@@ -38,10 +38,10 @@ describe('useSafeMemo() to avoid redundant actuation of hooks', () => {
     const { result } = renderHook(() => {
       const [state, setState] = useState(createStaticObject())
 
-      const memoized = useSafeMemo(Object.values(state), () => {
+      const memoized = useSafeMemo(() => {
         memoCalls++
         return state
-      })
+      }, Object.values(state))
 
       if (updatesCount !== 0) {
         updatesCount--
