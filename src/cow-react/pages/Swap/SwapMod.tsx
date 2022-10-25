@@ -63,6 +63,7 @@ import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { Widget } from '@cow/modules/application/pure/Widget'
+import { RowDeadline } from '@cow/modules/swap/containers/Row/RowDeadline'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -367,6 +368,8 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
                       <RowSlippage allowedSlippage={allowedSlippage} />
                     )}
+                    {!isExpertMode && <RowDeadline />}
+
                     {(isFeeGreater || trade) && fee && (
                       <TradeBasicDetails
                         allowedSlippage={userAllowedSlippage}

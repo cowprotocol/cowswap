@@ -7,6 +7,7 @@ import { LowerSectionWrapper } from '@cow/modules/swap/pure/styled'
 import { RowFee } from '@cow/modules/swap/containers/Row/RowFee'
 import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
+import { RowDeadline } from '@cow/modules/swap/containers/Row/RowDeadline'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
@@ -43,6 +44,9 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
         <>
           {/* Slippage */}
           <RowSlippage allowedSlippage={allowedSlippagePercent} />
+
+          {/* Transaction deadline (eth flow only) */}
+          <RowDeadline />
 
           {/* Min/Max received */}
           <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} showHelpers={true} />
