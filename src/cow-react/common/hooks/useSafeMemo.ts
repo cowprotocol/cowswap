@@ -5,7 +5,7 @@ import { CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
  * UseMemo effectively (by values) compare only primitive types and compare objects by links
  * To get the best performance we need process objects changes manually
  */
-export function useSafeMemo<T>(deps: unknown[] | null, memoCall: () => T): T {
+export function useSafeMemo<T>(memoCall: () => T, deps: unknown[] | null): T {
   const safeDeps = deps
     ? deps.map((dep) => {
         if (dep instanceof NativeCurrency) return dep.symbol
@@ -21,5 +21,5 @@ export function useSafeMemo<T>(deps: unknown[] | null, memoCall: () => T): T {
 }
 
 export function useSafeMemoObject<T extends { [key: string]: unknown } | null>(depsObj: T): typeof depsObj {
-  return useSafeMemo<typeof depsObj>(depsObj ? Object.values(depsObj) : null, () => depsObj)
+  return useSafeMemo<typeof depsObj>(() => depsObj, depsObj ? Object.values(depsObj) : null)
 }
