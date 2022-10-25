@@ -189,7 +189,7 @@ export const Loader = styled.div<{ isLoading: boolean }>`
   display: flex;
   flex: 1;
   ${({ theme, isLoading }) =>
-    isLoading &&
+    !isLoading &&
     css`
       position: relative;
       display: inline-block;
@@ -202,21 +202,8 @@ export const Loader = styled.div<{ isLoading: boolean }>`
         bottom: 0;
         left: 0;
         transform: translateX(-100%);
-        background-image: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0) 0,
-          ${theme.shimmer1} 20%,
-          ${theme.shimmer2} 60%,
-          rgba(255, 255, 255, 0)
-        );
-        animation: shimmer 2s infinite;
+        ${theme.shimmer}; // shimmer effect
         content: '';
-      }
-
-      @keyframes shimmer {
-        100% {
-          transform: translateX(100%);
-        }
       }
     `}
 `
@@ -289,7 +276,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   align-items: flex-end;
 
   ${({ showLoader, theme }) =>
-    showLoader &&
+    !showLoader &&
     css`
       position: relative;
       overflow: hidden;
@@ -300,20 +287,8 @@ export const Card = styled.div<{ showLoader?: boolean }>`
         bottom: 0;
         left: 0;
         transform: translateX(-100%);
-        background-image: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0) 0,
-          ${theme.shimmer1} 20%,
-          ${theme.shimmer2} 60%,
-          rgba(255, 255, 255, 0)
-        );
-        animation: shimmer 2s infinite;
+        ${theme.shimmer}; // shimmer effect
         content: '';
-      }
-      @keyframes shimmer {
-        100% {
-          transform: translateX(100%);
-        }
       }
     `}
 

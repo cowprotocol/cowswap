@@ -4,7 +4,7 @@ import { ButtonSize } from 'theme'
 
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { transparentize } from 'polished'
+import { transparentize, lighten } from 'polished'
 
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
@@ -38,9 +38,6 @@ export function colors(darkMode: boolean): Colors {
     text1: darkMode ? '#CAE9FF' : '#052B65',
     text2: darkMode ? '#86B2DC' : '#506B93',
     text3: darkMode ? '#428dff' : '#0d5ed9',
-
-    shimmer1: darkMode ? 'transparent' : 'transparent',
-    shimmer2: darkMode ? 'rgb(10 35 71 / 80%)' : 'rgb(255 255 255 / 60%)',
 
     // States
     error: darkMode ? '#D41300' : '#D41300',
@@ -130,6 +127,21 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};
       `,
     },
+    shimmer: css`
+      background-image: linear-gradient(
+        90deg,
+        transparent 0,
+        ${transparentize(0.7, colorsTheme.bg1)} 20%,
+        ${lighten(0.07, transparentize(0.6, colorsTheme.bg1))} 60%,
+        transparent
+      );
+      animation: shimmer 2s infinite;
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    `,
     textShadow1: `
       ${
         darkMode

@@ -21,8 +21,6 @@ export interface Colors extends ColorsUniswap {
   border: Color
   border2: Color
   disabled: Color
-  shimmer1: Color
-  shimmer2: color
   scrollbarBg: Color
   scrollbarThumb: Color
   tableHeadBG: Color
@@ -66,6 +64,7 @@ declare module 'styled-components' {
 
   // Override theme
   export interface DefaultTheme extends DefaultThemeUniswap, Colors {
+    shimmer: FlattenSimpleInterpolation
     textShadow1: string
     boxShadow1: string
     boxShadow2: string
