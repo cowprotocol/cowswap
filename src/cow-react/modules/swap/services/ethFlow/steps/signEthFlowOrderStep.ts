@@ -9,6 +9,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
 import { getDomain, UnsignedOrder } from 'utils/signatures'
 import { Order } from 'state/orders/actions'
+import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -68,8 +69,7 @@ export async function signEthFlowOrderStep(
   const orderId = packOrderUidParams({
     orderDigest,
     owner: ethFlowContract.address,
-    // TODO: check this, do we set MAX here or is that in contract?
-    validTo: order.validTo,
+    validTo: MAX_VALID_TO_EPOCH,
   })
 
   logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
