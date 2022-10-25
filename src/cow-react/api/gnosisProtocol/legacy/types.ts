@@ -32,6 +32,7 @@ export type LegacyFeeQuoteParams = FeeQuoteParams & {
   chainId: ChainId
   priceQuality?: string
   isBestQuote?: boolean
+  isEthFlow?: boolean
 }
 
 export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'sellToken' | 'buyToken'> & PriceQuoteParams

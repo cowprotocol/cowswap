@@ -15,7 +15,7 @@ type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
 }
 
-export type AuxOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
+export type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
   quoteId: number
   appData: string
   validTo: string
@@ -39,7 +39,7 @@ export async function signEthFlowOrderStep(
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
-  const auxOrderParams: AuxOrderParams = {
+  const auxOrderParams: EthFlowCreateOrderParams = {
     ...order,
     quoteId,
     appData: order.appData.toString(),
@@ -65,7 +65,7 @@ export async function signEthFlowOrderStep(
 
   const domain = getDomain(orderParams.chainId)
   const orderDigest = hashOrder(domain, order)
-  // Generate the orderId from owner and validTo
+  // Generate the orderId from owner, orderDigest, and max validTo
   const orderId = packOrderUidParams({
     orderDigest,
     owner: ethFlowContract.address,
