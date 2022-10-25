@@ -1,4 +1,3 @@
-import { EthFlowContext, SwapFlowContext } from '@cow/modules/swap/services/common/types'
 import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
@@ -14,7 +13,7 @@ import useENSAddress from 'hooks/useENSAddress'
 import { SwapConfirmManager, useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import { useWETHContract } from 'hooks/useContract'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
@@ -22,12 +21,12 @@ import { useUserTransactionTTL } from 'state/user/hooks'
 import { useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
-import { CoWSwapEthFlow } from '@cow/abis/types/ethflow'
-import { GPv2Settlement, Weth } from '@cow/abis/types'
+import { Weth } from '@cow/abis/types'
 import TradeGp from 'state/swap/TradeGp'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { Web3Provider } from '@ethersproject/providers'
+import { BaseFlowContext } from '@cow/modules/swap/services/common/types'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -58,7 +57,7 @@ function calculateValidTo(deadline: number): number {
   return Math.min(validTo, MAX_VALID_TO_EPOCH)
 }
 
-interface BaseFlowContext {
+interface BaseFlowContextSetup {
   chainId: number | undefined
   account: string | undefined
   provider: Web3Provider | undefined
@@ -81,7 +80,7 @@ interface BaseFlowContext {
   dispatch: AppDispatch
 }
 
-export function useBaseFlowContext(): BaseFlowContext {
+export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { account, chainId, provider } = useWeb3React()
   const { recipient } = useSwapState()
   const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
@@ -130,45 +129,12 @@ export function useBaseFlowContext(): BaseFlowContext {
 }
 
 type BaseGetFlowContextProps = {
-  baseProps: BaseFlowContext
-  conditionalCheck: boolean
-  sellToken: Currency
+  baseProps: BaseFlowContextSetup
+  sellToken?: Token
   kind: OrderKind
 }
 
-interface GetCommonFlowContextProps extends BaseGetFlowContextProps {
-  contract: any
-}
-
-interface GetSwapFlowContextProps extends BaseGetFlowContextProps {
-  contract: GPv2Settlement | null
-}
-
-interface GetEthFlowContextProps extends BaseGetFlowContextProps {
-  contract: CoWSwapEthFlow | null
-}
-
-export function getFlowContext({
-  baseProps,
-  conditionalCheck,
-  sellToken,
-  kind,
-  contract,
-}: GetSwapFlowContextProps): SwapFlowContext
-export function getFlowContext({
-  baseProps,
-  conditionalCheck,
-  sellToken,
-  kind,
-  contract,
-}: GetEthFlowContextProps): EthFlowContext
-export function getFlowContext({
-  baseProps,
-  conditionalCheck,
-  sellToken,
-  kind,
-  contract,
-}: GetCommonFlowContextProps): any {
+export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContextProps): BaseFlowContext | null {
   const {
     chainId,
     account,
@@ -192,8 +158,6 @@ export function getFlowContext({
   } = baseProps
 
   if (
-    conditionalCheck ||
-    !contract ||
     !chainId ||
     !account ||
     !provider ||
@@ -269,7 +233,6 @@ export function getFlowContext({
     swapFlowAnalyticsContext,
     swapConfirmManager,
     orderParams,
-    contract,
     appDataInfo: appData,
   }
 }

@@ -7,9 +7,8 @@ import { CoWSwapEthFlow, GPv2Settlement } from '@cow/abis/types'
 import { AppDispatch } from 'state'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/common/steps/analytics'
-import { Contract } from '@ethersproject/contracts'
 
-interface BaseFlowContext<C extends Contract> {
+export interface BaseFlowContext {
   context: {
     chainId: number
     trade: TradeGp
@@ -29,9 +28,12 @@ interface BaseFlowContext<C extends Contract> {
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext
   swapConfirmManager: SwapConfirmManager
   orderParams: PostOrderParams
-  contract: C
   appDataInfo: AppDataInfo
 }
 
-export type SwapFlowContext = BaseFlowContext<GPv2Settlement>
-export type EthFlowContext = BaseFlowContext<CoWSwapEthFlow>
+export type SwapFlowContext = BaseFlowContext & {
+  contract: GPv2Settlement
+}
+export type EthFlowContext = BaseFlowContext & {
+  contract: CoWSwapEthFlow
+}
