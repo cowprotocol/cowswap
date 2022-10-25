@@ -253,10 +253,4 @@ export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInform
   // Higher prices are worse, thus, the order will be unfillable whenever percentage difference is positive
   // Check whether given price difference is > Price delta %, to allow for small market variations
   return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
-  // return {
-  //   isUnfillable: percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE),
-  //   percentageCurrentPriceDiff: percentageDifference.toFixed(2),
-  //   orderPrice: `${orderPrice.toSignificant(10)} ${order.outputToken.symbol}`,
-  //   currentPrice: `${currentPrice.toSignificant(10)} ${order.outputToken.symbol}`,
-  // }
 }

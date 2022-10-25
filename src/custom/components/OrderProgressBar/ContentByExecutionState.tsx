@@ -31,8 +31,8 @@ import { SupportedChainId } from 'constants/chains'
 import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { orderPriceAndCurrentPriceDiff } from '@src/custom/state/orders/utils'
-import { Order } from '@src/custom/state/orders/actions'
+import { orderPriceAndCurrentPriceDiff } from 'state/orders/utils'
+import { Order } from 'state/orders/actions'
 
 const DOC_LINK_PHENOM_COW = 'https://docs.cow.fi/overview/coincidence-of-wants'
 
