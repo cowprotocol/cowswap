@@ -189,7 +189,7 @@ export const Loader = styled.div<{ isLoading: boolean }>`
   display: flex;
   flex: 1;
   ${({ theme, isLoading }) =>
-    !isLoading &&
+    isLoading &&
     css`
       position: relative;
       display: inline-block;
@@ -276,7 +276,7 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   align-items: flex-end;
 
   ${({ showLoader, theme }) =>
-    !showLoader &&
+    showLoader &&
     css`
       position: relative;
       overflow: hidden;
