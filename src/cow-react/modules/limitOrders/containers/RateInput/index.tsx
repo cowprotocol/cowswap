@@ -81,12 +81,16 @@ export function RateInput() {
 
       <styledEl.Body>
         <styledEl.InputWrapper>
-          <styledEl.NumericalInput
-            $loading={isLoading}
-            className="rate-limit-amount-input"
-            value={activeRate || ''}
-            onUserInput={handleUserInput}
-          />
+          {isLoading ? (
+            <styledEl.RateLoader />
+          ) : (
+            <styledEl.NumericalInput
+              $loading={isLoading}
+              className="rate-limit-amount-input"
+              value={activeRate || ''}
+              onUserInput={handleUserInput}
+            />
+          )}
         </styledEl.InputWrapper>
 
         <styledEl.ActiveCurrency onClick={handleToggle}>

@@ -1,13 +1,14 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useAtomValue } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { Field } from 'state/swap/actions'
-import { limitRateAtom } from '../state/limitRateAtom'
-import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
-import { limitDecimals } from '../utils/limitDecimals'
+import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { limitDecimals } from '@cow/modules/limitOrders/utils/limitDecimals'
 
 function _getAddress(currency: WrappedTokenInfo): string | null {
   return currency?.address || currency?.tokenInfo?.address || null
@@ -20,6 +21,9 @@ export function useFetchInitialPrice() {
   // Global state
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const { isInversed } = useAtomValue(limitRateAtom)
+
+  // Rate state
+  const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
   // Local state
   const [inputPrice, setInputPrice] = useState<number | null>(null)
@@ -45,9 +49,10 @@ export function useFetchInitialPrice() {
       } catch (err) {
         setPrice(null)
         setFinalPrice(null)
+        updateLimitRateState({ isLoading: false })
       }
     },
-    [chainId]
+    [chainId, updateLimitRateState]
   )
 
   // Handle price fetching
@@ -59,12 +64,15 @@ export function useFetchInitialPrice() {
       return
     }
 
+    // Set isLoading to true
+    updateLimitRateState({ isLoading: true })
+
     // Fetch input currency price
     getPrice(inputAddress, Field.INPUT)
 
     // Fetch output currency price
     getPrice(outputAddress, Field.OUTPUT)
-  }, [chainId, getPrice, inputCurrency, outputCurrency])
+  }, [chainId, getPrice, inputCurrency, outputCurrency, updateLimitRateState])
 
   // Handle final price calculation
   useEffect(() => {
@@ -81,8 +89,12 @@ export function useFetchInitialPrice() {
       newPrice = inputPrice / outputPrice
     }
 
+    // Update final price
     setFinalPrice(String(limitDecimals(newPrice, 5)))
-  }, [inputPrice, isInversed, outputPrice])
+
+    // Set isLoading to false
+    updateLimitRateState({ isLoading: false })
+  }, [inputPrice, isInversed, outputPrice, updateLimitRateState])
 
   return { price: finalPrice }
 }
