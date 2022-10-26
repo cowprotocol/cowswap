@@ -2,13 +2,16 @@ import { useEffect, useState, useCallback } from 'react'
 import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
+import { Currency } from '@uniswap/sdk-core'
+import BigNumber from 'bignumber.js'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { Field } from 'state/swap/actions'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { limitDecimals } from '@cow/modules/limitOrders/utils/limitDecimals'
+import { formatSmart } from 'utils/format'
+import usePrevious from 'hooks/usePrevious'
 
 function _getAddress(currency: WrappedTokenInfo): string | null {
   return currency?.address || currency?.tokenInfo?.address || null
@@ -26,17 +29,21 @@ export function useFetchInitialPrice() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
   // Local state
-  const [inputPrice, setInputPrice] = useState<number | null>(null)
-  const [outputPrice, setOutputPrice] = useState<number | null>(null)
-  const [finalPrice, setFinalPrice] = useState<string | null>(null)
+  const [inputPrice, setInputPrice] = useState<BigNumber | null>(null)
+  const [outputPrice, setOutputPrice] = useState<BigNumber | null>(null)
+  const [finalPrice, setFinalPrice] = useState<string | null | undefined>(null)
+  const prevFinalPrice = usePrevious(finalPrice)
 
   // Get single price and set the local state
   const getPrice = useCallback(
-    async (address: string, field: Field) => {
+    async (currency: Currency, field: Field) => {
       // Set INPUT or OUTPUT local state based on field param
       const setPrice = field === Field.INPUT ? setInputPrice : setOutputPrice
 
-      if (!chainId) {
+      // Get token address
+      const address = _getAddress(currency as WrappedTokenInfo)
+
+      if (!chainId || !address) {
         return
       }
 
@@ -44,7 +51,14 @@ export function useFetchInitialPrice() {
         const res = await getNativePrice(chainId, address)
 
         if (res?.price) {
-          setPrice(res?.price)
+          // Convert to BigNumber
+          const price = new BigNumber(res.price)
+
+          // Adjust for decimals (some tokens use 18 some 6, USDC for example uses 6)
+          const adjusted = price.div(10 ** (18 - currency.decimals))
+
+          // Set the price in local state
+          setPrice(adjusted)
         }
       } catch (err) {
         setPrice(null)
@@ -57,10 +71,7 @@ export function useFetchInitialPrice() {
 
   // Handle price fetching
   useEffect(() => {
-    const inputAddress = _getAddress(inputCurrency as WrappedTokenInfo)
-    const outputAddress = _getAddress(outputCurrency as WrappedTokenInfo)
-
-    if (!inputAddress || !outputAddress || !chainId) {
+    if (!inputCurrency || !outputCurrency || !chainId) {
       return
     }
 
@@ -68,10 +79,10 @@ export function useFetchInitialPrice() {
     updateLimitRateState({ isLoading: true })
 
     // Fetch input currency price
-    getPrice(inputAddress, Field.INPUT)
+    getPrice(inputCurrency, Field.INPUT)
 
     // Fetch output currency price
-    getPrice(outputAddress, Field.OUTPUT)
+    getPrice(outputCurrency, Field.OUTPUT)
   }, [chainId, getPrice, inputCurrency, outputCurrency, updateLimitRateState])
 
   // Handle final price calculation
@@ -82,19 +93,24 @@ export function useFetchInitialPrice() {
 
     let newPrice = null
 
-    // TODO: modify calculation to use proper value types
+    // Calculate the new initial price
     if (isInversed) {
-      newPrice = outputPrice / inputPrice
+      newPrice = outputPrice.div(inputPrice)
     } else {
-      newPrice = inputPrice / outputPrice
+      newPrice = inputPrice.div(outputPrice)
     }
 
     // Update final price
-    setFinalPrice(String(limitDecimals(newPrice, 5)))
-
-    // Set isLoading to false
-    updateLimitRateState({ isLoading: false })
+    setFinalPrice(formatSmart(newPrice, 5))
   }, [inputPrice, isInversed, outputPrice, updateLimitRateState])
+
+  // Handle isLoading
+  useEffect(() => {
+    if (finalPrice !== prevFinalPrice) {
+      // Set isLoading to false only if finalPrice is changed
+      updateLimitRateState({ isLoading: false })
+    }
+  }, [finalPrice, prevFinalPrice, updateLimitRateState])
 
   return { price: finalPrice }
 }
