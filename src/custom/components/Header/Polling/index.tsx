@@ -61,7 +61,7 @@ const Wrapper = styled.div`
   }
 `
 
-export const Polling = () => {
+export function Polling() {
   return (
     <Wrapper>
       <PollingUni />
