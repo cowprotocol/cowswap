@@ -366,7 +366,12 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
     throw _handleError(error, response, params, 'QUOTE')
   }
 }
-
+// ETH-FLOW orders require different quote params
+// check the isEthFlow flag and set in quote req obj
+const ETH_FLOW_AUX_QUOTE_PARAMS = {
+  signingScheme: 'eip1271',
+  onchainOrder: true,
+}
 function _mapNewToLegacyParams({ isEthFlow, ...params }: FeeQuoteParams): QuoteQuery {
   const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
@@ -381,28 +386,27 @@ function _mapNewToLegacyParams({ isEthFlow, ...params }: FeeQuoteParams): QuoteQ
     validTo,
     partiallyFillable: false,
     priceQuality,
-    // TODO: check this setup as this is for all other orders
-    onchainOrder: false,
-    signingScheme: 'eip712',
   }
 
   if (isEthFlow) {
     console.debug('[API:CowSwap] ETH FLOW ORDER, setting onchainOrder: true, and signingScheme: eip1271')
-    baseParams.onchainOrder = true
-    baseParams.signingScheme = 'eip1271'
   }
-  const finalParams: QuoteQuery =
-    kind === OrderKind.SELL
-      ? {
-          kind: OrderKind.SELL,
-          sellAmountBeforeFee: amount,
-          ...baseParams,
-        }
-      : {
-          kind: OrderKind.BUY,
-          buyAmountAfterFee: amount,
-          ...baseParams,
-        }
+
+  let finalParams: QuoteQuery
+  if (kind === OrderKind.SELL) {
+    finalParams = {
+      ...baseParams,
+      ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),
+      kind: OrderKind.SELL,
+      sellAmountBeforeFee: amount,
+    }
+  } else {
+    finalParams = {
+      kind: OrderKind.BUY,
+      buyAmountAfterFee: amount,
+      ...baseParams,
+    }
+  }
 
   return finalParams
 }
@@ -436,6 +440,7 @@ export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<Pri
     ...params,
     buyToken: baseToken,
     sellToken: quoteToken,
+    isEthFlow: false,
   })
 }
 
