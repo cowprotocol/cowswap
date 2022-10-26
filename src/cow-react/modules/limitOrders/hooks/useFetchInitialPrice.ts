@@ -8,24 +8,7 @@ import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '../state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { limitDecimals } from '../utils/limitDecimals'
-
-function _getAddress(currency: WrappedTokenInfo): string | null {
-  let address: string | null = null
-
-  if (!currency) {
-    return null
-  }
-
-  if (currency.address) {
-    address = currency.address
-  }
-
-  if (currency.tokenInfo) {
-    address = currency.tokenInfo.address
-  }
-
-  return address
-}
+import { getCurrencyAddress } from '../utils/getCurrencyAddress'
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 export function useFetchInitialPrice() {
@@ -44,8 +27,7 @@ export function useFetchInitialPrice() {
   const getPrice = useCallback(
     async (address: string, field: Field) => {
       // Set INPUT or OUTPUT local state based on field param
-      const setters = { setInputPrice, setOutputPrice }
-      const setPrice = setters[field === Field.INPUT ? 'setInputPrice' : 'setOutputPrice']
+      const setPrice = field === Field.INPUT ? setInputPrice : setOutputPrice
 
       if (!chainId) {
         return
@@ -67,8 +49,8 @@ export function useFetchInitialPrice() {
 
   // Handle price fetching
   useEffect(() => {
-    const inputAddress = _getAddress(inputCurrency as WrappedTokenInfo)
-    const outputAddress = _getAddress(outputCurrency as WrappedTokenInfo)
+    const inputAddress = getCurrencyAddress(inputCurrency as WrappedTokenInfo)
+    const outputAddress = getCurrencyAddress(outputCurrency as WrappedTokenInfo)
 
     if (!inputAddress || !outputAddress || !chainId) {
       return

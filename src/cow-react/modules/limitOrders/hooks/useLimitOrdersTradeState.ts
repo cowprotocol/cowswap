@@ -4,6 +4,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useMemo } from 'react'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export interface LimitOrdersTradeState {
   readonly inputCurrency: Currency | null
@@ -12,6 +13,7 @@ export interface LimitOrdersTradeState {
   readonly outputCurrencyAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
   readonly deadline: number | null
+  readonly orderKind: OrderKind
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
@@ -19,6 +21,7 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
 
   const recipient = state.recipient
   const deadline = state.deadline
+  const orderKind = state.orderKind
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
   const inputCurrencyAmount =
@@ -34,6 +37,7 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
       outputCurrency,
       inputCurrencyAmount,
       outputCurrencyAmount,
+      orderKind,
     }
-  }, [deadline, recipient, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount])
+  }, [deadline, recipient, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, orderKind])
 }

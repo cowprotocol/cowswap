@@ -9,10 +9,14 @@ import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRat
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useFetchInitialPrice } from '@cow/modules/limitOrders/hooks/useFetchInitialPrice'
+import { useFetchMarketPrice } from '@cow/modules/limitOrders/hooks/useFetchMarketPrice'
 import usePrevious from 'hooks/usePrevious'
 
 export function RateInput() {
-  // Price fetching
+  // Continous market price fetch (quote)
+  useFetchMarketPrice()
+
+  // Initial price fetch
   const { price: initialPrice } = useFetchInitialPrice()
 
   // Rate and currency amount hooks
@@ -20,7 +24,7 @@ export function RateInput() {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   // Rate state
-  const { isInversed, activeRate, isLoading, marketRate } = useAtomValue(limitRateAtom)
+  const { isInversed, activeRate, isLoading, executionRate } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const prevIsInversed = usePrevious(isInversed)
 
@@ -34,8 +38,8 @@ export function RateInput() {
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
-    updateLimitRateState({ activeRate: marketRate })
-  }, [marketRate, updateLimitRateState])
+    updateLimitRateState({ activeRate: executionRate })
+  }, [executionRate, updateLimitRateState])
 
   // Handle rate input
   const handleUserInput = useCallback(
