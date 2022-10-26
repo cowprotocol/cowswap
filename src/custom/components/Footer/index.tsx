@@ -9,7 +9,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  margin: auto 16px;
   position: relative;
   width: 100%;
   margin: 0;
