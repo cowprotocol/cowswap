@@ -1305,9 +1305,9 @@
     loglevel "^1.8.0"
     multiformats "^9.6.4"
 
-"@cowprotocol/ethflowcontract@git+https://github.com/cowprotocol/ethflowcontract.git#a06e19c":
+"@cowprotocol/ethflowcontract@git+https://github.com/cowprotocol/ethflowcontract.git#main-artifacts":
   version "0.0.0-rc.0"
-  resolved "git+https://github.com/cowprotocol/ethflowcontract.git#a06e19c7a37d602311d085aac6fdba34e1680b43"
+  resolved "git+https://github.com/cowprotocol/ethflowcontract.git#31b4790fd332a72ed106cfd3ee3afdb09409afd1"
 
 "@craco/craco@^5.7.0":
   version "5.9.0"

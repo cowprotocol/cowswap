@@ -25,6 +25,7 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
     "cowSwapSettlement()": FunctionFragment;
     "createOrder((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64))": FunctionFragment;
     "deleteOrder((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64))": FunctionFragment;
+    "deleteOrders((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64)[])": FunctionFragment;
     "isValidSignature(bytes32,bytes)": FunctionFragment;
     "orders(bytes32)": FunctionFragment;
     "unwrap(uint256)": FunctionFragment;
@@ -70,6 +71,22 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "deleteOrders",
+    values: [
+      {
+        buyToken: string;
+        receiver: string;
+        sellAmount: BigNumberish;
+        buyAmount: BigNumberish;
+        appData: BytesLike;
+        feeAmount: BigNumberish;
+        validTo: BigNumberish;
+        partiallyFillable: boolean;
+        quoteId: BigNumberish;
+      }[]
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isValidSignature",
     values: [BytesLike, BytesLike]
   ): string;
@@ -95,6 +112,10 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "deleteOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "deleteOrders",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -259,6 +280,21 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    deleteOrders(
+      orderArray: {
+        buyToken: string;
+        receiver: string;
+        sellAmount: BigNumberish;
+        buyAmount: BigNumberish;
+        appData: BytesLike;
+        feeAmount: BigNumberish;
+        validTo: BigNumberish;
+        partiallyFillable: boolean;
+        quoteId: BigNumberish;
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isValidSignature(
       orderHash: BytesLike,
       arg1: BytesLike,
@@ -319,6 +355,21 @@ export class CoWSwapEthFlow extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  deleteOrders(
+    orderArray: {
+      buyToken: string;
+      receiver: string;
+      sellAmount: BigNumberish;
+      buyAmount: BigNumberish;
+      appData: BytesLike;
+      feeAmount: BigNumberish;
+      validTo: BigNumberish;
+      partiallyFillable: boolean;
+      quoteId: BigNumberish;
+    }[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   isValidSignature(
     orderHash: BytesLike,
     arg1: BytesLike,
@@ -376,6 +427,21 @@ export class CoWSwapEthFlow extends BaseContract {
         partiallyFillable: boolean;
         quoteId: BigNumberish;
       },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    deleteOrders(
+      orderArray: {
+        buyToken: string;
+        receiver: string;
+        sellAmount: BigNumberish;
+        buyAmount: BigNumberish;
+        appData: BytesLike;
+        feeAmount: BigNumberish;
+        validTo: BigNumberish;
+        partiallyFillable: boolean;
+        quoteId: BigNumberish;
+      }[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -578,6 +644,21 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    deleteOrders(
+      orderArray: {
+        buyToken: string;
+        receiver: string;
+        sellAmount: BigNumberish;
+        buyAmount: BigNumberish;
+        appData: BytesLike;
+        feeAmount: BigNumberish;
+        validTo: BigNumberish;
+        partiallyFillable: boolean;
+        quoteId: BigNumberish;
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     isValidSignature(
       orderHash: BytesLike,
       arg1: BytesLike,
@@ -633,6 +714,21 @@ export class CoWSwapEthFlow extends BaseContract {
         partiallyFillable: boolean;
         quoteId: BigNumberish;
       },
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    deleteOrders(
+      orderArray: {
+        buyToken: string;
+        receiver: string;
+        sellAmount: BigNumberish;
+        buyAmount: BigNumberish;
+        appData: BytesLike;
+        feeAmount: BigNumberish;
+        validTo: BigNumberish;
+        partiallyFillable: boolean;
+        quoteId: BigNumberish;
+      }[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
