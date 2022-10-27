@@ -43,11 +43,11 @@ interface ExecutionStateProps extends OrderProgressBarProps {
 }
 
 function amountsForMarketPriceFormatted(order: Order) {
-  if (!order?.isUnfillable || !order.amountByCurrentPrice) return {}
+  if (!order?.isUnfillable || !order.currentMarketPrice) return {}
 
   const { currentPrice, orderPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(
     order,
-    order.amountByCurrentPrice
+    order.currentMarketPrice
   )
 
   return {
@@ -168,8 +168,8 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 <StatusMsg>
                   Order Status:{' '}
                   <strong>
-                    Your limit price is (<SpanOrangeText>{amountsForMarketPriceDiff.percentageDiff}%</SpanOrangeText>)
-                    out of market.
+                    Your limit price is out of market{' '}
+                    <SpanOrangeText>{amountsForMarketPriceDiff.percentageDiff}%</SpanOrangeText>.
                   </strong>{' '}
                   {isCancellable ? (
                     <>
@@ -183,10 +183,14 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 <UnfillableMsgWrapper>
                   <div>
                     <p>
-                      Market is giving: <TextAmount strong>{amountsForMarketPriceDiff.currentPrice}</TextAmount>
+                      Current market price: <TextAmount>{amountsForMarketPriceDiff.currentPrice}</TextAmount>
                     </p>
                     <p>
-                      Your order expects: <TextAmount>{amountsForMarketPriceDiff.orderPrice}</TextAmount>
+                      Your order limit price:{' '}
+                      <TextAmount>
+                        {amountsForMarketPriceDiff.orderPrice} (
+                        <SpanOrangeText>-{amountsForMarketPriceDiff.percentageDiff}%</SpanOrangeText>)
+                      </TextAmount>
                     </p>
                   </div>
                   <div>

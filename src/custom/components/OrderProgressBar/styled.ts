@@ -4,31 +4,38 @@ import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
 
-export const TextAmount = styled.span<{ strong?: boolean }>`
+export const TextAmount = styled.span`
   display: block;
-  ${({ strong = false }) =>
-    strong &&
-    `
-    font-weight: bold;
-  `}
+  font-weight: bold;
 `
 export const UnfillableMsgWrapper = styled.div`
-  display: grid;
-  column-gap: 0.5rem;
-  grid-template-columns: 1.6fr 1.4fr;
-  align-items: center;
+  display: inline-block;
+  width: 100%;
+  div:nth-child(1) {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    padding-bottom: 1rem;
+    span {
+      padding-top: 0.5rem;
+    }
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: inline-block;
+      text-align: center;
+      line-height: normal;
+      span {
+        padding-top: 0.2rem;
+      }
+    `};
+  }
   div:nth-child(2) {
+    justify-content: center;
     display: flex;
     gap: 0.6rem;
     img {
       margin: 0;
     }
   }
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-template-columns: 1fr;
-    text-align: center;
-    row-gap: 1rem;
-  `};
 `
 
 export const ProgressBarWrapper = animated(styled.div`

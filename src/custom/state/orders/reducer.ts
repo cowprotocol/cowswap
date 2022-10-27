@@ -388,7 +388,7 @@ export default createReducer(initialState, (builder) =>
 
       if (orderObject?.order) {
         orderObject.order.isUnfillable = isUnfillable
-        orderObject.order.amountByCurrentPrice = amountByCurrentPrice
+        orderObject.order.currentMarketPrice = amountByCurrentPrice
       }
     })
 )

@@ -1,5 +1,5 @@
 import { OrderKind } from '@cowprotocol/contracts'
-import { Price } from '@uniswap/sdk-core'
+import { Percent, Price, Token } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { PENDING_ORDERS_BUFFER } from 'constants/index'
@@ -197,7 +197,13 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
   }
 }
 
-export function orderPriceAndCurrentPriceDiff(order: Order, priceAmount: string) {
+type OrderPriceAndCurrentPriceDiff = {
+  orderPrice: Price<Token, Token>
+  currentPrice: Price<Token, Token>
+  percentageDifference: Percent
+}
+
+export function orderPriceAndCurrentPriceDiff(order: Order, priceAmount: string): OrderPriceAndCurrentPriceDiff {
   // Build price object from stored order
   const orderPrice = new Price(
     order.inputToken,
