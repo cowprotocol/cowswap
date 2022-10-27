@@ -11,7 +11,6 @@ import { Field } from 'state/swap/actions'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { formatSmart } from 'utils/format'
-import usePrevious from 'hooks/usePrevious'
 
 function _getAddress(currency: WrappedTokenInfo): string | null {
   return currency?.address || currency?.tokenInfo?.address || null
@@ -32,18 +31,37 @@ export function useFetchInitialPrice() {
   const [inputPrice, setInputPrice] = useState<BigNumber | null>(null)
   const [outputPrice, setOutputPrice] = useState<BigNumber | null>(null)
   const [finalPrice, setFinalPrice] = useState<string | null | undefined>(null)
-  const prevFinalPrice = usePrevious(finalPrice)
+  const [isInputLoading, setInputLoading] = useState<boolean>(false)
+  const [isOutputLoading, setOutputLoading] = useState<boolean>(false)
 
   // Get single price and set the local state
   const getPrice = useCallback(
     async (currency: Currency, field: Field) => {
       // Set INPUT or OUTPUT local state based on field param
       const setPrice = field === Field.INPUT ? setInputPrice : setOutputPrice
+      const setLoading = field === Field.INPUT ? setInputLoading : setOutputLoading
+
+      setLoading(true)
+
+      // Error handler
+      const resetState = () => {
+        setPrice(null)
+        setFinalPrice(null)
+        setLoading(false)
+      }
 
       // Get token address
       const address = _getAddress(currency as WrappedTokenInfo)
 
+      // Handle native currency
+      if (currency.isNative) {
+        setPrice(new BigNumber(1))
+        setLoading(false)
+        return
+      }
+
       if (!chainId || !address) {
+        resetState()
         return
       }
 
@@ -59,14 +77,15 @@ export function useFetchInitialPrice() {
 
           // Set the price in local state
           setPrice(adjusted)
+          setLoading(false)
+        } else {
+          resetState()
         }
       } catch (err) {
-        setPrice(null)
-        setFinalPrice(null)
-        updateLimitRateState({ isLoading: false })
+        resetState()
       }
     },
-    [chainId, updateLimitRateState]
+    [chainId]
   )
 
   // Handle price fetching
@@ -74,9 +93,6 @@ export function useFetchInitialPrice() {
     if (!inputCurrency || !outputCurrency || !chainId) {
       return
     }
-
-    // Set isLoading to true
-    updateLimitRateState({ isLoading: true })
 
     // Fetch input currency price
     getPrice(inputCurrency, Field.INPUT)
@@ -104,13 +120,11 @@ export function useFetchInitialPrice() {
     setFinalPrice(formatSmart(newPrice, 5))
   }, [inputPrice, isInversed, outputPrice, updateLimitRateState])
 
-  // Handle isLoading
+  // Handle loading
   useEffect(() => {
-    if (finalPrice !== prevFinalPrice) {
-      // Set isLoading to false only if finalPrice is changed
-      updateLimitRateState({ isLoading: false })
-    }
-  }, [finalPrice, prevFinalPrice, updateLimitRateState])
+    const isLoading = isInputLoading || isOutputLoading
+    updateLimitRateState({ isLoading })
+  }, [isInputLoading, isOutputLoading, updateLimitRateState])
 
   return { price: finalPrice }
 }

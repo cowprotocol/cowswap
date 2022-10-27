@@ -2,6 +2,7 @@ import * as styledEl from './styled'
 import { useCallback, useEffect } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useWeb3React } from '@web3-react/core'
 
 import { HeadingText } from '@cow/modules/limitOrders/pure/RateInput/HeadingText'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
@@ -12,6 +13,9 @@ import { useFetchInitialPrice } from '@cow/modules/limitOrders/hooks/useFetchIni
 import usePrevious from 'hooks/usePrevious'
 
 export function RateInput() {
+  const { chainId } = useWeb3React()
+  const prevChainId = usePrevious(chainId)
+
   // Price fetching
   const { price: initialPrice } = useFetchInitialPrice()
 
@@ -68,6 +72,13 @@ export function RateInput() {
   useEffect(() => {
     updateLimitRateState({ activeRate: initialPrice })
   }, [initialPrice, updateLimitRateState])
+
+  // Clear active rate on network change
+  useEffect(() => {
+    if (prevChainId && prevChainId !== chainId) {
+      updateLimitRateState({ activeRate: null })
+    }
+  }, [chainId, prevChainId, updateLimitRateState])
 
   return (
     <styledEl.Wrapper>
