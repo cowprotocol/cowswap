@@ -1,5 +1,5 @@
 type Props = {
-  currency: string | null
+  currency: string | undefined
 }
 
 export function HeadingText({ currency }: Props) {
