@@ -51,6 +51,7 @@ function amountsForMarketPriceFormatted(order: Order) {
     percentageDiff: percentageDifference.toFixed(2),
     orderPrice: `${orderPrice.toSignificant(10)} ${order.outputToken.symbol}`,
     currentPrice: `${currentPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+    inputTokenSymbol: order.inputToken.symbol,
   }
 }
 
@@ -180,10 +181,11 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 <UnfillableMsgWrapper>
                   <div>
                     <p>
-                      Current market price: <TextAmount>{amountsForMarketPriceDiff.currentPrice}</TextAmount>
+                      Current market price per <strong>1 {amountsForMarketPriceDiff.inputTokenSymbol}</strong>:{' '}
+                      <TextAmount>{amountsForMarketPriceDiff.currentPrice}</TextAmount>
                     </p>
                     <p>
-                      Your order limit price:{' '}
+                      Your order limit price per <strong>1 {amountsForMarketPriceDiff.inputTokenSymbol}</strong>:{' '}
                       <TextAmount>
                         {amountsForMarketPriceDiff.orderPrice} (
                         <SpanOrangeText>-{amountsForMarketPriceDiff.percentageDiff}%</SpanOrangeText>)

@@ -199,9 +199,6 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
 
 type OrderWithMarketPriceConfigured = Omit<Order, 'currentMarketPriceAmount'> & { currentMarketPriceAmount: string }
 
-function isCurrentMarketPriceAmountDefined(order: Order): order is OrderWithMarketPriceConfigured {
-  return order.currentMarketPriceAmount !== undefined
-}
 type OrderPriceAndCurrentPriceDiff = {
   orderPrice: Price<Token, Token>
   currentPrice: Price<Token, Token>
@@ -217,9 +214,9 @@ export function orderPriceAndCurrentPriceDiff(order: Order, priceAmount?: string
     order.buyAmount.toString()
   )
 
-  const currentMarketPriceAmount = isCurrentMarketPriceAmountDefined(order)
-    ? order.currentMarketPriceAmount
-    : (priceAmount as string)
+  const currentMarketPriceAmount = priceAmount
+    ? priceAmount
+    : (order as OrderWithMarketPriceConfigured).currentMarketPriceAmount
 
   // Build current price object from quoted price
   // Note that depending on the order type, the amount will be used either as nominator or denominator
