@@ -16,7 +16,7 @@ import { /*Currency,*/ Percent /*, TradeType*/ } from '@uniswap/sdk-core'
 
 // MOD imports
 import TradeGp from 'state/swap/TradeGp'
-import TradeSummary from '../TradeSummary'
+import { TradeSummary } from '@cow/modules/swap/containers/TradeSummary'
 
 /* const StyledCard = styled(Card)`
   padding: 0;
