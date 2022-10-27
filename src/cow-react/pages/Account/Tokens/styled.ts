@@ -48,7 +48,7 @@ export const Menu = styled.div`
 
 export const MenuItem = styled.div<{ active: boolean }>`
   transition: background 0.2s ease-in;
-  background-color: ${({ active, theme }) => (active ? theme.primary1 : 'transparent')};
+  background-color: ${({ active, theme }) => (active ? theme.grey1 : 'transparent')};
   color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
   justify-content: space-between;
   border-radius: 8px;

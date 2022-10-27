@@ -64,7 +64,7 @@ export const Wrapper = styled.div`
     > div > ul {
       margin: 12px 0 24px;
       padding: 0 0 0 20px;
-      color: ${({ theme }) => theme.primary1};
+      color: ${({ theme }) => theme.text3};
       line-height: 1.2;
     }
 

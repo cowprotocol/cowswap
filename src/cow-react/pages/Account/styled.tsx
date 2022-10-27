@@ -45,9 +45,11 @@ export const Wrapper = styled(Page)`
 `
 
 export const ExtLink = styled(ExternalLink)`
+  color: ${({ theme }) => theme.text3};
+
   &:hover,
   &:focus {
-    color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.text3};
   }
 `
 
@@ -147,11 +149,10 @@ export const FlexWrap = styled.div`
 `
 
 export const StyledContainer = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-  }
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -401,7 +402,7 @@ export const BannerCard = styled(BannerExplainer)`
       color: ${({ theme }) => theme.text1};
 
       &:hover {
-        color: ${({ theme }) => theme.primary1};
+        color: ${({ theme }) => theme.text3};
       }
     }
   }

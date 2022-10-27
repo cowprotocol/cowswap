@@ -41,7 +41,7 @@ export const Content = styled.div`
   }
 
   > h2 > b {
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text3};
   }
 
   > h3 {
@@ -52,7 +52,7 @@ export const Content = styled.div`
   > h3::before {
     content: '';
     display: block;
-    border-top: 1px solid ${({ theme }) => theme.border};
+    border-top: 1px solid ${({ theme }) => theme.grey1};
     margin: 34px 0;
     opacity: 0.2;
   }
@@ -135,9 +135,8 @@ export const GdocsListStyle = css`
   > ul,
   ol {
     margin: 24px 0;
-    padding: 12px 24px 12px 38px;
-    background: ${({ theme }) => theme.bg2};
-    color: ${({ theme }) => theme.text2};
+    padding: 12px 48px;
+    background: ${({ theme }) => theme.grey1};
     border-radius: 12px;
 
     > li {
@@ -146,10 +145,10 @@ export const GdocsListStyle = css`
       list-style: decimal;
 
       a {
-        color: ${({ theme }) => theme.text2};
+        color: ${({ theme }) => theme.text3};
 
         &:hover {
-          color: ${({ theme }) => theme.primary1};
+          color: ${({ theme }) => theme.text3};
         }
       }
 
