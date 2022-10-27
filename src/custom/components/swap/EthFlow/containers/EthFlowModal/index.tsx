@@ -16,8 +16,7 @@ import { useSingleActivityDescriptor } from 'hooks/useRecentActivity'
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
 import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
-import { useTradeApproveCallback } from '@cow/common/containers/TradeApprove/useTradeApproveCallback'
-import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
+import { useTradeApproveCallback, useTradeApproveState } from '@cow/common/containers/TradeApprove'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>

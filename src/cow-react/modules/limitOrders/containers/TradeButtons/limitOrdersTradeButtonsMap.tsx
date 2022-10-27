@@ -52,7 +52,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
         {!!amountToApprove && (
           <TradeApproveButton amountToApprove={amountToApprove}>
             <SwapButton disabled={true}>
-              <Trans>Swap</Trans>
+              <Trans>Review limit order</Trans>
             </SwapButton>
           </TradeApproveButton>
         )}
