@@ -220,6 +220,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                   <strong>The network looks slower than usual. Our solvers are adjusting gas fees for you!</strong>
                   {isCancellable ? (
                     <>
+                      {' '}
                       You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
