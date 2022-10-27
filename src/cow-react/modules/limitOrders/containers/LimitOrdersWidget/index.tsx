@@ -8,6 +8,7 @@ import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import { ButtonPrimary } from 'components/Button'
 import { Trans } from '@lingui/macro'
 import React, { useCallback, useState } from 'react'
+import { useSetAtom } from 'jotai'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
@@ -27,6 +28,7 @@ import { tradeFlow } from '../../services/tradeFlow'
 import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
+import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 
 export function LimitOrdersWidget() {
   useSetupLimitOrdersState()
@@ -52,6 +54,7 @@ export function LimitOrdersWidget() {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
+  const setConfirmationState = useSetAtom(limitOrdersConfirmState)
   const tradeContext = useTradeFlowContext(limitOrdersQuote)
 
   const [showConfirmation, setShowConfirmation] = useState(false)
@@ -113,11 +116,14 @@ export function LimitOrdersWidget() {
 
   const doTrade = useCallback(() => {
     if (expertMode) {
-      tradeContext && tradeFlow(tradeContext)
+      if (tradeContext) {
+        setConfirmationState({ isPending: true, orderHash: null })
+        tradeFlow(tradeContext)
+      }
     } else {
       setShowConfirmation(true)
     }
-  }, [expertMode, tradeContext, setShowConfirmation])
+  }, [expertMode, tradeContext, setShowConfirmation, setConfirmationState])
 
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 

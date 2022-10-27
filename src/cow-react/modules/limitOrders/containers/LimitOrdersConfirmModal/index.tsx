@@ -1,5 +1,6 @@
 import Modal from '@src/components/Modal'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
+import { useAtom } from 'jotai'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { CloseIcon } from '@src/theme'
 import { useAtomValue } from 'jotai/utils'
@@ -10,6 +11,7 @@ import { tradeFlow, TradeFlowContext } from '../../services/tradeFlow'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
 import * as styledEl from './styled'
+import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -17,11 +19,6 @@ export interface LimitOrdersConfirmModalProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   onDismiss(): void
-}
-
-interface LimitOrderConfirmationState {
-  isPending: boolean
-  orderHash: string | null
 }
 
 function getCurrencyAmount(currency: Currency | null, value: string | null): CurrencyAmount<Currency> | null {
@@ -34,10 +31,7 @@ function getCurrencyAmount(currency: Currency | null, value: string | null): Cur
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
   const { activeRate } = useAtomValue(limitRateAtom)
-  const [confirmationState, setConfirmationState] = useState<LimitOrderConfirmationState>({
-    isPending: false,
-    orderHash: null,
-  })
+  const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
 
   const { viewAmount: inputViewAmount, currency: inputCurrency } = inputCurrencyInfo
   const { viewAmount: outputViewAmount, currency: outputCurrency } = outputCurrencyInfo
