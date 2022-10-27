@@ -6,18 +6,14 @@ import { Currency } from '@uniswap/sdk-core'
 import BigNumber from 'bignumber.js'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
-import { Field } from 'state/swap/actions'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import { Field } from 'state/swap/actions'
 import { formatSmart } from 'utils/format'
 
-function _getAddress(currency: WrappedTokenInfo): string | null {
-  return currency?.address || currency?.tokenInfo?.address || null
-}
-
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
-export function useFetchInitialPrice() {
+export function useGetInitialPrice(): { price: string | null | undefined } {
   const { chainId } = useWeb3React()
 
   // Global state
@@ -35,25 +31,26 @@ export function useFetchInitialPrice() {
   const [isOutputLoading, setOutputLoading] = useState<boolean>(false)
 
   // Get single price and set the local state
-  const getPrice = useCallback(
+  const fetchPrice = useCallback(
     async (currency: Currency, field: Field) => {
       // Set INPUT or OUTPUT local state based on field param
       const setPrice = field === Field.INPUT ? setInputPrice : setOutputPrice
       const setLoading = field === Field.INPUT ? setInputLoading : setOutputLoading
 
-      setLoading(true)
-
-      // Error handler
+      // Handle reset state
       const resetState = () => {
         setPrice(null)
         setFinalPrice(null)
         setLoading(false)
       }
 
-      // Get token address
-      const address = _getAddress(currency as WrappedTokenInfo)
+      // Set loading true for current field
+      setLoading(true)
 
-      // Handle native currency
+      // Get token address
+      const address = getAddress(currency)
+
+      // Handle if its native currency
       if (currency.isNative) {
         setPrice(new BigNumber(1))
         setLoading(false)
@@ -66,6 +63,7 @@ export function useFetchInitialPrice() {
       }
 
       try {
+        // Fetch the price
         const res = await getNativePrice(chainId, address)
 
         if (res?.price) {
@@ -95,11 +93,11 @@ export function useFetchInitialPrice() {
     }
 
     // Fetch input currency price
-    getPrice(inputCurrency, Field.INPUT)
+    fetchPrice(inputCurrency, Field.INPUT)
 
     // Fetch output currency price
-    getPrice(outputCurrency, Field.OUTPUT)
-  }, [chainId, getPrice, inputCurrency, outputCurrency, updateLimitRateState])
+    fetchPrice(outputCurrency, Field.OUTPUT)
+  }, [chainId, fetchPrice, inputCurrency, outputCurrency, updateLimitRateState])
 
   // Handle final price calculation
   useEffect(() => {
@@ -107,14 +105,8 @@ export function useFetchInitialPrice() {
       return
     }
 
-    let newPrice = null
-
     // Calculate the new initial price
-    if (isInversed) {
-      newPrice = outputPrice.div(inputPrice)
-    } else {
-      newPrice = inputPrice.div(outputPrice)
-    }
+    const newPrice = isInversed ? outputPrice.div(inputPrice) : inputPrice.div(outputPrice)
 
     // Update final price
     setFinalPrice(formatSmart(newPrice, 5))
