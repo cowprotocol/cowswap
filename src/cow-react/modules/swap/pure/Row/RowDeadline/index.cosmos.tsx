@@ -6,6 +6,7 @@ const defaultProps: RowDeadlineProps = {
   isEthFlow: true,
   displayDeadline: Math.floor(DEADLINE_LOWER_THRESHOLD_SECONDS / 60) + ' minutes',
   symbols: ['ETH', 'WETH'],
+  userDeadline: 600,
 }
 
 export default <RowDeadlineContent {...defaultProps} />
