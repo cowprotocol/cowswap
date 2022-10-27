@@ -32,7 +32,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
   isCancelling?: boolean // Intermediate state while the order has been cancelled but order is still pending
   isUnfillable?: boolean // Whether the order is out of the market, due to price movements since placement
-  currentMarketPrice?: string // Amount calculated for the current market price if the order price differs from the previous one
+  currentMarketPriceAmount?: string // Amount calculated for the current market price if the order price differs from the market
   fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
   fulfilledTransactionHash?: string // Hash of transaction when Order was fulfilled
 
@@ -164,7 +164,7 @@ export type SetIsOrderUnfillableParams = {
   id: OrderID
   chainId: ChainId
   isUnfillable: boolean
-  amountByCurrentPrice: string
+  currentMarketPriceAmount: string
 }
 
 export const setIsOrderUnfillable = createAction<SetIsOrderUnfillableParams>('order/setIsOrderUnfillable')

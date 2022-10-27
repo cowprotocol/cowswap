@@ -197,13 +197,18 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
   }
 }
 
+type OrderWithMarketPriceConfigured = Omit<Order, 'currentMarketPriceAmount'> & { currentMarketPriceAmount: string }
+
+function isCurrentMarketPriceAmountDefined(order: Order): order is OrderWithMarketPriceConfigured {
+  return order.currentMarketPriceAmount !== undefined
+}
 type OrderPriceAndCurrentPriceDiff = {
   orderPrice: Price<Token, Token>
   currentPrice: Price<Token, Token>
   percentageDifference: Percent
 }
 
-export function orderPriceAndCurrentPriceDiff(order: Order, priceAmount: string): OrderPriceAndCurrentPriceDiff {
+export function orderPriceAndCurrentPriceDiff(order: Order, priceAmount?: string): OrderPriceAndCurrentPriceDiff {
   // Build price object from stored order
   const orderPrice = new Price(
     order.inputToken,
@@ -212,12 +217,16 @@ export function orderPriceAndCurrentPriceDiff(order: Order, priceAmount: string)
     order.buyAmount.toString()
   )
 
+  const currentMarketPriceAmount = isCurrentMarketPriceAmountDefined(order)
+    ? order.currentMarketPriceAmount
+    : (priceAmount as string)
+
   // Build current price object from quoted price
   // Note that depending on the order type, the amount will be used either as nominator or denominator
   const currentPrice =
     order.kind === OrderKind.SELL
-      ? new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), priceAmount)
-      : new Price(order.inputToken, order.outputToken, priceAmount, order.buyAmount.toString())
+      ? new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), currentMarketPriceAmount)
+      : new Price(order.inputToken, order.outputToken, currentMarketPriceAmount, order.buyAmount.toString())
 
   // Calculate the percentage of the current price in regards to the order price
   const percentageDifference = ONE_HUNDRED_PERCENT.subtract(currentPrice.divide(orderPrice))

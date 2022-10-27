@@ -43,12 +43,9 @@ interface ExecutionStateProps extends OrderProgressBarProps {
 }
 
 function amountsForMarketPriceFormatted(order: Order) {
-  if (!order?.isUnfillable || !order.currentMarketPrice) return {}
+  if (!order?.isUnfillable || !order.currentMarketPriceAmount) return {}
 
-  const { currentPrice, orderPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(
-    order,
-    order.currentMarketPrice
-  )
+  const { currentPrice, orderPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(order)
 
   return {
     percentageDiff: percentageDifference.toFixed(2),
@@ -60,7 +57,7 @@ function amountsForMarketPriceFormatted(order: Order) {
 function ContentByExecutionState(props: ExecutionStateProps) {
   const { percentage, executionState, activityDerivedState, chainId, isSmartContractWallet } = props
   const { order, isCancellable, isOrder } = activityDerivedState
-  const textAllowToCancel = !isSmartContractWallet && ' or if you cancel'
+  const textOfNoChargeTx = isSmartContractWallet ? 'expires' : 'is reverted or if you cancel'
   const amountsForMarketPriceDiff = (isOrder && amountsForMarketPriceFormatted(order as Order)) || {}
 
   const progressAndMessage = () => {
@@ -173,7 +170,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                   </strong>{' '}
                   {isCancellable ? (
                     <>
-                      {' '}
+                      <br />
                       You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
@@ -196,7 +193,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                   <div>
                     <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                     <p>
-                      <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted{textAllowToCancel}.
+                      <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted {textOfNoChargeTx}.
                     </p>
                   </div>
                 </UnfillableMsgWrapper>
@@ -223,7 +220,6 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                   <strong>The network looks slower than usual. Our solvers are adjusting gas fees for you!</strong>
                   {isCancellable ? (
                     <>
-                      {' '}
                       You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
@@ -232,7 +228,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
               <StatusGraph>
                 <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
-                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted{textAllowToCancel}.
+                  <strong>CoW Swap</strong> won&apos;t charge you if the trade {textOfNoChargeTx}.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>

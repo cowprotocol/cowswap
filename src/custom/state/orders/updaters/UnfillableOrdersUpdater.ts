@@ -80,12 +80,15 @@ export function UnfillableOrdersUpdater(): null {
       const isUnfillable = isOrderUnfillable(order, price)
 
       // Only trigger state update if flag changed
-      if (order.isUnfillable !== isUnfillable || (order.isUnfillable && order.currentMarketPrice !== price.amount)) {
+      if (
+        order.isUnfillable !== isUnfillable ||
+        (order.isUnfillable && order.currentMarketPriceAmount !== price.amount)
+      ) {
         setIsOrderUnfillable({
           chainId,
           id: order.id,
           isUnfillable,
-          amountByCurrentPrice: price.amount as string,
+          currentMarketPriceAmount: price.amount as string,
         })
 
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case

@@ -34,6 +34,16 @@ describe('orderPriceAndCurrentPriceDiff', () => {
       percentageDifference: expect.any(Percent),
     })
   })
+  test('that the content of each object shows the expected significant digits', () => {
+    const price: PriceInformation = { token: buyToken.address, amount: '1011' }
+    const { orderPrice, currentPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(
+      order,
+      price.amount as string
+    )
+    expect(orderPrice.toSignificant()).toBe('1')
+    expect(currentPrice.toSignificant()).toBe('1.011')
+    expect(percentageDifference.toSignificant()).toBe('-1.1')
+  })
 })
 
 describe('isOrderUnfillable', () => {
