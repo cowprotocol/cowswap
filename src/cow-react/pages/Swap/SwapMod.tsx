@@ -368,7 +368,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
                       <RowSlippage allowedSlippage={allowedSlippage} />
                     )}
-                    {!isExpertMode && <RowDeadline />}
 
                     {(isFeeGreater || trade) && fee && (
                       <TradeBasicDetails
@@ -382,6 +381,9 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     {/* FEES DISCOUNT */}
                     {/* TODO: check cow balance and set here, else don't show */}
                     <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />
+
+                    {/* TRANSACTION DEADLINE */}
+                    {!isExpertMode && <RowDeadline />}
                   </AutoColumn>
                 </Card>
               )}
