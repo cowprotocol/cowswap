@@ -2,7 +2,7 @@ import { HTMLAttributes } from 'react'
 import styled from 'styled-components/macro'
 import { ButtonProps } from 'rebass/styled-components'
 import { ChevronDown, Star } from 'react-feather'
-import { transparentize } from 'polished'
+import { transparentize, darken } from 'polished'
 import useTheme from 'hooks/useTheme'
 import { RowBetween } from 'components/Row'
 
@@ -157,7 +157,7 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
 export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
   // CSS overrides
   background-color: ${({ theme }) => theme.disabled};
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   background-image: none;
   border: 0;
   cursor: auto;
@@ -169,11 +169,18 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
   background: ${({ theme }) => theme.red1};
+  color: ${({ theme }) => theme.bg1};
+  transition: background 0.15s ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
     background: ${({ theme }) => theme.red1};
+    color: ${({ theme }) => theme.bg1};
+  }
+
+  &:hover {
+    background: ${({ theme }) => darken(0.08, theme.red1)};
   }
 `
 
