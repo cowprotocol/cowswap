@@ -44,7 +44,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
         <styledEl.BannerInnerWrapper>
           <Trans>
             <p>
-              {!hasEnoughWrappedBalance && (
+              {!hasEnoughWrappedBalance ? (
                 <>
                   You will be prompted to{' '}
                   <strong>
@@ -52,7 +52,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
                   </strong>{' '}
                   before placing your order.
                 </>
-              )}{' '}
+              ) : null}{' '}
               This way, you&apos;ll take of advantage of:
             </p>
             <ul>

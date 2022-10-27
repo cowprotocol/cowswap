@@ -24,7 +24,6 @@ export enum SwapButtonState {
   SwapError = 'SwapError',
   ExpertModeSwap = 'ExpertModeSwap',
   RegularSwap = 'RegularSwap',
-  SwapWithWrappedToken = 'SwapWithWrappedToken',
   EthFlowSwap = 'EthFlowSwap',
 }
 
