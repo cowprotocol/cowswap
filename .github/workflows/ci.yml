@@ -191,6 +191,11 @@ jobs:
             src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
+      - name: Build Cosmos
+        id: build-cosmos
+        if: env.PR_NUMBER # only build cosmos on PRs
+        run: yarn cosmos:export
+
       - name: Build Web Apps
         run: yarn build
 
@@ -227,7 +232,8 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            * **🔭 [GP Swap](${{ env.REVIEW_FEATURE_URL }})**: CoW Protocol v2 Swap UI
+            * **🔭 [CoW Swap preview](${{ env.REVIEW_FEATURE_URL }})**: CoW Swap UI
+            * **🌌 [Cosmos](${{ env.REVIEW_FEATURE_URL }}/cosmos/)**: Cosmos
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         if: env.PR_NUMBER
