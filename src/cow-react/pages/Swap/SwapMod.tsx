@@ -28,11 +28,10 @@ import { useExpertModeManager, useRecipientToggleManager, useUserSlippageToleran
 import { LinkStyledButton } from 'theme'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { AMOUNT_PRECISION } from 'constants/index'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { formatSmart } from 'utils/format'
-import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/reducer'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -365,10 +364,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
                   >
                     {trade && <Price trade={trade} />}
 
-                    {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                      <RowSlippage allowedSlippage={allowedSlippage} />
-                    )}
-
                     {(isFeeGreater || trade) && fee && (
                       <TradeBasicDetails
                         allowedSlippage={userAllowedSlippage}
@@ -378,12 +373,13 @@ export default function Swap({ history, location, className }: RouteComponentPro
                         fee={fee}
                       />
                     )}
+
+                    {/* TRANSACTION DEADLINE */}
+                    <RowDeadline />
+
                     {/* FEES DISCOUNT */}
                     {/* TODO: check cow balance and set here, else don't show */}
                     <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />
-
-                    {/* TRANSACTION DEADLINE */}
-                    {!isExpertMode && <RowDeadline />}
                   </AutoColumn>
                 </Card>
               )}
