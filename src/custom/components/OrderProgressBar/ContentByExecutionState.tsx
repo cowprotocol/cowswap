@@ -166,7 +166,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                 <StatusMsg>
                   Order Status:{' '}
                   <strong>
-                    Your limit price is out of market{' '}
+                    Your limit price is out of market by{' '}
                     <SpanOrangeText>{amountsForMarketPriceDiff.percentageDiff}%</SpanOrangeText>.
                   </strong>{' '}
                   {isCancellable ? (

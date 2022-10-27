@@ -238,6 +238,7 @@ export const StatusWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  align-self: start;
 `
 
 export const StatusMsg = styled.p`
