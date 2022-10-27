@@ -160,8 +160,8 @@ export const ClaimSummary = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 8px;
-  background: ${({ theme }) => theme.currencyInput?.background};
-  border: ${({ theme }) => theme.currencyInput?.border};
+  background: ${({ theme }) => theme.grey1};
+  border: 0;
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
   position: relative;
