@@ -55,8 +55,10 @@ export interface ApproveCallbackParams {
   }, [addTransaction, getApproval])
 } */
 
-// returns a variable indicating the state of the approval and a function which approves if necessary or early returns
-// TODO: must be refactored
+/**
+ * returns a variable indicating the state of the approval and a function which approves if necessary or early returns
+ * @deprecated use `@cow/common/hooks/useApproveCallback` + `@cow/common/hooks/useApproveState`
+ */
 export function useApproveCallback({
   openTransactionConfirmationModal,
   closeModals,

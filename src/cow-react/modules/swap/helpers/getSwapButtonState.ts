@@ -38,7 +38,6 @@ export interface SwapButtonStateParams {
   quoteError: QuoteError | undefined | null
   inputError?: string
   approvalState: ApprovalState
-  approvalSubmitted: boolean
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
   isGettingNewQuote: boolean
@@ -64,10 +63,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
-    !input.inputError &&
-    (approvalState === ApprovalState.NOT_APPROVED ||
-      approvalState === ApprovalState.PENDING ||
-      (input.approvalSubmitted && approvalState === ApprovalState.APPROVED))
+    !input.inputError && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
