@@ -129,7 +129,6 @@
     "ua-parser-js": "^0.7.28",
     "use-count-up": "^2.2.5",
     "use-resize-observer": "^8.0.0",
-    "vercel": "^28.4.12",
     "web-vitals": "^2.1.0",
     "web3": "^1.7.0",
     "webpack-bundle-analyzer": "^4.5.0",
