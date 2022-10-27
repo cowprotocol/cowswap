@@ -46,12 +46,13 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
   symbols?: (string | undefined)[]
   displayDeadline: string
   styleProps?: RowStyleProps
+  userDeadline: number
 }
 
 export function RowDeadlineContent(props: RowDeadlineProps) {
-  const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
+  const { userDeadline, showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
 
-  if (!isEthFlow) return null
+  if (!isEthFlow || userDeadline > DEADLINE_LOWER_THRESHOLD_SECONDS) return null
 
   return (
     <StyledRowBetween {...styleProps}>

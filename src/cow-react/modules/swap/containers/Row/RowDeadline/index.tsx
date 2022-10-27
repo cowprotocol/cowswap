@@ -15,10 +15,12 @@ export function RowDeadline() {
   const props = useMemo(() => {
     const displayDeadline = userDeadline / 60 + ' minutes'
     return {
+      userDeadline,
       symbols: [nativeCurrency.symbol],
       displayDeadline,
       isEthFlow,
       toggleSettings,
+      showSettingOnClick: true,
     }
   }, [isEthFlow, nativeCurrency.symbol, toggleSettings, userDeadline])
 
