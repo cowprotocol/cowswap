@@ -32,7 +32,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: 16.17.1
 
       - name: Set output of cache
         id: yarn-cache
@@ -82,7 +82,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: 16.17.1
 
       - name: Load dependencies
         id: cache-node-modules
@@ -123,7 +123,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: 16.17.1
 
       - name: Load dependencies
         id: cache-node-modules
@@ -169,7 +169,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: 16.17.1
 
       - name: Load dependencies
         id: cache-node-modules
@@ -190,6 +190,11 @@ jobs:
             src/state/data
             src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Build Cosmos
+        id: build-cosmos
+        if: env.PR_NUMBER # only build cosmos on PRs
+        run: yarn cosmos:export
 
       - name: Build Web Apps
         run: yarn build
@@ -227,7 +232,8 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            * **🔭 [GP Swap](${{ env.REVIEW_FEATURE_URL }})**: CoW Protocol v2 Swap UI
+            * **🔭 [CoW Swap preview](${{ env.REVIEW_FEATURE_URL }})**: CoW Swap UI
+            * **🌌 [Cosmos](${{ env.REVIEW_FEATURE_URL }}/cosmos/)**: Cosmos
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         if: env.PR_NUMBER
@@ -272,7 +278,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: 16.17.1
 
       # - name: Download website
       #   uses: actions/download-artifact@v2
