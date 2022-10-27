@@ -94,7 +94,7 @@ export function getSigningSchemeLibValue(ecdaSigningScheme: SigningScheme): numb
 }
 // ---------------- end of the TODO:
 
-function _getDomain(chainId: ChainId): TypedDataDomain {
+export function getDomain(chainId: ChainId): TypedDataDomain {
   // Get settlement contract address
   const settlementContract = GP_SETTLEMENT_CONTRACT_ADDRESS[chainId]
 
@@ -108,7 +108,7 @@ function _getDomain(chainId: ChainId): TypedDataDomain {
 async function _signOrder(params: SignOrderParams): Promise<Signature> {
   const { chainId, signer, order, signingScheme } = params
 
-  const domain = _getDomain(chainId)
+  const domain = getDomain(chainId)
   console.log('[utils:signature] signOrder', {
     domain,
     order,
@@ -121,7 +121,7 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
 async function _signOrderCancellation(params: SingOrderCancellationParams): Promise<Signature> {
   const { chainId, signer, signingScheme, orderId } = params
 
-  const domain = _getDomain(chainId)
+  const domain = getDomain(chainId)
 
   console.log('[utils:signature] signOrderCancellation', {
     domain,
@@ -218,4 +218,4 @@ export async function signOrderCancellation(orderId: string, chainId: ChainId, s
   return _signPayload({ orderId, chainId }, _signOrderCancellation, signer)
 }
 
-registerOnWindow({ signature: { signOrder: _signOrder, getDomain: _getDomain } })
+registerOnWindow({ signature: { signOrder: _signOrder, getDomain } })
