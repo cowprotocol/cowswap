@@ -1,16 +1,15 @@
 import { NativeCurrency } from '@uniswap/sdk-core'
-import { HashZero } from '@ethersproject/constants'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 
-import { packOrderUidParams } from '@cowprotocol/contracts'
+import { hashOrder, packOrderUidParams } from '@cowprotocol/contracts'
 import { CoWSwapEthFlow } from '@cow/abis/types'
 import { logSwapFlow, logSwapFlowError } from '@cow/modules/swap/services/utils/logger'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
-import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
-import { UnsignedOrder } from 'utils/signatures'
+import { getDomain, UnsignedOrder } from 'utils/signatures'
 import { Order } from 'state/orders/actions'
+import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -64,10 +63,11 @@ export async function signEthFlowOrderStep(
     value: orderParams.sellAmountBeforeFee.quotient.toString(),
   })
 
+  const domain = getDomain(orderParams.chainId)
+  const orderDigest = hashOrder(domain, order)
   // Generate the orderId from owner and validTo
   const orderId = packOrderUidParams({
-    // TODO: check orderDigest and validTo time
-    orderDigest: HashZero,
+    orderDigest,
     owner: ethFlowContract.address,
     validTo: MAX_VALID_TO_EPOCH,
   })
