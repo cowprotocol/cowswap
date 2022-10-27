@@ -10,8 +10,11 @@ import { LimitOrdersConfirm } from '../../pure/LimitOrdersConfirm'
 import { tradeFlow, TradeFlowContext } from '../../services/tradeFlow'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
-import * as styledEl from './styled'
+import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
+import { useWalletInfo } from 'hooks/useWalletInfo'
+import { GpModal } from 'components/Modal'
+import * as styledEl from './styled'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -30,6 +33,7 @@ function getCurrencyAmount(currency: Currency | null, value: string | null): Cur
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
+  const { chainId } = useWalletInfo()
   const { activeRate } = useAtomValue(limitRateAtom)
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
 
@@ -81,15 +85,24 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
           </styledEl.ConfirmModalWrapper>
         )}
       </Modal>
+      {chainId && (
+        <GpModal isOpen={!!confirmationState.orderHash} onDismiss={onDismissConfirmation}>
+          <TxSubmittedModal
+            chainId={chainId}
+            onDismiss={onDismissConfirmation}
+            hash={confirmationState.orderHash || undefined}
+            pendingText={''}
+          />
+        </GpModal>
+      )}
       {outputCurrency && (
         <TransactionConfirmationModal
-          isOpen={confirmationState.isPending || !!confirmationState.orderHash}
+          isOpen={confirmationState.isPending}
           operationType={operationType}
           currencyToAdd={outputCurrency}
           pendingText={pendingText}
           onDismiss={onDismissConfirmation}
           attemptingTxn={confirmationState.isPending}
-          hash={confirmationState.orderHash || undefined}
         />
       )}
     </>
