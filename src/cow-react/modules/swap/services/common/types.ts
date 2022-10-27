@@ -3,12 +3,12 @@ import TradeGp from 'state/swap/TradeGp'
 import { SwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import { PostOrderParams } from 'utils/trade'
 import { AddOrderCallback } from 'state/orders/hooks'
-import { GPv2Settlement } from '@cow/abis/types'
+import { CoWSwapEthFlow, GPv2Settlement } from '@cow/abis/types'
 import { AppDispatch } from 'state'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
-import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/swapFlow/steps/analytics'
+import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/common/steps/analytics'
 
-export interface SwapFlowContext {
+export interface BaseFlowContext {
   context: {
     chainId: number
     trade: TradeGp
@@ -27,7 +27,13 @@ export interface SwapFlowContext {
   dispatch: AppDispatch
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext
   swapConfirmManager: SwapConfirmManager
-  postOrderParams: PostOrderParams
-  settlementContract: GPv2Settlement
+  orderParams: PostOrderParams
   appDataInfo: AppDataInfo
+}
+
+export type SwapFlowContext = BaseFlowContext & {
+  contract: GPv2Settlement
+}
+export type EthFlowContext = BaseFlowContext & {
+  contract: CoWSwapEthFlow
 }

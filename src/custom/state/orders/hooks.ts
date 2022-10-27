@@ -40,7 +40,7 @@ import {
 import { isTruthy } from 'utils/misc'
 import { OrderID } from '@cow/api/gnosisProtocol'
 import { ContractDeploymentBlocks } from './consts'
-import { deserializeToken, serializeToken } from '@src/state/user/hooks'
+import { deserializeToken, serializeToken } from 'state/user/hooks'
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
