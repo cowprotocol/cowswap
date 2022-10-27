@@ -2,7 +2,7 @@ import { HTMLAttributes } from 'react'
 import styled from 'styled-components/macro'
 import { ButtonProps } from 'rebass/styled-components'
 import { ChevronDown, Star } from 'react-feather'
-import { transparentize, darken } from 'polished'
+import { transparentize, darken, lighten } from 'polished'
 import useTheme from 'hooks/useTheme'
 import { RowBetween } from 'components/Row'
 
@@ -30,10 +30,8 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   color: ${({ theme }) => theme.white};
   position: relative;
   min-height: 58px;
-  ${({ theme }) => theme.cursor};
-
-  /* > div {
-  } */
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  /* ${({ theme }) => theme.cursor}; */ // TODO: add behind feature flag
 
   &:focus,
   &:hover,
@@ -41,6 +39,10 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
     box-shadow: none;
     transform: none;
     color: ${({ theme }) => theme.white};
+  }
+
+  &:hover {
+    background: ${({ theme }) => lighten(0.08, theme.bg2)};
   }
 
   &:disabled {
@@ -92,7 +94,7 @@ export const ButtonLight = styled(ButtonPrimary)`
     animation: none;
     color: ${({ theme }) => theme.primaryText1};
 
-    :hover {
+    &:hover {
       cursor: auto;
       background-color: ${({ theme }) => theme.primary5};
       box-shadow: none;

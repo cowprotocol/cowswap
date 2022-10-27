@@ -302,11 +302,15 @@ export const Card = styled.div<{ showLoader?: boolean }>`
 
     > svg {
       height: 100%;
-      width: auto;
+      width: 16px;
       object-fit: contain;
       margin: 0 0 0 6px;
       transform: translateX(0);
       transition: transform 0.2s ease-in-out;
+
+      > path {
+        fill: ${({ theme }) => theme.white};
+      }
     }
 
     &:hover > svg {
