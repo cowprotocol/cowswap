@@ -21,7 +21,7 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
 
 // TODO: apply design
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { sellToken, buyToken, validTo } = props.tradeContext.postOrderParams
+  const { account, sellToken, buyToken, validTo, recipient } = props.tradeContext.postOrderParams
   const expiryDate = new Date(validTo * 1000)
 
   return (
@@ -62,6 +62,16 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>{/*TODO*/}Fill or kill</span>
         </div>
       </styledEl.DetailsRow>
+      {recipient && recipient !== account && (
+        <styledEl.DetailsRow>
+          <div>
+            <span>Recipient</span> <InfoIcon content={'Recipient info TODO'} />
+          </div>
+          <div>
+            <span>{recipient}</span>
+          </div>
+        </styledEl.DetailsRow>
+      )}
     </div>
   )
 }
