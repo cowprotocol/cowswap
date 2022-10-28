@@ -1,9 +1,11 @@
+export const LIMIT_ORDERS_PATH = 'limit-orders'
+
 // ENUM with routes
 export enum Routes {
   HOME = '/',
   SWAP = '/swap',
   SWAP_OUTPUT_CURRENCY = '/swap/:outputCurrency',
-  LIMIT_ORDER = '/limit-order',
+  LIMIT_ORDER = '/:chainId?/limit-orders/:inputCurrencyId?/:outputCurrencyId?',
   SEND = '/send',
   ACCOUNT = '/account',
   ACCOUNT_TOKENS = '/account/tokens',

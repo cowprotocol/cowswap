@@ -19,6 +19,7 @@ import {
 
 import { UploadToIpfsUpdater } from 'state/appData/updater'
 import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
+import { LimitOrdersMenuUpdater } from '@cow/modules/limitOrders'
 
 export function Updaters() {
   return (
@@ -42,6 +43,7 @@ export function Updaters() {
       <GnosisSafeUpdater />
       <GnosisSafeExecutionUpdater />
       <GasPriceStrategyUpdater />
+      <LimitOrdersMenuUpdater />
     </>
   )
 }

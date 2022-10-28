@@ -32,7 +32,7 @@ import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/in
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { formatSmart } from 'utils/format'
-import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
+import { RowSlippage } from '@cow/modules/swap/containers/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/reducer'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -55,7 +55,7 @@ import { ArrowWrapperLoader } from 'components/ArrowWrapperLoader'
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
 import { FeesDiscount } from '@cow/modules/swap/containers/FeesDiscount'
 import { RouteComponentProps } from 'react-router-dom'
-import { EthFlowModal } from 'components/swap/EthFlow'
+import { EthFlowModal } from '@cow/modules/swap/containers/EthFlow'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
 import { Routes } from '@cow/constants/routes'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
@@ -365,7 +365,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     {trade && <Price trade={trade} />}
 
                     {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                      <RowSlippage allowedSlippage={allowedSlippage} fontSize={12} fontWeight={400} rowHeight={24} />
+                      <RowSlippage allowedSlippage={allowedSlippage} />
                     )}
                     {(isFeeGreater || trade) && fee && (
                       <TradeBasicDetails
