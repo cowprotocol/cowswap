@@ -18,6 +18,7 @@ const defaultProps = {
   pendingText: <div>pendingText</div>,
   currencyToAdd: COW[SupportedChainId.MAINNET],
   operationType: OperationType.ORDER_SIGN,
+  inline: false,
 }
 
 const Wrapper = styled.div`
