@@ -382,13 +382,13 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setIsOrderUnfillable, (state, action) => {
       prefillState(state, action)
-      const { chainId, id, isUnfillable, currentMarketPriceAmount: amountByCurrentPrice } = action.payload
+      const { chainId, id, isUnfillable, currentMarketPriceAmount } = action.payload
 
       const orderObject = getOrderById(state, chainId, id)
 
       if (orderObject?.order) {
         orderObject.order.isUnfillable = isUnfillable
-        orderObject.order.currentMarketPriceAmount = amountByCurrentPrice
+        orderObject.order.currentMarketPriceAmount = currentMarketPriceAmount
       }
     })
 )
