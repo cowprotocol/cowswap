@@ -15,6 +15,7 @@ import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
+import { formatSmartAmount } from 'utils/format'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -37,8 +38,8 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { activeRate } = useAtomValue(limitRateAtom)
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
 
-  const { viewAmount: inputViewAmount, currency: inputCurrency } = inputCurrencyInfo
-  const { viewAmount: outputViewAmount, currency: outputCurrency } = outputCurrencyInfo
+  const { rawAmount: inputRawAmount, currency: inputCurrency } = inputCurrencyInfo
+  const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
   // TODO: check with inversed rate
   const activeRateAmount = getCurrencyAmount(outputCurrency, activeRate)
   const activeRateFiatAmount = useHigherUSDValue(activeRateAmount || undefined)
@@ -63,7 +64,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   }, [onDismiss, setConfirmationState, tradeContext, onDismissConfirmation])
 
   const operationType = OperationType.ORDER_SIGN
-  const pendingText = `Placing limit order ${inputViewAmount} ${inputCurrency?.symbol} for ${outputViewAmount} ${outputCurrency?.symbol}`
+  const pendingText = `Placing limit order ${formatSmartAmount(inputRawAmount)} ${
+    inputCurrency?.symbol
+  } for ${formatSmartAmount(outputRawAmount)} ${outputCurrency?.symbol}`
 
   return (
     <>
@@ -92,6 +95,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             onDismiss={onDismissConfirmation}
             hash={confirmationState.orderHash || undefined}
             pendingText={''}
+            inline={true}
           />
         </GpModal>
       )}
