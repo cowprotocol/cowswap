@@ -206,12 +206,11 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                         {dashWhenNoValue(amountsForMarketPriceDiff?.orderPrice)}
                         {amountsForMarketPriceDiff ? (
                           <>
-                            {' ('}
+                            (
                             <SpanOrangeText>
                               {dashWhenNoValue(amountsForMarketPriceDiff?.percentageDiff, { prefix: '-', suffix: '%' })}
                             </SpanOrangeText>
-
-                            {')'}
+                            )
                           </>
                         ) : null}
                       </TextAmount>
