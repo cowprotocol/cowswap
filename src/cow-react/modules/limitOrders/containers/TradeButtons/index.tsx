@@ -24,7 +24,9 @@ export function TradeButtons(props: TradeButtonsProps) {
   const doTrade = useCallback(() => {
     if (expertMode && tradeContext) {
       setConfirmationState({ isPending: true, orderHash: null })
-      tradeFlow(tradeContext)
+      tradeFlow(tradeContext).finally(() => {
+        setConfirmationState({ isPending: false, orderHash: null })
+      })
     } else {
       openConfirmScreen()
     }
