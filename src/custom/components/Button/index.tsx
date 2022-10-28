@@ -195,11 +195,13 @@ const HoverIcon = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  margin-right: 8px;
+  margin: 0 8px 0 0;
+  opacity: 0.75;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
 
-  :hover {
-    cursor: pointer;
-    opacity: 0.6;
+  &:hover {
+    opacity: 1;
   }
 `
 
@@ -255,14 +257,14 @@ export function ButtonDropdownLight({
 
 export const ButtonStar = ({
   fill = 'transparent',
-  size = '15px',
+  size = '18px',
   stroke,
   ...rest
 }: { fill?: string; size?: string; stroke: string } & HTMLAttributes<HTMLDivElement>) => {
   const theme = useTheme()
   return (
     <HoverIcon {...rest}>
-      <Star stroke={stroke || theme.text3} fill={fill} size={size} />
+      <Star stroke={stroke || theme.text1} fill={fill} size={size} />
     </HoverIcon>
   )
 }

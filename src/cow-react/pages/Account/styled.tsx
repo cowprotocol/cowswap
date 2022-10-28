@@ -11,16 +11,15 @@ import SVG from 'react-inlinesvg'
 import SpinnerLoader from 'components/Loader'
 
 export const Container = styled.div`
-  max-width: 910px;
+  max-width: 100%;
   width: 100%;
   z-index: 1;
 `
 
 export const Wrapper = styled(Page)`
   ${GdocsListStyle}
-
-  max-width: 910px;
   width: 100%;
+  max-width: 100%;
   min-height: unset;
   padding-top: 16px;
   display: flex;
@@ -656,10 +655,11 @@ export const CardsLoader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px;
+  height: 100%;
+  width: 100%;
 `
 export const CardsSpinner = styled(SpinnerLoader)`
-  margin-left: 30px;
+  margin: auto;
 
   & path {
     stroke: ${({ theme }) => theme.text1};
