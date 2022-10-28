@@ -118,7 +118,10 @@ export function LimitOrdersWidget() {
     if (expertMode) {
       if (tradeContext) {
         setConfirmationState({ isPending: true, orderHash: null })
-        tradeFlow(tradeContext)
+
+        tradeFlow(tradeContext).finally(() => {
+          setConfirmationState({ isPending: false, orderHash: null })
+        })
       }
     } else {
       setShowConfirmation(true)
