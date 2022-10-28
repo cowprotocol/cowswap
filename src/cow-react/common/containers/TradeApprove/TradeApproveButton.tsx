@@ -1,5 +1,5 @@
 import React from 'react'
-import { ApproveButton } from '@cow/modules/shared/dumb/ApproveButton'
+import { ApproveButton } from '@cow/common/pure/ApproveButton'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useTradeApproveCallback } from './useTradeApproveCallback'
 import { useTradeApproveState } from './useTradeApproveState'
