@@ -9,6 +9,7 @@ import { getExplorerOrderLink } from 'utils/explorer'
 import { ActivityDescriptors, ActivityStatus, ActivityType, useSingleActivityDescriptor } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { ChainId } from '../state/lists/actions'
+import { Timestamp } from '@cowprotocol/contracts'
 
 export function useActivityDerivedState({
   chainId,
@@ -31,6 +32,18 @@ export function useSingleActivityState(params: { chainId?: ChainId; id: string }
   const singleActivity = useSingleActivityDescriptor({ chainId, id })
 
   return useActivityDerivedState({ chainId, activity: singleActivity as ActivityDescriptors })
+}
+
+function orderValidToIsBeforeThanNow(validTo: Timestamp) {
+  const now = new Date()
+  return new Date((validTo as number) * 1000) <= now
+}
+
+function isExpired(status: ActivityStatus, order?: Order) {
+  const isStatusExpired = status === ActivityStatus.EXPIRED
+  if (order) return orderValidToIsBeforeThanNow(order.validTo) || isStatusExpired
+
+  return isStatusExpired
 }
 
 function getActivityDerivedState(props: {
@@ -69,7 +82,7 @@ function getActivityDerivedState(props: {
     isPending,
     isPresignaturePending: status === ActivityStatus.PRESIGNATURE_PENDING,
     isConfirmed: status === ActivityStatus.CONFIRMED,
-    isExpired: status === ActivityStatus.EXPIRED,
+    isExpired: isExpired(status, order),
     isCancelling: status === ActivityStatus.CANCELLING,
     isCancelled: status === ActivityStatus.CANCELLED,
     isCancellable,
@@ -132,7 +145,7 @@ export function getActivityState({
   isCancelled,
   enhancedTransaction,
 }: ActivityDerivedState): ActivityState {
-  if (isPending) {
+  if (isPending && !isExpired) {
     if (enhancedTransaction) {
       console.log('enhancedTransaction', enhancedTransaction)
       const { safeTransaction, transactionHash } = enhancedTransaction
