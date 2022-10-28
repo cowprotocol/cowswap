@@ -195,7 +195,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
                   <div>
                     <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                     <p>
-                      <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted {textOfNoChargeTx}.
+                      <strong>CoW Swap</strong> won&apos;t charge you if the trade {textOfNoChargeTx}.
                     </p>
                   </div>
                 </UnfillableMsgWrapper>
