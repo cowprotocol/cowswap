@@ -29,6 +29,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { TokenAddressMap } from '@src/state/lists/hooks'
 import { shallowEqual } from 'react-redux'
 import { Mutable } from '../reducer'
+import { SUPPORTED_CHAIN_IDS } from 'utils/supportedChainId'
 
 /* export type TokenAddressMap = ChainTokenMap
 
@@ -105,28 +106,17 @@ export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
 }
 
 /**
- * Combine the tokens in map2 with the tokens on map1, where tokens on map1 take precedence
- * @param map1 the base token map
- * @param map2 the map of additioanl tokens to add to the base map
+ * Combine the tokens on each map, where first tokens take precedence
+ * @param maps the base token map
  */
-function _combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
-  const chainIds = Object.keys(
-    Object.keys(map1)
-      .concat(Object.keys(map2))
-      .reduce<{ [chainId: string]: true }>((memo, value) => {
-        memo[value] = true
-        return memo
-      }, {})
-  ).map((id) => parseInt(id))
-
-  return chainIds.reduce<Mutable<TokenAddressMap>>((memo, chainId) => {
-    memo[chainId] = {
-      ...map2[chainId],
-      // map1 takes precedence
-      ...map1[chainId],
-    }
-    return memo
-  }, {}) as TokenAddressMap
+function _combineMaps(...maps: TokenAddressMap[]): TokenAddressMap {
+  return SUPPORTED_CHAIN_IDS.reduce<Mutable<TokenAddressMap>>(
+    (memo, chainId) => {
+      memo[chainId] = Object.assign({}, ...maps.reverse().map((m) => m[chainId]))
+      return memo
+    },
+    { ...EMPTY_LIST }
+  ) as TokenAddressMap
 }
 
 export const combineMaps = memoizeOne(_combineMaps)
@@ -141,23 +131,22 @@ export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAd
 
 function combinedTokenMapFromUrls(urls: string[] | undefined, lists: any): TokenAddressMap {
   if (!urls) return EMPTY_LIST
-  return (
-    urls
+
+  try {
+    const tokensMapPerUrl = urls
       .slice()
       // sort by priority so top priority goes last
       .sort(sortByListPriority)
-      .reduce((allTokens, currentUrl) => {
+      .map((currentUrl) => {
         const current = lists?.[currentUrl]?.current
-        if (!current) return allTokens
-        try {
-          const newTokens = Object.assign(listToTokenMap(current))
-          return combineMaps(allTokens, newTokens)
-        } catch (error) {
-          console.error('Could not show token list due to error', error)
-          return allTokens
-        }
-      }, EMPTY_LIST)
-  )
+        return current ? listToTokenMap(current) : EMPTY_LIST
+      })
+
+    return combineMaps(...tokensMapPerUrl)
+  } catch (error) {
+    console.error('Could not show token list due to error', error)
+    return EMPTY_LIST
+  }
 }
 
 const memoizedCombinedTokenMapFromUrls = memoizeOne(combinedTokenMapFromUrls, isEqual)
@@ -228,7 +217,7 @@ export function useUnsupportedTokenList(): TokenAddressMap {
 
   // format into one token address map
   return useMemo(
-    () => combineMaps(brokenListMap, combineMaps(localUnsupportedListMap, loadedUnsupportedListMap)),
+    () => combineMaps(brokenListMap, localUnsupportedListMap, loadedUnsupportedListMap),
     [brokenListMap, localUnsupportedListMap, loadedUnsupportedListMap]
   )
 }

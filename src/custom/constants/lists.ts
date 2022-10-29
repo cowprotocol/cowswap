@@ -13,7 +13,6 @@ const COW_DAO_LIST = 'https://files.cow.fi/tokens/CowSwap.json'
 const COW_COINGECKO_LIST = 'https://files.cow.fi/tokens/CoinGecko.json'
 
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
-const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
 const AAVE_LIST = 'tokenlist.aave.eth'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 //const CMC_ALL_LIST = 'https://api.coinmarketcap.com/data-api/v3/uniswap/all.json'
