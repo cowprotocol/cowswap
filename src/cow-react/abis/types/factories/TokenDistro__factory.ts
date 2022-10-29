@@ -2,50 +2,53 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import { Provider } from '@ethersproject/providers'
-import type { TokenDistro, TokenDistroInterface } from '../TokenDistro'
+import { Contract, Signer, utils } from "ethers";
+import { Provider } from "@ethersproject/providers";
+import type { TokenDistro, TokenDistroInterface } from "../TokenDistro";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
-    name: 'balances',
+    name: "balances",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'allocatedTokens',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "allocatedTokens",
+        type: "uint256",
       },
       {
-        internalType: 'uint256',
-        name: 'claimed',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "claimed",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'claim',
+    name: "claim",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
-]
+];
 
 export class TokenDistro__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): TokenDistroInterface {
-    return new utils.Interface(_abi) as TokenDistroInterface
+    return new utils.Interface(_abi) as TokenDistroInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): TokenDistro {
-    return new Contract(address, _abi, signerOrProvider) as TokenDistro
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): TokenDistro {
+    return new Contract(address, _abi, signerOrProvider) as TokenDistro;
   }
 }

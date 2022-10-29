@@ -25,12 +25,12 @@ import {
   HeaderControls,
   HeaderElement,
 } from './styled'
-import { MenuTree } from './MenuTree'
 import MobileMenuIcon from './MobileMenuIcon'
 import Web3Status from 'components/Web3Status'
 import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
+import { MainMenu } from 'cow-react/modules/mainMenu'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
@@ -93,7 +93,7 @@ export default function Header() {
   }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
-    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen} isDarkMode={darkMode}>
       <HeaderModWrapper>
         <HeaderRow>
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
@@ -101,7 +101,7 @@ export default function Header() {
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
-          <MenuTree
+          <MainMenu
             isMobileMenuOpen={isMobileMenuOpen}
             darkMode={darkMode}
             toggleDarkMode={toggleDarkMode}

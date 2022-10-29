@@ -32,6 +32,7 @@ import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
 import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
+import { LIMIT_ORDERS_PATH } from '@cow/constants/routes'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -354,6 +355,19 @@ export default function NetworkSelector() {
 
   const info = getChainInfo(chainId)
 
+  const setChainIdToUrl = useCallback(
+    (chainId: SupportedChainId) => {
+      if (history.location.pathname.includes(LIMIT_ORDERS_PATH)) {
+        return
+      }
+
+      history.replace({
+        search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)),
+      })
+    },
+    [history]
+  )
+
   const onSelectChain = useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       if (!connector) return
@@ -365,8 +379,8 @@ export default function NetworkSelector() {
       try {
         dispatch(updateConnectionError({ connectionType, error: undefined }))
         await switchChain(connector, targetChain)
-        // Update URL right after network change
-        history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(targetChain)) })
+
+        setChainIdToUrl(targetChain)
       } catch (error) {
         console.error('Failed to switch networks', error)
 
@@ -380,7 +394,7 @@ export default function NetworkSelector() {
 
       isSwitching.current = false
     },
-    [connector, dispatch, history, addPopup, closeModal]
+    [connector, dispatch, setChainIdToUrl, addPopup, closeModal]
   )
 
   useEffect(() => {
@@ -390,23 +404,23 @@ export default function NetworkSelector() {
     }
     if (account && chainId && chainId !== urlChainId) {
       // if wallet is connected and chainId already set, keep the url param in sync
-      history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+      setChainIdToUrl(chainId)
     } else if (urlChainId && chainId && urlChainId !== chainId) {
       // if chain and url chainId are both set and differ, try to update chainid
       onSelectChain(urlChainId, true).catch(() => {
         // we want app network <-> chainId param to be in sync, so if user changes the network by changing the URL
         // but the request fails, revert the URL back to current chainId
-        history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+        setChainIdToUrl(chainId)
       })
     }
-  }, [account, chainId, history, onSelectChain, urlChainId])
+  }, [account, chainId, setChainIdToUrl, onSelectChain, urlChainId])
 
   // set chain parameter on initial load if not there
   useEffect(() => {
     if (chainId && !urlChainId) {
-      history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+      setChainIdToUrl(chainId)
     }
-  }, [chainId, history, urlChainId, urlChain])
+  }, [chainId, setChainIdToUrl, urlChainId, urlChain])
 
   // Mod: to show popup for unsupported network
   useEffect(() => {
