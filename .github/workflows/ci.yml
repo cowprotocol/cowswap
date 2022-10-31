@@ -208,7 +208,7 @@ jobs:
   vercel-test:
     name: Test deploy!!! Remove before publishing
     if: github.event_name == 'pull_request'
-    uses: .github/workflows/vercel.yml
+    uses: ./.github/workflows/vercel.yml
     secrets:
       project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
 
