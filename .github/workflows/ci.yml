@@ -209,7 +209,8 @@ jobs:
     name: Test deploy!!! Remove before publishing
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/vercel.yml
-    secrets:
+    secrets: inherit
+    input:
       project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
 
   vercel:
