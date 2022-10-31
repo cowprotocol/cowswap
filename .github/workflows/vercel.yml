@@ -6,7 +6,6 @@ on:
       project-id:
         description: 'The Vercel Project ID identifying which stage will be deployed'
         required: true
-        type: string
 
 env:
   VERCEL_PROJECT_ID: ${{ secrets.project-id }}
