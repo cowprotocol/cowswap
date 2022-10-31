@@ -3,7 +3,6 @@ import { useWeb3React } from '@web3-react/core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { OrderKind } from '@cowprotocol/contracts'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { BigNumber } from 'bignumber.js'
 
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
@@ -16,6 +15,7 @@ import { getQuote } from '@cow/api/gnosisProtocol'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { calculateValidTo } from 'hooks/useSwapCallback'
+import { Fraction } from '@uniswap/sdk-core'
 
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 
@@ -42,30 +42,16 @@ export function useFetchMarketPrice() {
     (response: SimpleGetQuoteResponse) => {
       const { buyAmount, sellAmount, feeAmount } = response.quote
 
-      // Adjust the values from the API response
-      const parsedBuyAmount = new BigNumber(buyAmount).dividedBy(10 ** (buyCurrency?.decimals || 0))
-      const parsedSellAmount = new BigNumber(sellAmount).dividedBy(10 ** (sellCurrency?.decimals || 0))
-      const parsedFeeAmount = new BigNumber(feeAmount).dividedBy(10 ** (sellCurrency?.decimals || 0))
-
-      let executionRate = null
+      const executionRate = new Fraction(sellAmount, buyAmount)
 
       // Calculate the new execution rate
-      if (!isInversed) {
-        // (buyAmount / 10 ** 18 - feeAmount / 10 ** 18) / (sellAmount / 10 ** 18)
-        const buyMinusFee = parsedBuyAmount.minus(parsedFeeAmount)
-        executionRate = buyMinusFee.dividedBy(parsedSellAmount)
-      } else {
-        // (sellAmount / 10 ** 18) / ((buyAmount / 10 ** 18) - (feeAmount / 10 ** 18))
-        const buyMinusFee = parsedBuyAmount.minus(parsedFeeAmount)
-        executionRate = parsedSellAmount.dividedBy(buyMinusFee)
-      }
 
-      console.log('debug new execution price', executionRate.toString())
+      console.log('debug new execution price', executionRate.toFixed(16))
 
       // // Update the rate state
-      updateLimitRateState({ executionRate: executionRate.toString() })
+      updateLimitRateState({ executionRate })
     },
-    [buyCurrency?.decimals, isInversed, sellCurrency?.decimals, updateLimitRateState]
+    [updateLimitRateState]
   )
 
   // Handle error

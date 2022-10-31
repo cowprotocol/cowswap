@@ -1,10 +1,11 @@
 import { atom } from 'jotai'
+import { Fraction } from '@uniswap/sdk-core'
 
 export interface LimitRateState {
   readonly isLoading: boolean
   readonly isInversed: boolean
   readonly activeRate: string | null
-  readonly executionRate: string | null
+  readonly executionRate: Fraction | null
 }
 
 const initLimitRateState = () => ({

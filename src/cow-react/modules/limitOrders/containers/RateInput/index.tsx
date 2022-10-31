@@ -42,7 +42,7 @@ export function RateInput() {
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
-    updateLimitRateState({ activeRate: executionRate })
+    updateLimitRateState({ activeRate: executionRate?.toFixed(16) })
   }, [executionRate, updateLimitRateState])
 
   // Handle rate input
