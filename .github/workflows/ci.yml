@@ -210,7 +210,7 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
-    input:
+    inputs:
       project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
 
   vercel:

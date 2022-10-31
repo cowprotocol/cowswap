@@ -2,14 +2,14 @@ name: Vercel
 
 on:
   workflow_call:
-    input:
+    inputs:
       project-id:
         description: 'The Vercel Project ID identifying which stage will be deployed'
         required: true
         type: string
 
 env:
-  VERCEL_PROJECT_ID: ${{ input.project-id }}
+  VERCEL_PROJECT_ID: ${{ inputs.project-id }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
 
 jobs:
