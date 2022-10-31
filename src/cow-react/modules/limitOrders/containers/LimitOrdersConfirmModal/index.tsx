@@ -32,13 +32,39 @@ function getCurrencyAmount(currency: Currency | null, value: string | null): Cur
   return CurrencyAmount.fromRawAmount(currency, Number(value || '0') * 10 ** currency.decimals)
 }
 
+function PendingText({
+  inputRawAmount,
+  outputRawAmount,
+}: {
+  inputRawAmount: CurrencyAmount<Currency> | null
+  outputRawAmount: CurrencyAmount<Currency> | null
+}) {
+  const inputSymbol = inputRawAmount?.currency?.symbol
+  const outputSymbol = outputRawAmount?.currency?.symbol
+  const inputTitle = (
+    <span title={inputRawAmount?.toExact() + ' ' + inputSymbol}>
+      {formatSmartAmount(inputRawAmount)} {inputSymbol}
+    </span>
+  )
+  const outputTitle = (
+    <span title={outputRawAmount?.toExact() + ' ' + outputSymbol}>
+      {formatSmartAmount(outputRawAmount)} {outputSymbol}
+    </span>
+  )
+  return (
+    <>
+      Placing limit order {inputTitle} for {outputTitle}
+    </>
+  )
+}
+
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
   const { chainId } = useWalletInfo()
   const { activeRate } = useAtomValue(limitRateAtom)
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
 
-  const { rawAmount: inputRawAmount, currency: inputCurrency } = inputCurrencyInfo
+  const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
   // TODO: check with inversed rate
   const activeRateAmount = getCurrencyAmount(outputCurrency, activeRate)
@@ -64,9 +90,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   }, [onDismiss, setConfirmationState, tradeContext, onDismissConfirmation])
 
   const operationType = OperationType.ORDER_SIGN
-  const pendingText = `Placing limit order ${formatSmartAmount(inputRawAmount)} ${
-    inputCurrency?.symbol
-  } for ${formatSmartAmount(outputRawAmount)} ${outputCurrency?.symbol}`
+  const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />
 
   return (
     <>
