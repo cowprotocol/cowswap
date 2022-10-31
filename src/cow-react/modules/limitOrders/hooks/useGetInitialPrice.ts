@@ -97,7 +97,7 @@ export function useGetInitialPrice(): { price: string | null | undefined } {
 
     // Fetch output currency price
     fetchPrice(outputCurrency, Field.OUTPUT)
-  }, [chainId, fetchPrice, inputCurrency, outputCurrency, updateLimitRateState])
+  }, [chainId, fetchPrice, inputCurrency, outputCurrency])
 
   // Handle final price calculation
   useEffect(() => {
@@ -109,8 +109,10 @@ export function useGetInitialPrice(): { price: string | null | undefined } {
     const newPrice = isInversed ? outputPrice.div(inputPrice) : inputPrice.div(outputPrice)
 
     // Update final price
-    setFinalPrice(formatSmart(newPrice, 5))
-  }, [inputPrice, isInversed, outputPrice, updateLimitRateState])
+    updateLimitRateState({ activeRate: formatSmart(newPrice, 5) })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputPrice, outputPrice, updateLimitRateState])
 
   // Handle loading
   useEffect(() => {
