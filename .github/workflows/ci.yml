@@ -222,17 +222,17 @@ jobs:
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
       - name: Deploy develop
-        if: ${{ github.ref == 'refs/heads/develop' }}
+        if: github.ref == 'refs/heads/develop'
         uses: ./vercel.yml
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
       - name: Deploy staging
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: ./vercel.yml
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
       - name: Deploy barn
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: ./vercel.yml
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_BARN }}
