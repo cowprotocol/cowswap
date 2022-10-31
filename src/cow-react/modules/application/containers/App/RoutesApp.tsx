@@ -10,12 +10,7 @@ import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'cons
 import { Loading } from 'components/FlashingLoading'
 
 import Account from '@cow/pages/Account'
-import Swap from '@cow/pages/Swap'
 import { NewSwapPage } from '@cow/pages/NewSwap'
-
-import { isBarn } from 'utils/environments'
-
-const isNewSwapEnabled = localStorage.getItem('enableNewSwap') || isBarn
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '@cow/pages/PrivacyPolicy'))
@@ -52,7 +47,7 @@ export function RoutesApp() {
           <Switch>
             <Redirect from="/claim" to={Routes.ACCOUNT} />
             <Redirect from="/profile" to={Routes.ACCOUNT} />
-            <Route exact strict path={Routes.SWAP} component={isNewSwapEnabled ? NewSwapPage : Swap} />
+            <Route exact strict path={Routes.SWAP} component={NewSwapPage} />
             <Route path={Routes.LIMIT_ORDER} component={LimitOrders} />
             <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
