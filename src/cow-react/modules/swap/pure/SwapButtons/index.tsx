@@ -13,16 +13,15 @@ import { AutoColumn } from 'components/Column'
 import * as styledEl from './styled'
 import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
-
-import { ApproveButtons, ApproveButtonsProps } from './ApproveButtons'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
+import { TradeApproveButton } from '@cow/common/containers/TradeApprove/TradeApproveButton'
 
 export interface SwapButtonsContext {
   swapButtonState: SwapButtonState
   chainId: number | undefined
   wrappedToken: Token
   handleSwap: HandleSwapCallback
-  approveButtonProps: ApproveButtonsProps
+  inputAmount: CurrencyAmount<Currency> | undefined
   wrapUnwrapAmount: CurrencyAmount<Currency> | undefined
   wrapInputError: string | undefined
   onWrapOrUnwrap: WrapUnwrapCallback | null
@@ -115,11 +114,15 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
   [SwapButtonState.NeedApprove]: (props: SwapButtonsContext) => (
     <AutoRow style={{ flexWrap: 'nowrap', width: '100%' }}>
       <AutoColumn style={{ width: '100%' }} gap="12px">
-        <ApproveButtons {...props.approveButtonProps}>
-          <styledEl.SwapButtonBox>
-            <Trans>Swap</Trans>
-          </styledEl.SwapButtonBox>
-        </ApproveButtons>
+        {props.inputAmount && (
+          <TradeApproveButton amountToApprove={props.inputAmount}>
+            <ButtonError disabled={true} buttonSize={ButtonSize.BIG}>
+              <styledEl.SwapButtonBox>
+                <Trans>Swap</Trans>
+              </styledEl.SwapButtonBox>
+            </ButtonError>
+          </TradeApproveButton>
+        )}
       </AutoColumn>
     </AutoRow>
   ),

@@ -29,7 +29,7 @@ import useTimeAgo from 'hooks/useTimeAgo'
 import NotificationBanner from 'components/NotificationBanner'
 import { useHasOrders } from '@cow/api/gnosisProtocol/hooks'
 import { useAffiliateAddress } from 'state/affiliate/hooks'
-import { HelpCircle } from '@cow/modules/shared/dumb/HelpCircle'
+import { HelpCircle } from '@cow/common/pure/HelpCircle'
 
 const NotificationMessages = ({ error, chainId }: { error?: unknown; chainId: ChainId }) => (
   <>
