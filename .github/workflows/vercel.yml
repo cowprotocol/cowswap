@@ -10,6 +10,7 @@ on:
 
 env:
   VERCEL_PROJECT_ID: ${{ secrets.project-id }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
 
 jobs:
   run:
