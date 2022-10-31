@@ -205,6 +205,13 @@ jobs:
           name: website
           path: build
 
+  vercel-test:
+    name: Test deploy!!! Remove before publishing
+    if: github.event_name == 'pull_request'
+    uses: .github/workflows/vercel.yml
+    secrets:
+      project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
+
   vercel:
     # Vercel build/deploy step
     # Doesn't run on PRs. All builds are PROD like
