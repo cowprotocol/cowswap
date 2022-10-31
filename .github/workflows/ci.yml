@@ -209,60 +209,28 @@ jobs:
 
   vercel:
     # Vercel build/deploy step
-    # In the future, Vercel will replace our AWS setup
-    # This build job will - for now - build only PRs and publish them to Vercel
-    # TODO: Finish setup for dev, staging, barn and prod
+    # Doesn't run on PRs. All builds are PROD like
     name: Vercel
+    needs: [test, lint] # only if these steps finish and succeed
     runs-on: ubuntu-latest
+    if: !env.PR_NUMBER # not on PRs
 
     steps:
-      - name: Checkout code
-        # TODO: for now, all steps are conditioned to PRs
-        # TODO: once this is properly setup, enable as needed for dev/staging/etc
-        if: env.PR_NUMBER
-        uses: actions/checkout@v2
-
-      - name: Install Vercel CLI
-        if: env.PR_NUMBER
-        run: npm install --global vercel@latest
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
-#      - name: Load dependencies
-#        id: cache-node-modules
-#        if: env.PR_NUMBER
-#        uses: actions/cache@v2
-#        with:
-#          path: node_modules
-#          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
-#          restore-keys: |
-#            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
-#
-#      - name: Build Cosmos
-#        id: build-cosmos
-#        if: env.PR_NUMBER # only build cosmos on PRs
-#        run: yarn cosmos:export
-
-      - name: Build Project Artifacts
-        # Actually this is redundant with the build step. Haven't figured out how to reuse the existing build artifacts
-        if: env.PR_NUMBER
-        run: vercel build -t ${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy Project Artifacts to Vercel
-        if: env.PR_NUMBER
-        run: >
-          vercel deploy --prebuilt
-          -t ${{ secrets.VERCEL_TOKEN }}
-          -b REACT_APP_SENTRY_DSN=${{ env.REACT_APP_SENTRY_DSN }}
-          -b REACT_APP_PINATA_API_KEY=${{ env.REACT_APP_PINATA_API_KEY }}
-          -b REACT_APP_PINATA_SECRET_API_KEY=${{ env.REACT_APP_PINATA_SECRET_API_KEY }}
-          -b REACT_APP_SENTRY_AUTH_TOKEN=${{ env.REACT_APP_SENTRY_AUTH_TOKEN }}
-          -b REACT_APP_BLOCKNATIVE_API_KEY=${{ env.REACT_APP_BLOCKNATIVE_API_KEY }}
-          -b REACT_APP_GOOGLE_ANALYTICS_ID=${{ env.REACT_APP_GOOGLE_ANALYTICS_ID }}
-          -b REACT_APP_AMPLITUDE_KEY=${{ env.REACT_APP_AMPLITUDE_KEY }}
-          -m PR_NUMBER=${{ env.PR_NUMBER }}
-
+      - name: Deploy develop
+        if: ${{ github.ref == 'refs/heads/develop' }}
+        uses: .github/workflows/vercel.yml
+        with:
+          project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
+      - name: Deploy staging
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        uses: .github/workflows/vercel.yml
+        with:
+          project-id: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
+      - name: Deploy barn
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        uses: .github/workflows/vercel.yml
+        with:
+          project-id: ${{ secrets.VERCEL_PROJECT_ID_BARN }}
 
   deploy:
     name: Deploy
