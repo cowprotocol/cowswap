@@ -3,12 +3,11 @@ import { useAtomValue } from 'jotai'
 import { useWeb3React } from '@web3-react/core'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '../state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { limitDecimals } from '../utils/limitDecimals'
-import { getCurrencyAddress } from '../utils/getCurrencyAddress'
+import { getAddress } from '../utils/getAddress'
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 export function useFetchInitialPrice() {
@@ -49,8 +48,8 @@ export function useFetchInitialPrice() {
 
   // Handle price fetching
   useEffect(() => {
-    const inputAddress = getCurrencyAddress(inputCurrency as WrappedTokenInfo)
-    const outputAddress = getCurrencyAddress(outputCurrency as WrappedTokenInfo)
+    const inputAddress = getAddress(inputCurrency)
+    const outputAddress = getAddress(outputCurrency)
 
     if (!inputAddress || !outputAddress || !chainId) {
       return

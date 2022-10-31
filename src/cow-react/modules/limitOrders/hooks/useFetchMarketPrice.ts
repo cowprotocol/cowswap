@@ -2,32 +2,36 @@ import { useEffect, useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { OrderKind } from '@cowprotocol/contracts'
-import { useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { BigNumber } from 'bignumber.js'
 
-import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useTypedValue } from './useTypedValue'
 import { useOrderValidTo } from 'state/user/hooks'
 import { DEFAULT_DECIMALS } from 'custom/constants'
-import { getCurrencyAddress } from '../utils/getCurrencyAddress'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { getAddress } from '../utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
-import { getBestQuote, QuoteResult } from 'utils/price'
-import { CancelableResult, onlyResolvesLast } from 'utils/async'
-import { getPromiseFulfilledValue } from 'utils/misc'
+import { getQuote } from '@cow/api/gnosisProtocol'
+import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { useUserTransactionTTL } from 'state/user/hooks'
+import { calculateValidTo } from 'hooks/useSwapCallback'
 
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
-
-const getBestQuoteResolveOnlyLastCall = onlyResolvesLast<QuoteResult>(getBestQuote)
 
 export function useFetchMarketPrice() {
   const { chainId, account } = useWeb3React()
 
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
+  // DAI / WETH
+
   const { inputCurrency: sellCurrency, outputCurrency: buyCurrency, orderKind, recipient } = useLimitOrdersTradeState()
+  const { isInversed } = useAtomValue(limitRateAtom)
   const { exactTypedValue } = useTypedValue()
   const { validTo } = useOrderValidTo()
+
+  const [deadline] = useUserTransactionTTL()
 
   // Receiver address
   const { address: ensRecipientAddress } = useENSAddress(recipient)
@@ -35,34 +39,33 @@ export function useFetchMarketPrice() {
 
   // Handle response
   const handleResponse = useCallback(
-    (response: CancelableResult<QuoteResult>, params: any) => {
-      const { cancelled, data } = response
+    (response: SimpleGetQuoteResponse) => {
+      const { buyAmount, sellAmount, feeAmount } = response.quote
 
-      if (cancelled) {
-        // Cancellation can happen if a new request is made, then any ongoing query is canceled
-        console.debug('[useFetchMarketPrice] Canceled get quote price for', params)
-        return
+      // Adjust the values from the API response
+      const parsedBuyAmount = new BigNumber(buyAmount).dividedBy(10 ** (buyCurrency?.decimals || 0))
+      const parsedSellAmount = new BigNumber(sellAmount).dividedBy(10 ** (sellCurrency?.decimals || 0))
+      const parsedFeeAmount = new BigNumber(feeAmount).dividedBy(10 ** (sellCurrency?.decimals || 0))
+
+      let executionRate = null
+
+      // Calculate the new execution rate
+      if (!isInversed) {
+        // (buyAmount / 10 ** 18 - feeAmount / 10 ** 18) / (sellAmount / 10 ** 18)
+        const buyMinusFee = parsedBuyAmount.minus(parsedFeeAmount)
+        executionRate = buyMinusFee.dividedBy(parsedSellAmount)
+      } else {
+        // (sellAmount / 10 ** 18) / ((buyAmount / 10 ** 18) - (feeAmount / 10 ** 18))
+        const buyMinusFee = parsedBuyAmount.minus(parsedFeeAmount)
+        executionRate = parsedSellAmount.dividedBy(buyMinusFee)
       }
 
-      const [price, fee] = data as QuoteResult
+      console.log('debug new execution price', executionRate.toString())
 
-      const quote = {
-        fee: getPromiseFulfilledValue(fee, undefined),
-        price: getPromiseFulfilledValue(price, undefined),
-      }
-
-      if (!quote.price) return
-
-      // TODO: what should we do with the fee here?
-      // TODO: is this idea to divide quote price and typed amount correct?
-      // TODO: update the math operation types
-      // Calculate the execution: quote price / typed amount
-      const executionRate = Number(quote.price.amount) / Number(exactTypedValue)
-
-      // Set the market rate
-      updateLimitRateState({ executionRate: String(executionRate) })
+      // // Update the rate state
+      updateLimitRateState({ executionRate: executionRate.toString() })
     },
-    [exactTypedValue, updateLimitRateState]
+    [buyCurrency?.decimals, isInversed, sellCurrency?.decimals, updateLimitRateState]
   )
 
   // Handle error
@@ -83,29 +86,32 @@ export function useFetchMarketPrice() {
       exactTypedValue,
       (orderKind === OrderKind.SELL ? sellCurrency : buyCurrency) ?? undefined
     )
-    if (!amount) return
+
+    const sellToken = getAddress(sellCurrency)
+    const buyToken = getAddress(buyCurrency)
+
+    if (!amount || !sellToken || !buyToken) return
 
     const quoteParams = {
-      sellToken: getCurrencyAddress(sellCurrency as WrappedTokenInfo),
-      buyToken: getCurrencyAddress(buyCurrency as WrappedTokenInfo),
+      validTo: calculateValidTo(deadline),
       amount: amount.quotient.toString(),
       kind: orderKind,
+      sellToken,
+      buyToken,
       fromDecimals,
       toDecimals,
       chainId,
     }
 
     // Fetch the quote and handle the response
-    const getQuote = () => {
-      getBestQuoteResolveOnlyLastCall({ quoteParams, fetchFee: true })
-        .then((res) => handleResponse(res, quoteParams))
-        .catch(handleError)
+    const handleFetchQuote = () => {
+      getQuote(quoteParams).then(handleResponse).catch(handleError)
     }
 
-    getQuote()
+    handleFetchQuote()
 
     // Run the interval
-    const intervalId = setInterval(getQuote, REFETCH_CHECK_INTERVAL)
+    const intervalId = setInterval(handleFetchQuote, REFETCH_CHECK_INTERVAL)
 
     return () => clearInterval(intervalId)
   }, [
@@ -119,5 +125,6 @@ export function useFetchMarketPrice() {
     receiver,
     handleResponse,
     handleError,
+    deadline,
   ])
 }
