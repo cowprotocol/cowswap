@@ -216,6 +216,11 @@ jobs:
     if: !env.PR_NUMBER # not on PRs
 
     steps:
+      - name: Test deploy!!! Remove before publishing
+        if: ${{ github.ref == 'refs/heads/vercel-setup' }}
+        uses: .github/workflows/vercel.yml
+        with:
+          project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
       - name: Deploy develop
         if: ${{ github.ref == 'refs/heads/develop' }}
         uses: .github/workflows/vercel.yml
