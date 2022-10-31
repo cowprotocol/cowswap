@@ -1,8 +1,7 @@
 import { useLocation, useParams } from 'react-router-dom'
 import { useMemo } from 'react'
-import { getDefaultLimitOrdersState, LimitOrdersState } from '@cow/modules/limitOrders/state/limitOrdersAtom'
-import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
+import { LimitOrdersState } from '../state/limitOrdersAtom'
 
 interface LimitOrdersStateFromUrl {
   readonly chainId: string | undefined
@@ -11,7 +10,6 @@ interface LimitOrdersStateFromUrl {
 }
 
 export function useLimitOrdersStateFromUrl(): LimitOrdersState {
-  const { chainId: currentChainId } = useWeb3React()
   const params = useParams()
   const location = useLocation()
 
@@ -21,10 +19,6 @@ export function useLimitOrdersStateFromUrl(): LimitOrdersState {
     const { chainId, inputCurrencyId, outputCurrencyId } = params as LimitOrdersStateFromUrl
     const chainIdAsNumber = chainId ? parseInt(chainId) : null
     const orderKind = OrderKind.SELL
-
-    if (currentChainId && currentChainId !== chainIdAsNumber) {
-      return getDefaultLimitOrdersState(currentChainId)
-    }
 
     return {
       chainId: chainIdAsNumber,
@@ -36,5 +30,5 @@ export function useLimitOrdersStateFromUrl(): LimitOrdersState {
       recipient,
       orderKind,
     }
-  }, [location.search, params, currentChainId])
+  }, [location.search, params])
 }
