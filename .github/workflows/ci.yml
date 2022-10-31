@@ -211,7 +211,7 @@ jobs:
     # Vercel build/deploy step
     # Doesn't run on PRs. All builds are PROD like
     name: Vercel
-    needs: [test, lint] # only if these steps finish and succeed
+#    needs: [test, lint] # only if these steps finish and succeed
     runs-on: ubuntu-latest
 #    if: github.event_name != 'pull_request' # not on PRs
 
