@@ -213,11 +213,11 @@ jobs:
     name: Vercel
     needs: [test, lint] # only if these steps finish and succeed
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' # not on PRs
+#    if: github.event_name != 'pull_request' # not on PRs
 
     steps:
       - name: Test deploy!!! Remove before publishing
-        if: ${{ github.ref == 'refs/heads/vercel-setup' }}
+        if: github.event_name == 'pull_request'
         uses: ./vercel.yml
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
