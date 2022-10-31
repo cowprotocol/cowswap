@@ -24,8 +24,6 @@ export function useFetchMarketPrice() {
 
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
-  // DAI / WETH
-
   const { inputCurrency: sellCurrency, outputCurrency: buyCurrency, orderKind, recipient } = useLimitOrdersTradeState()
   const { exactTypedValue } = useTypedValue()
   const { validTo } = useOrderValidTo()
@@ -41,13 +39,10 @@ export function useFetchMarketPrice() {
     (response: SimpleGetQuoteResponse) => {
       const { buyAmount, sellAmount } = response.quote
 
+      // Create fraction for execution rate
       const executionRate = new Fraction(sellAmount, buyAmount)
 
-      // Calculate the new execution rate
-
-      console.log('debug new execution price', executionRate.toFixed(16))
-
-      // // Update the rate state
+      // Update the rate state
       updateLimitRateState({ executionRate })
     },
     [updateLimitRateState]
