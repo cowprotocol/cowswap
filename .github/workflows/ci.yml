@@ -214,6 +214,7 @@ jobs:
     needs: [test, lint] # only if these steps finish and succeed
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' # not on PRs
+    secrets: inherit
 
     steps:
       - name: Test deploy!!! Remove before publishing
@@ -221,25 +222,21 @@ jobs:
         uses: ./vercel.yml
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
-        secrets: inherit
       - name: Deploy develop
         if: ${{ github.ref == 'refs/heads/develop' }}
         uses: ./vercel.yml
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
-        secrets: inherit
       - name: Deploy staging
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: ./vercel.yml
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
-        secrets: inherit
       - name: Deploy barn
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: ./vercel.yml
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_BARN }}
-        secrets: inherit
 
   deploy:
     name: Deploy
