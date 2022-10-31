@@ -24,7 +24,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { claimAnalytics } from 'components/analytics'
 import { ButtonSize } from 'theme'
-import { HelpCircle } from '@cow/modules/shared/dumb/HelpCircle'
+import { HelpCircle } from '@cow/common/pure/HelpCircle'
 
 enum ClaimStatus {
   INITIAL,

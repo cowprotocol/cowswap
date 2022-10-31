@@ -7,6 +7,7 @@ import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
 import { useHistory } from 'react-router-dom'
 import { Routes } from '@cow/constants/routes'
+import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
 
 export interface NewSwapModalsProps {
   chainId: number | undefined
@@ -30,6 +31,7 @@ export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
       {<ConfirmSwapModalSetup {...confirmSwapProps} />}
       {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+      <TradeApproveWidget />
     </>
   )
 }, genericPropsChecker)

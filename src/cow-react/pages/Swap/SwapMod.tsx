@@ -46,7 +46,7 @@ import { CompatibilityIssuesWarning } from '@cow/modules/swap/pure/Compatibility
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import { useAtomValue } from 'jotai/utils'
 import { swapConfirmAtom } from '@cow/modules/swap/state/swapConfirmAtom'
-import { SwapButtons, SwapButtonsContext } from '@cow/modules/swap/containers/SwapButtons'
+import { SwapButtons, SwapButtonsContext } from '@cow/modules/swap/pure/SwapButtons'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 import { Price } from '@cow/modules/swap/pure/Price'
 import { TradeBasicDetails } from '@cow/modules/swap/containers/TradeBasicDetails'
@@ -59,10 +59,10 @@ import { EthFlowModal } from '@cow/modules/swap/containers/EthFlow'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
 import { Routes } from '@cow/constants/routes'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
-
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { Widget } from '@cow/modules/application/pure/Widget'
+import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -170,9 +170,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
     [dependentField, independentField, parsedAmounts, showWrap, typedValue]
   )
 
-  // check if user has gone through approval process, used to show two step buttons, reset on token change
-  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-
   // reset url query on network change
   useEffect(() => {
     if (chainId && previousChainId && chainId !== previousChainId) {
@@ -194,7 +191,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
 
   const handleInputSelect = useCallback(
     (inputCurrency) => {
-      setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
     },
     [onCurrencySelection]
@@ -230,8 +226,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
   const swapButtonsContext: SwapButtonsContext = useSwapButtonContext({
     feeWarningAccepted,
     impactWarningAccepted,
-    approvalSubmitted,
-    setApprovalSubmitted,
     openNativeWrapModal,
     priceImpactParams,
   })
@@ -253,19 +247,17 @@ export default function Swap({ history, location, className }: RouteComponentPro
         {confirmSwapProps && <ConfirmSwapModalSetup {...confirmSwapProps} />}
         {/* CoWmunity Fees Discount Modal */}
         <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
-
+        <TradeApproveWidget />
         <AffiliateStatusCheck />
 
         {/* Native wrapping modal */}
         {showNativeWrapModal && (
           <EthFlowModal
             nativeInput={nativeInput}
-            approvalState={swapButtonsContext.approveButtonProps.approvalState}
             hasEnoughWrappedBalanceForSwap={swapButtonsContext.hasEnoughWrappedBalanceForSwap}
             onDismiss={dismissNativeWrapModal}
             wrapCallback={swapButtonsContext.onWrapOrUnwrap}
             directSwapCallback={swapButtonsContext.handleSwap}
-            approveCallback={swapButtonsContext.approveButtonProps.approveCallback}
           />
         )}
 
@@ -311,7 +303,7 @@ export default function Swap({ history, location, className }: RouteComponentPro
                     justify={isExpertMode || recipientToggleVisible ? 'space-between' : 'center'}
                     style={{ padding: '0 1rem' }}
                   >
-                    <ArrowWrapperLoader onSwitchTokens={onSwitchTokens} setApprovalSubmitted={setApprovalSubmitted} />
+                    <ArrowWrapperLoader onSwitchTokens={onSwitchTokens} />
                     {recipient === null && !showWrap && (isExpertMode || recipientToggleVisible) ? (
                       <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
                         <Trans>+ Add a recipient (optional)</Trans>
