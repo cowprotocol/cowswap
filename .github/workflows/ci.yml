@@ -213,7 +213,7 @@ jobs:
     name: Vercel
     needs: [test, lint] # only if these steps finish and succeed
     runs-on: ubuntu-latest
-    if: ${{ !env.PR_NUMBER }} # not on PRs
+    if: github.event_name != 'pull_request' # not on PRs
 
     steps:
       - name: Test deploy!!! Remove before publishing
