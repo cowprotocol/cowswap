@@ -44,3 +44,4 @@ jobs:
           -b REACT_APP_GOOGLE_ANALYTICS_ID=${{ env.REACT_APP_GOOGLE_ANALYTICS_ID }}
           -b REACT_APP_AMPLITUDE_KEY=${{ env.REACT_APP_AMPLITUDE_KEY }}
           -m VERSION=${{ steps.get_version.outputs.VERSION }}
+          -m COMMIT=${{ github.sha }}
