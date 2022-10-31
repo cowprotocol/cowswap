@@ -2,7 +2,7 @@ import Loader from 'components/Loader'
 import { Suspense, lazy } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
+import { RedirectPathToSwapOnly } from 'pages/Swap/redirects'
 import { Routes } from '@cow/constants/routes'
 
 import AnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers'
@@ -49,7 +49,6 @@ export function RoutesApp() {
             <Redirect from="/profile" to={Routes.ACCOUNT} />
             <Route exact strict path={Routes.SWAP} component={NewSwapPage} />
             <Route path={Routes.LIMIT_ORDER} component={LimitOrders} />
-            <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />
 
