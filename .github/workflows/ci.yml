@@ -214,7 +214,6 @@ jobs:
     needs: [test, lint] # only if these steps finish and succeed
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' # not on PRs
-    secrets: inherit
 
     steps:
       - name: Test deploy!!! Remove before publishing
