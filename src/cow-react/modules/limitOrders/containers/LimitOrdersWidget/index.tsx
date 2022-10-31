@@ -33,8 +33,17 @@ export function LimitOrdersWidget() {
   useResetStateWithSymbolDuplication()
 
   const { chainId } = useWeb3React()
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
-    useLimitOrdersTradeState()
+  const {
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrencyBalance,
+    outputCurrencyBalance,
+    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
+    recipient,
+  } = useLimitOrdersTradeState()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const onCurrencySelection = useOnCurrencySelection()
@@ -60,8 +69,8 @@ export function LimitOrdersWidget() {
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
     viewAmount: inputCurrencyAmount?.toExact() || '',
-    balance: null,
-    fiatAmount: null,
+    balance: inputCurrencyBalance,
+    fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
   const outputCurrencyInfo: CurrencyInfo = {
@@ -69,8 +78,8 @@ export function LimitOrdersWidget() {
     currency: outputCurrency,
     rawAmount: outputCurrencyAmount,
     viewAmount: outputCurrencyAmount?.toExact() || '',
-    balance: null,
-    fiatAmount: null,
+    balance: outputCurrencyBalance,
+    fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
   const tradeContext = useTradeFlowContext(limitOrdersQuote)
