@@ -15,7 +15,7 @@ export interface TradeFlowContext {
 }
 
 // TODO: Add all necessary like @cow/modules/swap/services/swapFlow/index.ts
-export async function tradeFlow(params: TradeFlowContext) {
+export async function tradeFlow(params: TradeFlowContext): Promise<string> {
   const { id: orderId, order } = await signAndPostOrder(params.postOrderParams)
 
   const presignTx = await (params.allowsOffchainSigning
@@ -33,4 +33,6 @@ export async function tradeFlow(params: TradeFlowContext) {
     },
     params.dispatch
   )
+
+  return orderId
 }

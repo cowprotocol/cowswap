@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
 import Input from 'components/NumericalInput'
+import Loader from 'components/Loader'
 
 export const Wrapper = styled.div`
   background: white;
@@ -63,4 +64,8 @@ export const ActiveIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`
+
+export const RateLoader = styled(Loader)`
+  margin: 5px;
 `

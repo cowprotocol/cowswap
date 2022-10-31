@@ -2,13 +2,14 @@ import * as styledEl from './styled'
 import { useCallback, useEffect } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useWeb3React } from '@web3-react/core'
 
 import { HeadingText } from '@cow/modules/limitOrders/pure/RateInput/HeadingText'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useFetchInitialPrice } from '@cow/modules/limitOrders/hooks/useFetchInitialPrice'
+import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useFetchMarketPrice } from '@cow/modules/limitOrders/hooks/useFetchMarketPrice'
 import usePrevious from 'hooks/usePrevious'
 
@@ -16,8 +17,11 @@ export function RateInput() {
   // Continous market price fetch (quote)
   useFetchMarketPrice()
 
-  // Initial price fetch
-  const { price: initialPrice } = useFetchInitialPrice()
+  const { chainId } = useWeb3React()
+  const prevChainId = usePrevious(chainId)
+
+  // Price fetching
+  const { price: initialPrice } = useGetInitialPrice()
 
   // Rate and currency amount hooks
   const calculateRate = useCalculateRate()
@@ -73,6 +77,13 @@ export function RateInput() {
     updateLimitRateState({ activeRate: initialPrice })
   }, [initialPrice, updateLimitRateState])
 
+  // Clear active rate on network change
+  useEffect(() => {
+    if (prevChainId && prevChainId !== chainId) {
+      updateLimitRateState({ activeRate: null })
+    }
+  }, [chainId, prevChainId, updateLimitRateState])
+
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
@@ -85,12 +96,16 @@ export function RateInput() {
 
       <styledEl.Body>
         <styledEl.InputWrapper>
-          <styledEl.NumericalInput
-            $loading={isLoading}
-            className="rate-limit-amount-input"
-            value={activeRate || ''}
-            onUserInput={handleUserInput}
-          />
+          {isLoading ? (
+            <styledEl.RateLoader />
+          ) : (
+            <styledEl.NumericalInput
+              $loading={isLoading}
+              className="rate-limit-amount-input"
+              value={activeRate || ''}
+              onUserInput={handleUserInput}
+            />
+          )}
         </styledEl.InputWrapper>
 
         <styledEl.ActiveCurrency onClick={handleToggle}>

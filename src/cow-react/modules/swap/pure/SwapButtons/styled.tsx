@@ -4,9 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
 import { ButtonSize, ThemedText } from 'theme'
 import { Text } from 'rebass'
-import { ButtonError, ButtonPrimary } from 'components/Button'
-import { Token } from '@uniswap/sdk-core'
-import { useReplaceSwapState, useSwapState } from 'state/swap/hooks'
+import { ButtonError } from 'components/Button'
 import { RowBetween } from 'components/Row'
 
 const fadeIn = `
@@ -78,32 +76,6 @@ export const SwapButtonBox = ({ children, showLoading = false, showButton = fals
       {children}
     </Text>
   )
-
-export function SwitchToWethBtn({ wrappedToken }: { wrappedToken: Token }) {
-  const replaceSwapState = useReplaceSwapState()
-  const { chainId, independentField, typedValue, OUTPUT } = useSwapState()
-
-  return (
-    <ButtonPrimary
-      buttonSize={ButtonSize.BIG}
-      id="swap-button"
-      onClick={() => {
-        if (!chainId) return
-
-        replaceSwapState({
-          chainId,
-          inputCurrencyId: wrappedToken.address,
-          outputCurrencyId: OUTPUT.currencyId ?? undefined,
-          typedValue,
-          recipient: null,
-          independentField,
-        })
-      }}
-    >
-      <ThemedText.Main mb="4px">Switch to {wrappedToken.symbol}</ThemedText.Main>
-    </ButtonPrimary>
-  )
-}
 
 export function FeesExceedFromAmountMessage() {
   return (
