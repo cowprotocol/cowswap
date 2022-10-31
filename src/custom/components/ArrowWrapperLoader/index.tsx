@@ -79,7 +79,7 @@ export const Wrapper = styled.div<ShowLoaderProp>`
       overflow: visible;
       padding: 0;
       border: transparent;
-      transform: translateX(-100%) rotateY(-180deg);  
+      transform: translateX(-100%) rotateY(-180deg);
 
       &::before,
       &::after {
@@ -116,10 +116,9 @@ export const Wrapper = styled.div<ShowLoaderProp>`
 
 export interface ArrowWrapperLoaderProps {
   onSwitchTokens: () => void
-  setApprovalSubmitted: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function ArrowWrapperLoader({ onSwitchTokens, setApprovalSubmitted }: ArrowWrapperLoaderProps) {
+export function ArrowWrapperLoader({ onSwitchTokens }: ArrowWrapperLoaderProps) {
   const isRefreshingQuote = useIsQuoteRefreshing()
   const isBestQuoteLoading = useIsBestQuoteLoading()
 
@@ -127,7 +126,6 @@ export function ArrowWrapperLoader({ onSwitchTokens, setApprovalSubmitted }: Arr
   const showQuoteLoader = useLoadingWithTimeout(isBestQuoteLoading, SHORT_LOAD_THRESHOLD)
 
   const handleClick = () => {
-    setApprovalSubmitted(false) // reset 2 step UI for approvals
     onSwitchTokens()
   }
 

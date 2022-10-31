@@ -6,27 +6,53 @@ import Loader from 'components/Loader'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { ButtonSize } from 'theme'
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { Currency } from '@uniswap/sdk-core'
 import { ThemeContext } from 'styled-components/macro'
+import { ApprovalState } from 'hooks/useApproveCallback'
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
-
-  disabled: boolean
-  isPending: boolean
-  isConfirmed: boolean
-  isRecentlyApproved: boolean
-
+  state: ApprovalState
   onClick: () => void
 }
 
-// TODO: should be refactored (need to separate context/logic/view)
 export function ApproveButton(props: ApproveButtonProps) {
-  const { currency, disabled, isPending, isConfirmed, isRecentlyApproved, onClick } = props
+  const { currency, state, onClick } = props
 
   const theme = useContext(ThemeContext)
   const symbol = currency?.symbol
+  const isPending = state === ApprovalState.PENDING
+  const isConfirmed = state === ApprovalState.APPROVED
+  const disabled = state !== ApprovalState.NOT_APPROVED
+
+  const content = useMemo(() => {
+    if (isConfirmed) {
+      return (
+        <>
+          <Trans>You can now trade {symbol}</Trans>
+          <CheckCircle size="20" color={theme.green1} />
+        </>
+      )
+    } else {
+      return (
+        <>
+          {/* we need to shorten this string on mobile */}
+          <Trans>Allow CoW Swap to use your {symbol}</Trans>
+          <MouseoverTooltip
+            text={
+              <Trans>
+                You must give the CoW Protocol smart contracts permission to use your {symbol}. You only have to do this
+                once per token.
+              </Trans>
+            }
+          >
+            {isPending ? <Loader stroke="white" /> : <HelpCircle size="20" color={theme.black} />}
+          </MouseoverTooltip>
+        </>
+      )
+    }
+  }, [symbol, theme, isPending, isConfirmed])
 
   return (
     <ButtonConfirmed
@@ -50,25 +76,7 @@ export function ApproveButton(props: ApproveButtonProps) {
         >
           <CurrencyLogo currency={currency} size={'20px'} style={{ flexShrink: 0 }} />
 
-          {/* we need to shorten this string on mobile */}
-          {isConfirmed ? <Trans>You can now trade {symbol}</Trans> : <Trans>Allow CoW Swap to use your {symbol}</Trans>}
-
-          {isPending ? (
-            <Loader stroke="white" />
-          ) : isRecentlyApproved ? (
-            <CheckCircle size="20" color={theme.green1} />
-          ) : (
-            <MouseoverTooltip
-              text={
-                <Trans>
-                  You must give the CoW Protocol smart contracts permission to use your {symbol}. You only have to do
-                  this once per token.
-                </Trans>
-              }
-            >
-              <HelpCircle size="20" color={theme.black} />
-            </MouseoverTooltip>
-          )}
+          {content}
         </span>
       </AutoRow>
     </ButtonConfirmed>

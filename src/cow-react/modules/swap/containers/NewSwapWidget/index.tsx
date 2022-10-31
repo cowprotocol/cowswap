@@ -41,7 +41,7 @@ import {
 import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
-import { SwapButtons } from '@cow/modules/swap/containers/SwapButtons'
+import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 
 export function NewSwapWidget() {
   useSetupSwapState()
@@ -95,7 +95,6 @@ export function NewSwapWidget() {
     receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,
   }
 
-  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const showCowSubsidyModal = useModalIsOpen(ApplicationModal.COW_SUBSIDY)
 
@@ -108,8 +107,6 @@ export function NewSwapWidget() {
   const swapButtonContext = useSwapButtonContext({
     feeWarningAccepted,
     impactWarningAccepted,
-    approvalSubmitted,
-    setApprovalSubmitted,
     openNativeWrapModal,
     priceImpactParams,
   })
@@ -138,10 +135,8 @@ export function NewSwapWidget() {
 
   const ethFlowProps: EthFlowProps = {
     nativeInput: parsedAmounts.INPUT,
-    approvalState: swapButtonContext.approveButtonProps.approvalState,
     onDismiss: dismissNativeWrapModal,
     wrapCallback: swapButtonContext.onWrapOrUnwrap,
-    approveCallback: swapButtonContext.approveButtonProps.approveCallback,
     directSwapCallback: swapButtonContext.handleSwap,
     hasEnoughWrappedBalanceForSwap: swapButtonContext.hasEnoughWrappedBalanceForSwap,
   }

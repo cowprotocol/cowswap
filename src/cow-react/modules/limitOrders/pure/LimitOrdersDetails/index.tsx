@@ -35,7 +35,9 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
             1 {sellToken.symbol} = {props.activeRate} {buyToken.symbol}
           </span>
           <br />
-          <span>(~${formatSmartAmount(props.activeRateFiatAmount)})</span>
+          <span title={props.activeRateFiatAmount?.toExact() + ' ' + buyToken.symbol}>
+            (~${formatSmartAmount(props.activeRateFiatAmount)})
+          </span>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
