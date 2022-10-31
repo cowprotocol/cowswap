@@ -219,27 +219,27 @@ jobs:
       - name: Test deploy!!! Remove before publishing
         if: ${{ github.ref == 'refs/heads/vercel-setup' }}
         uses: ./vercel.yml
-        secrets: inherit
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
+        secrets: inherit
       - name: Deploy develop
         if: ${{ github.ref == 'refs/heads/develop' }}
         uses: ./vercel.yml
-        secrets: inherit
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
+        secrets: inherit
       - name: Deploy staging
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: ./vercel.yml
-        secrets: inherit
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
+        secrets: inherit
       - name: Deploy barn
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: ./vercel.yml
-        secrets: inherit
         with:
           project-id: ${{ secrets.VERCEL_PROJECT_ID_BARN }}
+        secrets: inherit
 
   deploy:
     name: Deploy
