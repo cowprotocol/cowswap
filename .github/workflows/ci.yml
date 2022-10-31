@@ -216,6 +216,9 @@ jobs:
 #    if: github.event_name != 'pull_request' # not on PRs
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Test deploy!!! Remove before publishing
         if: github.event_name == 'pull_request'
         uses: ./.github/workflows/vercel.yml
