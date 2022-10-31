@@ -12,6 +12,7 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useFetchMarketPrice } from '@cow/modules/limitOrders/hooks/useFetchMarketPrice'
 import usePrevious from 'hooks/usePrevious'
+import { toFirstMeaningfulDecimal } from '@cow/modules/limitOrders/utils/toFirstMeaningfulDecimal'
 
 export function RateInput() {
   // Continous market price fetch (quote)
@@ -42,8 +43,11 @@ export function RateInput() {
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
-    updateLimitRateState({ activeRate: executionRate?.toFixed(16) })
-  }, [executionRate, updateLimitRateState])
+    if (!executionRate) return
+
+    const activeRate = isInversed ? executionRate.invert() : executionRate
+    updateLimitRateState({ activeRate: toFirstMeaningfulDecimal(activeRate) })
+  }, [executionRate, updateLimitRateState, isInversed])
 
   // Handle rate input
   const handleUserInput = useCallback(

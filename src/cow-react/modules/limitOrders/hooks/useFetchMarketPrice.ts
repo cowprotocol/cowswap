@@ -2,9 +2,9 @@ import { useEffect, useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { OrderKind } from '@cowprotocol/contracts'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useUpdateAtom } from 'jotai/utils'
 
-import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useTypedValue } from './useTypedValue'
 import { useOrderValidTo } from 'state/user/hooks'
@@ -27,7 +27,6 @@ export function useFetchMarketPrice() {
   // DAI / WETH
 
   const { inputCurrency: sellCurrency, outputCurrency: buyCurrency, orderKind, recipient } = useLimitOrdersTradeState()
-  const { isInversed } = useAtomValue(limitRateAtom)
   const { exactTypedValue } = useTypedValue()
   const { validTo } = useOrderValidTo()
 
@@ -40,7 +39,7 @@ export function useFetchMarketPrice() {
   // Handle response
   const handleResponse = useCallback(
     (response: SimpleGetQuoteResponse) => {
-      const { buyAmount, sellAmount, feeAmount } = response.quote
+      const { buyAmount, sellAmount } = response.quote
 
       const executionRate = new Fraction(sellAmount, buyAmount)
 
