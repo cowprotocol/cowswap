@@ -1,9 +1,11 @@
 import { useEffect, useCallback } from 'react'
-import { useWeb3React } from '@web3-react/core'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { OrderKind } from '@cowprotocol/contracts'
 import { useUpdateAtom } from 'jotai/utils'
+import { useWeb3React } from '@web3-react/core'
+import { OrderKind } from '@cowprotocol/contracts'
+import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { Fraction } from '@uniswap/sdk-core'
 
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useTypedValue } from './useTypedValue'
@@ -12,10 +14,8 @@ import { DEFAULT_DECIMALS } from 'custom/constants'
 import { getAddress } from '../utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
 import { getQuote } from '@cow/api/gnosisProtocol'
-import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { calculateValidTo } from 'hooks/useSwapCallback'
-import { Fraction } from '@uniswap/sdk-core'
 
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 

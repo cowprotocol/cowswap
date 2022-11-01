@@ -10,7 +10,10 @@ import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/sta
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { Field } from 'state/swap/actions'
-import { formatSmart } from 'utils/format'
+
+export const adjustDecimals = (price: number, decimals: number) => {
+  return new BigNumber(price).div(10 ** (18 - decimals))
+}
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 export function useGetInitialPrice(): { price: string | null | undefined } {
@@ -67,14 +70,8 @@ export function useGetInitialPrice(): { price: string | null | undefined } {
         const res = await getNativePrice(chainId, address)
 
         if (res?.price) {
-          // Convert to BigNumber
-          const price = new BigNumber(res.price)
-
-          // Adjust for decimals (some tokens use 18 some 6, USDC for example uses 6)
-          const adjusted = price.div(10 ** (18 - currency.decimals))
-
           // Set the price in local state
-          setPrice(adjusted)
+          setPrice(adjustDecimals(res?.price, currency.decimals))
           setLoading(false)
         } else {
           resetState()
@@ -109,7 +106,7 @@ export function useGetInitialPrice(): { price: string | null | undefined } {
     const newPrice = isInversed ? outputPrice.div(inputPrice) : inputPrice.div(outputPrice)
 
     // Update final price
-    updateLimitRateState({ activeRate: formatSmart(newPrice, 5) })
+    updateLimitRateState({ activeRate: newPrice.toFixed(10) })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputPrice, outputPrice, updateLimitRateState])
