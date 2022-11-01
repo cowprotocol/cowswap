@@ -4,44 +4,42 @@ import { useCurrencyBalances } from 'state/connection/hooks'
 import { useIsExpertMode } from 'state/user/hooks'
 import { useWeb3React } from '@web3-react/core'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
-import { ApprovalState, ApproveCallback } from 'hooks/useApproveCallback'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import { useDetectNativeToken } from 'state/swap/hooks'
 import { GpModal } from 'components/Modal'
-import { EthFlowModalContent } from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent'
-import { getDerivedEthFlowState } from '@cow/modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
-import { ethFlowContextAtom } from '@cow/modules/swap/state/EthFlow/ethFlowContextAtom'
+import { EthFlowModalContent } from '../../pure/EthFlow/EthFlowModalContent'
+import { getDerivedEthFlowState } from './utils/getDerivedEthFlowState'
+import { ethFlowContextAtom } from '../../state/EthFlow/ethFlowContextAtom'
 import { useAtomValue } from 'jotai/utils'
-import { WrappingPreviewProps } from '@cow/modules/swap/pure/EthFlow/WrappingPreview'
+import { WrappingPreviewProps } from '../../pure/EthFlow/WrappingPreview'
 import { useSingleActivityDescriptor } from 'hooks/useRecentActivity'
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
-import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
+import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
+import { useTradeApproveCallback, useTradeApproveState } from '@cow/common/containers/TradeApprove'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
   hasEnoughWrappedBalanceForSwap: boolean
-  approvalState: ApprovalState
   wrapCallback: WrapUnwrapCallback | null
-  approveCallback: ApproveCallback
   directSwapCallback: HandleSwapCallback
   onDismiss: () => void
 }
 
 function EthFlow({
   nativeInput,
-  approvalState,
   onDismiss,
   wrapCallback,
-  approveCallback,
   directSwapCallback,
   hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
   const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
   const { native, wrappedToken: wrapped } = useDetectNativeToken()
+  const approvalState = useTradeApproveState(nativeInput || null)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
+  const approveCallback = useTradeApproveCallback(nativeInput?.wrapped)
   const ethFlowActions = useEthFlowActions({
     wrap: wrapCallback,
     approve: approveCallback,

@@ -276,7 +276,7 @@ export function TransactionErrorContent({ message, onDismiss }: { message: React
   )
 }
 
-function L2Content({
+export function L2Content({
   onDismiss,
   chainId,
   hash,

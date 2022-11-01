@@ -25,6 +25,7 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
         toDecimals: outputCurrency.decimals,
       }
     : null
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => feeQuoteParams, [JSON.stringify(feeQuoteParams)])
 }
