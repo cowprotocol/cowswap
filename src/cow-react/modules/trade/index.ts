@@ -1,1 +1,1 @@
-export * from './updaters/LimitOrdersMenuUpdater'
+export * from './updaters/TradeMenuUpdater'
