@@ -5,7 +5,6 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { Fraction } from '@uniswap/sdk-core'
 
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useTypedValue } from './useTypedValue'
@@ -16,6 +15,8 @@ import useENSAddress from 'hooks/useENSAddress'
 import { getQuote } from '@cow/api/gnosisProtocol'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { calculateValidTo } from 'hooks/useSwapCallback'
+import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
+import { parseUnits } from '@ethersproject/units'
 
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 
@@ -62,19 +63,19 @@ export function useFetchMarketPrice() {
     const fromDecimals = sellCurrency?.decimals ?? DEFAULT_DECIMALS
     const toDecimals = buyCurrency?.decimals ?? DEFAULT_DECIMALS
 
-    const amount = tryParseCurrencyAmount(
-      exactTypedValue,
-      (orderKind === OrderKind.SELL ? sellCurrency : buyCurrency) ?? undefined
-    )
+    const amount =
+      orderKind === OrderKind.SELL
+        ? parseUnits(exactTypedValue, sellCurrency.decimals).toString()
+        : parseUnits(exactTypedValue, buyCurrency.decimals).toString()
 
     const sellToken = getAddress(sellCurrency)
     const buyToken = getAddress(buyCurrency)
 
     if (!amount || !sellToken || !buyToken) return
 
-    const quoteParams = {
+    const quoteParams: FeeQuoteParams = {
       validTo: calculateValidTo(deadline),
-      amount: amount.quotient.toString(),
+      amount,
       kind: orderKind,
       sellToken,
       buyToken,
