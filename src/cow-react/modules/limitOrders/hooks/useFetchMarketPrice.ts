@@ -3,7 +3,6 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
-import { BigNumber } from 'bignumber.js'
 
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
@@ -17,6 +16,7 @@ import { useUserTransactionTTL } from 'state/user/hooks'
 import { calculateValidTo } from 'hooks/useSwapCallback'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { parseUnits } from 'ethers/lib/utils'
+import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
 
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 
@@ -47,8 +47,8 @@ export function useFetchMarketPrice() {
         }
 
         // Parse values
-        const parsedBuyAmount = new BigNumber(buyAmount).div(10 ** (18 - sellCurrency.decimals))
-        const parsedSellAmount = new BigNumber(sellAmount).div(10 ** (18 - buyCurrency.decimals))
+        const parsedBuyAmount = adjustDecimals(Number(buyAmount), sellCurrency.decimals)
+        const parsedSellAmount = adjustDecimals(Number(sellAmount), buyCurrency.decimals)
 
         // Calculate execution rate
         const executionRate = isInversed ? parsedSellAmount.div(parsedBuyAmount) : parsedBuyAmount.div(parsedSellAmount)
@@ -63,9 +63,13 @@ export function useFetchMarketPrice() {
   )
 
   // Handle error
-  const handleError = useCallback((err) => {
-    console.debug('[useFetchMarketPrice] Failed to fetch exection price', err)
-  }, [])
+  const handleError = useCallback(
+    (err) => {
+      updateLimitRateState({ executionRate: null })
+      console.debug('[useFetchMarketPrice] Failed to fetch exection price', err)
+    },
+    [updateLimitRateState]
+  )
 
   useEffect(() => {
     if (!sellCurrency || !buyCurrency || !exactTypedValue || !chainId) {
@@ -99,7 +103,12 @@ export function useFetchMarketPrice() {
 
     // Fetch the quote and handle the response
     const handleFetchQuote = () => {
-      getQuote(quoteParams).then(handleResponse).catch(handleError)
+      getQuote(quoteParams)
+        .then(handleResponse)
+        .catch(handleError)
+        .finally(() => {
+          updateLimitRateState({ isLoadingExecutionRate: false })
+        })
     }
 
     handleFetchQuote()
@@ -120,5 +129,12 @@ export function useFetchMarketPrice() {
     handleResponse,
     handleError,
     deadline,
+    updateLimitRateState,
+    isInversed,
   ])
+
+  // Handle loading
+  useEffect(() => {
+    updateLimitRateState({ isLoadingExecutionRate: true })
+  }, [chainId, sellCurrency, buyCurrency, orderKind, account, isInversed, updateLimitRateState])
 }

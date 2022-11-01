@@ -26,7 +26,7 @@ export function RateInput() {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   // Rate state
-  const { isInversed, activeRate, isLoading, executionRate } = useAtomValue(limitRateAtom)
+  const { isInversed, activeRate, isLoading, executionRate, isLoadingExecutionRate } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const prevIsInversed = usePrevious(isInversed)
 
@@ -82,7 +82,7 @@ export function RateInput() {
       <styledEl.Header>
         <HeadingText currency={primaryCurrency} />
 
-        <styledEl.MarketPriceButton onClick={handleSetMarketPrice}>
+        <styledEl.MarketPriceButton disabled={isLoadingExecutionRate} onClick={handleSetMarketPrice}>
           <span>Market price</span>
         </styledEl.MarketPriceButton>
       </styledEl.Header>

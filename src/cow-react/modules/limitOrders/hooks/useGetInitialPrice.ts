@@ -9,11 +9,8 @@ import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
 import { Field } from 'state/swap/actions'
-
-export const adjustDecimals = (price: number, decimals: number) => {
-  return new BigNumber(price).div(10 ** (18 - decimals))
-}
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 export function useGetInitialPrice(): { price: string | null | undefined } {
