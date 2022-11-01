@@ -54,7 +54,7 @@ export function useFetchMarketPrice() {
         const executionRate = isInversed ? parsedSellAmount.div(parsedBuyAmount) : parsedBuyAmount.div(parsedSellAmount)
 
         // Update the rate state
-        updateLimitRateState({ executionRate: executionRate.toString() })
+        updateLimitRateState({ executionRate: executionRate.toFixed(20) })
       } catch (error) {
         console.log('debug error', error)
       }

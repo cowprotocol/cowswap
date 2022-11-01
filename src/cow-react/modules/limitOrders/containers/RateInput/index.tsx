@@ -82,7 +82,7 @@ export function RateInput() {
       <styledEl.Header>
         <HeadingText currency={primaryCurrency} />
 
-        <styledEl.MarketPriceButton disabled={isLoadingExecutionRate} onClick={handleSetMarketPrice}>
+        <styledEl.MarketPriceButton disabled={isLoadingExecutionRate || !executionRate} onClick={handleSetMarketPrice}>
           <span>Market price</span>
         </styledEl.MarketPriceButton>
       </styledEl.Header>

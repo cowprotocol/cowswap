@@ -4,7 +4,6 @@ import { useAtomValue } from 'jotai'
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '../state/limitRateAtom'
 import { BigNumber } from 'bignumber.js'
-import { formatSmart } from 'utils/format'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useApplyLimitRate() {
@@ -35,7 +34,7 @@ export function useApplyLimitRate() {
       }
 
       // We need to return string and we also limit the decimals
-      return formatSmart(output)
+      return output?.toFixed(20)
     },
     [activeRate, isInversed]
   )
