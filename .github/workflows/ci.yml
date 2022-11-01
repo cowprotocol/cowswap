@@ -212,6 +212,7 @@ jobs:
     secrets: inherit
     with:
       project_id_env_var_name: VERCEL_PROJECT_ID_DEV
+      env_name: dev
 
   vercel:
     # Vercel build/deploy step
