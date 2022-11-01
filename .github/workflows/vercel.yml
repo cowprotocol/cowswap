@@ -3,42 +3,23 @@ name: Vercel
 on:
   workflow_call:
     inputs:
-      project_id_env_var_name:
-        description: 'The Vercel Project ID identifying which stage will be deployed'
-        required: false
-        type: string
       env_name:
+        description: 'Environment to deploy to. Options are: dev, staging, barn and prod'
         required: true
         type: string
 
-
-
-
 env:
-#  VERCEL_PROJECT_ID: ${{ secrets['${{ inputs.project_id_env_var_name }}'] }}
-
-#  VERCEL_PROJECT_ID: ${{ secrets['VERCEL_PROJECT_ID_DEV'] }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-#  VERCEL_PROJECT_ID_DEV: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
-#  VERCEL_PROJECT_ID_STAGING: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
-#  VERCEL_PROJECT_ID_BARN: ${{ secrets.VERCEL_PROJECT_ID_BARN }}
-#  VERCEL_PROJECT_ID_PROD: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
 
 jobs:
-  run:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: print stuff
-        run: >
-          echo ${{ env.VERCEL_PROJECT_ID }} &&
-          echo ${{ inputs.project_id_env_var_name }} &&
-          echo ${{ secrets['${{ inputs.project_id_env_var_name }}'] }}
-
-      - name: Set env var...
+      - name: Set VERCEL_PROJECT_ID env var
         run: >
           if [[ ${{ inputs.env_name == 'dev' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_DEV }}" >> $GITHUB_ENV
