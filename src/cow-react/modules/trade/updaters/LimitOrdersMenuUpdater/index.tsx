@@ -1,9 +1,9 @@
-import { useParameterizeTradeInMenu } from '../../hooks/useParameterizeTradeInMenu'
 import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useAtomValue } from 'jotai/utils'
 import { Routes } from '@cow/constants/routes'
 import { MainMenuItemId } from '@cow/modules/mainMenu/constants/mainMenu'
 import { useSwapState } from 'state/swap/hooks'
+import { useParameterizeTradeInMenu } from '@cow/modules/limitOrders/hooks/useParameterizeTradeInMenu'
 
 export function TradeMenuUpdater() {
   const limitOrdersState = useAtomValue(limitOrdersAtom)
