@@ -12,6 +12,7 @@ on:
 env:
   REPO_NAME_SLUG: cowswap
   PR_NUMBER: ${{ github.event.number }}
+  ALLOWED_TO_DEPLOY_TO_PROD: [ahhda, fleupold, anxolin, josojo, alfetopito]
   NODE_VERSION: lts/gallium
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
@@ -205,6 +206,17 @@ jobs:
         with:
           name: website
           path: build
+
+  vercel-test:
+    name: Test deploy!!! Remove before publishing
+    #    needs: [test, lint] # only if these steps finish and succeed
+    if: |
+      github.event_name == 'pull_request' &&
+      contains(env.ALLOWED_TO_DEPLOY_TO_PROD, github.author)
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: dev
 
   vercel-dev:
     # Deploys to Vercel dev environment
