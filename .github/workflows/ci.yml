@@ -7,7 +7,7 @@ on:
   push:
     branches: [main, develop]
     tags: [v*]
-
+  workflow_dispatch: # Manually trigger it via UI/CLI/API
 
 env:
   REPO_NAME_SLUG: cowswap
