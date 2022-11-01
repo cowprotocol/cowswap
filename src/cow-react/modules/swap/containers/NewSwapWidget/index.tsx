@@ -42,6 +42,7 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 import { useSetupTradeState } from '@cow/modules/trade'
+import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 
 export function NewSwapWidget() {
   useSetupTradeState()
@@ -58,6 +59,7 @@ export function NewSwapWidget() {
   const showRecipientControls = useShowRecipientControls()
   const userAllowedSlippage = useUserSlippageTolerance()
   const swapState = useSwapState()
+  const onCurrencySelection = useOnCurrencySelection()
   const { INPUT, independentField, recipient } = swapState
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
@@ -123,6 +125,7 @@ export function NewSwapWidget() {
     subsidyAndBalance,
     allowsOffchainSigning,
     showRecipientControls,
+    onCurrencySelection,
   }
 
   const confirmSwapProps: ConfirmSwapModalSetupProps = {

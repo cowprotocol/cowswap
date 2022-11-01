@@ -19,8 +19,9 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
     subsidyAndBalance,
     showRecipientControls,
     recipient,
+    onCurrencySelection,
   } = props
-  const { onSwitchTokens, onChangeRecipient } = swapActions
+  const { onSwitchTokens, onChangeRecipient, onUserInput } = swapActions
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const maxBalance = inputCurrencyInfo.balance ? maxAmountSpend(inputCurrencyInfo.balance) : undefined
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
@@ -34,8 +35,8 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       <CurrencyInputPanel
         id="swap-currency-input"
         loading={currenciesLoadingInProgress}
-        onCurrencySelection={swapActions.onCurrencySelection}
-        onUserInput={swapActions.onUserInput}
+        onCurrencySelection={onCurrencySelection}
+        onUserInput={onUserInput}
         subsidyAndBalance={subsidyAndBalance}
         allowsOffchainSigning={allowsOffchainSigning}
         currencyInfo={inputCurrencyInfo}
@@ -52,8 +53,8 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       <CurrencyInputPanel
         id="swap-currency-output"
         loading={currenciesLoadingInProgress}
-        onCurrencySelection={swapActions.onCurrencySelection}
-        onUserInput={swapActions.onUserInput}
+        onCurrencySelection={onCurrencySelection}
+        onUserInput={onUserInput}
         subsidyAndBalance={subsidyAndBalance}
         allowsOffchainSigning={allowsOffchainSigning}
         currencyInfo={outputCurrencyInfo}

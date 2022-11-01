@@ -20,6 +20,9 @@ const defaultProps: SwapFormProps = {
   },
   subsidyAndBalance: defaultCurrencyInputPanelProps.subsidyAndBalance,
   priceImpactParams: defaultCurrencyInputPanelProps.priceImpactParams,
+  onCurrencySelection() {
+    /**/
+  },
   swapActions: {
     onCurrencySelection() {
       /**/

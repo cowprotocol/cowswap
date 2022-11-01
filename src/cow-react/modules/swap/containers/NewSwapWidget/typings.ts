@@ -3,6 +3,7 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { SwapActions } from 'state/swap/hooks'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
+import { CurrencySelectionCallback } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 
 export interface SwapFormProps {
   recipient: string | null
@@ -15,6 +16,7 @@ export interface SwapFormProps {
   subsidyAndBalance: BalanceAndSubsidy
   priceImpactParams: PriceImpact
   swapActions: SwapActions
+  onCurrencySelection: CurrencySelectionCallback
 }
 
 export interface TradeStateFromUrl {

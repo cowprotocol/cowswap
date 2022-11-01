@@ -9,7 +9,6 @@ import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
-import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
@@ -24,6 +23,7 @@ import { TradeButtons } from '@cow/modules/limitOrders/containers/TradeButtons'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
 import { useSetupTradeState } from '@cow/modules/trade'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
+import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
