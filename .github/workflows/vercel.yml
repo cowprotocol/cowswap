@@ -12,7 +12,9 @@ on:
 
 
 env:
-  VERCEL_PROJECT_ID: ${{ secrets['${{ inputs.project_id_env_var_name }}'] }}
+#  VERCEL_PROJECT_ID: ${{ secrets['${{ inputs.project_id_env_var_name }}'] }}
+
+  VERCEL_PROJECT_ID: ${{ secrets['VERCEL_PROJECT_ID_DEV'] }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
 #  VERCEL_PROJECT_ID_DEV: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
 #  VERCEL_PROJECT_ID_STAGING: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
@@ -26,6 +28,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: print stuff
+        run: "echo ${{ env.VERCEL_PROJECT_ID }} && echo ${{ inputs.project_id_env_var_name }}"
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
