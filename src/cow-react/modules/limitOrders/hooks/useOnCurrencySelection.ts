@@ -35,9 +35,15 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency) => 
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
       if (field === Field.INPUT) {
-        limitOrdersNavigate(chainId, tokenSymbolOrAddress, resolveCurrencyAddressOrSymbol(outputCurrency))
+        limitOrdersNavigate(chainId, {
+          inputCurrencyId: tokenSymbolOrAddress,
+          outputCurrencyId: resolveCurrencyAddressOrSymbol(outputCurrency),
+        })
       } else {
-        limitOrdersNavigate(chainId, resolveCurrencyAddressOrSymbol(inputCurrency), tokenSymbolOrAddress)
+        limitOrdersNavigate(chainId, {
+          inputCurrencyId: resolveCurrencyAddressOrSymbol(inputCurrency),
+          outputCurrencyId: tokenSymbolOrAddress,
+        })
       }
     },
     [limitOrdersNavigate, chainId, inputCurrency, outputCurrency, resolveCurrencyAddressOrSymbol]

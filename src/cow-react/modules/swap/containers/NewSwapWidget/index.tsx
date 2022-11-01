@@ -41,7 +41,7 @@ import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
-import { useSetupTradeState } from '@cow/modules/trade/hooks/useSetupTradeState'
+import { useSetupTradeState } from '@cow/modules/trade'
 
 export function NewSwapWidget() {
   useSetupTradeState()

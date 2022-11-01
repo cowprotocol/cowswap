@@ -22,7 +22,7 @@ import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { TradeButtons } from '@cow/modules/limitOrders/containers/TradeButtons'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
-import { useSetupTradeState } from '@cow/modules/trade/hooks/useSetupTradeState'
+import { useSetupTradeState } from '@cow/modules/trade'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 
 export function LimitOrdersWidget() {
@@ -96,7 +96,7 @@ export function LimitOrdersWidget() {
 
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = state
-    limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
+    limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
     updateCurrencyAmount({ outputCurrencyAmount: inputCurrencyAmount })
   }, [state, limitOrdersNavigate, chainId, updateCurrencyAmount])
 

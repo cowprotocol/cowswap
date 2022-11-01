@@ -3,8 +3,8 @@ import { useWeb3React } from '@web3-react/core'
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
-import { getDefaultTradeState, TradeState } from '../types/TradeState'
-import { useTradeNavigate } from './useTradeNavigate'
+import { getDefaultTradeState, TradeState } from '../../types/TradeState'
+import { useTradeNavigate } from '../useTradeNavigate'
 
 const alertMessage = (
   doubledSymbol: string
@@ -40,7 +40,10 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
       alert(alertMessage(doubledSymbol || ''))
 
       const defaultState = getDefaultTradeState(chainId)
-      navigate(chainId, defaultState.inputCurrencyId, defaultState.outputCurrencyId)
+      navigate(chainId, {
+        inputCurrencyId: defaultState.inputCurrencyId,
+        outputCurrencyId: defaultState.outputCurrencyId,
+      })
     }
   }, [navigate, checkTokensWithSameSymbol, chainId, state])
 }

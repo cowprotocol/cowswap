@@ -12,7 +12,7 @@ export function useParameterizeTradeInMenu(route: Routes, menuItemId: MainMenuIt
 
   useEffect(() => {
     overrideMainMenu({
-      [menuItemId]: parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId, route),
+      [menuItemId]: parameterizeTradeRoute(chainId, inputCurrencyId, outputCurrencyId, route),
     })
   }, [menuItemId, route, overrideMainMenu, chainId, inputCurrencyId, outputCurrencyId])
 }
@@ -21,7 +21,7 @@ export function useParameterizeTradeInMenu(route: Routes, menuItemId: MainMenuIt
  * When input currency is not set and user select output currency, we build a link like:
  * /limit-orders/_/DAI
  */
-export function parameterizeLimitOrdersRoute(
+export function parameterizeTradeRoute(
   chainId: number | null | undefined,
   inputCurrencyId: string | null,
   outputCurrencyId: string | null,
