@@ -207,45 +207,32 @@ jobs:
 
   vercel-test:
     name: Test deploy!!! Remove before publishing
+    #    needs: [test, lint] # only if these steps finish and succeed
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     with:
-      project_id_env_var_name: VERCEL_PROJECT_ID_DEV
       env_name: dev
 
-  vercel:
-    # Vercel build/deploy step
-    # Doesn't run on PRs. All builds are PROD like
-    name: Vercel
-#    needs: [test, lint] # only if these steps finish and succeed
-    runs-on: ubuntu-latest
-#    if: github.event_name != 'pull_request' # not on PRs
+  vercel-dev:
+    name: Deploys to Vercel dev environment
+    needs: [test, lint]
+    if: github.ref == 'refs/heads/develop'
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: dev
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Test deploy!!! Remove before publishing
-        if: github.event_name == 'pull_request'
-        uses: ./.github/workflows/vercel.yml
-        with:
-          project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
-      - name: Deploy develop
-        if: github.ref == 'refs/heads/develop'
-        uses: ./.github/workflows/vercel.yml
-        with:
-          project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
-      - name: Deploy staging
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: ./.github/workflows/vercel.yml
-        with:
-          project-id: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
-      - name: Deploy barn
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: ./.github/workflows/vercel.yml
-        with:
-          project-id: ${{ secrets.VERCEL_PROJECT_ID_BARN }}
+  vercel-pre-prod:
+    name: Deploys to Vercel staging and barn environments
+    needs: [test, lint]
+    if: startsWith(github.ref, 'refs/tags/v')
+    secrets: inherit
+    strategy:
+      matrix:
+        env_name: [barn, staging] # deploys both in parallel
+    with:
+      env_name: ${{ matrix.env_name }}
 
   deploy:
     name: Deploy
