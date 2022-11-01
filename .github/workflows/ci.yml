@@ -212,7 +212,7 @@ jobs:
     #    needs: [test, lint] # only if these steps finish and succeed
     if: |
       github.event_name == 'pull_request' &&
-      ${{ contains([ahhda, fleupold, anxolin, josojo, alfetopito], github.author) }}
+      ${{ contains(fromJSON([ahhda, fleupold, anxolin, josojo, alfetopito]), github.author) }}
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     with:
@@ -247,7 +247,7 @@ jobs:
     needs: [test, lint]
     if: |
       github.event_name == 'workflow_dispatch' &&
-      ${{ contains([ahhda, fleupold, anxolin, josojo, alfetopito], github.author) }}
+      ${{ contains(fromJSON([ahhda, fleupold, anxolin, josojo, alfetopito]), github.author) }}
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     with:
