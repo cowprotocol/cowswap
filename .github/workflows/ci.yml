@@ -211,7 +211,7 @@ jobs:
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     with:
-      project-id: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
+      project_id_env_var_name: VERCEL_PROJECT_ID_DEV
 
   vercel:
     # Vercel build/deploy step
