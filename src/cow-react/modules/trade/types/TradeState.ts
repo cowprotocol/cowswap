@@ -1,6 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 
+export interface TradeStateFromUrl {
+  readonly chainId: string | undefined
+  readonly inputCurrencyId: string | undefined
+  readonly outputCurrencyId: string | undefined
+}
+
 export interface TradeState {
   readonly chainId: number | null
   readonly inputCurrencyId: string | null

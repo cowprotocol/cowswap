@@ -1,12 +1,6 @@
 import { useLocation, useParams } from 'react-router-dom'
 import { useMemo } from 'react'
-import { TradeState } from '../types/TradeState'
-
-interface TradeStateFromUrl {
-  readonly chainId: string | undefined
-  readonly inputCurrencyId: string | undefined
-  readonly outputCurrencyId: string | undefined
-}
+import { TradeState, TradeStateFromUrl } from '../types/TradeState'
 
 export function useTradeStateFromUrl(): TradeState {
   const params = useParams()
