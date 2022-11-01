@@ -5,7 +5,6 @@ import { Currency, Token } from '@uniswap/sdk-core'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
-import { Routes } from '@cow/constants/routes'
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
@@ -28,7 +27,7 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
 export function useOnCurrencySelection(): (field: Field, currency: Currency) => void {
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const limitOrdersNavigate = useTradeNavigate(Routes.LIMIT_ORDER)
+  const limitOrdersNavigate = useTradeNavigate()
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
   return useCallback(

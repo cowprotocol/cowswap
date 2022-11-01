@@ -2,7 +2,6 @@ import { useWeb3React } from '@web3-react/core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
-import { Routes } from '@cow/constants/routes'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
 import { getDefaultTradeState, TradeState } from '../types/TradeState'
 import { useTradeNavigate } from './useTradeNavigate'
@@ -22,11 +21,11 @@ Please select the token you need from the UI or use the address of the token ins
  * Example: /limit-orders/0xa47c8bf37f92abed4a126bda807a7b7498661acd/WETH
  * @see useOnCurrencySelection.ts
  */
-export function useResetStateWithSymbolDuplication(route: Routes, state: TradeState): void {
+export function useResetStateWithSymbolDuplication(state: TradeState): void {
   const { chainId } = useWeb3React()
   const { inputCurrencyId, outputCurrencyId } = state
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-  const navigate = useTradeNavigate(route)
+  const navigate = useTradeNavigate()
 
   useEffect(() => {
     const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)

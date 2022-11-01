@@ -1,22 +1,25 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useHistory } from 'react-router-dom'
 import { useCallback } from 'react'
-import { Routes } from '@cow/constants/routes'
 import { parameterizeLimitOrdersRoute } from './useParameterizeTradeInMenu'
+import { useTradeTypeInfo } from '@cow/modules/trade/hooks/useTradeTypeInfo'
 
 interface UseTradeNavigateCallback {
   (chainId: SupportedChainId | null | undefined, inputCurrencyId: string | null, outputCurrencyId: string | null): void
 }
 
-export function useTradeNavigate(baseRoute: Routes): UseTradeNavigateCallback {
+export function useTradeNavigate(): UseTradeNavigateCallback {
   const history = useHistory()
+  const tradeTypeInfo = useTradeTypeInfo()
 
   return useCallback(
     (chainId: SupportedChainId | null | undefined, inputCurrencyId: string | null, outputCurrencyId: string | null) => {
-      const route = parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId, baseRoute)
+      if (!tradeTypeInfo) return
+
+      const route = parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId, tradeTypeInfo.route)
 
       history.push(route)
     },
-    [baseRoute, history]
+    [tradeTypeInfo, history]
   )
 }

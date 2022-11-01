@@ -45,7 +45,7 @@ export function LimitOrdersWidget() {
     recipient,
   } = useLimitOrdersTradeState()
   const onCurrencySelection = useOnCurrencySelection()
-  const limitOrdersNavigate = useTradeNavigate(Routes.LIMIT_ORDER)
+  const limitOrdersNavigate = useTradeNavigate()
   const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()

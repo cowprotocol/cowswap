@@ -9,7 +9,7 @@ import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDup
 
 export function useSetupTradeState(route: Routes, state: TradeState, updateState: (state: TradeState) => void): void {
   const { chainId: currentChainId, connector } = useWeb3React()
-  const tradeNavigate = useTradeNavigate(route)
+  const tradeNavigate = useTradeNavigate()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
   const tradeStateFromUrl = useTradeStateFromUrl()
 
@@ -60,5 +60,5 @@ export function useSetupTradeState(route: Routes, state: TradeState, updateState
     updateStateAndNavigate()
   }, [shouldSkipUpdate, isChainIdSet, updateStateAndNavigate])
 
-  useResetStateWithSymbolDuplication(route, state)
+  useResetStateWithSymbolDuplication(state)
 }
