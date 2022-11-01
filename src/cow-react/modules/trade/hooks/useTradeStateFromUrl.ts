@@ -1,6 +1,6 @@
 import { useLocation, useParams } from 'react-router-dom'
 import { useMemo } from 'react'
-import { TradeState } from '@cow/modules/limitOrders/types/TradeState'
+import { TradeState } from '../types/TradeState'
 
 interface TradeStateFromUrl {
   readonly chainId: string | undefined

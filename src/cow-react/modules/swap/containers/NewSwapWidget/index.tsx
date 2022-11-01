@@ -41,9 +41,9 @@ import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
-import { useSetupTradeState } from '@cow/modules/limitOrders/hooks/useSetupTradeState'
+import { useSetupTradeState } from '@cow/modules/trade/hooks/useSetupTradeState'
 import { useAppDispatch } from '@src/state/hooks'
-import { TradeState } from '@cow/modules/limitOrders/types/TradeState'
+import { TradeState } from '@cow/modules/trade/types/TradeState'
 import { Routes } from '@cow/constants/routes'
 
 export function NewSwapWidget() {

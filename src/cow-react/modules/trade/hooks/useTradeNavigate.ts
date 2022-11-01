@@ -1,8 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { parameterizeLimitOrdersRoute } from '@cow/modules/limitOrders/hooks/useParameterizeTradeInMenu'
 import { useHistory } from 'react-router-dom'
 import { useCallback } from 'react'
 import { Routes } from '@cow/constants/routes'
+import { parameterizeLimitOrdersRoute } from './useParameterizeTradeInMenu'
 
 interface UseTradeNavigateCallback {
   (chainId: SupportedChainId | null | undefined, inputCurrencyId: string | null, outputCurrencyId: string | null): void

@@ -2,10 +2,10 @@ import { useWeb3React } from '@web3-react/core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
-import { useAreThereTokensWithSameSymbol } from '@cow/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
-import { useTradeNavigate } from '@cow/modules/limitOrders/hooks/useTradeNavigate'
 import { Routes } from '@cow/constants/routes'
-import { getDefaultTradeState, TradeState } from '@cow/modules/limitOrders/types/TradeState'
+import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
+import { getDefaultTradeState, TradeState } from '../types/TradeState'
+import { useTradeNavigate } from './useTradeNavigate'
 
 const alertMessage = (
   doubledSymbol: string

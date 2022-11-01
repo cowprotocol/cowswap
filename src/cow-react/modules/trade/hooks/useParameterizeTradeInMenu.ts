@@ -2,9 +2,8 @@ import { Routes } from '@cow/constants/routes'
 import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
 import { useSetAtom } from 'jotai'
-import { updateMainMenuUrlOverridesAtom } from '@cow/modules/mainMenu/state/mainMenuUrlOverridesAtom'
-import { MainMenuItemId } from '@cow/modules/mainMenu/constants/mainMenu'
-import { TradeCurrenciesIds } from '@cow/modules/limitOrders/types/TradeState'
+import { updateMainMenuUrlOverridesAtom, MainMenuItemId } from '@cow/modules/mainMenu'
+import { TradeCurrenciesIds } from '../types/TradeState'
 
 export function useParameterizeTradeInMenu(route: Routes, menuItemId: MainMenuItemId, state: TradeCurrenciesIds): void {
   const { chainId } = useWeb3React()

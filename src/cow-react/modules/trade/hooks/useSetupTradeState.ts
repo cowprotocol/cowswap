@@ -3,8 +3,8 @@ import { useWeb3React } from '@web3-react/core'
 import { switchChain } from 'utils/switchChain'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 import { useTradeNavigate } from './useTradeNavigate'
-import { getDefaultTradeState, TradeState } from '@cow/modules/limitOrders/types/TradeState'
 import { Routes } from '@cow/constants/routes'
+import { getDefaultTradeState, TradeState } from '../types/TradeState'
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 
 export function useSetupTradeState(route: Routes, state: TradeState, updateState: (state: TradeState) => void): void {

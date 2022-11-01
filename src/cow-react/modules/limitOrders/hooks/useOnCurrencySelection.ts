@@ -2,9 +2,9 @@ import { useCallback } from 'react'
 import { Field } from 'state/swap/actions'
 import { useWeb3React } from '@web3-react/core'
 import { Currency, Token } from '@uniswap/sdk-core'
-import { useAreThereTokensWithSameSymbol } from '@cow/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
+import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useTradeNavigate } from '@cow/modules/limitOrders/hooks/useTradeNavigate'
+import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { Routes } from '@cow/constants/routes'
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
