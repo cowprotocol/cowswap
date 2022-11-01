@@ -21,13 +21,15 @@ Please select the token you need from the UI or use the address of the token ins
  * Example: /limit-orders/0xa47c8bf37f92abed4a126bda807a7b7498661acd/WETH
  * @see useOnCurrencySelection.ts
  */
-export function useResetStateWithSymbolDuplication(state: TradeState): void {
+export function useResetStateWithSymbolDuplication(state: TradeState | null): void {
   const { chainId } = useWeb3React()
-  const { inputCurrencyId, outputCurrencyId } = state
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
   const navigate = useTradeNavigate()
 
   useEffect(() => {
+    if (!state) return
+
+    const { inputCurrencyId, outputCurrencyId } = state
     const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)
     const outputCurrencyIsDoubled = checkTokensWithSameSymbol(outputCurrencyId)
 
@@ -40,5 +42,5 @@ export function useResetStateWithSymbolDuplication(state: TradeState): void {
       const defaultState = getDefaultTradeState(chainId)
       navigate(chainId, defaultState.inputCurrencyId, defaultState.outputCurrencyId)
     }
-  }, [navigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
+  }, [navigate, checkTokensWithSameSymbol, chainId, state])
 }

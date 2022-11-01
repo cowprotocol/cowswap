@@ -22,15 +22,11 @@ import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { TradeButtons } from '@cow/modules/limitOrders/containers/TradeButtons'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
-import { Routes } from '@cow/constants/routes'
 import { useSetupTradeState } from '@cow/modules/trade/hooks/useSetupTradeState'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 
 export function LimitOrdersWidget() {
-  const state = useAtomValue(limitOrdersAtom)
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-
-  useSetupTradeState(Routes.LIMIT_ORDER, state, updateLimitOrdersState)
+  useSetupTradeState()
 
   const { chainId } = useWeb3React()
   const {
@@ -51,6 +47,8 @@ export function LimitOrdersWidget() {
   const isSellOrder = useIsSellOrder()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
   const tradeContext = useTradeFlowContext(limitOrdersQuote)
+  const state = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 

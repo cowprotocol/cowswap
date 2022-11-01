@@ -19,11 +19,11 @@ import usePriceImpact from 'hooks/usePriceImpact'
 import { useTradePricesUpdate } from '@cow/modules/swap/hooks/useTradePricesUpdate'
 import { useCurrencyBalance } from 'state/connection/hooks'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
-import { Field, replaceSwapState, ReplaceSwapStatePayload } from 'state/swap/actions'
+import { Field } from 'state/swap/actions'
 import { tokenViewAmount } from '@cow/modules/swap/helpers/tokenViewAmount'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
@@ -42,42 +42,9 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 import { useSetupTradeState } from '@cow/modules/trade/hooks/useSetupTradeState'
-import { useAppDispatch } from '@src/state/hooks'
-import { TradeState } from '@cow/modules/trade/types/TradeState'
-import { Routes } from '@cow/constants/routes'
 
 export function NewSwapWidget() {
-  const dispatch = useAppDispatch()
-  const swapState = useSwapState()
-  const { INPUT, OUTPUT, independentField, recipient, chainId: swapStateChainId } = swapState
-
-  // TODO: generalize
-  const updateSwapState = useCallback(
-    (state: TradeState) => {
-      const newState: ReplaceSwapStatePayload = {
-        typedValue: swapState.typedValue,
-        independentField: swapState.independentField,
-        chainId: state.chainId,
-        recipient: state.recipient,
-        inputCurrencyId: state.inputCurrencyId || undefined,
-        outputCurrencyId: state.outputCurrencyId || undefined,
-      }
-
-      dispatch(replaceSwapState(newState))
-    },
-    [swapState, dispatch]
-  )
-
-  useSetupTradeState(
-    Routes.SWAP,
-    {
-      chainId: swapStateChainId,
-      inputCurrencyId: INPUT.currencyId || null,
-      outputCurrencyId: OUTPUT.currencyId || null,
-      recipient,
-    },
-    updateSwapState
-  )
+  useSetupTradeState()
 
   const { chainId, account } = useWeb3React()
   const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
@@ -90,6 +57,8 @@ export function NewSwapWidget() {
   const subsidyAndBalance = useCowBalanceAndSubsidy()
   const showRecipientControls = useShowRecipientControls()
   const userAllowedSlippage = useUserSlippageTolerance()
+  const swapState = useSwapState()
+  const { INPUT, independentField, recipient } = swapState
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({

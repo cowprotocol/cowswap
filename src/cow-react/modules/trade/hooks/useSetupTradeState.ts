@@ -1,64 +1,55 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { switchChain } from 'utils/switchChain'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 import { useTradeNavigate } from './useTradeNavigate'
-import { Routes } from '@cow/constants/routes'
 import { getDefaultTradeState, TradeState } from '../types/TradeState'
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
+import { useTradeState } from './useTradeState'
+import { useSetupChainId } from './useSetupChainId'
 
-export function useSetupTradeState(route: Routes, state: TradeState, updateState: (state: TradeState) => void): void {
-  const { chainId: currentChainId, connector } = useWeb3React()
+export function useSetupTradeState(): void {
+  const { chainId: currentChainId } = useWeb3React()
   const tradeNavigate = useTradeNavigate()
-  const [isChainIdSet, setIsChainIdSet] = useState(false)
   const tradeStateFromUrl = useTradeStateFromUrl()
+  const tradeState = useTradeState()
 
   const chainIdFromUrl = tradeStateFromUrl.chainId
   const chainIdWasChanged = !!currentChainId && chainIdFromUrl !== currentChainId
 
   const shouldSkipUpdate =
     !chainIdWasChanged &&
-    (!tradeStateFromUrl.recipient || tradeStateFromUrl.recipient === state.recipient) &&
-    tradeStateFromUrl.inputCurrencyId?.toLowerCase() === state.inputCurrencyId?.toLowerCase() &&
-    tradeStateFromUrl.outputCurrencyId?.toLowerCase() === state.outputCurrencyId?.toLowerCase()
+    !!tradeState &&
+    (!tradeStateFromUrl.recipient || tradeStateFromUrl.recipient === tradeState.state.recipient) &&
+    tradeStateFromUrl.inputCurrencyId?.toLowerCase() === tradeState.state.inputCurrencyId?.toLowerCase() &&
+    tradeStateFromUrl.outputCurrencyId?.toLowerCase() === tradeState.state.outputCurrencyId?.toLowerCase()
 
   const updateStateAndNavigate = useCallback(() => {
+    if (!tradeState) return
     // Case: we have WETH/COW tokens pair
     // User decided to select WETH as output currency, and navigated to WETH/WETH
     // In this case, we reverse tokens pair and the result willbe: COW/WETH
     const areCurrenciesTheSame = tradeStateFromUrl.inputCurrencyId === tradeStateFromUrl.outputCurrencyId
-    const inputCurrencyId = areCurrenciesTheSame ? state.outputCurrencyId : tradeStateFromUrl.inputCurrencyId
-    const outputCurrencyId = areCurrenciesTheSame ? state.inputCurrencyId : tradeStateFromUrl.outputCurrencyId
+    const inputCurrencyId = areCurrenciesTheSame ? tradeState.state.outputCurrencyId : tradeStateFromUrl.inputCurrencyId
+    const outputCurrencyId = areCurrenciesTheSame
+      ? tradeState.state.inputCurrencyId
+      : tradeStateFromUrl.outputCurrencyId
 
     const newState: TradeState = chainIdWasChanged
       ? getDefaultTradeState(currentChainId)
       : {
           chainId: tradeStateFromUrl.chainId,
-          recipient: tradeStateFromUrl.recipient || state.recipient,
+          recipient: tradeStateFromUrl.recipient || tradeState.state.recipient,
           inputCurrencyId,
           outputCurrencyId,
         }
 
     console.log('UPDATE TRADE STATE:', newState)
 
-    updateState(newState)
+    tradeState.updateState(newState)
     tradeNavigate(currentChainId, newState.inputCurrencyId || null, newState.outputCurrencyId || null)
-  }, [tradeNavigate, updateState, state, tradeStateFromUrl, chainIdWasChanged, currentChainId])
+  }, [tradeNavigate, tradeState, tradeStateFromUrl, chainIdWasChanged, currentChainId])
 
-  // Set chainId from URL into wallet provider once on page load
-  useEffect(() => {
-    if (isChainIdSet || !chainIdFromUrl || !currentChainId) return
+  useSetupChainId(shouldSkipUpdate, chainIdFromUrl, updateStateAndNavigate)
 
-    setIsChainIdSet(true)
-    switchChain(connector, chainIdFromUrl).finally(updateStateAndNavigate)
-  }, [isChainIdSet, setIsChainIdSet, chainIdFromUrl, connector, currentChainId, updateStateAndNavigate])
-
-  // Update state when something was changed (chainId or URL params)
-  useEffect(() => {
-    if (!isChainIdSet || shouldSkipUpdate) return
-
-    updateStateAndNavigate()
-  }, [shouldSkipUpdate, isChainIdSet, updateStateAndNavigate])
-
-  useResetStateWithSymbolDuplication(state)
+  useResetStateWithSymbolDuplication(tradeState?.state || null)
 }

@@ -1,0 +1,54 @@
+import { TradeType, useTradeTypeInfo } from './useTradeTypeInfo'
+import { useCallback, useMemo } from 'react'
+import { TradeState } from '@cow/modules/trade/types/TradeState'
+import { replaceSwapState, ReplaceSwapStatePayload } from 'state/swap/actions'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { useSwapState } from 'state/swap/hooks'
+import { useAppDispatch } from '@src/state/hooks'
+
+export function useTradeState(): { state: TradeState; updateState: (state: TradeState) => void } | null {
+  const dispatch = useAppDispatch()
+  const tradeTypeInfo = useTradeTypeInfo()
+
+  const limitOrdersState = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+
+  const swapState = useSwapState()
+  const updateSwapState = useCallback(
+    (state: TradeState) => {
+      const newState: ReplaceSwapStatePayload = {
+        typedValue: swapState.typedValue,
+        independentField: swapState.independentField,
+        chainId: state.chainId,
+        recipient: state.recipient,
+        inputCurrencyId: state.inputCurrencyId || undefined,
+        outputCurrencyId: state.outputCurrencyId || undefined,
+      }
+
+      dispatch(replaceSwapState(newState))
+    },
+    [swapState, dispatch]
+  )
+
+  return useMemo(() => {
+    if (!tradeTypeInfo) return null
+
+    if (tradeTypeInfo.tradeType === TradeType.SWAP) {
+      return {
+        state: {
+          chainId: swapState.chainId,
+          recipient: swapState.recipient,
+          inputCurrencyId: swapState.INPUT.currencyId || null,
+          outputCurrencyId: swapState.OUTPUT.currencyId || null,
+        },
+        updateState: updateSwapState,
+      }
+    }
+
+    return {
+      state: limitOrdersState,
+      updateState: updateLimitOrdersState,
+    }
+  }, [tradeTypeInfo, swapState, updateSwapState, limitOrdersState, updateLimitOrdersState])
+}
