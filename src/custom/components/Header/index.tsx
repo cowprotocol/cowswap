@@ -30,7 +30,7 @@ import Web3Status from 'components/Web3Status'
 import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
-import { MainMenu } from 'cow-react/modules/mainMenu'
+import { MainMenu } from 'cow-react/modules/mainMenu/containers/MainMenu'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
