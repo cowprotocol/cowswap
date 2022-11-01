@@ -6,7 +6,7 @@ import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTo
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 
-export type CurrencySelectionCallback = (field: Field, currency: Currency) => void
+export type CurrencySelectionCallback = (field: Field, currency: Currency | null) => void
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
@@ -33,7 +33,7 @@ export function useOnCurrencySelection(): CurrencySelectionCallback {
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
   return useCallback(
-    (field: Field, currency: Currency) => {
+    (field: Field, currency: Currency | null) => {
       if (!tradeState) return
 
       const { inputCurrencyId, outputCurrencyId } = tradeState.state

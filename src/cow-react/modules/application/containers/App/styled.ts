@@ -1,6 +1,5 @@
 import * as CSS from 'csstype'
 
-import { Routes } from '@cow/constants/routes'
 import styled from 'styled-components/macro'
 
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
@@ -40,7 +39,7 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   align-items: flex-start;
 `}
 
-  ${({ theme, location }) => theme.mediaWidth.upToMedium`
-  padding: ${[Routes.SWAP].includes(location.pathname as Routes) ? '0 0 16px' : '0 16px 16px'};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+  padding:  '0 0 16px';
 `}
 `

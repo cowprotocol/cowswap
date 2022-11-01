@@ -1,13 +1,13 @@
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowModal, EthFlowProps } from '@cow/modules/swap/containers/EthFlow'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { ImportTokenModal } from '@cow/modules/swap/containers/ImportTokenModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
-import { useHistory } from 'react-router-dom'
-import { Routes } from '@cow/constants/routes'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
+import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { Field } from 'state/swap/actions'
 
 export interface NewSwapModalsProps {
   chainId: number | undefined
@@ -21,13 +21,19 @@ export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
   const { chainId, showNativeWrapModal, showCowSubsidyModal, confirmSwapProps, ethFlowProps } = props
 
   const closeModals = useCloseModals()
-  const history = useHistory()
+  const onCurrencySelection = useOnCurrencySelection()
+  const onImportDismiss = useCallback(
+    (unknownFields: Field[]) => {
+      unknownFields.forEach((field) => onCurrencySelection(field, null))
+    },
+    [onCurrencySelection]
+  )
 
   console.debug('RENDER SWAP MODALS: ', props)
 
   return (
     <>
-      {chainId && <ImportTokenModal chainId={chainId} onDismiss={() => history.push(Routes.SWAP)} />}
+      {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
       <CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} />
       {<ConfirmSwapModalSetup {...confirmSwapProps} />}
       {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}

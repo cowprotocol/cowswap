@@ -1,25 +1,25 @@
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
-import { Field } from 'state/swap/actions'
 import { Token } from '@uniswap/sdk-core'
 import { useCallback, useMemo, useState } from 'react'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { useDefaultsFromURLSearch } from 'state/swap/hooks'
 import TokenWarningModal from 'components/TokenWarningModal'
+import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
+import { Field } from 'state/swap/actions'
 
 export interface ImportTokenModalProps {
   chainId: number
-  onDismiss(): void
+  onDismiss(unknownFields: Field[]): void
 }
 
 export function ImportTokenModal(props: ImportTokenModalProps) {
   const { chainId, onDismiss } = props
 
-  const loadedUrlParams = useDefaultsFromURLSearch()
+  const tradeState = useTradeState()
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
-    useCurrency(loadedUrlParams?.[Field.INPUT]?.currencyId),
-    useCurrency(loadedUrlParams?.[Field.OUTPUT]?.currencyId),
+    useCurrency(tradeState?.state?.inputCurrencyId),
+    useCurrency(tradeState?.state?.outputCurrencyId),
   ]
 
   const urlLoadedTokens: Token[] = useMemo(
@@ -68,9 +68,19 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
 
   // reset if they close warning without tokens in params
   const handleDismissTokenWarning = useCallback(() => {
+    const unknownFields: Field[] = []
+
+    if (loadedInputCurrency && importTokensNotInDefault.includes(loadedInputCurrency as Token)) {
+      unknownFields.push(Field.INPUT)
+    }
+
+    if (loadedOutputCurrency && importTokensNotInDefault.includes(loadedOutputCurrency as Token)) {
+      unknownFields.push(Field.OUTPUT)
+    }
+
     setDismissTokenWarning(true)
-    onDismiss()
-  }, [onDismiss])
+    onDismiss(unknownFields)
+  }, [onDismiss, importTokensNotInDefault, loadedInputCurrency, loadedOutputCurrency])
 
   return (
     <TokenWarningModal

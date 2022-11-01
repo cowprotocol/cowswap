@@ -1,6 +1,3 @@
-export const SWAP_PATH = 'swap'
-export const LIMIT_ORDERS_PATH = 'limit-orders'
-
 // ENUM with routes
 export enum Routes {
   HOME = '/',
