@@ -4,18 +4,19 @@ import { useAtomValue } from 'jotai'
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '../state/limitRateAtom'
 import { BigNumber } from 'bignumber.js'
+import { formatSmart } from 'utils/format'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useApplyLimitRate() {
   const { activeRate, isInversed } = useAtomValue(limitRateAtom)
 
   return useCallback(
-    (value: string | null, field: Field): string | null => {
+    (value: string | null, field: Field): string | null | undefined => {
       if (!value || !activeRate) {
         return null
       }
 
-      let output: number | BigNumber = 0
+      let output: BigNumber | null = null
       const parsedRate = new BigNumber(activeRate)
       const parsedValue = new BigNumber(value)
 
@@ -34,7 +35,7 @@ export function useApplyLimitRate() {
       }
 
       // We need to return string and we also limit the decimals
-      return output.toString()
+      return formatSmart(output)
     },
     [activeRate, isInversed]
   )

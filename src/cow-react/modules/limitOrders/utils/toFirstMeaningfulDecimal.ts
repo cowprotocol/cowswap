@@ -1,8 +1,5 @@
-import { Fraction } from '@uniswap/sdk-core'
-
-export function toFirstMeaningfulDecimal(value: Fraction, limit = 6): string {
-  const shortValue = value.toFixed(18)
-  const [quotient, remainder] = shortValue.split('.')
+export function toFirstMeaningfulDecimal(value: string, limit = 6): string {
+  const [quotient, remainder] = value.split('.')
 
   const isValueTooSmall = remainder.length > limit && remainder[limit] === '0'
 

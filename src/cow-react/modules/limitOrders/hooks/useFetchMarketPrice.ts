@@ -1,11 +1,11 @@
 import { useEffect, useCallback } from 'react'
-import { useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
-import { Fraction } from '@uniswap/sdk-core'
+import { BigNumber } from 'bignumber.js'
 
-import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useTypedValue } from './useTypedValue'
 import { useOrderValidTo } from 'state/user/hooks'
@@ -16,13 +16,14 @@ import { getQuote } from '@cow/api/gnosisProtocol'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { calculateValidTo } from 'hooks/useSwapCallback'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { parseUnits } from '@ethersproject/units'
+import { parseUnits } from 'ethers/lib/utils'
 
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 
 export function useFetchMarketPrice() {
   const { chainId, account } = useWeb3React()
 
+  const { isInversed } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
   const { inputCurrency: sellCurrency, outputCurrency: buyCurrency, orderKind, recipient } = useLimitOrdersTradeState()
@@ -38,15 +39,27 @@ export function useFetchMarketPrice() {
   // Handle response
   const handleResponse = useCallback(
     (response: SimpleGetQuoteResponse) => {
-      const { buyAmount, sellAmount } = response.quote
+      try {
+        const { buyAmount, sellAmount } = response.quote
 
-      // Create fraction for execution rate
-      const executionRate = new Fraction(sellAmount, buyAmount)
+        if (!buyCurrency || !sellCurrency) {
+          return
+        }
 
-      // Update the rate state
-      updateLimitRateState({ executionRate })
+        // Parse values
+        const parsedBuyAmount = new BigNumber(buyAmount).div(10 ** (18 - sellCurrency.decimals))
+        const parsedSellAmount = new BigNumber(sellAmount).div(10 ** (18 - buyCurrency.decimals))
+
+        // Calculate execution rate
+        const executionRate = isInversed ? parsedSellAmount.div(parsedBuyAmount) : parsedBuyAmount.div(parsedSellAmount)
+
+        // Update the rate state
+        updateLimitRateState({ executionRate: executionRate.toString() })
+      } catch (error) {
+        console.log('debug error', error)
+      }
     },
-    [updateLimitRateState]
+    [buyCurrency, isInversed, sellCurrency, updateLimitRateState]
   )
 
   // Handle error
