@@ -18,9 +18,9 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isAddress } from 'utils'
 import { useCurrencyBalances } from 'state/connection/hooks'
 // import { AppState } from '../index'
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
+import { Field, replaceSwapState, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
-import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'components/analytics'
+import { changeSwapAmountAnalytics } from 'components/analytics'
 
 // MOD
 import { BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
@@ -47,6 +47,8 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AppState } from 'state'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
+import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 
 export * from '@src/state/swap/hooks'
 
@@ -73,25 +75,19 @@ interface DerivedSwapInfo {
 }
 
 export function useSwapActionHandlers(): SwapActions {
+  const { chainId } = useWeb3React()
   const dispatch = useAppDispatch()
-  const onCurrencySelection = useCallback(
-    (field: Field, currency: Currency) => {
-      currencySelectAnalytics(field, currency.symbol)
-
-      dispatch(
-        selectCurrency({
-          field,
-          currencyId: currency.isToken ? currency.address : currency.isNative ? 'ETH' : '',
-        })
-      )
-    },
-    [dispatch]
-  )
+  const onCurrencySelection = useOnCurrencySelection()
+  const navigate = useTradeNavigate()
+  const swapState = useSwapState()
 
   const onSwitchTokens = useCallback(() => {
-    switchTokensAnalytics()
+    const inputCurrencyId = swapState.INPUT.currencyId || null
+    const outputCurrencyId = swapState.OUTPUT.currencyId || null
+
+    navigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
     dispatch(switchCurrencies())
-  }, [dispatch])
+  }, [swapState, navigate, chainId, dispatch])
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
