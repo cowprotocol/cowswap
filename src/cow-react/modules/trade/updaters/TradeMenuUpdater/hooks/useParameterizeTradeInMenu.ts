@@ -8,12 +8,13 @@ import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTra
 
 export function useParameterizeTradeInMenu(route: Routes, menuItemId: MainMenuItemId, state: TradeCurrenciesIds): void {
   const { chainId } = useWeb3React()
-  const { inputCurrencyId, outputCurrencyId } = state
   const overrideMainMenu = useSetAtom(updateMainMenuUrlOverridesAtom)
 
   useEffect(() => {
+    const { inputCurrencyId, outputCurrencyId } = state
+
     overrideMainMenu({
       [menuItemId]: parameterizeTradeRoute(chainId, inputCurrencyId, outputCurrencyId, route),
     })
-  }, [menuItemId, route, overrideMainMenu, chainId, inputCurrencyId, outputCurrencyId])
+  }, [menuItemId, route, overrideMainMenu, chainId, state])
 }

@@ -7,6 +7,21 @@ import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders
 import { useSwapState } from 'state/swap/hooks'
 import { useAppDispatch } from '@src/state/hooks'
 
+export function useSwapTradeState(): TradeState {
+  const swapState = useSwapState()
+
+  return {
+    chainId: swapState.chainId,
+    recipient: swapState.recipient,
+    inputCurrencyId: swapState.INPUT.currencyId || null,
+    outputCurrencyId: swapState.OUTPUT.currencyId || null,
+  }
+}
+
+export function useLimitOrdersTradeState(): TradeState {
+  return useAtomValue(limitOrdersAtom)
+}
+
 export function useTradeState(): { state: TradeState; updateState: (state: TradeState) => void } | null {
   const dispatch = useAppDispatch()
   const tradeTypeInfo = useTradeTypeInfo()
@@ -15,6 +30,7 @@ export function useTradeState(): { state: TradeState; updateState: (state: Trade
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
   const swapState = useSwapState()
+  const swapTradeState = useSwapTradeState()
   const updateSwapState = useCallback(
     (state: TradeState) => {
       const newState: ReplaceSwapStatePayload = {
@@ -36,12 +52,7 @@ export function useTradeState(): { state: TradeState; updateState: (state: Trade
 
     if (tradeTypeInfo.tradeType === TradeType.SWAP) {
       return {
-        state: {
-          chainId: swapState.chainId,
-          recipient: swapState.recipient,
-          inputCurrencyId: swapState.INPUT.currencyId || null,
-          outputCurrencyId: swapState.OUTPUT.currencyId || null,
-        },
+        state: swapTradeState,
         updateState: updateSwapState,
       }
     }
@@ -50,5 +61,5 @@ export function useTradeState(): { state: TradeState; updateState: (state: Trade
       state: limitOrdersState,
       updateState: updateLimitOrdersState,
     }
-  }, [tradeTypeInfo, swapState, updateSwapState, limitOrdersState, updateLimitOrdersState])
+  }, [tradeTypeInfo, updateSwapState, limitOrdersState, updateLimitOrdersState, swapTradeState])
 }
