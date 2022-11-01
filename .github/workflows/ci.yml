@@ -12,7 +12,7 @@ on:
 env:
   REPO_NAME_SLUG: cowswap
   PR_NUMBER: ${{ github.event.number }}
-  ALLOWED_TO_DEPLOY_TO_PROD: [ahhda, fleupold, anxolin, josojo, alfetopito]
+  ALLOWED_TO_DEPLOY_TO_PROD: "ahhda, fleupold, anxolin, josojo, alfetopito"
   NODE_VERSION: lts/gallium
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
