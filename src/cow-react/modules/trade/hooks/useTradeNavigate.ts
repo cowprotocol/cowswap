@@ -1,9 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useHistory } from 'react-router-dom'
 import { useCallback } from 'react'
-import { parameterizeTradeRoute } from './useParameterizeTradeInMenu'
 import { useTradeTypeInfo } from '@cow/modules/trade/hooks/useTradeTypeInfo'
 import { TradeCurrenciesIds } from '@cow/modules/trade/types/TradeState'
+import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 
 interface UseTradeNavigateCallback {
   (chainId: SupportedChainId | null | undefined, { inputCurrencyId, outputCurrencyId }: TradeCurrenciesIds): void
