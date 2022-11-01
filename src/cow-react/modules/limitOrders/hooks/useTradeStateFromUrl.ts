@@ -1,34 +1,28 @@
 import { useLocation, useParams } from 'react-router-dom'
 import { useMemo } from 'react'
-import { OrderKind } from '@cowprotocol/contracts'
-import { LimitOrdersState } from '../state/limitOrdersAtom'
+import { TradeState } from '@cow/modules/limitOrders/types/TradeState'
 
-interface LimitOrdersStateFromUrl {
+interface TradeStateFromUrl {
   readonly chainId: string | undefined
   readonly inputCurrencyId: string | undefined
   readonly outputCurrencyId: string | undefined
 }
 
-export function useLimitOrdersStateFromUrl(): LimitOrdersState {
+export function useTradeStateFromUrl(): TradeState {
   const params = useParams()
   const location = useLocation()
 
   return useMemo(() => {
     const searchParams = new URLSearchParams(location.search)
     const recipient = searchParams.get('recipient')
-    const { chainId, inputCurrencyId, outputCurrencyId } = params as LimitOrdersStateFromUrl
+    const { chainId, inputCurrencyId, outputCurrencyId } = params as TradeStateFromUrl
     const chainIdAsNumber = chainId ? parseInt(chainId) : null
-    const orderKind = OrderKind.SELL
 
     return {
       chainId: chainIdAsNumber,
-      deadline: null,
-      inputCurrencyAmount: null,
-      outputCurrencyAmount: null,
       inputCurrencyId: inputCurrencyId || null,
       outputCurrencyId: outputCurrencyId || null,
       recipient,
-      orderKind,
     }
   }, [location.search, params])
 }

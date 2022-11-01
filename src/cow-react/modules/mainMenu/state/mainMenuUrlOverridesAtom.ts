@@ -11,3 +11,11 @@ import { MainMenuItemId } from '../constants/mainMenu'
 export type MainMenuUrlOverrides = { [key in keyof Partial<typeof MainMenuItemId>]: string }
 
 export const mainMenuUrlOverridesAtom = atom<MainMenuUrlOverrides>({})
+
+export const updateMainMenuUrlOverridesAtom = atom(null, (get, set, nextState: Partial<MainMenuUrlOverrides>) => {
+  set(mainMenuUrlOverridesAtom, () => {
+    const prevState = get(mainMenuUrlOverridesAtom)
+
+    return { ...prevState, ...nextState }
+  })
+})

@@ -1,10 +1,6 @@
 import * as styledEl from './styled'
 
-import { LimitOrdersWidget } from '@cow/modules/limitOrders/containers/LimitOrdersWidget'
-import { ChartWidget } from '@cow/modules/limitOrders/containers/ChartWidget'
-import { Orders } from '@cow/modules/limitOrders/containers/Orders'
-import { InfoPopup } from '@cow/modules/limitOrders/pure/InfoPopup'
-import { QuoteUpdater } from '@cow/modules/limitOrders/updaters/QuoteUpdater'
+import { LimitOrdersWidget, ChartWidget, Orders, QuoteUpdater, InfoPopup } from '@cow/modules/limitOrders'
 
 export default function LimitOrderPage() {
   return (

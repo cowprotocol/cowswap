@@ -46,6 +46,7 @@ import {
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AppState } from 'state'
+import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 
 export * from '@src/state/swap/hooks'
 
@@ -223,8 +224,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     recipient,
   } = useSwapState()
 
-  const inputCurrency = useCurrency(inputCurrencyId)
-  const outputCurrency = useCurrency(outputCurrencyId)
+  const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId)
+  const outputCurrency = useTokenBySymbolOrAddress(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 

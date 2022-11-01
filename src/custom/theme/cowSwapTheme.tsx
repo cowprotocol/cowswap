@@ -11,7 +11,7 @@ import {
 
 import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
-import { LIMIT_ORDERS_PATH, Routes } from '@cow/constants/routes'
+import { LIMIT_ORDERS_PATH, SWAP_PATH } from '@cow/constants/routes'
 import { useLocation } from 'react-router-dom'
 
 export { MEDIA_WIDTHS, ThemedText } from '@src/theme'
@@ -57,7 +57,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     // Page background must be blurred for all pages besides Swap page
     const shouldBlurBackground =
       location.pathname.length > 1 &&
-      Routes.SWAP !== location.pathname &&
+      !location.pathname.includes(SWAP_PATH) &&
       !location.pathname.includes(LIMIT_ORDERS_PATH)
 
     return theme(darkMode, shouldBlurBackground)

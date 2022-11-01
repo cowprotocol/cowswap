@@ -1,21 +1,22 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { parameterizeLimitOrdersRoute } from '@cow/modules/limitOrders/hooks/useParameterizeLimitOrdersInMenu'
+import { parameterizeLimitOrdersRoute } from '@cow/modules/limitOrders/hooks/useParameterizeTradeInMenu'
 import { useHistory } from 'react-router-dom'
 import { useCallback } from 'react'
+import { Routes } from '@cow/constants/routes'
 
-interface UseLimitOrdersNavigateCallback {
+interface UseTradeNavigateCallback {
   (chainId: SupportedChainId | null | undefined, inputCurrencyId: string | null, outputCurrencyId: string | null): void
 }
 
-export function useLimitOrdersNavigate(): UseLimitOrdersNavigateCallback {
+export function useTradeNavigate(baseRoute: Routes): UseTradeNavigateCallback {
   const history = useHistory()
 
   return useCallback(
     (chainId: SupportedChainId | null | undefined, inputCurrencyId: string | null, outputCurrencyId: string | null) => {
-      const route = parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId)
+      const route = parameterizeLimitOrdersRoute(chainId, inputCurrencyId, outputCurrencyId, baseRoute)
 
       history.push(route)
     },
-    [history]
+    [baseRoute, history]
   )
 }

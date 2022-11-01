@@ -8,11 +8,10 @@ import React, { useCallback, useState } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
-import { useSetupLimitOrdersState } from '../../hooks/useSetupLimitOrdersState'
+import { useSetupTradeState } from '../../hooks/useSetupTradeState'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
-import { useResetStateWithSymbolDuplication } from '../../hooks/useResetStateWithSymbolDuplication'
-import { useLimitOrdersNavigate } from '../../hooks/useLimitOrdersNavigate'
+import { useTradeNavigate } from '../../hooks/useTradeNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
@@ -25,10 +24,13 @@ import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { TradeButtons } from '@cow/modules/limitOrders/containers/TradeButtons'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
+import { Routes } from '@cow/constants/routes'
 
 export function LimitOrdersWidget() {
-  useSetupLimitOrdersState()
-  useResetStateWithSymbolDuplication()
+  const state = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+
+  useSetupTradeState(Routes.LIMIT_ORDER, state, updateLimitOrdersState)
 
   const { chainId } = useWeb3React()
   const {
@@ -42,10 +44,8 @@ export function LimitOrdersWidget() {
     outputCurrencyFiatAmount,
     recipient,
   } = useLimitOrdersTradeState()
-  const state = useAtomValue(limitOrdersAtom)
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const onCurrencySelection = useOnCurrencySelection()
-  const limitOrdersNavigate = useLimitOrdersNavigate()
+  const limitOrdersNavigate = useTradeNavigate(Routes.LIMIT_ORDER)
   const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()

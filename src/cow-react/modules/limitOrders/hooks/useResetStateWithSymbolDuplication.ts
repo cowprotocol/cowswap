@@ -2,10 +2,10 @@ import { useWeb3React } from '@web3-react/core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
-import { getDefaultLimitOrdersState, limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useAreThereTokensWithSameSymbol } from '@cow/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
-import { useAtomValue } from 'jotai/utils'
-import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useTradeNavigate } from '@cow/modules/limitOrders/hooks/useTradeNavigate'
+import { Routes } from '@cow/constants/routes'
+import { getDefaultTradeState, TradeState } from '@cow/modules/limitOrders/types/TradeState'
 
 const alertMessage = (
   doubledSymbol: string
@@ -22,11 +22,11 @@ Please select the token you need from the UI or use the address of the token ins
  * Example: /limit-orders/0xa47c8bf37f92abed4a126bda807a7b7498661acd/WETH
  * @see useOnCurrencySelection.ts
  */
-export function useResetStateWithSymbolDuplication(): void {
+export function useResetStateWithSymbolDuplication(route: Routes, state: TradeState): void {
   const { chainId } = useWeb3React()
-  const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersAtom)
+  const { inputCurrencyId, outputCurrencyId } = state
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-  const limitOrdersNavigate = useLimitOrdersNavigate()
+  const navigate = useTradeNavigate(route)
 
   useEffect(() => {
     const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)
@@ -38,8 +38,8 @@ export function useResetStateWithSymbolDuplication(): void {
       // TODO: add UI modal instead of alert
       alert(alertMessage(doubledSymbol || ''))
 
-      const defaultState = getDefaultLimitOrdersState(chainId)
-      limitOrdersNavigate(chainId, defaultState.inputCurrencyId, defaultState.outputCurrencyId)
+      const defaultState = getDefaultTradeState(chainId)
+      navigate(chainId, defaultState.inputCurrencyId, defaultState.outputCurrencyId)
     }
-  }, [limitOrdersNavigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
+  }, [navigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
 }

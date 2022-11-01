@@ -1,23 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
 import { switchChain } from 'utils/switchChain'
-import { useLimitOrdersStateFromUrl } from '../hooks/useLimitOrdersStateFromUrl'
-import {
-  getDefaultLimitOrdersState,
-  limitOrdersAtom,
-  LimitOrdersState,
-  updateLimitOrdersAtom,
-} from '../state/limitOrdersAtom'
-import { useLimitOrdersNavigate } from '../hooks/useLimitOrdersNavigate'
+import { useTradeStateFromUrl } from './useTradeStateFromUrl'
+import { useTradeNavigate } from './useTradeNavigate'
+import { getDefaultTradeState, TradeState } from '@cow/modules/limitOrders/types/TradeState'
+import { Routes } from '@cow/constants/routes'
+import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 
-export function useSetupLimitOrdersState(): void {
+export function useSetupTradeState(route: Routes, state: TradeState, updateState: (state: TradeState) => void): void {
   const { chainId: currentChainId, connector } = useWeb3React()
-  const state = useAtomValue(limitOrdersAtom)
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-  const limitOrdersNavigate = useLimitOrdersNavigate()
+  const tradeNavigate = useTradeNavigate(route)
   const [isChainIdSet, setIsChainIdSet] = useState(false)
-  const tradeStateFromUrl = useLimitOrdersStateFromUrl()
+  const tradeStateFromUrl = useTradeStateFromUrl()
 
   const chainIdFromUrl = tradeStateFromUrl.chainId
   const chainIdWasChanged = !!currentChainId && chainIdFromUrl !== currentChainId
@@ -36,8 +30,8 @@ export function useSetupLimitOrdersState(): void {
     const inputCurrencyId = areCurrenciesTheSame ? state.outputCurrencyId : tradeStateFromUrl.inputCurrencyId
     const outputCurrencyId = areCurrenciesTheSame ? state.inputCurrencyId : tradeStateFromUrl.outputCurrencyId
 
-    const newState: Partial<LimitOrdersState> = chainIdWasChanged
-      ? getDefaultLimitOrdersState(currentChainId)
+    const newState: TradeState = chainIdWasChanged
+      ? getDefaultTradeState(currentChainId)
       : {
           chainId: tradeStateFromUrl.chainId,
           recipient: tradeStateFromUrl.recipient || state.recipient,
@@ -45,11 +39,11 @@ export function useSetupLimitOrdersState(): void {
           outputCurrencyId,
         }
 
-    console.log('UPDATE LIMIT ORDERS STATE:', newState)
+    console.log('UPDATE TRADE STATE:', newState)
 
-    updateLimitOrdersState(newState)
-    limitOrdersNavigate(currentChainId, newState.inputCurrencyId || null, newState.outputCurrencyId || null)
-  }, [limitOrdersNavigate, updateLimitOrdersState, state, tradeStateFromUrl, chainIdWasChanged, currentChainId])
+    updateState(newState)
+    tradeNavigate(currentChainId, newState.inputCurrencyId || null, newState.outputCurrencyId || null)
+  }, [tradeNavigate, updateState, state, tradeStateFromUrl, chainIdWasChanged, currentChainId])
 
   // Set chainId from URL into wallet provider once on page load
   useEffect(() => {
@@ -65,4 +59,6 @@ export function useSetupLimitOrdersState(): void {
 
     updateStateAndNavigate()
   }, [shouldSkipUpdate, isChainIdSet, updateStateAndNavigate])
+
+  useResetStateWithSymbolDuplication(route, state)
 }

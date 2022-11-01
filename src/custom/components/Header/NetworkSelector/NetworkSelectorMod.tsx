@@ -32,7 +32,7 @@ import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
 import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
-import { LIMIT_ORDERS_PATH } from '@cow/constants/routes'
+import { LIMIT_ORDERS_PATH, SWAP_PATH } from '@cow/constants/routes'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -357,7 +357,7 @@ export default function NetworkSelector() {
 
   const setChainIdToUrl = useCallback(
     (chainId: SupportedChainId) => {
-      if (history.location.pathname.includes(LIMIT_ORDERS_PATH)) {
+      if (history.location.pathname.includes(LIMIT_ORDERS_PATH) || history.location.pathname.includes(SWAP_PATH)) {
         return
       }
 
