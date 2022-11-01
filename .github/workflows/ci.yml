@@ -241,6 +241,18 @@ jobs:
     with:
       env_name: ${{ matrix.env_name }}
 
+  vercel-prod:
+    # Deploys to Vercel prod environment
+    name: Vercel prod
+    needs: [test, lint]
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      contains(env.ALLOWED_TO_DEPLOY_TO_PROD, github.author)
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: prod
+
   deploy:
     name: Deploy
     needs: build
