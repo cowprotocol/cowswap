@@ -2,7 +2,7 @@ import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from '@cow/modules/
 import { EthFlowModal, EthFlowProps } from '@cow/modules/swap/containers/EthFlow'
 import React, { useCallback } from 'react'
 import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
-import { ImportTokenModal } from '@cow/modules/swap/containers/ImportTokenModal'
+import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'

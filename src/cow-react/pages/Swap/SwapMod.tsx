@@ -41,7 +41,7 @@ import { useErrorMessage } from 'hooks/useErrorMessageAndModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { AlertWrapper } from './styleds'
 import { setMaxSellTokensAnalytics } from 'components/analytics'
-import { ImportTokenModal } from '@cow/modules/swap/containers/ImportTokenModal'
+import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
 import { CompatibilityIssuesWarning } from '@cow/modules/swap/pure/CompatibilityIssuesWarning'
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import { useAtomValue } from 'jotai/utils'
@@ -64,6 +64,9 @@ import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { Widget } from '@cow/modules/application/pure/Widget'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
 
+/**
+ * @deprecated TODO: delete it
+ */
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
