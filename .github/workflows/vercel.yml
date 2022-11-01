@@ -67,12 +67,12 @@ jobs:
         run: >
           vercel deploy --prebuilt --prod
           -t ${{ secrets.VERCEL_TOKEN }}
-          -b REACT_APP_SENTRY_DSN=${{ env.REACT_APP_SENTRY_DSN }}
-          -b REACT_APP_PINATA_API_KEY=${{ env.REACT_APP_PINATA_API_KEY }}
-          -b REACT_APP_PINATA_SECRET_API_KEY=${{ env.REACT_APP_PINATA_SECRET_API_KEY }}
-          -b REACT_APP_SENTRY_AUTH_TOKEN=${{ env.REACT_APP_SENTRY_AUTH_TOKEN }}
-          -b REACT_APP_BLOCKNATIVE_API_KEY=${{ env.REACT_APP_BLOCKNATIVE_API_KEY }}
-          -b REACT_APP_GOOGLE_ANALYTICS_ID=${{ env.REACT_APP_GOOGLE_ANALYTICS_ID }}
-          -b REACT_APP_AMPLITUDE_KEY=${{ env.REACT_APP_AMPLITUDE_KEY }}
+          -b REACT_APP_SENTRY_DSN=${{ secrets.REACT_APP_SENTRY_DSN }}
+          -b REACT_APP_PINATA_API_KEY=${{ secrets.REACT_APP_PINATA_API_KEY }}
+          -b REACT_APP_PINATA_SECRET_API_KEY=${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
+          -b REACT_APP_SENTRY_AUTH_TOKEN=${{ secrets.REACT_APP_SENTRY_AUTH_TOKEN }}
+          -b REACT_APP_BLOCKNATIVE_API_KEY=${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
+          -b REACT_APP_GOOGLE_ANALYTICS_ID=${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
+          -b REACT_APP_AMPLITUDE_KEY=${{ secrets.REACT_APP_AMPLITUDE_KEY }}
           -m VERSION=${{ steps.get_version.outputs.VERSION }}
           -m COMMIT=${{ github.sha }}
