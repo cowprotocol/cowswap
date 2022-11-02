@@ -210,10 +210,10 @@ jobs:
   vercel-test:
     name: Test deploy!!! Remove before publishing
     #    needs: [test, lint] # only if these steps finish and succeed
-    if: |
-      github.event_name == 'pull_request' &&
-      ${{ contains(fromJSON('["ahhda", "fleupold", "anxolin", "josojo"]'), github.author) }}
+    if: github.event_name == 'pull_request'
     uses: ./.github/workflows/vercel.yml
+    environment: test environment
+    concurrency: test environment
     secrets: inherit
     with:
       env_name: dev
@@ -245,10 +245,10 @@ jobs:
     # Deploys to Vercel prod environment
     name: Vercel prod
     needs: [test, lint]
-    if: |
-      github.event_name == 'workflow_dispatch' &&
-      ${{ contains(fromJSON('["ahhda", "fleupold", "anxolin", "josojo"]'), github.author) }}
+    if: github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/vercel.yml
+    environment: production
+    concurrency: production
     secrets: inherit
     with:
       env_name: prod
