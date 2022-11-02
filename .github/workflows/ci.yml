@@ -12,6 +12,7 @@ on:
 env:
   REPO_NAME_SLUG: cowswap
   PR_NUMBER: ${{ github.event.number }}
+  NODE_VERSION: lts/gallium
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
@@ -32,7 +33,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.17.1
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Set output of cache
         id: yarn-cache
@@ -82,7 +83,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.17.1
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
@@ -123,7 +124,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.17.1
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
@@ -169,7 +170,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.17.1
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
@@ -301,7 +302,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.17.1
+          node-version: ${{ env.NODE_VERSION }}
 
       # Install deps only
       - name: Cypress install dependencies
