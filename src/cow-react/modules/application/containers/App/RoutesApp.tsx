@@ -47,8 +47,8 @@ export function RoutesApp() {
           <Switch>
             <Redirect from="/claim" to={Routes.ACCOUNT} />
             <Redirect from="/profile" to={Routes.ACCOUNT} />
-            <Route exact strict path={Routes.SWAP} component={NewSwapPage} />
-            <Route path={Routes.LIMIT_ORDER} component={LimitOrders} />
+            <Route exact path={Routes.SWAP} component={NewSwapPage} />
+            <Route exact path={Routes.LIMIT_ORDER} component={LimitOrders} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />
 

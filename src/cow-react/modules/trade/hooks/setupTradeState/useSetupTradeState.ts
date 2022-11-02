@@ -55,8 +55,12 @@ export function useSetupTradeState(): void {
   const updateStateAndNavigate = useCallback(() => {
     if (!tradeState) return
 
-    // Reset state to default when chainId was changed
-    const newState: TradeState = chainIdWasChanged
+    // Reset state to default when chainId was changed or there are no both tokens in URL
+    const shouldResetStateToDefault =
+      currentChainId &&
+      (chainIdWasChanged || (!tradeStateFromUrl.inputCurrencyId && !tradeStateFromUrl.outputCurrencyId))
+
+    const newState: TradeState = shouldResetStateToDefault
       ? getDefaultTradeState(currentChainId)
       : {
           chainId: tradeStateFromUrl.chainId,
