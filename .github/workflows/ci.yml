@@ -213,6 +213,10 @@ jobs:
     environment: test environment
     concurrency: test environment
 
+    steps:
+      - name: Approval workflow
+        run: echo "Workflow approved by ${{ github.author }}"
+
   vercel-test:
     name: Test deploy!!! Remove before publishing
     needs: pre-vercel-test
