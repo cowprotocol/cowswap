@@ -5,11 +5,13 @@ import { ChartWidget } from '@cow/modules/limitOrders/containers/ChartWidget'
 import { Orders } from '@cow/modules/limitOrders/containers/Orders'
 import { InfoPopup } from '@cow/modules/limitOrders/pure/InfoPopup'
 import { QuoteUpdater } from '@cow/modules/limitOrders/updaters/QuoteUpdater'
+import { InitialPriceUpdater } from '@cow/modules/limitOrders/updaters/InitialPriceUpdater'
 
 export default function LimitOrderPage() {
   return (
     <>
       <QuoteUpdater />
+      <InitialPriceUpdater />
       <styledEl.PageWrapper>
         <styledEl.Column>
           <LimitOrdersWidget />

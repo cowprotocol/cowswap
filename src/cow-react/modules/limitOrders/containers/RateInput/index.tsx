@@ -9,7 +9,6 @@ import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/sta
 import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useGetMarketPrice } from '@cow/modules/limitOrders/hooks/useGetMarketPrice'
 import usePrevious from 'hooks/usePrevious'
 import { toFirstMeaningfulDecimal } from '../../utils/toFirstMeaningfulDecimal'
@@ -17,7 +16,6 @@ import { toFirstMeaningfulDecimal } from '../../utils/toFirstMeaningfulDecimal'
 export function RateInput() {
   // Continous market price fetch (quote)
   useGetMarketPrice()
-  useGetInitialPrice()
 
   const { chainId } = useWeb3React()
   const prevChainId = usePrevious(chainId)
@@ -34,6 +32,7 @@ export function RateInput() {
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount } = useLimitOrdersTradeState()
+  const areBothCurrencies = !!inputCurrency && !!outputCurrency
   const inputCurrencyId = inputCurrency?.symbol
   const outputCurrencyId = outputCurrency?.symbol
 
@@ -42,9 +41,9 @@ export function RateInput() {
 
   // Handle rate display
   const displayedRate = useMemo(() => {
-    if (!activeRate) return ''
+    if (!activeRate || !areBothCurrencies) return ''
     return isTypedValue ? activeRate : toFirstMeaningfulDecimal(activeRate)
-  }, [activeRate, isTypedValue])
+  }, [activeRate, isTypedValue, areBothCurrencies])
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
@@ -97,11 +96,11 @@ export function RateInput() {
 
       <styledEl.Body>
         <styledEl.InputWrapper>
-          {isLoading ? (
+          {isLoading && areBothCurrencies ? (
             <styledEl.RateLoader />
           ) : (
             <styledEl.NumericalInput
-              $loading={isLoading}
+              $loading={false}
               className="rate-limit-amount-input"
               value={displayedRate}
               onUserInput={handleUserInput}

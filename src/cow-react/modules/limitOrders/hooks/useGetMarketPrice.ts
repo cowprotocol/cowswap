@@ -104,6 +104,7 @@ export function useGetMarketPrice() {
       chainId,
     }
 
+    // TODO: we have a limitOrdersQuoteAtom with the same quote result, should be used here
     // Fetch the quote and handle the response
     const handleFetchQuote = () => {
       getQuote(quoteParams)
