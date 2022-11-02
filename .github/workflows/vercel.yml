@@ -23,12 +23,16 @@ jobs:
         run: >
           if [[ ${{ inputs.env_name == 'dev' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_DEV }}" >> $GITHUB_ENV
+            echo "DOMAIN=${{ dev.swap.cow.fi }}" >> $GITHUB_ENV
           elif [[ ${{ inputs.env_name == 'staging' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_STAGING }}" >> $GITHUB_ENV
+            echo "DOMAIN=${{ staging.swap.cow.fi }}" >> $GITHUB_ENV
           elif [[ ${{ inputs.env_name == 'barn' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_BARN }}" >> $GITHUB_ENV
+            echo "DOMAIN=${{ barn.cow.fi }}" >> $GITHUB_ENV
           elif [[ ${{ inputs.env_name == 'prod' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_PROD }}" >> $GITHUB_ENV
+            echo "DOMAIN=${{ swap.cow.fi }}" >> $GITHUB_ENV
           fi
 
       - name: Install Vercel CLI
@@ -45,6 +49,9 @@ jobs:
         run: echo "VERSION=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_OUTPUT
 
       - name: Deploy Project Artifacts to Vercel
+        environment:
+          name: ${{ inputs.env_name }}
+          url: https://${{ env.DOMAIN }}
         run: >
           vercel deploy --prebuilt --prod
           -t ${{ secrets.VERCEL_TOKEN }}

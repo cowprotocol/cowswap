@@ -207,21 +207,20 @@ jobs:
           name: website
           path: build
 
-  pre-vercel-test:
-    name: Test step, remove me!
-    if: github.event_name == 'pull_request'
-    environment: test environment
-    concurrency: test environment
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Approval workflow
-        run: echo "Workflow run by ${{ github.actor }} triggered by ${{ github.triggering_actor }}"
+#  pre-vercel-test:
+#    name: Test step, remove me!
+#    if: github.event_name == 'pull_request'
+#    environment: test environment
+#    concurrency: test environment
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Approval workflow
+#        run: echo "Workflow run by ${{ github.actor }} triggered by ${{ github.triggering_actor }}"
 
   vercel-test:
     name: Test deploy!!! Remove before publishing
-    needs: pre-vercel-test
-    if: ${{ success() }}
+    if: github.event_name == 'pull_request'
     uses: ./.github/workflows/vercel.yml
     secrets: inherit
     with:
