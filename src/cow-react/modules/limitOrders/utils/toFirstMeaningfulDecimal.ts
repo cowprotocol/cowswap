@@ -1,4 +1,8 @@
-export function toFirstMeaningfulDecimal(value: string, limit = 6): string {
+export function toFirstMeaningfulDecimal(value: string | undefined | null, limit = 6): string {
+  if (!value) {
+    return '0'
+  }
+
   const [quotient, remainder] = value.split('.')
 
   if (!remainder || remainder.length < limit) {
@@ -9,9 +13,9 @@ export function toFirstMeaningfulDecimal(value: string, limit = 6): string {
 
   if (nonZero === -1) {
     return quotient
-  } else if (nonZero < limit) {
-    return `${quotient}.${remainder.substring(0, limit)}`
+  } else if (nonZero <= limit) {
+    return `${quotient}.${remainder.substring(0, limit + 1)}`
   } else {
-    return `${quotient}.${remainder.substring(0, nonZero)}`
+    return `${quotient}.${remainder.substring(0, nonZero + 1)}`
   }
 }

@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
@@ -12,6 +12,7 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useGetMarketPrice } from '@cow/modules/limitOrders/hooks/useGetMarketPrice'
 import usePrevious from 'hooks/usePrevious'
+import { toFirstMeaningfulDecimal } from '../../utils/toFirstMeaningfulDecimal'
 
 export function RateInput() {
   // Continous market price fetch (quote)
@@ -26,7 +27,8 @@ export function RateInput() {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
   // Rate state
-  const { isInversed, activeRate, isLoading, executionRate, isLoadingExecutionRate } = useAtomValue(limitRateAtom)
+  const { isInversed, activeRate, isLoading, executionRate, isLoadingExecutionRate, isTypedValue } =
+    useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const prevIsInversed = usePrevious(isInversed)
 
@@ -38,22 +40,28 @@ export function RateInput() {
   const primaryCurrency = isInversed ? outputCurrencyId : inputCurrencyId
   const secondaryCurrency = isInversed ? inputCurrencyId : outputCurrencyId
 
+  // Handle rate display
+  const displayedRate = useMemo(() => {
+    if (!activeRate) return ''
+    return isTypedValue ? activeRate : toFirstMeaningfulDecimal(activeRate)
+  }, [activeRate, isTypedValue])
+
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
-    updateLimitRateState({ activeRate: executionRate })
+    updateLimitRateState({ activeRate: executionRate, isTypedValue: false })
   }, [executionRate, updateLimitRateState])
 
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
-      updateLimitRateState({ activeRate: typedValue })
+      updateLimitRateState({ activeRate: typedValue, isTypedValue: true })
     },
     [updateLimitRateState]
   )
 
   // Handle toggle primary field
   const handleToggle = () => {
-    updateLimitRateState({ isInversed: !isInversed, activeRate: calculateRate() })
+    updateLimitRateState({ isInversed: !isInversed, activeRate: calculateRate(), isTypedValue: false })
   }
 
   // Observe the active rate change and set the INPUT currency amount
@@ -95,7 +103,7 @@ export function RateInput() {
             <styledEl.NumericalInput
               $loading={isLoading}
               className="rate-limit-amount-input"
-              value={activeRate || ''}
+              value={displayedRate}
               onUserInput={handleUserInput}
             />
           )}

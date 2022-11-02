@@ -6,6 +6,7 @@ export interface LimitRateState {
   readonly isInversed: boolean
   readonly activeRate: string | null
   readonly executionRate: string | null
+  readonly isTypedValue: boolean
 }
 
 const initLimitRateState = () => ({
@@ -14,6 +15,7 @@ const initLimitRateState = () => ({
   isLoadingExecutionRate: false,
   activeRate: null,
   executionRate: null,
+  isTypedValue: false,
 })
 
 export const limitRateAtom = atom<LimitRateState>(initLimitRateState())

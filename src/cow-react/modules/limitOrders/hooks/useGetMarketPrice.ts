@@ -3,21 +3,20 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { parseUnits } from 'ethers/lib/utils'
 
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useTypedValue } from './useTypedValue'
 import { useOrderValidTo } from 'state/user/hooks'
 import { DEFAULT_DECIMALS } from 'custom/constants'
-import { getAddress } from '../utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
 import { getQuote } from '@cow/api/gnosisProtocol'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { calculateValidTo } from 'hooks/useSwapCallback'
+import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { parseUnits } from 'ethers/lib/utils'
 import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
-import { toFirstMeaningfulDecimal } from '../utils/toFirstMeaningfulDecimal'
 
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 
@@ -52,10 +51,13 @@ export function useGetMarketPrice() {
         const parsedSellAmount = adjustDecimals(Number(sellAmount), buyCurrency.decimals)
 
         // Calculate execution rate
-        const executionRate = isInversed ? parsedSellAmount.div(parsedBuyAmount) : parsedBuyAmount.div(parsedSellAmount)
+        const amount = isInversed ? parsedSellAmount.div(parsedBuyAmount) : parsedBuyAmount.div(parsedSellAmount)
+
+        // Parse for decimals
+        const executionRate = amount.toFixed(20)
 
         // Update the rate state
-        updateLimitRateState({ executionRate: toFirstMeaningfulDecimal(executionRate.toFixed(20)) })
+        updateLimitRateState({ executionRate })
       } catch (error) {
         console.log('debug error', error)
       }

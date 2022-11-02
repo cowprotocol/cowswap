@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 import { useAtomValue } from 'jotai'
+import { BigNumber } from 'bignumber.js'
 
 import { Field } from 'state/swap/actions'
-import { limitRateAtom } from '../state/limitRateAtom'
-import { BigNumber } from 'bignumber.js'
+import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useApplyLimitRate() {
