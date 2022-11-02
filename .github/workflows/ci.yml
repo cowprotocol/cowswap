@@ -216,7 +216,7 @@ jobs:
 
     steps:
       - name: Approval workflow
-        run: echo "Workflow approved by ${{ github.author }}"
+        run: echo "Workflow run by ${{ github.actor }} triggered by ${{ github.triggering_actor }}"
 
   vercel-test:
     name: Test deploy!!! Remove before publishing
