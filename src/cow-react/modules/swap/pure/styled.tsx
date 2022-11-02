@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
 import { RowBetween } from 'components/Row'
+import { Info } from 'react-feather'
 
 export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
   ...props,
@@ -27,4 +28,15 @@ export const BottomGrouping = styled.div`
 export const LightGreyText = styled.span`
   font-weight: 400;
   color: ${({ theme }) => theme.text4};
+`
+
+export const StyledInfo = styled(Info)`
+  opacity: 0.4;
+  color: ${({ theme }) => theme.text1};
+  height: 16px;
+  width: 16px;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `
