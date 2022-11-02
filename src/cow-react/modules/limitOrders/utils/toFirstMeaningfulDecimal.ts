@@ -14,7 +14,7 @@ export function toFirstMeaningfulDecimal(value: string | undefined | null, limit
   if (nonZero === -1) {
     return quotient
   } else if (nonZero <= limit) {
-    return `${quotient}.${remainder.substring(0, limit + 1)}`
+    return `${quotient}.${remainder.substring(0, limit)}`
   } else {
     return `${quotient}.${remainder.substring(0, nonZero + 1)}`
   }

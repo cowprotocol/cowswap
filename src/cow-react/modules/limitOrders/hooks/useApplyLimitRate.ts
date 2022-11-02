@@ -4,6 +4,7 @@ import { BigNumber } from 'bignumber.js'
 
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { toFirstMeaningfulDecimal } from '../utils/toFirstMeaningfulDecimal'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useApplyLimitRate() {
@@ -34,7 +35,7 @@ export function useApplyLimitRate() {
       }
 
       // We need to return string and we also limit the decimals
-      return output?.toFixed(20)
+      return toFirstMeaningfulDecimal(output?.toFixed(20))
     },
     [activeRate, isInversed]
   )
