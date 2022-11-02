@@ -67,6 +67,7 @@ export interface SwapActions {
 
 interface DerivedSwapInfo {
   currencies: Currencies
+  currenciesIds: { [field in Field]?: string | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
   inputError?: string
@@ -236,8 +237,26 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     [inputCurrency, isExactIn, outputCurrency, typedValue]
   )
 
+  const currencies: { [field in Field]?: Currency | null } = useMemo(
+    () => ({
+      [Field.INPUT]: inputCurrency,
+      [Field.OUTPUT]: outputCurrency,
+    }),
+    [inputCurrency, outputCurrency]
+  )
+
+  const currenciesIds: { [field in Field]?: string | null } = useMemo(
+    () => ({
+      [Field.INPUT]: currencies.INPUT?.isNative ? currencies.INPUT.symbol : currencies.INPUT?.address?.toLowerCase(),
+      [Field.OUTPUT]: currencies.OUTPUT?.isNative
+        ? currencies.OUTPUT.symbol
+        : currencies.OUTPUT?.address?.toLowerCase(),
+    }),
+    [currencies]
+  )
+
   const { quote } = useGetQuoteAndStatus({
-    token: inputCurrencyId,
+    token: currenciesIds.INPUT,
     chainId,
   })
 
@@ -274,14 +293,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       [Field.OUTPUT]: relevantTokenBalances[1],
     }),
     [relevantTokenBalances]
-  )
-
-  const currencies: { [field in Field]?: Currency | null } = useMemo(
-    () => ({
-      [Field.INPUT]: inputCurrency,
-      [Field.OUTPUT]: outputCurrency,
-    }),
-    [inputCurrency, outputCurrency]
   )
 
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled
@@ -331,15 +342,19 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   }, [account, allowedSlippage, currencies, currencyBalances, inputCurrency, parsedAmount, to, v2Trade]) // mod
 
   return useMemo(
-    () => ({
-      currencies,
-      currencyBalances,
-      parsedAmount,
-      inputError,
-      v2Trade: v2Trade ?? undefined, // mod
-      allowedSlippage,
-    }),
-    [allowedSlippage, currencies, currencyBalances, inputError, parsedAmount, v2Trade] // mod
+    () => {
+      return {
+        currencies,
+        currenciesIds,
+        currencyBalances,
+        parsedAmount,
+        inputError,
+        v2Trade: v2Trade ?? undefined, // mod
+        allowedSlippage,
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [allowedSlippage, currencyBalances, currenciesIds, inputError, parsedAmount, JSON.stringify(v2Trade)] // mod
   )
 }
 
@@ -478,8 +493,8 @@ export function useDetectNativeToken() {
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useSwapState()
 
-  const input = useCurrency(inputCurrencyId)
-  const output = useCurrency(outputCurrencyId)
+  const input = useTokenBySymbolOrAddress(inputCurrencyId)
+  const output = useTokenBySymbolOrAddress(outputCurrencyId)
 
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)

@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useDerivedSwapInfo, useDetectNativeToken, useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
@@ -37,18 +37,24 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
-  const { v2Trade: trade, allowedSlippage, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
+  const {
+    v2Trade: trade,
+    allowedSlippage,
+    parsedAmount,
+    currencies,
+    currenciesIds,
+    inputError: swapInputError,
+  } = useDerivedSwapInfo()
   const [isExpertMode] = useExpertModeManager()
   const toggleWalletModal = useToggleWalletModal()
   const { openSwapConfirmModal } = useSwapConfirmManager()
-  const { INPUT } = useSwapState()
   const swapFlowContext = useSwapFlowContext()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
 
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
-    token: INPUT.currencyId,
+    token: currenciesIds.INPUT,
     chainId,
   })
 

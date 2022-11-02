@@ -47,7 +47,7 @@ export function NewSwapWidget() {
   useSetupTradeState()
 
   const { chainId, account } = useWeb3React()
-  const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
+  const { allowedSlippage, currencies, currenciesIds, v2Trade: trade } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
@@ -58,7 +58,7 @@ export function NewSwapWidget() {
   const showRecipientControls = useShowRecipientControls()
   const userAllowedSlippage = useUserSlippageTolerance()
   const swapState = useSwapState()
-  const { INPUT, independentField, recipient } = swapState
+  const { independentField, recipient } = swapState
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -70,7 +70,7 @@ export function NewSwapWidget() {
   const isTradePriceUpdating = useTradePricesUpdate()
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
     chainId,
-    address: INPUT.currencyId,
+    address: currenciesIds.INPUT,
   })
 
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
