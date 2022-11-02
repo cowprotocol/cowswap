@@ -14,9 +14,7 @@ env:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    environment: # Environment rules defined on GH UI
-      name: ${{ inputs.env_name }}
-      url: https://${{ env.DOMAIN }}
+    environment: ${{ inputs.env_name }} # Environment rules defined on GH UI
 
     steps:
       - name: Checkout code
@@ -26,16 +24,12 @@ jobs:
         run: >
           if [[ ${{ inputs.env_name == 'dev' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_DEV }}" >> $GITHUB_ENV
-            echo "DOMAIN=dev.swap.cow.fi" >> $GITHUB_ENV
           elif [[ ${{ inputs.env_name == 'staging' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_STAGING }}" >> $GITHUB_ENV
-            echo "DOMAIN=staging.swap.cow.fi" >> $GITHUB_ENV
           elif [[ ${{ inputs.env_name == 'barn' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_BARN }}" >> $GITHUB_ENV
-            echo "DOMAIN=barn.cow.fi" >> $GITHUB_ENV
           elif [[ ${{ inputs.env_name == 'prod' }} ]]; then
             echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_PROD }}" >> $GITHUB_ENV
-            echo "DOMAIN=swap.cow.fi" >> $GITHUB_ENV
           fi
 
       - name: Install Vercel CLI
