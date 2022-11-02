@@ -9,14 +9,10 @@ import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/sta
 import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useGetMarketPrice } from '@cow/modules/limitOrders/hooks/useGetMarketPrice'
 import usePrevious from 'hooks/usePrevious'
 import { toFirstMeaningfulDecimal } from '../../utils/toFirstMeaningfulDecimal'
 
 export function RateInput() {
-  // Continous market price fetch (quote)
-  useGetMarketPrice()
-
   const { chainId } = useWeb3React()
   const prevChainId = usePrevious(chainId)
 

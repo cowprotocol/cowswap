@@ -12,7 +12,7 @@ export function useApplyLimitRate() {
 
   return useCallback(
     (value: string | null, field: Field): string | null | undefined => {
-      if (!value || !activeRate) {
+      if (!value || !activeRate || !Number(value) || !Number(activeRate)) {
         return null
       }
 
