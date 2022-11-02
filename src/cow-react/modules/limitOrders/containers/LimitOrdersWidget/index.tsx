@@ -25,6 +25,7 @@ import { useSetupTradeState } from '@cow/modules/trade'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
+import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -42,6 +43,7 @@ export function LimitOrdersWidget() {
     recipient,
   } = useLimitOrdersTradeState()
   const onCurrencySelection = useOnCurrencySelection()
+  const onImportDismiss = useOnImportDismiss()
   const limitOrdersNavigate = useTradeNavigate()
   const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
@@ -106,13 +108,6 @@ export function LimitOrdersWidget() {
       updateLimitOrdersState({ recipient })
     },
     [updateLimitOrdersState]
-  )
-
-  const onImportDismiss = useCallback(
-    (unknownFields: Field[]) => {
-      unknownFields.forEach((field) => onCurrencySelection(field, null))
-    },
-    [onCurrencySelection]
   )
 
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
