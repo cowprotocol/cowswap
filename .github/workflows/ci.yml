@@ -212,6 +212,7 @@ jobs:
     if: github.event_name == 'pull_request'
     environment: test environment
     concurrency: test environment
+    runs-on: ubuntu-latest
 
     steps:
       - name: Approval workflow
