@@ -36,7 +36,7 @@ jobs:
 
       - name: Set output of cache
         id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn cache
         uses: actions/cache@v2
@@ -205,6 +205,29 @@ jobs:
           name: website
           path: build
 
+  vercel-dev:
+    # Deploys to Vercel dev environment
+    name: Vercel dev
+    needs: [test, lint]
+    if: github.ref == 'refs/heads/develop'
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: dev
+
+  vercel-pre-prod:
+    # Deploys to Vercel staging and barn environments
+    name: Vercel pre-prod
+    needs: [test, lint]
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    strategy:
+      matrix:
+        env_name: [barn, staging] # deploys both in parallel
+    with:
+      env_name: ${{ matrix.env_name }}
+
   deploy:
     name: Deploy
     needs: build
@@ -250,7 +273,7 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+        run: echo "VERSION=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_OUTPUT
 
       - name: 'Production deployment: Upload release build files to be deployed'
         if: startsWith(github.ref, 'refs/tags/v')
@@ -279,11 +302,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.17.1
-
-      # - name: Download website
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: website
 
       # Install deps only
       - name: Cypress install dependencies
