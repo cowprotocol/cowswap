@@ -48,7 +48,7 @@ export function useSetupTradeState(): void {
   const tradeStateFromUrl = useTradeStateFromUrl()
   const tradeState = useTradeState()
 
-  const chainIdFromUrl = tradeStateFromUrl.chainId
+  const chainIdFromUrl = tradeStateFromUrl.chainId || currentChainId
   const chainIdWasChanged = !!currentChainId && chainIdFromUrl !== currentChainId
   const skipUpdate = tradeState ? shouldSkipUpdate(chainIdWasChanged, tradeStateFromUrl, tradeState.state) : true
 
