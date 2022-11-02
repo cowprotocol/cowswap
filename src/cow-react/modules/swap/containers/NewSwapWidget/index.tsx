@@ -55,10 +55,10 @@ export function NewSwapWidget() {
   const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()
-  const showRecipientControls = useShowRecipientControls()
   const userAllowedSlippage = useUserSlippageTolerance()
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
+  const showRecipientControls = useShowRecipientControls(recipient)
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -185,7 +185,7 @@ export function NewSwapWidget() {
       <styledEl.Container id="new-swap-widget">
         <NewSwapModals {...swapModalsProps} />
         <AffiliateStatusCheck />
-        <styledEl.ContainerBox>
+        <styledEl.ContainerBox id="swap-page">
           <SwapForm {...swapFormProps} />
           <TradeRates {...tradeRatesProps} />
           <NewSwapWarningsTop {...swapWarningsTopProps} />

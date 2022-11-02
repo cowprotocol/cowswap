@@ -18,8 +18,8 @@ export function useTradeStateFromUrl(): TradeState {
 
     return {
       chainId: chainIdAsNumber,
-      inputCurrencyId: inputCurrencyId || null,
-      outputCurrencyId: outputCurrencyId || null,
+      inputCurrencyId: inputCurrencyId || searchParams.get('inputCurrency') || null,
+      outputCurrencyId: outputCurrencyId || searchParams.get('outputCurrency') || null,
       recipient,
     }
   }, [location.search, params])
