@@ -1,5 +1,5 @@
 import Modal from '@src/components/Modal'
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useAtom } from 'jotai'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { CloseIcon } from '@src/theme'
@@ -26,10 +26,12 @@ export interface LimitOrdersConfirmModalProps {
 }
 
 function getCurrencyAmount(currency: Currency | null, value: string | null): CurrencyAmount<Currency> | null {
-  if (!currency) return null
+  if (!currency || !value) return null
 
-  // TODO: think about BigNumber usage
-  return CurrencyAmount.fromRawAmount(currency, Number(value || '0') * 10 ** currency.decimals)
+  const [quotient, remainder] = value.split('.')
+  const fixedNumber = remainder ? quotient + '.' + remainder.slice(0, currency.decimals) : quotient
+
+  return CurrencyAmount.fromRawAmount(currency, Number(fixedNumber) * 10 ** currency.decimals)
 }
 
 function PendingText({
@@ -67,7 +69,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
   // TODO: check with inversed rate
-  const activeRateAmount = getCurrencyAmount(outputCurrency, activeRate)
+  const activeRateAmount = useMemo(() => getCurrencyAmount(outputCurrency, activeRate), [outputCurrency, activeRate])
   const activeRateFiatAmount = useHigherUSDValue(activeRateAmount || undefined)
 
   const onDismissConfirmation = useCallback(() => {

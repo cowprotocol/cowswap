@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 import { useAtomValue } from 'jotai'
+import { BigNumber } from 'bignumber.js'
 
 import { limitOrdersAtom } from '../state/limitOrdersAtom'
 import { limitRateAtom } from '../state/limitRateAtom'
-import { limitDecimals } from '../utils/limitDecimals'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useCalculateRate() {
@@ -11,21 +11,25 @@ export function useCalculateRate() {
   const { activeRate, isInversed } = useAtomValue(limitRateAtom)
 
   return useCallback(() => {
-    const inputValue = Number(inputCurrencyAmount)
-    const outputValue = Number(outputCurrencyAmount)
+    if (!inputCurrencyAmount || !outputCurrencyAmount) {
+      return null
+    }
+
+    const inputValue = new BigNumber(inputCurrencyAmount)
+    const outputValue = new BigNumber(outputCurrencyAmount)
 
     let newRate
 
     if (!activeRate || !inputValue || !outputValue) {
       newRate = null
     } else if (isInversed) {
-      newRate = outputValue / inputValue
+      newRate = outputValue.div(inputValue)
     } else {
-      newRate = inputValue / outputValue
+      newRate = inputValue.div(outputValue)
     }
 
     if (newRate !== null) {
-      newRate = String(limitDecimals(newRate, 5))
+      newRate = newRate.toString()
     }
 
     return newRate
