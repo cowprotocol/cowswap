@@ -19,7 +19,6 @@ import {
 
 import { UploadToIpfsUpdater } from 'state/appData/updater'
 import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
-import { TradeMenuUpdater } from '@cow/modules/trade'
 
 export function Updaters() {
   return (
@@ -42,7 +41,6 @@ export function Updaters() {
       <UploadToIpfsUpdater />
       <GnosisSafeUpdater />
       <GasPriceStrategyUpdater />
-      <TradeMenuUpdater />
     </>
   )
 }

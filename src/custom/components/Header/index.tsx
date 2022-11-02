@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from '@cow/constants/routes'
 import { useHistory } from 'react-router-dom'
@@ -30,10 +30,12 @@ import Web3Status from 'components/Web3Status'
 import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
-import { MainMenu } from 'cow-react/modules/mainMenu/containers/MainMenu'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
+import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
+import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
+import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -64,6 +66,7 @@ export default function Header() {
     toggleDarkModeAnalytics(!darkMode)
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
+  const tradeState = useTradeState()
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const handleOpenOrdersPanel = () => {
@@ -86,6 +89,22 @@ export default function Header() {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
+  const tradeMenuContext = useMemo(
+    () => ({
+      inputCurrencyId: tradeState?.state.inputCurrencyId || undefined,
+      outputCurrencyId: tradeState?.state.outputCurrencyId || undefined,
+      chainId: tradeState?.state.chainId?.toString(),
+    }),
+    [tradeState?.state]
+  )
+
+  const menuContext: MainMenuContext = {
+    darkMode,
+    toggleDarkMode,
+    handleMobileMenuOnClick,
+    tradeContext: tradeMenuContext,
+  }
+
   // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
@@ -101,12 +120,7 @@ export default function Header() {
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
-          <MainMenu
-            isMobileMenuOpen={isMobileMenuOpen}
-            darkMode={darkMode}
-            toggleDarkMode={toggleDarkMode}
-            handleMobileMenuOnClick={handleMobileMenuOnClick}
-          />
+          <MenuTree items={MAIN_MENU} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
         </HeaderRow>
 
         <HeaderControls>
