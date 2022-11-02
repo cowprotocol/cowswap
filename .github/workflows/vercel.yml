@@ -14,7 +14,7 @@ env:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    environment:
+    environment: # Environment rules defined on GH UI
       name: ${{ inputs.env_name }}
       url: https://${{ env.DOMAIN }}
 
