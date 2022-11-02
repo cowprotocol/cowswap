@@ -17,10 +17,11 @@ import { calculateValidTo } from 'hooks/useSwapCallback'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { parseUnits } from 'ethers/lib/utils'
 import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
+import { toFirstMeaningfulDecimal } from '../utils/toFirstMeaningfulDecimal'
 
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 
-export function useFetchMarketPrice() {
+export function useGetMarketPrice() {
   const { chainId, account } = useWeb3React()
 
   const { isInversed } = useAtomValue(limitRateAtom)
@@ -54,7 +55,7 @@ export function useFetchMarketPrice() {
         const executionRate = isInversed ? parsedSellAmount.div(parsedBuyAmount) : parsedBuyAmount.div(parsedSellAmount)
 
         // Update the rate state
-        updateLimitRateState({ executionRate: executionRate.toFixed(20) })
+        updateLimitRateState({ executionRate: toFirstMeaningfulDecimal(executionRate.toFixed(20)) })
       } catch (error) {
         console.log('debug error', error)
       }

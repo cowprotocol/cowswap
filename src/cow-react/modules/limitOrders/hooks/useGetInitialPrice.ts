@@ -11,6 +11,7 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
 import { Field } from 'state/swap/actions'
+import { toFirstMeaningfulDecimal } from '../utils/toFirstMeaningfulDecimal'
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 export function useGetInitialPrice(): { price: string | null | undefined } {
@@ -103,7 +104,7 @@ export function useGetInitialPrice(): { price: string | null | undefined } {
     const newPrice = isInversed ? outputPrice.div(inputPrice) : inputPrice.div(outputPrice)
 
     // Update final price
-    updateLimitRateState({ activeRate: newPrice.toFixed(10) })
+    updateLimitRateState({ activeRate: toFirstMeaningfulDecimal(newPrice.toFixed(20)) })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputPrice, outputPrice, updateLimitRateState])

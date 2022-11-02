@@ -4,6 +4,7 @@ import { BigNumber } from 'bignumber.js'
 
 import { limitOrdersAtom } from '../state/limitOrdersAtom'
 import { limitRateAtom } from '../state/limitRateAtom'
+import { toFirstMeaningfulDecimal } from '../utils/toFirstMeaningfulDecimal'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useCalculateRate() {
@@ -29,7 +30,7 @@ export function useCalculateRate() {
     }
 
     if (newRate !== null) {
-      newRate = newRate.toString()
+      newRate = toFirstMeaningfulDecimal(newRate.toString())
     }
 
     return newRate

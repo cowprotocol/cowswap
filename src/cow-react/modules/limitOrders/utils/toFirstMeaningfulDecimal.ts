@@ -1,13 +1,17 @@
 export function toFirstMeaningfulDecimal(value: string, limit = 6): string {
   const [quotient, remainder] = value.split('.')
 
-  const isValueTooSmall = remainder.length > limit && remainder[limit] === '0'
-
-  if (isValueTooSmall) {
-    const firstMeaningfulDecimal = remainder.split('').findIndex((digit) => digit !== '0')
-
-    return firstMeaningfulDecimal < 0 ? quotient : `${quotient}.${remainder.slice(0, firstMeaningfulDecimal + 1)}`
+  if (!remainder || remainder.length < limit) {
+    return value
   }
 
-  return `${quotient}.${remainder.slice(0, limit)}`
+  const nonZero = [...remainder].findIndex((digit) => digit !== '0')
+
+  if (nonZero === -1) {
+    return quotient
+  } else if (nonZero < limit) {
+    return `${quotient}.${remainder.substring(0, limit)}`
+  } else {
+    return `${quotient}.${remainder.substring(0, nonZero)}`
+  }
 }
