@@ -205,15 +205,6 @@ jobs:
           name: website
           path: build
 
-  vercel-test:
-    name: Test deploy!!! Remove before publishing
-    #    needs: [test, lint] # only if these steps finish and succeed
-    if: github.event_name == 'pull_request'
-    uses: ./.github/workflows/vercel.yml
-    secrets: inherit
-    with:
-      env_name: dev
-
   vercel-dev:
     # Deploys to Vercel dev environment
     name: Vercel dev
