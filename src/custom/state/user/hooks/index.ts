@@ -9,7 +9,7 @@ import {
 } from 'state/user/reducer'
 import { useUserTransactionTTL, serializeToken, deserializeToken } from '@src/state/user/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { calculateValidTo } from '@cow/common/utils/calculateValidTo'
+import { calculateValidTo } from '@cow/utils/time'
 
 export * from '@src/state/user/hooks'
 

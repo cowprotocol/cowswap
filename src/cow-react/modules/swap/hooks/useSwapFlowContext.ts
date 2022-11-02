@@ -22,7 +22,7 @@ import { useUserTransactionTTL } from 'state/user/hooks'
 import { useGP2SettlementContract } from 'hooks/useContract'
 import { useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
-import { calculateValidTo } from '@cow/common/utils/calculateValidTo'
+import { calculateValidTo } from '@cow/utils/time'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>

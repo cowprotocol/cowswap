@@ -23,7 +23,7 @@ import { CancelableResult, onlyResolvesLast } from 'utils/async'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { LegacyFeeQuoteParams, LegacyQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { calculateValidTo } from '@cow/common/utils/calculateValidTo'
+import { calculateValidTo } from '@cow/utils/time'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
