@@ -5,7 +5,7 @@ import { replaceSwapState, ReplaceSwapStatePayload } from 'state/swap/actions'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useSwapState } from 'state/swap/hooks'
-import { useAppDispatch } from '@src/state/hooks'
+import { useAppDispatch } from 'state/hooks'
 
 export function useSwapTradeState(): TradeState {
   const swapState = useSwapState()
