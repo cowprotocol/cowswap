@@ -5,7 +5,7 @@ import { formatMax, formatSmart } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { RowFeeContent } from '@cow/modules/swap/pure/Row/RowFeeContent'
-import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/typings'
+import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'

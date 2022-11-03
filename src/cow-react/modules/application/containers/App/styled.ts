@@ -40,6 +40,6 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
 `}
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-  padding:  '0 0 16px';
+  padding: '0 0 16px';
 `}
 `

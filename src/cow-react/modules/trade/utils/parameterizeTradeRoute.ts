@@ -1,13 +1,12 @@
 import { Routes } from '@cow/constants/routes'
+import { TradeStateFromUrl } from '@cow/modules/trade/types/TradeState'
 
 /**
  * When input currency is not set and user select output currency, we build a link like:
  * /limit-orders/_/DAI
  */
 export function parameterizeTradeRoute(
-  chainId: number | null | undefined,
-  inputCurrencyId: string | null,
-  outputCurrencyId: string | null,
+  { chainId, inputCurrencyId, outputCurrencyId }: TradeStateFromUrl,
   route: Routes
 ): string {
   return route

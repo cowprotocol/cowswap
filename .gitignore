@@ -58,3 +58,6 @@ yalc.lock
 
 # public
 public/version.json
+
+# vercel
+.vercel

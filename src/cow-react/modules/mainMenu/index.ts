@@ -1,2 +1,2 @@
-export * from './state/mainMenuUrlOverridesAtom'
 export * from './constants/mainMenu'
+export * from './types'

@@ -17,7 +17,14 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
     (chainId: SupportedChainId | null | undefined, { inputCurrencyId, outputCurrencyId }: TradeCurrenciesIds) => {
       if (!tradeTypeInfo) return
 
-      const route = parameterizeTradeRoute(chainId, inputCurrencyId, outputCurrencyId, tradeTypeInfo.route)
+      const route = parameterizeTradeRoute(
+        {
+          chainId: chainId ? chainId.toString() : undefined,
+          inputCurrencyId: inputCurrencyId || undefined,
+          outputCurrencyId: outputCurrencyId || undefined,
+        },
+        tradeTypeInfo.route
+      )
 
       history.push(route)
     },

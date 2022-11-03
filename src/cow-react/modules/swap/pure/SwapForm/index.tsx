@@ -1,5 +1,5 @@
 import React from 'react'
-import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/typings'
+import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
 import * as styledEl from '@cow/modules/swap/containers/NewSwapWidget/styled'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
