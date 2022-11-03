@@ -4,7 +4,7 @@ import { ButtonSize } from 'theme'
 
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { transparentize } from 'polished'
+import { transparentize, lighten } from 'polished'
 
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
@@ -26,7 +26,7 @@ export function colors(darkMode: boolean): Colors {
 
     // CoW Swap V2 colors ======================
     white: darkMode ? '#CAE9FF' : '#ffffff',
-    black: '#000000',
+    black: '#07162D',
     blueDark1: '#07162D',
     blueDark2: '#052B65',
     blueLight1: '#CAE9FF',
@@ -38,9 +38,6 @@ export function colors(darkMode: boolean): Colors {
     text1: darkMode ? '#CAE9FF' : '#052B65',
     text2: darkMode ? '#86B2DC' : '#506B93',
     text3: darkMode ? '#428dff' : '#0d5ed9',
-
-    shimmer1: darkMode ? 'transparent' : 'transparent',
-    shimmer2: darkMode ? 'rgb(10 35 71 / 80%)' : 'rgb(255 255 255 / 60%)',
 
     // States
     error: darkMode ? '#D41300' : '#D41300',
@@ -124,12 +121,27 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         ${darkMode
           ? `
           background-color: ${colorsTheme.blueDark1};
-          background-image: radial-gradient(50% 500px at 50% -10%, hsl(216deg 100% 20% / 70%) 0%, #071832 50%, #06162d 100%),radial-gradient(circle at -70% 50%, hsla(215,100%,20%,0.7) 0, transparent 50%);`
+          background-image: radial-gradient(50% 500px at 50% -6%, hsl(216deg 100% 20% / 70%) 0%, #071832 50%, #06162d 100%),radial-gradient(circle at -70% 50%, hsla(215,100%,20%,0.7) 0, transparent 50%);`
           : `background: linear-gradient(45deg, #EAE9FF 14.64%, ${colorsTheme.blueLight1} 85.36%)`};
         background-attachment: fixed;
         scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};
       `,
     },
+    shimmer: css`
+      background-image: linear-gradient(
+        90deg,
+        transparent 0,
+        ${transparentize(0.7, colorsTheme.bg1)} 20%,
+        ${lighten(0.07, transparentize(0.6, colorsTheme.bg1))} 60%,
+        transparent
+      );
+      animation: shimmer 2s infinite;
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    `,
     textShadow1: `
       ${
         darkMode
@@ -140,7 +152,7 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
           : 'none'
       }
     `,
-    boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.04)' : '0 12px 12px rgba(5, 43, 101, 0.04)',
+    boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
     boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
     input: {
       bg1: darkMode ? '#07162D' : '#ECF1F8',
@@ -225,12 +237,12 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       `,
       border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
       boxShadow: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg1});
+        background: linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1});
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
     iconGradientBorder: css`
-      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.primary1} 360grad);
+      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.bg2} 360grad);
     `,
     header: {
       border: 'none',

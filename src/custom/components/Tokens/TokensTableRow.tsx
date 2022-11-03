@@ -1,13 +1,11 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { Token, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
-import { RowFixed } from 'components/Row'
+import { Trans } from '@lingui/macro'
 import useTheme from 'hooks/useTheme'
 import {
   TokenText,
   ResponsiveGrid,
   Label,
-  LargeOnly,
-  HideLarge,
   ResponsiveLogo,
   IndexNumber,
   Cell,
@@ -15,6 +13,7 @@ import {
   ApproveLabel,
   CustomLimit,
   BalanceValue,
+  InfoCircle,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { formatMax, formatSmart } from 'utils/format'
@@ -32,6 +31,8 @@ import FiatBalanceCell from './FiatBalanceCell'
 import Loader from 'components/Loader'
 import { getBlockExplorerUrl } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { MouseoverTooltip } from 'components/Tooltip'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 type DataRowParams = {
   tokenData: Token
@@ -106,6 +107,7 @@ const DataRow = ({
 
   const hasZeroBalance = !balance || balance?.equalTo(0)
   const hasNoAllowance = !currentAllowance || currentAllowance.equalTo(0)
+  const native = useNativeCurrency()
 
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
@@ -124,7 +126,7 @@ const DataRow = ({
     } else if (!isApproved && !hasNoAllowance) {
       return (
         <CustomLimit>
-          <TableButton onClick={handleApprove} color={theme.primary1}>
+          <TableButton onClick={handleApprove} color={theme.text1}>
             Approve all
           </TableButton>
           <ApproveLabel
@@ -137,14 +139,14 @@ const DataRow = ({
       )
     } else if (!isApproved || hasNoAllowance) {
       return (
-        <TableButton onClick={handleApprove} color={theme.primary1}>
+        <TableButton onClick={handleApprove} color={theme.text1}>
           Approve
         </TableButton>
       )
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.primary1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.text1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
@@ -162,26 +164,15 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <RowFixed>
-          <ResponsiveLogo currency={tokenData} />
-        </RowFixed>
-
         <ExtLink title={tokenData.name} href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+          <ResponsiveLogo currency={tokenData} />
           <TokenText>
-            <LargeOnly style={{ marginLeft: '10px' }}>
-              <Label>{tokenData.symbol}</Label>
-            </LargeOnly>
-
-            <HideLarge style={{ marginLeft: '10px' }}>
-              <RowFixed>
-                <Label fontWeight={400} ml="8px" color={theme.text1}>
-                  {tokenData.name}
-                </Label>
-                <Label ml="8px" color={theme.primary5}>
-                  ({tokenData.symbol})
-                </Label>
-              </RowFixed>
-            </HideLarge>
+            <Label>
+              <span>
+                <b>{tokenData.name}</b>
+                <i>{tokenData.symbol}</i>
+              </span>
+            </Label>
           </TokenText>
         </ExtLink>
       </Cell>
@@ -193,18 +184,24 @@ const DataRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.BUY)} color={theme.green1}>
-          Buy
-        </TableButton>
-      </Cell>
+        <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)}>Swap</TableButton>
+        {/* <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)}>Sell</TableButton> */}
+        {/* <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.BUY)}>Buy</TableButton> */}
 
-      <Cell>
-        <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)} color={theme.red1}>
-          Sell
-        </TableButton>
+        {displayApproveContent}
+        <MouseoverTooltip
+          text={
+            <Trans>
+              Approve this token for trading. This only needs to be done once. <br />
+              <br />
+              Once approved, you can place orders for free using meta-transactions without paying for the transaction
+              using your {native.name}.
+            </Trans>
+          }
+        >
+          <InfoCircle size="20" />
+        </MouseoverTooltip>
       </Cell>
-
-      <Cell>{displayApproveContent}</Cell>
     </ResponsiveGrid>
   )
 }

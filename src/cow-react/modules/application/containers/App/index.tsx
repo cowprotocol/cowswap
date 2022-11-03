@@ -4,7 +4,6 @@ import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import { Route, useLocation } from 'react-router-dom'
 import ErrorBoundary from 'components/ErrorBoundary'
 import Header from 'components/Header'
-import Polling from 'components/Header/Polling'
 
 import DarkModeQueryParamReader from 'theme'
 
@@ -32,7 +31,6 @@ export function App() {
           <Header />
         </styledEl.HeaderWrapper>
         <styledEl.BodyWrapper location={location}>
-          <Polling />
           <TopLevelModals />
           <ReferralLinkUpdater />
           <RoutesApp />

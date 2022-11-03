@@ -15,7 +15,7 @@ export const StyledLogo = styled(Logo)<{ size: string; $native: boolean }>`
   box-shadow: 0 0 1px ${({ $native }) => ($native ? 'white' : 'black')};
   border: 0px solid rgba(255, 255, 255, 0); */
   border-radius: ${({ size }) => size};
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
+  /* box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075); */
   /* background-color: ${({ theme }) => theme.white}; */
   background-color: ${({ theme }) => theme.bg1}; // mod
 `
