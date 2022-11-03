@@ -25,10 +25,7 @@ export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> =
       )
 
       if (status === 1 && transaction.replacementType !== 'cancel') {
-        // Halloween temporary
-        const { userDarkMode, matchesDarkMode } = store.getState().user
-        const isDarkMode = userDarkMode === null ? matchesDarkMode : userDarkMode
-        cowSound = getCowSoundSuccess(isDarkMode)
+        cowSound = getCowSoundSuccess()
 
         if (transaction.swapVCow) {
           store.dispatch(setSwapVCowStatus(SwapVCowStatus.CONFIRMED))
