@@ -63,8 +63,8 @@ import { CallState } from '@uniswap/redux-multicall'
 
 export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
-const CLAIMS_REPO_BRANCH = 'gip-13'
-export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
+const CLAIMS_REPO_BRANCH = 'main'
+export const CLAIMS_REPO = `https://raw.githubusercontent.com/cowprotocol/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
 const ONE_VCOW = CurrencyAmount.fromRawAmount(

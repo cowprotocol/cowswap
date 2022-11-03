@@ -13,7 +13,7 @@ import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sou
 import { orderAnalytics } from 'components/analytics'
 import { openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
-import { timeSinceInSeconds } from 'utils/time'
+import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { isMobile } from 'utils/userAgent'
 

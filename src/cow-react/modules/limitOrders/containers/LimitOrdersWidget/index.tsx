@@ -1,48 +1,59 @@
 import { useWeb3React } from '@web3-react/core'
 import * as styledEl from './styled'
-import { ButtonSize } from 'theme'
 import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
-import { ButtonPrimary } from 'components/Button'
-import { Trans } from '@lingui/macro'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
-import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
-import { useSetupLimitOrdersState } from '../../hooks/useSetupLimitOrdersState'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
-import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
-import { useResetStateWithSymbolDuplication } from '../../hooks/useResetStateWithSymbolDuplication'
-import { useLimitOrdersNavigate } from '../../hooks/useLimitOrdersNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
-import { tradeFlow } from '../../services/tradeFlow'
-import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
-
-import { RateInput } from '@cow/modules/limitOrders/containers/RateInput'
-import { ExpiryDate } from '@cow/modules/limitOrders/containers/ExpiryDate'
-import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
-import { useIsSellOrder } from '@cow/modules/limitOrders/hooks/useIsSellOrder'
+import { RateInput } from '../RateInput'
+import { ExpiryDate } from '../ExpiryDate'
+import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
+import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
+import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
+import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
+import { useIsSellOrder } from '../../hooks/useIsSellOrder'
+import { TradeButtons } from '@cow/modules/limitOrders/containers/TradeButtons'
+import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
+import { useSetupTradeState } from '@cow/modules/trade'
+import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
+import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
+import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 
 export function LimitOrdersWidget() {
-  useSetupLimitOrdersState()
-  useResetStateWithSymbolDuplication()
+  useSetupTradeState()
 
   const { chainId } = useWeb3React()
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } =
-    useLimitOrdersTradeState()
-  const state = useAtomValue(limitOrdersAtom)
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const {
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrencyBalance,
+    outputCurrencyBalance,
+    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
+    recipient,
+  } = useLimitOrdersTradeState()
   const onCurrencySelection = useOnCurrencySelection()
-  const limitOrdersNavigate = useLimitOrdersNavigate()
-  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
+  const onImportDismiss = useOnImportDismiss()
+  const limitOrdersNavigate = useTradeNavigate()
   const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
+  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
+  const tradeContext = useTradeFlowContext(limitOrdersQuote)
+  const state = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
@@ -57,23 +68,24 @@ export function LimitOrdersWidget() {
   }
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
+    label: isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
     viewAmount: inputCurrencyAmount?.toExact() || '',
-    balance: null,
-    fiatAmount: null,
+    balance: inputCurrencyBalance,
+    fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
+    label: isSellOrder ? 'Your receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: outputCurrencyAmount,
     viewAmount: outputCurrencyAmount?.toExact() || '',
-    balance: null,
-    fiatAmount: null,
+    balance: outputCurrencyBalance,
+    fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
-  const tradeContext = useTradeFlowContext(limitOrdersQuote)
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       if (field === Field.INPUT) {
@@ -87,7 +99,7 @@ export function LimitOrdersWidget() {
 
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = state
-    limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
+    limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
     updateCurrencyAmount({ outputCurrencyAmount: inputCurrencyAmount })
   }, [state, limitOrdersNavigate, chainId, updateCurrencyAmount])
 
@@ -98,62 +110,69 @@ export function LimitOrdersWidget() {
     [updateLimitOrdersState]
   )
 
-  const doTrade = useCallback(() => {
-    tradeContext && tradeFlow(tradeContext)
-  }, [tradeContext])
-
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
   return (
-    <styledEl.Container>
-      <styledEl.ContainerBox>
-        <styledEl.Header>
-          <div>Limit</div>
-          <SettingsWidget />
-        </styledEl.Header>
-        <CurrencyInputPanel
-          id="swap-currency-input"
-          loading={currenciesLoadingInProgress}
-          onCurrencySelection={onCurrencySelection}
-          onUserInput={onUserInput}
-          subsidyAndBalance={subsidyAndBalance}
-          allowsOffchainSigning={allowsOffchainSigning}
-          currencyInfo={inputCurrencyInfo}
-          showSetMax={showSetMax}
-          topLabel={isSellOrder ? 'You sell' : 'You sell at most'}
-        />
-        <styledEl.RateWrapper>
-          <RateInput />
-          <ExpiryDate />
-        </styledEl.RateWrapper>
-        <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
-          <CurrencyArrowSeparator
-            onSwitchTokens={onSwitchTokens}
-            withRecipient={showRecipient}
-            isLoading={isTradePriceUpdating}
+    <>
+      <styledEl.Container>
+        <styledEl.ContainerBox>
+          <styledEl.Header>
+            <div>Limit orders</div>
+            <SettingsWidget />
+          </styledEl.Header>
+          <CurrencyInputPanel
+            id="swap-currency-input"
+            loading={currenciesLoadingInProgress}
+            onCurrencySelection={onCurrencySelection}
+            onUserInput={onUserInput}
+            subsidyAndBalance={subsidyAndBalance}
+            allowsOffchainSigning={allowsOffchainSigning}
+            currencyInfo={inputCurrencyInfo}
+            showSetMax={showSetMax}
+            topLabel={inputCurrencyInfo.label}
           />
-          {showRecipient && <AddRecipient onChangeRecipient={onChangeRecipient} />}
-        </styledEl.CurrencySeparatorBox>
-        <CurrencyInputPanel
-          id="swap-currency-output"
-          loading={currenciesLoadingInProgress}
-          onCurrencySelection={onCurrencySelection}
-          onUserInput={onUserInput}
-          subsidyAndBalance={subsidyAndBalance}
-          allowsOffchainSigning={allowsOffchainSigning}
-          currencyInfo={outputCurrencyInfo}
-          priceImpactParams={priceImpactParams}
-          topLabel={isSellOrder ? 'Your receive at least' : 'You receive exactly'}
+          <styledEl.RateWrapper>
+            <RateInput />
+            <ExpiryDate />
+          </styledEl.RateWrapper>
+          <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
+            <CurrencyArrowSeparator
+              onSwitchTokens={onSwitchTokens}
+              withRecipient={showRecipient}
+              isLoading={isTradePriceUpdating}
+            />
+            {showRecipient && <AddRecipient onChangeRecipient={onChangeRecipient} />}
+          </styledEl.CurrencySeparatorBox>
+          <CurrencyInputPanel
+            id="swap-currency-output"
+            loading={currenciesLoadingInProgress}
+            onCurrencySelection={onCurrencySelection}
+            onUserInput={onUserInput}
+            subsidyAndBalance={subsidyAndBalance}
+            allowsOffchainSigning={allowsOffchainSigning}
+            currencyInfo={outputCurrencyInfo}
+            priceImpactParams={priceImpactParams}
+            topLabel={outputCurrencyInfo.label}
+          />
+          {recipient !== null && (
+            <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
+          )}
+          <styledEl.TradeButtonBox>
+            <TradeButtons tradeContext={tradeContext} openConfirmScreen={() => setShowConfirmation(true)} />
+          </styledEl.TradeButtonBox>
+        </styledEl.ContainerBox>
+      </styledEl.Container>
+      <TradeApproveWidget />
+      {tradeContext && (
+        <LimitOrdersConfirmModal
+          isOpen={showConfirmation}
+          tradeContext={tradeContext}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+          onDismiss={() => setShowConfirmation(false)}
         />
-        {recipient !== null && (
-          <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
-        )}
-        <styledEl.TradeButtonBox>
-          <ButtonPrimary onClick={doTrade} disabled={false} buttonSize={ButtonSize.BIG}>
-            <Trans>Review Limit Order</Trans>
-          </ButtonPrimary>
-        </styledEl.TradeButtonBox>
-      </styledEl.ContainerBox>
-    </styledEl.Container>
+      )}
+      {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
+    </>
   )
 }

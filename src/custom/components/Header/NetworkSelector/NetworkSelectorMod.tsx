@@ -32,7 +32,7 @@ import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
 import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
-import { LIMIT_ORDERS_PATH } from '@cow/constants/routes'
+import { useTradeTypeInfo } from '@cow/modules/trade'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -358,6 +358,7 @@ export default function NetworkSelector() {
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
   const history = useHistory()
+  const tradeTypeInfo = useTradeTypeInfo()
   const isSmartContractWallet = useIsSmartContractWallet() // mod
   const isUnsupportedNetwork = !supportedChainId(chainId)
 
@@ -371,15 +372,14 @@ export default function NetworkSelector() {
 
   const setChainIdToUrl = useCallback(
     (chainId: SupportedChainId) => {
-      if (history.location.pathname.includes(LIMIT_ORDERS_PATH)) {
-        return
-      }
+      // Don't set chainId as query parameter because swap and limit orders have different routing scheme
+      if (tradeTypeInfo) return
 
       history.replace({
         search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)),
       })
     },
-    [history]
+    [tradeTypeInfo, history]
   )
 
   const onSelectChain = useCallback(

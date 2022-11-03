@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
 
 import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'
 import { FallbackPriceImpactParams } from './types'
@@ -46,9 +46,8 @@ function _getBaTradeParsedAmount(abTrade: TradeGp | undefined, shouldCalculate: 
 
 export default function useFallbackPriceImpact({ abTrade, isWrapping }: FallbackPriceImpactParams) {
   const {
-    INPUT: { currencyId: sellToken },
-    OUTPUT: { currencyId: buyToken },
-  } = useSwapState()
+    currenciesIds: { INPUT: sellToken, OUTPUT: buyToken },
+  } = useDerivedSwapInfo()
 
   const { chainId } = useWeb3React()
   const lastQuote = useQuote({ token: sellToken, chainId })

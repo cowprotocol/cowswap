@@ -37,7 +37,7 @@ import LockedGnoVesting from './LockedGnoVesting'
 import { useCowFromLockedGnoBalances } from '@cow/pages/Account/LockedGnoVesting/hooks'
 import { getProviderErrorMessage } from 'utils/misc'
 import { MetaMask } from '@web3-react/metamask'
-import { HelpCircle } from '@cow/modules/shared/dumb/HelpCircle'
+import { HelpCircle } from '@cow/common/pure/HelpCircle'
 
 const COW_DECIMALS = COW[ChainId.MAINNET].decimals
 

@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
 import { lighten } from 'polished'
 
-export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed: boolean }>`
+export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed: boolean; readonlyMode: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,12 +14,15 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
   box-shadow: ${({ stubbed }) => (stubbed ? '0 6px 8px rgb(0 0 0 / 6%)' : 'none')};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
+  pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: 16px;
   padding: 8px;
   transition: background-color 0.15s ease-in-out;
 
   &:hover {
-    background-color: ${({ stubbed, theme }) => (stubbed ? lighten(0.1, theme.bg2) : lighten(0.1, theme.bg1))};
+    // TODO: Check what 'readonlyMode' does and proper style it.
+    background-color: ${({ readonlyMode, stubbed, theme }) =>
+      readonlyMode ? 'red' : stubbed ? lighten(0.1, theme.bg2) : lighten(0.1, theme.bg1)};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

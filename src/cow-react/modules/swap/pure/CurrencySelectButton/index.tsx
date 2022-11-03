@@ -6,16 +6,18 @@ import { Trans } from '@lingui/macro'
 export interface CurrencySelectButtonProps {
   currency?: Currency
   loading: boolean
+  readonlyMode?: boolean
   onClick?(): void
 }
 
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
-  const { currency, onClick, loading } = props
+  const { currency, onClick, loading, readonlyMode = false } = props
   const stubbed = !currency || false
 
   return (
     <styledEl.CurrencySelectWrapper
       className="open-currency-select-button"
+      readonlyMode={readonlyMode}
       onClick={onClick}
       isLoading={loading}
       stubbed={stubbed}
@@ -24,7 +26,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
       <styledEl.CurrencySymbol className="token-symbol-container" stubbed={stubbed}>
         {currency ? currency.symbol : <Trans>Select a token</Trans>}
       </styledEl.CurrencySymbol>
-      {stubbed ? <styledEl.ArrowDown stubbed /> : <styledEl.ArrowDown />}
+      {readonlyMode ? null : stubbed ? <styledEl.ArrowDown stubbed /> : <styledEl.ArrowDown />}
     </styledEl.CurrencySelectWrapper>
   )
 }
