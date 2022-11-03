@@ -4,7 +4,6 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/
 import { OrderKind } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
-import { DEFAULT_DECIMALS } from 'custom/constants'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { calculateValidTo } from 'hooks/useSwapCallback'
@@ -21,8 +20,8 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
       return null
     }
 
-    const fromDecimals = inputCurrency?.decimals ?? DEFAULT_DECIMALS
-    const toDecimals = outputCurrency?.decimals ?? DEFAULT_DECIMALS
+    const fromDecimals = inputCurrency?.decimals
+    const toDecimals = outputCurrency?.decimals
 
     const amount =
       orderKind === OrderKind.SELL

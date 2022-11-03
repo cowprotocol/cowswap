@@ -1,7 +1,7 @@
-import { useGetMarketPrice } from './hooks/useGetMarketPrice'
+import { useFetchMarketPrice } from './hooks/useFetchMarketPrice'
 
 export function QuoteUpdater() {
-  useGetMarketPrice()
+  useFetchMarketPrice()
 
   return null
 }
