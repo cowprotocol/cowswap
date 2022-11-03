@@ -1,7 +1,7 @@
 import Modal from '@src/components/Modal'
 import React, { useCallback, useMemo } from 'react'
 import { useAtom } from 'jotai'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { CloseIcon } from '@src/theme'
 import { useAtomValue } from 'jotai/utils'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
@@ -16,6 +16,9 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
 import { formatSmartAmount } from 'utils/format'
+import { registerOnWindow } from '@src/custom/utils/misc'
+
+registerOnWindow({ Fraction })
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -25,13 +28,10 @@ export interface LimitOrdersConfirmModalProps {
   onDismiss(): void
 }
 
-function getCurrencyAmount(currency: Currency | null, value: string | null): CurrencyAmount<Currency> | null {
+function getCurrencyAmount(currency: Currency | null, value: Fraction | null): CurrencyAmount<Currency> | null {
   if (!currency || !value) return null
 
-  const [quotient, remainder] = value.split('.')
-  const fixedNumber = remainder ? quotient + '.' + remainder.slice(0, currency.decimals) : quotient
-
-  return CurrencyAmount.fromRawAmount(currency, Number(fixedNumber) * 10 ** currency.decimals)
+  return CurrencyAmount.fromFractionalAmount(currency, value.numerator, value.denominator)
 }
 
 function PendingText({
@@ -106,7 +106,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             <LimitOrdersConfirm
               tradeContext={tradeContext}
               activeRateFiatAmount={activeRateFiatAmount}
-              activeRate={activeRate}
+              activeRate={activeRate.toFixed(20)}
               inputCurrencyInfo={inputCurrencyInfo}
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}
