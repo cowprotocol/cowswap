@@ -66,7 +66,13 @@ export function useGetInitialPrice(): { price: BigNumber | null; isLoading: bool
       return null
     }
 
-    return isInversed ? outputPrice.div(inputPrice) : inputPrice.div(outputPrice)
+    const output = isInversed ? outputPrice.div(inputPrice) : inputPrice.div(outputPrice)
+
+    if (!output.isFinite() || output.isNegative()) {
+      return null
+    }
+
+    return output
   }, [isInversed, outputPrice, inputPrice])
 
   // To avoid loading state blinking
