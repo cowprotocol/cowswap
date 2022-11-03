@@ -2,7 +2,7 @@ import { HTMLAttributes } from 'react'
 import styled from 'styled-components/macro'
 import { ButtonProps } from 'rebass/styled-components'
 import { ChevronDown, Star } from 'react-feather'
-import { transparentize } from 'polished'
+import { transparentize, darken, lighten } from 'polished'
 import useTheme from 'hooks/useTheme'
 import { RowBetween } from 'components/Row'
 
@@ -30,10 +30,8 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   color: ${({ theme }) => theme.white};
   position: relative;
   min-height: 58px;
-  ${({ theme }) => theme.cursor};
-
-  /* > div {
-  } */
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  /* ${({ theme }) => theme.cursor}; */ // TODO: add behind feature flag
 
   &:focus,
   &:hover,
@@ -41,6 +39,10 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
     box-shadow: none;
     transform: none;
     color: ${({ theme }) => theme.white};
+  }
+
+  &:hover {
+    background: ${({ theme }) => lighten(0.08, theme.bg2)};
   }
 
   &:disabled {
@@ -92,7 +94,7 @@ export const ButtonLight = styled(ButtonPrimary)`
     animation: none;
     color: ${({ theme }) => theme.primaryText1};
 
-    :hover {
+    &:hover {
       cursor: auto;
       background-color: ${({ theme }) => theme.primary5};
       box-shadow: none;
@@ -157,7 +159,7 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
 export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
   // CSS overrides
   background-color: ${({ theme }) => theme.disabled};
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   background-image: none;
   border: 0;
   cursor: auto;
@@ -169,11 +171,18 @@ export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
   background: ${({ theme }) => theme.red1};
+  color: ${({ theme }) => theme.bg1};
+  transition: background 0.15s ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
     background: ${({ theme }) => theme.red1};
+    color: ${({ theme }) => theme.bg1};
+  }
+
+  &:hover {
+    background: ${({ theme }) => darken(0.08, theme.red1)};
   }
 `
 
@@ -186,11 +195,13 @@ const HoverIcon = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  margin-right: 8px;
+  margin: 0 8px 0 0;
+  opacity: 0.75;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
 
-  :hover {
-    cursor: pointer;
-    opacity: 0.6;
+  &:hover {
+    opacity: 1;
   }
 `
 
@@ -246,14 +257,14 @@ export function ButtonDropdownLight({
 
 export const ButtonStar = ({
   fill = 'transparent',
-  size = '15px',
+  size = '18px',
   stroke,
   ...rest
 }: { fill?: string; size?: string; stroke: string } & HTMLAttributes<HTMLDivElement>) => {
   const theme = useTheme()
   return (
     <HoverIcon {...rest}>
-      <Star stroke={stroke || theme.text3} fill={fill} size={size} />
+      <Star stroke={stroke || theme.text1} fill={fill} size={size} />
     </HoverIcon>
   )
 }

@@ -237,12 +237,12 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       `,
       border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
       boxShadow: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg1});
+        background: linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1});
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
     iconGradientBorder: css`
-      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.primary1} 360grad);
+      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.bg2} 360grad);
     `,
     header: {
       border: 'none',

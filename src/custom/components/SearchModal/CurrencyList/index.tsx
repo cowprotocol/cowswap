@@ -64,7 +64,6 @@ const Wrapper = styled.div`
   }
 
   ${StyledLogo} {
-    background: ${({ theme }) => theme.bg1};
     height: 36px;
     width: 36px;
     border-radius: 36px;

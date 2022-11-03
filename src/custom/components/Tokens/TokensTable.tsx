@@ -15,7 +15,6 @@ import {
   Table,
   PaginationText,
   IndexLabel,
-  InfoCircle,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { useHistory } from 'react-router-dom'
@@ -25,11 +24,9 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { OrderKind } from '@cowprotocol/contracts'
-import { MouseoverTooltip } from 'components/Tooltip'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import useFilterTokens from 'hooks/useFilterTokens'
 
-const MAX_ITEMS = 10
+const MAX_ITEMS = 20
 
 enum SORT_FIELD {
   NAME = 'name',
@@ -70,7 +67,6 @@ export default function TokenTable({
   debouncedQuery,
 }: TokenTableParams) {
   // const { account } = useWeb3React()
-  const native = useNativeCurrency()
 
   const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
@@ -221,21 +217,7 @@ export default function TokenTable({
                 <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
               </ClickableText>
               <Label>Value</Label>
-              <Label>Buy</Label>
-              <Label>Sell</Label>
-              <Label>
-                <span>Approve</span>
-                <MouseoverTooltip
-                  text={
-                    <Trans>
-                      Enable token for trading. This only need to be done once. Once it is enabled, you can place orders
-                      for free using meta-transactions (no {native.name} is required)
-                    </Trans>
-                  }
-                >
-                  <InfoCircle size="20" color={'white'} />
-                </MouseoverTooltip>
-              </Label>
+              <Label>Actions</Label>
             </TableHeader>
 
             <TableBody>

@@ -29,9 +29,8 @@ export const BodyWrapper = styled.div<{ location: { pathname: string } }>`
   display: flex;
   flex-direction: row;
   width: 100%;
-  align-items: center;
-  justify-content: center;
   align-items: flex-start;
+  justify-content: center;
   flex: auto;
   z-index: 1;
   padding: ${({ location }) => ([Routes.SWAP].includes(location.pathname as Routes) ? '5vh 0 0' : '5vh 0 240px')};

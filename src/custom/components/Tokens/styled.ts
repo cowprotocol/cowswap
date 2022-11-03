@@ -1,29 +1,39 @@
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
-import { ThemedText } from 'theme'
 import { transparentize } from 'polished'
 import { AutoColumn } from 'components/Column'
 import { BaseButton } from 'components/Button'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { HelpCircle } from 'react-feather'
-import { SearchInput } from 'components/SearchModal/styleds'
 
-export const TokenSearchInput = styled(SearchInput)`
-  margin-bottom: 16px;
+export const TokenSearchInput = styled.input`
+  margin: 0;
   font-size: 14px;
-  max-width: 500px;
+  width: 280px;
   align-self: flex-end;
-  border-radius: 0;
-  box-shadow: none !important;
-  border-bottom: 1px solid ${({ theme }) => theme.bg2} !important;
+  box-shadow: none;
+  background: ${({ theme }) => theme.grey1};
+  border: 1px solid ${({ theme }) => theme.bg1};
+  border-radius: 21px;
+  transition: background 0.2s ease-in-out, width 0.2s ease-in-out;
+  appearance: none;
+  height: 44px;
+  padding: 0 16px;
+  outline: 0;
 
-  ::placeholder {
-    font-size: 14px !important;
-    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : theme.text1)} !important;
+  &:focus {
+    width: 500px;
+    background: ${({ theme }) => theme.bg1};
+    outline: 0;
   }
 
-  :focus::placeholder {
-    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? theme.white : theme.text1)} !important;
+  &::placeholder {
+    font-size: 14px !important;
+    color: ${({ theme }) => transparentize(0.5, theme.darkMode ? theme.white : theme.text1)};
+  }
+
+  &:focus::placeholder {
+    color: ${({ theme }) => transparentize(0.3, theme.darkMode ? theme.white : theme.text1)};
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -46,19 +56,28 @@ export const Wrapper = styled.div`
   width: 100%;
   border: none;
   padding: 0;
+  background: ${({ theme }) => theme.bg1};
+  border-radius: 16px;
+  box-shadow: ${({ theme }) => theme.boxShadow1};
 `
 
 export const ResponsiveGrid = styled.div`
   display: grid;
-  grid-gap: 1em;
+  grid-gap: 16px;
+  width: 100%;
+  height: 58px;
+  font-size: 14px;
   align-items: center;
   text-align: left;
-  border-bottom: 1px solid ${({ theme }) => (theme.darkMode ? theme.text3 : transparentize(0.5, theme.text1))};
-  grid-template-columns: 50px minmax(80px, auto) minmax(70px, 140px) minmax(70px, 140px) repeat(2, 55px) 100px;
+  border: 0;
+  padding: 0 16px;
+  grid-template-columns: 40px 7fr 2fr 2fr 4fr;
+  background: transparent;
+  transition: background 0.1s ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    grid-template-columns: 50px minmax(80px, 100px) minmax(70px, 140px) minmax(70px, 140px) repeat(2, 55px) 100px;
-  `};
+  &:hover {
+    background: ${({ theme }) => theme.grey1};
+  }
 `
 
 export const LinkWrapper = styled(Link)`
@@ -74,9 +93,9 @@ export const LinkWrapper = styled(Link)`
 `
 
 export const ResponsiveLogo = styled(CurrencyLogo)`
-  width: 36px;
-  height: 36px;
-  border-radius: 36px;
+  width: 28px;
+  height: 28px;
+  border-radius: 28px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 16px;
@@ -84,18 +103,42 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
   `};
 `
 
-export const Label = styled(ThemedText.Label)<{ end?: number }>`
+export const Label = styled.div<{ end?: number }>`
   display: flex;
-  font-size: 14px;
+  font-size: inherit;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
   color: ${({ theme }) => theme.text1};
   align-items: center;
   font-variant-numeric: tabular-nums;
+  word-break: break-all;
+  overflow: hidden;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
+  > span {
+    display: flex;
+    align-items: center;
+    max-width: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  > span > b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    font-weight: 500;
+    display: inline-block;
+  }
+
+  > span > i {
+    opacity: 0.6;
+    margin: 0 0 0 4px;
+    font-style: normal;
+    display: inline-block;
+    text-transform: uppercase;
+  }
 `
 
 export const ClickableText = styled(Label)<{ disabled?: boolean }>`
@@ -204,29 +247,36 @@ export const LargeOnly = styled.span`
 `
 
 export const TableHeader = styled(ResponsiveGrid)`
-  padding: 1.2rem 0;
+  padding: 16px;
   background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.bg2) : transparentize(0.7, theme.bg1))};
+  border-bottom: 1px solid ${({ theme }) => theme.grey1};
+
+  &:hover {
+    background: transparent;
+  }
+
+  ${Label} {
+    opacity: 0.75;
+  }
 `
 
 export const TableBody = styled(AutoColumn)`
-  margin-bottom: 0.8rem;
+  margin: 0 0 16px;
+  padding: 10px 0 0;
+  gap: 0;
 `
 
-export const Cell = styled.div<{ center?: boolean }>`
+export const Cell = styled.div`
   display: flex;
-  padding: 1rem 0;
-  justify-content: ${({ center }) => (center ? 'center' : 'flex-start')};
+  padding: 0;
+  justify-content: flex-start;
   align-items: center;
-
-  > * {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   > a {
     text-decoration-color: transparent;
     transition: text-decoration-color 0.2s ease-in-out;
+    overflow: hidden;
+    display: flex;
 
     &:hover {
       text-decoration-color: ${({ theme }) => theme.text1};
@@ -259,16 +309,17 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
 `
 
 export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean; text?: boolean }>`
-  font-size: 12px;
+  font-size: 14px;
   padding: 3px 15px;
   width: auto;
   font-weight: 400;
   transition: all 0.15s ease-in;
-  background: ${({ theme, color }) => transparentize(0.2, color || theme.text1)};
+  background: ${({ color }) => transparentize(0.2, color || 'transparent')};
+  color: ${({ theme }) => theme.text1};
   white-space: nowrap;
   position: relative;
 
-  :hover {
+  &:hover {
     background: ${({ theme, color }) => color || theme.text1};
   }
 
@@ -326,6 +377,8 @@ export const TokenText = styled.div`
   display: flex;
   align-items: center;
   text-align: left;
+  margin: 0 0 0 12px;
+  font-size: 16px;
 `
 
 export const ApproveLabel = styled.span<{ color?: string }>`
@@ -343,7 +396,7 @@ export const CustomLimit = styled.div`
 `
 
 export const IndexLabel = styled(Label)`
-  padding-left: 15px;
+  padding: 0;
 `
 
 export const FiatValue = styled.div`

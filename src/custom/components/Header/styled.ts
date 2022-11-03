@@ -32,6 +32,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
 export const BalanceText = styled(BalanceTextUni)`
   font-weight: 500;
+  font-size: 13px;
   padding: 0 6px 0 12px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`

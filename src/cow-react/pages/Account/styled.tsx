@@ -11,16 +11,15 @@ import SVG from 'react-inlinesvg'
 import SpinnerLoader from 'components/Loader'
 
 export const Container = styled.div`
-  max-width: 910px;
+  max-width: 100%;
   width: 100%;
   z-index: 1;
 `
 
 export const Wrapper = styled(Page)`
   ${GdocsListStyle}
-
-  max-width: 910px;
   width: 100%;
+  max-width: 100%;
   min-height: unset;
   padding-top: 16px;
   display: flex;
@@ -45,9 +44,11 @@ export const Wrapper = styled(Page)`
 `
 
 export const ExtLink = styled(ExternalLink)`
+  color: ${({ theme }) => theme.text3};
+
   &:hover,
   &:focus {
-    color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.text3};
   }
 `
 
@@ -147,11 +148,10 @@ export const FlexWrap = styled.div`
 `
 
 export const StyledContainer = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-  }
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -302,11 +302,15 @@ export const Card = styled.div<{ showLoader?: boolean }>`
 
     > svg {
       height: 100%;
-      width: auto;
+      width: 16px;
       object-fit: contain;
       margin: 0 0 0 6px;
       transform: translateX(0);
       transition: transform 0.2s ease-in-out;
+
+      > path {
+        fill: ${({ theme }) => theme.white};
+      }
     }
 
     &:hover > svg {
@@ -397,7 +401,7 @@ export const BannerCard = styled(BannerExplainer)`
       color: ${({ theme }) => theme.text1};
 
       &:hover {
-        color: ${({ theme }) => theme.primary1};
+        color: ${({ theme }) => theme.text3};
       }
     }
   }
@@ -651,10 +655,11 @@ export const CardsLoader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px;
+  height: 100%;
+  width: 100%;
 `
 export const CardsSpinner = styled(SpinnerLoader)`
-  margin-left: 30px;
+  margin: auto;
 
   & path {
     stroke: ${({ theme }) => theme.text1};

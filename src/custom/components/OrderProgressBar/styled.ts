@@ -16,7 +16,7 @@ export const ProgressBarWrapper = animated(styled.div`
   border-radius: 12px;
   padding: 20px 20px 0;
   color: ${({ theme }) => theme.text1};
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: ${({ theme }) => theme.grey1};
   transition: height 0.2s ease;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -171,24 +171,20 @@ export const StatusMsgContainer = styled.div`
 export const StatusGraph = styled.div`
   display: flex;
   align-items: center;
-  margin: 1rem 0 0 0;
-  gap: 1rem;
-  border: 1px solid ${({ theme }) => theme.border2};
-  border-radius: 0.6rem;
+  margin: 42px auto 0;
+  gap: 10px;
+  border: 1px solid ${({ theme }) => theme.bg1};
+  border-radius: 16px;
   padding: 0 0.9rem;
-  min-height: 6rem;
+  min-height: 100px;
   width: 100%;
 
-  .meditating-cow {
-    margin: 0 2rem;
-  }
-
-  span {
-    color: ${({ theme }) => theme.orange};
+  > img {
+    margin: 0 10px 0 0;
   }
 
   p {
-    font-size: 0.82rem;
+    font-size: 15px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -234,6 +230,6 @@ export const StyledCoWLink = styled(ExternalLink)`
 `
 
 export const StyledExternalLink = styled(ExternalLink)`
-  font-size: 0.82rem;
-  color: ${({ theme }) => theme.orange};
+  font-size: inherit;
+  color: inherit;
 `
