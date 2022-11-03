@@ -7,7 +7,7 @@ on:
   push:
     branches: [main, develop]
     tags: [v*]
-
+  workflow_dispatch: # Manually trigger it via UI/CLI/API
 
 env:
   REPO_NAME_SLUG: cowswap
@@ -112,6 +112,7 @@ jobs:
       #   uses: coverallsapp/github-action@v1.1.2
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
+
   lint:
     name: Lint
     needs: setup
@@ -228,6 +229,16 @@ jobs:
         env_name: [barn, staging] # deploys both in parallel
     with:
       env_name: ${{ matrix.env_name }}
+
+  vercel-prod:
+    # Deploys to Vercel prod environment
+    name: Vercel prod
+    needs: [test, lint]
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: prod
 
   deploy:
     name: Deploy
