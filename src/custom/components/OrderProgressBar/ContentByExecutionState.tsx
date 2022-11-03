@@ -53,13 +53,13 @@ function amountsForMarketPriceFormatted(
     percentageDiff: percentageDifference.toFixed(2),
     orderPrice: `${orderPrice.toSignificant(10)} ${order.outputToken.symbol}`,
     currentPrice: `${currentPrice.toSignificant(10)} ${order.outputToken.symbol}`,
-    inputTokenSymbol: order.inputToken.symbol ?? '???',
+    inputTokenSymbol: order.inputToken.symbol || '',
   }
 }
 
 function dashWhenNoValue(value: string | undefined, params?: { prefix?: string; suffix?: string }) {
   if (!value) return '-'
-  return `${params?.prefix ?? ''}${value}${params?.suffix ?? ''}`
+  return `${params?.prefix || ''}${value}${params?.suffix || ''}`
 }
 
 function ContentByExecutionState(props: ExecutionStateProps) {
