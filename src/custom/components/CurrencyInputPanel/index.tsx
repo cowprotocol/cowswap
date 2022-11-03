@@ -2,11 +2,7 @@ import styled from 'styled-components/macro'
 import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
 import { useIsQuoteRefreshing } from 'state/price/hooks'
 
-import CurrencyInputPanelMod, {
-  CurrencyInputPanelProps,
-  Wrapper as WrapperMod,
-  StyledTokenName,
-} from './CurrencyInputPanelMod'
+import CurrencyInputPanelMod, { CurrencyInputPanelProps, Wrapper } from './CurrencyInputPanelMod'
 import CurrencySearchModalUni from '@src/components/SearchModal/CurrencySearchModal'
 
 import { LONG_LOAD_THRESHOLD } from 'constants/index'
@@ -23,12 +19,6 @@ export const CurrencySearchModal = styled(CurrencySearchModalUni)`
       max-width: 100%;
       border-radius: 0;
     `}
-  }
-`
-
-const Wrapper = styled(WrapperMod)`
-  ${StyledTokenName} {
-    font-size: 19px;
   }
 `
 

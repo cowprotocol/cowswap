@@ -243,6 +243,10 @@ export const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }
 export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   // CSS Override
 
+  ${StyledTokenName} {
+    font-size: 19px;
+  }
+
   ${InputPanel} {
     background: transparent;
     color: ${({ theme }) => theme.currencyInput?.color};
