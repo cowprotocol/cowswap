@@ -22,16 +22,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set VERCEL_PROJECT_ID env var
-        run: >
-          if [[ ${{ inputs.env_name == 'dev' }} ]]; then
-            echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_DEV }}" >> $GITHUB_ENV
-          elif [[ ${{ inputs.env_name == 'staging' }} ]]; then
-            echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_STAGING }}" >> $GITHUB_ENV
-          elif [[ ${{ inputs.env_name == 'barn' }} ]]; then
-            echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_BARN }}" >> $GITHUB_ENV
-          elif [[ ${{ inputs.env_name == 'prod' }} ]]; then
-            echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID_PROD }}" >> $GITHUB_ENV
-          fi
+        # It's set in each env's config on https://github.com/cowprotocol/cowswap/settings/environments
+        run: echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
