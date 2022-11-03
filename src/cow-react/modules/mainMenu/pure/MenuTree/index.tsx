@@ -16,7 +16,7 @@ import {
   MenuItemKind,
   MenuLink,
   MenuTreeItem,
-} from '@cow/modules/mainMenu/typings'
+} from '@cow/modules/mainMenu/types'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
 

@@ -7,7 +7,7 @@ import { Field } from 'state/swap/actions'
 import { formatMax } from 'utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/typings'
+import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
 
 export interface RowReceivedAfterSlippageProps extends RowWithShowHelpersProps {
   trade: TradeGp

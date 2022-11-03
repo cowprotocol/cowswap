@@ -1,6 +1,6 @@
 import { Field } from 'state/swap/actions'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { OrderKind } from 'state/orders/actions'

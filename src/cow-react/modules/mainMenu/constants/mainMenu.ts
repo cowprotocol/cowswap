@@ -1,6 +1,6 @@
 import { Routes } from '@cow/constants/routes'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
-import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../typings'
+import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
 
 // Assets
 import IMAGE_DOCS from 'assets/cow-swap/doc.svg'

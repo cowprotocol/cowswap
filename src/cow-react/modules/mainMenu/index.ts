@@ -1,2 +1,2 @@
 export * from './constants/mainMenu'
-export * from './typings'
+export * from './types'
