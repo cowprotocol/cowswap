@@ -64,7 +64,7 @@ export function RateInput() {
   // Don't call this when the rate changes as a result of click on inverse button
   // because in that case we don't want to recalculate anything
   useEffect(() => {
-    if (isInversed === prevIsInversed) {
+    if (isInversed === prevIsInversed && activeRate && inputCurrencyAmount) {
       updateCurrencyAmount({
         inputCurrencyAmount: inputCurrencyAmount?.toExact(),
         keepOrderKind: true,
