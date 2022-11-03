@@ -2,10 +2,9 @@ import { useWeb3React } from '@web3-react/core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
-import { getDefaultLimitOrdersState, limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
-import { useAreThereTokensWithSameSymbol } from '@cow/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
-import { useAtomValue } from 'jotai/utils'
-import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
+import { getDefaultTradeState, TradeState } from '../../types/TradeState'
+import { useTradeNavigate } from '../useTradeNavigate'
 
 const alertMessage = (
   doubledSymbol: string
@@ -22,13 +21,15 @@ Please select the token you need from the UI or use the address of the token ins
  * Example: /limit-orders/0xa47c8bf37f92abed4a126bda807a7b7498661acd/WETH
  * @see useOnCurrencySelection.ts
  */
-export function useResetStateWithSymbolDuplication(): void {
+export function useResetStateWithSymbolDuplication(state: TradeState | null): void {
   const { chainId } = useWeb3React()
-  const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersAtom)
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
-  const limitOrdersNavigate = useLimitOrdersNavigate()
+  const navigate = useTradeNavigate()
 
   useEffect(() => {
+    if (!state) return
+
+    const { inputCurrencyId, outputCurrencyId } = state
     const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)
     const outputCurrencyIsDoubled = checkTokensWithSameSymbol(outputCurrencyId)
 
@@ -38,8 +39,11 @@ export function useResetStateWithSymbolDuplication(): void {
       // TODO: add UI modal instead of alert
       alert(alertMessage(doubledSymbol || ''))
 
-      const defaultState = getDefaultLimitOrdersState(chainId)
-      limitOrdersNavigate(chainId, defaultState.inputCurrencyId, defaultState.outputCurrencyId)
+      const defaultState = getDefaultTradeState(chainId)
+      navigate(chainId, {
+        inputCurrencyId: defaultState.inputCurrencyId,
+        outputCurrencyId: defaultState.outputCurrencyId,
+      })
     }
-  }, [limitOrdersNavigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
+  }, [navigate, checkTokensWithSameSymbol, chainId, state])
 }

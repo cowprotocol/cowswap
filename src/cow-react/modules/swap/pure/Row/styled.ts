@@ -2,7 +2,7 @@ import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 import { RowBetween } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { RowStyleProps } from './typings'
+import { RowStyleProps } from './types'
 
 const StyledMouseoverTooltipContent = styled(MouseoverTooltipContent)``
 export const TextWrapper = styled(Text)``

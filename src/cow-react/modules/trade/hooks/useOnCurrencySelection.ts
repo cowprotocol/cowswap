@@ -2,9 +2,11 @@ import { useCallback } from 'react'
 import { Field } from 'state/swap/actions'
 import { useWeb3React } from '@web3-react/core'
 import { Currency, Token } from '@uniswap/sdk-core'
-import { useAreThereTokensWithSameSymbol } from '@cow/modules/limitOrders/hooks/useAreThereTokensWithSameSymbol'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useLimitOrdersNavigate } from '@cow/modules/limitOrders/hooks/useLimitOrdersNavigate'
+import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
+import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
+import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
+
+export type CurrencySelectionCallback = (field: Field, currency: Currency | null) => void
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
@@ -24,22 +26,31 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
  * if there are more than one token with the same symbol
  * @see useResetStateWithSymbolDuplication.ts
  */
-export function useOnCurrencySelection(): (field: Field, currency: Currency) => void {
+export function useOnCurrencySelection(): CurrencySelectionCallback {
   const { chainId } = useWeb3React()
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const limitOrdersNavigate = useLimitOrdersNavigate()
+  const tradeState = useTradeState()
+  const navigate = useTradeNavigate()
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
   return useCallback(
-    (field: Field, currency: Currency) => {
+    (field: Field, currency: Currency | null) => {
+      if (!tradeState) return
+
+      const { inputCurrencyId, outputCurrencyId } = tradeState.state
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
       if (field === Field.INPUT) {
-        limitOrdersNavigate(chainId, tokenSymbolOrAddress, resolveCurrencyAddressOrSymbol(outputCurrency))
+        navigate(chainId, {
+          inputCurrencyId: tokenSymbolOrAddress,
+          outputCurrencyId,
+        })
       } else {
-        limitOrdersNavigate(chainId, resolveCurrencyAddressOrSymbol(inputCurrency), tokenSymbolOrAddress)
+        navigate(chainId, {
+          inputCurrencyId,
+          outputCurrencyId: tokenSymbolOrAddress,
+        })
       }
     },
-    [limitOrdersNavigate, chainId, inputCurrency, outputCurrency, resolveCurrencyAddressOrSymbol]
+    [navigate, chainId, tradeState, resolveCurrencyAddressOrSymbol]
   )
 }
