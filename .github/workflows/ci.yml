@@ -112,6 +112,7 @@ jobs:
       #   uses: coverallsapp/github-action@v1.1.2
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
+
   lint:
     name: Lint
     needs: setup
@@ -205,14 +206,6 @@ jobs:
         with:
           name: website
           path: build
-
-  vercel-test:
-    name: Test deploy!!! Remove before publishing
-    if: github.event_name == 'pull_request'
-    uses: ./.github/workflows/vercel.yml
-    secrets: inherit
-    with:
-      env_name: dev
 
   vercel-dev:
     # Deploys to Vercel dev environment
