@@ -334,21 +334,8 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
           bottom: 0;
           left: 0;
           transform: translateX(-100%);
-          background-image: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0,
-            ${theme.shimmer1} 20%,
-            ${theme.shimmer2} 60%,
-            rgba(255, 255, 255, 0)
-          );
-          animation: shimmer 2s infinite;
+          ${theme.shimmer}; // shimmer effect
           content: '';
-        }
-
-        @keyframes shimmer {
-          100% {
-            transform: translateX(100%);
-          }
         }
       }
     `}

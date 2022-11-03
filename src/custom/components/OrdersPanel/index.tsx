@@ -17,7 +17,7 @@ const SideBar = styled.div`
   top: 0;
   right: 0;
   width: 100%;
-  max-width: 750px;
+  max-width: 850px;
   height: 80vh;
   border-radius: 24px;
   margin: auto;
@@ -28,10 +28,9 @@ const SideBar = styled.div`
   cursor: default;
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
-  box-shadow: 0 16px 32px 0 rgb(0 0 0 / 5%);
-  animation: slideIn 0.3s cubic-bezier(0.87, 0, 0.13, 1);
-  background: ${({ theme }) => theme.card.background2};
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
+  box-shadow: ${({ theme }) => theme.boxShadow1};
+  background: ${({ theme }) => theme.bg1};
+  scrollbar-color: ${({ theme }) => `${transparentize(0.5, theme.text1)} ${theme.bg1}`};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`    
     width: 100%;
@@ -49,7 +48,7 @@ const SideBar = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.card.border};
+    background: ${({ theme }) => `${transparentize(0.5, theme.text1)}`};
     border: 4px solid transparent;
     border-radius: 16px;
     background-clip: padding-box;
@@ -60,26 +59,6 @@ const SideBar = styled.div`
   &::-webkit-scrollbar-corner {
     height: 6px;
   }
-
-  @keyframes slideIn {
-    from {
-      transform: translateY(-100vh);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`    
-  @keyframes slideIn {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-  `};
 `
 
 const SidebarBackground = styled.div`
@@ -89,7 +68,7 @@ const SidebarBackground = styled.div`
   z-index: 1;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => transparentize(0.4, theme.black)};
+  background: ${({ theme }) => transparentize(0.1, theme.black)};
   backdrop-filter: blur(3px);
 
   ${({ theme }) => theme.mediaWidth.upToSmall`    
@@ -104,6 +83,7 @@ const Header = styled.div`
   padding: 20px 30px;
   align-items: center;
   transition: opacity 0.2s ease-in-out;
+  color: ${({ theme }) => theme.text1};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     top: 0;
@@ -112,7 +92,7 @@ const Header = styled.div`
     position: sticky;
     left: 0;
     height: 52px;
-    background: ${({ theme }) => theme.card.background2};
+    background: ${({ theme }) => theme.bg1};
   `};
 
   &:hover {
@@ -121,14 +101,20 @@ const Header = styled.div`
   }
 
   > strong {
-    font-size: 15px;
-    ${({ theme }) => theme.text1};
+    font-size: 24px;
+    color: inherit;
   }
 `
 
 const CloseIcon = styled(Close)`
-  path {
-    stroke: ${({ theme }) => theme.text4};
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+  stroke: ${({ theme }) => theme.text1};
+  width: 24px;
+  height: 24px;
+
+  &:hover {
+    opacity: 1;
   }
 `
 

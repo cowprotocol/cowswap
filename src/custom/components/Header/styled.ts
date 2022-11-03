@@ -32,6 +32,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
 export const BalanceText = styled(BalanceTextUni)`
   font-weight: 500;
+  font-size: 13px;
   padding: 0 6px 0 12px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -315,14 +316,14 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 
   > a:hover > svg > path {
-    fill: ${({ theme }) => theme.primary1};
+    fill: ${({ theme }) => theme.text1};
   }
 `
 
 export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   width: 131px;
   height: 41px;
-  background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
+  background: none;
   margin: 0 32px 0 0;
   position: relative;
 
@@ -341,8 +342,8 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   `}
 
   > svg {
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
     object-fit: contain;
   }
 `

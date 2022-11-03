@@ -8,6 +8,9 @@ export const Container = styled.div`
 `
 
 export const ContainerBox = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 10px;
   background: ${({ theme }) => theme.bg1};
   border: none;
   border-radius: 16px;
@@ -22,9 +25,9 @@ export const ContainerBox = styled.div`
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0 4px;
-  margin: 5px 0 15px 0;
-
+  align-items: center;
+  padding: 4px 10px;
+  margin: 0;
   font-weight: 500;
   font-size: 16px;
 `
@@ -32,7 +35,8 @@ export const Header = styled.div`
 export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
   display: flex;
   justify-content: space-between;
-  margin: ${({ withRecipient }) => (withRecipient ? '10px' : '0')};
+  margin: 0;
+  padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
 `
 
 export const SettingsButton = styled.div`
@@ -46,11 +50,12 @@ export const SettingsButton = styled.div`
 `
 
 export const TradeButtonBox = styled.div`
-  margin-top: 15px;
+  margin: 0;
 `
 
 export const RateWrapper = styled.div`
   display: flex;
+  gap: 10px;
 `
 
 export const SettingsIcon = styled(Settings)`

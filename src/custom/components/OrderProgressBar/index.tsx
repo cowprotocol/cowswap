@@ -184,7 +184,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." className="meditating-cow" />
+                <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." />
                 <p>
                   Your tokens should already be in your wallet, check out your trade on the{' '}
                   <StyledExternalLink href={order ? getExplorerOrderLink(chainId, order.id) : '#'}>

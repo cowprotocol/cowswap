@@ -31,6 +31,8 @@ import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 import { MainMenu } from 'cow-react/modules/mainMenu'
+import SVG from 'react-inlinesvg'
+import { cowSwapLogo } from 'theme/cowSwapAssets'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
@@ -98,7 +100,9 @@ export default function Header() {
         <HeaderRow>
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
-              <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
+              <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
+                <SVG src={cowSwapLogo(darkMode)} />
+              </LogoImage>
             </UniIcon>
           </Title>
           <MainMenu

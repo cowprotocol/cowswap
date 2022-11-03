@@ -8,7 +8,7 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean }>`
   background: ${({ theme }) => theme.input.bg1};
   border: none;
   border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
-  min-height: 100px;
+  min-height: 120px;
 `
 
 export const CurrencyInputBox = styled.div<{ flexibleWidth: boolean }>`

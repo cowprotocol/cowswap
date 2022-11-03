@@ -14,9 +14,15 @@ interface FeesDiscountProps extends BoxProps {
 
 const DarkSpan = styled.span`
   padding: 2px 8px;
-  background-color: ${({ theme }) => theme.bg4};
+  background: ${({ theme }) => theme.grey1};
   border-radius: 5px;
   color: ${({ theme }) => theme.text1};
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
+  }
 `
 
 export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...boxProps }: FeesDiscountProps) => {
