@@ -12,9 +12,10 @@ import { SupportedChainId } from 'constants/chains'
 import { AutoColumn } from 'components/Column'
 import * as styledEl from './styled'
 import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
-import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import { TradeApproveButton } from '@cow/common/containers/TradeApprove/TradeApproveButton'
+
+export type HandleSwapCallback = () => void
 
 export interface SwapButtonsContext {
   swapButtonState: SwapButtonState

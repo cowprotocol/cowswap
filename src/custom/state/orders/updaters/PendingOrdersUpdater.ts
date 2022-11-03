@@ -26,7 +26,7 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import ms from 'ms.macro'
 import { openNpsAppziSometimes } from 'utils/appzi'
-import { timeSinceInSeconds } from 'utils/time'
+import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
 
