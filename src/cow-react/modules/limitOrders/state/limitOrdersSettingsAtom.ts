@@ -6,12 +6,14 @@ export interface LimitOrdersSettingsState {
   readonly expertMode: boolean
   readonly showRecipient: boolean
   readonly deadline: number
+  readonly customDeadline: number | null
 }
 
 export const limitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>('limit-orders-settings-atom', {
   expertMode: false,
   showRecipient: false,
   deadline: defaultLimitOrderDeadline.value,
+  customDeadline: null,
 })
 
 export const updateLimitOrdersSettingsAtom = atom(null, (get, set, nextState: Partial<LimitOrdersSettingsState>) => {

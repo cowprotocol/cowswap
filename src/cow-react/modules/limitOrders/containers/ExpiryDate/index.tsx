@@ -26,7 +26,7 @@ const customDateOptions: Intl.DateTimeFormatOptions = {
 }
 
 export function ExpiryDate() {
-  const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const { deadline, customDeadline } = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const currentDeadlineNode = useRef<HTMLButtonElement>()
 
@@ -34,16 +34,17 @@ export function ExpiryDate() {
   const max = limitDateString(new Date(Date.now() + maxCustomDeadline))
 
   const existingDeadline = useMemo(() => {
-    return limitOrdersDeadlines.find((item) => item.value === settingsState.deadline)
-  }, [settingsState.deadline])
+    return limitOrdersDeadlines.find((item) => item.value === deadline)
+  }, [deadline])
 
   const customDeadlineTitle = useMemo(() => {
-    return new Date(settingsState.deadline).toLocaleString(undefined, customDateOptions)
-  }, [settingsState.deadline])
+    if (!customDeadline) return ''
+    return new Date(customDeadline).toLocaleString(undefined, customDateOptions)
+  }, [customDeadline])
 
   const setDeadline = useCallback(
     (deadline: number) => {
-      updateSettingsState({ deadline })
+      updateSettingsState({ deadline, customDeadline: null })
       currentDeadlineNode.current?.click() // Close dropdown
     },
     [updateSettingsState]
@@ -51,9 +52,9 @@ export function ExpiryDate() {
 
   const onChange = useCallback(
     (event) => {
-      const deadline = new Date(event.target.value).getTime()
+      const customDeadline = new Date(event.target.value).getTime()
 
-      updateSettingsState({ deadline })
+      updateSettingsState({ customDeadline })
     },
     [updateSettingsState]
   )
@@ -76,8 +77,8 @@ export function ExpiryDate() {
     <styledEl.Wrapper>
       <styledEl.Title>Expiry</styledEl.Title>
       <Dropdown content={list}>
-        <styledEl.Current ref={currentDeadlineNode as any} isCustom={!existingDeadline}>
-          <span>{existingDeadline ? existingDeadline.title : customDeadlineTitle}</span>
+        <styledEl.Current ref={currentDeadlineNode as any} isCustom={!!customDeadline}>
+          <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
           <ChevronDown size="18" />
         </styledEl.Current>
       </Dropdown>
