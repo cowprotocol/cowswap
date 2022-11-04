@@ -5,10 +5,12 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { Token } from '@uniswap/sdk-core'
 import { parseUnits } from '@ethersproject/units'
 import { useMemo } from 'react'
+import useENSAddress from '@src/hooks/useENSAddress'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient, deadline } = useLimitOrdersTradeState()
   const { chainId, account } = useWeb3React()
+  const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   const isFullInput = !!(deadline && chainId && inputCurrencyAmount && inputCurrency && outputCurrency)
 
@@ -16,7 +18,7 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
     ? {
         chainId,
         validTo: Math.round(Date.now() / 1000 + 60 * deadline),
-        receiver: recipient || account,
+        receiver: recipientEnsAddress || recipient || account,
         kind: OrderKind.SELL,
         sellToken: (inputCurrency as Token).address,
         buyToken: (outputCurrency as Token).address,
