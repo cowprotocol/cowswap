@@ -1,6 +1,6 @@
 import * as styledEl from './styled'
 import { Dropdown } from '@cow/common/pure/Dropdown'
-import { limitOrdersDeadlines, maxCustomDeadline } from '@cow/modules/limitOrders/containers/ExpiryDate/deadlines'
+import { limitOrdersDeadlines, maxCustomDeadline } from '@cow/modules/limitOrders/containers/DeadlineInput/deadlines'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,

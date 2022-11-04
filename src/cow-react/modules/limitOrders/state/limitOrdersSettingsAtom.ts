@@ -1,5 +1,5 @@
 import { atomWithStorage } from 'jotai/utils'
-import { defaultLimitOrderDeadline } from '@cow/modules/limitOrders/containers/ExpiryDate/deadlines'
+import { defaultLimitOrderDeadline } from '@cow/modules/limitOrders/containers/DeadlineInput/deadlines'
 import { atom } from 'jotai'
 
 export interface LimitOrdersSettingsState {
