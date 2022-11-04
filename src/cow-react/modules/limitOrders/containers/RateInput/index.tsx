@@ -25,8 +25,8 @@ export function RateInput() {
 
   // Handle rate display
   const displayedRate = useMemo(() => {
-    if (!activeRate || !areBothCurrencies) return ''
     if (isTypedValue) return typedValue || ''
+    else if (!activeRate || !areBothCurrencies || activeRate.equalTo(0)) return ''
 
     const rate = isInversed ? activeRate.invert() : activeRate
 
@@ -41,9 +41,9 @@ export function RateInput() {
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
-      updateLimitRateState({ typedValue, activeRate: toFraction(typedValue), isTypedValue: true })
+      updateLimitRateState({ typedValue, activeRate: toFraction(typedValue, isInversed), isTypedValue: true })
     },
-    [updateLimitRateState]
+    [isInversed, updateLimitRateState]
   )
 
   // Handle toggle primary field
