@@ -6,13 +6,9 @@ import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import React, { useCallback, useState } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
-import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
-import { useSetupLimitOrdersState } from '../../hooks/useSetupLimitOrdersState'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
-import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
-import { useResetStateWithSymbolDuplication } from '../../hooks/useResetStateWithSymbolDuplication'
-import { useLimitOrdersNavigate } from '../../hooks/useLimitOrdersNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
@@ -25,10 +21,14 @@ import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { TradeButtons } from '@cow/modules/limitOrders/containers/TradeButtons'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
+import { useSetupTradeState } from '@cow/modules/trade'
+import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
+import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
+import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 
 export function LimitOrdersWidget() {
-  useSetupLimitOrdersState()
-  useResetStateWithSymbolDuplication()
+  useSetupTradeState()
 
   const { chainId } = useWeb3React()
   const {
@@ -42,15 +42,16 @@ export function LimitOrdersWidget() {
     outputCurrencyFiatAmount,
     recipient,
   } = useLimitOrdersTradeState()
-  const state = useAtomValue(limitOrdersAtom)
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const onCurrencySelection = useOnCurrencySelection()
-  const limitOrdersNavigate = useLimitOrdersNavigate()
+  const onImportDismiss = useOnImportDismiss()
+  const limitOrdersNavigate = useTradeNavigate()
   const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
   const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
   const tradeContext = useTradeFlowContext(limitOrdersQuote)
+  const state = useAtomValue(limitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -98,7 +99,7 @@ export function LimitOrdersWidget() {
 
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId } = state
-    limitOrdersNavigate(chainId, outputCurrencyId, inputCurrencyId)
+    limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
   }, [state, limitOrdersNavigate, chainId])
 
   const onChangeRecipient = useCallback(
@@ -170,6 +171,7 @@ export function LimitOrdersWidget() {
           onDismiss={() => setShowConfirmation(false)}
         />
       )}
+      {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
     </>
   )
 }

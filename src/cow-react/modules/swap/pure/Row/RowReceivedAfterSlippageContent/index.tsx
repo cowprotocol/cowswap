@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
-import { StyledInfo } from '@cow/pages/Swap/styleds'
+import { StyledInfo } from '../../styled'
 import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/RowReceivedAfterSlippage'
 
 import { RowFixed } from 'components/Row'
@@ -10,7 +10,7 @@ import { getMinimumReceivedTooltip } from 'utils/tooltips'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { StyledRowBetween, TextWrapper } from '../styled'
-import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
+import { RowStyleProps } from '@cow/modules/swap/pure/Row/types'
 
 export interface RowReceivedAfterSlippageContentProps extends RowReceivedAfterSlippageProps {
   isExactIn: boolean

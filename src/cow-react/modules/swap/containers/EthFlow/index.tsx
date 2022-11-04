@@ -15,8 +15,8 @@ import { WrappingPreviewProps } from '../../pure/EthFlow/WrappingPreview'
 import { useSingleActivityDescriptor } from 'hooks/useRecentActivity'
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
-import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
 import { useTradeApproveCallback, useTradeApproveState } from '@cow/common/containers/TradeApprove'
+import { HandleSwapCallback } from '@cow/modules/swap/pure/SwapButtons'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>

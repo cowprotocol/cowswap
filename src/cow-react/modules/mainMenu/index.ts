@@ -1,1 +1,2 @@
-export { MainMenu } from './containers/MainMenu'
+export * from './constants/mainMenu'
+export * from './types'
