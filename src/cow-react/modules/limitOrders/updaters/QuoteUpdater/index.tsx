@@ -3,6 +3,7 @@ import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrders
 import { useEffect } from 'react'
 import { useQuoteRequestParams } from './hooks/useQuoteRequestParams'
 import { getQuote } from '@cow/api/gnosisProtocol'
+import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
 
 export function QuoteUpdater() {
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
@@ -13,10 +14,11 @@ export function QuoteUpdater() {
       console.debug('LIMIT ORDER QUOTE REQUEST:', feeQuoteParams)
 
       getQuote(feeQuoteParams)
-        .then(setLimitOrdersQuote)
-        .catch((e) => {
-          // TODO: process error
-          console.error('Limit order quote error: ', e)
+        .then((response) => {
+          setLimitOrdersQuote({ response, error: undefined })
+        })
+        .catch((error: GpQuoteError) => {
+          setLimitOrdersQuote({ response: undefined, error })
         })
     }
   }, [setLimitOrdersQuote, feeQuoteParams])

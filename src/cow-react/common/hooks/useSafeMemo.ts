@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
 import { CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
+import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 
 export function useSafeMemoDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
     if (dep instanceof NativeCurrency) return dep.symbol
     if (dep instanceof Token) return dep.address.toLowerCase()
     if (dep instanceof CurrencyAmount) return dep.toExact()
+    if (dep instanceof WrappedTokenInfo) return dep.address
 
     return dep
   })
