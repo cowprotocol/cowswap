@@ -13,7 +13,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { RateInput } from '../RateInput'
-import { ExpiryDate } from '../DeadlineInput'
+import { DeadlineInput } from '../DeadlineInput'
 import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
@@ -133,7 +133,7 @@ export function LimitOrdersWidget() {
           />
           <styledEl.RateWrapper>
             <RateInput />
-            <ExpiryDate />
+            <DeadlineInput />
           </styledEl.RateWrapper>
           <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
             <CurrencyArrowSeparator

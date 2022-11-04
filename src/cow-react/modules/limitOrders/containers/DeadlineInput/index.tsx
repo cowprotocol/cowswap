@@ -1,6 +1,3 @@
-import * as styledEl from './styled'
-import { Dropdown } from '@cow/common/pure/Dropdown'
-import { limitOrdersDeadlines, maxCustomDeadline } from '@cow/modules/limitOrders/containers/DeadlineInput/deadlines'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
@@ -8,80 +5,38 @@ import {
 import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai/utils'
 import { useCallback, useMemo, useRef } from 'react'
-import { ChevronDown } from 'react-feather'
+import { DeadlineSelector } from '@cow/modules/limitOrders/pure/DeadlineSelector'
+import { LimitOrderDeadline, limitOrdersDeadlines } from '@cow/modules/limitOrders/pure/DeadlineSelector/deadlines'
 
-function limitDateString(date: Date): string {
-  const [first, second] = date.toISOString().split(':')
-
-  return [first, second].join(':')
-}
-
-const customDateOptions: Intl.DateTimeFormatOptions = {
-  year: '2-digit',
-  month: 'short',
-  day: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
-}
-
-export function ExpiryDate() {
+export function DeadlineInput() {
   const { deadline, customDeadline } = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const currentDeadlineNode = useRef<HTMLButtonElement>()
-
-  const min = limitDateString(new Date())
-  const max = limitDateString(new Date(Date.now() + maxCustomDeadline))
-
   const existingDeadline = useMemo(() => {
     return limitOrdersDeadlines.find((item) => item.value === deadline)
   }, [deadline])
 
-  const customDeadlineTitle = useMemo(() => {
-    if (!customDeadline) return ''
-    return new Date(customDeadline).toLocaleString(undefined, customDateOptions)
-  }, [customDeadline])
-
-  const setDeadline = useCallback(
-    (deadline: number) => {
-      updateSettingsState({ deadline, customDeadline: null })
+  const selectDeadline = useCallback(
+    (deadline: LimitOrderDeadline) => {
+      updateSettingsState({ deadline: deadline.value, customDeadline: null })
       currentDeadlineNode.current?.click() // Close dropdown
     },
     [updateSettingsState]
   )
 
-  const onChange = useCallback(
-    (event) => {
-      const customDeadline = new Date(event.target.value).getTime()
-
+  const selectCustomDeadline = useCallback(
+    (customDeadline: number) => {
       updateSettingsState({ customDeadline })
     },
     [updateSettingsState]
   )
 
-  const list = (
-    <styledEl.ListWrapper>
-      {limitOrdersDeadlines.map(({ title, value }) => (
-        <li key={value}>
-          <styledEl.ListItem onClick={() => setDeadline(value)}>{title}</styledEl.ListItem>
-        </li>
-      ))}
-      <styledEl.ListItem>
-        Custom
-        <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} />
-      </styledEl.ListItem>
-    </styledEl.ListWrapper>
-  )
-
   return (
-    <styledEl.Wrapper>
-      <styledEl.Title>Expiry</styledEl.Title>
-      <Dropdown content={list}>
-        <styledEl.Current ref={currentDeadlineNode as any} isCustom={!!customDeadline}>
-          <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
-          <ChevronDown size="18" />
-        </styledEl.Current>
-      </Dropdown>
-    </styledEl.Wrapper>
+    <DeadlineSelector
+      deadline={existingDeadline}
+      customDeadline={customDeadline}
+      selectDeadline={selectDeadline}
+      selectCustomDeadline={selectCustomDeadline}
+    />
   )
 }
