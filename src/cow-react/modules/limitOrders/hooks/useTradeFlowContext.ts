@@ -40,7 +40,7 @@ export function useTradeFlowContext(limitOrdersQuote: SimpleGetQuoteResponse | n
   }
 
   const isGnosisSafeWallet = !!gnosisSafeInfo
-  const validTo = Math.round(Date.now() / 1000 + 60 * state.deadline)
+  const validTo = Math.round((Date.now() + state.deadline) / 1000)
   const recipient = state.recipient || account
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token

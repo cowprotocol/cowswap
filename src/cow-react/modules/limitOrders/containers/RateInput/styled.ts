@@ -3,7 +3,7 @@ import Input from 'components/NumericalInput'
 import Loader from 'components/Loader'
 
 export const Wrapper = styled.div`
-  background: white;
+  background: ${({ theme }) => theme.cardBackground};
   border-radius: 12px;
   margin-top: 1rem;
   padding: 0.75rem 1rem;

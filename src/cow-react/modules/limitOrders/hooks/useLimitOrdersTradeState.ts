@@ -7,6 +7,7 @@ import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrA
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
+import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
 export interface LimitOrdersTradeState {
   readonly inputCurrency: Currency | null
@@ -24,9 +25,10 @@ export interface LimitOrdersTradeState {
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const { account } = useWeb3React()
   const state = useAtomValue(limitOrdersAtom)
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
 
   const recipient = state.recipient
-  const deadline = state.deadline
+  const deadline = settingsState.deadline
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
   const inputCurrencyAmount =

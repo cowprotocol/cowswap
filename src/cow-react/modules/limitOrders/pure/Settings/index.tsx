@@ -30,7 +30,7 @@ function SettingsBox({ title, tooltip, value, toggle, disabled = false }: Settin
 
 export interface SettingsProps {
   state: LimitOrdersSettingsState
-  onStateChanged: (state: LimitOrdersSettingsState) => void
+  onStateChanged: (state: Partial<LimitOrdersSettingsState>) => void
 }
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
@@ -40,7 +40,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     tooltip: 'Allow high price impact trades and skip the confirm screen. Use at your own risk.',
     value: expertMode,
     toggle() {
-      onStateChanged({ expertMode: !expertMode, showRecipient })
+      onStateChanged({ expertMode: !expertMode })
     },
   }
 
@@ -50,7 +50,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     value: showRecipient,
     disabled: expertMode,
     toggle() {
-      onStateChanged({ expertMode, showRecipient: !showRecipient })
+      onStateChanged({ showRecipient: !showRecipient })
     },
   }
 

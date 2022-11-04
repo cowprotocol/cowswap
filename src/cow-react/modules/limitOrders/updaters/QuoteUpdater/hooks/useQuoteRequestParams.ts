@@ -17,7 +17,7 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
   const feeQuoteParams: FeeQuoteParams | null = isFullInput
     ? {
         chainId,
-        validTo: Math.round(Date.now() / 1000 + 60 * deadline),
+        validTo: Math.round((Date.now() + deadline) / 1000),
         receiver: recipientEnsAddress || recipient || account,
         kind: OrderKind.SELL,
         sellToken: (inputCurrency as Token).address,
