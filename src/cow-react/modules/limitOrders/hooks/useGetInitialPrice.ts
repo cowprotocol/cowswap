@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Currency, Fraction } from '@uniswap/sdk-core'
+import { useAsyncMemo } from 'use-async-memo'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
-import { useAsyncMemo } from 'use-async-memo'
-import { DEFAULT_DECIMALS } from '@src/custom/constants'
+import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
 
 type PriceResult = number | Error | undefined
 
@@ -29,7 +29,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
     }
 
     // TODO: IS THIS CORRECT (I've used 18 here as arbitrary number to remove decimals)
-    const price = result.price * 10 ** (18 + (currency.decimals || DEFAULT_DECIMALS))
+    const price = result.price * 10 ** (18 + getDecimals(currency))
 
     if (!price) {
       throw new Error('Cannot parse initial price')

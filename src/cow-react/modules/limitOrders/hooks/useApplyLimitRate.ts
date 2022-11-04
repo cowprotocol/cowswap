@@ -9,33 +9,31 @@ import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useApplyLimitRate() {
-  const { activeRate, isInversed } = useAtomValue(limitRateAtom)
+  const { activeRate, isInversed, isTypedValue } = useAtomValue(limitRateAtom)
 
   return useCallback(
     (value: string | null, field: Field): string | null | undefined => {
-      if (!value || !activeRate || !Number(value)) {
+      if (!value || !Number(value) || !activeRate || activeRate.equalTo(0)) {
         return null
       }
 
-      console.log('debug useApplyLimitRate', isInversed, activeRate.toFixed(20))
-
       let output: Fraction | null = null
       const parsedValue = toFraction(value)
+      // We need to invert rate only when its typed value
+      const parsedRate = isInversed && isTypedValue ? activeRate.invert() : activeRate
 
       // If the field is INPUT we will MULTIPLY passed value and rate
       if (field === Field.INPUT) {
-        output = parsedValue.multiply(activeRate)
+        output = parsedValue.multiply(parsedRate)
 
         // If the field is OUTPUT we will DIVIDE passed value and rate
       } else if (field === Field.OUTPUT) {
-        output = parsedValue.divide(activeRate)
+        output = parsedValue.divide(parsedRate)
       }
-
-      console.log('debug output', output?.toFixed(20))
 
       // We need to return string and we also limit the decimals
       return toFirstMeaningfulDecimal(output?.toFixed(20))
     },
-    [activeRate, isInversed]
+    [activeRate, isInversed, isTypedValue]
   )
 }

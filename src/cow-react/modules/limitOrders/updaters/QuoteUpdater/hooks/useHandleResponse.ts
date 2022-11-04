@@ -1,15 +1,15 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
+import { Fraction } from '@uniswap/sdk-core'
+import JSBI from 'jsbi'
 
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useHandleError } from './useHandleError'
-import { Fraction } from '@uniswap/sdk-core'
-import JSBI from 'jsbi'
-import { DEFAULT_DECIMALS } from '@src/custom/constants'
+import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
 
 export function useHandleResponse() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
@@ -28,15 +28,8 @@ export function useHandleResponse() {
         }
 
         // Adjust for decimals
-        const adjustedBuy = JSBI.multiply(
-          JSBI.BigInt(buyAmount),
-          JSBI.BigInt(10 ** inputCurrency.decimals || DEFAULT_DECIMALS)
-        )
-
-        const adjustedSell = JSBI.multiply(
-          JSBI.BigInt(sellAmount),
-          JSBI.BigInt(10 ** outputCurrency.decimals || DEFAULT_DECIMALS)
-        )
+        const adjustedBuy = JSBI.multiply(JSBI.BigInt(buyAmount), JSBI.BigInt(10 ** getDecimals(inputCurrency)))
+        const adjustedSell = JSBI.multiply(JSBI.BigInt(sellAmount), JSBI.BigInt(10 ** getDecimals(outputCurrency)))
 
         // Create executionRate fraction
         const executionRate = new Fraction(adjustedBuy, adjustedSell)

@@ -6,12 +6,12 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { HeadingText } from '@cow/modules/limitOrders/pure/RateInput/HeadingText'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { toFirstMeaningfulDecimal } from '@cow/modules/limitOrders/utils/toFirstMeaningfulDecimal'
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 
 export function RateInput() {
   // Rate state
-  const { isInversed, activeRate, isLoading, executionRate, isLoadingExecutionRate } = useAtomValue(limitRateAtom)
+  const { isInversed, activeRate, isLoading, executionRate, isLoadingExecutionRate, typedValue, isTypedValue } =
+    useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
   // Limit order state
@@ -26,11 +26,12 @@ export function RateInput() {
   // Handle rate display
   const displayedRate = useMemo(() => {
     if (!activeRate || !areBothCurrencies) return ''
+    if (isTypedValue) return typedValue || ''
 
     const rate = isInversed ? activeRate.invert() : activeRate
 
-    return toFirstMeaningfulDecimal(rate.toFixed(20))
-  }, [activeRate, areBothCurrencies, isInversed])
+    return rate.toSignificant(6)
+  }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
@@ -40,7 +41,7 @@ export function RateInput() {
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
-      updateLimitRateState({ activeRate: toFraction(typedValue), isTypedValue: true })
+      updateLimitRateState({ typedValue, activeRate: toFraction(typedValue), isTypedValue: true })
     },
     [updateLimitRateState]
   )
