@@ -1,9 +1,8 @@
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { StyledInfo } from '@cow/pages/Swap/styleds'
-import { LightGreyText } from '@cow/modules/swap/pure/styled'
+import { StyledInfo, LightGreyText } from '../../styled'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
-import { RowStyleProps, RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/typings'
+import { RowStyleProps, RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
 
 export interface RowFeeContentProps extends RowWithShowHelpersProps {
   includeGasMessage: string

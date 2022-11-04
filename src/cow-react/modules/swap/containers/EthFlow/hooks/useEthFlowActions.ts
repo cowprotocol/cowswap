@@ -8,8 +8,8 @@ import { useDerivedSwapInfo, useSwapActionHandlers } from 'state/swap/hooks'
 import { useSwapConfirmManager } from 'cow-react/modules/swap/hooks/useSwapConfirmManager'
 import { useWeb3React } from '@web3-react/core'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
-import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
 import { TradeApproveCallback } from '@cow/common/containers/TradeApprove/useTradeApproveCallback'
+import { HandleSwapCallback } from '@cow/modules/swap/pure/SwapButtons'
 
 export interface EthFlowActionCallbacks {
   approve: TradeApproveCallback

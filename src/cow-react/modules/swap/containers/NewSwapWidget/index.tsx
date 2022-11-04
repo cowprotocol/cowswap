@@ -1,5 +1,4 @@
 import * as styledEl from './styled'
-import { useSetupSwapState } from '@cow/modules/swap/hooks/useSetupSwapState'
 import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import {
@@ -19,7 +18,7 @@ import { useShowRecipientControls } from '@cow/modules/swap/hooks/useShowRecipie
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useTradePricesUpdate } from '@cow/modules/swap/hooks/useTradePricesUpdate'
 import { useCurrencyBalance } from 'state/connection/hooks'
-import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/typings'
+import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from 'state/swap/actions'
 import { tokenViewAmount } from '@cow/modules/swap/helpers/tokenViewAmount'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
@@ -28,7 +27,7 @@ import React, { useState } from 'react'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
-import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/typings'
+import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
 import { ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from '@cow/modules/swap/containers/EthFlow'
 import { NewSwapModals, NewSwapModalsProps } from '@cow/modules/swap/containers/NewSwapModals'
@@ -42,13 +41,13 @@ import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
+import { useSetupTradeState } from '@cow/modules/trade'
 
 export function NewSwapWidget() {
-  useSetupSwapState()
+  useSetupTradeState()
 
   const { chainId, account } = useWeb3React()
-  const { INPUT, independentField, recipient } = useSwapState()
-  const { allowedSlippage, currencies, v2Trade: trade } = useDerivedSwapInfo()
+  const { allowedSlippage, currencies, currenciesIds, v2Trade: trade } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
@@ -56,8 +55,10 @@ export function NewSwapWidget() {
   const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()
-  const showRecipientControls = useShowRecipientControls()
   const userAllowedSlippage = useUserSlippageTolerance()
+  const swapState = useSwapState()
+  const { independentField, recipient } = swapState
+  const showRecipientControls = useShowRecipientControls(recipient)
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -69,7 +70,7 @@ export function NewSwapWidget() {
   const isTradePriceUpdating = useTradePricesUpdate()
   const { isFeeGreater, fee } = useIsFeeGreaterThanInput({
     chainId,
-    address: INPUT.currencyId,
+    address: currenciesIds.INPUT,
   })
 
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
@@ -184,7 +185,7 @@ export function NewSwapWidget() {
       <styledEl.Container id="new-swap-widget">
         <NewSwapModals {...swapModalsProps} />
         <AffiliateStatusCheck />
-        <styledEl.ContainerBox>
+        <styledEl.ContainerBox id="swap-page">
           <SwapForm {...swapFormProps} />
           <TradeRates {...tradeRatesProps} />
           <NewSwapWarningsTop {...swapWarningsTopProps} />

@@ -1,0 +1,54 @@
+name: Vercel
+
+on:
+  workflow_call:
+    inputs:
+      env_name:
+        description: 'Environment to deploy to. Options are: dev, staging, barn and prod'
+        required: true
+        type: string
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env_name }} # Environment rules defined on GH UI
+    concurrency: ${{ inputs.env_name }} # Only one run per env at a time
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set VERCEL_PROJECT_ID env var
+        # It's set in each env's config on https://github.com/cowprotocol/cowswap/settings/environments
+        run: echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: >
+          REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          REACT_APP_SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+          REACT_APP_PINATA_API_KEY=${{ secrets.REACT_APP_PINATA_API_KEY }}
+          REACT_APP_PINATA_SECRET_API_KEY=${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
+          REACT_APP_BLOCKNATIVE_API_KEY=${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
+          REACT_APP_GOOGLE_ANALYTICS_ID=${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
+          REACT_APP_AMPLITUDE_KEY=${{ secrets.REACT_APP_AMPLITUDE_KEY }}
+          vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
+
+      - name: Get the version
+        id: get_version
+        run: echo "VERSION=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_OUTPUT
+
+      - name: Deploy Project Artifacts to Vercel
+        run: >
+          vercel deploy --prebuilt --prod
+          -t ${{ secrets.VERCEL_TOKEN }}
+          -m VERSION=${{ steps.get_version.outputs.VERSION }}
+          -m COMMIT=${{ github.sha }}
