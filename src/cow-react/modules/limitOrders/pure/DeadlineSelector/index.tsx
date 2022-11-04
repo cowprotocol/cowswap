@@ -5,6 +5,7 @@ import { useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
 import * as styledEl from './styled'
 import ms from 'ms.macro'
+import { Trans } from '@lingui/macro'
 
 function limitDateString(date: Date): string {
   const [first, second] = date.toISOString().split(':')
@@ -65,11 +66,13 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     <styledEl.ListWrapper>
       {limitOrdersDeadlines.map((item) => (
         <li key={item.value}>
-          <styledEl.ListItem onClick={() => setDeadline(item)}>{item.title}</styledEl.ListItem>
+          <styledEl.ListItem onClick={() => setDeadline(item)}>
+            <Trans>{item.title}</Trans>
+          </styledEl.ListItem>
         </li>
       ))}
       <styledEl.ListItem>
-        Custom
+        <Trans>Custom</Trans>
         <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} />
       </styledEl.ListItem>
     </styledEl.ListWrapper>
@@ -77,7 +80,9 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
 
   return (
     <styledEl.Wrapper>
-      <styledEl.Title>Expiry</styledEl.Title>
+      <styledEl.Title>
+        <Trans>Expiry</Trans>
+      </styledEl.Title>
       <Dropdown content={list}>
         <styledEl.Current ref={currentDeadlineNode as any} isCustom={!!customDeadline}>
           <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
