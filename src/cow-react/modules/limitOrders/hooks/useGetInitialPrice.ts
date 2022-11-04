@@ -28,7 +28,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
       throw new Error('Cannot parse initial price')
     }
 
-    // TODO: IS THIS CORRECT (I've used 18 here as arbitrary number to remove decimals)
+    // TODO: IS THIS CORRECT? (I've used 18 here as arbitrary number to remove decimals)
     const price = result.price * 10 ** (18 + getDecimals(currency))
 
     if (!price) {
@@ -68,8 +68,6 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
     if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
       return null
     }
-
-    console.log('debug', inputPrice, outputPrice)
 
     return new Fraction(inputPrice, outputPrice)
   }, [outputPrice, inputPrice])

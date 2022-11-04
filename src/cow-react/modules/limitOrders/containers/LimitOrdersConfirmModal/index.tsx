@@ -16,9 +16,6 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
 import { formatSmartAmount } from 'utils/format'
-import { registerOnWindow } from '@src/custom/utils/misc'
-
-registerOnWindow({ Fraction })
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
