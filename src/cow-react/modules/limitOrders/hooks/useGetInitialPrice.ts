@@ -1,17 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useAtomValue } from 'jotai'
 import { useWeb3React } from '@web3-react/core'
-import { Currency } from '@uniswap/sdk-core'
-import BigNumber from 'bignumber.js'
-
-import { getNativePrice } from '@cow/api/gnosisProtocol/api'
-import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
-import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
+import { Currency, Fraction } from '@uniswap/sdk-core'
 import { useAsyncMemo } from 'use-async-memo'
 
-type PriceResult = BigNumber | Error | undefined
+import { getNativePrice } from '@cow/api/gnosisProtocol/api'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
+import { DEFAULT_DECIMALS } from 'custom/constants'
+
+type PriceResult = number | Error | undefined
 
 async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
   const currencyAddress = getAddress(currency)
@@ -21,15 +19,21 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
   }
 
   if (currency.isNative) {
-    return new BigNumber(1)
+    return 1
   }
 
   try {
     const result = await getNativePrice(chainId, currencyAddress)
 
-    const price = result ? adjustDecimals(result?.price, currency.decimals) : undefined
+    if (!result) {
+      throw new Error('Cannot parse initial price')
+    }
 
-    if (!price) return new Error('Cannot parse initial price')
+    const price = result.price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
+
+    if (!price) {
+      throw new Error('Cannot parse initial price')
+    }
 
     return price
   } catch (error) {
@@ -39,10 +43,9 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 // When return null it means we failed on price loading
-export function useGetInitialPrice(): { price: BigNumber | null; isLoading: boolean } {
+export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const { isInversed } = useAtomValue(limitRateAtom)
   const [isInputPriceLoading, setInputPriceLoading] = useState(false)
   const [isOutputPriceLoading, setOutputPriceLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -66,14 +69,8 @@ export function useGetInitialPrice(): { price: BigNumber | null; isLoading: bool
       return null
     }
 
-    const output = isInversed ? outputPrice.div(inputPrice) : inputPrice.div(outputPrice)
-
-    if (!output.isFinite() || output.isNegative()) {
-      return null
-    }
-
-    return output
-  }, [isInversed, outputPrice, inputPrice])
+    return new Fraction(inputPrice, outputPrice)
+  }, [outputPrice, inputPrice])
 
   // To avoid loading state blinking
   useEffect(() => {

@@ -1,11 +1,10 @@
-import { useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { getQuote } from '@cow/api/gnosisProtocol'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useQuoteRequestParams } from './useQuoteRequestParams'
 import { useHandleResponse } from './useHandleResponse'
 import { useHandleError } from './useHandleError'
@@ -20,7 +19,6 @@ export function useFetchMarketPrice() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersTradeState()
-  const { isInversed } = useAtomValue(limitRateAtom)
 
   const handleResponse = useHandleResponse()
   const handleError = useHandleError()
@@ -53,7 +51,7 @@ export function useFetchMarketPrice() {
   // Turn on the loading if some of these dependencies have changed
   useEffect(() => {
     updateLimitRateState({ isLoadingExecutionRate: true })
-  }, [chainId, inputCurrency, outputCurrency, orderKind, account, isInversed, updateLimitRateState])
+  }, [chainId, inputCurrency, outputCurrency, orderKind, account, updateLimitRateState])
 
   return null
 }
