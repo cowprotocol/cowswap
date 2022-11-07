@@ -13,7 +13,7 @@ export function RowDeadline() {
   const { native: nativeCurrency } = useDetectNativeToken()
 
   const props = useMemo(() => {
-    const displayDeadline = userDeadline / 60 + ' minutes'
+    const displayDeadline = Math.floor(userDeadline / 60) + ' minutes'
     return {
       userDeadline,
       symbols: [nativeCurrency.symbol],
