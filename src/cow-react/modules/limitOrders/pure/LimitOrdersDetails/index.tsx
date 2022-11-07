@@ -4,6 +4,7 @@ import * as styledEl from './styled'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { formatSmartAmount } from 'utils/format'
+import { isAddress, shortenAddress } from 'utils'
 
 export interface LimitOrdersDetailsProps {
   activeRate: Fraction
@@ -21,7 +22,8 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
 
 // TODO: apply design
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { account, sellToken, buyToken, validTo, recipient } = props.tradeContext.postOrderParams
+  const { account, sellToken, buyToken, validTo, recipient, recipientAddressOrName } =
+    props.tradeContext.postOrderParams
   const expiryDate = new Date(validTo * 1000)
 
   return (
@@ -64,13 +66,15 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>{/*TODO*/}Fill or kill</span>
         </div>
       </styledEl.DetailsRow>
-      {recipient && recipient !== account && (
+      {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>
             <span>Recipient</span> <InfoIcon content={'Recipient info TODO'} />
           </div>
           <div>
-            <span>{recipient}</span>
+            <span title={recipientAddressOrName}>
+              {isAddress(recipientAddressOrName) ? shortenAddress(recipientAddressOrName) : recipientAddressOrName}
+            </span>
           </div>
         </styledEl.DetailsRow>
       )}
