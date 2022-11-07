@@ -27,8 +27,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
 
   const showRowFee = trade || fee
-  const showRowSlippage =
-    isExpertMode || (!isExpertMode && !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT))
+  const showRowSlippage = isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
   const showRowReceivedAfterSlippage = isExpertMode && trade
 
   return (
