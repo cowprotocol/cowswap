@@ -5,7 +5,7 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { Token } from '@uniswap/sdk-core'
 import { parseUnits } from '@ethersproject/units'
 import { useMemo } from 'react'
-import useENSAddress from '@src/hooks/useENSAddress'
+import useENSAddress from 'hooks/useENSAddress'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient, deadline } = useLimitOrdersTradeState()

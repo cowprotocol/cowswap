@@ -11,9 +11,7 @@ import { AppDispatch } from 'state'
 import { useAppData } from 'hooks/useAppData'
 import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
-
-// TODO: set proper values (+ENS name)
-const recipientAddressOrName = null
+import useENSAddress from 'hooks/useENSAddress'
 
 export function useTradeFlowContext(limitOrdersQuote: SimpleGetQuoteResponse | null): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
@@ -22,6 +20,7 @@ export function useTradeFlowContext(limitOrdersQuote: SimpleGetQuoteResponse | n
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE })
+  const { address: ensRecipientAddress } = useENSAddress(state.recipient)
 
   if (
     !limitOrdersQuote ||
@@ -41,7 +40,8 @@ export function useTradeFlowContext(limitOrdersQuote: SimpleGetQuoteResponse | n
 
   const isGnosisSafeWallet = !!gnosisSafeInfo
   const validTo = Math.round((Date.now() + state.deadline) / 1000)
-  const recipient = state.recipient || account
+  const recipientAddressOrName = state.recipient || ensRecipientAddress
+  const recipient = ensRecipientAddress || state.recipient || account
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token
   const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, +limitOrdersQuote.quote.feeAmount)
