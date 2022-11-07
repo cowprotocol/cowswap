@@ -7,13 +7,11 @@ import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { calculateValidTo } from '@cow/utils/time'
-import { useUserTransactionTTL } from '@src/state/user/hooks'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
-  const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, recipient, orderKind, deadline } = useLimitOrdersTradeState()
   const { chainId, account } = useWeb3React()
   const { exactTypedValue } = useTypedValue()
-  const [deadline] = useUserTransactionTTL()
 
   return useMemo(() => {
     if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId || !deadline) {
