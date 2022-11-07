@@ -105,6 +105,7 @@ export default function useCowUsdPrice(currency?: Currency) {
       toDecimals: stablecoin.decimals,
       userAddress: account,
       validTo: getUsdQuoteValidTo(),
+      isEthFlow: false,
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
 

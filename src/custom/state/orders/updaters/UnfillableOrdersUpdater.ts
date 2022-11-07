@@ -40,8 +40,8 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     quoteToken = order.sellToken
   }
 
-  const isNativeSellSwap = order.sellToken === NATIVE_CURRENCY_BUY_ADDRESS
-  if (isNativeSellSwap) {
+  const isEthFlow = order.sellToken === NATIVE_CURRENCY_BUY_ADDRESS
+  if (isEthFlow) {
     console.debug('[UnfillableOrderUpdater] - Native sell swap detected. Using wrapped token address for quotes')
   }
 
@@ -50,7 +50,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     amount,
     kind: order.kind,
     // we need to get wrapped token quotes (native quotes will fail)
-    sellToken: isNativeSellSwap ? WRAPPED_NATIVE_CURRENCY[chainId].address : order.sellToken,
+    sellToken: isEthFlow ? WRAPPED_NATIVE_CURRENCY[chainId].address : order.sellToken,
     buyToken: order.buyToken,
     baseToken,
     quoteToken,
@@ -59,6 +59,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     validTo: timestamp(order.validTo),
     userAddress: order.owner,
     receiver: order.receiver,
+    isEthFlow,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })

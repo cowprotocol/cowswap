@@ -1307,7 +1307,7 @@
 
 "@cowprotocol/ethflowcontract@git+https://github.com/cowprotocol/ethflowcontract.git#main-artifacts":
   version "0.0.0-rc.0"
-  resolved "git+https://github.com/cowprotocol/ethflowcontract.git#31b4790fd332a72ed106cfd3ee3afdb09409afd1"
+  resolved "git+https://github.com/cowprotocol/ethflowcontract.git#70b874d6306e4b9f0c653844f5b19cd3a9e3d0a3"
 
 "@craco/craco@^5.7.0":
   version "5.9.0"

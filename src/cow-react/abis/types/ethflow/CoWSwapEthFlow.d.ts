@@ -24,8 +24,8 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
   functions: {
     "cowSwapSettlement()": FunctionFragment;
     "createOrder((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64))": FunctionFragment;
-    "deleteOrder((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64))": FunctionFragment;
-    "deleteOrders((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64)[])": FunctionFragment;
+    "invalidateOrder((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64))": FunctionFragment;
+    "invalidateOrdersIgnoringNotAllowed((address,address,uint256,uint256,bytes32,uint256,uint32,bool,int64)[])": FunctionFragment;
     "isValidSignature(bytes32,bytes)": FunctionFragment;
     "orders(bytes32)": FunctionFragment;
     "unwrap(uint256)": FunctionFragment;
@@ -55,7 +55,7 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "deleteOrder",
+    functionFragment: "invalidateOrder",
     values: [
       {
         buyToken: string;
@@ -71,7 +71,7 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "deleteOrders",
+    functionFragment: "invalidateOrdersIgnoringNotAllowed",
     values: [
       {
         buyToken: string;
@@ -111,11 +111,11 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "deleteOrder",
+    functionFragment: "invalidateOrder",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "deleteOrders",
+    functionFragment: "invalidateOrdersIgnoringNotAllowed",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -132,11 +132,19 @@ interface CoWSwapEthFlowInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "OrderInvalidation(bytes)": EventFragment;
     "OrderPlacement(address,tuple,tuple,bytes)": EventFragment;
+    "OrderRefund(bytes,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "OrderInvalidation"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OrderPlacement"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OrderRefund"): EventFragment;
 }
+
+export type OrderInvalidationEvent = TypedEvent<
+  [string] & { orderUid: string }
+>;
 
 export type OrderPlacementEvent = TypedEvent<
   [
@@ -204,6 +212,10 @@ export type OrderPlacementEvent = TypedEvent<
   }
 >;
 
+export type OrderRefundEvent = TypedEvent<
+  [string, string] & { orderUid: string; refunder: string }
+>;
+
 export class CoWSwapEthFlow extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
@@ -265,7 +277,7 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    deleteOrder(
+    invalidateOrder(
       order: {
         buyToken: string;
         receiver: string;
@@ -280,7 +292,7 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    deleteOrders(
+    invalidateOrdersIgnoringNotAllowed(
       orderArray: {
         buyToken: string;
         receiver: string;
@@ -340,7 +352,7 @@ export class CoWSwapEthFlow extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  deleteOrder(
+  invalidateOrder(
     order: {
       buyToken: string;
       receiver: string;
@@ -355,7 +367,7 @@ export class CoWSwapEthFlow extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  deleteOrders(
+  invalidateOrdersIgnoringNotAllowed(
     orderArray: {
       buyToken: string;
       receiver: string;
@@ -415,7 +427,7 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    deleteOrder(
+    invalidateOrder(
       order: {
         buyToken: string;
         receiver: string;
@@ -430,7 +442,7 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    deleteOrders(
+    invalidateOrdersIgnoringNotAllowed(
       orderArray: {
         buyToken: string;
         receiver: string;
@@ -466,6 +478,14 @@ export class CoWSwapEthFlow extends BaseContract {
   };
 
   filters: {
+    "OrderInvalidation(bytes)"(
+      orderUid?: BytesLike | null
+    ): TypedEventFilter<[string], { orderUid: string }>;
+
+    OrderInvalidation(
+      orderUid?: BytesLike | null
+    ): TypedEventFilter<[string], { orderUid: string }>;
+
     "OrderPlacement(address,tuple,tuple,bytes)"(
       sender?: string | null,
       order?: null,
@@ -609,6 +629,22 @@ export class CoWSwapEthFlow extends BaseContract {
         data: string;
       }
     >;
+
+    "OrderRefund(bytes,address)"(
+      orderUid?: BytesLike | null,
+      refunder?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { orderUid: string; refunder: string }
+    >;
+
+    OrderRefund(
+      orderUid?: BytesLike | null,
+      refunder?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { orderUid: string; refunder: string }
+    >;
   };
 
   estimateGas: {
@@ -629,7 +665,7 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    deleteOrder(
+    invalidateOrder(
       order: {
         buyToken: string;
         receiver: string;
@@ -644,7 +680,7 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    deleteOrders(
+    invalidateOrdersIgnoringNotAllowed(
       orderArray: {
         buyToken: string;
         receiver: string;
@@ -702,7 +738,7 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    deleteOrder(
+    invalidateOrder(
       order: {
         buyToken: string;
         receiver: string;
@@ -717,7 +753,7 @@ export class CoWSwapEthFlow extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    deleteOrders(
+    invalidateOrdersIgnoringNotAllowed(
       orderArray: {
         buyToken: string;
         receiver: string;
