@@ -1,0 +1,82 @@
+import { Currency } from '@uniswap/sdk-core'
+import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
+import styled from 'styled-components/macro'
+import { AlertTriangle } from 'react-feather'
+
+interface RateImpactAcknowledge {
+  withAcknowledge: boolean
+  onAcknowledgeChange(checked: boolean): void
+}
+
+export interface RateImpactWarningProps extends Partial<RateImpactAcknowledge> {
+  rateImpact: number
+  inputCurrency: Currency
+  className?: string
+}
+
+const RateImpactWarningBox = styled.div<{ withAcknowledge: boolean }>`
+  display: flex;
+  align-items: center;
+  border-radius: ${({ withAcknowledge }) => (withAcknowledge ? '18px 18px 0 0' : '18px')};
+  padding: 15px;
+  gap: 15px;
+  color: #860b00;
+  background: rgba(255, 59, 41, 0.2);
+`
+
+const ReadMoreLink = styled.a`
+  display: block;
+  margin-top: 5px;
+  color: #860b00;
+`
+
+const AcknowledgeBox = styled.div`
+  color: #860b00;
+  background: rgba(255, 59, 41, 0.4);
+  text-align: center;
+  padding: 15px 0;
+  border-radius: 0 0 18px 18px;
+
+  label {
+    cursor: pointer;
+  }
+
+  input {
+    margin-right: 5px;
+  }
+`
+
+export function RateImpactWarning({
+  withAcknowledge = false,
+  onAcknowledgeChange,
+  rateImpact,
+  inputCurrency,
+  className,
+}: RateImpactWarningProps) {
+  const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
+
+  if (!isTooLowRate) return null
+
+  return (
+    <div className={className}>
+      <RateImpactWarningBox withAcknowledge={withAcknowledge}>
+        <div>
+          <AlertTriangle size={32} />
+        </div>
+        <div>
+          Your limit price is {Math.abs(rateImpact)}% lower than current market price. You will be selling your{' '}
+          {inputCurrency.symbol} at a loss!
+          <ReadMoreLink href="TODO">Read more about limit orders</ReadMoreLink>
+        </div>
+      </RateImpactWarningBox>
+      {withAcknowledge && (
+        <AcknowledgeBox>
+          <label>
+            <input type="checkbox" onChange={(event) => onAcknowledgeChange?.(event.target.checked)} />
+            <span>I acknowledge the high price impact</span>
+          </label>
+        </AcknowledgeBox>
+      )}
+    </div>
+  )
+}

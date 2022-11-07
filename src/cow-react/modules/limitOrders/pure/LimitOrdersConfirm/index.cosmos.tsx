@@ -71,6 +71,7 @@ const Fixtures = {
   default: (
     <LimitOrdersConfirm
       activeRate={'2'}
+      rateImpact={1}
       activeRateFiatAmount={CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18)}
       tradeContext={tradeContext}
       inputCurrencyInfo={inputCurrencyInfo}

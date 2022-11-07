@@ -16,6 +16,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
 import { formatSmartAmount } from 'utils/format'
+import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -71,6 +72,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   // TODO: check with inversed rate
   const activeRateAmount = useMemo(() => getCurrencyAmount(outputCurrency, activeRate), [outputCurrency, activeRate])
   const activeRateFiatAmount = useHigherUSDValue(activeRateAmount || undefined)
+  const rateImpact = useRateImpact()
 
   const onDismissConfirmation = useCallback(() => {
     setConfirmationState({ isPending: false, orderHash: null })
@@ -110,6 +112,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               inputCurrencyInfo={inputCurrencyInfo}
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}
+              rateImpact={rateImpact}
             />
           </styledEl.ConfirmModalWrapper>
         )}

@@ -8,6 +8,7 @@ import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/sta
 import { useCalculateRate } from '@cow/modules/limitOrders/hooks/useCalculateRate'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { toFirstMeaningfulDecimal } from '@cow/modules/limitOrders/utils/toFirstMeaningfulDecimal'
+import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export function RateInput() {
   // Rate and currency amount hooks
@@ -20,6 +21,7 @@ export function RateInput() {
 
   // Limit order state
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const rateImpact = useRateImpact()
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
   const inputCurrencyId = inputCurrency?.symbol
   const outputCurrencyId = outputCurrency?.symbol
@@ -54,7 +56,7 @@ export function RateInput() {
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
-        <HeadingText currency={primaryCurrency} />
+        <HeadingText currency={primaryCurrency} rateImpact={rateImpact} />
 
         <styledEl.MarketPriceButton disabled={isLoadingExecutionRate || !executionRate} onClick={handleSetMarketPrice}>
           <span>Market price</span>

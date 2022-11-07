@@ -26,6 +26,7 @@ import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
+import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -52,6 +53,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext(limitOrdersQuote)
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const rateImpact = useRateImpact()
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -159,6 +161,9 @@ export function LimitOrdersWidget() {
           <styledEl.TradeButtonBox>
             <TradeButtons tradeContext={tradeContext} openConfirmScreen={() => setShowConfirmation(true)} />
           </styledEl.TradeButtonBox>
+          {!!inputCurrency && (
+            <styledEl.StyledRateImpactWarning rateImpact={rateImpact} inputCurrency={inputCurrency} />
+          )}
         </styledEl.ContainerBox>
       </styledEl.Container>
       <TradeApproveWidget />
