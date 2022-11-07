@@ -366,12 +366,14 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
     throw _handleError(error, response, params, 'QUOTE')
   }
 }
+
 // ETH-FLOW orders require different quote params
 // check the isEthFlow flag and set in quote req obj
 const ETH_FLOW_AUX_QUOTE_PARAMS = {
   signingScheme: 'eip1271',
   onchainOrder: true,
 }
+
 function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
   const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality, isEthFlow } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
