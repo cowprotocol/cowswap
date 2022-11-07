@@ -11,6 +11,7 @@ import { AppDispatch } from 'state'
 import { useAppData } from 'hooks/useAppData'
 import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { calculateValidTo } from '@cow/utils/time'
 
 // TODO: set proper values (+ENS name)
 const recipientAddressOrName = null
@@ -40,7 +41,7 @@ export function useTradeFlowContext(limitOrdersQuote: SimpleGetQuoteResponse | n
   }
 
   const isGnosisSafeWallet = !!gnosisSafeInfo
-  const validTo = Math.round((Date.now() + state.deadline) / 1000)
+  const validTo = calculateValidTo(state.deadline)
   const recipient = state.recipient || account
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token

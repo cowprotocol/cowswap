@@ -28,7 +28,9 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
 
   const recipient = state.recipient
-  const deadline = settingsState.customDeadline ? settingsState.customDeadline - Date.now() : settingsState.deadline
+  const deadline = Math.round(
+    (settingsState.customDeadline ? settingsState.customDeadline - Date.now() : settingsState.deadline) / 1000
+  )
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
   const inputCurrencyAmount =

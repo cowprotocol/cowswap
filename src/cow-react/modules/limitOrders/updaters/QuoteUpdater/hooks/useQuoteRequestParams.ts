@@ -6,6 +6,7 @@ import { Token } from '@uniswap/sdk-core'
 import { parseUnits } from '@ethersproject/units'
 import { useMemo } from 'react'
 import useENSAddress from '@src/hooks/useENSAddress'
+import { calculateValidTo } from '@cow/utils/time'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient, deadline } = useLimitOrdersTradeState()
@@ -17,7 +18,7 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
   const feeQuoteParams: FeeQuoteParams | null = isFullInput
     ? {
         chainId,
-        validTo: Math.round((Date.now() + deadline) / 1000),
+        validTo: calculateValidTo(deadline),
         receiver: recipientEnsAddress || recipient || account,
         kind: OrderKind.SELL,
         sellToken: (inputCurrency as Token).address,
