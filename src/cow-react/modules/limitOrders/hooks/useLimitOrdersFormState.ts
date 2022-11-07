@@ -28,6 +28,7 @@ export enum LimitOrdersFormState {
   InsufficientBalance = 'InsufficientBalance',
   CantLoadBalances = 'CantLoadBalances',
   QuoteError = 'QuoteError',
+  WrapOrUnwrap = 'WrapOrUnwrap',
 }
 
 interface LimitOrdersFormParams {
@@ -40,6 +41,7 @@ interface LimitOrdersFormParams {
   tradeState: LimitOrdersTradeState
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
+  isWrapOrUnwrap: boolean
 }
 
 function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState {
@@ -52,6 +54,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     tradeState,
     recipientEnsAddress,
     quote,
+    isWrapOrUnwrap,
   } = params
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
@@ -99,6 +102,10 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.InsufficientBalance
   }
 
+  if (isWrapOrUnwrap) {
+    return LimitOrdersFormState.WrapOrUnwrap
+  }
+
   if (!currentAllowance || !quote) {
     return LimitOrdersFormState.Loading
   }
@@ -125,6 +132,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const sellAmount = tradeState.inputCurrencyAmount
   const sellToken = inputCurrency?.isToken ? inputCurrency : undefined
   const spender = chainId ? GP_VAULT_RELAYER[chainId] : undefined
+  const isWrapOrUnwrap = tradeState.isWrap || tradeState.isUnwrap
 
   const currentAllowance = useTokenAllowance(sellToken, account ?? undefined, spender)
   const approvalState = useTradeApproveState(sellAmount)
@@ -141,6 +149,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
     tradeState,
     recipientEnsAddress,
     quote,
+    isWrapOrUnwrap,
   }
 
   return useSafeMemo(() => {

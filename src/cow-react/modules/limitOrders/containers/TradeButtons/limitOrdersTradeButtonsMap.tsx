@@ -7,11 +7,14 @@ import { ButtonSize } from 'theme'
 import { TradeApproveButton } from '@cow/common/containers/TradeApprove/TradeApproveButton'
 import { LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
+import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 
 export interface TradeButtonsParams {
   tradeState: LimitOrdersTradeState
   quote: LimitOrdersQuoteState
   toggleWalletModal: () => void
+  isWrap: boolean
+  wrapCallback: WrapUnwrapCallback | null
 }
 
 interface ButtonConfig {
@@ -85,6 +88,13 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.CantLoadBalances]: {
     disabled: true,
     text: "Couldn't load balances",
+  },
+  [LimitOrdersFormState.WrapOrUnwrap]: ({ wrapCallback, isWrap }: TradeButtonsParams) => {
+    return (
+      <SwapButton disabled={false} onClick={() => wrapCallback?.()}>
+        <Trans>{isWrap ? 'Wrap' : 'Unwrap'}</Trans>
+      </SwapButton>
+    )
   },
   [LimitOrdersFormState.QuoteError]: ({ quote }: TradeButtonsParams) => {
     return (

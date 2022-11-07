@@ -20,6 +20,24 @@ export interface LimitOrdersTradeState {
   readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
   readonly deadline: number | null
+  readonly isWrap: boolean
+  readonly isUnwrap: boolean
+}
+
+function detectWrapUnwrap(
+  inputCurrency: Currency | null,
+  outputCurrency: Currency | null
+): { isWrap: boolean; isUnwrap: boolean } {
+  const isWrap =
+    !!inputCurrency?.isNative &&
+    !!outputCurrency?.isToken &&
+    outputCurrency.address.toLowerCase() === inputCurrency.wrapped.address.toLowerCase()
+  const isUnwrap =
+    !!outputCurrency?.isNative &&
+    !!inputCurrency?.isToken &&
+    inputCurrency.address.toLowerCase() === outputCurrency.wrapped.address.toLowerCase()
+
+  return { isWrap, isUnwrap }
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
@@ -51,5 +69,6 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
     outputCurrencyBalance,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
+    ...detectWrapUnwrap(inputCurrency, outputCurrency),
   })
 }

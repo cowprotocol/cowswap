@@ -91,12 +91,14 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
   return !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
 }
 
-export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapContext | null {
+export function useWrapUnwrapContext(
+  inputAmount: CurrencyAmount<Currency> | undefined,
+  isNativeIn: boolean
+): WrapUnwrapContext | null {
   const { chainId } = useWeb3React()
   const closeModals = useCloseModals()
   const wethContract = useWETHContract()
   const { native, wrapped } = getChainCurrencySymbols(chainId)
-  const { isNativeIn } = useDetectNativeToken()
   const addTransaction = useTransactionAdder()
   const wrapType = isNativeIn ? WrapType.WRAP : WrapType.UNWRAP
   const isWrap = isNativeIn
@@ -133,8 +135,11 @@ export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | und
 /**
  * Given the selected input and output currency, return a wrap callback
  */
-export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapCallback | null {
-  const context = useWrapUnwrapContext(inputAmount)
+export function useWrapCallback(
+  inputAmount: CurrencyAmount<Currency> | undefined,
+  isNativeIn: boolean
+): WrapUnwrapCallback | null {
+  const context = useWrapUnwrapContext(inputAmount, isNativeIn)
 
   if (!context) {
     return null

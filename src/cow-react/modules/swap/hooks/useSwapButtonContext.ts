@@ -69,7 +69,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
-  const wrapCallback = useWrapCallback(wrapUnwrapAmount)
+  const wrapCallback = useWrapCallback(wrapUnwrapAmount, isNativeIn)
   const approvalState = useTradeApproveState(parsedAmount || null)
 
   const handleSwap = useCallback(() => {
