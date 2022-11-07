@@ -5,7 +5,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { getQuote } from '@cow/api/gnosisProtocol'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
-import { useQuoteRequestParams } from './useQuoteRequestParams'
+import { useQuoteRequestParams } from '../useQuoteRequestParams'
 import { useHandleResponse } from './useHandleResponse'
 import { useHandleError } from './useHandleError'
 
