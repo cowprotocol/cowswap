@@ -7,6 +7,7 @@ import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
+import { DEFAULT_DECIMALS } from 'custom/constants'
 
 type PriceResult = number | Error | undefined
 
@@ -28,8 +29,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
       throw new Error('Cannot parse initial price')
     }
 
-    // TODO: IS THIS CORRECT? (I've used 18 here as arbitrary number to remove decimals)
-    const price = result.price * 10 ** (18 + getDecimals(currency))
+    const price = result.price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
 
     if (!price) {
       throw new Error('Cannot parse initial price')

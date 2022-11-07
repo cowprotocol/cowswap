@@ -1,10 +1,7 @@
 import { Fraction } from '@uniswap/sdk-core'
 
 export function toFraction(value: string, isInversed = false) {
-  // eslint-disable-next-line prefer-const
-  let [quotient, remainder] = value.split('.')
-
-  if (!remainder) remainder = ''
+  const [quotient, remainder = ''] = value.split('.')
 
   if (!value || !Number(value)) return new Fraction(0)
 
