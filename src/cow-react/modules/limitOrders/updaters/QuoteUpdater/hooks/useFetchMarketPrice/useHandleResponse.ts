@@ -1,19 +1,20 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
+import { Fraction } from '@uniswap/sdk-core'
+import JSBI from 'jsbi'
 
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
-import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useHandleError } from './useHandleError'
+import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
 
 export function useHandleResponse() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const { isInversed } = useAtomValue(limitRateAtom)
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
   const handleError = useHandleError()
 
@@ -26,15 +27,12 @@ export function useHandleResponse() {
           return
         }
 
-        // Parse values
-        const parsedBuyAmount = adjustDecimals(Number(buyAmount), inputCurrency.decimals)
-        const parsedSellAmount = adjustDecimals(Number(sellAmount), outputCurrency.decimals)
+        // Adjust for decimals
+        const adjustedBuy = JSBI.multiply(JSBI.BigInt(buyAmount), JSBI.BigInt(10 ** getDecimals(inputCurrency)))
+        const adjustedSell = JSBI.multiply(JSBI.BigInt(sellAmount), JSBI.BigInt(10 ** getDecimals(outputCurrency)))
 
-        // Calculate execution rate
-        const amount = isInversed ? parsedSellAmount.div(parsedBuyAmount) : parsedBuyAmount.div(parsedSellAmount)
-
-        // Parse for decimals
-        const executionRate = amount.toFixed(20)
+        // Create executionRate fraction
+        const executionRate = new Fraction(adjustedBuy, adjustedSell)
 
         // Update the rate state
         updateLimitRateState({ executionRate })
@@ -45,6 +43,6 @@ export function useHandleResponse() {
         handleError(error)
       }
     },
-    [handleError, inputCurrency, isInversed, outputCurrency, setLimitOrdersQuote, updateLimitRateState]
+    [handleError, inputCurrency, outputCurrency, setLimitOrdersQuote, updateLimitRateState]
   )
 }

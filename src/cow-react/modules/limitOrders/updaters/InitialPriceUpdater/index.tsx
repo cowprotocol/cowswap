@@ -9,7 +9,7 @@ export function InitialPriceUpdater() {
   const { price, isLoading } = useGetInitialPrice()
 
   useEffect(() => {
-    updateLimitRateState({ isLoading, activeRate: price ? price.toFixed(20) : '0' })
+    updateLimitRateState({ isLoading, activeRate: price })
   }, [price, isLoading, updateLimitRateState])
 
   return null
