@@ -392,23 +392,20 @@ function _mapNewToLegacyParams({ isEthFlow, ...params }: FeeQuoteParams): QuoteQ
     console.debug('[API:CowSwap] ETH FLOW ORDER, setting onchainOrder: true, and signingScheme: eip1271')
   }
 
-  let finalParams: QuoteQuery
   if (kind === OrderKind.SELL) {
-    finalParams = {
+    return {
       ...baseParams,
       ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),
       kind: OrderKind.SELL,
       sellAmountBeforeFee: amount,
     }
   } else {
-    finalParams = {
+    return {
       kind: OrderKind.BUY,
       buyAmountAfterFee: amount,
       ...baseParams,
     }
   }
-
-  return finalParams
 }
 
 export async function getQuote(params: FeeQuoteParams) {
