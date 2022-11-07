@@ -8,7 +8,7 @@ export function useRateImpact(): number {
   return useMemo(() => {
     if (!activeRate || !executionRate || isLoading || isLoadingExecutionRate) return 0
 
-    const ratePercent = +((Number(activeRate) * 100) / Number(executionRate) - 100).toFixed(1)
+    const ratePercent = +activeRate.divide(executionRate).multiply(100).subtract(100).toFixed(1)
 
     return !ratePercent || !Number.isFinite(ratePercent) || Number.isNaN(ratePercent) ? 0 : ratePercent
   }, [activeRate, executionRate, isLoading, isLoadingExecutionRate])

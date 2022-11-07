@@ -1,6 +1,6 @@
 import { Fraction } from '@uniswap/sdk-core'
 
-export function toFraction(value: string, isInversed = false) {
+export function toFraction(value: string, isInversed = false): Fraction {
   const [quotient, remainder = ''] = value.split('.')
 
   if (!value || !Number(value)) return new Fraction(0)
@@ -10,7 +10,5 @@ export function toFraction(value: string, isInversed = false) {
 
   const params: [string, string] = !isInversed ? [numerator, denominator] : [denominator, numerator]
 
-  const fraction = new Fraction(...params)
-
-  return fraction
+  return new Fraction(...params)
 }
