@@ -24,6 +24,7 @@ const ImpactTooltip = styled.span`
 
 export function RateImpactIndicator({ rateImpact }: RateImpactProps) {
   const isPositive = rateImpact > 0
+  const hugePositiveImpact = rateImpact > 999
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
   if (!rateImpact) return null
@@ -34,8 +35,8 @@ export function RateImpactIndicator({ rateImpact }: RateImpactProps) {
     <MouseoverTooltipContent wrap={false} content={tooltipContent} disableHover={!isTooLowRate} placement="bottom">
       <PercentBox isPositive={isPositive} isTooLowRate={isTooLowRate}>
         <span>
-          ({isPositive ? '+' : ''}
-          {rateImpact}%)
+          ({isPositive && !hugePositiveImpact ? '+' : ''}
+          {hugePositiveImpact ? '>999' : rateImpact}%)
         </span>
         {isTooLowRate && <AlertTriangle size={14} />}
       </PercentBox>
