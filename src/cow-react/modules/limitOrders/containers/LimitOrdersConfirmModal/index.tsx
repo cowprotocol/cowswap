@@ -25,7 +25,10 @@ export interface LimitOrdersConfirmModalProps {
   onDismiss(): void
 }
 
-function getCurrencyAmount(currency: Currency | null, value: Fraction | null): CurrencyAmount<Currency> | null {
+function getCurrencyAmount(
+  currency: Currency | null,
+  value: Fraction | null | undefined
+): CurrencyAmount<Currency> | null {
   if (!currency || !value) return null
 
   return CurrencyAmount.fromFractionalAmount(currency, value.numerator, value.denominator)
@@ -60,13 +63,16 @@ function PendingText({
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
   const { chainId } = useWalletInfo()
-  const { activeRate } = useAtomValue(limitRateAtom)
+  const { activeRate, isInversed } = useAtomValue(limitRateAtom)
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
-  // TODO: check with inversed rate
-  const activeRateAmount = useMemo(() => getCurrencyAmount(outputCurrency, activeRate), [outputCurrency, activeRate])
+
+  const activeRateAmount = useMemo(() => {
+    return getCurrencyAmount(outputCurrency, isInversed ? activeRate?.invert() : activeRate)
+  }, [outputCurrency, activeRate, isInversed])
+
   const activeRateFiatAmount = useHigherUSDValue(activeRateAmount || undefined)
 
   const onDismissConfirmation = useCallback(() => {
