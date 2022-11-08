@@ -34,7 +34,9 @@ export function EthFlowDeadlineUpdater() {
       const deadlineLessThanThreshold = MINIMUM_ETH_FLOW_DEADLINE_SECONDS > userDeadline
       if (deadlineLessThanThreshold) {
         console.log(
-          '[EthFlowDeadlineUpdater] - Setting user deadline to minimum threshold of 10 minutes',
+          `[EthFlowDeadlineUpdater] - Setting user deadline to minimum threshold of ${
+            MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60
+          } minutes`,
           isEthFlow,
           userDeadline,
           deadlineLessThanThreshold
