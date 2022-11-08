@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
-const STORAGE_KEY = 'UserPreviousDeadline'
+const LOCAL_STORAGE_KEY = 'UserPreviousDeadline'
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
 
@@ -52,11 +52,11 @@ export function EthFlowDeadlineUpdater() {
 }
 
 function _saveDeadline(currentUserDeadline: number): void {
-  return localStorage.setItem(STORAGE_KEY, JSON.stringify(currentUserDeadline))
+  return localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentUserDeadline))
 }
 
 function _loadDeadline(): number | null {
-  const previousDeadlineStorage = localStorage.getItem(STORAGE_KEY)
+  const previousDeadlineStorage = localStorage.getItem(LOCAL_STORAGE_KEY)
 
   return previousDeadlineStorage ? +JSON.parse(previousDeadlineStorage) : null
 }

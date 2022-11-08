@@ -4,14 +4,14 @@ import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'state/use
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export const ETH_FLOW_SLIPPAGE = new Percent(2, 100) // 2%
-const STORAGE_KEY = 'UserPreviousSlippage'
+const LOCAL_STORAGE_KEY = 'UserPreviousSlippage'
 
 export function EthFlowSlippageUpdater() {
   const [mounted, setMounted] = useState(false)
   // use previous slippage for when user is not in native swap and set to native flow
   const currentSlippage = useUserSlippageTolerance()
   // save the last non eth-flow slippage amount to reset when user switches back to normal erc20 flow
-  const previousSlippageStorage = localStorage.getItem(STORAGE_KEY)
+  const previousSlippageStorage = localStorage.getItem(LOCAL_STORAGE_KEY)
   const isEthFlow = useIsEthFlow()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
 
@@ -65,7 +65,7 @@ function _parseSlippageFromStorageAndSet(
 
 function _saveSlippageToStorage(currentSlippage: Percent | 'auto') {
   return localStorage.setItem(
-    STORAGE_KEY,
+    LOCAL_STORAGE_KEY,
     JSON.stringify(
       currentSlippage instanceof Percent
         ? [currentSlippage.numerator.toString(), currentSlippage.denominator.toString()]
