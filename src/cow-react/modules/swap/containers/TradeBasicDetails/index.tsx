@@ -4,9 +4,9 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { LowerSectionWrapper } from '@cow/modules/swap/pure/styled'
-import { RowFee } from '@cow/modules/swap/containers/RowFee'
-import { RowSlippage } from '@cow/modules/swap/containers/RowSlippage'
-import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/RowReceivedAfterSlippage'
+import { RowFee } from '@cow/modules/swap/containers/Row/RowFee'
+import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
+import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
@@ -26,10 +26,14 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   // so we can take both
   const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
 
+  const showRowFee = trade || fee
+  const showRowSlippage = isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
+  const showRowReceivedAfterSlippage = isExpertMode && trade
+
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
-      {(trade || fee) && (
+      {showRowFee && (
         <RowFee
           trade={trade}
           showHelpers={true}
@@ -38,15 +42,10 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
           feeFiatValue={feeFiatValue}
         />
       )}
-
-      {isExpertMode && trade && (
-        <>
-          {/* Slippage */}
-          <RowSlippage allowedSlippage={allowedSlippagePercent} />
-
-          {/* Min/Max received */}
-          <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} showHelpers={true} />
-        </>
+      {/* Slippage */}
+      {showRowSlippage && <RowSlippage allowedSlippage={allowedSlippagePercent} />}
+      {showRowReceivedAfterSlippage && (
+        <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} showHelpers={true} />
       )}
     </LowerSectionWrapper>
   )

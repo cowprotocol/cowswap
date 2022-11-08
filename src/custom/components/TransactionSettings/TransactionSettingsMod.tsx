@@ -16,7 +16,6 @@ import { RowBetween, RowFixed } from 'components/Row'
 
 // MOD imports
 import {
-  INPUT_OUTPUT_EXPLANATION,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
   MIN_SLIPPAGE_BPS,
   MAX_SLIPPAGE_BPS,
@@ -31,6 +30,7 @@ import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/slip
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { DEADLINE_LOWER_THRESHOLD_SECONDS } from '@cow/modules/swap/state/EthFlow/updaters'
+import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from '@cow/modules/swap/pure/Row/RowDeadline'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -300,10 +300,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               text={
                 <Trans>
                   {isEthFlow
-                    ? `Native currency (e.g ETH) orders require a minimum transaction deadline threshold of ${
-                        DEADLINE_LOWER_THRESHOLD_SECONDS / 60
-                      } minutes to ensure the best swapping experience. Orders not matched after the threshold time are automatically refunded.`
-                    : `Your swap expires and will not execute if it is pending for longer than the selected duration. ${INPUT_OUTPUT_EXPLANATION}`}
+                    ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])
+                    : getNonNativeOrderDeadlineTooltip()}
                 </Trans>
               }
             />
