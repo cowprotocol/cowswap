@@ -45,6 +45,8 @@ export function EthFlowDeadlineUpdater() {
       // if we are leaving EthFlow context, reset deadline to previous value
       _resetDeadline(setUserDeadline)
     }
+    // we only want to depend on isEthFlow
+    // to avoid re-renders
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEthFlow])
 
