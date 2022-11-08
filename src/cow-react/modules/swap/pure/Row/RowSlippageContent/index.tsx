@@ -8,7 +8,7 @@ import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper, ClickableText } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
 import { ThemedText } from 'theme/index'
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/slippageUpdater'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
 
 export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
   <Trans>

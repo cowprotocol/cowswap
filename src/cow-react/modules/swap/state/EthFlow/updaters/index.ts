@@ -1,2 +1,2 @@
-export * from './slippageUpdater'
-export * from './deadlineUpdater'
+export * from './EthFlowDeadlineUpdater'
+export * from './EthFlowSlippageUpdater'

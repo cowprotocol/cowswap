@@ -26,7 +26,7 @@ import {
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/slippageUpdater'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { DEADLINE_LOWER_THRESHOLD_SECONDS } from '@cow/modules/swap/state/EthFlow/updaters'
