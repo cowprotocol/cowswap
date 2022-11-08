@@ -1,14 +1,14 @@
 import { Fraction } from '@uniswap/sdk-core'
+import F from 'fraction.js'
 
 export function toFraction(value: string, isInversed = false) {
-  const [quotient, remainder = ''] = value.split('.')
-
   if (!value || !Number(value)) return new Fraction(0)
 
-  const numerator = `${quotient}${remainder}`
-  const denominator = `1${'0'.repeat(remainder.length)}`
+  const f = new F(value)
 
-  const params: [string, string] = !isInversed ? [numerator, denominator] : [denominator, numerator]
+  const { n: numerator, d: denominator } = f
+
+  const params: [number, number] = !isInversed ? [numerator, denominator] : [denominator, numerator]
 
   const fraction = new Fraction(...params)
 
