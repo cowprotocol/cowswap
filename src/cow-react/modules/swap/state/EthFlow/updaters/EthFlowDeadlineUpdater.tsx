@@ -9,7 +9,7 @@ export const DEADLINE_LOWER_THRESHOLD_SECONDS = 600
 export function EthFlowDeadlineUpdater() {
   const [mounted, setMounted] = useState(false)
 
-  // USER DEADLINE (IN SECONDS)
+  // user deadline (in seconds)
   const [userDeadline, setUserDeadline] = useUserTransactionTTL()
   const isEthFlow = useIsEthFlow()
 
