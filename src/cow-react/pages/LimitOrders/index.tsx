@@ -6,7 +6,7 @@ import {
   Orders,
   QuoteUpdater,
   InfoPopup,
-  InitialPriceUpdater,
+  MarketPriceUpdater,
   ActiveRateUpdater,
 } from '@cow/modules/limitOrders'
 
@@ -14,7 +14,7 @@ export default function LimitOrderPage() {
   return (
     <>
       <QuoteUpdater />
-      <InitialPriceUpdater />
+      <MarketPriceUpdater />
       <ActiveRateUpdater />
       <styledEl.PageWrapper>
         <styledEl.Column>

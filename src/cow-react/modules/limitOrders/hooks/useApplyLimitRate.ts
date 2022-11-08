@@ -3,7 +3,6 @@ import { useAtomValue } from 'jotai'
 
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
-import { toFirstMeaningfulDecimal } from '@cow/modules/limitOrders/utils/toFirstMeaningfulDecimal'
 import { Fraction } from '@uniswap/sdk-core'
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 
@@ -30,7 +29,7 @@ export function useApplyLimitRate() {
       }
 
       // We need to return string and we also limit the decimals
-      return toFirstMeaningfulDecimal(output?.toFixed(20))
+      return output?.toSignificant(6)
     },
     [activeRate]
   )
