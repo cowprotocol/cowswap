@@ -11,7 +11,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
 
   ${TextWrapper} {
     color: ${({ theme }) => theme.text1};
-    font-size: ${({ fontSize = 12 }) => fontSize}px;
+    font-size: ${({ fontSize = 13 }) => fontSize}px;
     font-weight: ${({ fontWeight = 500 }) => fontWeight};
   }
 
@@ -19,4 +19,15 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     background-color: ${({ theme }) => theme.bg3};
     color: ${({ theme }) => theme.text1};
   }
+`
+export const ClickableText = styled.button<{ isWarn?: boolean }>`
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  color: ${({ isWarn, theme }) => theme[isWarn ? 'text2' : 'text1']};
+  cursor: pointer;
 `

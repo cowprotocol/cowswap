@@ -3,7 +3,7 @@ import { Separator } from 'theme'
 import { ChevronUp, ChevronDown } from 'react-feather'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
 import { PERCENTAGE_PRECISION } from 'constants/index'
 import { EthFlowBannerCallbacks } from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
 import ethFlowIcon from 'assets/svg/ethFlow.svg'

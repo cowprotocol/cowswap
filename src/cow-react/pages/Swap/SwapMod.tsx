@@ -28,11 +28,10 @@ import { useExpertModeManager, useRecipientToggleManager, useUserSlippageToleran
 import { LinkStyledButton } from 'theme'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
-import { AMOUNT_PRECISION, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { AMOUNT_PRECISION } from 'constants/index'
 import FeeInformationTooltip from 'components/swap/FeeInformationTooltip'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { formatSmart } from 'utils/format'
-import { RowSlippage } from '@cow/modules/swap/containers/RowSlippage'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/reducer'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -63,6 +62,7 @@ import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { Widget } from '@cow/modules/application/pure/Widget'
+import { RowDeadline } from '@cow/modules/swap/containers/Row/RowDeadline'
 
 export default function Swap({ history, location, className }: RouteComponentProps & { className?: string }) {
   const { account, chainId } = useWeb3React()
@@ -364,9 +364,6 @@ export default function Swap({ history, location, className }: RouteComponentPro
                   >
                     {trade && <Price trade={trade} />}
 
-                    {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-                      <RowSlippage allowedSlippage={allowedSlippage} />
-                    )}
                     {(isFeeGreater || trade) && fee && (
                       <TradeBasicDetails
                         allowedSlippage={userAllowedSlippage}
@@ -376,6 +373,10 @@ export default function Swap({ history, location, className }: RouteComponentPro
                         fee={fee}
                       />
                     )}
+
+                    {/* TRANSACTION DEADLINE */}
+                    <RowDeadline />
+
                     {/* FEES DISCOUNT */}
                     {/* TODO: check cow balance and set here, else don't show */}
                     <FeesDiscount theme={theme} onClick={openCowSubsidyModal} />

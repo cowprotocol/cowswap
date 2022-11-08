@@ -1,26 +1,14 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
 import { StyledInfo } from '@cow/pages/Swap/styleds'
-import { RowSlippageProps } from '@cow/modules/swap/containers/RowSlippage'
-import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
+import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
+import { StyledRowBetween, TextWrapper, ClickableText } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
 import { ThemedText } from 'theme/index'
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updater'
-
-const ClickableText = styled.button<{ isWarn?: boolean }>`
-  background: none;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  font-weight: 500;
-  font-size: 13px;
-  color: ${({ isWarn, theme }) => theme[isWarn ? 'text2' : 'text1']};
-`
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
 
 export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
   <Trans>

@@ -19,7 +19,7 @@ import {
 
 import { UploadToIpfsUpdater } from 'state/appData/updater'
 import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
-import EthFlowSlippageUpdater from '@cow/modules/swap/state/EthFlow/updater'
+import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from '@cow/modules/swap/state/EthFlow/updaters'
 
 export function Updaters() {
   return (
@@ -43,6 +43,7 @@ export function Updaters() {
       <GnosisSafeUpdater />
       <GasPriceStrategyUpdater />
       <EthFlowSlippageUpdater />
+      <EthFlowDeadlineUpdater />
     </>
   )
 }
