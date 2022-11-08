@@ -29,7 +29,7 @@ import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import { DEADLINE_LOWER_THRESHOLD_SECONDS } from '@cow/modules/swap/state/EthFlow/updaters'
+import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cow/modules/swap/state/EthFlow/updaters'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from '@cow/modules/swap/pure/Row/RowDeadline'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
@@ -186,7 +186,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           parsed <
             (isEthFlow
               ? // 10 minute low threshold for eth flow
-                DEADLINE_LOWER_THRESHOLD_SECONDS
+                MINIMUM_ETH_FLOW_DEADLINE_SECONDS
               : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
           parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
         ) {

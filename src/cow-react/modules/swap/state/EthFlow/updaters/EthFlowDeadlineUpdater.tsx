@@ -3,8 +3,8 @@ import { useUserTransactionTTL } from 'state/user/hooks'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 const STORAGE_KEY = 'UserPreviousDeadline'
-// 10 minutes in SECONDS
-export const DEADLINE_LOWER_THRESHOLD_SECONDS = 600
+// Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
+export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
 
 export function EthFlowDeadlineUpdater() {
   const [mounted, setMounted] = useState(false)
@@ -29,7 +29,7 @@ export function EthFlowDeadlineUpdater() {
 
   useEffect(() => {
     if (isEthFlow) {
-      const deadlineLessThanThreshold = DEADLINE_LOWER_THRESHOLD_SECONDS > userDeadline
+      const deadlineLessThanThreshold = MINIMUM_ETH_FLOW_DEADLINE_SECONDS > userDeadline
       if (deadlineLessThanThreshold) {
         console.log(
           '[EthFlowDeadlineUpdater] - Setting user deadline to minimum threshold of 10 minutes',
@@ -38,7 +38,7 @@ export function EthFlowDeadlineUpdater() {
           deadlineLessThanThreshold
         )
         _saveDeadline(userDeadline)
-        setUserDeadline(DEADLINE_LOWER_THRESHOLD_SECONDS)
+        setUserDeadline(MINIMUM_ETH_FLOW_DEADLINE_SECONDS)
       }
     } else if (mounted) {
       _resetDeadline(setUserDeadline)

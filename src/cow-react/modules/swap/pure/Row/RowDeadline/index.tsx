@@ -8,15 +8,15 @@ import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper, ClickableText } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
 import { ThemedText } from 'theme/index'
-import { DEADLINE_LOWER_THRESHOLD_SECONDS } from '@cow/modules/swap/state/EthFlow/updaters'
+import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cow/modules/swap/state/EthFlow/updaters'
 
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
   return (
     <Trans>
       <p>
         {symbols?.[0] || 'Native currency (e.g ETH)'} orders require a minimum transaction expiration time threshold of{' '}
-        {DEADLINE_LOWER_THRESHOLD_SECONDS / 60} minutes to ensure the best swapping experience. Orders not matched after
-        the threshold time are automatically refunded.
+        {MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60} minutes to ensure the best swapping experience. Orders not matched
+        after the threshold time are automatically refunded.
       </p>
     </Trans>
   )
@@ -44,7 +44,7 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
 export function RowDeadlineContent(props: RowDeadlineProps) {
   const { userDeadline, showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
 
-  if (!isEthFlow || userDeadline > DEADLINE_LOWER_THRESHOLD_SECONDS) return null
+  if (!isEthFlow || userDeadline > MINIMUM_ETH_FLOW_DEADLINE_SECONDS) return null
 
   return (
     <StyledRowBetween {...styleProps}>
