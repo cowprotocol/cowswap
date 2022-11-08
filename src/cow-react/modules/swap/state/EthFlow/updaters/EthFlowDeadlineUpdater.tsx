@@ -13,7 +13,7 @@ export function EthFlowDeadlineUpdater() {
   const [userDeadline, setUserDeadline] = useUserTransactionTTL()
   const isEthFlow = useIsEthFlow()
 
-  // on updater mount
+  // on updater mount, load previous deadline from localStorage and set it, if it exists
   useEffect(() => {
     const previousDeadline = _loadDeadline()
 
@@ -29,6 +29,7 @@ export function EthFlowDeadlineUpdater() {
 
   useEffect(() => {
     if (isEthFlow) {
+      // if EthFlow and deadline < than minimum, set it to minimum
       const deadlineLessThanThreshold = MINIMUM_ETH_FLOW_DEADLINE_SECONDS > userDeadline
       if (deadlineLessThanThreshold) {
         console.log(
@@ -41,6 +42,7 @@ export function EthFlowDeadlineUpdater() {
         setUserDeadline(MINIMUM_ETH_FLOW_DEADLINE_SECONDS)
       }
     } else if (mounted) {
+      // if we are leaving EthFlow context, reset deadline to previous value
       _resetDeadline(setUserDeadline)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,7 +51,7 @@ export function EthFlowDeadlineUpdater() {
   return null
 }
 
-function _saveDeadline(currentUserDeadline: number) {
+function _saveDeadline(currentUserDeadline: number): void {
   return localStorage.setItem(STORAGE_KEY, JSON.stringify(currentUserDeadline))
 }
 
@@ -59,7 +61,7 @@ function _loadDeadline(): number | null {
   return previousDeadlineStorage ? +JSON.parse(previousDeadlineStorage) : null
 }
 
-function _resetDeadline(setUserDeadline: (slippage: number) => void) {
+function _resetDeadline(setUserDeadline: (slippage: number) => void): void {
   const parsedDeadline = _loadDeadline()
   // user switched back to non-native swap, set deadline back to previous value
   parsedDeadline && setUserDeadline(parsedDeadline)
