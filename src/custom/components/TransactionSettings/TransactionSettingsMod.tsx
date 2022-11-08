@@ -23,13 +23,13 @@ import {
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
   PERCENTAGE_PRECISION,
+  MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@cow/modules/swap/state/EthFlow/updaters'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from '@cow/modules/swap/pure/Row/RowDeadline'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
