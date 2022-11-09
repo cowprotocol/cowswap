@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Routes } from '@cow/constants/routes'
 
-import { ThemedText } from 'theme'
 import { RowFixed } from 'components/Row'
 import { LIMIT_ORDERS_ENABLED } from '@cow/constants/featureFlags'
 import { FeatureFlag } from '@cow/utils/featureFlags'
@@ -25,21 +24,25 @@ export function TradeWidgetLinks() {
   return FeatureFlag.get(LIMIT_ORDERS_ENABLED) ? (
     <RowFixed>
       <styledEl.Link activeClassName="active" to={parameterizeTradeRoute(tradeContext, Routes.SWAP)}>
-        <ThemedText.Black fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+        <styledEl.MenuItem>
           <Trans>Swap</Trans>
-        </ThemedText.Black>
+        </styledEl.MenuItem>
       </styledEl.Link>
+
       <styledEl.Link activeClassName="active" to={parameterizeTradeRoute(tradeContext, Routes.LIMIT_ORDER)}>
-        <ThemedText.Black fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+        <styledEl.MenuItem>
           <Trans>Limit</Trans>
-        </ThemedText.Black>
+        </styledEl.MenuItem>
+        <styledEl.Badge>
+          <Trans>Beta</Trans>
+        </styledEl.Badge>
       </styledEl.Link>
     </RowFixed>
   ) : (
     <RowFixed>
-      <ThemedText.Black fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+      <styledEl.MenuItem>
         <Trans>Swap</Trans>
-      </ThemedText.Black>
+      </styledEl.MenuItem>
     </RowFixed>
   )
 }
