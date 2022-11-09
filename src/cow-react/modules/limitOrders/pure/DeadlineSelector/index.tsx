@@ -42,7 +42,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
 
   const customDeadlineTitle = useMemo(() => {
     if (!customDeadline) return ''
-    return new Date(customDeadline).toLocaleString(undefined, customDateOptions)
+    return new Date(customDeadline * 1000).toLocaleString(undefined, customDateOptions)
   }, [customDeadline])
 
   const setDeadline = useCallback(
@@ -55,7 +55,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
 
   const onChange = useCallback(
     (event) => {
-      const customDeadline = new Date(event.target.value).getTime()
+      const customDeadline = Math.round(new Date(event.target.value).getTime() / 1000)
 
       selectCustomDeadline(customDeadline)
     },

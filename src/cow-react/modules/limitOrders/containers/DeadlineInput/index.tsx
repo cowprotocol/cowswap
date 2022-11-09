@@ -9,16 +9,16 @@ import { DeadlineSelector } from '@cow/modules/limitOrders/pure/DeadlineSelector
 import { LimitOrderDeadline, limitOrdersDeadlines } from '@cow/modules/limitOrders/pure/DeadlineSelector/deadlines'
 
 export function DeadlineInput() {
-  const { deadline, customDeadline } = useAtomValue(limitOrdersSettingsAtom)
+  const { deadlineMilliseconds, customDeadlineTimestamp } = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const currentDeadlineNode = useRef<HTMLButtonElement>()
   const existingDeadline = useMemo(() => {
-    return limitOrdersDeadlines.find((item) => item.value === deadline)
-  }, [deadline])
+    return limitOrdersDeadlines.find((item) => item.value === deadlineMilliseconds)
+  }, [deadlineMilliseconds])
 
   const selectDeadline = useCallback(
     (deadline: LimitOrderDeadline) => {
-      updateSettingsState({ deadline: deadline.value, customDeadline: null })
+      updateSettingsState({ deadlineMilliseconds: deadline.value, customDeadlineTimestamp: null })
       currentDeadlineNode.current?.click() // Close dropdown
     },
     [updateSettingsState]
@@ -26,7 +26,7 @@ export function DeadlineInput() {
 
   const selectCustomDeadline = useCallback(
     (customDeadline: number) => {
-      updateSettingsState({ customDeadline })
+      updateSettingsState({ customDeadlineTimestamp: customDeadline })
     },
     [updateSettingsState]
   )
@@ -34,7 +34,7 @@ export function DeadlineInput() {
   return (
     <DeadlineSelector
       deadline={existingDeadline}
-      customDeadline={customDeadline}
+      customDeadline={customDeadlineTimestamp}
       selectDeadline={selectDeadline}
       selectCustomDeadline={selectCustomDeadline}
     />
