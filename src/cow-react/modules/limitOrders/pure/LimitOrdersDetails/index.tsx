@@ -2,11 +2,11 @@ import React from 'react'
 import { InfoIcon } from 'components/InfoIcon'
 import * as styledEl from './styled'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { formatSmartAmount } from 'utils/format'
 
 export interface LimitOrdersDetailsProps {
-  activeRate: string
+  activeRate: Fraction
   activeRateFiatAmount: CurrencyAmount<Currency> | null
   tradeContext: TradeFlowContext
 }
@@ -31,8 +31,8 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Limit Price</span> <InfoIcon content={'Limit price info TODO'} />
         </div>
         <div>
-          <span>
-            1 {sellToken.symbol} = {props.activeRate} {buyToken.symbol}
+          <span title={props.activeRate.toSignificant(18)}>
+            1 {sellToken.symbol} ={props.activeRate.toSignificant(6)} {buyToken.symbol}
           </span>
           <br />
           <span title={props.activeRateFiatAmount?.toExact() + ' ' + buyToken.symbol}>
