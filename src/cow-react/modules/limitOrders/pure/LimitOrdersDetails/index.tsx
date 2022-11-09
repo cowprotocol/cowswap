@@ -33,13 +33,12 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Limit Price</span> <InfoIcon content={'Limit price info TODO'} />
         </div>
         <div>
-          <span title={props.activeRate.toSignificant(18)}>
-            1 {sellToken.symbol} ={props.activeRate.toSignificant(6)} {buyToken.symbol}
+          <span title={props.activeRate.toSignificant(18) + ' ' + buyToken.symbol}>
+            1 {sellToken.symbol} = {props.activeRate.toSignificant(6)} {buyToken.symbol}
           </span>
-          <br />
-          <span title={props.activeRateFiatAmount?.toExact() + ' ' + buyToken.symbol}>
+          <styledEl.FiatRateAmount title={props.activeRateFiatAmount?.toSignificant(6) + ' ' + buyToken.symbol}>
             (~${formatSmartAmount(props.activeRateFiatAmount)})
-          </span>
+          </styledEl.FiatRateAmount>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
