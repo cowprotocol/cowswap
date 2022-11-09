@@ -4,12 +4,12 @@ import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAto
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 
 // Fetch and update initial price for the selected token pair
-export function InitialPriceUpdater() {
+export function MarketPriceUpdater() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const { price, isLoading } = useGetInitialPrice()
 
   useEffect(() => {
-    updateLimitRateState({ isLoading, activeRate: price })
+    updateLimitRateState({ isLoading, activeRate: price, isTypedValue: false })
   }, [price, isLoading, updateLimitRateState])
 
   return null
