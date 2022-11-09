@@ -18,7 +18,9 @@ export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Toke
 
     return (
       tokens.find(
-        (item) => item.address.toLowerCase() === symbolOrAddress.toLowerCase() || item.symbol === symbolOrAddress
+        (item) =>
+          item.address.toLowerCase() === symbolOrAddress.toLowerCase() ||
+          item.symbol?.toLowerCase() === symbolOrAddress.toLowerCase()
       ) || null
     )
   }, [symbolOrAddress, nativeCurrency, tokens])
