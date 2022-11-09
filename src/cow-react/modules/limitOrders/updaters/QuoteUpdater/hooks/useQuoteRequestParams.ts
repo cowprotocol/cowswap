@@ -14,14 +14,14 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
   const { chainId, account } = useWeb3React()
   const { exactTypedValue } = useTypedValue()
   const { address: recipientEnsAddress } = useENSAddress(recipient)
-  const sellToken = getAddress(inputCurrency)
-  const buyToken = getAddress(outputCurrency)
 
   return useMemo(() => {
     if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId || !deadline) {
       return null
     }
 
+    const sellToken = getAddress(inputCurrency)
+    const buyToken = getAddress(outputCurrency)
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
@@ -47,5 +47,15 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
       fromDecimals,
       toDecimals,
     }
-  }, [account, chainId, deadline, exactTypedValue, sellToken, orderKind, buyToken, recipient, recipientEnsAddress])
+  }, [
+    account,
+    chainId,
+    deadline,
+    exactTypedValue,
+    inputCurrency,
+    orderKind,
+    outputCurrency,
+    recipient,
+    recipientEnsAddress,
+  ])
 }
