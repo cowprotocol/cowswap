@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useCallback } from 'react'
 import { useTradeTypeInfo } from '@cow/modules/trade/hooks/useTradeTypeInfo'
 import { TradeCurrenciesIds } from '@cow/modules/trade/types/TradeState'
@@ -11,6 +11,7 @@ interface UseTradeNavigateCallback {
 
 export function useTradeNavigate(): UseTradeNavigateCallback {
   const history = useHistory()
+  const location = useLocation()
   const tradeTypeInfo = useTradeTypeInfo()
 
   return useCallback(
@@ -26,8 +27,8 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
         tradeTypeInfo.route
       )
 
-      history.push(route)
+      history.push(route + location.search)
     },
-    [tradeTypeInfo, history]
+    [tradeTypeInfo, history, location]
   )
 }

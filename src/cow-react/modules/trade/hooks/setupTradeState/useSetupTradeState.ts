@@ -85,9 +85,16 @@ export function useSetupTradeState(): void {
    */
   useEffect(() => {
     if (isChainIdSet || !chainIdFromUrl || !currentChainId) return
+    let isSubscribed = true
 
     setIsChainIdSet(true)
-    switchChain(connector, chainIdFromUrl).finally(updateStateAndNavigate)
+    switchChain(connector, chainIdFromUrl).finally(() => {
+      if (isSubscribed) updateStateAndNavigate()
+    })
+
+    return () => {
+      isSubscribed = false
+    }
   }, [isChainIdSet, setIsChainIdSet, chainIdFromUrl, connector, currentChainId, updateStateAndNavigate])
 
   /**
