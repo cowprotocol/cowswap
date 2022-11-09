@@ -4,6 +4,7 @@ import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
+import { OrderKind } from '@cowprotocol/contracts'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
@@ -22,6 +23,7 @@ export interface LimitOrdersTradeState {
   readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
   readonly deadlineTimestamp: Timestamp | null
+  readonly orderKind: OrderKind
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
@@ -30,7 +32,7 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
 
   const recipient = state.recipient
-
+  const orderKind = state.orderKind
   const deadlineTimestamp = settingsState.customDeadlineTimestamp
     ? settingsState.customDeadlineTimestamp
     : calculateValidTo(settingsState.deadlineMilliseconds / 1000)
@@ -47,6 +49,7 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
 
   return useSafeMemoObject({
+    orderKind,
     deadlineTimestamp,
     recipient,
     inputCurrency,
