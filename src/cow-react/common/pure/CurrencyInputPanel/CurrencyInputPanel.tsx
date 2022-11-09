@@ -23,6 +23,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   loading: boolean
   isRateLoading?: boolean
   showSetMax?: boolean
+  disableNonToken?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
@@ -39,6 +40,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     currencyInfo,
     className,
     priceImpactParams,
+    disableNonToken = false,
     showSetMax = false,
     onCurrencySelection,
     onUserInput,
@@ -145,7 +147,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         otherSelectedCurrency={currency}
         showCommonBases={true}
         showCurrencyAmount={true}
-        disableNonToken={false}
+        disableNonToken={disableNonToken}
       />
     </>
   )

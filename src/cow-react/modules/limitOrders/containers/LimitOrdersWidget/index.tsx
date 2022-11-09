@@ -28,9 +28,11 @@ import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
+import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
+  useDisableNativeTokenUsage()
 
   const { chainId } = useWeb3React()
   const {
@@ -125,6 +127,7 @@ export function LimitOrdersWidget() {
           </styledEl.Header>
           <CurrencyInputPanel
             id="swap-currency-input"
+            disableNonToken={true}
             loading={currenciesLoadingInProgress}
             onCurrencySelection={onCurrencySelection}
             onUserInput={onUserInput}
@@ -148,6 +151,7 @@ export function LimitOrdersWidget() {
           </styledEl.CurrencySeparatorBox>
           <CurrencyInputPanel
             id="swap-currency-output"
+            disableNonToken={true}
             loading={currenciesLoadingInProgress}
             isRateLoading={isRateLoading}
             onCurrencySelection={onCurrencySelection}
