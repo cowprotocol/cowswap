@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useHasPendingApproval } from 'state/enhancedTransactions/hooks'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
-import usePrevious from '@src/hooks/usePrevious'
+import usePrevious from 'hooks/usePrevious'
 import { useMemo } from 'react'
 
 function getCurrencyToApprove(amountToApprove: CurrencyAmount<Currency> | null): Token | undefined {
