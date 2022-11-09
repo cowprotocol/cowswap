@@ -34,7 +34,7 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const deadlineTimestamp = settingsState.customDeadlineTimestamp
     ? settingsState.customDeadlineTimestamp
     : calculateValidTo(settingsState.deadlineMilliseconds / 1000)
-  console.log('DDDDD', deadlineTimestamp)
+
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
   const inputCurrencyAmount =
