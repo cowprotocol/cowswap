@@ -31,7 +31,7 @@ export function useTradeFlowContext(limitOrdersQuote: SimpleGetQuoteResponse | n
     !state.outputCurrencyAmount ||
     !state.inputCurrency ||
     !state.outputCurrency ||
-    !state.deadline ||
+    !state.deadlineTimestamp ||
     !provider ||
     !settlementContract ||
     !appData
@@ -40,7 +40,6 @@ export function useTradeFlowContext(limitOrdersQuote: SimpleGetQuoteResponse | n
   }
 
   const isGnosisSafeWallet = !!gnosisSafeInfo
-  const validTo = Math.round(Date.now() / 1000 + 60 * state.deadline)
   const recipient = state.recipient || account
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token
@@ -58,7 +57,7 @@ export function useTradeFlowContext(limitOrdersQuote: SimpleGetQuoteResponse | n
       chainId,
       sellToken,
       buyToken,
-      validTo,
+      validTo: state.deadlineTimestamp,
       recipient,
       recipientAddressOrName,
       allowsOffchainSigning,

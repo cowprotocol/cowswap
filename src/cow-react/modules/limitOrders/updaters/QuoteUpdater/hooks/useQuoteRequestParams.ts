@@ -6,17 +6,16 @@ import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
-import { calculateValidTo } from '@cow/utils/time'
 import useENSAddress from '@src/hooks/useENSAddress'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
-  const { inputCurrency, outputCurrency, recipient, orderKind, deadline } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, recipient, orderKind, deadlineTimestamp } = useLimitOrdersTradeState()
   const { chainId, account } = useWeb3React()
   const { exactTypedValue } = useTypedValue()
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId || !deadline) {
+    if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId || !deadlineTimestamp) {
       return null
     }
 
@@ -30,15 +29,13 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
         ? parseUnits(exactTypedValue, fromDecimals).toString()
         : parseUnits(exactTypedValue, toDecimals).toString()
 
-    const validTo = calculateValidTo(deadline)
-
     if (!amount || !sellToken || !buyToken) {
       return null
     }
 
     return {
       chainId,
-      validTo,
+      validTo: deadlineTimestamp,
       receiver: recipientEnsAddress || recipient || account,
       kind: orderKind,
       sellToken,
@@ -50,12 +47,12 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
   }, [
     account,
     chainId,
-    deadline,
     exactTypedValue,
     inputCurrency,
     orderKind,
     outputCurrency,
     recipient,
     recipientEnsAddress,
+    deadlineTimestamp,
   ])
 }
