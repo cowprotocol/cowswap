@@ -7,6 +7,7 @@ import { HeadingText } from '@cow/modules/limitOrders/pure/RateInput/HeadingText
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
+import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export function RateInput() {
   // Rate state
@@ -16,6 +17,7 @@ export function RateInput() {
 
   // Limit order state
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const rateImpact = useRateImpact()
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
   const inputCurrencyId = inputCurrency?.symbol
   const outputCurrencyId = outputCurrency?.symbol
@@ -54,7 +56,7 @@ export function RateInput() {
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
-        <HeadingText currency={primaryCurrency} />
+        <HeadingText currency={primaryCurrency} rateImpact={rateImpact} />
 
         <styledEl.MarketPriceButton disabled={isLoadingExecutionRate || !executionRate} onClick={handleSetMarketPrice}>
           <span>Market price</span>
