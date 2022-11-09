@@ -13,7 +13,6 @@ const PercentBox = styled.span<{ isPositive: boolean; isTooLowRate: boolean }>`
   font-size: 12px;
   display: inline-flex;
   align-items: center;
-  margin-left: 5px;
   color: ${({ isPositive, isTooLowRate }) => (isPositive ? 'green' : isTooLowRate ? 'red' : 'grey')};
 
   svg {
