@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Trans } from '@lingui/macro'
 import { ButtonSize } from 'theme'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { ButtonPrimary } from 'components/Button'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'
@@ -14,7 +14,7 @@ import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext
   activeRateFiatAmount: CurrencyAmount<Currency> | null
-  activeRate: string
+  activeRate: Fraction
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   rateImpact: number

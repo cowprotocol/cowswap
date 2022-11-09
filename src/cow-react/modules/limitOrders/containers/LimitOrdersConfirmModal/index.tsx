@@ -111,7 +111,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             <LimitOrdersConfirm
               tradeContext={tradeContext}
               activeRateFiatAmount={activeRateFiatAmount}
-              activeRate={activeRate.toSignificant(6)}
+              activeRate={activeRate}
               inputCurrencyInfo={inputCurrencyInfo}
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}

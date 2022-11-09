@@ -7,6 +7,8 @@ interface RateImpactProps {
   rateImpact: number
 }
 
+const MAX_POSITIVE_RATE_IMPACT_PERCENT = 999
+
 const PercentBox = styled.span<{ isPositive: boolean; isTooLowRate: boolean }>`
   font-size: 12px;
   display: inline-flex;
@@ -24,7 +26,7 @@ const ImpactTooltip = styled.span`
 
 export function RateImpactIndicator({ rateImpact }: RateImpactProps) {
   const isPositive = rateImpact > 0
-  const hugePositiveImpact = rateImpact > 999
+  const hugePositiveImpact = rateImpact > MAX_POSITIVE_RATE_IMPACT_PERCENT
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
   if (!rateImpact) return null
@@ -36,7 +38,7 @@ export function RateImpactIndicator({ rateImpact }: RateImpactProps) {
       <PercentBox isPositive={isPositive} isTooLowRate={isTooLowRate}>
         <span>
           ({isPositive && !hugePositiveImpact ? '+' : ''}
-          {hugePositiveImpact ? '>999' : rateImpact}%)
+          {hugePositiveImpact ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : rateImpact}%)
         </span>
         {isTooLowRate && <AlertTriangle size={14} />}
       </PercentBox>
