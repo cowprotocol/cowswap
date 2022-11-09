@@ -1,11 +1,21 @@
 import * as styledEl from './styled'
 
-import { LimitOrdersWidget, ChartWidget, Orders, QuoteUpdater, InfoPopup } from '@cow/modules/limitOrders'
+import {
+  LimitOrdersWidget,
+  ChartWidget,
+  Orders,
+  QuoteUpdater,
+  InfoPopup,
+  MarketPriceUpdater,
+  ActiveRateUpdater,
+} from '@cow/modules/limitOrders'
 
 export default function LimitOrderPage() {
   return (
     <>
       <QuoteUpdater />
+      <MarketPriceUpdater />
+      <ActiveRateUpdater />
       <styledEl.PageWrapper>
         <styledEl.Column>
           <LimitOrdersWidget />

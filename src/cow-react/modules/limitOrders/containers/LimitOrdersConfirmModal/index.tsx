@@ -1,7 +1,7 @@
 import Modal from 'components/Modal'
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useAtom } from 'jotai'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { CloseIcon } from 'theme'
 import { useAtomValue } from 'jotai/utils'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
@@ -25,11 +25,13 @@ export interface LimitOrdersConfirmModalProps {
   onDismiss(): void
 }
 
-function getCurrencyAmount(currency: Currency | null, value: string | null): CurrencyAmount<Currency> | null {
-  if (!currency) return null
+function getCurrencyAmount(
+  currency: Currency | null,
+  value: Fraction | null | undefined
+): CurrencyAmount<Currency> | null {
+  if (!currency || !value) return null
 
-  // TODO: think about BigNumber usage
-  return CurrencyAmount.fromRawAmount(currency, Number(value || '0') * 10 ** currency.decimals)
+  return CurrencyAmount.fromFractionalAmount(currency, value.numerator, value.denominator)
 }
 
 function PendingText({
@@ -61,13 +63,16 @@ function PendingText({
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
   const { chainId } = useWalletInfo()
-  const { activeRate } = useAtomValue(limitRateAtom)
+  const { activeRate, isInversed } = useAtomValue(limitRateAtom)
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
-  // TODO: check with inversed rate
-  const activeRateAmount = getCurrencyAmount(outputCurrency, activeRate)
+
+  const activeRateAmount = useMemo(() => {
+    return getCurrencyAmount(outputCurrency, isInversed ? activeRate?.invert() : activeRate)
+  }, [outputCurrency, activeRate, isInversed])
+
   const activeRateFiatAmount = useHigherUSDValue(activeRateAmount || undefined)
 
   const onDismissConfirmation = useCallback(() => {
@@ -104,7 +109,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             <LimitOrdersConfirm
               tradeContext={tradeContext}
               activeRateFiatAmount={activeRateFiatAmount}
-              activeRate={activeRate}
+              activeRate={activeRate.toFixed(20)}
               inputCurrencyInfo={inputCurrencyInfo}
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}

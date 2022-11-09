@@ -26,6 +26,7 @@ import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
+import { limitRateAtom } from '../../state/limitRateAtom'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -52,6 +53,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext(limitOrdersQuote)
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const { isLoading: isRateLoading } = useAtomValue(limitRateAtom)
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -98,10 +100,9 @@ export function LimitOrdersWidget() {
   )
 
   const onSwitchTokens = useCallback(() => {
-    const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = state
+    const { inputCurrencyId, outputCurrencyId } = state
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
-    updateCurrencyAmount({ outputCurrencyAmount: inputCurrencyAmount })
-  }, [state, limitOrdersNavigate, chainId, updateCurrencyAmount])
+  }, [state, limitOrdersNavigate, chainId])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
@@ -146,6 +147,7 @@ export function LimitOrdersWidget() {
           <CurrencyInputPanel
             id="swap-currency-output"
             loading={currenciesLoadingInProgress}
+            isRateLoading={isRateLoading}
             onCurrencySelection={onCurrencySelection}
             onUserInput={onUserInput}
             subsidyAndBalance={subsidyAndBalance}
