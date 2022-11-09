@@ -9,7 +9,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
 import { getDomain, UnsignedOrder } from 'utils/signatures'
 import { Order } from 'state/orders/actions'
-import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
+import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency

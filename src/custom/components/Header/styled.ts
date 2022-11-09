@@ -13,9 +13,6 @@ import HeaderMod, {
 } from './HeaderMod'
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'components/MenuDropdown/styled'
 
-// Halloween temporary
-import SpiderRag from 'assets/cow-swap/halloween-spider.svg'
-
 export const StyledNavLink = styled(StyledNavLinkUni)`
   transition: color 0.15s ease-in-out;
   color: ${({ theme }) => darken(0.3, theme.text1)};
@@ -79,30 +76,8 @@ export const HeaderElement = styled(HeaderElementUni)`
   `}
 `
 
-export const Wrapper = styled.div<{ isMobileMenuOpen: boolean; isDarkMode: boolean }>`
+export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
-  position: relative;
-
-  // Halloween temporary start
-  ${({ isDarkMode }) =>
-    isDarkMode &&
-    css`
-      &::after {
-        content: '';
-        display: block;
-        background: url(${SpiderRag}) no-repeat center/contain;
-        height: 200px;
-        width: 200px;
-        position: fixed;
-        right: -42px;
-        top: 90px;
-
-        ${({ theme }) => theme.mediaWidth.upToSmall`
-          display: none;
-          content: none;
-        `};
-      }
-    `}
 
   ${HeaderFrame} {
     padding: 16px;
@@ -114,7 +89,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean; isDarkMode: boole
       ${
         isMobileMenuOpen &&
         css`
-          position: fixed;
+          position: absolute;
           top: 0;
           z-index: 3;
 

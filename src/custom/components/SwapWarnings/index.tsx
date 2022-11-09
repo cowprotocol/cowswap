@@ -3,12 +3,12 @@ import { AlertTriangle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { Fraction } from '@uniswap/sdk-core'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { StyledInfo } from '@cow/pages/Swap/styleds'
 import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { darken } from 'polished'
 import useDebounce from 'hooks/useDebounce'
+import { StyledInfo } from '@cow/modules/swap/pure/styled'
 
 interface HighFeeContainerProps {
   padding?: string
@@ -152,7 +152,8 @@ export const HighFeeWarning = (props: WarningProps) => {
         </MouseoverTooltipContent>
         {acceptWarningCb && (
           <WarningCheckboxContainer>
-            <input type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap anyway
+            <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
+            Swap anyway
           </WarningCheckboxContainer>
         )}
       </div>
@@ -181,7 +182,8 @@ export const NoImpactWarning = (props: WarningProps) => {
         </MouseoverTooltipContent>
         {acceptWarningCb && (
           <WarningCheckboxContainer>
-            <input type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap anyway
+            <input id="price-impact-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
+            Swap anyway
           </WarningCheckboxContainer>
         )}
       </div>

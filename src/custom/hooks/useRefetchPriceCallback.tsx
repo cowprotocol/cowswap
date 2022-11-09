@@ -21,10 +21,10 @@ import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { QuoteError } from 'state/price/actions'
 import { CancelableResult, onlyResolvesLast } from 'utils/async'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
-import { calculateValidTo } from 'hooks/useSwapCallback'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { LegacyFeeQuoteParams, LegacyQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { calculateValidTo } from '@cow/utils/time'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams

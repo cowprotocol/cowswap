@@ -11,8 +11,8 @@ import {
 
 import { getTheme, MEDIA_WIDTHS as MEDIA_WIDTHS_UNISWAP } from '@src/theme'
 import { useIsDarkMode } from 'state/user/hooks'
-import { Routes } from '@cow/constants/routes'
 import { useLocation } from 'react-router-dom'
+import { useTradeTypeInfo } from '@cow/modules/trade'
 
 export { MEDIA_WIDTHS, ThemedText } from '@src/theme'
 
@@ -52,14 +52,14 @@ export function theme(darkmode: boolean, shouldBlurBackground: boolean): Default
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const darkMode = useIsDarkMode()
   const location = useLocation()
+  const tradeTypeInfo = useTradeTypeInfo()
 
   const themeObject = useMemo(() => {
-    // Page background must be blurred for all pages besides Swap page
-    const shouldBlurBackground =
-      location.pathname.length > 1 && !([Routes.SWAP] as string[]).includes(location.pathname)
+    // Page background must be blurred for all pages besides Swap page and Limit orders
+    const shouldBlurBackground = location.pathname.length > 1 && !tradeTypeInfo
 
     return theme(darkMode, shouldBlurBackground)
-  }, [darkMode, location.pathname])
+  }, [darkMode, location.pathname, tradeTypeInfo])
 
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }

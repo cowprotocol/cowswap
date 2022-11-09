@@ -18,7 +18,7 @@ export const claimMinedMiddleware: Middleware<Record<string, unknown>, AppState>
 
     if (transaction.claim) {
       console.debug('[stat:claim:middleware] Claim transaction sent', transaction.hash, transaction.claim)
-      cowSound = getCowSoundSend(false)
+      cowSound = getCowSoundSend()
     }
   } else if (isFinalizeTransaction(action)) {
     const { chainId, hash } = action.payload

@@ -4,7 +4,6 @@ import { useCurrencyBalances } from 'state/connection/hooks'
 import { useIsExpertMode } from 'state/user/hooks'
 import { useWeb3React } from '@web3-react/core'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
-import { ApprovalState, ApproveCallback } from 'hooks/useApproveCallback'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { GpModal } from 'components/Modal'
@@ -16,32 +15,31 @@ import { WrappingPreviewProps } from '@cow/modules/swap/pure/EthFlow/WrappingPre
 import { useSingleActivityDescriptor } from 'hooks/useRecentActivity'
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
-import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
+import { useTradeApproveCallback, useTradeApproveState } from '@cow/common/containers/TradeApprove'
+import { HandleSwapCallback } from '@cow/modules/swap/pure/SwapButtons'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
   hasEnoughWrappedBalanceForSwap: boolean
-  approvalState: ApprovalState
   wrapCallback: WrapUnwrapCallback | null
-  approveCallback: ApproveCallback
   directSwapCallback: HandleSwapCallback
   onDismiss: () => void
 }
 
 function EthFlow({
   nativeInput,
-  approvalState,
-  hasEnoughWrappedBalanceForSwap,
   onDismiss,
   wrapCallback,
-  approveCallback,
   directSwapCallback,
+  hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
   const { account, chainId } = useWeb3React()
   const isExpertMode = useIsExpertMode()
   const { native, wrappedToken: wrapped } = useDetectNativeToken()
+  const approvalState = useTradeApproveState(nativeInput || null)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
+  const approveCallback = useTradeApproveCallback(nativeInput?.wrapped)
   const ethFlowActions = useEthFlowActions({
     wrap: wrapCallback,
     approve: approveCallback,

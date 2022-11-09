@@ -16,7 +16,6 @@ import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
-import { MAX_VALID_TO_EPOCH } from 'hooks/useSwapCallback'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
@@ -27,6 +26,7 @@ import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { Web3Provider } from '@ethersproject/providers'
 import { BaseFlowContext } from '@cow/modules/swap/services/common/types'
+import { calculateValidTo } from '@cow/utils/time'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -46,15 +46,6 @@ const _computeInputAmountForSignature = (params: {
     // User BUYING? POST inputAmount as amount with no fee
     return inputWithSlippage.subtract(fee)
   }
-}
-
-function calculateValidTo(deadline: number): number {
-  // Need the timestamp in seconds
-  const now = Date.now() / 1000
-  // Must be an integer
-  const validTo = Math.floor(deadline + now)
-  // Should not be greater than what the contract supports
-  return Math.min(validTo, MAX_VALID_TO_EPOCH)
 }
 
 interface BaseFlowContextSetup {

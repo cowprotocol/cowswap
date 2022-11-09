@@ -7,11 +7,11 @@ import {
   removeAllFavouriteTokens,
   initFavouriteTokens,
 } from 'state/user/reducer'
-import { calculateValidTo } from 'hooks/useSwapCallback'
 import { useUserTransactionTTL, deserializeToken } from '@src/state/user/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { SerializedToken } from 'state/user/types'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { calculateValidTo } from '@cow/utils/time'
 
 export * from '@src/state/user/hooks'
 

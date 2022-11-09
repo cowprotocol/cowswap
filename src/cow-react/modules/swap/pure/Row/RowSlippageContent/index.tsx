@@ -1,14 +1,26 @@
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
+import { RowStyleProps } from '@cow/modules/swap/pure/Row/types'
 import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
-import { StyledInfo } from '@cow/pages/Swap/styleds'
 import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
-import { StyledRowBetween, TextWrapper, ClickableText } from '@cow/modules/swap/pure/Row/styled'
-import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
+import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { ThemedText } from 'theme/index'
 import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
+import { StyledInfo } from '@cow/modules/swap/pure/styled'
+
+export const ClickableText = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  color: ${({ theme }) => theme.text1};
+`
 
 export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
   <Trans>

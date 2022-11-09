@@ -14,9 +14,6 @@ import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 // Modal override items
 import { HeaderText } from '@src/components/WalletModal/Option'
-import { AutoColumn } from 'components/Column'
-import { RowBetween } from 'components/Row'
-import { ModalContentWrapper } from 'components/Settings/SettingsMod'
 import { NPS_KEY } from 'utils/appzi'
 
 export { ThemedText } from '@src/theme'
@@ -404,7 +401,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     }
   }
 
-  ::selection { 
+  ::selection {
     background: ${({ theme }) => theme.primary1};
     color: ${({ theme }) => theme.text2};
   }
@@ -577,13 +574,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   // START - Modal overrides
   ${HeaderText} {
     color: ${({ theme }) => theme.text1};
-  }
-
-  ${ModalContentWrapper} {
-    ${RowBetween} > div,
-    ${AutoColumn} > div {
-      color: ${({ theme }) => theme.text2};
-    }
   }
   // END - Modal overrides
 

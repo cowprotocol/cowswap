@@ -12,7 +12,7 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import CopyHelper from 'components/Copy'
 import { getBlockExplorerUrl } from 'utils'
-import { formatDateWithTimezone } from 'utils/time'
+import { formatDateWithTimezone } from '@cow/utils/time'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useWeb3React } from '@web3-react/core'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
@@ -24,7 +24,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { claimAnalytics } from 'components/analytics'
 import { ButtonSize } from 'theme'
-import { HelpCircle } from '@cow/modules/shared/dumb/HelpCircle'
+import { HelpCircle } from '@cow/common/pure/HelpCircle'
 
 enum ClaimStatus {
   INITIAL,

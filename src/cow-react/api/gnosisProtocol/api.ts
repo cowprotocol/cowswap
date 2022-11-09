@@ -588,6 +588,28 @@ function _transformGChainGasPrices({ slow, average, fast }: GChainFeeEndpointRes
   }
 }
 
+export interface NativePrice {
+  price: number
+}
+
+export async function getNativePrice(chainId: ChainId, address: string): Promise<NativePrice | null> {
+  console.log(`[api:${API_NAME}] Get native price for`, chainId, address)
+
+  try {
+    const response = await _get(chainId, `/token/${address}/native_price`)
+
+    if (!response.ok) {
+      const errorResponse = await response.json()
+      throw new Error(errorResponse)
+    } else {
+      return response.json()
+    }
+  } catch (error) {
+    console.error('Error getting native price:', error)
+    throw new Error('Error getting native price: ' + error)
+  }
+}
+
 // Register some globals for convenience
 registerOnWindow({
   operator: {
@@ -597,5 +619,6 @@ registerOnWindow({
     sendSignedOrder: sendOrder,
     apiGet: _get,
     apiPost: _post,
+    getNativePrice,
   },
 })

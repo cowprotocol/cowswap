@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { getDateTimestamp } from 'utils/time'
+import { getDateTimestamp } from '@cow/utils/time'
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
 import { isPending } from 'components/Web3Status'
 

@@ -8,11 +8,11 @@ import { useDerivedSwapInfo, useSwapActionHandlers } from 'state/swap/hooks'
 import { useSwapConfirmManager } from 'cow-react/modules/swap/hooks/useSwapConfirmManager'
 import { useWeb3React } from '@web3-react/core'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
-import { ApproveCallback } from 'hooks/useApproveCallback'
-import { HandleSwapCallback } from 'cow-react/modules/swap/hooks/useHandleSwap'
+import { TradeApproveCallback } from '@cow/common/containers/TradeApprove/useTradeApproveCallback'
+import { HandleSwapCallback } from '@cow/modules/swap/pure/SwapButtons'
 
 export interface EthFlowActionCallbacks {
-  approve: ApproveCallback
+  approve: TradeApproveCallback
   wrap: WrapUnwrapCallback | null
   directSwap: HandleSwapCallback
   dismiss: () => void
@@ -70,7 +70,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
 
     const approve = (useModals?: boolean) => {
       return sendTransaction('approve', () => {
-        return callbacks.approve({ useModals }).then((res) => res?.hash)
+        return callbacks.approve({ useModals: !!useModals }).then((res) => res?.hash)
       })
     }
 
