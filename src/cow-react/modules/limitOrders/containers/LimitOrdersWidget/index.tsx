@@ -143,6 +143,7 @@ export function LimitOrdersWidget() {
           </styledEl.RateWrapper>
           <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
             <CurrencyArrowSeparator
+              isCollapsed={false}
               onSwitchTokens={onSwitchTokens}
               withRecipient={showRecipient}
               isLoading={isTradePriceUpdating}
