@@ -6,7 +6,7 @@ import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
-import useENSAddress from '@src/hooks/useENSAddress'
+import useENSAddress from 'hooks/useENSAddress'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
   const { inputCurrency, outputCurrency, recipient, orderKind, deadlineTimestamp } = useLimitOrdersTradeState()
