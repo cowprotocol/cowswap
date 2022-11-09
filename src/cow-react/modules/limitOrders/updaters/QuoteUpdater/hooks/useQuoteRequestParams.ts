@@ -7,17 +7,21 @@ import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { calculateValidTo } from '@cow/utils/time'
+import useENSAddress from '@src/hooks/useENSAddress'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
   const { inputCurrency, outputCurrency, recipient, orderKind, deadline } = useLimitOrdersTradeState()
   const { chainId, account } = useWeb3React()
   const { exactTypedValue } = useTypedValue()
+  const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   return useMemo(() => {
     if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId || !deadline) {
       return null
     }
 
+    const sellToken = getAddress(inputCurrency)
+    const buyToken = getAddress(outputCurrency)
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
@@ -26,8 +30,6 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
         ? parseUnits(exactTypedValue, fromDecimals).toString()
         : parseUnits(exactTypedValue, toDecimals).toString()
 
-    const sellToken = getAddress(inputCurrency)
-    const buyToken = getAddress(outputCurrency)
     const validTo = calculateValidTo(deadline)
 
     if (!amount || !sellToken || !buyToken) {
@@ -37,7 +39,7 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
     return {
       chainId,
       validTo,
-      receiver: recipient || account,
+      receiver: recipientEnsAddress || recipient || account,
       kind: orderKind,
       sellToken,
       buyToken,
@@ -45,5 +47,15 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
       fromDecimals,
       toDecimals,
     }
-  }, [account, chainId, deadline, exactTypedValue, inputCurrency, orderKind, outputCurrency, recipient])
+  }, [
+    account,
+    chainId,
+    deadline,
+    exactTypedValue,
+    inputCurrency,
+    orderKind,
+    outputCurrency,
+    recipient,
+    recipientEnsAddress,
+  ])
 }

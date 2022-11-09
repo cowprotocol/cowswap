@@ -8,7 +8,6 @@ import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
-import { useHandleError } from './useHandleError'
 import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
 
 export function useHandleResponse() {
@@ -16,7 +15,6 @@ export function useHandleResponse() {
 
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
-  const handleError = useHandleError()
 
   return useCallback(
     (response: SimpleGetQuoteResponse) => {
@@ -38,11 +36,12 @@ export function useHandleResponse() {
         updateLimitRateState({ executionRate })
 
         // Update limit order quote
-        setLimitOrdersQuote(response)
+        setLimitOrdersQuote({ response })
       } catch (error) {
-        handleError(error)
+        console.debug('[useFetchMarketPrice] Failed to fetch exection price', error)
+        updateLimitRateState({ executionRate: null })
       }
     },
-    [handleError, inputCurrency, outputCurrency, setLimitOrdersQuote, updateLimitRateState]
+    [inputCurrency, outputCurrency, setLimitOrdersQuote, updateLimitRateState]
   )
 }

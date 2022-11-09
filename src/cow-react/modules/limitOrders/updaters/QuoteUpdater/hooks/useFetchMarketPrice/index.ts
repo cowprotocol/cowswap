@@ -7,7 +7,9 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useQuoteRequestParams } from '../useQuoteRequestParams'
 import { useHandleResponse } from './useHandleResponse'
-import { useHandleError } from './useHandleError'
+import { useSetAtom } from 'jotai'
+import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
+import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
 
 // Every 10s
 const REFETCH_CHECK_INTERVAL = 10000
@@ -17,11 +19,10 @@ export function useFetchMarketPrice() {
 
   const feeQuoteParams = useQuoteRequestParams()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
 
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersTradeState()
-
   const handleResponse = useHandleResponse()
-  const handleError = useHandleError()
 
   // Main hook updater
   useEffect(() => {
@@ -34,7 +35,9 @@ export function useFetchMarketPrice() {
 
       getQuote(feeQuoteParams)
         .then(handleResponse)
-        .catch(handleError)
+        .catch((error: GpQuoteError) => {
+          setLimitOrdersQuote({ error })
+        })
         .finally(() => {
           updateLimitRateState({ isLoadingExecutionRate: false })
         })
@@ -46,7 +49,7 @@ export function useFetchMarketPrice() {
     const intervalId = setInterval(handleFetchQuote, REFETCH_CHECK_INTERVAL)
 
     return () => clearInterval(intervalId)
-  }, [feeQuoteParams, handleResponse, handleError, updateLimitRateState])
+  }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote])
 
   // Turn on the loading if some of these dependencies have changed
   useEffect(() => {
