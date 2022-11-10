@@ -12,10 +12,11 @@ interface UseTradeNavigateCallback {
 export function useTradeNavigate(): UseTradeNavigateCallback {
   const history = useHistory()
   const tradeTypeInfo = useTradeTypeInfo()
+  const tradeRoute = tradeTypeInfo?.route
 
   return useCallback(
     (chainId: SupportedChainId | null | undefined, { inputCurrencyId, outputCurrencyId }: TradeCurrenciesIds) => {
-      if (!tradeTypeInfo) return
+      if (!tradeRoute) return
 
       const route = parameterizeTradeRoute(
         {
@@ -23,11 +24,11 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
           inputCurrencyId: inputCurrencyId || undefined,
           outputCurrencyId: outputCurrencyId || undefined,
         },
-        tradeTypeInfo.route
+        tradeRoute
       )
 
       history.push(route)
     },
-    [tradeTypeInfo, history]
+    [tradeRoute, history]
   )
 }
