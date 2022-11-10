@@ -1,18 +1,24 @@
+import { Fraction } from '@uniswap/sdk-core'
 import { atom } from 'jotai'
 
 export interface LimitRateState {
   readonly isLoading: boolean
+  readonly isLoadingExecutionRate: boolean
   readonly isInversed: boolean
-  readonly activeRate: string | null
-  readonly marketRate: string | null
+  readonly activeRate: Fraction | null
+  readonly executionRate: Fraction | null
+  readonly isTypedValue: boolean
+  readonly typedValue: string | null
 }
 
 const initLimitRateState = () => ({
   isInversed: false,
   isLoading: false,
+  isLoadingExecutionRate: false,
   activeRate: null,
-  // TODO: set this to null, this is just for testing purposes
-  marketRate: '2',
+  executionRate: null,
+  isTypedValue: false,
+  typedValue: null,
 })
 
 export const limitRateAtom = atom<LimitRateState>(initLimitRateState())

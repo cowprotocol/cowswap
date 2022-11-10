@@ -21,6 +21,7 @@ interface BuiltItProps {
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   loading: boolean
+  isRateLoading?: boolean
   showSetMax?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
@@ -44,6 +45,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     allowsOffchainSigning,
     subsidyAndBalance,
     topLabel,
+    isRateLoading,
   } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
@@ -115,7 +117,12 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           </div>
           <div>
             <styledEl.FiatAmountText>
-              <FiatValue priceImpactLoading={priceImpactLoading} fiatValue={fiatAmount} priceImpact={priceImpact} />
+              <FiatValue
+                isLoading={isRateLoading}
+                priceImpactLoading={priceImpactLoading}
+                fiatValue={fiatAmount}
+                priceImpact={priceImpact}
+              />
             </styledEl.FiatAmountText>
           </div>
         </styledEl.CurrencyInputBox>

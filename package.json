@@ -24,7 +24,7 @@
   },
   "types": "./dist/widgets.d.ts",
   "private": true,
-  "version": "1.23.3-RC.1",
+  "version": "1.23.4",
   "engines": {
     "node": ">=16.0.0"
   },
@@ -259,6 +259,7 @@
     "ethers": "^5.1.4",
     "fast-safe-stringify": "^2.0.8",
     "fortmatic": "^2.2.1",
+    "fraction.js": "^4.2.0",
     "immer": "^9.0.6",
     "ipfs-deploy": "^8.0.1",
     "ipfs-http-client": "^52.0.3",
