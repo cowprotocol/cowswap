@@ -1,6 +1,6 @@
 import { useAllTokens, useCurrency } from 'hooks/Tokens'
 import { Token } from '@uniswap/sdk-core'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import TokenWarningModal from 'components/TokenWarningModal'
@@ -81,6 +81,13 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
     setDismissTokenWarning(true)
     onDismiss(unknownFields)
   }, [onDismiss, importTokensNotInDefault, loadedInputCurrency, loadedOutputCurrency])
+
+  // Reset dismiss state after importing token
+  useEffect(() => {
+    if (importTokensNotInDefault.length === 0) {
+      setDismissTokenWarning(false)
+    }
+  }, [importTokensNotInDefault])
 
   return (
     <TokenWarningModal

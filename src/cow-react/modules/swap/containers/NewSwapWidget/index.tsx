@@ -178,6 +178,7 @@ export function NewSwapWidget() {
     userAllowedSlippage,
     isFeeGreater,
     fee,
+    isWrapUnwrapMode,
     discount: subsidyAndBalance.subsidy.discount || 0,
   }
 
