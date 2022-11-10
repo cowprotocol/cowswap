@@ -46,6 +46,7 @@ export interface SwapButtonStateParams {
   swapCallbackError: string | null
   trade: TradeGp | undefined | null
   isNativeIn: boolean
+  isSmartContractWallet: boolean
   wrappedToken: Token
 }
 
@@ -121,7 +122,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.isNativeIn) {
-    if (getEthFlowEnabled()) {
+    if (getEthFlowEnabled(input.isSmartContractWallet)) {
       return SwapButtonState.EthFlowSwap
     } else {
       return SwapButtonState.SwapWithWrappedToken
