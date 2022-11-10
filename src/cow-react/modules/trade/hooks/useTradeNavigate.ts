@@ -16,13 +16,16 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
   const tradeTypeInfo = useTradeTypeInfo()
   const { chainId: currentChainId } = useWeb3React()
 
+  const isNetworkSupported = isSupportedChainId(currentChainId)
+  // Currencies ids shouldn't be displayed in the URL when user selected unsupported network
+  const fixCurrencyId = useCallback(
+    (currencyId: string | null) => (isNetworkSupported ? currencyId || undefined : undefined),
+    [isNetworkSupported]
+  )
+
   return useCallback(
     (chainId: SupportedChainId | null | undefined, { inputCurrencyId, outputCurrencyId }: TradeCurrenciesIds) => {
       if (!tradeTypeInfo) return
-
-      const isNetworkSupported = isSupportedChainId(currentChainId)
-      // Currencies ids shouldn't be displayed in the URL when user selected unsupported network
-      const fixCurrencyId = (currencyId: string | null) => (isNetworkSupported ? currencyId || undefined : undefined)
 
       const route = parameterizeTradeRoute(
         {
@@ -35,6 +38,6 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
 
       history.push(route)
     },
-    [tradeTypeInfo, history, currentChainId]
+    [tradeTypeInfo, history, fixCurrencyId]
   )
 }
