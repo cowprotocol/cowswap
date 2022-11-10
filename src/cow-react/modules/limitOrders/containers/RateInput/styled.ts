@@ -20,10 +20,12 @@ export const Header = styled.div`
 
 export const MarketPriceButton = styled.button`
   background: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1};
+  white-space: nowrap;
   border: none;
   cursor: pointer;
   border-radius: 16px;
-  padding: 5px 10px;
+  padding: 5px 8px;
 `
 
 export const Body = styled.div`
@@ -52,6 +54,7 @@ export const ActiveCurrency = styled.button`
 `
 
 export const ActiveSymbol = styled.span`
+  color: ${({ theme }) => theme.text1};
   font-size: 0.85rem;
   margin-right: 5px;
   font-weight: 500;
@@ -59,6 +62,7 @@ export const ActiveSymbol = styled.span`
 
 export const ActiveIcon = styled.div`
   background-color: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1};
   width: 20px;
   height: 20px;
   border-radius: 50%;

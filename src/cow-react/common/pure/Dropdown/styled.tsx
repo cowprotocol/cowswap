@@ -15,7 +15,8 @@ export const DropdownContent = styled.div<DropdownContentPosition>`
   width: max-content;
   top: ${({ positionY }) => (positionY === 'top' ? '' : '100%')};
   bottom: ${({ positionY }) => (positionY === 'bottom' ? '' : '100%')};
-  right: ${({ positionX }) => (positionX === 'right' ? '0' : '-100%')};
+  right: ${({ positionX }) => (positionX === 'right' ? '0' : '')};
+  left: ${({ positionX }) => (positionX === 'left' ? '0' : '')};
 `
 
 export const DropdownBox = styled.div`

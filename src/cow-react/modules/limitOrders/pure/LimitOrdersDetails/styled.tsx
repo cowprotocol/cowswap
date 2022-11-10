@@ -7,3 +7,8 @@ export const DetailsRow = styled.div`
   align-items: center;
   text-align: right;
 `
+
+export const FiatRateAmount = styled.span`
+  font-size: 14px;
+  margin-left: 5px;
+`

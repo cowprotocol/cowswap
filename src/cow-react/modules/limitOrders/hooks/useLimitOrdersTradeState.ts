@@ -4,9 +4,13 @@ import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
+import { OrderKind } from '@cowprotocol/contracts'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
+import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { calculateValidTo } from '@cow/utils/time'
+import { Timestamp } from '@cow/types'
 
 export interface LimitOrdersTradeState {
   readonly inputCurrency: Currency | null
@@ -18,15 +22,21 @@ export interface LimitOrdersTradeState {
   readonly inputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
-  readonly deadline: number | null
+  readonly deadlineTimestamp: Timestamp | null
+  readonly orderKind: OrderKind
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const { account } = useWeb3React()
   const state = useAtomValue(limitOrdersAtom)
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
 
   const recipient = state.recipient
-  const deadline = state.deadline
+  const orderKind = state.orderKind
+  const deadlineTimestamp = settingsState.customDeadlineTimestamp
+    ? settingsState.customDeadlineTimestamp
+    : calculateValidTo(settingsState.deadlineMilliseconds / 1000)
+
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
   const inputCurrencyAmount =
@@ -39,7 +49,8 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
 
   return useSafeMemoObject({
-    deadline,
+    orderKind,
+    deadlineTimestamp,
     recipient,
     inputCurrency,
     outputCurrency,

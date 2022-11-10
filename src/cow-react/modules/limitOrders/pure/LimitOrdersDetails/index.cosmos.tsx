@@ -1,4 +1,4 @@
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { OrderKind } from 'state/orders/actions'
@@ -36,7 +36,7 @@ const tradeContext: TradeFlowContext = {
 const Fixtures = {
   default: (
     <LimitOrdersDetails
-      activeRate={'2'}
+      activeRate={new Fraction(50000000, 20000000)}
       activeRateFiatAmount={CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18)}
       tradeContext={tradeContext}
     />

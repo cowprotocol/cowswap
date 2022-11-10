@@ -13,10 +13,9 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { RateInput } from '../RateInput'
-import { ExpiryDate } from '../ExpiryDate'
+import { DeadlineInput } from '../DeadlineInput'
 import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
-import { limitOrdersQuoteAtom } from '../../state/limitOrdersQuoteAtom'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { TradeButtons } from '@cow/modules/limitOrders/containers/TradeButtons'
@@ -26,9 +25,14 @@ import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
+import { limitRateAtom } from '../../state/limitRateAtom'
+import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
+import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
+import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
+  useDisableNativeTokenUsage()
 
   const { chainId } = useWeb3React()
   const {
@@ -48,10 +52,11 @@ export function LimitOrdersWidget() {
   const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
-  const limitOrdersQuote = useAtomValue(limitOrdersQuoteAtom)
-  const tradeContext = useTradeFlowContext(limitOrdersQuote)
+  const tradeContext = useTradeFlowContext()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const { isLoading: isRateLoading } = useAtomValue(limitRateAtom)
+  const rateImpact = useRateImpact()
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -98,10 +103,9 @@ export function LimitOrdersWidget() {
   )
 
   const onSwitchTokens = useCallback(() => {
-    const { inputCurrencyId, outputCurrencyId, inputCurrencyAmount } = state
+    const { inputCurrencyId, outputCurrencyId } = state
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
-    updateCurrencyAmount({ outputCurrencyAmount: inputCurrencyAmount })
-  }, [state, limitOrdersNavigate, chainId, updateCurrencyAmount])
+  }, [state, limitOrdersNavigate, chainId])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
@@ -117,11 +121,12 @@ export function LimitOrdersWidget() {
       <styledEl.Container>
         <styledEl.ContainerBox>
           <styledEl.Header>
-            <div>Limit orders</div>
+            <TradeWidgetLinks />
             <SettingsWidget />
           </styledEl.Header>
           <CurrencyInputPanel
             id="swap-currency-input"
+            disableNonToken={true}
             loading={currenciesLoadingInProgress}
             onCurrencySelection={onCurrencySelection}
             onUserInput={onUserInput}
@@ -133,10 +138,11 @@ export function LimitOrdersWidget() {
           />
           <styledEl.RateWrapper>
             <RateInput />
-            <ExpiryDate />
+            <DeadlineInput />
           </styledEl.RateWrapper>
           <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
             <CurrencyArrowSeparator
+              isCollapsed={false}
               onSwitchTokens={onSwitchTokens}
               withRecipient={showRecipient}
               isLoading={isTradePriceUpdating}
@@ -145,7 +151,9 @@ export function LimitOrdersWidget() {
           </styledEl.CurrencySeparatorBox>
           <CurrencyInputPanel
             id="swap-currency-output"
+            disableNonToken={true}
             loading={currenciesLoadingInProgress}
+            isRateLoading={isRateLoading}
             onCurrencySelection={onCurrencySelection}
             onUserInput={onUserInput}
             subsidyAndBalance={subsidyAndBalance}
@@ -160,6 +168,9 @@ export function LimitOrdersWidget() {
           <styledEl.TradeButtonBox>
             <TradeButtons tradeContext={tradeContext} openConfirmScreen={() => setShowConfirmation(true)} />
           </styledEl.TradeButtonBox>
+          {!!inputCurrency && (
+            <styledEl.StyledRateImpactWarning rateImpact={rateImpact} inputCurrency={inputCurrency} />
+          )}
         </styledEl.ContainerBox>
       </styledEl.Container>
       <TradeApproveWidget />

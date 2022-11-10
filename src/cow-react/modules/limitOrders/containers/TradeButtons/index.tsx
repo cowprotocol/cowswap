@@ -8,6 +8,8 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { limitOrdersTradeButtonsMap, SwapButton } from './limitOrdersTradeButtonsMap'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
+import { useToggleWalletModal } from 'state/application/hooks'
+import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
@@ -20,6 +22,8 @@ export function TradeButtons(props: TradeButtonsProps) {
   const formState = useLimitOrdersFormState()
   const tradeState = useLimitOrdersTradeState()
   const setConfirmationState = useSetAtom(limitOrdersConfirmState)
+  const toggleWalletModal = useToggleWalletModal()
+  const quote = useAtomValue(limitOrdersQuoteAtom)
 
   const doTrade = useCallback(() => {
     if (expertMode && tradeContext) {
@@ -35,7 +39,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const button = limitOrdersTradeButtonsMap[formState]
 
   if (typeof button === 'function') {
-    return button({ tradeState })
+    return button({ tradeState, toggleWalletModal, quote })
   }
 
   return (

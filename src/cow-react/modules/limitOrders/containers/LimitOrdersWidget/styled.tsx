@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 import { Settings } from 'react-feather'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
+import { RateImpactWarning } from '@cow/modules/limitOrders/pure/RateImpactWarning'
 
 export const Container = styled.div`
   max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
@@ -68,4 +69,8 @@ export const SettingsIcon = styled(Settings)`
 
 export const StyledRemoveRecipient = styled(RemoveRecipient)`
   margin: 15px 0;
+`
+
+export const StyledRateImpactWarning = styled(RateImpactWarning)`
+  margin-top: 15px;
 `

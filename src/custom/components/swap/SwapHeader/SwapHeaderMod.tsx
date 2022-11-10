@@ -1,10 +1,9 @@
-import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
 
-import { ThemedText } from 'theme'
 import { RowBetween, RowFixed } from 'components/Row'
 import SettingsTab from 'components/Settings'
+import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
 
 const StyledSwapHeader = styled.div`
   padding: 1rem 1.25rem 0.5rem 1.25rem;
@@ -16,11 +15,7 @@ export default function SwapHeader({ allowedSlippage, className }: { allowedSlip
   return (
     <StyledSwapHeader className={className}>
       <RowBetween>
-        <RowFixed>
-          <ThemedText.Black fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
-            <Trans>Swap</Trans>
-          </ThemedText.Black>
-        </RowFixed>
+        <TradeWidgetLinks />
         <RowFixed>
           <SettingsTab placeholderSlippage={allowedSlippage} />
         </RowFixed>
