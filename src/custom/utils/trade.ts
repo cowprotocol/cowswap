@@ -12,7 +12,7 @@ import { formatSmart } from 'utils/format'
 import { SigningScheme } from '@cowprotocol/contracts'
 import { getTrades, getProfileData } from '@cow/api/gnosisProtocol/api'
 
-export interface PostOrderParams {
+export type PostOrderParams = {
   account: string
   chainId: ChainId
   signer: Signer
@@ -29,6 +29,13 @@ export interface PostOrderParams {
   allowsOffchainSigning: boolean
   appDataHash: string
   quoteId?: number
+}
+
+export type UnsignedOrderAdditionalParams = PostOrderParams & {
+  orderId: string
+  summary: string
+  signature: string
+  isOnChain?: boolean
 }
 
 function _getSummary(params: PostOrderParams): string {
@@ -107,9 +114,14 @@ export function getOrderParams(params: PostOrderParams): {
   }
 }
 
-export function mapUnsignedOrderToOrder(
-  unsignedOrder: UnsignedOrder,
-  {
+export type MapUnsignedOrderToOrderParams = {
+  unsignedOrder: UnsignedOrder
+  additionalParams: UnsignedOrderAdditionalParams
+}
+
+export function mapUnsignedOrderToOrder({
+  unsignedOrder,
+  additionalParams: {
     orderId,
     account,
     summary,
@@ -119,8 +131,8 @@ export function mapUnsignedOrderToOrder(
     isOnChain,
     signature,
     sellAmountBeforeFee,
-  }: PostOrderParams & { orderId: string; summary: string; signature: string; isOnChain?: boolean }
-): Order {
+  },
+}: MapUnsignedOrderToOrderParams): Order {
   return {
     ...unsignedOrder,
 
@@ -178,7 +190,10 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     owner: account,
   })
 
-  const pendingOrderParams: Order = mapUnsignedOrderToOrder(unsignedOrder, { ...params, orderId, summary, signature })
+  const pendingOrderParams: Order = mapUnsignedOrderToOrder({
+    unsignedOrder,
+    additionalParams: { ...params, orderId, summary, signature },
+  })
 
   return {
     chainId,

@@ -76,7 +76,10 @@ export async function signEthFlowOrderStep(
 
   return {
     txReceipt,
-    order: mapUnsignedOrderToOrder(order, { ...orderParams, orderId, signature: '', summary }),
+    order: mapUnsignedOrderToOrder({
+      unsignedOrder: order,
+      additionalParams: { ...orderParams, orderId, signature: '', summary },
+    }),
     orderId,
   }
 }
