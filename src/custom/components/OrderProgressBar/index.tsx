@@ -30,7 +30,7 @@ import cowMeditatingGraph from 'assets/images/cow-meditating.svg'
 import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 
 import { getExplorerOrderLink } from 'utils/explorer'
-import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
+import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
