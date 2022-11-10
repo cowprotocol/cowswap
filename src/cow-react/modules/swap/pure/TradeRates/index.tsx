@@ -22,6 +22,7 @@ export interface TradeRatesProps {
   allowsOffchainSigning: boolean
   userAllowedSlippage: Percent | string
   isFeeGreater: boolean
+  isWrapUnwrapMode: boolean
   discount: number
   fee: CurrencyAmount<Currency> | null
 }
@@ -36,6 +37,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     allowsOffchainSigning,
     userAllowedSlippage,
     discount,
+    isWrapUnwrapMode,
   } = props
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
@@ -54,15 +56,17 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
           fee={fee}
         />
       )}
-      <styledEl.Row>
-        <div>
-          <span>Fees discount</span>
-          <InfoIcon content={SUBSIDY_INFO_MESSAGE_EXTENDED} />
-        </div>
-        <div>
-          <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
-        </div>
-      </styledEl.Row>
+      {!isWrapUnwrapMode && (
+        <styledEl.Row>
+          <div>
+            <span>Fees discount</span>
+            <InfoIcon content={SUBSIDY_INFO_MESSAGE_EXTENDED} />
+          </div>
+          <div>
+            <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
+          </div>
+        </styledEl.Row>
+      )}
     </styledEl.Box>
   )
 }, genericPropsChecker)
