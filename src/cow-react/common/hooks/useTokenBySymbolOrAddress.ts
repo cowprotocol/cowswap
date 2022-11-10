@@ -12,13 +12,17 @@ export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Toke
       return null
     }
 
-    if (nativeCurrency.symbol === symbolOrAddress) {
+    const symbolOrAddressLowerCase = symbolOrAddress.toLowerCase()
+
+    if (nativeCurrency.symbol?.toLowerCase() === symbolOrAddressLowerCase) {
       return nativeCurrency
     }
 
     return (
       tokens.find(
-        (item) => item.address.toLowerCase() === symbolOrAddress.toLowerCase() || item.symbol === symbolOrAddress
+        (item) =>
+          item.address.toLowerCase() === symbolOrAddressLowerCase ||
+          item.symbol?.toLowerCase() === symbolOrAddressLowerCase
       ) || null
     )
   }, [symbolOrAddress, nativeCurrency, tokens])
