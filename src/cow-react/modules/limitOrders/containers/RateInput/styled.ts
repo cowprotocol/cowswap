@@ -20,10 +20,11 @@ export const Header = styled.div`
 export const MarketPriceButton = styled.button`
   background-color: ${({ theme }) => theme.bg1};
   color: ${({ theme }) => theme.text1};
+  white-space: nowrap;
   border: none;
   cursor: pointer;
   border-radius: 16px;
-  padding: 5px 10px;
+  padding: 5px 8px;
 `
 
 export const Body = styled.div`

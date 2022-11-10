@@ -2,8 +2,6 @@ import * as styledEl from './styled'
 
 import {
   LimitOrdersWidget,
-  ChartWidget,
-  Orders,
   QuoteUpdater,
   InfoPopup,
   MarketPriceUpdater,
@@ -22,10 +20,11 @@ export default function LimitOrderPage() {
           <InfoPopup />
         </styledEl.Column>
 
-        <styledEl.Column>
-          <ChartWidget />
-          <Orders />
-        </styledEl.Column>
+        {/*TODO: temporary hidden right part of the page until it's ready*/}
+        {/*<styledEl.Column>*/}
+        {/*  <ChartWidget />*/}
+        {/*  <Orders />*/}
+        {/*</styledEl.Column>*/}
       </styledEl.PageWrapper>
     </>
   )

@@ -2,7 +2,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import styled from 'styled-components/macro'
 import { AlertTriangle } from 'react-feather'
-import { useIsDarkMode } from '@src/state/user/hooks'
+import { useIsDarkMode } from 'state/user/hooks'
 
 interface RateImpactAcknowledge {
   withAcknowledge: boolean
