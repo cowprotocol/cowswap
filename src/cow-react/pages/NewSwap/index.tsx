@@ -2,7 +2,6 @@ import React from 'react'
 
 import { NewSwapWidget } from '@cow/modules/swap/containers/NewSwapWidget'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { SupportedChainId } from 'constants/chains'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
@@ -13,13 +12,18 @@ export function NewSwapPage() {
 }
 
 export function NewSwapPageRedirect({ location }: RouteComponentProps) {
-  const { chainId = SupportedChainId.MAINNET } = useWeb3React()
-  const inputCurrencyId = WETH[chainId].symbol
+  const { chainId } = useWeb3React()
 
-  const pathname = parameterizeTradeRoute(
-    { chainId: String(chainId), inputCurrencyId, outputCurrencyId: undefined },
-    Routes.SWAP
-  )
+  if (!chainId) return null
 
-  return <Redirect to={{ ...location, pathname }} />
+  const searchParams = new URLSearchParams(location.search)
+  const inputCurrencyId = searchParams.get('inputCurrency') || WETH[chainId].symbol
+  const outputCurrencyId = searchParams.get('outputCurrency') || undefined
+
+  searchParams.delete('inputCurrency')
+  searchParams.delete('outputCurrency')
+
+  const pathname = parameterizeTradeRoute({ chainId: String(chainId), inputCurrencyId, outputCurrencyId }, Routes.SWAP)
+
+  return <Redirect to={{ ...location, pathname, search: searchParams.toString() }} />
 }
