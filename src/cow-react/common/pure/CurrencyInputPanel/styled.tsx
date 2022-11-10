@@ -3,12 +3,13 @@ import { loadingOpacityMixin } from 'components/Loader/styled'
 import Input from 'components/NumericalInput'
 import { MEDIA_WIDTHS } from 'theme'
 
-export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean }>`
+export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: boolean }>`
   padding: 1rem;
   background: ${({ theme }) => theme.currencyInput?.background};
   border: ${({ theme }) => theme.currencyInput?.border};
   border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '20px 20px 0 0' : '20px')};
   border-bottom: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '0' : 'auto')};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 `
 
 export const CurrencyInputBox = styled.div<{ flexibleWidth: boolean }>`

@@ -6,6 +6,7 @@ import { useTradeNavigate } from '../useTradeNavigate'
 import { getDefaultTradeState, TradeCurrenciesIds, TradeState } from '../../types/TradeState'
 import { useTradeState } from '../useTradeState'
 import { switchChain } from 'utils/switchChain'
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 
 /**
  * Case: we have WETH/COW tokens pair in the sore
@@ -84,10 +85,24 @@ export function useSetupTradeState(): void {
    * It's needed because useWeb3React() returns mainnet chainId by default
    */
   useEffect(() => {
-    if (isChainIdSet || !chainIdFromUrl || !currentChainId) return
+    if (isChainIdSet || !chainIdFromUrl || !currentChainId || !isSupportedChainId(chainIdFromUrl)) return
+    let isSubscribed = true
 
     setIsChainIdSet(true)
-    switchChain(connector, chainIdFromUrl).finally(updateStateAndNavigate)
+
+    switchChain(connector, chainIdFromUrl)
+      .catch((e) => {
+        console.error(e)
+      })
+      .finally(() => {
+        if (!isSubscribed) return
+
+        updateStateAndNavigate()
+      })
+
+    return () => {
+      isSubscribed = false
+    }
   }, [isChainIdSet, setIsChainIdSet, chainIdFromUrl, connector, currentChainId, updateStateAndNavigate])
 
   /**

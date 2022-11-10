@@ -21,6 +21,7 @@ interface BuiltItProps {
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   loading: boolean
+  disabled?: boolean
   showSetMax?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
@@ -39,6 +40,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     className,
     priceImpactParams,
     showSetMax = false,
+    disabled = false,
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
@@ -79,15 +81,15 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
   return (
     <>
-      <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo}>
+      <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
         <styledEl.CurrencyInputBox flexibleWidth={true}>
           <div>
             <CurrencySelectButton
               onClick={() => setCurrencySearchModalOpen(true)}
-              currency={currency || undefined}
-              loading={loading}
+              currency={disabled ? undefined : currency || undefined}
+              loading={loading || disabled}
             />
           </div>
           <div>
@@ -102,7 +104,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
         <styledEl.CurrencyInputBox flexibleWidth={false}>
           <div>
-            {balance && (
+            {balance && !disabled && (
               <>
                 <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
                   <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}

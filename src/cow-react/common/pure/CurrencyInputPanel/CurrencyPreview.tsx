@@ -25,7 +25,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
 
   return (
     <>
-      <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={false}>
+      <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={false} disabled={false}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
         <styledEl.CurrencyInputBox flexibleWidth={true}>

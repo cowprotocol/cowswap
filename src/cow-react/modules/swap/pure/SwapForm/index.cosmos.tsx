@@ -6,6 +6,7 @@ import { SupportedChainId } from 'constants/chains'
 import { Percent } from '@uniswap/sdk-core'
 
 const defaultProps: SwapFormProps = {
+  chainId: 1,
   recipient: '0x000',
   allowedSlippage: new Percent(12, 10_000),
   isTradePriceUpdating: false,
