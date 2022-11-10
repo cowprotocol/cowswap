@@ -27,6 +27,7 @@ import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
+import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
 import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
 
 export function LimitOrdersWidget() {
@@ -120,7 +121,7 @@ export function LimitOrdersWidget() {
       <styledEl.Container>
         <styledEl.ContainerBox>
           <styledEl.Header>
-            <div>Limit orders</div>
+            <TradeWidgetLinks />
             <SettingsWidget />
           </styledEl.Header>
           <CurrencyInputPanel
