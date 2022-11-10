@@ -1,4 +1,3 @@
-import Modal from 'components/Modal'
 import React, { useCallback, useMemo } from 'react'
 import { useAtom } from 'jotai'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
@@ -101,7 +100,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
 
   return (
     <>
-      <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={100}>
+      <GpModal isOpen={isOpen} onDismiss={onDismiss}>
         {tradeContext && activeRate && (
           <styledEl.ConfirmModalWrapper>
             <styledEl.ConfirmHeader>
@@ -119,7 +118,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             />
           </styledEl.ConfirmModalWrapper>
         )}
-      </Modal>
+      </GpModal>
       {chainId && (
         <GpModal isOpen={!!confirmationState.orderHash} onDismiss={onDismissConfirmation}>
           <TxSubmittedModal

@@ -4,7 +4,7 @@ import { Text } from 'rebass'
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { ButtonError } from 'components/Button'
-import Modal from '@src/components/Modal'
+import Modal from 'components/Modal'
 import styled from 'styled-components/macro'
 import { X } from 'react-feather'
 

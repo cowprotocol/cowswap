@@ -17,6 +17,7 @@ const REFETCH_CHECK_INTERVAL = 10000
 export function useFetchMarketPrice() {
   const { chainId, account } = useWeb3React()
 
+  // TODO: should be throttled to avoid too frequent requests
   const feeQuoteParams = useQuoteRequestParams()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
