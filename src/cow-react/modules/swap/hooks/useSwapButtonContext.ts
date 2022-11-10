@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapActionHandlers } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
@@ -14,7 +14,7 @@ import {
   useWrapUnwrapError,
 } from 'hooks/useWrapCallback'
 import { useCallback } from 'react'
-import { logSwapFlow } from '@cow/modules/swap/services/swapFlow/logger'
+import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
@@ -24,6 +24,9 @@ import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { useSwapFlowContext } from '@cow/modules/swap/hooks/useSwapFlowContext'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { useEthFlowContext } from '@cow/modules/swap/hooks/useEthFlowContext'
+import { ethFlow } from '@cow/modules/swap/services/ethFlow'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -49,6 +52,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const toggleWalletModal = useToggleWalletModal()
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const swapFlowContext = useSwapFlowContext()
+  const ethFlowContext = useEthFlowContext()
+  const { onCurrencySelection } = useSwapActionHandlers()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -73,13 +78,19 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const approvalState = useTradeApproveState(parsedAmount || null)
 
   const handleSwap = useCallback(() => {
-    if (!swapFlowContext) return
+    if (!swapFlowContext && !ethFlowContext) return
 
-    logSwapFlow('Start swap flow')
-    swapFlow(swapFlowContext, priceImpactParams)
-  }, [swapFlowContext, priceImpactParams])
+    if (swapFlowContext) {
+      logSwapFlow('SWAP FLOW', 'Start swap flow')
+      swapFlow(swapFlowContext, priceImpactParams)
+    } else if (ethFlowContext) {
+      logSwapFlow('ETH FLOW', 'Start eth flow')
+      ethFlow(ethFlowContext, priceImpactParams)
+    }
+  }, [swapFlowContext, ethFlowContext, priceImpactParams])
 
-  const swapCallbackError = swapFlowContext ? null : 'Missing dependencies'
+  const contextExists = ethFlowContext || swapFlowContext
+  const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
@@ -122,5 +133,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     },
     toggleWalletModal,
     swapInputError,
+    onCurrencySelection,
   }
 }

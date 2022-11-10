@@ -6,7 +6,7 @@ import {
   RowReceivedAfterSlippageContent,
   RowReceivedAfterSlippageContentProps,
 } from '@cow/modules/swap/pure/Row/RowReceivedAfterSlippageContent'
-import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/RowReceivedAfterSlippage'
+import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]

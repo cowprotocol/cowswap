@@ -4,7 +4,7 @@ import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, TradeType, Price } from '@uniswap/sdk-core'
 import { RowFeeContent, RowFeeContentProps } from '@cow/modules/swap/pure/Row/RowFeeContent'
 
-import { RowFeeProps } from '@cow/modules/swap/containers/RowFee'
+import { RowFeeProps } from '@cow/modules/swap/containers/Row/RowFee'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]

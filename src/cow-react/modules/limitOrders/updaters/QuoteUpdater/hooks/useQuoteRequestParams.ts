@@ -43,6 +43,7 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
       amount,
       fromDecimals,
       toDecimals,
+      isEthFlow: false, // EthFlow is not compatible with limit orders
     }
   }, [
     account,

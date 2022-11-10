@@ -32,9 +32,11 @@ export type LegacyFeeQuoteParams = FeeQuoteParams & {
   chainId: ChainId
   priceQuality?: string
   isBestQuote?: boolean
+  isEthFlow: boolean
 }
 
-export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'sellToken' | 'buyToken'> & PriceQuoteParams
+export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'isEthFlow' | 'sellToken' | 'buyToken'> &
+  PriceQuoteParams
 
 export type LegacyPriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
 export type LegacyPriceInformationWithSource = PriceInformation & { source: LegacyPriceSource; data?: any }

@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { Token } from '@uniswap/sdk-core'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import {
   toggleURLWarning,
@@ -7,8 +7,10 @@ import {
   removeAllFavouriteTokens,
   initFavouriteTokens,
 } from 'state/user/reducer'
-import { useUserTransactionTTL, serializeToken, deserializeToken } from '@src/state/user/hooks'
+import { useUserTransactionTTL, deserializeToken } from '@src/state/user/hooks'
 import { useWeb3React } from '@web3-react/core'
+import { SerializedToken } from 'state/user/types'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { calculateValidTo } from '@cow/utils/time'
 
 export * from '@src/state/user/hooks'
@@ -70,4 +72,16 @@ export function useInitFavouriteTokens(): void {
       dispatch(initFavouriteTokens({ chainId }))
     }
   }, [chainId, dispatch])
+}
+
+export function serializeToken(token: Currency): SerializedToken {
+  const address = token.isNative ? NATIVE_CURRENCY_BUY_TOKEN[token.chainId].address : token.address
+
+  return {
+    chainId: token.chainId,
+    address,
+    decimals: token.decimals,
+    symbol: token.symbol,
+    name: token.name,
+  }
 }
