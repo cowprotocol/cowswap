@@ -167,5 +167,5 @@ The plan:
 
 ## Feature flags
 
-`localStorage.setItem('enableNewSwap', '1')` - enable refactored swap interface
+`localStorage.setItem('enableEthFlow', '1')` - enable native EthFlow (WORK IN PROGRESS)
 `localStorage.setItem('enableLimitOrders', '1')` - enable limit orders page (WORK IN PROGRESS)
