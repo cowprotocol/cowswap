@@ -6,13 +6,14 @@ import { SupportedChainId } from 'constants/chains'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { useWeb3React } from '@web3-react/core'
 
 export function NewSwapPage() {
   return <NewSwapWidget />
 }
 
 export function NewSwapPageRedirect({ location }: RouteComponentProps) {
-  const chainId = SupportedChainId.MAINNET
+  const { chainId = SupportedChainId.MAINNET } = useWeb3React()
   const { inputCurrencyId, outputCurrencyId } = getDefaultTradeState(chainId)
 
   const pathname = parameterizeTradeRoute(

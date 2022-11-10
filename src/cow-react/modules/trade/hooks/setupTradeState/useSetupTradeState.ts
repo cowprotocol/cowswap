@@ -6,6 +6,7 @@ import { useTradeNavigate } from '../useTradeNavigate'
 import { getDefaultTradeState, TradeCurrenciesIds, TradeState } from '../../types/TradeState'
 import { useTradeState } from '../useTradeState'
 import { switchChain } from 'utils/switchChain'
+import { SupportedChainId } from 'constants/chains'
 
 /**
  * Case: we have WETH/COW tokens pair in the sore
@@ -42,7 +43,7 @@ function shouldSkipUpdate(
 }
 
 export function useSetupTradeState(): void {
-  const { chainId: currentChainId, connector } = useWeb3React()
+  const { chainId: currentChainId = SupportedChainId.MAINNET, connector } = useWeb3React()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
@@ -88,9 +89,13 @@ export function useSetupTradeState(): void {
     let isSubscribed = true
 
     setIsChainIdSet(true)
-    switchChain(connector, chainIdFromUrl).finally(() => {
-      if (isSubscribed) updateStateAndNavigate()
-    })
+    switchChain(connector, chainIdFromUrl)
+      .catch((e) => {
+        console.error(e)
+      })
+      .finally(() => {
+        if (isSubscribed) updateStateAndNavigate()
+      })
 
     return () => {
       isSubscribed = false
