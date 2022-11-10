@@ -22,6 +22,7 @@ export function NewSwapPageRedirect({ location }: RouteComponentProps) {
 
   searchParams.delete('inputCurrency')
   searchParams.delete('outputCurrency')
+  searchParams.delete('chain')
 
   const pathname = parameterizeTradeRoute({ chainId: String(chainId), inputCurrencyId, outputCurrencyId }, Routes.SWAP)
 
