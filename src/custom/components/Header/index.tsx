@@ -36,6 +36,7 @@ import { toggleDarkModeAnalytics } from 'components/analytics'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
 import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -89,14 +90,15 @@ export default function Header() {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
-  const tradeMenuContext = useMemo(
-    () => ({
-      inputCurrencyId: tradeState?.state.inputCurrencyId || undefined,
-      outputCurrencyId: tradeState?.state.outputCurrencyId || undefined,
-      chainId: tradeState?.state.chainId?.toString(),
-    }),
-    [tradeState?.state]
-  )
+  const tradeMenuContext = useMemo(() => {
+    const defaultTradeState = getDefaultTradeState(tradeState?.state.chainId || chainId || null)
+
+    return {
+      inputCurrencyId: tradeState?.state.inputCurrencyId || defaultTradeState.inputCurrencyId || undefined,
+      outputCurrencyId: tradeState?.state.outputCurrencyId || defaultTradeState.outputCurrencyId || undefined,
+      chainId: defaultTradeState.chainId?.toString(),
+    }
+  }, [chainId, tradeState?.state])
 
   const menuContext: MainMenuContext = {
     darkMode,

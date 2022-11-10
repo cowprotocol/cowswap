@@ -3,9 +3,9 @@ import React from 'react'
 import { NewSwapWidget } from '@cow/modules/swap/containers/NewSwapWidget'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { SupportedChainId } from 'constants/chains'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 export function NewSwapPage() {
   return <NewSwapWidget />
@@ -13,10 +13,14 @@ export function NewSwapPage() {
 
 export function NewSwapPageRedirect({ location }: RouteComponentProps) {
   const chainId = SupportedChainId.MAINNET
-  const inputCurrencyId = WETH[chainId].symbol
+  const { inputCurrencyId, outputCurrencyId } = getDefaultTradeState(chainId)
 
   const pathname = parameterizeTradeRoute(
-    { chainId: String(chainId), inputCurrencyId, outputCurrencyId: undefined },
+    {
+      chainId: String(chainId),
+      inputCurrencyId: inputCurrencyId || undefined,
+      outputCurrencyId: outputCurrencyId || undefined,
+    },
     Routes.SWAP
   )
 

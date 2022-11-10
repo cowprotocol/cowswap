@@ -1,9 +1,9 @@
 import { validatedRecipient } from 'state/swap/hooks'
 import { Field, ReplaceSwapStatePayload } from 'state/swap/actions'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { TradeStateFromUrl } from '@cow/modules/swap/containers/NewSwapWidget/types'
 import { SupportedChainId } from 'constants/chains'
 import { SwapState } from 'state/swap/reducer'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 function calculateIndependentField(urlValue: string | null, persistedValue?: Field): Field {
   if (urlValue === 'input') return Field.INPUT
@@ -17,7 +17,7 @@ export function initSwapStateFromUrl(
   tradeStateFromUrl: TradeStateFromUrl,
   persistedSwapState: SwapState | null
 ): ReplaceSwapStatePayload {
-  const defaultInputToken = WETH[chainId]?.address
+  const defaultInputToken = getDefaultTradeState(chainId).inputCurrencyId
 
   const typedValue =
     (tradeStateFromUrl.amount && !isNaN(parseFloat(tradeStateFromUrl.amount)) ? tradeStateFromUrl.amount : '') ||
