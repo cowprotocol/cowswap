@@ -2,7 +2,6 @@ import React from 'react'
 
 import { NewSwapWidget } from '@cow/modules/swap/containers/NewSwapWidget'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { SupportedChainId } from 'constants/chains'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
@@ -13,17 +12,19 @@ export function NewSwapPage() {
 }
 
 export function NewSwapPageRedirect({ location }: RouteComponentProps) {
-  const { chainId = SupportedChainId.MAINNET } = useWeb3React()
-  const { inputCurrencyId, outputCurrencyId } = getDefaultTradeState(chainId)
+  const { chainId } = useWeb3React()
 
-  const pathname = parameterizeTradeRoute(
-    {
-      chainId: String(chainId),
-      inputCurrencyId: inputCurrencyId || undefined,
-      outputCurrencyId: outputCurrencyId || undefined,
-    },
-    Routes.SWAP
-  )
+  if (!chainId) return null
 
-  return <Redirect to={{ ...location, pathname }} />
+  const defaultState = getDefaultTradeState(chainId)
+  const searchParams = new URLSearchParams(location.search)
+  const inputCurrencyId = searchParams.get('inputCurrency') || defaultState.inputCurrencyId || undefined
+  const outputCurrencyId = searchParams.get('outputCurrency') || defaultState.outputCurrencyId || undefined
+
+  searchParams.delete('inputCurrency')
+  searchParams.delete('outputCurrency')
+
+  const pathname = parameterizeTradeRoute({ chainId: String(chainId), inputCurrencyId, outputCurrencyId }, Routes.SWAP)
+
+  return <Redirect to={{ ...location, pathname, search: searchParams.toString() }} />
 }
