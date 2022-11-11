@@ -26,6 +26,7 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean }>`
 
 export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   position: absolute;
+  left: calc(50% - 14px);
   height: 100%;
   text-align: center;
   transform-style: preserve-3d;
