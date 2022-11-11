@@ -119,6 +119,15 @@ export interface OrderMetaData {
   signingScheme: SigningSchemeValue
   status: ApiOrderStatus
   receiver: string
+  // EthFlow related fields
+  ethFlowData: EthFlowData
+  onchainUser?: string
+}
+
+type EthFlowData = {
+  // TODO: API should return camelCase for consistency
+  user_valid_to: number
+  is_refunded: boolean
 }
 
 export interface TradeMetaData {
