@@ -38,6 +38,10 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
   fulfilledTransactionHash?: string // Hash of transaction when Order was fulfilled
 
+  // EthFlow
+  orderCreationHash?: string
+  // TODO: add refund hash here when working on that
+
   // Additional information from the order available in the API
   apiAdditionalInfo?: OrderInfoApi
 

@@ -36,6 +36,7 @@ export type UnsignedOrderAdditionalParams = PostOrderParams & {
   summary: string
   signature: string
   isOnChain?: boolean
+  orderCreationHash?: string
 }
 
 function _getSummary(params: PostOrderParams): string {
@@ -131,6 +132,7 @@ export function mapUnsignedOrderToOrder({
     isOnChain,
     signature,
     sellAmountBeforeFee,
+    orderCreationHash,
   },
 }: MapUnsignedOrderToOrderParams): Order {
   return {
@@ -146,6 +148,9 @@ export function mapUnsignedOrderToOrder({
     // Status
     status: allowsOffchainSigning || isOnChain ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,
     creationTime: new Date().toISOString(),
+
+    // EthFlow
+    orderCreationHash,
 
     // Signature
     signature,
