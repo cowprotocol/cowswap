@@ -13,6 +13,7 @@ export const HeaderWrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
   justify-content: space-between;
+  z-index: 3;
 `
 
 export const FooterWrapper = styled(HeaderWrapper)`
