@@ -33,9 +33,10 @@ import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
-import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
+import { useSwapTradeState, useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
 import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -66,6 +67,7 @@ export default function Header() {
     toggleDarkModeAnalytics(!darkMode)
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
+  const swapState = useSwapTradeState()
   const tradeState = useTradeState()
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
@@ -89,14 +91,16 @@ export default function Header() {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
-  const tradeMenuContext = useMemo(
-    () => ({
-      inputCurrencyId: tradeState?.state.inputCurrencyId || undefined,
-      outputCurrencyId: tradeState?.state.outputCurrencyId || undefined,
-      chainId: tradeState?.state.chainId?.toString(),
-    }),
-    [tradeState?.state]
-  )
+  const tradeMenuContext = useMemo(() => {
+    const state = tradeState?.state || swapState
+    const defaultTradeState = getDefaultTradeState(state.chainId || chainId || null)
+
+    return {
+      inputCurrencyId: state.inputCurrencyId || defaultTradeState.inputCurrencyId || undefined,
+      outputCurrencyId: state.outputCurrencyId || defaultTradeState.outputCurrencyId || undefined,
+      chainId: defaultTradeState.chainId?.toString(),
+    }
+  }, [chainId, tradeState?.state, swapState])
 
   const menuContext: MainMenuContext = {
     darkMode,

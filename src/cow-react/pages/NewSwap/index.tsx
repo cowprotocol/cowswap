@@ -6,6 +6,7 @@ import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
 import { useWeb3React } from '@web3-react/core'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 export function NewSwapPage() {
   return <NewSwapWidget />
@@ -16,9 +17,10 @@ export function NewSwapPageRedirect({ location }: RouteComponentProps) {
 
   if (!chainId) return null
 
+  const defaultState = getDefaultTradeState(chainId)
   const searchParams = new URLSearchParams(location.search)
-  const inputCurrencyId = searchParams.get('inputCurrency') || WETH[chainId].symbol
-  const outputCurrencyId = searchParams.get('outputCurrency') || undefined
+  const inputCurrencyId = searchParams.get('inputCurrency') || defaultState.inputCurrencyId || WETH[chainId].symbol
+  const outputCurrencyId = searchParams.get('outputCurrency') || defaultState.outputCurrencyId || undefined
 
   searchParams.delete('inputCurrency')
   searchParams.delete('outputCurrency')
