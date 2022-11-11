@@ -1,5 +1,6 @@
 import { Orders } from './index'
-import { OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
+import { OrderTab } from './OrdersTabs'
+import { ordersMock } from './orders.mock'
 
 const tabs: OrderTab[] = [
   {
@@ -13,4 +14,4 @@ const tabs: OrderTab[] = [
   },
 ]
 
-export default <Orders tabs={tabs} onTabChange={() => void 0} />
+export default <Orders orders={ordersMock} tabs={tabs} onTabChange={() => void 0} />

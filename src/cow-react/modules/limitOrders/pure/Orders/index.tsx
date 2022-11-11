@@ -1,14 +1,18 @@
 import * as styledEl from './styled'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
+import { OrdersTable, OrdersTableProps } from '@cow/modules/limitOrders/pure/Orders/OrdersTable'
 
-export type OrdersProps = OrdersTabsProps
+export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {}
 
-export function Orders({ tabs, onTabChange }: OrdersProps) {
+export function Orders({ orders, tabs, onTabChange }: OrdersProps) {
   return (
     <>
       <styledEl.Orders>
         <p>Orders</p>
         <OrdersTabs tabs={tabs} onTabChange={onTabChange} />
+        <br />
+        <br />
+        <OrdersTable orders={orders} />
       </styledEl.Orders>
     </>
   )

@@ -6,6 +6,7 @@ import {
   InfoPopup,
   MarketPriceUpdater,
   ActiveRateUpdater,
+  OrdersWidget,
 } from '@cow/modules/limitOrders'
 
 export default function LimitOrderPage() {
@@ -21,10 +22,10 @@ export default function LimitOrderPage() {
         </styledEl.Column>
 
         {/*TODO: temporary hidden right part of the page until it's ready*/}
-        {/*<styledEl.Column>*/}
-        {/*  <ChartWidget />*/}
-        {/*  <Orders />*/}
-        {/*</styledEl.Column>*/}
+        <styledEl.Column>
+          {/*  <ChartWidget />*/}
+          <OrdersWidget />
+        </styledEl.Column>
       </styledEl.PageWrapper>
     </>
   )
