@@ -33,7 +33,7 @@ export const BodyWrapper = styled.div`
   flex: auto;
   z-index: 1;
   // TODO: '5vh 0 0' : '5vh 0 240px'
-  padding: 5vh 0 240px;
+  padding-top: 5vh;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
   padding: '0 0 16px';
