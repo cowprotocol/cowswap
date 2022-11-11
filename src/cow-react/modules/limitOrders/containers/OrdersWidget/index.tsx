@@ -1,4 +1,4 @@
-import { Orders } from './index'
+import { Orders } from '../../pure/Orders'
 import { OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
 
 const tabs: OrderTab[] = [
@@ -9,8 +9,13 @@ const tabs: OrderTab[] = [
   {
     title: 'Orders history',
     count: 0,
-    isActive: false,
   },
 ]
 
-export default <Orders tabs={tabs} onTabChange={() => void 0} />
+export function OrdersWidget() {
+  const onTabChange = () => {
+    console.log('tab changed')
+  }
+
+  return <Orders onTabChange={onTabChange} tabs={tabs} />
+}

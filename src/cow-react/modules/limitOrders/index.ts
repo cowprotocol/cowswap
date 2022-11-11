@@ -1,6 +1,6 @@
 export * from './containers/LimitOrdersWidget'
 export * from './containers/ChartWidget'
-export * from './containers/Orders'
+export * from './containers/OrdersWidget'
 export * from './updaters/QuoteUpdater'
 export * from './updaters/ActiveRateUpdater'
 export * from './updaters/MarketPriceUpdater'
