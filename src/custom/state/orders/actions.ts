@@ -20,7 +20,7 @@ export enum OrderStatus {
   REFUNDED = 'refunded',
 }
 
-// Abstract type for the order used in the Dapp. Its composed out of 3 types of props:
+// Abstract type for the order used in the Dapp. It's composed out of 3 types of props:
 //  - Information present in the order creation type used in the API to post new orders
 //  - Additional information available in the API
 //  - Derived/additional information that is handy for this app
@@ -62,7 +62,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
  * When you fetch orders by orderId, the API provides some additional information not available at creation time.
  * This type models the fields that are present in this endpoint and not in the creation time order.
  *
- * Note it uses OrderMetaData, which is the return type of the endpoint that get's an order by orderId
+ * Note it uses OrderMetaData, which is the return type of the endpoint that gets an order by orderId
  */
 type OrderInfoApi = Pick<
   OrderMetaData,
