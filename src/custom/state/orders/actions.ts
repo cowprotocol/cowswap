@@ -14,6 +14,9 @@ export enum OrderStatus {
   FULFILLED = 'fulfilled',
   EXPIRED = 'expired',
   CANCELLED = 'cancelled',
+  CREATING = 'creating',
+  REJECTED = 'rejected',
+  REFUNDED = 'refunded',
 }
 
 // Abstract type for the order used in the Dapp. Its composed out of 3 types of props:
