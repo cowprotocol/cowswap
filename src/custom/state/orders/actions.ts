@@ -41,6 +41,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
 
   // EthFlow
   orderCreationHash?: string
+  isRefunded?: boolean
   // TODO: add refund hash here when working on that
 
   // Additional information from the order available in the API
