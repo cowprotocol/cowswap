@@ -1,10 +1,8 @@
 import styled from 'styled-components/macro'
-import { Settings } from 'react-feather'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 import { RateImpactWarning } from '@cow/modules/limitOrders/pure/RateImpactWarning'
 
 export const Container = styled.div`
-  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
   width: 100%;
 `
 
@@ -57,14 +55,6 @@ export const TradeButtonBox = styled.div`
 export const RateWrapper = styled.div`
   display: flex;
   gap: 10px;
-`
-
-export const SettingsIcon = styled(Settings)`
-  height: 20px;
-  width: 20px;
-  > * {
-    stroke: ${({ theme }) => theme.text1};
-  }
 `
 
 export const StyledRemoveRecipient = styled(RemoveRecipient)`
