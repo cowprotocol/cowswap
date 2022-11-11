@@ -28,6 +28,7 @@ function _getTokenFromMapping(
   return tokens[getAddress(address)] || tokens[address]
 }
 
+// TODO: update this for ethflow states
 const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   cancelled: OrderStatus.CANCELLED,
   expired: OrderStatus.EXPIRED,

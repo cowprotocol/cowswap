@@ -67,6 +67,7 @@ export async function signEthFlowOrderStep(
   const domain = getDomain(orderParams.chainId)
   const orderDigest = hashOrder(domain, order)
   // Generate the orderId from owner, orderDigest, and max validTo
+  // TODO: this is not working. The generated address does not match the final order
   const orderId = packOrderUidParams({
     orderDigest,
     owner: ethFlowContract.address,
