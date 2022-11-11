@@ -247,22 +247,37 @@ export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap 
 }
 
 export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
-  const state = useSelector<AppState, { pending: PartialOrdersMap; presignaturePending: PartialOrdersMap } | undefined>(
-    (state) => {
-      const ordersState = chainId && state.orders?.[chainId]
-      if (!ordersState) {
-        return
+  const state = useSelector<
+    AppState,
+    | {
+        pending: PartialOrdersMap
+        presignaturePending: PartialOrdersMap
+        creating: PartialOrdersMap
+        refunding: PartialOrdersMap
       }
-
-      return { pending: ordersState.pending || {}, presignaturePending: ordersState.presignaturePending || {} }
+    | undefined
+  >((state) => {
+    const ordersState = chainId && state.orders?.[chainId]
+    if (!ordersState) {
+      return
     }
-  )
+
+    return {
+      pending: ordersState.pending || {},
+      presignaturePending: ordersState.presignaturePending || {},
+      creating: ordersState.creating || {},
+      refunding: ordersState.refunding || {},
+    }
+  })
 
   return useMemo(() => {
     if (!state) return []
 
-    const { pending, presignaturePending } = state
-    const allPending = Object.values(pending).concat(Object.values(presignaturePending))
+    const { pending, presignaturePending, creating, refunding } = state
+    const allPending = Object.values(pending)
+      .concat(Object.values(presignaturePending))
+      .concat(Object.values(creating))
+      .concat(Object.values(refunding))
 
     return allPending.map(_deserializeOrder).filter(isTruthy)
   }, [state])
