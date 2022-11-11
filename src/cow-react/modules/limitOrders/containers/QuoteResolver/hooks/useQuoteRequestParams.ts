@@ -7,15 +7,17 @@ import { parseUnits } from '@ethersproject/units'
 import { useMemo } from 'react'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient, deadline } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient, deadlineTimestamp } =
+    useLimitOrdersTradeState()
   const { chainId, account } = useWeb3React()
 
-  const isFullInput = !!(deadline && chainId && inputCurrencyAmount && inputCurrency && outputCurrency)
+  const isFullInput = !!(deadlineTimestamp && chainId && inputCurrencyAmount && inputCurrency && outputCurrency)
 
   const feeQuoteParams: FeeQuoteParams | null = isFullInput
     ? {
+        isEthFlow: false, // We don't have ETH-flow in limit orders
         chainId,
-        validTo: Math.round(Date.now() / 1000 + 60 * deadline),
+        validTo: deadlineTimestamp,
         receiver: recipient || account,
         kind: OrderKind.SELL,
         sellToken: (inputCurrency as Token).address,
