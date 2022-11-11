@@ -85,7 +85,7 @@ interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
   lastCheckedBlock: number
 }
 
-type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersParams) => void
+export type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersParams) => void
 export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
 export type RemoveOrderCallback = (removeOrderParams: GetRemoveOrderParams) => void
 export type FulfillOrderCallback = (fulfillOrderParams: FulfillOrderParams) => void
