@@ -23,6 +23,7 @@ import { CancelableResult, onlyResolvesLast } from 'utils/async'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { LegacyFeeQuoteParams, LegacyQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { calculateValidTo } from '@cow/utils/time'
 
 interface HandleQuoteErrorParams {
@@ -128,6 +129,7 @@ export function useRefetchQuoteCallback() {
   // check which price strategy to use (COWSWAP/LEGACY)
   const priceStrategy = useGetGpPriceStrategy()
   const [deadline] = useUserTransactionTTL()
+  const isEthFlow = useIsEthFlow()
 
   registerOnWindow({
     getNewQuote,
@@ -143,6 +145,7 @@ export function useRefetchQuoteCallback() {
       const { quoteParams, isPriceRefresh } = params
       // set the validTo time here
       quoteParams.validTo = calculateValidTo(deadline)
+      quoteParams.isEthFlow = isEthFlow
 
       let quoteData: LegacyFeeQuoteParams | QuoteInformationObject = quoteParams
 
@@ -245,6 +248,7 @@ export function useRefetchQuoteCallback() {
         .catch(handleError)
     },
     [
+      isEthFlow,
       deadline,
       priceStrategy,
       isUnsupportedTokenGp,
