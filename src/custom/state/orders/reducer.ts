@@ -49,6 +49,7 @@ export type OrderLists = {
   cancelled: PartialOrdersMap
   creating: PartialOrdersMap
   rejected: PartialOrdersMap
+  refunding: PartialOrdersMap
   refunded: PartialOrdersMap
 }
 
@@ -64,7 +65,7 @@ export interface PrefillStateRequired {
   chainId: ChainId
 }
 
-export type EthFlowOrderTypes = 'creating' | 'rejected' | 'refunded'
+export type EthFlowOrderTypes = 'creating' | 'rejected' | 'refunding' | 'refunded'
 export type PreSignOrderTypes = 'presignaturePending'
 export type OrderTypeKeys = 'pending' | PreSignOrderTypes | 'expired' | 'fulfilled' | 'cancelled' | EthFlowOrderTypes
 
@@ -76,6 +77,7 @@ export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
   'cancelled',
   'creating',
   'rejected',
+  'refunding',
   'refunded',
 ]
 export const ORDERS_LIST: OrderLists = {
@@ -86,6 +88,7 @@ export const ORDERS_LIST: OrderLists = {
   cancelled: {},
   creating: {},
   rejected: {},
+  refunding: {},
   refunded: {},
 }
 
@@ -133,6 +136,7 @@ function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string
     stateForChain.fulfilled[id] ||
     stateForChain.creating[id] ||
     stateForChain.rejected[id] ||
+    stateForChain.refunding[id] ||
     stateForChain.refunded[id]
   )
 }
@@ -146,6 +150,7 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.cancelled[id]
   delete stateForChain.creating[id]
   delete stateForChain.rejected[id]
+  delete stateForChain.refunding[id]
   delete stateForChain.refunded[id]
 }
 
@@ -185,6 +190,7 @@ export default createReducer(initialState, (builder) =>
       switch (order.status) {
         // EthFlow or PreSign orders have their respective buckets
         case OrderStatus.CREATING: // ethflow orders
+        case OrderStatus.REFUNDING: // ethflow orders
         case OrderStatus.PRESIGNATURE_PENDING: // pre-sign orders
           addOrderToState(state, chainId, id, order.status, order)
           break
@@ -250,6 +256,7 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.PRESIGNATURE_PENDING, id) ||
           popOrder(state, chainId, OrderStatus.CREATING, id) ||
           popOrder(state, chainId, OrderStatus.REJECTED, id) ||
+          popOrder(state, chainId, OrderStatus.REFUNDING, id) ||
           popOrder(state, chainId, OrderStatus.REFUNDED, id)
 
         // merge existing and new order objects

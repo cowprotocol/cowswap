@@ -16,6 +16,7 @@ export enum OrderStatus {
   CANCELLED = 'cancelled',
   CREATING = 'creating',
   REJECTED = 'rejected',
+  REFUNDING = 'refunding',
   REFUNDED = 'refunded',
 }
 
