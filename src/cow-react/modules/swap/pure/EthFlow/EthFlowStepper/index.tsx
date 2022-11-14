@@ -13,34 +13,6 @@ export enum EthFlowStepperStatus {
   ETH_REFUNDED = 'ETH_REFUNDED',
 }
 
-export interface EthFlowStepperProps {
-  status: EthFlowStepperStatus
-  nativeTokenSymbol: string
-  tokenLabel: string
-
-  sendEtherTx: string
-  refundTx?: string
-  cancelationTx?: string
-
-  order?: {
-    orderId: string
-    isExpired: boolean
-    rejectedReason?: string
-  }
-}
-
-const Wrapper = styled.div`
-  padding: 15px;
-  background-color: #ecf1f8;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
-
-const StepWrapper = styled.div`
-  padding: 10px;
-`
-
 type StepStatus = 'success' | 'pending' | 'not-started' | 'error'
 
 interface StepIcon {
@@ -66,17 +38,44 @@ const STATUS_COLORS: Record<StepStatus, StepIcon> = {
     color: '#D6DDE9',
   },
   error: {
-    bgColor: '#D5E5E3',
-    borderColor: 'D5E5E3',
-    color: '#017B28',
+    bgColor: '#f25757',
+    borderColor: '#f25757',
+    color: 'white',
   },
 }
 
-export interface StepProps {
-  status: StepStatus
-  details: React.ReactNode
-  icon: Icon
-}
+const Wrapper = styled.div`
+  padding: 15px;
+  background-color: #ecf1f8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1.5;
+
+  p {
+    margin: 0;
+  }
+
+  p.error {
+    color: #f25757;
+  }
+
+  .crossOut {
+    text-decoration: line-through;
+    color: gray;
+  }
+`
+
+const StepWrapper = styled.div`
+  height: 100%;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 6rem;
+`
 
 const Circle = styled.div<StepIcon>`
   border-radius: 50%;
@@ -88,6 +87,7 @@ const Circle = styled.div<StepIcon>`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 5px;
 `
 
 function Status({ status, icon: CustomIcon }: { status: StepStatus; icon: Icon }) {
@@ -98,6 +98,12 @@ function Status({ status, icon: CustomIcon }: { status: StepStatus; icon: Icon }
       <CustomIcon size="20" />
     </Circle>
   )
+}
+
+export interface StepProps {
+  status: StepStatus
+  details: React.ReactNode
+  icon: Icon
 }
 
 function Step(props: StepProps) {
@@ -117,6 +123,22 @@ const Divider = styled.progress`
   min-width: 100px;
 `
 
+export interface EthFlowStepperProps {
+  status: EthFlowStepperStatus
+  nativeTokenSymbol: string
+  tokenLabel: string
+
+  sendEtherTx: string
+  refundTx?: string
+  cancelationTx?: string
+
+  order?: {
+    orderId: string
+    isExpired: boolean
+    rejectedReason?: string
+  }
+}
+
 function Step1({ status, sendEtherTx, nativeTokenSymbol }: EthFlowStepperProps) {
   let message: string, stepStatus: StepStatus, icon: Icon
   if (status === EthFlowStepperStatus.ETH_SENDING) {
@@ -131,9 +153,8 @@ function Step1({ status, sendEtherTx, nativeTokenSymbol }: EthFlowStepperProps) 
 
   const details = (
     <>
-      {message}
-      <br />
-      {sendEtherTx && <ExplorerLink type="transaction" label="View Transaction" id={sendEtherTx} />}
+      <p>{message}</p>
+      <CreateOrderTx tx={sendEtherTx} />
     </>
   )
   return <Step status={stepStatus} details={details} icon={icon} />
@@ -171,17 +192,12 @@ function Step2({ status, order }: EthFlowStepperProps) {
     icon = Check
   }
 
+  const className = rejectedReason ? 'error' : undefined
   const details = (
     <>
-      {message}
-      <br />
-      {rejectedReason && (
-        <>
-          {rejectedReason}
-          <br />
-        </>
-      )}
-      {order && <ExplorerLink type="transaction" label="View details" id={order.orderId} />}
+      <p className={className}>{message}</p>
+      {rejectedReason && <p className={className}>{rejectedReason}</p>}
+      <OrderLink orderId={order?.orderId} />
     </>
   )
   return <Step status={stepStatus} details={details} icon={icon} />
@@ -201,8 +217,6 @@ function Divider2({ status, order, refundTx, cancelationTx }: EthFlowStepperProp
     progress = 66
   } else if (status === EthFlowStepperStatus.ETH_SENDING || (isEthSent && !order)) {
     progress = 0
-    // } else if (order) {
-    //   progress = 33
   } else if (isEthSent) {
     if (refundTx || cancelationTx) {
       progress = 66
@@ -247,35 +261,43 @@ function Step3({ status, nativeTokenSymbol, tokenLabel, order, refundTx, cancela
 
   const details = (
     <>
-      <span style={wontReceiveToken ? { textDecoration: 'line-through' } : undefined}>{message}</span>
-      <br />
-      {isOrderExpired && (
-        <>
-          Order is Expired
-          <br />
-        </>
-      )}
-      {isRefunding && !refundTx && (
-        <>
-          Initiating ETH Refund...
-          <br />
-        </>
-      )}
+      <p className={wontReceiveToken ? 'crossOut' : undefined}>{message}</p>
+      {isOrderExpired && !(isOrderRejected || isCancelled) && <p>Order is Expired</p>}
+      {wontReceiveToken && !refundTx && <p>Initiating ETH Refund...</p>}
       <RefundEthTx tx={refundTx} isPending={isEthSent} />
     </>
   )
   return <Step status={stepStatus} details={details} icon={icon} />
 }
 
-export function RefundEthTx(props: { isPending: boolean; tx?: string }) {
-  const { isPending, tx } = props
+const ExplorerLinkStyled = styled(ExplorerLink)`
+  margin-top: 3px;
+  display: block;
+`
 
+export function CreateOrderTx({ tx }: { tx?: string }) {
+  if (!tx) {
+    return null
+  }
+
+  return <ExplorerLinkStyled type="transaction" label="View Transaction" id={tx} />
+}
+
+export function OrderLink({ orderId }: { orderId?: string }) {
+  if (!orderId) {
+    return null
+  }
+
+  return <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />
+}
+
+export function RefundEthTx({ isPending, tx }: { isPending: boolean; tx?: string }) {
   if (!tx) {
     return null
   }
 
   return (
-    <ExplorerLink
+    <ExplorerLinkStyled
       type="transaction"
       label={isPending ? 'Receiving ETH Refund...' : 'ETH refunded successfully'}
       id={tx}

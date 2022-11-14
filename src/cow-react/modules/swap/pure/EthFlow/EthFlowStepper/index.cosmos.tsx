@@ -108,7 +108,7 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: `[REJECTED] If expires when also rejected, we don't care`,
+    description: `[REJECTED] Rejected+Expired: Rejected Wins`,
     props: {
       ...defaultProps,
       status: EthFlowStepperStatus.ETH_SENT,
@@ -145,13 +145,13 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL] Cancelled',
+    description: '[CANCEL] Cancelled+Expired: Cancelled wins',
     props: {
       ...defaultProps,
       status: EthFlowStepperStatus.ORDER_CANCELLED,
       order: {
         orderId: ORDER_ID,
-        isExpired: false,
+        isExpired: true,
       },
       cancelationTx: TX,
     },
