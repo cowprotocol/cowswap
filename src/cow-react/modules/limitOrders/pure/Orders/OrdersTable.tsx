@@ -2,12 +2,25 @@ import { Order } from 'state/orders/actions'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import * as styledEl from './OrdersTable.styled'
+import { useEffect, useState } from 'react'
+import { OrdersTablePagination } from './OrdersTablePagination'
 
 export interface OrdersTableProps {
   orders: Order[]
 }
 
+const pageSize = 10
+
 export function OrdersTable({ orders }: OrdersTableProps) {
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const step = currentPage * pageSize
+  const ordersPage = orders.slice(step - pageSize, step)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [orders])
+
   return (
     <>
       <styledEl.TableBox>
@@ -26,7 +39,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
           </div>
         </styledEl.Header>
         <styledEl.Rows>
-          {orders.map((order) => {
+          {ordersPage.map((order) => {
             const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
             const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
             const price = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
@@ -40,7 +53,9 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                   <styledEl.CurrencyAmountItem amount={buyAmount} />
                 </div>
                 <div>
-                  1 {order.inputToken.symbol} = {price.toSignificant(6)} {order.outputToken.symbol}
+                  <styledEl.RateValue>
+                    1 {order.inputToken.symbol} = {price.toSignificant(6)} {order.outputToken.symbol}
+                  </styledEl.RateValue>
                 </div>
                 <div>
                   <styledEl.StatusItem status={order.status}>{order.status}</styledEl.StatusItem>
@@ -50,6 +65,12 @@ export function OrdersTable({ orders }: OrdersTableProps) {
           })}
         </styledEl.Rows>
       </styledEl.TableBox>
+      <OrdersTablePagination
+        pageSize={pageSize}
+        totalCount={orders.length}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </>
   )
 }

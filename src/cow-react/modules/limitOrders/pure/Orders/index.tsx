@@ -1,6 +1,6 @@
 import * as styledEl from './styled'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
-import { OrdersTable, OrdersTableProps } from '@cow/modules/limitOrders/pure/Orders/OrdersTable'
+import { OrdersTable, OrdersTableProps } from './OrdersTable'
 
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {}
 
@@ -15,7 +15,7 @@ export function Orders({ orders, tabs, onTabChange }: OrdersProps) {
             <OrdersTable orders={orders} />
           </>
         ) : (
-          <div>You have no orders yet</div>
+          <styledEl.EmptyOrdersMessage>You have no orders yet</styledEl.EmptyOrdersMessage>
         )}
       </styledEl.Orders>
     </>

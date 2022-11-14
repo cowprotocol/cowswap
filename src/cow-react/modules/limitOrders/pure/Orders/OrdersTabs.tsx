@@ -7,10 +7,12 @@ const Tabs = styled.div`
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 15px;
+  border: 2px solid ${({ theme }) => theme.border2};
 `
 
 const TabButton = styled.button<{ active?: boolean }>`
-  background: ${({ theme, active }) => (active ? theme.bg6 : theme.bg1)};
+  background: ${({ theme, active }) => (active ? theme.bg2 : theme.bg1)};
+  color: ${({ theme, active }) => (active ? theme.text2 : theme.text1)};
   font-weight: ${({ active }) => (active ? '600' : '400')};
   font-size: 14px;
   padding: 12px 24px;
@@ -19,7 +21,8 @@ const TabButton = styled.button<{ active?: boolean }>`
   cursor: pointer;
 
   :hover {
-    background: ${({ theme }) => theme.bg6};
+    color: ${({ theme }) => theme.text2};
+    background: ${({ theme }) => theme.bg2};
   }
 `
 

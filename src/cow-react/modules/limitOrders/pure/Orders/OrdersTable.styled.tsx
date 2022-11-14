@@ -27,6 +27,7 @@ export const Header = styled.div`
   > div {
     padding: 12px;
     overflow: hidden;
+    font-size: 14px;
   }
 `
 
@@ -43,6 +44,7 @@ export const Row = styled(Header)`
 export const StatusItem = styled.div<{ status: OrderStatus }>`
   display: inline-block;
   background: ${({ status }) => statusColorMap[status]};
+  color: ${({ theme }) => theme.text2};
   padding: 5px 10px;
   border-radius: 3px;
 `
@@ -51,6 +53,10 @@ export const AmountItem = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`
+
+export const RateValue = styled.span`
+  font-size: 12px;
 `
 
 export function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
