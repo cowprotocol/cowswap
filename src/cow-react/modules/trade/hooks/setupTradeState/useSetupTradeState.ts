@@ -73,7 +73,7 @@ export function useSetupTradeState(): void {
 
     tradeState.updateState(newState)
 
-    tradeNavigate(currentChainId, {
+    tradeNavigate(newState.chainId, {
       inputCurrencyId: newState.inputCurrencyId || null,
       outputCurrencyId: newState.outputCurrencyId || null,
     })

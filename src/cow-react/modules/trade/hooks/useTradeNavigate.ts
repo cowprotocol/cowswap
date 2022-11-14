@@ -20,8 +20,8 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
   const isNetworkSupported = isSupportedChainId(currentChainId)
   // Currencies ids shouldn't be displayed in the URL when user selected unsupported network
   const fixCurrencyId = useCallback(
-    (currencyId: string | null) => (isNetworkSupported ? currencyId || undefined : undefined),
-    [isNetworkSupported]
+    (currencyId: string | null) => (isNetworkSupported || !currentChainId ? currencyId || undefined : undefined),
+    [currentChainId, isNetworkSupported]
   )
 
   return useCallback(
