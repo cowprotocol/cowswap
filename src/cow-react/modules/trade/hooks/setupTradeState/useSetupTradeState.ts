@@ -66,6 +66,9 @@ export function useSetupTradeState(): void {
 
   const newChainId = useMemo(() => {
     const providerChainId = currentChainId || SupportedChainId.MAINNET
+    const validChainIdFromUrl = isSupportedChainId(chainIdFromUrl || undefined)
+      ? chainIdFromUrl || providerChainId
+      : providerChainId
 
     if (!account) {
       // When wallet is not connected and network was changed in the provider, then use chainId from provider
@@ -73,14 +76,10 @@ export function useSetupTradeState(): void {
         return providerChainId
       } else {
         // When wallet is not connected, then use chainId from URL by priority and fallback to provider's value
-        if (isSupportedChainId(chainIdFromUrl || undefined)) {
-          return chainIdFromUrl || providerChainId
-        }
-
-        return providerChainId
+        return validChainIdFromUrl
       }
     } else {
-      if (networkChangeInProgress) return chainIdFromUrl
+      if (networkChangeInProgress) return validChainIdFromUrl
       // When wallet is connected, then always use chainId from provider
       return providerChainId
     }
