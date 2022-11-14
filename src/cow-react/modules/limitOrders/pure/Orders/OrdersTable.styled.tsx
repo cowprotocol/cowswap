@@ -21,7 +21,7 @@ export const TableBox = styled.div`
 export const Header = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-bottom: 2px solid ${({ theme }) => theme.border2};
 
   > div {
