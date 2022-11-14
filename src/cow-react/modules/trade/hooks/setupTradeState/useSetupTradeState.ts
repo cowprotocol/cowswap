@@ -85,13 +85,14 @@ export function useSetupTradeState(): void {
     if (!tradeState) return
 
     // Reset state to default when chainId was changed in the provider
-    const newState: TradeState = providerChainIdWasChanged
-      ? getDefaultTradeState(newChainId)
-      : {
-          chainId: newChainId,
-          recipient: tradeStateFromUrl.recipient || tradeState.state.recipient,
-          ...getUpdatedCurrenciesIds(tradeStateFromUrl, tradeState.state),
-        }
+    const newState: TradeState =
+      providerChainIdWasChanged && !!account
+        ? getDefaultTradeState(newChainId)
+        : {
+            chainId: newChainId,
+            recipient: tradeStateFromUrl.recipient || tradeState.state.recipient,
+            ...getUpdatedCurrenciesIds(tradeStateFromUrl, tradeState.state),
+          }
 
     console.debug('UPDATE TRADE STATE:', newState)
 
@@ -101,7 +102,7 @@ export function useSetupTradeState(): void {
       inputCurrencyId: newState.inputCurrencyId || null,
       outputCurrencyId: newState.outputCurrencyId || null,
     })
-  }, [tradeNavigate, newChainId, providerChainIdWasChanged, tradeState, tradeStateFromUrl])
+  }, [tradeNavigate, newChainId, providerChainIdWasChanged, tradeState, tradeStateFromUrl, account])
 
   /**
    * STEP 1
