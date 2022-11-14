@@ -8,18 +8,9 @@ export enum EthFlowStepperStatus {
   ETH_SENT = 'ETH_SENT',
   ORDER_FILLED = 'ORDER_FILLED',
 
-  // ORDER_REJECTED = 'ORDER_REJECTED',
-  // ORDER_EXPIRED = 'ORDER_EXPIRED',
-  // ORDER_CANCELLING = 'ORDER_CANCELLING',
   ORDER_CANCELLED = 'ORDER_CANCELLED',
-
   ETH_REFUNDING = 'ETH_REFUNDING',
   ETH_REFUNDED = 'ETH_REFUNDED',
-}
-
-export enum SendEthStatus {
-  ETH_SENDING = 'ETH_SENDING',
-  ETH_SENT = 'ETH_SENT',
 }
 
 export interface EthFlowStepperProps {
@@ -126,16 +117,6 @@ const Divider = styled.progress`
   min-width: 100px;
 `
 
-// const DividerWrapper = styled.div`
-//   height: 3px;
-//   background-color: #155ebe;
-//   min-width: 100px;
-// `
-
-// export function Divider(props: EthFlowStepperProps) {
-//   return <DividerWrapper><div></></DividerWrapper>
-// }
-
 function Step1({ status, sendEtherTx, nativeTokenSymbol }: EthFlowStepperProps) {
   let message: string, stepStatus: StepStatus, icon: Icon
   if (status === EthFlowStepperStatus.ETH_SENDING) {
@@ -235,6 +216,7 @@ function Divider2({ status, order, refundTx, cancelationTx }: EthFlowStepperProp
 }
 
 function Step3({ status, nativeTokenSymbol, tokenLabel, order, refundTx, cancelationTx }: EthFlowStepperProps) {
+  const isEthSent = status === EthFlowStepperStatus.ETH_SENT
   const isRefunding = status === EthFlowStepperStatus.ETH_REFUNDING
   const isOrderExpired = order && order.isExpired
   const isOrderRejected = order && order.rejectedReason
@@ -243,7 +225,7 @@ function Step3({ status, nativeTokenSymbol, tokenLabel, order, refundTx, cancela
   const isRefunded = status === EthFlowStepperStatus.ETH_REFUNDED
 
   let message: string, stepStatus: StepStatus, icon: Icon
-  if (status === EthFlowStepperStatus.ETH_SENT && order) {
+  if (isEthSent && order) {
     message = 'Receive ' + tokenLabel
     stepStatus = 'pending'
     icon = Flag
@@ -279,10 +261,26 @@ function Step3({ status, nativeTokenSymbol, tokenLabel, order, refundTx, cancela
           <br />
         </>
       )}
-      {refundTx && <ExplorerLink type="transaction" label="ETH refunded successfully" id={refundTx} />}
+      <RefundEthTx tx={refundTx} isPending={isEthSent} />
     </>
   )
   return <Step status={stepStatus} details={details} icon={icon} />
+}
+
+export function RefundEthTx(props: { isPending: boolean; tx?: string }) {
+  const { isPending, tx } = props
+
+  if (!tx) {
+    return null
+  }
+
+  return (
+    <ExplorerLink
+      type="transaction"
+      label={isPending ? 'Receiving ETH Refund...' : 'ETH refunded successfully'}
+      id={tx}
+    />
+  )
 }
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
