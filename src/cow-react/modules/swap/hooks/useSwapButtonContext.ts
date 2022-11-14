@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useDetectNativeToken, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
@@ -24,6 +24,7 @@ import { useGetQuoteAndStatus } from 'state/price/hooks'
 import { useSwapFlowContext } from '@cow/modules/swap/hooks/useSwapFlowContext'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -45,6 +46,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     currenciesIds,
     inputError: swapInputError,
   } = useDerivedSwapInfo()
+  const { typedValue } = useSwapState()
   const [isExpertMode] = useExpertModeManager()
   const toggleWalletModal = useToggleWalletModal()
   const { openSwapConfirmModal } = useSwapConfirmManager()
@@ -70,7 +72,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapCallback(wrapUnwrapAmount)
-  const approvalState = useTradeApproveState(parsedAmount || null)
+  const inputAmount = tryParseCurrencyAmount(typedValue, currencyIn ?? undefined)
+  const approvalState = useTradeApproveState(inputAmount || null)
 
   const handleSwap = useCallback(() => {
     if (!swapFlowContext) return
@@ -106,7 +109,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   return {
     swapButtonState,
-    inputAmount: parsedAmount,
+    inputAmount,
     chainId,
     wrappedToken,
     handleSwap,
