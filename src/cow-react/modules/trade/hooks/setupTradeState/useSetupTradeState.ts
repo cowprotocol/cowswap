@@ -49,7 +49,7 @@ export function useSetupTradeState(): void {
   const tradeStateFromUrl = useTradeStateFromUrl()
   const tradeState = useTradeState()
 
-  const chainIdFromUrl = tradeStateFromUrl.chainId || currentChainId
+  const chainIdFromUrl = tradeStateFromUrl.chainId
   const chainIdWasChanged = !!currentChainId && chainIdFromUrl !== currentChainId
   const skipUpdate = tradeState ? shouldSkipUpdate(chainIdWasChanged, tradeStateFromUrl, tradeState.state) : true
 
@@ -78,6 +78,17 @@ export function useSetupTradeState(): void {
       outputCurrencyId: newState.outputCurrencyId || null,
     })
   }, [tradeNavigate, tradeState, tradeStateFromUrl, chainIdWasChanged, currentChainId])
+
+  /**
+   * Handle case when the chain id param from url is invalid
+   * In that case we want to set the chain ID in URL to current chain id
+   */
+  useEffect(() => {
+    if (!currentChainId) return
+    if (!chainIdFromUrl || !isSupportedChainId(chainIdFromUrl)) {
+      updateStateAndNavigate()
+    }
+  }, [currentChainId, chainIdFromUrl, updateStateAndNavigate])
 
   /**
    * STEP 1
