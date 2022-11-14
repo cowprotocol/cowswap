@@ -44,6 +44,7 @@ function shouldSkipUpdate(tradeStateFromUrl: TradeState, tradeStateFromStore: Tr
 export function useSetupTradeState(): void {
   const { chainId: currentChainId, connector, account } = useWeb3React()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
+  const [networkChangeInProgress, setNetworkChangeInProgress] = useState(false)
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const tradeState = useTradeState()
@@ -56,13 +57,16 @@ export function useSetupTradeState(): void {
   const providerChainIdWasChanged = !!currentChainId && currentChainId !== prevCurrentChainId
 
   const skipUpdate = useMemo(() => {
+    if (chainIdFromUrlWasChanged && !!account) return true
+
     if (providerChainIdWasChanged) return false
 
     return tradeState ? shouldSkipUpdate(tradeStateFromUrl, tradeState.state) : true
-  }, [tradeState, tradeStateFromUrl, providerChainIdWasChanged])
+  }, [tradeState, tradeStateFromUrl, providerChainIdWasChanged, chainIdFromUrlWasChanged, account])
 
   const newChainId = useMemo(() => {
     const providerChainId = currentChainId || SupportedChainId.MAINNET
+
     if (!account) {
       // When wallet is not connected and network was changed in the provider, then use chainId from provider
       if (providerChainIdWasChanged) {
@@ -76,10 +80,11 @@ export function useSetupTradeState(): void {
         return providerChainId
       }
     } else {
+      if (networkChangeInProgress) return chainIdFromUrl
       // When wallet is connected, then always use chainId from provider
       return providerChainId
     }
-  }, [account, providerChainIdWasChanged, chainIdFromUrl, currentChainId])
+  }, [account, providerChainIdWasChanged, networkChangeInProgress, chainIdFromUrl, currentChainId])
 
   const updateStateAndNavigate = useCallback(() => {
     if (!tradeState) return
@@ -124,12 +129,15 @@ export function useSetupTradeState(): void {
     let isSubscribed = true
 
     setIsChainIdSet(true)
+    setNetworkChangeInProgress(true)
 
     switchChain(connector, chainIdFromUrl)
       .catch((e) => {
         console.error(e)
       })
       .finally(() => {
+        setNetworkChangeInProgress(false)
+
         if (!isSubscribed) return
 
         updateStateAndNavigate()
