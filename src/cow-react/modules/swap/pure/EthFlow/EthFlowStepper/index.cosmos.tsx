@@ -1,4 +1,6 @@
-import { EthFlowStepper, EthFlowStepperProps, EthFlowStepperStatus } from '.'
+import 'inter-ui' // TODO: We need to do a cosmos wrapper with the global styles! Will reiterate to remove this line
+
+import { EthFlowStepper, EthFlowStepperProps, SmartOrderStatus } from '.'
 
 import { useSelect } from 'react-cosmos/fixture'
 
@@ -8,11 +10,22 @@ const ORDER_ID =
 const TX = '0x183fa3b48c676bf9c5613e3e20b67a7250acc94af8e65dbe57787f47e5e54c75'
 const ORDER_REJECTED_REASON = 'Price quote expired'
 
-const defaultProps = {
-  sendEtherTx: TX,
+const defaultOrderProps = {
+  createOrderTx: TX,
+  orderId: ORDER_ID,
+  state: SmartOrderStatus.CREATING,
+  isExpired: false,
+}
+const defaultProps: EthFlowStepperProps = {
   nativeTokenSymbol: 'xDAI',
   tokenLabel: 'USDC',
-  isOrderExpired: false,
+  order: defaultOrderProps,
+  refund: {
+    isRefunded: false,
+  },
+  cancelation: {
+    isCanceled: false,
+  },
 }
 
 interface Step {
@@ -23,60 +36,108 @@ interface Step {
 const STEPS: Step[] = [
   {
     description: '1. User Send Order Creation Tx',
-    props: { ...defaultProps, status: EthFlowStepperStatus.ETH_SENDING },
+    props: defaultProps,
   },
   {
     description: '2. Order Creation Tx is Executed',
-    props: { ...defaultProps, status: EthFlowStepperStatus.ETH_SENT },
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.CREATION_MINED,
+      },
+    },
   },
   {
     description: '3. Order is Created',
-    props: { ...defaultProps, status: EthFlowStepperStatus.ETH_SENT, order: { orderId: ORDER_ID, isExpired: false } },
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+      },
+    },
   },
   {
     description: '4. Order is Filled',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ORDER_FILLED,
-      order: { orderId: ORDER_ID, isExpired: false },
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.FILLED,
+      },
     },
   },
   {
     description: '[EXPIRED] 1. Just Expired',
-    props: { ...defaultProps, status: EthFlowStepperStatus.ETH_SENT, order: { orderId: ORDER_ID, isExpired: true } },
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        isExpired: true,
+      },
+    },
   },
   {
     description: '[EXPIRED] 2. Refunding',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ETH_SENT,
       order: {
-        orderId: ORDER_ID,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      refundTx: TX,
+      refund: {
+        refundTx: TX,
+        isRefunded: false,
+      },
     },
   },
   {
     description: '[EXPIRED] 3. Received Refund',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ETH_REFUNDED,
       order: {
-        orderId: ORDER_ID,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      refundTx: TX,
+      refund: {
+        refundTx: TX,
+        isRefunded: true,
+      },
+    },
+  },
+  {
+    description: '[EXPIRED] Expired+Creating: ????',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.CREATING,
+        isExpired: true,
+      },
+    },
+  },
+  {
+    description: '[EXPIRED] Expired+Created: ????',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.CREATION_MINED,
+        isExpired: true,
+      },
     },
   },
   {
     description: '[REJECTED] 1. Just Rejected',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ETH_SENT,
       order: {
-        orderId: ORDER_ID,
-        isExpired: false,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
         rejectedReason: ORDER_REJECTED_REASON,
       },
     },
@@ -85,75 +146,168 @@ const STEPS: Step[] = [
     description: '[REJECTED] 2. Refunding',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ETH_SENT,
       order: {
-        orderId: ORDER_ID,
-        isExpired: false,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
         rejectedReason: ORDER_REJECTED_REASON,
       },
-      refundTx: TX,
+      refund: {
+        refundTx: TX,
+        isRefunded: false,
+      },
     },
   },
   {
     description: '[REJECTED] 3. Refunded',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ETH_REFUNDED,
       order: {
-        orderId: ORDER_ID,
-        isExpired: false,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
         rejectedReason: ORDER_REJECTED_REASON,
       },
-      refundTx: TX,
+      refund: {
+        refundTx: TX,
+        isRefunded: true,
+      },
     },
   },
   {
     description: `[REJECTED] Rejected+Expired: Rejected Wins`,
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ETH_SENT,
       order: {
-        orderId: ORDER_ID,
-        isExpired: true,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
         rejectedReason: ORDER_REJECTED_REASON,
+        isExpired: true,
       },
-      refundTx: TX,
     },
   },
   {
     description: '[CANCEL] 1. Open and Canceling',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ETH_SENT,
       order: {
-        orderId: ORDER_ID,
-        isExpired: false,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
       },
-      cancelationTx: TX,
+      cancelation: {
+        cancelationTx: TX,
+        isCanceled: false,
+      },
     },
   },
   {
     description: '[CANCEL] 2. Cancelled',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ORDER_CANCELLED,
       order: {
-        orderId: ORDER_ID,
-        isExpired: false,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
       },
-      cancelationTx: TX,
+      cancelation: {
+        cancelationTx: TX,
+        isCanceled: true,
+      },
     },
   },
   {
-    description: '[CANCEL] Cancelled+Expired: Cancelled wins',
+    description: '[CANCEL] Cancelling+Expired: Cancelled wins',
     props: {
       ...defaultProps,
-      status: EthFlowStepperStatus.ORDER_CANCELLED,
       order: {
-        orderId: ORDER_ID,
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
         isExpired: true,
       },
-      cancelationTx: TX,
+      cancelation: {
+        cancelationTx: TX,
+        isCanceled: false,
+      },
+    },
+  },
+  {
+    description: '[CANCEL+REFUND] Cancelling+Refunding',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
+        isExpired: true,
+      },
+      cancelation: {
+        cancelationTx: TX,
+        isCanceled: false,
+      },
+      refund: {
+        refundTx: TX,
+        isRefunded: false,
+      },
+    },
+  },
+  {
+    description: '[CANCEL+REFUND] Cancelling+Refunded',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
+        isExpired: true,
+      },
+      cancelation: {
+        cancelationTx: TX,
+        isCanceled: false,
+      },
+      refund: {
+        refundTx: TX,
+        isRefunded: true,
+      },
+    },
+  },
+  {
+    description: '[CANCEL+REFUND] Canceled+Refunding',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
+        isExpired: true,
+      },
+      cancelation: {
+        cancelationTx: TX,
+        isCanceled: true,
+      },
+      refund: {
+        refundTx: TX,
+        isRefunded: false,
+      },
+    },
+  },
+  {
+    description: '[CANCEL+REFUND] Canceled+Refunded',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
+        isExpired: true,
+      },
+      cancelation: {
+        cancelationTx: TX,
+        isCanceled: true,
+      },
+      refund: {
+        refundTx: TX,
+        isRefunded: true,
+      },
     },
   },
 ]

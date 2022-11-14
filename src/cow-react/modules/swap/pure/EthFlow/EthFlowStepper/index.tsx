@@ -1,16 +1,23 @@
 import { ExplorerLink } from '@src/custom/components/ExplorerLink'
 import React from 'react'
-import { Icon, Send, Flag, X, Plus, Check } from 'react-feather'
+import { Icon, Send, Flag, X, Plus, Check, AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-export enum EthFlowStepperStatus {
-  ETH_SENDING = 'ETH_SENDING',
-  ETH_SENT = 'ETH_SENT',
-  ORDER_FILLED = 'ORDER_FILLED',
+// export enum EthFlowStepperStatus {
+//   ETH_SENDING = 'ETH_SENDING',
+//   ETH_SENT = 'ETH_SENT',
+//   ORDER_FILLED = 'ORDER_FILLED',
 
-  ORDER_CANCELLED = 'ORDER_CANCELLED',
-  ETH_REFUNDING = 'ETH_REFUNDING',
-  ETH_REFUNDED = 'ETH_REFUNDED',
+//   ORDER_CANCELLED = 'ORDER_CANCELLED',
+//   ETH_REFUNDING = 'ETH_REFUNDING',
+//   ETH_REFUNDED = 'ETH_REFUNDED',
+// }
+
+export enum SmartOrderStatus {
+  CREATING = 'CREATING',
+  CREATION_MINED = 'CREATED',
+  INDEXED = 'INDEXED',
+  FILLED = 'FILLED',
 }
 
 type StepStatus = 'success' | 'pending' | 'not-started' | 'error'
@@ -55,6 +62,16 @@ const Wrapper = styled.div`
 
   p {
     margin: 0;
+  }
+
+  .success {
+    color: #017b28;
+  }
+  .pending {
+    color: #0d5ed9;
+  }
+  .not-started {
+    color: gray;
   }
 
   .error {
@@ -120,67 +137,98 @@ function Step(props: StepProps) {
   )
 }
 
-const Divider = styled.progress`
+const Progress = styled.progress`
   height: 5px;
   min-width: 100px;
 `
 
 export interface EthFlowStepperProps {
-  status: EthFlowStepperStatus
+  // status: EthFlowStepperStatus
   nativeTokenSymbol: string
   tokenLabel: string
 
-  sendEtherTx: string
-  refundTx?: string
-  cancelationTx?: string
-
-  order?: {
+  order: {
+    createOrderTx: string
     orderId: string
+    state: SmartOrderStatus
     isExpired: boolean
     rejectedReason?: string
   }
+
+  refund: {
+    refundTx?: string
+    isRefunded: boolean
+  }
+
+  cancelation: {
+    cancelationTx?: string
+    isCanceled: boolean
+  }
 }
 
-function Step1({ status, sendEtherTx, nativeTokenSymbol }: EthFlowStepperProps) {
+function Step1({ nativeTokenSymbol, order }: EthFlowStepperProps) {
+  const { state, isExpired, createOrderTx } = order
+  const isCreating = state === SmartOrderStatus.CREATING
+
   let message: string, stepStatus: StepStatus, icon: Icon
-  if (status === EthFlowStepperStatus.ETH_SENDING) {
+  if (isCreating) {
     message = 'Sending ' + nativeTokenSymbol
-    stepStatus = 'pending'
-    icon = Send
+    if (isExpired) {
+      stepStatus = 'error'
+      icon = AlertTriangle
+    } else {
+      stepStatus = 'pending'
+      icon = Send
+    }
   } else {
-    message = 'Sending ' + nativeTokenSymbol
+    message = 'Sent ' + nativeTokenSymbol
     stepStatus = 'success'
     icon = Check
   }
 
   const details = (
     <>
-      <p>{message}</p>
-      <CreateOrderTx tx={sendEtherTx} />
+      <p className={isExpired && isCreating ? 'error' : stepStatus}>{message}</p>
+      <CreateOrderTx tx={createOrderTx} />
     </>
   )
   return <Step status={stepStatus} details={details} icon={icon} />
 }
 
-function Divider1({ status }: EthFlowStepperProps) {
+function Progress1({ order }: EthFlowStepperProps) {
+  const { state, isExpired } = order
+  const isCreating = state === SmartOrderStatus.CREATING
+
   let progress: number
-  if (status === EthFlowStepperStatus.ETH_SENDING) {
+  if (isCreating && !isExpired) {
     progress = 50
   } else {
     progress = 100
   }
 
-  return <Divider value={progress} max={100} />
+  return <Progress value={progress} max={100} />
 }
 
-function Step2({ status, order }: EthFlowStepperProps) {
-  const rejectedReason = order?.rejectedReason
+function Step2({ order }: EthFlowStepperProps) {
+  const { state, isExpired, orderId } = order
+  let rejectedReason = order.rejectedReason
+  const isCreating = state === SmartOrderStatus.CREATING
+  const isIndexing = state === SmartOrderStatus.CREATION_MINED
+  const isOrderCreated = !(isCreating || isIndexing)
+
+  const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
+
   let message: string, stepStatus: StepStatus, icon: Icon
-  if (status === EthFlowStepperStatus.ETH_SENDING) {
+  if (expiredBeforeCreate) {
+    message = 'Order Creation Failed'
+    rejectedReason = 'Expired before creation'
+    stepStatus = 'error'
+    icon = X
+  } else if (isCreating) {
     message = 'Create Order'
     stepStatus = 'not-started'
     icon = Plus
-  } else if (status === EthFlowStepperStatus.ETH_SENT && order === undefined) {
+  } else if (isIndexing) {
     message = 'Creating Order'
     stepStatus = 'pending'
     icon = Plus
@@ -194,62 +242,70 @@ function Step2({ status, order }: EthFlowStepperProps) {
     icon = Check
   }
 
-  const className = rejectedReason ? 'error' : undefined
   const details = (
     <>
-      <p className={className}>{message}</p>
-      {rejectedReason && <p className={className}>{rejectedReason}</p>}
-      <OrderLink orderId={order?.orderId} />
+      <p className={stepStatus}>{message}</p>
+      {rejectedReason && <p className={stepStatus}>{rejectedReason}</p>}
+      {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
     </>
   )
   return <Step status={stepStatus} details={details} icon={icon} />
 }
 
-function Divider2({ status, order, refundTx, cancelationTx }: EthFlowStepperProps) {
-  const isTerminalState =
-    status === EthFlowStepperStatus.ETH_REFUNDED ||
-    status === EthFlowStepperStatus.ORDER_CANCELLED ||
-    status === EthFlowStepperStatus.ORDER_FILLED
-  const isEthSent = status === EthFlowStepperStatus.ETH_SENT
+function Progress2({ order, refund, cancelation }: EthFlowStepperProps) {
+  const { state } = order
+  const { isRefunded, refundTx } = refund
+  const { isCanceled, cancelationTx } = cancelation
+  const isIndexing = state === SmartOrderStatus.CREATION_MINED
+  const isFilled = state === SmartOrderStatus.FILLED
+  const isCreating = state === SmartOrderStatus.CREATING
 
+  const isTerminalState = isRefunded || isCanceled || isFilled
   let progress: number
   if (isTerminalState) {
     progress = 100
   } else if (refundTx || cancelationTx) {
     progress = 66
-  } else if (status === EthFlowStepperStatus.ETH_SENDING || (isEthSent && !order)) {
+  } else if (isCreating || isIndexing) {
     progress = 0
-  } else if (isEthSent) {
+  } else {
     if (refundTx || cancelationTx) {
       progress = 66
     } else {
       progress = 33
     }
-  } else {
-    progress = 90
   }
-  return <Divider value={progress} max={100} />
+  return <Progress value={progress} max={100} />
 }
 
-function Step3({ status, nativeTokenSymbol, tokenLabel, order, refundTx, cancelationTx }: EthFlowStepperProps) {
-  const isEthSent = status === EthFlowStepperStatus.ETH_SENT
-  const isRefunding = status === EthFlowStepperStatus.ETH_REFUNDING
-  const isOrderExpired = order?.isExpired ?? false
-  const isOrderRejected = !!order?.rejectedReason
-  const isCancelling = cancelationTx !== undefined
-  const isCancelled = status === EthFlowStepperStatus.ORDER_CANCELLED
-  const isRefunded = status === EthFlowStepperStatus.ETH_REFUNDED
+function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelation }: EthFlowStepperProps) {
+  const { state, isExpired, rejectedReason } = order
+  const { isRefunded, refundTx } = refund
+  const { isCanceled, cancelationTx } = cancelation
+
+  const isIndexing = state === SmartOrderStatus.CREATION_MINED
+  const isCreating = state === SmartOrderStatus.CREATING
+  const isFilled = state === SmartOrderStatus.FILLED
+
+  const isRefunding = !!refundTx && !isRefunded
+  const isCanceling = !!cancelationTx && isCanceled
+
+  const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
   let message: string, stepStatus: StepStatus, icon: Icon
-  if (isEthSent && order) {
+  if (expiredBeforeCreate) {
     message = 'Receive ' + tokenLabel
     stepStatus = 'pending'
     icon = Flag
-  } else if (status === EthFlowStepperStatus.ORDER_FILLED) {
+  } else if (isIndexing) {
+    message = 'Receive ' + tokenLabel
+    stepStatus = 'not-started'
+    icon = Flag
+  } else if (isFilled) {
     message = 'Received ' + tokenLabel
     stepStatus = 'success'
     icon = Check
-  } else if (isCancelled || isRefunded) {
+  } else if (isCanceled || isRefunded) {
     message = nativeTokenSymbol + ' Refunded'
     stepStatus = 'success'
     icon = Check
@@ -259,13 +315,31 @@ function Step3({ status, nativeTokenSymbol, tokenLabel, order, refundTx, cancela
     icon = Flag
   }
 
-  const wontReceiveToken = isOrderExpired || isOrderRejected || isRefunding || isCancelling || isCancelled || isRefunded
-  console.log({ isOrderExpired, isOrderRejected, isRefunding, isCancelling, isCancelled, isRefunded })
+  const isOrderRejected = !!rejectedReason
+  const wontReceiveToken = isExpired || isOrderRejected || isRefunding || isCanceling || isCanceled || isRefunded
+  console.log({
+    isOrderExpired: isExpired,
+    isOrderRejected,
+    isRefunding,
+    isCancelling: isCanceling,
+    isCanceled,
+    isRefunded,
+  })
+  const isSuccess = stepStatus === 'success'
   const details = (
     <>
-      <p className={wontReceiveToken ? 'crossOut' : undefined}>{message}</p>
-      {isOrderExpired && !(isOrderRejected || isCancelled) && <p>Order is Expired</p>}
-      <RefundEthTx tx={refundTx} isPending={isEthSent} wontReceiveToken={wontReceiveToken} />
+      <p className={!isSuccess && wontReceiveToken ? 'crossOut' : stepStatus}>{message}</p>
+      {isExpired && !isSuccess && <p>Order is Expired</p>}
+
+      {wontReceiveToken && !refundTx && <p className="refund">Initiating ETH Refund...</p>}
+
+      {refundTx && !expiredBeforeCreate && (
+        <ExplorerLinkStyled
+          type="transaction"
+          label={isRefunding ? 'Receiving ETH Refund...' : 'ETH refunded successfully'}
+          id={refundTx}
+        />
+      )}
     </>
   )
   return <Step status={stepStatus} details={details} icon={icon} />
@@ -284,43 +358,13 @@ export function CreateOrderTx({ tx }: { tx?: string }) {
   return <ExplorerLinkStyled type="transaction" label="View Transaction" id={tx} />
 }
 
-export function OrderLink({ orderId }: { orderId?: string }) {
-  if (!orderId) {
-    return null
-  }
-
-  return <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />
-}
-
-export function RefundEthTx({
-  isPending,
-  tx,
-  wontReceiveToken,
-}: {
-  isPending: boolean
-  tx?: string
-  wontReceiveToken: boolean
-}) {
-  if (!tx) {
-    return wontReceiveToken ? <p className="refund">Initiating ETH Refund...</p> : null
-  }
-
-  return (
-    <ExplorerLinkStyled
-      type="transaction"
-      label={isPending ? 'Receiving ETH Refund...' : 'ETH refunded successfully'}
-      id={tx}
-    />
-  )
-}
-
 export function EthFlowStepper(props: EthFlowStepperProps) {
   return (
     <Wrapper>
       <Step1 {...props} />
-      <Divider1 {...props} />
+      <Progress1 {...props} />
       <Step2 {...props} />
-      <Divider2 {...props} />
+      <Progress2 {...props} />
       <Step3 {...props} />
     </Wrapper>
   )
