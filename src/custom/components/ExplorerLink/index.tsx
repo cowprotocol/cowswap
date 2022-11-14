@@ -26,7 +26,7 @@ export function ExplorerLink(props: Props) {
   const linkLabel = label || getExplorerLabel(chainId, id, type)
   return (
     <ExternalLink className={className} href={getEtherscanLink(chainId, id, type)}>
-      {linkLabel}
+      {linkLabel} <span style={{ fontSize: '0.8em' }}>↗</span>
     </ExternalLink>
   )
 }

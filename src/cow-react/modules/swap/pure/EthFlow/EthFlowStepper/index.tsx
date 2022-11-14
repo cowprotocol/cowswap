@@ -57,13 +57,17 @@ const Wrapper = styled.div`
     margin: 0;
   }
 
-  p.error {
+  .error {
     color: #f25757;
   }
 
   .crossOut {
     text-decoration: line-through;
     color: gray;
+  }
+
+  .refund {
+    color: #0d5ed9;
   }
 `
 
@@ -110,7 +114,6 @@ function Step(props: StepProps) {
   const { details, status, icon } = props
   return (
     <StepWrapper>
-      {/* {status} */}
       <Status icon={icon} status={status} />
       {details}
     </StepWrapper>
@@ -119,7 +122,6 @@ function Step(props: StepProps) {
 
 const Divider = styled.progress`
   height: 5px;
-  // background-color: #155ebe;
   min-width: 100px;
 `
 
@@ -232,8 +234,8 @@ function Divider2({ status, order, refundTx, cancelationTx }: EthFlowStepperProp
 function Step3({ status, nativeTokenSymbol, tokenLabel, order, refundTx, cancelationTx }: EthFlowStepperProps) {
   const isEthSent = status === EthFlowStepperStatus.ETH_SENT
   const isRefunding = status === EthFlowStepperStatus.ETH_REFUNDING
-  const isOrderExpired = order && order.isExpired
-  const isOrderRejected = order && order.rejectedReason
+  const isOrderExpired = order?.isExpired ?? false
+  const isOrderRejected = !!order?.rejectedReason
   const isCancelling = cancelationTx !== undefined
   const isCancelled = status === EthFlowStepperStatus.ORDER_CANCELLED
   const isRefunded = status === EthFlowStepperStatus.ETH_REFUNDED
@@ -258,13 +260,12 @@ function Step3({ status, nativeTokenSymbol, tokenLabel, order, refundTx, cancela
   }
 
   const wontReceiveToken = isOrderExpired || isOrderRejected || isRefunding || isCancelling || isCancelled || isRefunded
-
+  console.log({ isOrderExpired, isOrderRejected, isRefunding, isCancelling, isCancelled, isRefunded })
   const details = (
     <>
       <p className={wontReceiveToken ? 'crossOut' : undefined}>{message}</p>
       {isOrderExpired && !(isOrderRejected || isCancelled) && <p>Order is Expired</p>}
-      {wontReceiveToken && !refundTx && <p>Initiating ETH Refund...</p>}
-      <RefundEthTx tx={refundTx} isPending={isEthSent} />
+      <RefundEthTx tx={refundTx} isPending={isEthSent} wontReceiveToken={wontReceiveToken} />
     </>
   )
   return <Step status={stepStatus} details={details} icon={icon} />
@@ -291,9 +292,17 @@ export function OrderLink({ orderId }: { orderId?: string }) {
   return <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />
 }
 
-export function RefundEthTx({ isPending, tx }: { isPending: boolean; tx?: string }) {
+export function RefundEthTx({
+  isPending,
+  tx,
+  wontReceiveToken,
+}: {
+  isPending: boolean
+  tx?: string
+  wontReceiveToken: boolean
+}) {
   if (!tx) {
-    return null
+    return wontReceiveToken ? <p className="refund">Initiating ETH Refund...</p> : null
   }
 
   return (
