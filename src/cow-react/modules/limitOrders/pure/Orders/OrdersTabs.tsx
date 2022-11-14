@@ -6,6 +6,7 @@ const Tabs = styled.div`
   display: inline-block;
   border-radius: 8px;
   overflow: hidden;
+  margin-bottom: 15px;
 `
 
 const TabButton = styled.button<{ active?: boolean }>`

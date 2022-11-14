@@ -8,12 +8,10 @@ export function Orders({ orders, tabs, onTabChange }: OrdersProps) {
   return (
     <>
       <styledEl.Orders>
-        <p>Orders</p>
+        <styledEl.OrdersTitle>Orders</styledEl.OrdersTitle>
         <OrdersTabs tabs={tabs} onTabChange={onTabChange} />
         {orders.length > 0 ? (
           <>
-            <br />
-            <br />
             <OrdersTable orders={orders} />
           </>
         ) : (

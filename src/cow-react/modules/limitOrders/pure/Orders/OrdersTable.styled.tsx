@@ -26,6 +26,7 @@ export const Header = styled.div`
 
   > div {
     padding: 12px;
+    overflow: hidden;
   }
 `
 

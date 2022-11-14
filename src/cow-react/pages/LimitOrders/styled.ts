@@ -9,14 +9,16 @@ export const PageWrapper = styled.div`
   grid-column-gap: 20px;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
-  max-width: ${MEDIA_WIDTHS.upToMedium}px;
-`}
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-  display: flex;
-  flex-direction: column;
-  max-width: 640px;
-`}
+    display: flex;
+    flex-direction: column;
+    max-width: 640px;
+  `}
 `
 
-export const Column = styled.div``
+export const Column = styled.div`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    :not(:first-child) {
+      margin-top: 20px;
+    }
+  `}
+`
