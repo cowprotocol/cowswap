@@ -9,9 +9,9 @@ export function Orders({ orders, tabs, onTabChange }: OrdersProps) {
     <>
       <styledEl.Orders>
         <p>Orders</p>
+        <OrdersTabs tabs={tabs} onTabChange={onTabChange} />
         {orders.length > 0 ? (
           <>
-            <OrdersTabs tabs={tabs} onTabChange={onTabChange} />
             <br />
             <br />
             <OrdersTable orders={orders} />

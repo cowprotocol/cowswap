@@ -1,13 +1,13 @@
 import { Orders } from '../../pure/Orders'
 import { OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
-import { useOrders } from 'state/orders/hooks'
-import { useWeb3React } from '@web3-react/core'
-import { useMemo } from 'react'
+import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
+import { useMemo, useState } from 'react'
+import { Order } from 'state/orders/actions'
 
-const tabs: OrderTab[] = [
+const TABS: OrderTab[] = [
   {
     title: 'Open orders',
-    count: 5,
+    count: 0,
   },
   {
     title: 'Orders history',
@@ -15,20 +15,26 @@ const tabs: OrderTab[] = [
   },
 ]
 
+function getOrdersListByIndex(ordersList: LimitOrdersList, index: number): Order[] {
+  return index === 0 ? ordersList.pending : ordersList.history
+}
+
 export function OrdersWidget() {
-  const { chainId, account } = useWeb3React()
-  const allNonEmptyOrders = useOrders({ chainId })
-  const accountLowerCase = account?.toLowerCase()
+  const [activeTab, setActiveTab] = useState(0)
+  const ordersList = useLimitOrdersList()
 
-  // TODO: move it to hook
   const orders = useMemo(() => {
-    return allNonEmptyOrders
-      .filter((order) => order.owner.toLowerCase() === accountLowerCase)
-      .sort((a, b) => Date.parse(b.creationTime) - Date.parse(a.creationTime))
-  }, [accountLowerCase, allNonEmptyOrders])
+    return getOrdersListByIndex(ordersList, activeTab)
+  }, [ordersList, activeTab])
 
-  const onTabChange = () => {
-    console.log('tab changed')
+  const tabs = useMemo(() => {
+    return TABS.map((tab, index) => {
+      return { ...tab, isActive: index === activeTab, count: getOrdersListByIndex(ordersList, index).length }
+    })
+  }, [activeTab, ordersList])
+
+  const onTabChange = (tab: OrderTab, index: number) => {
+    setActiveTab(index)
   }
 
   return <Orders onTabChange={onTabChange} tabs={tabs} orders={orders} />
