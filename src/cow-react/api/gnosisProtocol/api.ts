@@ -120,7 +120,7 @@ export interface OrderMetaData {
   status: ApiOrderStatus
   receiver: string
   // EthFlow related fields
-  ethFlowData: EthFlowData
+  ethflowData: EthFlowData
   onchainUser?: string
 }
 

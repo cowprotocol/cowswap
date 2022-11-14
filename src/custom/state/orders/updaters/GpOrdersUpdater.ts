@@ -44,9 +44,9 @@ function _transformGpOrderToStoreOrder(
   chainId: ChainId,
   allTokens: { [address: string]: Token | null }
 ): Order | undefined {
-  const { uid: id, sellToken, buyToken, creationDate: creationTime, receiver, ethFlowData, owner, onchainUser } = order
+  const { uid: id, sellToken, buyToken, creationDate: creationTime, receiver, ethflowData, owner, onchainUser } = order
 
-  const isEthFlow = Boolean(ethFlowData)
+  const isEthFlow = Boolean(ethflowData)
 
   const inputToken = _getInputToken(isEthFlow, chainId, sellToken, allTokens)
   const outputToken = _getTokenFromMapping(buyToken, chainId, allTokens)
@@ -81,8 +81,8 @@ function _transformGpOrderToStoreOrder(
     isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
     // EthFlow related
     owner: onchainUser || owner,
-    validTo: ethFlowData?.user_valid_to || order.validTo,
-    isRefunded: ethFlowData?.is_refunded,
+    validTo: ethflowData?.user_valid_to || order.validTo,
+    isRefunded: ethflowData?.is_refunded,
   }
   // The function to compute the summary needs the Order instance to exist already
   // That's why it's not used before and an empty string is set instead
