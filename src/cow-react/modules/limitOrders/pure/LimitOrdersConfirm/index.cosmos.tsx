@@ -67,12 +67,18 @@ const tradeContext: TradeFlowContext = {
   isGnosisSafeWallet: false,
 }
 
+const activeRateDisplay = {
+  inputActiveRateCurrency: inputCurrency,
+  outputActiveRateCurrency: outputCurrency,
+  currentActiveRate: new Fraction(50000000, 20000000),
+  currentActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
+}
+
 const Fixtures = {
   default: (
     <LimitOrdersConfirm
-      activeRate={new Fraction(50000000, 20000000)}
+      activeRateDisplay={activeRateDisplay}
       rateImpact={1}
-      activeRateFiatAmount={CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18)}
       tradeContext={tradeContext}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}

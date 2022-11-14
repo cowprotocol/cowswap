@@ -49,6 +49,14 @@ export const RateWrapper = styled.div`
   display: flex;
 `
 
+export const RateInfoWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 8px 0 8px;
+  font-size: 14px;
+`
+
 export const StyledRateImpactWarning = styled(RateImpactWarning)`
   margin-top: 15px;
 `

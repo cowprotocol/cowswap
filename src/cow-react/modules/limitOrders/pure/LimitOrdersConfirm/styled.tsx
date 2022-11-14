@@ -4,4 +4,5 @@ export const ConfirmWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  font-size: 14px;
 `

@@ -2,13 +2,12 @@ import React from 'react'
 import { InfoIcon } from 'components/InfoIcon'
 import * as styledEl from './styled'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
-import { formatSmartAmount } from 'utils/format'
 import { isAddress, shortenAddress } from 'utils'
+import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
+import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
 
 export interface LimitOrdersDetailsProps {
-  activeRate: Fraction
-  activeRateFiatAmount: CurrencyAmount<Currency> | null
+  activeRateDisplay: ActiveRateDisplay
   tradeContext: TradeFlowContext
 }
 
@@ -22,8 +21,7 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
 
 // TODO: apply design
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { account, sellToken, buyToken, validTo, recipient, recipientAddressOrName } =
-    props.tradeContext.postOrderParams
+  const { account, validTo, recipient, recipientAddressOrName } = props.tradeContext.postOrderParams
   const expiryDate = new Date(validTo * 1000)
 
   return (
@@ -33,12 +31,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Limit Price</span> <InfoIcon content={'Limit price info TODO'} />
         </div>
         <div>
-          <span title={props.activeRate.toSignificant(18) + ' ' + buyToken.symbol}>
-            1 {sellToken.symbol} = {props.activeRate.toSignificant(6)} {buyToken.symbol}
-          </span>
-          <styledEl.FiatRateAmount title={props.activeRateFiatAmount?.toSignificant(6) + ' ' + buyToken.symbol}>
-            (~${formatSmartAmount(props.activeRateFiatAmount)})
-          </styledEl.FiatRateAmount>
+          <RateInfo activeRateDisplay={props.activeRateDisplay} />
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
