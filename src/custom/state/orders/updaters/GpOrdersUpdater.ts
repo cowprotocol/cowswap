@@ -97,10 +97,7 @@ function _getInputToken(
   sellToken: string,
   allTokens: { [address: string]: Token | null }
 ): ReturnType<typeof _getTokenFromMapping> {
-  const inputToken = isEthFlow
-    ? NATIVE_CURRENCY_BUY_TOKEN[chainId]
-    : _getTokenFromMapping(sellToken, chainId, allTokens)
-  return inputToken
+  return isEthFlow ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : _getTokenFromMapping(sellToken, chainId, allTokens)
 }
 
 function _getMissingTokensAddresses(
