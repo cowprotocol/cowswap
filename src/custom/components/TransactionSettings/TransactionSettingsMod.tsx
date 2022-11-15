@@ -68,12 +68,12 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   :hover {
     cursor: pointer;
   }
+
   &:disabled {
     border: none;
     pointer-events: none;
   }
-  /* background-color: ${({ active, theme }) => active && theme.primary1}; */
-  background-color: ${({ active, theme }) => active && theme.bg2}; // mod
+  background-color: ${({ active, theme }) => active && theme.primary1};
   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
 `
 
