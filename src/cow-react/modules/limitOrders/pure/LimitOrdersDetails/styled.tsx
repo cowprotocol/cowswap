@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
 
 export const DetailsRow = styled.div`
   display: flex;
@@ -8,7 +9,6 @@ export const DetailsRow = styled.div`
   text-align: right;
 `
 
-export const FiatRateAmount = styled.span`
-  font-size: 14px;
-  margin-left: 5px;
+export const StyledRateInfo = styled(RateInfo)`
+  margin-bottom: 5px;
 `

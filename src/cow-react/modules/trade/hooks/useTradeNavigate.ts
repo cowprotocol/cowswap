@@ -37,8 +37,10 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
         tradeRoute
       )
 
+      if (location.pathname === route) return
+
       history.push(route + location.search)
     },
-    [tradeRoute, history, location.search, fixCurrencyId]
+    [tradeRoute, history, location.pathname, location.search, fixCurrencyId]
   )
 }

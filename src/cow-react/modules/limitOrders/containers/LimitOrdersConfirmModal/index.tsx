@@ -1,13 +1,10 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { useAtom } from 'jotai'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { CloseIcon } from 'theme'
-import { useAtomValue } from 'jotai/utils'
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { LimitOrdersConfirm } from '../../pure/LimitOrdersConfirm'
 import { tradeFlow, TradeFlowContext } from '../../services/tradeFlow'
-import { limitRateAtom } from '../../state/limitRateAtom'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
 import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
@@ -16,6 +13,7 @@ import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
 import { formatSmartAmount } from 'utils/format'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
+import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -23,15 +21,6 @@ export interface LimitOrdersConfirmModalProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   onDismiss(): void
-}
-
-function getCurrencyAmount(
-  currency: Currency | null,
-  value: Fraction | null | undefined
-): CurrencyAmount<Currency> | null {
-  if (!currency || !value || value.denominator.toString() === '0') return null
-
-  return CurrencyAmount.fromFractionalAmount(currency, value.numerator, value.denominator)
 }
 
 function PendingText({
@@ -63,18 +52,13 @@ function PendingText({
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
   const { chainId } = useWalletInfo()
-  const { activeRate, isInversed } = useAtomValue(limitRateAtom)
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
 
-  const activeRateAmount = useMemo(() => {
-    return getCurrencyAmount(outputCurrency, isInversed ? activeRate?.invert() : activeRate)
-  }, [outputCurrency, activeRate, isInversed])
-
-  const activeRateFiatAmount = useHigherUSDValue(activeRateAmount || undefined)
   const rateImpact = useRateImpact()
+  const activeRateDisplay = useActiveRateDisplay()
 
   const onDismissConfirmation = useCallback(() => {
     setConfirmationState({ isPending: false, orderHash: null })
@@ -101,7 +85,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   return (
     <>
       <GpModal isOpen={isOpen} onDismiss={onDismiss}>
-        {tradeContext && activeRate && (
+        {tradeContext && (
           <styledEl.ConfirmModalWrapper>
             <styledEl.ConfirmHeader>
               <styledEl.ConfirmHeaderTitle>Review limit order</styledEl.ConfirmHeaderTitle>
@@ -109,8 +93,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             </styledEl.ConfirmHeader>
             <LimitOrdersConfirm
               tradeContext={tradeContext}
-              activeRateFiatAmount={activeRateFiatAmount}
-              activeRate={activeRate}
+              activeRateDisplay={activeRateDisplay}
               inputCurrencyInfo={inputCurrencyInfo}
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}

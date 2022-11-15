@@ -1,7 +1,6 @@
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useGP2SettlementContract } from 'hooks/useContract'
@@ -10,10 +9,13 @@ import { AppDispatch } from 'state'
 import { useAppData } from 'hooks/useAppData'
 import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import useENSAddress from 'hooks/useENSAddress'
+import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
+import { useLimitOrdersDeadline } from './useLimitOrdersDeadline'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
   const state = useLimitOrdersTradeState()
+  const deadlineTimestamp = useLimitOrdersDeadline()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
@@ -27,7 +29,6 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     !state.outputCurrencyAmount ||
     !state.inputCurrency ||
     !state.outputCurrency ||
-    !state.deadlineTimestamp ||
     !provider ||
     !settlementContract ||
     !appData
@@ -54,7 +55,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       chainId,
       sellToken,
       buyToken,
-      validTo: state.deadlineTimestamp,
+      validTo: deadlineTimestamp,
       recipient,
       recipientAddressOrName,
       allowsOffchainSigning,
