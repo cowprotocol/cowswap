@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
-import { UnsupportedToken } from 'api/gnosisProtocol'
-import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
+import { UnsupportedToken } from '@cow/api/gnosisProtocol'
+import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from '@cow/api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/contracts'
 
-import { useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { Field } from 'state/swap/actions'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
 
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
-import { useCurrency } from 'hooks/Tokens'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { useWeb3React } from '@web3-react/core'
@@ -133,13 +132,11 @@ export default function FeesUpdater(): null {
   const [lastUnsupportedCheck, setLastUnsupportedCheck] = useState<null | number>(null)
   const { chainId, account } = useWeb3React()
 
+  const { independentField, typedValue: rawTypedValue, recipient } = useSwapState()
   const {
-    INPUT: { currencyId: sellToken },
-    OUTPUT: { currencyId: buyToken },
-    independentField,
-    typedValue: rawTypedValue,
-    recipient,
-  } = useSwapState()
+    currencies: { INPUT: sellCurrency, OUTPUT: buyCurrency },
+    currenciesIds: { INPUT: sellCurrencyId, OUTPUT: buyCurrencyId },
+  } = useDerivedSwapInfo()
 
   const { address: ensRecipientAddress } = useENSAddress(recipient)
   const receiver = ensRecipientAddress || recipient
@@ -148,10 +145,12 @@ export default function FeesUpdater(): null {
   // Fee API calculation/call
   const typedValue = useDebounce(rawTypedValue, TYPED_VALUE_DEBOUNCE_TIME)
 
-  const sellCurrency = useCurrency(sellToken)
-  const buyCurrency = useCurrency(buyToken)
   const quotesMap = useAllQuotes({ chainId })
-  const quoteInfo = quotesMap && sellToken ? quotesMap[sellToken] : undefined
+
+  const quoteInfo = useMemo(() => {
+    return quotesMap && sellCurrencyId ? quotesMap[sellCurrencyId] : undefined
+  }, [quotesMap, sellCurrencyId])
+
   const isLoading = useIsQuoteLoading()
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
@@ -164,8 +163,8 @@ export default function FeesUpdater(): null {
   const { validTo } = useOrderValidTo()
 
   // prevents things like "USDC" being used as an address
-  const sellTokenAddressInvalid = sellCurrency && !sellCurrency.isNative && !isAddress(sellToken)
-  const buyTokenAddressInvalid = buyCurrency && !buyCurrency.isNative && !isAddress(buyToken)
+  const sellTokenAddressInvalid = sellCurrency && !sellCurrency.isNative && !isAddress(sellCurrencyId)
+  const buyTokenAddressInvalid = buyCurrency && !buyCurrency.isNative && !isAddress(buyCurrencyId)
 
   // Update if any parameter is changing
   useEffect(() => {
@@ -175,8 +174,8 @@ export default function FeesUpdater(): null {
     //  - it is a wrapping operation
     if (
       !chainId ||
-      !sellToken ||
-      !buyToken ||
+      !sellCurrencyId ||
+      !buyCurrencyId ||
       !typedValue ||
       !windowVisible ||
       sellTokenAddressInvalid ||
@@ -203,8 +202,8 @@ export default function FeesUpdater(): null {
 
     const quoteParams = {
       chainId,
-      sellToken,
-      buyToken,
+      sellToken: sellCurrencyId,
+      buyToken: buyCurrencyId,
       fromDecimals,
       toDecimals,
       kind,
@@ -228,8 +227,7 @@ export default function FeesUpdater(): null {
       }
     }
 
-    const unsupportedToken =
-      isUnsupportedTokenGp(sellToken.toLowerCase()) || isUnsupportedTokenGp(buyToken.toLowerCase())
+    const unsupportedToken = isUnsupportedTokenGp(sellCurrencyId) || isUnsupportedTokenGp(buyCurrencyId)
 
     // if there is no more unsupported token, and there was previously, we set last check back to null
     if (!unsupportedToken && lastUnsupportedCheck) {
@@ -276,8 +274,8 @@ export default function FeesUpdater(): null {
     windowVisible,
     isOnline,
     chainId,
-    sellToken,
-    buyToken,
+    sellCurrencyId,
+    buyCurrencyId,
     independentField,
     typedValue,
     sellCurrency,

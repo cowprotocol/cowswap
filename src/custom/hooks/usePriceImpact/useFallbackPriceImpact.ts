@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
 
 import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'
 import { FallbackPriceImpactParams } from './types'
@@ -11,7 +11,7 @@ import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
 import { useQuote } from 'state/price/hooks'
 import { useWeb3React } from '@web3-react/core'
-import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 
 type SwapParams = { abTrade?: TradeGp; sellToken?: string | null; buyToken?: string | null }
 
@@ -46,9 +46,8 @@ function _getBaTradeParsedAmount(abTrade: TradeGp | undefined, shouldCalculate: 
 
 export default function useFallbackPriceImpact({ abTrade, isWrapping }: FallbackPriceImpactParams) {
   const {
-    INPUT: { currencyId: sellToken },
-    OUTPUT: { currencyId: buyToken },
-  } = useSwapState()
+    currenciesIds: { INPUT: sellToken, OUTPUT: buyToken },
+  } = useDerivedSwapInfo()
 
   const { chainId } = useWeb3React()
   const lastQuote = useQuote({ token: sellToken, chainId })

@@ -1,10 +1,9 @@
 import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useDerivedSwapInfo, useDetectNativeToken, useSwapState } from 'state/swap/hooks'
-import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { useExpertModeManager } from 'state/user/hooks'
-import { useCloseModals, useToggleWalletModal } from 'state/application/hooks'
-import { useSwapConfirmManager } from 'cow-react/modules/swap/hooks/useSwapConfirmManager'
+import { useToggleWalletModal } from 'state/application/hooks'
+import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import { Field } from 'state/swap/actions'
 import { TradeType } from '@uniswap/sdk-core'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
@@ -15,56 +14,49 @@ import {
   useWrapUnwrapError,
 } from 'hooks/useWrapCallback'
 import { useCallback } from 'react'
-import { logSwapFlow } from 'cow-react/modules/swap/services/swapFlow/logger'
-import { swapFlow } from 'cow-react/modules/swap/services/swapFlow'
-import { useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
+import { logSwapFlow } from '@cow/modules/swap/services/swapFlow/logger'
+import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
-import { ApproveButtonsProps } from 'cow-react/modules/swap/containers/SwapButtons/ApproveButtons'
-import { getSwapButtonState } from 'cow-react/modules/swap/helpers/getSwapButtonState'
-import { SwapButtonsContext } from 'cow-react/modules/swap/containers/SwapButtons'
+import { getSwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
+import { SwapButtonsContext } from '@cow/modules/swap/pure/SwapButtons'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
-import { OperationType } from 'components/TransactionConfirmationModal'
-import { useTransactionConfirmModal } from 'cow-react/modules/swap/hooks/useTransactionConfirmModal'
-import { useSwapFlowContext } from 'cow-react/modules/swap/hooks/useSwapFlowContext'
+import { useSwapFlowContext } from '@cow/modules/swap/hooks/useSwapFlowContext'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
-  approvalSubmitted: boolean
   priceImpactParams: PriceImpact
-  setApprovalSubmitted(value: boolean): void
   openNativeWrapModal(): void
 }
 
 export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext {
-  const {
-    feeWarningAccepted,
-    impactWarningAccepted,
-    approvalSubmitted,
-    setApprovalSubmitted,
-    openNativeWrapModal,
-    priceImpactParams,
-  } = input
+  const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal, priceImpactParams } = input
 
   const { account, chainId } = useWeb3React()
   const { isSupportedWallet } = useWalletInfo()
-  const { v2Trade: trade, allowedSlippage, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
-  const transactionDeadline = useTransactionDeadline()
+  const {
+    v2Trade: trade,
+    allowedSlippage,
+    parsedAmount,
+    currencies,
+    currenciesIds,
+    inputError: swapInputError,
+  } = useDerivedSwapInfo()
+  const { typedValue } = useSwapState()
   const [isExpertMode] = useExpertModeManager()
-  const closeModals = useCloseModals()
   const toggleWalletModal = useToggleWalletModal()
   const { openSwapConfirmModal } = useSwapConfirmManager()
-  const { INPUT } = useSwapState()
-  const setTransactionConfirm = useTransactionConfirmModal()
   const swapFlowContext = useSwapFlowContext()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
 
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
-    token: INPUT.currencyId,
+    token: currenciesIds.INPUT,
     chainId,
   })
 
@@ -80,6 +72,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapCallback(wrapUnwrapAmount)
+  const inputAmount = tryParseCurrencyAmount(typedValue, currencyIn ?? undefined)
+  const approvalState = useTradeApproveState(inputAmount || null)
 
   const handleSwap = useCallback(() => {
     if (!swapFlowContext) return
@@ -89,34 +83,9 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   }, [swapFlowContext, priceImpactParams])
 
   const swapCallbackError = swapFlowContext ? null : 'Missing dependencies'
-  const isValid = !swapInputError && feeWarningAccepted && impactWarningAccepted // mod
-
-  const { approvalState, approve: approveCallback } = useApproveCallbackFromTrade({
-    openTransactionConfirmationModal(pendingText: string) {
-      setTransactionConfirm({ operationType: OperationType.APPROVE_TOKEN, pendingText })
-    },
-    closeModals,
-    trade,
-    allowedSlippage,
-    isNativeFlow: isNativeInSwap,
-  })
 
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
-
-  const approveButtonProps: ApproveButtonsProps = {
-    trade,
-    currencyIn,
-    allowedSlippage,
-    transactionDeadline,
-    isExpertMode,
-    handleSwap,
-    isValid,
-    approvalState,
-    approveCallback,
-    approvalSubmitted,
-    setApprovalSubmitted,
-  }
 
   const swapButtonState = getSwapButtonState({
     account,
@@ -131,7 +100,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     quoteError: quote?.error,
     inputError: swapInputError,
     approvalState,
-    approvalSubmitted,
     feeWarningAccepted,
     impactWarningAccepted,
     isGettingNewQuote,
@@ -141,7 +109,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   return {
     swapButtonState,
-    approveButtonProps,
+    inputAmount,
     chainId,
     wrappedToken,
     handleSwap,

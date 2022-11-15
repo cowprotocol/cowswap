@@ -1,5 +1,5 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { OrderID } from 'api/gnosisProtocol'
+import { OrderID } from '@cow/api/gnosisProtocol'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addOrUpdateOrders,

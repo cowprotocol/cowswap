@@ -20,7 +20,7 @@ import {
   RemoveGpUnsupportedTokenParams,
   removeGpUnsupportedToken,
 } from '../actions'
-import { UnsupportedToken } from 'api/gnosisProtocol'
+import { UnsupportedToken } from '@cow/api/gnosisProtocol'
 import { isAddress } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -250,7 +250,7 @@ export function useIsUnsupportedTokenFromLists() {
     (addressToCheck?: string) => {
       const checkSummedAddress = isAddress(addressToCheck)
 
-      if (!checkSummedAddress || !chainId || !allUnsupportedTokens[chainId][checkSummedAddress]) return false
+      if (!checkSummedAddress || !chainId || !allUnsupportedTokens[chainId]?.[checkSummedAddress]) return false
 
       const { address } = allUnsupportedTokens[chainId][checkSummedAddress].token
 

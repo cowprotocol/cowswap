@@ -1,12 +1,12 @@
 import { BoxProps, Text } from 'rebass'
 import styled, { DefaultTheme } from 'styled-components/macro'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { LowerSectionWrapper } from 'cow-react/modules/swap/pure/styled'
+import { LowerSectionWrapper } from '@cow/modules/swap/pure/styled'
 import { AutoRow } from 'components/Row'
 import { Trans } from '@lingui/macro'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
-import { StyledInfo } from 'pages/Swap/styleds'
+import { StyledInfo } from '../../pure/styled'
 
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme

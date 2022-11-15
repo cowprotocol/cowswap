@@ -20,13 +20,13 @@ import { OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import { OrderID } from 'api/gnosisProtocol'
+import { OrderID } from '@cow/api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import ms from 'ms.macro'
 import { openNpsAppziSometimes } from 'utils/appzi'
-import { timeSinceInSeconds } from 'utils/time'
+import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
 

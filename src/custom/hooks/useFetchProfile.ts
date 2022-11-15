@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
-import { getProfileData } from 'api/gnosisProtocol'
-import { ProfileData } from 'api/gnosisProtocol/api'
+import { getProfileData } from '@cow/api/gnosisProtocol'
+import { ProfileData } from '@cow/api/gnosisProtocol/api'
 
 type FetchProfileState = {
   profileData: ProfileData | null

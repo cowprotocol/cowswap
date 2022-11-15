@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-restricted-imports
-import { t, Trans } from '@lingui/macro'
+import { Trans } from '@lingui/macro'
 // import { Percent } from '@uniswap/sdk-core'
 // import { useWeb3React } from '@web3-react/core'
 // import { AUTO_ROUTER_SUPPORTED_CHAINS } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useCallback, useContext, useRef, useState } from 'react'
-import { Settings, X } from 'react-feather'
+import { Settings } from 'react-feather'
 // import ReactGA from 'react-ga4'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -13,9 +13,7 @@ import { useModalIsOpen, useToggleSettingsMenu } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'state/user/hooks'
 import { ThemedText } from 'theme'
-import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
-import Modal from 'components/Modal'
 import QuestionHelper from 'components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
@@ -29,6 +27,7 @@ import {
 
 // MOD imports
 import { SettingsTabProp } from '.'
+import { ExpertModeModal } from '@cow/common/pure/ExpertModeModal'
 
 export const StyledMenuIcon = styled(Settings)`
   height: 20px;
@@ -43,17 +42,17 @@ export const StyledMenuIcon = styled(Settings)`
   }
 `
 
-const StyledCloseIcon = styled(X)`
-  height: 20px;
-  width: 20px;
-  :hover {
-    cursor: pointer;
-  }
-
-  > * {
-    stroke: ${({ theme }) => theme.text1};
-  }
-`
+// const StyledCloseIcon = styled(X)`
+//   height: 20px;
+//   width: 20px;
+//   :hover {
+//     cursor: pointer;
+//   }
+//
+//   > * {
+//     stroke: ${({ theme }) => theme.text1};
+//   }
+// `
 
 export const StyledMenuButton = styled.button`
   position: relative;
@@ -109,20 +108,20 @@ export const MenuFlyout = styled.span`
   user-select: none;
 `
 
-const Break = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: ${({ theme }) => theme.bg3};
-`
-
-export const ModalContentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 0;
-  background-color: ${({ theme }) => theme.bg2};
-  border-radius: 20px;
-`
+// const Break = styled.div`
+//   width: 100%;
+//   height: 1px;
+//   background-color: ${({ theme }) => theme.bg3};
+// `
+//
+// const ModalContentWrapper = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 2rem 0;
+//   background-color: ${({ theme }) => theme.bg2};
+//   border-radius: 20px;
+// `
 
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
   // const { chainId } = useWeb3React()
@@ -170,7 +169,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
     <StyledMenu ref={node as any} className={className}>
-      <Modal isOpen={showConfirmation} onDismiss={() => setShowConfirmation(false)} maxHeight={100}>
+      {/* <Modal isOpen={showConfirmation} onDismiss={() => setShowConfirmation(false)} maxHeight={100}>
         <ModalContentWrapper>
           <AutoColumn gap="lg">
             <RowBetween style={{ padding: '0 2rem' }}>
@@ -209,7 +208,15 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
             </AutoColumn>
           </AutoColumn>
         </ModalContentWrapper>
-      </Modal>
+      </Modal> */}
+      <ExpertModeModal
+        isOpen={showConfirmation}
+        onDismiss={() => setShowConfirmation(false)}
+        onEnable={() => {
+          toggleExpertMode()
+          setShowConfirmation(false)
+        }}
+      />
       <SettingsButton expertMode={expertMode} toggleSettings={toggle} />
       {/* <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
         <StyledMenuIcon />

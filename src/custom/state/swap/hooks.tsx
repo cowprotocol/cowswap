@@ -18,9 +18,9 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isAddress } from 'utils'
 import { useCurrencyBalances } from 'state/connection/hooks'
 // import { AppState } from '../index'
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
+import { Field, replaceSwapState, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
-import { currencySelectAnalytics, changeSwapAmountAnalytics, switchTokensAnalytics } from 'components/analytics'
+import { changeSwapAmountAnalytics } from 'components/analytics'
 
 // MOD
 import { BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
@@ -46,6 +46,9 @@ import {
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AppState } from 'state'
+import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
+import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 
 export * from '@src/state/swap/hooks'
 
@@ -64,6 +67,7 @@ export interface SwapActions {
 
 interface DerivedSwapInfo {
   currencies: Currencies
+  currenciesIds: { [field in Field]?: string | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
   inputError?: string
@@ -72,25 +76,19 @@ interface DerivedSwapInfo {
 }
 
 export function useSwapActionHandlers(): SwapActions {
+  const { chainId } = useWeb3React()
   const dispatch = useAppDispatch()
-  const onCurrencySelection = useCallback(
-    (field: Field, currency: Currency) => {
-      currencySelectAnalytics(field, currency.symbol)
-
-      dispatch(
-        selectCurrency({
-          field,
-          currencyId: currency.isToken ? currency.address : currency.isNative ? 'ETH' : '',
-        })
-      )
-    },
-    [dispatch]
-  )
+  const onCurrencySelection = useOnCurrencySelection()
+  const navigate = useTradeNavigate()
+  const swapState = useSwapState()
 
   const onSwitchTokens = useCallback(() => {
-    switchTokensAnalytics()
+    const inputCurrencyId = swapState.INPUT.currencyId || null
+    const outputCurrencyId = swapState.OUTPUT.currencyId || null
+
+    navigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
     dispatch(switchCurrencies())
-  }, [dispatch])
+  }, [swapState, navigate, chainId, dispatch])
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
@@ -223,8 +221,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     recipient,
   } = useSwapState()
 
-  const inputCurrency = useCurrency(inputCurrencyId)
-  const outputCurrency = useCurrency(outputCurrencyId)
+  const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId)
+  const outputCurrency = useTokenBySymbolOrAddress(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
@@ -239,8 +237,26 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     [inputCurrency, isExactIn, outputCurrency, typedValue]
   )
 
+  const currencies: { [field in Field]?: Currency | null } = useMemo(
+    () => ({
+      [Field.INPUT]: inputCurrency,
+      [Field.OUTPUT]: outputCurrency,
+    }),
+    [inputCurrency, outputCurrency]
+  )
+
+  const currenciesIds: { [field in Field]?: string | null } = useMemo(
+    () => ({
+      [Field.INPUT]: currencies.INPUT?.isNative ? currencies.INPUT.symbol : currencies.INPUT?.address?.toLowerCase(),
+      [Field.OUTPUT]: currencies.OUTPUT?.isNative
+        ? currencies.OUTPUT.symbol
+        : currencies.OUTPUT?.address?.toLowerCase(),
+    }),
+    [currencies]
+  )
+
   const { quote } = useGetQuoteAndStatus({
-    token: inputCurrencyId,
+    token: currenciesIds.INPUT,
     chainId,
   })
 
@@ -277,14 +293,6 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       [Field.OUTPUT]: relevantTokenBalances[1],
     }),
     [relevantTokenBalances]
-  )
-
-  const currencies: { [field in Field]?: Currency | null } = useMemo(
-    () => ({
-      [Field.INPUT]: inputCurrency,
-      [Field.OUTPUT]: outputCurrency,
-    }),
-    [inputCurrency, outputCurrency]
   )
 
   // allowed slippage is either auto slippage, or custom user defined slippage if auto slippage disabled
@@ -334,15 +342,19 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   }, [account, allowedSlippage, currencies, currencyBalances, inputCurrency, parsedAmount, to, v2Trade]) // mod
 
   return useMemo(
-    () => ({
-      currencies,
-      currencyBalances,
-      parsedAmount,
-      inputError,
-      v2Trade: v2Trade ?? undefined, // mod
-      allowedSlippage,
-    }),
-    [allowedSlippage, currencies, currencyBalances, inputError, parsedAmount, v2Trade] // mod
+    () => {
+      return {
+        currencies,
+        currenciesIds,
+        currencyBalances,
+        parsedAmount,
+        inputError,
+        v2Trade: v2Trade ?? undefined, // mod
+        allowedSlippage,
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [allowedSlippage, currencyBalances, currenciesIds, inputError, parsedAmount, JSON.stringify(v2Trade)] // mod
   )
 }
 
@@ -481,8 +493,8 @@ export function useDetectNativeToken() {
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useSwapState()
 
-  const input = useCurrency(inputCurrencyId)
-  const output = useCurrency(outputCurrencyId)
+  const input = useTokenBySymbolOrAddress(inputCurrencyId)
+  const output = useTokenBySymbolOrAddress(outputCurrencyId)
 
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)

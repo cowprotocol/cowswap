@@ -6,7 +6,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { VCow as VCowType } from 'abis/types'
+import { VCow as VCowType } from '@cow/abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useWeb3React } from '@web3-react/core'
@@ -53,7 +53,7 @@ import {
   setIsTouched,
   setClaimsCount,
 } from '../actions'
-import { EnhancedUserClaimData } from 'pages/Claim/types'
+import { EnhancedUserClaimData } from '@cow/pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
@@ -63,8 +63,8 @@ import { CallState } from '@uniswap/redux-multicall'
 
 export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
-const CLAIMS_REPO_BRANCH = 'gip-13'
-export const CLAIMS_REPO = `https://raw.githubusercontent.com/gnosis/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
+const CLAIMS_REPO_BRANCH = 'main'
+export const CLAIMS_REPO = `https://raw.githubusercontent.com/cowprotocol/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`
 
 // Base amount = 1 VCOW
 const ONE_VCOW = CurrencyAmount.fromRawAmount(

@@ -3,13 +3,13 @@ import React, { ErrorInfo } from 'react'
 import styled from 'styled-components/macro'
 
 // MOD imports
-import Page from 'components/Page'
+import { Page } from '@cow/modules/application/pure/Page'
 import { MEDIA_WIDTHS } from '@src/theme'
 // import { UniIcon, LogoImage } from '../Header'
 import { UniIcon, LogoImage } from 'components/Header/styled' // mod
 import { HeaderRow } from 'components/Header/HeaderMod'
 import Footer from 'components/Footer'
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { sendError } from 'components/analytics'
 import { ChunkLoadError } from 'components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'components/ErrorBoundary/ErrorWithStackTrace'

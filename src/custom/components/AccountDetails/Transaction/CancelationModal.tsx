@@ -12,7 +12,7 @@ import {
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import { CancellationSummary } from './styled'
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 
 import { shortenOrderId } from 'utils'
 import { NavHashLink } from 'react-router-hash-link'

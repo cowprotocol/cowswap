@@ -1,4 +1,4 @@
-import { TradeRates, TradeRatesProps } from 'cow-react/modules/swap/pure/TradeRates/index'
+import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates/index'
 import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
@@ -23,6 +23,7 @@ const trade = new TradeGp({
 })
 const defaultProps: TradeRatesProps = {
   trade,
+  isWrapUnwrapMode: false,
   isExpertMode: false,
   allowsOffchainSigning: true,
   isFeeGreater: false,

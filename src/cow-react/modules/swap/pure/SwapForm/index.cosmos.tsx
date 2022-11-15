@@ -1,11 +1,12 @@
-import { SwapForm } from 'cow-react/modules/swap/pure/SwapForm/index'
-import { SwapFormProps } from 'cow-react/modules/swap/containers/NewSwapWidget/typings'
-import { defaultCurrencyInputPanelProps } from 'cow-react/common/pure/CurrencyInputPanel/defaultCurrencyInputProps'
+import { SwapForm } from '@cow/modules/swap/pure/SwapForm/index'
+import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
+import { defaultCurrencyInputPanelProps } from '@cow/common/pure/CurrencyInputPanel/defaultCurrencyInputProps'
 import { GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { Percent } from '@uniswap/sdk-core'
 
 const defaultProps: SwapFormProps = {
+  chainId: 1,
   recipient: '0x000',
   allowedSlippage: new Percent(12, 10_000),
   isTradePriceUpdating: false,

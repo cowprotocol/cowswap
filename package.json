@@ -160,7 +160,7 @@
     "serve:ci": "serve website -l 3000",
     "cypress": "cypress open",
     "contracts:add:export": "node ./scripts/contracts_add_export.js",
-    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/custom/abis/types './src/custom/abis/**/*.json'",
+    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/cow-react/abis/types './src/cow-react/abis/**/*.json'",
     "contracts:compile:abi-uniswap": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
     "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:add:export && yarn contracts:compile:abi-uniswap && yarn contracts:compile:v3",
@@ -182,6 +182,7 @@
   },
   "jest": {
     "moduleNameMapper": {
+      "@cow/(.*)": "<rootDir>/src/cow-react/$1",
       "@src/(.*)": "<rootDir>/src/$1"
     }
   },

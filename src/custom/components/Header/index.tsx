@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { Routes } from 'constants/routes'
+import { Routes } from '@cow/constants/routes'
 import { useHistory } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'
@@ -25,7 +25,6 @@ import {
   HeaderControls,
   HeaderElement,
 } from './styled'
-import { MenuTree } from './MenuTree'
 import MobileMenuIcon from './MobileMenuIcon'
 import Web3Status from 'components/Web3Status'
 import OrdersPanel from 'components/OrdersPanel'
@@ -34,6 +33,10 @@ import CowBalanceButton from 'components/CowBalanceButton'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
+import { useSwapTradeState, useTradeState } from '@cow/modules/trade/hooks/useTradeState'
+import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
+import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -64,6 +67,8 @@ export default function Header() {
     toggleDarkModeAnalytics(!darkMode)
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
+  const swapState = useSwapTradeState()
+  const tradeState = useTradeState()
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const handleOpenOrdersPanel = () => {
@@ -86,6 +91,24 @@ export default function Header() {
     isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
   }, [isUpToLarge, isMobileMenuOpen])
 
+  const tradeMenuContext = useMemo(() => {
+    const state = tradeState?.state || swapState
+    const defaultTradeState = getDefaultTradeState(state.chainId || chainId || null)
+
+    return {
+      inputCurrencyId: state.inputCurrencyId || defaultTradeState.inputCurrencyId || undefined,
+      outputCurrencyId: state.outputCurrencyId || defaultTradeState.outputCurrencyId || undefined,
+      chainId: defaultTradeState.chainId?.toString(),
+    }
+  }, [chainId, tradeState?.state, swapState])
+
+  const menuContext: MainMenuContext = {
+    darkMode,
+    toggleDarkMode,
+    handleMobileMenuOnClick,
+    tradeContext: tradeMenuContext,
+  }
+
   // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
   // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
   useEffect(() => {
@@ -101,12 +124,7 @@ export default function Header() {
               <LogoImage isMobileMenuOpen={isMobileMenuOpen} />
             </UniIcon>
           </Title>
-          <MenuTree
-            isMobileMenuOpen={isMobileMenuOpen}
-            darkMode={darkMode}
-            toggleDarkMode={toggleDarkMode}
-            handleMobileMenuOnClick={handleMobileMenuOnClick}
-          />
+          <MenuTree items={MAIN_MENU} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
         </HeaderRow>
 
         <HeaderControls>
