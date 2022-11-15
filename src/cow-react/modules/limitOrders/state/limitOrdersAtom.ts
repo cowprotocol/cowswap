@@ -12,6 +12,7 @@ export interface LimitOrdersState {
   readonly outputCurrencyAmount: string | null
   readonly recipient: string | null
   readonly orderKind: OrderKind
+  readonly isUnlocked: boolean
 }
 
 export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): LimitOrdersState {
@@ -21,6 +22,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
     outputCurrencyAmount: null,
     recipient: null,
     orderKind: OrderKind.SELL,
+    isUnlocked: false,
   }
 }
 
