@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 
-export const PageWrapper = styled.div`
-  width: 100%;
+export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
+  width: ${({ isUnlocked }) => (isUnlocked ? '100%' : '460px')};
   max-width: ${MEDIA_WIDTHS.upToLarge}px;
-  display: grid;
+  display: ${({ isUnlocked }) => (isUnlocked ? 'grid' : 'block')};
   grid-template-columns: 480px 1fr;
   grid-column-gap: 20px;
 
