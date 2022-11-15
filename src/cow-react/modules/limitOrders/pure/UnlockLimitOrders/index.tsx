@@ -50,6 +50,7 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
       </styledEl.BodySection>
 
       <styledEl.ControlSection>
+        {/* TODO: update href with a correct external link */}
         <ExternalLink href={'https://www.google.com'}>Learn more about limit orders ↗</ExternalLink>
         <ButtonPrimary onClick={handleUnlock}>Unlock limit orders (BETA)</ButtonPrimary>
       </styledEl.ControlSection>

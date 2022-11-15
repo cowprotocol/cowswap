@@ -124,7 +124,7 @@ export function LimitOrdersWidget() {
         <styledEl.ContainerBox>
           <styledEl.Header>
             <TradeWidgetLinks />
-            <SettingsWidget />
+            {isUnlocked && <SettingsWidget />}
           </styledEl.Header>
 
           {isUnlocked ? (
