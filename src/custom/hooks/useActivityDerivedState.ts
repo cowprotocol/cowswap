@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
-import { Order } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { getEtherscanLink } from 'utils'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { ActivityDescriptors, ActivityStatus, ActivityType, useSingleActivityDescriptor } from 'hooks/useRecentActivity'
@@ -99,16 +99,21 @@ function getActivityLinkUrl(params: {
     const { transactionHash, safeTransaction } = enhancedTransaction
 
     if (transactionHash) {
-      // Is an Ethereum transaction: Etherscan link
+      // It's an Ethereum transaction: Etherscan link
       return getEtherscanLink(chainId, transactionHash, 'transaction')
     } else if (safeTransaction && safeTransaction) {
-      // Its a safe transaction: Gnosis Safe Web link
+      // It's a safe transaction: Gnosis Safe Web link
       const { safe } = safeTransaction
       return getSafeWebUrl(chainId, safe) ?? undefined
     }
   } else if (order) {
-    // Its an order: GP Explorer link
-    return getExplorerOrderLink(chainId, id)
+    if (order.orderCreationHash && order.status === OrderStatus.CREATING) {
+      // It's a EthFlow transaction: Etherscan link
+      return getEtherscanLink(chainId, order.orderCreationHash, 'transaction')
+    } else {
+      // It's an order: GP Explorer link
+      return getExplorerOrderLink(chainId, id)
+    }
   }
 
   return undefined
