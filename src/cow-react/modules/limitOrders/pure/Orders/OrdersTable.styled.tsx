@@ -23,6 +23,7 @@ export const Header = styled.div`
   grid-gap: 10px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   border-bottom: 2px solid ${({ theme }) => theme.border2};
+  align-items: center;
 
   > div {
     padding: 12px;

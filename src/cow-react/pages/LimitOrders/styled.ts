@@ -8,6 +8,10 @@ export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   grid-template-columns: 480px 1fr;
   grid-column-gap: 20px;
 
+  > div:last-child {
+    display: ${({ isUnlocked }) => (isUnlocked ? '' : 'none')};
+  }
+
   ${({ theme }) => theme.mediaWidth.upToLarge`
     display: flex;
     flex-direction: column;

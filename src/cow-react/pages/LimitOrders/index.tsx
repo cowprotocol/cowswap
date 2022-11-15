@@ -22,7 +22,7 @@ export default function LimitOrderPage() {
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.Column>
           <LimitOrdersWidget />
-          <InfoPopup />
+          {isUnlocked && <InfoPopup />}
         </styledEl.Column>
 
         {/*TODO: temporary hidden right part of the page until it's ready*/}
