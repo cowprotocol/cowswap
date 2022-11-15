@@ -25,11 +25,9 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
   const { chainId } = useWeb3React()
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
   const navigate = useTradeNavigate()
+  const { inputCurrencyId, outputCurrencyId } = state || {}
 
   useEffect(() => {
-    if (!state) return
-
-    const { inputCurrencyId, outputCurrencyId } = state
     const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)
     const outputCurrencyIsDoubled = checkTokensWithSameSymbol(outputCurrencyId)
 
@@ -37,7 +35,10 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
       const doubledSymbol = inputCurrencyIsDoubled ? inputCurrencyId : outputCurrencyId
 
       // TODO: add UI modal instead of alert
-      alert(alertMessage(doubledSymbol || ''))
+      // Show alert in 500ms to avoid glitch with transparent Import token modal
+      setTimeout(() => {
+        alert(alertMessage(doubledSymbol || ''))
+      }, 500)
 
       const defaultState = getDefaultTradeState(chainId)
       navigate(chainId, {
@@ -45,5 +46,5 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
         outputCurrencyId: defaultState.outputCurrencyId,
       })
     }
-  }, [navigate, checkTokensWithSameSymbol, chainId, state])
+  }, [navigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
 }

@@ -113,6 +113,7 @@ export function NewSwapWidget() {
   })
 
   const swapFormProps: SwapFormProps = {
+    chainId,
     recipient,
     allowedSlippage,
     isTradePriceUpdating,
@@ -177,6 +178,7 @@ export function NewSwapWidget() {
     userAllowedSlippage,
     isFeeGreater,
     fee,
+    isWrapUnwrapMode,
     discount: subsidyAndBalance.subsidy.discount || 0,
   }
 

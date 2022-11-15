@@ -1,8 +1,8 @@
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { atom } from 'jotai'
 import { OrderKind } from '@cowprotocol/contracts'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 export interface LimitOrdersState {
   readonly chainId: number | null
@@ -16,9 +16,7 @@ export interface LimitOrdersState {
 
 export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): LimitOrdersState {
   return {
-    chainId,
-    inputCurrencyId: chainId ? WETH[chainId]?.symbol || null : null,
-    outputCurrencyId: null,
+    ...getDefaultTradeState(chainId),
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
     recipient: null,
