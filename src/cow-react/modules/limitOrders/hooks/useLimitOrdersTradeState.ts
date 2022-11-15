@@ -24,6 +24,7 @@ export interface LimitOrdersTradeState {
   readonly recipient: string | null
   readonly deadlineTimestamp: Timestamp | null
   readonly orderKind: OrderKind
+  readonly isUnlocked: boolean
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
@@ -33,6 +34,7 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
 
   const recipient = state.recipient
   const orderKind = state.orderKind
+  const isUnlocked = state.isUnlocked
   const deadlineTimestamp = settingsState.customDeadlineTimestamp
     ? settingsState.customDeadlineTimestamp
     : calculateValidTo(settingsState.deadlineMilliseconds / 1000)
@@ -60,5 +62,6 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
     outputCurrencyBalance,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
+    isUnlocked,
   })
 }
