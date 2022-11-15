@@ -17,6 +17,7 @@ const PILL_COLOUR_MAP = {
   CONFIRMED: 'success',
   PENDING_ORDER: 'pending',
   PRESIGNATURE_PENDING: 'pending',
+  CREATING: 'pending',
   PENDING_TX: 'pending',
   EXPIRED_ORDER: 'attention',
   CANCELLED_ORDER: 'attention',
@@ -39,6 +40,8 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
       return PILL_COLOUR_MAP.CANCELLING_ORDER
     case ActivityStatus.CANCELLED:
       return PILL_COLOUR_MAP.CANCELLED_ORDER
+    case ActivityStatus.CREATING:
+      return PILL_COLOUR_MAP.CREATING
   }
 }
 
@@ -63,6 +66,11 @@ export interface ActivityDerivedState {
   isPresignaturePending: boolean
   isUnfillable?: boolean
   isCancellable: boolean
+  // EthFlow flags
+  isCreating: boolean
+  isRefunding: boolean
+  isRefunded: boolean
+  // TODO: refactor these convenience flags
 
   // Possible activity types
   enhancedTransaction?: EnhancedTransactionDetails

@@ -74,6 +74,9 @@ function getActivityDerivedState(props: {
     isCancelled: status === ActivityStatus.CANCELLED,
     isCancellable,
     isUnfillable: isCancellable && (activity as Order).isUnfillable,
+    isCreating: status === ActivityStatus.CREATING,
+    isRefunding: false, // TODO: wire up refunding/refunded states
+    isRefunded: order?.isRefunded || false,
 
     // Convenient casting
     order,
@@ -121,6 +124,9 @@ type ActivityState =
   | 'pending'
   | 'signing'
   | 'cancelling'
+  | 'creating'
+  | 'refunding'
+  | 'refunded'
 
 export function getActivityState({
   isPending,
@@ -130,6 +136,9 @@ export function getActivityState({
   isCancelling,
   isPresignaturePending,
   isCancelled,
+  isCreating,
+  isRefunding,
+  isRefunded,
   enhancedTransaction,
 }: ActivityDerivedState): ActivityState {
   if (isPending) {
@@ -162,6 +171,18 @@ export function getActivityState({
 
   if (isCancelled) {
     return 'cancelled'
+  }
+
+  if (isCreating) {
+    return 'creating'
+  }
+
+  if (isRefunding) {
+    return 'refunding'
+  }
+
+  if (isRefunded) {
+    return 'refunded'
   }
 
   return 'open'
