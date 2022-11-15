@@ -15,6 +15,7 @@ export enum OrderStatus {
   EXPIRED = 'expired',
   CANCELLED = 'cancelled',
   CREATING = 'creating',
+  // TODO: not sure all of those states will be exposed by the backend
   REJECTED = 'rejected',
   REFUNDING = 'refunding',
   REFUNDED = 'refunded',
