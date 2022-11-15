@@ -32,7 +32,7 @@ const SideBar = styled.div`
   background: ${({ theme }) => theme.bg1};
   scrollbar-color: ${({ theme }) => `${transparentize(0.5, theme.text1)} ${theme.bg1}`};
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`    
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
     height: 100%;
     max-width: 100%;
@@ -71,7 +71,7 @@ const SidebarBackground = styled.div`
   background: ${({ theme }) => transparentize(0.1, theme.black)};
   backdrop-filter: blur(3px);
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`    
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `};
 `
@@ -150,16 +150,25 @@ export default function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps
   // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
   const allRecentActivity = useRecentActivity()
 
-  const { pendingActivity, confirmedActivity } = useMemo(() => {
-    // Separate the array into 2: PENDING and FULFILLED(or CONFIRMED)+EXPIRED
-    const pendingActivity = allRecentActivity.filter(isPending).map((data) => data.id)
-    const confirmedActivity = allRecentActivity.filter(isConfirmed).map((data) => data.id)
+  const [pendingActivity, confirmedActivity] = useMemo(
+    () =>
+      // Separate the array into 2: transitory (pending) and final (confirmed) states
+      allRecentActivity.reduce<[string[], string[]]>(
+        (acc, activity) => {
+          if (isPending(activity)) {
+            acc[0].push(activity.id)
+          } else if (isConfirmed(activity)) {
+            acc[1].push(activity.id)
+          }
+          return acc
+        },
+        [[], []]
+      ),
 
-    return {
-      pendingActivity,
-      confirmedActivity,
-    }
-  }, [allRecentActivity])
+    // Reducing unnecessary re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(allRecentActivity)]
+  )
 
   const { active, ensName } = walletInfo
   const ENSName = ensName
