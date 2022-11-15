@@ -11,9 +11,9 @@ export interface OrdersTableProps {
 }
 
 const orderStatusTitleMap: { [key in OrderStatus]: string } = {
-  [OrderStatus.PENDING]: 'Pending',
+  [OrderStatus.PENDING]: 'Open',
   [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
-  [OrderStatus.FULFILLED]: 'Fulfilled',
+  [OrderStatus.FULFILLED]: 'Filled',
   [OrderStatus.EXPIRED]: 'Expired',
   [OrderStatus.CANCELLED]: 'Canceled',
 }
