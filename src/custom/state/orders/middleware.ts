@@ -61,9 +61,21 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     let popup: PopupPayload
     if (isPendingOrderAction(action)) {
-      // Pending Order Popup
-      popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
-      orderAnalytics('Posted', 'Offchain')
+      const hash = orderObject.order.orderCreationHash
+      if (hash) {
+        // EthFlow Order
+        popup = setPopupData(OrderTxTypes.TXN, {
+          summary,
+          status: 'submitted',
+          id: hash,
+          hash,
+        })
+        orderAnalytics('Posted', 'EthFlow')
+      } else {
+        // Pending Order Popup
+        popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
+        orderAnalytics('Posted', 'Offchain')
+      }
     } else if (isPresignOrders(action)) {
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'presigned', id })
       orderAnalytics('Posted', 'Pre-Signed')
