@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 import { RateImpactWarning } from '@cow/modules/limitOrders/pure/RateImpactWarning'
+import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
 
 export const Container = styled.div`
   // max-width: 460px;
@@ -49,12 +50,8 @@ export const RateWrapper = styled.div`
   display: flex;
 `
 
-export const RateInfoWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 15px 8px 0 8px;
-  font-size: 14px;
+export const StyledRateInfo = styled(RateInfo)`
+  margin-top: 15px;
 `
 
 export const StyledRateImpactWarning = styled(RateImpactWarning)`

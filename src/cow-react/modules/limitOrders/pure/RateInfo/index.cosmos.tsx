@@ -2,11 +2,15 @@ import { RateInfo } from './index'
 import { DAI_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
+const inputCurrency = WETH_GOERLI
+const outputCurrency = DAI_GOERLI
+
 const activeRateDisplay = {
-  inputActiveRateCurrency: WETH_GOERLI,
-  outputActiveRateCurrency: DAI_GOERLI,
-  currentActiveRate: new Fraction(20000000000, 1000000),
-  currentActiveRateFiatAmount: CurrencyAmount.fromRawAmount(DAI_GOERLI, 45000000000),
+  inputCurrency,
+  outputCurrency,
+  activeRate: new Fraction(50000000, 20000000),
+  activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
+  inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
 const Fixtures = {

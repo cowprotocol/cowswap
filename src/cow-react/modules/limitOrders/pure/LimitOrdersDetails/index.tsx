@@ -4,7 +4,6 @@ import * as styledEl from './styled'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { isAddress, shortenAddress } from 'utils'
 import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
-import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
 
 export interface LimitOrdersDetailsProps {
   activeRateDisplay: ActiveRateDisplay
@@ -27,12 +26,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   return (
     <div>
       <styledEl.DetailsRow>
-        <div>
-          <span>Limit Price</span> <InfoIcon content={'Limit price info TODO'} />
-        </div>
-        <div>
-          <RateInfo activeRateDisplay={props.activeRateDisplay} />
-        </div>
+        <styledEl.StyledRateInfo activeRateDisplay={props.activeRateDisplay} />
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
