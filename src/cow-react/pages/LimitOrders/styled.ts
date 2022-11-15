@@ -16,6 +16,7 @@ export const PageWrapper = styled.div`
 export const PrimaryWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
+  gap: 16px;
 `
 
 // Graph + orders table

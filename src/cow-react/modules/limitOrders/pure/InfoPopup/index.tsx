@@ -1,6 +1,7 @@
 import * as styledEl from './styled'
-import { AlertTriangle } from 'react-feather'
 import { useState } from 'react'
+import AlertIcon from 'assets/cow-swap/alert-circle.svg'
+import SVG from 'react-inlinesvg'
 
 const localStorageKey = 'LimitOrdersInfoPopupShown'
 
@@ -16,8 +17,9 @@ export function InfoPopup() {
   return (
     <styledEl.InfoPopup>
       <div>
-        <AlertTriangle size={32} />
+        <SVG src={AlertIcon} />
       </div>
+
       <div>
         Your limit price might not be exactly filled, even if the market price on the chart matches your limit order
         price. <a href="TODO">Learn more</a>
