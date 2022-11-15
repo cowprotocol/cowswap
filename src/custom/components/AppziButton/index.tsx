@@ -5,7 +5,7 @@ import SVG from 'react-inlinesvg'
 import { transparentize } from 'polished'
 
 const Wrapper = styled.div`
-  background: ${({ theme }) => transparentize(0.5, theme.bg2)};
+  background: ${({ theme }) => transparentize(0.3, theme.bg2)};
   backdrop-filter: blur(5px);
   border: 0;
   border-radius: 46px;
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   bottom: 46px;
   right: 21px;
   overflow: visible;
-  z-index: 2;
+  z-index: 10;
   cursor: pointer;
   transform: translateY(0);
   transition: background 0.5s ease-in-out, transform 0.5s ease-in-out;
@@ -29,7 +29,7 @@ const Wrapper = styled.div`
     height: 100%;
     padding: 8px;
     object-fit: contain;
-    fill: ${({ theme }) => transparentize(0.3, theme.white)};
+    fill: ${({ theme }) => transparentize(0.2, theme.white)};
     transform: rotate(0);
     transition: fill 0.5s ease-in-out, transform 0.5s ease-in-out;
   }
