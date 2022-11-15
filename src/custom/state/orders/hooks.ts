@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'state'
@@ -7,22 +7,16 @@ import {
   addOrUpdateOrders,
   AddOrUpdateOrdersParams,
   addPendingOrder,
-  cancelOrder,
   cancelOrdersBatch,
-  clearOrders,
-  expireOrder,
   expireOrdersBatch,
-  fulfillOrder,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   Order,
   preSignOrders,
-  removeOrder,
   requestOrderCancellation,
   SerializedOrder,
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
-  updateLastCheckedBlock,
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
 } from './actions'
@@ -39,7 +33,6 @@ import {
 } from './reducer'
 import { isTruthy } from 'utils/misc'
 import { OrderID } from '@cow/api/gnosisProtocol'
-import { ContractDeploymentBlocks } from './consts'
 import { deserializeToken, serializeToken } from 'state/user/hooks'
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
@@ -54,10 +47,6 @@ interface AddPendingOrderParams extends GetRemoveOrderParams {
   order: SerializedOrder
 }
 
-interface FulfillOrderParams extends GetRemoveOrderParams {
-  fulfillmentTime: string
-  transactionHash: string
-}
 interface GetRemoveOrderParams {
   id: OrderID
   chainId: ChainId
@@ -68,9 +57,6 @@ type GetOrdersByIdParams = {
 }
 
 type GetOrdersParams = Partial<Pick<GetRemoveOrderParams, 'chainId'>>
-type ClearOrdersParams = Pick<GetRemoveOrderParams, 'chainId'>
-type GetLastCheckedBlockParams = GetOrdersParams
-type ExpireOrderParams = GetRemoveOrderParams
 type CancelOrderParams = GetRemoveOrderParams
 interface UpdateOrdersBatchParams {
   ids: OrderID[]
@@ -81,16 +67,9 @@ type ExpireOrdersBatchParams = UpdateOrdersBatchParams
 type CancelOrdersBatchParams = UpdateOrdersBatchParams
 type PresignOrdersParams = UpdateOrdersBatchParams
 
-interface UpdateLastCheckedBlockParams extends ClearOrdersParams {
-  lastCheckedBlock: number
-}
-
 export type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersParams) => void
 export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
-export type RemoveOrderCallback = (removeOrderParams: GetRemoveOrderParams) => void
-export type FulfillOrderCallback = (fulfillOrderParams: FulfillOrderParams) => void
 export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
-export type ExpireOrderCallback = (fulfillOrderParams: ExpireOrderParams) => void
 export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
 export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
@@ -98,11 +77,7 @@ export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) =>
 export type UpdatePresignGnosisSafeTxCallback = (
   updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams
 ) => void
-export type ClearOrdersCallback = (clearOrdersParams: ClearOrdersParams) => void
-export type UpdateLastCheckedBlockCallback = (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) => void
 export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
-
-export type GetOrderByIdCallback = (id: OrderID) => SerializedOrder | undefined
 
 function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
@@ -172,32 +147,6 @@ function useOrdersStateNetwork(chainId: ChainId | undefined): OrdersStateNetwork
     const ordersState = state.orders?.[chainId] || {}
     return { ...getDefaultNetworkState(chainId), ...ordersState }
   })
-}
-
-// used to extract Order.summary before showing popup
-// TODO: put the whole logic inside Popup middleware
-export const useFindOrderById = ({ chainId }: GetOrdersParams): GetOrderByIdCallback => {
-  const state = useOrdersStateNetwork(chainId)
-
-  // stable ref, so we don't recreate the function
-  const stateRef = useRef(state)
-  stateRef.current = state
-
-  // stable ref so that we don't refresh useEffect too much
-  // as we need to get an order lazily before creating a popup only
-  return useCallback(
-    (id: OrderID) => {
-      if (!chainId || !stateRef.current) return
-
-      const orders = { ...ORDERS_LIST, ...stateRef.current }
-
-      const serialisedOrderObject =
-        orders.fulfilled[id] || orders.pending[id] || orders.expired[id] || orders.cancelled[id]
-
-      return _deserializeOrder(serialisedOrderObject)
-    },
-    [chainId]
-  )
 }
 
 export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
@@ -291,30 +240,6 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
   }, [state])
 }
 
-export const useFulfilledOrders = ({ chainId }: GetOrdersParams): Order[] => {
-  const state = useSelector<AppState, PartialOrdersMap | undefined>(
-    (state) => chainId && state.orders?.[chainId]?.fulfilled
-  )
-
-  return useMemo(() => {
-    if (!state) return []
-
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
-  }, [state])
-}
-
-export const useExpiredOrders = ({ chainId }: GetOrdersParams): Order[] => {
-  const state = useSelector<AppState, PartialOrdersMap | undefined>(
-    (state) => chainId && state.orders?.[chainId]?.expired
-  )
-
-  return useMemo(() => {
-    if (!state) return []
-
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
-  }, [state])
-}
-
 export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
     (state) => chainId && state.orders?.[chainId]?.cancelled
@@ -363,12 +288,6 @@ export const useAddPendingOrder = (): AddOrderCallback => {
   )
 }
 
-// unused except in mock
-export const useFulfillOrder = (): FulfillOrderCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback((fulfillOrderParams: FulfillOrderParams) => dispatch(fulfillOrder(fulfillOrderParams)), [dispatch])
-}
-
 export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
@@ -390,22 +309,12 @@ export const useUpdatePresignGnosisSafeTx = (): UpdatePresignGnosisSafeTxCallbac
   )
 }
 
-export const useExpireOrder = (): ExpireOrderCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback((expireOrderParams: ExpireOrderParams) => dispatch(expireOrder(expireOrderParams)), [dispatch])
-}
-
 export const useExpireOrdersBatch = (): ExpireOrdersBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (expireOrdersBatchParams: ExpireOrdersBatchParams) => dispatch(expireOrdersBatch(expireOrdersBatchParams)),
     [dispatch]
   )
-}
-
-export const useCancelPendingOrder = (): CancelOrderCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback((cancelOrderParams: CancelOrderParams) => dispatch(cancelOrder(cancelOrderParams)), [dispatch])
 }
 
 export const useCancelOrdersBatch = (): CancelOrdersBatchCallback => {
@@ -420,33 +329,6 @@ export const useRequestOrderCancellation = (): CancelOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (cancelOrderParams: CancelOrderParams) => dispatch(requestOrderCancellation(cancelOrderParams)),
-    [dispatch]
-  )
-}
-
-export const useRemoveOrder = (): RemoveOrderCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback((removeOrderParams: GetRemoveOrderParams) => dispatch(removeOrder(removeOrderParams)), [dispatch])
-}
-
-export const useClearOrders = (): ClearOrdersCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback((clearOrdersParams: ClearOrdersParams) => dispatch(clearOrders(clearOrdersParams)), [dispatch])
-}
-
-export const useLastCheckedBlock = ({ chainId }: GetLastCheckedBlockParams): number => {
-  return useSelector<AppState, number>((state) => {
-    if (!chainId) return 0
-
-    return state.orders?.[chainId]?.lastCheckedBlock ?? ContractDeploymentBlocks[chainId] ?? 0
-  })
-}
-
-export const useUpdateLastCheckedBlock = (): UpdateLastCheckedBlockCallback => {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback(
-    (updateLastCheckedBlockParams: UpdateLastCheckedBlockParams) =>
-      dispatch(updateLastCheckedBlock(updateLastCheckedBlockParams)),
     [dispatch]
   )
 }
