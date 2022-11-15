@@ -250,7 +250,7 @@ export function useIsUnsupportedTokenFromLists() {
     (addressToCheck?: string) => {
       const checkSummedAddress = isAddress(addressToCheck)
 
-      if (!checkSummedAddress || !chainId || !allUnsupportedTokens[chainId][checkSummedAddress]) return false
+      if (!checkSummedAddress || !chainId || !allUnsupportedTokens[chainId]?.[checkSummedAddress]) return false
 
       const { address } = allUnsupportedTokens[chainId][checkSummedAddress].token
 

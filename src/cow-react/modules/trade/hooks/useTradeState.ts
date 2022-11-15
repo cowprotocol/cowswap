@@ -61,5 +61,15 @@ export function useTradeState(): { state: TradeState; updateState: (state: Trade
       state: limitOrdersState,
       updateState: updateLimitOrdersState,
     }
-  }, [tradeTypeInfo, updateSwapState, limitOrdersState, updateLimitOrdersState, swapTradeState])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(tradeTypeInfo),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(limitOrdersState),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(swapTradeState),
+    updateSwapState,
+    updateLimitOrdersState,
+  ])
 }

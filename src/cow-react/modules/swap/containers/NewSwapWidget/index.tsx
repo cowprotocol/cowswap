@@ -113,6 +113,7 @@ export function NewSwapWidget() {
   })
 
   const swapFormProps: SwapFormProps = {
+    chainId,
     recipient,
     allowedSlippage,
     isTradePriceUpdating,

@@ -20,6 +20,7 @@ export interface LimitOrdersTradeState {
   readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
   readonly orderKind: OrderKind
+  readonly isUnlocked: boolean
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
@@ -28,6 +29,7 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
 
   const recipient = state.recipient
   const orderKind = state.orderKind
+  const isUnlocked = state.isUnlocked
 
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
@@ -51,5 +53,6 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
     outputCurrencyBalance,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
+    isUnlocked,
   })
 }
