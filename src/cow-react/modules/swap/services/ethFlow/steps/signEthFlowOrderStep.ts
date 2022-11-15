@@ -11,6 +11,7 @@ import { getDomain, UnsignedOrder } from 'utils/signatures'
 import { Order } from 'state/orders/actions'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -33,6 +34,7 @@ export async function signEthFlowOrderStep(
   ethFlowContract: CoWSwapEthFlow
 ): Promise<EthFlowResponse> {
   logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
+  const { chainId } = orderParams
 
   const { order, quoteId, summary } = getOrderParams(orderParams)
 
@@ -66,7 +68,11 @@ export async function signEthFlowOrderStep(
 
   const domain = getDomain(orderParams.chainId)
   // Different validTo when signing because EthFlow contract expects it to be max for all orders
-  const orderDigest = hashOrder(domain, { ...order, validTo: MAX_VALID_TO_EPOCH })
+  const orderDigest = hashOrder(domain, {
+    ...order,
+    validTo: MAX_VALID_TO_EPOCH,
+    sellToken: WRAPPED_NATIVE_CURRENCY[chainId].address,
+  })
   // Generate the orderId from owner, orderDigest, and max validTo
   const orderId = packOrderUidParams({
     orderDigest,
