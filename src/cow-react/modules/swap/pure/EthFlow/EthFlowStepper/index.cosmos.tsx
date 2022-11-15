@@ -110,28 +110,6 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[EXPIRED] Expired+Creating: ????',
-    props: {
-      ...defaultProps,
-      order: {
-        ...defaultOrderProps,
-        state: SmartOrderStatus.CREATING,
-        isExpired: true,
-      },
-    },
-  },
-  {
-    description: '[EXPIRED] Expired+Created: ????',
-    props: {
-      ...defaultProps,
-      order: {
-        ...defaultOrderProps,
-        state: SmartOrderStatus.CREATION_MINED,
-        isExpired: true,
-      },
-    },
-  },
-  {
     description: '[REJECTED] 1. Just Rejected',
     props: {
       ...defaultProps,
@@ -172,18 +150,7 @@ const STEPS: Step[] = [
       },
     },
   },
-  {
-    description: `[REJECTED] Rejected+Expired: Rejected Wins`,
-    props: {
-      ...defaultProps,
-      order: {
-        ...defaultOrderProps,
-        state: SmartOrderStatus.INDEXED,
-        rejectedReason: ORDER_REJECTED_REASON,
-        isExpired: true,
-      },
-    },
-  },
+
   {
     description: '[CANCEL] 1. Open and Canceling',
     props: {
@@ -191,7 +158,6 @@ const STEPS: Step[] = [
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
-        rejectedReason: ORDER_REJECTED_REASON,
       },
       cancelation: {
         cancelationTx: TX,
@@ -206,7 +172,6 @@ const STEPS: Step[] = [
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
-        rejectedReason: ORDER_REJECTED_REASON,
       },
       cancelation: {
         cancelationTx: TX,
@@ -215,13 +180,56 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL] Cancelling+Expired: Cancelled wins',
+    description: `[REJECTED+EXPIRED] 1. Just Rejected`,
     props: {
       ...defaultProps,
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
         rejectedReason: ORDER_REJECTED_REASON,
+        isExpired: true,
+      },
+    },
+  },
+  {
+    description: `[REJECTED+EXPIRED] 2. Refunding`,
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
+        isExpired: true,
+      },
+      refund: {
+        refundTx: TX,
+        isRefunded: false,
+      },
+    },
+  },
+  {
+    description: `[REJECTED+EXPIRED] 3. Refunded`,
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        rejectedReason: ORDER_REJECTED_REASON,
+        isExpired: true,
+      },
+      refund: {
+        refundTx: TX,
+        isRefunded: true,
+      },
+    },
+  },
+  {
+    description: '[CANCEL+EXPIRED] 1. Expired and Canceling',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
       cancelation: {
@@ -231,7 +239,22 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL+REFUND] Cancelling+Refunding',
+    description: '[CANCEL+EXPIRED] 2. Expired and Canceled',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        isExpired: true,
+      },
+      cancelation: {
+        cancelationTx: TX,
+        isCanceled: true,
+      },
+    },
+  },
+  {
+    description: '[CANCEL+REFUND] Cancelling... + Refunding....',
     props: {
       ...defaultProps,
       order: {
@@ -251,7 +274,7 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL+REFUND] Cancelling+Refunded',
+    description: '[CANCEL+REFUND] Cancelling... + Refunded',
     props: {
       ...defaultProps,
       order: {
@@ -271,7 +294,7 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL+REFUND] Canceled+Refunding',
+    description: '[CANCEL+REFUND] Canceled + Refunding...',
     props: {
       ...defaultProps,
       order: {
@@ -291,7 +314,7 @@ const STEPS: Step[] = [
     },
   },
   {
-    description: '[CANCEL+REFUND] Canceled+Refunded',
+    description: '[CANCEL+REFUND] Canceled + Refunded',
     props: {
       ...defaultProps,
       order: {
@@ -307,6 +330,28 @@ const STEPS: Step[] = [
       refund: {
         refundTx: TX,
         isRefunded: true,
+      },
+    },
+  },
+  {
+    description: '[EXPIRED-BEFORE-CREATION] Expired before Create transaction is Mined',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.CREATING,
+        isExpired: true,
+      },
+    },
+  },
+  {
+    description: '[EXPIRED-BEFORE-CREATION] Expired when Create transaction is Mined (before indexing)',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.CREATION_MINED,
+        isExpired: true,
       },
     },
   },
