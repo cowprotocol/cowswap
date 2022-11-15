@@ -1,12 +1,21 @@
-import { Order } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import * as styledEl from './OrdersTable.styled'
 import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
+import { formatSmart } from 'utils/format'
 
 export interface OrdersTableProps {
   orders: Order[]
+}
+
+const orderStatusTitleMap: { [key in OrderStatus]: string } = {
+  [OrderStatus.PENDING]: 'Pending',
+  [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
+  [OrderStatus.FULFILLED]: 'Fulfilled',
+  [OrderStatus.EXPIRED]: 'Expired',
+  [OrderStatus.CANCELLED]: 'Canceled',
 }
 
 const pageSize = 10
@@ -54,11 +63,16 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                 </div>
                 <div>
                   <styledEl.RateValue>
-                    1 {order.inputToken.symbol} = {price.toSignificant(6)} {order.outputToken.symbol}
+                    1 {order.inputToken.symbol} ={' '}
+                    <span title={price.toSignificant(18) + ' ' + order.outputToken.symbol}>
+                      {formatSmart(price)} {order.outputToken.symbol}
+                    </span>
                   </styledEl.RateValue>
                 </div>
                 <div>
-                  <styledEl.StatusItem status={order.status}>{order.status}</styledEl.StatusItem>
+                  <styledEl.StatusItem cancelling={!!order.isCancelling} status={order.status}>
+                    {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
+                  </styledEl.StatusItem>
                 </div>
               </styledEl.Row>
             )

@@ -41,9 +41,9 @@ export const Row = styled(Header)`
   }
 `
 
-export const StatusItem = styled.div<{ status: OrderStatus }>`
+export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
   display: inline-block;
-  background: ${({ status }) => statusColorMap[status]};
+  background: ${({ status, cancelling }) => (cancelling ? statusColorMap.cancelled : statusColorMap[status])};
   color: ${({ theme }) => theme.text2};
   padding: 5px 10px;
   border-radius: 3px;
@@ -53,6 +53,7 @@ export const AmountItem = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  white-space: nowrap;
 `
 
 export const RateValue = styled.span`
@@ -61,8 +62,10 @@ export const RateValue = styled.span`
 
 export function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (
-    <AmountItem>
-      <CurrencyLogo currency={amount.currency} size="24px" />
+    <AmountItem title={amount.toExact() + ' ' + amount.currency.symbol}>
+      <div>
+        <CurrencyLogo currency={amount.currency} size="24px" />
+      </div>
       <span>{formatSmart(amount)}</span>
       <span>{amount.currency.symbol}</span>
     </AmountItem>

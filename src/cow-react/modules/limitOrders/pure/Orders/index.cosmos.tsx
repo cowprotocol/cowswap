@@ -14,4 +14,4 @@ const tabs: OrderTab[] = [
   },
 ]
 
-export default <Orders orders={ordersMock} tabs={tabs} onTabChange={() => void 0} />
+export default <Orders orders={ordersMock} tabs={tabs} onTabChange={() => void 0} isWalletConnected={true} />

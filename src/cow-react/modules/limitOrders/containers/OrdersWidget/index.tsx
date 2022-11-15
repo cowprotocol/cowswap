@@ -3,6 +3,7 @@ import { OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
 import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useMemo, useState } from 'react'
 import { Order } from 'state/orders/actions'
+import { useWeb3React } from '@web3-react/core'
 
 const TABS: OrderTab[] = [
   {
@@ -22,6 +23,7 @@ function getOrdersListByIndex(ordersList: LimitOrdersList, index: number): Order
 export function OrdersWidget() {
   const [activeTab, setActiveTab] = useState(0)
   const ordersList = useLimitOrdersList()
+  const { account } = useWeb3React()
 
   const orders = useMemo(() => {
     return getOrdersListByIndex(ordersList, activeTab)
@@ -37,5 +39,5 @@ export function OrdersWidget() {
     setActiveTab(index)
   }
 
-  return <Orders onTabChange={onTabChange} tabs={tabs} orders={orders} />
+  return <Orders onTabChange={onTabChange} tabs={tabs} orders={orders} isWalletConnected={!!account} />
 }
