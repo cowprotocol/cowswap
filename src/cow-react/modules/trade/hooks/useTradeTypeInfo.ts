@@ -18,8 +18,12 @@ export interface TradeTypeInfo {
 export function useTradeTypeInfo(): TradeTypeInfo | null {
   const location = useLocation()
 
-  const swapMatch = matchPath<TradeStateFromUrl>(location.pathname, Routes.SWAP)
-  const limitOrderMatch = matchPath<TradeStateFromUrl>(location.pathname, Routes.LIMIT_ORDER)
+  const [swapMatch, limitOrderMatch] = useMemo(() => {
+    return [
+      matchPath<TradeStateFromUrl>(location.pathname, Routes.SWAP),
+      matchPath<TradeStateFromUrl>(location.pathname, Routes.LIMIT_ORDER),
+    ]
+  }, [location.pathname])
 
   return useMemo(() => {
     if (!swapMatch && !limitOrderMatch) return null
