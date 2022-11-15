@@ -187,7 +187,8 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
     `,
     appBody: {
       maxWidth: {
-        trade: '470px',
+        swap: '470px',
+        limit: '1350px',
         content: '680px',
       },
     },

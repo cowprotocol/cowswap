@@ -1,23 +1,24 @@
 import styled from 'styled-components/macro'
-import { MEDIA_WIDTHS } from 'theme'
 
 export const PageWrapper = styled.div`
   width: 100%;
-  display: block;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
+  display: grid;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.limit};
   margin: 0 auto;
-  // grid-template-columns: ${({ theme }) => theme.appBody.maxWidth.trade} 1fr;
-  // grid-column-gap: 20px;
+  grid-template-columns: ${({ theme }) => theme.appBody.maxWidth.swap} 1fr;
+  grid-column-gap: 20px;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-  max-width: ${MEDIA_WIDTHS.upToMedium}px;
-`}
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-  display: flex;
-  flex-direction: column;
-  max-width: 640px;
-`}
+  ${({ theme }) => theme.mediaWidth.upToLarge``}
+  ${({ theme }) => theme.mediaWidth.upToMedium``};
 `
 
-export const Column = styled.div``
+// Form + banner
+export const PrimaryWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+`
+
+// Graph + orders table
+export const SecondaryWrapper = styled.div`
+  display: flex;
+`

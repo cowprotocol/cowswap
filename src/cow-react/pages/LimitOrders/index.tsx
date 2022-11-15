@@ -15,16 +15,16 @@ export default function LimitOrderPage() {
       <MarketPriceUpdater />
       <ActiveRateUpdater />
       <styledEl.PageWrapper>
-        <styledEl.Column>
+        <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />
           <InfoPopup />
-        </styledEl.Column>
+        </styledEl.PrimaryWrapper>
 
         {/*TODO: temporary hidden right part of the page until it's ready*/}
-        {/*<styledEl.Column>*/}
-        {/*  <ChartWidget />*/}
-        {/*  <Orders />*/}
-        {/*</styledEl.Column>*/}
+        <styledEl.SecondaryWrapper>
+          {/* <ChartWidget />
+          <Orders />*/}
+        </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>
   )

@@ -3,7 +3,7 @@ import SwapHeader from 'components/swap/SwapHeader'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 
 export const Container = styled.div`
-  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
+  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
   width: 100%;
 `
 
@@ -13,7 +13,7 @@ export const ContainerBox = styled.div`
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
+  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
 
   /* ${({ theme }) => theme.mediaWidth.upToSmall`
   `}; */

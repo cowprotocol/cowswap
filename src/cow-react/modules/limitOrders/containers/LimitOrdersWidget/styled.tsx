@@ -15,10 +15,6 @@ export const ContainerBox = styled.div`
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
-
-  /* ${({ theme }) => theme.mediaWidth.upToSmall`
-  `}; */
 `
 
 export const Header = styled.div`
