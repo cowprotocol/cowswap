@@ -67,24 +67,18 @@ function _getSummary(params: PostOrderParams): string {
   }
 }
 
-export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
-  const {
-    kind,
-    chainId,
-    inputAmount,
-    outputAmount,
-    sellToken,
-    buyToken,
-    feeAmount,
-    validTo,
-    account,
-    signer,
-    recipient,
-    allowsOffchainSigning,
-    appDataHash,
-    sellAmountBeforeFee,
-    quoteId,
-  } = params
+export function getOrderParams(params: PostOrderParams): {
+  summary: string
+  quoteId: number | undefined
+  order: UnsignedOrder
+} {
+  const { kind, inputAmount, outputAmount, sellToken, buyToken, feeAmount, validTo, recipient, appDataHash, quoteId } =
+    params
+  const sellTokenAddress = sellToken.address
+
+  if (!sellTokenAddress) {
+    throw new Error(`Order params invalid sellToken address for token: ${JSON.stringify(sellToken, undefined, 2)}`)
+  }
 
   // fee adjusted input amount
   const sellAmount = inputAmount.quotient.toString(RADIX_DECIMAL)
@@ -95,18 +89,69 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   const summary = _getSummary(params)
   const receiver = recipient
 
-  const unsignedOrder: UnsignedOrder = {
-    sellToken: sellToken.address,
-    buyToken: buyToken.address,
-    sellAmount,
-    buyAmount,
-    validTo,
-    appData: appDataHash,
-    feeAmount: feeAmount?.quotient.toString() || '0',
-    kind,
-    receiver,
-    partiallyFillable: false, // Always fill or kill
+  return {
+    summary,
+    quoteId,
+    order: {
+      sellToken: sellTokenAddress,
+      buyToken: buyToken.address,
+      sellAmount,
+      buyAmount,
+      validTo,
+      appData: appDataHash,
+      feeAmount: feeAmount?.quotient.toString() || '0',
+      kind,
+      receiver,
+      partiallyFillable: false, // Always fill or kill
+    },
   }
+}
+
+export function mapUnsignedOrderToOrder(
+  unsignedOrder: UnsignedOrder,
+  {
+    orderId,
+    account,
+    summary,
+    sellToken,
+    buyToken,
+    allowsOffchainSigning,
+    isOnChain,
+    signature,
+    sellAmountBeforeFee,
+  }: PostOrderParams & { orderId: string; summary: string; signature: string; isOnChain?: boolean }
+): Order {
+  return {
+    ...unsignedOrder,
+
+    // Basic order params
+    id: orderId,
+    owner: account,
+    summary,
+    inputToken: sellToken,
+    outputToken: buyToken,
+
+    // Status
+    status: allowsOffchainSigning || isOnChain ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,
+    creationTime: new Date().toISOString(),
+
+    // Signature
+    signature,
+
+    // Additional API info
+    apiAdditionalInfo: undefined,
+
+    // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
+    sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
+  }
+}
+
+export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
+  const { chainId, account, signer, allowsOffchainSigning } = params
+
+  // Prepare order
+  const { summary, quoteId, order: unsignedOrder } = getOrderParams(params)
+  const receiver = unsignedOrder.receiver
 
   let signingScheme: SigningScheme
   let signature: string | undefined
@@ -133,31 +178,7 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     owner: account,
   })
 
-  const creationTime = new Date().toISOString()
-
-  const pendingOrderParams: Order = {
-    ...unsignedOrder,
-
-    // Basic order params
-    id: orderId,
-    owner: account,
-    summary,
-    inputToken: sellToken,
-    outputToken: buyToken,
-
-    // Status
-    status: allowsOffchainSigning ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,
-    creationTime,
-
-    // Signature
-    signature,
-
-    // Additional API info
-    apiAdditionalInfo: undefined,
-
-    // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
-    sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
-  }
+  const pendingOrderParams: Order = mapUnsignedOrderToOrder(unsignedOrder, { ...params, orderId, summary, signature })
 
   return {
     chainId,

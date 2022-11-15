@@ -20,7 +20,7 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
-import { useDetectNativeToken } from 'state/swap/hooks'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 export * from '@src/hooks/useStablecoinPrice'
 
@@ -105,6 +105,7 @@ export default function useCowUsdPrice(currency?: Currency) {
       toDecimals: stablecoin.decimals,
       userAddress: account,
       validTo: getUsdQuoteValidTo(),
+      isEthFlow: false,
     }
   }, [account, baseAmountRaw, isStablecoin, sellTokenAddress, sellTokenDecimals, stablecoin, supportedChain])
 

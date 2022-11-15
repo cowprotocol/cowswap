@@ -22,6 +22,7 @@ import { isWrappingTrade } from 'state/swap/utils'
 import { useOrderValidTo } from 'state/user/hooks'
 import { isAddress } from 'utils'
 import useENSAddress from 'hooks/useENSAddress'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -152,6 +153,7 @@ export default function FeesUpdater(): null {
   }, [quotesMap, sellCurrencyId])
 
   const isLoading = useIsQuoteLoading()
+  const isEthFlow = useIsEthFlow()
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 
@@ -211,6 +213,7 @@ export default function FeesUpdater(): null {
       receiver,
       userAddress: account,
       validTo,
+      isEthFlow,
     }
 
     // Don't refetch if offline.
@@ -271,6 +274,7 @@ export default function FeesUpdater(): null {
 
     return () => clearInterval(intervalId)
   }, [
+    isEthFlow,
     windowVisible,
     isOnline,
     chainId,

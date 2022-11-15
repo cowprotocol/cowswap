@@ -13,11 +13,12 @@ import { getOperationMessage, OperationType } from '../components/TransactionCon
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { isRejectRequestProviderError } from '../utils/misc'
 import { wrapAnalytics } from 'components/analytics'
-import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useCloseModals } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useCurrencyBalance } from 'state/connection/hooks'
 import { useTransactionConfirmModal } from '@cow/modules/swap/hooks/useTransactionConfirmModal'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -56,7 +57,7 @@ export function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<C
   const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT?.wrapped)
 
   // is an native currency trade but wrapped token has enough balance
-  return !!(wrappedBalance && inputAmount && wrappedBalance.greaterThan(inputAmount))
+  return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))
 }
 
 export function useWrapType(): WrapType {

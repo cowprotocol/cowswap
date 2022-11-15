@@ -1,6 +1,6 @@
 import { PostOrderParams, signAndPostOrder } from 'utils/trade'
 import { presignOrderStep } from '@cow/modules/swap/services/swapFlow/steps/presignOrderStep'
-import { addPendingOrderStep } from '@cow/modules/swap/services/swapFlow/steps/addPendingOrderStep'
+import { addPendingOrderStep } from '@cow/modules/swap/services/common/steps/addPendingOrderStep'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AppDispatch } from 'state'
 import { GPv2Settlement } from '@cow/abis/types'
