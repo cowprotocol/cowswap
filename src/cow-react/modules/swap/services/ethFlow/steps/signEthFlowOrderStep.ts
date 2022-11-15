@@ -10,7 +10,6 @@ import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/
 import { getDomain, UnsignedOrder } from 'utils/signatures'
 import { Order } from 'state/orders/actions'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
@@ -88,7 +87,6 @@ export async function signEthFlowOrderStep(
       unsignedOrder: order,
       additionalParams: {
         ...orderParams,
-        sellToken: NATIVE_CURRENCY_BUY_TOKEN[orderParams.chainId], // sellToken always native currency
         orderId,
         signature: '',
         summary,
