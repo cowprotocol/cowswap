@@ -9,6 +9,8 @@ const RefundMessage = styled.span`
   color: #0d5ed9;
 `
 
+const ExpiredMessage = styled.span``
+
 export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelation }: EthFlowStepperProps) {
   const { state, isExpired, rejectedReason } = order
   const { isRefunded, refundTx } = refund
@@ -79,7 +81,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
     <>
       {/* <p className={!isSuccess && wontReceiveToken ? 'crossOut' : stepStatus}>{label}</p> */}
       {/* <StepLabel crossOut={!isSuccess && wontReceiveToken}>{message}</StepLabel> */}
-      {isExpired && !(isSuccess || isOrderRejected) && <p>Order is Expired</p>}
+      {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order is Expired</ExpiredMessage>}
 
       {wontReceiveToken && !(refundTx || cancelationTx) && <RefundMessage>Initiating ETH Refund...</RefundMessage>}
       {refundLink}

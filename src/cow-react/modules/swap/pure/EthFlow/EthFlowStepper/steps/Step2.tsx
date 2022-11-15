@@ -1,8 +1,13 @@
 import React from 'react'
 import { Icon, X, Plus, Check } from 'react-feather'
+import styled from 'styled-components/macro'
 import { ExplorerLinkStyled, EthFlowStepperProps, SmartOrderStatus } from '..'
 import { StatusIconState } from '../StatusIcon'
 import { Step } from '../Step'
+
+const RejectMessage = styled.span`
+  color: #f25757;
+`
 
 export function Step2({ order }: EthFlowStepperProps) {
   const { state, isExpired, orderId } = order
@@ -13,36 +18,35 @@ export function Step2({ order }: EthFlowStepperProps) {
 
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
-  let message: string, stepStatus: StatusIconState, icon: Icon
+  let label: string, stepStatus: StatusIconState, icon: Icon
   if (expiredBeforeCreate) {
-    message = 'Order Creation Failed'
+    label = 'Order Creation Failed'
     rejectedReason = 'Expired before creation'
     stepStatus = 'error'
     icon = X
   } else if (isCreating) {
-    message = 'Create Order'
+    label = 'Create Order'
     stepStatus = 'not-started'
     icon = Plus
   } else if (isIndexing) {
-    message = 'Creating Order'
+    label = 'Creating Order'
     stepStatus = 'pending'
     icon = Plus
   } else if (rejectedReason) {
-    message = 'Order Creation Failed'
+    label = 'Order Creation Failed'
     stepStatus = 'error'
     icon = X
   } else {
-    message = 'Order Created'
+    label = 'Order Created'
     stepStatus = 'success'
     icon = Check
   }
 
   const details = (
     <>
-      <p className={stepStatus}>{message}</p>
-      {rejectedReason && <p className={stepStatus}>{rejectedReason}</p>}
+      {rejectedReason && <RejectMessage>{rejectedReason}</RejectMessage>}
       {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
     </>
   )
-  return <Step statusIconState={stepStatus} details={details} icon={icon} />
+  return <Step statusIconState={stepStatus} details={details} icon={icon} label={label} />
 }

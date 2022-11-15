@@ -37,7 +37,7 @@ const LABEL_COLOR: Record<StatusIconState, string> = {
   success: STATUS_ICON_STYLES['success'].color,
   pending: STATUS_ICON_STYLES['pending'].color,
   'not-started': 'gray',
-  error: STATUS_ICON_STYLES['error'].color,
+  error: STATUS_ICON_STYLES['error'].bgColor,
 }
 
 const StepIcon = styled.div<StepIconStyle>`
@@ -48,7 +48,7 @@ const StepIcon = styled.div<StepIconStyle>`
   justify-content: center;
   align-items: center;
   margin-bottom: 5px;
-  border: 1px solid;
+  border: 2px solid;
 
   ${({ bgColor, borderColor, color }) => css`
     background-color: ${bgColor};
@@ -73,7 +73,7 @@ export interface StatusIconProps {
   crossOut?: boolean
 }
 
-export function StatusIcon({ state, icon: CustomIcon, label, crossOut = true }: StatusIconProps) {
+export function StatusIcon({ state, icon: CustomIcon, label, crossOut = false }: StatusIconProps) {
   const styles = STATUS_ICON_STYLES[state]
 
   return (

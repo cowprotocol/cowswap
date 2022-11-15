@@ -45,18 +45,6 @@ const Wrapper = styled.div`
   align-items: center;
   font-size: 12px;
   line-height: 1.5;
-
-  p {
-    margin: 0;
-  }
-
-  // TODO: Figure out why this doesn't work https://stackoverflow.com/questions/18368202/how-can-i-set-the-color-for-the-progress-element
-  /* 
-  progress.error::-webkit-progress-value {
-    background: red;
-    color: red;
-  } 
-  */
 `
 
 export const Progress = styled.progress`
