@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Trans } from '@lingui/macro'
 import { ButtonSize } from 'theme'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { ButtonPrimary } from 'components/Button'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'
@@ -10,11 +9,11 @@ import { TradeFlowContext } from '../../services/tradeFlow'
 import * as styledEl from './styled'
 import { RateImpactWarning } from '@cow/modules/limitOrders/pure/RateImpactWarning'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
+import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext
-  activeRateFiatAmount: CurrencyAmount<Currency> | null
-  activeRate: Fraction
+  activeRateDisplay: ActiveRateDisplay
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   rateImpact: number
@@ -22,15 +21,7 @@ export interface LimitOrdersConfirmProps {
 }
 
 export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
-  const {
-    tradeContext,
-    inputCurrencyInfo,
-    outputCurrencyInfo,
-    onConfirm,
-    activeRate,
-    activeRateFiatAmount,
-    rateImpact,
-  } = props
+  const { tradeContext, inputCurrencyInfo, outputCurrencyInfo, onConfirm, activeRateDisplay, rateImpact } = props
 
   const [rateImpactAcknowledge, setRateImpactAcknowledge] = useState(false)
 
@@ -50,11 +41,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         currencyInfo={outputCurrencyInfo}
         topLabel={outputCurrencyInfo.label}
       />
-      <LimitOrdersDetails
-        tradeContext={tradeContext}
-        activeRate={activeRate}
-        activeRateFiatAmount={activeRateFiatAmount}
-      />
+      <LimitOrdersDetails tradeContext={tradeContext} activeRateDisplay={activeRateDisplay} />
       {!!inputCurrency && (
         <RateImpactWarning
           withAcknowledge={true}

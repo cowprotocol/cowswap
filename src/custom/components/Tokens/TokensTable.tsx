@@ -17,13 +17,11 @@ import {
   IndexLabel,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
-import { useHistory } from 'react-router-dom'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
-import { OrderKind } from '@cowprotocol/contracts'
 import useFilterTokens from 'hooks/useFilterTokens'
 
 const MAX_ITEMS = 20
@@ -103,17 +101,6 @@ export default function TokenTable({
 
   // token index
   const getTokenIndex = useCallback((i: number) => (page - 1) * MAX_ITEMS + i, [page])
-
-  // buy and sell
-  const history = useHistory()
-
-  const handleBuyOrSell = useCallback(
-    (token: Token, type: OrderKind) => {
-      const typeQuery = type === OrderKind.BUY ? 'outputCurrency' : 'inputCurrency'
-      history.push(`/swap?${typeQuery}=${token.address}`)
-    },
-    [history]
-  )
 
   const { ErrorModal } = useErrorModal()
 
@@ -226,7 +213,6 @@ export default function TokenTable({
                   return (
                     <TokensTableRow
                       key={data.address}
-                      handleBuyOrSell={handleBuyOrSell}
                       toggleWalletModal={toggleWalletModal}
                       balance={balances && balances[0][data.address]}
                       openTransactionConfirmationModal={openModal}

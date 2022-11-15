@@ -8,9 +8,6 @@ import { OrderKind } from '@cowprotocol/contracts'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
-import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
-import { calculateValidTo } from '@cow/utils/time'
-import { Timestamp } from '@cow/types'
 
 export interface LimitOrdersTradeState {
   readonly inputCurrency: Currency | null
@@ -22,20 +19,17 @@ export interface LimitOrdersTradeState {
   readonly inputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
-  readonly deadlineTimestamp: Timestamp | null
   readonly orderKind: OrderKind
+  readonly isUnlocked: boolean
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const { account } = useWeb3React()
   const state = useAtomValue(limitOrdersAtom)
-  const settingsState = useAtomValue(limitOrdersSettingsAtom)
 
   const recipient = state.recipient
   const orderKind = state.orderKind
-  const deadlineTimestamp = settingsState.customDeadlineTimestamp
-    ? settingsState.customDeadlineTimestamp
-    : calculateValidTo(settingsState.deadlineMilliseconds / 1000)
+  const isUnlocked = state.isUnlocked
 
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
@@ -50,7 +44,6 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
 
   return useSafeMemoObject({
     orderKind,
-    deadlineTimestamp,
     recipient,
     inputCurrency,
     outputCurrency,
@@ -60,5 +53,6 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
     outputCurrencyBalance,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
+    isUnlocked,
   })
 }

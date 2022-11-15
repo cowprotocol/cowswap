@@ -14,7 +14,7 @@ export function useTradeStateFromUrl(): TradeState {
     const searchParams = new URLSearchParams(location.search)
     const recipient = searchParams.get('recipient')
     const { chainId, inputCurrencyId, outputCurrencyId } = params as TradeStateFromUrl
-    const chainIdAsNumber = chainId ? parseInt(chainId) : null
+    const chainIdAsNumber = chainId && /^\d+$/.test(chainId) ? parseInt(chainId) : null
 
     return {
       chainId: chainIdAsNumber,

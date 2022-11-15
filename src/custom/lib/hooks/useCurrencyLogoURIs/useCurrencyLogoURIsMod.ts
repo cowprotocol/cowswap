@@ -66,7 +66,7 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
         // mod
         const logoURI = getOverriddenTokenLogoURI(currency)
         if (logoURI) {
-          logoURIs.push(logoURI)
+          return [logoURI]
         }
       }
     }

@@ -7,9 +7,11 @@ import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
+import { useLimitOrdersDeadline } from '@cow/modules/limitOrders/hooks/useLimitOrdersDeadline'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
-  const { inputCurrency, outputCurrency, recipient, orderKind, deadlineTimestamp } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
+  const deadlineTimestamp = useLimitOrdersDeadline()
   const { chainId, account } = useWeb3React()
   const { exactTypedValue } = useTypedValue()
   const { address: recipientEnsAddress } = useENSAddress(recipient)

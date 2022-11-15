@@ -1,44 +1,42 @@
-import { useState, useMemo, useCallback, useEffect } from 'react'
-import { Token, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
-import { Trans } from '@lingui/macro'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 import useTheme from 'hooks/useTheme'
 import {
-  TokenText,
-  ResponsiveGrid,
-  Label,
-  ResponsiveLogo,
-  IndexNumber,
-  Cell,
-  TableButton,
   ApproveLabel,
-  CustomLimit,
   BalanceValue,
-  InfoCircle,
+  Cell,
+  CustomLimit,
+  IndexNumber,
+  Label,
+  ResponsiveGrid,
+  ResponsiveLogo,
+  TableButton,
+  TokenText,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import { formatMax, formatSmart } from 'utils/format'
-import { useApproveCallback, ApprovalState } from 'hooks/useApproveCallback'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { CardsSpinner, ExtLink } from '@cow/pages/Account/styled'
 import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useWeb3React } from '@web3-react/core'
-import { GP_VAULT_RELAYER, AMOUNT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION, GP_VAULT_RELAYER } from 'constants/index'
 import { OrderKind } from '@cowprotocol/contracts'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
 import Loader from 'components/Loader'
 import { getBlockExplorerUrl } from 'utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { MouseoverTooltip } from 'components/Tooltip'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { Link } from 'react-router-dom'
+import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
+import { Routes } from '@cow/constants/routes'
 
 type DataRowParams = {
   tokenData: Token
   index: number
   balance?: CurrencyAmount<Token> | undefined
-  handleBuyOrSell: (token: Token, type: OrderKind) => void
   closeModals: () => void
   openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
   toggleWalletModal: () => void
@@ -48,7 +46,6 @@ const DataRow = ({
   tokenData,
   index,
   balance,
-  handleBuyOrSell,
   closeModals,
   openTransactionConfirmationModal,
   toggleWalletModal,
@@ -56,6 +53,15 @@ const DataRow = ({
   const { account, chainId = ChainId.MAINNET } = useWeb3React()
 
   const theme = useTheme()
+  const tradeLink = useCallback(
+    (token: Token, kind: OrderKind) => {
+      const inputCurrencyId = kind === OrderKind.SELL ? token.symbol : undefined
+      const outputCurrencyId = kind === OrderKind.BUY ? token.symbol : undefined
+
+      return parameterizeTradeRoute({ chainId: chainId.toString(), inputCurrencyId, outputCurrencyId }, Routes.SWAP)
+    },
+    [chainId]
+  )
 
   // allowance
   const spender = chainId ? GP_VAULT_RELAYER[chainId] : undefined
@@ -107,7 +113,6 @@ const DataRow = ({
 
   const hasZeroBalance = !balance || balance?.equalTo(0)
   const hasNoAllowance = !currentAllowance || currentAllowance.equalTo(0)
-  const native = useNativeCurrency()
 
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
@@ -184,24 +189,18 @@ const DataRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)}>Swap</TableButton>
-        {/* <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.SELL)}>Sell</TableButton> */}
-        {/* <TableButton onClick={() => handleBuyOrSell(tokenData, OrderKind.BUY)}>Buy</TableButton> */}
-
-        {displayApproveContent}
-        <MouseoverTooltip
-          text={
-            <Trans>
-              Approve this token for trading. This only needs to be done once. <br />
-              <br />
-              Once approved, you can place orders for free using meta-transactions without paying for the transaction
-              using your {native.name}.
-            </Trans>
-          }
-        >
-          <InfoCircle size="20" />
-        </MouseoverTooltip>
+        <Link to={tradeLink(tokenData, OrderKind.BUY)}>
+          <TableButton color={theme.green1}>Buy</TableButton>
+        </Link>
       </Cell>
+
+      <Cell>
+        <Link to={tradeLink(tokenData, OrderKind.SELL)}>
+          <TableButton color={theme.red1}>Sell</TableButton>
+        </Link>
+      </Cell>
+
+      <Cell>{displayApproveContent}</Cell>
     </ResponsiveGrid>
   )
 }
