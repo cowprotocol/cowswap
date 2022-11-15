@@ -3,10 +3,11 @@ import { MEDIA_WIDTHS } from 'theme'
 
 export const PageWrapper = styled.div`
   width: 100%;
-  max-width: ${MEDIA_WIDTHS.upToLarge}px;
-  display: grid;
-  grid-template-columns: ${({ theme }) => theme.appBody.maxWidth.trade} 1fr;
-  grid-column-gap: 20px;
+  display: block;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.trade};
+  margin: 0 auto;
+  // grid-template-columns: ${({ theme }) => theme.appBody.maxWidth.trade} 1fr;
+  // grid-column-gap: 20px;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
   max-width: ${MEDIA_WIDTHS.upToMedium}px;

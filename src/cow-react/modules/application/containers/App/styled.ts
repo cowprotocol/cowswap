@@ -13,6 +13,7 @@ export const HeaderWrapper = styled.div`
   ${({ theme }) => theme.flexRowNoWrap}
   width: 100%;
   justify-content: space-between;
+  z-index: 3;
 `
 
 export const FooterWrapper = styled(HeaderWrapper)`
@@ -31,9 +32,9 @@ export const BodyWrapper = styled.div`
   align-items: flex-start;
   justify-content: center;
   flex: auto;
-  z-index: 1;
+  z-index: 2;
   // TODO: '5vh 0 0' : '5vh 0 240px'
-  padding: 5vh 0 240px;
+  padding-top: 5vh;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
   padding: '0 0 16px';

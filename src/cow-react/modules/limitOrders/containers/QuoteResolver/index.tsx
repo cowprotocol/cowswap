@@ -13,7 +13,9 @@ export const QuoteResolver = () => {
       console.debug('LIMIT ORDER QUOTE REQUEST:', feeQuoteParams)
 
       getQuote(feeQuoteParams)
-        .then(setLimitOrdersQuote)
+        .then((response) => {
+          setLimitOrdersQuote({ response })
+        })
         .catch((e) => {
           // TODO: process error
           console.error('Limit order quote error: ', e)
