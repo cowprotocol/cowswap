@@ -29,6 +29,7 @@ import { limitRateAtom } from '../../state/limitRateAtom'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
 import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
+import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 
 export function LimitOrdersWidget() {
@@ -59,6 +60,7 @@ export function LimitOrdersWidget() {
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const { isLoading: isRateLoading } = useAtomValue(limitRateAtom)
   const rateImpact = useRateImpact()
+  const activeRateDisplay = useActiveRateDisplay()
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -170,6 +172,9 @@ export function LimitOrdersWidget() {
               {recipient !== null && (
                 <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
               )}
+
+              <styledEl.StyledRateInfo activeRateDisplay={activeRateDisplay} />
+
               <styledEl.TradeButtonBox>
                 <TradeButtons tradeContext={tradeContext} openConfirmScreen={() => setShowConfirmation(true)} />
               </styledEl.TradeButtonBox>

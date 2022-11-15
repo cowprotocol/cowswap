@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 import { RateImpactWarning } from '@cow/modules/limitOrders/pure/RateImpactWarning'
+import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
 
 export const Container = styled.div`
   // max-width: 460px;
@@ -47,6 +48,10 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 
 export const RateWrapper = styled.div`
   display: flex;
+`
+
+export const StyledRateInfo = styled(RateInfo)`
+  margin-top: 15px;
 `
 
 export const StyledRateImpactWarning = styled(RateImpactWarning)`
