@@ -79,10 +79,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
   const crossOut = !isSuccess && wontReceiveToken
   const details = (
     <>
-      {/* <p className={!isSuccess && wontReceiveToken ? 'crossOut' : stepStatus}>{label}</p> */}
-      {/* <StepLabel crossOut={!isSuccess && wontReceiveToken}>{message}</StepLabel> */}
       {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order is Expired</ExpiredMessage>}
-
       {wontReceiveToken && !(refundTx || cancelationTx) && <RefundMessage>Initiating ETH Refund...</RefundMessage>}
       {refundLink}
     </>
