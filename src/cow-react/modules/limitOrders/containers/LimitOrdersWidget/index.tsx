@@ -31,6 +31,7 @@ import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidge
 import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
 import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
+import usePriceImpact from 'hooks/usePriceImpact'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -68,7 +69,20 @@ export function LimitOrdersWidget() {
   const allowsOffchainSigning = false
   const isTradePriceUpdating = false
   const showSetMax = true
-  const priceImpactParams = undefined
+  const priceImpactParams = usePriceImpact({
+    // TODO: set proper trade params regarding to isInversed
+    abTrade: {
+      inputAmount: inputCurrencyAmount,
+      outputAmount: outputCurrencyAmount,
+      inputAmountWithoutFee: inputCurrencyAmount || undefined,
+      outputAmountWithoutFee: outputCurrencyAmount || undefined,
+    },
+    parsedAmounts: {
+      INPUT: inputCurrencyAmount || undefined,
+      OUTPUT: outputCurrencyAmount || undefined,
+    },
+    isWrapping: false,
+  })
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
       tier: 0,
