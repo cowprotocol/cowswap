@@ -283,7 +283,18 @@ function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): Orde
     return
   }
 
-  const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
+  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, rejected, refunded, refunding } =
+    orders
 
-  return pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
+  return (
+    pending?.[id] ||
+    presignaturePending?.[id] ||
+    fulfilled?.[id] ||
+    expired?.[id] ||
+    cancelled?.[id] ||
+    creating?.[id] ||
+    rejected?.[id] ||
+    refunding?.[id] ||
+    refunded?.[id]
+  )
 }

@@ -154,7 +154,11 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
       orders?.pending[id] ||
       orders?.expired[id] ||
       orders?.presignaturePending[id] ||
-      orders?.cancelled[id]
+      orders?.cancelled[id] ||
+      orders?.creating[id] ||
+      orders?.rejected[id] ||
+      orders?.refunding[id] ||
+      orders?.refunded[id]
 
     return _deserializeOrder(serialisedOrder)
   })
@@ -220,6 +224,10 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
       ...state.fulfilled,
       ...state.expired,
       ...state.cancelled,
+      ...state.creating,
+      ...state.refunding,
+      ...state.rejected,
+      ...state.refunded,
     }
   }, [state])
 }

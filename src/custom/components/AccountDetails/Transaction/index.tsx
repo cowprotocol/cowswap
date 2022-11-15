@@ -22,6 +22,7 @@ const PILL_COLOUR_MAP = {
   EXPIRED_ORDER: 'attention',
   CANCELLED_ORDER: 'attention',
   CANCELLING_ORDER: 'attention',
+  FAILED: 'attention',
 }
 
 export function determinePillColour(status: ActivityStatus, type: ActivityType) {
@@ -42,6 +43,8 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
       return PILL_COLOUR_MAP.CANCELLED_ORDER
     case ActivityStatus.CREATING:
       return PILL_COLOUR_MAP.CREATING
+    case ActivityStatus.FAILED:
+      return PILL_COLOUR_MAP.FAILED
   }
 }
 
