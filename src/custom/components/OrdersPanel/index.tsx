@@ -127,10 +127,17 @@ const Wrapper = styled.div`
 `
 
 const isPending = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.PENDING || data.status === OrderStatus.PRESIGNATURE_PENDING
+  data.status === OrderStatus.PENDING ||
+  data.status === OrderStatus.PRESIGNATURE_PENDING ||
+  data.status === OrderStatus.CREATING ||
+  data.status === OrderStatus.REFUNDING
 
 const isConfirmed = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED || data.status === OrderStatus.CANCELLED
+  data.status === OrderStatus.FULFILLED ||
+  data.status === OrderStatus.EXPIRED ||
+  data.status === OrderStatus.CANCELLED ||
+  data.status === OrderStatus.REJECTED ||
+  data.status === OrderStatus.REFUNDED
 
 export interface OrdersPanelProps {
   handleCloseOrdersPanel: () => void
