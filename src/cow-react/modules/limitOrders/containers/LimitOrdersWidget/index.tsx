@@ -31,6 +31,7 @@ import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidge
 import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
 import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
+import { Trans } from '@lingui/macro'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -169,10 +170,14 @@ export function LimitOrdersWidget() {
             <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
           )}
 
-          <styledEl.RateInfoWrapper>
-            <span>Limit price</span>
-            <RateInfo activeRateDisplay={activeRateDisplay} />
-          </styledEl.RateInfoWrapper>
+          {activeRateDisplay.currentActiveRate && (
+            <styledEl.RateInfoWrapper>
+              <span>
+                <Trans>Limit price</Trans>
+              </span>
+              <RateInfo activeRateDisplay={activeRateDisplay} />
+            </styledEl.RateInfoWrapper>
+          )}
 
           <styledEl.TradeButtonBox>
             <TradeButtons tradeContext={tradeContext} openConfirmScreen={() => setShowConfirmation(true)} />

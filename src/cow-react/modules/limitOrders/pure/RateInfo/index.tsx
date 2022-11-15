@@ -16,12 +16,14 @@ export function RateInfo({ activeRateDisplay, className }: RateInfoProps) {
   const { currentActiveRate, currentActiveRateFiatAmount, inputActiveRateCurrency, outputActiveRateCurrency } =
     activeRateDisplay
 
+  if (!currentActiveRate || !inputActiveRateCurrency || !outputActiveRateCurrency) return null
+
   return (
     <Wrapper className={className}>
-      <span title={currentActiveRate?.toSignificant(18) + ' ' + inputActiveRateCurrency?.symbol}>
-        1 {inputActiveRateCurrency?.symbol} = {formatSmart(currentActiveRate)} {outputActiveRateCurrency?.symbol}
+      <span title={currentActiveRate.toSignificant(18) + ' ' + inputActiveRateCurrency.symbol}>
+        1 {inputActiveRateCurrency.symbol} = {formatSmart(currentActiveRate)} {outputActiveRateCurrency.symbol}
       </span>{' '}
-      <span>(≈${formatSmartAmount(currentActiveRateFiatAmount)})</span>
+      {!!currentActiveRateFiatAmount && <span>(≈${formatSmartAmount(currentActiveRateFiatAmount)})</span>}
     </Wrapper>
   )
 }
