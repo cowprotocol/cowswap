@@ -5,6 +5,7 @@ import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 
 export interface SwapFormProps {
+  chainId: number | undefined
   recipient: string | null
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
