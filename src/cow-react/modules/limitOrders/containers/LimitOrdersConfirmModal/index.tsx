@@ -29,7 +29,7 @@ function getCurrencyAmount(
   currency: Currency | null,
   value: Fraction | null | undefined
 ): CurrencyAmount<Currency> | null {
-  if (!currency || !value) return null
+  if (!currency || !value || value.denominator.toString() === '0') return null
 
   return CurrencyAmount.fromFractionalAmount(currency, value.numerator, value.denominator)
 }
