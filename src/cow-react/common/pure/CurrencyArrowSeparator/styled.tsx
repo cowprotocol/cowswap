@@ -1,8 +1,8 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 import { ArrowDown } from 'react-feather'
 import { loadingAnimationMixin } from './style-mixins'
 
-export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean }>`
+export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; hasSeparatorLine?: boolean }>`
   display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
   margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-12px auto' : '10px auto')};
   cursor: pointer;
@@ -13,15 +13,19 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean }>`
   justify-content: ${({ withRecipient }) => (withRecipient ? 'intial' : 'center')};
   transition: width 0.3s ease-in-out;
 
-  &::before {
-    content: ${({ withRecipient }) => (withRecipient ? 'none' : '""')};
-    position: absolute;
-    width: calc(100% + 20px);
-    left: -10px;
-    top: calc(50% - 1px);
-    height: 1px;
-    background: ${({ theme }) => theme.grey1};
-  }
+  ${({ hasSeparatorLine, withRecipient, theme }) =>
+    hasSeparatorLine &&
+    css`
+      &::before {
+        content: ${withRecipient ? 'none' : '""'};
+        position: absolute;
+        width: calc(100% + 20px);
+        left: -10px;
+        top: calc(50% - 1px);
+        height: 1px;
+        background: ${theme.grey1};
+      }
+    `}
 `
 
 export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
