@@ -419,27 +419,20 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
     return ''
   }
 
-  let title = activityDerivedState.isOrder ? 'Order' : 'Transaction'
+  const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
 
   switch (activityDerivedState.status) {
     case ActivityStatus.CONFIRMED:
-      title += ' Confirmed'
-      break
+      return `${prefix} Confirmed`
     case ActivityStatus.EXPIRED:
-      title += ' Expired'
-      break
+      return `${prefix} Expired`
     case ActivityStatus.CANCELLED:
-      title += ' Cancelled'
-      break
+      return `${prefix} Cancelled`
     case ActivityStatus.CANCELLING:
-      title += ' Cancelling'
-      break
+      return `${prefix} Cancelling`
     default:
-      title += ' Submitted'
-      break
+      return `${prefix} Submitted`
   }
-
-  return title
 }
 
 export function ConfirmationPendingContent({
