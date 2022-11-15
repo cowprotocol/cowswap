@@ -1,7 +1,7 @@
 import { SwapFlowContext } from '@cow/modules/swap/services/common/types'
 
 export function logSwapFlow(label: string, ...args: any[]) {
-  console.debug(`%c [${label} ERROR] `, 'font-weight: bold; color: #1c5dbf', args)
+  console.debug(`%c [${label}] `, 'font-weight: bold; color: #1c5dbf', args)
 }
 
 export function logSwapFlowError(label: string, ...args: any[]) {
