@@ -43,7 +43,7 @@ export function colors(darkMode: boolean): Colors {
     error: darkMode ? '#D41300' : '#D41300',
     warning: darkMode ? '#f3841e' : '#f3841e',
 
-    // DEPRECIATED but keeping because of depedencies
+    // DEPRECIATED but keeping because of dependencies
     primary1: darkMode ? '#0d5ed9' : '#052B65',
     primary3: darkMode ? '#0d5ed9' : '#052B65',
     primary4: darkMode ? '#0d5ed9' : '#052B65',
