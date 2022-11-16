@@ -17,7 +17,8 @@ export const StyledLogo = styled(Logo)<{ size: string; $native: boolean }>`
   border-radius: ${({ size }) => size};
   /* box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075); */
   /* background-color: ${({ theme }) => theme.white}; */
-  background-color: ${({ theme }) => theme.bg1}; // mod
+  background-color: ${({ theme }) => theme.bg1}; // MOD
+  color: ${({ theme }) => theme.text1}!important; // MOD
 `
 
 export default function CurrencyLogo({

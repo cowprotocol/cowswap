@@ -27,6 +27,7 @@ export interface Colors extends ColorsUniswap {
   tableRowBG: Color
   info: Color
   warning: Color
+  danger: Color
   error: Color
   infoText: Color
   warningText: Color

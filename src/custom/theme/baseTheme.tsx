@@ -39,8 +39,8 @@ export function colors(darkMode: boolean): Colors {
     text2: darkMode ? '#86B2DC' : '#506B93',
     text3: darkMode ? '#428dff' : '#0d5ed9',
 
-    // States
-    error: darkMode ? '#D41300' : '#D41300',
+    // States NEW
+    danger: darkMode ? '#EB3030' : '#D41300',
     warning: darkMode ? '#f3841e' : '#f3841e',
 
     // DEPRECIATED but keeping because of dependencies
@@ -48,7 +48,8 @@ export function colors(darkMode: boolean): Colors {
     primary3: darkMode ? '#0d5ed9' : '#052B65',
     primary4: darkMode ? '#0d5ed9' : '#052B65',
     primary5: darkMode ? '#0d5ed9' : '#052B65',
-    red1: darkMode ? '#D41300' : '#D41300',
+    red1: darkMode ? '#EB3030' : '#D41300',
+    error: darkMode ? '#EB3030' : '#D41300',
     // ==========================================
 
     // ****** text ******
@@ -86,7 +87,6 @@ export function colors(darkMode: boolean): Colors {
 
     // states
     success: darkMode ? '#00d897' : '#00815a',
-    danger: darkMode ? '#f7a7a7' : '#8f0000',
     pending: '#43758C',
     attention: '#ff5722',
 

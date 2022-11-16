@@ -280,7 +280,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               fontSize: '14px',
               paddingTop: '7px',
               // color: slippageError ? 'red' : '#F3841E',
-              color: slippageError ? theme.error : theme.warning, // MOD
+              color: slippageError ? theme.danger : theme.warning, // MOD
             }}
           >
             {slippageError ? (

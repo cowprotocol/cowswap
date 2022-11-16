@@ -11,7 +11,7 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: bo
   background: ${({ theme }) => theme.input.bg1};
   border: none;
   border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
-  min-height: 120px;
+  min-height: 100px;
   pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 `
 
@@ -50,8 +50,10 @@ export const CurrencyInputBox = styled.div<{ flexibleWidth: boolean }>`
 `
 
 export const CurrencyTopLabel = styled.div`
-  font-size: 0.85rem;
-  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0.8;
+  margin: auto 0;
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -60,7 +62,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   display: flex;
   align-items: center;
   background: none;
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 500;
   color: ${({ theme }) => theme.text1};
 

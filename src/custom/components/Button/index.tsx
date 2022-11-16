@@ -46,7 +46,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => transparentize(0.95, theme.text1)};
+    background-color: ${({ theme }) => theme.grey1};
     color: ${({ theme }) => transparentize(0.4, theme.text1)};
     background-image: none;
     border: 0;
