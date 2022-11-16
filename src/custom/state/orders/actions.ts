@@ -103,13 +103,6 @@ export type ChangeOrderStatusParams = { id: OrderID; chainId: ChainId }
 
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
 export const removeOrder = createAction<ChangeOrderStatusParams>('order/removeOrder')
-//                                                                        fulfillmentTime from event timestamp
-export const fulfillOrder = createAction<{
-  id: OrderID
-  chainId: ChainId
-  fulfillmentTime: string
-  transactionHash: string
-}>('order/fulfillOrder')
 
 export interface OrderFulfillmentData {
   id: OrderID
@@ -146,8 +139,6 @@ export type CancelOrdersBatchParams = BatchOrdersUpdateParams
 export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/addOrUpdateOrders')
 
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
-
-export const expireOrder = createAction<ChangeOrderStatusParams>('order/expireOrder')
 
 export const preSignOrders = createAction<PresignedOrdersParams>('order/presignOrders')
 

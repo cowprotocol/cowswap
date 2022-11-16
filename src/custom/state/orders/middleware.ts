@@ -17,15 +17,9 @@ import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 
 // action syntactic sugar
-const isSingleOrderChangeAction = isAnyOf(
-  OrderActions.addPendingOrder,
-  OrderActions.expireOrder,
-  OrderActions.fulfillOrder,
-  OrderActions.cancelOrder
-)
+const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.cancelOrder)
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
 const isPresignOrders = isAnyOf(OrderActions.preSignOrders)
-const isSingleFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
 const isBatchOrderAction = isAnyOf(
   OrderActions.fulfillOrdersBatch,
   OrderActions.expireOrdersBatch,
@@ -34,8 +28,7 @@ const isBatchOrderAction = isAnyOf(
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 // const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch) // disabled because doesn't work on `if`
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
-const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
-const isSingleExpireOrderAction = isAnyOf(OrderActions.expireOrder)
+const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
 
@@ -79,16 +72,6 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } else if (isPresignOrders(action)) {
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'presigned', id })
       orderAnalytics('Posted', 'Pre-Signed')
-    } else if (isSingleFulfillOrderAction(action)) {
-      // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
-      // because it's nicer there
-      popup = setPopupData(OrderTxTypes.METATXN, {
-        summary,
-        id,
-        status: OrderActions.OrderStatus.FULFILLED,
-        descriptor: 'was traded',
-      })
-      orderAnalytics('Executed')
     } else if (isCancelOrderAction(action)) {
       // action is order/cancelOrder
       // Cancelled Order Popup
@@ -254,22 +237,12 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } = action.payload
 
     _triggerNps(store, chainId, id, { traded: true })
-  } else if (isSingleFulfillOrderAction(action)) {
-    // Shows NPS feedback (or attempts to) when there's a successful trade
-    const { chainId, id } = action.payload
-
-    _triggerNps(store, chainId, id, { traded: true })
   } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const {
       chainId,
       ids: [id],
     } = action.payload
-
-    _triggerNps(store, chainId, id, { expired: true })
-  } else if (isSingleExpireOrderAction(action)) {
-    // Shows NPS feedback (or attempts to) when the order expired
-    const { chainId, id } = action.payload
 
     _triggerNps(store, chainId, id, { expired: true })
   }

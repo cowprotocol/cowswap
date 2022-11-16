@@ -7,9 +7,7 @@ import {
   cancelOrder,
   cancelOrdersBatch,
   clearOrders,
-  expireOrder,
   expireOrdersBatch,
-  fulfillOrder,
   fulfillOrdersBatch,
   OrderStatus,
   preSignOrders,
@@ -273,23 +271,6 @@ export default createReducer(initialState, (builder) =>
         addOrderToState(state, chainId, id, status, order)
       })
     })
-    .addCase(fulfillOrder, (state, action) => {
-      prefillState(state, action)
-      const { id, chainId, fulfillmentTime, transactionHash } = action.payload
-      const orderObject = getOrderById(state, chainId, id)
-
-      if (orderObject) {
-        deleteOrderById(state, chainId, id)
-
-        orderObject.order.status = OrderStatus.FULFILLED
-        orderObject.order.fulfillmentTime = fulfillmentTime
-
-        orderObject.order.fulfilledTransactionHash = transactionHash
-        orderObject.order.isCancelling = false
-
-        addOrderToState(state, chainId, id, 'fulfilled', orderObject.order)
-      }
-    })
     .addCase(fulfillOrdersBatch, (state, action) => {
       prefillState(state, action)
       const { ordersData, chainId } = action.payload
@@ -313,21 +294,6 @@ export default createReducer(initialState, (builder) =>
           addOrderToState(state, chainId, id, 'fulfilled', orderObject.order)
         }
       })
-    })
-    .addCase(expireOrder, (state, action) => {
-      prefillState(state, action)
-      const { id, chainId } = action.payload
-
-      const orderObject = getOrderById(state, chainId, id)
-
-      if (orderObject) {
-        deleteOrderById(state, chainId, id)
-
-        orderObject.order.status = OrderStatus.EXPIRED
-        orderObject.order.isCancelling = false
-
-        addOrderToState(state, chainId, id, 'expired', orderObject.order)
-      }
     })
     .addCase(expireOrdersBatch, (state, action) => {
       prefillState(state, action)
