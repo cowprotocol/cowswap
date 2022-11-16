@@ -18,8 +18,11 @@ export const Row = styled.div`
     align-items: center;
 
     &:first-child {
-      opacity: 0.8;
       font-weight: 400;
+    }
+
+    &:first-child > span {
+      opacity: 0.8;
     }
 
     &:last-child {
