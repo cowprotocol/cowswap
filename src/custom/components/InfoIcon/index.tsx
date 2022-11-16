@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 
 const StyledInfoIcon = styled(Info)`
   opacity: 0.8;
-  stroke: ${({ theme }) => theme.black};
+  stroke: ${({ theme }) => theme.text3};
   line-height: 0;
   vertical-align: middle;
 

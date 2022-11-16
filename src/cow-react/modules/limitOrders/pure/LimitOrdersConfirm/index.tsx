@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode } from 'react'
 import { Trans } from '@lingui/macro'
 import { ButtonSize } from 'theme'
 import { ButtonPrimary } from 'components/Button'
@@ -7,7 +7,6 @@ import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'
 import { LimitOrdersDetails } from '../LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import * as styledEl from './styled'
-import { RateImpactWarning } from '@cow/modules/limitOrders/pure/RateImpactWarning'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 
@@ -17,17 +16,25 @@ export interface LimitOrdersConfirmProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   rateImpact: number
+  warningsAccepted: boolean
+  Warnings: ReactNode
   onConfirm(): void
 }
 
 export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
-  const { tradeContext, inputCurrencyInfo, outputCurrencyInfo, onConfirm, activeRateDisplay, rateImpact } = props
+  const {
+    tradeContext,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    onConfirm,
+    activeRateDisplay,
+    rateImpact,
+    Warnings,
+    warningsAccepted,
+  } = props
 
-  const [rateImpactAcknowledge, setRateImpactAcknowledge] = useState(false)
-
-  const inputCurrency = inputCurrencyInfo.currency
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
-  const isTradeDisabled = isTooLowRate ? !rateImpactAcknowledge : false
+  const isTradeDisabled = isTooLowRate ? !warningsAccepted : false
 
   return (
     <styledEl.ConfirmWrapper>
@@ -42,14 +49,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         topLabel={outputCurrencyInfo.label}
       />
       <LimitOrdersDetails tradeContext={tradeContext} activeRateDisplay={activeRateDisplay} />
-      {!!inputCurrency && (
-        <RateImpactWarning
-          withAcknowledge={true}
-          onAcknowledgeChange={setRateImpactAcknowledge}
-          rateImpact={rateImpact}
-          inputCurrency={inputCurrency}
-        />
-      )}
+      {Warnings}
       <ButtonPrimary onClick={onConfirm} disabled={isTradeDisabled} buttonSize={ButtonSize.BIG}>
         <Trans>Confirm</Trans>
       </ButtonPrimary>

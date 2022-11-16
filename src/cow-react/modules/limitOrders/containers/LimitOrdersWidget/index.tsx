@@ -26,12 +26,12 @@ import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySe
 import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { limitRateAtom } from '../../state/limitRateAtom'
-import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
 import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
 import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import usePriceImpact from 'hooks/usePriceImpact'
+import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -60,7 +60,6 @@ export function LimitOrdersWidget() {
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const { isLoading: isRateLoading } = useAtomValue(limitRateAtom)
-  const rateImpact = useRateImpact()
   const activeRateDisplay = useActiveRateDisplay()
 
   const [showConfirmation, setShowConfirmation] = useState(false)
@@ -189,12 +188,11 @@ export function LimitOrdersWidget() {
 
               <styledEl.StyledRateInfo activeRateDisplay={activeRateDisplay} />
 
+              <LimitOrdersWarnings priceImpact={priceImpactParams} />
+
               <styledEl.TradeButtonBox>
                 <TradeButtons tradeContext={tradeContext} openConfirmScreen={() => setShowConfirmation(true)} />
               </styledEl.TradeButtonBox>
-              {!!inputCurrency && (
-                <styledEl.StyledRateImpactWarning rateImpact={rateImpact} inputCurrency={inputCurrency} />
-              )}
             </>
           ) : (
             <UnlockLimitOrders handleUnlock={() => updateLimitOrdersState({ isUnlocked: true })} />
@@ -206,6 +204,7 @@ export function LimitOrdersWidget() {
         <LimitOrdersConfirmModal
           isOpen={showConfirmation}
           tradeContext={tradeContext}
+          priceImpact={priceImpactParams}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
           onDismiss={() => setShowConfirmation(false)}

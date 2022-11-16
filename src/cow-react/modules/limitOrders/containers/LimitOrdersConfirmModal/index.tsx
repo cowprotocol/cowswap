@@ -14,12 +14,16 @@ import * as styledEl from './styled'
 import { formatSmartAmount } from 'utils/format'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
+import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
+import { PriceImpact } from 'hooks/usePriceImpact'
+import { useLimitOrdersWarningsAccepted } from '@cow/modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
   tradeContext: TradeFlowContext
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
+  priceImpact: PriceImpact
   onDismiss(): void
 }
 
@@ -50,9 +54,10 @@ function PendingText({
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
-  const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss } = props
+  const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss, priceImpact } = props
   const { chainId } = useWalletInfo()
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
+  const warningsAccepted = useLimitOrdersWarningsAccepted(true)
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
@@ -81,6 +86,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
 
   const operationType = OperationType.ORDER_SIGN
   const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />
+  const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
 
   return (
     <>
@@ -98,6 +104,8 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}
               rateImpact={rateImpact}
+              warningsAccepted={warningsAccepted}
+              Warnings={Warnings}
             />
           </styledEl.ConfirmModalWrapper>
         )}

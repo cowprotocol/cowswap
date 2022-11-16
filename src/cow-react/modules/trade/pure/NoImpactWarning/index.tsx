@@ -15,15 +15,17 @@ const NoImpactWarningMessage = (
 export interface NoImpactWarningProps {
   isAccepted: boolean
   withoutAccepting?: boolean
+  className?: string
   acceptCallback?(): void
 }
 
 export function NoImpactWarning(props: NoImpactWarningProps) {
-  const { acceptCallback, isAccepted, withoutAccepting } = props
+  const { acceptCallback, isAccepted, withoutAccepting, className } = props
 
   return (
     <TradeWarning
       type={TradeWarningType.LOW}
+      className={className}
       withoutAccepting={withoutAccepting}
       isAccepted={isAccepted}
       tooltipContent={NoImpactWarningMessage}

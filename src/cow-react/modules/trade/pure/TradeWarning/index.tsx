@@ -17,6 +17,7 @@ export interface TradeWarningProps {
   isAccepted?: boolean
   type?: TradeWarningType
   withoutAccepting?: boolean
+  className?: string
   acceptCallback?: (isAccepted: boolean) => void
 }
 
@@ -36,7 +37,7 @@ const WarningBox = styled.div<{ color: string }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 auto 12px;
+  margin: 0 auto;
   width: 99%;
 
   svg {
@@ -78,11 +79,12 @@ export function TradeWarning(props: TradeWarningProps) {
     withoutAccepting,
     acceptCallback,
     isAccepted,
+    className,
   } = props
   const color = warningColorMap[type]
 
   return (
-    <WarningBox color={color}>
+    <WarningBox color={color} className={className}>
       <InfoBox withoutAccepting={!!withoutAccepting}>
         <AlertIcon size={18} />
         <span>{text}</span>
