@@ -66,7 +66,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
  *
  * Note it uses OrderMetaData, which is the return type of the endpoint that gets an order by orderId
  */
-type OrderInfoApi = Pick<
+export type OrderInfoApi = Pick<
   OrderMetaData,
   | 'creationDate'
   | 'availableBalance'
@@ -75,6 +75,7 @@ type OrderInfoApi = Pick<
   | 'executedSellAmountBeforeFees'
   | 'executedFeeAmount'
   | 'invalidated'
+  | 'ethflowData'
 >
 
 /**
