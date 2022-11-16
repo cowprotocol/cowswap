@@ -3,10 +3,9 @@ import styled from 'styled-components/macro'
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.input.bg1};
   border-radius: 12px;
-  margin-left: 1rem;
-  padding: 1rem;
-  flex: 1;
-  max-width: 40%;
+  padding: 10px 16px;
+  flex: 1 1 30%;
+  min-height: 80px;
 `
 
 export const Title = styled.p`

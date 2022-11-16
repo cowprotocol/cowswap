@@ -1,24 +1,20 @@
 import styled from 'styled-components/macro'
-import { MEDIA_WIDTHS } from 'theme'
-
-export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
-  width: ${({ isUnlocked }) => (isUnlocked ? '100%' : '460px')};
-  max-width: ${MEDIA_WIDTHS.upToLarge}px;
-  display: ${({ isUnlocked }) => (isUnlocked ? 'grid' : 'block')};
-  grid-template-columns: 480px 1fr;
+export const PageWrapper = styled.div`
+  width: 100%;
+  display: grid;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.limit};
+  margin: 0 auto;
+  grid-template-columns: ${({ theme }) => theme.appBody.maxWidth.swap} 1fr;
   grid-column-gap: 20px;
-
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    display: flex;
-    flex-direction: column;
-    max-width: 640px;
-  `}
+`
+// Form + banner
+export const PrimaryWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 16px;
 `
 
-export const Column = styled.div`
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    :not(:first-child) {
-      margin-top: 20px;
-    }
-  `}
+// Graph + orders table
+export const SecondaryWrapper = styled.div`
+  display: flex;
 `
