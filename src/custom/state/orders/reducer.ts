@@ -8,6 +8,7 @@ import {
   clearOrders,
   expireOrdersBatch,
   fulfillOrdersBatch,
+  OrderInfoApi,
   OrderStatus,
   preSignOrders,
   requestOrderCancellation,
@@ -173,6 +174,10 @@ function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id:
   return orderObj
 }
 
+function getValidTo(apiAdditionalInfo: OrderInfoApi | undefined, order: SerializedOrder): number {
+  return (apiAdditionalInfo?.ethflowData?.userValidTo || order.validTo) as number
+}
+
 const initialState: OrdersState = {}
 
 export default createReducer(initialState, (builder) =>
@@ -250,15 +255,17 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.REFUNDING, id) ||
           popOrder(state, chainId, OrderStatus.REFUNDED, id)
 
+        const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
         // merge existing and new order objects
         const order = orderObj
           ? {
               ...orderObj.order,
+              validTo,
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
               isCancelling: newOrder.isCancelling,
               status,
             }
-          : newOrder
+          : { ...newOrder, validTo }
 
         // add order to respective state
         addOrderToState(state, chainId, id, status, order)
@@ -281,6 +288,8 @@ export default createReducer(initialState, (builder) =>
 
           orderObject.order.fulfilledTransactionHash = transactionHash
           orderObject.order.isCancelling = false
+          // EthFlow orders validTo is different
+          orderObject.order.validTo = getValidTo(apiAdditionalInfo, orderObject.order)
 
           orderObject.order.apiAdditionalInfo = apiAdditionalInfo
 
