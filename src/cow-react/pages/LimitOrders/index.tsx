@@ -19,10 +19,10 @@ export default function LimitOrderPage() {
         </styledEl.PrimaryWrapper>
 
         {/*TODO: temporary hidden right part of the page until it's ready*/}
-        <styledEl.SecondaryWrapper>
-          {/* <ChartWidget />
-          <Orders />*/}
-        </styledEl.SecondaryWrapper>
+        {/* <styledEl.SecondaryWrapper>
+          <ChartWidget />
+          <Orders />
+        </styledEl.SecondaryWrapper> */}
       </styledEl.PageWrapper>
     </>
   )
