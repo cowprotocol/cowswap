@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { CloseIcon } from 'theme'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { LimitOrdersConfirm } from '../../pure/LimitOrdersConfirm'
-import { tradeFlow, TradeFlowContext } from '../../services/tradeFlow'
+import { PriceImpactDeclineError, tradeFlow, TradeFlowContext } from '../../services/tradeFlow'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
 import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
@@ -72,17 +72,21 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const doTrade = useCallback(() => {
     if (!tradeContext) return
 
-    onDismiss()
-    setConfirmationState({ isPending: true, orderHash: null })
+    const beforeTrade = () => {
+      onDismiss()
+      setConfirmationState({ isPending: true, orderHash: null })
+    }
 
-    tradeFlow(tradeContext)
+    tradeFlow(tradeContext, priceImpact, beforeTrade)
       .then((orderHash) => {
         setConfirmationState({ isPending: false, orderHash })
       })
-      .catch(() => {
+      .catch((error: Error) => {
+        if (error instanceof PriceImpactDeclineError) return
+
         onDismissConfirmation()
       })
-  }, [onDismiss, setConfirmationState, tradeContext, onDismissConfirmation])
+  }, [onDismiss, setConfirmationState, tradeContext, onDismissConfirmation, priceImpact])
 
   const operationType = OperationType.ORDER_SIGN
   const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />

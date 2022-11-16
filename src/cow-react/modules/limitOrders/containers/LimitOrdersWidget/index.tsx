@@ -191,7 +191,11 @@ export function LimitOrdersWidget() {
               <LimitOrdersWarnings priceImpact={priceImpactParams} />
 
               <styledEl.TradeButtonBox>
-                <TradeButtons tradeContext={tradeContext} openConfirmScreen={() => setShowConfirmation(true)} />
+                <TradeButtons
+                  tradeContext={tradeContext}
+                  priceImpact={priceImpactParams}
+                  openConfirmScreen={() => setShowConfirmation(true)}
+                />
               </styledEl.TradeButtonBox>
             </>
           ) : (

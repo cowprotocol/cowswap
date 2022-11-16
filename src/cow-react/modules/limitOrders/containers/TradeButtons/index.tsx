@@ -11,14 +11,16 @@ import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useLimitOrdersWarningsAccepted } from '@cow/modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
+  priceImpact: PriceImpact
   openConfirmScreen(): void
 }
 
 export function TradeButtons(props: TradeButtonsProps) {
-  const { tradeContext, openConfirmScreen } = props
+  const { tradeContext, openConfirmScreen, priceImpact } = props
   const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
   const formState = useLimitOrdersFormState()
   const tradeState = useLimitOrdersTradeState()
@@ -29,14 +31,19 @@ export function TradeButtons(props: TradeButtonsProps) {
 
   const doTrade = useCallback(() => {
     if (expertMode && tradeContext) {
-      setConfirmationState({ isPending: true, orderHash: null })
-      tradeFlow(tradeContext).finally(() => {
-        setConfirmationState({ isPending: false, orderHash: null })
-      })
+      const beforeTrade = () => setConfirmationState({ isPending: true, orderHash: null })
+
+      tradeFlow(tradeContext, priceImpact, beforeTrade)
+        .catch((error) => {
+          console.error(error)
+        })
+        .finally(() => {
+          setConfirmationState({ isPending: false, orderHash: null })
+        })
     } else {
       openConfirmScreen()
     }
-  }, [expertMode, tradeContext, openConfirmScreen, setConfirmationState])
+  }, [expertMode, tradeContext, openConfirmScreen, setConfirmationState, priceImpact])
 
   const button = limitOrdersTradeButtonsMap[formState]
 
