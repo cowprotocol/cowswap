@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'state/enhancedTransactions/hooks'
-import { useOrder, useOrders, useOrdersById } from 'state/orders/hooks'
+import { useOrder, useOrders, useOrdersById, usePendingOrders } from 'state/orders/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getDateTimestamp } from '@cow/utils/time'
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
-import { isPending } from 'components/Web3Status'
 
 export interface AddedOrder extends Order {
   addedTime: number
@@ -38,10 +37,6 @@ export enum ActivityStatus {
 enum TxReceiptStatus {
   PENDING,
   CONFIRMED,
-}
-
-export function isAnOrder(element: TransactionAndOrder): element is AddedOrder {
-  return 'inputToken' in element && 'outputToken' in element
 }
 
 /**
@@ -286,14 +281,16 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
 }
 
 export function useRecentActivityLastPendingOrder() {
-  const allRecentActivity = useRecentActivity()
+  const { chainId } = useWeb3React()
+  const pending = usePendingOrders({ chainId })
 
   return useMemo(() => {
-    const pendings = allRecentActivity.filter(isPending)
-    const lastOrder = pendings[pendings.length - 1]
+    if (!pending.length) {
+      return null
+    }
+    return pending[pending.length - 1] || null
 
-    if (!lastOrder || !isAnOrder(lastOrder)) return null
-
-    return lastOrder
-  }, [allRecentActivity])
+    // Disabling hook to avoid unnecessary re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(pending)])
 }
