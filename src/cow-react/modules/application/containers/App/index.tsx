@@ -1,10 +1,12 @@
 import { initializeAnalytics } from 'components/AmplitudeAnalytics'
 import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
-import { Route, useLocation } from 'react-router-dom'
+import {
+  Route,
+  // useLocation
+} from 'react-router-dom'
 import ErrorBoundary from 'components/ErrorBoundary'
 import Header from 'components/Header'
-import Polling from 'components/Header/Polling'
 
 import DarkModeQueryParamReader from 'theme'
 
@@ -17,7 +19,7 @@ import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
 
 export function App() {
-  const location = useLocation()
+  // const location = useLocation()
 
   initializeAnalytics()
 
@@ -31,8 +33,9 @@ export function App() {
         <styledEl.HeaderWrapper>
           <Header />
         </styledEl.HeaderWrapper>
-        <styledEl.BodyWrapper location={location}>
-          <Polling />
+        <styledEl.BodyWrapper
+        // location={location}
+        >
           <TopLevelModals />
           <ReferralLinkUpdater />
           <RoutesApp />

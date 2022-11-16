@@ -20,6 +20,6 @@ export const DropdownContent = styled.div<DropdownContentPosition>`
 `
 
 export const DropdownBox = styled.div`
-  display: inline-block;
+  display: flex;
   position: relative;
 `

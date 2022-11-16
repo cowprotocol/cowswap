@@ -129,7 +129,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
       <span>
         {label}{' '}
         <WrappedQuestionHelper
-          bgColor={theme.bg4}
+          bgColor={theme.bg1}
           color={theme.text1}
           text={
             <FeeInnerWrapper>

@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { formatSmartLocaleAware } from 'utils/format'
 import { COW_SUBSIDY_DATA } from './constants'
 import { CowSubsidy } from '.'
-import { transparentize } from 'polished'
+import { transparentize, lighten } from 'polished'
 
 import { BigNumber } from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
@@ -21,9 +21,9 @@ const StyledSubsidyTable = styled.table`
   }
 
   tbody {
+    background: ${({ theme }) => theme.grey1};
     border-radius: 16px;
-    border: none;
-    border: 1px solid ${({ theme }) => theme.text2};
+    border: 0;
   }
 
   thead > tr {
@@ -39,10 +39,15 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   border: 1px solid transparent;
   gap: 0;
   background: transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.4, theme.text2)};
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.7, theme.text2)};
 
   &:last-child {
     border-bottom: 0;
+  }
+
+  &:hover > td {
+    color: ${({ theme }) => theme.text1};
+    background: ${({ theme }) => transparentize(0.9, theme.text1)};
   }
 
   > th {
@@ -52,10 +57,12 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
   > td {
     font-size: 15px;
+    color: ${({ theme }) => theme.text2};
+    transition: background 0.3s ease-in-out;
   }
 
   > td:first-child {
-    border-right: 1px solid ${({ theme }) => transparentize(0.4, theme.text2)};
+    border-right: 1px solid ${({ theme }) => transparentize(0.7, theme.text2)};
   }
 
   > td,
@@ -67,7 +74,9 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   ${({ selected, theme, darkMode }) =>
     selected &&
     `
-    background: ${darkMode ? transparentize(0.85, theme.orange) : transparentize(0.75, theme.orange)};
+    background: ${theme.bg2};
+    color: ${theme.white};
+    transition: background 0.2s ease-in-out;
 
     &::before {
       position: absolute;
@@ -79,7 +88,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
       width: 6px;
       height: 6px;
       border-radius: 6px;
-      background-color: ${theme.orange};
+      background-color: ${theme.white};
       animation: 2s ease-in-out infinite pulse;
       box-shadow: 0;
     }
@@ -93,7 +102,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
       left: -2px;
       position: absolute;
       border-radius: 3px;
-      border: 2px solid ${theme.orange};
+      border: 0;
     }
 
     &:first-child,
@@ -107,7 +116,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     }
     
     > td {
-      color: ${darkMode ? theme.orange : theme.text1};
+      color: ${theme.white};
       font-weight: 500;
 
       &:first-child {
@@ -120,17 +129,26 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
         border-left: none;
       }
     }
+
+    &:hover {
+      background: ${lighten(0.05, theme.bg2)};
+
+        > td {
+          background: transparent;
+          color: ${theme.white};
+        }
+    }
   `}
 
   ${({ theme }) =>
     `
     @keyframes pulse {
       0% {
-        box-shadow: 0 0 0 0 ${transparentize(0.7, theme.orange)};
+        box-shadow: 0 0 0 0 ${transparentize(0.7, theme.white)};
       }
 
       100% {
-        box-shadow: 0 0 0 8px ${transparentize(1, theme.orange)};
+        box-shadow: 0 0 0 8px ${transparentize(1, theme.white)};
       }
     }
   `}

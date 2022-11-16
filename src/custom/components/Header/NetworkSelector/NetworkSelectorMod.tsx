@@ -109,7 +109,11 @@ const FlyoutMenuContents = styled.div`
 `
 const FlyoutRow = styled.div<{ active: boolean }>`
   align-items: center;
-  background-color: ${({ active, theme }) => (active ? theme.primary1 : 'transparent')};
+  background-color: ${({ active, theme }) =>
+    active
+      ? // theme.primary1
+        theme.bg2 // MOD
+      : 'transparent'};
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -118,10 +122,19 @@ const FlyoutRow = styled.div<{ active: boolean }>`
   padding: 6px 8px;
   text-align: left;
   width: 100%;
-  color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
+  color: ${({ active, theme }) =>
+    active
+      ? // theme.text2
+        theme.white // MOD
+      : theme.text1};
   &:hover {
     color: ${({ theme, active }) => !active && theme.text1};
-    background: ${({ theme, active }) => !active && theme.bg4};
+    background: ${
+      ({ theme, active }) =>
+        !active &&
+        // theme.bg4
+        transparentize(0.9, theme.text1) // MOD
+    };
   }
   transition: background 0.13s ease-in-out;
 `
@@ -137,9 +150,10 @@ export const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
   height: 16px;
 ` */
 const Logo = styled.img`
-  height: 20px;
-  // width: 20px; // mod
-  width: 16px;
+  // height: 20px;
+  // width: 20px;
+  width: 24px; // MOD
+  height: 24px; // MOD
   margin-right: 8px;
 `
 const NetworkLabel = styled.div`

@@ -16,7 +16,7 @@ export const ProgressBarWrapper = animated(styled.div`
   border-radius: 12px;
   padding: 20px 20px 0;
   color: ${({ theme }) => theme.text1};
-  background-color: ${({ theme }) => theme.bg4};
+  background-color: ${({ theme }) => theme.grey1};
   transition: height 0.2s ease;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -58,7 +58,7 @@ export const CowProtocolIcon = styled.div`
   height: 24px;
   width: 24px;
   border-radius: 100%;
-  border: 1px solid ${({ theme }) => theme.bg4};
+  border: 1px solid ${({ theme }) => theme.bg1};
   background: url(${CowProtocolLogo}) ${({ theme }) => theme.black} no-repeat center/75%;
   box-shadow: 0 0 10px 2px ${({ theme }) => theme.bg1};
 `
@@ -90,7 +90,7 @@ export const WarningLogo = styled.div`
     position: absolute;
     left: -2px;
     top: -2px;
-    background: ${({ theme }) => `linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg4}, #c5daef, #1b5a7a)`};
+    background: ${({ theme }) => `linear-gradient(45deg, #e57751, #c5daef, #275194, ${theme.bg1}, #c5daef, #1b5a7a)`};
     background-size: 800%;
     width: calc(100% + 4px);
     height: calc(100% + 4px);
@@ -171,24 +171,20 @@ export const StatusMsgContainer = styled.div`
 export const StatusGraph = styled.div`
   display: flex;
   align-items: center;
-  margin: 1rem 0 0 0;
-  gap: 1rem;
-  border: 1px solid ${({ theme }) => theme.border2};
-  border-radius: 0.6rem;
+  margin: 42px auto 0;
+  gap: 10px;
+  border: 1px solid ${({ theme }) => theme.bg1};
+  border-radius: 16px;
   padding: 0 0.9rem;
-  min-height: 6rem;
+  min-height: 100px;
   width: 100%;
 
-  .meditating-cow {
-    margin: 0 2rem;
-  }
-
-  span {
-    color: ${({ theme }) => theme.orange};
+  > img {
+    margin: 0 10px 0 0;
   }
 
   p {
-    font-size: 0.82rem;
+    font-size: 15px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -234,6 +230,6 @@ export const StyledCoWLink = styled(ExternalLink)`
 `
 
 export const StyledExternalLink = styled(ExternalLink)`
-  font-size: 0.82rem;
-  color: ${({ theme }) => theme.orange};
+  font-size: inherit;
+  color: inherit;
 `

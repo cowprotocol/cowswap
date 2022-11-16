@@ -4,11 +4,11 @@ import Input from 'components/NumericalInput'
 import { MEDIA_WIDTHS } from 'theme'
 
 export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: boolean }>`
-  padding: 1rem;
-  background: ${({ theme }) => theme.currencyInput?.background};
-  border: ${({ theme }) => theme.currencyInput?.border};
-  border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '20px 20px 0 0' : '20px')};
-  border-bottom: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '0' : 'auto')};
+  padding: 16px;
+  background: ${({ theme }) => theme.input.bg1};
+  border: none;
+  border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
+  min-height: 120px;
   pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 `
 

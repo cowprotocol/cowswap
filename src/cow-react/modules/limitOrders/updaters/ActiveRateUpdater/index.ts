@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
+import { OrderKind } from '@cowprotocol/contracts'
 
 import usePrevious from 'hooks/usePrevious'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
@@ -9,10 +10,9 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 
 // Observe the activeRate value changes
-// Re-trigger the input field to apply the new rate to output
 export function ActiveRateUpdater() {
   const { chainId } = useWeb3React()
-  const { inputCurrencyAmount } = useLimitOrdersTradeState()
+  const { orderKind, ...limitState } = useLimitOrdersTradeState()
   const { isInversed, activeRate, isLoading } = useAtomValue(limitRateAtom)
 
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
@@ -23,17 +23,21 @@ export function ActiveRateUpdater() {
 
   useEffect(() => {
     // Handle active rate change
-    if (isInversed === prevIsInversed && activeRate && inputCurrencyAmount) {
+    if (isInversed === prevIsInversed && activeRate) {
+      const field = orderKind === OrderKind.SELL ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
+
       updateCurrencyAmount({
-        inputCurrencyAmount: inputCurrencyAmount?.toExact(),
+        [field]: limitState[field]?.toExact(),
         keepOrderKind: true,
       })
     }
 
-    // Clear output amount when there is no active rate
+    // Clear input/output amount based on the orderKind, when there is no active rate
     if (!activeRate) {
+      const field = orderKind === OrderKind.SELL ? 'outputCurrencyAmount' : 'inputCurrencyAmount'
+
       updateLimitOrdersState({
-        outputCurrencyAmount: null,
+        [field]: null,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

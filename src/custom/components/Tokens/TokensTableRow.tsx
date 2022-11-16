@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
-import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
 import {
   ApproveLabel,
   BalanceValue,
   Cell,
   CustomLimit,
-  HideLarge,
   IndexNumber,
   Label,
-  LargeOnly,
   ResponsiveGrid,
   ResponsiveLogo,
   TableButton,
@@ -134,7 +131,7 @@ const DataRow = ({
     } else if (!isApproved && !hasNoAllowance) {
       return (
         <CustomLimit>
-          <TableButton onClick={handleApprove} color={theme.primary1}>
+          <TableButton onClick={handleApprove} color={theme.text1}>
             Approve all
           </TableButton>
           <ApproveLabel
@@ -147,14 +144,14 @@ const DataRow = ({
       )
     } else if (!isApproved || hasNoAllowance) {
       return (
-        <TableButton onClick={handleApprove} color={theme.primary1}>
+        <TableButton onClick={handleApprove} color={theme.text1}>
           Approve
         </TableButton>
       )
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.primary1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.text1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
@@ -172,26 +169,15 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <RowFixed>
-          <ResponsiveLogo currency={tokenData} />
-        </RowFixed>
-
         <ExtLink title={tokenData.name} href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+          <ResponsiveLogo currency={tokenData} />
           <TokenText>
-            <LargeOnly style={{ marginLeft: '10px' }}>
-              <Label>{tokenData.symbol}</Label>
-            </LargeOnly>
-
-            <HideLarge style={{ marginLeft: '10px' }}>
-              <RowFixed>
-                <Label fontWeight={400} ml="8px" color={theme.text1}>
-                  {tokenData.name}
-                </Label>
-                <Label ml="8px" color={theme.primary5}>
-                  ({tokenData.symbol})
-                </Label>
-              </RowFixed>
-            </HideLarge>
+            <Label>
+              <span>
+                <b>{tokenData.name}</b>
+                <i>{tokenData.symbol}</i>
+              </span>
+            </Label>
           </TokenText>
         </ExtLink>
       </Cell>

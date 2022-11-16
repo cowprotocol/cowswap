@@ -22,7 +22,7 @@ export const Link = styled(NavLink)<{ isActive?: boolean }>`
 
 export const Badge = styled.div`
   background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => (theme.darkMode ? theme.text2 : theme.text1)};
+  color: ${({ theme }) => theme.white};
   border: none;
   cursor: pointer;
   border-radius: 16px;

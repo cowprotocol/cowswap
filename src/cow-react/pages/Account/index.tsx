@@ -24,13 +24,13 @@ const NotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ '@cow/pag
 function _getPropsFromRoute(route: string) {
   switch (route) {
     case Routes.ACCOUNT:
-      return ['account-overview', 'Overview']
+      return ['account-overview', 'Account overview']
     case Routes.ACCOUNT_AFFILIATE:
       return ['account-affiliate', 'Affiliate']
     case Routes.ACCOUNT_GOVERNANCE:
       return ['account-governance', 'Governance']
     case Routes.ACCOUNT_TOKENS:
-      return ['account-tokens', 'Tokens']
+      return ['account-tokens', 'Tokens overview']
     default:
       return []
   }
