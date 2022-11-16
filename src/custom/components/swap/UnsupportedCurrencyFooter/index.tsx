@@ -29,7 +29,6 @@ const Wrapper = styled.div`
     margin: 1px auto 0;
     max-width: calc(100% - 38px);
     padding: 20px 24px 24px;
-    border-top: ${({ theme }) => theme.appBody.border};
   }
 `
 

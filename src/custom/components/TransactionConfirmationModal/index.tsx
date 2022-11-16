@@ -41,8 +41,10 @@ const Section = styled.div`
 export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
-  opacity: 0.5;
+  opacity: 0.6;
   transition: opacity 0.2s ease-in-out;
+  height: 28px;
+  width: 28px;
 
   &:hover {
     opacity: 1;
@@ -113,7 +115,7 @@ const ButtonGroup = styled.div`
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin: 12px 0 24px;
+  margin: 12px 0 0;
   width: 100%;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
@@ -165,8 +167,8 @@ const UpperSection = styled.div`
 const LowerSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  background: ${({ theme }) => theme.bg4};
-  padding: 40px;
+  background: ${({ theme }) => theme.grey1};
+  padding: 32px;
   margin: 16px auto 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -176,13 +178,13 @@ const LowerSection = styled.div`
   > h3 {
     text-align: center;
     width: 100%;
-    font-size: 21px;
+    font-size: 24px;
     margin: 0 auto 42px;
   }
 
   > h3 > span:last-of-type {
     display: block;
-    font-weight: 400;
+    font-weight: 300;
   }
 `
 
@@ -271,9 +273,9 @@ const StepsWrapper = styled.div`
 
   > hr {
     flex: 1 1 auto;
-    height: 1px;
+    height: 2px;
     border: 0;
-    background: ${({ theme }) => theme.border2};
+    background: ${({ theme }) => theme.bg1};
     margin: auto;
     position: absolute;
     width: 100%;
@@ -288,7 +290,7 @@ const StepsWrapper = styled.div`
     content: '';
     height: 4px;
     width: 100%;
-    background: ${({ theme }) => theme.bg4};
+    background: ${({ theme }) => theme.grey1};
     display: block;
     margin: 0;
     animation: Shrink 1s forwards linear;
@@ -296,12 +298,14 @@ const StepsWrapper = styled.div`
   }
 
   > div > p {
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.4;
     text-align: center;
   }
 
   > div > p > span {
+    display: block;
+    margin: 6px auto 0;
     opacity: 0.7;
   }
 
@@ -538,12 +542,12 @@ export function TransactionSubmittedContent({
     <Wrapper>
       <Section>
         <CloseIconWrapper onClick={onDismiss} />
-        <Text fontWeight={500} fontSize={20}>
+        <Text fontWeight={600} fontSize={28}>
           {getTitleStatus(activityDerivedState)}
         </Text>
         {supportedChainId(chainId) && hash && (
           <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
-            <Text fontWeight={500} fontSize={14} color={theme.primary1}>
+            <Text fontWeight={500} fontSize={14} color={theme.text3}>
               {getExplorerLabel(chainId, hash, 'transaction')} ↗
             </Text>
           </ExternalLinkCustom>

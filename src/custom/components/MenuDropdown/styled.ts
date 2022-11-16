@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 
 export const MenuFlyout = styled.ol`
   display: flex;
@@ -48,11 +49,12 @@ export const Content = styled.div`
   top: 100%;
   left: 0;
   border-radius: 16px;
-  background: ${({ theme }) => theme.bg4};
-  box-shadow: 0 12px 18px ${({ theme }) => theme.bg5};
+  border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
+  background: ${({ theme }) => theme.bg1};
+  box-shadow: ${({ theme }) => theme.boxShadow2};
   padding: 32px;
   gap: 62px;
-  margin: 12px 0 0;
+  margin: 6px 0 0;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     box-shadow: none;
@@ -106,28 +108,31 @@ export const MenuSection = styled.div`
     margin: 0;
     padding: 0;
     color: ${({ theme }) => theme.text1};
-    gap: 12px;
+    opacity: 0.8;
+    transition: opacity 0.15s ease-in-out;
+
+    > svg,
+    > img {
+      width: 18px;
+      height: auto;
+      max-height: 21px;
+      margin: 0 7px 0 0;
+      object-fit: contain;
+      color: ${({ theme }) => theme.text1};
+    }
+
+    > svg > path {
+      fill: ${({ theme }) => theme.text1};
+    }
 
     &:hover {
       text-decoration: underline;
       font-weight: 500;
+      opacity: 1;
     }
 
     &.ACTIVE {
       font-weight: bold;
     }
-  }
-
-  a > svg,
-  a > img {
-    width: 18px;
-    height: auto;
-    max-height: 21px;
-    object-fit: contain;
-    color: ${({ theme }) => theme.text1};
-  }
-
-  a > svg > path {
-    fill: ${({ theme }) => theme.text1};
   }
 `

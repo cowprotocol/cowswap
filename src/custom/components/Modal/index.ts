@@ -12,13 +12,14 @@ export const GpModal = styled(Modal)<{
   padding?: string
 }>`
   > [data-reach-dialog-content] {
-    background-color: ${({ backgroundColor, theme }) => (backgroundColor ? backgroundColor : theme.bg1)};
+    color: ${({ theme }) => theme.text1};
     max-width: ${({ maxWidth = 470 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};
     z-index: 100;
     padding: ${({ padding = '0px' }) => `${padding}`};
     margin: auto;
     transition: max-width 0.4s ease;
+    background-color: ${({ theme }) => theme.bg1};
 
     ${({ theme }) => theme.mediaWidth.upToLarge`
       width: 623px;

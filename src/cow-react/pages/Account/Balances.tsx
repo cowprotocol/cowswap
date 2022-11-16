@@ -205,9 +205,11 @@ export default function Profile() {
       <ErrorModal />
 
       {isCardsLoading ? (
-        <CardsLoader style={{ minHeight: '200px' }}>
-          <CardsSpinner size="24px" />
-        </CardsLoader>
+        <Card>
+          <CardsLoader>
+            <CardsSpinner size="42px" />
+          </CardsLoader>
+        </Card>
       ) : (
         <>
           {hasVCowBalance && (
