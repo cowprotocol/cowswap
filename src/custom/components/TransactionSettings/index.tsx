@@ -2,7 +2,6 @@ import SlippageTabsMod, {
   TransactionSettingsProps as TransactionSettingsPropsMod,
   FancyButton as FancyButtonUni,
   OptionCustom,
-  Input,
 } from './TransactionSettingsMod'
 import { RowBetween, RowFixed } from 'components/Row'
 import styled from 'styled-components/macro'
@@ -45,10 +44,6 @@ const Wrapper = styled.div`
       opacity: 0.5;
       color: ${({ theme }) => theme.text1};
     }
-  }
-
-  ${Input} {
-    color: ${({ theme, color }) => (color === 'red' ? theme.error : theme.text1)};
   }
 
   ${RowFixed} {

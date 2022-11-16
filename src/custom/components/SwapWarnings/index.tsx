@@ -8,7 +8,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { darken } from 'polished'
 import useDebounce from 'hooks/useDebounce'
-import { StyledInfo } from '@cow/modules/swap/pure/styled'
+import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 
 interface HighFeeContainerProps {
   padding?: string
@@ -67,7 +67,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   }
 `
 
-const ErrorStyledInfo = styled(StyledInfo)`
+const ErrorStyledInfoIcon = styled(StyledInfoIcon)`
   color: ${({ theme }) => theme.infoText};
 `
 const HIGH_TIER_FEE = { level: '30', colour: '#FF7676' }
@@ -148,7 +148,7 @@ export const HighFeeWarning = (props: WarningProps) => {
           wrap
           content={<HighFeeWarningMessage feePercentage={feePercentage} />}
         >
-          <ErrorStyledInfo />
+          <ErrorStyledInfoIcon />
         </MouseoverTooltipContent>
         {acceptWarningCb && (
           <WarningCheckboxContainer>
@@ -178,7 +178,7 @@ export const NoImpactWarning = (props: WarningProps) => {
           Price impact <strong>unknown</strong> - trade carefully
         </div>{' '}
         <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={NoImpactWarningMessage} wrap>
-          <ErrorStyledInfo />
+          <ErrorStyledInfoIcon />
         </MouseoverTooltipContent>
         {acceptWarningCb && (
           <WarningCheckboxContainer>

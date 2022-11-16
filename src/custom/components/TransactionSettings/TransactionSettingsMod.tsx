@@ -73,8 +73,10 @@ const Option = styled(FancyButton)<{ active: boolean }>`
     border: none;
     pointer-events: none;
   }
-  background-color: ${({ active, theme }) => active && theme.primary1};
-  color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
+  /* background-color: ${({ active, theme }) => active && theme.primary1}; */
+  background-color: ${({ active, theme }) => (active ? theme.bg2 : theme.grey1)}; // MOD
+  /* color: ${({ active, theme }) => (active ? theme.white : theme.text1)}; */
+  color: ${({ active, theme }) => (active ? theme.white : theme.text1)}; // MOD
 `
 
 export const Input = styled.input`
@@ -277,7 +279,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             style={{
               fontSize: '14px',
               paddingTop: '7px',
-              color: slippageError ? 'red' : '#F3841E',
+              // color: slippageError ? 'red' : '#F3841E',
+              color: slippageError ? theme.error : theme.warning, // MOD
             }}
           >
             {slippageError ? (

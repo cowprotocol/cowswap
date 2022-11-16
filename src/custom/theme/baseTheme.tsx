@@ -41,7 +41,14 @@ export function colors(darkMode: boolean): Colors {
 
     // States
     error: darkMode ? '#D41300' : '#D41300',
-    errorText: darkMode ? '#560000' : '#560000',
+    warning: darkMode ? '#f3841e' : '#f3841e',
+
+    // DEPRECIATED but keeping because of depedencies
+    primary1: darkMode ? '#0d5ed9' : '#052B65',
+    primary3: darkMode ? '#0d5ed9' : '#052B65',
+    primary4: darkMode ? '#0d5ed9' : '#052B65',
+    primary5: darkMode ? '#0d5ed9' : '#052B65',
+    red1: darkMode ? '#D41300' : '#D41300',
     // ==========================================
 
     // ****** text ******
@@ -57,12 +64,6 @@ export function colors(darkMode: boolean): Colors {
 
     // ****** specialty colors ******
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
-
-    // ****** primary colors ******
-    primary1: darkMode ? '#D67B5A' : '#FF784A',
-    primary3: darkMode ? '#D67B5A' : '#FF784A',
-    primary4: darkMode ? '#ff5d25' : '#ff5d25',
-    primary5: darkMode ? '#D67B5A' : '#FF784A',
 
     // ****** color text ******
     primaryText1: darkMode ? '#021E34' : '#000000',
@@ -110,7 +111,6 @@ export function colors(darkMode: boolean): Colors {
     // banner styles
     info: darkMode ? '#615845' : '#FFEDAF',
     infoText: darkMode ? '#ffca4a' : '#564D00',
-    warning: '#FFEDAF',
     warningText: '#564D00',
   }
 }

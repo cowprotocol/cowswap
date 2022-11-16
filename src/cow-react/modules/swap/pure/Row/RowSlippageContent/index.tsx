@@ -9,7 +9,7 @@ import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { ThemedText } from 'theme/index'
 import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
-import { StyledInfo } from '@cow/modules/swap/pure/styled'
+import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 
 export const ClickableText = styled.button`
   background: none;
@@ -17,9 +17,9 @@ export const ClickableText = styled.button`
   outline: none;
   padding: 0;
   margin: 0;
-  font-weight: 500;
-  font-size: 13px;
-  color: ${({ theme }) => theme.text1};
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
 `
 
 export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
@@ -76,7 +76,7 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
           wrap
           content={isEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip()}
         >
-          <StyledInfo />
+          <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
       </RowFixed>
       <TextWrapper textAlign="right">

@@ -1,6 +1,6 @@
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { StyledInfo, LightGreyText } from '../../styled'
+import { StyledInfoIcon, LightGreyText } from '@cow/modules/swap/pure/styled'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps, RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
 
@@ -31,7 +31,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
         <TextWrapper>Fees {includeGasMessage}</TextWrapper>
         {showHelpers && (
           <MouseoverTooltipContent content={tooltip} wrap>
-            <StyledInfo />
+            <StyledInfoIcon size={16} />
           </MouseoverTooltipContent>
         )}
       </RowFixed>
