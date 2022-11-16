@@ -4,14 +4,12 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addOrUpdateOrders,
   addPendingOrder,
-  cancelOrder,
   cancelOrdersBatch,
   clearOrders,
   expireOrdersBatch,
   fulfillOrdersBatch,
   OrderStatus,
   preSignOrders,
-  removeOrder,
   requestOrderCancellation,
   SerializedOrder,
   setIsOrderUnfillable,
@@ -227,11 +225,6 @@ export default createReducer(initialState, (builder) =>
         orderObject.order.presignGnosisSafeTx = safeTransaction
       }
     })
-    .addCase(removeOrder, (state, action) => {
-      prefillState(state, action)
-      const { id, chainId } = action.payload
-      deleteOrderById(state, chainId, id)
-    })
     .addCase(addOrUpdateOrders, (state, action) => {
       prefillState(state, action)
       const { chainId, orders } = action.payload
@@ -322,21 +315,6 @@ export default createReducer(initialState, (builder) =>
 
       if (orderObject) {
         orderObject.order.isCancelling = true
-      }
-    })
-    .addCase(cancelOrder, (state, action) => {
-      prefillState(state, action)
-      const { id, chainId } = action.payload
-
-      const orderObject = getOrderById(state, chainId, id)
-
-      if (orderObject) {
-        deleteOrderById(state, chainId, id)
-
-        orderObject.order.status = OrderStatus.CANCELLED
-        orderObject.order.isCancelling = false
-
-        addOrderToState(state, chainId, id, 'cancelled', orderObject.order)
       }
     })
     .addCase(cancelOrdersBatch, (state, action) => {

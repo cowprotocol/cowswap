@@ -17,7 +17,7 @@ import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 
 // action syntactic sugar
-const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.cancelOrder)
+const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
 const isPresignOrders = isAnyOf(OrderActions.preSignOrders)
 const isBatchOrderAction = isAnyOf(
@@ -30,7 +30,7 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
-const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
+const isCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 
 // on each Pending, Expired, Fulfilled order action
 // a corresponding Popup action is dispatched

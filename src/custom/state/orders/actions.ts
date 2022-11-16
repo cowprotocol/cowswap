@@ -103,7 +103,6 @@ export interface AddPendingOrderParams {
 export type ChangeOrderStatusParams = { id: OrderID; chainId: ChainId }
 
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
-export const removeOrder = createAction<ChangeOrderStatusParams>('order/removeOrder')
 
 export interface OrderFulfillmentData {
   id: OrderID
@@ -150,8 +149,6 @@ export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxP
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
 
 export const requestOrderCancellation = createAction<ChangeOrderStatusParams>('order/requestOrderCancellation')
-
-export const cancelOrder = createAction<ChangeOrderStatusParams>('order/cancelOrder')
 
 export const cancelOrdersBatch = createAction<CancelOrdersBatchParams>('order/cancelOrdersBatch')
 
