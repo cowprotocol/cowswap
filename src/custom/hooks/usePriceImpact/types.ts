@@ -5,17 +5,11 @@ export type ParsedAmounts = {
   OUTPUT: CurrencyAmount<Currency> | undefined
 }
 
-// const isExactIn: boolean = independentField === Field.INPUT
-// const feeAsCurrency = stringToCurrency(quote.fee.amount, inputCurrency)
-// const inputAmountWithoutFee = stringToCurrency(quote.price.amount, inputCurrency)
-// const inputAmountWithFee = inputAmountWithoutFee.add(feeAsCurrency)
-// const outputAmount = stringToCurrency(quote.price.amount, outputCurrency)
-
 export interface PriceImpactTrade {
-  inputAmount: CurrencyAmount<Currency> | null // isExactIn ? parsedInputAmount : inputAmountWithFee
-  outputAmount: CurrencyAmount<Currency> | null // isExactIn ? stringToCurrency(quote.price.amount, outputCurrency) : parsedInputAmount
-  inputAmountWithoutFee?: CurrencyAmount<Currency> // isExactIn ? parsedInputAmount : inputAmountWithoutFee
-  outputAmountWithoutFee?: CurrencyAmount<Currency> // isExactIn ? stringToCurrency(quote.price.amount, outputCurrency) (???) : parsedInputAmount
+  inputAmount: CurrencyAmount<Currency> | null
+  outputAmount: CurrencyAmount<Currency> | null
+  inputAmountWithoutFee?: CurrencyAmount<Currency>
+  outputAmountWithoutFee?: CurrencyAmount<Currency>
 }
 
 export interface FallbackPriceImpactParams {

@@ -70,7 +70,6 @@ export function LimitOrdersWidget() {
   const isTradePriceUpdating = false
   const showSetMax = true
   const priceImpactParams = usePriceImpact({
-    // TODO: set proper trade params regarding to isInversed
     abTrade: {
       inputAmount: inputCurrencyAmount,
       outputAmount: outputCurrencyAmount,
