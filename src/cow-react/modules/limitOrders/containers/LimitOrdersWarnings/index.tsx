@@ -41,10 +41,12 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const showPriceImpactWarning = !expertMode && !!account && !!priceImpact.error
 
+  // Reset price impact flag when there is no price impact
   useEffect(() => {
     updateLimitOrdersWarnings({ isPriceImpactAccepted: !showPriceImpactWarning })
   }, [showPriceImpactWarning, updateLimitOrdersWarnings])
 
+  // Reset rate impact before openning confirmation screen
   useEffect(() => {
     if (isConfirmScreen) {
       updateLimitOrdersWarnings({ isRateImpactAccepted: false })
