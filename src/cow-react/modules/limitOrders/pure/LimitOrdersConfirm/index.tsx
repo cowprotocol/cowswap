@@ -9,6 +9,7 @@ import { TradeFlowContext } from '../../services/tradeFlow'
 import * as styledEl from './styled'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext
@@ -16,6 +17,7 @@ export interface LimitOrdersConfirmProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   rateImpact: number
+  priceImpact: PriceImpact
   warningsAccepted: boolean
   Warnings: ReactNode
   onConfirm(): void
@@ -31,6 +33,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
     rateImpact,
     Warnings,
     warningsAccepted,
+    priceImpact,
   } = props
 
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
@@ -47,6 +50,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         id="output-currency-preview"
         currencyInfo={outputCurrencyInfo}
         topLabel={outputCurrencyInfo.label}
+        priceImpactParams={priceImpact}
       />
       <LimitOrdersDetails tradeContext={tradeContext} activeRateDisplay={activeRateDisplay} />
       {Warnings}

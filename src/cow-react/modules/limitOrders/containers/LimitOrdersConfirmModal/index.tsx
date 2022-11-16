@@ -108,6 +108,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}
               rateImpact={rateImpact}
+              priceImpact={priceImpact}
               warningsAccepted={warningsAccepted}
               Warnings={Warnings}
             />

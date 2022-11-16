@@ -91,6 +91,7 @@ const Fixtures = {
     <LimitOrdersConfirm
       activeRateDisplay={activeRateDisplay}
       rateImpact={1}
+      priceImpact={priceImpact}
       tradeContext={tradeContext}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}

@@ -5,7 +5,7 @@ import { ParsedAmounts, PriceImpactTrade } from './types'
 import { QuoteError } from 'state/price/actions'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 
-type PriceImpactParams = {
+export interface PriceImpactParams {
   abTrade?: PriceImpactTrade
   isWrapping: boolean
   parsedAmounts: ParsedAmounts

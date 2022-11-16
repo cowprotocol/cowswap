@@ -32,6 +32,7 @@ import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRa
 import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
+import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -68,19 +69,8 @@ export function LimitOrdersWidget() {
   const allowsOffchainSigning = false
   const isTradePriceUpdating = false
   const showSetMax = true
-  const priceImpactParams = usePriceImpact({
-    abTrade: {
-      inputAmount: inputCurrencyAmount,
-      outputAmount: outputCurrencyAmount,
-      inputAmountWithoutFee: inputCurrencyAmount || undefined,
-      outputAmountWithoutFee: outputCurrencyAmount || undefined,
-    },
-    parsedAmounts: {
-      INPUT: inputCurrencyAmount || undefined,
-      OUTPUT: outputCurrencyAmount || undefined,
-    },
-    isWrapping: false,
-  })
+
+  const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
       tier: 0,
@@ -179,7 +169,7 @@ export function LimitOrdersWidget() {
                 subsidyAndBalance={subsidyAndBalance}
                 allowsOffchainSigning={allowsOffchainSigning}
                 currencyInfo={outputCurrencyInfo}
-                priceImpactParams={priceImpactParams}
+                priceImpactParams={priceImpact}
                 topLabel={outputCurrencyInfo.label}
               />
               {recipient !== null && (
@@ -188,12 +178,12 @@ export function LimitOrdersWidget() {
 
               <styledEl.StyledRateInfo activeRateDisplay={activeRateDisplay} />
 
-              <LimitOrdersWarnings priceImpact={priceImpactParams} />
+              <LimitOrdersWarnings priceImpact={priceImpact} />
 
               <styledEl.TradeButtonBox>
                 <TradeButtons
                   tradeContext={tradeContext}
-                  priceImpact={priceImpactParams}
+                  priceImpact={priceImpact}
                   openConfirmScreen={() => setShowConfirmation(true)}
                 />
               </styledEl.TradeButtonBox>
@@ -208,7 +198,7 @@ export function LimitOrdersWidget() {
         <LimitOrdersConfirmModal
           isOpen={showConfirmation}
           tradeContext={tradeContext}
-          priceImpact={priceImpactParams}
+          priceImpact={priceImpact}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
           onDismiss={() => setShowConfirmation(false)}
