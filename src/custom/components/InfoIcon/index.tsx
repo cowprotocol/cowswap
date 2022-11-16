@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 
 const StyledInfoIcon = styled(Info)`
   opacity: 0.8;
-  stroke: ${({ theme }) => theme.text3};
+  stroke: ${({ theme }) => theme.black};
   line-height: 0;
   vertical-align: middle;
 
@@ -23,6 +23,7 @@ const StyledTooltipContainer = styled(TooltipContainer)`
 
 export interface InfoIconProps {
   content: ReactNode
+  className?: string
 }
 
 export function InfoIcon(props: InfoIconProps) {
@@ -30,7 +31,7 @@ export function InfoIcon(props: InfoIconProps) {
 
   return (
     <MouseoverTooltipContent wrap={false} content={content} placement="bottom">
-      <StyledInfoIcon size={16} />
+      <StyledInfoIcon className={props.className} size={16} />
     </MouseoverTooltipContent>
   )
 }

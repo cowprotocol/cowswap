@@ -7,7 +7,6 @@ import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { darken } from 'polished'
-import useDebounce from 'hooks/useDebounce'
 import { StyledInfo } from '@cow/modules/swap/pure/styled'
 
 interface HighFeeContainerProps {
@@ -105,18 +104,6 @@ const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) 
   </div>
 )
 
-const NoImpactWarningMessage = (
-  <div>
-    <small>
-      We are unable to calculate the price impact for this order.
-      <br />
-      <br />
-      You may still move forward but{' '}
-      <strong>please review carefully that the receive amounts are what you expect.</strong>
-    </small>
-  </div>
-)
-
 export type WarningProps = {
   trade?: TradeGp
   acceptedStatus?: boolean
@@ -153,36 +140,6 @@ export const HighFeeWarning = (props: WarningProps) => {
         {acceptWarningCb && (
           <WarningCheckboxContainer>
             <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
-            Swap anyway
-          </WarningCheckboxContainer>
-        )}
-      </div>
-    </WarningContainer>
-  )
-}
-
-export const NoImpactWarning = (props: WarningProps) => {
-  const { acceptedStatus, acceptWarningCb, hide } = props
-  const theme = useContext(ThemeContext)
-
-  const debouncedHide = useDebounce(hide, 2000)
-  const [bgColour, textColour] = [LOW_TIER_FEE.colour, darken(0.7, HIGH_TIER_FEE.colour)]
-
-  if (!!debouncedHide) return null
-
-  return (
-    <WarningContainer {...props} bgColour={bgColour} textColour={textColour}>
-      <div>
-        <AlertTriangle size={18} />
-        <div>
-          Price impact <strong>unknown</strong> - trade carefully
-        </div>{' '}
-        <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={NoImpactWarningMessage} wrap>
-          <ErrorStyledInfo />
-        </MouseoverTooltipContent>
-        {acceptWarningCb && (
-          <WarningCheckboxContainer>
-            <input id="price-impact-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
             Swap anyway
           </WarningCheckboxContainer>
         )}

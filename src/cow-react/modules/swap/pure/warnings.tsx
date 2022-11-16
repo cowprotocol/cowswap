@@ -1,10 +1,11 @@
-import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
+import { HighFeeWarning } from 'components/SwapWarnings'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { CompatibilityIssuesWarning } from '@cow/modules/swap/pure/CompatibilityIssuesWarning'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'
 import React from 'react'
 import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
+import { NoImpactWarning } from '@cow/modules/trade/pure/NoImpactWarning'
 
 export interface NewSwapWarningsTopProps {
   trade: TradeGp | undefined
@@ -47,14 +48,12 @@ export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTop
         width="99%"
         padding="5px 15px"
       />
-      <NoImpactWarning
-        trade={trade}
-        hide={hideUnknownImpactWarning}
-        acceptedStatus={impactWarningAccepted}
-        acceptWarningCb={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
-        width="99%"
-        padding="5px 15px"
-      />
+      {!hideUnknownImpactWarning && (
+        <NoImpactWarning
+          isAccepted={impactWarningAccepted}
+          acceptCallback={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
+        />
+      )}
     </>
   )
 }, genericPropsChecker)
