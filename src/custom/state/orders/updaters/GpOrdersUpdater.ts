@@ -81,8 +81,8 @@ function _transformGpOrderToStoreOrder(
     isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
     // EthFlow related
     owner: onchainUser || owner,
-    validTo: ethflowData?.user_valid_to || order.validTo,
-    isRefunded: ethflowData?.is_refunded,
+    validTo: ethflowData?.userValidTo || order.validTo,
+    isRefunded: ethflowData?.isRefunded,
   }
   // The function to compute the summary needs the Order instance to exist already
   // That's why it's not used before and an empty string is set instead

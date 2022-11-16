@@ -106,8 +106,8 @@ async function _updateCreatingOrders(
           }
           const updatedOrder = {
             ...order,
-            validTo: orderData.ethflowData?.user_valid_to || order.validTo,
-            isRefunded: orderData.ethflowData?.is_refunded,
+            validTo: orderData.ethflowData?.userValidTo || order.validTo,
+            isRefunded: orderData.ethflowData?.isRefunded,
           }
           addOrUpdateOrders({ chainId, orders: [updatedOrder] })
         })

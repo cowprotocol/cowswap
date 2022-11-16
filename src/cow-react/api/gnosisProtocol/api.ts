@@ -125,9 +125,8 @@ export interface OrderMetaData {
 }
 
 type EthFlowData = {
-  // TODO: API should return camelCase for consistency
-  user_valid_to: number
-  is_refunded: boolean
+  userValidTo: number
+  isRefunded: boolean
 }
 
 export interface TradeMetaData {
