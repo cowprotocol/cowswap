@@ -50,14 +50,16 @@ export const FancyButton = styled.button`
   font-size: 1rem;
   width: auto;
   min-width: 3.5rem;
-  border: 1px solid ${({ theme }) => theme.bg3};
+  /* border: 1px solid ${({ theme }) => theme.bg3}; */
+  border: 0; // mod
   outline: none;
-  background: ${({ theme }) => theme.bg1};
+  /* background: ${({ theme }) => theme.bg1}; */
+  background: ${({ theme }) => theme.bg2}; // mod
   :hover {
-    border: 1px solid ${({ theme }) => theme.bg4};
+    /* border: 1px solid ${({ theme }) => theme.bg4}; */
   }
   :focus {
-    border: 1px solid ${({ theme }) => theme.primary1};
+    /* border: 1px solid ${({ theme }) => theme.primary1}; */
   }
 `
 
@@ -66,6 +68,7 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   :hover {
     cursor: pointer;
   }
+
   &:disabled {
     border: none;
     pointer-events: none;
@@ -74,7 +77,7 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
 `
 
-const Input = styled.input`
+export const Input = styled.input`
   background: ${({ theme }) => theme.bg1};
   font-size: 16px;
   width: auto;

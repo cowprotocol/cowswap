@@ -5,11 +5,11 @@ export const WrapCardWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex: 1;
-  padding: 8px;
+  padding: 16px;
 
   > img {
-    width: 32px;
-    height: 32px;
+    width: 42px;
+    height: 42px;
     margin: 0 0 14px;
     box-shadow: none;
   }
@@ -18,9 +18,12 @@ export const WrapCardWrapper = styled.div`
 export const BalanceLabel = styled.p<{ background?: string }>`
   display: flex;
   justify-content: center;
-  margin: 0 0 4px;
-  font-size: 13px;
+  margin: 0 0 6px;
+  font-size: 15px;
   width: 100%;
+  word-break: break-all;
+  text-align: center;
+  padding: 0 10px;
 `
 
 export const WrappingPreviewContainer = styled.div`
@@ -32,21 +35,25 @@ export const WrappingPreviewContainer = styled.div`
   overflow: hidden;
 
   > ${WrapCardWrapper} {
-    border: 1px solid ${({ theme }) => theme.bg2};
+    border: 1px solid ${({ theme }) => theme.bg3};
+
     &:nth-of-type(1) {
       background-color: ${({ theme }) => theme.bg1};
       border-radius: 16px 0 0 16px;
+      border-right: 0;
     }
 
     &:nth-of-type(2) {
-      color: ${({ theme }) => theme.text2};
-      background-color: ${({ theme }) => theme.bg2};
+      color: ${({ theme }) => theme.text1};
+      background-color: ${({ theme }) => theme.grey1};
+      border: 1px solid ${({ theme }) => theme.grey1};
       border-radius: 0 16px 16px 0;
     }
 
     > ${BalanceLabel}:last-of-type {
       margin: 0;
-      font-size: 12px;
+      font-size: 13px;
+      opacity: 0.8;
     }
   }
 
@@ -58,10 +65,11 @@ export const WrappingPreviewContainer = styled.div`
     bottom: 0;
     right: 0;
     margin: auto;
-    background: ${({ theme }) => theme.white};
-    width: 24px;
-    height: 24px;
-    border-radius: 24px;
-    padding: 3px;
+    background: ${({ theme }) => theme.grey1};
+    stroke: ${({ theme }) => theme.text1};
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    padding: 5px;
   }
 `

@@ -41,6 +41,7 @@ export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   filter: ${({ disable }) => disable && 'grayscale(1)'};
 
   flex: 0 0 calc(33% - 8px);
+  justify-content: center;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex: auto;

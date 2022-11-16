@@ -29,6 +29,7 @@ export const StyledNavLink = styled(StyledNavLinkUni)`
 
 export const BalanceText = styled(BalanceTextUni)`
   font-weight: 500;
+  font-size: 13px;
   padding: 0 6px 0 12px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -98,7 +99,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
             width: 100%;
             display: flex;
             height: 60px;
-            background: ${({ theme }) => theme.bg4};
+            background: ${({ theme }) => theme.bg1};
             position: fixed;
             top: 0;
             left: 0;
@@ -154,7 +155,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     cursor: pointer;
     background: transparent;
     transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
-    color: ${({ theme }) => transparentize(0.4, theme.text1)};
+    color: ${({ theme }) => theme.text2};
 
     ${({ theme }) => theme.mediaWidth.upToLarge`
       width: 100%;
@@ -168,7 +169,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     `};
 
     > svg > path {
-      fill: ${({ theme }) => transparentize(0.4, theme.text1)};
+      fill: ${({ theme }) => theme.text2};
       transition: fill 0.15s ease-in-out;
     }
 
@@ -197,6 +198,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
     &.ACTIVE {
       color: ${({ theme }) => theme.text1};
+      font-weight: 600;
     }
   }
 
@@ -245,7 +247,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
     left: 0;
     bottom: 0;
     z-index: 3;
-    background: ${({ theme }) => theme.bg4};
+    background: ${({ theme }) => theme.bg1};
     outline: 0;
     padding: 60px 8px;
     overflow-x: hidden;
@@ -289,14 +291,14 @@ export const TwitterLink = styled(StyledMenuButton)`
   }
 
   > a:hover > svg > path {
-    fill: ${({ theme }) => theme.primary1};
+    fill: ${({ theme }) => theme.text1};
   }
 `
 
 export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   width: 131px;
   height: 41px;
-  background: ${({ theme }) => `url(${theme.logo.src}) no-repeat center/contain`};
+  background: none;
   margin: 0 32px 0 0;
   position: relative;
 
@@ -315,8 +317,8 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   `}
 
   > svg {
-    width: 100%;
-    height: 100%;
+    width: inherit;
+    height: inherit;
     object-fit: contain;
   }
 `
@@ -332,7 +334,7 @@ export const UniIcon = styled.div`
 `
 
 export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
-  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg4)};
+  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg1)};
   border-radius: 21px;
   border: 2px solid transparent;
   transition: border 0.2s ease-in-out;

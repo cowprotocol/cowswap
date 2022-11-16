@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import WalletModal from 'components/WalletModal'
-import { Web3StatusInner, Web3StatusConnected, Text } from './Web3StatusMod'
+import { Web3StatusInner, Web3StatusConnect, Web3StatusConnected, Text } from './Web3StatusMod'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { OrderStatus } from 'state/orders/actions'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 
 export const Wrapper = styled.div`
-  color: ${({ theme }) => theme.wallet?.color};
+  color: ${({ theme }) => theme.text1};
   height: 40px;
   width: 100%;
   display: flex;
@@ -29,10 +29,16 @@ export const Wrapper = styled.div`
     width: max-content;
   }
 
+  ${Web3StatusConnect} {
+    background-color: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
+    border: 0;
+  }
+
   ${Web3StatusConnected} {
     border-radius: 21px;
-    color: ${({ theme }) => theme.wallet?.color};
-    background: ${({ theme }) => theme.wallet?.background};
+    color: ${({ theme }) => theme.text1};
+    background-color: ${({ theme }) => theme.grey1};
     height: 100%;
     width: 100%;
     border: 0;
