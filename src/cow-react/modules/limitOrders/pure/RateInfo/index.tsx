@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 
 const InvertIcon = styled.div`
   background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.white};
   width: 20px;
   height: 20px;
   border-radius: 50%;
