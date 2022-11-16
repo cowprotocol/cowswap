@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { transparentize } from 'polished'
+import { transparentize, lighten } from 'polished'
 import { X } from 'react-feather'
 
 export const InfoPopup = styled.div`
@@ -9,8 +9,7 @@ export const InfoPopup = styled.div`
   gap: 16px;
   font-size: 14px;
   line-height: 1.3;
-  background: ${({ theme }) =>
-    `linear-gradient(90deg, ${transparentize(0.88, theme.text1)} 0%, ${transparentize(0.94, theme.text1)} 100%)`};
+  background: ${({ theme }) => `linear-gradient(90deg, ${theme.bg1} 0%, ${lighten(0.03, theme.bg1)} 100%)`};
   border-radius: 16px;
   padding: 20px 40px 16px 20px;
 
