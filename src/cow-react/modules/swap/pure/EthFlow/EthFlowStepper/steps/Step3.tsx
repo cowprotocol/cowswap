@@ -1,15 +1,16 @@
-import React from 'react'
-import { Icon, Flag, Check } from 'react-feather'
+import React, { useCallback } from 'react'
+import { Flag, Check } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ExplorerLinkStyled, EthFlowStepperProps, SmartOrderStatus } from '..'
-import { StatusIconState } from '../StatusIcon'
-import { Step } from '../Step'
+import { Step, StepProps } from '../Step'
 
 const RefundMessage = styled.span`
   color: #0d5ed9;
 `
 
 const ExpiredMessage = styled.span``
+
+type BasicStepProps = Pick<StepProps, 'label' | 'statusIconState' | 'icon'>
 
 export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelation }: EthFlowStepperProps) {
   const { state, isExpired, rejectedReason } = order
@@ -26,36 +27,54 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
 
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
-  let label: string, stepStatus: StatusIconState, icon: Icon
-  if (expiredBeforeCreate) {
-    label = 'Receive ' + tokenLabel
-    stepStatus = 'pending'
-    icon = Flag
-  } else if (isIndexing) {
-    label = 'Receive ' + tokenLabel
-    stepStatus = 'not-started'
-    icon = Flag
-  } else if (isFilled) {
-    label = 'Received ' + tokenLabel
-    stepStatus = 'success'
-    icon = Check
-  } else if (isCanceled || isRefunded) {
-    label = nativeTokenSymbol + ' Refunded'
-    stepStatus = 'success'
-    icon = Check
-  } else if (isIndexed) {
-    label = 'Receive ' + tokenLabel
-    stepStatus = 'pending'
-    icon = Flag
-  } else {
-    label = 'Receive ' + tokenLabel
-    stepStatus = 'not-started'
-    icon = Flag
-  }
+  // Get the label, status and icon
+  const { label, statusIconState, icon } = useCallback<() => BasicStepProps>(() => {
+    if (expiredBeforeCreate) {
+      return {
+        label: 'Receive ' + tokenLabel,
+        statusIconState: 'pending',
+        icon: Flag,
+      }
+    }
+    if (isIndexing) {
+      return {
+        label: 'Receive ' + tokenLabel,
+        statusIconState: 'not-started',
+        icon: Flag,
+      }
+    }
+    if (isFilled) {
+      return {
+        label: 'Received ' + tokenLabel,
+        statusIconState: 'success',
+        icon: Check,
+      }
+    }
+    if (isCanceled || isRefunded) {
+      return {
+        label: nativeTokenSymbol + ' Refunded',
+        statusIconState: 'success',
+        icon: Check,
+      }
+    }
+    if (isIndexed) {
+      return {
+        label: 'Receive ' + tokenLabel,
+        statusIconState: 'pending',
+        icon: Flag,
+      }
+    }
+
+    return {
+      label: 'Receive ' + tokenLabel,
+      statusIconState: 'not-started',
+      icon: Flag,
+    }
+  }, [nativeTokenSymbol, tokenLabel, expiredBeforeCreate, isIndexing, isFilled, isCanceled, isRefunded, isIndexed])()
 
   const isOrderRejected = !!rejectedReason
   const wontReceiveToken = isExpired || isOrderRejected || isRefunding || isCanceling || isCanceled || isRefunded
-  const isSuccess = stepStatus === 'success'
+  const isSuccess = statusIconState === 'success'
 
   let refundLink: JSX.Element | undefined
   if (cancelationTx && !isRefunded) {
@@ -84,5 +103,5 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
       {refundLink}
     </>
   )
-  return <Step statusIconState={stepStatus} details={details} icon={icon} label={label} crossOut={crossOut} />
+  return <Step statusIconState={statusIconState} details={details} icon={icon} label={label} crossOut={crossOut} />
 }
