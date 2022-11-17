@@ -57,6 +57,11 @@ export const Progress = styled.progress<ProgressProps>`
   min-width: 100px;
 
   // TODO: We might want to style differently the error status (see props!)
+  /* ::-moz-progress-bar,
+  ::-webkit-progress-value,
+  ::-webkit-progress-bar {
+    background-color: red;
+  } */
 `
 
 export const ExplorerLinkStyled = styled(ExplorerLink)`
