@@ -1,6 +1,5 @@
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { useWeb3React } from '@web3-react/core'
-import { OrderKind } from '@cowprotocol/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useGP2SettlementContract } from 'hooks/useContract'
@@ -50,7 +49,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     postOrderParams: {
-      kind: OrderKind.SELL,
+      kind: state.orderKind,
       account,
       chainId,
       sellToken,
