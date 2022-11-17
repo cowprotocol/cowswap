@@ -53,7 +53,7 @@ export function useSetupTradeState(): void {
   const prevCurrentChainId = usePrevious(currentChainId)
 
   const chainIdFromUrlWasChanged = !!chainIdFromUrl && chainIdFromUrl !== prevChainIdFromUrl
-  const providerChainIdWasChanged = !!currentChainId && currentChainId !== prevCurrentChainId
+  const providerChainIdWasChanged = !!currentChainId && !!prevCurrentChainId && currentChainId !== prevCurrentChainId
 
   const skipUpdate = useMemo(() => {
     if (chainIdFromUrlWasChanged && !!account) return true
