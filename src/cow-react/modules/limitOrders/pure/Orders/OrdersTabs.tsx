@@ -27,6 +27,7 @@ const TabButton = styled.button<{ active?: boolean }>`
 `
 
 export interface OrderTab {
+  id: string
   title: string
   count: number
   isActive?: boolean
@@ -34,7 +35,7 @@ export interface OrderTab {
 
 export interface OrdersTabsProps {
   tabs: OrderTab[]
-  onTabChange(tab: OrderTab, index: number): void
+  onTabChange(tab: OrderTab): void
 }
 
 export function OrdersTabs({ tabs, onTabChange }: OrdersTabsProps) {
@@ -48,7 +49,7 @@ export function OrdersTabs({ tabs, onTabChange }: OrdersTabsProps) {
   const changeTab = useCallback(
     (tab: OrderTab, index: number) => {
       setActiveTabIndex(index)
-      onTabChange(tab, index)
+      onTabChange(tab)
     },
     [setActiveTabIndex, onTabChange]
   )
