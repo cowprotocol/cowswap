@@ -1,5 +1,5 @@
 import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
-import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
+
 import { CompatibilityIssuesWarning } from '@cow/modules/swap/pure/CompatibilityIssuesWarning'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'
@@ -73,8 +73,6 @@ export const NewSwapWarningsBottom = React.memo(function (props: NewSwapWarnings
           isSupportedWallet={isSupportedWallet}
         />
       )}
-
-      <NetworkAlert />
     </>
   )
 }, genericPropsChecker)
