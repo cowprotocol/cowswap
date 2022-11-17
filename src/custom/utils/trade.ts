@@ -28,6 +28,7 @@ export interface PostOrderParams {
   recipientAddressOrName: string | null
   allowsOffchainSigning: boolean
   appDataHash: string
+  class: 'market' | 'limit'
   quoteId?: number
 }
 
@@ -109,7 +110,14 @@ export function getOrderParams(params: PostOrderParams): {
 
 export function mapUnsignedOrderToOrder(
   unsignedOrder: UnsignedOrder,
-  {
+  params: PostOrderParams & {
+    orderId: string
+    summary: string
+    signature: string
+    isOnChain?: boolean
+  }
+): Order {
+  const {
     orderId,
     account,
     summary,
@@ -119,8 +127,7 @@ export function mapUnsignedOrderToOrder(
     isOnChain,
     signature,
     sellAmountBeforeFee,
-  }: PostOrderParams & { orderId: string; summary: string; signature: string; isOnChain?: boolean }
-): Order {
+  } = params
   return {
     ...unsignedOrder,
 
@@ -130,6 +137,7 @@ export function mapUnsignedOrderToOrder(
     summary,
     inputToken: sellToken,
     outputToken: buyToken,
+    class: params.class,
 
     // Status
     status: allowsOffchainSigning || isOnChain ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,

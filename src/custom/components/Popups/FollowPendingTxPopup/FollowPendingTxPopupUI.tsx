@@ -14,7 +14,7 @@ type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
 
 const TooltipWrapper = styled(Tooltip)`
   & {
-    z-index: 2;
+    z-index: 6;
   }
   > .arrow- {
     z-index: 1;
@@ -69,7 +69,7 @@ const AutoColumnWrapper = styled(AutoColumn)`
 const StyledClose = styled(IconClose)`
   top: 0.5rem;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    right:0.5rem; 
+    right:0.5rem;
   `};
 `
 

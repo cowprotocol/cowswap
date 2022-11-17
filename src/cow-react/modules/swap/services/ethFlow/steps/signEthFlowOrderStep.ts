@@ -76,7 +76,8 @@ export async function signEthFlowOrderStep(
 
   return {
     txReceipt,
-    order: mapUnsignedOrderToOrder(order, { ...orderParams, orderId, signature: '', summary }),
+    // For ETH-flow we always set order class to 'market' since we don't support ETH-flow in Limit orders
+    order: mapUnsignedOrderToOrder(order, { ...orderParams, orderId, signature: '', class: 'market', summary }),
     orderId,
   }
 }
