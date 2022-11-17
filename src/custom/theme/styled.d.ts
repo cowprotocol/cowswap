@@ -84,7 +84,8 @@ declare module 'styled-components' {
     }
     appBody: {
       maxWidth: {
-        trade: string
+        swap: string
+        limit: string
         content: string
       }
     }
