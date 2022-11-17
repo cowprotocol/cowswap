@@ -6,6 +6,7 @@ import { Progress1 } from './steps/Progress1'
 import { Step2 } from './steps/Step2'
 import { Progress2 } from './steps/Progress2'
 import { Step3 } from './steps/Step3'
+import { StatusIconState } from './StatusIcon'
 
 export enum SmartOrderStatus {
   CREATING = 'CREATING',
@@ -47,9 +48,15 @@ const Wrapper = styled.div`
   line-height: 1.5;
 `
 
-export const Progress = styled.progress`
+export interface ProgressProps {
+  status: StatusIconState
+  value: number
+}
+export const Progress = styled.progress<ProgressProps>`
   height: 5px;
   min-width: 100px;
+
+  // TODO: We might want to style differently the error status (see props!)
 `
 
 export const ExplorerLinkStyled = styled(ExplorerLink)`

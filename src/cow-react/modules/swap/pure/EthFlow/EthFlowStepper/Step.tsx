@@ -15,7 +15,7 @@ const StepWrapper = styled.div`
 `
 
 export interface StepProps {
-  statusIconState: StatusIconState
+  state: StatusIconState
   icon: Icon
   label: string
   crossOut?: boolean
@@ -23,10 +23,10 @@ export interface StepProps {
 }
 
 export function Step(props: StepProps) {
-  const { label, crossOut, details, statusIconState, icon } = props
+  const { label, crossOut, details, state, icon } = props
   return (
     <StepWrapper>
-      <StatusIcon icon={icon} state={statusIconState} label={label} crossOut={crossOut} />
+      <StatusIcon icon={icon} state={state} label={label} crossOut={crossOut} />
       {details}
     </StepWrapper>
   )

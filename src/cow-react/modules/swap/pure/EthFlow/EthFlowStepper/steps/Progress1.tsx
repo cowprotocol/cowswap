@@ -1,24 +1,30 @@
-import React from 'react'
-import { Progress, EthFlowStepperProps, SmartOrderStatus } from '..'
-import { StatusIconState } from '../StatusIcon'
+import React, { useMemo } from 'react'
+import { Progress, EthFlowStepperProps, SmartOrderStatus, ProgressProps } from '..'
 
 export function Progress1({ order }: EthFlowStepperProps) {
   const { state, isExpired } = order
   const isCreating = state === SmartOrderStatus.CREATING
 
-  let progress: number, status: StatusIconState
-  if (isCreating) {
-    if (isExpired) {
-      progress = 100
-      status = 'error'
-    } else {
-      progress = 50
-      status = 'pending'
-    }
-  } else {
-    progress = 100
-    status = 'pending'
-  }
+  const { status: progressStatus, value: progress } = useMemo<ProgressProps>(() => {
+    if (isCreating) {
+      if (isExpired) {
+        return {
+          value: 100,
+          status: 'error',
+        }
+      }
 
-  return <Progress className={status} value={progress} max={100} />
+      return {
+        value: 50,
+        status: 'pending',
+      }
+    }
+
+    return {
+      value: 100,
+      status: 'pending',
+    }
+  }, [isCreating, isExpired])
+
+  return <Progress status={progressStatus} value={progress} max={100} />
 }

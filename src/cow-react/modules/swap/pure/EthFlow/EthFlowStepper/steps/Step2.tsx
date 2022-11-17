@@ -19,12 +19,17 @@ export function Step2({ order }: EthFlowStepperProps) {
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
   // Get config for Step 2
-  const { label, statusIconState, icon, error } = useCallback<() => Step2Config>(() => {
+  const {
+    label,
+    state: stepState,
+    icon,
+    error,
+  } = useCallback<() => Step2Config>(() => {
     if (expiredBeforeCreate) {
       return {
         label: 'Order Creation Failed',
         errorMessage: 'Expired before creation',
-        statusIconState: 'error',
+        state: 'error',
         icon: X,
       }
     }
@@ -32,7 +37,7 @@ export function Step2({ order }: EthFlowStepperProps) {
     if (isCreating) {
       return {
         label: 'Create Order',
-        statusIconState: 'not-started',
+        state: 'not-started',
         icon: Plus,
       }
     }
@@ -40,7 +45,7 @@ export function Step2({ order }: EthFlowStepperProps) {
     if (isIndexing) {
       return {
         label: 'Creating Order',
-        statusIconState: 'pending',
+        state: 'pending',
         icon: Plus,
       }
     }
@@ -48,14 +53,14 @@ export function Step2({ order }: EthFlowStepperProps) {
     if (rejectedReason) {
       return {
         label: 'Order Creation Failed',
-        statusIconState: 'error',
+        state: 'error',
         icon: X,
       }
     }
 
     return {
       label: 'Order Created',
-      statusIconState: 'success',
+      state: 'success',
       icon: Check,
     }
   }, [expiredBeforeCreate, isCreating, isIndexing, rejectedReason])()
@@ -67,5 +72,5 @@ export function Step2({ order }: EthFlowStepperProps) {
       {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
     </>
   )
-  return <Step statusIconState={statusIconState} details={details} icon={icon} label={label} />
+  return <Step state={stepState} details={details} icon={icon} label={label} />
 }
