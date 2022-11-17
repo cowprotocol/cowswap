@@ -189,18 +189,11 @@ const DataRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <Link to={tradeLink(tokenData, OrderKind.BUY)}>
-          <TableButton color={theme.green1}>Buy</TableButton>
-        </Link>
-      </Cell>
-
-      <Cell>
         <Link to={tradeLink(tokenData, OrderKind.SELL)}>
-          <TableButton color={theme.red1}>Sell</TableButton>
+          <TableButton>Swap</TableButton>
         </Link>
+        {displayApproveContent}
       </Cell>
-
-      <Cell>{displayApproveContent}</Cell>
     </ResponsiveGrid>
   )
 }

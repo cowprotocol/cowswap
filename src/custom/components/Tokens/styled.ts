@@ -272,6 +272,10 @@ export const Cell = styled.div`
   justify-content: flex-start;
   align-items: center;
 
+  &:not(:first-child) {
+    gap: 16px;
+  }
+
   > a {
     text-decoration-color: transparent;
     transition: text-decoration-color 0.2s ease-in-out;
@@ -310,17 +314,18 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
 
 export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean; text?: boolean }>`
   font-size: 14px;
-  padding: 3px 15px;
+  padding: 0;
   width: auto;
   font-weight: 400;
   transition: all 0.15s ease-in;
-  background: ${({ color }) => transparentize(0.2, color || 'transparent')};
-  color: ${({ theme }) => theme.text1};
+  background: transparent;
+  color: ${({ theme, color }) => color || theme.text1};
   white-space: nowrap;
   position: relative;
 
   &:hover {
-    background: ${({ theme, color }) => color || theme.text1};
+    background: transparent;
+    text-decoration: underline;
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -382,7 +387,6 @@ export const TokenText = styled.div`
 `
 
 export const ApproveLabel = styled.span<{ color?: string }>`
-  font-size: 12px;
   color: ${({ theme, color }) => color || theme.text1};
 `
 
