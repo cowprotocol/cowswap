@@ -159,7 +159,7 @@ export function LimitOrdersWidget() {
               </styledEl.CurrencySeparatorBox>
               <CurrencyInputPanel
                 id="swap-currency-output"
-                disableNonToken={true}
+                disableNonToken={false}
                 loading={currenciesLoadingInProgress}
                 isRateLoading={isRateLoading}
                 onCurrencySelection={onCurrencySelection}

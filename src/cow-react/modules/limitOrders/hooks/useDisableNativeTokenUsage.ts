@@ -4,10 +4,11 @@ import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 /**
  * To avoid WRAP/UNWRAP/ETH-flow cases in the Limit orders page
- * We disable selecting of native currency
+ * We disable selecting of native currency as input currency
  * We set `disableNonToken` as true to `CurrencyInputPanel` component as well
  */
 export function useDisableNativeTokenUsage() {
@@ -23,12 +24,12 @@ export function useDisableNativeTokenUsage() {
     const nativeIds = [nativeToken.address, nativeToken.symbol].map((value) => value?.toLowerCase())
 
     const isInputNative = !!inputCurrencyId && nativeIds.includes(inputCurrencyId?.toLowerCase())
-    const isOutputNative = !!outputCurrencyId && nativeIds.includes(outputCurrencyId?.toLowerCase())
+    const defaultInputCurrencyId = getDefaultTradeState(chainId).inputCurrencyId
 
-    if (isInputNative || isOutputNative) {
+    if (isInputNative) {
       limitOrdersNavigate(chainId, {
-        inputCurrencyId: isInputNative ? null : inputCurrencyId,
-        outputCurrencyId: isOutputNative ? null : outputCurrencyId,
+        inputCurrencyId: isInputNative ? defaultInputCurrencyId : inputCurrencyId,
+        outputCurrencyId,
       })
     }
   }, [chainId, inputCurrencyId, outputCurrencyId, limitOrdersNavigate])

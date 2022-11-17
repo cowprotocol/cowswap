@@ -14,16 +14,12 @@ type PriceResult = number | Error | undefined
 async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
   const currencyAddress = getAddress(currency)
 
-  if (!chainId || !currencyAddress || !currency) {
+  if (!chainId || !currency || (currency.isNative ? false : !currencyAddress)) {
     return
   }
 
-  if (currency.isNative) {
-    return 1
-  }
-
   try {
-    const result = await getNativePrice(chainId, currencyAddress)
+    const result = currency.isNative || !currencyAddress ? { price: 1 } : await getNativePrice(chainId, currencyAddress)
 
     if (!result) {
       throw new Error('Cannot parse initial price')
