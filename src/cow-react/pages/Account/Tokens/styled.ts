@@ -21,6 +21,7 @@ export const MenuButton = styled.button`
   display: flex;
   align-items: center;
   font-size: 16px;
+  white-space: nowrap;
 `
 
 export const StyledChevronDown = styled(ChevronDown)`
@@ -84,10 +85,7 @@ export const AccountPageWrapper = styled.div`
   border: none;
   background: none;
   padding: 0;
-  margin: 0 auto;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-  `};
+  margin: 0;
 `
 
 export const MainText = styled(ThemedText.Main)`
@@ -104,13 +102,7 @@ export const AccountHeading = styled.div`
   display: flex;
   align-items: center;
   padding: 0 0 20px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-direction: column;
-  `}
+  gap: 12px;
 `
 
 export const RemoveTokens = styled.button`
@@ -126,17 +118,6 @@ export const WrongNetwork = styled.div`
 
 export const LeftSection = styled.div`
   display: flex;
-
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    flex-direction: column;
-    align-items: flex-start;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  `};
 `
 
 export const ClearSearchInput = styled.div`

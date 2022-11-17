@@ -25,6 +25,10 @@ export const TokenSearchInput = styled.input`
     width: 500px;
     background: ${({ theme }) => theme.bg1};
     outline: 0;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      width: 100%;
+    `};
   }
 
   &::placeholder {
@@ -37,16 +41,15 @@ export const TokenSearchInput = styled.input`
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-width: 350px;
+    max-width: 100%;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     text-align: center;
     font-size: 12px !important;
     align-self: flex-start;
-    max-width: 100%;
 
-    ::placeholder {
+    &::placeholder {
       font-size: 12px !important;
     }
   `};
@@ -96,10 +99,13 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
   width: 28px;
   height: 28px;
   border-radius: 28px;
+  background: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1}!important; // TODO: prevent styles override
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    width: 16px;
-    height: 16px;
+    width: 21px;
+    height: 21px;
+    border-radius: 21px;
   `};
 `
 
@@ -153,10 +159,6 @@ export const ClickableText = styled(Label)<{ disabled?: boolean }>`
       opacity: 0.6;
     }
   `}
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
 `
 
 export const PageButtons = styled.div`
@@ -164,24 +166,16 @@ export const PageButtons = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 0.8em;
-  margin-bottom: 0.5em;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
+  margin: 24px auto;
 `
 
 export const PaginationText = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 10px;
-  `};
-
+  font-size: 13px;
   white-space: nowrap;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 15px;
+  `};
 `
 
 export const ArrowButton = styled.button`
@@ -214,41 +208,8 @@ export const Break = styled.div`
   width: 100%;
 `
 
-export const HideLarge = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    display: none;
-  `};
-`
-
-export const HideMedium = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `};
-`
-
-export const HideExtraSmall = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    display: none;
-  `};
-`
-
-export const MediumOnly = styled.span`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: block;
-  `};
-`
-
-export const LargeOnly = styled.span`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    display: block;
-  `};
-`
-
 export const TableHeader = styled(ResponsiveGrid)`
   padding: 16px;
-  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.bg2) : transparentize(0.7, theme.bg1))};
   border-bottom: 1px solid ${({ theme }) => theme.grey1};
 
   &:hover {
@@ -291,10 +252,6 @@ export const Cell = styled.div`
 export const IndexNumber = styled.span`
   font-size: 14px;
   font-weight: 400;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
@@ -306,10 +263,6 @@ export const BalanceValue = styled.span<{ hasBalance: boolean }>`
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
 `
 
 export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean; text?: boolean }>`
@@ -388,6 +341,7 @@ export const TokenText = styled.div`
 
 export const ApproveLabel = styled.span<{ color?: string }>`
   color: ${({ theme, color }) => color || theme.text1};
+  font-weight: 500;
 `
 
 export const CustomLimit = styled.div`
