@@ -13,14 +13,12 @@ interface PopupContentProps {
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
 
 const TooltipWrapper = styled(Tooltip)`
-  & {
-    z-index: 2;
-  }
   > .arrow- {
     z-index: 1;
   }
+
   > div {
-    max-width: 23rem !important;
+    max-width: 370px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
