@@ -29,7 +29,7 @@ import {
 import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
 import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
-import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
+import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
 import { useTradeTypeInfo } from '@cow/modules/trade'
