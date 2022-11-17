@@ -61,6 +61,7 @@ export const ExpertModeIndicator = styled.div`
 export const SettingsIcon = styled(SettingsIconRaw)`
   height: 20px;
   width: 20px;
+
   > path,
   > circle {
     transition: stroke 0.3s ease-in-out;

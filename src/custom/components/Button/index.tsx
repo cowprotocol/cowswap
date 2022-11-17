@@ -31,6 +31,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   position: relative;
   min-height: 58px;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  margin: 0;
   /* ${({ theme }) => theme.cursor}; */ // TODO: add behind feature flag
 
   &:focus,
