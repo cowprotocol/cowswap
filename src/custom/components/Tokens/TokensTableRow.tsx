@@ -8,7 +8,6 @@ import {
   CustomLimit,
   IndexNumber,
   Label,
-  ResponsiveGrid,
   ResponsiveLogo,
   TableButton,
   TokenText,
@@ -162,7 +161,7 @@ const DataRow = ({
   }, [approvalState, prevApprovalState, approving])
 
   return (
-    <ResponsiveGrid>
+    <>
       <Cell>
         <FavouriteTokenButton tokenData={tokenData} />
         <IndexNumber>{index + 1}</IndexNumber>
@@ -194,7 +193,7 @@ const DataRow = ({
         </Link>
         {displayApproveContent}
       </Cell>
-    </ResponsiveGrid>
+    </>
   )
 }
 

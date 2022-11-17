@@ -64,24 +64,24 @@ export const Wrapper = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
 `
 
-export const ResponsiveGrid = styled.div`
-  display: grid;
-  grid-gap: 16px;
-  width: 100%;
-  height: 58px;
-  font-size: 14px;
-  align-items: center;
-  text-align: left;
-  border: 0;
-  padding: 0 16px;
-  grid-template-columns: 40px 7fr 2fr 2fr 4fr;
-  background: transparent;
-  transition: background 0.1s ease-in-out;
+// export const ResponsiveGrid = styled.div`
+//   display: grid;
+//   grid-gap: 16px;
+//   width: 100%;
+//   height: 58px;
+//   font-size: 14px;
+//   align-items: center;
+//   text-align: left;
+//   border: 0;
+//   padding: 0 16px;
+//   grid-template-columns: 40px 7fr 2fr 2fr 4fr;
+//   background: transparent;
+//   transition: background 0.1s ease-in-out;
 
-  &:hover {
-    background: ${({ theme }) => theme.grey1};
-  }
-`
+//   &:hover {
+//     background: ${({ theme }) => theme.grey1};
+//   }
+// `
 
 export const LinkWrapper = styled(Link)`
   text-decoration: none;
@@ -208,24 +208,28 @@ export const Break = styled.div`
   width: 100%;
 `
 
-export const TableHeader = styled(ResponsiveGrid)`
-  padding: 16px;
-  border-bottom: 1px solid ${({ theme }) => theme.grey1};
+// export const TableHeader = styled(ResponsiveGrid)`
+//   padding: 16px;
+//   border-bottom: 1px solid ${({ theme }) => theme.grey1};
 
-  &:hover {
-    background: transparent;
-  }
+//   &:hover {
+//     background: transparent;
+//   }
 
-  ${Label} {
-    opacity: 0.75;
-  }
-`
+//   ${Label} {
+//     opacity: 0.75;
+//   }
+// `
 
-export const TableBody = styled(AutoColumn)`
-  margin: 0 0 16px;
-  padding: 10px 0 0;
-  gap: 0;
-`
+// export const TableBody = styled(AutoColumn)`
+//   margin: 0 0 16px;
+//   padding: 10px 0 0;
+//   gap: 0;
+
+//   ${({ theme }) => theme.mediaWidth.upToSmall`
+//     padding: 0 56px 16px 0;
+//   `};
+// `
 
 export const Cell = styled.div`
   display: flex;
@@ -233,8 +237,9 @@ export const Cell = styled.div`
   justify-content: flex-start;
   align-items: center;
 
-  &:not(:first-child) {
-    gap: 16px;
+  &:nth-child(5n) {
+    justify-content: flex-end;
+    gap: 10px;
   }
 
   > a {
@@ -281,10 +286,6 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
     text-decoration: underline;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 10px;
-  `};
-
   ${({ theme, outlined, color }) =>
     outlined &&
     `
@@ -314,6 +315,21 @@ export const Table = styled(AutoColumn)`
   overflow-y: auto;
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
+  display: grid;
+  grid-gap: 16px;
+  width: 100%;
+  font-size: 14px;
+  align-items: center;
+  text-align: left;
+  border: 0;
+  padding: 0 16px;
+  grid-template-columns: 40px auto repeat(3, min-content);
+  background: transparent;
+  transition: background 0.1s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.grey1};
+  }
 
   &::-webkit-scrollbar {
     height: 6px;
@@ -337,6 +353,10 @@ export const TokenText = styled.div`
   text-align: left;
   margin: 0 0 0 12px;
   font-size: 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 13px;
+  `};
 `
 
 export const ApproveLabel = styled.span<{ color?: string }>`

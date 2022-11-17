@@ -2,7 +2,7 @@ import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { Card } from '@cow/pages/Account/styled'
-import { darken } from 'polished'
+import { transparentize, darken } from 'polished'
 
 export const MenuWrapper = styled.div`
   position: relative;
@@ -138,9 +138,26 @@ export const Overview = styled.div`
   margin: 0;
   padding: 0;
   z-index: 2;
+  position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     display: flex;
     flex-flow: column wrap;
+
+    &::after {
+      content: "";
+      display: block;
+      background: linear-gradient(to left, ${({ theme }) => theme.bg1} 0%, ${({ theme }) =>
+    transparentize(1, theme.bg1)} 100%);
+      pointer-events: none;
+      height: 100%;
+      width: 80px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      z-index: 1;
+    }
   `};
 `
