@@ -6,7 +6,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
-import { transparentize, darken } from 'polished'
+import { darken } from 'polished'
 import useDebounce from 'hooks/useDebounce'
 import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 
@@ -26,7 +26,7 @@ const WarningCheckboxContainer = styled.span`
   gap: 2px;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${({ theme }) => transparentize(0.7, theme.bg1)};
+  border: 1px solid ${({ theme }) => theme.bg1};
   border-radius: 16px;
   padding: 16px;
   margin: 10px auto;
@@ -147,7 +147,7 @@ export const HighFeeWarning = (props: WarningProps) => {
         </MouseoverTooltipContent>{' '}
       </div>
 
-      {!acceptWarningCb && (
+      {acceptWarningCb && (
         <WarningCheckboxContainer>
           <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap
           anyway
