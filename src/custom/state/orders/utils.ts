@@ -18,6 +18,13 @@ export type OrderTransitionStatus =
   | 'presignaturePending'
   | 'presigned'
   | 'pending'
+// EthFlow statuses
+// | 'creating' // this status will never be seen as orders in this status are not in the API yet
+// | 'refused'
+// | 'refunding'
+// | 'refunded'
+
+// TODO: handle new states for refused/refunding/refunded orders
 
 /**
  * An order is considered fulfilled if `executedByAmount` and `executedSellAmount` are > 0.
@@ -47,6 +54,7 @@ function isOrderCancelled(order: Pick<OrderMetaData, 'creationDate' | 'invalidat
  * execute a transaction after the backend changed the order status.
  */
 function isOrderExpired(order: Pick<OrderMetaData, 'validTo'>): boolean {
+  // TODO: EthFlow expiration is different, make sure it's taken into account
   const validToTime = order.validTo * 1000 // validTo is in seconds
   return Date.now() - validToTime > PENDING_ORDERS_BUFFER
 }
@@ -62,6 +70,7 @@ function isOrderPresigned(order: Pick<OrderMetaData, 'signingScheme' | 'status'>
   return order.signingScheme === 'presign' && order.status === 'open'
 }
 
+// TODO: classify EthFlow states!
 export function classifyOrder(
   order: Pick<
     OrderMetaData,

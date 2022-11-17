@@ -1,18 +1,18 @@
-import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { isAddress, shortenAddress } from 'utils'
-import { OrderStatus, OrderKind, ChangeOrderStatusParams, Order } from 'state/orders/actions'
+import { ChangeOrderStatusParams, Order, OrderKind, OrderStatus } from 'state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { sendSignedOrderCancellation, sendOrder as sendOrderApi, OrderID } from '@cow/api/gnosisProtocol'
+import { OrderID, sendOrder as sendOrderApi, sendSignedOrderCancellation } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
-import { RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION, RADIX_DECIMAL } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 import { SigningScheme } from '@cowprotocol/contracts'
-import { getTrades, getProfileData } from '@cow/api/gnosisProtocol/api'
+import { getProfileData, getTrades } from '@cow/api/gnosisProtocol/api'
 
-export interface PostOrderParams {
+export type PostOrderParams = {
   account: string
   chainId: ChainId
   signer: Signer
@@ -29,6 +29,14 @@ export interface PostOrderParams {
   allowsOffchainSigning: boolean
   appDataHash: string
   quoteId?: number
+}
+
+export type UnsignedOrderAdditionalParams = PostOrderParams & {
+  orderId: string
+  summary: string
+  signature: string
+  isOnChain?: boolean
+  orderCreationHash?: string
 }
 
 function _getSummary(params: PostOrderParams): string {
@@ -107,9 +115,14 @@ export function getOrderParams(params: PostOrderParams): {
   }
 }
 
-export function mapUnsignedOrderToOrder(
-  unsignedOrder: UnsignedOrder,
-  {
+export type MapUnsignedOrderToOrderParams = {
+  unsignedOrder: UnsignedOrder
+  additionalParams: UnsignedOrderAdditionalParams
+}
+
+export function mapUnsignedOrderToOrder({
+  unsignedOrder,
+  additionalParams: {
     orderId,
     account,
     summary,
@@ -119,8 +132,11 @@ export function mapUnsignedOrderToOrder(
     isOnChain,
     signature,
     sellAmountBeforeFee,
-  }: PostOrderParams & { orderId: string; summary: string; signature: string; isOnChain?: boolean }
-): Order {
+    orderCreationHash,
+  },
+}: MapUnsignedOrderToOrderParams): Order {
+  const status = _getOrderStatus(allowsOffchainSigning, isOnChain)
+
   return {
     ...unsignedOrder,
 
@@ -132,8 +148,11 @@ export function mapUnsignedOrderToOrder(
     outputToken: buyToken,
 
     // Status
-    status: allowsOffchainSigning || isOnChain ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,
+    status,
     creationTime: new Date().toISOString(),
+
+    // EthFlow
+    orderCreationHash,
 
     // Signature
     signature,
@@ -143,6 +162,16 @@ export function mapUnsignedOrderToOrder(
 
     // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
     sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
+  }
+}
+
+function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | undefined): OrderStatus {
+  if (isOnChain) {
+    return OrderStatus.CREATING
+  } else if (!allowsOffchainSigning) {
+    return OrderStatus.PRESIGNATURE_PENDING
+  } else {
+    return OrderStatus.PENDING
   }
 }
 
@@ -178,7 +207,10 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     owner: account,
   })
 
-  const pendingOrderParams: Order = mapUnsignedOrderToOrder(unsignedOrder, { ...params, orderId, summary, signature })
+  const pendingOrderParams: Order = mapUnsignedOrderToOrder({
+    unsignedOrder,
+    additionalParams: { ...params, orderId, summary, signature },
+  })
 
   return {
     chainId,

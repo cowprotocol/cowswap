@@ -232,14 +232,19 @@ export const StatusLabel = styled.div<{
   isPending: boolean
   isCancelling: boolean
   isPresignaturePending: boolean
+  isCreating: boolean
   color: string
 }>`
   height: 28px;
   width: 100px;
-  ${({ isPending, isPresignaturePending, isCancelling, theme }) =>
-    !isCancelling && (isPending || isPresignaturePending) && `border:  1px solid ${theme.card.border};`}
-  color: ${({ isPending, isPresignaturePending, theme, color }) =>
-    isPending || isPresignaturePending ? theme.text1 : color === 'success' ? theme.success : theme.attention};
+  ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
+    !isCancelling && (isPending || isPresignaturePending || isCreating) && `border:  1px solid ${theme.card.border};`}
+  color: ${({ isPending, isPresignaturePending, isCreating, theme, color }) =>
+    isPending || isPresignaturePending || isCreating
+      ? theme.text1
+      : color === 'success'
+      ? theme.success
+      : theme.attention};
   position: relative;
   border-radius: 4px;
   display: flex;
@@ -258,8 +263,8 @@ export const StatusLabel = styled.div<{
 
   &::before {
     content: '';
-    background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, theme }) =>
-      !isCancelling && isPending
+    background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
+      !isCancelling && (isPending || isCreating)
         ? 'transparent'
         : isPresignaturePending || (isPending && isTransaction)
         ? theme.pending
@@ -275,7 +280,7 @@ export const StatusLabel = styled.div<{
     opacity: 0.15;
   }
 
-  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending }) =>
+  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending, isCreating }) =>
     (isCancelling || isPresignaturePending || (isPending && isTransaction)) &&
     css`
       &::after {
@@ -298,8 +303,12 @@ export const StatusLabel = styled.div<{
   }
 
   > svg > path {
-    fill: ${({ theme, color, isPending, isPresignaturePending }) =>
-      isPending || isPresignaturePending ? theme.text1 : color === 'success' ? theme.success : theme.attention};
+    fill: ${({ theme, color, isPending, isPresignaturePending, isCreating }) =>
+      isPending || isPresignaturePending || isCreating
+        ? theme.text1
+        : color === 'success'
+        ? theme.success
+        : theme.attention};
   }
 `
 

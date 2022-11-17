@@ -10,6 +10,11 @@ const statusColorMap: { [key in OrderStatus]: string } = {
   [OrderStatus.EXPIRED]: '#eeaaaa',
   [OrderStatus.FULFILLED]: '#d5eab3',
   [OrderStatus.CANCELLED]: '#fcecb4',
+  // TODO: decide what color for each state
+  [OrderStatus.CREATING]: '#badbe8',
+  [OrderStatus.REFUNDED]: '#eeaaaa',
+  [OrderStatus.REFUNDING]: '#eeaaaa',
+  [OrderStatus.REJECTED]: '#eeaaaa',
 }
 
 export const TableBox = styled.div`

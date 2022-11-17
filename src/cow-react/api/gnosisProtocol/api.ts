@@ -119,6 +119,14 @@ export interface OrderMetaData {
   signingScheme: SigningSchemeValue
   status: ApiOrderStatus
   receiver: string
+  // EthFlow related fields
+  ethflowData: EthFlowData
+  onchainUser?: string
+}
+
+type EthFlowData = {
+  userValidTo: number
+  isRefunded: boolean
 }
 
 export interface TradeMetaData {
