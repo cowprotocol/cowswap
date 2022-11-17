@@ -10,8 +10,6 @@ const RefundMessage = styled.span`
 
 const ExpiredMessage = styled.span``
 
-type BasicStepProps = Pick<StepProps, 'label' | 'statusIconState' | 'icon'>
-
 export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelation }: EthFlowStepperProps) {
   const { state, isExpired, rejectedReason } = order
   const { isRefunded, refundTx } = refund
@@ -28,7 +26,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
   // Get the label, status and icon
-  const { label, statusIconState, icon } = useCallback<() => BasicStepProps>(() => {
+  const { label, statusIconState, icon } = useCallback<() => StepProps>(() => {
     if (expiredBeforeCreate) {
       return {
         label: 'Receive ' + tokenLabel,

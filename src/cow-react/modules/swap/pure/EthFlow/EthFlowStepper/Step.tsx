@@ -19,7 +19,7 @@ export interface StepProps {
   icon: Icon
   label: string
   crossOut?: boolean
-  details: React.ReactNode
+  details?: React.ReactNode
 }
 
 export function Step(props: StepProps) {
