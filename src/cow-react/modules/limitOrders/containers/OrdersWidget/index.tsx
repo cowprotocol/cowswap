@@ -1,10 +1,10 @@
 import { Orders } from '../../pure/Orders'
-import { LIMIT_ORDERS_TAB_KEY, OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
+import { LIMIT_ORDERS_TAB_KEY, limitOrdersTabUrl, OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
 import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 const openTab: OrderTab = {
   id: 'open',
@@ -24,6 +24,7 @@ function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] 
 
 export function OrdersWidget() {
   const location = useLocation()
+  const history = useHistory()
   const ordersList = useLimitOrdersList()
   const { account } = useWeb3React()
 
@@ -40,6 +41,10 @@ export function OrdersWidget() {
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
   }, [currentTabId, ordersList])
+
+  useEffect(() => {
+    history.push(limitOrdersTabUrl(location.pathname, location.search, currentTabId))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return <Orders tabs={tabs} orders={orders} isWalletConnected={!!account} />
 }
