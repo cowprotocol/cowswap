@@ -77,7 +77,6 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
   const isSuccess = stepState === 'success'
 
   let refundLink: JSX.Element | undefined
-  console.log('cancelationTx && !isRefunded', { cancelationTx, isRefunded }, cancelationTx && !isRefunded)
   if (cancelationTx && !isRefunded) {
     refundLink = (
       <ExplorerLinkStyled
