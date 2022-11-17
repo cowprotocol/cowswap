@@ -1,5 +1,5 @@
 import { Orders } from '../../pure/Orders'
-import { LIMIT_ORDERS_TAB_KEY, limitOrdersTabUrl, OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
+import { LIMIT_ORDERS_TAB_KEY, buildLimitOrdersTabUrl, OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
 import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useEffect, useMemo } from 'react'
 import { Order } from 'state/orders/actions'
@@ -43,7 +43,7 @@ export function OrdersWidget() {
   }, [currentTabId, ordersList])
 
   useEffect(() => {
-    history.push(limitOrdersTabUrl(location.pathname, location.search, currentTabId))
+    history.push(buildLimitOrdersTabUrl(location.pathname, location.search, currentTabId))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return <Orders tabs={tabs} orders={orders} isWalletConnected={!!account} />

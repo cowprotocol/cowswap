@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 export const LIMIT_ORDERS_TAB_KEY = 'tab'
 
-export const limitOrdersTabUrl = (pathname: string, search: string, tabId: string) => {
+export const buildLimitOrdersTabUrl = (pathname: string, search: string, tabId: string) => {
   const query = new URLSearchParams(search)
   query.delete(LIMIT_ORDERS_TAB_KEY)
   query.append(LIMIT_ORDERS_TAB_KEY, tabId)
@@ -61,7 +61,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
         <TabButton
           key={index}
           active={index === activeTabIndex}
-          to={(location) => limitOrdersTabUrl(location.pathname, location.search, tab.id)}
+          to={(location) => buildLimitOrdersTabUrl(location.pathname, location.search, tab.id)}
         >
           <Trans>{tab.title}</Trans> <span>({tab.count})</span>
         </TabButton>
