@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useMemo } from 'react'
 import { X, Plus, Check } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ExplorerLinkStyled, EthFlowStepperProps, SmartOrderStatus } from '..'
@@ -24,11 +24,11 @@ export function Step2({ order }: EthFlowStepperProps) {
     state: stepState,
     icon,
     error,
-  } = useCallback<() => Step2Config>(() => {
+  } = useMemo<Step2Config>(() => {
     if (expiredBeforeCreate) {
       return {
         label: 'Order Creation Failed',
-        errorMessage: 'Expired before creation',
+        error: 'Expired before creation',
         state: 'error',
         icon: X,
       }
@@ -63,14 +63,15 @@ export function Step2({ order }: EthFlowStepperProps) {
       state: 'success',
       icon: Check,
     }
-  }, [expiredBeforeCreate, isCreating, isIndexing, rejectedReason])()
+  }, [expiredBeforeCreate, isCreating, isIndexing, rejectedReason])
 
   const errorMessage = error || rejectedReason
-  const details = (
-    <>
-      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-      {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
-    </>
+  return (
+    <Step state={stepState} icon={icon} label={label}>
+      <>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+        {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
+      </>
+    </Step>
   )
-  return <Step state={stepState} details={details} icon={icon} label={label} />
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Icon } from 'react-feather'
 import styled from 'styled-components/macro'
 import { StatusIcon, StatusIconState } from './StatusIcon'
@@ -14,20 +14,19 @@ const StepWrapper = styled.div`
   min-height: 6rem;
 `
 
-export interface StepProps {
+export type StepProps = PropsWithChildren<{
   state: StatusIconState
   icon: Icon
   label: string
   crossOut?: boolean
-  details?: React.ReactNode
-}
+}>
 
 export function Step(props: StepProps) {
-  const { label, crossOut, details, state, icon } = props
+  const { label, crossOut, children, state, icon } = props
   return (
     <StepWrapper>
       <StatusIcon icon={icon} state={state} label={label} crossOut={crossOut} />
-      {details}
+      {children}
     </StepWrapper>
   )
 }

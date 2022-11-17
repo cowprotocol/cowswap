@@ -19,10 +19,6 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
   const isIndexed = state === SmartOrderStatus.INDEXED
   const isCreating = state === SmartOrderStatus.CREATING
   const isFilled = state === SmartOrderStatus.FILLED
-
-  const isRefunding = !!refundTx && !isRefunded
-  const isCanceling = !!cancelationTx && !isCanceled
-
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
   // Get the label, state and icon
@@ -74,11 +70,14 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
     }
   }, [nativeTokenSymbol, tokenLabel, expiredBeforeCreate, isIndexing, isFilled, isCanceled, isRefunded, isIndexed])
 
+  const isRefunding = !!refundTx && !isRefunded
+  const isCanceling = !!cancelationTx && !isCanceled
   const isOrderRejected = !!rejectedReason
   const wontReceiveToken = isExpired || isOrderRejected || isRefunding || isCanceling || isCanceled || isRefunded
   const isSuccess = stepState === 'success'
 
   let refundLink: JSX.Element | undefined
+  console.log('cancelationTx && !isRefunded', { cancelationTx, isRefunded }, cancelationTx && !isRefunded)
   if (cancelationTx && !isRefunded) {
     refundLink = (
       <ExplorerLinkStyled
@@ -98,12 +97,13 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
   }
 
   const crossOut = !isSuccess && wontReceiveToken
-  const details = (
-    <>
-      {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order is Expired</ExpiredMessage>}
-      {wontReceiveToken && !(refundTx || cancelationTx) && <RefundMessage>Initiating ETH Refund...</RefundMessage>}
-      {refundLink}
-    </>
+  return (
+    <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
+      <>
+        {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order is Expired</ExpiredMessage>}
+        {wontReceiveToken && !(refundTx || cancelationTx) && <RefundMessage>Initiating ETH Refund...</RefundMessage>}
+        {refundLink}
+      </>
+    </Step>
   )
-  return <Step state={stepState} details={details} icon={icon} label={label} crossOut={crossOut} />
 }

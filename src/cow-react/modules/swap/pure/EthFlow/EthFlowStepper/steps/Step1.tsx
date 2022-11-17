@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon, Send, Check, AlertTriangle } from 'react-feather'
-import { ExplorerLinkStyled, EthFlowStepperProps, SmartOrderStatus } from '..'
+import { EthFlowStepperProps, ExplorerLinkStyled, SmartOrderStatus } from '..'
 import { StatusIconState } from '../StatusIcon'
 import { Step } from '../Step'
 
@@ -24,8 +24,9 @@ export function Step1({ nativeTokenSymbol, order }: EthFlowStepperProps) {
     icon = Check
   }
 
-  const details = (
-    <>{createOrderTx && <ExplorerLinkStyled type="transaction" label="View Transaction" id={createOrderTx} />}</>
+  return (
+    <Step state={stepState} icon={icon} label={label}>
+      {createOrderTx && <ExplorerLinkStyled type="transaction" label="View Transaction" id={createOrderTx} />}
+    </Step>
   )
-  return <Step state={stepState} details={details} icon={icon} label={label} />
 }
