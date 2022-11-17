@@ -260,7 +260,6 @@ const STEPS: Step[] = [
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
-        rejectedReason: ORDER_REJECTED_REASON,
         isExpired: true,
       },
       cancelation: {
@@ -280,7 +279,6 @@ const STEPS: Step[] = [
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
-        rejectedReason: ORDER_REJECTED_REASON,
         isExpired: true,
       },
       cancelation: {
@@ -300,7 +298,6 @@ const STEPS: Step[] = [
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
-        rejectedReason: ORDER_REJECTED_REASON,
         isExpired: true,
       },
       cancelation: {
@@ -320,7 +317,6 @@ const STEPS: Step[] = [
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
-        rejectedReason: ORDER_REJECTED_REASON,
         isExpired: true,
       },
       cancelation: {
