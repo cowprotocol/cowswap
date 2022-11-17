@@ -6,7 +6,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
-import { darken } from 'polished'
+import { transparentize, darken } from 'polished'
 import useDebounce from 'hooks/useDebounce'
 import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 
@@ -26,7 +26,6 @@ const WarningCheckboxContainer = styled.span`
   gap: 2px;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.bg1};
   border-radius: 16px;
   padding: 16px;
   margin: 10px auto;
@@ -47,6 +46,10 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   width: ${({ width = '100%' }) => width};
   border-radius: 16px;
   margin: ${({ margin = '0 auto 12px auto' }) => margin};
+
+  ${WarningCheckboxContainer} {
+    border: 1px solid ${({ theme, textColour }) => transparentize(0.7, textColour || theme.infoText)};
+  }
 
   > div {
     display: flex;
