@@ -9,7 +9,7 @@ import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 /**
  * To avoid WRAP/UNWRAP/ETH-flow cases in the Limit orders page
  * We disable selecting of native currency as input currency
- * We set `disableNonToken` as true to `CurrencyInputPanel` component as well
+ * We set `disableNonToken` as true to input currency `CurrencyInputPanel` component as well
  */
 export function useDisableNativeTokenUsage() {
   const { chainId } = useWeb3React()
