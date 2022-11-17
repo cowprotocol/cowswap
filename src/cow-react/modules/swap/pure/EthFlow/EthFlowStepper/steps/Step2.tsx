@@ -1,52 +1,71 @@
-import React from 'react'
-import { Icon, X, Plus, Check } from 'react-feather'
+import React, { useCallback } from 'react'
+import { X, Plus, Check } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ExplorerLinkStyled, EthFlowStepperProps, SmartOrderStatus } from '..'
-import { StatusIconState } from '../StatusIcon'
-import { Step } from '../Step'
+import { Step, StepProps } from '../Step'
 
-const RejectMessage = styled.span`
+const ErrorMessage = styled.span`
   color: #f25757;
 `
 
+type Step2Config = StepProps & { error?: string }
+
 export function Step2({ order }: EthFlowStepperProps) {
-  const { state, isExpired, orderId } = order
-  let rejectedReason = order.rejectedReason
+  const { state, isExpired, orderId, rejectedReason } = order
   const isCreating = state === SmartOrderStatus.CREATING
   const isIndexing = state === SmartOrderStatus.CREATION_MINED
   const isOrderCreated = !(isCreating || isIndexing)
 
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
-  let label: string, stepStatus: StatusIconState, icon: Icon
-  if (expiredBeforeCreate) {
-    label = 'Order Creation Failed'
-    rejectedReason = 'Expired before creation'
-    stepStatus = 'error'
-    icon = X
-  } else if (isCreating) {
-    label = 'Create Order'
-    stepStatus = 'not-started'
-    icon = Plus
-  } else if (isIndexing) {
-    label = 'Creating Order'
-    stepStatus = 'pending'
-    icon = Plus
-  } else if (rejectedReason) {
-    label = 'Order Creation Failed'
-    stepStatus = 'error'
-    icon = X
-  } else {
-    label = 'Order Created'
-    stepStatus = 'success'
-    icon = Check
-  }
+  // Get config for Step 2
+  const { label, statusIconState, icon, error } = useCallback<() => Step2Config>(() => {
+    if (expiredBeforeCreate) {
+      return {
+        label: 'Order Creation Failed',
+        errorMessage: 'Expired before creation',
+        statusIconState: 'error',
+        icon: X,
+      }
+    }
 
+    if (isCreating) {
+      return {
+        label: 'Create Order',
+        statusIconState: 'not-started',
+        icon: Plus,
+      }
+    }
+
+    if (isIndexing) {
+      return {
+        label: 'Creating Order',
+        statusIconState: 'pending',
+        icon: Plus,
+      }
+    }
+
+    if (rejectedReason) {
+      return {
+        label: 'Order Creation Failed',
+        statusIconState: 'error',
+        icon: X,
+      }
+    }
+
+    return {
+      label: 'Order Created',
+      statusIconState: 'success',
+      icon: Check,
+    }
+  }, [expiredBeforeCreate, isCreating, isIndexing, rejectedReason])()
+
+  const errorMessage = error || rejectedReason
   const details = (
     <>
-      {rejectedReason && <RejectMessage>{rejectedReason}</RejectMessage>}
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
     </>
   )
-  return <Step statusIconState={stepStatus} details={details} icon={icon} label={label} />
+  return <Step statusIconState={statusIconState} details={details} icon={icon} label={label} />
 }
