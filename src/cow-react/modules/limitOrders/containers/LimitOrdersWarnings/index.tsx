@@ -14,6 +14,8 @@ import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrd
 import { useSetAtom } from 'jotai'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import styled from 'styled-components/macro'
+import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
+import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 
 export interface LimitOrdersWarningsProps {
   priceImpact: PriceImpact
@@ -34,12 +36,15 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const { isPriceImpactAccepted, isRateImpactAccepted } = useAtomValue(limitOrdersWarningsAtom)
   const updateLimitOrdersWarnings = useSetAtom(updateLimitOrdersWarningsAtom)
   const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
+  const quoteState = useAtomValue(limitOrdersQuoteAtom)
+  const { activeRate } = useAtomValue(limitRateAtom)
 
   const rateImpact = useRateImpact()
-  const { account } = useWeb3React()
+  const { chainId, account } = useWeb3React()
   const { inputCurrency } = useLimitOrdersTradeState()
 
-  const showPriceImpactWarning = !expertMode && !!account && !!priceImpact.error
+  const showPriceImpactWarning =
+    !!chainId && !expertMode && !!account && !!priceImpact.error && !quoteState.error && !activeRate?.equalTo(0)
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
