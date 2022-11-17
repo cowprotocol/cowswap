@@ -6,7 +6,7 @@ import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
 import { sendSignedOrderCancellation, sendOrder as sendOrderApi, OrderID } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
-import { RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
+import { RADIX_DECIMAL, AMOUNT_PRECISION, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 import { SigningScheme } from '@cowprotocol/contracts'
@@ -94,7 +94,7 @@ export function getOrderParams(params: PostOrderParams): {
     quoteId,
     order: {
       sellToken: sellTokenAddress,
-      buyToken: buyToken.address,
+      buyToken: buyToken.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : buyToken.address,
       sellAmount,
       buyAmount,
       validTo,
