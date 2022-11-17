@@ -1,10 +1,10 @@
 import { Orders } from '../../pure/Orders'
-import { OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
+import { LIMIT_ORDERS_TAB_KEY, OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
 import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 const openTab: OrderTab = {
   id: 'open',
@@ -17,7 +17,6 @@ const historyTab: OrderTab = {
   count: 0,
 }
 const TABS: OrderTab[] = [openTab, historyTab]
-const TAB_KEY = 'tab'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
   return id === openTab.id ? ordersList.pending : ordersList.history
@@ -25,34 +24,22 @@ function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] 
 
 export function OrdersWidget() {
   const location = useLocation()
-  const history = useHistory()
-  const defaultTab = new URLSearchParams(location.search).get(TAB_KEY) || openTab.id
-  const [activeTab, setActiveTab] = useState(defaultTab)
   const ordersList = useLimitOrdersList()
   const { account } = useWeb3React()
 
+  const currentTabId = useMemo(() => {
+    return new URLSearchParams(location.search).get(LIMIT_ORDERS_TAB_KEY) || openTab.id
+  }, [location.search])
+
   const orders = useMemo(() => {
-    return getOrdersListByIndex(ordersList, activeTab)
-  }, [ordersList, activeTab])
+    return getOrdersListByIndex(ordersList, currentTabId)
+  }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
     return TABS.map((tab, index) => {
-      return { ...tab, isActive: tab.id === activeTab, count: getOrdersListByIndex(ordersList, tab.id).length }
+      return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
-  }, [activeTab, ordersList])
+  }, [currentTabId, ordersList])
 
-  const onTabChange = useCallback(
-    (tab: OrderTab) => {
-      setActiveTab(tab.id)
-
-      const query = new URLSearchParams(location.search)
-      query.delete(TAB_KEY)
-      query.append(TAB_KEY, tab.id)
-
-      history.push(location.pathname + '?' + query)
-    },
-    [history, location]
-  )
-
-  return <Orders onTabChange={onTabChange} tabs={tabs} orders={orders} isWalletConnected={!!account} />
+  return <Orders tabs={tabs} orders={orders} isWalletConnected={!!account} />
 }
