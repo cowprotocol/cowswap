@@ -16,7 +16,7 @@ export function EthFlowDeadlineUpdater() {
   useEffect(() => {
     const { ethFlow } = _loadDeadline() || {}
 
-    // Depending on where whether we are on EthFlow, set a different deadline (if it exists)
+    // If on load there's an efhFlow deadline stored and it's ethFlow, use it
     if (ethFlow && isEthFlow) {
       setUserDeadline(ethFlow)
     }
