@@ -31,8 +31,6 @@ export function useFetchMarketPrice() {
 
   // Main hook updater
   useEffect(() => {
-    console.debug('LIMIT ORDER QUOTE REQUEST:', feeQuoteParams)
-
     const handleFetchQuote = () => {
       if (!feeQuoteParams) {
         return
