@@ -23,7 +23,7 @@ function useCheckIsSmartContract(): boolean | undefined {
   return data
 }
 
-export default function useIsSmartContractWallet(): boolean {
+export function useIsSmartContractWallet(): boolean {
   const [isSmartContractWallet, setIsSmartContractWallet] = useState<boolean>(false)
 
   const { account } = useWeb3React()

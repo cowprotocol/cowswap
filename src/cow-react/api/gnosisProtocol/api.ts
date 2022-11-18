@@ -119,6 +119,15 @@ export interface OrderMetaData {
   signingScheme: SigningSchemeValue
   status: ApiOrderStatus
   receiver: string
+  class: 'market' | 'limit'
+  // EthFlow related fields
+  ethflowData: EthFlowData
+  onchainUser?: string
+}
+
+type EthFlowData = {
+  userValidTo: number
+  isRefunded: boolean
 }
 
 export interface TradeMetaData {
@@ -444,7 +453,7 @@ export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<Pri
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
-  console.log(`[api:${API_NAME}] Get order for `, chainId, orderId)
+  console.debug(`[api:${API_NAME}] Get order for `, chainId, orderId)
   try {
     const response = await _get(chainId, `/orders/${orderId}`)
 
@@ -461,7 +470,7 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
 }
 
 export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<OrderMetaData[]> {
-  console.log(`[api:${API_NAME}] Get orders for `, chainId, owner, limit, offset)
+  console.debug(`[api:${API_NAME}] Get orders for `, chainId, owner, limit, offset)
 
   const queryString = stringify({ limit, offset }, { addQueryPrefix: true })
 

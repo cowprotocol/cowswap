@@ -1306,8 +1306,8 @@
     multiformats "^9.6.4"
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#main-artifacts":
-  version "0.0.0-rc.1"
-  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/3b82d5ee56a4eff0a88d57b3da52b0960007b3b8"
+  version "0.0.0-rc.2"
+  resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/7d5ed9adf9f59dd041051f30ea740bbeb4dea7c5"
 
 "@craco/craco@^5.7.0":
   version "5.9.0"

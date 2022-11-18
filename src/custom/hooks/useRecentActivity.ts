@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'state/enhancedTransactions/hooks'
-import { useOrder, useOrders, useOrdersById } from 'state/orders/hooks'
+import { useOrder, useOrders, useOrdersById, usePendingOrders } from 'state/orders/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getDateTimestamp } from '@cow/utils/time'
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
-import { isPending } from 'components/Web3Status'
 
 export interface AddedOrder extends Order {
   addedTime: number
@@ -31,15 +30,13 @@ export enum ActivityStatus {
   EXPIRED,
   CANCELLING,
   CANCELLED,
+  CREATING,
+  FAILED,
 }
 
 enum TxReceiptStatus {
   PENDING,
   CONFIRMED,
-}
-
-export function isAnOrder(element: TransactionAndOrder): element is AddedOrder {
-  return 'inputToken' in element && 'outputToken' in element
 }
 
 /**
@@ -133,6 +130,9 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     isConfirmed: boolean,
     isCancelling: boolean,
     isCancelled: boolean,
+    isCreating: boolean,
+    isRefunding: boolean,
+    isRefunded: boolean,
     date: Date
 
   if (!tx && order) {
@@ -145,6 +145,9 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
     isCancelling = (order.isCancelling || false) && isPending
     isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
+    isCreating = order.status === OrderStatus.CREATING
+    isRefunding = false // TODO: wire up refunding state
+    isRefunded = order.isRefunded || false
 
     activity = order
     type = ActivityType.ORDER
@@ -163,6 +166,9 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     isConfirmed = !isPending && isReceiptConfirmed
     isCancelling = isCancelTx && isPending
     isCancelled = isCancelTx && !isPending && isReceiptConfirmed
+    isCreating = false // TODO: the creation is a tx, but we should do an order. Likely wouldn't need to handle it here
+    isRefunding = false
+    isRefunded = false
 
     activity = tx
     type = ActivityType.TX
@@ -185,6 +191,12 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     status = ActivityStatus.CANCELLED
   } else if (isConfirmed) {
     status = ActivityStatus.CONFIRMED
+  } else if (isCreating) {
+    status = ActivityStatus.CREATING
+  } else if (isRefunding) {
+    status = ActivityStatus.EXPIRED
+  } else if (isRefunded) {
+    status = ActivityStatus.EXPIRED
   } else {
     status = ActivityStatus.EXPIRED
   }
@@ -269,14 +281,16 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
 }
 
 export function useRecentActivityLastPendingOrder() {
-  const allRecentActivity = useRecentActivity()
+  const { chainId } = useWeb3React()
+  const pending = usePendingOrders({ chainId })
 
   return useMemo(() => {
-    const pendings = allRecentActivity.filter(isPending)
-    const lastOrder = pendings[pendings.length - 1]
+    if (!pending.length) {
+      return null
+    }
+    return pending[pending.length - 1] || null
 
-    if (!lastOrder || !isAnOrder(lastOrder)) return null
-
-    return lastOrder
-  }, [allRecentActivity])
+    // Disabling hook to avoid unnecessary re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(pending)])
 }

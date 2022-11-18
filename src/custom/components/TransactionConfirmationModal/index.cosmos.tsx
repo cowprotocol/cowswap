@@ -72,6 +72,7 @@ store.dispatch(
       creationTime: Date.now().toString(),
       sellAmountBeforeFee: 400000,
       signature: 'xxxxx',
+      class: 'market',
     },
   })
 )

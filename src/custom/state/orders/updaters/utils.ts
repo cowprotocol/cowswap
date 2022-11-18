@@ -3,7 +3,7 @@ import { getOrder, OrderID, OrderMetaData } from '@cow/api/gnosisProtocol'
 import { stringToCurrency } from 'state/swap/extension'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
-import { OrderTransitionStatus, classifyOrder } from 'state/orders/utils'
+import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
@@ -58,6 +58,10 @@ type PopupData = {
 }
 
 export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainId): Promise<PopupData | null> {
+  // Skip EthFlow creating orders
+  if (orderFromStore.status === OrderStatus.CREATING) {
+    return null
+  }
   // Get order from API
   let orderFromApi: OrderMetaData | null = null
   try {

@@ -151,7 +151,7 @@ export function ActivityDetails(props: {
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
-  const showProgressBar = activityState === 'open' || activityState === 'filled'
+  const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
 
   if (!order && !enhancedTransaction) return null
 

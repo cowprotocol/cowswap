@@ -6,9 +6,9 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
-import { darken } from 'polished'
+import { transparentize, darken } from 'polished'
 import useDebounce from 'hooks/useDebounce'
-import { StyledInfo } from '@cow/modules/swap/pure/styled'
+import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 
 interface HighFeeContainerProps {
   padding?: string
@@ -18,12 +18,22 @@ interface HighFeeContainerProps {
   textColour?: string
 }
 
-const WarningCheckboxContainer = styled.div`
+const WarningCheckboxContainer = styled.span`
   display: flex;
+  width: 100%;
+  margin: 0 auto;
   font-weight: bold;
   gap: 2px;
   justify-content: center;
   align-items: center;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 10px auto;
+
+  > input {
+    cursor: pointer;
+    margin: 1px 4px 0 0;
+  }
 `
 
 const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
@@ -32,42 +42,30 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
 }))<HighFeeContainerProps>`
   background: ${({ theme, bgColour }) => bgColour || theme.info};
   color: ${({ theme, textColour }) => textColour || theme.infoText};
-
-  padding: ${({ padding = '5px 12px' }) => padding};
+  padding: ${({ padding = '10px' }) => padding};
   width: ${({ width = '100%' }) => width};
-  border-radius: 7px;
+  border-radius: 16px;
   margin: ${({ margin = '0 auto 12px auto' }) => margin};
+
+  ${WarningCheckboxContainer} {
+    border: 1px solid ${({ theme, textColour }) => transparentize(0.7, textColour || theme.infoText)};
+  }
 
   > div {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    gap: 5px;
-
-    font-size: 13px;
+    gap: 8px;
+    font-size: 14px;
     font-weight: 500;
 
     svg {
-      &:first-child {
-        margin-right: 5px;
-      }
       stroke: ${({ theme, textColour }) => textColour || theme.infoText};
-    }
-
-    > ${WarningCheckboxContainer} {
-      font-size: 10px;
-      margin-left: auto;
-      min-width: max-content;
-
-      > input {
-        cursor: pointer;
-        margin: 1px 4px 0 0;
-      }
     }
   }
 `
 
-const ErrorStyledInfo = styled(StyledInfo)`
+const ErrorStyledInfoIcon = styled(StyledInfoIcon)`
   color: ${({ theme }) => theme.infoText};
 `
 const HIGH_TIER_FEE = { level: '30', colour: '#FF7676' }
@@ -140,23 +138,24 @@ export const HighFeeWarning = (props: WarningProps) => {
   return (
     <WarningContainer {...props} bgColour={bgColour} textColour={textColour}>
       <div>
-        <AlertTriangle size={18} />
-        <div>Fees exceed {level}% of the swap amount!</div>{' '}
+        <AlertTriangle size={24} />
+        Fees exceed {level}% of the swap amount!{' '}
         <MouseoverTooltipContent
           bgColor={theme.bg1}
           color={theme.text1}
           wrap
           content={<HighFeeWarningMessage feePercentage={feePercentage} />}
         >
-          <ErrorStyledInfo />
-        </MouseoverTooltipContent>
-        {acceptWarningCb && (
-          <WarningCheckboxContainer>
-            <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
-            Swap anyway
-          </WarningCheckboxContainer>
-        )}
+          <ErrorStyledInfoIcon />
+        </MouseoverTooltipContent>{' '}
       </div>
+
+      {acceptWarningCb && (
+        <WarningCheckboxContainer>
+          <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap
+          anyway
+        </WarningCheckboxContainer>
+      )}
     </WarningContainer>
   )
 }
@@ -174,11 +173,9 @@ export const NoImpactWarning = (props: WarningProps) => {
     <WarningContainer {...props} bgColour={bgColour} textColour={textColour}>
       <div>
         <AlertTriangle size={18} />
-        <div>
-          Price impact <strong>unknown</strong> - trade carefully
-        </div>{' '}
+        Price impact <strong>unknown</strong> - trade carefully{' '}
         <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={NoImpactWarningMessage} wrap>
-          <ErrorStyledInfo />
+          <ErrorStyledInfoIcon />
         </MouseoverTooltipContent>
         {acceptWarningCb && (
           <WarningCheckboxContainer>

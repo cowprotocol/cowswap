@@ -26,6 +26,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    class: 'market',
     kind: OrderKind.SELL,
   },
   {
@@ -47,6 +48,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    class: 'market',
     kind: OrderKind.SELL,
   },
   {
@@ -68,6 +70,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    class: 'market',
     kind: OrderKind.SELL,
   },
   {
@@ -89,6 +92,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    class: 'market',
     kind: OrderKind.SELL,
   },
   {
@@ -110,6 +114,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
+    class: 'market',
     kind: OrderKind.SELL,
   },
 ]
