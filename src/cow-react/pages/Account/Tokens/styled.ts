@@ -64,7 +64,7 @@ export const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 120px 950px;
   flex-direction: column;
-  margin: 0 16px;
+  margin: 0
   width: 100%;
   justify-content: center;
 
