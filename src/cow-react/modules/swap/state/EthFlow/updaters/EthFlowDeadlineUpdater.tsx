@@ -77,7 +77,6 @@ type DeadlineSettings = {
 }
 
 function _saveDeadline(currentUserDeadline: DeadlineSettings): void {
-  console.log(`EthFlowDeadlineUpdater:_saveDeadline`, currentUserDeadline)
   setJsonToLocalStorage(LOCAL_STORAGE_KEY, currentUserDeadline)
 }
 
