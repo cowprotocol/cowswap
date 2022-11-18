@@ -425,6 +425,20 @@ export const ThemedGlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.white};
   }
 
+  // TODO: Can be removed once we control this component
+  [data-reach-dialog-overlay] {
+    z-index: 10!important;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      top: 0!important;
+      bottom: 0!important;
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      bottom: 65px!important;
+    `}
+  }
+
   // Appzi Container override
   div[id*='appzi-wfo-'] {
     display: none!important; // Force hiding Appzi container when not opened

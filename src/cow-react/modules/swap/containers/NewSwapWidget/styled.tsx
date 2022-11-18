@@ -14,6 +14,10 @@ export const ContainerBox = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 10px 16px 16px;
+  `};
 `
 
 export const Header = styled.div`

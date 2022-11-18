@@ -24,7 +24,7 @@ const Wrapper = styled.div`
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin: auto 0 100px;
+    margin: 56px auto 100px;
   `}
 `
 
@@ -32,6 +32,12 @@ const FooterVersion = styled(Version)`
   margin: 0 auto 0 0;
   padding: 0;
   flex-flow: row wrap;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-flow: column wrap;
+    width: 100%;
+    gap: 24px;
+  `}
 
   > div {
     ${({ theme }) => theme.mediaWidth.upToSmall`
