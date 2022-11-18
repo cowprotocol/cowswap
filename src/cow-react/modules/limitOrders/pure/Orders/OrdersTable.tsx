@@ -2,14 +2,16 @@ import { Order, OrderStatus } from 'state/orders/actions'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import * as styledEl from './OrdersTable.styled'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { formatSmart } from 'utils/format'
 import { AlertTriangle } from 'react-feather'
 import { MouseoverTooltipContent } from 'components/Tooltip'
+import { BalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 
 export interface OrdersTableProps {
   orders: Order[]
+  balancesAndAllowances: BalancesAndAllowances
 }
 
 const orderStatusTitleMap: { [key in OrderStatus]: string } = {
@@ -48,7 +50,7 @@ const allowanceWarning = (tokenSymbol: string) => (
   </styledEl.WarningParagraph>
 )
 
-export function OrdersTable({ orders }: OrdersTableProps) {
+export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
 
   const step = currentPage * pageSize
@@ -80,7 +82,14 @@ export function OrdersTable({ orders }: OrdersTableProps) {
             const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
             const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
             const price = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-            const withWarning = false
+
+            const { balances, allowances } = balancesAndAllowances
+            const balance = balances[order.inputToken.address]
+            const allowance = allowances[order.inputToken.address]
+
+            const hasEnoughBalance = balance ? sellAmount.lessThan(balance) : true
+            const hasEnoughAllowance = allowance ? sellAmount.lessThan(allowance) : true
+            const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
             return (
               <styledEl.Row key={order.id}>
@@ -114,8 +123,8 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                           bgColor={'#ffcb67'}
                           content={
                             <styledEl.WarningContent>
-                              {balanceWarning(order.inputToken.symbol || '')}
-                              {allowanceWarning(order.inputToken.symbol || '')}
+                              {!hasEnoughBalance && balanceWarning(order.inputToken.symbol || '')}
+                              {!hasEnoughAllowance && allowanceWarning(order.inputToken.symbol || '')}
                             </styledEl.WarningContent>
                           }
                           placement="bottom"

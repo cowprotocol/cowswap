@@ -6,7 +6,7 @@ export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
 }
 
-export function Orders({ orders, tabs, isWalletConnected }: OrdersProps) {
+export function Orders({ orders, tabs, isWalletConnected, balancesAndAllowances }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
       return <styledEl.EmptyOrdersMessage>Please connect your wallet to view orders</styledEl.EmptyOrdersMessage>
@@ -16,7 +16,7 @@ export function Orders({ orders, tabs, isWalletConnected }: OrdersProps) {
       return <styledEl.EmptyOrdersMessage>You have no orders yet</styledEl.EmptyOrdersMessage>
     }
 
-    return <OrdersTable orders={orders} />
+    return <OrdersTable orders={orders} balancesAndAllowances={balancesAndAllowances} />
   }
 
   return (

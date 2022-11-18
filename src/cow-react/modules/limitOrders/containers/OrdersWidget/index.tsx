@@ -5,6 +5,8 @@ import { useEffect, useMemo } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useHistory, useLocation } from 'react-router-dom'
+import { useOrdersBalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { GP_VAULT_RELAYER } from 'constants/index'
 
 const openTab: OrderTab = {
   id: 'open',
@@ -26,7 +28,10 @@ export function OrdersWidget() {
   const location = useLocation()
   const history = useHistory()
   const ordersList = useLimitOrdersList()
-  const { account } = useWeb3React()
+  const { chainId, account } = useWeb3React()
+  const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
+
+  const balancesAndAllowances = useOrdersBalancesAndAllowances(account, spender, ordersList.pending)
 
   const currentTabId = useMemo(() => {
     return new URLSearchParams(location.search).get(LIMIT_ORDERS_TAB_KEY) || openTab.id
@@ -46,5 +51,7 @@ export function OrdersWidget() {
     history.push(buildLimitOrdersTabUrl(location.pathname, location.search, currentTabId))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Orders tabs={tabs} orders={orders} isWalletConnected={!!account} />
+  return (
+    <Orders tabs={tabs} orders={orders} balancesAndAllowances={balancesAndAllowances} isWalletConnected={!!account} />
+  )
 }
