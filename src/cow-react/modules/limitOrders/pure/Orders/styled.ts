@@ -3,6 +3,7 @@ import { Widget } from '../Widget'
 
 export const Orders = styled(Widget)`
   min-height: 200px;
+  width: 100%;
 `
 
 export const OrdersTitle = styled.h3`
