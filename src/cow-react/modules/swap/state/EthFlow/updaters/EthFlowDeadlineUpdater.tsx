@@ -3,6 +3,7 @@ import { useUserTransactionTTL } from 'state/user/hooks'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cow/utils/localStorage'
 import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'constants/index'
+import { DeadlineSettings } from './types'
 
 const LOCAL_STORAGE_KEY = 'UserDeadlineSettings'
 
@@ -67,11 +68,6 @@ export function EthFlowDeadlineUpdater() {
   }, [isEthFlow, setUserDeadline, userDeadline])
 
   return null
-}
-
-type DeadlineSettings = {
-  regular: number
-  ethFlow: number
 }
 
 function _saveDeadline(currentUserDeadline: DeadlineSettings): void {

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'state/user/hooks'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cow/utils/localStorage'
+import { SerializedSlippage, SerializedSlippageSettings, Slippage, SlippageSettings } from './types'
 
 export const ETH_FLOW_SLIPPAGE = new Percent(2, 100) // 2%
 const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
@@ -65,17 +66,6 @@ export function EthFlowSlippageUpdater() {
 
   return null
 }
-
-type StoredSettings<T> = {
-  regular: T
-  ethFlow: T
-}
-
-type SerializedSlippage = 'auto' | [string, string]
-type Slippage = Percent | 'auto'
-
-type SerializedSlippageSettings = StoredSettings<SerializedSlippage>
-type SlippageSettings = StoredSettings<Slippage>
 
 function _saveSlippage(slippageSettings: SlippageSettings): void {
   setJsonToLocalStorage(LOCAL_STORAGE_KEY, _serialize(slippageSettings))
