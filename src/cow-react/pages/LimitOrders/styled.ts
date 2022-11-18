@@ -1,16 +1,25 @@
 import styled from 'styled-components/macro'
-export const PageWrapper = styled.div`
+
+export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   width: 100%;
   display: grid;
   max-width: ${({ theme }) => theme.appBody.maxWidth.limit};
   margin: 0 auto;
-  /* grid-template-columns: ${({ theme }) => theme.appBody.maxWidth.swap} 1fr; */
+  grid-template-columns: ${({ theme, isUnlocked }) => (isUnlocked ? theme.appBody.maxWidth.swap : '')} 1fr;
   grid-column-gap: 20px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: flex;
     flex-flow: column wrap;
+
+    > div:last-child {
+      margin: 20px;
+    }
   `};
+
+  > div:last-child {
+    display: ${({ isUnlocked }) => (isUnlocked ? '' : 'none')};
+  }
 `
 // Form + banner
 export const PrimaryWrapper = styled.div`

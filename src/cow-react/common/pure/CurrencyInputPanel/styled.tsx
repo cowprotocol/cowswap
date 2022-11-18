@@ -7,6 +7,7 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: bo
   display: flex;
   flex-flow: row wrap;
   align-content: space-between;
+  gap: 10px;
   padding: 16px;
   background: ${({ theme }) => theme.input.bg1};
   border: none;

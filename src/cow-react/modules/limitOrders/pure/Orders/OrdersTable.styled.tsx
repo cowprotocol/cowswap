@@ -27,6 +27,7 @@ export const Header = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
   border-bottom: 2px solid ${({ theme }) => theme.border2};
 
   > div {
