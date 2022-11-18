@@ -27,10 +27,10 @@ export interface Colors extends ColorsUniswap {
   tableRowBG: Color
   info: Color
   warning: Color
+  danger: Color
   error: Color
   infoText: Color
   warningText: Color
-  errorText: Color
   cardBackground: Color
   cardBorder: Color
   cardShadow1: Color
@@ -39,6 +39,7 @@ export interface Colors extends ColorsUniswap {
   blueDark2: Color
   blueLight1: Color
   grey1: Color
+  red1: Color
 }
 
 declare module 'styled-components' {
@@ -84,7 +85,8 @@ declare module 'styled-components' {
     }
     appBody: {
       maxWidth: {
-        trade: string
+        swap: string
+        limit: string
         content: string
       }
     }

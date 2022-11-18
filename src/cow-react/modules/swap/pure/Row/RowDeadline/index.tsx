@@ -7,7 +7,7 @@ import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
 import { ThemedText } from 'theme/index'
-import { StyledInfo } from '../../styled'
+import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 import { ClickableText } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
@@ -58,7 +58,7 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
           </Trans>
         </TextWrapper>
         <MouseoverTooltipContent wrap content={getNativeOrderDeadlineTooltip(symbols)}>
-          <StyledInfo />
+          <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
       </RowFixed>
       <TextWrapper textAlign="right">

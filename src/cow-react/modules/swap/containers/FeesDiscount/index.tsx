@@ -6,7 +6,7 @@ import { AutoRow } from 'components/Row'
 import { Trans } from '@lingui/macro'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
-import { StyledInfo } from '../../pure/styled'
+import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme
@@ -39,7 +39,7 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
             color={theme.text1}
             wrap
           >
-            <StyledInfo />
+            <StyledInfoIcon />
           </MouseoverTooltipContent>
         </AutoRow>
       </Text>

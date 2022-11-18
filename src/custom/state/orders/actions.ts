@@ -14,9 +14,14 @@ export enum OrderStatus {
   FULFILLED = 'fulfilled',
   EXPIRED = 'expired',
   CANCELLED = 'cancelled',
+  CREATING = 'creating',
+  // TODO: not sure all of those states will be exposed by the backend
+  REJECTED = 'rejected',
+  REFUNDING = 'refunding',
+  REFUNDED = 'refunded',
 }
 
-// Abstract type for the order used in the Dapp. Its composed out of 3 types of props:
+// Abstract type for the order used in the Dapp. It's composed out of 3 types of props:
 //  - Information present in the order creation type used in the API to post new orders
 //  - Additional information available in the API
 //  - Derived/additional information that is handy for this app
@@ -26,6 +31,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   id: OrderID // Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // Address, without '0x' prefix
   summary: string // Description of the order, for dapp use only, readable by user
+  class: 'market' | 'limit' // Flag to distinguish order class
 
   // Status
   status: OrderStatus
@@ -34,6 +40,11 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   isUnfillable?: boolean // Whether the order is out of the market, due to price movements since placement
   fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
   fulfilledTransactionHash?: string // Hash of transaction when Order was fulfilled
+
+  // EthFlow
+  orderCreationHash?: string
+  isRefunded?: boolean
+  // TODO: add refund hash here when working on that
 
   // Additional information from the order available in the API
   apiAdditionalInfo?: OrderInfoApi
@@ -54,9 +65,9 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
  * When you fetch orders by orderId, the API provides some additional information not available at creation time.
  * This type models the fields that are present in this endpoint and not in the creation time order.
  *
- * Note it uses OrderMetaData, which is the return type of the endpoint that get's an order by orderId
+ * Note it uses OrderMetaData, which is the return type of the endpoint that gets an order by orderId
  */
-type OrderInfoApi = Pick<
+export type OrderInfoApi = Pick<
   OrderMetaData,
   | 'creationDate'
   | 'availableBalance'
@@ -65,6 +76,7 @@ type OrderInfoApi = Pick<
   | 'executedSellAmountBeforeFees'
   | 'executedFeeAmount'
   | 'invalidated'
+  | 'ethflowData'
 >
 
 /**
@@ -92,14 +104,6 @@ export interface AddPendingOrderParams {
 export type ChangeOrderStatusParams = { id: OrderID; chainId: ChainId }
 
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
-export const removeOrder = createAction<ChangeOrderStatusParams>('order/removeOrder')
-//                                                                        fulfillmentTime from event timestamp
-export const fulfillOrder = createAction<{
-  id: OrderID
-  chainId: ChainId
-  fulfillmentTime: string
-  transactionHash: string
-}>('order/fulfillOrder')
 
 export interface OrderFulfillmentData {
   id: OrderID
@@ -137,8 +141,6 @@ export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/ad
 
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
 
-export const expireOrder = createAction<ChangeOrderStatusParams>('order/expireOrder')
-
 export const preSignOrders = createAction<PresignedOrdersParams>('order/presignOrders')
 
 export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxParams>(
@@ -148,8 +150,6 @@ export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxP
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
 
 export const requestOrderCancellation = createAction<ChangeOrderStatusParams>('order/requestOrderCancellation')
-
-export const cancelOrder = createAction<ChangeOrderStatusParams>('order/cancelOrder')
 
 export const cancelOrdersBatch = createAction<CancelOrdersBatchParams>('order/cancelOrdersBatch')
 

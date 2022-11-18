@@ -37,7 +37,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   transform-origin: center right;
   transition: transform 0.25s;
   border: 0;
-  box-shadow: 0px 0px 0px 4px ${({ theme }) => theme.bg1};
+  box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
   background: ${({ theme }) => theme.grey1};
   border-radius: 8px;
   width: 28px;

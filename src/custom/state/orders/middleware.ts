@@ -17,15 +17,9 @@ import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 
 // action syntactic sugar
-const isSingleOrderChangeAction = isAnyOf(
-  OrderActions.addPendingOrder,
-  OrderActions.expireOrder,
-  OrderActions.fulfillOrder,
-  OrderActions.cancelOrder
-)
+const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)
 const isPresignOrders = isAnyOf(OrderActions.preSignOrders)
-const isSingleFulfillOrderAction = isAnyOf(OrderActions.fulfillOrder)
 const isBatchOrderAction = isAnyOf(
   OrderActions.fulfillOrdersBatch,
   OrderActions.expireOrdersBatch,
@@ -34,10 +28,9 @@ const isBatchOrderAction = isAnyOf(
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 // const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch) // disabled because doesn't work on `if`
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
-const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch, OrderActions.expireOrder)
-const isSingleExpireOrderAction = isAnyOf(OrderActions.expireOrder)
+const isExpireOrdersAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
-const isCancelOrderAction = isAnyOf(OrderActions.cancelOrder, OrderActions.cancelOrdersBatch)
+const isCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 
 // on each Pending, Expired, Fulfilled order action
 // a corresponding Popup action is dispatched
@@ -61,22 +54,24 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     let popup: PopupPayload
     if (isPendingOrderAction(action)) {
-      // Pending Order Popup
-      popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
-      orderAnalytics('Posted', 'Offchain')
+      const hash = orderObject.order.orderCreationHash
+      if (hash) {
+        // EthFlow Order
+        popup = setPopupData(OrderTxTypes.TXN, {
+          summary,
+          status: 'submitted',
+          id: hash,
+          hash,
+        })
+        orderAnalytics('Posted', 'EthFlow')
+      } else {
+        // Pending Order Popup
+        popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
+        orderAnalytics('Posted', 'Offchain')
+      }
     } else if (isPresignOrders(action)) {
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'presigned', id })
       orderAnalytics('Posted', 'Pre-Signed')
-    } else if (isSingleFulfillOrderAction(action)) {
-      // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
-      // because it's nicer there
-      popup = setPopupData(OrderTxTypes.METATXN, {
-        summary,
-        id,
-        status: OrderActions.OrderStatus.FULFILLED,
-        descriptor: 'was traded',
-      })
-      orderAnalytics('Executed')
     } else if (isCancelOrderAction(action)) {
       // action is order/cancelOrder
       // Cancelled Order Popup
@@ -242,22 +237,12 @@ export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } = action.payload
 
     _triggerNps(store, chainId, id, { traded: true })
-  } else if (isSingleFulfillOrderAction(action)) {
-    // Shows NPS feedback (or attempts to) when there's a successful trade
-    const { chainId, id } = action.payload
-
-    _triggerNps(store, chainId, id, { traded: true })
   } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const {
       chainId,
       ids: [id],
     } = action.payload
-
-    _triggerNps(store, chainId, id, { expired: true })
-  } else if (isSingleExpireOrderAction(action)) {
-    // Shows NPS feedback (or attempts to) when the order expired
-    const { chainId, id } = action.payload
 
     _triggerNps(store, chainId, id, { expired: true })
   }
@@ -283,7 +268,18 @@ function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): Orde
     return
   }
 
-  const { pending, presignaturePending, fulfilled, expired, cancelled } = orders
+  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, rejected, refunded, refunding } =
+    orders
 
-  return pending?.[id] || presignaturePending?.[id] || fulfilled?.[id] || expired?.[id] || cancelled?.[id]
+  return (
+    pending?.[id] ||
+    presignaturePending?.[id] ||
+    fulfilled?.[id] ||
+    expired?.[id] ||
+    cancelled?.[id] ||
+    creating?.[id] ||
+    rejected?.[id] ||
+    refunding?.[id] ||
+    refunded?.[id]
+  )
 }

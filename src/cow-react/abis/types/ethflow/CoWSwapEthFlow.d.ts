@@ -479,11 +479,11 @@ export class CoWSwapEthFlow extends BaseContract {
 
   filters: {
     "OrderInvalidation(bytes)"(
-      orderUid?: BytesLike | null
+      orderUid?: null
     ): TypedEventFilter<[string], { orderUid: string }>;
 
     OrderInvalidation(
-      orderUid?: BytesLike | null
+      orderUid?: null
     ): TypedEventFilter<[string], { orderUid: string }>;
 
     "OrderPlacement(address,tuple,tuple,bytes)"(
@@ -631,7 +631,7 @@ export class CoWSwapEthFlow extends BaseContract {
     >;
 
     "OrderRefund(bytes,address)"(
-      orderUid?: BytesLike | null,
+      orderUid?: null,
       refunder?: string | null
     ): TypedEventFilter<
       [string, string],
@@ -639,7 +639,7 @@ export class CoWSwapEthFlow extends BaseContract {
     >;
 
     OrderRefund(
-      orderUid?: BytesLike | null,
+      orderUid?: null,
       refunder?: string | null
     ): TypedEventFilter<
       [string, string],

@@ -47,6 +47,7 @@ const outputCurrencyInfo: CurrencyInfo = {
 
 const tradeContext: TradeFlowContext = {
   postOrderParams: {
+    class: 'limit',
     account: '0x000',
     chainId: 1,
     signer: {} as any,

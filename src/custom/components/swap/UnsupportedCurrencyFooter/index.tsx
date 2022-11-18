@@ -5,6 +5,7 @@ import UnsupportedCurrencyFooterMod, {
 } from './UnsupportedCurrencyFooterMod'
 import { UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 
 const DEFAULT_DETAILS_TEXT = (
   <div>
@@ -26,9 +27,12 @@ const Wrapper = styled.div`
   position: relative;
 
   ${DetailsFooter} {
-    margin: 1px auto 0;
-    max-width: calc(100% - 38px);
-    padding: 20px 24px 24px;
+    margin: 10px auto 0;
+    max-width: 100%;
+    transform: none;
+    padding: 24px;
+    border-radius: 16px;
+    background: ${({ theme }) => transparentize(0.9, theme.danger)};
   }
 `
 

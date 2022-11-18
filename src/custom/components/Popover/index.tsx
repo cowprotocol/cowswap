@@ -18,6 +18,11 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
   border-radius: 12px;
   border: 0;
   padding: 6px 3px;
+  z-index: 10;
+
+  > div div {
+    font-size: 14px;
+  }
 `
 
 const Arrow = styled(ArrowMod)<Omit<PopoverContainerProps, 'color' | 'show'>>`

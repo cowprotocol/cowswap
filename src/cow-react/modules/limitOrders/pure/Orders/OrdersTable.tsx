@@ -15,7 +15,11 @@ const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
   [OrderStatus.FULFILLED]: 'Filled',
   [OrderStatus.EXPIRED]: 'Expired',
-  [OrderStatus.CANCELLED]: 'Canceled',
+  [OrderStatus.CANCELLED]: 'Cancelled',
+  [OrderStatus.CREATING]: 'Creating',
+  [OrderStatus.REFUNDED]: 'Expired',
+  [OrderStatus.REFUNDING]: 'Expired',
+  [OrderStatus.REJECTED]: 'Expired',
 }
 
 const pageSize = 10

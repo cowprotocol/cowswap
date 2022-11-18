@@ -4,10 +4,11 @@ import styled from 'styled-components/macro'
 import { ReactNode } from 'react'
 
 const StyledInfoIcon = styled(Info)`
-  opacity: 0.8;
-  stroke: ${({ theme }) => theme.text3};
+  opacity: 0.5;
+  stroke: ${({ theme }) => theme.text1};
   line-height: 0;
   vertical-align: middle;
+  transition: opacity 0.2s ease-in-out;
 
   :hover {
     opacity: 1;

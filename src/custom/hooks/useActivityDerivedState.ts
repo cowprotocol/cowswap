@@ -3,12 +3,11 @@ import { useMemo } from 'react'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
-import { Order } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { getEtherscanLink } from 'utils'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { ActivityDescriptors, ActivityStatus, ActivityType, useSingleActivityDescriptor } from 'hooks/useRecentActivity'
+import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { ChainId } from '../state/lists/actions'
 
 export function useActivityDerivedState({
   chainId,
@@ -24,13 +23,6 @@ export function useActivityDerivedState({
     () => getActivityDerivedState({ chainId, activityData: activity, allowsOffchainSigning, gnosisSafeInfo }),
     [chainId, activity, allowsOffchainSigning, gnosisSafeInfo]
   )
-}
-
-export function useSingleActivityState(params: { chainId?: ChainId; id: string }) {
-  const { chainId, id = '' } = params
-  const singleActivity = useSingleActivityDescriptor({ chainId, id })
-
-  return useActivityDerivedState({ chainId, activity: singleActivity as ActivityDescriptors })
 }
 
 function getActivityDerivedState(props: {
@@ -74,6 +66,9 @@ function getActivityDerivedState(props: {
     isCancelled: status === ActivityStatus.CANCELLED,
     isCancellable,
     isUnfillable: isCancellable && (activity as Order).isUnfillable,
+    isCreating: status === ActivityStatus.CREATING,
+    isRefunding: false, // TODO: wire up refunding/refunded states
+    isRefunded: order?.isRefunded || false,
 
     // Convenient casting
     order,
@@ -96,16 +91,21 @@ function getActivityLinkUrl(params: {
     const { transactionHash, safeTransaction } = enhancedTransaction
 
     if (transactionHash) {
-      // Is an Ethereum transaction: Etherscan link
+      // It's an Ethereum transaction: Etherscan link
       return getEtherscanLink(chainId, transactionHash, 'transaction')
     } else if (safeTransaction && safeTransaction) {
-      // Its a safe transaction: Gnosis Safe Web link
+      // It's a safe transaction: Gnosis Safe Web link
       const { safe } = safeTransaction
       return getSafeWebUrl(chainId, safe) ?? undefined
     }
   } else if (order) {
-    // Its an order: GP Explorer link
-    return getExplorerOrderLink(chainId, id)
+    if (order.orderCreationHash && order.status === OrderStatus.CREATING) {
+      // It's a EthFlow transaction: Etherscan link
+      return getEtherscanLink(chainId, order.orderCreationHash, 'transaction')
+    } else {
+      // It's an order: GP Explorer link
+      return getExplorerOrderLink(chainId, id)
+    }
   }
 
   return undefined
@@ -121,6 +121,9 @@ type ActivityState =
   | 'pending'
   | 'signing'
   | 'cancelling'
+  | 'creating'
+  | 'refunding'
+  | 'refunded'
 
 export function getActivityState({
   isPending,
@@ -130,6 +133,9 @@ export function getActivityState({
   isCancelling,
   isPresignaturePending,
   isCancelled,
+  isCreating,
+  isRefunding,
+  isRefunded,
   enhancedTransaction,
 }: ActivityDerivedState): ActivityState {
   if (isPending) {
@@ -162,6 +168,18 @@ export function getActivityState({
 
   if (isCancelled) {
     return 'cancelled'
+  }
+
+  if (isCreating) {
+    return 'creating'
+  }
+
+  if (isRefunding) {
+    return 'refunding'
+  }
+
+  if (isRefunded) {
+    return 'refunded'
   }
 
   return 'open'
