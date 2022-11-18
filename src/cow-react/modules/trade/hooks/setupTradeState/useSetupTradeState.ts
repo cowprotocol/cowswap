@@ -44,7 +44,6 @@ function shouldSkipUpdate(tradeStateFromUrl: TradeState, tradeStateFromStore: Tr
 export function useSetupTradeState(): void {
   const { chainId: currentChainId, connector, account } = useWeb3React()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
-  const [networkChangeInProgress, setNetworkChangeInProgress] = useState(false)
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const tradeState = useTradeState()
@@ -79,11 +78,10 @@ export function useSetupTradeState(): void {
         return validChainIdFromUrl
       }
     } else {
-      if (networkChangeInProgress) return validChainIdFromUrl
       // When wallet is connected, then always use chainId from provider
       return providerChainId
     }
-  }, [account, providerChainIdWasChanged, networkChangeInProgress, chainIdFromUrl, currentChainId])
+  }, [account, providerChainIdWasChanged, chainIdFromUrl, currentChainId])
 
   const updateStateAndNavigate = useCallback(() => {
     if (!tradeState) return
@@ -127,15 +125,12 @@ export function useSetupTradeState(): void {
     let isSubscribed = true
 
     setIsChainIdSet(true)
-    setNetworkChangeInProgress(true)
 
     switchChain(connector, chainIdFromUrl)
       .catch((e) => {
         console.error(e)
       })
       .finally(() => {
-        setNetworkChangeInProgress(false)
-
         if (!isSubscribed) return
 
         updateStateAndNavigate()
