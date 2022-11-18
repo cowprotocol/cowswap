@@ -7,6 +7,7 @@ import { calculateFallbackPriceImpact } from 'utils/price'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
+import ms from 'ms.macro'
 
 type SwapParams = { abTrade?: PriceImpactTrade; sellToken?: string | null; buyToken?: string | null }
 
@@ -62,7 +63,7 @@ export default function useFallbackPriceImpact({
     return {
       ..._getBaTradeParams({ abTrade, sellToken, buyToken }),
       parsedAmount: _getBaTradeParsedAmount(abTrade, shouldCalculate),
-      validTo: Math.round(Date.now() / 1000) + 60 * 30, // +30min - it's request to get price, so we don't need precise value for validTo
+      validTo: Math.round(Date.now() / 1000) + ms`30m`, // +30min - it's request to get price, so we don't need precise value for validTo
     }
   }, [abTrade, buyToken, sellToken, shouldCalculate])
 
