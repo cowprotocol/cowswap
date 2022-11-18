@@ -13,13 +13,11 @@ export function EthFlowDeadlineUpdater() {
 
   // On updater mount, load previous deadline from localStorage and set it
   useEffect(() => {
-    const { regular, ethFlow } = _loadDeadline() || {}
+    const { ethFlow } = _loadDeadline() || {}
 
     // Depending on where whether we are on EthFlow, set a different deadline (if it exists)
     if (ethFlow && isEthFlow) {
       setUserDeadline(ethFlow)
-    } else if (regular) {
-      setUserDeadline(regular)
     }
 
     // we only want this on mount
