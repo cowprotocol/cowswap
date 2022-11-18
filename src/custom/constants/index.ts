@@ -124,17 +124,23 @@ export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-ro
 export const MEV_TOTAL = '606 Million'
 export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
-// 30 minutes
-export const GAS_PRICE_UPDATE_THRESHOLD = 30 * 60 * 1000
+//  10 seconds
+export const GAS_PRICE_UPDATE_THRESHOLD = 10 * 1000
 export const GAS_FEE_ENDPOINTS = {
-  [ChainId.MAINNET]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
+  [ChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
   // No ropsten = main
   // [ChainId.ROPSTEN]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
-  [ChainId.RINKEBY]: 'https://safe-relay.rinkeby.gnosis.io/api/v1/gas-station/',
-  [ChainId.GOERLI]: 'https://safe-relay.goerli.gnosis.io/api/v1/gas-station/',
+  [ChainId.RINKEBY]: 'https://api.blocknative.com/gasprices/blockprices', // not actually supported
+  [ChainId.GOERLI]: 'https://api.blocknative.com/gasprices/blockprices', // not actually supported
   // no kovan = main
   // [ChainId.KOVAN]: 'https://safe-relay.kovan.gnosis.io/api/v1/gas-station/',
   [ChainId.GNOSIS_CHAIN]: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
+}
+export const GAS_API_KEYS = {
+  [ChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY,
+  [ChainId.RINKEBY]: process.env.REACT_APP_BLOCKNATIVE_API_KEY,
+  [ChainId.GOERLI]: process.env.REACT_APP_BLOCKNATIVE_API_KEY,
+  [ChainId.GNOSIS_CHAIN]: '',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq/trading#what-token-pairs-does-cowswap-allow-to-trade'
