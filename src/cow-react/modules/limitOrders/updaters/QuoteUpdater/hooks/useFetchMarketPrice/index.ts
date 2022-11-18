@@ -10,9 +10,13 @@ import { useHandleResponse } from './useHandleResponse'
 import { useSetAtom } from 'jotai'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
+import { onlyResolvesLast } from 'utils/async'
+import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 
 // Every 10s
 const REFETCH_CHECK_INTERVAL = 10000
+
+const getQuoteOnlyResolveLast = onlyResolvesLast<SimpleGetQuoteResponse>(getQuote)
 
 export function useFetchMarketPrice() {
   const { chainId, account } = useWeb3React()
@@ -27,21 +31,18 @@ export function useFetchMarketPrice() {
 
   // Main hook updater
   useEffect(() => {
-    console.debug('LIMIT ORDER QUOTE REQUEST:', feeQuoteParams)
-
     const handleFetchQuote = () => {
       if (!feeQuoteParams) {
         return
       }
 
-      getQuote(feeQuoteParams)
+      getQuoteOnlyResolveLast(feeQuoteParams)
         .then(handleResponse)
         .catch((error: GpQuoteError) => {
           setLimitOrdersQuote({ error })
+          updateLimitRateState({ executionRate: null })
         })
-        .finally(() => {
-          updateLimitRateState({ isLoadingExecutionRate: false })
-        })
+        .finally(() => updateLimitRateState({ isLoadingExecutionRate: false }))
     }
 
     handleFetchQuote()
@@ -52,9 +53,9 @@ export function useFetchMarketPrice() {
     return () => clearInterval(intervalId)
   }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote])
 
-  // Turn on the loading if some of these dependencies have changed
+  // Turn on the loading if some of these dependencies have changed and remove execution rate
   useEffect(() => {
-    updateLimitRateState({ isLoadingExecutionRate: true })
+    updateLimitRateState({ isLoadingExecutionRate: true, executionRate: null })
   }, [chainId, inputCurrency, outputCurrency, orderKind, account, updateLimitRateState])
 
   return null
