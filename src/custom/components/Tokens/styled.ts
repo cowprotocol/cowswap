@@ -8,20 +8,21 @@ import { HelpCircle } from 'react-feather'
 export const TokenSearchInput = styled.input`
   margin: 0;
   font-size: 14px;
-  width: 280px;
+  max-width: 280px;
+  width: 100%;
   align-self: flex-end;
   box-shadow: none;
   background: ${({ theme }) => theme.grey1};
   border: 1px solid ${({ theme }) => theme.bg1};
   border-radius: 21px;
-  transition: background 0.2s ease-in-out, width 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
   appearance: none;
   height: 44px;
   padding: 0 16px;
   outline: 0;
 
   &:focus {
-    width: 500px;
+    max-width: 500px;
     background: ${({ theme }) => theme.bg1};
     outline: 0;
 
@@ -44,9 +45,7 @@ export const TokenSearchInput = styled.input`
   `};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    text-align: center;
     font-size: 12px !important;
-    align-self: flex-start;
 
     &::placeholder {
       font-size: 12px !important;
@@ -60,7 +59,6 @@ export const Wrapper = styled.div`
   padding: 0;
   background: ${({ theme }) => theme.bg1};
   border-radius: 16px;
-  box-shadow: ${({ theme }) => theme.boxShadow1};
 `
 
 export const LinkWrapper = styled(Link)`

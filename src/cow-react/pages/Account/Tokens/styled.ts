@@ -141,6 +141,7 @@ export const Overview = styled.div`
   position: relative;
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: ${({ theme }) => theme.boxShadow1};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: flex;
