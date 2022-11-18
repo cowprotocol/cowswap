@@ -314,6 +314,7 @@ export const Table = styled.div`
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
   width: 100%;
+  min-height: 400px;
   font-size: 14px;
   align-items: center;
   text-align: left;
@@ -321,6 +322,10 @@ export const Table = styled.div`
   padding: 0;
   background: transparent;
   transition: background 0.1s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    min-height: 250px;
+  `};
 
   &::-webkit-scrollbar {
     height: 6px;
@@ -409,4 +414,28 @@ export const InfoCircle = styled(HelpCircle)`
   margin-left: 5px;
   vertical-align: middle;
   margin-bottom: 2px;
+`
+
+export const NoResults = styled.div`
+  color: inherit;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    min-height: 200px;
+    margin: 0 auto 0 0;
+  `};
+
+  > h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 auto;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 16px;
+      text-align: left;
+      margin: 16px;
+    `};
+  }
 `

@@ -14,6 +14,7 @@ import {
   IndexLabel,
   Row,
   TableHeader,
+  NoResults,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { OperationType } from 'components/TransactionConfirmationModal'
@@ -191,22 +192,23 @@ export default function TokenTable({
     <Wrapper>
       <ErrorModal />
       <TransactionConfirmationModal />
-      {tokensData && sortedTokens.length !== 0 ? (
-        <>
-          <Table ref={tableRef}>
-            <TableHeader>
-              <IndexLabel>#</IndexLabel>
-              <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
-                <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
-              </ClickableText>
-              <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
-                <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
-              </ClickableText>
-              <Label>Value</Label>
-              <Label>Actions</Label>
-            </TableHeader>
 
-            {sortedTokens.map((data, i) => {
+      <>
+        <Table ref={tableRef}>
+          <TableHeader>
+            <IndexLabel>#</IndexLabel>
+            <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
+              <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
+            </ClickableText>
+            <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
+              <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
+            </ClickableText>
+            <Label>Value</Label>
+            <Label>Actions</Label>
+          </TableHeader>
+
+          {tokensData && sortedTokens.length !== 0 ? (
+            sortedTokens.map((data, i) => {
               if (data) {
                 return (
                   <Row>
@@ -223,9 +225,15 @@ export default function TokenTable({
                 )
               }
               return null
-            })}
-          </Table>
+            })
+          ) : (
+            <NoResults>
+              <h3>No results found ¯\_(ツ)_/¯</h3>
+            </NoResults>
+          )}
+        </Table>
 
+        {tokensData && sortedTokens.length !== 0 && (
           <PageButtons>
             <ArrowButton onClick={() => setPage(1)}>
               <Arrow faded={page === 1}>{'<<'}</Arrow>
@@ -247,10 +255,8 @@ export default function TokenTable({
               <Arrow faded={page === maxPage}>{'>>'}</Arrow>
             </ArrowButton>
           </PageButtons>
-        </>
-      ) : (
-        <small>{'No results found :('}</small>
-      )}
+        )}
+      </>
     </Wrapper>
   )
 }
