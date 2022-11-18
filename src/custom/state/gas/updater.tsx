@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useGasPrices, useUpdateGasPrices } from './hooks'
 import { useWeb3React } from '@web3-react/core'
 import { GAS_PRICE_UPDATE_THRESHOLD } from 'constants/index'
-import { gasFeeApi } from '@cow/api/gnosisProtocol/gasFeeApi'
+import { gasFeeApi } from '@cow/api/gasPrices'
 import useBlockNumber from '@src/lib/hooks/useBlockNumber'
 
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
@@ -22,7 +22,7 @@ export default function GasUpdater(): null {
 
     // if no gas in local/redux state OR time threshold has passed
     // since last update, and there is a chainId, then update the gas prices
-    if (shouldUpdate && chainId) {
+    if (shouldUpdate && chainId && gasFeeApi.supportedChain(chainId)) {
       gasFeeApi
         .getGasPrices(chainId)
         .then((gas) => {

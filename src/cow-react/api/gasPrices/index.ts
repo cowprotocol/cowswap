@@ -1,5 +1,5 @@
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { GAS_FEE_ENDPOINTS, GAS_API_KEYS } from 'constants/index'
 
 // Values are returned as floats in gwei
@@ -38,6 +38,10 @@ class GasFeeApi {
     }
 
     return baseUrl
+  }
+
+  supportedChain(chainId: ChainId): boolean {
+    return !!GAS_FEE_ENDPOINTS[chainId]
   }
 
   getHeaders(chainId: ChainId): { headers?: Headers } {
@@ -102,11 +106,9 @@ class GasFeeApi {
   async fetchData(chainId: ChainId) {
     const url = this.getUrl(chainId)
     const headers = this.getHeaders(chainId)
-
     const response = await fetch(url, headers)
-    const json = await response.json()
 
-    return json
+    return response.json()
   }
 
   async getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS): Promise<GasFeeEndpointResponse> {
