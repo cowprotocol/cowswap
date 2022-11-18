@@ -29,9 +29,9 @@ export function OrdersWidget() {
   const history = useHistory()
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWeb3React()
-  const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
-  const balancesAndAllowances = useOrdersBalancesAndAllowances(account, spender, ordersList.pending)
+  const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
+  const pendingBalancesAndAllowances = useOrdersBalancesAndAllowances(account, spender, ordersList.pending)
 
   const currentTabId = useMemo(() => {
     return new URLSearchParams(location.search).get(LIMIT_ORDERS_TAB_KEY) || openTab.id
@@ -42,10 +42,14 @@ export function OrdersWidget() {
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
-    return TABS.map((tab, index) => {
+    return TABS.map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
   }, [currentTabId, ordersList])
+
+  // Check balances and allowances only for pending orders
+  const balancesAndAllowances =
+    currentTabId === openTab.id ? pendingBalancesAndAllowances : { balances: {}, allowances: {} }
 
   useEffect(() => {
     history.push(buildLimitOrdersTabUrl(location.pathname, location.search, currentTabId))
