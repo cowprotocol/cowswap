@@ -139,6 +139,8 @@ export const Overview = styled.div`
   padding: 0;
   z-index: 2;
   position: relative;
+  border-radius: 16px;
+  overflow: hidden;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: flex;

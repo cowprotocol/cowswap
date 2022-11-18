@@ -7,7 +7,6 @@ import {
   Cell,
   CustomLimit,
   IndexNumber,
-  Label,
   ResponsiveLogo,
   TableButton,
   TokenText,
@@ -168,17 +167,15 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <ExtLink title={tokenData.name} href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+        <Link title={tokenData.name} to={tradeLink(tokenData, OrderKind.SELL)}>
           <ResponsiveLogo currency={tokenData} />
           <TokenText>
-            <Label>
-              <span>
-                <b>{tokenData.name}</b>
-                <i>{tokenData.symbol}</i>
-              </span>
-            </Label>
+            <span>
+              <b>{tokenData.name}</b>
+              <i>{tokenData.symbol}</i>
+            </span>
           </TokenText>
-        </ExtLink>
+        </Link>
       </Cell>
 
       <Cell>
@@ -188,9 +185,9 @@ const DataRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <Link to={tradeLink(tokenData, OrderKind.SELL)}>
-          <TableButton>Swap</TableButton>
-        </Link>
+        <ExtLink href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+          <TableButton>Contract</TableButton>
+        </ExtLink>
         {displayApproveContent}
       </Cell>
     </>

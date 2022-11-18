@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
 import {
   Label,
@@ -13,6 +12,8 @@ import {
   Table,
   PaginationText,
   IndexLabel,
+  Row,
+  TableHeader,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { OperationType } from 'components/TransactionConfirmationModal'
@@ -191,30 +192,34 @@ export default function TokenTable({
       <ErrorModal />
       <TransactionConfirmationModal />
       {tokensData && sortedTokens.length !== 0 ? (
-        <AutoColumn>
+        <>
           <Table ref={tableRef}>
-            <IndexLabel>#</IndexLabel>
-            <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
-              <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
-            </ClickableText>
-            <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
-              <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
-            </ClickableText>
-            <Label>Value</Label>
-            <Label>Actions</Label>
+            <TableHeader>
+              <IndexLabel>#</IndexLabel>
+              <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
+                <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
+              </ClickableText>
+              <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
+                <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
+              </ClickableText>
+              <Label>Value</Label>
+              <Label>Actions</Label>
+            </TableHeader>
 
             {sortedTokens.map((data, i) => {
               if (data) {
                 return (
-                  <TokensTableRow
-                    key={data.address}
-                    toggleWalletModal={toggleWalletModal}
-                    balance={balances && balances[0][data.address]}
-                    openTransactionConfirmationModal={openModal}
-                    closeModals={closeModal}
-                    index={getTokenIndex(i)}
-                    tokenData={data}
-                  />
+                  <Row>
+                    <TokensTableRow
+                      key={data.address}
+                      toggleWalletModal={toggleWalletModal}
+                      balance={balances && balances[0][data.address]}
+                      openTransactionConfirmationModal={openModal}
+                      closeModals={closeModal}
+                      index={getTokenIndex(i)}
+                      tokenData={data}
+                    />
+                  </Row>
                 )
               }
               return null
@@ -242,7 +247,7 @@ export default function TokenTable({
               <Arrow faded={page === maxPage}>{'>>'}</Arrow>
             </ArrowButton>
           </PageButtons>
-        </AutoColumn>
+        </>
       ) : (
         <small>{'No results found :('}</small>
       )}

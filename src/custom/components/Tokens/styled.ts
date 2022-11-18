@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { transparentize } from 'polished'
-import { AutoColumn } from 'components/Column'
 import { BaseButton } from 'components/Button'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { HelpCircle } from 'react-feather'
@@ -64,25 +63,6 @@ export const Wrapper = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
 `
 
-// export const ResponsiveGrid = styled.div`
-//   display: grid;
-//   grid-gap: 16px;
-//   width: 100%;
-//   height: 58px;
-//   font-size: 14px;
-//   align-items: center;
-//   text-align: left;
-//   border: 0;
-//   padding: 0 16px;
-//   grid-template-columns: 40px 7fr 2fr 2fr 4fr;
-//   background: transparent;
-//   transition: background 0.1s ease-in-out;
-
-//   &:hover {
-//     background: ${({ theme }) => theme.grey1};
-//   }
-// `
-
 export const LinkWrapper = styled(Link)`
   text-decoration: none;
   padding: 0.8rem 0;
@@ -114,11 +94,12 @@ export const Label = styled.div<{ end?: number }>`
   font-size: inherit;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => transparentize(0.1, theme.text1)};
   align-items: center;
   font-variant-numeric: tabular-nums;
   word-break: break-all;
   overflow: hidden;
+  font-size: 13px;
 
   > span {
     display: flex;
@@ -208,37 +189,53 @@ export const Break = styled.div`
   width: 100%;
 `
 
-// export const TableHeader = styled(ResponsiveGrid)`
-//   padding: 16px;
-//   border-bottom: 1px solid ${({ theme }) => theme.grey1};
+export const Row = styled.div`
+  width: fit-content;
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: 62px 430px repeat(2, 100px) 161px;
+  padding: 16px;
+  justify-content: flex-start;
+  align-items: center;
+  background: transparent;
+  transition: background 0.2s ease-in-out;
 
-//   &:hover {
-//     background: transparent;
-//   }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 16px 56px 16px 16px
+  `}
 
-//   ${Label} {
-//     opacity: 0.75;
-//   }
-// `
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 62px 330px repeat(2,150px) 161px;
+  `}
 
-// export const TableBody = styled(AutoColumn)`
-//   margin: 0 0 16px;
-//   padding: 10px 0 0;
-//   gap: 0;
+  &:hover {
+    background: ${({ theme }) => theme.grey1};
+  }
+`
 
-//   ${({ theme }) => theme.mediaWidth.upToSmall`
-//     padding: 0 56px 16px 0;
-//   `};
-// `
+export const TableHeader = styled(Row)`
+  border-bottom: 1px solid ${({ theme }) => theme.grey1};
+
+  &:hover {
+    background: transparent;
+  }
+
+  ${Label} {
+    opacity: 0.75;
+  }
+`
 
 export const Cell = styled.div`
   display: flex;
-  padding: 0;
-  justify-content: flex-start;
-  align-items: center;
+  gap: 8px;
 
+  // 1st STAR column
+  &:nth-child(1n) {
+    gap: 0;
+  }
+
+  // ACTIONS column
   &:nth-child(5n) {
-    justify-content: flex-end;
     gap: 10px;
   }
 
@@ -247,8 +244,10 @@ export const Cell = styled.div`
     transition: text-decoration-color 0.2s ease-in-out;
     overflow: hidden;
     display: flex;
+    color: ${({ theme }) => theme.text1};
 
     &:hover {
+      color: ${({ theme }) => theme.text1};
       text-decoration-color: ${({ theme }) => theme.text1};
     }
   }
@@ -260,9 +259,8 @@ export const IndexNumber = styled.span`
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
-  color: ${({ hasBalance, theme }) => theme[hasBalance ? 'text1' : 'text3']};
-  font-variant-numeric: tabular-nums;
-  font-weight: 400;
+  color: ${({ hasBalance, theme }) => (hasBalance ? theme.text1 : transparentize(0.3, theme.text1))};
+  font-weight: 500;
   font-size: 14px;
   white-space: nowrap;
   max-width: 100%;
@@ -311,25 +309,20 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   `};
 `
 
-export const Table = styled(AutoColumn)`
+export const Table = styled.div`
+  display: flex;
+  flex-flow: column wrap;
   overflow-y: auto;
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
-  display: grid;
-  grid-gap: 16px;
   width: 100%;
   font-size: 14px;
   align-items: center;
   text-align: left;
   border: 0;
-  padding: 0 16px;
-  grid-template-columns: 40px auto repeat(3, min-content);
+  padding: 0;
   background: transparent;
   transition: background 0.1s ease-in-out;
-
-  &:hover {
-    background: ${({ theme }) => theme.grey1};
-  }
 
   &::-webkit-scrollbar {
     height: 6px;
@@ -353,6 +346,35 @@ export const TokenText = styled.div`
   text-align: left;
   margin: 0 0 0 12px;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+
+  > span {
+    display: flex;
+    align-items: center;
+    max-width: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  > span > b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    font-weight: 500;
+    display: inline-block;
+  }
+
+  > span > i {
+    opacity: 0.6;
+    margin: 0 0 0 4px;
+    font-style: normal;
+    display: inline-block;
+    text-transform: uppercase;
+  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 13px;
