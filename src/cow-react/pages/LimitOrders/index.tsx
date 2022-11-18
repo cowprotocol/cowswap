@@ -5,24 +5,29 @@ import {
   InfoPopup,
   MarketPriceUpdater,
   ActiveRateUpdater,
+  OrdersWidget,
+  limitOrdersAtom,
 } from '@cow/modules/limitOrders'
+import { useAtomValue } from 'jotai/utils'
+
 export default function LimitOrderPage() {
+  const { isUnlocked } = useAtomValue(limitOrdersAtom)
+
   return (
     <>
       <QuoteUpdater />
       <MarketPriceUpdater />
       <ActiveRateUpdater />
-      <styledEl.PageWrapper>
+      <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />
-          <InfoPopup />
+          {isUnlocked && <InfoPopup />}
         </styledEl.PrimaryWrapper>
 
-        {/*TODO: temporary hidden right part of the page until it's ready*/}
-        {/* <styledEl.SecondaryWrapper>
-          <ChartWidget />
-          <Orders />
-        </styledEl.SecondaryWrapper> */}
+        <styledEl.SecondaryWrapper>
+          {/*<ChartWidget />*/}
+          <OrdersWidget />
+        </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>
   )
