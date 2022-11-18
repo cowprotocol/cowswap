@@ -7,9 +7,9 @@ const ONE_GWEI = 1_000_000_000
 
 export type GasFeeEndpointResponse = {
   lastUpdate: string
-  average: number | null
-  fast: number | null
-  slow: number | null
+  average: string | null
+  fast: string | null
+  slow: string | null
 }
 
 export interface EstimatedPrice {
@@ -24,13 +24,13 @@ type GasPrices = Omit<GasFeeEndpointResponse, 'lastUpdate'>
 // Here the key is what we use in gas state and the value is confidence level
 // coming from the Blockscout api, so we map state values with confidence lvls
 const priceMap: GasPrices = {
-  fast: 99,
-  average: 90,
-  slow: 70,
+  fast: '99',
+  average: '90',
+  slow: '70',
 }
 
 class GasFeeApi {
-  getUrl(chainId: ChainId) {
+  getUrl(chainId: ChainId): string {
     const baseUrl = GAS_FEE_ENDPOINTS[chainId]
 
     if (chainId !== ChainId.GNOSIS_CHAIN) {
@@ -40,8 +40,8 @@ class GasFeeApi {
     return baseUrl
   }
 
-  getHeaders(chainId: ChainId) {
-    const headers: any = {}
+  getHeaders(chainId: ChainId): { headers?: Headers } {
+    const headers: { [key: string]: any } = {}
     const apiKey = GAS_API_KEYS[chainId] || ''
 
     if (chainId !== ChainId.GNOSIS_CHAIN) {
@@ -53,7 +53,7 @@ class GasFeeApi {
     return headers
   }
 
-  toWei(input: number | null) {
+  toWei(input: number | null): string | null {
     if (!input) {
       return null
     }
@@ -61,18 +61,18 @@ class GasFeeApi {
     return Math.floor(input * ONE_GWEI).toString()
   }
 
-  getBlocknativePrice(data: EstimatedPrice[], lvl: number | null) {
+  getBlocknativePrice(data: EstimatedPrice[], lvl: string | null): number | null {
     if (!data || !lvl) {
       return null
     }
 
-    const price = data.find(({ confidence }: EstimatedPrice) => lvl === confidence)?.price
+    const price = data.find(({ confidence }: EstimatedPrice) => lvl === String(confidence))?.price
 
     return price || null
   }
 
-  parseData(json: any, chainId: ChainId) {
-    const output: any = {
+  parseData(json: any, chainId: ChainId): GasFeeEndpointResponse {
+    const output: GasFeeEndpointResponse = {
       lastUpdate: new Date().toISOString(),
       fast: null,
       average: null,
@@ -82,7 +82,7 @@ class GasFeeApi {
     // Parse data for Gnosis chain (from Blockscout)
     if (chainId === ChainId.GNOSIS_CHAIN) {
       for (const key of Object.keys(priceMap)) {
-        output[key] = this.toWei(json[key])
+        output[key as keyof GasPrices] = this.toWei(json[key])
       }
     } else {
       // Parse data for other chains (from Blocknative)
@@ -91,7 +91,7 @@ class GasFeeApi {
       if (prices) {
         for (const [key, value] of Object.entries(priceMap)) {
           const price = this.getBlocknativePrice(prices, value)
-          output[key] = this.toWei(price)
+          output[key as keyof GasPrices] = this.toWei(price)
         }
       }
     }
@@ -109,7 +109,7 @@ class GasFeeApi {
     return json
   }
 
-  async getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS) {
+  async getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS): Promise<GasFeeEndpointResponse> {
     const data = await this.fetchData(chainId)
     const parsed = this.parseData(data, chainId)
 
