@@ -19,6 +19,7 @@ export function EthFlowSlippageUpdater() {
 
     if (
       isEthFlow &&
+      ethFlow &&
       ((currentSlippage === 'auto' && ethFlow !== 'auto') ||
         (currentSlippage instanceof Percent && ethFlow instanceof Percent && !currentSlippage.equalTo(ethFlow)))
     ) {
@@ -45,13 +46,14 @@ export function EthFlowSlippageUpdater() {
         // If current slippage is auto or if it's smaller than ETH flow slippage, update it
 
         // If the former ethFlow slippage was saved, use that. Otherwise pick the minimum
-        const newSlippage = ethFlow !== 'auto' && ethFlow.greaterThan(ETH_FLOW_SLIPPAGE) ? ethFlow : ETH_FLOW_SLIPPAGE
+        const newSlippage =
+          ethFlow !== 'auto' && ethFlow && ethFlow.greaterThan(ETH_FLOW_SLIPPAGE) ? ethFlow : ETH_FLOW_SLIPPAGE
 
         // Update the global state
         setUserSlippageTolerance(newSlippage)
 
         // Update local storage
-        _saveSlippage({ regular: currentSlippage, ethFlow: newSlippage })
+        _saveSlippage({ regular: regular || currentSlippage, ethFlow: newSlippage })
       } else {
         // If current slippage is NOT auto and it's greater than minimum, store that locally
         _saveSlippage({ regular, ethFlow: currentSlippage })
@@ -72,10 +74,12 @@ function _saveSlippage(slippageSettings: SlippageSettings): void {
 }
 
 function _serialize({ regular, ethFlow }: SlippageSettings): SerializedSlippageSettings {
-  return {
-    regular: _serializeSlippage(regular),
-    ethFlow: _serializeSlippage(ethFlow),
-  }
+  const slippage: SerializedSlippageSettings = {}
+
+  if (regular) slippage.regular = _serializeSlippage(regular)
+  if (ethFlow) slippage.ethFlow = _serializeSlippage(ethFlow)
+
+  return slippage
 }
 
 function _serializeSlippage(slippage: Slippage): SerializedSlippage {
@@ -91,18 +95,23 @@ function _loadSlippage(): SlippageSettings {
 function _deserialize(settings: SerializedSlippageSettings | null): SlippageSettings {
   const { regular, ethFlow } = settings || {}
 
-  return {
-    regular: _deserializeSlippage(regular),
-    ethFlow: _deserializeSlippage(ethFlow),
-  }
+  const slippage: SlippageSettings = {}
+
+  if (regular) slippage.regular = _deserializeSlippage(regular)
+  if (ethFlow) slippage.ethFlow = _deserializeSlippage(ethFlow)
+
+  return slippage
 }
 
-function _deserializeSlippage(slippage?: SerializedSlippage): Slippage {
-  return slippage === 'auto' || !slippage ? 'auto' : new Percent(slippage[0], slippage[1])
+function _deserializeSlippage(slippage: SerializedSlippage | undefined): Slippage | undefined {
+  return !slippage ? undefined : slippage === 'auto' ? 'auto' : new Percent(slippage[0], slippage[1])
+  // return slippage === 'auto' || !slippage ? 'auto' : new Percent(slippage[0], slippage[1])
 }
 
 function _resetSlippage(setUserSlippageTolerance: (slippageTolerance: Slippage) => void): void {
-  const { regular } = _loadSlippage()
+  const { regular, ethFlow } = _loadSlippage()
   // user switched back to non-native swap, set slippage back to previous value
-  setUserSlippageTolerance(regular)
+  setUserSlippageTolerance(regular || 'auto')
+  // Removing it from storage to avoid issues when coming back
+  _saveSlippage({ ethFlow })
 }

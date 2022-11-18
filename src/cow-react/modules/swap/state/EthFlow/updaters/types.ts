@@ -1,8 +1,8 @@
 import { Percent } from '@uniswap/sdk-core'
 
 type StoredSettings<T> = {
-  regular: T
-  ethFlow: T
+  regular?: T
+  ethFlow?: T
 }
 
 export type SerializedSlippage = 'auto' | [string, string]
