@@ -121,10 +121,7 @@ export type MapUnsignedOrderToOrderParams = {
   additionalParams: UnsignedOrderAdditionalParams
 }
 
-export function mapUnsignedOrderToOrder({
-  unsignedOrder,
-  additionalParams,
-}: MapUnsignedOrderToOrderParams): Order {
+export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: MapUnsignedOrderToOrderParams): Order {
   const {
     orderId,
     account,
