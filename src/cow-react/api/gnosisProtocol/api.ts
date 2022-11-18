@@ -32,7 +32,6 @@ import { getAppDataHash } from 'constants/appDataHash'
 import { Context } from '@sentry/types'
 import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'state/gas/atoms'
-import { BigNumber } from '@ethersproject/bignumber'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -581,7 +580,6 @@ export async function getNativePrice(chainId: ChainId, address: string): Promise
 
 // Register some globals for convenience
 registerOnWindow({
-  BigNumber,
   operator: {
     getQuote,
     getTrades,
