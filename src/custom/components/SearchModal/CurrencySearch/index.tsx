@@ -11,7 +11,7 @@ import Column from '@src/components/Column'
 
 export const ContentWrapper = styled(Column)`
   width: 100%;
-  flex: 1 1;
+  flex: 1 1 auto;
   position: relative;
 
   ${SearchInput} {

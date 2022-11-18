@@ -43,11 +43,6 @@ export const Menu = styled.div`
   min-width: 250px;
   z-index: 99;
   padding: 12px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    left: 50%;
-    transform: translateX(-50%) translateY(105%);
-  `}
 `
 
 export const MenuItem = styled.div<{ active: boolean }>`
@@ -100,6 +95,7 @@ export const AccountCard = styled(Card)`
 
 export const AccountHeading = styled.div`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   padding: 0 0 20px;
   gap: 12px;
