@@ -7,7 +7,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  gap: 0.5rem;
+  gap: 6px;
   border: 0;
   outline: none;
   background-color: ${({ theme, stubbed }) => (stubbed ? lighten(0.1, theme.bg2) : theme.bg1)};
@@ -16,7 +16,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: 16px;
-  padding: 8px;
+  padding: 6px;
   transition: background-color 0.15s ease-in-out;
 
   &:hover {
@@ -32,11 +32,11 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
 `
 
 export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
-  margin: 0 5px;
+  margin: 0 3px;
 
-  path {
+  > path {
     stroke: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
-    stroke-width: 1.5px;
+    stroke-width: 2px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -45,8 +45,8 @@ export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
 `
 
 export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
-  font-size: 19px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
   white-space: nowrap;
   color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
 `

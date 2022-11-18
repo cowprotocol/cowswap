@@ -1,12 +1,10 @@
-import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import AccountDetails from 'components/AccountDetails'
-import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { OrderStatus } from 'state/orders/actions'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { transparentize } from 'polished'
+import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 
 const SideBar = styled.div`
   display: flex;
@@ -32,7 +30,7 @@ const SideBar = styled.div`
   background: ${({ theme }) => theme.bg1};
   scrollbar-color: ${({ theme }) => `${transparentize(0.5, theme.text1)} ${theme.bg1}`};
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`    
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
     height: 100%;
     max-width: 100%;
@@ -71,7 +69,7 @@ const SidebarBackground = styled.div`
   background: ${({ theme }) => transparentize(0.1, theme.black)};
   backdrop-filter: blur(3px);
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`    
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `};
 `
@@ -126,12 +124,6 @@ const Wrapper = styled.div`
   width: 100%;
 `
 
-const isPending = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.PENDING || data.status === OrderStatus.PRESIGNATURE_PENDING
-
-const isConfirmed = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED || data.status === OrderStatus.CANCELLED
-
 export interface OrdersPanelProps {
   handleCloseOrdersPanel: () => void
 }
@@ -140,19 +132,7 @@ export default function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps
   const walletInfo = useWalletInfo()
   const toggleWalletModal = useToggleWalletModal()
 
-  // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
-  const allRecentActivity = useRecentActivity()
-
-  const { pendingActivity, confirmedActivity } = useMemo(() => {
-    // Separate the array into 2: PENDING and FULFILLED(or CONFIRMED)+EXPIRED
-    const pendingActivity = allRecentActivity.filter(isPending).map((data) => data.id)
-    const confirmedActivity = allRecentActivity.filter(isConfirmed).map((data) => data.id)
-
-    return {
-      pendingActivity,
-      confirmedActivity,
-    }
-  }, [allRecentActivity])
+  const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
   const { active, ensName } = walletInfo
   const ENSName = ensName

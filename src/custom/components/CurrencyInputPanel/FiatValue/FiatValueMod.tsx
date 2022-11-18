@@ -33,10 +33,20 @@ export function FiatValue({
     if (!priceImpact) return undefined
     if (priceImpact.lessThan('0')) return theme.green1
     const severity = warningSeverity(priceImpact)
-    if (severity < 1) return theme.text3
-    if (severity < 3) return theme.yellow1
+    // if (severity < 1) return theme.text3
+    if (severity < 1) return theme.text1 // MOD
+    // if (severity < 3) return theme.yellow1
+    if (severity < 3) return theme.warning // MOD
     return theme.red1
-  }, [priceImpact, theme.green1, theme.red1, theme.text3, theme.yellow1])
+  }, [
+    priceImpact,
+    theme.green1,
+    theme.red1,
+    // theme.text3,
+    theme.text1, // MOD
+    // theme.yellow1
+    theme.warning, // MOD
+  ])
 
   return (
     <ThemedText.Body className={className} fontSize={14} color={fiatValue ? theme.text1 : theme.text4}>

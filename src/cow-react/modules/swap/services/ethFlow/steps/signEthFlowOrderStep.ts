@@ -10,6 +10,7 @@ import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/
 import { getDomain, UnsignedOrder } from 'utils/signatures'
 import { Order } from 'state/orders/actions'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -32,6 +33,7 @@ export async function signEthFlowOrderStep(
   ethFlowContract: CoWSwapEthFlow
 ): Promise<EthFlowResponse> {
   logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
+  const { chainId } = orderParams
 
   const { order, quoteId, summary } = getOrderParams(orderParams)
 
@@ -64,7 +66,12 @@ export async function signEthFlowOrderStep(
   })
 
   const domain = getDomain(orderParams.chainId)
-  const orderDigest = hashOrder(domain, order)
+  // Different validTo when signing because EthFlow contract expects it to be max for all orders
+  const orderDigest = hashOrder(domain, {
+    ...order,
+    validTo: MAX_VALID_TO_EPOCH,
+    sellToken: WRAPPED_NATIVE_CURRENCY[chainId].address,
+  })
   // Generate the orderId from owner, orderDigest, and max validTo
   const orderId = packOrderUidParams({
     orderDigest,
@@ -76,8 +83,19 @@ export async function signEthFlowOrderStep(
 
   return {
     txReceipt,
-    // For ETH-flow we always set order class to 'market' since we don't support ETH-flow in Limit orders
-    order: mapUnsignedOrderToOrder(order, { ...orderParams, orderId, signature: '', class: 'market', summary }),
+    order: mapUnsignedOrderToOrder({
+      unsignedOrder: order,
+      additionalParams: {
+        ...orderParams,
+        // For ETH-flow we always set order class to 'market' since we don't support ETH-flow in Limit orders
+        class: 'market',
+        orderId,
+        signature: '',
+        summary,
+        orderCreationHash: txReceipt.hash,
+        isOnChain: true, // always on-chain
+      },
+    }),
     orderId,
   }
 }

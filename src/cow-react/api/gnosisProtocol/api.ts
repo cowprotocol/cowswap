@@ -120,6 +120,14 @@ export interface OrderMetaData {
   status: ApiOrderStatus
   receiver: string
   class: 'market' | 'limit'
+  // EthFlow related fields
+  ethflowData: EthFlowData
+  onchainUser?: string
+}
+
+type EthFlowData = {
+  userValidTo: number
+  isRefunded: boolean
 }
 
 export interface TradeMetaData {

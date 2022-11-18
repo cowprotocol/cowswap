@@ -28,6 +28,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { useEthFlowContext } from '@cow/modules/swap/hooks/useEthFlowContext'
 import { ethFlow } from '@cow/modules/swap/services/ethFlow'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -97,10 +98,12 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   const swapButtonState = getSwapButtonState({
     account,
     isSupportedWallet,
+    isSmartContractWallet,
     isReadonlyGnosisSafeUser,
     isExpertMode,
     isSwapSupported,

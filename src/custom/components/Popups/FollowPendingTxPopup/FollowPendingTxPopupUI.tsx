@@ -13,14 +13,12 @@ interface PopupContentProps {
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
 
 const TooltipWrapper = styled(Tooltip)`
-  & {
-    z-index: 6;
-  }
   > .arrow- {
     z-index: 1;
   }
+
   > div {
-    max-width: 23rem !important;
+    max-width: 370px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
@@ -73,10 +71,10 @@ const StyledClose = styled(IconClose)`
   `};
 `
 
-const PopupContent = ({ onCheck: onCheckout, onClose }: PopupContentProps) => {
+const PopupContent = ({ onCheck, onClose }: PopupContentProps) => {
   const _onCheckout = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation()
-    onCheckout()
+    onCheck()
   }
 
   return (
@@ -97,20 +95,15 @@ const PopupContent = ({ onCheck: onCheckout, onClose }: PopupContentProps) => {
   )
 }
 
-export default function FollowPendingTxPopupUI({
+export function FollowPendingTxPopupUI({
   show,
   children,
-  onCheck: onCheckout,
+  onCheck,
   onClose,
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
   return (
-    <TooltipWrapper
-      show={show}
-      placement="left"
-      text={<PopupContent onClose={onClose} onCheck={onCheckout} />}
-      {...rest}
-    >
+    <TooltipWrapper show={show} placement="left" text={<PopupContent onClose={onClose} onCheck={onCheck} />} {...rest}>
       <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
         {children}
       </div>

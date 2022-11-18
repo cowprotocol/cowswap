@@ -1,11 +1,9 @@
-import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import WalletModal from 'components/WalletModal'
 import { Web3StatusInner, Web3StatusConnect, Web3StatusConnected, Text } from './Web3StatusMod'
-import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { OrderStatus } from 'state/orders/actions'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
+import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 
 export const Wrapper = styled.div`
   color: ${({ theme }) => theme.text1};
@@ -59,28 +57,11 @@ export const Wrapper = styled.div`
   }
 `
 
-export const isPending = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.PENDING || data.status === OrderStatus.PRESIGNATURE_PENDING
-
-const isConfirmed = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED || data.status === OrderStatus.CANCELLED
-
 export default function Web3Status() {
   const walletInfo = useWalletInfo()
   const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
-  // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
-  const allRecentActivity = useRecentActivity()
 
-  const { pendingActivity, confirmedActivity } = useMemo(() => {
-    // Separate the array into 2: PENDING and FULFILLED(or CONFIRMED)+EXPIRED
-    const pendingActivity = allRecentActivity.filter(isPending).map((data) => data.id)
-    const confirmedActivity = allRecentActivity.filter(isConfirmed).map((data) => data.id)
-
-    return {
-      pendingActivity,
-      confirmedActivity,
-    }
-  }, [allRecentActivity])
+  const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
   const { active, ensName } = walletInfo
   if (!active && !latestProvider) {

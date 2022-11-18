@@ -9,7 +9,7 @@ import { CloseIcon } from 'theme'
 import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import { RowBetween } from 'components/Row'
-import { getEtherscanLink, getExplorerLabel } from 'utils'
+import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from 'utils'
 import { Text } from 'rebass'
 import { CheckCircle, UserCheck } from 'react-feather'
 import GameIcon from 'assets/cow-swap/game.gif'
@@ -25,6 +25,8 @@ import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDeri
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import AddToMetamask from 'components/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
+import { useOrder } from 'state/orders/hooks'
+import { OrderStatus } from 'state/orders/actions'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -419,27 +421,20 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
     return ''
   }
 
-  let title = activityDerivedState.isOrder ? 'Order' : 'Transaction'
+  const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
 
   switch (activityDerivedState.status) {
     case ActivityStatus.CONFIRMED:
-      title += ' Confirmed'
-      break
+      return `${prefix} Confirmed`
     case ActivityStatus.EXPIRED:
-      title += ' Expired'
-      break
+      return `${prefix} Expired`
     case ActivityStatus.CANCELLED:
-      title += ' Cancelled'
-      break
+      return `${prefix} Cancelled`
     case ActivityStatus.CANCELLING:
-      title += ' Cancelling'
-      break
+      return `${prefix} Cancelling`
     default:
-      title += ' Submitted'
-      break
+      return `${prefix} Submitted`
   }
-
-  return title
 }
 
 export function ConfirmationPendingContent({
@@ -528,7 +523,6 @@ export function TransactionSubmittedContent({
   chainId: ChainId
   currencyToAdd?: Currency | undefined
 }) {
-  const theme = useContext(ThemeContext)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
@@ -545,13 +539,7 @@ export function TransactionSubmittedContent({
         <Text fontWeight={600} fontSize={28}>
           {getTitleStatus(activityDerivedState)}
         </Text>
-        {supportedChainId(chainId) && hash && (
-          <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
-            <Text fontWeight={500} fontSize={14} color={theme.text3}>
-              {getExplorerLabel(chainId, hash, 'transaction')} ↗
-            </Text>
-          </ExternalLinkCustom>
-        )}
+        <DisplayLink id={hash} chainId={chainId} />
         {activityDerivedState && showProgressBar && (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
@@ -567,6 +555,34 @@ export function TransactionSubmittedContent({
         </ButtonGroup>
       </Section>
     </Wrapper>
+  )
+}
+
+type DisplayLinkProps = {
+  id: string | undefined
+  chainId: number
+}
+
+function DisplayLink({ id, chainId }: DisplayLinkProps) {
+  const theme = useContext(ThemeContext)
+  const { orderCreationHash, status } = useOrder({ id, chainId }) || {}
+
+  if (!id || !chainId) {
+    return null
+  }
+
+  const ethFlowHash = orderCreationHash && status === OrderStatus.CREATING ? orderCreationHash : undefined
+  const href = ethFlowHash
+    ? getBlockExplorerUrl(chainId, ethFlowHash, 'transaction')
+    : getEtherscanLink(chainId, id, 'transaction')
+  const label = getExplorerLabel(chainId, ethFlowHash || id, 'transaction')
+
+  return (
+    <ExternalLinkCustom href={href}>
+      <Text fontWeight={500} fontSize={14} color={theme.text3}>
+        {label} ↗
+      </Text>
+    </ExternalLinkCustom>
   )
 }
 

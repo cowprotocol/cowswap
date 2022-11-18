@@ -51,6 +51,8 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
       return 'Filled'
     case 'executed':
       return 'Executed'
+    case 'refunded':
+    case 'refunding':
     case 'expired':
       return 'Expired'
     case 'failed':
@@ -59,6 +61,8 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
       return 'Cancelling...'
     case 'cancelled':
       return 'Cancelled'
+    case 'creating':
+      return 'Creating...'
     default:
       return 'Open'
   }
@@ -78,6 +82,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     isTransaction,
     isCancelled,
     isCancellable,
+    isCreating,
   } = activityDerivedState
 
   return (
@@ -88,6 +93,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
         isPending={isPending}
         isCancelling={isCancelling}
         isPresignaturePending={isPresignaturePending}
+        isCreating={isCreating}
       >
         {isConfirmed && isTransaction ? (
           <SVG src={OrderCheckImage} description="Transaction Confirmed" />
@@ -97,6 +103,9 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           <SVG src={OrderCancelledImage} description="Transaction Failed" />
         ) : isExpired ? (
           <SVG src={OrderExpiredImage} description="Order Expired" />
+        ) : isCreating ? (
+          // TODO: use another icon for Creating state
+          <SVG src={OrderExpiredImage} description="Creating Order" />
         ) : isCancelled ? (
           <SVG src={OrderCancelledImage} description="Order Cancelled" />
         ) : isPresignaturePending ? (

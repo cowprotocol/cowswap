@@ -31,7 +31,7 @@ export function ApproveButton(props: ApproveButtonProps) {
       return (
         <>
           <Trans>You can now trade {symbol}</Trans>
-          <CheckCircle size="20" color={theme.green1} />
+          <CheckCircle size="24" color={theme.text1} />
         </>
       )
     } else {
@@ -47,7 +47,7 @@ export function ApproveButton(props: ApproveButtonProps) {
               </Trans>
             }
           >
-            {isPending ? <Loader stroke="white" /> : <HelpCircle size="20" color={theme.black} />}
+            {isPending ? <Loader stroke={theme.white} /> : <HelpCircle size="24" color={theme.white} />}
           </MouseoverTooltip>
         </>
       )
@@ -71,10 +71,10 @@ export function ApproveButton(props: ApproveButtonProps) {
             alignItems: 'center',
             justifyContent: 'space-evenly',
             width: '100%',
-            fontSize: '13px',
+            fontSize: '14px',
           }}
         >
-          <CurrencyLogo currency={currency} size={'20px'} style={{ flexShrink: 0 }} />
+          <CurrencyLogo currency={currency} size={'24px'} style={{ flexShrink: 0 }} />
 
           {content}
         </span>

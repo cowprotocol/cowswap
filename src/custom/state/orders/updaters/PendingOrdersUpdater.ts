@@ -2,17 +2,19 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 import {
+  AddOrUpdateOrdersCallback,
+  CancelOrdersBatchCallback,
+  ExpireOrdersBatchCallback,
+  FulfillOrdersBatchCallback,
+  PresignOrdersCallback,
+  UpdatePresignGnosisSafeTxCallback,
+  useAddOrUpdateOrders,
   useCancelOrdersBatch,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
-  usePresignOrders,
   usePendingOrders,
-  FulfillOrdersBatchCallback,
-  ExpireOrdersBatchCallback,
-  CancelOrdersBatchCallback,
-  PresignOrdersCallback,
+  usePresignOrders,
   useUpdatePresignGnosisSafeTx,
-  UpdatePresignGnosisSafeTxCallback,
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
 import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
@@ -20,7 +22,7 @@ import { OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import { OrderID } from '@cow/api/gnosisProtocol'
+import { getOrder, OrderID } from '@cow/api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
@@ -87,12 +89,48 @@ async function _updatePresignGnosisSafeTx(
   await Promise.all(getSafeTxPromises)
 }
 
+async function _updateCreatingOrders(
+  chainId: ChainId,
+  pendingOrders: Order[],
+  addOrUpdateOrders: AddOrUpdateOrdersCallback
+): Promise<void> {
+  const promises = pendingOrders.reduce<Promise<void>[]>((acc, order) => {
+    if (order.status === OrderStatus.CREATING) {
+      // Filter only EthFlow orders in creating state
+
+      const promise = getOrder(chainId, order.id)
+        .then((orderData) => {
+          console.debug(`[PendingOrdersUpdater] ETH FLOW order ${order.id} fetched from API!!!`, orderData)
+          if (!orderData) {
+            return
+          }
+          const updatedOrder = {
+            ...order,
+            validTo: orderData.ethflowData?.userValidTo || order.validTo,
+            isRefunded: orderData.ethflowData?.isRefunded,
+          }
+          addOrUpdateOrders({ chainId, orders: [updatedOrder] })
+        })
+        .catch((error) => {
+          // Nothing to do here, keep waiting until the order shows up
+          console.debug(`[PendingOrdersUpdater] ETH FLOW order ${order.id} couldn't be fetched from API`, error)
+        })
+
+      acc.push(promise)
+    }
+
+    return acc
+  }, [])
+
+  await Promise.all(promises)
+}
+
 interface UpdateOrdersParams {
   account: string
   chainId: ChainId
   orders: Order[]
-
   // Actions
+  addOrUpdateOrders: AddOrUpdateOrdersCallback
   fulfillOrdersBatch: FulfillOrdersBatchCallback
   expireOrdersBatch: ExpireOrdersBatchCallback
   cancelOrdersBatch: CancelOrdersBatchCallback
@@ -105,8 +143,8 @@ async function _updateOrders({
   account,
   chainId,
   orders,
-
   // Actions
+  addOrUpdateOrders,
   fulfillOrdersBatch,
   expireOrdersBatch,
   cancelOrdersBatch,
@@ -178,8 +216,10 @@ async function _updateOrders({
     })
   }
 
-  // Update the presign Gnosis Safe Tx info (if applies)}
+  // Update the presign Gnosis Safe Tx info (if applies)
   await _updatePresignGnosisSafeTx(chainId, orders, getSafeInfo, updatePresignGnosisSafeTx)
+  // Update the creating EthFlow orders (if any)
+  await _updateCreatingOrders(chainId, orders, addOrUpdateOrders)
 }
 
 function _triggerNps(pending: Order[], chainId: ChainId) {
@@ -218,6 +258,7 @@ export function PendingOrdersUpdater(): null {
   const fulfillOrdersBatch = useFulfillOrdersBatch()
   const expireOrdersBatch = useExpireOrdersBatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
+  const addOrUpdateOrders = useAddOrUpdateOrders()
   const presignOrders = usePresignOrders()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const getSafeInfo = useGetSafeInfo()
@@ -236,6 +277,7 @@ export function PendingOrdersUpdater(): null {
           account,
           chainId,
           orders: pendingRef.current,
+          addOrUpdateOrders,
           fulfillOrdersBatch,
           expireOrdersBatch,
           cancelOrdersBatch,
@@ -248,7 +290,15 @@ export function PendingOrdersUpdater(): null {
         })
       }
     },
-    [cancelOrdersBatch, updatePresignGnosisSafeTx, expireOrdersBatch, fulfillOrdersBatch, presignOrders, getSafeInfo]
+    [
+      addOrUpdateOrders,
+      fulfillOrdersBatch,
+      expireOrdersBatch,
+      cancelOrdersBatch,
+      presignOrders,
+      updatePresignGnosisSafeTx,
+      getSafeInfo,
+    ]
   )
 
   useEffect(() => {
