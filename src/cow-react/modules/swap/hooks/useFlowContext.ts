@@ -27,6 +27,7 @@ import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { Web3Provider } from '@ethersproject/providers'
 import { BaseFlowContext } from '@cow/modules/swap/services/common/types'
 import { calculateValidTo } from '@cow/utils/time'
+import { PostOrderParams } from 'utils/trade'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -179,7 +180,8 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
 
   const validTo = calculateValidTo(deadline)
 
-  const orderParams = {
+  const orderParams: PostOrderParams = {
+    class: 'market',
     kind,
     account,
     chainId,

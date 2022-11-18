@@ -31,6 +31,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   id: OrderID // Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // Address, without '0x' prefix
   summary: string // Description of the order, for dapp use only, readable by user
+  class: 'market' | 'limit' // Flag to distinguish order class
 
   // Status
   status: OrderStatus

@@ -87,6 +87,8 @@ export async function signEthFlowOrderStep(
       unsignedOrder: order,
       additionalParams: {
         ...orderParams,
+        // For ETH-flow we always set order class to 'market' since we don't support ETH-flow in Limit orders
+        class: 'market',
         orderId,
         signature: '',
         summary,
