@@ -78,6 +78,7 @@ export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps)
           </div>
         </styledEl.Header>
         <styledEl.Rows>
+          {/*TODO: move to separated component*/}
           {ordersPage.map((order) => {
             const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
             const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
