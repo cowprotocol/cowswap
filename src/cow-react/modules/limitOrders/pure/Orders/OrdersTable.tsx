@@ -5,6 +5,8 @@ import * as styledEl from './OrdersTable.styled'
 import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { formatSmart } from 'utils/format'
+import { AlertTriangle } from 'react-feather'
+import { MouseoverTooltipContent } from 'components/Tooltip'
 
 export interface OrdersTableProps {
   orders: Order[]
@@ -23,6 +25,28 @@ const orderStatusTitleMap: { [key in OrderStatus]: string } = {
 }
 
 const pageSize = 10
+
+const balanceWarning = (tokenSymbol: string) => (
+  <styledEl.WarningParagraph>
+    <h3>Insufficient balance for this limit order</h3>
+    <p>
+      This order is still open and valid but your account currently has insufficient <strong>{tokenSymbol}</strong>{' '}
+      balance. <br />
+      Your order therefore can&apos;t be matched.
+    </p>
+  </styledEl.WarningParagraph>
+)
+
+const allowanceWarning = (tokenSymbol: string) => (
+  <styledEl.WarningParagraph>
+    <h3>Insufficient allowance for this limit order</h3>
+    <p>
+      This order is still open and valid but your account currently has insufficient allowance to spend{' '}
+      <strong>{tokenSymbol}</strong>. <br />
+      Your order therefore can&apos;t be matched.
+    </p>
+  </styledEl.WarningParagraph>
+)
 
 export function OrdersTable({ orders }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
@@ -56,6 +80,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
             const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
             const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
             const price = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
+            const withWarning = false
 
             return (
               <styledEl.Row key={order.id}>
@@ -74,9 +99,32 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                   </styledEl.RateValue>
                 </div>
                 <div>
-                  <styledEl.StatusItem cancelling={!!order.isCancelling} status={order.status}>
-                    {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
-                  </styledEl.StatusItem>
+                  <styledEl.StatusBox>
+                    <styledEl.StatusItem
+                      withWarning={withWarning}
+                      cancelling={!!order.isCancelling}
+                      status={order.status}
+                    >
+                      {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
+                    </styledEl.StatusItem>
+                    {withWarning && (
+                      <styledEl.WarningIndicator>
+                        <MouseoverTooltipContent
+                          wrap={false}
+                          bgColor={'#ffcb67'}
+                          content={
+                            <styledEl.WarningContent>
+                              {balanceWarning(order.inputToken.symbol || '')}
+                              {allowanceWarning(order.inputToken.symbol || '')}
+                            </styledEl.WarningContent>
+                          }
+                          placement="bottom"
+                        >
+                          <AlertTriangle size={16} />
+                        </MouseoverTooltipContent>
+                      </styledEl.WarningIndicator>
+                    )}
+                  </styledEl.StatusBox>
                 </div>
               </styledEl.Row>
             )

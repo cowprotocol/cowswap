@@ -47,12 +47,52 @@ export const Row = styled(Header)`
   }
 `
 
-export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
+export const StatusBox = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean; withWarning: boolean }>`
   display: inline-block;
   background: ${({ status, cancelling }) => (cancelling ? statusColorMap.cancelled : statusColorMap[status])};
   color: ${({ theme }) => theme.text2};
   padding: 5px 10px;
-  border-radius: 3px;
+  border-radius: ${({ withWarning }) => (withWarning ? '4px 0 0 4px' : '4px')};
+`
+
+export const WarningIndicator = styled.button`
+  margin: 0;
+  padding: 0;
+  background: #ffcb67;
+  color: ${({ theme }) => theme.warningText};
+  line-height: 0;
+  border: 0;
+  height: 27px;
+  width: 27px;
+  border-radius: 0 4px 4px 0;
+`
+
+export const WarningContent = styled.div`
+  max-width: 450px;
+  padding: 15px 20px;
+  color: ${({ theme }) => theme.black};
+
+  h3,
+  p {
+    margin: 0;
+  }
+
+  h3 {
+    margin-bottom: 8px;
+  }
+`
+
+export const WarningParagraph = styled.div`
+  margin-bottom: 20px;
+
+  :last-child {
+    margin-bottom: 0;
+  }
 `
 
 export const AmountItem = styled.div`
