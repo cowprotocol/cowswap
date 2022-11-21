@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { getTimeoutAbortController } from '@cow/utils/request'
 import ms from 'ms.macro'
 
-const CONNECTIVITY_CHECK_POLLING_TIME = ms`5s`
-const CONNECTIVITY_CHECK_TIMEOUT = ms`10s`
+const CONNECTIVITY_CHECK_POLLING_TIME = ms`30s`
+const CONNECTIVITY_CHECK_TIMEOUT = ms`15s`
 const IS_SUPPORTED = navigator.onLine !== undefined
 
 export function isOnline() {
