@@ -21,8 +21,8 @@ export function useActiveRateDisplay(): ActiveRateDisplay {
   const parseRate = useCallback(
     (invert: boolean) => {
       if (!activeRate || activeRate.denominator.toString() === '0' || activeRate.numerator.toString() === '0') return
-      if (invert) return activeRate?.invert().toSignificant(18)
-      else return activeRate?.toSignificant(18)
+
+      return (invert ? activeRate.invert() : activeRate).toSignificant(18)
     },
     [activeRate]
   )
