@@ -6,10 +6,10 @@ export function genericPropsChecker(prev: any, next: any): boolean {
   if (typeof prev === 'object') {
     const prevKeys = Object.keys(prev)
     const nextKeys = Object.keys(next)
-    // Just in case, we take the longest list of keys
-    const keys = prevKeys.length > nextKeys.length ? prevKeys : nextKeys
 
-    return keys.every((key) => {
+    if (nextKeys.length !== prevKeys.length) return false
+
+    return nextKeys.every((key) => {
       const prevValue = prev[key]
       const nextValue = next[key]
 
