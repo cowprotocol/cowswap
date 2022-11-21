@@ -1,12 +1,12 @@
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowModal, EthFlowProps } from '@cow/modules/swap/containers/EthFlow'
 import React from 'react'
-import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal'
 import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
+import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 
 export interface NewSwapModalsProps {
   chainId: number | undefined
