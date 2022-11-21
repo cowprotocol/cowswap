@@ -60,5 +60,24 @@ export function swapPagePropsChecker(prev: SwapFormProps, next: SwapFormProps): 
 }
 
 export function genericPropsChecker(prev: any, next: any): boolean {
-  return JSON.stringify(prev) === JSON.stringify(next)
+  if (typeof prev === 'object') {
+    const prevKeys = Object.keys(prev)
+    const nextKeys = Object.keys(next)
+    // Just in case, we take the longest list of keys
+    const keys = prevKeys.length > nextKeys.length ? prevKeys : nextKeys
+
+    return keys.every((key) => {
+      const prevValue = prev[key]
+      const nextValue = next[key]
+
+      // We shouldn't check functions using JSON.stringify because it always returns true
+      if (typeof prevValue === 'function' || typeof nextValue === 'function') {
+        return prevValue === nextValue
+      }
+
+      return JSON.stringify(prevValue) === JSON.stringify(nextValue)
+    })
+  }
+
+  return prev === next
 }
