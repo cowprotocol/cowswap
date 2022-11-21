@@ -12,7 +12,7 @@ on:
 env:
   REPO_NAME_SLUG: cowswap
   PR_NUMBER: ${{ github.event.number }}
-  NODE_VERSION: lts/gallium
+  NODE_VERSION: 18.12.1
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
