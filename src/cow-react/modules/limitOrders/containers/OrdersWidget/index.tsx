@@ -5,6 +5,7 @@ import { useEffect, useMemo } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useHistory, useLocation } from 'react-router-dom'
+import { ReceiptModal } from '@cow/modules/limitOrders/containers/ReceiptModal'
 
 const openTab: OrderTab = {
   id: 'open',
@@ -46,5 +47,10 @@ export function OrdersWidget() {
     history.push(buildLimitOrdersTabUrl(location.pathname, location.search, currentTabId))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Orders tabs={tabs} orders={orders} isWalletConnected={!!account} />
+  return (
+    <>
+      <Orders tabs={tabs} orders={orders} isWalletConnected={!!account} />
+      <ReceiptModal />
+    </>
+  )
 }

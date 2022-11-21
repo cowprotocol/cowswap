@@ -5,6 +5,7 @@ import * as styledEl from './OrdersTable.styled'
 import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { formatSmart } from 'utils/format'
+import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/ReceiptModal/hooks'
 
 export interface OrdersTableProps {
   orders: Order[]
@@ -26,6 +27,7 @@ const pageSize = 10
 
 export function OrdersTable({ orders }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
+  const selectReceiptOrder = useSelectReceiptOrder()
 
   const step = currentPage * pageSize
   const ordersPage = orders.slice(step - pageSize, step)
@@ -58,7 +60,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
             const price = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
 
             return (
-              <styledEl.Row key={order.id}>
+              <styledEl.Row onClick={() => selectReceiptOrder(order)} key={order.id}>
                 <div>
                   <styledEl.CurrencyAmountItem amount={sellAmount} />
                 </div>
