@@ -9,8 +9,8 @@ import TradeGp from 'state/swap/TradeGp'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import { RowSlippage } from '@cow/modules/swap/containers/RowSlippage'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { TradeBasicDetails } from '@cow/modules/swap/containers/TradeBasicDetails'
+import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 
 const SUBSIDY_INFO_MESSAGE_EXTENDED =
   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
