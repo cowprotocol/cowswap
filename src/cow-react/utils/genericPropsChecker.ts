@@ -1,6 +1,6 @@
 /**
  * This is a function for generic React.memo() usage
- * The function compares previous and next props. It returns true when props are equal and vice versa
+ * The function compares previous and next props by values using JSON.stringify. It returns true when props are equal and vice versa
  */
 export function genericPropsChecker(prev: any, next: any): boolean {
   if (typeof prev === 'object') {
