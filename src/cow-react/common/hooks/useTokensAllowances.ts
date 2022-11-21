@@ -32,7 +32,7 @@ export function useTokensAllowances(
   const isLoading = useMemo(() => allowancesRequests.some((callState) => callState.loading), [allowancesRequests])
 
   return useMemo(() => {
-    if (!account) return { allowances: {}, isLoading }
+    if (!account) return { allowances: {}, isLoading: false }
 
     const allowances = tokensAddresses.reduce((acc, tokenAddress, i) => {
       const allowance = allowancesRequests?.[i].result?.[0]

@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useOrdersBalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
 import { GP_VAULT_RELAYER } from 'constants/index'
 
 const openTab: OrderTab = {
@@ -31,7 +31,6 @@ export function OrdersWidget() {
   const { chainId, account } = useWeb3React()
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
-  const pendingBalancesAndAllowances = useOrdersBalancesAndAllowances(account, spender, ordersList.pending)
 
   const currentTabId = useMemo(() => {
     return new URLSearchParams(location.search).get(LIMIT_ORDERS_TAB_KEY) || openTab.id
@@ -47,15 +46,24 @@ export function OrdersWidget() {
     })
   }, [currentTabId, ordersList])
 
-  // Check balances and allowances only for pending orders
-  const balancesAndAllowances =
-    currentTabId === openTab.id ? pendingBalancesAndAllowances : { balances: {}, allowances: {} }
+  const isOpenOrdersTab = openTab.id === currentTabId
+  const pendingBalancesAndAllowances = useOrdersBalancesAndAllowances(
+    // Request balances and allowances only for the open orders tab
+    isOpenOrdersTab ? account : undefined,
+    spender,
+    ordersList.pending
+  )
 
   useEffect(() => {
     history.push(buildLimitOrdersTabUrl(location.pathname, location.search, currentTabId))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Orders tabs={tabs} orders={orders} balancesAndAllowances={balancesAndAllowances} isWalletConnected={!!account} />
+    <Orders
+      tabs={tabs}
+      orders={orders}
+      balancesAndAllowances={pendingBalancesAndAllowances}
+      isWalletConnected={!!account}
+    />
   )
 }

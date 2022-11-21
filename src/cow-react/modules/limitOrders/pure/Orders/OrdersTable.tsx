@@ -28,6 +28,7 @@ const orderStatusTitleMap: { [key in OrderStatus]: string } = {
 
 const pageSize = 10
 
+// TODO: check texts with marketing
 const balanceWarning = (tokenSymbol: string) => (
   <styledEl.WarningParagraph>
     <h3>Insufficient balance for this limit order</h3>
@@ -88,8 +89,10 @@ export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps)
             const balance = balances[order.inputToken.address]
             const allowance = allowances[order.inputToken.address]
 
-            const hasEnoughBalance = balance ? sellAmount.lessThan(balance) : true
-            const hasEnoughAllowance = allowance ? sellAmount.lessThan(allowance) : true
+            const hasEnoughBalance = balance ? !sellAmount.equalTo(balance) && sellAmount.lessThan(balance) : true
+            const hasEnoughAllowance = allowance
+              ? !sellAmount.equalTo(allowance) && sellAmount.lessThan(allowance)
+              : true
             const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
             return (
