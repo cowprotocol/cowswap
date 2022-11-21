@@ -40,6 +40,9 @@ function _getBaTradeParsedAmount(abTrade: PriceImpactTrade | undefined, shouldCa
   return abTrade?.outputAmountWithoutFee
 }
 
+// It's request to get price, so we don't need precise value for validTo
+const PRICE_QUOTE_VALID_TO_TIME = ms`30m`
+
 export default function useFallbackPriceImpact({
   sellToken,
   buyToken,
@@ -63,7 +66,7 @@ export default function useFallbackPriceImpact({
     return {
       ..._getBaTradeParams({ abTrade, sellToken, buyToken }),
       parsedAmount: _getBaTradeParsedAmount(abTrade, shouldCalculate),
-      validTo: Math.round(Date.now() / 1000) + ms`30m`, // +30min - it's request to get price, so we don't need precise value for validTo
+      validTo: Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000),
     }
   }, [abTrade, buyToken, sellToken, shouldCalculate])
 
