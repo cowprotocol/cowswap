@@ -11,21 +11,27 @@ import { DEFAULT_DECIMALS } from 'custom/constants'
 
 type PriceResult = number | Error | undefined
 
+const parsePrice = (price: number, currency: Currency) => price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
+
 async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
   const currencyAddress = getAddress(currency)
 
-  if (!chainId || !currency || (currency.isNative ? false : !currencyAddress)) {
+  if (!chainId || !currency) {
     return
   }
 
   try {
-    const result = currency.isNative || !currencyAddress ? { price: 1 } : await getNativePrice(chainId, currencyAddress)
+    if (currency.isNative || !currencyAddress) {
+      return parsePrice(1, currency)
+    }
+
+    const result = await getNativePrice(chainId, currencyAddress)
 
     if (!result) {
       throw new Error('Cannot parse initial price')
     }
 
-    const price = result.price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
+    const price = parsePrice(result.price, currency)
 
     if (!price) {
       throw new Error('Cannot parse initial price')
