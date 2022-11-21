@@ -2,9 +2,10 @@ import { Order, OrderStatus } from 'state/orders/actions'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import * as styledEl from './OrdersTable.styled'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
-import { formatSmart } from 'utils/format'
+import { InvertRateControl, RateInfo } from '../../pure/RateInfo'
+import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
 
 export interface OrdersTableProps {
   orders: Order[]
@@ -26,6 +27,7 @@ const pageSize = 10
 
 export function OrdersTable({ orders }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
+  const [isRateInversed, setIsRateInversed] = useState(false)
 
   const step = currentPage * pageSize
   const ordersPage = orders.slice(step - pageSize, step)
@@ -45,7 +47,10 @@ export function OrdersTable({ orders }: OrdersTableProps) {
             <Trans>Receive</Trans>
           </div>
           <div>
-            <Trans>Limit price</Trans>
+            <span>
+              <Trans>Limit price</Trans>
+            </span>
+            <InvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
           </div>
           <div>
             <Trans>Status</Trans>
@@ -55,7 +60,14 @@ export function OrdersTable({ orders }: OrdersTableProps) {
           {ordersPage.map((order) => {
             const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
             const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-            const price = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
+            const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
+            const activeRateDisplay: ActiveRateDisplay = {
+              activeRate,
+              inputCurrency: order.inputToken,
+              outputCurrency: order.outputToken,
+              activeRateFiatAmount: null,
+              inversedActiveRateFiatAmount: null,
+            }
 
             return (
               <styledEl.Row key={order.id}>
@@ -67,10 +79,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                 </div>
                 <div>
                   <styledEl.RateValue>
-                    1 {order.inputToken.symbol} ={' '}
-                    <span title={price.toSignificant(18) + ' ' + order.outputToken.symbol}>
-                      {formatSmart(price)} {order.outputToken.symbol}
-                    </span>
+                    <RateInfo noLabel={true} isInversed={isRateInversed} activeRateDisplay={activeRateDisplay} />
                   </styledEl.RateValue>
                 </div>
                 <div>
