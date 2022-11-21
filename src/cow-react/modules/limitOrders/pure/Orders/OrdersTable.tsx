@@ -6,8 +6,10 @@ import React, { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { InvertRateControl, RateInfo } from '../../pure/RateInfo'
 import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
+import { SupportedChainId } from 'constants/chains'
 
 export interface OrdersTableProps {
+  chainId: SupportedChainId | undefined
   orders: Order[]
 }
 
@@ -25,7 +27,7 @@ const orderStatusTitleMap: { [key in OrderStatus]: string } = {
 
 const pageSize = 10
 
-export function OrdersTable({ orders }: OrdersTableProps) {
+export function OrdersTable({ chainId, orders }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [isRateInversed, setIsRateInversed] = useState(false)
 
@@ -62,9 +64,10 @@ export function OrdersTable({ orders }: OrdersTableProps) {
             const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
             const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
             const activeRateDisplay: ActiveRateDisplay = {
+              chainId,
               activeRate,
-              inputCurrency: order.inputToken,
-              outputCurrency: order.outputToken,
+              inputCurrencyAmount: sellAmount,
+              outputCurrencyAmount: buyAmount,
               activeRateFiatAmount: null,
               inversedActiveRateFiatAmount: null,
             }

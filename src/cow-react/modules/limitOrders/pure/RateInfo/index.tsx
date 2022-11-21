@@ -4,6 +4,8 @@ import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateD
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { RefreshCw } from 'react-feather'
+import { getAnchorCurrency } from '@cow/common/services/getAnchorCurrency'
+import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 
 export interface RateInfoProps {
   className?: string
@@ -26,9 +28,10 @@ const InvertIcon = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  display: inline-block;
-  text-align: center;
-  line-height: 22px;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-left: 5px;
   cursor: pointer;
 `
@@ -42,10 +45,20 @@ export function InvertRateControl({ onClick }: { onClick(): void }) {
 }
 
 export function RateInfo({ activeRateDisplay, className, isInversed = false, noLabel = false }: RateInfoProps) {
-  const { inputCurrency, outputCurrency, activeRate, activeRateFiatAmount, inversedActiveRateFiatAmount } =
-    activeRateDisplay
+  const {
+    chainId,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    activeRate,
+    activeRateFiatAmount,
+    inversedActiveRateFiatAmount,
+  } = activeRateDisplay
+
+  const inputCurrency = inputCurrencyAmount?.currency
+  const outputCurrency = outputCurrencyAmount?.currency
 
   const [currentIsInversed, setIsInversed] = useState(isInversed)
+  const [isAnchorCurrencyDetected, setIsAnchorCurrencyDetected] = useState(false)
 
   const currentActiveRate = useMemo(() => {
     if (!activeRate) return null
@@ -64,9 +77,35 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
     return currentIsInversed ? inputCurrency : outputCurrency
   }, [currentIsInversed, inputCurrency, outputCurrency])
 
+  const anchorCurrency = useMemo(() => {
+    return getAnchorCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
+  }, [chainId, inputCurrencyAmount, outputCurrencyAmount])
+
   useEffect(() => {
-    setIsInversed(isInversed)
+    setIsInversed((state) => !state)
   }, [isInversed])
+
+  /**
+   * @see getAnchorCurrency
+   */
+  useEffect(() => {
+    setIsAnchorCurrencyDetected(!!anchorCurrency)
+
+    if (isAnchorCurrencyDetected) return
+
+    if (anchorCurrency) {
+      const [anchorCurrencyAddress, inputCurrencyAddress] = [getAddress(anchorCurrency), getAddress(inputCurrency)]
+
+      setIsInversed(anchorCurrencyAddress !== inputCurrencyAddress)
+    }
+  }, [
+    isAnchorCurrencyDetected,
+    anchorCurrency,
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+  ])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 

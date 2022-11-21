@@ -16,4 +16,4 @@ const tabs: OrderTab[] = [
   },
 ]
 
-export default <Orders orders={ordersMock} tabs={tabs} isWalletConnected={true} />
+export default <Orders chainId={1} orders={ordersMock} tabs={tabs} isWalletConnected={true} />

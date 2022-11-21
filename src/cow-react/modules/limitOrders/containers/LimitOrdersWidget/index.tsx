@@ -108,8 +108,10 @@ export function LimitOrdersWidget() {
 
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId } = state
+
+    updateLimitOrdersState({ inputCurrencyAmount: outputCurrencyAmount?.toExact(), outputCurrencyAmount: null })
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
-  }, [state, limitOrdersNavigate, chainId])
+  }, [state, limitOrdersNavigate, updateLimitOrdersState, chainId, outputCurrencyAmount])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {

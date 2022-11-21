@@ -5,17 +5,22 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { useCallback } from 'react'
+import { SupportedChainId } from 'constants/chains'
+import { useWeb3React } from '@web3-react/core'
+import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
 
 export interface ActiveRateDisplay {
-  inputCurrency: Currency | null
-  outputCurrency: Currency | null
+  chainId: SupportedChainId | undefined
+  inputCurrencyAmount: CurrencyAmount<Currency> | null
+  outputCurrencyAmount: CurrencyAmount<Currency> | null
   activeRate: Fraction | null
   activeRateFiatAmount: CurrencyAmount<Currency> | null
   inversedActiveRateFiatAmount: CurrencyAmount<Currency> | null
 }
 
 export function useActiveRateDisplay(): ActiveRateDisplay {
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const { chainId } = useWeb3React()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
   const { activeRate } = useAtomValue(limitRateAtom)
 
   const parseRate = useCallback(
@@ -27,17 +32,20 @@ export function useActiveRateDisplay(): ActiveRateDisplay {
     [activeRate]
   )
 
-  const activeRateFiatAmount = useHigherUSDValue(tryParseCurrencyAmount(parseRate(false), outputCurrency || undefined))
-
-  const inversedActiveRateFiatAmount = useHigherUSDValue(
-    tryParseCurrencyAmount(parseRate(true), inputCurrency || undefined)
+  const activeRateFiatAmount = useHigherUSDValue(
+    tryParseCurrencyAmount(parseRate(false), outputCurrencyAmount?.currency || undefined)
   )
 
-  return {
-    inputCurrency,
-    outputCurrency,
+  const inversedActiveRateFiatAmount = useHigherUSDValue(
+    tryParseCurrencyAmount(parseRate(true), inputCurrencyAmount?.currency || undefined)
+  )
+
+  return useSafeMemoObject({
+    chainId,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
     activeRate,
     activeRateFiatAmount,
     inversedActiveRateFiatAmount,
-  }
+  })
 }

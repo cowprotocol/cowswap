@@ -26,7 +26,7 @@ export function OrdersWidget() {
   const location = useLocation()
   const history = useHistory()
   const ordersList = useLimitOrdersList()
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
 
   const currentTabId = useMemo(() => {
     return new URLSearchParams(location.search).get(LIMIT_ORDERS_TAB_KEY) || openTab.id
@@ -46,5 +46,5 @@ export function OrdersWidget() {
     history.push(buildLimitOrdersTabUrl(location.pathname, location.search, currentTabId))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Orders tabs={tabs} orders={orders} isWalletConnected={!!account} />
+  return <Orders chainId={chainId} tabs={tabs} orders={orders} isWalletConnected={!!account} />
 }
