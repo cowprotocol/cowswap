@@ -27,6 +27,7 @@ import AddToMetamask from 'components/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
 import { useOrder } from 'state/orders/hooks'
 import { OrderStatus } from 'state/orders/actions'
+import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -527,6 +528,7 @@ export function TransactionSubmittedContent({
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
+  const { order } = activityDerivedState || {}
 
   if (!supportedChainId(chainId)) {
     return null
@@ -540,6 +542,7 @@ export function TransactionSubmittedContent({
           {getTitleStatus(activityDerivedState)}
         </Text>
         <DisplayLink id={hash} chainId={chainId} />
+        <EthFlowStepper storeOrder={order} />
         {activityDerivedState && showProgressBar && (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
