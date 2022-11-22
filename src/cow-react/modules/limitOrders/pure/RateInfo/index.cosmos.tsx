@@ -1,5 +1,5 @@
 import { RateInfo } from './index'
-import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
+import { DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import { COW, GNO } from 'constants/tokens'
@@ -61,15 +61,6 @@ function SmartQuoteSelection() {
         buildActiveRateDisplay(GNO_GOERLI, DAI_GOERLI, 2000, 100),
         buildActiveRateDisplay(USDT_GOERLI, WETH_GOERLI, 6704, 12),
         buildActiveRateDisplay(WETH_GOERLI, USDT_GOERLI, 100, 6433),
-      ],
-    },
-    {
-      title: `When one of tokens is BTC or wrapped native, then it's quote`,
-      examples: [
-        buildActiveRateDisplay(GNO_GOERLI, WETH_GOERLI, 12, 600),
-        buildActiveRateDisplay(WETH_GOERLI, GNO_GOERLI, 600, 12),
-        buildActiveRateDisplay(WBTC_GOERLI, COW_GOERLI, 5, 2500),
-        buildActiveRateDisplay(COW_GOERLI, WBTC_GOERLI, 2500, 5),
       ],
     },
     {
