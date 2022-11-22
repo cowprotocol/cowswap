@@ -42,20 +42,26 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
 }
 
 export function RowDeadlineContent(props: RowDeadlineProps) {
-  const { userDeadline, showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
-
-  if (!isEthFlow || userDeadline > MINIMUM_ETH_FLOW_DEADLINE_SECONDS) return null
+  const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
 
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
         <TextWrapper>
-          <Trans>
-            Transaction expiration{' '}
-            <ThemedText.Warn display="inline-block" override>
-              (modified)
-            </ThemedText.Warn>
-          </Trans>
+          {isEthFlow ? (
+            <Trans>
+              Transaction expiration{' '}
+              <ThemedText.Warn display="inline-block" override>
+                (modified)
+              </ThemedText.Warn>
+            </Trans>
+          ) : showSettingOnClick ? (
+            <ClickableText onClick={toggleSettings}>
+              <Trans>Transaction expiration</Trans>
+            </ClickableText>
+          ) : (
+            <Trans>Transaction expiration</Trans>
+          )}
         </TextWrapper>
         <MouseoverTooltipContent wrap content={getNativeOrderDeadlineTooltip(symbols)}>
           <StyledInfoIcon size={16} />
