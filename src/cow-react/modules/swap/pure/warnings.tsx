@@ -44,16 +44,12 @@ export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTop
         trade={trade}
         acceptedStatus={feeWarningAccepted}
         acceptWarningCb={!isExpertMode && account ? () => setFeeWarningAccepted((state) => !state) : undefined}
-        width="99%"
-        padding="5px 15px"
       />
       <NoImpactWarning
         trade={trade}
         hide={hideUnknownImpactWarning}
         acceptedStatus={impactWarningAccepted}
         acceptWarningCb={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
-        width="99%"
-        padding="5px 15px"
       />
     </>
   )

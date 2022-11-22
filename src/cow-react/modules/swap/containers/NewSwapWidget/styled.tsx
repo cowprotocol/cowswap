@@ -16,7 +16,7 @@ export const ContainerBox = styled.div`
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 10px 16px 16px;
+    padding: 16px;
   `};
 `
 
@@ -37,7 +37,11 @@ export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
 `
 
 export const SwapHeaderStyled = styled(SwapHeader)`
-  padding: 0 0.25rem 0.5rem 0.25rem;
+  padding: 8px 8px 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 0 0 16px;
+  `};
 `
 
 export const RemoveRecipientStyled = styled(RemoveRecipient)`
