@@ -192,7 +192,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
     &.expanded + ${MenuContent} {
       ${({ theme }) => theme.mediaWidth.upToLarge`
-        border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
+        border: 0;
       `};
     }
 
