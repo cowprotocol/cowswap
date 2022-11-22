@@ -42,7 +42,10 @@ export function EthFlowSlippageUpdater() {
       // Set the flag
       wasEthFlowActive.current = true
 
-      if (currentSlippage === 'auto' || !currentSlippage.greaterThan(ETH_FLOW_SLIPPAGE)) {
+      if (
+        currentSlippage === 'auto' ||
+        (!currentSlippage.greaterThan(ETH_FLOW_SLIPPAGE) && !currentSlippage.equalTo(ETH_FLOW_SLIPPAGE))
+      ) {
         // If current slippage is auto or if it's smaller than ETH flow slippage, update it
 
         // If the former ethFlow slippage was saved, use that. Otherwise pick the minimum
