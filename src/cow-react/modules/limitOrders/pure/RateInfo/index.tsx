@@ -45,7 +45,7 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
   const { inputCurrency, outputCurrency, activeRate, activeRateFiatAmount, inversedActiveRateFiatAmount } =
     activeRateDisplay
 
-  const [currentIsInversed, setIsInversed] = useState(isInversed)
+  const [currentIsInversed, setCurrentIsInversed] = useState(isInversed)
 
   const currentActiveRate = useMemo(() => {
     if (!activeRate) return null
@@ -65,7 +65,7 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
   }, [currentIsInversed, inputCurrency, outputCurrency])
 
   useEffect(() => {
-    setIsInversed(isInversed)
+    setCurrentIsInversed(isInversed)
   }, [isInversed])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
@@ -75,7 +75,7 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
       {!noLabel && (
         <div>
           <Trans>Limit price</Trans>
-          <InvertRateControl onClick={() => setIsInversed(!currentIsInversed)} />
+          <InvertRateControl onClick={() => setCurrentIsInversed(!currentIsInversed)} />
         </div>
       )}
       <div>
