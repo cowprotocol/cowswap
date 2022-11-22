@@ -6,11 +6,14 @@ import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI, WBTC_GOERLI } from 'utils/goerli/
 import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WXDAI } from 'utils/gnosis_chain/constants'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 
-const STABLE_COINS: { [key in SupportedChainId]: Token[] } = {
-  [SupportedChainId.MAINNET]: [USDC_MAINNET, USDT, DAI],
-  [SupportedChainId.GNOSIS_CHAIN]: [USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI],
-  [SupportedChainId.GOERLI]: [USDC_GOERLI, USDT_GOERLI, DAI_GOERLI],
-  [SupportedChainId.RINKEBY]: [USDC_RINKEBY, USDT_RINKEBY, DAI_RINKEBY],
+// TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
+const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
+  [SupportedChainId.MAINNET]: [USDC_MAINNET, USDT, DAI].map((token) => token.address.toLowerCase()),
+  [SupportedChainId.GNOSIS_CHAIN]: [USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI].map((token) =>
+    token.address.toLowerCase()
+  ),
+  [SupportedChainId.GOERLI]: [USDC_GOERLI, USDT_GOERLI, DAI_GOERLI].map((token) => token.address.toLowerCase()),
+  [SupportedChainId.RINKEBY]: [USDC_RINKEBY, USDT_RINKEBY, DAI_RINKEBY].map((token) => token.address.toLowerCase()),
 }
 
 const BTC_LIST: { [key in SupportedChainId]: Token } = {
@@ -21,15 +24,15 @@ const BTC_LIST: { [key in SupportedChainId]: Token } = {
 }
 
 /**
- * Anchor - means the currency we consider as base
- * For example: 1 COW -> 2000 USDC - COW is anchor, because in a trade with stable-coin we always use the opposite currency as base
+ * Quote - means the currency we consider as base (https://www.investopedia.com/terms/q/quotecurrency.asp#:~:text=What%20Is%20a%20Quote%20Currency,value%20of%20the%20base%20currency)
+ * For example: 1 WETH -> 2000 USDC - USDC is the quote currency, because is a stable coin against a non-stable coin
  *
  * The algorithm:
  * 1. If one of the tokens is stable-coin, then take the opposite token as anchor
  * 2. If one of the tokens is BTC or wrapped native, then take it as anchor
  * 3. Take the token with the smallest amount as anchor (for 0.0005 WETH -> 3000 COW, WETH is anchor)
  */
-export function getAnchorCurrency(
+export function getQuoteCurrency(
   chainId: SupportedChainId | undefined,
   inputCurrencyAmount: CurrencyAmount<Currency> | null,
   outputCurrencyAmount: CurrencyAmount<Currency> | null
@@ -40,7 +43,7 @@ export function getAnchorCurrency(
   const outputCurrency = outputCurrencyAmount.currency
   const isInputAmountSmallerThatOutput = +inputCurrencyAmount.toExact() < +outputCurrencyAmount.toExact()
 
-  const stableCoins = STABLE_COINS[chainId].map((token) => token.address.toLowerCase())
+  const stableCoins = STABLE_COINS[chainId]
   const wrappedNativeToken = WRAPPED_NATIVE_CURRENCY[chainId]
   const btcToken = BTC_LIST[chainId]
 

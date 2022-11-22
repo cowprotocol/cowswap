@@ -55,7 +55,7 @@ const Box = styled.div`
 function SmartQuoteSelection() {
   const rates = [
     {
-      title: 'When one of tokens is stable-coin, then another token is anchor',
+      title: 'When one of tokens is stable-coin, then another token is quote',
       examples: [
         buildActiveRateDisplay(DAI_GOERLI, GNO_GOERLI, 2000, 100),
         buildActiveRateDisplay(GNO_GOERLI, DAI_GOERLI, 2000, 100),
@@ -64,7 +64,7 @@ function SmartQuoteSelection() {
       ],
     },
     {
-      title: `When one of tokens is BTC or wrapped native, then it's anchor`,
+      title: `When one of tokens is BTC or wrapped native, then it's quote`,
       examples: [
         buildActiveRateDisplay(GNO_GOERLI, WETH_GOERLI, 12, 600),
         buildActiveRateDisplay(WETH_GOERLI, GNO_GOERLI, 600, 12),
@@ -73,7 +73,7 @@ function SmartQuoteSelection() {
       ],
     },
     {
-      title: 'For other cases the anchor is a token that has the smallest amount',
+      title: 'For other cases the quote is a token that has the smallest amount',
       examples: [
         buildActiveRateDisplay(COW_GOERLI, GNO_GOERLI, 12, 652),
         buildActiveRateDisplay(GNO_GOERLI, COW_GOERLI, 2, 4220),
@@ -84,7 +84,7 @@ function SmartQuoteSelection() {
   return (
     <div>
       <h3>Smart quote selection</h3>
-      <p>Anchor token it&apos;s a token that always = 1. For example: 1 WETH = 0.333 DAI, WETH is anchor</p>
+      <p>Quote token it&apos;s a token that always = 1. For example: 1 WETH = 0.333 DAI, WETH is quote</p>
       <br />
       {rates.map(({ title, examples }, j) => {
         return (

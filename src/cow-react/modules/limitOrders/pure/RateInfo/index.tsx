@@ -4,7 +4,7 @@ import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateD
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { RefreshCw } from 'react-feather'
-import { getAnchorCurrency } from '@cow/common/services/getAnchorCurrency'
+import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 
 export interface RateInfoProps {
@@ -58,7 +58,7 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
   const outputCurrency = outputCurrencyAmount?.currency
 
   const [currentIsInversed, setCurrentIsInversed] = useState(isInversed)
-  const [isAnchorCurrencyDetected, setIsAnchorCurrencyDetected] = useState(false)
+  const [isQuoteCurrencyDetected, setIsQuoteCurrencyDetected] = useState(false)
 
   const currentActiveRate = useMemo(() => {
     if (!activeRate) return null
@@ -77,8 +77,8 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
     return currentIsInversed ? inputCurrency : outputCurrency
   }, [currentIsInversed, inputCurrency, outputCurrency])
 
-  const anchorCurrency = useMemo(() => {
-    return getAnchorCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
+  const quoteCurrency = useMemo(() => {
+    return getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
   }, [chainId, inputCurrencyAmount, outputCurrencyAmount])
 
   useEffect(() => {
@@ -86,26 +86,19 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
   }, [isInversed])
 
   /**
-   * @see getAnchorCurrency
+   * @see getQuoteCurrency
    */
   useEffect(() => {
-    setIsAnchorCurrencyDetected(!!anchorCurrency)
+    setIsQuoteCurrencyDetected(!!quoteCurrency)
 
-    if (isAnchorCurrencyDetected) return
+    if (isQuoteCurrencyDetected) return
 
-    if (anchorCurrency) {
-      const [anchorCurrencyAddress, inputCurrencyAddress] = [getAddress(anchorCurrency), getAddress(inputCurrency)]
+    if (quoteCurrency) {
+      const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
-      setCurrentIsInversed(anchorCurrencyAddress !== inputCurrencyAddress)
+      setCurrentIsInversed(quoteCurrencyAddress !== inputCurrencyAddress)
     }
-  }, [
-    isAnchorCurrencyDetected,
-    anchorCurrency,
-    inputCurrency,
-    outputCurrency,
-    inputCurrencyAmount,
-    outputCurrencyAmount,
-  ])
+  }, [isQuoteCurrencyDetected, quoteCurrency, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 
