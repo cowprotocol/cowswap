@@ -35,6 +35,7 @@ export function getNonNativeOrderDeadlineTooltip() {
 export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippage'> {
   toggleSettings: () => void
   isEthFlow: boolean
+  isExpertMode: boolean
   symbols?: (string | undefined)[]
   displayDeadline: string
   styleProps?: RowStyleProps
@@ -42,7 +43,11 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
 }
 
 export function RowDeadlineContent(props: RowDeadlineProps) {
-  const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
+  const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, isExpertMode, symbols, styleProps } = props
+
+  if (!isEthFlow && !isExpertMode) {
+    return null
+  }
 
   return (
     <StyledRowBetween {...styleProps}>
