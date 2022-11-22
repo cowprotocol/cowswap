@@ -3,6 +3,7 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { Fraction } from '@uniswap/sdk-core'
 import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
+import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 
 function isFractionEqual(prev?: Fraction | null, next?: Fraction | null): boolean {
   return prev && next ? prev.equalTo(next) : prev === next
@@ -57,8 +58,4 @@ export function swapPagePropsChecker(prev: SwapFormProps, next: SwapFormProps): 
     isCurrencyInfoEqual(prev.outputCurrencyInfo, next.outputCurrencyInfo) &&
     isPriceImpactEqual(prev.priceImpactParams, next.priceImpactParams)
   )
-}
-
-export function genericPropsChecker(prev: any, next: any): boolean {
-  return JSON.stringify(prev) === JSON.stringify(next)
 }

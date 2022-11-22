@@ -3,7 +3,7 @@ import { CompatibilityIssuesWarning } from '@cow/modules/swap/pure/Compatibility
 import TradeGp from 'state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'
 import React from 'react'
-import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
+import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { NoImpactWarning } from '@cow/modules/trade/pure/NoImpactWarning'
 import styled from 'styled-components/macro'
 
