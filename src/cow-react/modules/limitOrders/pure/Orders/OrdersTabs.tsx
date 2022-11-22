@@ -17,7 +17,7 @@ const Tabs = styled.div`
   display: inline-block;
   border-radius: 9px;
   overflow: hidden;
-  margin: 0 0 15px;
+  margin: 0;
   border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
 `
 
@@ -28,7 +28,7 @@ const TabButton = styled(Link)<{ active?: boolean }>`
   font-weight: ${({ active }) => (active ? '600' : '400')};
   text-decoration: none;
   font-size: 13px;
-  padding: 12px 24px;
+  padding: 10px 24px;
   border: 0;
   outline: none;
   cursor: pointer;

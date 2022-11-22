@@ -23,8 +23,8 @@ export const Header = styled.span`
 
 export const Current = styled.button<{ isCustom: boolean }>`
   color: ${({ theme }) => theme.text1};
-  font-size: ${({ isCustom }) => (isCustom ? '15px' : '100%')};
-  letter-spacing: ${({ isCustom }) => (isCustom ? '-0.5px' : '0')};
+  font-size: ${({ isCustom }) => (isCustom ? '12px' : '100%')};
+  letter-spacing: ${({ isCustom }) => (isCustom ? '-0.3px' : '0')};
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -37,9 +37,19 @@ export const Current = styled.button<{ isCustom: boolean }>`
   white-space: nowrap;
   cursor: pointer;
   width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 
   &:hover {
     text-decoration: underline;
+  }
+
+  > span {
+    display: inline-block;
+  }
+
+  > svg {
+    margin: 0 0 0 auto;
   }
 `
 

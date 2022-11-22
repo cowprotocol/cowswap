@@ -29,6 +29,7 @@ export const MarketPriceButton = styled.button`
   color: ${({ theme }) => theme.text1};
   white-space: nowrap;
   border: none;
+  font-weight: 500;
   cursor: pointer;
   border-radius: 9px;
   padding: 5px 8px;

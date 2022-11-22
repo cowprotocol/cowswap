@@ -1,7 +1,19 @@
+import styled from 'styled-components/macro'
 import * as styledEl from './styled'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
 
+export const Header = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  width: 100%;
+
+  > h2 {
+    font-size: 24px;
+  }
+`
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
 }
@@ -22,7 +34,11 @@ export function Orders({ orders, tabs, isWalletConnected }: OrdersProps) {
   return (
     <>
       <styledEl.Orders>
-        <OrdersTabs tabs={tabs} />
+        <Header>
+          <h2>Orders</h2>
+          <OrdersTabs tabs={tabs} />
+        </Header>
+
         {content()}
       </styledEl.Orders>
     </>
