@@ -5,6 +5,7 @@ import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
 import { RateInfo } from '../RateInfo'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const statusColorMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: '#badbe8',
@@ -63,19 +64,22 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
 }
 
 export interface OrderRowProps {
+  chainId: SupportedChainId | undefined
   order: Order
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
 }
 
-export function OrderRow({ order, RowElement, isRateInversed }: OrderRowProps) {
+export function OrderRow({ chainId, order, RowElement, isRateInversed }: OrderRowProps) {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
+
   const activeRateDisplay: ActiveRateDisplay = {
+    chainId,
     activeRate,
-    inputCurrency: order.inputToken,
-    outputCurrency: order.outputToken,
+    inputCurrencyAmount: sellAmount,
+    outputCurrencyAmount: buyAmount,
     activeRateFiatAmount: null,
     inversedActiveRateFiatAmount: null,
   }

@@ -96,7 +96,7 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
     if (anchorCurrency) {
       const [anchorCurrencyAddress, inputCurrencyAddress] = [getAddress(anchorCurrency), getAddress(inputCurrency)]
 
-      setIsInversed(anchorCurrencyAddress !== inputCurrencyAddress)
+      setCurrentIsInversed(anchorCurrencyAddress !== inputCurrencyAddress)
     }
   }, [
     isAnchorCurrencyDetected,

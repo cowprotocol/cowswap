@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '../../pure/RateInfo'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const TableBox = styled.div`
   display: block;
@@ -78,7 +79,13 @@ export function OrdersTable({ chainId, orders }: OrdersTableProps) {
         </Header>
         <Rows>
           {ordersPage.map((order) => (
-            <OrderRow key={order.id} chainId={chainId} order={order} RowElement={RowElement} isRateInversed={isRateInversed} />
+            <OrderRow
+              key={order.id}
+              chainId={chainId}
+              order={order}
+              RowElement={RowElement}
+              isRateInversed={isRateInversed}
+            />
           ))}
         </Rows>
       </TableBox>
