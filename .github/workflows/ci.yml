@@ -171,7 +171,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.17.1
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
