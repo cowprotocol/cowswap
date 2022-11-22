@@ -1,26 +1,46 @@
-import { Order, OrderStatus } from 'state/orders/actions'
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
-import * as styledEl from './OrdersTable.styled'
-import React, { useEffect, useState } from 'react'
+import styled from 'styled-components/macro'
+import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
+import { OrderRow } from './OrderRow'
 import { InvertRateControl, RateInfo } from '../../pure/RateInfo'
 import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
 
+const TableBox = styled.div`
+  display: block;
+  border-radius: 16px;
+  border: 2px solid ${({ theme }) => theme.border2};
+`
+
+const RowElement = styled.div`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  border-bottom: 2px solid ${({ theme }) => theme.border2};
+
+  > div {
+    padding: 12px;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  :last-child {
+    border-bottom: 0;
+  }
+`
+
+const Header = styled(RowElement)`
+  border-bottom: 2px solid ${({ theme }) => theme.border2};
+`
+
+const Rows = styled.div`
+  display: block;
+`
+
 export interface OrdersTableProps {
   orders: Order[]
-}
-
-const orderStatusTitleMap: { [key in OrderStatus]: string } = {
-  [OrderStatus.PENDING]: 'Open',
-  [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
-  [OrderStatus.FULFILLED]: 'Filled',
-  [OrderStatus.EXPIRED]: 'Expired',
-  [OrderStatus.CANCELLED]: 'Cancelled',
-  [OrderStatus.CREATING]: 'Creating',
-  [OrderStatus.REFUNDED]: 'Expired',
-  [OrderStatus.REFUNDING]: 'Expired',
-  [OrderStatus.REJECTED]: 'Expired',
 }
 
 const pageSize = 10
@@ -38,8 +58,8 @@ export function OrdersTable({ orders }: OrdersTableProps) {
 
   return (
     <>
-      <styledEl.TableBox>
-        <styledEl.Header>
+      <TableBox>
+        <Header>
           <div>
             <Trans>Sell</Trans>
           </div>
@@ -55,43 +75,13 @@ export function OrdersTable({ orders }: OrdersTableProps) {
           <div>
             <Trans>Status</Trans>
           </div>
-        </styledEl.Header>
-        <styledEl.Rows>
-          {ordersPage.map((order) => {
-            const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-            const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-            const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-            const activeRateDisplay: ActiveRateDisplay = {
-              activeRate,
-              inputCurrency: order.inputToken,
-              outputCurrency: order.outputToken,
-              activeRateFiatAmount: null,
-              inversedActiveRateFiatAmount: null,
-            }
-
-            return (
-              <styledEl.Row key={order.id}>
-                <div>
-                  <styledEl.CurrencyAmountItem amount={sellAmount} />
-                </div>
-                <div>
-                  <styledEl.CurrencyAmountItem amount={buyAmount} />
-                </div>
-                <div>
-                  <styledEl.RateValue>
-                    <RateInfo noLabel={true} isInversed={isRateInversed} activeRateDisplay={activeRateDisplay} />
-                  </styledEl.RateValue>
-                </div>
-                <div>
-                  <styledEl.StatusItem cancelling={!!order.isCancelling} status={order.status}>
-                    {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
-                  </styledEl.StatusItem>
-                </div>
-              </styledEl.Row>
-            )
-          })}
-        </styledEl.Rows>
-      </styledEl.TableBox>
+        </Header>
+        <Rows>
+          {ordersPage.map((order) => (
+            <OrderRow key={order.id} order={order} RowElement={RowElement} />
+          ))}
+        </Rows>
+      </TableBox>
       <OrdersTablePagination
         pageSize={pageSize}
         totalCount={orders.length}

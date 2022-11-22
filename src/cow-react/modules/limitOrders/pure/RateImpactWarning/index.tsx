@@ -6,6 +6,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 
 interface RateImpactAcknowledge {
   withAcknowledge: boolean
+  isAccepted: boolean
   onAcknowledgeChange(checked: boolean): void
 }
 
@@ -50,6 +51,7 @@ const AcknowledgeBox = styled.div<{ darkMode: boolean }>`
 export function RateImpactWarning({
   withAcknowledge = false,
   onAcknowledgeChange,
+  isAccepted,
   rateImpact,
   inputCurrency,
   className,
@@ -76,7 +78,11 @@ export function RateImpactWarning({
       {withAcknowledge && (
         <AcknowledgeBox darkMode={darkMode}>
           <label>
-            <input type="checkbox" onChange={(event) => onAcknowledgeChange?.(event.target.checked)} />
+            <input
+              type="checkbox"
+              checked={isAccepted}
+              onChange={(event) => onAcknowledgeChange?.(event.target.checked)}
+            />
             <span>I acknowledge the high price impact</span>
           </label>
         </AcknowledgeBox>

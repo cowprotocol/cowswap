@@ -1,10 +1,13 @@
 import { Percent } from '@uniswap/sdk-core'
 import useFiatValuePriceImpact from './useFiatValuePriceImpact'
 import useFallbackPriceImpact from './useFallbackPriceImpact'
-import { FallbackPriceImpactParams, ParsedAmounts } from './types'
+import { ParsedAmounts, PriceImpactTrade } from './types'
 import { QuoteError } from 'state/price/actions'
+import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 
-type PriceImpactParams = Omit<FallbackPriceImpactParams, 'fiatPriceImpact'> & {
+export interface PriceImpactParams {
+  abTrade?: PriceImpactTrade
+  isWrapping: boolean
   parsedAmounts: ParsedAmounts
 }
 
@@ -24,7 +27,12 @@ export default function usePriceImpact({ abTrade, parsedAmounts, isWrapping }: P
     impact: fallbackPriceImpact,
     error,
     loading,
-  } = useFallbackPriceImpact({ abTrade: fiatPriceImpact ? undefined : abTrade, isWrapping })
+  } = useFallbackPriceImpact({
+    sellToken: getAddress(parsedAmounts.INPUT?.currency),
+    buyToken: getAddress(parsedAmounts.OUTPUT?.currency),
+    abTrade: fiatPriceImpact ? undefined : abTrade,
+    isWrapping,
+  })
 
   const priceImpact = fiatPriceImpact || fallbackPriceImpact
 
