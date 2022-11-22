@@ -22,7 +22,6 @@ export function Orders({ orders, tabs, isWalletConnected }: OrdersProps) {
   return (
     <>
       <styledEl.Orders>
-        <styledEl.OrdersTitle>Orders</styledEl.OrdersTitle>
         <OrdersTabs tabs={tabs} />
         {content()}
       </styledEl.Orders>

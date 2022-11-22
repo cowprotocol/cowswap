@@ -3,6 +3,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { formatSmart } from 'utils/format'
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 
 const statusColorMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: '#badbe8',
@@ -20,7 +21,7 @@ const statusColorMap: { [key in OrderStatus]: string } = {
 export const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  border: 2px solid ${({ theme }) => theme.border2};
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
 `
 
 export const Header = styled.div`
@@ -28,12 +29,13 @@ export const Header = styled.div`
   grid-gap: 10px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
-  border-bottom: 2px solid ${({ theme }) => theme.border2};
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
 
   > div {
-    padding: 12px;
+    padding: 14px;
     overflow: hidden;
-    font-size: 14px;
+    font-size: 13px;
   }
 `
 
@@ -42,7 +44,11 @@ export const Rows = styled.div`
 `
 
 export const Row = styled(Header)`
-  :last-child {
+  > div {
+    font-size: 13px;
+  }
+
+  &:last-child {
     border-bottom: 0;
   }
 `
@@ -58,13 +64,11 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean 
 export const AmountItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   white-space: nowrap;
 `
 
-export const RateValue = styled.span`
-  font-size: 12px;
-`
+export const RateValue = styled.span``
 
 export function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (

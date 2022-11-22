@@ -80,9 +80,9 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
 
   return (
     <styledEl.Wrapper>
-      <styledEl.Title>
+      <styledEl.Header>
         <Trans>Expiry</Trans>
-      </styledEl.Title>
+      </styledEl.Header>
       <Dropdown content={list}>
         <styledEl.Current ref={currentDeadlineNode as any} isCustom={!!customDeadline}>
           <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
