@@ -42,6 +42,7 @@ export function colors(darkMode: boolean): Colors {
     // States NEW
     danger: darkMode ? '#EB3030' : '#D41300',
     warning: darkMode ? '#f3841e' : '#f3841e',
+    alert: darkMode ? '#ffc824' : '#ffc311',
 
     // DEPRECATED but keeping because of dependencies
     primary1: darkMode ? '#0d5ed9' : '#052B65',

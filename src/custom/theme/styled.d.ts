@@ -28,6 +28,7 @@ export interface Colors extends ColorsUniswap {
   info: Color
   warning: Color
   danger: Color
+  alert: Color
   error: Color
   infoText: Color
   warningText: Color
