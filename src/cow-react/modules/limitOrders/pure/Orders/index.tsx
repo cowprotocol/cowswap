@@ -9,9 +9,11 @@ export const Header = styled.span`
   justify-content: flex-start;
   gap: 16px;
   width: 100%;
+  margin: 0 0 10px;
 
   > h2 {
     font-size: 24px;
+    margin: 0;
   }
 `
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
