@@ -11,11 +11,11 @@ import { GpEther } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { AutoColumn } from 'components/Column'
 import * as styledEl from './styled'
-import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import { EthFlowBanner } from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
 import { Field } from 'state/swap/actions'
 import { TradeApproveButton } from '@cow/common/containers/TradeApprove/TradeApproveButton'
+import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 
 export type HandleSwapCallback = () => void
 

@@ -1,11 +1,14 @@
 import { Field } from 'state/swap/actions'
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { OrderKind } from 'state/orders/actions'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersConfirm } from './index'
+import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
+import React from 'react'
+import { PriceImpact } from 'hooks/usePriceImpact'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -77,14 +80,25 @@ const activeRateDisplay = {
   inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
+const priceImpact: PriceImpact = {
+  priceImpact: new Percent(20000, 10),
+  loading: false,
+  error: undefined,
+}
+
+const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+
 const Fixtures = {
   default: (
     <LimitOrdersConfirm
       activeRateDisplay={activeRateDisplay}
       rateImpact={1}
+      priceImpact={priceImpact}
       tradeContext={tradeContext}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
+      Warnings={Warnings}
+      warningsAccepted={true}
       onConfirm={() => void 0}
     />
   ),

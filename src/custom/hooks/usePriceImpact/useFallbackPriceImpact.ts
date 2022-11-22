@@ -1,19 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useDerivedSwapInfo } from 'state/swap/hooks'
-
 import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'
-import { FallbackPriceImpactParams } from './types'
+import { FallbackPriceImpactParams, PriceImpactTrade } from './types'
 import { calculateFallbackPriceImpact } from 'utils/price'
-import TradeGp from 'state/swap/TradeGp'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
-import { useQuote } from 'state/price/hooks'
-import { useWeb3React } from '@web3-react/core'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
+import ms from 'ms.macro'
 
-type SwapParams = { abTrade?: TradeGp; sellToken?: string | null; buyToken?: string | null }
+type SwapParams = { abTrade?: PriceImpactTrade; sellToken?: string | null; buyToken?: string | null }
 
 function _isQuoteValid(
   quote: QuoteInformationObject | LegacyFeeQuoteParams | undefined
@@ -22,7 +18,7 @@ function _isQuoteValid(
 }
 
 function _getBaTradeParams({ abTrade, sellToken, buyToken }: SwapParams) {
-  if (!abTrade) return undefined
+  if (!abTrade || !abTrade.inputAmount || !abTrade.outputAmount) return undefined
 
   const { inputAmount, outputAmount } = abTrade
 
@@ -37,21 +33,22 @@ function _getBaTradeParams({ abTrade, sellToken, buyToken }: SwapParams) {
   }
 }
 
-function _getBaTradeParsedAmount(abTrade: TradeGp | undefined, shouldCalculate: boolean) {
+function _getBaTradeParsedAmount(abTrade: PriceImpactTrade | undefined, shouldCalculate: boolean) {
   if (!shouldCalculate) return undefined
 
   // return the AB Trade's output amount WITHOUT fee
   return abTrade?.outputAmountWithoutFee
 }
 
-export default function useFallbackPriceImpact({ abTrade, isWrapping }: FallbackPriceImpactParams) {
-  const {
-    currenciesIds: { INPUT: sellToken, OUTPUT: buyToken },
-  } = useDerivedSwapInfo()
+// It's request to get price, so we don't need precise value for validTo
+const PRICE_QUOTE_VALID_TO_TIME = ms`30m`
 
-  const { chainId } = useWeb3React()
-  const lastQuote = useQuote({ token: sellToken, chainId })
-
+export default function useFallbackPriceImpact({
+  sellToken,
+  buyToken,
+  abTrade,
+  isWrapping,
+}: FallbackPriceImpactParams) {
   const [loading, setLoading] = useState(false)
 
   // Should we even calc this? Check if fiatPriceImpact exists OR user is wrapping token
@@ -65,14 +62,13 @@ export default function useFallbackPriceImpact({ abTrade, isWrapping }: Fallback
   }, [shouldCalculate])
 
   // Calculate the necessary params to get the inverse trade impact
-  const { parsedAmount, outputCurrency, ...swapQuoteParams } = useMemo(
-    () => ({
+  const { parsedAmount, outputCurrency, ...swapQuoteParams } = useMemo(() => {
+    return {
       ..._getBaTradeParams({ abTrade, sellToken, buyToken }),
       parsedAmount: _getBaTradeParsedAmount(abTrade, shouldCalculate),
-      validTo: lastQuote?.validTo,
-    }),
-    [abTrade, buyToken, lastQuote?.validTo, sellToken, shouldCalculate]
-  )
+      validTo: Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000),
+    }
+  }, [abTrade, buyToken, sellToken, shouldCalculate])
 
   const { quote } = useCalculateQuote({
     ...swapQuoteParams,
@@ -95,7 +91,7 @@ export default function useFallbackPriceImpact({ abTrade, isWrapping }: Fallback
   const [error, setError] = useState<QuoteError | undefined>()
 
   // primitive values to use as dependencies
-  const abIn = abTrade?.inputAmountWithoutFee.quotient.toString()
+  const abIn = abTrade?.inputAmountWithoutFee?.quotient.toString()
   const abOut = abTrade?.outputAmountWithoutFee?.quotient.toString()
   const baOut = baTrade?.outputAmountWithoutFee?.quotient.toString()
   const quoteError = quote?.error

@@ -62,7 +62,7 @@ export interface SwapModalHeaderProps {
   onAcceptChanges: () => void
   LightCard: LightCardType
   HighFeeWarning: React.FC<WarningProps>
-  NoImpactWarning: React.FC<WarningProps>
+  NoImpactWarning: React.ReactNode
   allowsOffchainSigning: boolean
 }
 
@@ -299,7 +299,7 @@ SwapModalHeaderProps) {
       {/* High Fee Warning */}
       <HighFeeWarning trade={trade} />
       {/* No Impact Warning */}
-      {!priceImpact && <NoImpactWarning margin="0" />}
+      {!priceImpact && NoImpactWarning}
     </AutoColumn>
   )
 }
