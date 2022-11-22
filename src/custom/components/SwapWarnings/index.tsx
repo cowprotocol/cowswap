@@ -8,12 +8,14 @@ import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import useDebounce from 'hooks/useDebounce'
 import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
+import { useIsDarkMode } from 'state/user/hooks'
 
 interface HighFeeContainerProps {
   padding?: string
   margin?: string
   width?: string
   level?: number
+  isDarkMode?: boolean
 }
 
 const WarningCheckboxContainer = styled.span`
@@ -44,7 +46,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
       : level === MEDIUM_TIER_FEE
       ? theme.warning
       : LOW_TIER_FEE
-      ? theme.warning
+      ? theme.alert
       : theme.info};
   color: ${({ theme }) => theme.text1};
   padding: ${({ padding = '16px' }) => padding};
@@ -62,7 +64,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
     left: 0;
     border-radius: inherit;
     background: var(--warningColor);
-    opacity: 0.15;
+    opacity: ${({ isDarkMode }) => (isDarkMode ? 0.25 : 0.15)};
     z-index: -1;
     width: 100%;
     height: 100%;
@@ -77,8 +79,8 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
     font-size: 14px;
     font-weight: 500;
 
-    svg {
-      stroke: ${({ theme }) => theme.text1};
+    > svg:first-child {
+      stroke: var(--warningColor);
     }
   }
 `
@@ -144,6 +146,7 @@ export type WarningProps = {
 export const HighFeeWarning = (props: WarningProps) => {
   const { acceptedStatus, acceptWarningCb, trade } = props
   const theme = useContext(ThemeContext)
+  const darkMode = useIsDarkMode()
 
   const { isHighFee, feePercentage } = useHighFeeWarning(trade)
   const [level] = useMemo(() => {
@@ -154,7 +157,7 @@ export const HighFeeWarning = (props: WarningProps) => {
   if (!isHighFee) return null
 
   return (
-    <WarningContainer {...props} level={level}>
+    <WarningContainer {...props} level={level} isDarkMode={darkMode}>
       <div>
         <AlertTriangle size={24} />
         Fees exceed {level}% of the swap amount!{' '}
