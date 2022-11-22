@@ -4,6 +4,7 @@ import styled from 'styled-components/macro'
 import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
+import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 
 const TableBox = styled.div`
   display: block;
@@ -44,29 +45,6 @@ export interface OrdersTableProps {
 
 const pageSize = 10
 
-// TODO: check texts with marketing
-const balanceWarning = (tokenSymbol: string) => (
-  <styledEl.WarningParagraph>
-    <h3>Insufficient balance for this limit order</h3>
-    <p>
-      This order is still open and valid but your account currently has insufficient <strong>{tokenSymbol}</strong>{' '}
-      balance. <br />
-      Your order therefore can&apos;t be matched.
-    </p>
-  </styledEl.WarningParagraph>
-)
-
-const allowanceWarning = (tokenSymbol: string) => (
-  <styledEl.WarningParagraph>
-    <h3>Insufficient allowance for this limit order</h3>
-    <p>
-      This order is still open and valid but your account currently has insufficient allowance to spend{' '}
-      <strong>{tokenSymbol}</strong>. <br />
-      Your order therefore can&apos;t be matched.
-    </p>
-  </styledEl.WarningParagraph>
-)
-
 export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -96,7 +74,12 @@ export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps)
         </Header>
         <Rows>
           {ordersPage.map((order) => (
-            <OrderRow key={order.id} order={order} RowElement={RowElement} />
+            <OrderRow
+              key={order.id}
+              order={order}
+              RowElement={RowElement}
+              balancesAndAllowances={balancesAndAllowances}
+            />
           ))}
         </Rows>
       </TableBox>
