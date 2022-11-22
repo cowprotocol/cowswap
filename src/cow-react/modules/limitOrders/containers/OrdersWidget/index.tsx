@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useHistory, useLocation } from 'react-router-dom'
-import { ReceiptModal } from '@cow/modules/limitOrders/containers/ReceiptModal'
+import { LimitOrdersReceiptModal } from '@cow/modules/limitOrders/containers/LimitOrdersReceiptModal'
 
 const openTab: OrderTab = {
   id: 'open',
@@ -50,7 +50,7 @@ export function OrdersWidget() {
   return (
     <>
       <Orders tabs={tabs} orders={orders} isWalletConnected={!!account} />
-      <ReceiptModal />
+      <LimitOrdersReceiptModal />
     </>
   )
 }

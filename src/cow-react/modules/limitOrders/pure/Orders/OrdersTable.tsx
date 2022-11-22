@@ -5,7 +5,7 @@ import * as styledEl from './OrdersTable.styled'
 import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { formatSmart } from 'utils/format'
-import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/ReceiptModal/hooks'
+import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/LimitOrdersReceiptModal/hooks'
 
 export interface OrdersTableProps {
   orders: Order[]

@@ -3,9 +3,9 @@ import { useAtomValue } from 'jotai/utils'
 import { receiptAtom } from '@cow/modules/limitOrders/state/limitOrdersReceiptAtom'
 import { useCloseReceiptModal } from './hooks'
 
-export function ReceiptModal() {
+export function LimitOrdersReceiptModal() {
   const { selected } = useAtomValue(receiptAtom)
   const closeReceiptModal = useCloseReceiptModal()
 
-  return <ReceiptModalPure selectedOrder={selected} isOpen={!!selected} onDismiss={closeReceiptModal} />
+  return <ReceiptModalPure order={selected} isOpen={!!selected} onDismiss={closeReceiptModal} />
 }
