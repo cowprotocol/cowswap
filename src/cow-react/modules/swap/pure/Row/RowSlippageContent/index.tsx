@@ -26,7 +26,7 @@ export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undef
   <Trans>
     <p>Your slippage is MEV protected.</p>
     <p>
-      When swapping {symbols?.[0] || 'a native currency'}, slippage tolerance is defaulted to{' '}
+      When swapping {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
       {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching, even in
       volatile market situations.
     </p>
