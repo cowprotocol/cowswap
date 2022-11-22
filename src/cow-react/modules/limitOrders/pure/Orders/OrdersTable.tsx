@@ -4,8 +4,7 @@ import styled from 'styled-components/macro'
 import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
-import { InvertRateControl, RateInfo } from '../../pure/RateInfo'
-import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
+import { InvertRateControl } from '../../pure/RateInfo'
 
 const TableBox = styled.div`
   display: block;
@@ -16,7 +15,7 @@ const TableBox = styled.div`
 const RowElement = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 150px);
   align-items: center;
   border-bottom: 2px solid ${({ theme }) => theme.border2};
 
@@ -78,7 +77,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
         </Header>
         <Rows>
           {ordersPage.map((order) => (
-            <OrderRow key={order.id} order={order} RowElement={RowElement} />
+            <OrderRow key={order.id} order={order} RowElement={RowElement} isRateInversed={isRateInversed} />
           ))}
         </Rows>
       </TableBox>

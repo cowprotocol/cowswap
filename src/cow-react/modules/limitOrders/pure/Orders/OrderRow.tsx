@@ -3,6 +3,8 @@ import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
+import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
+import { RateInfo } from '../RateInfo'
 
 const statusColorMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: '#badbe8',
@@ -63,12 +65,20 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
 export interface OrderRowProps {
   order: Order
   RowElement: StyledComponent<'div', DefaultTheme>
+  isRateInversed: boolean
 }
 
-export function OrderRow({ order, RowElement }: OrderRowProps) {
+export function OrderRow({ order, RowElement, isRateInversed }: OrderRowProps) {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-  const price = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
+  const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
+  const activeRateDisplay: ActiveRateDisplay = {
+    activeRate,
+    inputCurrency: order.inputToken,
+    outputCurrency: order.outputToken,
+    activeRateFiatAmount: null,
+    inversedActiveRateFiatAmount: null,
+  }
 
   return (
     <RowElement>
@@ -80,10 +90,7 @@ export function OrderRow({ order, RowElement }: OrderRowProps) {
       </div>
       <div>
         <RateValue>
-          1 {order.inputToken.symbol} ={' '}
-          <span title={price.toSignificant(18) + ' ' + order.outputToken.symbol}>
-            {formatSmart(price)} {order.outputToken.symbol}
-          </span>
+          <RateInfo noLabel={true} isInversed={isRateInversed} activeRateDisplay={activeRateDisplay} />
         </RateValue>
       </div>
       <div>
