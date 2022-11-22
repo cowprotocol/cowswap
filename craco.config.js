@@ -60,6 +60,10 @@ module.exports = {
     // https://webpack.js.org/configuration
     configure: (webpackConfig) => ({
       ...webpackConfig,
+      output: {
+        ...webpackConfig.output,
+        hashFunction: 'sha256',
+      },
       resolve: {
         ...webpackConfig.resolve,
         modules: [path.resolve(__dirname, 'src/custom'), ...webpackConfig.resolve.modules],
