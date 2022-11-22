@@ -21,10 +21,22 @@ const Wrapper = styled.div`
     width: 100%;
     height: auto;
     z-index: -1;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      left: initial;
+      bottom: initial;
+      top: 0;
+      margin: 120px auto 0;
+    `}
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin: 56px auto 100px;
+    flex-flow: column wrap;
+    margin: 56px auto 230px;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 56px auto 160px;
   `}
 `
 
