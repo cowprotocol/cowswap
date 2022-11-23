@@ -49,7 +49,6 @@ import { AppState } from 'state'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 
 export * from '@src/state/swap/hooks'
 
@@ -213,7 +212,6 @@ function _computeUnknownPriceImpactAcceptedState({
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): DerivedSwapInfo {
   const { account, chainId } = useWeb3React() // MOD: chainId
-  const isSupportedNetwork = isSupportedChainId(chainId)
 
   const {
     independentField,
@@ -223,8 +221,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     recipient,
   } = useSwapState()
 
-  const inputCurrency = useTokenBySymbolOrAddress(isSupportedNetwork ? inputCurrencyId : null)
-  const outputCurrency = useTokenBySymbolOrAddress(isSupportedNetwork ? outputCurrencyId : null)
+  const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId)
+  const outputCurrency = useTokenBySymbolOrAddress(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
