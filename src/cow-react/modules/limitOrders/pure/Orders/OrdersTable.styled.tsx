@@ -21,8 +21,7 @@ const statusColorMap: { [key in OrderStatus]: string } = {
 export const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-
-  min-height: 400px;
+  /* border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)}; */
 `
 
 export const Header = styled.div`
@@ -37,7 +36,7 @@ export const Header = styled.div`
     padding: 12px 16px;
     overflow: hidden;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
   }
 `
 
