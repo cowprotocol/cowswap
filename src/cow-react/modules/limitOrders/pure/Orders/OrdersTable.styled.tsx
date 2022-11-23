@@ -143,6 +143,11 @@ export const AmountItem = styled.div`
   align-items: center;
   gap: 6px;
   white-space: nowrap;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
 `
 
 export const RateValue = styled.span``
