@@ -2,14 +2,16 @@ import styled from 'styled-components/macro'
 import * as styledEl from './styled'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
+import { Content } from './OrdersTable.styled'
+import cowMeditatingV2 from 'assets/cow-swap/meditating-cow-v2.svg'
 
 export const Header = styled.span`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 16px;
   width: 100%;
-  margin: 0 0 10px;
+  margin: 0 0 24px;
 
   > h2 {
     font-size: 24px;
@@ -23,11 +25,26 @@ export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
 export function Orders({ orders, tabs, isWalletConnected }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
-      return <styledEl.EmptyOrdersMessage>Please connect your wallet to view orders</styledEl.EmptyOrdersMessage>
+      return (
+        <Content>
+          <p>Please connect your wallet to view orders</p>
+        </Content>
+      )
     }
 
     if (orders.length === 0) {
-      return <styledEl.EmptyOrdersMessage>You have no orders yet</styledEl.EmptyOrdersMessage>
+      return (
+        <Content>
+          <span>
+            <img src={cowMeditatingV2} alt="Cow meditating ..." />
+          </span>
+          <h3>No open orders</h3>
+          <p>
+            You don&apos;t have any open orders at the moment. <br />
+            Create one for free!
+          </p>
+        </Content>
+      )
     }
 
     return <OrdersTable orders={orders} />
@@ -37,7 +54,7 @@ export function Orders({ orders, tabs, isWalletConnected }: OrdersProps) {
     <>
       <styledEl.Orders>
         <Header>
-          <h2>Orders</h2>
+          <h2>Your Orders</h2>
           <OrdersTabs tabs={tabs} />
         </Header>
 

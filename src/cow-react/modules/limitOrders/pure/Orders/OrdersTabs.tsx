@@ -18,12 +18,12 @@ const Tabs = styled.div`
   border-radius: 9px;
   overflow: hidden;
   margin: 0;
-  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
 `
 
 const TabButton = styled(Link)<{ active?: boolean }>`
   display: inline-block;
-  background: ${({ theme, active }) => (active ? transparentize(0.88, theme.text1) : 'transparent')};
+  background: ${({ theme, active }) => (active ? transparentize(0.88, theme.text3) : 'transparent')};
   color: ${({ theme, active }) => (active ? theme.text1 : transparentize(0.2, theme.text1))};
   font-weight: ${({ active }) => (active ? '600' : '400')};
   text-decoration: none;
@@ -35,8 +35,8 @@ const TabButton = styled(Link)<{ active?: boolean }>`
   transition: background 0.15s ease-in-out, color 0.2s ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => theme.text1};
-    color: ${({ theme }) => theme.white};
+    background: ${({ theme }) => theme.bg1};
+    color: ${({ theme }) => theme.text1};
   }
 `
 

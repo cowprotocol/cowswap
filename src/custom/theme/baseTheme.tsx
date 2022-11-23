@@ -41,11 +41,10 @@ export function colors(darkMode: boolean): Colors {
 
     // States NEW
     danger: darkMode ? '#EB3030' : '#D41300',
-    warning: darkMode ? '#f3841e' : '#f3841e',
+    warning: darkMode ? '#ED6237' : '#D94719',
     alert: darkMode ? '#ffc824' : '#ffc311',
     success: darkMode ? '#00D897' : '#007B28',
-    pending: '#43758C',
-    cancelled: '#ff5722',
+    pending: '#43758C', // deprecate
     attention: '#ff5722', // deprecate
 
     // DEPRECATED but keeping because of dependencies

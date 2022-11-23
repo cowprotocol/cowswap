@@ -8,7 +8,58 @@ import { transparentize } from 'polished'
 export const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  /* border: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)}; */
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  padding: 0 0 24px;
+`
+
+export const Content = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  min-height: 424px;
+  padding: 0;
+
+  // Icon
+  > span {
+    --size: 130px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 16px;
+    background: ${({ theme }) => transparentize(0.75, theme.bg2)};
+
+    > img {
+      max-width: 100%;
+      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: inline;
+      padding: 16px;
+    }
+  }
+
+  > h3 {
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 500;
+    margin: 0 auto 16px;
+    text-align: center;
+  }
+
+  > p {
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 0 auto;
+    font-weight: 300;
+    text-align: center;
+  }
 `
 
 export const Header = styled.div`
@@ -17,7 +68,7 @@ export const Header = styled.div`
   grid-template-columns: repeat(3, minmax(0, 1fr)) 120px;
   align-items: center;
   border-top: 1px solid transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
 
   > div {
     padding: 12px 16px;
@@ -42,53 +93,46 @@ export const Row = styled(Header)`
 `
 
 export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
-  /* [OrderStatus.PENDING]: '#badbe8', // = OPEN order state
-  [OrderStatus.PRESIGNATURE_PENDING]: '#badbe8',
-  [OrderStatus.EXPIRED]: '#eeaaaa',
-  [OrderStatus.FULFILLED]: '#d5eab3',
-  [OrderStatus.CANCELLED]: '#fcecb4',
-  // TODO: decide what color for each state
-  [OrderStatus.CREATING]: '#badbe8',
-  [OrderStatus.REFUNDED]: '#eeaaaa',
-  [OrderStatus.REFUNDING]: '#eeaaaa',
-  [OrderStatus.REJECTED]: '#eeaaaa', */
-
   --statusColor: ${({ theme, status, cancelling }) =>
     cancelling
       ? theme.pending
       : status === OrderStatus.PENDING // OPEN order
+      ? theme.text3
+      : status === OrderStatus.PRESIGNATURE_PENDING
       ? theme.pending
-      : status === OrderStatus.PRESIGNATURE_PENDING // SIGNING order
-      ? theme.pending
-      : status === OrderStatus.FULFILLED // FILLED order
+      : status === OrderStatus.FULFILLED
       ? theme.success
-      : status === OrderStatus.EXPIRED // EXPIRED order
-      ? theme.cancelled
-      : status === OrderStatus.CREATING // CREATING order
-      ? theme.pending
-      : theme.pending};
+      : status === OrderStatus.EXPIRED
+      ? theme.warning
+      : status === (OrderStatus.CANCELLED || OrderStatus.REJECTED)
+      ? theme.danger
+      : status === OrderStatus.REFUNDED
+      ? theme.text3
+      : status === (OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING || OrderStatus.REFUNDING)
+      ? theme.text1
+      : theme.text1};
 
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--statusColor);
-  padding: 5px 10px;
+  padding: 7px 10px;
   border-radius: 3px;
   position: relative;
   z-index: 2;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     height: 100%;
     width: 100%;
-    display: block
+    display: block;
     left: 0;
     top: 0;
     background: var(--statusColor);
-    opacity: 0.10;
+    opacity: 0.1;
     z-index: 1;
     border-radius: 9px;
   }
