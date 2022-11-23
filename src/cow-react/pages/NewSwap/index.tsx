@@ -19,7 +19,7 @@ export function NewSwapPageRedirect({ location }: RouteComponentProps) {
 
   const defaultState = getDefaultTradeState(chainId)
   const searchParams = new URLSearchParams(location.search)
-  const inputCurrencyId = searchParams.get('inputCurrency') || defaultState.inputCurrencyId || WETH[chainId].symbol
+  const inputCurrencyId = searchParams.get('inputCurrency') || defaultState.inputCurrencyId || WETH[chainId]?.symbol
   const outputCurrencyId = searchParams.get('outputCurrency') || defaultState.outputCurrencyId || undefined
 
   searchParams.delete('inputCurrency')
