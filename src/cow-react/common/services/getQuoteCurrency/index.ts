@@ -22,7 +22,7 @@ const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
  *
  * The algorithm:
  * 1. If one of the tokens is stable-coin, then take the opposite token as quote
- * 2. Take the token with the smallest amount as quote (for 0.0005 WETH -> 3000 COW, WETH is quote)
+ * 2. Otherwise, take the token with the smallest amount as quote (for 0.0005 WETH -> 3000 COW, WETH is quote)
  */
 export function getQuoteCurrency(
   chainId: SupportedChainId | undefined,
