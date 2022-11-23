@@ -5,6 +5,9 @@ import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
 import { RateInfo } from '../RateInfo'
+import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { MouseoverTooltipContent } from 'components/Tooltip'
+import { AlertTriangle } from 'react-feather'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const statusColorMap: { [key in OrderStatus]: string } = {
@@ -36,6 +39,11 @@ const RateValue = styled.span`
   font-size: 12px;
 `
 
+const StatusBox = styled.div`
+  display: flex;
+  align-items: center;
+`
+
 const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
   display: inline-block;
   background: ${({ status, cancelling }) => (cancelling ? statusColorMap.cancelled : statusColorMap[status])};
@@ -51,6 +59,41 @@ const AmountItem = styled.div`
   white-space: nowrap;
 `
 
+const WarningIndicator = styled.button`
+  margin: 0;
+  padding: 0;
+  background: #ffcb67;
+  color: ${({ theme }) => theme.warningText};
+  line-height: 0;
+  border: 0;
+  height: 27px;
+  width: 27px;
+  border-radius: 0 4px 4px 0;
+`
+
+const WarningContent = styled.div`
+  max-width: 450px;
+  padding: 15px 20px;
+  color: ${({ theme }) => theme.black};
+
+  h3,
+  p {
+    margin: 0;
+  }
+
+  h3 {
+    margin-bottom: 8px;
+  }
+`
+
+const WarningParagraph = styled.div`
+  margin-bottom: 20px;
+
+  :last-child {
+    margin-bottom: 0;
+  }
+`
+
 function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (
     <AmountItem title={amount.toExact() + ' ' + amount.currency.symbol}>
@@ -63,18 +106,52 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   )
 }
 
+// TODO: check texts with marketing
+const balanceWarning = (tokenSymbol: string) => (
+  <WarningParagraph>
+    <h3>Insufficient balance for this limit order</h3>
+    <p>
+      This order is still open and valid but your account currently has insufficient <strong>{tokenSymbol}</strong>{' '}
+      balance. <br />
+      Your order therefore can&apos;t be matched.
+    </p>
+  </WarningParagraph>
+)
+
+const allowanceWarning = (tokenSymbol: string) => (
+  <WarningParagraph>
+    <h3>Insufficient allowance for this limit order</h3>
+    <p>
+      This order is still open and valid but your account currently has insufficient allowance to spend{' '}
+      <strong>{tokenSymbol}</strong>. <br />
+      Your order therefore can&apos;t be matched.
+    </p>
+  </WarningParagraph>
+)
+
 export interface OrderRowProps {
   chainId: SupportedChainId | undefined
   order: Order
+  balancesAndAllowances: BalancesAndAllowances
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
 }
 
-export function OrderRow({ chainId, order, RowElement, isRateInversed }: OrderRowProps) {
+function isEnoughAmount(
+  sellAmount: CurrencyAmount<Currency>,
+  targetAmount: CurrencyAmount<Currency> | undefined
+): boolean {
+  if (!targetAmount) return true
+
+  if (targetAmount.equalTo(sellAmount)) return true
+
+  return sellAmount.lessThan(targetAmount)
+}
+
+export function OrderRow({ chainId, order, RowElement, balancesAndAllowances, isRateInversed }: OrderRowProps) {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-
   const activeRateDisplay: ActiveRateDisplay = {
     chainId,
     activeRate,
@@ -83,6 +160,14 @@ export function OrderRow({ chainId, order, RowElement, isRateInversed }: OrderRo
     activeRateFiatAmount: null,
     inversedActiveRateFiatAmount: null,
   }
+
+  const { balances, allowances } = balancesAndAllowances
+  const balance = balances[order.inputToken.address]
+  const allowance = allowances[order.inputToken.address]
+
+  const hasEnoughBalance = isEnoughAmount(sellAmount, balance)
+  const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
+  const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
   return (
     <RowElement>
@@ -98,9 +183,28 @@ export function OrderRow({ chainId, order, RowElement, isRateInversed }: OrderRo
         </RateValue>
       </div>
       <div>
-        <StatusItem cancelling={!!order.isCancelling} status={order.status}>
-          {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
-        </StatusItem>
+        <StatusBox>
+          <StatusItem cancelling={!!order.isCancelling} status={order.status}>
+            {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
+          </StatusItem>
+          {withWarning && (
+            <WarningIndicator>
+              <MouseoverTooltipContent
+                wrap={false}
+                bgColor={'#ffcb67'}
+                content={
+                  <WarningContent>
+                    {!hasEnoughBalance && balanceWarning(order.inputToken.symbol || '')}
+                    {!hasEnoughAllowance && allowanceWarning(order.inputToken.symbol || '')}
+                  </WarningContent>
+                }
+                placement="bottom"
+              >
+                <AlertTriangle size={16} />
+              </MouseoverTooltipContent>
+            </WarningIndicator>
+          )}
+        </StatusBox>
       </div>
     </RowElement>
   )

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '../../pure/RateInfo'
+import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const TableBox = styled.div`
@@ -42,11 +43,12 @@ const Rows = styled.div`
 export interface OrdersTableProps {
   chainId: SupportedChainId | undefined
   orders: Order[]
+  balancesAndAllowances: BalancesAndAllowances
 }
 
 const pageSize = 10
 
-export function OrdersTable({ chainId, orders }: OrdersTableProps) {
+export function OrdersTable({ chainId, orders, balancesAndAllowances }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [isRateInversed, setIsRateInversed] = useState(false)
 
@@ -85,6 +87,7 @@ export function OrdersTable({ chainId, orders }: OrdersTableProps) {
               order={order}
               RowElement={RowElement}
               isRateInversed={isRateInversed}
+              balancesAndAllowances={balancesAndAllowances}
             />
           ))}
         </Rows>

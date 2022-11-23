@@ -1,6 +1,7 @@
 import { Orders } from './index'
 import { OrderTab } from './OrdersTabs'
 import { ordersMock } from './orders.mock'
+import { BalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 
 const tabs: OrderTab[] = [
   {
@@ -16,4 +17,12 @@ const tabs: OrderTab[] = [
   },
 ]
 
-export default <Orders chainId={1} orders={ordersMock} tabs={tabs} isWalletConnected={true} />
+// TODO: set values
+const balancesAndAllowances: BalancesAndAllowances = {
+  balances: {},
+  allowances: {},
+}
+
+export default (
+  <Orders chainId={1} orders={ordersMock} tabs={tabs} isWalletConnected={true} balancesAndAllowances={balancesAndAllowances} />
+)
