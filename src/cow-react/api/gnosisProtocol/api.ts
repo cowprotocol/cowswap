@@ -593,17 +593,19 @@ export async function getNativePrice(chainId: ChainId, address: string): Promise
 
 // TODO: won't be necessary once SDK is integrated
 function transformEthFlowOrder(order: OrderMetaData): OrderMetaData {
-  const { ethflowData } = order
+  const { ethflowData, creationDate } = order
 
   if (!ethflowData) {
     return order
   }
 
+  const expireIn5s = Math.ceil((new Date(creationDate).getTime() + 5 * 1000) / 1000)
   const { userValidTo: validTo } = ethflowData
+  console.log('modified validTo', expireIn5s, { validTo, creationDate })
   const owner = order.onchainUser || order.owner
   const sellToken = BUY_ETH_ADDRESS
 
-  return { ...order, validTo, owner, sellToken }
+  return { ...order, validTo: expireIn5s, owner, sellToken }
 }
 
 // Register some globals for convenience
