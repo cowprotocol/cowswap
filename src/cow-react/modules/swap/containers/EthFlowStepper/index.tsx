@@ -4,7 +4,7 @@ import {
   SmartOrderStatus,
 } from '@cow/modules/swap/pure/EthFlow/EthFlowStepper'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import { Order } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { safeTokenName } from '@cowprotocol/cow-js'
 
@@ -49,15 +49,19 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
   return <Pure {...stepperProps} />
 }
 
+const STEPPER_INDEXED_ORDER_STATUS: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.EXPIRED, OrderStatus.CANCELLED]
+
 function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStatus | undefined {
   // NOTE: not returning `CREATED` as we currently don't track the initial tx execution
-  if (!order) {
+  const { status } = order || {}
+
+  if (!status) {
     return
-  } else if (order.status === 'creating') {
+  } else if (status === 'creating') {
     return SmartOrderStatus.CREATING
-  } else if (order.status === 'pending') {
+  } else if (STEPPER_INDEXED_ORDER_STATUS.includes(status)) {
     return SmartOrderStatus.INDEXED
-  } else if (order.status === 'fulfilled') {
+  } else if (status === 'fulfilled') {
     return SmartOrderStatus.FILLED
   }
   return undefined
