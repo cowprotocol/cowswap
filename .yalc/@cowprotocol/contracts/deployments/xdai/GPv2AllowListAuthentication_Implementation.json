@@ -1,0 +1,371 @@
+{
+  "address": "0x9E7Ae8Bdba9AA346739792d219a808884996Db67",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newManager",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "oldManager",
+          "type": "address"
+        }
+      ],
+      "name": "ManagerChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "solver",
+          "type": "address"
+        }
+      ],
+      "name": "SolverAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "solver",
+          "type": "address"
+        }
+      ],
+      "name": "SolverRemoved",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "solver",
+          "type": "address"
+        }
+      ],
+      "name": "addSolver",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offset",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "length",
+          "type": "uint256"
+        }
+      ],
+      "name": "getStorageAt",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "manager_",
+          "type": "address"
+        }
+      ],
+      "name": "initializeManager",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "prospectiveSolver",
+          "type": "address"
+        }
+      ],
+      "name": "isSolver",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "manager",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "solver",
+          "type": "address"
+        }
+      ],
+      "name": "removeSolver",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "manager_",
+          "type": "address"
+        }
+      ],
+      "name": "setManager",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "targetContract",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "calldataPayload",
+          "type": "bytes"
+        }
+      ],
+      "name": "simulateDelegatecall",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "response",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "targetContract",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "calldataPayload",
+          "type": "bytes"
+        }
+      ],
+      "name": "simulateDelegatecallInternal",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "response",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xe52d425fe34d6d5215ccfc9ddfa485d490b3018f0ee5bbed708f2d172044d60d",
+  "receipt": {
+    "to": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+    "from": "0x7EAbac82dA8ea6Ac980d619Cb562a9924d1E3bAa",
+    "contractAddress": null,
+    "transactionIndex": 10,
+    "gasUsed": "829843",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xf60c2a58ea6092bec91d84d96f1cb1810074fd995163168b3c324ae4728d4e77",
+    "transactionHash": "0xe52d425fe34d6d5215ccfc9ddfa485d490b3018f0ee5bbed708f2d172044d60d",
+    "logs": [],
+    "blockNumber": 16465098,
+    "cumulativeGasUsed": "5177090",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "edc04b977e7a6657e6e9bb91bf92461d",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newManager\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oldManager\",\"type\":\"address\"}],\"name\":\"ManagerChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"solver\",\"type\":\"address\"}],\"name\":\"SolverAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"solver\",\"type\":\"address\"}],\"name\":\"SolverRemoved\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"solver\",\"type\":\"address\"}],\"name\":\"addSolver\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"length\",\"type\":\"uint256\"}],\"name\":\"getStorageAt\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"manager_\",\"type\":\"address\"}],\"name\":\"initializeManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"prospectiveSolver\",\"type\":\"address\"}],\"name\":\"isSolver\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"manager\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"solver\",\"type\":\"address\"}],\"name\":\"removeSolver\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"manager_\",\"type\":\"address\"}],\"name\":\"setManager\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"targetContract\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"calldataPayload\",\"type\":\"bytes\"}],\"name\":\"simulateDelegatecall\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"response\",\"type\":\"bytes\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"targetContract\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"calldataPayload\",\"type\":\"bytes\"}],\"name\":\"simulateDelegatecallInternal\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"response\",\"type\":\"bytes\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"Gnosis Developers\",\"events\":{\"ManagerChanged(address,address)\":{\"details\":\"Event emitted when the manager changes.\"},\"SolverAdded(address)\":{\"details\":\"Event emitted when a solver gets added.\"},\"SolverRemoved(address)\":{\"details\":\"Event emitted when a solver gets removed.\"}},\"kind\":\"dev\",\"methods\":{\"addSolver(address)\":{\"details\":\"Add an address to the set of allowed solvers. This method can only be called by the contract manager. This function is idempotent.\",\"params\":{\"solver\":\"The solver address to add.\"}},\"getStorageAt(uint256,uint256)\":{\"details\":\"Reads `length` bytes of storage in the currents contract\",\"params\":{\"length\":\"- the number of words (32 bytes) of data to read\",\"offset\":\"- the offset in the current contract's storage in words to start reading from\"},\"returns\":{\"_0\":\"the bytes that were read.\"}},\"initializeManager(address)\":{\"details\":\"Initialize the manager to a value. This method is a contract initializer that is called exactly once after creation. An initializer is used instead of a constructor so that this contract can be used behind a proxy. This initializer is idempotent.\",\"params\":{\"manager_\":\"The manager to initialize the contract with.\"}},\"isSolver(address)\":{\"details\":\"determines whether the provided address is an authenticated solver.\",\"params\":{\"prospectiveSolver\":\"the address of prospective solver.\"},\"returns\":{\"_0\":\"true when prospectiveSolver is an authenticated solver, otherwise false.\"}},\"removeSolver(address)\":{\"details\":\"Removes an address to the set of allowed solvers. This method can only be called by the contract manager. This function is idempotent.\",\"params\":{\"solver\":\"The solver address to remove.\"}},\"setManager(address)\":{\"details\":\"Set the manager for this contract. This method can be called by the current manager (if they want to to reliquish the role and give it to another address) or the contract owner (i.e. the proxy admin).\",\"params\":{\"manager_\":\"The new contract manager address.\"}},\"simulateDelegatecall(address,bytes)\":{\"details\":\"Performs a delegetecall on a targetContract in the context of self. Internally reverts execution to avoid side effects (making it static). Catches revert and returns encoded result as bytes.\",\"params\":{\"calldataPayload\":\"Calldata that should be sent to the target contract (encoded method name and arguments).\",\"targetContract\":\"Address of the contract containing the code to execute.\"}},\"simulateDelegatecallInternal(address,bytes)\":{\"details\":\"Performs a delegetecall on a targetContract in the context of self. Internally reverts execution to avoid side effects (making it static). Returns encoded result as revert message concatenated with the success flag of the inner call as a last byte.\",\"params\":{\"calldataPayload\":\"Calldata that should be sent to the target contract (encoded method name and arguments).\",\"targetContract\":\"Address of the contract containing the code to execute.\"}}},\"stateVariables\":{\"manager\":{\"details\":\"The address of the manager that has permissions to add and remove solvers.\"},\"solvers\":{\"details\":\"The set of allowed solvers. Allowed solvers have a value of `true` in this mapping.\"}},\"title\":\"Gnosis Protocol v2 Access Control Contract\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/contracts/GPv2AllowListAuthentication.sol\":\"GPv2AllowListAuthentication\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":1000000},\"remappings\":[]},\"sources\":{\"src/contracts/GPv2AllowListAuthentication.sol\":{\"content\":\"// SPDX-License-Identifier: LGPL-3.0-or-later\\npragma solidity ^0.7.6;\\n\\nimport \\\"./interfaces/GPv2Authentication.sol\\\";\\nimport \\\"./libraries/GPv2EIP1967.sol\\\";\\nimport \\\"./mixins/Initializable.sol\\\";\\nimport \\\"./mixins/StorageAccessible.sol\\\";\\n\\n/// @title Gnosis Protocol v2 Access Control Contract\\n/// @author Gnosis Developers\\ncontract GPv2AllowListAuthentication is\\n    GPv2Authentication,\\n    Initializable,\\n    StorageAccessible\\n{\\n    /// @dev The address of the manager that has permissions to add and remove\\n    /// solvers.\\n    address public manager;\\n\\n    /// @dev The set of allowed solvers. Allowed solvers have a value of `true`\\n    /// in this mapping.\\n    mapping(address => bool) private solvers;\\n\\n    /// @dev Event emitted when the manager changes.\\n    event ManagerChanged(address newManager, address oldManager);\\n\\n    /// @dev Event emitted when a solver gets added.\\n    event SolverAdded(address solver);\\n\\n    /// @dev Event emitted when a solver gets removed.\\n    event SolverRemoved(address solver);\\n\\n    /// @dev Initialize the manager to a value.\\n    ///\\n    /// This method is a contract initializer that is called exactly once after\\n    /// creation. An initializer is used instead of a constructor so that this\\n    /// contract can be used behind a proxy.\\n    ///\\n    /// This initializer is idempotent.\\n    ///\\n    /// @param manager_ The manager to initialize the contract with.\\n    function initializeManager(address manager_) external initializer {\\n        manager = manager_;\\n        emit ManagerChanged(manager_, address(0));\\n    }\\n\\n    /// @dev Modifier that ensures a method can only be called by the contract\\n    /// manager. Reverts if called by other addresses.\\n    modifier onlyManager() {\\n        require(manager == msg.sender, \\\"GPv2: caller not manager\\\");\\n        _;\\n    }\\n\\n    /// @dev Modifier that ensures method can be either called by the contract\\n    /// manager or the proxy owner.\\n    ///\\n    /// This modifier assumes that the proxy uses an EIP-1967 compliant storage\\n    /// slot for the admin.\\n    modifier onlyManagerOrOwner() {\\n        require(\\n            manager == msg.sender || GPv2EIP1967.getAdmin() == msg.sender,\\n            \\\"GPv2: not authorized\\\"\\n        );\\n        _;\\n    }\\n\\n    /// @dev Set the manager for this contract.\\n    ///\\n    /// This method can be called by the current manager (if they want to to\\n    /// reliquish the role and give it to another address) or the contract\\n    /// owner (i.e. the proxy admin).\\n    ///\\n    /// @param manager_ The new contract manager address.\\n    function setManager(address manager_) external onlyManagerOrOwner {\\n        address oldManager = manager;\\n        manager = manager_;\\n        emit ManagerChanged(manager_, oldManager);\\n    }\\n\\n    /// @dev Add an address to the set of allowed solvers. This method can only\\n    /// be called by the contract manager.\\n    ///\\n    /// This function is idempotent.\\n    ///\\n    /// @param solver The solver address to add.\\n    function addSolver(address solver) external onlyManager {\\n        solvers[solver] = true;\\n        emit SolverAdded(solver);\\n    }\\n\\n    /// @dev Removes an address to the set of allowed solvers. This method can\\n    /// only be called by the contract manager.\\n    ///\\n    /// This function is idempotent.\\n    ///\\n    /// @param solver The solver address to remove.\\n    function removeSolver(address solver) external onlyManager {\\n        solvers[solver] = false;\\n        emit SolverRemoved(solver);\\n    }\\n\\n    /// @inheritdoc GPv2Authentication\\n    function isSolver(address prospectiveSolver)\\n        external\\n        view\\n        override\\n        returns (bool)\\n    {\\n        return solvers[prospectiveSolver];\\n    }\\n}\\n\",\"keccak256\":\"0xce89f4fffc18fc055a06115a7b0d637570229e1fb945aa2857fd10d917d6fe6f\",\"license\":\"LGPL-3.0-or-later\"},\"src/contracts/interfaces/GPv2Authentication.sol\":{\"content\":\"// SPDX-License-Identifier: LGPL-3.0-or-later\\npragma solidity ^0.7.6;\\n\\n/// @title Gnosis Protocol v2 Authentication Interface\\n/// @author Gnosis Developers\\ninterface GPv2Authentication {\\n    /// @dev determines whether the provided address is an authenticated solver.\\n    /// @param prospectiveSolver the address of prospective solver.\\n    /// @return true when prospectiveSolver is an authenticated solver, otherwise false.\\n    function isSolver(address prospectiveSolver) external view returns (bool);\\n}\\n\",\"keccak256\":\"0xffbd3b9ca8cb5b86c3d7f7ce706755dd6acdc86ef9acefcb5bae375ea50628e3\",\"license\":\"LGPL-3.0-or-later\"},\"src/contracts/libraries/GPv2EIP1967.sol\":{\"content\":\"// SPDX-License-Identifier: LGPL-3.0-or-later\\npragma solidity ^0.7.6;\\n\\nlibrary GPv2EIP1967 {\\n    /// @dev The storage slot where the proxy administrator is stored, defined\\n    /// as `keccak256('eip1967.proxy.admin') - 1`.\\n    bytes32 internal constant ADMIN_SLOT =\\n        hex\\\"b53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103\\\";\\n\\n    /// @dev Returns the address stored in the EIP-1967 administrator storage\\n    /// slot for the current contract. If this method is not called from an\\n    /// contract behind an EIP-1967 proxy, then it will most likely return\\n    /// `address(0)`, as the implementation slot is likely to be unset.\\n    ///\\n    /// @return admin The administrator address.\\n    function getAdmin() internal view returns (address admin) {\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            admin := sload(ADMIN_SLOT)\\n        }\\n    }\\n\\n    /// @dev Sets the storage at the EIP-1967 administrator slot to be the\\n    /// specified address.\\n    ///\\n    /// @param admin The administrator address to set.\\n    function setAdmin(address admin) internal {\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            sstore(ADMIN_SLOT, admin)\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0xb59c61896cb90da15c86f6eee5453ff0dae92d84b0e6f2398a060c81185995eb\",\"license\":\"LGPL-3.0-or-later\"},\"src/contracts/mixins/Initializable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\n// Vendored from OpenZeppelin contracts with minor modifications:\\n// - Modified Solidity version\\n// - Formatted code\\n// - Shortned revert messages\\n// - Inlined `Address.isContract` implementation\\n// <https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.4.0/contracts/proxy/Initializable.sol>\\n\\npragma solidity ^0.7.6;\\n\\n/**\\n * @dev This is a base contract to aid in writing upgradeable contracts, or any kind of contract that will be deployed\\n * behind a proxy. Since a proxied contract can't have a constructor, it's common to move constructor logic to an\\n * external initializer function, usually called `initialize`. It then becomes necessary to protect this initializer\\n * function so it can only be called once. The {initializer} modifier provided by this contract will have this effect.\\n *\\n * TIP: To avoid leaving the proxy in an uninitialized state, the initializer function should be called as early as\\n * possible by providing the encoded function call as the `_data` argument to {UpgradeableProxy-constructor}.\\n *\\n * CAUTION: When used with inheritance, manual care must be taken to not invoke a parent initializer twice, or to ensure\\n * that all initializers are idempotent. This is not verified automatically as constructors are by Solidity.\\n */\\nabstract contract Initializable {\\n    /**\\n     * @dev Indicates that the contract has been initialized.\\n     */\\n    bool private _initialized;\\n\\n    /**\\n     * @dev Indicates that the contract is in the process of being initialized.\\n     */\\n    bool private _initializing;\\n\\n    /**\\n     * @dev Modifier to protect an initializer function from being invoked twice.\\n     */\\n    modifier initializer() {\\n        require(\\n            _initializing || _isConstructor() || !_initialized,\\n            \\\"Initializable: initialized\\\"\\n        );\\n\\n        bool isTopLevelCall = !_initializing;\\n        if (isTopLevelCall) {\\n            _initializing = true;\\n            _initialized = true;\\n        }\\n\\n        _;\\n\\n        if (isTopLevelCall) {\\n            _initializing = false;\\n        }\\n    }\\n\\n    /// @dev Returns true if and only if the function is running in the constructor\\n    function _isConstructor() private view returns (bool) {\\n        uint256 size;\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            size := extcodesize(address())\\n        }\\n        return size == 0;\\n    }\\n}\\n\",\"keccak256\":\"0xbe217e95a20d8c780ce6054290583dcd81b4b4a7e7a7d7e5ccae1f949bff81a4\",\"license\":\"MIT\"},\"src/contracts/mixins/StorageAccessible.sol\":{\"content\":\"// SPDX-License-Identifier: LGPL-3.0-only\\n\\n// Vendored from Gnosis utility contracts with minor modifications:\\n// - Modified Solidity version\\n// - Formatted code\\n// - Added linter directives to ignore low level call and assembly warnings\\n// <https://github.com/gnosis/util-contracts/blob/v3.1.0-solc-7/contracts/StorageAccessible.sol>\\n\\npragma solidity ^0.7.6;\\n\\n/// @title ViewStorageAccessible - Interface on top of StorageAccessible base class to allow simulations from view functions\\ninterface ViewStorageAccessible {\\n    /**\\n     * @dev Same as `simulateDelegatecall` on StorageAccessible. Marked as view so that it can be called from external contracts\\n     * that want to run simulations from within view functions. Will revert if the invoked simulation attempts to change state.\\n     */\\n    function simulateDelegatecall(\\n        address targetContract,\\n        bytes memory calldataPayload\\n    ) external view returns (bytes memory);\\n\\n    /**\\n     * @dev Same as `getStorageAt` on StorageAccessible. This method allows reading aribtrary ranges of storage.\\n     */\\n    function getStorageAt(uint256 offset, uint256 length)\\n        external\\n        view\\n        returns (bytes memory);\\n}\\n\\n/// @title StorageAccessible - generic base contract that allows callers to access all internal storage.\\ncontract StorageAccessible {\\n    /**\\n     * @dev Reads `length` bytes of storage in the currents contract\\n     * @param offset - the offset in the current contract's storage in words to start reading from\\n     * @param length - the number of words (32 bytes) of data to read\\n     * @return the bytes that were read.\\n     */\\n    function getStorageAt(uint256 offset, uint256 length)\\n        external\\n        view\\n        returns (bytes memory)\\n    {\\n        bytes memory result = new bytes(length * 32);\\n        for (uint256 index = 0; index < length; index++) {\\n            // solhint-disable-next-line no-inline-assembly\\n            assembly {\\n                let word := sload(add(offset, index))\\n                mstore(add(add(result, 0x20), mul(index, 0x20)), word)\\n            }\\n        }\\n        return result;\\n    }\\n\\n    /**\\n     * @dev Performs a delegetecall on a targetContract in the context of self.\\n     * Internally reverts execution to avoid side effects (making it static). Catches revert and returns encoded result as bytes.\\n     * @param targetContract Address of the contract containing the code to execute.\\n     * @param calldataPayload Calldata that should be sent to the target contract (encoded method name and arguments).\\n     */\\n    function simulateDelegatecall(\\n        address targetContract,\\n        bytes memory calldataPayload\\n    ) public returns (bytes memory response) {\\n        bytes memory innerCall =\\n            abi.encodeWithSelector(\\n                this.simulateDelegatecallInternal.selector,\\n                targetContract,\\n                calldataPayload\\n            );\\n        // solhint-disable-next-line avoid-low-level-calls\\n        (, response) = address(this).call(innerCall);\\n        bool innerSuccess = response[response.length - 1] == 0x01;\\n        setLength(response, response.length - 1);\\n        if (innerSuccess) {\\n            return response;\\n        } else {\\n            revertWith(response);\\n        }\\n    }\\n\\n    /**\\n     * @dev Performs a delegetecall on a targetContract in the context of self.\\n     * Internally reverts execution to avoid side effects (making it static). Returns encoded result as revert message\\n     * concatenated with the success flag of the inner call as a last byte.\\n     * @param targetContract Address of the contract containing the code to execute.\\n     * @param calldataPayload Calldata that should be sent to the target contract (encoded method name and arguments).\\n     */\\n    function simulateDelegatecallInternal(\\n        address targetContract,\\n        bytes memory calldataPayload\\n    ) external returns (bytes memory response) {\\n        bool success;\\n        // solhint-disable-next-line avoid-low-level-calls\\n        (success, response) = targetContract.delegatecall(calldataPayload);\\n        revertWith(abi.encodePacked(response, success));\\n    }\\n\\n    function revertWith(bytes memory response) internal pure {\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            revert(add(response, 0x20), mload(response))\\n        }\\n    }\\n\\n    function setLength(bytes memory buffer, uint256 length) internal pure {\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            mstore(buffer, length)\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x7a674911ee3d98ff3afa9c2b0b98c474604c4821bd5841af22c31849c70066ce\",\"license\":\"LGPL-3.0-only\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610e10806100206000396000f3fe608060405234801561001057600080fd5b50600436106100a35760003560e01c80637f7120fe11610076578063d0ebdbe71161005b578063d0ebdbe7146102e3578063ec58f4b814610316578063f84436bd14610349576100a3565b80637f7120fe1461027b5780638fd57b92146102b0576100a3565b806302cc250d146100a857806343218e19146100ef578063481c6a75146102275780635624b25b14610258575b600080fd5b6100db600480360360208110156100be57600080fd5b503573ffffffffffffffffffffffffffffffffffffffff1661040c565b604080519115158252519081900360200190f35b6101b26004803603604081101561010557600080fd5b73ffffffffffffffffffffffffffffffffffffffff823516919081019060408101602082013564010000000081111561013d57600080fd5b82018360208201111561014f57600080fd5b8035906020019184600183028401116401000000008311171561017157600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610437945050505050565b6040805160208082528351818301528351919283929083019185019080838360005b838110156101ec5781810151838201526020016101d4565b50505050905090810190601f1680156102195780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b61022f6105af565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b6101b26004803603604081101561026e57600080fd5b50803590602001356105d1565b6102ae6004803603602081101561029157600080fd5b503573ffffffffffffffffffffffffffffffffffffffff16610647565b005b6102ae600480360360208110156102c657600080fd5b503573ffffffffffffffffffffffffffffffffffffffff166107f8565b6102ae600480360360208110156102f957600080fd5b503573ffffffffffffffffffffffffffffffffffffffff16610907565b6102ae6004803603602081101561032c57600080fd5b503573ffffffffffffffffffffffffffffffffffffffff16610a47565b6101b26004803603604081101561035f57600080fd5b73ffffffffffffffffffffffffffffffffffffffff823516919081019060408101602082013564010000000081111561039757600080fd5b8201836020820111156103a957600080fd5b803590602001918460018302840111640100000000831117156103cb57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610b5a945050505050565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604090205460ff1690565b606060008373ffffffffffffffffffffffffffffffffffffffff16836040518082805190602001908083835b602083106104a057805182527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe09092019160209182019101610463565b6001836020036101000a038019825116818451168082178552505050505050905001915050600060405180830381855af49150503d8060008114610500576040519150601f19603f3d011682016040523d82523d6000602084013e610505565b606091505b5080935081925050506105a882826040516020018083805190602001908083835b6020831061056357805182527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe09092019160209182019101610526565b6001836020036101000a03801982511681845116808217855250505050505090500182151560f81b815260010192505050604051602081830303815290604052610da3565b5092915050565b60005462010000900473ffffffffffffffffffffffffffffffffffffffff1681565b606060008260200267ffffffffffffffff811180156105ef57600080fd5b506040519080825280601f01601f19166020018201604052801561061a576020820181803683370190505b50905060005b8381101561063d5784810154602080830284010152600101610620565b5090505b92915050565b600054610100900460ff16806106605750610660610dab565b8061066e575060005460ff16155b6106d957604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601a60248201527f496e697469616c697a61626c653a20696e697469616c697a6564000000000000604482015290519081900360640190fd5b600054610100900460ff1615801561073f57600080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00ff909116610100171660011790555b600080547fffffffffffffffffffff0000000000000000000000000000000000000000ffff166201000073ffffffffffffffffffffffffffffffffffffffff851690810291909117825560408051918252602082019290925281517f605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350929181900390910190a180156107f457600080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00ff1690555b5050565b60005462010000900473ffffffffffffffffffffffffffffffffffffffff16331461088457604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601860248201527f475076323a2063616c6c6572206e6f74206d616e616765720000000000000000604482015290519081900360640190fd5b73ffffffffffffffffffffffffffffffffffffffff811660008181526001602090815260409182902080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00169055815192835290517f640e18a2587e1d83e4fdabf70257d0a800ca4b2c1aaad1dfc485a4ad8bbbd6c69281900390910190a150565b60005462010000900473ffffffffffffffffffffffffffffffffffffffff1633148061094f575033610937610db1565b73ffffffffffffffffffffffffffffffffffffffff16145b6109ba57604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601460248201527f475076323a206e6f7420617574686f72697a6564000000000000000000000000604482015290519081900360640190fd5b6000805473ffffffffffffffffffffffffffffffffffffffff838116620100008181027fffffffffffffffffffff0000000000000000000000000000000000000000ffff85161790945560408051918252939092041660208201819052825190927f605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350928290030190a15050565b60005462010000900473ffffffffffffffffffffffffffffffffffffffff163314610ad357604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601860248201527f475076323a2063616c6c6572206e6f74206d616e616765720000000000000000604482015290519081900360640190fd5b73ffffffffffffffffffffffffffffffffffffffff811660008181526001602081815260409283902080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0016909217909155815192835290517f41f9d09dd5159251f8a8e482bbe097b7c01a5e6f70c5a0ddb494906464fc9dd79281900390910190a150565b606060006343218e1960e01b8484604051602401808373ffffffffffffffffffffffffffffffffffffffff16815260200180602001828103825283818151815260200191508051906020019080838360005b83811015610bc4578181015183820152602001610bac565b50505050905090810190601f168015610bf15780820380516001836020036101000a031916815260200191505b50604080517fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe08184030181529181526020820180517bffffffffffffffffffffffffffffffffffffffffffffffffffffffff167fffffffff00000000000000000000000000000000000000000000000000000000909816979097178752518151919750309688965090945084935091508083835b60208310610cc257805182527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe09092019160209182019101610c85565b6001836020036101000a0380198251168184511680821785525050505050509050019150506000604051808303816000865af19150503d8060008114610d24576040519150601f19603f3d011682016040523d82523d6000602084013e610d29565b606091505b50905080925050600082600184510381518110610d4257fe5b602001015160f81c60f81b7effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916600160f81b149050610d85836001855103610dd6565b8015610d92575050610641565b610d9b83610da3565b505092915050565b805160208201fd5b303b1590565b7fb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d61035490565b905256fea26469706673582212207106ba36b2d518d89a5ce88705dd7f52d98f3a8c838b8bb7ad9cdaa5b4254ab164736f6c63430007060033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100a35760003560e01c80637f7120fe11610076578063d0ebdbe71161005b578063d0ebdbe7146102e3578063ec58f4b814610316578063f84436bd14610349576100a3565b80637f7120fe1461027b5780638fd57b92146102b0576100a3565b806302cc250d146100a857806343218e19146100ef578063481c6a75146102275780635624b25b14610258575b600080fd5b6100db600480360360208110156100be57600080fd5b503573ffffffffffffffffffffffffffffffffffffffff1661040c565b604080519115158252519081900360200190f35b6101b26004803603604081101561010557600080fd5b73ffffffffffffffffffffffffffffffffffffffff823516919081019060408101602082013564010000000081111561013d57600080fd5b82018360208201111561014f57600080fd5b8035906020019184600183028401116401000000008311171561017157600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610437945050505050565b6040805160208082528351818301528351919283929083019185019080838360005b838110156101ec5781810151838201526020016101d4565b50505050905090810190601f1680156102195780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b61022f6105af565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b6101b26004803603604081101561026e57600080fd5b50803590602001356105d1565b6102ae6004803603602081101561029157600080fd5b503573ffffffffffffffffffffffffffffffffffffffff16610647565b005b6102ae600480360360208110156102c657600080fd5b503573ffffffffffffffffffffffffffffffffffffffff166107f8565b6102ae600480360360208110156102f957600080fd5b503573ffffffffffffffffffffffffffffffffffffffff16610907565b6102ae6004803603602081101561032c57600080fd5b503573ffffffffffffffffffffffffffffffffffffffff16610a47565b6101b26004803603604081101561035f57600080fd5b73ffffffffffffffffffffffffffffffffffffffff823516919081019060408101602082013564010000000081111561039757600080fd5b8201836020820111156103a957600080fd5b803590602001918460018302840111640100000000831117156103cb57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610b5a945050505050565b73ffffffffffffffffffffffffffffffffffffffff1660009081526001602052604090205460ff1690565b606060008373ffffffffffffffffffffffffffffffffffffffff16836040518082805190602001908083835b602083106104a057805182527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe09092019160209182019101610463565b6001836020036101000a038019825116818451168082178552505050505050905001915050600060405180830381855af49150503d8060008114610500576040519150601f19603f3d011682016040523d82523d6000602084013e610505565b606091505b5080935081925050506105a882826040516020018083805190602001908083835b6020831061056357805182527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe09092019160209182019101610526565b6001836020036101000a03801982511681845116808217855250505050505090500182151560f81b815260010192505050604051602081830303815290604052610da3565b5092915050565b60005462010000900473ffffffffffffffffffffffffffffffffffffffff1681565b606060008260200267ffffffffffffffff811180156105ef57600080fd5b506040519080825280601f01601f19166020018201604052801561061a576020820181803683370190505b50905060005b8381101561063d5784810154602080830284010152600101610620565b5090505b92915050565b600054610100900460ff16806106605750610660610dab565b8061066e575060005460ff16155b6106d957604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601a60248201527f496e697469616c697a61626c653a20696e697469616c697a6564000000000000604482015290519081900360640190fd5b600054610100900460ff1615801561073f57600080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00ff909116610100171660011790555b600080547fffffffffffffffffffff0000000000000000000000000000000000000000ffff166201000073ffffffffffffffffffffffffffffffffffffffff851690810291909117825560408051918252602082019290925281517f605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350929181900390910190a180156107f457600080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00ff1690555b5050565b60005462010000900473ffffffffffffffffffffffffffffffffffffffff16331461088457604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601860248201527f475076323a2063616c6c6572206e6f74206d616e616765720000000000000000604482015290519081900360640190fd5b73ffffffffffffffffffffffffffffffffffffffff811660008181526001602090815260409182902080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00169055815192835290517f640e18a2587e1d83e4fdabf70257d0a800ca4b2c1aaad1dfc485a4ad8bbbd6c69281900390910190a150565b60005462010000900473ffffffffffffffffffffffffffffffffffffffff1633148061094f575033610937610db1565b73ffffffffffffffffffffffffffffffffffffffff16145b6109ba57604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601460248201527f475076323a206e6f7420617574686f72697a6564000000000000000000000000604482015290519081900360640190fd5b6000805473ffffffffffffffffffffffffffffffffffffffff838116620100008181027fffffffffffffffffffff0000000000000000000000000000000000000000ffff85161790945560408051918252939092041660208201819052825190927f605c2dbf762e5f7d60a546d42e7205dcb1b011ebc62a61736a57c9089d3a4350928290030190a15050565b60005462010000900473ffffffffffffffffffffffffffffffffffffffff163314610ad357604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601860248201527f475076323a2063616c6c6572206e6f74206d616e616765720000000000000000604482015290519081900360640190fd5b73ffffffffffffffffffffffffffffffffffffffff811660008181526001602081815260409283902080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0016909217909155815192835290517f41f9d09dd5159251f8a8e482bbe097b7c01a5e6f70c5a0ddb494906464fc9dd79281900390910190a150565b606060006343218e1960e01b8484604051602401808373ffffffffffffffffffffffffffffffffffffffff16815260200180602001828103825283818151815260200191508051906020019080838360005b83811015610bc4578181015183820152602001610bac565b50505050905090810190601f168015610bf15780820380516001836020036101000a031916815260200191505b50604080517fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe08184030181529181526020820180517bffffffffffffffffffffffffffffffffffffffffffffffffffffffff167fffffffff00000000000000000000000000000000000000000000000000000000909816979097178752518151919750309688965090945084935091508083835b60208310610cc257805182527fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe09092019160209182019101610c85565b6001836020036101000a0380198251168184511680821785525050505050509050019150506000604051808303816000865af19150503d8060008114610d24576040519150601f19603f3d011682016040523d82523d6000602084013e610d29565b606091505b50905080925050600082600184510381518110610d4257fe5b602001015160f81c60f81b7effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916600160f81b149050610d85836001855103610dd6565b8015610d92575050610641565b610d9b83610da3565b505092915050565b805160208201fd5b303b1590565b7fb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d61035490565b905256fea26469706673582212207106ba36b2d518d89a5ce88705dd7f52d98f3a8c838b8bb7ad9cdaa5b4254ab164736f6c63430007060033",
+  "devdoc": {
+    "author": "Gnosis Developers",
+    "events": {
+      "ManagerChanged(address,address)": {
+        "details": "Event emitted when the manager changes."
+      },
+      "SolverAdded(address)": {
+        "details": "Event emitted when a solver gets added."
+      },
+      "SolverRemoved(address)": {
+        "details": "Event emitted when a solver gets removed."
+      }
+    },
+    "kind": "dev",
+    "methods": {
+      "addSolver(address)": {
+        "details": "Add an address to the set of allowed solvers. This method can only be called by the contract manager. This function is idempotent.",
+        "params": {
+          "solver": "The solver address to add."
+        }
+      },
+      "getStorageAt(uint256,uint256)": {
+        "details": "Reads `length` bytes of storage in the currents contract",
+        "params": {
+          "length": "- the number of words (32 bytes) of data to read",
+          "offset": "- the offset in the current contract's storage in words to start reading from"
+        },
+        "returns": {
+          "_0": "the bytes that were read."
+        }
+      },
+      "initializeManager(address)": {
+        "details": "Initialize the manager to a value. This method is a contract initializer that is called exactly once after creation. An initializer is used instead of a constructor so that this contract can be used behind a proxy. This initializer is idempotent.",
+        "params": {
+          "manager_": "The manager to initialize the contract with."
+        }
+      },
+      "isSolver(address)": {
+        "details": "determines whether the provided address is an authenticated solver.",
+        "params": {
+          "prospectiveSolver": "the address of prospective solver."
+        },
+        "returns": {
+          "_0": "true when prospectiveSolver is an authenticated solver, otherwise false."
+        }
+      },
+      "removeSolver(address)": {
+        "details": "Removes an address to the set of allowed solvers. This method can only be called by the contract manager. This function is idempotent.",
+        "params": {
+          "solver": "The solver address to remove."
+        }
+      },
+      "setManager(address)": {
+        "details": "Set the manager for this contract. This method can be called by the current manager (if they want to to reliquish the role and give it to another address) or the contract owner (i.e. the proxy admin).",
+        "params": {
+          "manager_": "The new contract manager address."
+        }
+      },
+      "simulateDelegatecall(address,bytes)": {
+        "details": "Performs a delegetecall on a targetContract in the context of self. Internally reverts execution to avoid side effects (making it static). Catches revert and returns encoded result as bytes.",
+        "params": {
+          "calldataPayload": "Calldata that should be sent to the target contract (encoded method name and arguments).",
+          "targetContract": "Address of the contract containing the code to execute."
+        }
+      },
+      "simulateDelegatecallInternal(address,bytes)": {
+        "details": "Performs a delegetecall on a targetContract in the context of self. Internally reverts execution to avoid side effects (making it static). Returns encoded result as revert message concatenated with the success flag of the inner call as a last byte.",
+        "params": {
+          "calldataPayload": "Calldata that should be sent to the target contract (encoded method name and arguments).",
+          "targetContract": "Address of the contract containing the code to execute."
+        }
+      }
+    },
+    "stateVariables": {
+      "manager": {
+        "details": "The address of the manager that has permissions to add and remove solvers."
+      },
+      "solvers": {
+        "details": "The set of allowed solvers. Allowed solvers have a value of `true` in this mapping."
+      }
+    },
+    "title": "Gnosis Protocol v2 Access Control Contract",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 3223,
+        "contract": "src/contracts/GPv2AllowListAuthentication.sol:GPv2AllowListAuthentication",
+        "label": "_initialized",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_bool"
+      },
+      {
+        "astId": 3226,
+        "contract": "src/contracts/GPv2AllowListAuthentication.sol:GPv2AllowListAuthentication",
+        "label": "_initializing",
+        "offset": 1,
+        "slot": "0",
+        "type": "t_bool"
+      },
+      {
+        "astId": 15,
+        "contract": "src/contracts/GPv2AllowListAuthentication.sol:GPv2AllowListAuthentication",
+        "label": "manager",
+        "offset": 2,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 20,
+        "contract": "src/contracts/GPv2AllowListAuthentication.sol:GPv2AllowListAuthentication",
+        "label": "solvers",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_address,t_bool)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_bool)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => bool)",
+        "numberOfBytes": "32",
+        "value": "t_bool"
+      }
+    }
+  }
+}

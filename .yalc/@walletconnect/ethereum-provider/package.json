@@ -1,0 +1,55 @@
+{
+  "name": "@walletconnect/ethereum-provider",
+  "version": "1.7.1",
+  "description": "Ethereum Provider for WalletConnect",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build:pre": "run-s clean",
+    "build:cjs": "npx tsc -p tsconfig.cjs.json",
+    "build:esm": "npx tsc -p tsconfig.esm.json",
+    "build:umd": "webpack",
+    "build": "run-s build:pre build:cjs build:esm build:umd",
+    "test": "env TS_NODE_PROJECT=\"tsconfig.cjs.json\" mocha -r ts-node/register ./test/**/*.spec.ts --exit"
+  },
+  "keywords": [
+    "wallet",
+    "walletconnect",
+    "ethereum",
+    "jsonrpc",
+    "mobile",
+    "qrcode",
+    "web3",
+    "crypto",
+    "cryptocurrency",
+    "dapp"
+  ],
+  "author": "WalletConnect, Inc. <walletconnect.com>",
+  "homepage": "https://github.com/WalletConnect/walletconnect-monorepo/",
+  "license": "Apache-2.0",
+  "main": "dist/cjs/index.js",
+  "browser": "dist/esm/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "unpkg": "dist/umd/index.min.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walletconnect/walletconnect-monorepo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/walletconnect/walletconnect-monorepo/issues"
+  },
+  "dependencies": {
+    "@walletconnect/client": "^1.7.1",
+    "@walletconnect/jsonrpc-http-connection": "^1.0.0",
+    "@walletconnect/jsonrpc-provider": "^1.0.0",
+    "@walletconnect/signer-connection": "^1.7.1",
+    "@walletconnect/types": "^1.7.1",
+    "@walletconnect/utils": "^1.7.1",
+    "eip1193-provider": "1.0.1",
+    "eventemitter3": "4.0.7"
+  },
+  "gitHead": "165f7993c2acc907c653c02847fb02721052c6e7",
+  "yalcSig": "ebb5f6d5263586414c7803c82d4e6788"
+}

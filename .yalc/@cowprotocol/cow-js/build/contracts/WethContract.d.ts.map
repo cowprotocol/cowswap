@@ -1,0 +1,1 @@
+{"version":3,"file":"WethContract.d.ts","sourceRoot":"","sources":["../../src/contracts/WethContract.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,IAAI,EAAE,MAAM,YAAY,CAAA;AACjC,OAAO,EAAE,gBAAgB,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAA;AAEpD,oBAAY,YAAY,GAAG,gBAAgB,CAAC,IAAI,CAAC,CAAA;AACjD,oBAAY,UAAU,GAAG,QAAQ,CAAC,IAAI,CAAC,CAAA"}

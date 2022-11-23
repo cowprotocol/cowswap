@@ -1,0 +1,1 @@
+{"version":3,"file":"ethers.js","sourceRoot":"","sources":["../../../src/ts/types/ethers.ts"],"names":[],"mappings":"AAiCA;;GAEG;AACH,MAAM,UAAU,iBAAiB,CAAC,MAAc;IAC9C,OAAO,gBAAgB,IAAI,MAAM,CAAC;AACpC,CAAC;AAED;;GAEG;AACH,MAAM,UAAU,iBAAiB,CAC/B,QAAkB;IAElB,OAAO,MAAM,IAAI,QAAQ,CAAC;AAC5B,CAAC"}
