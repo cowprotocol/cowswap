@@ -8,7 +8,7 @@ import {
   SigningSchemeValue,
   UnsignedOrder,
 } from 'utils/signatures'
-import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
+import { APP_DATA_HASH, RAW_CODE_LINK } from 'constants/index'
 import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
 import { environmentName, isBarn, isDev, isLocal, isPr } from 'utils/environments'
 import OperatorError, {
@@ -25,7 +25,6 @@ import QuoteError, {
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { LegacyFeeQuoteParams as FeeQuoteParams, LegacyPriceQuoteParams as PriceQuoteParams } from './legacy/types'
 
-import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import * as Sentry from '@sentry/browser'
 import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'utils/logging'
 import { ZERO_ADDRESS } from 'constants/misc'
@@ -564,37 +563,6 @@ export interface GChainFeeEndpointResponse {
   average: number
   fast: number
   slow: number
-}
-// Values are returned as floats in gwei
-const ONE_GWEI = 1_000_000_000
-
-export interface GasFeeEndpointResponse {
-  lastUpdate: string
-  lowest: string
-  safeLow?: string
-  standard: string
-  fast: string
-  fastest?: string
-}
-
-export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS): Promise<GasFeeEndpointResponse> {
-  const response = await fetch(GAS_FEE_ENDPOINTS[chainId])
-  const json = await response.json()
-
-  if (chainId === ChainId.GNOSIS_CHAIN) {
-    // Different endpoint for GChain with a different format. Need to transform it
-    return _transformGChainGasPrices(json)
-  }
-  return json
-}
-
-function _transformGChainGasPrices({ slow, average, fast }: GChainFeeEndpointResponse): GasFeeEndpointResponse {
-  return {
-    lastUpdate: new Date().toISOString(),
-    lowest: Math.floor(slow * ONE_GWEI).toString(),
-    standard: Math.floor(average * ONE_GWEI).toString(),
-    fast: Math.floor(fast * ONE_GWEI).toString(),
-  }
 }
 
 export interface NativePrice {

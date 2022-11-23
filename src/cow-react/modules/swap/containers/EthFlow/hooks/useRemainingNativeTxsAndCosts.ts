@@ -18,7 +18,7 @@ export function _estimateTxCost(gasPrice: ReturnType<typeof useGasPrices>, nativ
   }
   // TODO: should use DEFAULT_GAS_FEE from backup source
   // when/if implemented
-  const gas = gasPrice?.standard || DEFAULT_GAS_FEE
+  const gas = gasPrice?.average || DEFAULT_GAS_FEE
 
   const amount = BigNumber.from(gas).mul(MINIMUM_TXS).mul(AVG_APPROVE_COST_GWEI)
 
