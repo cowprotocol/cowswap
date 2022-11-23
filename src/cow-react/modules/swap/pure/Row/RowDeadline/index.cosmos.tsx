@@ -5,6 +5,7 @@ const defaultProps: RowDeadlineProps = {
   toggleSettings: console.log,
   isEthFlow: true,
   isExpertMode: true,
+  isWrapOrUnwrap: false,
   displayDeadline: Math.floor(MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60) + ' minutes',
   symbols: ['ETH', 'WETH'],
   userDeadline: 600,

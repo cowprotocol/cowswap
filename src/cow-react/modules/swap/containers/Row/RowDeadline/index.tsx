@@ -11,7 +11,7 @@ export function RowDeadline() {
   const toggleSettings = useToggleSettingsMenu()
   const isEthFlow = useIsEthFlow()
   const isExpertMode = useIsExpertMode()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const { native: nativeCurrency, isWrapOrUnwrap } = useDetectNativeToken()
 
   const props = useMemo(() => {
     const displayDeadline = Math.floor(userDeadline / 60) + ' minutes'
@@ -21,10 +21,11 @@ export function RowDeadline() {
       displayDeadline,
       isEthFlow,
       isExpertMode,
+      isWrapOrUnwrap,
       toggleSettings,
       showSettingOnClick: true,
     }
-  }, [isEthFlow, isExpertMode, nativeCurrency.symbol, toggleSettings, userDeadline])
+  }, [isEthFlow, isExpertMode, isWrapOrUnwrap, nativeCurrency.symbol, toggleSettings, userDeadline])
 
   return <RowDeadlineContent {...props} />
 }

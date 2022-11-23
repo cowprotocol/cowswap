@@ -36,6 +36,7 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
   toggleSettings: () => void
   isEthFlow: boolean
   isExpertMode: boolean
+  isWrapOrUnwrap: boolean
   symbols?: (string | undefined)[]
   displayDeadline: string
   styleProps?: RowStyleProps
@@ -43,9 +44,18 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
 }
 
 export function RowDeadlineContent(props: RowDeadlineProps) {
-  const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, isExpertMode, symbols, styleProps } = props
+  const {
+    showSettingOnClick,
+    toggleSettings,
+    displayDeadline,
+    isEthFlow,
+    isExpertMode,
+    isWrapOrUnwrap,
+    symbols,
+    styleProps,
+  } = props
 
-  if (!isEthFlow && !isExpertMode) {
+  if ((!isEthFlow && !isExpertMode) || isWrapOrUnwrap) {
     return null
   }
 
