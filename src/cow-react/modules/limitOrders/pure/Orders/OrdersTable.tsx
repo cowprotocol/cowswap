@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '../../pure/RateInfo'
+import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 
 const TableBox = styled.div`
   display: block;
@@ -40,11 +41,12 @@ const Rows = styled.div`
 
 export interface OrdersTableProps {
   orders: Order[]
+  balancesAndAllowances: BalancesAndAllowances
 }
 
 const pageSize = 10
 
-export function OrdersTable({ orders }: OrdersTableProps) {
+export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [isRateInversed, setIsRateInversed] = useState(false)
 
@@ -77,7 +79,13 @@ export function OrdersTable({ orders }: OrdersTableProps) {
         </Header>
         <Rows>
           {ordersPage.map((order) => (
-            <OrderRow key={order.id} order={order} RowElement={RowElement} isRateInversed={isRateInversed} />
+            <OrderRow
+              key={order.id}
+              order={order}
+              RowElement={RowElement}
+              isRateInversed={isRateInversed}
+              balancesAndAllowances={balancesAndAllowances}
+            />
           ))}
         </Rows>
       </TableBox>
