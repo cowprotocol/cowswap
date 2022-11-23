@@ -1,2 +1,0 @@
-(this["webpackJsonp@cowprotocol/cowswap"]=this["webpackJsonp@cowprotocol/cowswap"]||[]).push([[12],{1814:function(t,c,o){"use strict";o.r(c),o.d(c,"default",(function(){return r}));var n=o(2),e=o.p+"static/media/PrivacyPolicy.3905ff56.md",i=o(677),p=o(127),s=o(0),a=Object(n.default)(i.b).withConfig({componentId:"sc-pvja8n-0"})(["",""],p.b);function r(){return Object(s.jsx)(a,{contentFile:e})}}}]);
-//# sourceMappingURL=privacy_policy.dfba5b2e.chunk.js.map

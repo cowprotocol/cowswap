@@ -1,1 +1,0 @@
-{"version":3,"file":"Erc20Contract.d.ts","sourceRoot":"","sources":["../../src/contracts/Erc20Contract.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,KAAK,EAAE,MAAM,eAAe,CAAA;AACrC,OAAO,EAAE,gBAAgB,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAA;AAEpD,oBAAY,aAAa,GAAG,gBAAgB,CAAC,KAAK,CAAC,CAAA;AACnD,oBAAY,WAAW,GAAG,QAAQ,CAAC,KAAK,CAAC,CAAA"}

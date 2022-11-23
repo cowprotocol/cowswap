@@ -1,2 +1,0 @@
-(this["webpackJsonp@cowprotocol/cowswap"]=this["webpackJsonp@cowprotocol/cowswap"]||[]).push([[15],{1816:function(o,t,c){"use strict";c.r(t),c.d(t,"default",(function(){return i}));var n=c.p+"static/media/TermsAndConditions.b864fc80.md",s=c(677),e=c(0);function i(){return Object(e.jsx)(s.b,{contentFile:n})}}}]);
-//# sourceMappingURL=terms.69952ef9.chunk.js.map

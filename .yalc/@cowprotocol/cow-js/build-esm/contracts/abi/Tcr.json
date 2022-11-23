@@ -1,9 +1,0 @@
-[
-    {
-        "inputs": [{ "internalType": "uint256", "name": "_listId", "type": "uint256" }],
-        "name": "getTokens",
-        "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
-        "stateMutability": "view",
-        "type": "function"
-    }
-]
