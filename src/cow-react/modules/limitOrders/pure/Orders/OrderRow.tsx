@@ -3,6 +3,8 @@ import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
+import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
+import { RateInfo } from '../RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AlertTriangle } from 'react-feather'
@@ -130,6 +132,7 @@ export interface OrderRowProps {
   order: Order
   balancesAndAllowances: BalancesAndAllowances
   RowElement: StyledComponent<'div', DefaultTheme>
+  isRateInversed: boolean
 }
 
 function isEnoughAmount(
@@ -143,10 +146,17 @@ function isEnoughAmount(
   return sellAmount.lessThan(targetAmount)
 }
 
-export function OrderRow({ order, balancesAndAllowances, RowElement }: OrderRowProps) {
+export function OrderRow({ order, RowElement, balancesAndAllowances, isRateInversed }: OrderRowProps) {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-  const price = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
+  const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
+  const activeRateDisplay: ActiveRateDisplay = {
+    activeRate,
+    inputCurrency: order.inputToken,
+    outputCurrency: order.outputToken,
+    activeRateFiatAmount: null,
+    inversedActiveRateFiatAmount: null,
+  }
 
   const { balances, allowances } = balancesAndAllowances
   const balance = balances[order.inputToken.address]
@@ -166,10 +176,7 @@ export function OrderRow({ order, balancesAndAllowances, RowElement }: OrderRowP
       </div>
       <div>
         <RateValue>
-          1 {order.inputToken.symbol} ={' '}
-          <span title={price.toSignificant(18) + ' ' + order.outputToken.symbol}>
-            {formatSmart(price)} {order.outputToken.symbol}
-          </span>
+          <RateInfo noLabel={true} isInversed={isRateInversed} activeRateDisplay={activeRateDisplay} />
         </RateValue>
       </div>
       <div>
