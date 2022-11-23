@@ -18,6 +18,7 @@ export interface Colors extends ColorsUniswap {
   danger: Color
   pending: Color
   attention: Color
+  cancelled: Color
   border: Color
   border2: Color
   disabled: Color

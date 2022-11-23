@@ -5,19 +5,6 @@ import { formatSmart } from 'utils/format'
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 
-const statusColorMap: { [key in OrderStatus]: string } = {
-  [OrderStatus.PENDING]: '#badbe8',
-  [OrderStatus.PRESIGNATURE_PENDING]: '#badbe8',
-  [OrderStatus.EXPIRED]: '#eeaaaa',
-  [OrderStatus.FULFILLED]: '#d5eab3',
-  [OrderStatus.CANCELLED]: '#fcecb4',
-  // TODO: decide what color for each state
-  [OrderStatus.CREATING]: '#badbe8',
-  [OrderStatus.REFUNDED]: '#eeaaaa',
-  [OrderStatus.REFUNDING]: '#eeaaaa',
-  [OrderStatus.REJECTED]: '#eeaaaa',
-}
-
 export const TableBox = styled.div`
   display: block;
   border-radius: 16px;
@@ -27,7 +14,7 @@ export const TableBox = styled.div`
 export const Header = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 120px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
@@ -55,11 +42,56 @@ export const Row = styled(Header)`
 `
 
 export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
-  display: inline-block;
-  background: ${({ status, cancelling }) => (cancelling ? statusColorMap.cancelled : statusColorMap[status])};
-  color: ${({ theme }) => theme.text2};
+  /* [OrderStatus.PENDING]: '#badbe8', // = OPEN order state
+  [OrderStatus.PRESIGNATURE_PENDING]: '#badbe8',
+  [OrderStatus.EXPIRED]: '#eeaaaa',
+  [OrderStatus.FULFILLED]: '#d5eab3',
+  [OrderStatus.CANCELLED]: '#fcecb4',
+  // TODO: decide what color for each state
+  [OrderStatus.CREATING]: '#badbe8',
+  [OrderStatus.REFUNDED]: '#eeaaaa',
+  [OrderStatus.REFUNDING]: '#eeaaaa',
+  [OrderStatus.REJECTED]: '#eeaaaa', */
+
+  --statusColor: ${({ theme, status, cancelling }) =>
+    cancelling
+      ? theme.pending
+      : status === OrderStatus.PENDING // OPEN order
+      ? theme.pending
+      : status === OrderStatus.PRESIGNATURE_PENDING // SIGNING order
+      ? theme.pending
+      : status === OrderStatus.FULFILLED // FILLED order
+      ? theme.success
+      : status === OrderStatus.EXPIRED // EXPIRED order
+      ? theme.cancelled
+      : status === OrderStatus.CREATING // CREATING order
+      ? theme.pending
+      : theme.pending};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--statusColor);
   padding: 5px 10px;
   border-radius: 3px;
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 500;
+
+  &::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: block
+    left: 0;
+    top: 0;
+    background: var(--statusColor);
+    opacity: 0.10;
+    z-index: 1;
+    border-radius: 9px;
+  }
 `
 
 export const AmountItem = styled.div`
