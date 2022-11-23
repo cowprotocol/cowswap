@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { RefreshCw } from 'react-feather'
+import { Repeat } from 'react-feather'
 import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 
@@ -23,8 +23,8 @@ const Wrapper = styled.div`
 `
 
 const InvertIcon = styled.div`
-  background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.white};
+  background: ${({ theme }) => theme.grey1};
+  color: ${({ theme }) => theme.text1};
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -39,7 +39,7 @@ const InvertIcon = styled.div`
 export function InvertRateControl({ onClick }: { onClick(): void }) {
   return (
     <InvertIcon onClick={onClick}>
-      <RefreshCw size={12} />
+      <Repeat size={11} />
     </InvertIcon>
   )
 }

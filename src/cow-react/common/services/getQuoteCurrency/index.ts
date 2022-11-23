@@ -1,7 +1,6 @@
 import { SupportedChainId } from 'constants/chains'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { DAI, USDC_MAINNET, USDT } from 'constants/tokens'
-import { DAI_RINKEBY, USDT_RINKEBY, USDC_RINKEBY } from 'utils/rinkeby/constants'
 import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'
 import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from 'utils/gnosis_chain/constants'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
@@ -13,7 +12,7 @@ const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
     token.address.toLowerCase()
   ),
   [SupportedChainId.GOERLI]: [USDC_GOERLI, USDT_GOERLI, DAI_GOERLI].map((token) => token.address.toLowerCase()),
-  [SupportedChainId.RINKEBY]: [USDC_RINKEBY, USDT_RINKEBY, DAI_RINKEBY].map((token) => token.address.toLowerCase()),
+  [SupportedChainId.RINKEBY]: [],
 }
 
 /**
