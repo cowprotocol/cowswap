@@ -69,8 +69,5 @@ function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStat
 
 // TODO: move this somewhere else?
 function getIsEthFlowOrder(order: Order | undefined): boolean | undefined {
-  if (!order) {
-    return undefined
-  }
-  return order.inputToken.address === NATIVE_CURRENCY_BUY_ADDRESS
+  return order?.inputToken.address === NATIVE_CURRENCY_BUY_ADDRESS
 }
