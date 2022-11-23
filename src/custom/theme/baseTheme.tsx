@@ -436,7 +436,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     `}
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      bottom: 65px!important;
+      bottom: 64px!important;
     `}
   }
 

@@ -77,6 +77,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
     gap: 8px;
     font-size: 14px;
     font-weight: 500;
+    text-align: center;
 
     > svg:first-child {
       stroke: var(--warningColor);
