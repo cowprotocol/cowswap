@@ -1,4 +1,8 @@
-import { EthFlowStepper as Pure, SmartOrderStatus } from '@cow/modules/swap/pure/EthFlow/EthFlowStepper'
+import {
+  EthFlowStepper as Pure,
+  EthFlowStepperProps,
+  SmartOrderStatus,
+} from '@cow/modules/swap/pure/EthFlow/EthFlowStepper'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { Order } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
@@ -18,39 +22,30 @@ export function EthFlowStepper(props: Props) {
     return null
   }
 
-  const nativeTokenSymbol = native.symbol as string
-  const tokenLabel = storeOrder.outputToken.symbol as string
-
-  const order = {
-    // The creation hash is only available in the device where the order is placed
-    createOrderTx: storeOrder.orderCreationHash || '',
-    orderId: storeOrder.id,
-    state,
-    isExpired: storeOrder.status === 'expired',
-    // rejectedReason?: TODO: address when dealing with rejections
+  const stepperProps: EthFlowStepperProps = {
+    nativeTokenSymbol: native.symbol as string,
+    tokenLabel: storeOrder.outputToken.symbol as string,
+    order: {
+      // The creation hash is only available in the device where the order is placed
+      createOrderTx: storeOrder.orderCreationHash || '',
+      orderId: storeOrder.id,
+      state,
+      isExpired: storeOrder.status === 'expired',
+      // rejectedReason?: TODO: address when dealing with rejections
+    },
+    // TODO: fill these in when dealing with rejections
+    refund: {
+      // refundTx?: string
+      isRefunded: false,
+    },
+    // TODO: fill these in when dealing with cancellations
+    cancelation: {
+      // cancelationTx?: string
+      isCanceled: false,
+    },
   }
 
-  // TODO: fill these in when dealing with rejections
-  const refund = {
-    // refundTx?: string
-    isRefunded: false,
-  }
-
-  // TODO: fill these in when dealing with cancellations
-  const cancelation = {
-    // cancelationTx?: string
-    isCanceled: false,
-  }
-
-  return (
-    <Pure
-      nativeTokenSymbol={nativeTokenSymbol}
-      tokenLabel={tokenLabel}
-      order={order}
-      refund={refund}
-      cancelation={cancelation}
-    />
-  )
+  return <Pure {...stepperProps} />
 }
 
 function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStatus | undefined {
