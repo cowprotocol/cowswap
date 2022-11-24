@@ -9,7 +9,8 @@ import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
 
 import { generateOrder } from 'state/orders/mocks'
 
-import { isOrderUnfillable } from './utils'
+import { isOrderUnfillable, orderPriceAndCurrentPriceDiff } from './utils'
+import { Percent, Price } from '@uniswap/sdk-core'
 
 // Picked stable coins with same amount of decimals (6) for making easier to visually reason the amounts
 const sellToken = USDT
@@ -21,6 +22,29 @@ const ORDER = generateOrder({ owner: '0x...', sellToken, buyToken })
 // Price is 1 USDC per USDT == 1 USDT/USDC
 ORDER.sellAmount = '1000'
 ORDER.buyAmount = '1000'
+
+describe('orderPriceAndCurrentPriceDiff', () => {
+  const order = { ...ORDER, kind: OrderKind.SELL }
+
+  test('returns an obj with props orderPrice, currentPrice of class Price', () => {
+    const price: PriceInformation = { token: buyToken.address, amount: '1001' }
+    expect(orderPriceAndCurrentPriceDiff(order, price.amount as string)).toMatchObject({
+      orderPrice: expect.any(Price),
+      currentPrice: expect.any(Price),
+      percentageDifference: expect.any(Percent),
+    })
+  })
+  test('that the content of each object shows the expected significant digits', () => {
+    const price: PriceInformation = { token: buyToken.address, amount: '1011' }
+    const { orderPrice, currentPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(
+      order,
+      price.amount as string
+    )
+    expect(orderPrice.toSignificant()).toBe('1')
+    expect(currentPrice.toSignificant()).toBe('1.011')
+    expect(percentageDifference.toSignificant()).toBe('-1.1')
+  })
+})
 
 describe('isOrderUnfillable', () => {
   describe('sell order', () => {

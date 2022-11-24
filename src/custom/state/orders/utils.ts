@@ -1,5 +1,5 @@
 import { OrderKind } from '@cowprotocol/contracts'
-import { Price } from '@uniswap/sdk-core'
+import { Percent, Price, Token } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { PENDING_ORDERS_BUFFER } from 'constants/index'
@@ -197,8 +197,42 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
   }
 }
 
+type OrderWithMarketPriceConfigured = Omit<Order, 'currentMarketPriceAmount'> & { currentMarketPriceAmount: string }
+
+type OrderPriceAndCurrentPriceDiff = {
+  orderPrice: Price<Token, Token>
+  currentPrice: Price<Token, Token>
+  percentageDifference: Percent
+}
+
+export function orderPriceAndCurrentPriceDiff(order: Order, priceAmount?: string): OrderPriceAndCurrentPriceDiff {
+  // Build price object from stored order
+  const orderPrice = new Price(
+    order.inputToken,
+    order.outputToken,
+    order.sellAmount.toString(),
+    order.buyAmount.toString()
+  )
+
+  const currentMarketPriceAmount = priceAmount
+    ? priceAmount
+    : (order as OrderWithMarketPriceConfigured).currentMarketPriceAmount
+
+  // Build current price object from quoted price
+  // Note that depending on the order type, the amount will be used either as nominator or denominator
+  const currentPrice =
+    order.kind === OrderKind.SELL
+      ? new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), currentMarketPriceAmount)
+      : new Price(order.inputToken, order.outputToken, currentMarketPriceAmount, order.buyAmount.toString())
+
+  // Calculate the percentage of the current price in regards to the order price
+  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(currentPrice.divide(orderPrice))
+
+  return { orderPrice, currentPrice, percentageDifference }
+}
+
 /**
- * Based on the order and current price, returns `true` if order is out of the market.
+ * Based on the order and current price, returns true if order is out of the market.
  * Out of the market means the price difference between original and current to be positive
  * and greater than OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE.
  * Negative difference is good for the user.
@@ -209,23 +243,10 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
  * @param price
  */
 export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>): boolean {
-  // Build price object from stored order
-  const orderPrice = new Price(
-    order.inputToken,
-    order.outputToken,
-    order.sellAmount.toString(),
-    order.buyAmount.toString()
+  const { orderPrice, currentPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(
+    order,
+    price.amount as string
   )
-
-  // Build current price object from quoted price
-  // Note that depending on the order type, the amount will be used either as nominator or denominator
-  const currentPrice =
-    order.kind === OrderKind.SELL
-      ? new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), price.amount as string)
-      : new Price(order.inputToken, order.outputToken, price.amount as string, order.buyAmount.toString())
-
-  // Calculate the percentage of the current price in regards to the order price
-  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(currentPrice.divide(orderPrice))
 
   console.debug(
     `[UnfillableOrdersUpdater::isOrderUnfillable] ${order.kind} [${order.id.slice(0, 8)}]:`,

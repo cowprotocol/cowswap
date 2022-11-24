@@ -23,11 +23,16 @@ import {
   GreenCheckIcon,
   StyledExternalLink,
   StyledCoWLink,
+  UnfillableMsgWrapper,
+  SpanOrangeText,
+  TextAmount,
 } from './styled'
 import { SupportedChainId } from 'constants/chains'
 import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 import { AMMsLogo } from 'components/AMMsLogo'
 import { getExplorerOrderLink } from 'utils/explorer'
+import { orderPriceAndCurrentPriceDiff } from 'state/orders/utils'
+import { Order } from 'state/orders/actions'
 
 const DOC_LINK_PHENOM_COW = 'https://docs.cow.fi/overview/coincidence-of-wants'
 
@@ -37,10 +42,31 @@ interface ExecutionStateProps extends OrderProgressBarProps {
   isSmartContractWallet: boolean
 }
 
+function amountsForMarketPriceFormatted(
+  order: Order
+): { percentageDiff: string; orderPrice: string; currentPrice: string; inputTokenSymbol: string } | null {
+  if (!order?.isUnfillable || !order.currentMarketPriceAmount) return null
+
+  const { currentPrice, orderPrice, percentageDifference } = orderPriceAndCurrentPriceDiff(order)
+
+  return {
+    percentageDiff: percentageDifference.toFixed(2),
+    orderPrice: `${orderPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+    currentPrice: `${currentPrice.toSignificant(10)} ${order.outputToken.symbol}`,
+    inputTokenSymbol: order.inputToken.symbol || '',
+  }
+}
+
+function dashWhenNoValue(value: string | undefined, params?: { prefix?: string; suffix?: string }) {
+  if (!value) return '-'
+  return `${params?.prefix || ''}${value}${params?.suffix || ''}`
+}
+
 function ContentByExecutionState(props: ExecutionStateProps) {
   const { percentage, executionState, activityDerivedState, chainId, isSmartContractWallet } = props
-  const { order, isCancellable } = activityDerivedState
-  const textAllowToCancel = !isSmartContractWallet && ' or if you cancel'
+  const { order, isCancellable, isOrder } = activityDerivedState
+  const textOfNoChargeTx = isSmartContractWallet ? 'expires' : 'is reverted or if you cancel'
+  const amountsForMarketPriceDiff = (isOrder && amountsForMarketPriceFormatted(order as Order)) || null
 
   const progressAndMessage = () => {
     switch (executionState) {
@@ -145,26 +171,58 @@ function ContentByExecutionState(props: ExecutionStateProps) {
               <StatusWrapper>
                 <OrangeClockIcon size={16} />
                 <StatusMsg>
-                  Order Status: <strong>Your limit price is out of market.</strong>{' '}
+                  Order Status:{' '}
+                  <strong>
+                    Your limit price is out of market by{' '}
+                    <SpanOrangeText>
+                      {dashWhenNoValue(amountsForMarketPriceDiff?.percentageDiff, { suffix: '%' })}
+                    </SpanOrangeText>
+                    .
+                  </strong>{' '}
                   {isCancellable ? (
                     <>
-                      {' '}
+                      <br />
                       You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
                     </>
                   ) : null}
                 </StatusMsg>
               </StatusWrapper>
               <StatusGraph>
-                <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
-                {/*<p>
-                  Current price: <strong>$1200.56</strong>
-                </p>
-                <p>
-                  Your price: $1300.55 (<span>+8%</span>)
-                </p>*/}
-                <p>
-                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted{textAllowToCancel}.
-                </p>
+                <UnfillableMsgWrapper>
+                  <div>
+                    <p>
+                      Current market price per{' '}
+                      <strong>
+                        {dashWhenNoValue(amountsForMarketPriceDiff?.inputTokenSymbol, { prefix: '1 ', suffix: ':' })}
+                      </strong>{' '}
+                      <TextAmount>{dashWhenNoValue(amountsForMarketPriceDiff?.currentPrice)}</TextAmount>
+                    </p>
+                    <p>
+                      Your order limit price per{' '}
+                      <strong>
+                        {dashWhenNoValue(amountsForMarketPriceDiff?.inputTokenSymbol, { prefix: '1 ', suffix: ':' })}
+                      </strong>{' '}
+                      <TextAmount>
+                        {dashWhenNoValue(amountsForMarketPriceDiff?.orderPrice)}
+                        {amountsForMarketPriceDiff ? (
+                          <>
+                            (
+                            <SpanOrangeText>
+                              {dashWhenNoValue(amountsForMarketPriceDiff?.percentageDiff, { prefix: '-', suffix: '%' })}
+                            </SpanOrangeText>
+                            )
+                          </>
+                        ) : null}
+                      </TextAmount>
+                    </p>
+                  </div>
+                  <div>
+                    <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
+                    <p>
+                      <strong>CoW Swap</strong> won&apos;t charge you if the trade {textOfNoChargeTx}.
+                    </p>
+                  </div>
+                </UnfillableMsgWrapper>
               </StatusGraph>
             </StatusMsgContainer>
           </>
@@ -197,7 +255,7 @@ function ContentByExecutionState(props: ExecutionStateProps) {
               <StatusGraph>
                 <img src={cowMeditatingGraph} alt="Cow meditating ..." className="meditating-cow" />
                 <p>
-                  <strong>CoW Swap</strong> won&apos;t charge you if the trade is reverted{textAllowToCancel}.
+                  <strong>CoW Swap</strong> won&apos;t charge you if the trade {textOfNoChargeTx}.
                 </p>
               </StatusGraph>
             </StatusMsgContainer>

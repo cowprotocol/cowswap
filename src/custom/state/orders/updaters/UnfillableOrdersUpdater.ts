@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
-
 import { useWeb3React } from '@web3-react/core'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
 import { Order } from 'state/orders/actions'
@@ -81,8 +80,16 @@ export function UnfillableOrdersUpdater(): null {
       const isUnfillable = isOrderUnfillable(order, price)
 
       // Only trigger state update if flag changed
-      if (order.isUnfillable !== isUnfillable) {
-        setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
+      if (
+        order.isUnfillable !== isUnfillable ||
+        (order.isUnfillable && order.currentMarketPriceAmount !== price.amount)
+      ) {
+        setIsOrderUnfillable({
+          chainId,
+          id: order.id,
+          isUnfillable,
+          currentMarketPriceAmount: price.amount as string,
+        })
 
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
         if (typeof order.isUnfillable !== 'undefined') {

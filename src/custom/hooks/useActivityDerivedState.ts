@@ -73,7 +73,7 @@ function getActivityDerivedState(props: {
     isCancelling: status === ActivityStatus.CANCELLING,
     isCancelled: status === ActivityStatus.CANCELLED,
     isCancellable,
-    isUnfillable: isCancellable && (activity as Order).isUnfillable,
+    isUnfillable: (activity as Order).isUnfillable,
 
     // Convenient casting
     order,

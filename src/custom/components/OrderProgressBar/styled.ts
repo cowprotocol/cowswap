@@ -4,6 +4,40 @@ import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
 
+export const TextAmount = styled.span`
+  display: block;
+  font-weight: bold;
+`
+export const UnfillableMsgWrapper = styled.div`
+  display: inline-block;
+  width: 100%;
+  div:nth-child(1) {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    padding-bottom: 1rem;
+    span {
+      padding-top: 0.5rem;
+    }
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      display: inline-block;
+      text-align: center;
+      line-height: normal;
+      span {
+        padding-top: 0.2rem;
+      }
+    `};
+  }
+  div:nth-child(2) {
+    justify-content: center;
+    display: flex;
+    gap: 0.6rem;
+    img {
+      margin: 0;
+    }
+  }
+`
+
 export const ProgressBarWrapper = animated(styled.div`
   display: flex;
   flex-direction: column;
@@ -168,6 +202,10 @@ export const StatusMsgContainer = styled.div`
   `};
 `
 
+export const SpanOrangeText = styled.span`
+  color: ${({ theme }) => theme.orange};
+`
+
 export const StatusGraph = styled.div`
   display: flex;
   align-items: center;
@@ -181,10 +219,6 @@ export const StatusGraph = styled.div`
 
   .meditating-cow {
     margin: 0 2rem;
-  }
-
-  span {
-    color: ${({ theme }) => theme.orange};
   }
 
   p {
@@ -204,6 +238,7 @@ export const StatusWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  align-self: start;
 `
 
 export const StatusMsg = styled.p`
