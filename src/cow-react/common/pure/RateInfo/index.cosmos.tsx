@@ -1,6 +1,6 @@
 import { RateInfoParams, RateInfo } from './index'
 import { DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import styled from 'styled-components/macro'
@@ -10,16 +10,15 @@ const outputCurrency = DAI_GOERLI
 const GNO_GOERLI = GNO[SupportedChainId.GOERLI]
 const COW_GOERLI = COW[SupportedChainId.GOERLI]
 
-const activeRateDisplay = {
+const rateInfoParams = {
   chainId: 5,
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
-  activeRate: new Fraction(50000000, 20000000),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
   inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
-function buildActiveRateDisplay(
+function buildRateInfoParams(
   inputToken: Token,
   outputToken: Token,
   inputAmount: number,
@@ -27,13 +26,11 @@ function buildActiveRateDisplay(
 ): RateInfoParams {
   const inputCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, inputAmount * 10 ** inputToken.decimals)
   const outputCurrencyAmount = CurrencyAmount.fromRawAmount(outputToken, outputAmount * 10 ** outputToken.decimals)
-  const activeRate = new Fraction(outputCurrencyAmount.toExact(), inputCurrencyAmount.toExact())
 
   return {
     chainId: 5,
     inputCurrencyAmount,
     outputCurrencyAmount,
-    activeRate,
     activeRateFiatAmount: null,
     inversedActiveRateFiatAmount: null,
   }
@@ -56,17 +53,17 @@ function SmartQuoteSelection() {
     {
       title: 'When one of tokens is stable-coin, then another token is quote',
       examples: [
-        buildActiveRateDisplay(DAI_GOERLI, GNO_GOERLI, 2000, 100),
-        buildActiveRateDisplay(GNO_GOERLI, DAI_GOERLI, 2000, 100),
-        buildActiveRateDisplay(USDT_GOERLI, WETH_GOERLI, 6704, 12),
-        buildActiveRateDisplay(WETH_GOERLI, USDT_GOERLI, 100, 6433),
+        buildRateInfoParams(DAI_GOERLI, GNO_GOERLI, 2000, 100),
+        buildRateInfoParams(GNO_GOERLI, DAI_GOERLI, 2000, 100),
+        buildRateInfoParams(USDT_GOERLI, WETH_GOERLI, 6704, 12),
+        buildRateInfoParams(WETH_GOERLI, USDT_GOERLI, 100, 6433),
       ],
     },
     {
       title: 'For other cases the quote is a token that has the smallest amount',
       examples: [
-        buildActiveRateDisplay(COW_GOERLI, GNO_GOERLI, 12, 652),
-        buildActiveRateDisplay(GNO_GOERLI, COW_GOERLI, 2, 4220),
+        buildRateInfoParams(COW_GOERLI, GNO_GOERLI, 12, 652),
+        buildRateInfoParams(GNO_GOERLI, COW_GOERLI, 2, 4220),
       ],
     },
   ]
@@ -90,7 +87,7 @@ function SmartQuoteSelection() {
                     {' -> '}
                     {outputCurrencyAmount?.toExact()} {outputCurrencyAmount?.currency.symbol}{' '}
                   </p>
-                  <RateInfo noLabel={true} activeRateDisplay={rate} />
+                  <RateInfo noLabel={true} rateInfoParams={rate} />
                 </Box>
               )
             })}
@@ -102,7 +99,7 @@ function SmartQuoteSelection() {
 }
 
 const Fixtures = {
-  default: <RateInfo activeRateDisplay={activeRateDisplay} />,
+  default: <RateInfo rateInfoParams={rateInfoParams} />,
   SmartQuoteSelection: <SmartQuoteSelection />,
 }
 

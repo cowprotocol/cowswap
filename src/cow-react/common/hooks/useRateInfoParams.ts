@@ -1,17 +1,22 @@
-import { useAtomValue } from 'jotai/utils'
-import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
-export function useActiveRateDisplay(): RateInfoParams {
+export function useRateInfoParams(
+  inputCurrencyAmount: CurrencyAmount<Currency> | null,
+  outputCurrencyAmount: CurrencyAmount<Currency> | null
+): RateInfoParams {
   const { chainId } = useWeb3React()
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
-  const { activeRate } = useAtomValue(limitRateAtom)
+
+  const activeRate = useMemo(() => {
+    if (!outputCurrencyAmount?.quotient || !inputCurrencyAmount?.quotient) return null
+
+    return new Fraction(outputCurrencyAmount.quotient, inputCurrencyAmount.quotient)
+  }, [outputCurrencyAmount?.quotient, inputCurrencyAmount?.quotient])
 
   const parseRate = useCallback(
     (invert: boolean) => {
@@ -34,7 +39,6 @@ export function useActiveRateDisplay(): RateInfoParams {
     chainId,
     inputCurrencyAmount,
     outputCurrencyAmount,
-    activeRate,
     activeRateFiatAmount,
     inversedActiveRateFiatAmount,
   })

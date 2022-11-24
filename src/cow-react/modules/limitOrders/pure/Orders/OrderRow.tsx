@@ -1,7 +1,7 @@
 import { formatSmart } from 'utils/format'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
@@ -150,10 +150,9 @@ function isEnoughAmount(
 export function OrderRow({ chainId, order, RowElement, balancesAndAllowances, isRateInversed }: OrderRowProps) {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-  const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-  const activeRateDisplay: RateInfoParams = {
+
+  const rateInfoParams: RateInfoParams = {
     chainId,
-    activeRate,
     inputCurrencyAmount: sellAmount,
     outputCurrencyAmount: buyAmount,
     activeRateFiatAmount: null,
@@ -178,7 +177,7 @@ export function OrderRow({ chainId, order, RowElement, balancesAndAllowances, is
       </div>
       <div>
         <RateValue>
-          <RateInfo noLabel={true} isInversed={isRateInversed} activeRateDisplay={activeRateDisplay} />
+          <RateInfo noLabel={true} isInversed={isRateInversed} rateInfoParams={rateInfoParams} />
         </RateValue>
       </div>
       <div>

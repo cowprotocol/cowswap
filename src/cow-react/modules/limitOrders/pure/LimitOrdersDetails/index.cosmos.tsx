@@ -1,4 +1,4 @@
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { OrderKind } from 'state/orders/actions'
@@ -34,17 +34,16 @@ const tradeContext: TradeFlowContext = {
   isGnosisSafeWallet: false,
 }
 
-const activeRateDisplay = {
+const rateInfoParams = {
   chainId: 5,
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
-  activeRate: new Fraction(50000000, 20000000),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
   inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
 const Fixtures = {
-  default: <LimitOrdersDetails activeRateDisplay={activeRateDisplay} tradeContext={tradeContext} />,
+  default: <LimitOrdersDetails rateInfoParams={rateInfoParams} tradeContext={tradeContext} />,
 }
 
 export default Fixtures

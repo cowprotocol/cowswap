@@ -6,7 +6,7 @@ import { isAddress, shortenAddress } from 'utils'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export interface LimitOrdersDetailsProps {
-  activeRateDisplay: RateInfoParams
+  rateInfoParams: RateInfoParams
   tradeContext: TradeFlowContext
 }
 
@@ -26,7 +26,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   return (
     <div>
       <styledEl.DetailsRow>
-        <styledEl.StyledRateInfo activeRateDisplay={props.activeRateDisplay} />
+        <styledEl.StyledRateInfo rateInfoParams={props.rateInfoParams} />
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>

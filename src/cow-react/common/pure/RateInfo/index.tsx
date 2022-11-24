@@ -1,4 +1,4 @@
-import { formatSmart, formatSmartAmount } from 'utils/format'
+import { formatSmart } from 'utils/format'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
@@ -12,24 +12,38 @@ export interface RateInfoParams {
   chainId: SupportedChainId | undefined
   inputCurrencyAmount: CurrencyAmount<Currency> | null
   outputCurrencyAmount: CurrencyAmount<Currency> | null
-  activeRate: Fraction | null
   activeRateFiatAmount: CurrencyAmount<Currency> | null
   inversedActiveRateFiatAmount: CurrencyAmount<Currency> | null
 }
 
 export interface RateInfoProps {
   className?: string
+  label?: string
+  stylized?: boolean
   noLabel?: boolean
   isInversed?: boolean
-  activeRateDisplay: RateInfoParams
+  rateInfoParams: RateInfoParams
 }
 
-const Wrapper = styled.div`
+const LightText = styled.span`
+  font-weight: 400;
+`
+
+const Wrapper = styled.div<{ stylized: boolean }>`
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: center;
   font-size: inherit;
+  font-weight: 400;
+
+  :hover > div:first-child span {
+    opacity: 1;
+  }
+
+  ${LightText} {
+    opacity: ${({ stylized }) => (stylized ? '0.7' : '1')};
+  }
 `
 
 const InvertIcon = styled.div`
@@ -54,15 +68,22 @@ export function InvertRateControl({ onClick }: { onClick(): void }) {
   )
 }
 
-export function RateInfo({ activeRateDisplay, className, isInversed = false, noLabel = false }: RateInfoProps) {
-  const {
-    chainId,
-    inputCurrencyAmount,
-    outputCurrencyAmount,
-    activeRate,
-    activeRateFiatAmount,
-    inversedActiveRateFiatAmount,
-  } = activeRateDisplay
+export function RateInfo({
+  rateInfoParams,
+  className,
+  label = 'Limit price',
+  stylized = false,
+  isInversed = false,
+  noLabel = false,
+}: RateInfoProps) {
+  const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, inversedActiveRateFiatAmount } =
+    rateInfoParams
+
+  const activeRate = useMemo(() => {
+    return outputCurrencyAmount?.quotient && inputCurrencyAmount?.quotient
+      ? new Fraction(outputCurrencyAmount.quotient, inputCurrencyAmount.quotient)
+      : null
+  }, [outputCurrencyAmount?.quotient, inputCurrencyAmount?.quotient])
 
   const inputCurrency = inputCurrencyAmount?.currency
   const outputCurrency = outputCurrencyAmount?.currency
@@ -113,18 +134,21 @@ export function RateInfo({ activeRateDisplay, className, isInversed = false, noL
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 
   return (
-    <Wrapper className={className}>
+    <Wrapper stylized={stylized} className={className}>
       {!noLabel && (
         <div>
-          <Trans>Limit price</Trans>
-          <InvertRateControl onClick={() => setCurrentIsInversed(!currentIsInversed)} />
+          <LightText>
+            <Trans>{label}</Trans>
+            <InvertRateControl onClick={() => setCurrentIsInversed(!currentIsInversed)} />
+          </LightText>
         </div>
       )}
       <div>
         <span title={currentActiveRate.toSignificant(18) + ' ' + rateInputCurrency.symbol}>
-          1 {rateInputCurrency.symbol} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
+          <LightText>1 {rateInputCurrency.symbol}</LightText> = {formatSmart(currentActiveRate)}{' '}
+          {rateOutputCurrency.symbol}
         </span>{' '}
-        {!!fiatAmount && <span>(≈${formatSmartAmount(fiatAmount)})</span>}
+        <LightText>{!!fiatAmount && <span>(≈${formatSmart(fiatAmount, 2)})</span>}</LightText>
       </div>
     </Wrapper>
   )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
 
@@ -157,11 +157,10 @@ export function ActivityDetails(props: {
 
   // Order Summary default object
   let orderSummary: OrderSummaryType
-  let activeRateDisplay: RateInfoParams = {
+  let rateInfoParams: RateInfoParams = {
     chainId,
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
-    activeRate: null,
     activeRateFiatAmount: null,
     inversedActiveRateFiatAmount: null,
   }
@@ -193,15 +192,10 @@ export function ActivityDetails(props: {
       ? CurrencyAmount.fromRawAmount(outputToken, executedBuyAmount?.toString() || '0')
       : outputAmount
 
-    const activeRate = isOrderFulfilled
-      ? new Fraction(executedBuyAmount?.toString() || '0', executedSellAmountBeforeFees?.toString() || '0')
-      : new Fraction(buyAmount.toString(), sellAmount.toString())
-
-    activeRateDisplay = {
+    rateInfoParams = {
       chainId,
       inputCurrencyAmount: rateInputCurrencyAmount,
       outputCurrencyAmount: rateOutputCurrencyAmount,
-      activeRate,
       activeRateFiatAmount: null,
       inversedActiveRateFiatAmount: null,
     }
@@ -270,7 +264,7 @@ export function ActivityDetails(props: {
             <SummaryInnerRow>
               <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
               <i>
-                <RateInfo noLabel={true} activeRateDisplay={activeRateDisplay} />
+                <RateInfo noLabel={true} rateInfoParams={rateInfoParams} />
               </i>
             </SummaryInnerRow>
             <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
