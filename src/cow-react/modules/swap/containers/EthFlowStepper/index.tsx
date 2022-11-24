@@ -6,6 +6,7 @@ import {
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { Order } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { safeTokenName } from '@cowprotocol/cow-js'
 
 type EthFlowStepperProps = {
   order: Order | undefined
@@ -24,7 +25,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
 
   const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
-    tokenLabel: order.outputToken.symbol as string,
+    tokenLabel: safeTokenName(order.outputToken),
     order: {
       // The creation hash is only available in the device where the order is placed
       createOrderTx: order.orderCreationHash || '',
