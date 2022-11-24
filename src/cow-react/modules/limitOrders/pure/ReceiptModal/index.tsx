@@ -1,7 +1,7 @@
 import { OrderKind } from 'state/orders/actions'
 import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
-import { StatusItem, RateValue } from '../Orders/OrdersTable.styled'
+import { StatusItem } from '../Orders/OrdersTable.styled'
 import { orderStatusTitleMap } from '../Orders/OrdersTable'
 import { CloseIcon } from 'theme'
 import { useMemo } from 'react'
@@ -11,11 +11,13 @@ import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { ExternalLink } from 'theme'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getEtherscanLink } from 'utils'
-import moment from 'moment'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { FeeField } from './FeeField'
 import { StyledScrollarea } from 'components/SearchModal/CommonBases/CommonBasesMod'
 import { FieldLabel } from './FieldLabel'
+import { PriceField } from './PriceField'
+import { DateField } from './DateField'
+import { FilledField } from './FilledField'
 
 interface ReceiptProps {
   isOpen: boolean
@@ -52,14 +54,6 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
     return new Fraction(order.executedBuyAmount.toNumber(), order.executedSellAmount.toNumber())
   }, [order])
 
-  const filledPercentage = useMemo(() => {
-    if (!order || !order.filledPercentage) {
-      return null
-    }
-
-    return order.filledPercentage.times('100').decimalPlaces(2).toString()
-  }, [order])
-
   if (!order || !chainId) {
     return null
   }
@@ -69,11 +63,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const limitPrice = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-
   const activityUrl = getEtherscanLink(chainId, order.id, 'transaction')
-
-  const createdDate = moment(order.creationTime).format('MMM D YYYY, h:mm a')
-  const expiryDate = moment(order.expirationDate).format('MMM D YYYY, h:mm a')
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -100,51 +90,17 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
 
             <styledEl.Field>
               <FieldLabel label="Limit price" tooltip={Tooltip.LIMIT_PRICE} />
-
-              <styledEl.Value>
-                <RateValue>
-                  1 {order.inputToken.symbol} ={' '}
-                  <span title={limitPrice.toSignificant(18) + ' ' + order.outputToken.symbol}>
-                    {formatSmart(limitPrice)} {order.outputToken.symbol}
-                  </span>
-                </RateValue>
-              </styledEl.Value>
+              <PriceField order={order} price={limitPrice} />
             </styledEl.Field>
 
-            {!!executionPrice && (
-              <styledEl.Field>
-                <FieldLabel label="Execution price" tooltip={Tooltip.EXECUTION_PRICE} />
-
-                <styledEl.Value>
-                  <RateValue>
-                    1 {order.inputToken.symbol} ={' '}
-                    <span title={executionPrice?.toSignificant(18) + ' ' + order.outputToken.symbol}>
-                      {executionPrice ? formatSmart(executionPrice) : 0} {order.outputToken.symbol}
-                    </span>
-                  </RateValue>
-                </styledEl.Value>
-              </styledEl.Field>
-            )}
+            <styledEl.Field>
+              <FieldLabel label="Execution price" tooltip={Tooltip.EXECUTION_PRICE} />
+              <PriceField order={order} price={executionPrice} />
+            </styledEl.Field>
 
             <styledEl.Field>
               <FieldLabel label="Filled" tooltip={Tooltip.FILLED} />
-
-              <styledEl.Value>
-                <styledEl.InlineWrapper>
-                  <styledEl.Progress active={filledPercentage || 0} />
-                  <span>{filledPercentage}%</span>
-                </styledEl.InlineWrapper>
-
-                <styledEl.InlineWrapper>
-                  <strong>
-                    {formatSmart(sellAmount)} {order.inputToken.symbol}
-                  </strong>
-                  <span style={{ margin: '0 5px' }}>sold for</span>
-                  <strong>
-                    {formatSmart(buyAmount)} {order.outputToken.symbol}
-                  </strong>
-                </styledEl.InlineWrapper>
-              </styledEl.Value>
+              <FilledField order={order} sellAmount={sellAmount} buyAmount={buyAmount} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -159,30 +115,17 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
 
             <styledEl.Field>
               <FieldLabel label="Fee" tooltip={Tooltip.FEE} />
-
               <FeeField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>
               <FieldLabel label="Ceated" tooltip={Tooltip.CREATED} />
-
-              <styledEl.Value>
-                <styledEl.InlineWrapper>
-                  <strong>{moment(order.creationTime).fromNow()}</strong>
-                  <span>({createdDate})</span>
-                </styledEl.InlineWrapper>
-              </styledEl.Value>
+              <DateField date={order.creationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
               <FieldLabel label="Expiry" tooltip={Tooltip.EXPIRY} />
-
-              <styledEl.Value>
-                <styledEl.InlineWrapper>
-                  <strong>{moment(order.expirationDate).fromNow()}</strong>
-                  <span>({expiryDate})</span>
-                </styledEl.InlineWrapper>
-              </styledEl.Value>
+              <DateField date={order.creationTime} />
             </styledEl.Field>
 
             <styledEl.Field>

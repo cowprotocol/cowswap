@@ -16,7 +16,7 @@ export interface ParsedOrder extends Order {
   executedBuyAmount?: BigNumber
   executedSellAmount?: BigNumber
   surplusFee?: string
-  expirationDate?: Date
+  expirationTime?: Date
   partiallyFilled?: boolean
   fullyFilled?: boolean
   filledAmount?: BigNumber
@@ -39,12 +39,12 @@ export function useLimitOrdersList(): LimitOrdersList {
     const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)
     const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(order)
     const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
-    const expirationDate = new Date(Number(order.validTo) * 1000)
+    const expirationTime = new Date(Number(order.validTo) * 1000)
     const executedFeeAmount = new BigNumber(order.apiAdditionalInfo?.executedFeeAmount || 0)
 
     return {
       ...order,
-      expirationDate,
+      expirationTime,
       executedBuyAmount,
       executedSellAmount,
       filledAmount,
