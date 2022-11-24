@@ -278,15 +278,28 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   padding: 0;
   width: auto;
   font-weight: 400;
-  transition: all 0.15s ease-in;
+  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
   background: transparent;
   color: ${({ theme, color }) => color || theme.text1};
   white-space: nowrap;
   position: relative;
+  opacity: 0.7;
 
   &:hover {
     background: transparent;
     text-decoration: underline;
+    opacity: 1;
+  }
+
+  > svg {
+    width: 16px;
+    height: 16px;
+    max-width: 100%;
+    max-height: 100%;
+
+    > path {
+      fill: ${({ theme }) => theme.text1};
+    }
   }
 
   ${({ theme, outlined, color }) =>

@@ -30,6 +30,8 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { Link } from 'react-router-dom'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
+import SVG from 'react-inlinesvg'
+import EtherscanImage from 'assets/cow-swap/etherscan-icon.svg'
 
 type DataRowParams = {
   tokenData: Token
@@ -186,7 +188,9 @@ const DataRow = ({
 
       <Cell>
         <ExtLink href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
-          <TableButton>Contract</TableButton>
+          <TableButton>
+            <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
+          </TableButton>
         </ExtLink>
         {displayApproveContent}
       </Cell>
