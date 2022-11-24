@@ -8,7 +8,6 @@ import { useMemo } from 'react'
 import { CurrencyField } from './CurrencyField'
 import { formatSmart } from 'utils/format'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
-import { InfoIcon } from 'components/InfoIcon'
 import { ExternalLink } from 'theme'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getEtherscanLink } from 'utils'
@@ -16,12 +15,26 @@ import moment from 'moment'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { FeeField } from './FeeField'
 import { StyledScrollarea } from 'components/SearchModal/CommonBases/CommonBasesMod'
+import { FieldLabel } from './FieldLabel'
 
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
   chainId: SupportedChainId
   onDismiss: () => void
+}
+
+enum Tooltip {
+  STATUS = 'Status info TODO',
+  LIMIT_PRICE = 'Limit price TODO',
+  EXECUTION_PRICE = 'Execution price TODO',
+  FILLED = 'Filled TODO',
+  SURPLUS = 'Order Surplus TODO',
+  FEE = 'Fee TODO',
+  CREATED = 'Created date TODO',
+  EXPIRY = 'Expiry date TODO',
+  ORDER_TYPE = 'Order type TODO',
+  ORDER_ID = 'Order id TODO',
 }
 
 export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps) {
@@ -76,10 +89,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
             <CurrencyField amount={formatSmart(buyAmount)} token={order.outputToken} label={outputLabel} />
 
             <styledEl.Field border="rounded-top">
-              <styledEl.Label>
-                <styledEl.LabelText>Status</styledEl.LabelText>
-                <InfoIcon content={'Status info TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Status" tooltip={Tooltip.STATUS} />
 
               <styledEl.Value>
                 <StatusItem cancelling={!!order.isCancelling} status={order.status}>
@@ -89,10 +99,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
             </styledEl.Field>
 
             <styledEl.Field>
-              <styledEl.Label>
-                <styledEl.LabelText>Limit price</styledEl.LabelText>
-                <InfoIcon content={'Limit price TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Limit price" tooltip={Tooltip.LIMIT_PRICE} />
 
               <styledEl.Value>
                 <RateValue>
@@ -106,10 +113,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
 
             {!!executionPrice && (
               <styledEl.Field>
-                <styledEl.Label>
-                  <styledEl.LabelText>Execution price</styledEl.LabelText>
-                  <InfoIcon content={'Execution price TODO'} />
-                </styledEl.Label>
+                <FieldLabel label="Execution price" tooltip={Tooltip.EXECUTION_PRICE} />
 
                 <styledEl.Value>
                   <RateValue>
@@ -123,10 +127,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
             )}
 
             <styledEl.Field>
-              <styledEl.Label>
-                <styledEl.LabelText>Filled</styledEl.LabelText>
-                <InfoIcon content={'Filled TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Filled" tooltip={Tooltip.FILLED} />
 
               <styledEl.Value>
                 <styledEl.InlineWrapper>
@@ -147,10 +148,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
             </styledEl.Field>
 
             <styledEl.Field>
-              <styledEl.Label>
-                <styledEl.LabelText>Order surplus</styledEl.LabelText>
-                <InfoIcon content={'Order surplus TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Order surplus" tooltip={Tooltip.SURPLUS} />
 
               <styledEl.Value>
                 <strong>
@@ -160,19 +158,13 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
             </styledEl.Field>
 
             <styledEl.Field>
-              <styledEl.Label>
-                <styledEl.LabelText>Fee</styledEl.LabelText>
-                <InfoIcon content={'Fee TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Fee" tooltip={Tooltip.FEE} />
 
               <FeeField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <styledEl.Label>
-                <styledEl.LabelText>Created</styledEl.LabelText>
-                <InfoIcon content={'Created TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Ceated" tooltip={Tooltip.CREATED} />
 
               <styledEl.Value>
                 <styledEl.InlineWrapper>
@@ -183,10 +175,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
             </styledEl.Field>
 
             <styledEl.Field>
-              <styledEl.Label>
-                <styledEl.LabelText>Expiry</styledEl.LabelText>
-                <InfoIcon content={'Expiry TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Expiry" tooltip={Tooltip.EXPIRY} />
 
               <styledEl.Value>
                 <styledEl.InlineWrapper>
@@ -197,10 +186,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
             </styledEl.Field>
 
             <styledEl.Field>
-              <styledEl.Label>
-                <styledEl.LabelText>Order type</styledEl.LabelText>
-                <InfoIcon content={'Order type TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Order type" tooltip={Tooltip.ORDER_TYPE} />
 
               <styledEl.Value>
                 <strong>Fill or kil</strong>
@@ -208,10 +194,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
             </styledEl.Field>
 
             <styledEl.Field border="rounded-bottom">
-              <styledEl.Label>
-                <styledEl.LabelText>Order ID</styledEl.LabelText>
-                <InfoIcon content={'Order ID TODO'} />
-              </styledEl.Label>
+              <FieldLabel label="Order ID" tooltip={Tooltip.ORDER_ID} />
 
               <styledEl.Value>
                 <ExternalLink href={activityUrl || ''}>
