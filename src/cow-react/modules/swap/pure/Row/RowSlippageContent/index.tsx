@@ -50,6 +50,8 @@ export interface RowSlippageContentProps extends RowSlippageProps {
   styleProps?: RowStyleProps
 }
 
+// TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
+
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const { showSettingOnClick, toggleSettings, displaySlippage, isEthFlow, symbols, styleProps } = props
 
@@ -57,19 +59,12 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     <StyledRowBetween {...styleProps}>
       <RowFixed>
         <TextWrapper>
-          {isEthFlow ? (
-            <Trans>
-              Slippage tolerance{' '}
-              <ThemedText.Warn display="inline-block" override>
-                (modified)
-              </ThemedText.Warn>
-            </Trans>
-          ) : showSettingOnClick ? (
+          {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <Trans>Slippage tolerance</Trans>
+              <SlippageTextContents isEthFlow={isEthFlow} />
             </ClickableText>
           ) : (
-            <Trans>Slippage tolerance</Trans>
+            <SlippageTextContents isEthFlow={isEthFlow} />
           )}
         </TextWrapper>
         <MouseoverTooltipContent
@@ -87,5 +82,23 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         )}
       </TextWrapper>
     </StyledRowBetween>
+  )
+}
+
+type SlippageTextContentsProps = { isEthFlow: boolean }
+
+function SlippageTextContents({ isEthFlow }: SlippageTextContentsProps) {
+  return (
+    <>
+      <Trans>Slippage tolerance</Trans>
+      {isEthFlow && (
+        <>
+          {' '}
+          <ThemedText.Warn display="inline-block" override>
+            (modified)
+          </ThemedText.Warn>
+        </>
+      )}
+    </>
   )
 }
