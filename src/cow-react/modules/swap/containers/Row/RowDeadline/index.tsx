@@ -27,5 +27,9 @@ export function RowDeadline() {
     }
   }, [isEthFlow, isExpertMode, isWrapOrUnwrap, nativeCurrency.symbol, toggleSettings, userDeadline])
 
+  if ((!isEthFlow && !isExpertMode) || isWrapOrUnwrap) {
+    return null
+  }
+
   return <RowDeadlineContent {...props} />
 }
