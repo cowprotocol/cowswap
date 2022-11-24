@@ -200,6 +200,7 @@ export const Row = styled.div`
   transition: background 0.2s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: auto;
     grid-template-columns: 62px 330px repeat(2,150px) 200px;
   `}
 
@@ -210,10 +211,6 @@ export const Row = styled.div`
 
 export const TableHeader = styled(Row)`
   border-bottom: 1px solid ${({ theme }) => theme.grey1};
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    border: 0;
-  `}
 
   &:hover {
     background: transparent;
