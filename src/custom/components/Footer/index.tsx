@@ -26,13 +26,17 @@ const Wrapper = styled.div`
       left: initial;
       bottom: initial;
       top: 0;
+      margin: 24px auto 0;
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
       margin: 120px auto 0;
     `}
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-flow: column wrap;
-    margin: 56px auto 230px;
+    margin: 24px auto 0;
   `}
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -46,6 +50,10 @@ const FooterVersion = styled(Version)`
   flex-flow: row wrap;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: 0 auto;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: column wrap;
     width: 100%;
     gap: 24px;
