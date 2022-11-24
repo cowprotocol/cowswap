@@ -12,7 +12,7 @@ export const PageWrapper = styled(Widget)`
 
 export const Title = styled.h1`
   font-size: 32px;
-  margin: 0 0 32px;
+  margin: 0 0 24px;
   color: ${({ theme }) => theme.text1};
   text-shadow: ${({ theme }) => theme.textShadow1};
   font-weight: 500;
