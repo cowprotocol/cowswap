@@ -1,5 +1,4 @@
 import * as styledEl from './styled'
-import { RateValue } from '../Orders/OrdersTable.styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { Fraction } from '@uniswap/sdk-core'
 import { formatSmart } from 'utils/format'
@@ -13,12 +12,12 @@ export function PriceField({ order, price }: Props) {
   return (
     <styledEl.Value>
       {price ? (
-        <RateValue>
+        <styledEl.RateValue>
           1 {order.inputToken.symbol} ={' '}
           <span title={price.toSignificant(18) + ' ' + order.outputToken.symbol}>
             {formatSmart(price)} {order.outputToken.symbol}
           </span>
-        </RateValue>
+        </styledEl.RateValue>
       ) : (
         '-'
       )}

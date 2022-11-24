@@ -5,9 +5,9 @@ import { PERCENTAGE_PRECISION } from 'constants/index'
 import { useToggleSettingsMenu } from 'state/application/hooks'
 import { formatSmart } from 'utils/format'
 import { RowSlippageContent } from '@cow/modules/swap/pure/Row/RowSlippageContent'
-import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { useIsExpertMode } from '@src/state/user/hooks'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -17,10 +17,9 @@ export interface RowSlippageProps {
 export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowSlippageProps) {
   const toggleSettings = useToggleSettingsMenu()
 
-  // if is wrap/unwrap operation return null
-  const wrapType = useWrapType()
   const isEthFlow = useIsEthFlow()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const isExpertMode = useIsExpertMode()
+  const { native: nativeCurrency, isWrapOrUnwrap } = useDetectNativeToken()
 
   const props = useMemo(
     () => ({
@@ -33,5 +32,9 @@ export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowS
     [allowedSlippage, nativeCurrency, isEthFlow, showSettingOnClick]
   )
 
-  return wrapType !== WrapType.NOT_APPLICABLE ? null : <RowSlippageContent {...props} toggleSettings={toggleSettings} />
+  if ((!isEthFlow && !isExpertMode) || isWrapOrUnwrap) {
+    return null
+  }
+
+  return <RowSlippageContent {...props} toggleSettings={toggleSettings} />
 }

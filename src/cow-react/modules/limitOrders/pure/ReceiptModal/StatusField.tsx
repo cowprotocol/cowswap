@@ -1,6 +1,6 @@
 import * as styledEl from './styled'
-import { StatusItem } from '../Orders/OrdersTable.styled'
-import { orderStatusTitleMap } from '../Orders/OrdersTable'
+import { StatusItem } from '../Orders/OrderRow'
+import { orderStatusTitleMap } from '../Orders/OrderRow'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 
 export type Props = {

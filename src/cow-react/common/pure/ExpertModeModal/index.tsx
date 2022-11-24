@@ -89,6 +89,7 @@ export function ExpertModeModal(props: ExpertModeModalProps) {
         </p>
 
         <ButtonError
+          id="confirm-expert-mode"
           error={true}
           padding={'12px'}
           onClick={() => {

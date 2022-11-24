@@ -1,70 +1,85 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cow/utils/localStorage'
 import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'constants/index'
+import { DeadlineSettings } from './types'
 
-const LOCAL_STORAGE_KEY = 'UserPreviousDeadline'
+const LOCAL_STORAGE_KEY = 'UserDeadlineSettings'
 
 export function EthFlowDeadlineUpdater() {
-  const [mounted, setMounted] = useState(false)
-
   // user deadline (in seconds)
   const [userDeadline, setUserDeadline] = useUserTransactionTTL()
   const isEthFlow = useIsEthFlow()
 
-  // on updater mount, load previous deadline from localStorage and set it, if it exists
+  // On updater mount, load previous deadline from localStorage and set it
   useEffect(() => {
-    const previousDeadline = _loadDeadline()
+    const { ethFlow } = _loadDeadline() || {}
 
-    // only update if some storage amt exists
-    if (previousDeadline) {
-      setUserDeadline(previousDeadline)
+    // If on load there's an efhFlow deadline stored and it's ethFlow, use it
+    if (ethFlow && isEthFlow) {
+      setUserDeadline(ethFlow)
     }
 
-    setMounted(true)
     // we only want this on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // ref used to track when EthFlow is disabled
+  const wasEthFlowActive = useRef(false)
+
   useEffect(() => {
     if (isEthFlow) {
-      // if EthFlow and deadline < than minimum, set it to minimum
-      const deadlineLessThanThreshold = MINIMUM_ETH_FLOW_DEADLINE_SECONDS > userDeadline
-      if (deadlineLessThanThreshold) {
-        console.log(
-          `[EthFlowDeadlineUpdater] - Setting user deadline to minimum threshold of ${
-            MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60
-          } minutes`,
-          isEthFlow,
-          userDeadline,
-          deadlineLessThanThreshold
-        )
-        _saveDeadline(userDeadline)
-        setUserDeadline(MINIMUM_ETH_FLOW_DEADLINE_SECONDS)
+      // Load what's stored
+      const { regular, ethFlow } = _loadDeadline() || {}
+      // Set the flag
+      wasEthFlowActive.current = true
+
+      if (userDeadline >= MINIMUM_ETH_FLOW_DEADLINE_SECONDS) {
+        // Valid deadline for ethflow. No need to update global state
+        // But do update local storage with new ethflow value
+        _saveDeadline({
+          // Re-use the value stored or use current deadline if nothing is stored
+          regular: regular || userDeadline,
+          // Store it as ethflow deadline
+          ethFlow: userDeadline,
+        })
+      } else {
+        // Current deadline is too short
+        // Use what's stored. If that's not valid, use the minimum value
+        const newDeadline =
+          ethFlow && ethFlow > MINIMUM_ETH_FLOW_DEADLINE_SECONDS ? ethFlow : MINIMUM_ETH_FLOW_DEADLINE_SECONDS
+        // Set that on global state
+        setUserDeadline(newDeadline)
+        // Update local storage
+        _saveDeadline({
+          // Store previous value as regular
+          regular: userDeadline,
+          // Use new value as ethflow
+          ethFlow: newDeadline,
+        })
       }
-    } else if (mounted) {
-      // if we are leaving EthFlow context, reset deadline to previous value
+    } else if (wasEthFlowActive.current) {
+      // Only when disabling EthFlow, reset to previous regular value
       _resetDeadline(setUserDeadline)
+      // Disable the flag
+      wasEthFlowActive.current = false
     }
-    // we only want to depend on isEthFlow
-    // to avoid re-renders
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEthFlow])
+  }, [isEthFlow, setUserDeadline, userDeadline])
 
   return null
 }
 
-function _saveDeadline(currentUserDeadline: number): void {
+function _saveDeadline(currentUserDeadline: DeadlineSettings): void {
   setJsonToLocalStorage(LOCAL_STORAGE_KEY, currentUserDeadline)
 }
 
-function _loadDeadline(): number | null {
+function _loadDeadline(): DeadlineSettings | null {
   return loadJsonFromLocalStorage(LOCAL_STORAGE_KEY)
 }
 
-function _resetDeadline(setUserDeadline: (slippage: number) => void): void {
-  const parsedDeadline = _loadDeadline()
+function _resetDeadline(setUserDeadline: (deadline: number) => void): void {
+  const { regular } = _loadDeadline() || {}
   // user switched back to non-native swap, set deadline back to previous value
-  parsedDeadline && setUserDeadline(parsedDeadline)
+  regular && setUserDeadline(regular)
 }

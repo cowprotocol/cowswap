@@ -39,6 +39,7 @@ import { useSwapTradeState, useTradeState } from '@cow/modules/trade/hooks/useTr
 import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
 import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: 'Rinkeby',
@@ -95,11 +96,22 @@ export default function Header() {
 
   const tradeMenuContext = useMemo(() => {
     const state = tradeState?.state || swapState
-    const defaultTradeState = getDefaultTradeState(state.chainId || chainId || null)
+    const defaultTradeState = getDefaultTradeState(chainId || state.chainId || SupportedChainId.MAINNET)
+    const networkWasChanged = chainId && state.chainId && chainId !== state.chainId
+
+    // When network was changed - use the deafult trade state
+    const inputCurrencyId =
+      (networkWasChanged
+        ? defaultTradeState.inputCurrencyId
+        : state.inputCurrencyId || defaultTradeState.inputCurrencyId) || undefined
+    const outputCurrencyId =
+      (networkWasChanged
+        ? defaultTradeState.outputCurrencyId
+        : state.outputCurrencyId || defaultTradeState.outputCurrencyId) || undefined
 
     return {
-      inputCurrencyId: state.inputCurrencyId || defaultTradeState.inputCurrencyId || undefined,
-      outputCurrencyId: state.outputCurrencyId || defaultTradeState.outputCurrencyId || undefined,
+      inputCurrencyId,
+      outputCurrencyId,
       chainId: defaultTradeState.chainId?.toString(),
     }
   }, [chainId, tradeState?.state, swapState])

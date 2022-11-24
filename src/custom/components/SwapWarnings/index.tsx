@@ -7,7 +7,6 @@ import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { transparentize, darken } from 'polished'
-import useDebounce from 'hooks/useDebounce'
 import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 
 interface HighFeeContainerProps {
@@ -103,18 +102,6 @@ const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) 
   </div>
 )
 
-const NoImpactWarningMessage = (
-  <div>
-    <small>
-      We are unable to calculate the price impact for this order.
-      <br />
-      <br />
-      You may still move forward but{' '}
-      <strong>please review carefully that the receive amounts are what you expect.</strong>
-    </small>
-  </div>
-)
-
 export type WarningProps = {
   trade?: TradeGp
   acceptedStatus?: boolean
@@ -156,34 +143,6 @@ export const HighFeeWarning = (props: WarningProps) => {
           anyway
         </WarningCheckboxContainer>
       )}
-    </WarningContainer>
-  )
-}
-
-export const NoImpactWarning = (props: WarningProps) => {
-  const { acceptedStatus, acceptWarningCb, hide } = props
-  const theme = useContext(ThemeContext)
-
-  const debouncedHide = useDebounce(hide, 2000)
-  const [bgColour, textColour] = [LOW_TIER_FEE.colour, darken(0.7, HIGH_TIER_FEE.colour)]
-
-  if (!!debouncedHide) return null
-
-  return (
-    <WarningContainer {...props} bgColour={bgColour} textColour={textColour}>
-      <div>
-        <AlertTriangle size={18} />
-        Price impact <strong>unknown</strong> - trade carefully{' '}
-        <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={NoImpactWarningMessage} wrap>
-          <ErrorStyledInfoIcon />
-        </MouseoverTooltipContent>
-        {acceptWarningCb && (
-          <WarningCheckboxContainer>
-            <input id="price-impact-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
-            Swap anyway
-          </WarningCheckboxContainer>
-        )}
-      </div>
     </WarningContainer>
   )
 }

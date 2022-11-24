@@ -7,6 +7,7 @@ interface Props {
   id: string
   type?: BlockExplorerLinkType
   label?: string
+  className?: string
 }
 
 /**
@@ -14,7 +15,7 @@ interface Props {
  * @param props
  */
 export function ExplorerLink(props: Props) {
-  const { id, label, type = 'transaction' } = props
+  const { id, label, type = 'transaction', className } = props
   const { chainId: _chainId } = useWeb3React()
   const chainId = supportedChainId(_chainId)
 
@@ -23,5 +24,9 @@ export function ExplorerLink(props: Props) {
   }
 
   const linkLabel = label || getExplorerLabel(chainId, id, type)
-  return <ExternalLink href={getEtherscanLink(chainId, id, type)}>{linkLabel}</ExternalLink>
+  return (
+    <ExternalLink className={className} href={getEtherscanLink(chainId, id, type)}>
+      {linkLabel} <span style={{ fontSize: '0.8em' }}>↗</span>
+    </ExternalLink>
+  )
 }

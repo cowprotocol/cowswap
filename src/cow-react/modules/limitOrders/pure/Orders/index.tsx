@@ -1,31 +1,47 @@
-import * as styledEl from './styled'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
+import styled from 'styled-components/macro'
+import { Widget } from '../Widget'
+
+const OrdersBox = styled(Widget)`
+  min-height: 200px;
+  width: 100%;
+`
+
+const OrdersTitle = styled.h3`
+  margin: 0 0 20px 0;
+`
+
+const EmptyOrdersMessage = styled.p`
+  margin: 10px 20px;
+  font-size: 18px;
+  font-weight: 600;
+`
 
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
 }
 
-export function Orders({ orders, tabs, isWalletConnected }: OrdersProps) {
+export function Orders({ orders, tabs, isWalletConnected, balancesAndAllowances }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
-      return <styledEl.EmptyOrdersMessage>Please connect your wallet to view orders</styledEl.EmptyOrdersMessage>
+      return <EmptyOrdersMessage>Please connect your wallet to view orders</EmptyOrdersMessage>
     }
 
     if (orders.length === 0) {
-      return <styledEl.EmptyOrdersMessage>You have no orders yet</styledEl.EmptyOrdersMessage>
+      return <EmptyOrdersMessage>You have no orders yet</EmptyOrdersMessage>
     }
 
-    return <OrdersTable orders={orders} />
+    return <OrdersTable orders={orders} balancesAndAllowances={balancesAndAllowances} />
   }
 
   return (
     <>
-      <styledEl.Orders>
-        <styledEl.OrdersTitle>Orders</styledEl.OrdersTitle>
+      <OrdersBox>
+        <OrdersTitle>Orders</OrdersTitle>
         <OrdersTabs tabs={tabs} />
         {content()}
-      </styledEl.Orders>
+      </OrdersBox>
     </>
   )
 }
