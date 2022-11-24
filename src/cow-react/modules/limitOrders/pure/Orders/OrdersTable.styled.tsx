@@ -57,8 +57,9 @@ export const Content = styled.div`
     font-size: 15px;
     line-height: 1.4;
     margin: 0 auto;
-    font-weight: 300;
+    font-weight: 400;
     text-align: center;
+    opacity: 0.7;
   }
 `
 
