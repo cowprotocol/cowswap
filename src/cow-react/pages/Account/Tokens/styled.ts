@@ -2,7 +2,7 @@ import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { Card } from '@cow/pages/Account/styled'
-import { darken } from 'polished'
+import { transparentize, darken } from 'polished'
 
 export const MenuWrapper = styled.div`
   position: relative;
@@ -21,6 +21,7 @@ export const MenuButton = styled.button`
   display: flex;
   align-items: center;
   font-size: 16px;
+  white-space: nowrap;
 `
 
 export const StyledChevronDown = styled(ChevronDown)`
@@ -42,11 +43,6 @@ export const Menu = styled.div`
   min-width: 250px;
   z-index: 99;
   padding: 12px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    left: 50%;
-    transform: translateX(-50%) translateY(105%);
-  `}
 `
 
 export const MenuItem = styled.div<{ active: boolean }>`
@@ -66,10 +62,10 @@ export const MenuItem = styled.div<{ active: boolean }>`
 
 export const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 120px 950px;
-  flex-direction: column;
-  margin: 0 16px;
+  grid-template-columns: 120px minmax(auto, 950px);
+  margin: 0;
   width: 100%;
+  max-width: 100%;
   justify-content: center;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -84,10 +80,7 @@ export const AccountPageWrapper = styled.div`
   border: none;
   background: none;
   padding: 0;
-  margin: 0 auto;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-  `};
+  margin: 0;
 `
 
 export const MainText = styled(ThemedText.Main)`
@@ -102,15 +95,10 @@ export const AccountCard = styled(Card)`
 
 export const AccountHeading = styled.div`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   padding: 0 0 20px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-direction: column;
-  `}
+  gap: 12px;
 `
 
 export const RemoveTokens = styled.button`
@@ -126,17 +114,6 @@ export const WrongNetwork = styled.div`
 
 export const LeftSection = styled.div`
   display: flex;
-
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    flex-direction: column;
-    align-items: flex-start;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  `};
 `
 
 export const ClearSearchInput = styled.div`
@@ -157,9 +134,29 @@ export const Overview = styled.div`
   margin: 0;
   padding: 0;
   z-index: 2;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: ${({ theme }) => theme.boxShadow1};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     display: flex;
     flex-flow: column wrap;
+
+    &::after {
+      content: "";
+      display: block;
+      background: linear-gradient(to left, ${({ theme }) => theme.bg1} 0%, ${({ theme }) =>
+    transparentize(1, theme.bg1)} 100%);
+      pointer-events: none;
+      height: 100%;
+      width: 80px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      z-index: 1;
+    }
   `};
 `

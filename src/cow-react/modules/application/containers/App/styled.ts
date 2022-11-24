@@ -37,7 +37,7 @@ export const BodyWrapper = styled.div`
   padding-top: 5vh;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-  padding: 10px 0;
+  padding: 0 16px 16px;
   flex: none;
 `}
 `
