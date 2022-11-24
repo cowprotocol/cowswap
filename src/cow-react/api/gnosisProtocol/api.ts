@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { OrderKind, QuoteQuery } from '@cowprotocol/contracts'
+import { BUY_ETH_ADDRESS, OrderKind, QuoteQuery } from '@cowprotocol/contracts'
 import { stringify } from 'qs'
 import {
   getSigningSchemeApiValue,
@@ -460,7 +460,9 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
       const errorResponse: ApiErrorObject = await response.json()
       throw new OperatorError(errorResponse)
     } else {
-      return response.json()
+      const order = await response.json()
+
+      return transformEthFlowOrder(order)
     }
   } catch (error) {
     console.error('Error getting order information:', error)
@@ -480,7 +482,9 @@ export async function getOrders(chainId: ChainId, owner: string, limit = 1000, o
       const errorResponse: ApiErrorObject = await response.json()
       throw new OperatorError(errorResponse)
     } else {
-      return response.json()
+      const orders = await response.json()
+
+      return orders.map(transformEthFlowOrder)
     }
   } catch (error) {
     console.error('Error getting orders information:', error)
@@ -585,6 +589,21 @@ export async function getNativePrice(chainId: ChainId, address: string): Promise
     console.error('Error getting native price:', error)
     throw new Error('Error getting native price: ' + error)
   }
+}
+
+// TODO: won't be necessary once SDK is integrated
+function transformEthFlowOrder(order: OrderMetaData): OrderMetaData {
+  const { ethflowData } = order
+
+  if (!ethflowData) {
+    return order
+  }
+
+  const { userValidTo: validTo } = ethflowData
+  const owner = order.onchainUser || order.owner
+  const sellToken = BUY_ETH_ADDRESS
+
+  return { ...order, validTo, owner, sellToken }
 }
 
 // Register some globals for convenience
