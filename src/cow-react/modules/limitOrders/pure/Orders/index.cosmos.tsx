@@ -24,5 +24,11 @@ const balancesAndAllowances: BalancesAndAllowances = {
 }
 
 export default (
-  <Orders orders={ordersMock} tabs={tabs} isWalletConnected={true} balancesAndAllowances={balancesAndAllowances} />
+  <Orders
+    orders={ordersMock}
+    tabs={tabs}
+    isWalletConnected={true}
+    balancesAndAllowances={balancesAndAllowances}
+    showOrderCancelationModal={() => void 0}
+  />
 )

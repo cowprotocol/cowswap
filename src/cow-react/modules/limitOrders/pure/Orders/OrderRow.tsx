@@ -7,7 +7,8 @@ import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
 import { RateInfo } from '../RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { AlertTriangle } from 'react-feather'
+import { AlertTriangle, Trash2 } from 'react-feather'
+import { transparentize } from 'polished'
 
 const statusColorMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: '#badbe8',
@@ -93,6 +94,22 @@ const WarningParagraph = styled.div`
   }
 `
 
+const CancelOrderBtn = styled.button`
+  background: none;
+  border: 0;
+  outline: none;
+  margin: 0 auto;
+  border-radius: 3px;
+  color: ${({ theme }) => theme.text2};
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+
+  :hover {
+    background: ${({ theme }) => transparentize(0.9, theme.black)};
+  }
+`
+
 function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (
     <AmountItem title={amount.toExact() + ' ' + amount.currency.symbol}>
@@ -133,6 +150,7 @@ export interface OrderRowProps {
   balancesAndAllowances: BalancesAndAllowances
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
+  showOrderCancelationModal(order: Order): void
 }
 
 function isEnoughAmount(
@@ -146,7 +164,13 @@ function isEnoughAmount(
   return sellAmount.lessThan(targetAmount)
 }
 
-export function OrderRow({ order, RowElement, balancesAndAllowances, isRateInversed }: OrderRowProps) {
+export function OrderRow({
+  order,
+  RowElement,
+  balancesAndAllowances,
+  isRateInversed,
+  showOrderCancelationModal,
+}: OrderRowProps) {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
@@ -202,6 +226,13 @@ export function OrderRow({ order, RowElement, balancesAndAllowances, isRateInver
             </WarningIndicator>
           )}
         </StatusBox>
+      </div>
+      <div>
+        {order.status === OrderStatus.PENDING && !order.isCancelling && (
+          <CancelOrderBtn onClick={() => showOrderCancelationModal(order)}>
+            <Trash2 size={16} />
+          </CancelOrderBtn>
+        )}
       </div>
     </RowElement>
   )

@@ -16,7 +16,7 @@ const TableBox = styled.div`
 const RowElement = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 150px);
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 120px) minmax(0, 70px);
   align-items: center;
   border-bottom: 2px solid ${({ theme }) => theme.border2};
 
@@ -42,11 +42,12 @@ const Rows = styled.div`
 export interface OrdersTableProps {
   orders: Order[]
   balancesAndAllowances: BalancesAndAllowances
+  showOrderCancelationModal(order: Order): void
 }
 
 const pageSize = 10
 
-export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps) {
+export function OrdersTable({ orders, balancesAndAllowances, showOrderCancelationModal }: OrdersTableProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [isRateInversed, setIsRateInversed] = useState(false)
 
@@ -76,6 +77,7 @@ export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps)
           <div>
             <Trans>Status</Trans>
           </div>
+          <div>{/*Cancel order column*/}</div>
         </Header>
         <Rows>
           {ordersPage.map((order) => (
@@ -85,6 +87,7 @@ export function OrdersTable({ orders, balancesAndAllowances }: OrdersTableProps)
               RowElement={RowElement}
               isRateInversed={isRateInversed}
               balancesAndAllowances={balancesAndAllowances}
+              showOrderCancelationModal={showOrderCancelationModal}
             />
           ))}
         </Rows>

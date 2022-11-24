@@ -7,11 +7,14 @@ import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
-import { useLimitOrdersDeadline } from '@cow/modules/limitOrders/hooks/useLimitOrdersDeadline'
+import ms from 'ms.macro'
+
+// It's request to get price, so we don't need precise value for validTo
+const PRICE_QUOTE_VALID_TO_TIME = ms`30m`
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
   const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
-  const deadlineTimestamp = useLimitOrdersDeadline()
+  const deadlineTimestamp = Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000)
   const { chainId, account } = useWeb3React()
   const { exactTypedValue } = useTypedValue()
   const { address: recipientEnsAddress } = useENSAddress(recipient)
