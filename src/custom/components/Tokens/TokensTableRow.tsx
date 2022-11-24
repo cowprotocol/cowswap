@@ -115,13 +115,13 @@ const DataRow = ({
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
     if (!balance && account) {
-      return <Loader />
+      return <Loader stroke={theme.text3} />
     } else if (hasZeroBalance) {
       return <BalanceValue hasBalance={false}>0</BalanceValue>
     } else {
       return <FiatBalanceCell balance={balance} />
     }
-  }, [account, balance, hasZeroBalance])
+  }, [account, balance, hasZeroBalance, theme])
 
   const displayApproveContent = useMemo(() => {
     if (isPendingApprove) {

@@ -59,6 +59,7 @@ export const Wrapper = styled.div`
   padding: 0;
   background: ${({ theme }) => theme.bg1};
   border-radius: 16px;
+  display: grid;
 `
 
 export const LinkWrapper = styled(Link)`
@@ -188,10 +189,10 @@ export const Break = styled.div`
 `
 
 export const Row = styled.div`
-  width: fit-content;
+  width: 100%;
   display: grid;
   grid-gap: 16px;
-  grid-template-columns: 62px 430px repeat(2, 100px) 161px;
+  grid-template-columns: 62px 430px repeat(2, 100px) 1fr;
   padding: 16px;
   justify-content: flex-start;
   align-items: center;
@@ -199,11 +200,7 @@ export const Row = styled.div`
   transition: background 0.2s ease-in-out;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 16px 56px 16px 16px
-  `}
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-template-columns: 62px 330px repeat(2,150px) 161px;
+    grid-template-columns: 62px 330px repeat(2,150px) 200px;
   `}
 
   &:hover {
@@ -213,6 +210,10 @@ export const Row = styled.div`
 
 export const TableHeader = styled(Row)`
   border-bottom: 1px solid ${({ theme }) => theme.grey1};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    border: 0;
+  `}
 
   &:hover {
     background: transparent;
@@ -235,6 +236,12 @@ export const Cell = styled.div`
   // ACTIONS column
   &:nth-child(5n) {
     gap: 10px;
+    display: flex;
+    flex-flow: row wrap;
+
+    > span {
+      white-space: nowrap;
+    }
   }
 
   > a {
