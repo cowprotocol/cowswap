@@ -32,6 +32,7 @@ export function Orders({ orders, tabs, isWalletConnected }: OrdersProps) {
       )
     }
 
+    // TODO: Check if no orders + order history tab is active. To show a different icon & message.
     if (orders.length === 0) {
       return (
         <Content>
