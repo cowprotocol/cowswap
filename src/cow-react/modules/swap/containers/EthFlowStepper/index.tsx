@@ -53,16 +53,17 @@ const STEPPER_INDEXED_ORDER_STATUS: OrderStatus[] = [OrderStatus.PENDING, OrderS
 
 function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStatus | undefined {
   // NOTE: not returning `CREATED` as we currently don't track the initial tx execution
-  const { status } = order || {}
 
-  if (!status) {
-    return
-  } else if (status === 'creating') {
-    return SmartOrderStatus.CREATING
-  } else if (STEPPER_INDEXED_ORDER_STATUS.includes(status)) {
-    return SmartOrderStatus.INDEXED
-  } else if (status === 'fulfilled') {
-    return SmartOrderStatus.FILLED
+  if (order) {
+    const { status } = order
+
+    if (status === 'creating') {
+      return SmartOrderStatus.CREATING
+    } else if (STEPPER_INDEXED_ORDER_STATUS.includes(status)) {
+      return SmartOrderStatus.INDEXED
+    } else if (status === 'fulfilled') {
+      return SmartOrderStatus.FILLED
+    }
   }
   return undefined
 }
