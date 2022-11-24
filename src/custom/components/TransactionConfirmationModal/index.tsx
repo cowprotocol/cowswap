@@ -542,7 +542,7 @@ export function TransactionSubmittedContent({
           {getTitleStatus(activityDerivedState)}
         </Text>
         <DisplayLink id={hash} chainId={chainId} />
-        <EthFlowStepper storeOrder={order} />
+        <EthFlowStepper order={order} />
         {activityDerivedState && showProgressBar && (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
         )}

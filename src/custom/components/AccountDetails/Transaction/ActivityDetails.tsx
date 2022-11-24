@@ -298,7 +298,7 @@ export function ActivityDetails(props: {
           </ActivityLink>
         )}
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
-        <EthFlowStepper storeOrder={order} />
+        <EthFlowStepper order={order} />
         {showProgressBar && (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
         )}

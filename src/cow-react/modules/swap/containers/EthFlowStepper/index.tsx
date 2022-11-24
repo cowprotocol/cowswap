@@ -8,29 +8,29 @@ import { Order } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 
 type EthFlowStepperProps = {
-  storeOrder: Order | undefined
+  order: Order | undefined
 }
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
-  const { storeOrder } = props
+  const { order } = props
   const { native } = useDetectNativeToken()
 
-  const state = mapOrderToEthFlowStepperState(storeOrder)
-  const isEthFlowOrder = getIsEthFlowOrder(storeOrder)
+  const state = mapOrderToEthFlowStepperState(order)
+  const isEthFlowOrder = getIsEthFlowOrder(order)
 
-  if (!storeOrder || !state || !isEthFlowOrder) {
+  if (!order || !state || !isEthFlowOrder) {
     return null
   }
 
   const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
-    tokenLabel: storeOrder.outputToken.symbol as string,
+    tokenLabel: order.outputToken.symbol as string,
     order: {
       // The creation hash is only available in the device where the order is placed
-      createOrderTx: storeOrder.orderCreationHash || '',
-      orderId: storeOrder.id,
+      createOrderTx: order.orderCreationHash || '',
+      orderId: order.id,
       state,
-      isExpired: storeOrder.status === 'expired',
+      isExpired: order.status === 'expired',
       // rejectedReason?: TODO: address when dealing with rejections
     },
     // TODO: fill these in when dealing with rejections
