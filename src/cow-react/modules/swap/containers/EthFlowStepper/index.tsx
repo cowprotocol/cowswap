@@ -49,7 +49,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
   return <Pure {...stepperProps} />
 }
 
-const STEPPER_INDEXED_ORDER_STATUS: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.EXPIRED, OrderStatus.CANCELLED]
+const ORDER_INDEXED_STATUSES: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.EXPIRED, OrderStatus.CANCELLED]
 
 function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStatus | undefined {
   // NOTE: not returning `CREATED` as we currently don't track the initial tx execution
@@ -59,7 +59,7 @@ function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStat
 
     if (status === 'creating') {
       return SmartOrderStatus.CREATING
-    } else if (STEPPER_INDEXED_ORDER_STATUS.includes(status)) {
+    } else if (ORDER_INDEXED_STATUSES.includes(status)) {
       return SmartOrderStatus.INDEXED
     } else if (status === 'fulfilled') {
       return SmartOrderStatus.FILLED
