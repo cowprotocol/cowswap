@@ -55,7 +55,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
         />
       )}
       {/* TRANSACTION DEADLINE */}
-      <RowDeadline />
+      {trade && <RowDeadline />}
       {/* DISCOUNTS */}
       <styledEl.Row>
         <div>

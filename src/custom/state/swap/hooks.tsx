@@ -47,6 +47,7 @@ import { AppState } from 'state'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export * from '@src/state/swap/hooks'
 
@@ -235,6 +236,10 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     [inputCurrency, isExactIn, outputCurrency, typedValue]
   )
 
+  // MOD
+  const isEthFlow = useIsEthFlow()
+  const isEthFlowBuyOrder = !isExactIn && isEthFlow
+
   const currencies: { [field in Field]?: Currency | null } = useMemo(
     () => ({
       [Field.INPUT]: inputCurrency,
@@ -336,8 +341,23 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       inputError = t`Insufficient ${amountIn.currency.symbol} balance`
     }
 
+    // MOD
+    if (isEthFlowBuyOrder && amountIn) {
+      inputError = t`Native ${amountIn.currency.symbol} BUY orders are not supported`
+    }
+
     return inputError
-  }, [account, allowedSlippage, currencies, currencyBalances, inputCurrency, parsedAmount, to, v2Trade]) // mod
+  }, [
+    account,
+    allowedSlippage,
+    currencies,
+    currencyBalances,
+    inputCurrency,
+    isEthFlowBuyOrder,
+    parsedAmount,
+    to,
+    v2Trade,
+  ]) // mod
 
   return useMemo(
     () => {
@@ -347,7 +367,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         currencyBalances,
         parsedAmount,
         inputError,
-        v2Trade: v2Trade ?? undefined, // mod
+        v2Trade: (!isEthFlowBuyOrder && v2Trade) || undefined, // mod
         allowedSlippage,
       }
     },
