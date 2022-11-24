@@ -22,12 +22,15 @@ export const Title = styled.h3`
 
 export const Body = styled.div``
 
-export const Field = styled.div<{ border: 'rounded-full' | 'rounded-top' | 'rounded-bottom' }>`
+export const Field = styled.div<{ border?: 'rounded-full' | 'rounded-top' | 'rounded-bottom' }>`
   display: flex;
   flex-flow: row wrap;
-  align-content: space-between;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem;
   background: ${({ theme }) => theme.input.bg1};
+  margin-bottom: 5px;
+  width: 100%;
   border-radius: ${({ border }) => {
     if (border === 'rounded-full') return '1rem'
     else if (border === 'rounded-top') return '1rem 1rem 0 0'
@@ -39,6 +42,7 @@ export const Field = styled.div<{ border: 'rounded-full' | 'rounded-top' | 'roun
 export const CurrencyField = styled(Field)`
   margin-bottom: 10px;
   flex-direction: column;
+  align-items: flex-start;
 `
 
 export const CurrencyValue = styled.span`
@@ -56,5 +60,51 @@ export const FieldBody = styled.div`
 `
 
 export const FieldTitle = styled.span`
+  font-size: 0.9rem;
+  font-weight: 600;
+`
+
+export const LabelText = styled.span`
   font-size: 0.8rem;
+`
+
+export const Label = styled.div``
+
+export const Value = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: 1;
+  font-size: 0.9rem;
+
+  & a {
+    font-size: 0.9rem;
+  }
+`
+
+export const Progress = styled.div<{ active: number | string }>`
+  position: relative;
+  height: 4px;
+  width: 150px;
+  background: orange;
+  margin-right: 5px;
+
+  &:after {
+    content: '';
+    position: absolute;
+    height: 100%;
+    background: green;
+    width: ${({ active }) => `${active}%`};
+  }
+`
+
+export const InlineWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 0.75rem;
+
+  & > * {
+    margin-left: 5px;
+  }
 `

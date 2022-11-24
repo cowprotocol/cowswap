@@ -42,6 +42,8 @@ export const Rows = styled.div`
 `
 
 export const Row = styled(Header)`
+  cursor: pointer;
+
   :last-child {
     border-bottom: 0;
   }
