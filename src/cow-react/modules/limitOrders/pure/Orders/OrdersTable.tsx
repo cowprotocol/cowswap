@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import { useEffect, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
-import { InvertRateControl } from '../../pure/RateInfo'
+import { InvertRateControl } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 

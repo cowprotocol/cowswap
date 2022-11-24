@@ -3,22 +3,12 @@ import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { useCallback } from 'react'
-import { SupportedChainId } from 'constants/chains'
 import { useWeb3React } from '@web3-react/core'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
+import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
-export interface ActiveRateDisplay {
-  chainId: SupportedChainId | undefined
-  inputCurrencyAmount: CurrencyAmount<Currency> | null
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
-  activeRate: Fraction | null
-  activeRateFiatAmount: CurrencyAmount<Currency> | null
-  inversedActiveRateFiatAmount: CurrencyAmount<Currency> | null
-}
-
-export function useActiveRateDisplay(): ActiveRateDisplay {
+export function useActiveRateDisplay(): RateInfoParams {
   const { chainId } = useWeb3React()
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
   const { activeRate } = useAtomValue(limitRateAtom)

@@ -8,12 +8,12 @@ import { LimitOrdersDetails } from '../LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import * as styledEl from './styled'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
-import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext
-  activeRateDisplay: ActiveRateDisplay
+  activeRateDisplay: RateInfoParams
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   rateImpact: number

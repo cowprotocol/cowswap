@@ -1,17 +1,27 @@
 import { formatSmart, formatSmartAmount } from 'utils/format'
 import React, { useEffect, useMemo, useState } from 'react'
-import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { Repeat } from 'react-feather'
 import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import { SupportedChainId } from 'constants/chains'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+
+export interface RateInfoParams {
+  chainId: SupportedChainId | undefined
+  inputCurrencyAmount: CurrencyAmount<Currency> | null
+  outputCurrencyAmount: CurrencyAmount<Currency> | null
+  activeRate: Fraction | null
+  activeRateFiatAmount: CurrencyAmount<Currency> | null
+  inversedActiveRateFiatAmount: CurrencyAmount<Currency> | null
+}
 
 export interface RateInfoProps {
   className?: string
   noLabel?: boolean
   isInversed?: boolean
-  activeRateDisplay: ActiveRateDisplay
+  activeRateDisplay: RateInfoParams
 }
 
 const Wrapper = styled.div`
@@ -19,7 +29,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  font-size: 14px;
+  font-size: inherit;
 `
 
 const InvertIcon = styled.div`

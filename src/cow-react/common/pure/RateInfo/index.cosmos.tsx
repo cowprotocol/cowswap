@@ -1,7 +1,6 @@
-import { RateInfo } from './index'
+import { RateInfoParams, RateInfo } from './index'
 import { DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
-import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import styled from 'styled-components/macro'
@@ -25,7 +24,7 @@ function buildActiveRateDisplay(
   outputToken: Token,
   inputAmount: number,
   outputAmount: number
-): ActiveRateDisplay {
+): RateInfoParams {
   const inputCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, inputAmount * 10 ** inputToken.decimals)
   const outputCurrencyAmount = CurrencyAmount.fromRawAmount(outputToken, outputAmount * 10 ** outputToken.decimals)
   const activeRate = new Fraction(outputCurrencyAmount.toExact(), inputCurrencyAmount.toExact())

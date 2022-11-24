@@ -3,8 +3,7 @@ import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
-import { RateInfo } from '../RateInfo'
+import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AlertTriangle } from 'react-feather'
@@ -152,7 +151,7 @@ export function OrderRow({ chainId, order, RowElement, balancesAndAllowances, is
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-  const activeRateDisplay: ActiveRateDisplay = {
+  const activeRateDisplay: RateInfoParams = {
     chainId,
     activeRate,
     inputCurrencyAmount: sellAmount,

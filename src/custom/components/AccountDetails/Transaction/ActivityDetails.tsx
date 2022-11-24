@@ -1,5 +1,5 @@
 import React from 'react'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
 
@@ -15,8 +15,7 @@ import {
   ActivityVisual,
 } from './styled'
 
-import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
-import { DEFAULT_PRECISION, V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -25,6 +24,7 @@ import { useToken } from 'hooks/Tokens'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { V_COW, COW } from 'constants/tokens'
+import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -157,41 +157,53 @@ export function ActivityDetails(props: {
 
   // Order Summary default object
   let orderSummary: OrderSummaryType
+  let activeRateDisplay: RateInfoParams = {
+    chainId,
+    inputCurrencyAmount: null,
+    outputCurrencyAmount: null,
+    activeRate: null,
+    activeRateFiatAmount: null,
+    inversedActiveRateFiatAmount: null,
+  }
+  let isOrderFulfilled = false
+
   if (order) {
-    const { inputToken, sellAmount, feeAmount, outputToken, buyAmount, validTo, kind, fulfillmentTime } = order
+    const {
+      inputToken,
+      sellAmount,
+      feeAmount: feeAmountRaw,
+      outputToken,
+      buyAmount,
+      validTo,
+      kind,
+      fulfillmentTime,
+    } = order
 
-    const sellAmt = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
-    const feeAmt = CurrencyAmount.fromRawAmount(inputToken, feeAmount.toString())
+    const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
     const outputAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
-    const sellTokenDecimals = order?.inputToken?.decimals ?? DEFAULT_PRECISION
-    const buyTokenDecimals = order?.outputToken?.decimals ?? DEFAULT_PRECISION
+    const feeAmount = CurrencyAmount.fromRawAmount(inputToken, feeAmountRaw.toString())
 
-    const limitPrice = formatSmart(
-      getLimitPrice({
-        buyAmount: order.buyAmount.toString(),
-        sellAmount: order.sellAmount.toString(),
-        buyTokenDecimals,
-        sellTokenDecimals,
-        inverted: true, // TODO: handle invert price
-      })
-    )
+    isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
 
-    let executionPrice: string | undefined
-    if (order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED) {
-      const { executedSellAmountBeforeFees, executedBuyAmount } = order.apiAdditionalInfo
-      executionPrice = formatSmart(
-        getExecutionPrice({
-          executedSellAmountBeforeFees,
-          executedBuyAmount,
-          buyTokenDecimals,
-          sellTokenDecimals,
-          inverted: true, // TODO: Handle invert price
-        })
-      )
-    }
+    const { executedSellAmountBeforeFees, executedBuyAmount } = order.apiAdditionalInfo || {}
+    const rateInputCurrencyAmount = isOrderFulfilled
+      ? CurrencyAmount.fromRawAmount(inputToken, executedSellAmountBeforeFees?.toString() || '0')
+      : inputAmount
+    const rateOutputCurrencyAmount = isOrderFulfilled
+      ? CurrencyAmount.fromRawAmount(outputToken, executedBuyAmount?.toString() || '0')
+      : outputAmount
 
-    const getPriceFormat = (price: string): string => {
-      return `${price} ${sellAmt.currency.symbol} per ${outputAmount.currency.symbol}`
+    const activeRate = isOrderFulfilled
+      ? new Fraction(executedBuyAmount?.toString() || '0', executedSellAmountBeforeFees?.toString() || '0')
+      : new Fraction(buyAmount.toString(), sellAmount.toString())
+
+    activeRateDisplay = {
+      chainId,
+      inputCurrencyAmount: rateInputCurrencyAmount,
+      outputCurrencyAmount: rateOutputCurrencyAmount,
+      activeRate,
+      activeRateFiatAmount: null,
+      inversedActiveRateFiatAmount: null,
     }
 
     const DateFormatOptions: Intl.DateTimeFormatOptions = {
@@ -201,10 +213,8 @@ export function ActivityDetails(props: {
 
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
-      from: `${formatSmart(sellAmt.add(feeAmt))} ${sellAmt.currency.symbol}`,
+      from: `${formatSmart(inputAmount.add(feeAmount))} ${inputAmount.currency.symbol}`,
       to: `${formatSmart(outputAmount)} ${outputAmount.currency.symbol}`,
-      limitPrice: limitPrice && getPriceFormat(limitPrice),
-      executionPrice: executionPrice && getPriceFormat(executionPrice),
       validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
       fulfillmentTime: fulfillmentTime
         ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)
@@ -215,7 +225,7 @@ export function ActivityDetails(props: {
     orderSummary = DEFAULT_ORDER_SUMMARY
   }
 
-  const { kind, from, to, executionPrice, limitPrice, fulfillmentTime, validTo } = orderSummary
+  const { kind, from, to, fulfillmentTime, validTo } = orderSummary
   const activityName = isOrder ? `${kind} order` : 'Transaction'
   let inputToken = activityDerivedState?.order?.inputToken || null
   let outputToken = activityDerivedState?.order?.outputToken || null
@@ -258,19 +268,10 @@ export function ActivityDetails(props: {
               <i>{to}</i>
             </SummaryInnerRow>
             <SummaryInnerRow>
-              {executionPrice ? (
-                <>
-                  {' '}
-                  <b>Exec. price</b>
-                  <i>{executionPrice}</i>
-                </>
-              ) : (
-                <>
-                  {' '}
-                  <b>Limit price</b>
-                  <i>{limitPrice}</i>
-                </>
-              )}
+              <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
+              <i>
+                <RateInfo noLabel={true} activeRateDisplay={activeRateDisplay} />
+              </i>
             </SummaryInnerRow>
             <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
               {fulfillmentTime ? (
