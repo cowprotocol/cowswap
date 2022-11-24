@@ -7,6 +7,16 @@ export const Wrapper = styled.div`
   width: 100%;
   overflow-y: hidden;
   padding-bottom: 1.2rem;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    max-height: 80vh;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 70px 0;
+    overflow-y: auto;
+    padding-bottom: 0;
+  `}
 `
 
 export const Header = styled.div`
@@ -25,6 +35,14 @@ export const Title = styled.h3`
 export const Body = styled(AutoRow)`
   box-sizing: border-box;
   max-height: 700px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    max-height: 70vh;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    max-height: 100%;
+  `}
 `
 
 export const Field = styled.div<{ border?: 'rounded-full' | 'rounded-top' | 'rounded-bottom' }>`
