@@ -25,6 +25,7 @@ import { useToken } from 'hooks/Tokens'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { V_COW, COW } from 'constants/tokens'
+import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -151,6 +152,7 @@ export function ActivityDetails(props: {
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
+
   const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
 
   if (!order && !enhancedTransaction) return null
@@ -296,6 +298,7 @@ export function ActivityDetails(props: {
           </ActivityLink>
         )}
         <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+        <EthFlowStepper order={order} />
         {showProgressBar && (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
         )}
