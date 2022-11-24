@@ -1,10 +1,12 @@
 import styled from 'styled-components/macro'
+import { AutoRow } from 'components/Row'
 
 export const Wrapper = styled.div`
-  padding: 16px;
   border-radius: 16px;
   background: ${({ theme }) => theme.bg1};
   width: 100%;
+  overflow-y: hidden;
+  padding-bottom: 1.2rem;
 `
 
 export const Header = styled.div`
@@ -12,7 +14,7 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  padding: 1rem;
 `
 
 export const Title = styled.h3`
@@ -20,7 +22,10 @@ export const Title = styled.h3`
   margin: 0;
 `
 
-export const Body = styled.div``
+export const Body = styled(AutoRow)`
+  box-sizing: border-box;
+  max-height: 700px;
+`
 
 export const Field = styled.div<{ border?: 'rounded-full' | 'rounded-top' | 'rounded-bottom' }>`
   display: flex;
