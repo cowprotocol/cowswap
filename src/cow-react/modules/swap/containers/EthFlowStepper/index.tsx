@@ -60,7 +60,7 @@ function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStat
   } else if (order.status === 'fulfilled') {
     return SmartOrderStatus.FILLED
   }
-  return
+  return undefined
 }
 
 // TODO: move this somewhere else?
