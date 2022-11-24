@@ -109,7 +109,7 @@ export const Progress = styled.div<{ active: number | string }>`
   position: relative;
   height: 4px;
   width: 150px;
-  background: orange;
+  background: ${({ theme }) => theme.bg3};
   margin-right: 5px;
 
   &:after {
@@ -121,6 +121,10 @@ export const Progress = styled.div<{ active: number | string }>`
   }
 `
 
+export const ProgressPercent = styled.span`
+  color: ${({ theme }) => theme.green1};
+`
+
 export const InlineWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -128,7 +132,7 @@ export const InlineWrapper = styled.div`
   font-size: 0.75rem;
 
   & > * {
-    margin-left: 5px;
+    margin-left: 2px;
   }
 `
 

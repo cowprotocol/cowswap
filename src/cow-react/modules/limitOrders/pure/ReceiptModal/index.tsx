@@ -1,16 +1,11 @@
-import { OrderKind } from 'state/orders/actions'
 import { GpModal } from 'components/Modal'
+import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
-import { StatusItem } from '../Orders/OrdersTable.styled'
-import { orderStatusTitleMap } from '../Orders/OrdersTable'
+import { OrderKind } from 'state/orders/actions'
 import { CloseIcon } from 'theme'
-import { useMemo } from 'react'
 import { CurrencyField } from './CurrencyField'
 import { formatSmart } from 'utils/format'
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
-import { ExternalLink } from 'theme'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getEtherscanLink } from 'utils'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { FeeField } from './FeeField'
 import { StyledScrollarea } from 'components/SearchModal/CommonBases/CommonBasesMod'
@@ -19,12 +14,18 @@ import { PriceField } from './PriceField'
 import { DateField } from './DateField'
 import { FilledField } from './FilledField'
 import { SurplusField } from './SurplusField'
+import { OrderIDField } from './OrderIdField'
+import { StatusField } from './StatusField'
 
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
   chainId: SupportedChainId
   onDismiss: () => void
+  sellAmount: CurrencyAmount<Token>
+  buyAmount: CurrencyAmount<Token>
+  limitPrice: Fraction
+  executionPrice: Fraction | null
 }
 
 enum Tooltip {
@@ -40,31 +41,22 @@ enum Tooltip {
   ORDER_ID = 'Order id TODO',
 }
 
-export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps) {
-  const executionPrice = useMemo(() => {
-    if (
-      !order ||
-      !order.executedBuyAmount ||
-      !order.executedSellAmount ||
-      order.executedBuyAmount.isEqualTo(0) ||
-      order.executedSellAmount.isEqualTo(0)
-    ) {
-      return null
-    }
-
-    return new Fraction(order.executedBuyAmount.toNumber(), order.executedSellAmount.toNumber())
-  }, [order])
-
+export function ReceiptModal({
+  isOpen,
+  onDismiss,
+  order,
+  chainId,
+  sellAmount,
+  buyAmount,
+  limitPrice,
+  executionPrice,
+}: ReceiptProps) {
   if (!order || !chainId) {
     return null
   }
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'Your receive at least' : 'You receive exactly'
-  const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-  const limitPrice = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-  const activityUrl = getEtherscanLink(chainId, order.id, 'transaction')
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -81,12 +73,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
 
             <styledEl.Field border="rounded-top">
               <FieldLabel label="Status" tooltip={Tooltip.STATUS} />
-
-              <styledEl.Value>
-                <StatusItem cancelling={!!order.isCancelling} status={order.status}>
-                  {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
-                </StatusItem>
-              </styledEl.Value>
+              <StatusField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -121,7 +108,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
 
             <styledEl.Field>
               <FieldLabel label="Expiry" tooltip={Tooltip.EXPIRY} />
-              <DateField date={order.creationTime} />
+              <DateField date={order.expirationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -134,13 +121,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
 
             <styledEl.Field border="rounded-bottom">
               <FieldLabel label="Order ID" tooltip={Tooltip.ORDER_ID} />
-
-              <styledEl.Value>
-                <ExternalLink href={activityUrl || ''}>
-                  <span>{order.id.slice(0, 8)}</span>
-                  <span>↗</span>
-                </ExternalLink>
-              </styledEl.Value>
+              <OrderIDField order={order} chainId={chainId} />
             </styledEl.Field>
           </styledEl.Body>
         </StyledScrollarea>

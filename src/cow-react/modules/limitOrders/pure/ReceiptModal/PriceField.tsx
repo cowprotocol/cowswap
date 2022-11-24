@@ -4,12 +4,12 @@ import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/ho
 import { Fraction } from '@uniswap/sdk-core'
 import { formatSmart } from 'utils/format'
 
-interface PriceFieldProps {
+interface Props {
   order: ParsedOrder
   price: Fraction | null
 }
 
-export function PriceField({ order, price }: PriceFieldProps) {
+export function PriceField({ order, price }: Props) {
   return (
     <styledEl.Value>
       {price ? (

@@ -4,11 +4,11 @@ import * as styledEl from './styled'
 import { formatSmart } from 'utils/format'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-interface SurplusFieldProps {
+interface Props {
   order: ParsedOrder
 }
 
-export function SurplusField({ order }: SurplusFieldProps) {
+export function SurplusField({ order }: Props) {
   const { kind, inputToken, outputToken, surplusAmount, surplusPercentage } = order
 
   const surplusToken = kind === OrderKind.SELL ? outputToken : inputToken

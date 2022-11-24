@@ -4,13 +4,13 @@ import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/ho
 import { formatSmart } from 'utils/format'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-interface FilledFieldProps {
+interface Props {
   order: ParsedOrder
   sellAmount: CurrencyAmount<Token>
   buyAmount: CurrencyAmount<Token>
 }
 
-export function FilledField({ order, sellAmount, buyAmount }: FilledFieldProps) {
+export function FilledField({ order, sellAmount, buyAmount }: Props) {
   const filledPercentage = useMemo(() => {
     if (!order || !order.filledPercentage) {
       return null
@@ -23,7 +23,7 @@ export function FilledField({ order, sellAmount, buyAmount }: FilledFieldProps) 
     <styledEl.Value>
       <styledEl.InlineWrapper>
         <styledEl.Progress active={filledPercentage || 0} />
-        <span>{filledPercentage}%</span>
+        <styledEl.ProgressPercent>{filledPercentage}%</styledEl.ProgressPercent>
       </styledEl.InlineWrapper>
 
       <styledEl.InlineWrapper>
