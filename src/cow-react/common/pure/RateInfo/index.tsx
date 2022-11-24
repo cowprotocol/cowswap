@@ -89,7 +89,6 @@ export function RateInfo({
   const outputCurrency = outputCurrencyAmount?.currency
 
   const [currentIsInversed, setCurrentIsInversed] = useState(isInversed)
-  const [isQuoteCurrencyDetected, setIsQuoteCurrencyDetected] = useState(false)
 
   const currentActiveRate = useMemo(() => {
     if (!activeRate) return null
@@ -120,16 +119,12 @@ export function RateInfo({
    * @see getQuoteCurrency
    */
   useEffect(() => {
-    setIsQuoteCurrencyDetected(!!quoteCurrency)
-
-    if (isQuoteCurrencyDetected) return
-
     if (quoteCurrency) {
       const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
       setCurrentIsInversed(quoteCurrencyAddress !== inputCurrencyAddress)
     }
-  }, [isQuoteCurrencyDetected, quoteCurrency, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount])
+  }, [quoteCurrency, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 
