@@ -18,6 +18,7 @@ import { FieldLabel } from './FieldLabel'
 import { PriceField } from './PriceField'
 import { DateField } from './DateField'
 import { FilledField } from './FilledField'
+import { SurplusField } from './SurplusField'
 
 interface ReceiptProps {
   isOpen: boolean
@@ -105,12 +106,7 @@ export function ReceiptModal({ isOpen, onDismiss, order, chainId }: ReceiptProps
 
             <styledEl.Field>
               <FieldLabel label="Order surplus" tooltip={Tooltip.SURPLUS} />
-
-              <styledEl.Value>
-                <strong>
-                  {order.surplusFee} {order.outputToken.symbol}
-                </strong>
-              </styledEl.Value>
+              <SurplusField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>

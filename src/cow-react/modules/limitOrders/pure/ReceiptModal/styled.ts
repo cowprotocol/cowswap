@@ -94,11 +94,11 @@ export const LabelText = styled.span`
 export const Label = styled.div``
 
 export const Value = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  flex: 1;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 
   & a {
     font-size: 0.9rem;
@@ -130,4 +130,8 @@ export const InlineWrapper = styled.div`
   & > * {
     margin-left: 5px;
   }
+`
+
+export const Surplus = styled.span`
+  color: ${({ theme }) => theme.green1};
 `
