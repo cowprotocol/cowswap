@@ -1,17 +1,17 @@
 import {
   EthFlowStepper as Pure,
-  EthFlowStepperProps,
+  EthFlowStepperProps as PureProps,
   SmartOrderStatus,
 } from '@cow/modules/swap/pure/EthFlow/EthFlowStepper'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { Order } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 
-type Props = {
+type EthFlowStepperProps = {
   storeOrder: Order | undefined
 }
 
-export function EthFlowStepper(props: Props) {
+export function EthFlowStepper(props: EthFlowStepperProps) {
   const { storeOrder } = props
   const { native } = useDetectNativeToken()
 
@@ -22,7 +22,7 @@ export function EthFlowStepper(props: Props) {
     return null
   }
 
-  const stepperProps: EthFlowStepperProps = {
+  const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
     tokenLabel: storeOrder.outputToken.symbol as string,
     order: {
