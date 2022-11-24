@@ -24,7 +24,7 @@ interface ReceiptProps {
   onDismiss: () => void
   sellAmount: CurrencyAmount<Token>
   buyAmount: CurrencyAmount<Token>
-  limitPrice: Fraction
+  limitPrice: Fraction | null
   executionPrice: Fraction | null
 }
 

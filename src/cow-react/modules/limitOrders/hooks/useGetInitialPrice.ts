@@ -11,7 +11,8 @@ import { DEFAULT_DECIMALS } from 'custom/constants'
 
 type PriceResult = number | Error | undefined
 
-const parsePrice = (price: number, currency: Currency) => price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
+export const parsePrice = (price: number, currency: Currency) =>
+  price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
 
 async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
   const currencyAddress = getAddress(currency)

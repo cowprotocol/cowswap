@@ -1,6 +1,5 @@
-import { ZERO_BIG_NUMBER } from '@cowprotocol/cow-js'
-import BigNumber from 'bignumber.js'
 import { Order } from 'state/orders/actions'
+import JSBI from 'jsbi'
 
 /**
  * Syntactic sugar to get the order's executed amounts as a BigNumber (in atoms)
@@ -9,20 +8,21 @@ import { Order } from 'state/orders/actions'
  * @param order The order
  */
 export function getOrderExecutedAmounts(order: Order): {
-  executedBuyAmount: BigNumber
-  executedSellAmount: BigNumber
+  executedBuyAmount: JSBI
+  executedSellAmount: JSBI
 } {
   if (!order.apiAdditionalInfo) {
     return {
-      executedBuyAmount: ZERO_BIG_NUMBER,
-      executedSellAmount: ZERO_BIG_NUMBER,
+      executedBuyAmount: JSBI.BigInt(0),
+      executedSellAmount: JSBI.BigInt(0),
     }
   }
 
   return {
-    executedBuyAmount: new BigNumber(order.apiAdditionalInfo.executedBuyAmount),
-    executedSellAmount: new BigNumber(order.apiAdditionalInfo.executedSellAmount).minus(
-      order.apiAdditionalInfo.executedFeeAmount
+    executedBuyAmount: JSBI.BigInt(order.apiAdditionalInfo.executedBuyAmount),
+    executedSellAmount: JSBI.subtract(
+      JSBI.BigInt(order.apiAdditionalInfo.executedSellAmount),
+      JSBI.BigInt(order.apiAdditionalInfo.executedFeeAmount)
     ),
   }
 }

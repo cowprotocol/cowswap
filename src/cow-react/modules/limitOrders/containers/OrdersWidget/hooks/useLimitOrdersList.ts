@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js'
 import { getOrderFilledAmount } from '@cow/modules/limitOrders/utils/getOrderFilledAmount'
 import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 import { getOrderExecutedAmounts } from '@cow/modules/limitOrders/utils/getOrderExecutedAmounts'
+import JSBI from 'jsbi'
 
 export interface LimitOrdersList {
   pending: ParsedOrder[]
@@ -13,8 +14,8 @@ export interface LimitOrdersList {
 }
 
 export interface ParsedOrder extends Order {
-  executedBuyAmount?: BigNumber
-  executedSellAmount?: BigNumber
+  executedBuyAmount?: JSBI
+  executedSellAmount?: JSBI
   surplusFee?: string
   expirationTime?: Date
   partiallyFilled?: boolean
