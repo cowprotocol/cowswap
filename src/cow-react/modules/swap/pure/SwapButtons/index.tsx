@@ -154,6 +154,14 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
+  [SwapButtonState.EthFlowSwapBuyUnsupported]: (props: SwapButtonsContext) => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <Trans>
+        Native {GpEther.onChain(props.chainId || SupportedChainId.MAINNET).symbol} BUY orders are not currently
+        supported
+      </Trans>
+    </GreyCard>
+  ),
   [SwapButtonState.EthFlowSwap]: (props: SwapButtonsContext) => (
     <>
       <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
