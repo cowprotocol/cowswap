@@ -1,13 +1,10 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
 import {
   Label,
   Wrapper,
-  TableHeader,
-  TableBody,
   PageButtons,
   Arrow,
   ArrowButton,
@@ -15,6 +12,9 @@ import {
   Table,
   PaginationText,
   IndexLabel,
+  Row,
+  TableHeader,
+  NoResults,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
 import { OperationType } from 'components/TransactionConfirmationModal'
@@ -192,25 +192,26 @@ export default function TokenTable({
     <Wrapper>
       <ErrorModal />
       <TransactionConfirmationModal />
-      {tokensData && sortedTokens.length !== 0 ? (
-        <AutoColumn>
-          <Table ref={tableRef}>
-            <TableHeader>
-              <IndexLabel>#</IndexLabel>
-              <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
-                <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
-              </ClickableText>
-              <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
-                <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
-              </ClickableText>
-              <Label>Value</Label>
-              <Label>Actions</Label>
-            </TableHeader>
 
-            <TableBody>
-              {sortedTokens.map((data, i) => {
-                if (data) {
-                  return (
+      <>
+        <Table ref={tableRef}>
+          <TableHeader>
+            <IndexLabel>#</IndexLabel>
+            <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
+              <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
+            </ClickableText>
+            <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
+              <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
+            </ClickableText>
+            <Label>Value</Label>
+            <Label>Actions</Label>
+          </TableHeader>
+
+          {tokensData && sortedTokens.length !== 0 ? (
+            sortedTokens.map((data, i) => {
+              if (data) {
+                return (
+                  <Row>
                     <TokensTableRow
                       key={data.address}
                       toggleWalletModal={toggleWalletModal}
@@ -220,13 +221,19 @@ export default function TokenTable({
                       index={getTokenIndex(i)}
                       tokenData={data}
                     />
-                  )
-                }
-                return null
-              })}
-            </TableBody>
-          </Table>
+                  </Row>
+                )
+              }
+              return null
+            })
+          ) : (
+            <NoResults>
+              <h3>No results found ¯\_(ツ)_/¯</h3>
+            </NoResults>
+          )}
+        </Table>
 
+        {tokensData && sortedTokens.length !== 0 && (
           <PageButtons>
             <ArrowButton onClick={() => setPage(1)}>
               <Arrow faded={page === 1}>{'<<'}</Arrow>
@@ -248,10 +255,8 @@ export default function TokenTable({
               <Arrow faded={page === maxPage}>{'>>'}</Arrow>
             </ArrowButton>
           </PageButtons>
-        </AutoColumn>
-      ) : (
-        <small>{'No results found :('}</small>
-      )}
+        )}
+      </>
     </Wrapper>
   )
 }

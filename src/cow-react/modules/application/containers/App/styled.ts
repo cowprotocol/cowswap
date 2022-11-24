@@ -31,11 +31,12 @@ export const BodyWrapper = styled.div`
   width: 100%;
   align-items: flex-start;
   justify-content: center;
-  flex: auto;
+  flex: 1 1 auto;
   z-index: 2;
   padding: 5vh 16px 0;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-  padding: '0 0 16px';
+  padding: 0 16px 16px;
+  flex: none;
 `}
 `
