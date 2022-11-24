@@ -14,6 +14,10 @@ export const ContainerBox = styled.div`
   box-shadow: ${({ theme }) => theme.boxShadow1};
   padding: 10px;
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 16px;
+  `};
 `
 
 export const Header = styled.div`
@@ -33,7 +37,11 @@ export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
 `
 
 export const SwapHeaderStyled = styled(SwapHeader)`
-  padding: 0 0.25rem 0.5rem 0.25rem;
+  padding: 8px 8px 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    padding: 0 0 16px;
+  `};
 `
 
 export const RemoveRecipientStyled = styled(RemoveRecipient)`

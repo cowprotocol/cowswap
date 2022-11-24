@@ -40,8 +40,9 @@ export function colors(darkMode: boolean): Colors {
     text3: darkMode ? '#428dff' : '#0d5ed9',
 
     // States NEW
-    danger: darkMode ? '#EB3030' : '#D41300',
+    danger: darkMode ? '#ff7166' : '#D41300',
     warning: darkMode ? '#f3841e' : '#f3841e',
+    alert: darkMode ? '#ffc824' : '#ffc311',
 
     // DEPRECATED but keeping because of dependencies
     primary1: darkMode ? '#0d5ed9' : '#052B65',
@@ -423,6 +424,20 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ::selection {
     background: ${({ theme }) => theme.bg2};
     color: ${({ theme }) => theme.white};
+  }
+
+  // TODO: Can be removed once we control this component
+  [data-reach-dialog-overlay] {
+    z-index: 10!important;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      top: 0!important;
+      bottom: 0!important;
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      bottom: 64px!important;
+    `}
   }
 
   // Appzi Container override
