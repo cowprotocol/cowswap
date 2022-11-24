@@ -8,7 +8,6 @@ export interface DropdownContentPosition {
 export const DropdownBox = styled.div`
   display: flex;
   position: relative;
-  width: 100%;
 `
 
 export const DropdownButton = styled.span`

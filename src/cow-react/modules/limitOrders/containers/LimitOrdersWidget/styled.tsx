@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
 import { NumericalInput } from '@cow/modules/limitOrders/containers/RateInput/styled'
+import { DropdownBox } from '@cow/common/pure/Dropdown/styled'
 
 export const Container = styled.div`
   width: 100%;
@@ -56,6 +57,10 @@ export const RateWrapper = styled.div`
 
   ${NumericalInput} {
     font-size: 21px;
+  }
+
+  ${DropdownBox} {
+    width: 100%;
   }
 `
 
