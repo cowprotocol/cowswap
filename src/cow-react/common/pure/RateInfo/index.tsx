@@ -60,6 +60,16 @@ const InvertIcon = styled.div`
   cursor: pointer;
 `
 
+const RateWrapper = styled.button`
+  display: inline;
+  background: none;
+  border: 0;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+`
+
 export function InvertRateControl({ onClick }: { onClick(): void }) {
   return (
     <InvertIcon onClick={onClick}>
@@ -115,16 +125,12 @@ export function RateInfo({
     setCurrentIsInversed((state) => !state)
   }, [isInversed])
 
-  /**
-   * @see getQuoteCurrency
-   */
+  // Set isInversed based on quoteCurrency
   useEffect(() => {
-    if (quoteCurrency) {
-      const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
+    const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
-      setCurrentIsInversed(quoteCurrencyAddress !== inputCurrencyAddress)
-    }
-  }, [quoteCurrency, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount])
+    setCurrentIsInversed(quoteCurrencyAddress !== inputCurrencyAddress)
+  }, [quoteCurrency, inputCurrency, outputCurrency])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 
@@ -134,16 +140,18 @@ export function RateInfo({
         <div>
           <LightText>
             <Trans>{label}</Trans>
-            <InvertRateControl onClick={() => setCurrentIsInversed(!currentIsInversed)} />
+            <InvertRateControl onClick={() => setCurrentIsInversed((state) => !state)} />
           </LightText>
         </div>
       )}
       <div>
-        <span title={currentActiveRate.toSignificant(18) + ' ' + rateInputCurrency.symbol}>
-          <LightText>1 {rateInputCurrency.symbol}</LightText> = {formatSmart(currentActiveRate)}{' '}
-          {rateOutputCurrency.symbol}
-        </span>{' '}
-        <LightText>{!!fiatAmount && <span>(≈${formatSmart(fiatAmount, 2)})</span>}</LightText>
+        <RateWrapper onClick={() => setCurrentIsInversed((state) => !state)}>
+          <span title={currentActiveRate.toSignificant(18) + ' ' + rateInputCurrency.symbol}>
+            <LightText>1 {rateInputCurrency.symbol}</LightText> = {formatSmart(currentActiveRate)}{' '}
+            {rateOutputCurrency.symbol}
+          </span>{' '}
+          <LightText>{!!fiatAmount && <span>(≈${formatSmart(fiatAmount, 2)})</span>}</LightText>
+        </RateWrapper>
       </div>
     </Wrapper>
   )
