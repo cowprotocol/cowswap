@@ -7,20 +7,17 @@ import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
-import ms from 'ms.macro'
 
-// It's request to get price, so we don't need precise value for validTo
-const PRICE_QUOTE_VALID_TO_TIME = ms`30m`
+export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }
 
-export function useQuoteRequestParams(): FeeQuoteParams | null {
+export function useQuoteRequestParams(): LimitOrdersQuoteParams | null {
   const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
-  const deadlineTimestamp = Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000)
   const { chainId, account } = useWeb3React()
   const { exactTypedValue } = useTypedValue()
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId || !deadlineTimestamp) {
+    if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId) {
       return null
     }
 
@@ -40,7 +37,6 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
 
     return {
       chainId,
-      validTo: deadlineTimestamp,
       receiver: recipientEnsAddress || recipient || account,
       kind: orderKind,
       sellToken,
@@ -50,15 +46,5 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
       toDecimals,
       isEthFlow: false, // EthFlow is not compatible with limit orders
     }
-  }, [
-    account,
-    chainId,
-    exactTypedValue,
-    inputCurrency,
-    orderKind,
-    outputCurrency,
-    recipient,
-    recipientEnsAddress,
-    deadlineTimestamp,
-  ])
+  }, [account, chainId, exactTypedValue, inputCurrency, orderKind, outputCurrency, recipient, recipientEnsAddress])
 }
