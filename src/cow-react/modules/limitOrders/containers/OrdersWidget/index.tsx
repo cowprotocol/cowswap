@@ -1,13 +1,15 @@
 import { Orders } from '../../pure/Orders'
 import { LIMIT_ORDERS_TAB_KEY, buildLimitOrdersTabUrl, OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
 import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useHistory, useLocation } from 'react-router-dom'
 import { LimitOrdersReceiptModal } from '@cow/modules/limitOrders/containers/LimitOrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
 import { GP_VAULT_RELAYER } from 'constants/index'
+import { CancellationModal, CancellationModalProps } from 'components/AccountDetails/Transaction/CancelationModal'
+import { pendingOrderSummary } from '@cow/common/helpers/pendingOrderSummary'
 
 const openTab: OrderTab = {
   id: 'open',
@@ -30,6 +32,8 @@ export function OrdersWidget() {
   const history = useHistory()
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWeb3React()
+
+  const [cancelModalProps, setCancelModalProps] = useState<CancellationModalProps | null>(null)
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -55,6 +59,23 @@ export function OrdersWidget() {
     ordersList.pending
   )
 
+  const showOrderCancelationModal = useCallback(
+    (order: Order) => {
+      if (!chainId) return
+
+      setCancelModalProps({
+        isOpen: true,
+        chainId,
+        orderId: order.id,
+        summary: pendingOrderSummary(order),
+        onDismiss() {
+          setCancelModalProps(null)
+        },
+      })
+    },
+    [chainId]
+  )
+
   useEffect(() => {
     history.push(buildLimitOrdersTabUrl(location.pathname, location.search, currentTabId))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -62,11 +83,14 @@ export function OrdersWidget() {
   return (
     <>
       <Orders
+        chainId={chainId}
         tabs={tabs}
         orders={orders}
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
+        showOrderCancelationModal={showOrderCancelationModal}
       />
+      {cancelModalProps && <CancellationModal {...cancelModalProps} />}
       <LimitOrdersReceiptModal />
     </>
   )

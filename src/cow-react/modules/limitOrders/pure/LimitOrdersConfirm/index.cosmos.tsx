@@ -1,5 +1,5 @@
 import { Field } from 'state/swap/actions'
-import { CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
@@ -71,10 +71,10 @@ const tradeContext: TradeFlowContext = {
   isGnosisSafeWallet: false,
 }
 
-const activeRateDisplay = {
-  inputCurrency,
-  outputCurrency,
-  activeRate: new Fraction(50000000, 20000000),
+const rateInfoParams = {
+  chainId: 5,
+  inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
+  outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
   inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
@@ -90,7 +90,7 @@ const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceI
 const Fixtures = {
   default: (
     <LimitOrdersConfirm
-      activeRateDisplay={activeRateDisplay}
+      rateInfoParams={rateInfoParams}
       rateImpact={1}
       priceImpact={priceImpact}
       tradeContext={tradeContext}

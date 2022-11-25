@@ -1,13 +1,14 @@
 import { formatSmart } from 'utils/format'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
-import { RateInfo } from '../RateInfo'
+import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { AlertTriangle } from 'react-feather'
+import { AlertTriangle, Trash2 } from 'react-feather'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { transparentize } from 'polished'
 
 const statusColorMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: '#badbe8',
@@ -93,6 +94,22 @@ const WarningParagraph = styled.div`
   }
 `
 
+const CancelOrderBtn = styled.button`
+  background: none;
+  border: 0;
+  outline: none;
+  margin: 0 auto;
+  border-radius: 3px;
+  color: ${({ theme }) => theme.text2};
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+
+  :hover {
+    background: ${({ theme }) => transparentize(0.9, theme.black)};
+  }
+`
+
 function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (
     <AmountItem title={amount.toExact() + ' ' + amount.currency.symbol}>
@@ -129,11 +146,13 @@ const allowanceWarning = (tokenSymbol: string) => (
 )
 
 export interface OrderRowProps {
+  chainId: SupportedChainId | undefined
   order: Order
   balancesAndAllowances: BalancesAndAllowances
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
   onClick: () => void
+  showOrderCancelationModal(order: Order): void
 }
 
 function isEnoughAmount(
@@ -147,14 +166,22 @@ function isEnoughAmount(
   return sellAmount.lessThan(targetAmount)
 }
 
-export function OrderRow({ order, RowElement, balancesAndAllowances, isRateInversed, onClick }: OrderRowProps) {
+export function OrderRow({
+  chainId,
+  order,
+  RowElement,
+  balancesAndAllowances,
+  isRateInversed,
+  showOrderCancelationModal,
+  onClick,
+}: OrderRowProps) {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-  const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-  const activeRateDisplay: ActiveRateDisplay = {
-    activeRate,
-    inputCurrency: order.inputToken,
-    outputCurrency: order.outputToken,
+
+  const rateInfoParams: RateInfoParams = {
+    chainId,
+    inputCurrencyAmount: sellAmount,
+    outputCurrencyAmount: buyAmount,
     activeRateFiatAmount: null,
     inversedActiveRateFiatAmount: null,
   }
@@ -177,7 +204,7 @@ export function OrderRow({ order, RowElement, balancesAndAllowances, isRateInver
       </div>
       <div>
         <RateValue>
-          <RateInfo noLabel={true} isInversed={isRateInversed} activeRateDisplay={activeRateDisplay} />
+          <RateInfo noLabel={true} isInversed={isRateInversed} rateInfoParams={rateInfoParams} />
         </RateValue>
       </div>
       <div>
@@ -203,6 +230,13 @@ export function OrderRow({ order, RowElement, balancesAndAllowances, isRateInver
             </WarningIndicator>
           )}
         </StatusBox>
+      </div>
+      <div>
+        {order.status === OrderStatus.PENDING && !order.isCancelling && (
+          <CancelOrderBtn title="Cancel order" onClick={() => showOrderCancelationModal(order)}>
+            <Trash2 size={16} />
+          </CancelOrderBtn>
+        )}
       </div>
     </RowElement>
   )

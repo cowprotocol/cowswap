@@ -26,6 +26,10 @@ export const Header = styled.div`
   font-size: 16px;
 `
 
+export const SwapFormWrapper = styled.div`
+  margin-bottom: 10px;
+`
+
 export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
   display: flex;
   justify-content: space-between;

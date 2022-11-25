@@ -3,6 +3,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
+import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]
@@ -21,6 +22,13 @@ const trade = new TradeGp({
   tradeType: TradeType.EXACT_INPUT,
   quoteId: 10000,
 })
+const rateInfoParams: RateInfoParams = {
+  chainId: 5,
+  inputCurrencyAmount: null,
+  outputCurrencyAmount: null,
+  activeRateFiatAmount: null,
+  inversedActiveRateFiatAmount: null,
+}
 const defaultProps: TradeRatesProps = {
   trade,
   isExpertMode: false,
@@ -30,6 +38,7 @@ const defaultProps: TradeRatesProps = {
   allowedSlippage: new Percent(12, 10_000),
   userAllowedSlippage: new Percent(12, 10_000),
   fee: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
+  rateInfoParams,
 }
 
 export default <TradeRates {...defaultProps} />

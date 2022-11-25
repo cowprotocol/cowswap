@@ -9,7 +9,12 @@ export function MarketPriceUpdater() {
   const { price, isLoading } = useGetInitialPrice()
 
   useEffect(() => {
-    updateLimitRateState({ isLoading, activeRate: price, isTypedValue: false })
+    // Don't update activeRate while loading
+    if (isLoading) {
+      updateLimitRateState({ isLoading })
+    } else {
+      updateLimitRateState({ isLoading, activeRate: price, isTypedValue: false })
+    }
   }, [price, isLoading, updateLimitRateState])
 
   return null
