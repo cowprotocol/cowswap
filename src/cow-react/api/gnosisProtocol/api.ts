@@ -601,7 +601,7 @@ function transformEthFlowOrder(order: OrderMetaData): OrderMetaData {
 
   const expireIn5s = Math.ceil((new Date(creationDate).getTime() + 5 * 1000) / 1000)
   const { userValidTo: validTo } = ethflowData
-  console.log('modified validTo', expireIn5s, { validTo, creationDate })
+  console.log('modified validTo', order.uid.slice(0, 10), expireIn5s, { validTo, creationDate })
   const owner = order.onchainUser || order.owner
   const sellToken = BUY_ETH_ADDRESS
 
