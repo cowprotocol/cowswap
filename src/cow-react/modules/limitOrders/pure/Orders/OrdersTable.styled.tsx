@@ -102,11 +102,11 @@ export const Row = styled(Header)`
 export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
   --statusColor: ${({ theme, status, cancelling }) =>
     cancelling
-      ? theme.pending
+      ? theme.text1
       : status === OrderStatus.PENDING // OPEN order
       ? theme.text3
       : status === OrderStatus.PRESIGNATURE_PENDING
-      ? theme.pending
+      ? theme.text1
       : status === OrderStatus.FULFILLED
       ? theme.success
       : status === OrderStatus.EXPIRED
