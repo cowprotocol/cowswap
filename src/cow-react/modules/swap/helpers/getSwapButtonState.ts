@@ -4,7 +4,6 @@ import { QuoteError } from 'state/price/actions'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import TradeGp from 'state/swap/TradeGp'
 import { getEthFlowEnabled } from '@cow/modules/swap/helpers/getEthFlowEnabled'
-import { TradeType } from '@uniswap/sdk-core'
 
 export enum SwapButtonState {
   SwapIsUnsupported = 'SwapIsUnsupported',
@@ -28,7 +27,6 @@ export enum SwapButtonState {
   RegularSwap = 'RegularSwap',
   SwapWithWrappedToken = 'SwapWithWrappedToken',
   EthFlowSwap = 'EthFlowSwap',
-  EthFlowSwapBuyUnsupported = 'EthFlowSwapBuyUnsupported',
 }
 
 export interface SwapButtonStateParams {
@@ -125,9 +123,6 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
 
   if (input.isNativeIn) {
     if (getEthFlowEnabled(input.isSmartContractWallet)) {
-      if (input.trade?.tradeType === TradeType.EXACT_OUTPUT) {
-        return SwapButtonState.EthFlowSwapBuyUnsupported
-      }
       return SwapButtonState.EthFlowSwap
     } else {
       return SwapButtonState.SwapWithWrappedToken

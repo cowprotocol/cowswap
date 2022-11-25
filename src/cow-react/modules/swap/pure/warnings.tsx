@@ -21,7 +21,6 @@ export interface NewSwapWarningsTopProps {
 export interface NewSwapWarningsBottomProps {
   isSupportedWallet: boolean
   swapIsUnsupported: boolean
-  isEthFlowBuyOrder: boolean
   currencyIn: Currency | undefined
   currencyOut: Currency | undefined
 }
@@ -62,18 +61,17 @@ export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTop
 }, genericPropsChecker)
 
 export const NewSwapWarningsBottom = React.memo(function (props: NewSwapWarningsBottomProps) {
-  const { isSupportedWallet, swapIsUnsupported, isEthFlowBuyOrder, currencyIn, currencyOut } = props
+  const { isSupportedWallet, swapIsUnsupported, currencyIn, currencyOut } = props
 
   console.debug('SWAP WARNING RENDER BOTTOM: ', props)
 
   return (
     <>
-      {currencyIn && currencyOut && (swapIsUnsupported || isEthFlowBuyOrder) && (
+      {currencyIn && currencyOut && swapIsUnsupported && (
         <CompatibilityIssuesWarning
           currencyIn={currencyIn}
           currencyOut={currencyOut}
           isSupportedWallet={isSupportedWallet}
-          isEthFlowBuyOrder={isEthFlowBuyOrder}
         />
       )}
     </>

@@ -44,7 +44,6 @@ import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 import { useSetupTradeState } from '@cow/modules/trade'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
-import { useIsEthFlowBuyOrder } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export function NewSwapWidget() {
   useSetupTradeState()
@@ -75,8 +74,6 @@ export function NewSwapWidget() {
     chainId,
     address: currenciesIds.INPUT,
   })
-
-  const isEthFlowBuyOrder = useIsEthFlowBuyOrder()
 
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
@@ -174,7 +171,6 @@ export function NewSwapWidget() {
   const swapWarningsBottomProps: NewSwapWarningsBottomProps = {
     isSupportedWallet,
     swapIsUnsupported: isSwapUnsupported,
-    isEthFlowBuyOrder,
     currencyIn: currencies.INPUT || undefined,
     currencyOut: currencies.OUTPUT || undefined,
   }
@@ -191,7 +187,7 @@ export function NewSwapWidget() {
     rateInfoParams,
   }
 
-  const showTradeRates = !isWrapUnwrapMode && !isEthFlowBuyOrder
+  const showTradeRates = !isWrapUnwrapMode
 
   return (
     <>
