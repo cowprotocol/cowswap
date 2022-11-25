@@ -83,12 +83,16 @@ export function OrdersTable({ orders }: OrdersTableProps) {
           })}
         </styledEl.Rows>
       </styledEl.TableBox>
-      <OrdersTablePagination
-        pageSize={pageSize}
-        totalCount={orders.length}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
+
+      {/* Only show pagination if more than 1 page available */}
+      {orders.length > pageSize && (
+        <OrdersTablePagination
+          pageSize={pageSize}
+          totalCount={orders.length}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
     </>
   )
 }

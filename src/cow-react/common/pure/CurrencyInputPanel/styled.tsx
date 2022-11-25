@@ -63,7 +63,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   display: flex;
   align-items: center;
   background: none;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 500;
   color: ${({ theme }) => theme.text1};
 

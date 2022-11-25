@@ -64,18 +64,16 @@ export function RateInput() {
       </styledEl.Header>
 
       <styledEl.Body>
-        <styledEl.InputWrapper>
-          {isLoading && areBothCurrencies ? (
-            <styledEl.RateLoader />
-          ) : (
-            <styledEl.NumericalInput
-              $loading={false}
-              className="rate-limit-amount-input"
-              value={displayedRate}
-              onUserInput={handleUserInput}
-            />
-          )}
-        </styledEl.InputWrapper>
+        {isLoading && areBothCurrencies ? (
+          <styledEl.RateLoader />
+        ) : (
+          <styledEl.NumericalInput
+            $loading={false}
+            className="rate-limit-amount-input"
+            value={displayedRate}
+            onUserInput={handleUserInput}
+          />
+        )}
 
         <styledEl.ActiveCurrency onClick={handleToggle}>
           <styledEl.ActiveSymbol>{secondaryCurrency}</styledEl.ActiveSymbol>

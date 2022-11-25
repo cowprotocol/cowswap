@@ -4,7 +4,7 @@ import { loadingAnimationMixin } from './style-mixins'
 
 export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; hasSeparatorLine?: boolean }>`
   display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
-  margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-12px auto' : '10px auto')};
+  margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-12px auto' : '6px auto')};
   cursor: pointer;
   position: relative;
   z-index: 2;
@@ -28,7 +28,7 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
     `}
 `
 
-export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
+export const LoadingWrapper = styled.div<{ isLoading: boolean; darkMode: boolean }>`
   position: absolute;
   left: calc(50% - 14px);
   height: 100%;
@@ -36,9 +36,9 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   transform-style: preserve-3d;
   transform-origin: center right;
   transition: transform 0.25s;
-  border: 0;
+  border: 1px solid ${({ theme }) => theme.grey1};
   box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
-  background: ${({ theme }) => theme.grey1};
+  background: ${({ theme, darkMode }) => (darkMode ? theme.grey1 : theme.white)};
   border-radius: 8px;
   width: 28px;
   margin: 0 auto;

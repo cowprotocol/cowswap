@@ -1,24 +1,34 @@
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`
-  background: ${({ theme }) => theme.input.bg1};
-  border-radius: 12px;
+  background: ${({ theme }) => theme.grey1};
+  border-radius: 16px;
   padding: 10px 16px;
-  flex: 1 1 30%;
   min-height: 80px;
+  justify-content: space-between;
+  display: flex;
+  flex-flow: row wrap;
 `
 
-export const Title = styled.p`
-  display: block;
-  margin: 0 0 1rem;
-  font-size: 0.75rem;
+export const Header = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+  width: 100%;
+  color: ${({ theme }) => transparentize(0.3, theme.text1)};
 `
 
 export const Current = styled.button<{ isCustom: boolean }>`
   color: ${({ theme }) => theme.text1};
-  font-size: ${({ isCustom }) => (isCustom ? '16px' : '24px')};
+  font-size: ${({ isCustom }) => (isCustom ? '12px' : '100%')};
+  letter-spacing: ${({ isCustom }) => (isCustom ? '-0.3px' : '0')};
   font-weight: 500;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: none;
   border: 0;
   outline: none;
@@ -26,20 +36,27 @@ export const Current = styled.button<{ isCustom: boolean }>`
   padding: 0;
   white-space: nowrap;
   cursor: pointer;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 
-  :hover {
+  &:hover {
     text-decoration: underline;
   }
 
-  span {
-    margin-right: 5px;
+  > span {
+    display: inline-block;
+  }
+
+  > svg {
+    margin: 0 0 0 auto;
   }
 `
 
 export const ListWrapper = styled.ul`
   display: block;
-  background: ${({ theme }) => theme.cardBackground};
-  box-shadow: 0 0 10px 2px ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.bg1};
+  box-shadow: ${({ theme }) => theme.boxShadow2};
   margin: 15px 0 0 0;
   padding: 10px 15px;
   border-radius: 20px;

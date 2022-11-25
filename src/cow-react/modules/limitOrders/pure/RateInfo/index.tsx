@@ -19,8 +19,8 @@ const Wrapper = styled.div`
 `
 
 const InvertIcon = styled.div`
-  background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.white};
+  background: ${({ theme }) => theme.grey1};
+  color: ${({ theme }) => theme.text1};
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -29,6 +29,12 @@ const InvertIcon = styled.div`
   line-height: 22px;
   margin-left: 5px;
   cursor: pointer;
+  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.grey1};
+  }
 `
 
 export function RateInfo({ activeRateDisplay, className }: RateInfoProps) {
