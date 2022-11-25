@@ -28,6 +28,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { BaseFlowContext } from '@cow/modules/swap/services/common/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
+import { OrderClass } from 'state/orders/actions'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -181,7 +182,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
   const validTo = calculateValidTo(deadline)
 
   const orderParams: PostOrderParams = {
-    class: 'market',
+    class: OrderClass.MARKET,
     kind,
     account,
     chainId,

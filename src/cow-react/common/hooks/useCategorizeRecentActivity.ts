@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
-import { OrderStatus } from 'state/orders/actions'
+import { OrderStatus, OrderClass } from 'state/orders/actions'
 
 const PENDING_STATES = [
   OrderStatus.PENDING,
@@ -30,7 +30,7 @@ export function useCategorizeRecentActivity() {
       // Separate the array into 2: transitory (pending) and final (confirmed) states
       allRecentActivity.reduce<[string[], string[]]>(
         (acc, activity) => {
-          if (isPending(activity)) {
+          if (isPending(activity) && activity.class !== OrderClass.LIMIT) {
             acc[0].push(activity.id)
           } else if (isConfirmed(activity)) {
             acc[1].push(activity.id)

@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { isAddress, shortenAddress } from 'utils'
-import { ChangeOrderStatusParams, Order, OrderKind, OrderStatus } from 'state/orders/actions'
+import { ChangeOrderStatusParams, Order, OrderClass, OrderKind, OrderStatus } from 'state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
@@ -28,7 +28,7 @@ export type PostOrderParams = {
   recipientAddressOrName: string | null
   allowsOffchainSigning: boolean
   appDataHash: string
-  class: 'market' | 'limit'
+  class: OrderClass
   quoteId?: number
 }
 
