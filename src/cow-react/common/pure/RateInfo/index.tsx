@@ -68,6 +68,7 @@ const RateWrapper = styled.button`
   margin: 0;
   padding: 0;
   cursor: pointer;
+  color: inherit;
 `
 
 export function InvertRateControl({ onClick }: { onClick(): void }) {
