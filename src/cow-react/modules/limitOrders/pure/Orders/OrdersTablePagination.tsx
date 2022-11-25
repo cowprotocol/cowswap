@@ -14,7 +14,7 @@ const PaginationBox = styled.div`
 `
 
 const PageButton = styled.button<{ active?: boolean }>`
-  background: ${({ theme, active }) => (active ? transparentize(0.88, theme.text3) : 'transparent')};
+  background: ${({ theme, active }) => (active ? transparentize(0.9, theme.text3) : 'transparent')};
   color: ${({ theme, active }) => (active ? theme.text1 : transparentize(0.2, theme.text1))};
   border: 0;
   outline: 0;

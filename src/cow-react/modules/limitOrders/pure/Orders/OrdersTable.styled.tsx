@@ -76,6 +76,12 @@ export const Header = styled.div`
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  background: transparent;
+  transition: background 0.15s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => transparentize(0.9, theme.text3)};
+  }
 
   > div {
     padding: 12px 16px;
