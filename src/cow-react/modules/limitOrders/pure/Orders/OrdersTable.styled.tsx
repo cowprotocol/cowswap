@@ -32,7 +32,13 @@ export const Content = styled.div`
     align-items: center;
     justify-content: center;
     margin: 0 0 16px;
-    background: ${({ theme }) => transparentize(0.75, theme.bg2)};
+    background: ${({ theme }) => transparentize(0.8, theme.text3)};
+    transform: rotate(0);
+    transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+    &:hover {
+      transform: rotate(360deg);
+    }
 
     > img {
       max-width: 100%;
@@ -133,7 +139,7 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean 
     left: 0;
     top: 0;
     background: var(--statusColor);
-    opacity: 0.1;
+    opacity: 0.12;
     z-index: 1;
     border-radius: 9px;
   }
