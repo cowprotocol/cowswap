@@ -194,7 +194,7 @@ export function NewSwapWidget() {
         <AffiliateStatusCheck />
         <styledEl.ContainerBox id="swap-page">
           <SwapForm {...swapFormProps} />
-          <TradeRates {...tradeRatesProps} />
+          {!isWrapUnwrapMode && <TradeRates {...tradeRatesProps} />}
           <NewSwapWarningsTop {...swapWarningsTopProps} />
           <SwapButtons {...swapButtonContext} />
           <NewSwapWarningsBottom {...swapWarningsBottomProps} />

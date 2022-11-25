@@ -31,7 +31,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
   console.debug('SWAP PAGE RENDER: ', props)
 
   return (
-    <>
+    <styledEl.SwapFormWrapper>
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
       <CurrencyInputPanel
@@ -67,6 +67,6 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       {showRecipientControls && recipient !== null && (
         <styledEl.RemoveRecipientStyled recipient={recipient} onChangeRecipient={onChangeRecipient} />
       )}
-    </>
+    </styledEl.SwapFormWrapper>
   )
 }, swapPagePropsChecker)
