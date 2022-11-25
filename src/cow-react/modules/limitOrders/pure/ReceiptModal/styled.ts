@@ -140,6 +140,10 @@ export const Surplus = styled.span`
   color: ${({ theme }) => theme.green1};
 `
 
+export const SurplusValue = styled.strong`
+  margin-left: 10px;
+`
+
 export const RateValue = styled.div`
   font-size: 12px;
 `

@@ -4,7 +4,6 @@ import * as styledEl from './styled'
 import { OrderKind } from 'state/orders/actions'
 import { CloseIcon } from 'theme'
 import { CurrencyField } from './CurrencyField'
-import { formatSmart } from 'utils/format'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { FeeField } from './FeeField'
@@ -68,8 +67,8 @@ export function ReceiptModal({
 
         <StyledScrollarea>
           <styledEl.Body>
-            <CurrencyField amount={formatSmart(sellAmount)} token={order.inputToken} label={inputLabel} />
-            <CurrencyField amount={formatSmart(buyAmount)} token={order.outputToken} label={outputLabel} />
+            <CurrencyField amount={sellAmount} token={order.inputToken} label={inputLabel} />
+            <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
             <styledEl.Field border="rounded-top">
               <FieldLabel label="Status" tooltip={Tooltip.STATUS} />

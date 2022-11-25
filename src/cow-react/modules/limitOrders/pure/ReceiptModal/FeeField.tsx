@@ -1,6 +1,6 @@
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { formatSmart } from 'utils/format'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 
 export type Props = { order: ParsedOrder }
@@ -10,21 +10,23 @@ export function FeeField({ order }: Props): JSX.Element | null {
 
   let formattedExecutedFee: string | undefined = executedFeeAmount?.toString(10) || ''
   let quoteSymbol: string | undefined = sellToken
+  let executedFeeCurrency: CurrencyAmount<Token> | undefined
 
   if (sellToken) {
-    formattedExecutedFee = formatSmart(CurrencyAmount.fromRawAmount(inputToken, executedFeeAmount?.toString() || 0))
+    executedFeeCurrency = CurrencyAmount.fromRawAmount(inputToken, executedFeeAmount?.toString() || 0)
+    formattedExecutedFee = formatSmart(executedFeeCurrency)
     quoteSymbol = inputToken.symbol
-  }
-
-  if (!quoteSymbol) {
-    return null
   }
 
   return (
     <styledEl.Value>
-      <span>
-        {formattedExecutedFee} {quoteSymbol}
-      </span>
+      {!quoteSymbol || !formattedExecutedFee ? (
+        <span>-</span>
+      ) : (
+        <span title={`${executedFeeCurrency?.toExact()} ${quoteSymbol}`}>
+          {formattedExecutedFee} {quoteSymbol}
+        </span>
+      )}
     </styledEl.Value>
   )
 }

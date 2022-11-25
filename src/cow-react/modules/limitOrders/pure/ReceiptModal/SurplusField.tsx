@@ -22,12 +22,12 @@ export function SurplusField({ order }: Props) {
   const formattedPercent = surplusPercentage?.multipliedBy(100)?.toFixed(2)
 
   return (
-    <styledEl.Value>
+    <styledEl.Value title={`${parsedSurplus.toExact()} ${surplusToken.symbol}`}>
       <styledEl.InlineWrapper>
         <styledEl.Surplus>+{formattedPercent}%</styledEl.Surplus>
-        <strong>
+        <styledEl.SurplusValue>
           {formattedSurplus} {surplusToken.symbol}
-        </strong>
+        </styledEl.SurplusValue>
       </styledEl.InlineWrapper>
     </styledEl.Value>
   )

@@ -11,6 +11,8 @@ interface Props {
 }
 
 export function FilledField({ order, sellAmount, buyAmount }: Props) {
+  const { inputToken, outputToken } = order
+
   const filledPercentage = useMemo(() => {
     if (!order || !order.filledPercentage) {
       return null
@@ -27,12 +29,12 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
       </styledEl.InlineWrapper>
 
       <styledEl.InlineWrapper>
-        <strong>
-          {formatSmart(sellAmount)} {order.inputToken.symbol}
+        <strong title={`${sellAmount.toExact()} ${inputToken.symbol}`}>
+          {formatSmart(sellAmount)} {inputToken.symbol}
         </strong>
         <span style={{ margin: '0 5px' }}>sold for</span>
-        <strong>
-          {formatSmart(buyAmount)} {order.outputToken.symbol}
+        <strong title={`${buyAmount.toExact()} ${outputToken.symbol}`}>
+          {formatSmart(buyAmount)} {outputToken.symbol}
         </strong>
       </styledEl.InlineWrapper>
     </styledEl.Value>
