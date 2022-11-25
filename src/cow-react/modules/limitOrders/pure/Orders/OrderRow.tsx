@@ -1,13 +1,13 @@
 import { formatSmart } from 'utils/format'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { ActiveRateDisplay } from '../../hooks/useActiveRateDisplay'
-import { RateInfo } from '../RateInfo'
+import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AlertTriangle, Trash2 } from 'react-feather'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 
 const statusColorMap: { [key in OrderStatus]: string } = {
@@ -146,6 +146,7 @@ const allowanceWarning = (tokenSymbol: string) => (
 )
 
 export interface OrderRowProps {
+  chainId: SupportedChainId | undefined
   order: Order
   balancesAndAllowances: BalancesAndAllowances
   RowElement: StyledComponent<'div', DefaultTheme>
@@ -165,6 +166,7 @@ function isEnoughAmount(
 }
 
 export function OrderRow({
+  chainId,
   order,
   RowElement,
   balancesAndAllowances,
@@ -173,11 +175,11 @@ export function OrderRow({
 }: OrderRowProps) {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-  const activeRate = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-  const activeRateDisplay: ActiveRateDisplay = {
-    activeRate,
-    inputCurrency: order.inputToken,
-    outputCurrency: order.outputToken,
+
+  const rateInfoParams: RateInfoParams = {
+    chainId,
+    inputCurrencyAmount: sellAmount,
+    outputCurrencyAmount: buyAmount,
     activeRateFiatAmount: null,
     inversedActiveRateFiatAmount: null,
   }
@@ -200,7 +202,7 @@ export function OrderRow({
       </div>
       <div>
         <RateValue>
-          <RateInfo noLabel={true} isInversed={isRateInversed} activeRateDisplay={activeRateDisplay} />
+          <RateInfo noLabel={true} isInversed={isRateInversed} rateInfoParams={rateInfoParams} />
         </RateValue>
       </div>
       <div>

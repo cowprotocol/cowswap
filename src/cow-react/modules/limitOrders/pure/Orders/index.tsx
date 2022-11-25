@@ -23,6 +23,7 @@ export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
 }
 
 export function Orders({
+  chainId,
   orders,
   tabs,
   isWalletConnected,
@@ -40,6 +41,7 @@ export function Orders({
 
     return (
       <OrdersTable
+        chainId={chainId}
         orders={orders}
         balancesAndAllowances={balancesAndAllowances}
         showOrderCancelationModal={showOrderCancelationModal}

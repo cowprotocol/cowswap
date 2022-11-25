@@ -22,12 +22,10 @@ import {
   LOW_SLIPPAGE_BPS,
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
-  PERCENTAGE_PRECISION,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from '@cow/modules/swap/pure/Row/RowDeadline'
@@ -237,12 +235,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           >
             <Trans>Auto</Trans>
           </Option>
-          <OptionCustom
-            disabled={isEthFlow}
-            active={userSlippageTolerance !== 'auto' && !isEthFlow}
-            warning={!!slippageError}
-            tabIndex={-1}
-          >
+          <OptionCustom active={userSlippageTolerance !== 'auto'} warning={!!slippageError} tabIndex={-1}>
             <RowBetween>
               {tooLow || tooHigh ? (
                 <SlippageEmojiContainer>
@@ -252,12 +245,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 </SlippageEmojiContainer>
               ) : null}
               <Input
-                disabled={isEthFlow}
                 placeholder={placeholderSlippage.toFixed(2)}
                 value={
-                  isEthFlow
-                    ? ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)
-                    : slippageInput.length > 0
+                  slippageInput.length > 0
                     ? slippageInput
                     : userSlippageTolerance === 'auto'
                     ? ''

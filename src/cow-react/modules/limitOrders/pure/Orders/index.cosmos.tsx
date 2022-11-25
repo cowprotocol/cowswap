@@ -25,6 +25,7 @@ const balancesAndAllowances: BalancesAndAllowances = {
 
 export default (
   <Orders
+    chainId={1}
     orders={ordersMock}
     tabs={tabs}
     isWalletConnected={true}
