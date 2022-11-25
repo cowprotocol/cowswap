@@ -8,9 +8,10 @@ import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 // TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
 const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.MAINNET]: [USDC_MAINNET, USDT, DAI].map((token) => token.address.toLowerCase()),
-  [SupportedChainId.GNOSIS_CHAIN]: [USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI].map((token) =>
-    token.address.toLowerCase()
-  ),
+  [SupportedChainId.GNOSIS_CHAIN]: [USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI]
+    .map((token) => token.address.toLowerCase())
+    // XDAI and WXDAI are stable-coins
+    .concat(NATIVE_CURRENCY_BUY_ADDRESS),
   [SupportedChainId.GOERLI]: [USDC_GOERLI, USDT_GOERLI, DAI_GOERLI].map((token) => token.address.toLowerCase()),
   [SupportedChainId.RINKEBY]: [],
 }
