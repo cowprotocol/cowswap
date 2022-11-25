@@ -26,6 +26,11 @@ export const MarketPriceButton = styled.button`
   cursor: pointer;
   border-radius: 16px;
   padding: 5px 8px;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
 `
 
 export const Body = styled.div`
