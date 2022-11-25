@@ -15,6 +15,7 @@ import { Field } from 'state/swap/actions'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { MouseoverTooltip } from 'components/Tooltip'
 
 interface BuiltItProps {
   className: string
@@ -25,6 +26,8 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   chainId: SupportedChainId | undefined
   loading: boolean
   disabled?: boolean
+  inputDisabled?: boolean
+  inputTooltip?: string
   isRateLoading?: boolean
   showSetMax?: boolean
   disableNonToken?: boolean
@@ -46,6 +49,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     priceImpactParams,
     disableNonToken = false,
     showSetMax = false,
+    inputDisabled = false,
+    inputTooltip,
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
@@ -89,6 +94,16 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     setTypedValue(viewAmount)
   }, [viewAmount])
 
+  const numericalInput = (
+    <styledEl.NumericalInput
+      className="token-amount-input"
+      value={typedValue}
+      disabled={inputDisabled}
+      onUserInput={onUserInputDispatch}
+      $loading={loading}
+    />
+  )
+
   return (
     <>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
@@ -103,12 +118,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             />
           </div>
           <div>
-            <styledEl.NumericalInput
-              className="token-amount-input"
-              value={typedValue}
-              onUserInput={onUserInputDispatch}
-              $loading={loading}
-            />
+            {inputTooltip ? <MouseoverTooltip text={inputTooltip}>{numericalInput}</MouseoverTooltip> : numericalInput}
           </div>
         </styledEl.CurrencyInputBox>
 
