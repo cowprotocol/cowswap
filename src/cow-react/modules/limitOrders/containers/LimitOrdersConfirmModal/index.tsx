@@ -13,7 +13,7 @@ import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
 import { formatSmartAmount } from 'utils/format'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
-import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
+import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useLimitOrdersWarningsAccepted } from '@cow/modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
@@ -63,7 +63,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
 
   const rateImpact = useRateImpact()
-  const activeRateDisplay = useActiveRateDisplay()
+  const rateInfoParams = useRateInfoParams(inputRawAmount, outputRawAmount)
 
   const onDismissConfirmation = useCallback(() => {
     setConfirmationState({ isPending: false, orderHash: null })
@@ -103,7 +103,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
             </styledEl.ConfirmHeader>
             <LimitOrdersConfirm
               tradeContext={tradeContext}
-              activeRateDisplay={activeRateDisplay}
+              rateInfoParams={rateInfoParams}
               inputCurrencyInfo={inputCurrencyInfo}
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}

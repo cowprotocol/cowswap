@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 import { Repeat } from 'react-feather'
 import QuestionHelper from 'components/QuestionHelper'
+import { RateInfo } from '@cow/common/pure/RateInfo'
 
 export const Box = styled.div`
   margin: 16px 8px;
@@ -71,4 +72,9 @@ export const Discount = styled.span`
 
 export const LightText = styled.span`
   font-weight: 300;
+`
+
+export const StyledRateInfo = styled(RateInfo)`
+  font-size: 13px;
+  font-weight: 500;
 `

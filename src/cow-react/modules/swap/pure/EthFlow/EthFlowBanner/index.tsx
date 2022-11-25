@@ -57,7 +57,9 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
             </p>
             <ul>
               <li>Lower overall fees</li>
-              <li>Lower default slippage (instead of {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}%)</li>
+              <li>
+                Lower default slippage (instead of {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% minimum)
+              </li>
               <li>No fees for failed transactions</li>
             </ul>
             <Separator />

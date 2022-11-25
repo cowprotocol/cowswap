@@ -124,17 +124,18 @@ export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-ro
 export const MEV_TOTAL = '606 Million'
 export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
-// 30 minutes
-export const GAS_PRICE_UPDATE_THRESHOLD = 30 * 60 * 1000
+export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
 export const GAS_FEE_ENDPOINTS = {
-  [ChainId.MAINNET]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
-  // No ropsten = main
-  // [ChainId.ROPSTEN]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
-  [ChainId.RINKEBY]: 'https://safe-relay.rinkeby.gnosis.io/api/v1/gas-station/',
-  [ChainId.GOERLI]: 'https://safe-relay.goerli.gnosis.io/api/v1/gas-station/',
-  // no kovan = main
-  // [ChainId.KOVAN]: 'https://safe-relay.kovan.gnosis.io/api/v1/gas-station/',
+  [ChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
   [ChainId.GNOSIS_CHAIN]: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
+  [ChainId.RINKEBY]: '',
+  [ChainId.GOERLI]: '',
+}
+export const GAS_API_KEYS = {
+  [ChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY,
+  [ChainId.GNOSIS_CHAIN]: '',
+  [ChainId.RINKEBY]: '',
+  [ChainId.GOERLI]: '',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq/trading#what-token-pairs-does-cowswap-allow-to-trade'
