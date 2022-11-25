@@ -25,13 +25,12 @@ export const Header = styled.div`
   justify-content: space-between;
   padding: 0 12px 4px;
   margin: 5px 0 15px 0;
-
   font-weight: 500;
   font-size: 16px;
 `
 
 export const SwapFormWrapper = styled.div`
-  margin-bottom: 10px;
+  margin: 0 0 10px;
 `
 
 export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`

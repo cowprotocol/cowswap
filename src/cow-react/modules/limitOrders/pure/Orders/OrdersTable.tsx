@@ -19,7 +19,7 @@ const TableBox = styled.div`
 const Header = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) 120px;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 114px 70px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};

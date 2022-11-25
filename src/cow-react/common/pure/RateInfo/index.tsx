@@ -25,25 +25,12 @@ export interface RateInfoProps {
   rateInfoParams: RateInfoParams
 }
 
-const LightText = styled.span`
-  font-weight: 400;
-`
-
 const Wrapper = styled.div<{ stylized: boolean }>`
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  font-size: inherit;
-  font-weight: 400;
-
-  :hover > div:first-child span {
-    opacity: 1;
-  }
-
-  ${LightText} {
-    opacity: ${({ stylized }) => (stylized ? '0.7' : '1')};
-  }
+  font-size: 14px;
 `
 
 const InvertIcon = styled.div`
@@ -52,12 +39,17 @@ const InvertIcon = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  vertical-align: middle;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
+  text-align: center;
+  line-height: 22px;
   margin-left: 5px;
   cursor: pointer;
+  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.grey1};
+  }
 `
 
 const RateWrapper = styled.button`
@@ -69,6 +61,9 @@ const RateWrapper = styled.button`
   padding: 0;
   cursor: pointer;
   color: inherit;
+  font-size: 13px;
+  letter-spacing: -0.1px;
+  text-align: left;
 `
 
 export function InvertRateControl({ onClick }: { onClick(): void }) {
@@ -139,19 +134,16 @@ export function RateInfo({
     <Wrapper stylized={stylized} className={className}>
       {!noLabel && (
         <div>
-          <LightText>
-            <Trans>{label}</Trans>
-            <InvertRateControl onClick={() => setCurrentIsInversed((state) => !state)} />
-          </LightText>
+          <Trans>{label}</Trans>
+          <InvertRateControl onClick={() => setCurrentIsInversed((state) => !state)} />
         </div>
       )}
       <div>
         <RateWrapper onClick={() => setCurrentIsInversed((state) => !state)}>
           <span title={currentActiveRate.toSignificant(18) + ' ' + rateInputCurrency.symbol}>
-            <LightText>1 {rateInputCurrency.symbol}</LightText> = {formatSmart(currentActiveRate)}{' '}
-            {rateOutputCurrency.symbol}
+            1 {rateInputCurrency.symbol} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
           </span>{' '}
-          <LightText>{!!fiatAmount && <span>(≈${formatSmart(fiatAmount, 2)})</span>}</LightText>
+          {!!fiatAmount && <span>(≈${formatSmart(fiatAmount, 2)})</span>}
         </RateWrapper>
       </div>
     </Wrapper>

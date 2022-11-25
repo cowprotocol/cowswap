@@ -17,7 +17,7 @@ const Content = styled.div`
   justify-content: center;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
-  min-height: 424px;
+  min-height: 490px;
   padding: 0;
 
   // Icon
