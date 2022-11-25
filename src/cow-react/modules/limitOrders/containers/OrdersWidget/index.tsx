@@ -60,6 +60,7 @@ export function OrdersWidget() {
 
   return (
     <Orders
+      chainId={chainId}
       tabs={tabs}
       orders={orders}
       balancesAndAllowances={pendingBalancesAndAllowances}

@@ -28,7 +28,7 @@ import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
 import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
-import { useActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
+import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
@@ -61,7 +61,7 @@ export function LimitOrdersWidget() {
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const { isLoading: isRateLoading } = useAtomValue(limitRateAtom)
-  const activeRateDisplay = useActiveRateDisplay()
+  const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -110,8 +110,10 @@ export function LimitOrdersWidget() {
 
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId } = state
+
+    updateLimitOrdersState({ inputCurrencyAmount: outputCurrencyAmount?.toExact(), outputCurrencyAmount: null })
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
-  }, [state, limitOrdersNavigate, chainId])
+  }, [state, limitOrdersNavigate, updateLimitOrdersState, chainId, outputCurrencyAmount])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
@@ -176,7 +178,7 @@ export function LimitOrdersWidget() {
                 <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
               )}
 
-              <styledEl.StyledRateInfo activeRateDisplay={activeRateDisplay} />
+              <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
 
               <LimitOrdersWarnings priceImpact={priceImpact} />
 

@@ -8,12 +8,12 @@ import { LimitOrdersDetails } from '../LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import * as styledEl from './styled'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
-import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext
-  activeRateDisplay: ActiveRateDisplay
+  rateInfoParams: RateInfoParams
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   rateImpact: number
@@ -29,7 +29,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
     inputCurrencyInfo,
     outputCurrencyInfo,
     onConfirm,
-    activeRateDisplay,
+    rateInfoParams,
     rateImpact,
     Warnings,
     warningsAccepted,
@@ -52,7 +52,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         topLabel={outputCurrencyInfo.label}
         priceImpactParams={priceImpact}
       />
-      <LimitOrdersDetails tradeContext={tradeContext} activeRateDisplay={activeRateDisplay} />
+      <LimitOrdersDetails tradeContext={tradeContext} rateInfoParams={rateInfoParams} />
       {Warnings}
       <ButtonPrimary onClick={onConfirm} disabled={isTradeDisabled} buttonSize={ButtonSize.BIG}>
         <Trans>Confirm</Trans>

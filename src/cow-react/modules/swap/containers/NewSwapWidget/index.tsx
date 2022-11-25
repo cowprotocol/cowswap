@@ -43,6 +43,7 @@ import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 import { useSetupTradeState } from '@cow/modules/trade'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
+import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 
 export function NewSwapWidget() {
   useSetupTradeState()
@@ -127,6 +128,8 @@ export function NewSwapWidget() {
     showRecipientControls,
   }
 
+  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.rawAmount, outputCurrencyInfo.rawAmount)
+
   const confirmSwapProps: ConfirmSwapModalSetupProps = {
     trade,
     recipient,
@@ -134,6 +137,7 @@ export function NewSwapWidget() {
     handleSwap: swapButtonContext.handleSwap,
     priceImpact: priceImpactParams.priceImpact,
     dismissNativeWrapModal,
+    rateInfoParams,
   }
 
   const ethFlowProps: EthFlowProps = {
@@ -180,6 +184,7 @@ export function NewSwapWidget() {
     isFeeGreater,
     fee,
     discount: subsidyAndBalance.subsidy.discount || 0,
+    rateInfoParams,
   }
 
   return (
@@ -189,7 +194,7 @@ export function NewSwapWidget() {
         <AffiliateStatusCheck />
         <styledEl.ContainerBox id="swap-page">
           <SwapForm {...swapFormProps} />
-          <TradeRates {...tradeRatesProps} />
+          {!isWrapUnwrapMode && <TradeRates {...tradeRatesProps} />}
           <NewSwapWarningsTop {...swapWarningsTopProps} />
           <SwapButtons {...swapButtonContext} />
           <NewSwapWarningsBottom {...swapWarningsBottomProps} />

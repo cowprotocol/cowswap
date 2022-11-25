@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
-import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
+import { RateInfo } from '@cow/common/pure/RateInfo'
 
 export const Container = styled.div`
   width: 100%;
@@ -59,4 +59,5 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 
 export const StyledRateInfo = styled(RateInfo)`
   margin-top: 15px;
+  font-size: 14px;
 `
