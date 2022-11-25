@@ -32,7 +32,6 @@ import { getAppDataHash } from 'constants/appDataHash'
 import { Context } from '@sentry/types'
 import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'state/gas/atoms'
-import JSBI from 'jsbi'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -609,7 +608,6 @@ function transformEthFlowOrder(order: OrderMetaData): OrderMetaData {
 
 // Register some globals for convenience
 registerOnWindow({
-  JSBI,
   operator: {
     getQuote,
     getTrades,

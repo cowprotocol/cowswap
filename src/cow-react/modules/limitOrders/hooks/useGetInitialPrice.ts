@@ -6,13 +6,9 @@ import { useAsyncMemo } from 'use-async-memo'
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
-import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
-import { DEFAULT_DECIMALS } from 'custom/constants'
+import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 
 type PriceResult = number | Error | undefined
-
-export const parsePrice = (price: number, currency: Currency) =>
-  price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
 
 async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
   const currencyAddress = getAddress(currency)
