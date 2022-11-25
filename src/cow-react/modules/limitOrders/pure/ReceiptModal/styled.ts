@@ -80,6 +80,12 @@ export const FieldBody = styled.div`
   align-items: center;
   margin-top: 10px;
   width: 100%;
+
+  & .open-currency-select-button {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      width: auto;
+    `}
+  }
 `
 
 export const FieldTitle = styled.span`

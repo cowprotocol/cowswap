@@ -56,6 +56,7 @@ export function ReceiptModal({
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'Your receive at least' : 'You receive exactly'
+  const orderType = order.kind === OrderKind.SELL ? 'Sell order' : 'Buy order'
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -114,7 +115,9 @@ export function ReceiptModal({
               <FieldLabel label="Order type" tooltip={Tooltip.ORDER_TYPE} />
 
               <styledEl.Value>
-                <strong>Fill or kil</strong>
+                <span>
+                  {orderType} {!order.partiallyFillable && '(Fill or Kill)'}
+                </span>
               </styledEl.Value>
             </styledEl.Field>
 
