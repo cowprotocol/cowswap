@@ -30,5 +30,6 @@ export default (
     tabs={tabs}
     isWalletConnected={true}
     balancesAndAllowances={balancesAndAllowances}
+    showOrderCancelationModal={() => console.log('showOrderCancelationModal')}
   />
 )
