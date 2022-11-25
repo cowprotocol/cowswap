@@ -3,6 +3,9 @@ import { parsedQueryString } from 'hooks/useParsedQueryString'
 
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { queryParametersToSwapState } from 'state/swap/hooks'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { ChainId } from 'state/lists/actions/actionsMod'
 
 export interface SwapState {
   // Mod: added chainId
@@ -44,9 +47,10 @@ export default createReducer<SwapState>(initialState, (builder) =>
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
       if (currencyId === state[otherField].currencyId) {
         // the case where we have to swap the order
+        const independentField = getIndependentField(state)
         return {
           ...state,
-          independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
+          independentField,
           [field]: { currencyId },
           [otherField]: { currencyId: state[field].currencyId },
         }
@@ -59,9 +63,10 @@ export default createReducer<SwapState>(initialState, (builder) =>
       }
     })
     .addCase(switchCurrencies, (state) => {
+      const independentField = getIndependentField(state)
       return {
         ...state,
-        independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
+        independentField,
         [Field.INPUT]: { currencyId: state[Field.OUTPUT].currencyId },
         [Field.OUTPUT]: { currencyId: state[Field.INPUT].currencyId },
       }
@@ -77,3 +82,22 @@ export default createReducer<SwapState>(initialState, (builder) =>
       state.recipient = recipient
     })
 )
+
+/**
+ * Calculates the independent field when switching the tokens
+ *
+ * We don't support native token BUY orders
+ * So if BUY currency is native and user is inverting tokens, force independentField to INPUT
+ * to not end up with a BUY order
+ * Special case when opposite token is wrapped native, then it's fine to invert as it's a wrap
+ */
+function getIndependentField(state: SwapState): Field {
+  const chainId = state.chainId || ChainId.MAINNET
+
+  const isNativeOut =
+    state[Field.OUTPUT].currencyId?.toUpperCase() === NATIVE_CURRENCY_BUY_TOKEN[chainId].symbol?.toUpperCase()
+  const isWrappedIn =
+    state[Field.INPUT].currencyId?.toUpperCase() === WRAPPED_NATIVE_CURRENCY[chainId].symbol?.toUpperCase()
+
+  return isNativeOut && !isWrappedIn ? Field.INPUT : state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
+}
