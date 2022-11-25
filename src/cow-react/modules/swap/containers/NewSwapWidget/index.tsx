@@ -189,8 +189,9 @@ export function NewSwapWidget() {
     fee,
     discount: subsidyAndBalance.subsidy.discount || 0,
     rateInfoParams,
-    isEthFlowBuyOrder,
   }
+
+  const showTradeRates = !isWrapUnwrapMode && !isEthFlowBuyOrder
 
   return (
     <>
@@ -199,7 +200,7 @@ export function NewSwapWidget() {
         <AffiliateStatusCheck />
         <styledEl.ContainerBox id="swap-page">
           <SwapForm {...swapFormProps} />
-          {!isWrapUnwrapMode && <TradeRates {...tradeRatesProps} />}
+          {showTradeRates && <TradeRates {...tradeRatesProps} />}
           <NewSwapWarningsTop {...swapWarningsTopProps} />
           <SwapButtons {...swapButtonContext} />
           <NewSwapWarningsBottom {...swapWarningsBottomProps} />

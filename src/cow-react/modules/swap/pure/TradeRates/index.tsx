@@ -24,7 +24,6 @@ export interface TradeRatesProps {
   discount: number
   fee: CurrencyAmount<Currency> | null
   rateInfoParams: RateInfoParams
-  isEthFlowBuyOrder: boolean
 }
 
 export const TradeRates = React.memo(function (props: TradeRatesProps) {
@@ -37,13 +36,12 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     userAllowedSlippage,
     discount,
     rateInfoParams,
-    isEthFlowBuyOrder,
   } = props
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
   const showPrice = !!trade
-  const showTradeBasicDetails = (isFeeGreater || trade) && fee && !isEthFlowBuyOrder
-  const showRowDeadline = trade && !isEthFlowBuyOrder
+  const showTradeBasicDetails = (isFeeGreater || trade) && fee
+  const showRowDeadline = !!trade
 
   return (
     <styledEl.Box>

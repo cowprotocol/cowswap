@@ -39,7 +39,6 @@ const defaultProps: TradeRatesProps = {
   userAllowedSlippage: new Percent(12, 10_000),
   fee: CurrencyAmount.fromRawAmount(currency, fee * 10 ** 18),
   rateInfoParams,
-  isEthFlowBuyOrder: false,
 }
 
 export default <TradeRates {...defaultProps} />
