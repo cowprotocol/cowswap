@@ -139,7 +139,7 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean 
     left: 0;
     top: 0;
     background: var(--statusColor);
-    opacity: 0.12;
+    opacity: 0.14;
     z-index: 1;
     border-radius: 9px;
   }

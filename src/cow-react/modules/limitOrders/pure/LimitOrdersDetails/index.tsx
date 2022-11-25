@@ -1,10 +1,14 @@
 import React from 'react'
 import { InfoIcon } from 'components/InfoIcon'
 import * as styledEl from './styled'
+import styled from 'styled-components/macro'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { isAddress, shortenAddress } from 'utils'
 import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 
+const Wrapper = styled.div`
+  margin: 10px 0;
+`
 export interface LimitOrdersDetailsProps {
   activeRateDisplay: ActiveRateDisplay
   tradeContext: TradeFlowContext
@@ -24,7 +28,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   const expiryDate = new Date(validTo * 1000)
 
   return (
-    <div>
+    <Wrapper>
       <styledEl.DetailsRow>
         <styledEl.StyledRateInfo activeRateDisplay={props.activeRateDisplay} />
       </styledEl.DetailsRow>
@@ -33,12 +37,12 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Expiry</span> <InfoIcon content={'Expiry info TODO'} />
         </div>
         <div>
-          <span>({expiryDate.toLocaleString(undefined, dateTimeFormat)})</span>
+          <span>{expiryDate.toLocaleString(undefined, dateTimeFormat)}</span>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>MEW protection</span> <InfoIcon content={'MEW protection info TODO'} />
+          <span>MEV protection</span> <InfoIcon content={'MEV protection info TODO'} />
         </div>
         <div>
           <span>{/*TODO*/}Active</span>
@@ -64,6 +68,6 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           </div>
         </styledEl.DetailsRow>
       )}
-    </div>
+    </Wrapper>
   )
 }

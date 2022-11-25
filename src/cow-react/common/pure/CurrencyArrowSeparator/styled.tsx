@@ -28,7 +28,7 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
     `}
 `
 
-export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
+export const LoadingWrapper = styled.div<{ isLoading: boolean; darkMode: boolean }>`
   position: absolute;
   left: calc(50% - 14px);
   height: 100%;
@@ -38,7 +38,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   transition: transform 0.25s;
   border: 1px solid ${({ theme }) => theme.grey1};
   box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme, darkMode }) => (darkMode ? theme.grey1 : theme.white)};
   border-radius: 8px;
   width: 28px;
   margin: 0 auto;
