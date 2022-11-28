@@ -29,7 +29,17 @@ export default createReducer<SwapState>(initialState, (builder) =>
   builder
     // Mod: ranamed field => independentField, added chainId
     .addCase(replaceSwapState, (state, { payload }) => {
-      const { chainId, typedValue, recipient, independentField, inputCurrencyId, outputCurrencyId } = payload
+      const {
+        chainId,
+        typedValue,
+        recipient,
+        independentField: originalIndependentField,
+        inputCurrencyId,
+        outputCurrencyId,
+      } = payload
+
+      const independentField = getIndependentFieldOnSelect(inputCurrencyId, originalIndependentField, state)
+
       return {
         chainId,
         [Field.INPUT]: {
@@ -47,7 +57,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
       if (currencyId === state[otherField].currencyId) {
         // the case where we have to swap the order
-        const independentField = getIndependentField(state)
+        const independentField = getIndependentFieldOnSwitch(state)
         return {
           ...state,
           independentField,
@@ -56,14 +66,20 @@ export default createReducer<SwapState>(initialState, (builder) =>
         }
       } else {
         // the normal case
+        const independentField = getIndependentFieldOnSelect(
+          state[Field.INPUT].currencyId,
+          state.independentField,
+          state
+        )
         return {
           ...state,
+          independentField,
           [field]: { currencyId },
         }
       }
     })
     .addCase(switchCurrencies, (state) => {
-      const independentField = getIndependentField(state)
+      const independentField = getIndependentFieldOnSwitch(state)
       return {
         ...state,
         independentField,
@@ -91,7 +107,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
  * to not end up with a BUY order
  * Special case when opposite token is wrapped native, then it's fine to invert as it's a wrap
  */
-function getIndependentField(state: SwapState): Field {
+function getIndependentFieldOnSwitch(state: SwapState): Field {
   const chainId = state.chainId || ChainId.MAINNET
 
   const isNativeOut =
@@ -100,4 +116,22 @@ function getIndependentField(state: SwapState): Field {
     state[Field.INPUT].currencyId?.toUpperCase() === WRAPPED_NATIVE_CURRENCY[chainId].symbol?.toUpperCase()
 
   return isNativeOut && !isWrappedIn ? Field.INPUT : state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
+}
+
+/**
+ * Calculates the independent field when replacing the swap state
+ *
+ * Checks if input field is ETH.
+ * If so, set independent field to input.
+ * Otherwise, keep it as is
+ */
+function getIndependentFieldOnSelect(
+  inputCurrencyId: string | undefined | null,
+  independentField: Field,
+  state: SwapState
+): Field {
+  return inputCurrencyId?.toUpperCase() ===
+    NATIVE_CURRENCY_BUY_TOKEN[state.chainId || ChainId.MAINNET].symbol?.toUpperCase()
+    ? Field.INPUT
+    : independentField
 }
