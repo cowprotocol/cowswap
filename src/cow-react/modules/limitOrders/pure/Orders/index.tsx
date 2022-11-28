@@ -91,6 +91,7 @@ export function Orders({
   isWalletConnected,
   balancesAndAllowances,
   showOrderCancelationModal,
+  currentPageNumber,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -119,6 +120,7 @@ export function Orders({
 
     return (
       <OrdersTable
+        currentPageNumber={currentPageNumber}
         chainId={chainId}
         orders={orders}
         balancesAndAllowances={balancesAndAllowances}

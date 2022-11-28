@@ -1,5 +1,4 @@
 import { Orders } from '../../pure/Orders'
-import { LIMIT_ORDERS_TAB_KEY, buildLimitOrdersTabUrl, OrderTab } from '@cow/modules/limitOrders/pure/Orders/OrdersTabs'
 import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Order } from 'state/orders/actions'
@@ -9,21 +8,11 @@ import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllo
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { CancellationModal, CancellationModalProps } from 'components/AccountDetails/Transaction/CancelationModal'
 import { pendingOrderSummary } from '@cow/common/helpers/pendingOrderSummary'
-
-const openTab: OrderTab = {
-  id: 'open',
-  title: 'Open orders',
-  count: 0,
-}
-const historyTab: OrderTab = {
-  id: 'history',
-  title: 'Orders history',
-  count: 0,
-}
-const TABS: OrderTab[] = [openTab, historyTab]
+import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
+import { LIMIT_ORDERS_PAGE_SIZE, LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
-  return id === openTab.id ? ordersList.pending : ordersList.history
+  return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
 export function OrdersWidget() {
@@ -36,8 +25,13 @@ export function OrdersWidget() {
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
-  const currentTabId = useMemo(() => {
-    return new URLSearchParams(location.search).get(LIMIT_ORDERS_TAB_KEY) || openTab.id
+  const { currentTabId, currentPageNumber } = useMemo(() => {
+    const params = parseLimitOrdersPageParams(location.search)
+
+    return {
+      currentTabId: params.tabId || OPEN_TAB.id,
+      currentPageNumber: params.pageNumber || 1,
+    }
   }, [location.search])
 
   const orders = useMemo(() => {
@@ -45,12 +39,12 @@ export function OrdersWidget() {
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
-    return TABS.map((tab) => {
+    return LIMIT_ORDERS_TABS.map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
   }, [currentTabId, ordersList])
 
-  const isOpenOrdersTab = openTab.id === currentTabId
+  const isOpenOrdersTab = OPEN_TAB.id === currentTabId
   const pendingBalancesAndAllowances = useOrdersBalancesAndAllowances(
     // Request balances and allowances only for the open orders tab
     isOpenOrdersTab ? account : undefined,
@@ -75,9 +69,19 @@ export function OrdersWidget() {
     [chainId]
   )
 
+  // Set page params initially once
   useEffect(() => {
-    history.push(buildLimitOrdersTabUrl(location.pathname, location.search, currentTabId))
+    history.push(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Reset pageNumber to max if it's out of total pages count
+  useEffect(() => {
+    const pagesCount = Math.ceil(orders.length / LIMIT_ORDERS_PAGE_SIZE)
+
+    if (currentPageNumber > pagesCount) {
+      history.push(buildLimitOrdersUrl(location, { pageNumber: pagesCount }))
+    }
+  }, [history, location, currentPageNumber, orders.length])
 
   return (
     <>
@@ -85,6 +89,7 @@ export function OrdersWidget() {
         chainId={chainId}
         tabs={tabs}
         orders={orders}
+        currentPageNumber={currentPageNumber}
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
         showOrderCancelationModal={showOrderCancelationModal}

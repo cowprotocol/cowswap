@@ -2,16 +2,7 @@ import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { Link } from 'react-router-dom'
 import { transparentize } from 'polished'
-
-export const LIMIT_ORDERS_TAB_KEY = 'tab'
-
-export const buildLimitOrdersTabUrl = (pathname: string, search: string, tabId: string) => {
-  const query = new URLSearchParams(search)
-  query.delete(LIMIT_ORDERS_TAB_KEY)
-  query.append(LIMIT_ORDERS_TAB_KEY, tabId)
-
-  return pathname + '?' + query
-}
+import { buildLimitOrdersUrl } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 
 const Tabs = styled.div`
   display: inline-block;
@@ -63,7 +54,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
         <TabButton
           key={index}
           active={index === activeTabIndex}
-          to={(location) => buildLimitOrdersTabUrl(location.pathname, location.search, tab.id)}
+          to={(location) => buildLimitOrdersUrl(location, { tabId: tab.id, pageNumber: 1 })}
         >
           <Trans>{tab.title}</Trans> <span>({tab.count})</span>
         </TabButton>

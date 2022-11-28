@@ -1,13 +1,14 @@
 import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
+import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 
 const TableBox = styled.div`
   display: block;
@@ -54,24 +55,24 @@ const Rows = styled.div`
 `
 
 export interface OrdersTableProps {
+  currentPageNumber: number
   chainId: SupportedChainId | undefined
   orders: Order[]
   balancesAndAllowances: BalancesAndAllowances
   showOrderCancelationModal(order: Order): void
 }
 
-const pageSize = 10
-
-export function OrdersTable({ chainId, orders, balancesAndAllowances, showOrderCancelationModal }: OrdersTableProps) {
-  const [currentPage, setCurrentPage] = useState(1)
+export function OrdersTable({
+  chainId,
+  orders,
+  balancesAndAllowances,
+  showOrderCancelationModal,
+  currentPageNumber,
+}: OrdersTableProps) {
   const [isRateInversed, setIsRateInversed] = useState(false)
 
-  const step = currentPage * pageSize
-  const ordersPage = orders.slice(step - pageSize, step)
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [orders])
+  const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
+  const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step)
 
   return (
     <>
@@ -109,10 +110,9 @@ export function OrdersTable({ chainId, orders, balancesAndAllowances, showOrderC
         </Rows>
       </TableBox>
       <OrdersTablePagination
-        pageSize={pageSize}
+        pageSize={LIMIT_ORDERS_PAGE_SIZE}
         totalCount={orders.length}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
+        currentPage={currentPageNumber}
       />
     </>
   )
