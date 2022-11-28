@@ -3,12 +3,11 @@ import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
-import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AlertTriangle, Trash2 } from 'react-feather'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
+import { OrderParams } from './utils/getOrderParams'
 
 const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -175,50 +174,16 @@ const allowanceWarning = (tokenSymbol: string) => (
 )
 
 export interface OrderRowProps {
-  chainId: SupportedChainId | undefined
   order: Order
-  balancesAndAllowances: BalancesAndAllowances
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
+  orderParams: OrderParams
   showOrderCancelationModal(order: Order): void
 }
 
-function isEnoughAmount(
-  sellAmount: CurrencyAmount<Currency>,
-  targetAmount: CurrencyAmount<Currency> | undefined
-): boolean {
-  if (!targetAmount) return true
+export function OrderRow({ order, RowElement, isRateInversed, showOrderCancelationModal, orderParams }: OrderRowProps) {
+  const { sellAmount, buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
 
-  if (targetAmount.equalTo(sellAmount)) return true
-
-  return sellAmount.lessThan(targetAmount)
-}
-
-export function OrderRow({
-  chainId,
-  order,
-  RowElement,
-  balancesAndAllowances,
-  isRateInversed,
-  showOrderCancelationModal,
-}: OrderRowProps) {
-  const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-
-  const rateInfoParams: RateInfoParams = {
-    chainId,
-    inputCurrencyAmount: sellAmount,
-    outputCurrencyAmount: buyAmount,
-    activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
-  }
-
-  const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address]
-  const allowance = allowances[order.inputToken.address]
-
-  const hasEnoughBalance = isEnoughAmount(sellAmount, balance)
-  const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
   const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
   return (
