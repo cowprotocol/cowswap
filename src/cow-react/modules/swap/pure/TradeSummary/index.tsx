@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { AutoColumn } from 'components/Column'
-import { RowFixed } from 'components/Row'
 
 import { TradeSummaryProps } from '@cow/modules/swap/containers/TradeSummary'
 // Sub-components
@@ -10,13 +9,7 @@ import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowDeadline } from '@cow/modules/swap/containers/Row/RowDeadline'
 
-const Wrapper = styled.div`
-  ${RowFixed} {
-    > div {
-      color: ${({ theme }) => theme.text4};
-    }
-  }
-`
+const Wrapper = styled.div``
 
 export interface TradeSummaryContentProps extends TradeSummaryProps {
   fee: CurrencyAmount<Token> | null

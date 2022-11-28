@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { transparentize } from 'polished'
-import { AutoColumn } from 'components/Column'
 import { BaseButton } from 'components/Button'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { HelpCircle } from 'react-feather'
@@ -9,22 +8,27 @@ import { HelpCircle } from 'react-feather'
 export const TokenSearchInput = styled.input`
   margin: 0;
   font-size: 14px;
-  width: 280px;
+  max-width: 280px;
+  width: 100%;
   align-self: flex-end;
   box-shadow: none;
   background: ${({ theme }) => theme.grey1};
   border: 1px solid ${({ theme }) => theme.bg1};
   border-radius: 21px;
-  transition: background 0.2s ease-in-out, width 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out, max-width 0.2s ease-in-out;
   appearance: none;
   height: 44px;
   padding: 0 16px;
   outline: 0;
 
   &:focus {
-    width: 500px;
+    max-width: 500px;
     background: ${({ theme }) => theme.bg1};
     outline: 0;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      width: 100%;
+    `};
   }
 
   &::placeholder {
@@ -37,16 +41,13 @@ export const TokenSearchInput = styled.input`
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-width: 350px;
+    max-width: 100%;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    text-align: center;
     font-size: 12px !important;
-    align-self: flex-start;
-    max-width: 100%;
 
-    ::placeholder {
+    &::placeholder {
       font-size: 12px !important;
     }
   `};
@@ -58,26 +59,7 @@ export const Wrapper = styled.div`
   padding: 0;
   background: ${({ theme }) => theme.bg1};
   border-radius: 16px;
-  box-shadow: ${({ theme }) => theme.boxShadow1};
-`
-
-export const ResponsiveGrid = styled.div`
   display: grid;
-  grid-gap: 16px;
-  width: 100%;
-  height: 58px;
-  font-size: 14px;
-  align-items: center;
-  text-align: left;
-  border: 0;
-  padding: 0 16px;
-  grid-template-columns: 40px 7fr 2fr 2fr 4fr;
-  background: transparent;
-  transition: background 0.1s ease-in-out;
-
-  &:hover {
-    background: ${({ theme }) => theme.grey1};
-  }
 `
 
 export const LinkWrapper = styled(Link)`
@@ -96,10 +78,13 @@ export const ResponsiveLogo = styled(CurrencyLogo)`
   width: 28px;
   height: 28px;
   border-radius: 28px;
+  background: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1}!important; // TODO: prevent styles override
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    width: 16px;
-    height: 16px;
+    width: 21px;
+    height: 21px;
+    border-radius: 21px;
   `};
 `
 
@@ -108,11 +93,12 @@ export const Label = styled.div<{ end?: number }>`
   font-size: inherit;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => transparentize(0.1, theme.text1)};
   align-items: center;
   font-variant-numeric: tabular-nums;
   word-break: break-all;
   overflow: hidden;
+  font-size: 13px;
 
   > span {
     display: flex;
@@ -153,10 +139,6 @@ export const ClickableText = styled(Label)<{ disabled?: boolean }>`
       opacity: 0.6;
     }
   `}
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
 `
 
 export const PageButtons = styled.div`
@@ -164,24 +146,16 @@ export const PageButtons = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 0.8em;
-  margin-bottom: 0.5em;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
+  margin: 24px auto;
 `
 
 export const PaginationText = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 10px;
-  `};
-
+  font-size: 13px;
   white-space: nowrap;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 15px;
+  `};
 `
 
 export const ArrowButton = styled.button`
@@ -214,41 +188,28 @@ export const Break = styled.div`
   width: 100%;
 `
 
-export const HideLarge = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    display: none;
-  `};
-`
-
-export const HideMedium = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
-  `};
-`
-
-export const HideExtraSmall = styled.span`
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    display: none;
-  `};
-`
-
-export const MediumOnly = styled.span`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: block;
-  `};
-`
-
-export const LargeOnly = styled.span`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    display: block;
-  `};
-`
-
-export const TableHeader = styled(ResponsiveGrid)`
+export const Row = styled.div`
+  width: 100%;
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: 62px 430px repeat(2, 100px) 1fr;
   padding: 16px;
-  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.bg2) : transparentize(0.7, theme.bg1))};
+  justify-content: flex-start;
+  align-items: center;
+  background: transparent;
+  transition: background 0.2s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: auto;
+    grid-template-columns: 62px 330px repeat(2,150px) 200px;
+  `}
+
+  &:hover {
+    background: ${({ theme }) => theme.grey1};
+  }
+`
+
+export const TableHeader = styled(Row)`
   border-bottom: 1px solid ${({ theme }) => theme.grey1};
 
   &:hover {
@@ -260,25 +221,35 @@ export const TableHeader = styled(ResponsiveGrid)`
   }
 `
 
-export const TableBody = styled(AutoColumn)`
-  margin: 0 0 16px;
-  padding: 10px 0 0;
-  gap: 0;
-`
-
 export const Cell = styled.div`
   display: flex;
-  padding: 0;
-  justify-content: flex-start;
-  align-items: center;
+  gap: 8px;
+
+  // 1st STAR column
+  &:nth-child(1n) {
+    gap: 0;
+  }
+
+  // ACTIONS column
+  &:nth-child(5n) {
+    gap: 10px;
+    display: flex;
+    flex-flow: row wrap;
+
+    > span {
+      white-space: nowrap;
+    }
+  }
 
   > a {
     text-decoration-color: transparent;
     transition: text-decoration-color 0.2s ease-in-out;
     overflow: hidden;
     display: flex;
+    color: ${({ theme }) => theme.text1};
 
     &:hover {
+      color: ${({ theme }) => theme.text1};
       text-decoration-color: ${({ theme }) => theme.text1};
     }
   }
@@ -287,45 +258,46 @@ export const Cell = styled.div`
 export const IndexNumber = styled.span`
   font-size: 14px;
   font-weight: 400;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
 `
 
 export const BalanceValue = styled.span<{ hasBalance: boolean }>`
-  color: ${({ hasBalance, theme }) => theme[hasBalance ? 'text1' : 'text3']};
-  font-variant-numeric: tabular-nums;
-  font-weight: 400;
+  color: ${({ hasBalance, theme }) => (hasBalance ? theme.text1 : transparentize(0.3, theme.text1))};
+  font-weight: 500;
   font-size: 14px;
   white-space: nowrap;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 12px;
-  `};
 `
 
 export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boolean; text?: boolean }>`
   font-size: 14px;
-  padding: 3px 15px;
+  padding: 0;
   width: auto;
   font-weight: 400;
-  transition: all 0.15s ease-in;
-  background: ${({ color }) => transparentize(0.2, color || 'transparent')};
-  color: ${({ theme }) => theme.text1};
+  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  background: transparent;
+  color: ${({ theme, color }) => color || theme.text1};
   white-space: nowrap;
   position: relative;
+  opacity: 0.7;
 
   &:hover {
-    background: ${({ theme, color }) => color || theme.text1};
+    background: transparent;
+    text-decoration: underline;
+    opacity: 1;
   }
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 10px;
-  `};
+  > svg {
+    width: 16px;
+    height: 16px;
+    max-width: 100%;
+    max-height: 100%;
+
+    > path {
+      fill: ${({ theme }) => theme.text1};
+    }
+  }
 
   ${({ theme, outlined, color }) =>
     outlined &&
@@ -352,10 +324,25 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
   `};
 `
 
-export const Table = styled(AutoColumn)`
+export const Table = styled.div`
+  display: flex;
+  flex-flow: column wrap;
   overflow-y: auto;
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
+  width: 100%;
+  min-height: 400px;
+  font-size: 14px;
+  align-items: center;
+  text-align: left;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  transition: background 0.1s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    min-height: 250px;
+  `};
 
   &::-webkit-scrollbar {
     height: 6px;
@@ -379,11 +366,44 @@ export const TokenText = styled.div`
   text-align: left;
   margin: 0 0 0 12px;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+
+  > span {
+    display: flex;
+    align-items: center;
+    max-width: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  > span > b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    font-weight: 500;
+    display: inline-block;
+  }
+
+  > span > i {
+    opacity: 0.6;
+    margin: 0 0 0 4px;
+    font-style: normal;
+    display: inline-block;
+    text-transform: uppercase;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 13px;
+  `};
 `
 
 export const ApproveLabel = styled.span<{ color?: string }>`
-  font-size: 12px;
   color: ${({ theme, color }) => color || theme.text1};
+  font-weight: 500;
 `
 
 export const CustomLimit = styled.div`
@@ -411,4 +431,28 @@ export const InfoCircle = styled(HelpCircle)`
   margin-left: 5px;
   vertical-align: middle;
   margin-bottom: 2px;
+`
+
+export const NoResults = styled.div`
+  color: inherit;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    min-height: 200px;
+    margin: 0 auto 0 0;
+  `};
+
+  > h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 auto;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 16px;
+      text-align: left;
+      margin: 16px;
+    `};
+  }
 `
