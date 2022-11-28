@@ -31,14 +31,19 @@ export default createReducer<SwapState>(initialState, (builder) =>
     .addCase(replaceSwapState, (state, { payload }) => {
       const {
         chainId,
-        typedValue,
+        typedValue: originalTypedValue,
         recipient,
         independentField: originalIndependentField,
         inputCurrencyId,
         outputCurrencyId,
       } = payload
 
-      const independentField = getIndependentFieldOnSelect(inputCurrencyId, originalIndependentField, state)
+      const { independentField, typedValue } = getEthFlowOverridesOnSelect(
+        inputCurrencyId,
+        originalIndependentField,
+        originalTypedValue,
+        state
+      )
 
       return {
         chainId,
@@ -57,32 +62,36 @@ export default createReducer<SwapState>(initialState, (builder) =>
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
       if (currencyId === state[otherField].currencyId) {
         // the case where we have to swap the order
-        const independentField = getIndependentFieldOnSwitch(state)
+        const { independentField, typedValue } = getEthFlowOverridesOnSwitch(state)
         return {
           ...state,
           independentField,
+          typedValue,
           [field]: { currencyId },
           [otherField]: { currencyId: state[field].currencyId },
         }
       } else {
         // the normal case
-        const independentField = getIndependentFieldOnSelect(
+        const { independentField, typedValue } = getEthFlowOverridesOnSelect(
           state[Field.INPUT].currencyId,
           state.independentField,
+          state.typedValue,
           state
         )
         return {
           ...state,
           independentField,
+          typedValue,
           [field]: { currencyId },
         }
       }
     })
     .addCase(switchCurrencies, (state) => {
-      const independentField = getIndependentFieldOnSwitch(state)
+      const { independentField, typedValue } = getEthFlowOverridesOnSwitch(state)
       return {
         ...state,
         independentField,
+        typedValue,
         [Field.INPUT]: { currencyId: state[Field.OUTPUT].currencyId },
         [Field.OUTPUT]: { currencyId: state[Field.INPUT].currencyId },
       }
@@ -107,7 +116,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
  * to not end up with a BUY order
  * Special case when opposite token is wrapped native, then it's fine to invert as it's a wrap
  */
-function getIndependentFieldOnSwitch(state: SwapState): Field {
+function getEthFlowOverridesOnSwitch(state: SwapState): Pick<SwapState, 'independentField' | 'typedValue'> {
   const chainId = state.chainId || ChainId.MAINNET
 
   const isNativeOut =
@@ -115,7 +124,13 @@ function getIndependentFieldOnSwitch(state: SwapState): Field {
   const isWrappedIn =
     state[Field.INPUT].currencyId?.toUpperCase() === WRAPPED_NATIVE_CURRENCY[chainId].symbol?.toUpperCase()
 
-  return isNativeOut && !isWrappedIn ? Field.INPUT : state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
+  if (isNativeOut && !isWrappedIn) {
+    return { independentField: Field.INPUT, typedValue: '' }
+  }
+  return {
+    independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
+    typedValue: state.typedValue,
+  }
 }
 
 /**
@@ -125,13 +140,17 @@ function getIndependentFieldOnSwitch(state: SwapState): Field {
  * If so, set independent field to input.
  * Otherwise, keep it as is
  */
-function getIndependentFieldOnSelect(
+function getEthFlowOverridesOnSelect(
   inputCurrencyId: string | undefined | null,
-  independentField: Field,
+  originalIndependentField: SwapState['independentField'],
+  originalTypedValue: SwapState['typedValue'],
   state: SwapState
-): Field {
-  return inputCurrencyId?.toUpperCase() ===
-    NATIVE_CURRENCY_BUY_TOKEN[state.chainId || ChainId.MAINNET].symbol?.toUpperCase()
-    ? Field.INPUT
-    : independentField
+): Pick<SwapState, 'independentField' | 'typedValue'> {
+  if (
+    inputCurrencyId?.toUpperCase() === NATIVE_CURRENCY_BUY_TOKEN[state.chainId || ChainId.MAINNET].symbol?.toUpperCase()
+  ) {
+    return { independentField: Field.INPUT, typedValue: '' }
+  }
+
+  return { independentField: originalIndependentField, typedValue: originalTypedValue }
 }
