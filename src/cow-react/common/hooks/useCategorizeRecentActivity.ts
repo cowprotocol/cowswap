@@ -30,10 +30,12 @@ export function useCategorizeRecentActivity() {
       // Separate the array into 2: transitory (pending) and final (confirmed) states
       allRecentActivity.reduce<[string[], string[]]>(
         (acc, activity) => {
-          if (isPending(activity) && activity.class !== OrderClass.LIMIT) {
-            acc[0].push(activity.id)
-          } else if (isConfirmed(activity)) {
-            acc[1].push(activity.id)
+          if (activity.class === OrderClass.MARKET) {
+            if (isPending(activity)) {
+              acc[0].push(activity.id)
+            } else if (isConfirmed(activity)) {
+              acc[1].push(activity.id)
+            }
           }
           return acc
         },
