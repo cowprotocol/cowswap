@@ -2,9 +2,10 @@ import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { useSafeMemo, useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
+import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { usePrice } from '@cow/common/hooks/usePrice'
 
 export function useRateInfoParams(
   inputCurrencyAmount: CurrencyAmount<Currency> | null,
@@ -12,10 +13,7 @@ export function useRateInfoParams(
 ): RateInfoParams {
   const { chainId } = useWeb3React()
 
-  const activeRate = useSafeMemo(() => {
-    if (!outputCurrencyAmount || !inputCurrencyAmount) return null
-    return new Price({ baseAmount: inputCurrencyAmount, quoteAmount: outputCurrencyAmount })
-  }, [inputCurrencyAmount, outputCurrencyAmount])
+  const activeRate = usePrice(inputCurrencyAmount, outputCurrencyAmount)
 
   const parseRate = useCallback(
     (invert: boolean) => {
