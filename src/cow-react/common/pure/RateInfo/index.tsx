@@ -136,7 +136,7 @@ export function RateInfo({
       )}
       <div>
         <RateWrapper onClick={() => setCurrentIsInversed((state) => !state)}>
-          <span title={currentActiveRate.toSignificant(rateOutputCurrency.decimals) + ' ' + rateOutputCurrency.symbol}>
+          <span title={currentActiveRate.toFixed(rateOutputCurrency.decimals) + ' ' + rateOutputCurrency.symbol}>
             1 {rateInputCurrency.symbol} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
           </span>{' '}
           {!!fiatAmount && <span>(≈${formatSmart(fiatAmount, 2)})</span>}
