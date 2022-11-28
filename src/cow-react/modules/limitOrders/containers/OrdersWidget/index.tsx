@@ -9,7 +9,8 @@ import { GP_VAULT_RELAYER } from 'constants/index'
 import { CancellationModal, CancellationModalProps } from 'components/AccountDetails/Transaction/CancelationModal'
 import { pendingOrderSummary } from '@cow/common/helpers/pendingOrderSummary'
 import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
-import { LIMIT_ORDERS_PAGE_SIZE, LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
+import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
+import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -74,14 +75,7 @@ export function OrdersWidget() {
     history.push(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Reset pageNumber to max if it's out of total pages count
-  useEffect(() => {
-    const pagesCount = Math.ceil(orders.length / LIMIT_ORDERS_PAGE_SIZE)
-
-    if (currentPageNumber > pagesCount) {
-      history.push(buildLimitOrdersUrl(location, { pageNumber: pagesCount }))
-    }
-  }, [history, location, currentPageNumber, orders.length])
+  useValidatePageUrlParams(orders, currentTabId, currentPageNumber)
 
   return (
     <>
