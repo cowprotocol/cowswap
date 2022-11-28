@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import { LinkStyledButton } from 'theme'
 
-import { useCancelOrder } from 'hooks/useCancelOrder'
+import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { ButtonPrimary } from 'components/Button'
 import { GpModal as Modal } from 'components/Modal'
 import {
