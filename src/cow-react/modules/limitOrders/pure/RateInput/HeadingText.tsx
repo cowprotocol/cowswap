@@ -12,7 +12,7 @@ export function HeadingText({ currency, rateImpact }: Props) {
 
   return (
     <span>
-      Price per <strong>{currency}</strong>
+      Price per {currency}
       {<RateImpactIndicator rateImpact={rateImpact} />}
     </span>
   )

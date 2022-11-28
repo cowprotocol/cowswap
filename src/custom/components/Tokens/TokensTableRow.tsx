@@ -7,8 +7,6 @@ import {
   Cell,
   CustomLimit,
   IndexNumber,
-  Label,
-  ResponsiveGrid,
   ResponsiveLogo,
   TableButton,
   TokenText,
@@ -32,6 +30,8 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { Link } from 'react-router-dom'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
+import SVG from 'react-inlinesvg'
+import EtherscanImage from 'assets/cow-swap/etherscan-icon.svg'
 
 type DataRowParams = {
   tokenData: Token
@@ -117,13 +117,13 @@ const DataRow = ({
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
     if (!balance && account) {
-      return <Loader />
+      return <Loader stroke={theme.text3} />
     } else if (hasZeroBalance) {
       return <BalanceValue hasBalance={false}>0</BalanceValue>
     } else {
       return <FiatBalanceCell balance={balance} />
     }
-  }, [account, balance, hasZeroBalance])
+  }, [account, balance, hasZeroBalance, theme])
 
   const displayApproveContent = useMemo(() => {
     if (isPendingApprove) {
@@ -162,24 +162,22 @@ const DataRow = ({
   }, [approvalState, prevApprovalState, approving])
 
   return (
-    <ResponsiveGrid>
+    <>
       <Cell>
         <FavouriteTokenButton tokenData={tokenData} />
         <IndexNumber>{index + 1}</IndexNumber>
       </Cell>
 
       <Cell>
-        <ExtLink title={tokenData.name} href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+        <Link title={tokenData.name} to={tradeLink(tokenData, OrderKind.SELL)}>
           <ResponsiveLogo currency={tokenData} />
           <TokenText>
-            <Label>
-              <span>
-                <b>{tokenData.name}</b>
-                <i>{tokenData.symbol}</i>
-              </span>
-            </Label>
+            <span>
+              <b>{tokenData.name}</b>
+              <i>{tokenData.symbol}</i>
+            </span>
           </TokenText>
-        </ExtLink>
+        </Link>
       </Cell>
 
       <Cell>
@@ -189,19 +187,14 @@ const DataRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <Link to={tradeLink(tokenData, OrderKind.BUY)}>
-          <TableButton color={theme.green1}>Buy</TableButton>
-        </Link>
+        <ExtLink href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+          <TableButton>
+            <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
+          </TableButton>
+        </ExtLink>
+        {displayApproveContent}
       </Cell>
-
-      <Cell>
-        <Link to={tradeLink(tokenData, OrderKind.SELL)}>
-          <TableButton color={theme.red1}>Sell</TableButton>
-        </Link>
-      </Cell>
-
-      <Cell>{displayApproveContent}</Cell>
-    </ResponsiveGrid>
+    </>
   )
 }
 

@@ -96,13 +96,15 @@ const VersionsLinkWrapper = styled.span`
   opacity: 0.5;
   transition: opacity 0.3s ease-in-out;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    opacity: 1;
+    font-size: 13px;
+    width: 100%;
+  `}
+
   &:hover {
     opacity: 1;
   }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    opacity: 1;
-  `}
 `
 
 export const Version = ({ className }: { className?: string }) => {

@@ -5,8 +5,15 @@ export interface DropdownContentPosition {
   positionY: 'top' | 'bottom'
 }
 
+export const DropdownBox = styled.div`
+  display: flex;
+  position: relative;
+`
+
 export const DropdownButton = styled.span`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  width: 100%;
 `
 
 export const DropdownContent = styled.div<DropdownContentPosition>`
@@ -17,9 +24,4 @@ export const DropdownContent = styled.div<DropdownContentPosition>`
   bottom: ${({ positionY }) => (positionY === 'bottom' ? '' : '100%')};
   right: ${({ positionX }) => (positionX === 'right' ? '0' : '')};
   left: ${({ positionX }) => (positionX === 'left' ? '0' : '')};
-`
-
-export const DropdownBox = styled.div`
-  display: flex;
-  position: relative;
 `

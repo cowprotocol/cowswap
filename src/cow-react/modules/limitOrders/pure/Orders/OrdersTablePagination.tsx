@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 
 export interface OrdersTablePaginationProps {
   pageSize: number
@@ -13,18 +14,19 @@ const PaginationBox = styled.div`
 `
 
 const PageButton = styled.button<{ active?: boolean }>`
-  background: ${({ theme, active }) => (active ? theme.bg2 : theme.bg1)};
-  color: ${({ theme, active }) => (active ? theme.text2 : theme.text1)};
+  background: ${({ theme, active }) => (active ? transparentize(0.9, theme.text3) : 'transparent')};
+  color: ${({ theme, active }) => (active ? theme.text1 : transparentize(0.2, theme.text1))};
   border: 0;
   outline: 0;
   padding: 5px 10px;
   border-radius: 4px;
   margin: 0 5px;
   cursor: pointer;
+  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
 
-  :hover {
-    color: ${({ theme }) => theme.text2};
-    background: ${({ theme }) => theme.bg2};
+  &:hover {
+    background: ${({ theme }) => theme.bg1};
+    color: ${({ theme }) => theme.text1};
   }
 `
 

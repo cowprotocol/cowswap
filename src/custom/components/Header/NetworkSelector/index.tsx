@@ -1,5 +1,10 @@
 import styled from 'styled-components/macro'
-import NetworkSelectorMod, { SelectorLabel, SelectorControls, FlyoutMenu } from './NetworkSelectorMod'
+import NetworkSelectorMod, {
+  SelectorLabel,
+  SelectorControls,
+  FlyoutMenu,
+  FlyoutMenuContents,
+} from './NetworkSelectorMod'
 import { transparentize } from 'polished'
 export { getChainNameFromId, getParsedChainId } from './NetworkSelectorMod'
 
@@ -15,6 +20,18 @@ const Wrapper = styled.div`
       width: 100%;
       left: 0;
       top: 58px;
+    `};
+  }
+
+  ${FlyoutMenuContents} {
+    min-width: 175px;
+    z-index: 99;
+    padding: 16px;
+    border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      top: 50px;
+      box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(0.1, theme.black)}};
     `};
   }
 

@@ -9,6 +9,8 @@ import { TradeFlowContext } from '../../services/tradeFlow'
 import * as styledEl from './styled'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { CurrencySeparatorBox } from '@cow/modules/limitOrders/containers/LimitOrdersWidget/styled'
+import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export interface LimitOrdersConfirmProps {
@@ -46,6 +48,15 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         currencyInfo={inputCurrencyInfo}
         topLabel={inputCurrencyInfo.label}
       />
+      <CurrencySeparatorBox withRecipient={false}>
+        <CurrencyArrowSeparator
+          withRecipient={false}
+          isCollapsed={false}
+          isLoading={false}
+          hasSeparatorLine={true}
+          onSwitchTokens={() => null}
+        />
+      </CurrencySeparatorBox>
       <CurrencyPreview
         id="output-currency-preview"
         currencyInfo={outputCurrencyInfo}
