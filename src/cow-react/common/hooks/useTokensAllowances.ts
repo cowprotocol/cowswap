@@ -16,6 +16,7 @@ export interface TokensAllowancesResult {
   isLoading: boolean
 }
 
+// TODO: add calls batching (max 100 requests per batch for example)
 export function useTokensAllowances(
   account: string | undefined,
   spender: string | undefined,
