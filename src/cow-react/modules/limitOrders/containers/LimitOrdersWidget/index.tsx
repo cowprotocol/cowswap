@@ -33,6 +33,7 @@ import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -111,7 +112,11 @@ export function LimitOrdersWidget() {
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId } = state
 
-    updateLimitOrdersState({ inputCurrencyAmount: outputCurrencyAmount?.toExact(), outputCurrencyAmount: null })
+    updateLimitOrdersState({
+      inputCurrencyAmount: outputCurrencyAmount?.toExact(),
+      outputCurrencyAmount: null,
+      orderKind: OrderKind.SELL,
+    })
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
   }, [state, limitOrdersNavigate, updateLimitOrdersState, chainId, outputCurrencyAmount])
 
