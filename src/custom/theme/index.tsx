@@ -42,7 +42,7 @@ export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolea
 export const ThemedText = {
   ...ThemedTextUni,
   Warn(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'yellow1'} {...props} />
+    return <TextWrapper fontWeight={500} color={'warning'} {...props} />
   },
 }
 

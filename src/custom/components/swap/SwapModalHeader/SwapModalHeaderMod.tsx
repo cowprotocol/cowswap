@@ -55,7 +55,7 @@ const StyledRateInfo = styled(RateInfo)`
   font-size: 13px;
   font-weight: 500;
   margin: 0 auto;
-  width: 90%;
+  /* width: 90%; */
 `
 
 // MOD
@@ -276,7 +276,7 @@ SwapModalHeaderProps) {
         gap="sm"
         style={{
           // padding: '.75rem 1rem'
-          padding: '24px 16px 16px', // MOD
+          padding: '24px 10px 16px', // MOD
         }}
       >
         {trade.tradeType === TradeType.EXACT_INPUT ? (

@@ -1,34 +1,50 @@
-import { darken } from 'polished'
 import styled from 'styled-components/macro'
+import { ButtonPrimary } from 'components/Button'
+import { transparentize } from 'polished'
 
 export const BannerWrapper = styled.div`
-  background-color: ${({ theme }) => darken(theme.darkMode ? 0 : 0.08, theme.bg7)};
-  border: ${({ theme }) => theme.cardBorder};
-  border-radius: ${({ theme }) => theme.buttonOutlined.borderRadius};
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  background-color: ${({ theme }) => transparentize(0.8, theme.text3)};
+  border-radius: 16px;
   padding: 14px;
-  margin: 12px 0 8px;
+  margin: 10px 0 0;
   font-size: 13px;
   cursor: pointer;
+  min-height: 58px;
 `
 
 export const ClosedBannerWrapper = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 0.7fr auto 0.7fr;
+  grid-template-columns: repeat(3, auto);
   align-items: center;
-  > strong {
-    font-weight: 600;
+  font-weight: 500;
+  margin: auto;
+  width: 100%;
+
+  > b {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
-  > img:first-child {
-    filter: ${({ theme }) => `invert(${theme.darkMode ? 0 : 1})`};
-  }
-  > svg:last-child {
-    cursor: pointer;
-    stroke: ${({ theme }) => (theme.darkMode ? theme.white : theme.black)};
-  }
-  > svg,
-  > strong {
+
+  > svg {
     margin: auto;
+    cursor: pointer;
+
+    > path {
+      fill: ${({ theme }) => theme.text1};
+    }
+  }
+
+  > svg:last-child {
+    stroke: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
+
+  &:hover > svg:last-child {
+    stroke: ${({ theme }) => theme.text1};
   }
 `
 
@@ -39,26 +55,22 @@ export const BannerInnerWrapper = styled.div`
   justify-content: stretch;
   width: 100%;
   text-align: left;
+
   > p {
     padding: 0 10px;
     margin-bottom: 0;
   }
-`
 
-export const WrapEthCta = styled(BannerInnerWrapper)`
-  flex-flow: row nowrap;
-  text-align: center;
-  > span {
-    cursor: pointer;
-    font-weight: bold;
-    margin: 12px 0 4px;
+  > p,
+  ul {
+    color: ${({ theme }) => transparentize(0.15, theme.text1)};
+    line-height: 1.5;
   }
-`
 
-export const SpanCta = styled.span`
-  > small {
-    display: block;
-    margin: 5px 0 0;
-    font-weight: 400;
+  ${ButtonPrimary} {
+    font-size: 14px;
+    min-height: 46px;
+    padding: 0;
+    margin: 10px auto 0;
   }
 `
