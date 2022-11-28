@@ -6,7 +6,8 @@ import { Repeat } from 'react-feather'
 import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { SupportedChainId } from 'constants/chains'
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { usePrice } from '@cow/common/hooks/usePrice'
 
 export interface RateInfoParams {
   chainId: SupportedChainId | undefined
@@ -85,12 +86,7 @@ export function RateInfo({
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, inversedActiveRateFiatAmount } =
     rateInfoParams
 
-  const activeRate = useMemo(() => {
-    return outputCurrencyAmount?.quotient && inputCurrencyAmount?.quotient
-      ? new Fraction(outputCurrencyAmount.quotient, inputCurrencyAmount.quotient)
-      : null
-  }, [outputCurrencyAmount?.quotient, inputCurrencyAmount?.quotient])
-
+  const activeRate = usePrice(inputCurrencyAmount, outputCurrencyAmount)
   const inputCurrency = inputCurrencyAmount?.currency
   const outputCurrency = outputCurrencyAmount?.currency
 
