@@ -13,7 +13,7 @@ export const TransactionWrapper = styled.div`
   box-sizing: border-box;
   font-size: initial;
   display: flex;
-  padding: 22px;
+  padding: 0;
   border: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
   position: relative;
 
@@ -83,8 +83,9 @@ export const Summary = styled.div`
   display: grid;
   flex-flow: row wrap;
   width: 100%;
+  padding: 22px;
   grid-template-rows: 1fr;
-  grid-template-columns: 80px max-content;
+  grid-template-columns: 80px auto min-content;
   color: ${({ theme }) => theme.text1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

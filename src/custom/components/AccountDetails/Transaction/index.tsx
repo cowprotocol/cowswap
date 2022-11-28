@@ -7,7 +7,6 @@ import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapp
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
 
-import { StatusDetails } from './StatusDetails'
 // import { StateIcon } from './StateIcon'
 import { Order } from 'state/orders/actions'
 import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
@@ -123,9 +122,6 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
             />
           </ActivityDetailsText>
         </RowFixed>
-
-        {/* Status Details: icon, cancel, links */}
-        <StatusDetails chainId={chainId} activityDerivedState={activityDerivedState} />
       </TransactionWrapper>
     </Wrapper>
   )

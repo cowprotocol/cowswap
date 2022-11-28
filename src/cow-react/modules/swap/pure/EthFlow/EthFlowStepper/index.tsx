@@ -39,13 +39,15 @@ export interface EthFlowStepperProps {
 }
 
 const Wrapper = styled.div`
-  padding: 15px;
-  background-color: #ecf1f8;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
-  line-height: 1.5;
+  width: 100%;
+  padding: 22px;
+  border-radius: 0 0 12px 12px;
+  background: ${({ theme }) => theme.grey1};
+  font-size: 14px;
+  line-height: 1;
 `
 
 export interface ProgressProps {
