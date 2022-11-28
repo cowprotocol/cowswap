@@ -85,6 +85,7 @@ export function OrdersWidget() {
         chainId={chainId}
         tabs={tabs}
         orders={orders}
+        isOpenOrdersTab={isOpenOrdersTab}
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
         showOrderCancelationModal={showOrderCancelationModal}

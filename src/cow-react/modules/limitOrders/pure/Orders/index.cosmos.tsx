@@ -28,6 +28,7 @@ export default (
     chainId={1}
     orders={ordersMock}
     tabs={tabs}
+    isOpenOrdersTab={true}
     isWalletConnected={true}
     balancesAndAllowances={balancesAndAllowances}
     showOrderCancelationModal={() => console.log('showOrderCancelationModal')}
