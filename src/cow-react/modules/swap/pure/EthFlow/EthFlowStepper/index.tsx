@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { ExplorerLink } from 'components/ExplorerLink'
 import { Step1 } from './steps/Step1'
 import { Progress1 } from './steps/Progress1'
 import { Step2 } from './steps/Step2'
 import { Progress2 } from './steps/Progress2'
 import { Step3 } from './steps/Step3'
 import { StatusIconState } from './StatusIcon'
+import { transparentize } from 'polished'
 
 export enum SmartOrderStatus {
   CREATING = 'CREATING',
@@ -39,14 +39,14 @@ export interface EthFlowStepperProps {
 }
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 190px 1fr 190px 1fr;
+  align-items: flex-start;
   width: 100%;
   padding: 22px;
   border-radius: 0 0 12px 12px;
   background: ${({ theme }) => theme.grey1};
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1;
 `
 
@@ -54,9 +54,23 @@ export interface ProgressProps {
   status: StatusIconState
   value: number
 }
-export const Progress = styled.progress<ProgressProps>`
-  height: 5px;
-  min-width: 100px;
+export const Progress = styled.div<ProgressProps>`
+  height: 2px;
+  position: relative;
+  display: flex;
+  background: ${({ theme }) => transparentize(0.9, theme.text1)};
+  margin: 28px 0 0;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: inherit;
+    width: ${({ value }) => (value ? `${value}%` : '0%')};
+    background: ${({ theme }) => theme.text3};
+  }
 
   // TODO: We might want to style differently the error status (see props!)
   /* ::-moz-progress-bar,
@@ -64,11 +78,6 @@ export const Progress = styled.progress<ProgressProps>`
   ::-webkit-progress-bar {
     background-color: red;
   } */
-`
-
-export const ExplorerLinkStyled = styled(ExplorerLink)`
-  margin-top: 3px;
-  display: block;
 `
 
 export function EthFlowStepper(props: EthFlowStepperProps) {

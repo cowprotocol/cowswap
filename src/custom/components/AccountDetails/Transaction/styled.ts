@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'styled-components/macro'
 import { StyledSVG } from 'components/Loader'
-import { LinkStyledButton } from 'theme'
+import { LinkStyledButton, StyledLink } from 'theme'
 import { TransactionState as OldTransactionState } from '../TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
@@ -194,6 +194,11 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
     &.cancelled {
       text-decoration: line-through;
     }
+  }
+
+  + ${StyledLink} {
+    align-self: center;
+    margin: 20px 0 0;
   }
 `
 

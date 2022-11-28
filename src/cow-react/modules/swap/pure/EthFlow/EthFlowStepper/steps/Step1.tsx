@@ -1,8 +1,8 @@
 import React from 'react'
 import { Icon, Send, Check, AlertTriangle } from 'react-feather'
-import { EthFlowStepperProps, ExplorerLinkStyled, SmartOrderStatus } from '..'
+import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { StatusIconState } from '../StatusIcon'
-import { Step } from '../Step'
+import { Step, ExplorerLinkStyled } from '../Step'
 
 export function Step1({ nativeTokenSymbol, order }: EthFlowStepperProps) {
   const { state, isExpired, createOrderTx } = order

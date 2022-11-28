@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 import { Flag, Check } from 'react-feather'
 import styled from 'styled-components/macro'
-import { ExplorerLinkStyled, EthFlowStepperProps, SmartOrderStatus } from '..'
-import { Step, StepProps } from '../Step'
+import { EthFlowStepperProps, SmartOrderStatus } from '..'
+import { Step, StepProps, ExplorerLinkStyled } from '../Step'
 
 const RefundMessage = styled.span`
   color: #0d5ed9;

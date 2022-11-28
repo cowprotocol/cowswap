@@ -41,13 +41,14 @@ const LABEL_COLOR: Record<StatusIconState, string> = {
 }
 
 const StepIcon = styled.div<StepIconStyle>`
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  --size: 52px;
+  border-radius: var(--size);
+  width: var(--size);
+  height: var(--size);
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5px;
+  margin: 0 0 16px;
   border: 2px solid;
 
   ${({ bgColor, borderColor, color }) => css`
@@ -59,6 +60,9 @@ const StepIcon = styled.div<StepIconStyle>`
 
 const Label = styled.span<{ state: StatusIconState }>`
   color: ${({ state }) => LABEL_COLOR[state]};
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 0 6px;
 `
 
 const LabelCrossOut = styled.span`
