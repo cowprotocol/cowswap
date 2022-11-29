@@ -111,7 +111,7 @@ export function Orders({
             <img src={cowMeditatingV2} alt="Cow meditating ..." />
           </span>
           <h3>
-            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No orders history'}</Trans>
+            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No order history'}</Trans>
           </h3>
           <p>
             <Trans>
