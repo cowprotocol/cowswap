@@ -7,7 +7,7 @@ import { calculateFallbackPriceImpact } from 'utils/price'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import ms from 'ms.macro'
+import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 
 type SwapParams = { abTrade?: PriceImpactTrade; sellToken?: string | null; buyToken?: string | null }
 
@@ -39,9 +39,6 @@ function _getBaTradeParsedAmount(abTrade: PriceImpactTrade | undefined, shouldCa
   // return the AB Trade's output amount WITHOUT fee
   return abTrade?.outputAmountWithoutFee
 }
-
-// It's request to get price, so we don't need precise value for validTo
-const PRICE_QUOTE_VALID_TO_TIME = ms`30m`
 
 export default function useFallbackPriceImpact({
   sellToken,

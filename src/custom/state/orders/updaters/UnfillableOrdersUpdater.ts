@@ -18,6 +18,7 @@ import { GpPriceStrategy } from 'state/gas/atoms'
 import { supportedChainId } from 'utils/supportedChainId'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -56,7 +57,8 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     quoteToken,
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
-    validTo: timestamp(order.validTo),
+    validTo:
+      order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
     userAddress: order.owner,
     receiver: order.receiver,
     isEthFlow,

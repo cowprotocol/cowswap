@@ -25,7 +25,7 @@ export function useOrdersBalancesAndAllowances(
 
   // TODO: refactor useTokenBalancesWithLoadingIndicator() hook and add ListenerOptions
   const [balances] = useTokenBalancesWithLoadingIndicator(account, tokens)
-  const { allowances } = useTokensAllowances(account, spender, tokens, { blocksPerFetch: 25 })
+  const { allowances } = useTokensAllowances(account, spender, tokens)
 
   return useMemo(() => ({ balances, allowances }), [balances, allowances])
 }
