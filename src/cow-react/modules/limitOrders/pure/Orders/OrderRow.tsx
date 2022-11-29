@@ -233,7 +233,13 @@ export function OrderRow({
       </div>
       <div>
         {order.status === OrderStatus.PENDING && !order.isCancelling && (
-          <CancelOrderBtn title="Cancel order" onClick={() => showOrderCancelationModal(order)}>
+          <CancelOrderBtn
+            title="Cancel order"
+            onClick={(event) => {
+              event.stopPropagation()
+              showOrderCancelationModal(order)
+            }}
+          >
             <Trash2 size={16} />
           </CancelOrderBtn>
         )}
