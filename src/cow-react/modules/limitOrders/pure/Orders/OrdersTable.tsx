@@ -8,6 +8,7 @@ import { InvertRateControl } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
+import { getOrderParams } from './utils/getOrderParams'
 
 const TableBox = styled.div`
   display: block;
@@ -98,11 +99,10 @@ export function OrdersTable({ chainId, orders, balancesAndAllowances, showOrderC
           {ordersPage.map((order) => (
             <OrderRow
               key={order.id}
-              chainId={chainId}
               order={order}
+              orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
               RowElement={RowElement}
               isRateInversed={isRateInversed}
-              balancesAndAllowances={balancesAndAllowances}
               showOrderCancelationModal={showOrderCancelationModal}
             />
           ))}
