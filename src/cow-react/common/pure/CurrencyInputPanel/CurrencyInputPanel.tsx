@@ -13,6 +13,8 @@ import { setMaxSellTokensAnalytics } from 'components/analytics'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Field } from 'state/swap/actions'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 interface BuiltItProps {
   className: string
@@ -20,6 +22,7 @@ interface BuiltItProps {
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
+  chainId: SupportedChainId | undefined
   loading: boolean
   disabled?: boolean
   isRateLoading?: boolean
@@ -43,7 +46,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     priceImpactParams,
     disableNonToken = false,
     showSetMax = false,
-    disabled = false,
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
@@ -51,8 +53,12 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     topLabel,
     isRateLoading,
   } = props
+
+  const isSupportedNetwork = isSupportedChainId(props.chainId as number | undefined)
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
+  const disabled = props.disabled || !isSupportedNetwork
+
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 

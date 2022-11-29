@@ -138,6 +138,7 @@ export function LimitOrdersWidget() {
               <CurrencyInputPanel
                 id="swap-currency-input"
                 disableNonToken={true}
+                chainId={chainId}
                 loading={currenciesLoadingInProgress}
                 onCurrencySelection={onCurrencySelection}
                 onUserInput={onUserInput}
@@ -164,6 +165,7 @@ export function LimitOrdersWidget() {
               <CurrencyInputPanel
                 id="swap-currency-output"
                 disableNonToken={false}
+                chainId={chainId}
                 loading={currenciesLoadingInProgress}
                 isRateLoading={isRateLoading}
                 onCurrencySelection={onCurrencySelection}
