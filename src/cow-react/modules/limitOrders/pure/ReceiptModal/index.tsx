@@ -57,6 +57,7 @@ export function ReceiptModal({
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'Your receive at least' : 'You receive exactly'
   const orderType = order.kind === OrderKind.SELL ? 'Sell order' : 'Buy order'
+  const feeAmountParsed = CurrencyAmount.fromRawAmount(order.inputToken, order.feeAmount.toString())
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -68,7 +69,7 @@ export function ReceiptModal({
 
         <StyledScrollarea>
           <styledEl.Body>
-            <CurrencyField amount={sellAmount} token={order.inputToken} label={inputLabel} />
+            <CurrencyField amount={sellAmount.add(feeAmountParsed)} token={order.inputToken} label={inputLabel} />
             <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
             <styledEl.Field border="rounded-top">
