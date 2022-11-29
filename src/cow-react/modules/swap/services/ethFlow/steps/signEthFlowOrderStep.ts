@@ -8,7 +8,7 @@ import { logSwapFlow, logSwapFlowError } from '@cow/modules/swap/services/utils/
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
 import { getDomain, UnsignedOrder } from 'utils/signatures'
-import { Order } from 'state/orders/actions'
+import { Order, OrderClass } from 'state/orders/actions'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
@@ -88,7 +88,7 @@ export async function signEthFlowOrderStep(
       additionalParams: {
         ...orderParams,
         // For ETH-flow we always set order class to 'market' since we don't support ETH-flow in Limit orders
-        class: 'market',
+        class: OrderClass.MARKET,
         orderId,
         signature: '',
         summary,

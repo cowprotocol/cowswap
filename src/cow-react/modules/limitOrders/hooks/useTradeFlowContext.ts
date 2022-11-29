@@ -10,6 +10,7 @@ import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import useENSAddress from 'hooks/useENSAddress'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useLimitOrdersDeadline } from './useLimitOrdersDeadline'
+import { OrderClass } from '@src/custom/state/orders/actions'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
@@ -49,7 +50,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     postOrderParams: {
-      class: 'limit',
+      class: OrderClass.LIMIT,
       kind: state.orderKind,
       account,
       chainId,

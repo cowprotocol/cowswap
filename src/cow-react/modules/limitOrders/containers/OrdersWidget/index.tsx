@@ -83,6 +83,7 @@ export function OrdersWidget() {
         chainId={chainId}
         tabs={tabs}
         orders={orders}
+        isOpenOrdersTab={isOpenOrdersTab}
         currentPageNumber={currentPageNumber}
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
