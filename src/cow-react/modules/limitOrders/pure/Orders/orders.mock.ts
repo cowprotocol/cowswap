@@ -2,6 +2,7 @@ import { Order, OrderStatus } from 'state/orders/actions'
 import { COW, DAI, GNO, USDC } from 'constants/tokens'
 import { OrderKind } from '@cowprotocol/contracts'
 import { WETH_GOERLI } from 'utils/goerli/constants'
+import { OrderClass } from 'state/orders/actions'
 
 const chainId = 5
 const owner = '0x4cc6e4f6014cc998fc5ef14c3f5d1184f76ae25b'
@@ -26,7 +27,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
-    class: 'market',
+    class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
   {
@@ -48,7 +49,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
-    class: 'market',
+    class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
   {
@@ -70,7 +71,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
-    class: 'market',
+    class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
   {
@@ -92,7 +93,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
-    class: 'market',
+    class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
   {
@@ -114,7 +115,7 @@ export const ordersMock: Order[] = [
     appData: '',
     partiallyFillable: false,
     signature: '',
-    class: 'market',
+    class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
 ]

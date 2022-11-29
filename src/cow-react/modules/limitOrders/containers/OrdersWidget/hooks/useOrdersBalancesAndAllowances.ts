@@ -3,6 +3,7 @@ import { useTokenBalancesWithLoadingIndicator } from 'lib/hooks/useCurrencyBalan
 import { Allowances, useTokensAllowances } from '@cow/common/hooks/useTokensAllowances'
 import { useMemo } from 'react'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { ListenerOptions } from '@uniswap/redux-multicall'
 
 export type Balances = {
   [tokenAddress: string]: CurrencyAmount<Token> | undefined
@@ -12,6 +13,8 @@ export interface BalancesAndAllowances {
   balances: Balances
   allowances: Allowances
 }
+
+const listenerOptions: ListenerOptions = { blocksPerFetch: 25 }
 
 export function useOrdersBalancesAndAllowances(
   account: string | undefined,
@@ -25,7 +28,7 @@ export function useOrdersBalancesAndAllowances(
 
   // TODO: refactor useTokenBalancesWithLoadingIndicator() hook and add ListenerOptions
   const [balances] = useTokenBalancesWithLoadingIndicator(account, tokens)
-  const { allowances } = useTokensAllowances(account, spender, tokens)
+  const { allowances } = useTokensAllowances(account, spender, tokens, listenerOptions)
 
   return useMemo(() => ({ balances, allowances }), [balances, allowances])
 }

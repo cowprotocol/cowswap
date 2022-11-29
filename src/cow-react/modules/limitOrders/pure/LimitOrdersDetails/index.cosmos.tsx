@@ -1,7 +1,7 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
-import { OrderKind } from 'state/orders/actions'
+import { OrderClass, OrderKind } from 'state/orders/actions'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersDetails } from './index'
 
@@ -10,7 +10,7 @@ const outputCurrency = GNO[SupportedChainId.MAINNET]
 
 const tradeContext: TradeFlowContext = {
   postOrderParams: {
-    class: 'limit',
+    class: OrderClass.LIMIT,
     account: '0x000',
     chainId: 1,
     signer: {} as any,
