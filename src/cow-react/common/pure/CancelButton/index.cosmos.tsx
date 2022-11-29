@@ -16,8 +16,8 @@ function Wrapper(props: Partial<CancelButtonContentProps>) {
   const [showCancelModal, setShowCancelModal] = useState(false)
 
   const p: CancelButtonContentProps = {
-    onDismiss(): void {
-      console.log('Dismiss clicked')
+    onDismiss() {
+      setShowCancelModal(false)
     },
     chainId: 1,
     error: null,
@@ -25,9 +25,11 @@ function Wrapper(props: Partial<CancelButtonContentProps>) {
     type: 'soft',
     summary: 'This was the order that got cancelled bla bla',
     softCancellationContext,
-    ...props,
     showCancelModal,
-    setShowCancelModal,
+    onCancelButtonClick() {
+      setShowCancelModal(true)
+    },
+    ...props,
   }
   return <CancelButtonContent {...p} />
 }

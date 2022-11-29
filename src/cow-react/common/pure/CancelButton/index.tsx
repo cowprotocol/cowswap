@@ -1,4 +1,3 @@
-import React from 'react'
 import { LinkStyledButton } from 'theme'
 import { CancellationModal } from './CancellationModal'
 
@@ -10,7 +9,7 @@ export type CancelButtonContentProps = {
   summary: string | undefined
   chainId: number
   error: string | null
-  setShowCancelModal: React.Dispatch<React.SetStateAction<boolean>>
+  onCancelButtonClick: () => void
   onDismiss: () => void
   showCancelModal: boolean
   type: CancelButtonType
@@ -23,13 +22,11 @@ export type SoftCancellationContext = {
 }
 
 export function CancelButtonContent(props: CancelButtonContentProps) {
-  const { showCancelModal, setShowCancelModal, ...rest } = props
-
-  const onCancelClick = () => setShowCancelModal(true)
+  const { showCancelModal, onCancelButtonClick, ...rest } = props
 
   return (
     <>
-      <LinkStyledButton onClick={onCancelClick}>Cancel order</LinkStyledButton>{' '}
+      <LinkStyledButton onClick={onCancelButtonClick}>Cancel order</LinkStyledButton>{' '}
       {showCancelModal && <CancellationModal {...rest} />}
     </>
   )

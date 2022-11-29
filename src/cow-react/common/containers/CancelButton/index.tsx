@@ -1,10 +1,10 @@
-import { ChainId } from 'state/lists/actions/actionsMod'
-import { CancelButtonContent, CancelButtonType } from '@cow/common/pure/CancelButton'
 import { useCallback, useEffect, useState } from 'react'
+import { CancelButtonContent, CancelButtonType } from '@cow/common/pure/CancelButton'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
+import { SupportedChainId } from 'constants/chains'
 
 export type CancelButtonProps = {
-  chainId: ChainId
+  chainId: SupportedChainId
   summary: string | undefined
   orderId: string
   type: CancelButtonType
@@ -51,7 +51,7 @@ export function CancelButton(props: CancelButtonProps) {
       error={error}
       type={type}
       showCancelModal={showCancelModal}
-      setShowCancelModal={setShowCancelModal}
+      onCancelButtonClick={() => setShowCancelModal(true)}
       onDismiss={onDismiss}
       softCancellationContext={softCancellationContext}
     />
