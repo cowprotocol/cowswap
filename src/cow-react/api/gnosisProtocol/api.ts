@@ -32,7 +32,7 @@ import { getAppDataHash } from 'constants/appDataHash'
 import { Context } from '@sentry/types'
 import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'state/gas/atoms'
-import { OrderClass } from '@src/custom/state/orders/actions'
+import { OrderClass } from 'state/orders/actions'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
