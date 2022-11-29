@@ -45,7 +45,7 @@ export function OrdersWidget() {
     })
   }, [currentTabId, ordersList])
 
-  const isOpenOrdersTab = OPEN_TAB.id === currentTabId
+  const isOpenOrdersTab = useMemo(() => OPEN_TAB.id === currentTabId, [currentTabId])
   const pendingBalancesAndAllowances = useOrdersBalancesAndAllowances(
     // Request balances and allowances only for the open orders tab
     isOpenOrdersTab ? account : undefined,
