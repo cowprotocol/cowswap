@@ -69,8 +69,8 @@ export const HeaderElement = styled(HeaderElementUni)`
     width: 100%;
     border-radius: 0;
     height: 64px;
-    background-color: ${({ theme }) => transparentize(0.1, theme.bg3)};
-    border-top: 1px solid ${({ theme }) => transparentize(0.7, theme.border)};
+    background-color: ${({ theme }) => transparentize(0.75, theme.bg1)};
+    border-top: 1px solid ${({ theme }) => theme.grey1};
     backdrop-filter: blur(21px);
     padding: 10px 16px;
     gap: 8px;
@@ -111,7 +111,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   }
 
   ${StyledMenuButton} {
-    margin-left: 0.5rem;
+    margin: 0 0 0 10px;
     padding: 0;
     height: 38px;
     width: 38px;
@@ -192,7 +192,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
 
     &.expanded + ${MenuContent} {
       ${({ theme }) => theme.mediaWidth.upToLarge`
-        border-bottom: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
+        border: 0;
       `};
     }
 

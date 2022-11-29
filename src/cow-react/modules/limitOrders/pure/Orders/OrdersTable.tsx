@@ -7,33 +7,47 @@ import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { transparentize } from 'polished'
+import { getOrderParams } from './utils/getOrderParams'
 
 const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  border: 2px solid ${({ theme }) => theme.border2};
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  padding: 0 0 24px;
 `
 
-const RowElement = styled.div`
+const Header = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 120px) minmax(0, 70px);
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 114px 70px;
   align-items: center;
-  border-bottom: 2px solid ${({ theme }) => theme.border2};
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
 
   > div {
-    padding: 12px;
+    padding: 12px 16px;
     overflow: hidden;
-    font-size: 14px;
-  }
-
-  :last-child {
-    border-bottom: 0;
+    font-size: 13px;
+    font-weight: 400;
   }
 `
 
-const Header = styled(RowElement)`
-  border-bottom: 2px solid ${({ theme }) => theme.border2};
+const RowElement = styled(Header)`
+  background: transparent;
+  transition: background 0.15s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => transparentize(0.9, theme.text3)};
+  }
+
+  > div {
+    font-size: 13px;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
 `
 
 const Rows = styled.div`
@@ -85,11 +99,10 @@ export function OrdersTable({ chainId, orders, balancesAndAllowances, showOrderC
           {ordersPage.map((order) => (
             <OrderRow
               key={order.id}
-              chainId={chainId}
               order={order}
+              orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
               RowElement={RowElement}
               isRateInversed={isRateInversed}
-              balancesAndAllowances={balancesAndAllowances}
               showOrderCancelationModal={showOrderCancelationModal}
             />
           ))}

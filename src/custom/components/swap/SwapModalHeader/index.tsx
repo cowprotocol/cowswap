@@ -5,6 +5,8 @@ import { LightCard as LightCardUni } from 'components/Card'
 import { HighFeeWarning as HighFeeWarningBase } from 'components/SwapWarnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { NoImpactWarning } from '@cow/modules/trade/pure/NoImpactWarning'
+import { SwapShowAcceptChanges } from 'components/swap/styleds'
+import { transparentize } from 'polished'
 import React from 'react'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
@@ -22,6 +24,17 @@ const Wrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 32px auto 0;
   `};
+
+  ${SwapShowAcceptChanges} {
+    background: ${({ theme }) => transparentize(0.85, theme.alert)};
+    border: 1px solid ${({ theme }) => transparentize(0.75, theme.alert)};
+    padding: 8px 8px 8px 16px;
+    margin: 8px 0 0;
+
+    svg {
+      stroke: ${({ theme }) => theme.alert};
+    }
+  }
 
   svg {
     stroke: ${({ theme }) => theme.text1};
