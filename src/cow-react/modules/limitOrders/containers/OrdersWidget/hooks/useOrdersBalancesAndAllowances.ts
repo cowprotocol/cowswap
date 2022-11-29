@@ -23,8 +23,9 @@ export function useOrdersBalancesAndAllowances(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orders.map((order) => order.sellToken).join('')])
 
+  // TODO: refactor useTokenBalancesWithLoadingIndicator() hook and add ListenerOptions
   const [balances] = useTokenBalancesWithLoadingIndicator(account, tokens)
-  const { allowances } = useTokensAllowances(account, spender, tokens)
+  const { allowances } = useTokensAllowances(account, spender, tokens, { blocksPerFetch: 25 })
 
   return useMemo(() => ({ balances, allowances }), [balances, allowances])
 }
