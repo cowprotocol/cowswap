@@ -20,7 +20,7 @@ export function useValidatePageUrlParams(orders: Order[], currentTabId: string, 
     if (shouldResetPageNumber || shouldResetTabId) {
       history.push(
         buildLimitOrdersUrl(location, {
-          pageNumber: shouldResetPageNumber ? currentPageNumber : undefined,
+          pageNumber: shouldResetPageNumber ? 1 : undefined,
           tabId: shouldResetTabId ? currentTabId : undefined,
         })
       )
