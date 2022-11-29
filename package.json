@@ -37,6 +37,7 @@
     "@cowprotocol/cow-sdk": "1.0.0-RC.0",
     "@craco/craco": "^5.7.0",
     "@ethersproject/experimental": "^5.4.0",
+    "@ethersproject/hash": "5.6.1",
     "@lingui/cli": "^3.9.0",
     "@lingui/core": "^3.9.0",
     "@lingui/loader": "^3.9.0",
