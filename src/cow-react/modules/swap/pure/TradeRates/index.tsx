@@ -39,11 +39,13 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
   } = props
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
+  const showPrice = !!trade
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
+  const showRowDeadline = !!trade
 
   return (
     <styledEl.Box>
-      <styledEl.StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />
+      {showPrice && <styledEl.StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />}
       {/* SLIPPAGE & FEE */}
       {showTradeBasicDetails && (
         <TradeBasicDetails
@@ -55,7 +57,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
         />
       )}
       {/* TRANSACTION DEADLINE */}
-      <RowDeadline />
+      {showRowDeadline && <RowDeadline />}
       {/* DISCOUNTS */}
       <styledEl.Row>
         <div>
