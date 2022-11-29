@@ -40,7 +40,7 @@ export interface EthFlowStepperProps {
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 190px 1fr 190px 1fr;
+  grid-template-columns: repeat(5, 1fr);
   align-items: flex-start;
   width: 100%;
   padding: 22px;
@@ -55,11 +55,13 @@ export interface ProgressProps {
   value: number
 }
 export const Progress = styled.div<ProgressProps>`
-  height: 2px;
+  --height: 2px;
+  height: var(--height);
   position: relative;
   display: flex;
   background: ${({ theme }) => transparentize(0.9, theme.text1)};
   margin: 28px 0 0;
+  border-radius: var(--height);
 
   &::after {
     content: '';
@@ -68,16 +70,12 @@ export const Progress = styled.div<ProgressProps>`
     left: 0;
     top: 0;
     height: inherit;
+    transition: width 0.3s ease-in-out, background 0.2s ease-in-out;
     width: ${({ value }) => (value ? `${value}%` : '0%')};
-    background: ${({ theme }) => theme.text3};
+    background: ${({ status, theme }) =>
+      status === 'error' ? theme.danger : status === 'success' ? theme.success : theme.text3};
+    border-radius: var(--height);
   }
-
-  // TODO: We might want to style differently the error status (see props!)
-  /* ::-moz-progress-bar,
-  ::-webkit-progress-value,
-  ::-webkit-progress-bar {
-    background-color: red;
-  } */
 `
 
 export function EthFlowStepper(props: EthFlowStepperProps) {

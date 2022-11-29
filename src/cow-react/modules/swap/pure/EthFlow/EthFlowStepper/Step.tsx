@@ -1,12 +1,9 @@
 import React, { PropsWithChildren } from 'react'
-import { Icon } from 'react-feather'
 import styled from 'styled-components/macro'
 import { StatusIcon, StatusIconState } from './StatusIcon'
 import { ExplorerLink } from 'components/ExplorerLink'
 
-export const ExplorerLinkStyled = styled(ExplorerLink)`
-  display: block;
-`
+export const ExplorerLinkStyled = styled(ExplorerLink)``
 
 const StepWrapper = styled.div`
   height: 100%;
@@ -18,39 +15,39 @@ const StepWrapper = styled.div`
   justify-content: flex-start;
   font-size: 13px;
   font-weight: 600;
+  gap: 9px;
+  position: relative;
+
+  // Sublabel text
+  > i {
+    font-weight: 500;
+    font-style: normal;
+  }
 
   // Needs && to override
   && ${ExplorerLinkStyled} {
-    font-size: inherit;
-    font-weight: inherit;
-  }
-
-  // Step 1
-  &:first-child {
-    text-align: left;
-    align-items: flex-start;
-  }
-
-  // Step 2
-  &:last-child {
-    text-align: right;
-    align-items: flex-end;
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: underline;
   }
 `
 
 export type StepProps = PropsWithChildren<{
   state: StatusIconState
-  icon: Icon
+  icon: string
   label: string
   crossOut?: boolean
+  errorMessage?: string
 }>
 
 export function Step(props: StepProps) {
-  const { label, crossOut, children, state, icon } = props
+  const { label, crossOut, children, state, icon, errorMessage } = props
   return (
     <StepWrapper>
-      <StatusIcon icon={icon} state={state} label={label} crossOut={crossOut} />
-      {children}
+      <StatusIcon icon={icon} state={state} label={label} crossOut={crossOut} errorMessage={errorMessage}>
+        {children}
+      </StatusIcon>
     </StepWrapper>
   )
 }
