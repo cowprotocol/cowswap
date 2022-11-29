@@ -1,25 +1,89 @@
+import styled from 'styled-components/macro'
 import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 import { OrdersTable, OrdersTableProps } from './OrdersTable'
-import styled from 'styled-components/macro'
 import { Widget } from '../Widget'
+import { transparentize } from 'polished'
+import cowMeditatingV2 from 'assets/cow-swap/meditating-cow-v2.svg'
+import { Trans } from '@lingui/macro'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;
   width: 100%;
 `
 
-const OrdersTitle = styled.h3`
-  margin: 0 0 20px 0;
+const Content = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  min-height: 490px;
+  padding: 0;
+
+  // Icon
+  > span {
+    --size: 130px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 16px;
+    background: ${({ theme }) => transparentize(0.8, theme.text3)};
+    transform: rotate(0);
+    transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+    &:hover {
+      transform: rotate(360deg);
+    }
+
+    > img {
+      max-width: 100%;
+      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: inline;
+      padding: 16px;
+    }
+  }
+
+  > h3 {
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 500;
+    margin: 0 auto 16px;
+    text-align: center;
+  }
+
+  > p {
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 0 auto;
+    font-weight: 400;
+    text-align: center;
+    opacity: 0.7;
+  }
 `
 
-const EmptyOrdersMessage = styled.p`
-  margin: 10px 20px;
-  font-size: 18px;
-  font-weight: 600;
-`
+const Header = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin: 0 0 24px;
 
+  > h2 {
+    font-size: 24px;
+    margin: 0;
+  }
+`
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
+  isOpenOrdersTab: boolean
 }
 
 export function Orders({
@@ -27,20 +91,42 @@ export function Orders({
   orders,
   tabs,
   isWalletConnected,
+  isOpenOrdersTab,
   balancesAndAllowances,
   showOrderCancelationModal,
+  currentPageNumber,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
-      return <EmptyOrdersMessage>Please connect your wallet to view orders</EmptyOrdersMessage>
+      return (
+        <Content>
+          <p>Please connect your wallet to view orders</p>
+        </Content>
+      )
     }
 
     if (orders.length === 0) {
-      return <EmptyOrdersMessage>You have no orders yet</EmptyOrdersMessage>
+      return (
+        <Content>
+          <span>
+            <img src={cowMeditatingV2} alt="Cow meditating ..." />
+          </span>
+          <h3>
+            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No order history'}</Trans>
+          </h3>
+          <p>
+            <Trans>
+              You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
+              Create one for free!
+            </Trans>
+          </p>
+        </Content>
+      )
     }
 
     return (
       <OrdersTable
+        currentPageNumber={currentPageNumber}
         chainId={chainId}
         orders={orders}
         balancesAndAllowances={balancesAndAllowances}
@@ -52,8 +138,11 @@ export function Orders({
   return (
     <>
       <OrdersBox>
-        <OrdersTitle>Orders</OrdersTitle>
-        <OrdersTabs tabs={tabs} />
+        <Header>
+          <h2>Your Orders</h2>
+          <OrdersTabs tabs={tabs} />
+        </Header>
+
         {content()}
       </OrdersBox>
     </>

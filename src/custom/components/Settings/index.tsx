@@ -29,9 +29,7 @@ const Settings = styled(SettingsMod)`
     border: none;
     background-color: transparent;
     margin: 0;
-    height: 35px;
     padding: 0;
-    border-radius: 35px;
 
     &:hover,
     &:focus {
@@ -42,7 +40,7 @@ const Settings = styled(SettingsMod)`
 
     svg {
       opacity: 1;
-      margin: 2px 0 0;
+      margin: 0;
       transition: transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
     }
 

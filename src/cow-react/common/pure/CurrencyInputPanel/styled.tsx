@@ -12,7 +12,7 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: bo
   background: ${({ theme }) => theme.input.bg1};
   border: none;
   border-radius: ${({ withReceiveAmountInfo }) => (withReceiveAmountInfo ? '16px 16px 0 0' : '16px')};
-  min-height: 100px;
+  min-height: 106px;
   pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 `
 
@@ -63,7 +63,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   display: flex;
   align-items: center;
   background: none;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 500;
   color: ${({ theme }) => theme.text1};
 

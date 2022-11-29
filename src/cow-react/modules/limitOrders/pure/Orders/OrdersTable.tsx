@@ -1,41 +1,55 @@
 import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
 import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/LimitOrdersReceiptModal/hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { transparentize } from 'polished'
+import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
+import { getOrderParams } from './utils/getOrderParams'
 
 const TableBox = styled.div`
   display: block;
   border-radius: 16px;
-  border: 2px solid ${({ theme }) => theme.border2};
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  padding: 0 0 24px;
 `
 
-const RowElement = styled.div`
+const Header = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 120px) minmax(0, 70px);
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 114px 70px;
   align-items: center;
-  border-bottom: 2px solid ${({ theme }) => theme.border2};
-  cursor: pointer;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
 
   > div {
-    padding: 12px;
+    padding: 12px 16px;
     overflow: hidden;
-    font-size: 14px;
-  }
-
-  :last-child {
-    border-bottom: 0;
+    font-size: 13px;
+    font-weight: 400;
   }
 `
 
-const Header = styled(RowElement)`
-  border-bottom: 2px solid ${({ theme }) => theme.border2};
+const RowElement = styled(Header)`
+  background: transparent;
+  transition: background 0.15s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => transparentize(0.9, theme.text3)};
+  }
+
+  > div {
+    font-size: 13px;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
 `
 
 const Rows = styled.div`
@@ -43,25 +57,25 @@ const Rows = styled.div`
 `
 
 export interface OrdersTableProps {
+  currentPageNumber: number
   chainId: SupportedChainId | undefined
   orders: Order[]
   balancesAndAllowances: BalancesAndAllowances
   showOrderCancelationModal(order: Order): void
 }
 
-const pageSize = 10
-
-export function OrdersTable({ chainId, orders, balancesAndAllowances, showOrderCancelationModal }: OrdersTableProps) {
-  const [currentPage, setCurrentPage] = useState(1)
-  const selectReceiptOrder = useSelectReceiptOrder()
+export function OrdersTable({
+  chainId,
+  orders,
+  balancesAndAllowances,
+  showOrderCancelationModal,
+  currentPageNumber,
+}: OrdersTableProps) {
   const [isRateInversed, setIsRateInversed] = useState(false)
 
-  const step = currentPage * pageSize
-  const ordersPage = orders.slice(step - pageSize, step)
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [orders])
+  const selectReceiptOrder = useSelectReceiptOrder()
+  const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
+  const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step)
 
   return (
     <>
@@ -88,22 +102,20 @@ export function OrdersTable({ chainId, orders, balancesAndAllowances, showOrderC
           {ordersPage.map((order) => (
             <OrderRow
               key={order.id}
-              chainId={chainId}
               order={order}
+              orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
               RowElement={RowElement}
               isRateInversed={isRateInversed}
-              balancesAndAllowances={balancesAndAllowances}
-              onClick={() => selectReceiptOrder(order)}
               showOrderCancelationModal={showOrderCancelationModal}
+              onClick={() => selectReceiptOrder(order)}
             />
           ))}
         </Rows>
       </TableBox>
       <OrdersTablePagination
-        pageSize={pageSize}
+        pageSize={LIMIT_ORDERS_PAGE_SIZE}
         totalCount={orders.length}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
+        currentPage={currentPageNumber}
       />
     </>
   )

@@ -3,7 +3,7 @@ import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
-import { OrderKind } from 'state/orders/actions'
+import { OrderClass, OrderKind } from 'state/orders/actions'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersConfirm } from './index'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
@@ -47,7 +47,7 @@ const outputCurrencyInfo: CurrencyInfo = {
 
 const tradeContext: TradeFlowContext = {
   postOrderParams: {
-    class: 'limit',
+    class: OrderClass.LIMIT,
     account: '0x000',
     chainId: 1,
     signer: {} as any,

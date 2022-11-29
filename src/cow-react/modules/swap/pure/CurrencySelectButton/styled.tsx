@@ -46,7 +46,7 @@ export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
 
 export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
   color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
 `

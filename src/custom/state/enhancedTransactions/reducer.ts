@@ -10,6 +10,7 @@ import {
 } from 'state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { SerializableTransactionReceipt } from '@src/state/transactions/types'
+import { OrderClass } from '../orders/actions'
 
 export enum HashType {
   ETHEREUM_TX = 'ETHEREUM_TX',
@@ -45,6 +46,8 @@ export interface EnhancedTransactionDetails {
   // Cancelling/Replacing
   replacementType?: ReplacementType // if the user cancelled or speedup the tx it will be reflected here
   linkedTransactionHash?: string
+
+  class?: OrderClass // Flag to distinguish order class
 }
 
 export interface EnhancedTransactionState {

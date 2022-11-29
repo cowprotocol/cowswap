@@ -21,10 +21,26 @@ const Wrapper = styled.div`
     width: 100%;
     height: auto;
     z-index: -1;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      left: initial;
+      bottom: initial;
+      top: 0;
+      margin: 24px auto 0;
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 120px auto 0;
+    `}
   }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin: auto 0 100px;
+    flex-flow: column wrap;
+    margin: 24px auto 0;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 56px auto 160px;
   `}
 `
 
@@ -32,6 +48,16 @@ const FooterVersion = styled(Version)`
   margin: 0 auto 0 0;
   padding: 0;
   flex-flow: row wrap;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: 0 auto;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-flow: column wrap;
+    width: 100%;
+    gap: 24px;
+  `}
 
   > div {
     ${({ theme }) => theme.mediaWidth.upToSmall`
