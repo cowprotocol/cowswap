@@ -11,18 +11,19 @@ export function getOrderExecutedAmounts(order: Order): {
   executedBuyAmount: JSBI
   executedSellAmount: JSBI
 } {
-  if (!order.apiAdditionalInfo) {
+  const { apiAdditionalInfo } = order
+
+  if (!apiAdditionalInfo) {
     return {
       executedBuyAmount: JSBI.BigInt(0),
       executedSellAmount: JSBI.BigInt(0),
     }
   }
 
+  const { executedBuyAmount, executedSellAmount, executedFeeAmount } = apiAdditionalInfo
+
   return {
-    executedBuyAmount: JSBI.BigInt(order.apiAdditionalInfo.executedBuyAmount),
-    executedSellAmount: JSBI.subtract(
-      JSBI.BigInt(order.apiAdditionalInfo.executedSellAmount),
-      JSBI.BigInt(order.apiAdditionalInfo.executedFeeAmount)
-    ),
+    executedBuyAmount: JSBI.BigInt(executedBuyAmount),
+    executedSellAmount: JSBI.subtract(JSBI.BigInt(executedSellAmount), JSBI.BigInt(executedFeeAmount)),
   }
 }

@@ -1,37 +1,14 @@
-import { ReceiptModal } from '@cow/modules/limitOrders/pure/ReceiptModal'
-import { useAtomValue } from 'jotai/utils'
-import { receiptAtom } from '@cow/modules/limitOrders/state/limitOrdersReceiptAtom'
-import { useCloseReceiptModal } from './hooks'
-import { useWeb3React } from '@web3-react/core'
-import { supportedChainId } from '@src/custom/utils/supportedChainId'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
+import { useAtomValue } from 'jotai/utils'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
 
-function calculatePrice({
-  buyAmount,
-  sellAmount,
-  inputToken,
-  outputToken,
-}: {
-  buyAmount: JSBI | undefined
-  sellAmount: JSBI | undefined
-  inputToken: Token
-  outputToken: Token
-}) {
-  const isZero = (x: JSBI) => JSBI.equal(x, JSBI.BigInt(0))
+import { receiptAtom } from '@cow/modules/limitOrders/state/limitOrdersReceiptAtom'
+import { ReceiptModal } from '@cow/modules/limitOrders/pure/ReceiptModal'
+import { calculatePrice } from '@cow/modules/limitOrders/utils/calculatePrice'
 
-  if (!buyAmount || !sellAmount || !inputToken || !outputToken || isZero(buyAmount) || isZero(sellAmount)) {
-    return null
-  }
-
-  const adjustedBuy = adjustDecimals(buyAmount, inputToken.decimals)
-  const adjustedSell = adjustDecimals(sellAmount, outputToken.decimals)
-  return new Fraction(adjustedBuy, adjustedSell)
-}
-
-const adjustDecimals = (amount: string | JSBI, decimals: number) => {
-  return JSBI.multiply(JSBI.BigInt(amount), JSBI.BigInt(10 ** decimals))
-}
+import { supportedChainId } from 'utils/supportedChainId'
+import { useCloseReceiptModal } from './hooks'
 
 export function OrdersReceiptModal() {
   // TODO: can we get selected order from URL by id?

@@ -41,6 +41,7 @@ enum Tooltip {
   ORDER_ID = 'Order id TODO',
 }
 
+// TODO: add cosmos fixture for this component
 export function ReceiptModal({
   isOpen,
   onDismiss,
