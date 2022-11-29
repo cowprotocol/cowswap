@@ -1,10 +1,12 @@
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
+import { Link } from 'react-router-dom'
+import { buildLimitOrdersUrl } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 
 export interface OrdersTablePaginationProps {
   pageSize: number
   totalCount: number
   currentPage: number
-  setCurrentPage(index: number): void
 }
 
 const PaginationBox = styled.div`
@@ -12,28 +14,25 @@ const PaginationBox = styled.div`
   margin-top: 20px;
 `
 
-const PageButton = styled.button<{ active?: boolean }>`
-  background: ${({ theme, active }) => (active ? theme.bg2 : theme.bg1)};
-  color: ${({ theme, active }) => (active ? theme.text2 : theme.text1)};
+const PageButton = styled(Link)<{ active?: boolean }>`
+  background: ${({ theme, active }) => (active ? transparentize(0.9, theme.text3) : 'transparent')};
+  color: ${({ theme, active }) => (active ? theme.text1 : transparentize(0.2, theme.text1))};
   border: 0;
   outline: 0;
   padding: 5px 10px;
   border-radius: 4px;
   margin: 0 5px;
   cursor: pointer;
+  transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+  text-decoration: none;
 
-  :hover {
-    color: ${({ theme }) => theme.text2};
-    background: ${({ theme }) => theme.bg2};
+  &:hover {
+    background: ${({ theme }) => theme.bg1};
+    color: ${({ theme }) => theme.text1};
   }
 `
 
-export function OrdersTablePagination({
-  pageSize,
-  totalCount,
-  currentPage,
-  setCurrentPage,
-}: OrdersTablePaginationProps) {
+export function OrdersTablePagination({ pageSize, totalCount, currentPage }: OrdersTablePaginationProps) {
   const pagesCount = Math.ceil(totalCount / pageSize)
 
   return (
@@ -42,7 +41,11 @@ export function OrdersTablePagination({
         const index = i + 1
 
         return (
-          <PageButton key={index} active={index === currentPage} onClick={() => setCurrentPage(index)}>
+          <PageButton
+            key={index}
+            active={index === currentPage}
+            to={(location) => buildLimitOrdersUrl(location, { pageNumber: index })}
+          >
             {index}
           </PageButton>
         )

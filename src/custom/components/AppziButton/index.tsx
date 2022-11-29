@@ -24,6 +24,10 @@ const Wrapper = styled.div`
   transform: translateY(0);
   transition: background 0.5s ease-in-out, transform 0.5s ease-in-out;
 
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    background: ${({ theme }) => transparentize(0.1, theme.bg2)};
+  `};
+
   > svg {
     width: 100%;
     height: 100%;
@@ -32,6 +36,10 @@ const Wrapper = styled.div`
     fill: ${({ theme }) => transparentize(0.2, theme.white)};
     transform: rotate(0);
     transition: fill 0.5s ease-in-out, transform 0.5s ease-in-out;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      fill: ${({ theme }) => theme.white};
+    `};
   }
 
   &:hover {
@@ -46,8 +54,8 @@ const Wrapper = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     left: 14px;
-    height: 42px;
-    width: 42px;
+    height: 38px;
+    width: 38px;
     bottom: 11px;
     right: initial;
     z-index: 10;

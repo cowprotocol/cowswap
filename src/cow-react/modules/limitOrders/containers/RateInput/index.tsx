@@ -53,29 +53,31 @@ export function RateInput() {
     updateLimitRateState({ isInversed: !isInversed, isTypedValue: false })
   }
 
+  const isDisabledMPrice = useMemo(() => {
+    return isLoadingExecutionRate || !executionRate || activeRate?.equalTo(executionRate)
+  }, [activeRate, executionRate, isLoadingExecutionRate])
+
   return (
     <styledEl.Wrapper>
       <styledEl.Header>
         <HeadingText currency={primaryCurrency} rateImpact={rateImpact} />
 
-        <styledEl.MarketPriceButton disabled={isLoadingExecutionRate || !executionRate} onClick={handleSetMarketPrice}>
+        <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
           <span>Market price</span>
         </styledEl.MarketPriceButton>
       </styledEl.Header>
 
       <styledEl.Body>
-        <styledEl.InputWrapper>
-          {isLoading && areBothCurrencies ? (
-            <styledEl.RateLoader />
-          ) : (
-            <styledEl.NumericalInput
-              $loading={false}
-              className="rate-limit-amount-input"
-              value={displayedRate}
-              onUserInput={handleUserInput}
-            />
-          )}
-        </styledEl.InputWrapper>
+        {isLoading && areBothCurrencies ? (
+          <styledEl.RateLoader />
+        ) : (
+          <styledEl.NumericalInput
+            $loading={false}
+            className="rate-limit-amount-input"
+            value={displayedRate}
+            onUserInput={handleUserInput}
+          />
+        )}
 
         <styledEl.ActiveCurrency onClick={handleToggle}>
           <styledEl.ActiveSymbol>{secondaryCurrency}</styledEl.ActiveSymbol>

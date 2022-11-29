@@ -14,11 +14,11 @@ export const AutoColumn = styled(AutoColumnUni)`
     &::after {
       content: "";
       display: block;
-      background: linear-gradient(to left, ${({ theme }) => theme.bg3} 0%, ${({ theme }) =>
-    transparentize(1, theme.bg3)} 100%);
+      background: linear-gradient(to left, ${({ theme }) => theme.bg1} 0%, ${({ theme }) =>
+    transparentize(1, theme.bg1)} 100%);
       pointer-events: none;
       height: 100%;
-      width: 70px;
+      width: 80px;
       position: absolute;
       right: 0;
       top: 0;

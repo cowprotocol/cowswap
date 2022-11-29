@@ -49,7 +49,7 @@ export const Wrapper = styled.div`
     }
 
     > div > svg > path {
-      stroke: ${({ theme }) => theme.black};
+      stroke: ${({ theme }) => theme.text3};
     }
   }
 

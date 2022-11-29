@@ -2,7 +2,7 @@ import { ConfirmationPendingContent, L2Content, OperationType } from 'components
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import store from 'state'
-import { addPendingOrder, OrderStatus } from 'state/orders/actions'
+import { addPendingOrder, OrderClass, OrderStatus } from 'state/orders/actions'
 import { OrderKind } from '@cowprotocol/contracts'
 import { TransactionSubmittedContent } from 'components/TransactionConfirmationModal/index'
 import styled from 'styled-components/macro'
@@ -72,7 +72,7 @@ store.dispatch(
       creationTime: Date.now().toString(),
       sellAmountBeforeFee: 400000,
       signature: 'xxxxx',
-      class: 'market',
+      class: OrderClass.MARKET,
     },
   })
 )

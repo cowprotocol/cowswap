@@ -10,6 +10,8 @@ export const LowerSectionWrapper = styled(RowBetween).attrs((props) => ({
   flexWrap: 'wrap',
   minHeight: 24,
 }))`
+  gap: 0;
+
   > .price-container {
     display: flex;
     gap: 5px;

@@ -81,7 +81,7 @@ export const FlyoutMenu = styled.div`
   `} */
 `
 // mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
-const FlyoutMenuContents = styled.div`
+export const FlyoutMenuContents = styled.div`
   align-items: flex-start;
   background-color: ${({ theme }) => theme.bg1};
   border: 1px solid ${({ theme }) => theme.bg0};
@@ -97,12 +97,6 @@ const FlyoutMenuContents = styled.div`
     margin-bottom: 5px;
   }
 
-  // mod
-  min-width: 175px;
-  z-index: 99;
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    top: 50px;
-  }
   ${ActiveRowWrapper} {
     background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
   }

@@ -10,7 +10,7 @@ export type Props = {
 export function StatusField({ order }: Props) {
   return (
     <styledEl.Value>
-      <StatusItem cancelling={!!order.isCancelling} status={order.status}>
+      <StatusItem style={{ width: 'auto' }} cancelling={!!order.isCancelling} status={order.status}>
         {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
       </StatusItem>
     </styledEl.Value>

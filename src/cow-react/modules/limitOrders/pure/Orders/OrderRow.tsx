@@ -3,25 +3,11 @@ import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
-import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AlertTriangle, Trash2 } from 'react-feather'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
-
-const statusColorMap: { [key in OrderStatus]: string } = {
-  [OrderStatus.PENDING]: '#badbe8',
-  [OrderStatus.PRESIGNATURE_PENDING]: '#badbe8',
-  [OrderStatus.EXPIRED]: '#eeaaaa',
-  [OrderStatus.FULFILLED]: '#d5eab3',
-  [OrderStatus.CANCELLED]: '#fcecb4',
-  // TODO: decide what color for each state
-  [OrderStatus.CREATING]: '#badbe8',
-  [OrderStatus.REFUNDED]: '#eeaaaa',
-  [OrderStatus.REFUNDING]: '#eeaaaa',
-  [OrderStatus.REJECTED]: '#eeaaaa',
-}
+import { OrderParams } from './utils/getOrderParams'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -35,9 +21,7 @@ export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.REJECTED]: 'Expired',
 }
 
-const RateValue = styled.span`
-  font-size: 12px;
-`
+const RateValue = styled.span``
 
 const StatusBox = styled.div`
   display: flex;
@@ -45,18 +29,62 @@ const StatusBox = styled.div`
 `
 
 export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
-  display: inline-block;
-  background: ${({ status, cancelling }) => (cancelling ? statusColorMap.cancelled : statusColorMap[status])};
-  color: ${({ theme }) => theme.text2};
-  padding: 5px 10px;
+  --statusColor: ${({ theme, status, cancelling }) =>
+    cancelling
+      ? theme.text1
+      : status === OrderStatus.PENDING // OPEN order
+      ? theme.text3
+      : status === OrderStatus.PRESIGNATURE_PENDING
+      ? theme.text1
+      : status === OrderStatus.FULFILLED
+      ? theme.success
+      : status === OrderStatus.EXPIRED
+      ? theme.warning
+      : status === (OrderStatus.CANCELLED || OrderStatus.REJECTED)
+      ? theme.danger
+      : status === OrderStatus.REFUNDED
+      ? theme.text3
+      : status === (OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING || OrderStatus.REFUNDING)
+      ? theme.text1
+      : theme.text1};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--statusColor);
+  padding: 7px 10px;
   border-radius: 3px;
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 600;
+  width: 100%;
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: block;
+    left: 0;
+    top: 0;
+    background: var(--statusColor);
+    opacity: 0.14;
+    z-index: 1;
+    border-radius: 9px;
+  }
 `
 
 const AmountItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   white-space: nowrap;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
 `
 
 const WarningIndicator = styled.button`
@@ -146,52 +174,24 @@ const allowanceWarning = (tokenSymbol: string) => (
 )
 
 export interface OrderRowProps {
-  chainId: SupportedChainId | undefined
   order: Order
-  balancesAndAllowances: BalancesAndAllowances
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
+  orderParams: OrderParams
   onClick: () => void
   showOrderCancelationModal(order: Order): void
 }
 
-function isEnoughAmount(
-  sellAmount: CurrencyAmount<Currency>,
-  targetAmount: CurrencyAmount<Currency> | undefined
-): boolean {
-  if (!targetAmount) return true
-
-  if (targetAmount.equalTo(sellAmount)) return true
-
-  return sellAmount.lessThan(targetAmount)
-}
-
 export function OrderRow({
-  chainId,
   order,
   RowElement,
-  balancesAndAllowances,
   isRateInversed,
   showOrderCancelationModal,
+  orderParams,
   onClick,
 }: OrderRowProps) {
-  const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
+  const { sellAmount, buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
 
-  const rateInfoParams: RateInfoParams = {
-    chainId,
-    inputCurrencyAmount: sellAmount,
-    outputCurrencyAmount: buyAmount,
-    activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
-  }
-
-  const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address]
-  const allowance = allowances[order.inputToken.address]
-
-  const hasEnoughBalance = isEnoughAmount(sellAmount, balance)
-  const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
   const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
   return (
