@@ -1,4 +1,4 @@
-import { ReceiptModal as ReceiptModalPure } from '@cow/modules/limitOrders/pure/ReceiptModal'
+import { ReceiptModal } from '@cow/modules/limitOrders/pure/ReceiptModal'
 import { useAtomValue } from 'jotai/utils'
 import { receiptAtom } from '@cow/modules/limitOrders/state/limitOrdersReceiptAtom'
 import { useCloseReceiptModal } from './hooks'
@@ -33,7 +33,7 @@ const adjustDecimals = (amount: string | JSBI, decimals: number) => {
   return JSBI.multiply(JSBI.BigInt(amount), JSBI.BigInt(10 ** decimals))
 }
 
-export function LimitOrdersReceiptModal() {
+export function OrdersReceiptModal() {
   // TODO: can we get selected order from URL by id?
   const { selected: order } = useAtomValue(receiptAtom)
   const { chainId: _chainId } = useWeb3React()
@@ -67,7 +67,7 @@ export function LimitOrdersReceiptModal() {
   })
 
   return (
-    <ReceiptModalPure
+    <ReceiptModal
       sellAmount={sellAmountCurrency}
       buyAmount={buyAmountCurrency}
       limitPrice={limitPrice}
