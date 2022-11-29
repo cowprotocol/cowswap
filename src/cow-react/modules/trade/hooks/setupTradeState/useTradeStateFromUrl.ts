@@ -16,11 +16,21 @@ export function useTradeStateFromUrl(): TradeState {
     const { chainId, inputCurrencyId, outputCurrencyId } = params as TradeStateFromUrl
     const chainIdAsNumber = chainId && /^\d+$/.test(chainId) ? parseInt(chainId) : null
 
-    return {
+    const state: TradeState = {
       chainId: chainIdAsNumber,
       inputCurrencyId: inputCurrencyId || searchParams.get('inputCurrency') || null,
       outputCurrencyId: outputCurrencyId || searchParams.get('outputCurrency') || null,
       recipient,
     }
-  }, [location.search, params])
+
+    if (state.outputCurrencyId === state.inputCurrencyId) {
+      return {
+        ...state,
+        outputCurrencyId: null,
+      }
+    }
+
+    return state
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, JSON.stringify(params)])
 }
