@@ -2,7 +2,7 @@ import SafeServiceClient, { SafeInfoResponse, SafeMultisigTransactionResponse } 
 import { registerOnWindow } from 'utils/misc'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
-import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
+import EthersAdapter from '@safe-global/safe-ethers-lib'
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 
@@ -43,7 +43,7 @@ function createSafeServiceClient(txServiceUrl: string, library: Web3Provider): S
   const provider = new Web3Provider(library.send.bind(library) as JsonRpcFetchFunc)
   const ethAdapter = new EthersAdapter({
     ethers,
-    signer: provider.getSigner(0),
+    signerOrProvider: provider.getSigner(0),
   })
 
   return new SafeServiceClient({ txServiceUrl, ethAdapter })
