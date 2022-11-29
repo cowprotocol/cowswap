@@ -1,12 +1,14 @@
 import { useWeb3React } from '@web3-react/core'
+import BigNumber from 'bignumber.js'
+import JSBI from 'jsbi'
+
 import { useOrders } from 'state/orders/hooks'
 import { useCallback, useMemo } from 'react'
 import { Order, OrderStatus } from 'state/orders/actions'
-import BigNumber from 'bignumber.js'
 import { getOrderFilledAmount } from '@cow/modules/limitOrders/utils/getOrderFilledAmount'
 import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 import { getOrderExecutedAmounts } from '@cow/modules/limitOrders/utils/getOrderExecutedAmounts'
-import JSBI from 'jsbi'
+import { isOrderFilled } from '@cow/modules/limitOrders/utils/isOrderFilled'
 
 export interface LimitOrdersList {
   pending: ParsedOrder[]
@@ -42,6 +44,7 @@ export function useLimitOrdersList(): LimitOrdersList {
     const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
     const expirationTime = new Date(Number(order.validTo) * 1000)
     const executedFeeAmount = new BigNumber(order.apiAdditionalInfo?.executedFeeAmount || 0)
+    const fullyFilled = isOrderFilled(order)
 
     return {
       ...order,
@@ -53,6 +56,7 @@ export function useLimitOrdersList(): LimitOrdersList {
       surplusAmount,
       surplusPercentage,
       executedFeeAmount,
+      fullyFilled,
     }
   }
 

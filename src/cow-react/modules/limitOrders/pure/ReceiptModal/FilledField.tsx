@@ -11,21 +11,23 @@ interface Props {
 }
 
 export function FilledField({ order, sellAmount, buyAmount }: Props) {
-  const { inputToken, outputToken } = order
+  const { inputToken, outputToken, filledPercentage, fullyFilled } = order
 
-  const filledPercentage = useMemo(() => {
-    if (!order || !order.filledPercentage) {
+  const touched = filledPercentage?.gt(0)
+
+  const formattedPercentage = useMemo(() => {
+    if (!filledPercentage) {
       return null
     }
 
-    return order.filledPercentage.times('100').decimalPlaces(2).toString()
-  }, [order])
+    return filledPercentage.times('100').decimalPlaces(2).toString()
+  }, [filledPercentage])
 
   return (
     <styledEl.Value>
       <styledEl.InlineWrapper>
-        <styledEl.Progress active={filledPercentage || 0} />
-        <styledEl.ProgressPercent>{filledPercentage}%</styledEl.ProgressPercent>
+        <styledEl.Progress active={formattedPercentage || 0} />
+        <styledEl.ProgressPercent>{formattedPercentage}%</styledEl.ProgressPercent>
       </styledEl.InlineWrapper>
 
       <styledEl.InlineWrapper>
