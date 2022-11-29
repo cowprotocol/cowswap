@@ -13,12 +13,14 @@ import useENSAddress from 'hooks/useENSAddress'
 import { isAddress } from 'utils'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
   CanTrade = 'CanTrade',
   Loading = 'Loading',
   // SwapIsUnsupported = 'SwapIsUnsupported',
+  Unwrap = 'Unwrap',
   InvalidRecipient = 'InvalidRecipient',
   WalletIsUnsupported = 'WalletIsUnsupported',
   WalletIsNotConnected = 'WalletIsNotConnected',
@@ -40,6 +42,7 @@ interface LimitOrdersFormParams {
   tradeState: LimitOrdersTradeState
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
+  isWrapOrUnwrap: boolean
 }
 
 function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState {
@@ -52,6 +55,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     tradeState,
     recipientEnsAddress,
     quote,
+    isWrapOrUnwrap,
   } = params
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
@@ -83,10 +87,11 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   }
 
   if (
-    !inputCurrencyAmount ||
-    inputCurrencyAmount.toExact() === '0' ||
-    !outputCurrencyAmount ||
-    outputCurrencyAmount.toExact() === '0'
+    !isWrapOrUnwrap &&
+    (!inputCurrencyAmount ||
+      inputCurrencyAmount.toExact() === '0' ||
+      !outputCurrencyAmount ||
+      outputCurrencyAmount.toExact() === '0')
   ) {
     return LimitOrdersFormState.AmountIsNotSet
   }
@@ -95,11 +100,11 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.CantLoadBalances
   }
 
-  if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+  if (inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
     return LimitOrdersFormState.InsufficientBalance
   }
 
-  if (!currentAllowance || !quote) {
+  if (!isWrapOrUnwrap && (!currentAllowance || !quote)) {
     return LimitOrdersFormState.Loading
   }
 
@@ -107,7 +112,11 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.NotApproved
   }
 
-  if (quote.error) {
+  if (isWrapOrUnwrap) {
+    return LimitOrdersFormState.Unwrap
+  }
+
+  if (quote?.error) {
     return LimitOrdersFormState.QuoteError
   }
 
@@ -120,6 +129,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { isSupportedWallet } = useWalletInfo()
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const quote = useAtomValue(limitOrdersQuoteAtom)
+  const { isWrapOrUnwrap } = useDetectNativeToken()
 
   const { inputCurrency, outputCurrency, recipient } = tradeState
   const sellAmount = tradeState.inputCurrencyAmount
@@ -141,6 +151,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
     tradeState,
     recipientEnsAddress,
     quote,
+    isWrapOrUnwrap,
   }
 
   return useSafeMemo(() => {

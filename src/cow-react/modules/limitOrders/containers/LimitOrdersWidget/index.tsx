@@ -27,18 +27,21 @@ import { ImportTokenModal } from '@cow/modules/trade/containers/ImportTokenModal
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
-import { useDisableNativeTokenUsage } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenUsage'
+import { useDisableNativeTokenSelling } from '@cow/modules/limitOrders/hooks/useDisableNativeTokenSelling'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
+import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
-  useDisableNativeTokenUsage()
+  useDisableNativeTokenSelling()
 
   const { chainId } = useWeb3React()
+  const { allowsOffchainSigning } = useWalletInfo()
   const {
     inputCurrency,
     outputCurrency,
@@ -62,11 +65,11 @@ export function LimitOrdersWidget() {
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const { isLoading: isRateLoading } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
+  const { isWrapOrUnwrap } = useDetectNativeToken()
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
   const currenciesLoadingInProgress = false
-  const allowsOffchainSigning = false
   const isTradePriceUpdating = false
   const showSetMax = true
 
@@ -91,21 +94,26 @@ export function LimitOrdersWidget() {
     field: Field.OUTPUT,
     label: isSellOrder ? 'Your receive at least' : 'You receive exactly',
     currency: outputCurrency,
-    rawAmount: outputCurrencyAmount,
-    viewAmount: outputCurrencyAmount?.toExact() || '',
+    rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
+    viewAmount: isWrapOrUnwrap ? inputCurrencyAmount?.toExact() || '' : outputCurrencyAmount?.toExact() || '',
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
+      if (isWrapOrUnwrap) {
+        updateCurrencyAmount({ inputCurrencyAmount: typedValue })
+        return
+      }
+
       if (field === Field.INPUT) {
         updateCurrencyAmount({ inputCurrencyAmount: typedValue })
       } else {
         updateCurrencyAmount({ outputCurrencyAmount: typedValue })
       }
     },
-    [updateCurrencyAmount]
+    [updateCurrencyAmount, isWrapOrUnwrap]
   )
 
   const onSwitchTokens = useCallback(() => {
@@ -137,7 +145,7 @@ export function LimitOrdersWidget() {
             <>
               <CurrencyInputPanel
                 id="swap-currency-input"
-                disableNonToken={true}
+                disableNonToken={false}
                 chainId={chainId}
                 loading={currenciesLoadingInProgress}
                 onCurrencySelection={onCurrencySelection}
@@ -148,10 +156,12 @@ export function LimitOrdersWidget() {
                 showSetMax={showSetMax}
                 topLabel={inputCurrencyInfo.label}
               />
-              <styledEl.RateWrapper>
-                <RateInput />
-                <DeadlineInput />
-              </styledEl.RateWrapper>
+              {!isWrapOrUnwrap && (
+                <styledEl.RateWrapper>
+                  <RateInput />
+                  <DeadlineInput />
+                </styledEl.RateWrapper>
+              )}
               <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
                 <CurrencyArrowSeparator
                   isCollapsed={false}
@@ -180,12 +190,13 @@ export function LimitOrdersWidget() {
                 <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
               )}
 
-              <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+              {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />}
 
               <LimitOrdersWarnings priceImpact={priceImpact} />
 
               <styledEl.TradeButtonBox>
                 <TradeButtons
+                  inputCurrencyAmount={inputCurrencyAmount}
                   tradeContext={tradeContext}
                   priceImpact={priceImpact}
                   openConfirmScreen={() => setShowConfirmation(true)}
