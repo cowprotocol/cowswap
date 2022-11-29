@@ -28,7 +28,7 @@ const StatusBox = styled.div`
   align-items: center;
 `
 
-const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
+export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
   --statusColor: ${({ theme, status, cancelling }) =>
     cancelling
       ? theme.text1
