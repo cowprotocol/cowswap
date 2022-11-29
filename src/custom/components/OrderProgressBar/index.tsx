@@ -20,7 +20,6 @@ import {
 import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from 'components/OrderProgressBar/utils'
 import { SupportedChainId } from 'constants/chains'
-import { CancelButton } from 'components/AccountDetails/Transaction/CancelButton'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import loadingCowWebp from 'assets/cow-swap/cow-load.webp'
 import cowGraph from 'assets/images/cow-graph.svg'
@@ -31,6 +30,7 @@ import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 
 import { getExplorerOrderLink } from 'utils/explorer'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
+import { CancelButton } from '@cow/common/containers/CancelButton'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
@@ -214,7 +214,13 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   {isCancellable ? (
                     <>
                       {' '}
-                      You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                      You can wait or{' '}
+                      <CancelButton
+                        chainId={chainId}
+                        orderId={activityDerivedState.id}
+                        summary={activityDerivedState.summary}
+                        type={'soft'}
+                      />
                     </>
                   ) : null}
                 </StatusMsg>
@@ -254,7 +260,13 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                   {isCancellable ? (
                     <>
                       {' '}
-                      You can wait or <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+                      You can wait or{' '}
+                      <CancelButton
+                        chainId={chainId}
+                        orderId={activityDerivedState.id}
+                        summary={activityDerivedState.summary}
+                        type={'soft'}
+                      />
                     </>
                   ) : null}
                 </StatusMsg>

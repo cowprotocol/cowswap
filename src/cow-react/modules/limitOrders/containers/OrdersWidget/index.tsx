@@ -7,12 +7,12 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
 import { GP_VAULT_RELAYER } from 'constants/index'
-import { CancellationModal, CancellationModalProps } from 'components/AccountDetails/Transaction/CancelationModal'
 import { pendingOrderSummary } from '@cow/common/helpers/pendingOrderSummary'
 import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
+import { CancellationModal, CancellationModalProps } from '@cow/common/pure/CancelButton/CancellationModal'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -61,13 +61,14 @@ export function OrdersWidget() {
       if (!chainId) return
 
       setCancelModalProps({
-        isOpen: true,
         chainId,
         orderId: order.id,
         summary: pendingOrderSummary(order),
         onDismiss() {
           setCancelModalProps(null)
         },
+        error: null,
+        type: 'soft',
       })
     },
     [chainId]
