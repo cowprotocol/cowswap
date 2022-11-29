@@ -13,6 +13,7 @@ import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limi
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { CancellationModal, CancellationModalProps } from '@cow/common/pure/CancelButton/CancellationModal'
+import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -24,6 +25,7 @@ export function OrdersWidget() {
   const ordersList = useLimitOrdersList()
   const isSmartContractWallet = useIsSmartContractWallet()
   const { chainId, account } = useWeb3React()
+  const cancelOrder = useCancelOrder()
 
   const [cancelModalProps, setCancelModalProps] = useState<CancellationModalProps | null>(null)
 
@@ -60,18 +62,22 @@ export function OrdersWidget() {
     (order: Order) => {
       if (!chainId) return
 
+      const onDismiss = () => setCancelModalProps(null)
+
       setCancelModalProps({
         chainId,
         orderId: order.id,
         summary: pendingOrderSummary(order),
-        onDismiss() {
-          setCancelModalProps(null)
-        },
+        onDismiss,
         error: null,
         type: 'soft',
+        softCancellationContext: {
+          isWaitingSignature: false,
+          cancelOrder: () => cancelOrder(order.id).then(onDismiss),
+        },
       })
     },
-    [chainId]
+    [cancelOrder, chainId]
   )
 
   // Set page params initially once
