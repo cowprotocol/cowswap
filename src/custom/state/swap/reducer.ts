@@ -149,7 +149,14 @@ function getEthFlowOverridesOnSelect(
   if (
     inputCurrencyId?.toUpperCase() === NATIVE_CURRENCY_BUY_TOKEN[state.chainId || ChainId.MAINNET].symbol?.toUpperCase()
   ) {
-    return { independentField: Field.INPUT, typedValue: '' }
+    const independentField = Field.INPUT
+
+    if (inputCurrencyId !== state[Field.INPUT].currencyId) {
+      // Only reset the typedValue if native token was not already selected
+      return { independentField, typedValue: '' }
+    }
+    // Otherwise, keep the typedValue to avoid resetting input on every change
+    return { independentField, typedValue: originalTypedValue }
   }
 
   return { independentField: originalIndependentField, typedValue: originalTypedValue }
