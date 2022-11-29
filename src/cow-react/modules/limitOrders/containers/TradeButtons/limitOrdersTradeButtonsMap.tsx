@@ -134,7 +134,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
       </>
     )
   },
-  [LimitOrdersFormState.Unwrap]: ({ wrapUnwrapParams }: TradeButtonsParams) => {
+  [LimitOrdersFormState.WrapUnwrap]: ({ wrapUnwrapParams }: TradeButtonsParams) => {
     const {
       isNativeIn,
       wrapUnwrapCallback,

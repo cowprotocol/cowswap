@@ -20,7 +20,7 @@ export enum LimitOrdersFormState {
   CanTrade = 'CanTrade',
   Loading = 'Loading',
   // SwapIsUnsupported = 'SwapIsUnsupported',
-  Unwrap = 'Unwrap',
+  WrapUnwrap = 'WrapUnwrap',
   InvalidRecipient = 'InvalidRecipient',
   WalletIsUnsupported = 'WalletIsUnsupported',
   WalletIsNotConnected = 'WalletIsNotConnected',
@@ -113,7 +113,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   }
 
   if (isWrapOrUnwrap) {
-    return LimitOrdersFormState.Unwrap
+    return LimitOrdersFormState.WrapUnwrap
   }
 
   if (quote?.error) {
