@@ -34,6 +34,7 @@ const adjustDecimals = (amount: string | JSBI, decimals: number) => {
 }
 
 export function LimitOrdersReceiptModal() {
+  // TODO: can we get selected order from URL by id?
   const { selected: order } = useAtomValue(receiptAtom)
   const { chainId: _chainId } = useWeb3React()
   const closeReceiptModal = useCloseReceiptModal()

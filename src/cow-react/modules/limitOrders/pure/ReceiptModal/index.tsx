@@ -15,6 +15,7 @@ import { FilledField } from './FilledField'
 import { SurplusField } from './SurplusField'
 import { OrderIDField } from './OrderIdField'
 import { StatusField } from './StatusField'
+import { OrderTypeField } from './OrderTypeField'
 
 interface ReceiptProps {
   isOpen: boolean
@@ -56,7 +57,6 @@ export function ReceiptModal({
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'Your receive at least' : 'You receive exactly'
-  const orderType = order.kind === OrderKind.SELL ? 'Sell order' : 'Buy order'
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -113,12 +113,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Order type" tooltip={Tooltip.ORDER_TYPE} />
-
-              <styledEl.Value>
-                <span>
-                  {orderType} {!order.partiallyFillable && '(Fill or Kill)'}
-                </span>
-              </styledEl.Value>
+              <OrderTypeField order={order} />
             </styledEl.Field>
 
             <styledEl.Field border="rounded-bottom">
