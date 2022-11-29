@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import Finish from 'assets/cow-swap/plus.svg'
+import Finish from 'assets/cow-swap/finish.svg'
 import Checkmark from 'assets/cow-swap/checkmark.svg'
 import Refund from 'assets/cow-swap/refund.svg'
 import styled from 'styled-components/macro'
