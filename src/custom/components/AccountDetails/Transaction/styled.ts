@@ -19,7 +19,6 @@ export const TransactionWrapper = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: column wrap;
-    padding: 20px;
   `};
 
   ${RowFixed} {

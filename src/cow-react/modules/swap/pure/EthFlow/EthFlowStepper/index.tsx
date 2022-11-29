@@ -48,6 +48,14 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.grey1};
   font-size: 15px;
   line-height: 1;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 42px 22px;
+  `}
 `
 
 export interface ProgressProps {
@@ -63,6 +71,15 @@ export const Progress = styled.div<ProgressProps>`
   margin: 28px 0 0;
   border-radius: var(--height);
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    --height: 50px;
+    --width: 3px;
+    border-radius: var(--width);
+    margin: 24px auto;
+    height: var(--height);
+    width: var(--width);
+  `}
+
   &::after {
     content: '';
     display: block;
@@ -75,6 +92,13 @@ export const Progress = styled.div<ProgressProps>`
     background: ${({ status, theme }) =>
       status === 'error' ? theme.danger : status === 'success' ? theme.success : theme.text3};
     border-radius: var(--height);
+
+    ${({ theme }) => theme.mediaWidth.upToSmall<ProgressProps>`
+      --width: 3px;
+      width: var(--width);
+      border-radius: var(--width);
+      height: ${({ value }) => (value ? `${value}%` : '0%')};
+    `}
   }
 `
 
