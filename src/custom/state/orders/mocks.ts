@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 
-import { Order, OrderStatus, OrderKind, SerializedOrder, addPendingOrder } from './actions'
+import { Order, OrderStatus, OrderKind, SerializedOrder, addPendingOrder, OrderClass } from './actions'
 import { RADIX_DECIMAL } from 'constants/index'
 import { serializeToken } from 'state/user/hooks'
 import store from '..'
@@ -63,7 +63,7 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
     signature: (orderN++).toString().repeat(65 * 2), // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
     receiver: owner.replace('0x', ''),
     apiAdditionalInfo: undefined,
-    class: 'market',
+    class: OrderClass.MARKET,
   }
 }
 
@@ -116,7 +116,7 @@ export const mockOrderDispatches = {
         signature:
           '1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
         receiver: '123',
-        class: 'market' as 'market' | 'limit',
+        class: OrderClass.MARKET,
       },
     }
 
