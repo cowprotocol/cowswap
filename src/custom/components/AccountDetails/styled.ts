@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { CopyIcon, TransactionStatusText } from 'components/Copy'
-import { LinkStyledButton, StyledLink } from 'theme'
+import { StyledLink } from 'theme'
 import {
   WalletName,
   AccountSection as AccountSectionMod,
@@ -230,23 +230,29 @@ export const LowerSection = styled.div`
     width: 100%;
     background-color: inherit;
     padding: 0 0 48px;
+
+    > ${StyledLink} {
+      width: 100%;
+      text-align: center;
+      margin: 24px auto 0;
+    }
   }
 
-  h5 {
+  > span > h5 {
     margin: 0;
     font-weight: 500;
     color: inherit;
     line-height: 1;
     display: flex;
     align-items: center;
+
     > span {
       opacity: 0.6;
       margin: 0 0 0 4px;
     }
   }
 
-  ${LinkStyledButton}, ${StyledLink} {
-    opacity: 0.7;
+  > span > ${StyledLink} {
     color: ${({ theme }) => theme.text1};
     text-decoration: underline;
     font-size: 14px;
@@ -259,6 +265,7 @@ export const LowerSection = styled.div`
 
 export const LowerSectionSimple = styled(LowerSection)`
   padding: 0 12px;
+
   > div {
     padding: 0;
 

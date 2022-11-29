@@ -148,6 +148,16 @@ export const SummaryInner = styled.div`
       grid-column: 1 / -1;
     `}
   }
+
+  > a {
+    color: ${({ theme }) => theme.text1};
+    text-decoration: underline;
+    font-size: 14px;
+
+    &:hover {
+      color: ${({ theme }) => theme.text3};
+    }
+  }
 `
 
 export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: boolean }>`
@@ -198,7 +208,7 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
 
   + ${StyledLink} {
     align-self: center;
-    margin: 20px 0 0;
+    margin: 16px 0 0;
   }
 `
 

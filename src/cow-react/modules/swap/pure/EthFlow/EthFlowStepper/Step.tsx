@@ -13,7 +13,7 @@ const StepWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   gap: 9px;
   position: relative;
@@ -27,9 +27,10 @@ const StepWrapper = styled.div`
   // Needs && to override
   && ${ExplorerLinkStyled} {
     display: block;
-    font-size: 13px;
     font-weight: 500;
     text-decoration: underline;
+    color: ${({ theme }) => theme.text3};
+    opacity: 1;
   }
 `
 
