@@ -22,6 +22,7 @@ export function useLimitOrdersTradeState(): TradeState {
   return useAtomValue(limitOrdersAtom)
 }
 
+// TODO: maybe better to return empty object instead of null
 export function useTradeState(): { state: TradeState; updateState: (state: TradeState) => void } | null {
   const dispatch = useAppDispatch()
   const tradeTypeInfo = useTradeTypeInfo()

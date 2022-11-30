@@ -14,12 +14,14 @@ import { isAddress } from 'utils'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
   CanTrade = 'CanTrade',
   Loading = 'Loading',
   // SwapIsUnsupported = 'SwapIsUnsupported',
+  WrapUnwrap = 'WrapUnwrap',
   InvalidRecipient = 'InvalidRecipient',
   WalletIsUnsupported = 'WalletIsUnsupported',
   WalletIsNotConnected = 'WalletIsNotConnected',
@@ -43,6 +45,7 @@ interface LimitOrdersFormParams {
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
   activeRate: Fraction | null
+  isWrapOrUnwrap: boolean
 }
 
 function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState {
@@ -55,11 +58,15 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     tradeState,
     recipientEnsAddress,
     quote,
+    isWrapOrUnwrap,
     activeRate,
   } = params
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
     tradeState
+
+  const inputAmountIsNotSet = !inputCurrencyAmount || inputCurrencyAmount.equalTo(0)
+  const outputAmountIsNotSet = !outputCurrencyAmount || outputCurrencyAmount.equalTo(0)
 
   if (!account) {
     return LimitOrdersFormState.WalletIsNotConnected
@@ -86,36 +93,41 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.ReadonlyGnosisSafeUser
   }
 
-  if (
-    !inputCurrencyAmount ||
-    inputCurrencyAmount.toExact() === '0' ||
-    !outputCurrencyAmount ||
-    outputCurrencyAmount.toExact() === '0'
-  ) {
-    if (!activeRate || activeRate.equalTo(0)) {
-      return LimitOrdersFormState.PriceIsNotSet
+  if (isWrapOrUnwrap) {
+    if (inputAmountIsNotSet && outputAmountIsNotSet) {
+      return LimitOrdersFormState.AmountIsNotSet
     }
+  } else {
+    if (inputAmountIsNotSet || outputAmountIsNotSet) {
+      if (!activeRate || activeRate.equalTo(0)) {
+        return LimitOrdersFormState.PriceIsNotSet
+      }
 
-    return LimitOrdersFormState.AmountIsNotSet
+      return LimitOrdersFormState.AmountIsNotSet
+    }
   }
 
   if (!inputCurrencyBalance) {
     return LimitOrdersFormState.CantLoadBalances
   }
 
-  if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+  if (inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
     return LimitOrdersFormState.InsufficientBalance
   }
 
-  if (!currentAllowance || !quote) {
+  if (!isWrapOrUnwrap && (!currentAllowance || !quote)) {
     return LimitOrdersFormState.Loading
+  }
+
+  if (isWrapOrUnwrap) {
+    return LimitOrdersFormState.WrapUnwrap
   }
 
   if (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) {
     return LimitOrdersFormState.NotApproved
   }
 
-  if (quote.error) {
+  if (quote?.error) {
     return LimitOrdersFormState.QuoteError
   }
 
@@ -129,6 +141,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const { activeRate } = useAtomValue(limitRateAtom)
+  const { isWrapOrUnwrap } = useDetectNativeToken()
 
   const { inputCurrency, outputCurrency, recipient } = tradeState
   const sellAmount = tradeState.inputCurrencyAmount
@@ -151,6 +164,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
     recipientEnsAddress,
     quote,
     activeRate,
+    isWrapOrUnwrap,
   }
 
   return useSafeMemo(() => {

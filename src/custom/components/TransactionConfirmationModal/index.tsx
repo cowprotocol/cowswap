@@ -413,7 +413,7 @@ function getSubmittedMessage(operationLabel: string, operationType: OperationTyp
     case OperationType.ORDER_SIGN:
       return t`The order is submitted and ready to be settled.`
     default:
-      return t`The ${operationLabel} is submitted.`
+      return `The ${operationLabel} is submitted.`
   }
 }
 
