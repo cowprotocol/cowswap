@@ -69,7 +69,7 @@ export function LimitOrdersWidget() {
 
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
-  const isTradePriceUpdating = false
+  const isTradePriceUpdating = isRateLoading
   const showSetMax = true
 
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())

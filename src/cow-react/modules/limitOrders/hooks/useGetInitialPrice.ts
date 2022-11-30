@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 import { useAsyncMemo } from 'use-async-memo'
@@ -52,41 +52,35 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const [isInputPriceLoading, setInputPriceLoading] = useState(false)
-  const [isOutputPriceLoading, setOutputPriceLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())
 
-  const inputPrice = useAsyncMemo(() => {
-    setInputPriceLoading(true)
-    return requestPriceForCurrency(chainId, inputCurrency).finally(() => {
-      setInputPriceLoading(false)
-    })
-  }, [chainId, inputCurrency, updateTimestamp])
+  const price = useAsyncMemo(
+    () => {
+      setIsLoading(true)
 
-  const outputPrice = useAsyncMemo(() => {
-    setOutputPriceLoading(true)
-    return requestPriceForCurrency(chainId, outputCurrency).finally(() => {
-      setOutputPriceLoading(false)
-    })
-  }, [chainId, outputCurrency, updateTimestamp])
+      return Promise.all([
+        requestPriceForCurrency(chainId, inputCurrency),
+        requestPriceForCurrency(chainId, outputCurrency),
+      ])
+        .then(([inputPrice, outputPrice]) => {
+          if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
+            return null
+          }
 
-  const price = useMemo(() => {
-    if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
-      return null
-    }
+          const result = new Fraction(inputPrice, outputPrice)
 
-    const result = new Fraction(inputPrice, outputPrice)
+          console.debug('Updated limit orders initial price: ', result.toSignificant(18))
 
-    console.debug('Updated limit orders initial price: ', result.toSignificant(18))
-
-    return result
-  }, [outputPrice, inputPrice])
-
-  // To avoid loading state blinking
-  useEffect(() => {
-    setIsLoading(isInputPriceLoading || isOutputPriceLoading)
-  }, [isInputPriceLoading, isOutputPriceLoading])
+          return result
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
+    },
+    [chainId, inputCurrency, outputCurrency, updateTimestamp],
+    null
+  )
 
   // Update initial price every 10 seconds
   useEffect(() => {
