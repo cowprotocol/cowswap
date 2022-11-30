@@ -15,7 +15,7 @@ import { useSetAtom } from 'jotai'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import styled from 'styled-components/macro'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFormState'
-import { isCurrencyAmountFalsy } from '@cow/utils/isCurrencyAmountFalsy'
+import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 
 export interface LimitOrdersWarningsProps {
   priceImpact: PriceImpact
@@ -77,7 +77,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
           acceptCallback={onAcceptPriceImpact}
         />
       )}
-      {inputCurrency && !isCurrencyAmountFalsy(inputCurrencyAmount) && !isCurrencyAmountFalsy(outputCurrencyAmount) && (
+      {inputCurrency && !isFractionFalsy(inputCurrencyAmount) && !isFractionFalsy(outputCurrencyAmount) && (
         <StyledRateImpactWarning
           withAcknowledge={isConfirmScreen}
           isAccepted={isRateImpactAccepted}

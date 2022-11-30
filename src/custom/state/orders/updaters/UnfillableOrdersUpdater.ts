@@ -57,6 +57,8 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     quoteToken,
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
+    // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
+    // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
     validTo:
       order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
     userAddress: order.owner,
