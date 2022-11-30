@@ -48,7 +48,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
     }
     if (isFilled) {
       return {
-        label: 'Received ' + tokenLabel + '!',
+        label: 'Received ' + tokenLabel,
         state: 'success',
         icon: Checkmark,
       }
