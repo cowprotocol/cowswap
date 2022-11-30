@@ -20,7 +20,7 @@ const TableBox = styled.div`
   scroll-behavior: smooth;
   position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
     overflow-y: hidden;
     overflow-x: auto;
@@ -37,7 +37,7 @@ const Header = styled.div`
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-template-columns: repeat(3,minmax(190px, 1fr)) 120px 100px;
   `};
 
@@ -69,7 +69,7 @@ const RowElement = styled(Header)`
 const Rows = styled.div`
   display: block;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
    display: flex;
    flex-flow: column wrap;
   `};
