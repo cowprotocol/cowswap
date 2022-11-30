@@ -120,7 +120,7 @@ export const SummaryInner = styled.div`
   width: auto;
   margin: 0;
   opacity: 1;
-  font-size: 13px;
+  font-size: 14px;
   word-break: break-word;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -227,6 +227,8 @@ export const StatusLabelWrapper = styled.div`
   `};
 `
 
+// TODO: Consolidate status label logic with StatusItem
+// in src/cow-react/modules/limitOrders/pure/Orders/OrderRow.tsx
 export const StatusLabel = styled.div<{
   isTransaction: boolean
   isPending: boolean

@@ -83,10 +83,10 @@ export const AuxInformationContainer = styled(Container)<{
 }>`
   margin: ${({ margin = '0 auto' }) => margin};
   border-radius: 0 0 15px 15px;
-  border: 2px solid ${({ theme, hideInput }) => (hideInput ? theme.grey1 : theme.bg2)};
+  border: 2px solid ${({ theme }) => theme.grey1};
 
   &:hover {
-    border: 2px solid ${({ theme, hideInput }) => (hideInput ? theme.grey1 : theme.bg2)};
+    border: 2px solid ${({ theme }) => theme.grey1};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
