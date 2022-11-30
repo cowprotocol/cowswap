@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { CancelButtonContent, CancelButtonType } from '@cow/common/pure/CancelButton'
+import { CancelButton as Pure, CancelButtonType } from '@cow/common/pure/CancelButton'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { SupportedChainId } from 'constants/chains'
 
@@ -44,7 +44,7 @@ export function CancelButton(props: CancelButtonProps) {
   }
 
   return (
-    <CancelButtonContent
+    <Pure
       orderId={orderId}
       summary={summary}
       chainId={chainId}

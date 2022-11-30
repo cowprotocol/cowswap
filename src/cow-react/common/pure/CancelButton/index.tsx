@@ -4,7 +4,7 @@ import { CancellationModal } from './CancellationModal'
 // TODO: add for each type when implemented
 export type CancelButtonType = 'soft'
 
-export type CancelButtonContentProps = {
+export type CancelButtonProps = {
   orderId: string
   summary: string | undefined
   chainId: number
@@ -21,7 +21,7 @@ export type SoftCancellationContext = {
   isWaitingSignature: boolean
 }
 
-export function CancelButtonContent(props: CancelButtonContentProps) {
+export function CancelButton(props: CancelButtonProps) {
   const { showCancelModal, onCancelButtonClick, ...rest } = props
 
   return (
