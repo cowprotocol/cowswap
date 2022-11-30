@@ -27,6 +27,7 @@ export interface ParsedOrder extends Order {
   surplusAmount?: BigNumber
   surplusPercentage?: BigNumber
   executedFeeAmount?: BigNumber
+  parsedCreationtime?: Date
 }
 
 const pendingOrderStatuses: OrderStatus[] = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.PENDING]
@@ -44,6 +45,7 @@ export function useLimitOrdersList(): LimitOrdersList {
     const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
     const expirationTime = new Date(Number(order.validTo) * 1000)
     const executedFeeAmount = new BigNumber(order.apiAdditionalInfo?.executedFeeAmount || 0)
+    const parsedCreationtime = new Date(order.creationTime)
     const fullyFilled = isOrderFilled(order)
 
     return {
@@ -56,6 +58,7 @@ export function useLimitOrdersList(): LimitOrdersList {
       surplusAmount,
       surplusPercentage,
       executedFeeAmount,
+      parsedCreationtime,
       fullyFilled,
     }
   }

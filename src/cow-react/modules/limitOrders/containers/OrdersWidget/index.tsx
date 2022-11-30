@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useHistory, useLocation } from 'react-router-dom'
-import { LimitOrdersReceiptModal } from '@cow/modules/limitOrders/containers/LimitOrdersReceiptModal'
+import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { CancellationModal, CancellationModalProps } from 'components/AccountDetails/Transaction/CancelationModal'
@@ -91,7 +91,7 @@ export function OrdersWidget() {
         showOrderCancelationModal={showOrderCancelationModal}
       />
       {cancelModalProps && <CancellationModal {...cancelModalProps} />}
-      <LimitOrdersReceiptModal />
+      <OrdersReceiptModal />
     </>
   )
 }

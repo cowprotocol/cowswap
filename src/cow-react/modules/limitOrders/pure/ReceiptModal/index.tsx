@@ -15,6 +15,7 @@ import { FilledField } from './FilledField'
 import { SurplusField } from './SurplusField'
 import { OrderIDField } from './OrderIdField'
 import { StatusField } from './StatusField'
+import { OrderTypeField } from './OrderTypeField'
 
 interface ReceiptProps {
   isOpen: boolean
@@ -40,6 +41,7 @@ enum Tooltip {
   ORDER_ID = 'Order id TODO',
 }
 
+// TODO: add cosmos fixture for this component
 export function ReceiptModal({
   isOpen,
   onDismiss,
@@ -56,8 +58,8 @@ export function ReceiptModal({
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'Your receive at least' : 'You receive exactly'
-  const orderType = order.kind === OrderKind.SELL ? 'Sell order' : 'Buy order'
   const feeAmountParsed = CurrencyAmount.fromRawAmount(order.inputToken, order.feeAmount.toString())
+  const sellAmountWithFee = sellAmount.add(feeAmountParsed)
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -69,7 +71,7 @@ export function ReceiptModal({
 
         <StyledScrollarea>
           <styledEl.Body>
-            <CurrencyField amount={sellAmount.add(feeAmountParsed)} token={order.inputToken} label={inputLabel} />
+            <CurrencyField amount={sellAmountWithFee} token={order.inputToken} label={inputLabel} />
             <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
             <styledEl.Field border="rounded-top">
@@ -104,7 +106,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Created" tooltip={Tooltip.CREATED} />
-              <DateField date={order.creationTime} />
+              <DateField date={order.parsedCreationtime} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -114,12 +116,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Order type" tooltip={Tooltip.ORDER_TYPE} />
-
-              <styledEl.Value>
-                <span>
-                  {orderType} {!order.partiallyFillable && '(Fill or Kill)'}
-                </span>
-              </styledEl.Value>
+              <OrderTypeField order={order} />
             </styledEl.Field>
 
             <styledEl.Field border="rounded-bottom">

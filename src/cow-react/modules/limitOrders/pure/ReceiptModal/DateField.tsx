@@ -1,17 +1,21 @@
-import moment from 'moment'
 import * as styledEl from './styled'
+import useTimeAgo from 'hooks/useTimeAgo'
+import { format } from 'date-fns'
 
 interface Props {
-  date: string | Date | undefined
+  date: Date | undefined
 }
 
 export function DateField({ date }: Props) {
+  const timeAgo = useTimeAgo(date)
+  const previewDate = format(date || 0, 'MMM d YYY, h:mm a')
+
   return (
     <styledEl.Value>
       {date ? (
         <styledEl.InlineWrapper>
-          <strong>{moment(date).fromNow()}</strong>
-          <span>({moment(date).format('MMM D YYYY, h:mm a')})</span>
+          <strong>{timeAgo}</strong>
+          <span>({previewDate})</span>
         </styledEl.InlineWrapper>
       ) : (
         '-'

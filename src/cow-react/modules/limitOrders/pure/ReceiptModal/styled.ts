@@ -153,3 +153,9 @@ export const SurplusValue = styled.strong`
 export const RateValue = styled.div`
   font-size: 12px;
 `
+
+export const OrderTypeValue = styled.span`
+  &:first-letter {
+    text-transform: uppercase;
+  }
+`
