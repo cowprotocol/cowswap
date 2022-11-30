@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
@@ -11,17 +11,13 @@ export function MarketPriceUpdater() {
   const { executionRate } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
+  const [isInitialPriceSet, setIsInitialPriceSet] = useState(false)
   const { price, isLoading } = useGetInitialPrice()
 
   const isFalsey = (value: CurrencyAmount<Currency> | null) => !value || value.equalTo(0)
 
   useEffect(() => {
-    // Don't update activeRate while loading
-    if (isLoading) {
-      updateLimitRateState({ isLoading })
-    } else {
-      updateLimitRateState({ isLoading, activeRate: price, isTypedValue: false })
-    }
+    updateLimitRateState({ initialRate: price, isTypedValue: false })
   }, [price, isLoading, updateLimitRateState])
 
   useEffect(() => {
@@ -30,6 +26,14 @@ export function MarketPriceUpdater() {
       updateLimitRateState({ executionRate: null })
     }
   }, [inputCurrencyAmount, outputCurrencyAmount, executionRate, updateLimitRateState])
+
+  // Set initial price once on start
+  useEffect(() => {
+    if (!price || isInitialPriceSet || isLoading) return
+
+    setIsInitialPriceSet(true)
+    updateLimitRateState({ isLoading, activeRate: price, isTypedValue: false })
+  }, [isInitialPriceSet, updateLimitRateState, price, isLoading])
 
   return null
 }

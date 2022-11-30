@@ -8,8 +8,11 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
 import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
 import { DEFAULT_DECIMALS } from 'custom/constants'
+import ms from 'ms.macro'
 
 type PriceResult = number | Error | undefined
+
+const PRICE_UPDATE_INTERVAL = ms`10sec`
 
 const parsePrice = (price: number, currency: Currency) => price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
 
@@ -45,39 +48,54 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 // When return null it means we failed on price loading
+// TODO: rename it to useNativeBasedPrice
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const [isInputPriceLoading, setInputPriceLoading] = useState(false)
   const [isOutputPriceLoading, setOutputPriceLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())
 
   const inputPrice = useAsyncMemo(() => {
     setInputPriceLoading(true)
     return requestPriceForCurrency(chainId, inputCurrency).finally(() => {
       setInputPriceLoading(false)
     })
-  }, [chainId, inputCurrency])
+  }, [chainId, inputCurrency, updateTimestamp])
 
   const outputPrice = useAsyncMemo(() => {
     setOutputPriceLoading(true)
     return requestPriceForCurrency(chainId, outputCurrency).finally(() => {
       setOutputPriceLoading(false)
     })
-  }, [chainId, outputCurrency])
+  }, [chainId, outputCurrency, updateTimestamp])
 
   const price = useMemo(() => {
     if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
       return null
     }
 
-    return new Fraction(inputPrice, outputPrice)
+    const result = new Fraction(inputPrice, outputPrice)
+
+    console.debug('Updated limit orders initial price: ', result.toSignificant(18))
+
+    return result
   }, [outputPrice, inputPrice])
 
   // To avoid loading state blinking
   useEffect(() => {
     setIsLoading(isInputPriceLoading || isOutputPriceLoading)
   }, [isInputPriceLoading, isOutputPriceLoading])
+
+  // Update initial price every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setUpdateTimestamp(Date.now())
+    }, PRICE_UPDATE_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return { price, isLoading }
 }
