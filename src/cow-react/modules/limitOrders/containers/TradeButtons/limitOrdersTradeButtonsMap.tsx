@@ -57,7 +57,7 @@ const quoteErrorTexts: { [key in GpQuoteErrorCodes]: string } = {
     'Buying native currency with smart contract wallets is not currently supported',
   [GpQuoteErrorCodes.UnsupportedToken]: 'Unsupported token',
   [GpQuoteErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
-  [GpQuoteErrorCodes.FeeExceedsFrom]: 'Fees exceed from amount',
+  [GpQuoteErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
   [GpQuoteErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
 }
 
