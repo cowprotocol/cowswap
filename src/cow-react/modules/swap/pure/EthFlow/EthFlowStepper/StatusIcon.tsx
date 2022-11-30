@@ -40,7 +40,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
   transition: box-shadow 0.15s ease-in-out, background 0.15s ease-in-out, border 0.15s ease-in-out;
   position: relative;
 
-  // PENDING only animation
+  // 'PENDING' STATE only animation
   &::before {
     content: ${({ status }) => (status === 'pending' ? '""' : 'none')};
     background: ${({ theme }) => `conic-gradient(transparent 40grad, 80grad, ${theme.text3} 360grad)`};
@@ -58,7 +58,7 @@ const StepIcon = styled.div<{ status: StatusIconState }>`
     animation: spin 3s linear infinite;
   }
 
-  // PENDING only animation
+  // 'PENDING' STATE only animation
   &::after {
     content: ${({ status }) => (status === 'pending' ? '""' : 'none')};
     position: absolute;
