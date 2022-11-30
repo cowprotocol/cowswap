@@ -92,7 +92,9 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
   return !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
 }
 
-export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapContext | null {
+export function useWrapUnwrapContext(
+  inputAmount: CurrencyAmount<Currency> | null | undefined
+): WrapUnwrapContext | null {
   const { chainId } = useWeb3React()
   const closeModals = useCloseModals()
   const wethContract = useWETHContract()
@@ -134,7 +136,7 @@ export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | und
 /**
  * Given the selected input and output currency, return a wrap callback
  */
-export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapCallback | null {
+export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | null | undefined): WrapUnwrapCallback | null {
   const context = useWrapUnwrapContext(inputAmount)
 
   if (!context) {

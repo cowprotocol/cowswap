@@ -65,6 +65,9 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
     tradeState
 
+  const inputAmountIsNotSet = !inputCurrencyAmount || inputCurrencyAmount.equalTo(0)
+  const outputAmountIsNotSet = !outputCurrencyAmount || outputCurrencyAmount.equalTo(0)
+
   if (!account) {
     return LimitOrdersFormState.WalletIsNotConnected
   }
@@ -90,18 +93,18 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.ReadonlyGnosisSafeUser
   }
 
-  if (
-    !isWrapOrUnwrap &&
-    (!inputCurrencyAmount ||
-      inputCurrencyAmount.toExact() === '0' ||
-      !outputCurrencyAmount ||
-      outputCurrencyAmount.toExact() === '0')
-  ) {
-    if (!activeRate || activeRate.equalTo(0)) {
-      return LimitOrdersFormState.PriceIsNotSet
+  if (isWrapOrUnwrap) {
+    if (inputAmountIsNotSet && outputAmountIsNotSet) {
+      return LimitOrdersFormState.AmountIsNotSet
     }
+  } else {
+    if (inputAmountIsNotSet || outputAmountIsNotSet) {
+      if (!activeRate || activeRate.equalTo(0)) {
+        return LimitOrdersFormState.PriceIsNotSet
+      }
 
-    return LimitOrdersFormState.AmountIsNotSet
+      return LimitOrdersFormState.AmountIsNotSet
+    }
   }
 
   if (!inputCurrencyBalance) {
@@ -116,12 +119,12 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.Loading
   }
 
-  if (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) {
-    return LimitOrdersFormState.NotApproved
-  }
-
   if (isWrapOrUnwrap) {
     return LimitOrdersFormState.WrapUnwrap
+  }
+
+  if (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) {
+    return LimitOrdersFormState.NotApproved
   }
 
   if (quote?.error) {

@@ -33,7 +33,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const toggleWalletModal = useToggleWalletModal()
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
-  const wrapUnwrapCallback = useWrapCallback(inputCurrencyAmount || undefined)
+  const wrapUnwrapCallback = useWrapCallback(inputCurrencyAmount)
   const transactionConfirmState = useAtomValue(transactionConfirmAtom)
   const closeModals = useCloseModals()
   const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)

@@ -4,7 +4,7 @@ import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
@@ -57,7 +57,7 @@ export function LimitOrdersWidget() {
   const onCurrencySelection = useOnCurrencySelection()
   const onImportDismiss = useOnImportDismiss()
   const limitOrdersNavigate = useTradeNavigate()
-  const { showRecipient } = useAtomValue(limitOrdersSettingsAtom)
+  const settingState = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
   const tradeContext = useTradeFlowContext()
@@ -73,6 +73,10 @@ export function LimitOrdersWidget() {
   const isTradePriceUpdating = false
   const showSetMax = true
 
+  const showRecipient = useMemo(
+    () => !isWrapOrUnwrap && settingState.showRecipient,
+    [settingState.showRecipient, isWrapOrUnwrap]
+  )
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -119,9 +123,12 @@ export function LimitOrdersWidget() {
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId } = state
 
-    updateLimitOrdersState({ inputCurrencyAmount: outputCurrencyAmount?.toExact(), outputCurrencyAmount: null })
+    if (!isWrapOrUnwrap) {
+      updateLimitOrdersState({ inputCurrencyAmount: outputCurrencyAmount?.toExact(), outputCurrencyAmount: null })
+    }
+
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
-  }, [state, limitOrdersNavigate, updateLimitOrdersState, chainId, outputCurrencyAmount])
+  }, [state, isWrapOrUnwrap, limitOrdersNavigate, updateLimitOrdersState, chainId, outputCurrencyAmount])
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {

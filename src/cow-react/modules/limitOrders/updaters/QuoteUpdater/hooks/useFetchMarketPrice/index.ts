@@ -12,6 +12,7 @@ import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrders
 import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { onlyResolvesLast } from 'utils/async'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 // Every 10s
 const REFETCH_CHECK_INTERVAL = 10000
@@ -25,6 +26,7 @@ export function useFetchMarketPrice() {
   const feeQuoteParams = useQuoteRequestParams()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
+  const { isWrapOrUnwrap } = useDetectNativeToken()
 
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersTradeState()
   const handleResponse = useHandleResponse()
@@ -32,7 +34,7 @@ export function useFetchMarketPrice() {
   // Main hook updater
   useEffect(() => {
     const handleFetchQuote = () => {
-      if (!feeQuoteParams) {
+      if (!feeQuoteParams || isWrapOrUnwrap) {
         return
       }
 
@@ -51,7 +53,7 @@ export function useFetchMarketPrice() {
     const intervalId = setInterval(handleFetchQuote, REFETCH_CHECK_INTERVAL)
 
     return () => clearInterval(intervalId)
-  }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote])
+  }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote, isWrapOrUnwrap])
 
   // Turn on the loading if some of these dependencies have changed and remove execution rate
   useEffect(() => {
