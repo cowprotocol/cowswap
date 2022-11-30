@@ -1,3 +1,4 @@
+// Code based on https://github.com/cowprotocol/explorer/blob/develop/src/components/orders/FilledProgress/index.tsx
 import { useMemo } from 'react'
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
@@ -5,6 +6,7 @@ import { formatSmartAmount } from 'utils/format'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { BigNumber } from 'bignumber.js'
+import JSBI from 'jsbi'
 
 interface Props {
   order: ParsedOrder
@@ -28,15 +30,15 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
     filledAmount,
   } = order
 
-  const touched = filledPercentage?.gt(0)
+  const touched = !!filledPercentage?.gt(0)
 
-  let mainToken
-  let mainAddress
-  let mainAmount
-  let swappedToken
-  let swappedAddress
-  let swappedAmount
-  let action
+  let mainToken: Token
+  let mainAddress: string
+  let mainAmount: CurrencyAmount<Token>
+  let swappedToken: Token
+  let swappedAddress: string
+  let swappedAmount: JSBI | undefined
+  let action: string
 
   let filledAmountWithFee, swappedAmountWithFee
   if (kind === OrderKind.SELL) {
