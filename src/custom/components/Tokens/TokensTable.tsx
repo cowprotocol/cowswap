@@ -211,7 +211,7 @@ export default function TokenTable({
             sortedTokens.map((data, i) => {
               if (data) {
                 return (
-                  <Row>
+                  <Row key={data.address}>
                     <TokensTableRow
                       key={data.address}
                       toggleWalletModal={toggleWalletModal}

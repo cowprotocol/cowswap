@@ -37,7 +37,7 @@ export function useTokensAllowances(
 
   const allowances = useMemo(() => {
     return tokensAddresses.reduce((acc, tokenAddress, i) => {
-      const allowance = allowancesRequests?.[i].result?.[0]
+      const allowance = allowancesRequests?.[i]?.result?.[0]
       const token = tokens[i]
 
       acc[tokenAddress] = allowance ? CurrencyAmount.fromRawAmount(token, JSBI.BigInt(allowance.toString())) : undefined

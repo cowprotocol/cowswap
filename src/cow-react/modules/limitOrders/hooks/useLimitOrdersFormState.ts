@@ -8,11 +8,12 @@ import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTra
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import useENSAddress from 'hooks/useENSAddress'
 import { isAddress } from 'utils'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
+import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 export enum LimitOrdersFormState {
@@ -27,6 +28,7 @@ export enum LimitOrdersFormState {
   ReadonlyGnosisSafeUser = 'ReadonlyGnosisSafeUser',
   NeedToSelectToken = 'NeedToSelectToken',
   AmountIsNotSet = 'AmountIsNotSet',
+  PriceIsNotSet = 'PriceIsNotSet',
   InsufficientBalance = 'InsufficientBalance',
   CantLoadBalances = 'CantLoadBalances',
   QuoteError = 'QuoteError',
@@ -42,6 +44,7 @@ interface LimitOrdersFormParams {
   tradeState: LimitOrdersTradeState
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
+  activeRate: Fraction | null
   isWrapOrUnwrap: boolean
 }
 
@@ -56,6 +59,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     recipientEnsAddress,
     quote,
     isWrapOrUnwrap,
+    activeRate,
   } = params
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
@@ -93,6 +97,10 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
       !outputCurrencyAmount ||
       outputCurrencyAmount.toExact() === '0')
   ) {
+    if (!activeRate || activeRate.equalTo(0)) {
+      return LimitOrdersFormState.PriceIsNotSet
+    }
+
     return LimitOrdersFormState.AmountIsNotSet
   }
 
@@ -129,6 +137,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { isSupportedWallet } = useWalletInfo()
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const quote = useAtomValue(limitOrdersQuoteAtom)
+  const { activeRate } = useAtomValue(limitRateAtom)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
   const { inputCurrency, outputCurrency, recipient } = tradeState
@@ -151,6 +160,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
     tradeState,
     recipientEnsAddress,
     quote,
+    activeRate,
     isWrapOrUnwrap,
   }
 
