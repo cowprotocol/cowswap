@@ -7,10 +7,10 @@ import {
 } from 'components/TransactionConfirmationModal'
 import { RequestCancellationModal } from './RequestCancellationModal'
 import { useMemo } from 'react'
-import { CancelButtonContentProps } from '@cow/common/pure/CancelButton/index'
+import { CancelButtonProps } from '@cow/common/pure/CancelButton/index'
 
 export type CancellationModalProps = Pick<
-  CancelButtonContentProps,
+  CancelButtonProps,
   'chainId' | 'orderId' | 'onDismiss' | 'summary' | 'softCancellationContext' | 'error' | 'type'
 > & {
   onDismiss: () => void

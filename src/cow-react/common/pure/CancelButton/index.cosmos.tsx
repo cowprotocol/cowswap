@@ -1,8 +1,4 @@
-import {
-  CancelButtonContent,
-  CancelButtonContentProps,
-  SoftCancellationContext,
-} from '@cow/common/pure/CancelButton/index'
+import { CancelButton, CancelButtonProps, SoftCancellationContext } from '@cow/common/pure/CancelButton/index'
 import { useState } from 'react'
 
 const softCancellationContext: SoftCancellationContext = {
@@ -12,10 +8,10 @@ const softCancellationContext: SoftCancellationContext = {
   isWaitingSignature: false,
 }
 
-function Wrapper(props: Partial<CancelButtonContentProps>) {
+function Wrapper(props: Partial<CancelButtonProps>) {
   const [showCancelModal, setShowCancelModal] = useState(false)
 
-  const p: CancelButtonContentProps = {
+  const p: CancelButtonProps = {
     onDismiss() {
       setShowCancelModal(false)
     },
@@ -31,7 +27,7 @@ function Wrapper(props: Partial<CancelButtonContentProps>) {
     },
     ...props,
   }
-  return <CancelButtonContent {...p} />
+  return <CancelButton {...p} />
 }
 
 const Fixtures = {
