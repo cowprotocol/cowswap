@@ -113,11 +113,15 @@ export function OrdersTable({
           ))}
         </Rows>
       </TableBox>
-      <OrdersTablePagination
-        pageSize={LIMIT_ORDERS_PAGE_SIZE}
-        totalCount={orders.length}
-        currentPage={currentPageNumber}
-      />
+
+      {/* Only show pagination if more than 1 page available */}
+      {orders.length > LIMIT_ORDERS_PAGE_SIZE && (
+        <OrdersTablePagination
+          pageSize={LIMIT_ORDERS_PAGE_SIZE}
+          totalCount={orders.length}
+          currentPage={currentPageNumber}
+        />
+      )}
     </>
   )
 }
