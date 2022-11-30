@@ -72,15 +72,12 @@ const RateWrapper = styled.button`
   font-size: 13px;
   letter-spacing: -0.1px;
   text-align: left;
+  font-weight: 500;
+`
 
-  > span:first-child {
-    font-weight: 500;
-  }
-
-  > span:last-child {
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
-    font-weight: 400;
-  }
+export const FiatRate = styled.span`
+  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  font-weight: 400;
 `
 
 export function InvertRateControl({ onClick }: { onClick(): void }) {
@@ -155,7 +152,7 @@ export function RateInfo({
           <span title={currentActiveRate.toSignificant(18) + ' ' + rateInputCurrency.symbol}>
             1 {rateInputCurrency.symbol} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
           </span>{' '}
-          {!!fiatAmount && <span>(≈${formatSmart(fiatAmount, 2)})</span>}
+          {!!fiatAmount && <FiatRate>(≈${formatSmart(fiatAmount, 2)})</FiatRate>}
         </RateWrapper>
       </div>
     </Wrapper>
