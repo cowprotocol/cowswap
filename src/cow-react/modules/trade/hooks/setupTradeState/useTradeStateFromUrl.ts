@@ -23,13 +23,6 @@ export function useTradeStateFromUrl(): TradeState {
       recipient,
     }
 
-    if (state.outputCurrencyId === state.inputCurrencyId) {
-      return {
-        ...state,
-        outputCurrencyId: null,
-      }
-    }
-
     return state
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search, JSON.stringify(params)])
