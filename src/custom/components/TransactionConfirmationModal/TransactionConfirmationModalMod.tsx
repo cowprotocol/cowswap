@@ -344,7 +344,7 @@ export function L2Content({
             {!hash ? (
               <Trans>Confirm transaction in wallet</Trans>
             ) : !confirmed ? (
-              <Trans>Transaction Submitted</Trans>
+              <Trans>{isLimitOrderSubmit ? 'Order' : 'Transaction'} Submitted</Trans>
             ) : transactionSuccess ? (
               <Trans>Success</Trans>
             ) : (
@@ -357,7 +357,7 @@ export function L2Content({
           {chainId && hash ? (
             <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
               <Text fontWeight={500} fontSize={14} color={theme.primary1}>
-                <Trans>View on Explorer</Trans>
+                <Trans>View on Explorer ↗</Trans>
               </Text>
             </ExternalLink>
           ) : (
