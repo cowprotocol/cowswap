@@ -103,7 +103,7 @@ export const StyledLink = styled.a`
 
   :focus {
     outline: none;
-    text-decoration: underline;
+    text-decoration: none;
   }
 
   :active {
