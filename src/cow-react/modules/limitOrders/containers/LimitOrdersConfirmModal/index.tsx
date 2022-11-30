@@ -92,8 +92,6 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />
   const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
 
-  console.log('debug', confirmationState)
-
   return (
     <>
       <GpModal isOpen={isOpen} onDismiss={onDismiss}>
