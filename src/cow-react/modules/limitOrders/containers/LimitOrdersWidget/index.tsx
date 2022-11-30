@@ -88,7 +88,7 @@ export function LimitOrdersWidget() {
   }
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSellOrder ? 'You sell' : 'You sell at most',
+    label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
     viewAmount: inputCurrencyAmount?.toExact() || '',
@@ -98,7 +98,7 @@ export function LimitOrdersWidget() {
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSellOrder ? 'Your receive at least' : 'You receive exactly',
+    label: isWrapOrUnwrap ? undefined : isSellOrder ? 'Your receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
     viewAmount: isWrapOrUnwrap ? inputCurrencyAmount?.toExact() || '' : outputCurrencyAmount?.toExact() || '',
