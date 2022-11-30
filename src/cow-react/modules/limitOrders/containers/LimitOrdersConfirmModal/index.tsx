@@ -92,6 +92,8 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />
   const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
 
+  console.log('debug', confirmationState)
+
   return (
     <>
       <GpModal isOpen={isOpen} onDismiss={onDismiss}>
@@ -118,6 +120,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       {chainId && (
         <GpModal isOpen={!!confirmationState.orderHash} onDismiss={onDismissConfirmation}>
           <TxSubmittedModal
+            isLimitOrderSubmit
             chainId={chainId}
             onDismiss={onDismissConfirmation}
             hash={confirmationState.orderHash || undefined}
