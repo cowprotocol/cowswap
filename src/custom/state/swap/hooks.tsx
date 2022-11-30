@@ -347,7 +347,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         currencyBalances,
         parsedAmount,
         inputError,
-        v2Trade: v2Trade ?? undefined, // mod
+        v2Trade: v2Trade || undefined, // mod
         allowedSlippage,
       }
     },

@@ -34,6 +34,11 @@ export const MarketPriceButton = styled.button`
   border-radius: 9px;
   padding: 5px 8px;
   font-size: 11px;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
 `
 
 export const Body = styled.div`

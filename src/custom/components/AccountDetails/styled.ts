@@ -263,8 +263,9 @@ export const LowerSection = styled.div`
   }
 `
 
+// TODO: Prevent beyond 3 level selector nestings
 export const LowerSectionSimple = styled(LowerSection)`
-  padding: 0 12px;
+  padding: 0;
 
   > div {
     padding: 0;

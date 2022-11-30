@@ -4,6 +4,7 @@ import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { Widget } from '../Widget'
 import { transparentize } from 'polished'
 import cowMeditatingV2 from 'assets/cow-swap/meditating-cow-v2.svg'
+import { Trans } from '@lingui/macro'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;
@@ -75,6 +76,11 @@ const Header = styled.span`
   width: 100%;
   margin: 0 0 24px;
 
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-flow: column wrap;
+    margin: 0 0 16px;
+  `};
+
   > h2 {
     font-size: 24px;
     margin: 0;
@@ -82,6 +88,7 @@ const Header = styled.span`
 `
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
+  isOpenOrdersTab: boolean
 }
 
 export function Orders({
@@ -89,8 +96,10 @@ export function Orders({
   orders,
   tabs,
   isWalletConnected,
+  isOpenOrdersTab,
   balancesAndAllowances,
   showOrderCancelationModal,
+  currentPageNumber,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -101,17 +110,20 @@ export function Orders({
       )
     }
 
-    // TODO: Check if no orders + order history tab is active. To show a different icon & message.
     if (orders.length === 0) {
       return (
         <Content>
           <span>
             <img src={cowMeditatingV2} alt="Cow meditating ..." />
           </span>
-          <h3>No open orders</h3>
+          <h3>
+            <Trans>{isOpenOrdersTab ? 'No open orders' : 'No order history'}</Trans>
+          </h3>
           <p>
-            You don&apos;t have any open orders at the moment. <br />
-            Create one for free!
+            <Trans>
+              You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
+              Create one for free!
+            </Trans>
           </p>
         </Content>
       )
@@ -119,6 +131,7 @@ export function Orders({
 
     return (
       <OrdersTable
+        currentPageNumber={currentPageNumber}
         chainId={chainId}
         orders={orders}
         balancesAndAllowances={balancesAndAllowances}

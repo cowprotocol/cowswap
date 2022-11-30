@@ -11,10 +11,6 @@ export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     display: flex;
     flex-flow: column wrap;
-
-    > div:last-child {
-      margin: 20px;
-    }
   `};
 
   > div:last-child {
@@ -33,4 +29,9 @@ export const PrimaryWrapper = styled.div`
 // Graph + orders table
 export const SecondaryWrapper = styled.div`
   display: flex;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-flow: column wrap;
+    margin: 56px 0;
+  `};
 `
