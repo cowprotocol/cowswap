@@ -9,11 +9,11 @@ export type CancelButtonProps = {
   summary: string | undefined
   chainId: number
   error: string | null
-  onCancelButtonClick: () => void
-  onDismiss: () => void
   showCancelModal: boolean
   type: CancelButtonType
   softCancellationContext?: SoftCancellationContext
+  onCancelButtonClick: () => void
+  onDismiss: () => void
 }
 
 export type SoftCancellationContext = {
