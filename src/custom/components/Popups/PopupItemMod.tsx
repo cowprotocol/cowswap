@@ -10,7 +10,6 @@ import FailedNetworkSwitchPopup from './FailedNetworkSwitchPopupMod'
 import TransactionPopup from './TransactionPopupMod'
 
 // MOD imports
-import ListUpdatePopup from 'components/Popups/ListUpdatePopup'
 import { WarningPopup } from 'components/Popups/WarningPopup'
 
 export const StyledClose = styled(X)`
@@ -82,7 +81,6 @@ export default function PopupItem({
 
   // mod
   const isTxn = 'txn' in content
-  const isListUpdate = 'listUpdate' in content
   const isUnsupportedNetwork = 'unsupportedNetwork' in content
   const isMetaTxn = 'metatxn' in content
   const isWarningTxn = 'warning' in content
@@ -93,11 +91,6 @@ export default function PopupItem({
       txn: { hash, success, summary },
     } = content
     popupContent = <TransactionPopup hash={hash} success={success} summary={summary} />
-  } else if (isListUpdate) {
-    const {
-      listUpdate: { listUrl, oldList, newList, auto },
-    } = content
-    popupContent = <ListUpdatePopup popKey={popKey} listUrl={listUrl} oldList={oldList} newList={newList} auto={auto} />
   } else if (isMetaTxn) {
     const {
       metatxn: { id, success, summary },

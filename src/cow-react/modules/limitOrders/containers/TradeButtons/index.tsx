@@ -6,21 +6,26 @@ import { tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/t
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { limitOrdersTradeButtonsMap, SwapButton } from './limitOrdersTradeButtonsMap'
+import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
-import { useToggleWalletModal } from 'state/application/hooks'
+import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'state/application/hooks'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useLimitOrdersWarningsAccepted } from '@cow/modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { useWrapCallback } from 'hooks/useWrapCallback'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { transactionConfirmAtom } from '@cow/modules/swap/state/transactionConfirmAtom'
+import { ApplicationModal } from '@src/state/application/reducer'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
   priceImpact: PriceImpact
+  inputCurrencyAmount: CurrencyAmount<Currency> | null
   openConfirmScreen(): void
 }
 
 export function TradeButtons(props: TradeButtonsProps) {
-  const { tradeContext, openConfirmScreen, priceImpact } = props
+  const { tradeContext, openConfirmScreen, priceImpact, inputCurrencyAmount } = props
   const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
   const formState = useLimitOrdersFormState()
   const tradeState = useLimitOrdersTradeState()
@@ -28,6 +33,18 @@ export function TradeButtons(props: TradeButtonsProps) {
   const toggleWalletModal = useToggleWalletModal()
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
+  const wrapUnwrapCallback = useWrapCallback(inputCurrencyAmount)
+  const transactionConfirmState = useAtomValue(transactionConfirmAtom)
+  const closeModals = useCloseModals()
+  const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
+
+  const wrapUnwrapParams: WrapUnwrapParams = {
+    isNativeIn: !!inputCurrencyAmount?.currency.isNative,
+    wrapUnwrapCallback,
+    transactionConfirmState,
+    closeModals,
+    showTransactionConfirmationModal,
+  }
 
   const doTrade = useCallback(() => {
     if (expertMode && tradeContext) {
@@ -48,7 +65,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const button = limitOrdersTradeButtonsMap[formState]
 
   if (typeof button === 'function') {
-    return button({ tradeState, toggleWalletModal, quote })
+    return button({ tradeState, toggleWalletModal, quote, wrapUnwrapParams })
   }
 
   const isButtonDisabled = button.disabled || !warningsAccepted

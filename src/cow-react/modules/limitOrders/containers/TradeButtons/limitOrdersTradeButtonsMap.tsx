@@ -7,11 +7,23 @@ import { ButtonSize } from 'theme'
 import { TradeApproveButton } from '@cow/common/containers/TradeApprove/TradeApproveButton'
 import { LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
+import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
+import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
+import { TransactionConfirmState } from '@cow/modules/swap/state/transactionConfirmAtom'
+
+export interface WrapUnwrapParams {
+  isNativeIn: boolean
+  wrapUnwrapCallback: WrapUnwrapCallback | null
+  transactionConfirmState: TransactionConfirmState
+  closeModals(): void
+  showTransactionConfirmationModal: boolean
+}
 
 export interface TradeButtonsParams {
   tradeState: LimitOrdersTradeState
   quote: LimitOrdersQuoteState
   toggleWalletModal: () => void
+  wrapUnwrapParams: WrapUnwrapParams
 }
 
 interface ButtonConfig {
@@ -45,7 +57,7 @@ const quoteErrorTexts: { [key in GpQuoteErrorCodes]: string } = {
     'Buying native currency with smart contract wallets is not currently supported',
   [GpQuoteErrorCodes.UnsupportedToken]: 'Unsupported token',
   [GpQuoteErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
-  [GpQuoteErrorCodes.FeeExceedsFrom]: 'Fees exceed from amount',
+  [GpQuoteErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
   [GpQuoteErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
 }
 
@@ -78,6 +90,10 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     disabled: true,
     text: 'Enter an amount',
   },
+  [LimitOrdersFormState.PriceIsNotSet]: {
+    disabled: true,
+    text: 'Enter a price',
+  },
   [LimitOrdersFormState.InvalidRecipient]: {
     disabled: true,
     text: 'Enter a recipient',
@@ -89,7 +105,9 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.QuoteError]: ({ quote }: TradeButtonsParams) => {
     return (
       <SwapButton disabled={true}>
-        <Trans>{quote.error ? quoteErrorTexts[quote.error.type] : 'Unknown error'}</Trans>
+        <Trans>
+          {quote.error ? quoteErrorTexts[quote.error.type] || 'Error loading price. Try again later.' : 'Unknown error'}
+        </Trans>
       </SwapButton>
     )
   },
@@ -119,6 +137,30 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
             </SwapButton>
           </TradeApproveButton>
         )}
+      </>
+    )
+  },
+  [LimitOrdersFormState.WrapUnwrap]: ({ wrapUnwrapParams }: TradeButtonsParams) => {
+    const {
+      isNativeIn,
+      wrapUnwrapCallback,
+      transactionConfirmState: { pendingText, operationType },
+      closeModals,
+      showTransactionConfirmationModal,
+    } = wrapUnwrapParams
+
+    return (
+      <>
+        <SwapButton disabled={false} onClick={() => wrapUnwrapCallback?.({ useModals: true })}>
+          <Trans>{isNativeIn ? 'Wrap' : 'Unwrap'}</Trans>
+        </SwapButton>
+        <TransactionConfirmationModal
+          attemptingTxn={true}
+          isOpen={showTransactionConfirmationModal}
+          pendingText={pendingText}
+          onDismiss={closeModals}
+          operationType={operationType}
+        />
       </>
     )
   },

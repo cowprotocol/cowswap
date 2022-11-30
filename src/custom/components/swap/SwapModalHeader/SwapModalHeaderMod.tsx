@@ -55,7 +55,7 @@ const StyledRateInfo = styled(RateInfo)`
   font-size: 13px;
   font-weight: 500;
   margin: 0 auto;
-  width: 90%;
+  /* width: 90%; */
 `
 
 // MOD
@@ -165,7 +165,11 @@ SwapModalHeaderProps) {
         </AutoColumn>
       </LightCard>
       {!!exactInLabel && (
-        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+        <AuxInformationContainer
+          margin="-4px auto 4px"
+          hideInput
+          // borderColor={transparentize(0.5, theme.bg0)}
+        >
           <FeeInformationTooltip
             amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
@@ -276,7 +280,7 @@ SwapModalHeaderProps) {
         gap="sm"
         style={{
           // padding: '.75rem 1rem'
-          padding: '24px 16px 16px', // MOD
+          padding: '24px 10px 16px', // MOD
         }}
       >
         {trade.tradeType === TradeType.EXACT_INPUT ? (

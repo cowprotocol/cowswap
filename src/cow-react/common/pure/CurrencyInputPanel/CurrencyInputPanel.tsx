@@ -13,6 +13,9 @@ import { setMaxSellTokensAnalytics } from 'components/analytics'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Field } from 'state/swap/actions'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { MouseoverTooltip } from 'components/Tooltip'
 
 interface BuiltItProps {
   className: string
@@ -20,8 +23,11 @@ interface BuiltItProps {
 
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
+  chainId: SupportedChainId | undefined
   loading: boolean
   disabled?: boolean
+  inputDisabled?: boolean
+  inputTooltip?: string
   isRateLoading?: boolean
   showSetMax?: boolean
   disableNonToken?: boolean
@@ -43,7 +49,8 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     priceImpactParams,
     disableNonToken = false,
     showSetMax = false,
-    disabled = false,
+    inputDisabled = false,
+    inputTooltip,
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
@@ -51,8 +58,12 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     topLabel,
     isRateLoading,
   } = props
+
+  const isSupportedNetwork = isSupportedChainId(props.chainId as number | undefined)
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
+  const disabled = props.disabled || !isSupportedNetwork
+
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 
@@ -83,6 +94,16 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     setTypedValue(viewAmount)
   }, [viewAmount])
 
+  const numericalInput = (
+    <styledEl.NumericalInput
+      className="token-amount-input"
+      value={typedValue}
+      disabled={inputDisabled}
+      onUserInput={onUserInputDispatch}
+      $loading={loading}
+    />
+  )
+
   return (
     <>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
@@ -97,12 +118,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             />
           </div>
           <div>
-            <styledEl.NumericalInput
-              className="token-amount-input"
-              value={typedValue}
-              onUserInput={onUserInputDispatch}
-              $loading={loading}
-            />
+            {inputTooltip ? <MouseoverTooltip text={inputTooltip}>{numericalInput}</MouseoverTooltip> : numericalInput}
           </div>
         </styledEl.CurrencyInputBox>
 

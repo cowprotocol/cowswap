@@ -3,14 +3,14 @@ import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
-import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AlertTriangle, Trash2 } from 'react-feather'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
+import { OrderParams } from './utils/getOrderParams'
+import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 
-const orderStatusTitleMap: { [key in OrderStatus]: string } = {
+export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
   [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
   [OrderStatus.FULFILLED]: 'Filled',
@@ -29,7 +29,7 @@ const StatusBox = styled.div`
   align-items: center;
 `
 
-const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
+export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
   --statusColor: ${({ theme, status, cancelling }) =>
     cancelling
       ? theme.text1
@@ -175,56 +175,30 @@ const allowanceWarning = (tokenSymbol: string) => (
 )
 
 export interface OrderRowProps {
-  chainId: SupportedChainId | undefined
   order: Order
-  balancesAndAllowances: BalancesAndAllowances
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
+  orderParams: OrderParams
+  onClick: () => void
   showOrderCancelationModal(order: Order): void
 }
 
-function isEnoughAmount(
-  sellAmount: CurrencyAmount<Currency>,
-  targetAmount: CurrencyAmount<Currency> | undefined
-): boolean {
-  if (!targetAmount) return true
-
-  if (targetAmount.equalTo(sellAmount)) return true
-
-  return sellAmount.lessThan(targetAmount)
-}
-
 export function OrderRow({
-  chainId,
   order,
   RowElement,
-  balancesAndAllowances,
   isRateInversed,
   showOrderCancelationModal,
+  orderParams,
+  onClick,
 }: OrderRowProps) {
-  const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-  const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
+  const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
 
-  const rateInfoParams: RateInfoParams = {
-    chainId,
-    inputCurrencyAmount: sellAmount,
-    outputCurrencyAmount: buyAmount,
-    activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
-  }
-
-  const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address]
-  const allowance = allowances[order.inputToken.address]
-
-  const hasEnoughBalance = isEnoughAmount(sellAmount, balance)
-  const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
   const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
   return (
-    <RowElement>
+    <RowElement onClick={onClick}>
       <div>
-        <CurrencyAmountItem amount={sellAmount} />
+        <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
       </div>
       <div>
         <CurrencyAmountItem amount={buyAmount} />
@@ -260,7 +234,13 @@ export function OrderRow({
       </div>
       <div>
         {order.status === OrderStatus.PENDING && !order.isCancelling && (
-          <CancelOrderBtn title="Cancel order" onClick={() => showOrderCancelationModal(order)}>
+          <CancelOrderBtn
+            title="Cancel order"
+            onClick={(event) => {
+              event.stopPropagation()
+              showOrderCancelationModal(order)
+            }}
+          >
             <Trash2 size={16} />
           </CancelOrderBtn>
         )}

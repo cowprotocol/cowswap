@@ -20,6 +20,10 @@ export const ClickableText = styled.button`
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
+
+  > div {
+    display: inline-block;
+  }
 `
 
 export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
@@ -94,9 +98,7 @@ function SlippageTextContents({ isEthFlow }: SlippageTextContentsProps) {
       {isEthFlow && (
         <>
           {' '}
-          <ThemedText.Warn display="inline-block" override>
-            (modified)
-          </ThemedText.Warn>
+          <ThemedText.Warn override>(modified)</ThemedText.Warn>
         </>
       )}
     </>

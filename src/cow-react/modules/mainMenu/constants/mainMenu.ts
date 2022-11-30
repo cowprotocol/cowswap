@@ -32,7 +32,25 @@ export const ACCOUNT_MENU: InternalLink[] = [
 ]
 
 export const MAIN_MENU: MenuTreeItem[] = [
-  { id: MainMenuItemId.SWAP, kind: MenuItemKind.DYNAMIC_LINK, title: 'Swap', url: Routes.SWAP },
+  FeatureFlag.get(LIMIT_ORDERS_ENABLED)
+    ? {
+        kind: MenuItemKind.DROP_DOWN,
+        title: 'Trade',
+        items: [
+          {
+            links: [
+              { id: MainMenuItemId.SWAP, kind: MenuItemKind.DYNAMIC_LINK, title: 'Swap', url: Routes.SWAP },
+              {
+                id: MainMenuItemId.LIMIT_ORDERS,
+                kind: MenuItemKind.DYNAMIC_LINK,
+                title: 'Limit orders',
+                url: Routes.LIMIT_ORDER,
+              },
+            ],
+          },
+        ],
+      }
+    : { id: MainMenuItemId.SWAP, kind: MenuItemKind.DYNAMIC_LINK, title: 'Swap', url: Routes.SWAP },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'Account',
@@ -118,12 +136,3 @@ export const MAIN_MENU: MenuTreeItem[] = [
     ],
   },
 ]
-
-if (FeatureFlag.get(LIMIT_ORDERS_ENABLED)) {
-  MAIN_MENU.splice(1, 0, {
-    id: MainMenuItemId.LIMIT_ORDERS,
-    kind: MenuItemKind.DYNAMIC_LINK,
-    title: 'Limit orders',
-    url: Routes.LIMIT_ORDER,
-  })
-}
