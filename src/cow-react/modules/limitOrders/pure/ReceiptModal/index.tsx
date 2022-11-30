@@ -6,8 +6,9 @@ import { CloseIcon } from 'theme'
 import { CurrencyField } from './CurrencyField'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { FeeField } from './FeeField'
+import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 import { StyledScrollarea } from 'components/SearchModal/CommonBases/CommonBasesMod'
+import { FeeField } from './FeeField'
 import { FieldLabel } from './FieldLabel'
 import { PriceField } from './PriceField'
 import { DateField } from './DateField'
@@ -58,8 +59,6 @@ export function ReceiptModal({
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'Your receive at least' : 'You receive exactly'
-  const feeAmountParsed = CurrencyAmount.fromRawAmount(order.inputToken, order.feeAmount.toString())
-  const sellAmountWithFee = sellAmount.add(feeAmountParsed)
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -71,7 +70,7 @@ export function ReceiptModal({
 
         <StyledScrollarea>
           <styledEl.Body>
-            <CurrencyField amount={sellAmountWithFee} token={order.inputToken} label={inputLabel} />
+            <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
             <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
             <styledEl.Field border="rounded-top">
