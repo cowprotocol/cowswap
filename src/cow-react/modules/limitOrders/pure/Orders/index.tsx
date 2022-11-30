@@ -76,6 +76,11 @@ const Header = styled.span`
   width: 100%;
   margin: 0 0 24px;
 
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-flow: column wrap;
+    margin: 0 0 16px;
+  `};
+
   > h2 {
     font-size: 24px;
     margin: 0;

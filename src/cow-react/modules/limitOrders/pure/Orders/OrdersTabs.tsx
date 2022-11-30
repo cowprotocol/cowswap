@@ -10,6 +10,12 @@ const Tabs = styled.div`
   overflow: hidden;
   margin: 0;
   border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  `};
 `
 
 const TabButton = styled(Link)<{ active: string }>`
@@ -24,6 +30,10 @@ const TabButton = styled(Link)<{ active: string }>`
   outline: none;
   cursor: pointer;
   transition: background 0.15s ease-in-out, color 0.2s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    text-align: center;
+  `};
 
   &:hover {
     background: ${({ theme }) => theme.bg1};
