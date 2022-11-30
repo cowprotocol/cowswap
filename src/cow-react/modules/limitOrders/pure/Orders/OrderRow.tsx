@@ -8,8 +8,9 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AlertTriangle, Trash2 } from 'react-feather'
 import { transparentize } from 'polished'
 import { OrderParams } from './utils/getOrderParams'
+import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 
-const orderStatusTitleMap: { [key in OrderStatus]: string } = {
+export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
   [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
   [OrderStatus.FULFILLED]: 'Filled',
@@ -28,7 +29,7 @@ const StatusBox = styled.div`
   align-items: center;
 `
 
-const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
+export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
   --statusColor: ${({ theme, status, cancelling }) =>
     cancelling
       ? theme.text1
@@ -188,18 +189,26 @@ export interface OrderRowProps {
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
   orderParams: OrderParams
+  onClick: () => void
   showOrderCancelationModal(order: Order): void
 }
 
-export function OrderRow({ order, RowElement, isRateInversed, showOrderCancelationModal, orderParams }: OrderRowProps) {
-  const { sellAmount, buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
+export function OrderRow({
+  order,
+  RowElement,
+  isRateInversed,
+  showOrderCancelationModal,
+  orderParams,
+  onClick,
+}: OrderRowProps) {
+  const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
 
   const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
   return (
-    <RowElement>
+    <RowElement onClick={onClick}>
       <div>
-        <CurrencyAmountItem amount={sellAmount} />
+        <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
       </div>
       <div>
         <CurrencyAmountItem amount={buyAmount} />
@@ -235,7 +244,13 @@ export function OrderRow({ order, RowElement, isRateInversed, showOrderCancelati
       </div>
       <div>
         {order.status === OrderStatus.PENDING && !order.isCancelling && (
-          <CancelOrderBtn title="Cancel order" onClick={() => showOrderCancelationModal(order)}>
+          <CancelOrderBtn
+            title="Cancel order"
+            onClick={(event) => {
+              event.stopPropagation()
+              showOrderCancelationModal(order)
+            }}
+          >
             <Trash2 size={16} />
           </CancelOrderBtn>
         )}

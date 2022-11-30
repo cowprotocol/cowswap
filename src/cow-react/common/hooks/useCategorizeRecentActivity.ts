@@ -30,7 +30,8 @@ export function useCategorizeRecentActivity() {
       // Separate the array into 2: transitory (pending) and final (confirmed) states
       allRecentActivity.reduce<[string[], string[]]>(
         (acc, activity) => {
-          if (activity.class === OrderClass.MARKET) {
+          // Not order transactions (wrap, approve, etc.) doesn't have class property
+          if (!activity.class || activity.class === OrderClass.MARKET) {
             if (isPending(activity)) {
               acc[0].push(activity.id)
             } else if (isConfirmed(activity)) {

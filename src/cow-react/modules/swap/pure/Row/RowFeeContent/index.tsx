@@ -1,6 +1,7 @@
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { StyledInfoIcon, LightGreyText } from '@cow/modules/swap/pure/styled'
+import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
+import { FiatRate } from '@cow/common/pure/RateInfo/'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps, RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
 
@@ -37,7 +38,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
       </RowFixed>
 
       <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
-        {feeToken} {feeUsd && <LightGreyText>{feeUsd}</LightGreyText>}
+        {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
       </TextWrapper>
     </StyledRowBetween>
   )

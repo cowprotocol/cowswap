@@ -92,7 +92,9 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
   return !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
 }
 
-export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapContext | null {
+export function useWrapUnwrapContext(
+  inputAmount: CurrencyAmount<Currency> | null | undefined
+): WrapUnwrapContext | null {
   const { chainId } = useWeb3React()
   const closeModals = useCloseModals()
   const wethContract = useWETHContract()
@@ -113,9 +115,9 @@ export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | und
   const amountHex = `0x${inputAmount.quotient.toString(RADIX_HEX)}`
   const operationType = isWrap ? OperationType.WRAP_ETHER : OperationType.UNWRAP_WETH
   const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
-  const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${baseSummarySuffix}`
-  const summary = t`${isWrap ? 'Wrap' : 'Unwrap'} ${baseSummary}`
-  const confirmationMessage = t`${isWrap ? 'Wrapping' : 'Unwrapping'} ${baseSummary}`
+  const baseSummary = `${formatSmart(inputAmount, AMOUNT_PRECISION)} ${baseSummarySuffix}`
+  const summary = `${isWrap ? 'Wrap' : 'Unwrap'} ${baseSummary}`
+  const confirmationMessage = `${isWrap ? 'Wrapping' : 'Unwrapping'} ${baseSummary}`
   const operationMessage = getOperationMessage(operationType, chainId)
 
   return {
@@ -134,7 +136,7 @@ export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | und
 /**
  * Given the selected input and output currency, return a wrap callback
  */
-export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapCallback | null {
+export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | null | undefined): WrapUnwrapCallback | null {
   const context = useWrapUnwrapContext(inputAmount)
 
   if (!context) {

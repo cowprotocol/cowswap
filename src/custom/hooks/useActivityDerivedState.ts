@@ -79,7 +79,7 @@ function getActivityDerivedState(props: {
   }
 }
 
-function getActivityLinkUrl(params: {
+export function getActivityLinkUrl(params: {
   chainId: number
   id: string
   enhancedTransaction?: EnhancedTransactionDetails

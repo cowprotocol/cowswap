@@ -5,19 +5,17 @@ import { Token } from '@uniswap/sdk-core'
 import { WETH_LOGO_URI } from 'constants/index'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tokens'
-import { useSwapState } from 'state/swap/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
-import { Field } from 'state/swap/actions'
 import WXDAI_LOGO_URI from 'assets/cow-swap/wxdai.png'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 
+// TODO: move it to `modules/trade`
 export function useDetectNativeToken() {
   const { chainId } = useWeb3React()
-  const {
-    [Field.INPUT]: { currencyId: inputCurrencyId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
-  } = useSwapState()
+  const tradeState = useTradeState()
+  const { inputCurrencyId, outputCurrencyId } = tradeState?.state || {}
 
   const input = useTokenBySymbolOrAddress(inputCurrencyId)
   const output = useTokenBySymbolOrAddress(outputCurrencyId)
