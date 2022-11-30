@@ -86,7 +86,7 @@ export const AuxInformationContainer = styled(Container)<{
   border: 2px solid ${({ theme }) => theme.grey1};
 
   &:hover {
-    /* border: 2px solid ${({ theme, hideInput }) => (hideInput ? theme.grey1 : theme.bg2)}; */
+    border: 2px solid ${({ theme }) => theme.grey1};
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

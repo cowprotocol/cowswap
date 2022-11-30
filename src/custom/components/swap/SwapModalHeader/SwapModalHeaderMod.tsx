@@ -165,7 +165,11 @@ SwapModalHeaderProps) {
         </AutoColumn>
       </LightCard>
       {!!exactInLabel && (
-        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+        <AuxInformationContainer
+          margin="-4px auto 4px"
+          hideInput
+          // borderColor={transparentize(0.5, theme.bg0)}
+        >
           <FeeInformationTooltip
             amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
