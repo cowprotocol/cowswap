@@ -78,6 +78,10 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     disabled: true,
     text: 'Enter an amount',
   },
+  [LimitOrdersFormState.PriceIsNotSet]: {
+    disabled: true,
+    text: 'Enter a price',
+  },
   [LimitOrdersFormState.InvalidRecipient]: {
     disabled: true,
     text: 'Enter a recipient',
@@ -89,7 +93,9 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.QuoteError]: ({ quote }: TradeButtonsParams) => {
     return (
       <SwapButton disabled={true}>
-        <Trans>{quote.error ? quoteErrorTexts[quote.error.type] : 'Unknown error'}</Trans>
+        <Trans>
+          {quote.error ? quoteErrorTexts[quote.error.type] || 'Error loading price. Try again later.' : 'Unknown error'}
+        </Trans>
       </SwapButton>
     )
   },
