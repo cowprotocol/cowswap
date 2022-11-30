@@ -6,6 +6,7 @@ import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
@@ -37,6 +38,7 @@ const Header = styled.div`
 const RowElement = styled(Header)`
   background: transparent;
   transition: background 0.15s ease-in-out;
+  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => transparentize(0.9, theme.text3)};
@@ -72,6 +74,7 @@ export function OrdersTable({
 }: OrdersTableProps) {
   const [isRateInversed, setIsRateInversed] = useState(false)
 
+  const selectReceiptOrder = useSelectReceiptOrder()
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
   const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step)
 
@@ -105,6 +108,7 @@ export function OrdersTable({
               RowElement={RowElement}
               isRateInversed={isRateInversed}
               showOrderCancelationModal={showOrderCancelationModal}
+              onClick={() => selectReceiptOrder(order)}
             />
           ))}
         </Rows>
