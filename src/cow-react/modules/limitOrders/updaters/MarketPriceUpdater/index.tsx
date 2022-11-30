@@ -18,6 +18,7 @@ export function MarketPriceUpdater() {
 
   useEffect(() => {
     updateLimitRateState({
+      // Don't change isLoading flag when price is already set
       isLoading: isInitialPriceSet ? false : isLoading,
       initialRate: price,
       isTypedValue: false,
