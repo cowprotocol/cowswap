@@ -24,11 +24,6 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
     background-color: ${({ readonlyMode, stubbed, theme }) =>
       readonlyMode ? 'red' : stubbed ? lighten(0.1, theme.bg2) : lighten(0.1, theme.bg1)};
   }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-    justify-content: start;
-  `};
 `
 
 export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
@@ -49,4 +44,11 @@ export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
   font-weight: 500;
   white-space: nowrap;
   color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 17px;
+    word-break: break-all;
+    white-space: normal;
+    text-align: left;
+  `};
 `

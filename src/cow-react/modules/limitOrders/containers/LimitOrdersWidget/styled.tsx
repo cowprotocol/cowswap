@@ -58,6 +58,11 @@ export const RateWrapper = styled.div`
   grid-template-columns: auto 150px;
   gap: 6px;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: flex;
+    flex-flow: column wrap;
+  `}
+
   ${NumericalInput} {
     font-size: 21px;
   }
@@ -74,4 +79,13 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 export const StyledRateInfo = styled(RateInfo)`
   margin-top: 15px;
   font-size: 14px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: flex;
+    flex-flow: column wrap;
+    align-items: flex-start;
+    padding: 8px;
+    margin: 0;
+    gap: 4px;
+  `}
 `

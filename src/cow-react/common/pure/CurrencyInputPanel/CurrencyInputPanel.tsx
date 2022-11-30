@@ -109,7 +109,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
-        <styledEl.CurrencyInputBox flexibleWidth={true}>
+        <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
               onClick={() => setCurrencySearchModalOpen(true)}
@@ -122,7 +122,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           </div>
         </styledEl.CurrencyInputBox>
 
-        <styledEl.CurrencyInputBox flexibleWidth={false}>
+        <styledEl.CurrencyInputBox>
           <div>
             {balance && !disabled && (
               <>
