@@ -8,6 +8,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { AlertTriangle, Trash2 } from 'react-feather'
 import { transparentize } from 'polished'
 import { OrderParams } from './utils/getOrderParams'
+import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -190,14 +191,14 @@ export function OrderRow({
   orderParams,
   onClick,
 }: OrderRowProps) {
-  const { sellAmount, buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
+  const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
 
   const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
   return (
     <RowElement onClick={onClick}>
       <div>
-        <CurrencyAmountItem amount={sellAmount} />
+        <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
       </div>
       <div>
         <CurrencyAmountItem amount={buyAmount} />
