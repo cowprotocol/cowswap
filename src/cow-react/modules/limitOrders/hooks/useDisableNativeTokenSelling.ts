@@ -30,7 +30,7 @@ export function useDisableNativeTokenSelling() {
 
     const defaultInputCurrencyId = getDefaultTradeState(chainId).inputCurrencyId
 
-    if (isInputNative && !isOutputWrappedNative) {
+    if (isInputNative && outputCurrencyId && !isOutputWrappedNative) {
       limitOrdersNavigate(chainId, {
         inputCurrencyId: isInputNative ? defaultInputCurrencyId : inputCurrencyId,
         outputCurrencyId,
