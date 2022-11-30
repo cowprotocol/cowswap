@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Order } from 'state/orders/actions'
 import { LIMIT_ORDERS_PAGE_SIZE } from '../../../const/limitOrdersTabs'
@@ -9,7 +9,7 @@ export function useValidatePageUrlParams(orders: Order[], currentTabId: string, 
   const location = useLocation()
   const history = useHistory()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const pagesCount = Math.ceil(orders.length / LIMIT_ORDERS_PAGE_SIZE)
     const params = parseLimitOrdersPageParams(location.search)
 
