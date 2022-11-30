@@ -33,4 +33,8 @@ export const PrimaryWrapper = styled.div`
 // Graph + orders table
 export const SecondaryWrapper = styled.div`
   display: flex;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+  `};
 `
