@@ -33,6 +33,8 @@ import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
+import { OrderKind } from '@cowprotocol/contracts'
+import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -111,9 +113,15 @@ export function LimitOrdersWidget() {
   const onSwitchTokens = useCallback(() => {
     const { inputCurrencyId, outputCurrencyId } = state
 
-    updateLimitOrdersState({ inputCurrencyAmount: outputCurrencyAmount?.toExact(), outputCurrencyAmount: null })
+    updateLimitOrdersState({
+      inputCurrencyAmount: outputCurrencyAmount?.toExact(),
+      outputCurrencyAmount: null,
+      orderKind: OrderKind.SELL,
+    })
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
   }, [state, limitOrdersNavigate, updateLimitOrdersState, chainId, outputCurrencyAmount])
+  // Disable too frequent tokens switching
+  const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
@@ -155,7 +163,7 @@ export function LimitOrdersWidget() {
               <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
                 <CurrencyArrowSeparator
                   isCollapsed={false}
-                  onSwitchTokens={onSwitchTokens}
+                  onSwitchTokens={throttledOnSwitchTokens}
                   withRecipient={showRecipient}
                   isLoading={isTradePriceUpdating}
                   hasSeparatorLine={true}
