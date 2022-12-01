@@ -100,6 +100,7 @@ export function Orders({
   balancesAndAllowances,
   showOrderCancelationModal,
   currentPageNumber,
+  isSmartContractWallet,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -131,6 +132,7 @@ export function Orders({
 
     return (
       <OrdersTable
+        isSmartContractWallet={isSmartContractWallet}
         currentPageNumber={currentPageNumber}
         chainId={chainId}
         orders={orders}

@@ -59,6 +59,7 @@ const Rows = styled.div`
 
 export interface OrdersTableProps {
   currentPageNumber: number
+  isSmartContractWallet: boolean
   chainId: SupportedChainId | undefined
   orders: Order[]
   balancesAndAllowances: BalancesAndAllowances
@@ -71,6 +72,7 @@ export function OrdersTable({
   balancesAndAllowances,
   showOrderCancelationModal,
   currentPageNumber,
+  isSmartContractWallet,
 }: OrdersTableProps) {
   const [isRateInversed, setIsRateInversed] = useState(false)
 
@@ -107,6 +109,7 @@ export function OrdersTable({
               orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
               RowElement={RowElement}
               isRateInversed={isRateInversed}
+              isSmartContractWallet={isSmartContractWallet}
               showOrderCancelationModal={showOrderCancelationModal}
               onClick={() => selectReceiptOrder(order)}
             />
