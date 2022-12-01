@@ -118,6 +118,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       {chainId && (
         <GpModal isOpen={!!confirmationState.orderHash} onDismiss={onDismissConfirmation}>
           <TxSubmittedModal
+            isLimitOrderSubmit
             chainId={chainId}
             onDismiss={onDismissConfirmation}
             hash={confirmationState.orderHash || undefined}

@@ -25,6 +25,7 @@ export enum Z_INDEX {
 type TextProps = TextPropsUni & { override?: boolean }
 
 export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolean }>`
+  display: contents;
   color: ${({ color, theme, override }) => {
     const colour = (theme as any)[color]
     if (colour && override) {
@@ -42,7 +43,7 @@ export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolea
 export const ThemedText = {
   ...ThemedTextUni,
   Warn(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'yellow1'} {...props} />
+    return <TextWrapper fontWeight={500} color={'warning'} {...props} />
   },
 }
 

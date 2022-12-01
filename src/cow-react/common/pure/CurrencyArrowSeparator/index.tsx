@@ -1,7 +1,6 @@
 import React from 'react'
 import loadingCowWebp from 'assets/cow-swap/cow-load.webp'
 import * as styledEl from './styled'
-import { useIsDarkMode } from 'state/user/hooks'
 
 export interface CurrencyArrowSeparatorProps {
   isLoading: boolean
@@ -13,7 +12,6 @@ export interface CurrencyArrowSeparatorProps {
 
 export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
   const { isLoading, onSwitchTokens, withRecipient, isCollapsed = true, hasSeparatorLine } = props
-  const darkMode = useIsDarkMode()
 
   return (
     <styledEl.Box
@@ -22,7 +20,7 @@ export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
       onClick={onSwitchTokens}
       hasSeparatorLine={hasSeparatorLine}
     >
-      <styledEl.LoadingWrapper isLoading={isLoading} darkMode={darkMode}>
+      <styledEl.LoadingWrapper isLoading={isLoading}>
         {isLoading ? <styledEl.CowImg src={loadingCowWebp} alt="loading" /> : <styledEl.ArrowDownIcon />}
       </styledEl.LoadingWrapper>
     </styledEl.Box>
