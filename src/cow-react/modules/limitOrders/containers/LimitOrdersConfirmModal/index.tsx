@@ -17,6 +17,7 @@ import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useLimitOrdersWarningsAccepted } from '@cow/modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -64,6 +65,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
 
   const rateImpact = useRateImpact()
   const rateInfoParams = useRateInfoParams(inputRawAmount, outputRawAmount)
+  const { handleSetError, ErrorModal } = useErrorModal()
 
   const onDismissConfirmation = useCallback(() => {
     setConfirmationState({ isPending: false, orderHash: null })
@@ -85,8 +87,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         if (error instanceof PriceImpactDeclineError) return
 
         onDismissConfirmation()
+        handleSetError(error.message)
       })
-  }, [onDismiss, setConfirmationState, tradeContext, onDismissConfirmation, priceImpact])
+  }, [onDismiss, handleSetError, setConfirmationState, tradeContext, onDismissConfirmation, priceImpact])
 
   const operationType = OperationType.ORDER_SIGN
   const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />
@@ -137,6 +140,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
           attemptingTxn={confirmationState.isPending}
         />
       )}
+      <ErrorModal />
     </>
   )
 }
