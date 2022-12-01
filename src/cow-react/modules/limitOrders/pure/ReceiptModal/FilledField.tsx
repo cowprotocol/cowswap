@@ -2,7 +2,7 @@
 import { useMemo } from 'react'
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { formatSmartAmount } from 'utils/format'
+import { formatAtoms, formatSmartAmount } from 'utils/format'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { BigNumber } from 'bignumber.js'
@@ -27,7 +27,6 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
     executedBuyAmount,
     executedSellAmount,
     executedFeeAmount,
-    executedSurplusFee,
     filledAmount,
   } = order
 
@@ -54,7 +53,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
     swappedAmount = executedBuyAmount
 
     // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
-    filledAmountWithFee = filledAmount?.plus(executedFeeAmount || '0')?.plus(executedSurplusFee || '0')
+    filledAmountWithFee = filledAmount?.plus(executedFeeAmount || '0')
     swappedAmountWithFee = new BigNumber(swappedAmount?.toString() || '0')
   } else {
     action = 'bought'
@@ -69,9 +68,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
 
     // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
     filledAmountWithFee = filledAmount
-    swappedAmountWithFee = new BigNumber(swappedAmount?.toString() || '0')
-      .plus(executedFeeAmount || '0')
-      .plus(executedSurplusFee || '0')
+    swappedAmountWithFee = new BigNumber(swappedAmount?.toString() || '0').plus(executedFeeAmount || '0')
   }
 
   // In case the token object is empty, display the address
@@ -79,11 +76,13 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
   const swappedSymbol = swappedToken ? swappedToken.symbol : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
 
+  const mainAmountDecimal = formatAtoms(mainAmount.quotient.toString(), mainToken.decimals)
   const formattedMainAmount = formatSmartAmount(mainAmount)
-  const formattedFilledAmount = formatSmartAmount(filledAmountWithFee?.div(new BigNumber(10 ** mainToken.decimals)))
-  const formattedSwappedAmount = formatSmartAmount(
-    swappedAmountWithFee?.div(new BigNumber(10 ** swappedToken.decimals))
-  )
+  const filledAmountDecimal = filledAmountWithFee?.div(new BigNumber(10 ** mainToken.decimals))
+  const formattedFilledAmount = formatSmartAmount(filledAmountDecimal)
+
+  const swappedAmountDecimal = swappedAmountWithFee?.div(new BigNumber(10 ** swappedToken.decimals))
+  const formattedSwappedAmount = formatSmartAmount(swappedAmountDecimal)
 
   const formattedPercentage = useMemo(() => {
     if (!filledPercentage) {
@@ -102,7 +101,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
 
       <styledEl.InlineWrapper>
         <span>
-          <b>
+          <b title={filledAmountDecimal?.toString() + ' ' + mainSymbol}>
             {/* Executed part (bought/sold tokens) */}
             {formattedFilledAmount} {mainSymbol}
           </b>{' '}
@@ -110,7 +109,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
             // Show the total amount to buy/sell. Only for orders that are not 100% executed
             <>
               of{' '}
-              <b>
+              <b title={mainAmountDecimal.toString() + ' ' + mainSymbol}>
                 {formattedMainAmount} {mainSymbol}
               </b>{' '}
             </>
@@ -122,7 +121,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
             //    Total sell tokens you pay (for buy orders)
             <>
               for a total of{' '}
-              <b>
+              <b title={swappedAmountDecimal.toString() + ' ' + swappedSymbol}>
                 {formattedSwappedAmount} {swappedSymbol}
               </b>
             </>
