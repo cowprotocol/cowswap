@@ -17,6 +17,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { transactionConfirmAtom } from '@cow/modules/swap/state/transactionConfirmAtom'
 import { ApplicationModal } from '@src/state/application/reducer'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
@@ -56,7 +57,9 @@ export function TradeButtons(props: TradeButtonsProps) {
         .catch((error) => {
           if (error instanceof PriceImpactDeclineError) return
 
-          handleSetError(error.message)
+          if (error instanceof OperatorError) {
+            handleSetError(error.message)
+          }
         })
         .finally(() => {
           setConfirmationState({ isPending: false, orderHash: null })

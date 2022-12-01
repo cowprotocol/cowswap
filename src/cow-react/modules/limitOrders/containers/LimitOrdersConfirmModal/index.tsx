@@ -18,6 +18,7 @@ import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOr
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useLimitOrdersWarningsAccepted } from '@cow/modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -87,7 +88,10 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         if (error instanceof PriceImpactDeclineError) return
 
         onDismissConfirmation()
-        handleSetError(error.message)
+
+        if (error instanceof OperatorError) {
+          handleSetError(error.message)
+        }
       })
   }, [onDismiss, handleSetError, setConfirmationState, tradeContext, onDismissConfirmation, priceImpact])
 
