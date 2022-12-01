@@ -38,7 +38,7 @@ export function useLimitOrdersList(): LimitOrdersList {
   const accountLowerCase = account?.toLowerCase()
 
   const ordersFilter = useCallback((order: Order) => order.owner.toLowerCase() === accountLowerCase, [accountLowerCase])
-  const ordersSorter = (a: Order, b: Order) => Date.parse(b.creationTime) - Date.parse(a.creationTime)
+  const ordersSorter = (a: Order, b: Order) => Date.parse(a.creationTime) - Date.parse(b.creationTime)
   const ordersParser = (order: Order): ParsedOrder => {
     const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)
     const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(order)
