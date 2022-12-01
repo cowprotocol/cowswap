@@ -8,11 +8,20 @@ import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/sta
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
+import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 
 export function RateInput() {
   // Rate state
-  const { isInversed, activeRate, isLoading, executionRate, isLoadingExecutionRate, typedValue, isTypedValue } =
-    useAtomValue(limitRateAtom)
+  const {
+    isInversed,
+    activeRate,
+    isLoading,
+    executionRate,
+    isLoadingExecutionRate,
+    typedValue,
+    isTypedValue,
+    initialRate,
+  } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
   // Limit order state
@@ -37,8 +46,11 @@ export function RateInput() {
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
-    updateLimitRateState({ activeRate: executionRate, isTypedValue: false })
-  }, [executionRate, updateLimitRateState])
+    updateLimitRateState({
+      activeRate: isFractionFalsy(executionRate) ? initialRate : executionRate,
+      isTypedValue: false,
+    })
+  }, [executionRate, initialRate, updateLimitRateState])
 
   // Handle rate input
   const handleUserInput = useCallback(
@@ -54,8 +66,16 @@ export function RateInput() {
   }
 
   const isDisabledMPrice = useMemo(() => {
-    return isLoadingExecutionRate || !executionRate || activeRate?.equalTo(executionRate)
-  }, [activeRate, executionRate, isLoadingExecutionRate])
+    if (isLoadingExecutionRate) return true
+
+    if (!outputCurrencyId || !inputCurrencyId) return true
+
+    if (executionRate) {
+      return activeRate?.equalTo(executionRate)
+    } else {
+      return !!initialRate && activeRate?.equalTo(initialRate)
+    }
+  }, [activeRate, executionRate, isLoadingExecutionRate, initialRate, inputCurrencyId, outputCurrencyId])
 
   return (
     <styledEl.Wrapper>
