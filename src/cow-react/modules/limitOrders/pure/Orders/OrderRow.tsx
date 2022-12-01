@@ -151,25 +151,25 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   )
 }
 
-// TODO: check texts with marketing
 const balanceWarning = (tokenSymbol: string) => (
   <WarningParagraph>
     <h3>Insufficient balance for this limit order</h3>
     <p>
-      This order is still open and valid but your account currently has insufficient <strong>{tokenSymbol}</strong>{' '}
-      balance. <br />
-      Your order therefore can&apos;t be matched.
+      Your wallet currently has insufficient <strong>{tokenSymbol}</strong> balance to execute this order.
+      <br />
+      The order is still open and will become executable when you top up your <strong>{tokenSymbol}</strong> balance.
     </p>
   </WarningParagraph>
 )
 
 const allowanceWarning = (tokenSymbol: string) => (
   <WarningParagraph>
-    <h3>Insufficient allowance for this limit order</h3>
+    <h3>Insufficient approval for this limit order</h3>
     <p>
-      This order is still open and valid but your account currently has insufficient allowance to spend{' '}
-      <strong>{tokenSymbol}</strong>. <br />
-      Your order therefore can&apos;t be matched.
+      This order is still open and valid, but you haven’t given CoW Swap sufficient allowance to spend{' '}
+      <strong>{tokenSymbol}</strong>.
+      <br />
+      The order will become executable when you approve <strong>{tokenSymbol}</strong> in your account token page.
     </p>
   </WarningParagraph>
 )

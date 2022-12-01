@@ -29,17 +29,18 @@ interface ReceiptProps {
   executionPrice: Fraction | null
 }
 
+// TODO: Anxo please add texts
 enum Tooltip {
-  STATUS = 'Status info TODO',
-  LIMIT_PRICE = 'Limit price TODO',
-  EXECUTION_PRICE = 'Execution price TODO',
-  FILLED = 'Filled TODO',
-  SURPLUS = 'Order Surplus TODO',
-  FEE = 'Fee TODO',
-  CREATED = 'Created date TODO',
-  EXPIRY = 'Expiry date TODO',
-  ORDER_TYPE = 'Order type TODO',
-  ORDER_ID = 'Order id TODO',
+  LIMIT_PRICE = 'You will receive this price or better for your tokens.',
+  EXECUTION_PRICE = 'An order’s actual execution price will vary based on the market price and network fees.',
+  FILLED = 'CoW Swap doesn’t currently support partial fills. Your order will either be filled completely or not at all.',
+  SURPLUS = 'The amount of extra tokens you get on top of your limit price.',
+  FEE = 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
+  CREATED = 'Your order was created on this date & time. It will remain open until it expires or is filled.',
+  EXPIRY = "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
+  ORDER_TYPE = 'Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify). \n' +
+    '\n' +
+    'All orders are currently fill or kill, but support for partially fillable limit orders is coming soon!',
 }
 
 // TODO: add cosmos fixture for this component
@@ -74,7 +75,7 @@ export function ReceiptModal({
             <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
             <styledEl.Field border="rounded-top">
-              <FieldLabel label="Status" tooltip={Tooltip.STATUS} />
+              <FieldLabel label="Status" />
               <StatusField order={order} />
             </styledEl.Field>
 
@@ -119,7 +120,7 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field border="rounded-bottom">
-              <FieldLabel label="Order ID" tooltip={Tooltip.ORDER_ID} />
+              <FieldLabel label="Order ID" />
               <OrderIDField order={order} chainId={chainId} />
             </styledEl.Field>
           </styledEl.Body>
