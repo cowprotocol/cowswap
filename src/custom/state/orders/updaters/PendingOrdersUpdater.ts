@@ -17,8 +17,8 @@ import {
   useUpdatePresignGnosisSafeTx,
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
-import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
-import { OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
+import { Order, OrderClass, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
@@ -264,7 +264,7 @@ export function PendingOrdersUpdater(): null {
   const getSafeInfo = useGetSafeInfo()
 
   const updateOrders = useCallback(
-    async (chainId: ChainId, account: string) => {
+    async (chainId: ChainId, account: string, orderClass: OrderClass) => {
       if (!account) {
         return []
       }
@@ -276,7 +276,7 @@ export function PendingOrdersUpdater(): null {
         return _updateOrders({
           account,
           chainId,
-          orders: pendingRef.current,
+          orders: pendingRef.current.filter((order) => order.class === orderClass),
           addOrUpdateOrders,
           fulfillOrdersBatch,
           expireOrdersBatch,
@@ -306,9 +306,19 @@ export function PendingOrdersUpdater(): null {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId, account), OPERATOR_API_POLL_INTERVAL)
+    const marketIinterval = setInterval(
+      () => updateOrders(chainId, account, OrderClass.MARKET),
+      MARKET_OPERATOR_API_POLL_INTERVAL
+    )
+    const limitInterval = setInterval(
+      () => updateOrders(chainId, account, OrderClass.LIMIT),
+      LIMIT_OPERATOR_API_POLL_INTERVAL
+    )
 
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(marketIinterval)
+      clearInterval(limitInterval)
+    }
   }, [account, chainId, updateOrders])
 
   return null
