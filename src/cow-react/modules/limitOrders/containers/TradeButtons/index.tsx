@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Trans } from '@lingui/macro'
 import { useAtomValue } from 'jotai/utils'
 import { useSetAtom } from 'jotai'
-import { tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
+import { PriceImpactDeclineError, tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
@@ -16,6 +16,7 @@ import { useWrapCallback } from 'hooks/useWrapCallback'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { transactionConfirmAtom } from '@cow/modules/swap/state/transactionConfirmAtom'
 import { ApplicationModal } from '@src/state/application/reducer'
+import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
@@ -37,6 +38,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const transactionConfirmState = useAtomValue(transactionConfirmAtom)
   const closeModals = useCloseModals()
   const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
+  const { handleSetError, ErrorModal } = useErrorModal()
 
   const wrapUnwrapParams: WrapUnwrapParams = {
     isNativeIn: !!inputCurrencyAmount?.currency.isNative,
@@ -52,7 +54,9 @@ export function TradeButtons(props: TradeButtonsProps) {
 
       tradeFlow(tradeContext, priceImpact, beforeTrade)
         .catch((error) => {
-          console.error(error)
+          if (error instanceof PriceImpactDeclineError) return
+
+          handleSetError(error.message)
         })
         .finally(() => {
           setConfirmationState({ isPending: false, orderHash: null })
@@ -60,7 +64,7 @@ export function TradeButtons(props: TradeButtonsProps) {
     } else {
       openConfirmScreen()
     }
-  }, [expertMode, tradeContext, openConfirmScreen, setConfirmationState, priceImpact])
+  }, [handleSetError, expertMode, tradeContext, openConfirmScreen, setConfirmationState, priceImpact])
 
   const button = limitOrdersTradeButtonsMap[formState]
 
@@ -71,8 +75,11 @@ export function TradeButtons(props: TradeButtonsProps) {
   const isButtonDisabled = button.disabled || !warningsAccepted
 
   return (
-    <SwapButton onClick={doTrade} disabled={isButtonDisabled}>
-      <Trans>{button.text}</Trans>
-    </SwapButton>
+    <>
+      <SwapButton onClick={doTrade} disabled={isButtonDisabled}>
+        <Trans>{button.text}</Trans>
+      </SwapButton>
+      <ErrorModal />
+    </>
   )
 }
