@@ -5,7 +5,6 @@ import { loadingAnimationMixin } from './style-mixins'
 export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; hasSeparatorLine?: boolean }>`
   display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
   margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-12px auto' : '6px auto')};
-  cursor: pointer;
   position: relative;
   z-index: 2;
   width: ${({ withRecipient }) => (withRecipient ? '28px' : '100%')};
@@ -52,6 +51,7 @@ export const ArrowDownIcon = styled(ArrowDown)`
   width: 100%;
   height: 100%;
   padding: 3px;
+  cursor: pointer;
 `
 
 export const CowImg = styled.img`
