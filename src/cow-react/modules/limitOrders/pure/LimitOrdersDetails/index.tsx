@@ -34,7 +34,8 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>Expiry</span> <InfoIcon content={'Expiry info TODO'} />
+          <span>Expiry</span>
+          {/*<InfoIcon content={'Expiry info TODO'} />*/}
         </div>
         <div>
           <span>{expiryDate.toLocaleString(undefined, dateTimeFormat)}</span>
@@ -42,15 +43,21 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>MEV protection</span> <InfoIcon content={'MEV protection info TODO'} />
+          <span>MEV protection</span>
+          {/*<InfoIcon content={'MEV protection info TODO'} />*/}
         </div>
         <div>
-          <span>{/*TODO*/}Active</span>
+          <span>Active</span>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>Order type</span> <InfoIcon content={'Order type info TODO'} />
+          <span>Order type</span>{' '}
+          <InfoIcon
+            content={
+              'This order will either be filled completely or not filled. (Support for partially fillable orders is coming soon!)'
+            }
+          />
         </div>
         <div>
           <span>{/*TODO*/}Fill or kill</span>
