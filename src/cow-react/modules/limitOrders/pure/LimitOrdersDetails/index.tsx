@@ -35,7 +35,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       <styledEl.DetailsRow>
         <div>
           <span>Expiry</span>
-          {/*<InfoIcon content={'Expiry info TODO'} />*/}
+          {/*TODO HIDDEN: <InfoIcon content={'Expiry info TODO'} />*/}
         </div>
         <div>
           <span>{expiryDate.toLocaleString(undefined, dateTimeFormat)}</span>
@@ -44,7 +44,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       <styledEl.DetailsRow>
         <div>
           <span>MEV protection</span>
-          {/*<InfoIcon content={'MEV protection info TODO'} />*/}
+          {/*TODO HIDDEN: <InfoIcon content={'MEV protection info TODO'} />*/}
         </div>
         <div>
           <span>Active</span>
