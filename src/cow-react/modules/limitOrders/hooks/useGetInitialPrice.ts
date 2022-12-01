@@ -43,6 +43,27 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
   }
 }
 
+async function requestPrice(
+  chainId: number | undefined,
+  inputCurrency: Currency | null,
+  outputCurrency: Currency | null
+): Promise<Fraction | null> {
+  return Promise.all([
+    requestPriceForCurrency(chainId, inputCurrency),
+    requestPriceForCurrency(chainId, outputCurrency),
+  ]).then(([inputPrice, outputPrice]) => {
+    if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
+      return null
+    }
+
+    const result = new Fraction(inputPrice, outputPrice)
+
+    console.debug('Updated limit orders initial price: ', result.toSignificant(18))
+
+    return result
+  })
+}
+
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
 // When return null it means we failed on price loading
 // TODO: rename it to useNativeBasedPrice
@@ -56,24 +77,9 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
     () => {
       setIsLoading(true)
 
-      return Promise.all([
-        requestPriceForCurrency(chainId, inputCurrency),
-        requestPriceForCurrency(chainId, outputCurrency),
-      ])
-        .then(([inputPrice, outputPrice]) => {
-          if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
-            return null
-          }
-
-          const result = new Fraction(inputPrice, outputPrice)
-
-          console.debug('Updated limit orders initial price: ', result.toSignificant(18))
-
-          return result
-        })
-        .finally(() => {
-          setIsLoading(false)
-        })
+      return requestPrice(chainId, inputCurrency, outputCurrency).finally(() => {
+        setIsLoading(false)
+      })
     },
     [chainId, inputCurrency, outputCurrency, updateTimestamp],
     null

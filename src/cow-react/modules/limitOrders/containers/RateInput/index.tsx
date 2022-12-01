@@ -68,12 +68,14 @@ export function RateInput() {
   const isDisabledMPrice = useMemo(() => {
     if (isLoadingExecutionRate) return true
 
+    if (!outputCurrencyId || !inputCurrencyId) return true
+
     if (executionRate) {
       return activeRate?.equalTo(executionRate)
     } else {
       return !!initialRate && activeRate?.equalTo(initialRate)
     }
-  }, [activeRate, executionRate, isLoadingExecutionRate, initialRate])
+  }, [activeRate, executionRate, isLoadingExecutionRate, initialRate, inputCurrencyId, outputCurrencyId])
 
   return (
     <styledEl.Wrapper>
@@ -81,7 +83,7 @@ export function RateInput() {
         <HeadingText currency={primaryCurrency} rateImpact={rateImpact} />
 
         <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
-          <span>{executionRate ? 'Market price' : 'Update price'}</span>
+          <span>Market price</span>
         </styledEl.MarketPriceButton>
       </styledEl.Header>
 
