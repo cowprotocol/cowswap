@@ -33,7 +33,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   const { deadline, customDeadline, selectDeadline, selectCustomDeadline } = props
   const currentDeadlineNode = useRef<HTMLButtonElement>()
 
-  const min = limitDateString(new Date(Date.now() + ms`10m`))
+  const min = limitDateString(new Date(Date.now() + ms`30min`))
   const max = limitDateString(new Date(Date.now() + maxCustomDeadline))
 
   const existingDeadline = useMemo(() => {

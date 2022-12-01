@@ -4,7 +4,6 @@ import { addPendingOrderStep } from '@cow/modules/swap/services/common/steps/add
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AppDispatch } from 'state'
 import { GPv2Settlement } from '@cow/abis/types'
-import confirmPriceImpactWithoutFee from '@src/components/swap/confirmPriceImpactWithoutFee'
 import { PriceImpact } from 'hooks/usePriceImpact'
 
 export interface TradeFlowContext {
@@ -23,9 +22,9 @@ export async function tradeFlow(
   priceImpact: PriceImpact,
   beforeTrade?: () => void
 ): Promise<string> {
-  if (priceImpact.priceImpact && !confirmPriceImpactWithoutFee(priceImpact.priceImpact)) {
-    throw new PriceImpactDeclineError()
-  }
+  // if (priceImpact.priceImpact && !confirmPriceImpactWithoutFee(priceImpact.priceImpact)) {
+  //   throw new PriceImpactDeclineError()
+  // }
 
   beforeTrade?.()
 

@@ -12,6 +12,7 @@ import { pendingOrderSummary } from '@cow/common/helpers/pendingOrderSummary'
 import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
+import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -21,6 +22,7 @@ export function OrdersWidget() {
   const location = useLocation()
   const history = useHistory()
   const ordersList = useLimitOrdersList()
+  const isSmartContractWallet = useIsSmartContractWallet()
   const { chainId, account } = useWeb3React()
 
   const [cancelModalProps, setCancelModalProps] = useState<CancellationModalProps | null>(null)
@@ -85,6 +87,7 @@ export function OrdersWidget() {
         tabs={tabs}
         orders={orders}
         isOpenOrdersTab={isOpenOrdersTab}
+        isSmartContractWallet={isSmartContractWallet}
         currentPageNumber={currentPageNumber}
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}

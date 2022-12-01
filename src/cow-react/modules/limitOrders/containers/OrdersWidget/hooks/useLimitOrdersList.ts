@@ -9,6 +9,7 @@ import { getOrderFilledAmount } from '@cow/modules/limitOrders/utils/getOrderFil
 import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 import { getOrderExecutedAmounts } from '@cow/modules/limitOrders/utils/getOrderExecutedAmounts'
 import { isOrderFilled } from '@cow/modules/limitOrders/utils/isOrderFilled'
+import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
 
 export interface LimitOrdersList {
   pending: ParsedOrder[]
@@ -38,7 +39,6 @@ export function useLimitOrdersList(): LimitOrdersList {
   const accountLowerCase = account?.toLowerCase()
 
   const ordersFilter = useCallback((order: Order) => order.owner.toLowerCase() === accountLowerCase, [accountLowerCase])
-  const ordersSorter = (a: Order, b: Order) => Date.parse(b.creationTime) - Date.parse(a.creationTime)
   const ordersParser = (order: Order): ParsedOrder => {
     const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)
     const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(order)

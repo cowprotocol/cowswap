@@ -11,6 +11,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { getOrderParams } from './utils/getOrderParams'
+import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
 
 const TableBox = styled.div`
   display: block;
@@ -59,6 +60,7 @@ const Rows = styled.div`
 
 export interface OrdersTableProps {
   currentPageNumber: number
+  isSmartContractWallet: boolean
   chainId: SupportedChainId | undefined
   orders: Order[]
   balancesAndAllowances: BalancesAndAllowances
@@ -71,12 +73,13 @@ export function OrdersTable({
   balancesAndAllowances,
   showOrderCancelationModal,
   currentPageNumber,
+  isSmartContractWallet,
 }: OrdersTableProps) {
   const [isRateInversed, setIsRateInversed] = useState(false)
 
   const selectReceiptOrder = useSelectReceiptOrder()
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
-  const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step)
+  const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step).sort(ordersSorter)
 
   return (
     <>
@@ -107,6 +110,7 @@ export function OrdersTable({
               orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
               RowElement={RowElement}
               isRateInversed={isRateInversed}
+              isSmartContractWallet={isSmartContractWallet}
               showOrderCancelationModal={showOrderCancelationModal}
               onClick={() => selectReceiptOrder(order)}
             />

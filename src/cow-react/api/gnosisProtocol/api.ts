@@ -273,7 +273,9 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
 
   if (!response.ok) {
     // Raise an exception
-    const errorMessage = await OperatorError.getErrorFromStatusCode(response, 'delete')
+    const errorObject: ApiErrorObject = await response.json()
+    const errorMessage = OperatorError.getErrorFromStatusCode(response.status, errorObject, 'delete')
+
     throw new Error(errorMessage)
   }
 
@@ -320,10 +322,9 @@ async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedO
     // Handle response
     if (!response.ok) {
       // Raise an exception
-      const [errorObject, description] = await Promise.all<[Promise<ApiErrorObject>, Promise<string>]>([
-        response.json(),
-        OperatorError.getErrorFromStatusCode(response, 'create'),
-      ])
+      const errorObject: ApiErrorObject = await response.json()
+      const description = OperatorError.getErrorFromStatusCode(response.status, errorObject, 'create')
+
       // create the OperatorError from the constructed error message and the original error
       const error = new OperatorError(Object.assign({}, errorObject, { description }))
 
