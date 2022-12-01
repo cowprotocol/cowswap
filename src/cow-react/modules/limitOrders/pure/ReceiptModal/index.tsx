@@ -29,6 +29,7 @@ interface ReceiptProps {
   executionPrice: Fraction | null
 }
 
+// TODO: Anxo please add texts
 enum Tooltip {
   STATUS = 'Status info TODO',
   LIMIT_PRICE = 'Limit price TODO',
