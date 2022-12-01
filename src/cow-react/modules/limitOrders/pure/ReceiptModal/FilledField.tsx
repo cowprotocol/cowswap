@@ -2,7 +2,7 @@
 import { useMemo } from 'react'
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { formatAtoms, formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from 'utils/format'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { BigNumber } from 'bignumber.js'
@@ -76,7 +76,6 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
   const swappedSymbol = swappedToken ? swappedToken.symbol : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
 
-  const mainAmountDecimal = formatAtoms(mainAmount.quotient.toString(), mainToken.decimals)
   const formattedMainAmount = formatSmartAmount(mainAmount)
   const filledAmountDecimal = filledAmountWithFee?.div(new BigNumber(10 ** mainToken.decimals))
   const formattedFilledAmount = formatSmartAmount(filledAmountDecimal)
@@ -109,7 +108,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
             // Show the total amount to buy/sell. Only for orders that are not 100% executed
             <>
               of{' '}
-              <b title={mainAmountDecimal.toString() + ' ' + mainSymbol}>
+              <b title={mainAmount.toExact() + ' ' + mainSymbol}>
                 {formattedMainAmount} {mainSymbol}
               </b>{' '}
             </>
