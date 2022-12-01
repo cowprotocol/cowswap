@@ -20,8 +20,9 @@ export function InfoPopup() {
         <SVG src={AlertIcon} />
       </div>
       <div>
-        Your limit price might not be exactly filled, even if the market price on the chart matches your limit order
-        price. <a href="TODO">Learn more</a>
+        CoW Swap will cover your fees by executing your order at a slightly better price than the limit price you set.
+        For this reason, your order may not be filled exactly when the market price reaches your limit price.{' '}
+        {/*TODO HIDDEN: <a href="TODO">Learn more</a>*/}
       </div>
       <styledEl.CloseIcon onClick={closePopup} size={16} />
     </styledEl.InfoPopup>

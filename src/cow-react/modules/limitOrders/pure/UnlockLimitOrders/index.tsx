@@ -1,7 +1,6 @@
 import React from 'react'
 import * as styledEl from './styled'
 import { CheckCircle, Activity } from 'react-feather'
-import { ExternalLink } from 'theme'
 import { ButtonPrimary } from 'components/Button'
 
 const iconMap = {
@@ -37,21 +36,21 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
 
       <styledEl.BodySection>
         <styledEl.BodyColumn>
-          <Item type="completed">Set your limit price and CoW Protocol executes</Item>
-          <Item type="completed">FREE order placement and cancellations</Item>
-          <Item type="completed">Place unlimited orders: balances are not locked</Item>
+          <Item type="completed">Set any limit price and time horizon</Item>
+          <Item type="completed">FREE order placement and cancellation</Item>
+          <Item type="completed">Place multiple orders using the same balance</Item>
         </styledEl.BodyColumn>
 
         <styledEl.BodyColumn>
-          <Item type="completed">Always receive 100% of the order surplus</Item>
-          <Item type="completed">Your order is protected from MEV by default!</Item>
-          <Item type="pending">Orders are Fill-or-Kill. Partial fills coming soon!</Item>
+          <Item type="completed">Always receive 100% of your order surplus</Item>
+          <Item type="completed">Protection from MEV by default</Item>
+          <Item type="pending">Orders are fill or kill. Partial fills coming soon!</Item>
         </styledEl.BodyColumn>
       </styledEl.BodySection>
 
       <styledEl.ControlSection>
         {/* TODO: update href with a correct external link */}
-        <ExternalLink href={'https://www.google.com'}>Learn more about limit orders ↗</ExternalLink>
+        {/*TODO HIDDEN: <ExternalLink href={'https://www.google.com'}>Learn more about limit orders ↗</ExternalLink>*/}
         <ButtonPrimary onClick={handleUnlock}>Unlock limit orders (BETA)</ButtonPrimary>
       </styledEl.ControlSection>
     </styledEl.Container>

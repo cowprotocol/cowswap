@@ -105,7 +105,7 @@ export function Orders({
     if (!isWalletConnected) {
       return (
         <Content>
-          <p>Please connect your wallet to view orders</p>
+          <p>To use limit orders, please connect your wallet to one of our supported networks.</p>
         </Content>
       )
     }
