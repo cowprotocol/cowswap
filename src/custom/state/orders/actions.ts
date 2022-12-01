@@ -80,6 +80,7 @@ export type OrderInfoApi = Pick<
   | 'executedSellAmount'
   | 'executedSellAmountBeforeFees'
   | 'executedFeeAmount'
+  | 'executedSurplusFee'
   | 'invalidated'
   | 'ethflowData'
 >

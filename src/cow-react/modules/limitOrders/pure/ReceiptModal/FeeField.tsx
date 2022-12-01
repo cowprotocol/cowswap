@@ -6,15 +6,17 @@ import * as styledEl from './styled'
 export type Props = { order: ParsedOrder }
 
 export function FeeField({ order }: Props): JSX.Element | null {
-  const { executedFeeAmount, inputToken, sellToken } = order
+  const { executedFeeAmount, executedSurplusFee, inputToken, sellToken } = order
 
-  let formattedExecutedFee: string | undefined = executedFeeAmount
+  let formattedExecutedFee: string | undefined = executedSurplusFee || executedFeeAmount
   let quoteSymbol: string | undefined = sellToken
-  let executedFeeCurrency: CurrencyAmount<Token> | undefined
+  let totalFeel: CurrencyAmount<Token> | undefined
 
   if (sellToken) {
-    executedFeeCurrency = CurrencyAmount.fromRawAmount(inputToken, executedFeeAmount || 0)
-    formattedExecutedFee = formatSmart(executedFeeCurrency)
+    const executedFeeCurrency = CurrencyAmount.fromRawAmount(inputToken, executedFeeAmount || 0)
+    const executedSurplusFeeCurrency = CurrencyAmount.fromRawAmount(inputToken, executedSurplusFee || 0)
+    totalFeel = executedFeeCurrency.add(executedSurplusFeeCurrency)
+    formattedExecutedFee = formatSmart(totalFeel)
     quoteSymbol = inputToken.symbol
   }
 
@@ -23,7 +25,7 @@ export function FeeField({ order }: Props): JSX.Element | null {
       {!quoteSymbol || !formattedExecutedFee ? (
         <span>-</span>
       ) : (
-        <span title={`${executedFeeCurrency?.toExact()} ${quoteSymbol}`}>
+        <span title={`${totalFeel?.toExact()} ${quoteSymbol}`}>
           {formattedExecutedFee} {quoteSymbol}
         </span>
       )}

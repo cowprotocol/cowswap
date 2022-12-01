@@ -27,6 +27,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
     executedBuyAmount,
     executedSellAmount,
     executedFeeAmount,
+    executedSurplusFee,
     filledAmount,
   } = order
 
@@ -53,7 +54,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
     swappedAmount = executedBuyAmount
 
     // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
-    filledAmountWithFee = filledAmount?.plus(executedFeeAmount || '0')
+    filledAmountWithFee = filledAmount?.plus(executedFeeAmount || '0')?.plus(executedSurplusFee || '0')
     swappedAmountWithFee = new BigNumber(swappedAmount?.toString() || '0')
   } else {
     action = 'bought'
@@ -68,7 +69,9 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
 
     // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
     filledAmountWithFee = filledAmount
-    swappedAmountWithFee = new BigNumber(swappedAmount?.toString() || '0').plus(executedFeeAmount || 0)
+    swappedAmountWithFee = new BigNumber(swappedAmount?.toString() || '0')
+      .plus(executedFeeAmount || '0')
+      .plus(executedSurplusFee || '0')
   }
 
   // In case the token object is empty, display the address
