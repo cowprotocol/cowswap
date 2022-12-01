@@ -13,6 +13,7 @@ import IMAGE_TWITTER from 'assets/cow-swap/twitter.svg'
 import IMAGE_PIE from 'assets/cow-swap/pie.svg'
 import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
 import IMAGE_GAME from 'assets/cow-swap/game.gif'
+import { isBarn } from 'utils/environments'
 
 export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
   return !!(item.title && item.url)
@@ -32,7 +33,7 @@ export const ACCOUNT_MENU: InternalLink[] = [
 ]
 
 export const MAIN_MENU: MenuTreeItem[] = [
-  FeatureFlag.get(LIMIT_ORDERS_ENABLED)
+  FeatureFlag.get(LIMIT_ORDERS_ENABLED) || isBarn
     ? {
         kind: MenuItemKind.DROP_DOWN,
         title: 'Trade',
