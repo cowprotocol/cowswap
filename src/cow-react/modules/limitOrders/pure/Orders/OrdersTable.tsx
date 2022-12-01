@@ -11,6 +11,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { getOrderParams } from './utils/getOrderParams'
+import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
 
 const TableBox = styled.div`
   display: block;
@@ -78,7 +79,7 @@ export function OrdersTable({
 
   const selectReceiptOrder = useSelectReceiptOrder()
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
-  const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step)
+  const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step).sort(ordersSorter)
 
   return (
     <>
