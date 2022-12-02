@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro'
-import { transparentize } from 'polished'
+import { transparentize, darken } from 'polished'
 
 export const Container = styled.div`
   padding: 16px;
-  border-radius: 0 0 16px 16px;
-  background: ${({ theme }) => theme.grey1};
+  border-radius: 16px;
+  background: ${({ theme }) => (theme.darkMode ? darken(0.03, theme.bg1) : theme.grey1)};
 `
 
 export const TitleSection = styled.div`
