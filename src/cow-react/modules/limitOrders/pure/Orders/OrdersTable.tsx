@@ -18,6 +18,17 @@ const TableBox = styled.div`
   border-radius: 16px;
   border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 0 24px;
+  scrollbar-color: ${({ theme }) => `${theme.grey1} ${theme.text1}`};
+  scroll-behavior: smooth;
+  position: relative;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+    display: flex;
+    flex-flow: column wrap;
+  `};
 `
 
 const Header = styled.div`
@@ -27,6 +38,10 @@ const Header = styled.div`
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: repeat(3,minmax(190px, 1fr)) 120px 100px;
+  `};
 
   > div {
     padding: 12px 16px;
@@ -56,6 +71,26 @@ const RowElement = styled(Header)`
 
 const Rows = styled.div`
   display: block;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+   display: flex;
+   flex-flow: column wrap;
+  `};
+
+  &::-webkit-scrollbar {
+    height: 6px;
+    background: ${({ theme }) => `${theme.grey1}`};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => `${theme.text1}`};
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-track {
+    height: 5px;
+  }
 `
 
 export interface OrdersTableProps {
