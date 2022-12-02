@@ -8,7 +8,7 @@ export const ProgressBarWrapper = animated(styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 575px;
+  width: 100%;
   margin: 16px 0 8px 0;
   overflow: hidden;
   display: flex;
