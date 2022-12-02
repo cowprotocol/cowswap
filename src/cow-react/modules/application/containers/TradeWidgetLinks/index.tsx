@@ -8,6 +8,7 @@ import { useMemo } from 'react'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import * as styledEl from './styled'
+import { isBarn } from 'utils/environments'
 
 export function TradeWidgetLinks() {
   const tradeState = useTradeState()
@@ -21,7 +22,7 @@ export function TradeWidgetLinks() {
     [tradeState?.state]
   )
 
-  return FeatureFlag.get(LIMIT_ORDERS_ENABLED) ? (
+  return FeatureFlag.get(LIMIT_ORDERS_ENABLED) || isBarn ? (
     <RowFixed>
       <styledEl.Link activeClassName="active" to={parameterizeTradeRoute(tradeContext, Routes.SWAP)}>
         <styledEl.MenuItem>

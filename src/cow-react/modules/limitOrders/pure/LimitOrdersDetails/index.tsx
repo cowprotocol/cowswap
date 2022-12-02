@@ -22,7 +22,6 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
   minute: 'numeric',
 }
 
-// TODO: apply design
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   const { account, validTo, recipient, recipientAddressOrName } = props.tradeContext.postOrderParams
   const expiryDate = new Date(validTo * 1000)
@@ -34,7 +33,12 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>Expiry</span> <InfoIcon content={'Expiry info TODO'} />
+          <span>Expiry</span>
+          <InfoIcon
+            content={
+              "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
+            }
+          />
         </div>
         <div>
           <span>{expiryDate.toLocaleString(undefined, dateTimeFormat)}</span>
@@ -42,24 +46,39 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>MEV protection</span> <InfoIcon content={'MEV protection info TODO'} />
+          <span>MEV protection</span>
+          <InfoIcon
+            content={
+              'On CoW Swap, your limit orders - just like market orders - are protected from MEV by default! So there’s no need to worry about MEV attacks like frontrunning or sandwiching.'
+            }
+          />
         </div>
         <div>
-          <span>{/*TODO*/}Active</span>
+          <span>Active</span>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>Order type</span> <InfoIcon content={'Order type info TODO'} />
+          <span>Order type</span>{' '}
+          <InfoIcon
+            content={
+              'This order will either be filled completely or not filled. (Support for partially fillable orders is coming soon!)'
+            }
+          />
         </div>
         <div>
-          <span>{/*TODO*/}Fill or kill</span>
+          <span>Fill or kill</span>
         </div>
       </styledEl.DetailsRow>
       {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>
-            <span>Recipient</span> <InfoIcon content={'Recipient info TODO'} />
+            <span>Recipient</span>{' '}
+            <InfoIcon
+              content={
+                'The tokens received from this order will automatically be sent to this address. No need to do a second transaction!'
+              }
+            />
           </div>
           <div>
             <span title={recipientAddressOrName}>

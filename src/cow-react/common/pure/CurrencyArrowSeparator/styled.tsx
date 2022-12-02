@@ -59,6 +59,7 @@ export const ArrowDownIcon = styled(ArrowDown)`
   padding: 3px;
   height: 100%;
   width: 100%;
+  cursor: pointer;
 `
 
 export const CowImg = styled.img`

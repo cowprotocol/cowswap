@@ -29,6 +29,7 @@ export default (
     currentPageNumber={1}
     orders={ordersMock}
     tabs={tabs}
+    isSmartContractWallet={false}
     isOpenOrdersTab={true}
     isWalletConnected={true}
     balancesAndAllowances={balancesAndAllowances}

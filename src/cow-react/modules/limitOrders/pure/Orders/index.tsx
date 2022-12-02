@@ -100,12 +100,13 @@ export function Orders({
   balancesAndAllowances,
   showOrderCancelationModal,
   currentPageNumber,
+  isSmartContractWallet,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
       return (
         <Content>
-          <p>Please connect your wallet to view orders</p>
+          <p>To use limit orders, please connect your wallet to one of our supported networks.</p>
         </Content>
       )
     }
@@ -131,6 +132,7 @@ export function Orders({
 
     return (
       <OrdersTable
+        isSmartContractWallet={isSmartContractWallet}
         currentPageNumber={currentPageNumber}
         chainId={chainId}
         orders={orders}

@@ -82,9 +82,18 @@ const AmountItem = styled.div`
   gap: 6px;
   white-space: nowrap;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    white-space: normal;
+  `};
+
   > div {
     display: flex;
     align-items: center;
+  }
+
+  > span {
+    white-space: normal;
+    word-break: break-all;
   }
 `
 
@@ -145,31 +154,32 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
       <div>
         <CurrencyLogo currency={amount.currency} size="24px" />
       </div>
-      <span>{formatSmart(amount)}</span>
-      <span>{amount.currency.symbol}</span>
+      <span>
+        {formatSmart(amount)} {amount.currency.symbol}
+      </span>
     </AmountItem>
   )
 }
 
-// TODO: check texts with marketing
 const balanceWarning = (tokenSymbol: string) => (
   <WarningParagraph>
     <h3>Insufficient balance for this limit order</h3>
     <p>
-      This order is still open and valid but your account currently has insufficient <strong>{tokenSymbol}</strong>{' '}
-      balance. <br />
-      Your order therefore can&apos;t be matched.
+      Your wallet currently has insufficient <strong>{tokenSymbol}</strong> balance to execute this order.
+      <br />
+      The order is still open and will become executable when you top up your <strong>{tokenSymbol}</strong> balance.
     </p>
   </WarningParagraph>
 )
 
 const allowanceWarning = (tokenSymbol: string) => (
   <WarningParagraph>
-    <h3>Insufficient allowance for this limit order</h3>
+    <h3>Insufficient approval for this limit order</h3>
     <p>
-      This order is still open and valid but your account currently has insufficient allowance to spend{' '}
-      <strong>{tokenSymbol}</strong>. <br />
-      Your order therefore can&apos;t be matched.
+      This order is still open and valid, but you haven’t given CoW Swap sufficient allowance to spend{' '}
+      <strong>{tokenSymbol}</strong>.
+      <br />
+      The order will become executable when you approve <strong>{tokenSymbol}</strong> in your account token page.
     </p>
   </WarningParagraph>
 )
@@ -181,6 +191,7 @@ export interface OrderRowProps {
   orderParams: OrderParams
   onClick: () => void
   showOrderCancelationModal(order: Order): void
+  isSmartContractWallet: boolean
 }
 
 export function OrderRow({
@@ -190,6 +201,7 @@ export function OrderRow({
   showOrderCancelationModal,
   orderParams,
   onClick,
+  isSmartContractWallet,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
 
@@ -233,7 +245,7 @@ export function OrderRow({
         </StatusBox>
       </div>
       <div>
-        {order.status === OrderStatus.PENDING && !order.isCancelling && (
+        {!isSmartContractWallet && order.status === OrderStatus.PENDING && !order.isCancelling && (
           <CancelOrderBtn
             title="Cancel order"
             onClick={(event) => {

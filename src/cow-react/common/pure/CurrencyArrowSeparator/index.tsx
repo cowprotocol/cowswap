@@ -15,14 +15,13 @@ export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
   const { isLoading, onSwitchTokens, withRecipient, isCollapsed = true, hasSeparatorLine, border } = props
 
   return (
-    <styledEl.Box
-      withRecipient={withRecipient}
-      isCollapsed={isCollapsed}
-      onClick={onSwitchTokens}
-      hasSeparatorLine={hasSeparatorLine}
-    >
+    <styledEl.Box withRecipient={withRecipient} isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine}>
       <styledEl.LoadingWrapper isLoading={isLoading} border={border}>
-        {isLoading ? <styledEl.CowImg src={loadingCowWebp} alt="loading" /> : <styledEl.ArrowDownIcon />}
+        {isLoading ? (
+          <styledEl.CowImg src={loadingCowWebp} alt="loading" />
+        ) : (
+          <styledEl.ArrowDownIcon onClick={onSwitchTokens} />
+        )}
       </styledEl.LoadingWrapper>
     </styledEl.Box>
   )
