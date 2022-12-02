@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 import SwapHeader from 'components/swap/SwapHeader'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
+import { LoadingWrapper } from '@cow/common/pure/CurrencyArrowSeparator/styled'
 
 export const Container = styled.div`
   max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
@@ -27,6 +28,16 @@ export const Header = styled.div`
 
 export const SwapFormWrapper = styled.div`
   margin: 0 0 10px;
+
+  ${LoadingWrapper} {
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      --size: 24px;
+      height: var(--size);
+      width: var(--size);
+      left: calc(50% - var(--size)/2);
+      border-radius: var(--size);
+  `};
+  }
 `
 
 export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`

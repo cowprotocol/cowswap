@@ -128,10 +128,10 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
               <>
                 <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
                   <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+                  {showSetMax && balance.greaterThan(0) && (
+                    <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
+                  )}
                 </styledEl.BalanceText>
-                {showSetMax && balance.greaterThan(0) && (
-                  <styledEl.SetMaxBtn onClick={handleMaxInput}>(Max)</styledEl.SetMaxBtn>
-                )}
               </>
             )}
           </div>

@@ -40,14 +40,14 @@ export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
 `
 
 export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 500;
   white-space: nowrap;
   color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 17px;
-    word-break: break-all;
+    font-size: 16px;
+    word-break: break-word;
     white-space: normal;
     text-align: left;
   `};

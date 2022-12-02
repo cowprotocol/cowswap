@@ -29,8 +29,11 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
 `
 
 export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean }>`
+  --size: 26px;
   position: absolute;
-  left: calc(50% - 14px);
+  left: calc(50% - var(--size) / 2);
+  top: 0;
+  bottom: 0;
   height: 100%;
   text-align: center;
   transform-style: preserve-3d;
@@ -40,8 +43,12 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
   box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
   background: ${({ theme }) => (theme.darkMode ? theme.grey1 : theme.white)};
   border-radius: 8px;
-  width: 26px;
-  margin: 0 auto;
+  width: var(--size);
+  margin: auto;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 
   ${({ isLoading }) => isLoading && loadingAnimationMixin}
 `

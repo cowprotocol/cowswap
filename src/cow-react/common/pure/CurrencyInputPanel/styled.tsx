@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { loadingOpacityMixin } from 'components/Loader/styled'
 import Input from 'components/NumericalInput'
-import { MEDIA_WIDTHS } from 'theme'
+import { transparentize } from 'polished'
 
 export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: boolean }>`
   display: flex;
@@ -29,10 +29,10 @@ export const CurrencyInputBox = styled.div`
   margin: 0;
   font-weight: 400;
   font-size: 13px;
+  color: ${({ theme }) => transparentize(0.3, theme.text1)};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     gap: 8px;
-    grid-template-columns: minmax(auto, 50%) auto;
   `}
 
   > div {
@@ -50,8 +50,8 @@ export const CurrencyInputBox = styled.div`
 export const CurrencyTopLabel = styled.div`
   font-size: 13px;
   font-weight: 400;
-  opacity: 0.8;
   margin: auto 0;
+  color: ${({ theme }) => transparentize(0.3, theme.text1)};
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -69,8 +69,7 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   `}
 
   &::placeholder {
-    color: ${({ theme }) => theme.text1};
-    opacity: 0.5;
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
 
   ${loadingOpacityMixin}
@@ -79,10 +78,9 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 export const BalanceText = styled.span`
   font-weight: inherit;
   font-size: inherit;
-
-  @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    opacity: 0.75;
-  }
+  gap: 5px;
+  display: flex;
+  align-items: center;
 `
 
 export const FiatAmountText = styled.span`
@@ -101,10 +99,15 @@ export const SetMaxBtn = styled.button`
   border: none;
   outline: none;
   color: ${({ theme }) => theme.text3};
-  font-weight: 500;
-  font-size: inherit;
+  font-weight: 600;
+  font-size: 11px;
+  background: ${({ theme }) => transparentize(0.9, theme.text3)};
+  border-radius: 6px;
+  padding: 3px 4px;
+  text-transform: uppercase;
+  transition: background 0.15s ease-in-out;
 
-  :hover {
-    opacity: 0.85;
+  &:hover {
+    background: ${({ theme }) => transparentize(0.7, theme.text3)};
   }
 `
