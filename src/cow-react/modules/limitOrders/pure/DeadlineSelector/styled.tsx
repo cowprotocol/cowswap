@@ -40,6 +40,10 @@ export const Current = styled.button<{ isCustom: boolean }>`
   text-overflow: ellipsis;
   overflow: hidden;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 21px;
+  `}
+
   &:hover {
     text-decoration: underline;
   }
