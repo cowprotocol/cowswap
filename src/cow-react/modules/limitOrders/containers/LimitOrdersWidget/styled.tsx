@@ -57,6 +57,7 @@ export const RateWrapper = styled.div`
   display: grid;
   grid-template-columns: auto 150px;
   gap: 6px;
+  text-align: right;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
