@@ -14,8 +14,9 @@ export const PopoverContainer = styled.div<{ show: boolean }>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
   transition: visibility 150ms linear, opacity 150ms linear;
-  color: ${({ theme }) => theme.text2};
+  /* color: ${({ theme }) => theme.text2}; */
   /* MOD */
+  color: ${({ theme }) => theme.text1};
   background: ${({ theme }) => theme.bg1};
   border: 1px solid ${({ theme }) => theme.bg3};
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.9, theme.shadow1)};

@@ -88,7 +88,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
-        <styledEl.CurrencyInputBox flexibleWidth={true}>
+        <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
               onClick={() => setCurrencySearchModalOpen(true)}
@@ -106,16 +106,16 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           </div>
         </styledEl.CurrencyInputBox>
 
-        <styledEl.CurrencyInputBox flexibleWidth={false}>
+        <styledEl.CurrencyInputBox>
           <div>
             {balance && !disabled && (
               <>
                 <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
                   <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+                  {showSetMax && balance.greaterThan(0) && (
+                    <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
+                  )}
                 </styledEl.BalanceText>
-                {showSetMax && balance.greaterThan(0) && (
-                  <styledEl.SetMaxBtn onClick={handleMaxInput}>(Max)</styledEl.SetMaxBtn>
-                )}
               </>
             )}
           </div>

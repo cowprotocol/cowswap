@@ -9,7 +9,7 @@ const StyledMouseoverTooltipContent = styled(MouseoverTooltipContent)``
 export const TextWrapper = styled(Text)``
 
 export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
-  height: ${({ rowHeight = 24 }) => rowHeight}px;
+  min-height: 24px;
 
   ${TextWrapper} {
     color: ${({ theme }) => theme.text1};
@@ -25,6 +25,10 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   &:hover {
     ${TextWrapper} {
       opacity: 1;
+    }
+
+    &:last-child {
+      text-align: right;
     }
   }
 

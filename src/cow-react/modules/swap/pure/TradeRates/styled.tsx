@@ -64,7 +64,7 @@ export const Discount = styled.span`
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bg2};
+    background: ${({ theme }) => theme.bg2};
     color: ${({ theme }) => theme.white};
   }
 `

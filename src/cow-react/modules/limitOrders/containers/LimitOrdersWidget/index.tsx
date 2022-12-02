@@ -156,6 +156,7 @@ export function LimitOrdersWidget() {
                   withRecipient={showRecipient}
                   isLoading={isTradePriceUpdating}
                   hasSeparatorLine={true}
+                  border={true}
                 />
                 {showRecipient && <AddRecipient onChangeRecipient={onChangeRecipient} />}
               </styledEl.CurrencySeparatorBox>
