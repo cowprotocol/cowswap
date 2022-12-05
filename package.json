@@ -143,7 +143,11 @@
     "react-error-overlay": "6.0.9",
     "@types/react": "^17.0.2",
     "@lingui/babel-plugin-extract-messages": "3.13.3",
-    "@lingui/conf": "3.13.3"
+    "@lingui/conf": "3.13.3",
+    "@lingui/cli": "3.13.3",
+    "@lingui/core": "3.13.3",
+    "@lingui/loader": "3.13.3",
+    "@lingui/react": "3.13.3"
   },
   "scripts": {
     "start:default": "craco start",
