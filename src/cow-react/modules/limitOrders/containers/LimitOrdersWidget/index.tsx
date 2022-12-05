@@ -76,10 +76,10 @@ export function LimitOrdersWidget() {
   const showSetMax = true
 
   const isTradePriceUpdating = useMemo(() => {
-    if (!inputCurrency || !outputCurrency) return false
+    if (isWrapOrUnwrap || !inputCurrency || !outputCurrency) return false
 
     return isRateLoading
-  }, [isRateLoading, inputCurrency, outputCurrency])
+  }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
   const showRecipient = useMemo(
     () => !isWrapOrUnwrap && settingState.showRecipient,
     [settingState.showRecipient, isWrapOrUnwrap]
@@ -132,6 +132,8 @@ export function LimitOrdersWidget() {
 
     if (!isWrapOrUnwrap) {
       updateLimitOrdersState({
+        inputCurrencyId: outputCurrencyId,
+        outputCurrencyId: inputCurrencyId,
         inputCurrencyAmount: outputCurrencyAmount?.toExact(),
         outputCurrencyAmount: inputCurrencyAmount?.toExact(),
         orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,

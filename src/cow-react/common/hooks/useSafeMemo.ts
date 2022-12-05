@@ -6,7 +6,7 @@ export function useSafeMemoDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {
     if (dep instanceof NativeCurrency) return dep.symbol
     if (dep instanceof Token) return dep.address.toLowerCase()
-    if (dep instanceof CurrencyAmount) return dep.toExact()
+    if (dep instanceof CurrencyAmount) return dep.toExact() + dep.currency.symbol + dep.currency.isNative
     if (dep instanceof WrappedTokenInfo) return dep.address
 
     return dep
