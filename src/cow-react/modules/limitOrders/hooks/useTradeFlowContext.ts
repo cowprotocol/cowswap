@@ -11,6 +11,8 @@ import useENSAddress from 'hooks/useENSAddress'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useLimitOrdersDeadline } from './useLimitOrdersDeadline'
 import { OrderClass } from '@src/custom/state/orders/actions'
+import { useAtomValue } from 'jotai/utils'
+import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
@@ -21,6 +23,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE })
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
+  const quoteState = useAtomValue(limitOrdersQuoteAtom)
 
   if (
     !chainId ||
@@ -42,6 +45,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token
   const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
+  const quoteId = quoteState.response?.id || undefined
 
   return {
     chainId,
@@ -66,6 +70,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       outputAmount: state.outputCurrencyAmount,
       sellAmountBeforeFee: state.inputCurrencyAmount,
       appDataHash: appData.hash,
+      quoteId,
     },
   }
 }
