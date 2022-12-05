@@ -73,9 +73,13 @@ export function LimitOrdersWidget() {
   const [showConfirmation, setShowConfirmation] = useState(false)
 
   const currenciesLoadingInProgress = false
-  const isTradePriceUpdating = isRateLoading
   const showSetMax = true
 
+  const isTradePriceUpdating = useMemo(() => {
+    if (!inputCurrency || !outputCurrency) return false
+
+    return isRateLoading
+  }, [isRateLoading, inputCurrency, outputCurrency])
   const showRecipient = useMemo(
     () => !isWrapOrUnwrap && settingState.showRecipient,
     [settingState.showRecipient, isWrapOrUnwrap]
