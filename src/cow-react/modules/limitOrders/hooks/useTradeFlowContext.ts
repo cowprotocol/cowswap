@@ -19,7 +19,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
-  const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE })
+  const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE, orderClass: OrderClass.LIMIT })
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
 
   if (
