@@ -11,6 +11,7 @@ import { Web3Provider } from '@ethersproject/providers'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
+  // validTo must be calculated just before signing of an order
   postOrderParams: Omit<PostOrderParams, 'validTo' | 'signer'>
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
