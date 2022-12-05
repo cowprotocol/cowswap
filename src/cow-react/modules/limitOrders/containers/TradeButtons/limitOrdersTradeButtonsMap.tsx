@@ -10,6 +10,7 @@ import { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { TransactionConfirmState } from '@cow/modules/swap/state/transactionConfirmAtom'
+import { TradeLoadingButton } from '@cow/modules/trade/pure/TradeLoadingButton'
 
 export interface WrapUnwrapParams {
   isNativeIn: boolean
@@ -62,10 +63,11 @@ const quoteErrorTexts: { [key in GpQuoteErrorCodes]: string } = {
 }
 
 export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: ButtonConfig | ButtonCallback } = {
-  [LimitOrdersFormState.Loading]: {
-    disabled: true,
-    text: 'Loading...',
-  },
+  [LimitOrdersFormState.Loading]: () => (
+    <SwapButton disabled={true}>
+      <TradeLoadingButton />
+    </SwapButton>
+  ),
   [LimitOrdersFormState.CanTrade]: {
     disabled: false,
     text: 'Review limit order',
