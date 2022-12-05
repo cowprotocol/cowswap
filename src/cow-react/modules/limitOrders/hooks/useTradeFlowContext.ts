@@ -11,6 +11,8 @@ import useENSAddress from 'hooks/useENSAddress'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useLimitOrdersDeadline } from './useLimitOrdersDeadline'
 import { OrderClass } from '@src/custom/state/orders/actions'
+import { useUpdateAtom } from 'jotai/utils'
+import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
@@ -20,6 +22,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE, orderClass: OrderClass.LIMIT })
+  const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
 
   if (
@@ -49,6 +52,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     allowsOffchainSigning,
     isGnosisSafeWallet,
     dispatch,
+    addAppDataToUploadQueue,
+    appData,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,

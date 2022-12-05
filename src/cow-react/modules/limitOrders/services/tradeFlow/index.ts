@@ -5,12 +5,15 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AppDispatch } from 'state'
 import { GPv2Settlement } from '@cow/abis/types'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 
 export interface TradeFlowContext {
   postOrderParams: PostOrderParams
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
   dispatch: AppDispatch
+  appData: AppDataInfo
+  addAppDataToUploadQueue: (update: AddAppDataToUploadQueueParams) => void
   allowsOffchainSigning: boolean
   isGnosisSafeWallet: boolean
 }
@@ -45,6 +48,8 @@ export async function tradeFlow(
     },
     params.dispatch
   )
+
+  params.addAppDataToUploadQueue({ chainId: params.chainId, orderId, appData: params.appData })
 
   return orderId
 }
