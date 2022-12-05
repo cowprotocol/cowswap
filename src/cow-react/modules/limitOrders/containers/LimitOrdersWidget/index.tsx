@@ -55,6 +55,7 @@ export function LimitOrdersWidget() {
     outputCurrencyFiatAmount,
     recipient,
     isUnlocked,
+    orderKind,
   } = useLimitOrdersTradeState()
   const onCurrencySelection = useOnCurrencySelection()
   const onImportDismiss = useOnImportDismiss()
@@ -128,12 +129,21 @@ export function LimitOrdersWidget() {
     if (!isWrapOrUnwrap) {
       updateLimitOrdersState({
         inputCurrencyAmount: outputCurrencyAmount?.toExact(),
-        outputCurrencyAmount: null,
-        orderKind: OrderKind.SELL,
+        outputCurrencyAmount: inputCurrencyAmount?.toExact(),
+        orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
       })
     }
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
-  }, [state, isWrapOrUnwrap, limitOrdersNavigate, updateLimitOrdersState, chainId, outputCurrencyAmount])
+  }, [
+    state,
+    isWrapOrUnwrap,
+    limitOrdersNavigate,
+    updateLimitOrdersState,
+    chainId,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    orderKind,
+  ])
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
