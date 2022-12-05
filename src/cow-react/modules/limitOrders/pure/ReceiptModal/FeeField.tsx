@@ -10,13 +10,13 @@ export function FeeField({ order }: Props): JSX.Element | null {
 
   let formattedExecutedFee: string | undefined = executedSurplusFee || executedFeeAmount
   let quoteSymbol: string | undefined = sellToken
-  let totalFeel: CurrencyAmount<Token> | undefined
+  let totalFee: CurrencyAmount<Token> | undefined
 
   if (sellToken) {
     const executedFeeCurrency = CurrencyAmount.fromRawAmount(inputToken, executedFeeAmount || 0)
     const executedSurplusFeeCurrency = CurrencyAmount.fromRawAmount(inputToken, executedSurplusFee || 0)
-    totalFeel = executedFeeCurrency.add(executedSurplusFeeCurrency)
-    formattedExecutedFee = formatSmart(totalFeel)
+    totalFee = executedFeeCurrency.add(executedSurplusFeeCurrency)
+    formattedExecutedFee = formatSmart(totalFee)
     quoteSymbol = inputToken.symbol
   }
 
@@ -25,7 +25,7 @@ export function FeeField({ order }: Props): JSX.Element | null {
       {!quoteSymbol || !formattedExecutedFee ? (
         <span>-</span>
       ) : (
-        <span title={`${totalFeel?.toExact()} ${quoteSymbol}`}>
+        <span title={`${totalFee?.toExact()} ${quoteSymbol}`}>
           {formattedExecutedFee} {quoteSymbol}
         </span>
       )}
