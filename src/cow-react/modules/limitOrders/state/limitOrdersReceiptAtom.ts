@@ -1,12 +1,11 @@
 import { atom } from 'jotai'
-import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 
 export interface ReceiptState {
-  selected: ParsedOrder | null
+  orderId: string | null
 }
 
 export const receiptAtom = atom<ReceiptState>({
-  selected: null,
+  orderId: null,
 })
 
 export const updateReceiptAtom = atom(null, (get, set, nextState: Partial<ReceiptState>) => {
