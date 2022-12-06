@@ -12,6 +12,7 @@ import { StatusDetails } from './StatusDetails'
 import { Order } from 'state/orders/actions'
 import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDetails } from './ActivityDetails'
+import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: 'success',
@@ -68,7 +69,6 @@ export interface ActivityDerivedState {
   isCancelled: boolean
   isPresignaturePending: boolean
   isUnfillable?: boolean
-  isCancellable: boolean
   // EthFlow flags
   isCreating: boolean
   isRefunding: boolean
@@ -86,10 +86,14 @@ export interface ActivityDerivedState {
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {
   const { chainId } = useWeb3React()
 
-  // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
+  // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
   const activityDerivedState = useActivityDerivedState({ chainId, activity })
+  const getShowCancellationModal = useCancelOrder()
 
   if (!activityDerivedState || !chainId) return null
+
+  const showCancellationModal = activityDerivedState.order ? getShowCancellationModal(activityDerivedState.order) : null
+
   const { activityLinkUrl } = activityDerivedState
   const hasLink = activityLinkUrl !== null
 
@@ -125,7 +129,7 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
         </RowFixed>
 
         {/* Status Details: icon, cancel, links */}
-        <StatusDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+        <StatusDetails activityDerivedState={activityDerivedState} showCancellationModal={showCancellationModal} />
       </TransactionWrapper>
     </Wrapper>
   )
