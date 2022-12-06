@@ -34,12 +34,7 @@ export function useEthFlowContract(): CoWSwapEthFlow | null {
 
   const contractAddress = chainId ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv][chainId] : undefined
 
-  return useContract<CoWSwapEthFlow>(
-    // TODO: get the networks.json when contracts deployed
-    contractAddress,
-    COWSWAP_ETHFLOW_ABI,
-    true
-  )
+  return useContract<CoWSwapEthFlow>(contractAddress, COWSWAP_ETHFLOW_ABI, true)
 }
 
 export function useGP2SettlementContract(): GPv2Settlement | null {
