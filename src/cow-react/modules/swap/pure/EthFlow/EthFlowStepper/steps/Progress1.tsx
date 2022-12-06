@@ -26,5 +26,5 @@ export function Progress1({ order }: EthFlowStepperProps) {
     }
   }, [isCreating, isExpired])
 
-  return <Progress status={progressStatus} value={progress} max={100} />
+  return <Progress status={progressStatus} value={progress} />
 }
