@@ -31,6 +31,7 @@ const StepWrapper = styled.div`
     text-decoration: underline;
     color: ${({ theme }) => theme.text3};
     opacity: 1;
+    font-size: 13px;
   }
 `
 
