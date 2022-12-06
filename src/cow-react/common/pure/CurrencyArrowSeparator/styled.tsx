@@ -41,7 +41,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
   transition: transform 0.25s;
   border: ${({ border, theme }) => (border ? `1px solid ${theme.grey1}` : '0')};
   box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
-  background: ${({ theme, darkMode }) => (darkMode ? theme.grey1 : theme.white)};
+  background: ${({ theme }) => (theme.darkMode ? theme.grey1 : theme.white)};
   border-radius: 8px;
   width: var(--size);
   margin: auto;
