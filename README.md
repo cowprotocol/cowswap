@@ -169,5 +169,3 @@ The plan:
 
 `localStorage.setItem('enableEthFlow', '1')` - enable native EthFlow (WORK IN PROGRESS)
 `localStorage.setItem('enableLimitOrders', '1')` - enable limit orders page (WORK IN PROGRESS)
-
-Debug
