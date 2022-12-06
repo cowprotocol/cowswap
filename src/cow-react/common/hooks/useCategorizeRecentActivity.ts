@@ -31,7 +31,7 @@ export function useCategorizeRecentActivity() {
       allRecentActivity.reduce<[string[], string[]]>(
         (acc, activity) => {
           // Not order transactions (wrap, approve, etc.) doesn't have class property
-          if (!activity.class || activity.class === OrderClass.MARKET) {
+          if (!activity.class || activity.class !== OrderClass.LIMIT) {
             if (isPending(activity)) {
               acc[0].push(activity.id)
             } else if (isConfirmed(activity)) {
