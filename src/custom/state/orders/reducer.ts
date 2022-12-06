@@ -14,6 +14,7 @@ import {
   requestOrderCancellation,
   SerializedOrder,
   setIsOrderUnfillable,
+  setOrderCancellationHash,
   updateLastCheckedBlock,
   updatePresignGnosisSafeTx,
 } from './actions'
@@ -316,6 +317,16 @@ export default createReducer(initialState, (builder) =>
           addOrderToState(state, chainId, id, 'expired', orderObject.order)
         }
       })
+    })
+    .addCase(setOrderCancellationHash, (state, action) => {
+      prefillState(state, action)
+      const { id, chainId, hash } = action.payload
+
+      const orderObject = getOrderById(state, chainId, id)
+
+      if (orderObject) {
+        orderObject.order.cancellationHash = hash
+      }
     })
     .addCase(requestOrderCancellation, (state, action) => {
       prefillState(state, action)
