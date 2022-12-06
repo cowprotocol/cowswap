@@ -34,7 +34,7 @@ export const List = styled.ul`
   margin: 0 0 42px;
   padding: 0 16px;
   font-size: 14px;
-  gap: 16px;
+  gap: 20px 24px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: 1fr;
