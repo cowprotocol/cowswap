@@ -38,11 +38,10 @@
     "@craco/craco": "^5.7.0",
     "@ethersproject/experimental": "^5.4.0",
     "@ethersproject/hash": "5.6.1",
+    "@lingui/core": "^3.14.0",
+    "@lingui/macro": "^3.14.0",
+    "@lingui/react": "^3.14.0",
     "@lingui/cli": "^3.9.0",
-    "@lingui/core": "^3.9.0",
-    "@lingui/loader": "^3.9.0",
-    "@lingui/macro": "^3.9.0",
-    "@lingui/react": "^3.9.0",
     "@metamask/jazzicon": "^2.0.0",
     "@reach/dialog": "^0.10.3",
     "@reach/portal": "^0.10.3",
@@ -141,13 +140,7 @@
   "resolutions": {
     "@walletconnect/ethereum-provider": "1.7.1",
     "react-error-overlay": "6.0.9",
-    "@types/react": "^17.0.2",
-    "@lingui/babel-plugin-extract-messages": "3.13.3",
-    "@lingui/conf": "3.13.3",
-    "@lingui/cli": "3.13.3",
-    "@lingui/core": "3.13.3",
-    "@lingui/loader": "3.13.3",
-    "@lingui/react": "3.13.3"
+    "@types/react": "^17.0.2"
   },
   "scripts": {
     "start:default": "craco start",
