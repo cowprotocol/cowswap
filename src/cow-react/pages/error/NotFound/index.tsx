@@ -8,9 +8,11 @@ const Wrapper = styled(Page)`
   ${GdocsListStyle}
   min-height: auto;
   padding-bottom: 32px;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding-bottom: 24px;
   `}
+
   ${Title} {
     margin-bottom: 50px;
     font-size: 26px;
@@ -19,6 +21,7 @@ const Wrapper = styled(Page)`
       text-align: center;
     `}
   }
+
   ${Content} {
     margin-bottom: 0;
   }
@@ -32,7 +35,6 @@ const Container = styled.div`
   ${ButtonPrimary} {
     width: 196px;
     padding: 9px;
-    color: ${({ theme }) => theme.primaryText1};
 
     &:hover {
     }
