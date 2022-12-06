@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { darken } from 'polished'
 
 import { ExternalLink } from 'theme'
 
@@ -34,12 +33,14 @@ const OptionCardLeft = styled.div`
 
 export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean }>`
   margin-top: 0;
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
+  background-color: ${({ theme, active }) => (active ? theme.bg2 : theme.grey1)};
+  color: ${({ theme, active }) => (active ? theme.white : theme.text1)};
+
   &:hover {
     cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
-    border: ${({ clickable, theme }) => (clickable ? `1px solid ${theme.primary1}` : ``)};
+    border: ${({ clickable, theme }) => (clickable ? `1px solid ${theme.grey1}` : ``)};
   }
-  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
-  background-color: ${({ theme, active }) => (active ? theme.primary1 : darken(0.06, theme.bg1))};
 `
 
 const GreenCircle = styled.div`
@@ -65,7 +66,7 @@ const CircleWrapper = styled.div`
 
 export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : ({ theme }) => theme.text1)};
+  /* color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : ({ theme }) => theme.text1)}; */
   font-size: 1rem;
   font-weight: 500;
 `
