@@ -34,7 +34,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@cowprotocol/cow-sdk": "1.0.0-RC.0",
+    "@cowprotocol/cow-sdk": "1.0.1-RC.8",
     "@craco/craco": "^5.7.0",
     "@ethersproject/experimental": "^5.4.0",
     "@ethersproject/hash": "5.6.1",

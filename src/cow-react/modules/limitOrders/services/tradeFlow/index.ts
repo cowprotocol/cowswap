@@ -8,6 +8,7 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { Web3Provider } from '@ethersproject/providers'
+import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
@@ -16,6 +17,8 @@ export interface TradeFlowContext {
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
   dispatch: AppDispatch
+  appData: AppDataInfo
+  addAppDataToUploadQueue: (update: AddAppDataToUploadQueueParams) => void
   provider: Web3Provider
   allowsOffchainSigning: boolean
   isGnosisSafeWallet: boolean
@@ -58,6 +61,8 @@ export async function tradeFlow(
     },
     params.dispatch
   )
+
+  params.addAppDataToUploadQueue({ chainId: params.chainId, orderId, appData: params.appData })
 
   return orderId
 }

@@ -79,7 +79,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
 
-  const appData = useAppData({ chainId, allowedSlippage })
+  const appData = useAppData({ chainId, allowedSlippage, orderClass: OrderClass.MARKET })
   const closeModals = useCloseModals()
   const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const addOrderCallback = useAddPendingOrder()

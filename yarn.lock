@@ -1189,10 +1189,10 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cowprotocol/app-data@^0.0.1-RC.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-0.0.1.tgz#777c29c6b09bdca27977396f77f6616907984fcb"
-  integrity sha512-xrefyKUt2r9aJo7pmIl5VZslcVHOxcedmGtyKZxVQCEn0VK4e30z3rli+NfeOTeafiFqUkNo0PDyOVkcHy8RCg==
+"@cowprotocol/app-data@^0.0.2-RC.1":
+  version "0.0.2-RC.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-0.0.2-RC.1.tgz#66f02f05e120b4b03b265fd609c07089f0db68c9"
+  integrity sha512-x+fRnQ62u9nF04vkeWoiiU97Ug6kPunn76uZeVF1TyVg7N8TAy97XJL7V5s9PKddbmT5TKECmVqQ0TVeeyCtDA==
   dependencies:
     ajv "^8.11.0"
 
@@ -1214,21 +1214,22 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@1.0.0-RC.0":
-  version "1.0.0-RC.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-1.0.0-RC.0.tgz#acadbaf46f8538665a55d84daed8bf4976f33a94"
-  integrity sha512-84GZNRFxl8ZJe6ZNGX6BlMj/UIZ9mwylaJv8HIJN3eEUnXGwZE48NElOQMINa4OaQv49cxh2C4K77E6HU9PiCQ==
+"@cowprotocol/cow-sdk@1.0.1-RC.8":
+  version "1.0.1-RC.8"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-1.0.1-RC.8.tgz#91fc8765554e3976dcbec2135c9cdfb041bfe34d"
+  integrity sha512-kNzIeuhTOiRI6mVbHiS4PtEMMeTzgIOzLsI0VLtDQpqY8bRXqyaahs8xJLEISnX36gpPM4LZ2p+d5y76ZznCPQ==
   dependencies:
-    "@cowprotocol/app-data" "^0.0.1-RC.1"
+    "@cowprotocol/app-data" "^0.0.2-RC.1"
     "@cowprotocol/contracts" "^1.3.1"
-    ajv "^8.8.2"
     cross-fetch "^3.1.5"
     ethers "^5.5.3"
     graphql "^16.3.0"
-    graphql-request "^4.1.0"
+    graphql-request "^4.3.0"
     ipfs-only-hash "^4.0.0"
     loglevel "^1.8.0"
     multiformats "^9.6.4"
+    paraswap "^5.2.0"
+    paraswap-core "^1.0.2"
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#0.0.0-rc4-artifacts":
   version "0.0.0-rc.4"
@@ -5781,7 +5782,7 @@ ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.1, ajv@^8.11.0, ajv@^8.8.2:
+ajv@^8.0.1, ajv@^8.11.0:
   version "8.11.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.11.2.tgz#aecb20b50607acf2569b6382167b65a96008bb78"
   integrity sha512-E4bfmKAhGiSTvMfL1Myyycaub+cUEU2/IvpylXkUu7CHBkBj1f/ikdzbD7YQ6FKUbixDxeYvB/xY4fvyroDlQg==
@@ -11674,7 +11675,7 @@ graphql-request@^3.4.0:
     extract-files "^9.0.0"
     form-data "^3.0.0"
 
-graphql-request@^4.1.0:
+graphql-request@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-4.3.0.tgz#b934e08fcae764aa2cdc697d3c821f046cb5dbf2"
   integrity sha512-2v6hQViJvSsifK606AliqiNiijb1uwWp6Re7o0RTyH+uRTv/u7Uqm2g4Fjq/LgZIzARB38RZEvVBFOQOVdlBow==
@@ -16473,10 +16474,24 @@ param-case@^3.0.3:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-paraswap-core@1.0.2:
+paraswap-core@1.0.2, paraswap-core@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/paraswap-core/-/paraswap-core-1.0.2.tgz#9e2ae35bc393b6f3bb9407bd097f21d498abb5a7"
   integrity sha512-/PyonrjBsv9xOsFk4mVr0rh7BENrQtYYvvZMwu6QFN4qcca2VgmqOgpNWZPvfyBpKY+fUqmbBNlhqlaMQ3TMzQ==
+
+paraswap@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/paraswap/-/paraswap-5.2.0.tgz#07649e4cc18e911f01629d52efeca85596c79db1"
+  integrity sha512-SYGhP7/ReHPwyLmCUuHh3mHqSK91r7HRcAs8siE7xOZ+omcUsyRwmvnlK9L5jsIwXkYZ/Rn6q3BTwCTLmw+4bA==
+  dependencies:
+    async "^3.1.0"
+    axios "0.21.2"
+    bignumber.js "8.1.1"
+    lodash "4.17.21"
+    paraswap-core "1.0.2"
+    qs "^6.9.1"
+    ts-essentials "^7.0.0"
+    web3 "^1.5.0"
 
 "paraswap@npm:@nenad91/paraswap#5.1.0":
   version "5.1.0"
@@ -21834,7 +21849,7 @@ web3-utils@1.8.1, web3-utils@^1.8.1:
     randombytes "^2.1.0"
     utf8 "3.0.0"
 
-web3@^1.7.0:
+web3@^1.5.0, web3@^1.7.0:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.8.1.tgz#8ea67215ef5f3a6f6d3381800b527242ea22885a"
   integrity sha512-tAqFsQhGv340C9OgRJIuoScN7f7wa1tUvsnnDUMt9YE6J4gcm7TV2Uwv+KERnzvV+xgdeuULYpsioRRNKrUvoQ==
