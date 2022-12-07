@@ -4,7 +4,6 @@ import { useContext } from 'react'
 import { AlertCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 
@@ -43,9 +42,7 @@ export default function FailedNetworkSwitchPopup({
         <AlertCircle color={isUnsupportedNetwork ? theme.red3 : theme.red1} size={24} />
       </div>
       <AutoColumn gap="8px">
-        <ThemedText.Body fontWeight={500} color={isUnsupportedNetwork ? theme.text2 : theme.text1}>
-          <Trans>{errorMessage}</Trans>
-        </ThemedText.Body>
+        <Trans>{errorMessage}</Trans>
       </AutoColumn>
     </RowNoFlex>
   )

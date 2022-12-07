@@ -4,6 +4,7 @@ import { SupportedChainId } from 'constants/chains'
 import { OrderClass, OrderKind } from 'state/orders/actions'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersDetails } from './index'
+import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -13,7 +14,6 @@ const tradeContext: TradeFlowContext = {
     class: OrderClass.LIMIT,
     account: '0x000',
     chainId: 1,
-    signer: {} as any,
     kind: OrderKind.SELL,
     inputAmount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
     outputAmount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
@@ -21,12 +21,14 @@ const tradeContext: TradeFlowContext = {
     feeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
     sellToken: inputCurrency,
     buyToken: outputCurrency,
-    validTo: Date.now() + 10000000,
     recipient: '0xaaa',
     recipientAddressOrName: null,
     allowsOffchainSigning: true,
     appDataHash: '0xabc',
   },
+  appData: {} as any,
+  addAppDataToUploadQueue: () => void 0,
+  provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,
   dispatch: (() => void 0) as any,
@@ -43,7 +45,13 @@ const rateInfoParams = {
 }
 
 const Fixtures = {
-  default: <LimitOrdersDetails rateInfoParams={rateInfoParams} tradeContext={tradeContext} />,
+  default: (
+    <LimitOrdersDetails
+      settingsState={defaultLimitOrdersSettings}
+      rateInfoParams={rateInfoParams}
+      tradeContext={tradeContext}
+    />
+  ),
 }
 
 export default Fixtures

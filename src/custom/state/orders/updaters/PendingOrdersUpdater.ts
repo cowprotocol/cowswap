@@ -26,13 +26,10 @@ import { getOrder, OrderID } from '@cow/api/gnosisProtocol'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
-import ms from 'ms.macro'
-import { openNpsAppziSometimes } from 'utils/appzi'
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
-
-const PENDING_TOO_LONG_TIME = ms`5 min`
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -222,14 +219,13 @@ async function _updateOrders({
   await _updateCreatingOrders(chainId, orders, addOrUpdateOrders)
 }
 
+// Check if there is any order pending for a long time
+// If so, trigger appzi
 function _triggerNps(pending: Order[], chainId: ChainId) {
-  // Check if there is any order pending for a long time
-  // If so, trigger appzi
-  const now = Date.now()
-
-  for (const { openSince, id: orderId } of pending) {
-    // Check if there's any pending for more than `PENDING_TOO_LONG_TIME`
-    if (openSince && now - openSince > PENDING_TOO_LONG_TIME) {
+  for (const order of pending) {
+    const { openSince, id: orderId } = order
+    // Check if there's any MARKET pending for more than `PENDING_TOO_LONG_TIME`
+    if (order.class === OrderClass.MARKET && isOrderInPendingTooLong(openSince)) {
       const explorerUrl = getExplorerOrderLink(chainId, orderId)
       // Trigger NPS display, controlled by Appzi
       openNpsAppziSometimes({

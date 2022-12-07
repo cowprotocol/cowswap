@@ -71,6 +71,8 @@ declare module 'styled-components' {
     textShadow1: string
     boxShadow1: string
     boxShadow2: string
+    boxShadow3: string
+    gradient1: string
     input: {
       bg1: Color
     }
