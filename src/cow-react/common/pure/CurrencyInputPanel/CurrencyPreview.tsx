@@ -28,7 +28,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={false} disabled={false}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
-        <styledEl.CurrencyInputBox flexibleWidth={true}>
+        <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton currency={currency || undefined} loading={false} readonlyMode={true} />
           </div>
@@ -44,7 +44,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
           </div>
         </styledEl.CurrencyInputBox>
 
-        <styledEl.CurrencyInputBox flexibleWidth={false}>
+        <styledEl.CurrencyInputBox>
           <div>
             {balance && (
               <>

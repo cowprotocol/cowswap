@@ -12,6 +12,10 @@ export const Wrapper = styled.div`
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 10px;
+  `}
 `
 
 export const Header = styled.div`
@@ -44,6 +48,7 @@ export const MarketPriceButton = styled.button`
 export const Body = styled.div`
   padding: 0;
   display: flex;
+  width: 100%;
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -51,6 +56,10 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   border: none;
   width: 100%;
   text-align: left;
+
+  &::placeholder {
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
 `
 
 export const ActiveCurrency = styled.button`

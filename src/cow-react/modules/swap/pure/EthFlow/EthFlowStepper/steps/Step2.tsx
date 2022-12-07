@@ -1,12 +1,9 @@
 import React, { useMemo } from 'react'
-import { X, Plus, Check } from 'react-feather'
-import styled from 'styled-components/macro'
-import { ExplorerLinkStyled, EthFlowStepperProps, SmartOrderStatus } from '..'
-import { Step, StepProps } from '../Step'
-
-const ErrorMessage = styled.span`
-  color: #f25757;
-`
+import Plus from 'assets/cow-swap/plus.svg'
+import X from 'assets/cow-swap/x.svg'
+import Checkmark from 'assets/cow-swap/checkmark.svg'
+import { EthFlowStepperProps, SmartOrderStatus } from '..'
+import { Step, StepProps, ExplorerLinkStyled } from '../Step'
 
 type Step2Config = StepProps & { error?: string }
 
@@ -61,17 +58,14 @@ export function Step2({ order }: EthFlowStepperProps) {
     return {
       label: 'Order Created',
       state: 'success',
-      icon: Check,
+      icon: Checkmark,
     }
   }, [expiredBeforeCreate, isCreating, isIndexing, rejectedReason])
 
   const errorMessage = error || rejectedReason
   return (
-    <Step state={stepState} icon={icon} label={label}>
-      <>
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-        {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
-      </>
+    <Step state={stepState} icon={icon} label={label} errorMessage={errorMessage}>
+      <>{isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}</>
     </Step>
   )
 }

@@ -10,10 +10,9 @@ import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from 'consta
 
 // MOD imports
 import EthereumLogo from 'assets/cow-swap/network-mainnet-logo.svg'
-import RinkebyLogo from 'assets/cow-swap/network-rinkeby-logo.svg'
 import GoerliLogo from 'assets/cow-swap/network-goerli-logo.svg'
 import GnosisChainLogo from 'assets/cow-swap/network-gnosis-chain-logo.svg'
-import { CHAIN_INFO as UNI_CHAIN_INFO, NetworkType } from '@src/constants/chainInfo'
+import { NetworkType } from '@src/constants/chainInfo'
 
 export * from '@src/constants/chainInfo'
 
@@ -56,7 +55,7 @@ export type ChainInfoMap = { readonly [chainId: number]: L1ChainInfo | L2ChainIn
 } & { readonly [chainId in SupportedL1ChainId]: L1ChainInfo }
 
 export const CHAIN_INFO: ChainInfoMap = {
-  ...UNI_CHAIN_INFO,
+  // ...UNI_CHAIN_INFO,
   [SupportedChainId.MAINNET]: {
     networkType: NetworkType.L1,
     docs: 'https://docs.cow.fi/',
@@ -65,16 +64,6 @@ export const CHAIN_INFO: ChainInfoMap = {
     label: 'Ethereum',
     logoUrl: EthereumLogo,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-  },
-  [SupportedChainId.RINKEBY]: {
-    networkType: NetworkType.L1,
-    docs: 'https://docs.cow.fi/',
-    explorer: 'https://rinkeby.etherscan.io/',
-    infoLink: 'https://cow.fi',
-    bridge: 'https://www.rinkeby.io/#faucet', // actually a faucet rather than a bridge
-    label: 'Rinkeby',
-    logoUrl: RinkebyLogo,
-    nativeCurrency: { name: 'Rinkeby Ether', symbol: 'rETH', decimals: 18 },
   },
   /*[SupportedChainId.ROPSTEN]: {
     networkType: NetworkType.L1,

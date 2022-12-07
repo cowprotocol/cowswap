@@ -4,7 +4,6 @@ import ms from 'ms.macro'
 
 export const ContractDeploymentBlocks: Partial<Record<ChainId, number>> = {
   [ChainId.MAINNET]: 11469934,
-  [ChainId.RINKEBY]: 7724701,
   [ChainId.GNOSIS_CHAIN]: 13566914,
 }
 

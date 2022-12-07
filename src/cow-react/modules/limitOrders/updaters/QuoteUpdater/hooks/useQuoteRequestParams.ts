@@ -5,7 +5,7 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
-import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import { getAddress } from '@cow/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
 
 export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }

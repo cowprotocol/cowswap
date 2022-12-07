@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { ReactComponent as DropDown } from 'assets/images/dropdown.svg'
-import { lighten } from 'polished'
+import { lighten, transparentize } from 'polished'
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed: boolean; readonlyMode: boolean }>`
   display: flex;
@@ -12,7 +12,8 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
   outline: none;
   background-color: ${({ theme, stubbed }) => (stubbed ? lighten(0.1, theme.bg2) : theme.bg1)};
   color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
-  box-shadow: ${({ stubbed }) => (stubbed ? '0 6px 8px rgb(0 0 0 / 6%)' : 'none')};
+  box-shadow: ${({ theme }) =>
+    theme.darkMode ? `0px 4px 8px ${theme.black}` : `0px 4px 8px ${transparentize(0.96, theme.text1)}`};
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   pointer-events: ${({ readonlyMode }) => (readonlyMode ? 'none' : '')};
   border-radius: 16px;
@@ -24,11 +25,6 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; stubbed
     background-color: ${({ readonlyMode, stubbed, theme }) =>
       readonlyMode ? 'red' : stubbed ? lighten(0.1, theme.bg2) : lighten(0.1, theme.bg1)};
   }
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-    justify-content: start;
-  `};
 `
 
 export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
@@ -45,8 +41,15 @@ export const ArrowDown = styled(DropDown)<{ stubbed?: boolean }>`
 `
 
 export const CurrencySymbol = styled.div<{ stubbed: boolean }>`
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 500;
   white-space: nowrap;
   color: ${({ stubbed, theme }) => (stubbed ? theme.white : theme.text1)};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 16px;
+    word-break: break-word;
+    white-space: normal;
+    text-align: left;
+  `};
 `
