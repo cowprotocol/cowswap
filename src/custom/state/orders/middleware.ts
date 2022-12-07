@@ -37,7 +37,7 @@ const isCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
-  let idsAndPopups: OrderIDWithPopup[] = []
+  const idsAndPopups: OrderIDWithPopup[] = []
   //  is it a singular action with {chainId, id} payload
   if (isSingleOrderChangeAction(action)) {
     const { id, chainId } = action.payload
@@ -50,7 +50,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       return result
     }
     // look up Order.summary for Popup
-    const summary = orderObject.order.summary
+    const { summary, class: orderClass } = orderObject.order
 
     let popup: PopupPayload
     if (isPendingOrderAction(action)) {
@@ -63,15 +63,15 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
           id: hash,
           hash,
         })
-        orderAnalytics('Posted', 'EthFlow')
+        orderAnalytics('Posted', orderClass, 'EthFlow')
       } else {
         // Pending Order Popup
         popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
-        orderAnalytics('Posted', 'Offchain')
+        orderAnalytics('Posted', orderClass, 'Offchain')
       }
     } else if (isPresignOrders(action)) {
       popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'presigned', id })
-      orderAnalytics('Posted', 'Pre-Signed')
+      orderAnalytics('Posted', orderClass, 'Pre-Signed')
     } else if (isCancelOrderAction(action)) {
       // action is order/cancelOrder
       // Cancelled Order Popup
@@ -80,7 +80,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
         summary: buildCancellationPopupSummary(id, summary),
         id,
       })
-      orderAnalytics('Canceled')
+      orderAnalytics('Canceled', orderClass)
     } else {
       // action is order/expireOrder
       // Expired Order Popup
@@ -90,7 +90,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
         id,
         status: OrderActions.OrderStatus.EXPIRED,
       })
-      orderAnalytics('Expired')
+      orderAnalytics('Expired', orderClass)
     }
 
     idsAndPopups.push({
@@ -112,18 +112,22 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
 
-      idsAndPopups = action.payload.ordersData.map(({ id, summary }) => {
-        // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
-        // because it's nicer there
-        const popup = setPopupData(OrderTxTypes.METATXN, {
-          summary,
-          id,
-          status: OrderActions.OrderStatus.FULFILLED,
-          descriptor: 'was traded',
-        })
-        orderAnalytics('Executed')
+      action.payload.ordersData.forEach(({ id, summary }) => {
+        const orderObject = _getOrderById(orders, id)
+        if (orderObject) {
+          const { class: orderClass } = orderObject.order
+          // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
+          // because it's nicer there
+          const popup = setPopupData(OrderTxTypes.METATXN, {
+            summary,
+            id,
+            status: OrderActions.OrderStatus.FULFILLED,
+            descriptor: 'was traded',
+          })
+          orderAnalytics('Executed', orderClass)
 
-        return { id, popup }
+          idsAndPopups.push({ id, popup })
+        }
       })
     } else if (action.type === 'order/cancelOrdersBatch') {
       // Why is this condition not using a `isAnyOf` like the others?
@@ -132,36 +136,41 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       // If you know how to fix it, let me know.
 
       // construct Cancelled Order Popups for each Order
-      idsAndPopups = action.payload.ids.map((id) => {
+      action.payload.ids.forEach((id) => {
         const orderObject = cancelled?.[id]
 
-        const summary = orderObject?.order.summary
+        if (orderObject) {
+          const { order } = orderObject
 
-        const popup = setPopupData(OrderTxTypes.METATXN, {
-          success: true,
-          summary: buildCancellationPopupSummary(id, summary),
-          id,
-        })
-        orderAnalytics('Canceled')
+          const summary = order.summary
 
-        return { id, popup }
+          const popup = setPopupData(OrderTxTypes.METATXN, {
+            success: true,
+            summary: buildCancellationPopupSummary(id, summary),
+            id,
+          })
+          orderAnalytics('Canceled', order.class)
+
+          idsAndPopups.push({ id, popup })
+        }
       })
     } else {
       // construct Expired Order Popups for each Order
-      idsAndPopups = action.payload.ids.map((id) => {
+      action.payload.ids.forEach((id) => {
         const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id]
+        if (orderObject) {
+          const { summary, class: orderClass } = orderObject.order
 
-        const summary = orderObject?.order.summary
+          const popup = setPopupData(OrderTxTypes.METATXN, {
+            success: false,
+            summary,
+            id,
+            status: OrderActions.OrderStatus.EXPIRED,
+          })
+          orderAnalytics('Expired', orderClass)
 
-        const popup = setPopupData(OrderTxTypes.METATXN, {
-          success: false,
-          summary,
-          id,
-          status: OrderActions.OrderStatus.EXPIRED,
-        })
-        orderAnalytics('Expired')
-
-        return { id, popup }
+          idsAndPopups.push({ id, popup })
+        }
       })
     }
   }
