@@ -93,6 +93,11 @@ const Rows = styled.div`
   }
 `
 
+const StyledInvertRateControl = styled(InvertRateControl)`
+  display: inline-flex;
+  margin-left: 5px;
+`
+
 export interface OrdersTableProps {
   currentPageNumber: number
   isSmartContractWallet: boolean
@@ -130,7 +135,7 @@ export function OrdersTable({
             <span>
               <Trans>Limit price</Trans>
             </span>
-            <InvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
+            <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
           </div>
           <div>
             <Trans>Status</Trans>

@@ -14,6 +14,7 @@ import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
+import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
@@ -25,6 +26,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
   const quoteState = useAtomValue(limitOrdersQuoteAtom)
+  const rateImpact = useRateImpact()
 
   if (
     !chainId ||
@@ -57,6 +59,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     provider,
     addAppDataToUploadQueue,
     appData,
+    rateImpact,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,
