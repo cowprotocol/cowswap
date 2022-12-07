@@ -38,7 +38,6 @@ import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -83,7 +82,7 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
-    viewAmount: inputCurrencyAmount?.toSignificant(6) || '',
+    viewAmount: inputCurrencyAmount?.toExact() || '',
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -93,40 +92,25 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'Your receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
-    viewAmount: isWrapOrUnwrap
-      ? inputCurrencyAmount?.toSignificant(6) || ''
-      : outputCurrencyAmount?.toSignificant(6) || '',
+    viewAmount: isWrapOrUnwrap ? inputCurrencyAmount?.toExact() || '' : outputCurrencyAmount?.toExact() || '',
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      if (!inputCurrency || !outputCurrency) return
-
-      const value = tryParseCurrencyAmount(
-        typedValue,
-        field === Field.INPUT ? inputCurrency : outputCurrency
-      )?.quotient.toString()
-
       if (isWrapOrUnwrap) {
-        updateCurrencyAmount({
-          inputCurrencyAmount: value,
-        })
+        updateCurrencyAmount({ inputCurrencyAmount: typedValue })
         return
       }
 
       if (field === Field.INPUT) {
-        updateCurrencyAmount({
-          inputCurrencyAmount: value,
-        })
+        updateCurrencyAmount({ inputCurrencyAmount: typedValue })
       } else {
-        updateCurrencyAmount({
-          outputCurrencyAmount: value,
-        })
+        updateCurrencyAmount({ outputCurrencyAmount: typedValue })
       }
     },
-    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency]
+    [updateCurrencyAmount, isWrapOrUnwrap]
   )
 
   const onSwitchTokens = useCallback(() => {
@@ -136,8 +120,8 @@ export function LimitOrdersWidget() {
       updateLimitOrdersState({
         inputCurrencyId: outputCurrencyId,
         outputCurrencyId: inputCurrencyId,
-        inputCurrencyAmount: outputCurrencyAmount?.quotient.toString(),
-        outputCurrencyAmount: inputCurrencyAmount?.quotient.toString(),
+        inputCurrencyAmount: outputCurrencyAmount?.toExact(),
+        outputCurrencyAmount: inputCurrencyAmount?.toExact(),
         orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
       })
     }

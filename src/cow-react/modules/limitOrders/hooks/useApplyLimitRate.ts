@@ -11,22 +11,25 @@ export function useApplyLimitRate() {
   const { activeRate } = useAtomValue(limitRateAtom)
 
   return useCallback(
-    (value: string | null, field: Field): Fraction | null => {
+    (value: string | null, field: Field): string | null | undefined => {
       if (!value || !Number(value) || !activeRate || activeRate.equalTo(0)) {
         return null
       }
 
+      let output: Fraction | null = null
       const parsedValue = toFraction(value)
 
+      // If the field is INPUT we will MULTIPLY passed value and rate
       if (field === Field.INPUT) {
-        return parsedValue.multiply(activeRate)
+        output = parsedValue.multiply(activeRate)
+
+        // If the field is OUTPUT we will DIVIDE passed value and rate
+      } else if (field === Field.OUTPUT) {
+        output = parsedValue.divide(activeRate)
       }
 
-      if (field === Field.OUTPUT) {
-        return parsedValue.divide(activeRate)
-      }
-
-      return null
+      // We need to return string and we also limit the decimals
+      return output?.toSignificant(6)
     },
     [activeRate]
   )

@@ -27,7 +27,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
 }
 
 export const limitOrdersAtom = atomWithStorage<LimitOrdersState>(
-  'limit-orders-atom:v2',
+  'limit-orders-atom:v1',
   getDefaultLimitOrdersState(null),
   /**
    * atomWithStorage() has build-in feature to persist state between all tabs

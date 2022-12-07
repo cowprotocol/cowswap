@@ -2,6 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 import { OrderKind } from '@cowprotocol/contracts'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
@@ -22,16 +23,6 @@ export interface LimitOrdersTradeState {
   readonly isUnlocked: boolean
 }
 
-function tryParseFractionalAmount(currency: Currency | null, amount: string | null): CurrencyAmount<Currency> | null {
-  if (!amount || !currency) return null
-
-  try {
-    return currency ? CurrencyAmount.fromFractionalAmount(currency, amount, 1) : null
-  } catch (e) {
-    return null
-  }
-}
-
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
   const { account } = useWeb3React()
   const state = useAtomValue(limitOrdersAtom)
@@ -42,8 +33,10 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
 
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
-  const inputCurrencyAmount = tryParseFractionalAmount(inputCurrency, state.inputCurrencyAmount)
-  const outputCurrencyAmount = tryParseFractionalAmount(outputCurrency, state.outputCurrencyAmount)
+  const inputCurrencyAmount =
+    tryParseCurrencyAmount(state.inputCurrencyAmount || undefined, inputCurrency || undefined) || null
+  const outputCurrencyAmount =
+    tryParseCurrencyAmount(state.outputCurrencyAmount || undefined, outputCurrency || undefined) || null
   const inputCurrencyBalance = useCurrencyBalance(account, inputCurrency) || null
   const outputCurrencyBalance = useCurrencyBalance(account, outputCurrency) || null
   const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
