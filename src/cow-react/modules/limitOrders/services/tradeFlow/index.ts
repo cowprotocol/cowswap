@@ -9,6 +9,8 @@ import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOr
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { Web3Provider } from '@ethersproject/providers'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
+import confirmPriceImpactWithoutFee from '@src/components/swap/confirmPriceImpactWithoutFee'
+import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
@@ -17,6 +19,7 @@ export interface TradeFlowContext {
   settlementContract: GPv2Settlement
   chainId: SupportedChainId
   dispatch: AppDispatch
+  rateImpact: number
   appData: AppDataInfo
   addAppDataToUploadQueue: (update: AddAppDataToUploadQueueParams) => void
   provider: Web3Provider
@@ -32,9 +35,12 @@ export async function tradeFlow(
   settingsState: LimitOrdersSettingsState,
   beforeTrade?: () => void
 ): Promise<string> {
-  // if (priceImpact.priceImpact && !confirmPriceImpactWithoutFee(priceImpact.priceImpact)) {
-  //   throw new PriceImpactDeclineError()
-  // }
+  // Don't check price impact warning if there is rate impact warning already
+  const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
+
+  if (!isTooLowRate && priceImpact.priceImpact && !confirmPriceImpactWithoutFee(priceImpact.priceImpact)) {
+    throw new PriceImpactDeclineError()
+  }
 
   beforeTrade?.()
 

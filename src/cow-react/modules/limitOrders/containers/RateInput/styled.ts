@@ -56,6 +56,10 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   border: none;
   width: 100%;
   text-align: left;
+
+  &::placeholder {
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
 `
 
 export const ActiveCurrency = styled.button`
