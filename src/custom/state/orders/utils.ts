@@ -200,9 +200,10 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
   executedBuyAmount: BigNumber
   executedSellAmount: BigNumber
 } {
+  const { executedBuyAmount, executedSellAmount, executedFeeAmount } = order
   return {
-    executedBuyAmount: new BigNumber(order.executedBuyAmount),
-    executedSellAmount: new BigNumber(order.executedSellAmount).minus(order.executedFeeAmount),
+    executedBuyAmount: new BigNumber(executedBuyAmount),
+    executedSellAmount: new BigNumber(executedSellAmount).minus(executedFeeAmount),
   }
 }
 

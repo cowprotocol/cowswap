@@ -93,6 +93,7 @@ const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
 export type OrderID = string
 export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'presignaturePending' | 'open'
 
+// TODO: replace it by import from SDK
 export interface OrderMetaData {
   creationDate: string
   owner: string
@@ -102,6 +103,7 @@ export interface OrderMetaData {
   executedSellAmount: string
   executedSellAmountBeforeFees: string
   executedFeeAmount: string
+  executedSurplusFee: string | null
   invalidated: false
   sellToken: string
   buyToken: string
