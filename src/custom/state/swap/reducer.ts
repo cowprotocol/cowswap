@@ -124,9 +124,16 @@ function getEthFlowOverridesOnSwitch(state: SwapState): Pick<SwapState, 'indepen
   const isWrappedIn =
     state[Field.INPUT].currencyId?.toUpperCase() === WRAPPED_NATIVE_CURRENCY[chainId].symbol?.toUpperCase()
 
-  if (isNativeOut && !isWrappedIn) {
+  const formerIndependentField = state.independentField
+
+  // If the sell token was Native, and it's not a wrap, and it was a SELL order
+  if (isNativeOut && !isWrappedIn && formerIndependentField === Field.INPUT) {
+    // It would normally become a buy order, but there are no Native buy orders!
+    // Set order type to SELL and reset the input
     return { independentField: Field.INPUT, typedValue: '' }
   }
+  // Otherwise (it was a buy order and will become a sell order)
+  // Keep the same typed in value. Pretty much keeping the original behaviour
   return {
     independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
     typedValue: state.typedValue,
@@ -151,9 +158,10 @@ function getEthFlowOverridesOnSelect(
     NATIVE_CURRENCY_BUY_TOKEN[state.chainId || ChainId.MAINNET]?.symbol?.toUpperCase()
   ) {
     const independentField = Field.INPUT
+    const formerIndependentField = state.independentField
 
-    if (inputCurrencyId !== state[Field.INPUT].currencyId) {
-      // Only reset the typedValue if native token was not already selected
+    if (inputCurrencyId !== state[Field.INPUT].currencyId && formerIndependentField !== Field.INPUT) {
+      // Only reset the typedValue if native token was not already selected and it was a SELL order
       return { independentField, typedValue: '' }
     }
     // Otherwise, keep the typedValue to avoid resetting input on every change
