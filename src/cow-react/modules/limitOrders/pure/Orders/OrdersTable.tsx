@@ -147,7 +147,7 @@ export function OrdersTable({
               isRateInversed={isRateInversed}
               isSmartContractWallet={isSmartContractWallet}
               showOrderCancelationModal={showOrderCancelationModal}
-              onClick={() => selectReceiptOrder(order)}
+              onClick={() => selectReceiptOrder(order.id)}
             />
           ))}
         </Rows>

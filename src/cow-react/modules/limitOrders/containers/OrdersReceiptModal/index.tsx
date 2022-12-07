@@ -1,18 +1,16 @@
 import JSBI from 'jsbi'
-import { useAtomValue } from 'jotai/utils'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
-import { receiptAtom } from '@cow/modules/limitOrders/state/limitOrdersReceiptAtom'
 import { ReceiptModal } from '@cow/modules/limitOrders/pure/ReceiptModal'
 import { calculatePrice } from '@cow/modules/limitOrders/utils/calculatePrice'
 
 import { supportedChainId } from 'utils/supportedChainId'
-import { useCloseReceiptModal } from './hooks'
+import { useCloseReceiptModal, useSelectedOrder } from './hooks'
 
 export function OrdersReceiptModal() {
   // TODO: can we get selected order from URL by id?
-  const { selected: order } = useAtomValue(receiptAtom)
+  const order = useSelectedOrder()
   const { chainId: _chainId } = useWeb3React()
   const closeReceiptModal = useCloseReceiptModal()
   const chainId = supportedChainId(_chainId)
