@@ -11,13 +11,13 @@ interface Props {
 
 export function CurrencyField({ label, token, amount }: Props) {
   return (
-    <styledEl.CurrencyField title={amount?.toExact()} border="rounded-full">
-      <styledEl.FieldTitle>{label}</styledEl.FieldTitle>
+    <styledEl.CurrencyField title={amount?.toExact()}>
+      <b>{label}</b>
 
-      <styledEl.FieldBody>
+      <div>
         <CurrencySelectButton readonlyMode={true} loading={false} currency={token} />
         <styledEl.CurrencyValue>{formatSmart(amount)}</styledEl.CurrencyValue>
-      </styledEl.FieldBody>
+      </div>
     </styledEl.CurrencyField>
   )
 }

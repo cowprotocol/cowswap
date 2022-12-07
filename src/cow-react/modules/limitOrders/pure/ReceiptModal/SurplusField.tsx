@@ -25,9 +25,9 @@ export function SurplusField({ order }: Props) {
     <styledEl.Value title={`${parsedSurplus.toExact()} ${surplusToken.symbol}`}>
       <styledEl.InlineWrapper>
         <styledEl.Surplus>+{formattedPercent}%</styledEl.Surplus>
-        <styledEl.SurplusValue>
+        <span>
           {formattedSurplus} {surplusToken.symbol}
-        </styledEl.SurplusValue>
+        </span>
       </styledEl.InlineWrapper>
     </styledEl.Value>
   )

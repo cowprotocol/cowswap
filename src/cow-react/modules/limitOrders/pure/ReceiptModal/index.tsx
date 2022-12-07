@@ -79,55 +79,57 @@ export function ReceiptModal({
           <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
           <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
-          <styledEl.Field border="rounded-top">
-            <FieldLabel label="Status" />
-            <StatusField order={order} />
-          </styledEl.Field>
+          <styledEl.FieldsWrapper>
+            <styledEl.Field>
+              <FieldLabel label="Status" />
+              <StatusField order={order} />
+            </styledEl.Field>
 
-          <styledEl.Field>
-            <FieldLabel label="Limit price" tooltip={tooltips.LIMIT_PRICE} />
-            <PriceField order={order} price={limitPrice} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Limit price" tooltip={tooltips.LIMIT_PRICE} />
+              <PriceField order={order} price={limitPrice} />
+            </styledEl.Field>
 
-          <styledEl.Field>
-            <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />
-            <PriceField order={order} price={executionPrice} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />
+              <PriceField order={order} price={executionPrice} />
+            </styledEl.Field>
 
-          <styledEl.Field>
-            <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
-            <FilledField order={order} sellAmount={sellAmount} buyAmount={buyAmount} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
+              <FilledField order={order} sellAmount={sellAmount} buyAmount={buyAmount} />
+            </styledEl.Field>
 
-          <styledEl.Field>
-            <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
-            <SurplusField order={order} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
+              <SurplusField order={order} />
+            </styledEl.Field>
 
-          <styledEl.Field>
-            <FieldLabel label="Fee" tooltip={tooltips.FEE} />
-            <FeeField order={order} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Fee" tooltip={tooltips.FEE} />
+              <FeeField order={order} />
+            </styledEl.Field>
 
-          <styledEl.Field>
-            <FieldLabel label="Created" tooltip={tooltips.CREATED} />
-            <DateField date={order.parsedCreationtime} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Created" tooltip={tooltips.CREATED} />
+              <DateField date={order.parsedCreationtime} />
+            </styledEl.Field>
 
-          <styledEl.Field>
-            <FieldLabel label="Expiry" tooltip={tooltips.EXPIRY} />
-            <DateField date={order.expirationTime} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Expiry" tooltip={tooltips.EXPIRY} />
+              <DateField date={order.expirationTime} />
+            </styledEl.Field>
 
-          <styledEl.Field>
-            <FieldLabel label="Order type" tooltip={tooltips.ORDER_TYPE} />
-            <OrderTypeField order={order} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Order type" tooltip={tooltips.ORDER_TYPE} />
+              <OrderTypeField order={order} />
+            </styledEl.Field>
 
-          <styledEl.Field border="rounded-bottom">
-            <FieldLabel label="Order ID" />
-            <OrderIDField order={order} chainId={chainId} />
-          </styledEl.Field>
+            <styledEl.Field>
+              <FieldLabel label="Order ID" />
+              <OrderIDField order={order} chainId={chainId} />
+            </styledEl.Field>
+          </styledEl.FieldsWrapper>
         </styledEl.Body>
       </styledEl.Wrapper>
     </GpModal>

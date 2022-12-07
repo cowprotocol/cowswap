@@ -94,7 +94,6 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
     <styledEl.Value>
       <styledEl.InlineWrapper>
         <styledEl.Progress active={formattedPercentage || 0} />
-        <styledEl.ProgressPercent>{formattedPercentage}%</styledEl.ProgressPercent>
       </styledEl.InlineWrapper>
 
       <styledEl.InlineWrapper>
