@@ -5,6 +5,8 @@ import styled from 'styled-components/macro'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { isAddress, shortenAddress } from 'utils'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
+import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
 const Wrapper = styled.div`
   margin: 10px 0;
@@ -12,6 +14,7 @@ const Wrapper = styled.div`
 export interface LimitOrdersDetailsProps {
   rateInfoParams: RateInfoParams
   tradeContext: TradeFlowContext
+  settingsState: LimitOrdersSettingsState
 }
 
 const dateTimeFormat: Intl.DateTimeFormatOptions = {
@@ -23,7 +26,8 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
 }
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { account, validTo, recipient, recipientAddressOrName } = props.tradeContext.postOrderParams
+  const { account, recipient, recipientAddressOrName } = props.tradeContext.postOrderParams
+  const validTo = calculateLimitOrdersDeadline(props.settingsState)
   const expiryDate = new Date(validTo * 1000)
 
   return (

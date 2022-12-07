@@ -5,7 +5,7 @@ import { useAsyncMemo } from 'use-async-memo'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import { getAddress } from '@cow/utils/getAddress'
 import ms from 'ms.macro'
 import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 

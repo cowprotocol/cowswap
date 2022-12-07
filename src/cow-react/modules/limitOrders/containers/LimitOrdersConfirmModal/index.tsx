@@ -19,6 +19,8 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { useLimitOrdersWarningsAccepted } from '@cow/modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
+import { useAtomValue } from 'jotai/utils'
+import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -60,6 +62,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { chainId } = useWalletInfo()
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
@@ -80,7 +83,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
       setConfirmationState({ isPending: true, orderHash: null })
     }
 
-    tradeFlow(tradeContext, priceImpact, beforeTrade)
+    tradeFlow(tradeContext, priceImpact, settingsState, beforeTrade)
       .then((orderHash) => {
         setConfirmationState({ isPending: false, orderHash })
       })
@@ -93,7 +96,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
           handleSetError(error.message)
         }
       })
-  }, [onDismiss, handleSetError, setConfirmationState, tradeContext, onDismissConfirmation, priceImpact])
+  }, [onDismiss, handleSetError, settingsState, setConfirmationState, tradeContext, onDismissConfirmation, priceImpact])
 
   const operationType = OperationType.ORDER_SIGN
   const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />
@@ -109,6 +112,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               <CloseIcon onClick={() => onDismiss()} />
             </styledEl.ConfirmHeader>
             <LimitOrdersConfirm
+              settingsState={settingsState}
               tradeContext={tradeContext}
               rateInfoParams={rateInfoParams}
               inputCurrencyInfo={inputCurrencyInfo}

@@ -1,13 +1,9 @@
 import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
 import { PriceImpact } from 'hooks/usePriceImpact'
-import { Fraction } from '@uniswap/sdk-core'
 import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
-
-function isFractionEqual(prev?: Fraction | null, next?: Fraction | null): boolean {
-  return prev && next ? prev.equalTo(next) : prev === next
-}
+import { areFractionsEqual } from '@cow/utils/areFractionsEqual'
 
 function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveAmountInfo | null): boolean {
   if (!prev || !next) {
@@ -17,7 +13,7 @@ function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveA
   return (
     prev.feeAmount === next.feeAmount &&
     prev.amountBeforeFees === next.amountBeforeFees &&
-    isFractionEqual(prev.amountAfterFeesRaw, next.amountAfterFeesRaw) &&
+    areFractionsEqual(prev.amountAfterFeesRaw, next.amountAfterFeesRaw) &&
     prev.amountAfterFees === next.amountAfterFees
   )
 }
@@ -25,9 +21,9 @@ function isReceiveAmountInfoEqual(prev: ReceiveAmountInfo | null, next: ReceiveA
 function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
   const isCurrencyEqual =
     prev.currency && next.currency ? prev.currency.equals(next.currency) : prev.currency === next.currency
-  const isBalanceEqual = isFractionEqual(prev.balance, next.balance)
-  const isFiatAmountEqual = isFractionEqual(prev.fiatAmount, next.fiatAmount)
-  const isRawAmountEqual = isFractionEqual(prev.rawAmount, next.rawAmount)
+  const isBalanceEqual = areFractionsEqual(prev.balance, next.balance)
+  const isFiatAmountEqual = areFractionsEqual(prev.fiatAmount, next.fiatAmount)
+  const isRawAmountEqual = areFractionsEqual(prev.rawAmount, next.rawAmount)
   const isViewAmountEqual = prev.viewAmount === next.viewAmount
 
   return (
@@ -42,7 +38,7 @@ function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
 
 function isPriceImpactEqual(prev: PriceImpact, next: PriceImpact): boolean {
   return (
-    prev.loading === next.loading && prev.error === next.error && isFractionEqual(prev.priceImpact, next.priceImpact)
+    prev.loading === next.loading && prev.error === next.error && areFractionsEqual(prev.priceImpact, next.priceImpact)
   )
 }
 

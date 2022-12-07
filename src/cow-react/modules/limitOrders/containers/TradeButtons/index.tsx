@@ -28,7 +28,7 @@ export interface TradeButtonsProps {
 
 export function TradeButtons(props: TradeButtonsProps) {
   const { tradeContext, openConfirmScreen, priceImpact, inputCurrencyAmount } = props
-  const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const formState = useLimitOrdersFormState()
   const tradeState = useLimitOrdersTradeState()
   const setConfirmationState = useSetAtom(limitOrdersConfirmState)
@@ -50,10 +50,10 @@ export function TradeButtons(props: TradeButtonsProps) {
   }
 
   const doTrade = useCallback(() => {
-    if (expertMode && tradeContext) {
+    if (settingsState.expertMode && tradeContext) {
       const beforeTrade = () => setConfirmationState({ isPending: true, orderHash: null })
 
-      tradeFlow(tradeContext, priceImpact, beforeTrade)
+      tradeFlow(tradeContext, priceImpact, settingsState, beforeTrade)
         .catch((error) => {
           if (error instanceof PriceImpactDeclineError) return
 
@@ -67,7 +67,7 @@ export function TradeButtons(props: TradeButtonsProps) {
     } else {
       openConfirmScreen()
     }
-  }, [handleSetError, expertMode, tradeContext, openConfirmScreen, setConfirmationState, priceImpact])
+  }, [handleSetError, settingsState, tradeContext, openConfirmScreen, setConfirmationState, priceImpact])
 
   const button = limitOrdersTradeButtonsMap[formState]
 
