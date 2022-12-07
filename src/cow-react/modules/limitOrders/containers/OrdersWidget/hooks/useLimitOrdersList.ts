@@ -28,7 +28,7 @@ export interface ParsedOrder extends Order {
   surplusAmount?: BigNumber
   surplusPercentage?: BigNumber
   executedFeeAmount?: string
-  executedSurplusFee?: string
+  executedSurplusFee: string | null
   parsedCreationtime?: Date
 }
 
@@ -47,7 +47,7 @@ export function useLimitOrdersList(): LimitOrdersList {
     const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
     const expirationTime = new Date(Number(order.validTo) * 1000)
     const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
-    const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee
+    const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
     const parsedCreationtime = new Date(order.creationTime)
     const fullyFilled = isOrderFilled(order)
 
