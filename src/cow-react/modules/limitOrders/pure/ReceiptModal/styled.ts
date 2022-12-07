@@ -44,7 +44,7 @@ export const Title = styled.h3`
 
 export const Body = styled(AutoRow)`
   box-sizing: border-box;
-  max-height: 70vh;
+  max-height: 80vh;
   padding: 0 10px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
