@@ -9,7 +9,6 @@ import { useAppData } from 'hooks/useAppData'
 import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import useENSAddress from 'hooks/useENSAddress'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
-import { useLimitOrdersDeadline } from './useLimitOrdersDeadline'
 import { OrderClass } from '@src/custom/state/orders/actions'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
@@ -17,7 +16,6 @@ import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrders
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
   const state = useLimitOrdersTradeState()
-  const deadlineTimestamp = useLimitOrdersDeadline()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
@@ -53,6 +51,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     allowsOffchainSigning,
     isGnosisSafeWallet,
     dispatch,
+    provider,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,
@@ -60,12 +59,10 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       chainId,
       sellToken,
       buyToken,
-      validTo: deadlineTimestamp,
       recipient,
       recipientAddressOrName,
       allowsOffchainSigning,
       feeAmount,
-      signer: provider.getSigner(),
       inputAmount: state.inputCurrencyAmount,
       outputAmount: state.outputCurrencyAmount,
       sellAmountBeforeFee: state.inputCurrencyAmount,

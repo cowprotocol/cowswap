@@ -37,6 +37,7 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -70,27 +71,12 @@ export function LimitOrdersWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
-  const [showConfirmation, setShowConfirmation] = useState(false)
-
-  const currenciesLoadingInProgress = false
-  const showSetMax = true
-
-  const isTradePriceUpdating = useMemo(() => {
-    if (isWrapOrUnwrap || !inputCurrency || !outputCurrency) return false
-
-    return isRateLoading
-  }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
   const showRecipient = useMemo(
     () => !isWrapOrUnwrap && settingState.showRecipient,
     [settingState.showRecipient, isWrapOrUnwrap]
   )
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
-  const subsidyAndBalance: BalanceAndSubsidy = {
-    subsidy: {
-      tier: 0,
-      discount: 0,
-    },
-  }
+
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
@@ -150,8 +136,6 @@ export function LimitOrdersWidget() {
     outputCurrencyAmount,
     orderKind,
   ])
-  // Disable too frequent tokens switching
-  const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
@@ -159,6 +143,74 @@ export function LimitOrdersWidget() {
     },
     [updateLimitOrdersState]
   )
+
+  const props: LimitOrdersProps = {
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    isUnlocked,
+    isRateLoading,
+    allowsOffchainSigning,
+    isWrapOrUnwrap,
+    showRecipient,
+    recipient,
+    chainId,
+    onChangeRecipient,
+    onUserInput,
+    onSwitchTokens,
+    onCurrencySelection,
+    onImportDismiss,
+    rateInfoParams,
+    priceImpact,
+    tradeContext,
+  }
+
+  return <LimitOrders {...props} />
+}
+
+const LimitOrders = React.memo((props: LimitOrdersProps) => {
+  const {
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    isUnlocked,
+    chainId,
+    isRateLoading,
+    onUserInput,
+    onSwitchTokens,
+    onCurrencySelection,
+    onImportDismiss,
+    allowsOffchainSigning,
+    isWrapOrUnwrap,
+    showRecipient,
+    recipient,
+    onChangeRecipient,
+    rateInfoParams,
+    priceImpact,
+    tradeContext,
+  } = props
+
+  const inputCurrency = inputCurrencyInfo.currency
+  const outputCurrency = outputCurrencyInfo.currency
+
+  const isTradePriceUpdating = useMemo(() => {
+    if (isWrapOrUnwrap || !inputCurrency || !outputCurrency) return false
+
+    return isRateLoading
+  }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
+
+  const currenciesLoadingInProgress = false
+  const showSetMax = true
+
+  const subsidyAndBalance: BalanceAndSubsidy = {
+    subsidy: {
+      tier: 0,
+      discount: 0,
+    },
+  }
+
+  // Disable too frequent tokens switching
+  const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
@@ -227,7 +279,7 @@ export function LimitOrdersWidget() {
 
               <styledEl.TradeButtonBox>
                 <TradeButtons
-                  inputCurrencyAmount={inputCurrencyAmount}
+                  inputCurrencyAmount={inputCurrencyInfo.rawAmount}
                   tradeContext={tradeContext}
                   priceImpact={priceImpact}
                   openConfirmScreen={() => setShowConfirmation(true)}
@@ -253,4 +305,4 @@ export function LimitOrdersWidget() {
       {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
     </>
   )
-}
+}, limitOrdersPropsChecker)
