@@ -27,6 +27,7 @@ const tradeContext: TradeFlowContext = {
     allowsOffchainSigning: true,
     appDataHash: '0xabc',
   },
+  rateImpact: 1,
   settlementContract: {} as any,
   chainId: 1,
   dispatch: (() => void 0) as any,

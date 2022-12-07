@@ -11,6 +11,7 @@ import useENSAddress from 'hooks/useENSAddress'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useLimitOrdersDeadline } from './useLimitOrdersDeadline'
 import { OrderClass } from '@src/custom/state/orders/actions'
+import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
@@ -21,6 +22,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE })
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
+  const rateImpact = useRateImpact()
 
   if (
     !chainId ||
@@ -49,6 +51,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     allowsOffchainSigning,
     isGnosisSafeWallet,
     dispatch,
+    rateImpact,
     postOrderParams: {
       class: OrderClass.LIMIT,
       kind: state.orderKind,
