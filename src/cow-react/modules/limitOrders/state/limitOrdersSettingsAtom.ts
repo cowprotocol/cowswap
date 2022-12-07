@@ -18,7 +18,7 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
 }
 
 export const limitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
-  'limit-orders-settings-atom',
+  'limit-orders-settings-atom:v1',
   defaultLimitOrdersSettings
 )
 
