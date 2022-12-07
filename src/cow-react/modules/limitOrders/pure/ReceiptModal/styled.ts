@@ -34,24 +34,18 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  padding-top: 0;
+  padding: 0 16px 16px;
 `
 
 export const Title = styled.h3`
-  font-size: 1rem;
+  font-size: 16px;
   margin: 0;
 `
 
 export const Body = styled(AutoRow)`
   box-sizing: border-box;
-  max-height: 700px;
-  padding: 1rem;
-  padding-top: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-height: 70vh;
-  `}
+  max-height: 70vh;
+  padding: 0 10px 10px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     max-height: 100%;
