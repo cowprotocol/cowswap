@@ -12,14 +12,12 @@ interface Claim {
 
 const indexFiles = {
   [SupportedChainId.MAINNET]: mainnetIndex,
-  // [SupportedChainId.RINKEBY]: rinkebyIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
   [SupportedChainId.GOERLI]: goerliIndex,
 }
 
 const chainNames = {
   [SupportedChainId.MAINNET]: 'mainnet',
-  // [SupportedChainId.RINKEBY]: 'rinkeby',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
   [SupportedChainId.GOERLI]: 'goerli',
 }
