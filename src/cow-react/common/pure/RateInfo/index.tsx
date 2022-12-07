@@ -87,9 +87,9 @@ export const FiatRate = styled.span`
   text-align: right;
 `
 
-export function InvertRateControl({ onClick }: { onClick(): void }) {
+export function InvertRateControl({ onClick, className }: { onClick(): void; className?: string }) {
   return (
-    <InvertIcon onClick={onClick}>
+    <InvertIcon className={className} onClick={onClick}>
       <Repeat size={11} />
     </InvertIcon>
   )
