@@ -11,10 +11,11 @@ import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
 // import ReactGA from 'react-ga4'
 import { orderAnalytics } from 'components/analytics'
-import { openNpsAppziSometimes } from 'utils/appzi'
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
+import { OrderClass } from './actions'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
@@ -266,8 +267,14 @@ function _triggerNps(
   npsParams: Parameters<typeof openNpsAppziSometimes>[0]
 ) {
   const orders = store.getState().orders[chainId]
-  const openSince = _getOrderById(orders, orderId)?.order?.openSince
+  const order = _getOrderById(orders, orderId)?.order
+  const openSince = order?.openSince
   const explorerUrl = getExplorerOrderLink(chainId, orderId)
+
+  // Open Appzi NPS for limit orders only if they were filled before `PENDING_TOO_LONG_TIME` since creating
+  if (order?.class === OrderClass.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)) {
+    return
+  }
 
   openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince), explorerUrl, chainId })
 }
