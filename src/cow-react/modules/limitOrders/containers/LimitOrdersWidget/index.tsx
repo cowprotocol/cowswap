@@ -55,6 +55,7 @@ export function LimitOrdersWidget() {
     outputCurrencyFiatAmount,
     recipient,
     isUnlocked,
+    orderKind,
   } = useLimitOrdersTradeState()
   const onCurrencySelection = useOnCurrencySelection()
   const onImportDismiss = useOnImportDismiss()
@@ -72,9 +73,13 @@ export function LimitOrdersWidget() {
   const [showConfirmation, setShowConfirmation] = useState(false)
 
   const currenciesLoadingInProgress = false
-  const isTradePriceUpdating = isRateLoading
   const showSetMax = true
 
+  const isTradePriceUpdating = useMemo(() => {
+    if (isWrapOrUnwrap || !inputCurrency || !outputCurrency) return false
+
+    return isRateLoading
+  }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
   const showRecipient = useMemo(
     () => !isWrapOrUnwrap && settingState.showRecipient,
     [settingState.showRecipient, isWrapOrUnwrap]
@@ -127,13 +132,24 @@ export function LimitOrdersWidget() {
 
     if (!isWrapOrUnwrap) {
       updateLimitOrdersState({
+        inputCurrencyId: outputCurrencyId,
+        outputCurrencyId: inputCurrencyId,
         inputCurrencyAmount: outputCurrencyAmount?.toExact(),
-        outputCurrencyAmount: null,
-        orderKind: OrderKind.SELL,
+        outputCurrencyAmount: inputCurrencyAmount?.toExact(),
+        orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
       })
     }
     limitOrdersNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
-  }, [state, isWrapOrUnwrap, limitOrdersNavigate, updateLimitOrdersState, chainId, outputCurrencyAmount])
+  }, [
+    state,
+    isWrapOrUnwrap,
+    limitOrdersNavigate,
+    updateLimitOrdersState,
+    chainId,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    orderKind,
+  ])
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
