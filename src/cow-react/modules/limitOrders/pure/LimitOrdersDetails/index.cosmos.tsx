@@ -26,6 +26,7 @@ const tradeContext: TradeFlowContext = {
     allowsOffchainSigning: true,
     appDataHash: '0xabc',
   },
+  rateImpact: 0,
   appData: {} as any,
   addAppDataToUploadQueue: () => void 0,
   provider: {} as any,
