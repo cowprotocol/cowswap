@@ -29,6 +29,10 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     &:last-child {
       text-align: right;
     }
+
+    &:last-child {
+      text-align: right;
+    }
   }
 
   ${StyledMouseoverTooltipContent} {

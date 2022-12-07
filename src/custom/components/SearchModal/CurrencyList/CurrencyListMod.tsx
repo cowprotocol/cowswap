@@ -80,7 +80,7 @@ export const TokenListLogoWrapper = styled.img`
 
 export const StyledScrollarea = styled.div`
   div:first-of-type {
-    overflow-y: auto;
+    /* overflow-y: auto; */
     scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
     scroll-behavior: smooth;
 
