@@ -6,11 +6,11 @@ import { ChevronDown } from 'react-feather'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
 
-function limitDateString(date: Date): string {
-  const [first, second] = date.toISOString().split(':')
+// function limitDateString(date: Date): string {
+//   const [first, second] = date.toISOString().split(':')
 
-  return [first, second].join(':')
-}
+//   return [first, second].join(':')
+// }
 
 const customDateOptions: Intl.DateTimeFormatOptions = {
   year: '2-digit',
