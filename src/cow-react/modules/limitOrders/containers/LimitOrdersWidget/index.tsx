@@ -118,6 +118,8 @@ export function LimitOrdersWidget() {
 
     if (!isWrapOrUnwrap) {
       updateLimitOrdersState({
+        inputCurrencyId: outputCurrencyId,
+        outputCurrencyId: inputCurrencyId,
         inputCurrencyAmount: outputCurrencyAmount?.toExact(),
         outputCurrencyAmount: inputCurrencyAmount?.toExact(),
         orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
