@@ -62,7 +62,7 @@ export interface SwapModalHeaderProps {
   onAcceptChanges: () => void
   LightCard: LightCardType
   HighFeeWarning: React.FC<WarningProps>
-  NoImpactWarning: React.FC<WarningProps>
+  NoImpactWarning: React.ReactNode
   allowsOffchainSigning: boolean
 }
 
@@ -234,19 +234,26 @@ SwapModalHeaderProps) {
           />
         </AuxInformationContainer>
       )}
-      <Price trade={trade} width="90%" margin="auto" />
+      <Price
+        trade={trade}
+        // width="90%"
+        margin="auto"
+      />
       {/*<RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
         <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
       </RowBetween>*/}
-      <LightCard style={{ padding: '.75rem', marginTop: '0.5rem' }}>
-        <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
-      </LightCard>
+      {/* <LightCard style={{ padding: '.75rem', marginTop: '0.5rem' }}> */}
+      <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
+      {/* </LightCard> */}
       {showAcceptChanges ? (
         <SwapShowAcceptChanges justify="flex-start" gap={'0px'}>
           <RowBetween>
             <RowFixed>
               <AlertTriangle size={20} style={{ marginRight: '8px', minWidth: 24 }} />
-              <ThemedText.Main color={theme.primary1}>
+              <ThemedText.Main
+                // color={theme.primary1}
+                color={theme.text1} // MOD
+              >
                 <Trans>Price Updated</Trans>
               </ThemedText.Main>
             </RowFixed>
@@ -260,7 +267,14 @@ SwapModalHeaderProps) {
         </SwapShowAcceptChanges>
       ) : null}
 
-      <AutoColumn justify="flex-start" gap="sm" style={{ padding: '.75rem 1rem' }}>
+      <AutoColumn
+        justify="flex-start"
+        gap="sm"
+        style={{
+          // padding: '.75rem 1rem'
+          padding: '24px 16px 16px', // MOD
+        }}
+      >
         {trade.tradeType === TradeType.EXACT_INPUT ? (
           <ThemedText.Italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
             <Trans>
@@ -299,7 +313,7 @@ SwapModalHeaderProps) {
       {/* High Fee Warning */}
       <HighFeeWarning trade={trade} />
       {/* No Impact Warning */}
-      {!priceImpact && <NoImpactWarning margin="0" />}
+      {!priceImpact && NoImpactWarning}
     </AutoColumn>
   )
 }

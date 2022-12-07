@@ -1,37 +1,49 @@
 import styled from 'styled-components/macro'
 import Input from 'components/NumericalInput'
 import Loader from 'components/Loader'
+import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`
-  background: white;
-  border-radius: 12px;
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  flex: 3;
+  background: ${({ theme }) => theme.grey1};
+  border-radius: 16px;
+  padding: 10px 16px;
+  flex: 1 1 70%;
+  min-height: 80px;
+  justify-content: space-between;
+  display: flex;
+  flex-flow: row wrap;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    gap: 10px;
+  `}
 `
 
 export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: 13px;
+  font-weight: 500;
+  width: 100%;
+  color: ${({ theme }) => transparentize(0.3, theme.text1)};
 `
 
 export const MarketPriceButton = styled.button`
-  background-color: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1};
+  white-space: nowrap;
   border: none;
+  font-weight: 500;
   cursor: pointer;
-  border-radius: 16px;
-  padding: 5px 10px;
+  border-radius: 9px;
+  padding: 5px 8px;
+  font-size: 11px;
 `
 
 export const Body = styled.div`
-  padding: 0.5rem 0;
+  padding: 0;
   display: flex;
-`
-
-export const InputWrapper = styled.div`
-  flex: 1;
+  width: 100%;
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
@@ -51,6 +63,7 @@ export const ActiveCurrency = styled.button`
 `
 
 export const ActiveSymbol = styled.span`
+  color: ${({ theme }) => theme.text1};
   font-size: 0.85rem;
   margin-right: 5px;
   font-weight: 500;
@@ -58,6 +71,7 @@ export const ActiveSymbol = styled.span`
 
 export const ActiveIcon = styled.div`
   background-color: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1};
   width: 20px;
   height: 20px;
   border-radius: 50%;

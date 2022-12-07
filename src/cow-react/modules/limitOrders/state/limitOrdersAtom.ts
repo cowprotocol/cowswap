@@ -1,7 +1,6 @@
 import { atomWithStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
-import { TRADE_DEADLINE_DEFAULT } from '@cow/modules/limitOrders/const/trade'
 import { OrderKind } from '@cowprotocol/contracts'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
@@ -12,8 +11,8 @@ export interface LimitOrdersState {
   readonly inputCurrencyAmount: string | null
   readonly outputCurrencyAmount: string | null
   readonly recipient: string | null
-  readonly deadline: number | null
   readonly orderKind: OrderKind
+  readonly isUnlocked: boolean
 }
 
 export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): LimitOrdersState {
@@ -21,8 +20,9 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
     ...getDefaultTradeState(chainId),
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
-    deadline: TRADE_DEADLINE_DEFAULT,
+    recipient: null,
     orderKind: OrderKind.SELL,
+    isUnlocked: false,
   }
 }
 

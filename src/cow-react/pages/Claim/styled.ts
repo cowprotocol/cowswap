@@ -20,8 +20,8 @@ export const InnerPageWrapper = styled.div`
   flex-flow: column wrap;
   color: ${({ theme }) => theme.text1};
   padding: 30px;
-  border: ${({ theme }) => theme.appBody.border};
-  box-shadow: ${({ theme }) => theme.appBody.boxShadow};
+  border: none;
+  box-shadow: ${({ theme }) => theme.boxShadow1};
   background: ${({ theme }) => theme.bg1};
   min-height: 450px;
   justify-content: center;
@@ -160,8 +160,8 @@ export const ClaimSummary = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 8px;
-  background: ${({ theme }) => theme.currencyInput?.background};
-  border: ${({ theme }) => theme.currencyInput?.border};
+  background: ${({ theme }) => theme.grey1};
+  border: 0;
   border-radius: var(--border-radius);
   margin: 0 auto 24px;
   position: relative;
@@ -343,10 +343,6 @@ export const ClaimTable = styled.div`
     min-width: 100%;
     font-size: 16px;
     grid-template-columns: min-content auto auto 240px;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      display: block;
-    `};
 
     input[type='checkbox'] {
       ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -1758,10 +1754,6 @@ export const BannerExplainer = styled.div`
     padding: 24px;
     height: auto;
   `}
-
-  &:hover {
-    border: 4px solid ${({ theme }) => transparentize(0.7, theme.white)};
-  }
 
   > span {
     display: flex;

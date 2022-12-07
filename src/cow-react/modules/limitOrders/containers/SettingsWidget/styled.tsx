@@ -1,11 +1,6 @@
 import styled from 'styled-components/macro'
 import { Settings as SettingsIconRaw } from 'react-feather'
-
-export const SettingsTitle = styled.span`
-  font-size: 14px;
-  font-weight: 700;
-  margin-right: 5px;
-`
+import { transparentize } from 'polished'
 
 export const SettingsButton = styled.div`
   display: flex;
@@ -64,9 +59,17 @@ export const ExpertModeIndicator = styled.div`
 `
 
 export const SettingsIcon = styled(SettingsIconRaw)`
-  height: 20px;
-  width: 20px;
-  > * {
+  height: 18px;
+  width: 18px;
+
+  > path,
+  > circle {
+    transition: stroke 0.3s ease-in-out;
+    stroke: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
+
+  &:hover > path,
+  &:hover > circle {
     stroke: ${({ theme }) => theme.text1};
   }
 `

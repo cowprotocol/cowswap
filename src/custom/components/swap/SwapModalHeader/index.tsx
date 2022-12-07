@@ -1,47 +1,43 @@
 // import { computeTradePriceBreakdown } from '../TradeSummary'
 import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
-import { AutoColumn } from 'components/Column'
 import styled from 'styled-components/macro'
 import { LightCard as LightCardUni } from 'components/Card'
-import { darken, transparentize } from 'polished'
-import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
-import { HighFeeWarning as HighFeeWarningBase, NoImpactWarning as NoImpactWarningBase } from 'components/SwapWarnings'
+import { HighFeeWarning as HighFeeWarningBase } from 'components/SwapWarnings'
 import { useWalletInfo } from 'hooks/useWalletInfo'
+import { NoImpactWarning } from '@cow/modules/trade/pure/NoImpactWarning'
+import { SwapShowAcceptChanges } from 'components/swap/styleds'
+import { transparentize } from 'polished'
+import React from 'react'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
-  background-color: ${({ theme }) => darken(0.06, theme.bg1)};
-  border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
-  ${({ flatBorder = false }) => flatBorder && `border-radius: 20px 20px 0 0;`}
+  background-color: ${({ theme }) => theme.grey1};
+  border: none;
+  ${({ flatBorder = false }) => flatBorder && `border-radius: 20px 20px 0 0;`};
 `
 
 export type LightCardType = typeof LightCard
 
 // targettable by styled injection
 const HighFeeWarning = styled(HighFeeWarningBase)``
-const NoImpactWarning = styled(NoImpactWarningBase)``
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 32px auto 0;
   `};
 
+  ${SwapShowAcceptChanges} {
+    background: ${({ theme }) => transparentize(0.85, theme.alert)};
+    border: 1px solid ${({ theme }) => transparentize(0.75, theme.alert)};
+    padding: 8px 8px 8px 16px;
+    margin: 8px 0 0;
+
+    svg {
+      stroke: ${({ theme }) => theme.alert};
+    }
+  }
+
   svg {
     stroke: ${({ theme }) => theme.text1};
-  }
-
-  ${AutoColumn} > div:not(${HighFeeWarning}):not(${NoImpactWarning}) > div {
-    color: ${({ theme }) => theme.text1};
-  }
-
-  ${AuxInformationContainer}:not(${HighFeeWarning}):not(${NoImpactWarning}) {
-    background-color: ${({ theme }) => theme.bg3};
-    border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
-    border-top: 0;
-
-    &:hover {
-      border: 2px solid ${({ theme }) => transparentize(0.5, theme.bg0)};
-      border-top: 0;
-    }
   }
 `
 
@@ -49,6 +45,8 @@ export default function SwapModalHeader(
   props: Omit<SwapModalHeaderProps, 'HighFeeWarning' | 'NoImpactWarning' | 'LightCard'>
 ) {
   const { allowsOffchainSigning } = useWalletInfo()
+  const NoImpactWarningComponent = <NoImpactWarning isAccepted={true} withoutAccepting={true} />
+
   return (
     <Wrapper>
       <SwapModalHeaderMod
@@ -56,7 +54,7 @@ export default function SwapModalHeader(
         allowsOffchainSigning={allowsOffchainSigning}
         LightCard={LightCard}
         HighFeeWarning={HighFeeWarning}
-        NoImpactWarning={NoImpactWarning}
+        NoImpactWarning={NoImpactWarningComponent}
       />
     </Wrapper>
   )

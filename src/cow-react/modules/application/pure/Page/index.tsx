@@ -2,7 +2,6 @@ import { PropsWithChildren } from 'react'
 
 import styled, { css } from 'styled-components/macro'
 import { WithClassName } from 'types'
-import { transparentize } from 'polished'
 import { Widget } from '@cow/modules/application/pure/Widget'
 
 export const PageWrapper = styled(Widget)`
@@ -13,10 +12,10 @@ export const PageWrapper = styled(Widget)`
 
 export const Title = styled.h1`
   font-size: 32px;
-  margin: 24px 0 16px;
+  margin: 24px 0;
   color: ${({ theme }) => theme.text1};
-  text-shadow: 0px 0px 42px ${({ theme }) => transparentize(0.9, theme.text1)},
-    0px 0px 28px ${({ theme }) => transparentize(0.8, theme.text1)};
+  text-shadow: ${({ theme }) => theme.textShadow1};
+  font-weight: 500;
 
   ${({ theme }) => theme.mediaWidth.upToVerySmall`
     font-size: 24px;
@@ -43,7 +42,7 @@ export const Content = styled.div`
   }
 
   > h2 > b {
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text3};
   }
 
   > h3 {
@@ -54,7 +53,7 @@ export const Content = styled.div`
   > h3::before {
     content: '';
     display: block;
-    border-top: 1px solid ${({ theme }) => theme.border};
+    border-top: 1px solid ${({ theme }) => theme.grey1};
     margin: 34px 0;
     opacity: 0.2;
   }
@@ -109,15 +108,6 @@ export const Content = styled.div`
     line-height: 1.6;
   }
 
-  a {
-    color: ${({ theme }) => theme.text1};
-    transition: color 0.2s ease-in-out;
-
-    &:hover {
-      color: ${({ theme }) => theme.textLink};
-    }
-  }
-
   ol > ol {
     margin: 0 0 24px;
   }
@@ -137,9 +127,8 @@ export const GdocsListStyle = css`
   > ul,
   ol {
     margin: 24px 0;
-    padding: 12px 24px 12px 38px;
-    background: ${({ theme }) => theme.bg2};
-    color: ${({ theme }) => theme.text2};
+    padding: 12px 48px;
+    background: ${({ theme }) => theme.grey1};
     border-radius: 12px;
 
     > li {
@@ -148,10 +137,10 @@ export const GdocsListStyle = css`
       list-style: decimal;
 
       a {
-        color: ${({ theme }) => theme.text2};
+        color: ${({ theme }) => theme.text3};
 
         &:hover {
-          color: ${({ theme }) => theme.primary1};
+          color: ${({ theme }) => theme.text3};
         }
       }
 

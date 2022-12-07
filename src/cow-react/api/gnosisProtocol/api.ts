@@ -119,6 +119,15 @@ export interface OrderMetaData {
   signingScheme: SigningSchemeValue
   status: ApiOrderStatus
   receiver: string
+  class: 'market' | 'limit'
+  // EthFlow related fields
+  ethflowData: EthFlowData
+  onchainUser?: string
+}
+
+type EthFlowData = {
+  userValidTo: number
+  isRefunded: boolean
 }
 
 export interface TradeMetaData {
@@ -367,8 +376,15 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
   }
 }
 
+// ETH-FLOW orders require different quote params
+// check the isEthFlow flag and set in quote req obj
+const ETH_FLOW_AUX_QUOTE_PARAMS = {
+  signingScheme: 'eip1271',
+  onchainOrder: true,
+}
+
 function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
-  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality } = params
+  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality, isEthFlow } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
   const baseParams = {
@@ -383,25 +399,30 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
     priceQuality,
   }
 
-  const finalParams: QuoteQuery =
-    kind === OrderKind.SELL
-      ? {
-          kind: OrderKind.SELL,
-          sellAmountBeforeFee: amount,
-          ...baseParams,
-        }
-      : {
-          kind: OrderKind.BUY,
-          buyAmountAfterFee: amount,
-          ...baseParams,
-        }
+  if (isEthFlow) {
+    console.debug('[API:CowSwap] ETH FLOW ORDER, setting onchainOrder: true, and signingScheme: eip1271')
+  }
 
-  return finalParams
+  if (kind === OrderKind.SELL) {
+    return {
+      ...baseParams,
+      ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),
+      kind: OrderKind.SELL,
+      sellAmountBeforeFee: amount,
+    }
+  } else {
+    return {
+      kind: OrderKind.BUY,
+      buyAmountAfterFee: amount,
+      ...baseParams,
+    }
+  }
 }
 
 export async function getQuote(params: FeeQuoteParams) {
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
+
   const response = await _post(chainId, '/quote', quoteParams)
 
   return _handleQuoteResponse<SimpleGetQuoteResponse>(response, params)
@@ -427,11 +448,12 @@ export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<Pri
     ...params,
     buyToken: baseToken,
     sellToken: quoteToken,
+    isEthFlow: false,
   })
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
-  console.log(`[api:${API_NAME}] Get order for `, chainId, orderId)
+  console.debug(`[api:${API_NAME}] Get order for `, chainId, orderId)
   try {
     const response = await _get(chainId, `/orders/${orderId}`)
 
@@ -448,7 +470,7 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
 }
 
 export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<OrderMetaData[]> {
-  console.log(`[api:${API_NAME}] Get orders for `, chainId, owner, limit, offset)
+  console.debug(`[api:${API_NAME}] Get orders for `, chainId, owner, limit, offset)
 
   const queryString = stringify({ limit, offset }, { addQueryPrefix: true })
 

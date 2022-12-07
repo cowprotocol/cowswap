@@ -12,6 +12,8 @@ import { SupportedChainId } from 'constants/chains'
 import { AutoColumn } from 'components/Column'
 import * as styledEl from './styled'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
+import { EthFlowBanner } from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
+import { Field } from 'state/swap/actions'
 import { TradeApproveButton } from '@cow/common/containers/TradeApprove/TradeApproveButton'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 
@@ -31,6 +33,7 @@ export interface SwapButtonsContext {
   toggleWalletModal: () => void
   hasEnoughWrappedBalanceForSwap: boolean
   swapInputError?: ReactNode
+  onCurrencySelection: (field: Field, currency: Currency) => void
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
@@ -150,6 +153,20 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
         <Trans>Swap</Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
+  ),
+  [SwapButtonState.EthFlowSwap]: (props: SwapButtonsContext) => (
+    <>
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
+        <styledEl.SwapButtonBox>
+          <Trans>Swap</Trans>
+        </styledEl.SwapButtonBox>
+      </ButtonError>
+      <EthFlowBanner
+        hasEnoughWrappedBalance={props.hasEnoughWrappedBalanceForSwap}
+        switchCurrencyCallback={() => props.onCurrencySelection(Field.INPUT, props.wrappedToken)}
+        wrapCallback={props.onEthFlow}
+      />
+    </>
   ),
 }
 

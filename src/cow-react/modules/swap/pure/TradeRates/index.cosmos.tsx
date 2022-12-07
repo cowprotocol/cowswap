@@ -23,7 +23,6 @@ const trade = new TradeGp({
 })
 const defaultProps: TradeRatesProps = {
   trade,
-  isWrapUnwrapMode: false,
   isExpertMode: false,
   allowsOffchainSigning: true,
   isFeeGreater: false,

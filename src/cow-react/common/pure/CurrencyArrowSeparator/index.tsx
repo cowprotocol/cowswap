@@ -5,16 +5,23 @@ import * as styledEl from './styled'
 export interface CurrencyArrowSeparatorProps {
   isLoading: boolean
   withRecipient: boolean
+  hasSeparatorLine?: boolean
+  isCollapsed?: boolean
   onSwitchTokens(): void
+  border?: boolean
 }
 
 export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
-  const { isLoading, onSwitchTokens, withRecipient } = props
+  const { isLoading, onSwitchTokens, withRecipient, isCollapsed = true, hasSeparatorLine, border } = props
 
   return (
-    <styledEl.Box withRecipient={withRecipient} onClick={onSwitchTokens}>
-      <styledEl.LoadingWrapper isLoading={isLoading}>
-        {isLoading ? <styledEl.CowImg src={loadingCowWebp} alt="loading" /> : <styledEl.ArrowDownIcon />}
+    <styledEl.Box withRecipient={withRecipient} isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine}>
+      <styledEl.LoadingWrapper isLoading={isLoading} border={border}>
+        {isLoading ? (
+          <styledEl.CowImg src={loadingCowWebp} alt="loading" />
+        ) : (
+          <styledEl.ArrowDownIcon onClick={onSwitchTokens} />
+        )}
       </styledEl.LoadingWrapper>
     </styledEl.Box>
   )

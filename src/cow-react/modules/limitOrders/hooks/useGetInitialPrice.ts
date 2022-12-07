@@ -1,122 +1,83 @@
-import { useEffect, useState, useCallback } from 'react'
-import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useEffect, useMemo, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { Currency } from '@uniswap/sdk-core'
-import BigNumber from 'bignumber.js'
+import { Currency, Fraction } from '@uniswap/sdk-core'
+import { useAsyncMemo } from 'use-async-memo'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
-import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
-import { Field } from 'state/swap/actions'
-import { formatSmart } from 'utils/format'
+import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
+import { DEFAULT_DECIMALS } from 'custom/constants'
+
+type PriceResult = number | Error | undefined
+
+const parsePrice = (price: number, currency: Currency) => price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
+
+async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
+  const currencyAddress = getAddress(currency)
+
+  if (!chainId || !currency) {
+    return
+  }
+
+  try {
+    if (currency.isNative || !currencyAddress) {
+      return parsePrice(1, currency)
+    }
+
+    const result = await getNativePrice(chainId, currencyAddress)
+
+    if (!result) {
+      throw new Error('Cannot parse initial price')
+    }
+
+    const price = parsePrice(result.price, currency)
+
+    if (!price) {
+      throw new Error('Cannot parse initial price')
+    }
+
+    return price
+  } catch (error) {
+    return error
+  }
+}
 
 // Fetches the INPUT and OUTPUT price and calculates initial Active rate
-export function useGetInitialPrice(): { price: string | null | undefined } {
+// When return null it means we failed on price loading
+export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
   const { chainId } = useWeb3React()
-
-  // Global state
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const { isInversed } = useAtomValue(limitRateAtom)
+  const [isInputPriceLoading, setInputPriceLoading] = useState(false)
+  const [isOutputPriceLoading, setOutputPriceLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Rate state
-  const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const inputPrice = useAsyncMemo(() => {
+    setInputPriceLoading(true)
+    return requestPriceForCurrency(chainId, inputCurrency).finally(() => {
+      setInputPriceLoading(false)
+    })
+  }, [chainId, inputCurrency])
 
-  // Local state
-  const [inputPrice, setInputPrice] = useState<BigNumber | null>(null)
-  const [outputPrice, setOutputPrice] = useState<BigNumber | null>(null)
-  const [finalPrice, setFinalPrice] = useState<string | null | undefined>(null)
-  const [isInputLoading, setInputLoading] = useState<boolean>(false)
-  const [isOutputLoading, setOutputLoading] = useState<boolean>(false)
+  const outputPrice = useAsyncMemo(() => {
+    setOutputPriceLoading(true)
+    return requestPriceForCurrency(chainId, outputCurrency).finally(() => {
+      setOutputPriceLoading(false)
+    })
+  }, [chainId, outputCurrency])
 
-  // Get single price and set the local state
-  const fetchPrice = useCallback(
-    async (currency: Currency, field: Field) => {
-      // Set INPUT or OUTPUT local state based on field param
-      const setPrice = field === Field.INPUT ? setInputPrice : setOutputPrice
-      const setLoading = field === Field.INPUT ? setInputLoading : setOutputLoading
-
-      // Handle reset state
-      const resetState = () => {
-        setPrice(null)
-        setFinalPrice(null)
-        setLoading(false)
-      }
-
-      // Set loading true for current field
-      setLoading(true)
-
-      // Get token address
-      const address = getAddress(currency)
-
-      // Handle if its native currency
-      if (currency.isNative) {
-        setPrice(new BigNumber(1))
-        setLoading(false)
-        return
-      }
-
-      if (!chainId || !address) {
-        resetState()
-        return
-      }
-
-      try {
-        // Fetch the price
-        const res = await getNativePrice(chainId, address)
-
-        if (res?.price) {
-          // Convert to BigNumber
-          const price = new BigNumber(res.price)
-
-          // Adjust for decimals (some tokens use 18 some 6, USDC for example uses 6)
-          const adjusted = price.div(10 ** (18 - currency.decimals))
-
-          // Set the price in local state
-          setPrice(adjusted)
-          setLoading(false)
-        } else {
-          resetState()
-        }
-      } catch (err) {
-        resetState()
-      }
-    },
-    [chainId]
-  )
-
-  // Handle price fetching
-  useEffect(() => {
-    if (!inputCurrency || !outputCurrency || !chainId) {
-      return
+  const price = useMemo(() => {
+    if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
+      return null
     }
 
-    // Fetch input currency price
-    fetchPrice(inputCurrency, Field.INPUT)
+    return new Fraction(inputPrice, outputPrice)
+  }, [outputPrice, inputPrice])
 
-    // Fetch output currency price
-    fetchPrice(outputCurrency, Field.OUTPUT)
-  }, [chainId, fetchPrice, inputCurrency, outputCurrency, updateLimitRateState])
-
-  // Handle final price calculation
+  // To avoid loading state blinking
   useEffect(() => {
-    if (!inputPrice || !outputPrice) {
-      return
-    }
+    setIsLoading(isInputPriceLoading || isOutputPriceLoading)
+  }, [isInputPriceLoading, isOutputPriceLoading])
 
-    // Calculate the new initial price
-    const newPrice = isInversed ? outputPrice.div(inputPrice) : inputPrice.div(outputPrice)
-
-    // Update final price
-    setFinalPrice(formatSmart(newPrice, 5))
-  }, [inputPrice, isInversed, outputPrice, updateLimitRateState])
-
-  // Handle loading
-  useEffect(() => {
-    const isLoading = isInputLoading || isOutputLoading
-    updateLimitRateState({ isLoading })
-  }, [isInputLoading, isOutputLoading, updateLimitRateState])
-
-  return { price: finalPrice }
+  return { price, isLoading }
 }

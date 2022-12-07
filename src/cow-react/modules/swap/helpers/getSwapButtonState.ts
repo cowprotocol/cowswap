@@ -3,6 +3,7 @@ import { WrapType } from 'hooks/useWrapCallback'
 import { QuoteError } from 'state/price/actions'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import TradeGp from 'state/swap/TradeGp'
+import { getEthFlowEnabled } from '@cow/modules/swap/helpers/getEthFlowEnabled'
 
 export enum SwapButtonState {
   SwapIsUnsupported = 'SwapIsUnsupported',
@@ -25,6 +26,7 @@ export enum SwapButtonState {
   ExpertModeSwap = 'ExpertModeSwap',
   RegularSwap = 'RegularSwap',
   SwapWithWrappedToken = 'SwapWithWrappedToken',
+  EthFlowSwap = 'EthFlowSwap',
 }
 
 export interface SwapButtonStateParams {
@@ -44,6 +46,7 @@ export interface SwapButtonStateParams {
   swapCallbackError: string | null
   trade: TradeGp | undefined | null
   isNativeIn: boolean
+  isSmartContractWallet: boolean
   wrappedToken: Token
 }
 
@@ -119,7 +122,11 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.isNativeIn) {
-    return SwapButtonState.SwapWithWrappedToken
+    if (getEthFlowEnabled(input.isSmartContractWallet)) {
+      return SwapButtonState.EthFlowSwap
+    } else {
+      return SwapButtonState.SwapWithWrappedToken
+    }
   }
 
   if (input.isExpertMode) {

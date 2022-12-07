@@ -29,7 +29,7 @@ import {
 import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
 import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
-import useIsSmartContractWallet from 'hooks/useIsSmartContractWallet'
+import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
 import { useTradeTypeInfo } from '@cow/modules/trade'
@@ -81,7 +81,7 @@ export const FlyoutMenu = styled.div`
   `} */
 `
 // mod: actually, this is closer to original version but I haven't yet pulled latest from uniswap
-const FlyoutMenuContents = styled.div`
+export const FlyoutMenuContents = styled.div`
   align-items: flex-start;
   background-color: ${({ theme }) => theme.bg1};
   border: 1px solid ${({ theme }) => theme.bg0};
@@ -97,19 +97,17 @@ const FlyoutMenuContents = styled.div`
     margin-bottom: 5px;
   }
 
-  // mod
-  min-width: 175px;
-  z-index: 99;
-  @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    top: 50px;
-  }
   ${ActiveRowWrapper} {
     background-color: ${({ theme }) => transparentize(0.4, theme.bg4)};
   }
 `
 const FlyoutRow = styled.div<{ active: boolean }>`
   align-items: center;
-  background-color: ${({ active, theme }) => (active ? theme.primary1 : 'transparent')};
+  background-color: ${({ active, theme }) =>
+    active
+      ? // theme.primary1
+        theme.bg2 // MOD
+      : 'transparent'};
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -118,10 +116,19 @@ const FlyoutRow = styled.div<{ active: boolean }>`
   padding: 6px 8px;
   text-align: left;
   width: 100%;
-  color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
+  color: ${({ active, theme }) =>
+    active
+      ? // theme.text2
+        theme.white // MOD
+      : theme.text1};
   &:hover {
     color: ${({ theme, active }) => !active && theme.text1};
-    background: ${({ theme, active }) => !active && theme.bg4};
+    background: ${
+      ({ theme, active }) =>
+        !active &&
+        // theme.bg4
+        transparentize(0.9, theme.text1) // MOD
+    };
   }
   transition: background 0.13s ease-in-out;
 `
@@ -137,9 +144,10 @@ export const FlyoutRowActiveIndicator = styled.div<{ active: boolean }>`
   height: 16px;
 ` */
 const Logo = styled.img`
-  height: 20px;
-  // width: 20px; // mod
-  width: 16px;
+  // height: 20px;
+  // width: 20px;
+  width: 24px; // MOD
+  height: 24px; // MOD
   margin-right: 8px;
 `
 const NetworkLabel = styled.div`
@@ -179,10 +187,18 @@ export const SelectorControls = styled.div<{ supportedChain: boolean }>`
   padding: 6px 8px;
   ${({ supportedChain, theme }) =>
     !supportedChain &&
+    // `
+    //   color: white;
+    //   background-color: ${theme.red1};
+    //   border: 2px solid ${theme.red1};
+    // `}
+
+    // MOD
+    // Todo: Prevent usage of !important
     `
-      color: white;
-      background-color: ${theme.red1};
-      border: 2px solid ${theme.red1};
+      color: ${theme.danger}!important;
+      background: ${transparentize(0.85, theme.danger)}!important;
+      border: 2px solid ${transparentize(0.5, theme.danger)}!important;
     `}
   :focus {
     background-color: ${({ theme }) => darken(0.1, theme.red1)};
@@ -432,7 +448,9 @@ export default function NetworkSelector() {
           failedSwitchNetwork: chainId as SupportedChainId,
           unsupportedNetwork: true,
           styles: css`
-            background: ${({ theme }) => theme.yellow3};
+            /* background: ${({ theme }) => theme.yellow3}; */
+            background: ${({ theme }) => theme.alert}; // mod
+            color: ${({ theme }) => theme.black}; // mod
           `,
         },
         POPUP_KEY,

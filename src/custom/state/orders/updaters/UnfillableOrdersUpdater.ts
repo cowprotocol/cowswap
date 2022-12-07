@@ -16,6 +16,8 @@ import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { priceOutOfRangeAnalytics } from 'components/analytics'
 import { GpPriceStrategy } from 'state/gas/atoms'
 import { supportedChainId } from 'utils/supportedChainId'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -38,11 +40,17 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     quoteToken = order.sellToken
   }
 
+  const isEthFlow = order.sellToken === NATIVE_CURRENCY_BUY_ADDRESS
+  if (isEthFlow) {
+    console.debug('[UnfillableOrderUpdater] - Native sell swap detected. Using wrapped token address for quotes')
+  }
+
   const quoteParams = {
     chainId,
     amount,
     kind: order.kind,
-    sellToken: order.sellToken,
+    // we need to get wrapped token quotes (native quotes will fail)
+    sellToken: isEthFlow ? WRAPPED_NATIVE_CURRENCY[chainId].address : order.sellToken,
     buyToken: order.buyToken,
     baseToken,
     quoteToken,
@@ -51,6 +59,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     validTo: timestamp(order.validTo),
     userAddress: order.owner,
     receiver: order.receiver,
+    isEthFlow,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })

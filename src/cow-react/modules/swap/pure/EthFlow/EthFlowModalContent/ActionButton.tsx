@@ -9,8 +9,9 @@ const ButtonWrapper = styled.div`
   justify-content: center;
   gap: 16px;
   margin-top: 8px;
+
   > button {
-    min-width: 90%;
+    min-width: 100%;
     min-height: 60px;
   }
 `

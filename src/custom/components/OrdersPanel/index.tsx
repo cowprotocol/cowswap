@@ -1,12 +1,10 @@
-import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import AccountDetails from 'components/AccountDetails'
-import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { OrderStatus } from 'state/orders/actions'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { transparentize } from 'polished'
+import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 
 const SideBar = styled.div`
   display: flex;
@@ -17,7 +15,7 @@ const SideBar = styled.div`
   top: 0;
   right: 0;
   width: 100%;
-  max-width: 750px;
+  max-width: 850px;
   height: 80vh;
   border-radius: 24px;
   margin: auto;
@@ -28,12 +26,11 @@ const SideBar = styled.div`
   cursor: default;
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
-  box-shadow: 0 16px 32px 0 rgb(0 0 0 / 5%);
-  animation: slideIn 0.3s cubic-bezier(0.87, 0, 0.13, 1);
-  background: ${({ theme }) => theme.card.background2};
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
+  box-shadow: ${({ theme }) => theme.boxShadow1};
+  background: ${({ theme }) => theme.bg1};
+  scrollbar-color: ${({ theme }) => `${transparentize(0.5, theme.text1)} ${theme.bg1}`};
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`    
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
     height: 100%;
     max-width: 100%;
@@ -49,7 +46,7 @@ const SideBar = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.card.border};
+    background: ${({ theme }) => `${transparentize(0.5, theme.text1)}`};
     border: 4px solid transparent;
     border-radius: 16px;
     background-clip: padding-box;
@@ -60,26 +57,6 @@ const SideBar = styled.div`
   &::-webkit-scrollbar-corner {
     height: 6px;
   }
-
-  @keyframes slideIn {
-    from {
-      transform: translateY(-100vh);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`    
-  @keyframes slideIn {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-  `};
 `
 
 const SidebarBackground = styled.div`
@@ -89,10 +66,10 @@ const SidebarBackground = styled.div`
   z-index: 1;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => transparentize(0.4, theme.black)};
+  background: ${({ theme }) => transparentize(0.1, theme.black)};
   backdrop-filter: blur(3px);
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`    
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `};
 `
@@ -104,6 +81,7 @@ const Header = styled.div`
   padding: 20px 30px;
   align-items: center;
   transition: opacity 0.2s ease-in-out;
+  color: ${({ theme }) => theme.text1};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     top: 0;
@@ -112,7 +90,7 @@ const Header = styled.div`
     position: sticky;
     left: 0;
     height: 52px;
-    background: ${({ theme }) => theme.card.background2};
+    background: ${({ theme }) => theme.bg1};
   `};
 
   &:hover {
@@ -121,14 +99,20 @@ const Header = styled.div`
   }
 
   > strong {
-    font-size: 15px;
-    ${({ theme }) => theme.text1};
+    font-size: 24px;
+    color: inherit;
   }
 `
 
 const CloseIcon = styled(Close)`
-  path {
-    stroke: ${({ theme }) => theme.text4};
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+  stroke: ${({ theme }) => theme.text1};
+  width: 24px;
+  height: 24px;
+
+  &:hover {
+    opacity: 1;
   }
 `
 
@@ -140,12 +124,6 @@ const Wrapper = styled.div`
   width: 100%;
 `
 
-const isPending = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.PENDING || data.status === OrderStatus.PRESIGNATURE_PENDING
-
-const isConfirmed = (data: TransactionAndOrder) =>
-  data.status === OrderStatus.FULFILLED || data.status === OrderStatus.EXPIRED || data.status === OrderStatus.CANCELLED
-
 export interface OrdersPanelProps {
   handleCloseOrdersPanel: () => void
 }
@@ -154,19 +132,7 @@ export default function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps
   const walletInfo = useWalletInfo()
   const toggleWalletModal = useToggleWalletModal()
 
-  // Returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
-  const allRecentActivity = useRecentActivity()
-
-  const { pendingActivity, confirmedActivity } = useMemo(() => {
-    // Separate the array into 2: PENDING and FULFILLED(or CONFIRMED)+EXPIRED
-    const pendingActivity = allRecentActivity.filter(isPending).map((data) => data.id)
-    const confirmedActivity = allRecentActivity.filter(isConfirmed).map((data) => data.id)
-
-    return {
-      pendingActivity,
-      confirmedActivity,
-    }
-  }, [allRecentActivity])
+  const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
   const { active, ensName } = walletInfo
   const ENSName = ensName

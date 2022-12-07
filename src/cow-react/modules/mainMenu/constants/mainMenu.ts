@@ -1,5 +1,7 @@
 import { Routes } from '@cow/constants/routes'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
+import { LIMIT_ORDERS_ENABLED } from '@cow/constants/featureFlags'
+import { FeatureFlag } from '@cow/utils/featureFlags'
 import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
 
 // Assets
@@ -117,7 +119,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
   },
 ]
 
-if (localStorage.getItem('enableLimitOrders')) {
+if (FeatureFlag.get(LIMIT_ORDERS_ENABLED)) {
   MAIN_MENU.splice(1, 0, {
     id: MainMenuItemId.LIMIT_ORDERS,
     kind: MenuItemKind.DYNAMIC_LINK,

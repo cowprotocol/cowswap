@@ -1,10 +1,11 @@
-import { HighFeeWarning, NoImpactWarning } from 'components/SwapWarnings'
-import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
+import { HighFeeWarning } from 'components/SwapWarnings'
 import { CompatibilityIssuesWarning } from '@cow/modules/swap/pure/CompatibilityIssuesWarning'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'
 import React from 'react'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
+import { NoImpactWarning } from '@cow/modules/trade/pure/NoImpactWarning'
+import styled from 'styled-components/macro'
 
 export interface NewSwapWarningsTopProps {
   trade: TradeGp | undefined
@@ -23,6 +24,10 @@ export interface NewSwapWarningsBottomProps {
   currencyIn: Currency | undefined
   currencyOut: Currency | undefined
 }
+
+const StyledNoImpactWarning = styled(NoImpactWarning)`
+  margin-bottom: 15px;
+`
 
 export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTopProps) {
   const {
@@ -44,17 +49,13 @@ export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTop
         trade={trade}
         acceptedStatus={feeWarningAccepted}
         acceptWarningCb={!isExpertMode && account ? () => setFeeWarningAccepted((state) => !state) : undefined}
-        width="99%"
-        padding="5px 15px"
       />
-      <NoImpactWarning
-        trade={trade}
-        hide={hideUnknownImpactWarning}
-        acceptedStatus={impactWarningAccepted}
-        acceptWarningCb={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
-        width="99%"
-        padding="5px 15px"
-      />
+      {!hideUnknownImpactWarning && (
+        <StyledNoImpactWarning
+          isAccepted={impactWarningAccepted}
+          acceptCallback={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
+        />
+      )}
     </>
   )
 }, genericPropsChecker)
@@ -73,8 +74,6 @@ export const NewSwapWarningsBottom = React.memo(function (props: NewSwapWarnings
           isSupportedWallet={isSupportedWallet}
         />
       )}
-
-      <NetworkAlert />
     </>
   )
 }, genericPropsChecker)

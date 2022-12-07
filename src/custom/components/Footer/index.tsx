@@ -1,11 +1,63 @@
 import styled from 'styled-components/macro'
+import { useIsDarkMode } from 'state/user/hooks'
+import { Version } from '../Version'
+import { Polling } from '../Header/Polling'
+import SVG from 'react-inlinesvg'
+import { footerImage } from 'theme/cowSwapAssets'
 
-import Version from '../Version'
-// import ClickWrap from '../ClickWrap'
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0 24px 16px;
+
+  > svg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    z-index: -1;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      left: initial;
+      bottom: initial;
+      top: 0;
+      margin: 24px auto 0;
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 120px auto 0;
+    `}
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-flow: column wrap;
+    margin: 24px auto 0;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 56px auto 160px;
+  `}
+`
 
 const FooterVersion = styled(Version)`
-  margin-right: auto;
-  min-width: max-content;
+  margin: 0 auto 0 0;
+  padding: 0;
+  flex-flow: row wrap;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: 0 auto;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-flow: column wrap;
+    width: 100%;
+    gap: 24px;
+  `}
 
   > div {
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -14,30 +66,14 @@ const FooterVersion = styled(Version)`
   }
 `
 
-const Wrapper = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
-  align-items: center;
-  justify-content: space-evenly;
-  margin: auto 16px;
-  width: 100%;
+export default function Footer() {
+  const darkMode = useIsDarkMode()
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin: auto 0 100px;
-  `}
-`
-
-const FooterWrapper = styled.div`
-  width: 100%;
-`
-
-export default function Footer({ children }: { children?: React.ReactChildren }) {
   return (
     <Wrapper>
-      {/* <ClickWrap /> */}
-      <FooterWrapper>
-        <FooterVersion />
-        {children}
-      </FooterWrapper>
+      <FooterVersion />
+      <Polling />
+      <SVG src={footerImage(darkMode)} description="CoW Swap footer image" />
     </Wrapper>
   )
 }

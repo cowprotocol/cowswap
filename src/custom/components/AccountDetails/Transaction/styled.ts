@@ -14,7 +14,7 @@ export const TransactionWrapper = styled.div`
   font-size: initial;
   display: flex;
   padding: 22px;
-  border: 1px solid ${({ theme }) => theme.card.border};
+  border: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -232,14 +232,19 @@ export const StatusLabel = styled.div<{
   isPending: boolean
   isCancelling: boolean
   isPresignaturePending: boolean
+  isCreating: boolean
   color: string
 }>`
   height: 28px;
   width: 100px;
-  ${({ isPending, isPresignaturePending, isCancelling, theme }) =>
-    !isCancelling && (isPending || isPresignaturePending) && `border:  1px solid ${theme.card.border};`}
-  color: ${({ isPending, isPresignaturePending, theme, color }) =>
-    isPending || isPresignaturePending ? theme.text1 : color === 'success' ? theme.success : theme.attention};
+  ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
+    !isCancelling && (isPending || isPresignaturePending || isCreating) && `border:  1px solid ${theme.card.border};`}
+  color: ${({ isPending, isPresignaturePending, isCreating, theme, color }) =>
+    isPending || isPresignaturePending || isCreating
+      ? theme.text1
+      : color === 'success'
+      ? theme.success
+      : theme.attention};
   position: relative;
   border-radius: 4px;
   display: flex;
@@ -258,8 +263,8 @@ export const StatusLabel = styled.div<{
 
   &::before {
     content: '';
-    background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, theme }) =>
-      !isCancelling && isPending
+    background: ${({ color, isTransaction, isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
+      !isCancelling && (isPending || isCreating)
         ? 'transparent'
         : isPresignaturePending || (isPending && isTransaction)
         ? theme.pending
@@ -275,7 +280,7 @@ export const StatusLabel = styled.div<{
     opacity: 0.15;
   }
 
-  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending }) =>
+  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending, isCreating }) =>
     (isCancelling || isPresignaturePending || (isPending && isTransaction)) &&
     css`
       &::after {
@@ -285,23 +290,10 @@ export const StatusLabel = styled.div<{
         bottom: 0;
         left: 0;
         transform: translateX(-100%);
-        background-image: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0) 0,
-          ${transparentize(0.3, theme.card.background2)} 20%,
-          ${theme.card.background2} 60%,
-          rgba(255, 255, 255, 0)
-        );
-        animation: shimmer 2s infinite;
+        ${theme.shimmer}; // shimmer effect
         content: '';
       }
     `}
-
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
-  }
 
   > svg {
     margin: 0 5px 0 0;
@@ -311,8 +303,12 @@ export const StatusLabel = styled.div<{
   }
 
   > svg > path {
-    fill: ${({ theme, color, isPending, isPresignaturePending }) =>
-      isPending || isPresignaturePending ? theme.text1 : color === 'success' ? theme.success : theme.attention};
+    fill: ${({ theme, color, isPending, isPresignaturePending, isCreating }) =>
+      isPending || isPresignaturePending || isCreating
+        ? theme.text1
+        : color === 'success'
+        ? theme.success
+        : theme.attention};
   }
 `
 
@@ -324,12 +320,12 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   font-size: 12px;
   line-height: 1.1;
   margin: 7px auto 0;
-  color: ${({ isCancelling, theme }) => (isCancelling ? theme.primary1 : 'inherit')};
+  color: ${({ isCancelling, theme }) => (isCancelling ? theme.text1 : 'inherit')};
 
   > ${LinkStyledButton} {
     margin: 2px 0;
     opacity: 1;
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text1};
   }
 `
 
@@ -363,7 +359,7 @@ export const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
-  background: ${({ theme }) => theme.bg4};
+  background: ${({ theme }) => theme.bg1};
 `
 
 export const TransactionAlertMessage = styled.div<{ type?: string }>`
@@ -482,10 +478,10 @@ export const ActivityVisual = styled.div`
     padding: 2px;
     box-sizing: content-box;
     box-shadow: none;
-    background: ${({ theme }) => theme.transaction.tokenBackground};
+    background: ${({ theme }) => theme.white};
     color: ${({ theme }) =>
       theme.transaction.tokenColor}!important; // TODO: Fix MOD file to not require this !important property value.
-    border: 2px solid ${({ theme }) => theme.transaction.tokenBorder};
+    border: 2px solid ${({ theme }) => theme.bg1};
   }
 
   ${StyledLogo}:not(:first-child):last-child {

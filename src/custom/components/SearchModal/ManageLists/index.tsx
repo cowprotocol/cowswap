@@ -1,4 +1,4 @@
-import { ManageLists as ManageListsMod, ListContainer } from './ManageListsMod'
+import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { useWeb3React } from '@web3-react/core'
 import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
@@ -9,6 +9,8 @@ import Row, { RowFixed, RowBetween } from 'components/Row'
 import CardUni from 'components/Card'
 import styled from 'styled-components/macro'
 import { TextDot } from '@src/components/SearchModal/styleds'
+import { transparentize } from 'polished'
+import { ButtonPrimary } from 'components/Button'
 
 export interface ListRowProps {
   acceptListUpdate: (url: string) => ReturnType<typeof acceptListUpdate>
@@ -22,38 +24,45 @@ const Wrapper = styled.div`
   height: 100%;
 
   ${ListContainer} {
-    ${({ theme }) => theme.neumorphism.boxShadow}
+    border-top: 1px solid ${({ theme }) => theme.grey1};
     padding: 1rem;
     padding-bottom: 80px;
+
+    svg > path,
+    svg > circle {
+      stroke: ${({ theme }) => theme.text1};
+    }
+  }
+
+  ${PopoverContainer} {
+    background: ${({ theme }) => theme.bg1};
   }
 `
 
 export const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasActiveTokens: boolean }>`
-  background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg4)};
+  background-color: ${({ bgColor, active, theme }) =>
+    active ? `${transparentize(0.75, bgColor)}` ?? 'transparent' : theme.bg1};
   opacity: ${({ hasActiveTokens }) => (hasActiveTokens ? 1 : 0.4)};
   transition: 0.2s;
   align-items: center;
   padding: 1rem;
   border-radius: 20px;
+  border: 1px solid ${({ theme }) => theme.grey1};
 
   ${Row}, ${RowFixed}, ${RowBetween} {
     > div {
-      color: ${({ active, theme }) => (active ? theme.text2 : theme.text1)};
+      color: ${({ active, theme }) => (active ? theme.text1 : theme.text2)};
     }
   }
 `
 
 export const Card = styled(CardUni)`
-  background: ${({ theme }) => theme.bg4};
+  background: ${({ theme }) => theme.bg1};
 
   ${Row},
   ${Row} > div > div,
   ${Row} > div > div > div {
     color: ${({ theme }) => theme.text1};
-  }
-
-  svg > * {
-    stroke: ${({ theme }) => theme.text1};
   }
 
   ${Row} > img {
@@ -65,6 +74,11 @@ export const Card = styled(CardUni)`
 
   ${TextDot} {
     background: ${({ theme }) => theme.text1};
+  }
+
+  ${ButtonPrimary} {
+    min-height: auto;
+    padding: 8px 12px;
   }
 `
 

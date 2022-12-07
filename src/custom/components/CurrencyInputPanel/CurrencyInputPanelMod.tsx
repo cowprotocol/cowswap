@@ -4,7 +4,7 @@ import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
-import { darken } from 'polished'
+import { lighten } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
@@ -83,6 +83,11 @@ export const AuxInformationContainer = styled(Container)<{
 }>`
   margin: ${({ margin = '0 auto' }) => margin};
   border-radius: 0 0 15px 15px;
+  border: 2px solid ${({ theme, hideInput }) => (hideInput ? theme.grey1 : theme.bg2)};
+
+  &:hover {
+    border: 2px solid ${({ theme, hideInput }) => (hideInput ? theme.grey1 : theme.bg2)};
+  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: auto;
@@ -142,8 +147,7 @@ export const AuxInformationContainer = styled(Container)<{
 
 export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: boolean; hideInput?: boolean }>`
   align-items: center;
-  background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.primary1)};
-  box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
+  background-color: ${({ selected, theme }) => (selected ? theme.bg1 : lighten(0.1, theme.bg1))};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
   cursor: pointer;
   border-radius: 16px;
@@ -159,7 +163,7 @@ export const CurrencySelect = styled(ButtonGray)<{ visible: boolean; selected: b
   margin-right: ${({ hideInput }) => (hideInput ? '0' : '12px')};
   :focus,
   :hover {
-    background-color: ${({ selected, theme }) => (selected ? theme.bg2 : darken(0.05, theme.primary1))};
+    background-color: ${({ selected, theme }) => (selected ? theme.bg1 : lighten(0.1, theme.bg1))};
   }
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
@@ -180,7 +184,7 @@ export const LabelRow = styled.div`
   padding: 0 1rem 1rem;
   span:hover {
     cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.text2)};
+    color: ${({ theme }) => lighten(0.2, theme.text2)};
   }
 `
 
@@ -244,9 +248,14 @@ export const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }
 export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   // CSS Override
 
+  ${StyledTokenName} {
+    font-size: 19px;
+  }
+
   ${InputPanel} {
     background: transparent;
     color: ${({ theme }) => theme.currencyInput?.color};
+    border-radius: none;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       flex-flow: column wrap;
@@ -301,22 +310,20 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
   }
 
   ${Container} {
-    background: ${({ theme }) => (theme.currencyInput?.background ? theme.currencyInput?.background : theme.bg1)};
-    border: ${({ theme }) =>
-      theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
+    background-color: ${({ theme }) => theme.input?.bg1};
+    border: none;
+    border-radius: 16px;
 
     &:hover {
-      border: ${({ theme }) =>
-        theme.currencyInput?.border ? theme.currencyInput?.border : `border: 1px solid ${theme.bg2}`};
     }
   }
 
   ${AuxInformationContainer} {
-    background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
+    background-color: ${({ theme }) => lighten(0.0, theme.bg1 || theme.bg3)};
     border-top: none;
 
     &:hover {
-      background-color: ${({ theme }) => darken(0.0, theme.bg1 || theme.bg3)};
+      background-color: ${({ theme }) => lighten(0.0, theme.bg1 || theme.bg3)};
       border-top: none;
     }
   }
@@ -329,36 +336,23 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
         display: inline-block;
 
         overflow: hidden;
-        &::after {
+        &::before {
           position: absolute;
           top: 0;
           right: 0;
           bottom: 0;
           left: 0;
           transform: translateX(-100%);
-          background-image: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0,
-            ${theme.shimmer1} 20%,
-            ${theme.shimmer2} 60%,
-            rgba(255, 255, 255, 0)
-          );
-          animation: shimmer 2s infinite;
+          ${theme.shimmer}; // shimmer effect
           content: '';
-        }
-
-        @keyframes shimmer {
-          100% {
-            transform: translateX(100%);
-          }
         }
       }
     `}
 
   ${CurrencySelect} {
     z-index: 2;
-    color: ${({ selected, theme }) =>
-      selected ? theme.buttonCurrencySelect.colorSelected : theme.buttonCurrencySelect.color};
+    background: ${({ selected, theme }) => (selected ? theme.bg1 : theme.bg2)};
+    color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
     transition: background-color 0.2s ease-in-out;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -366,15 +360,14 @@ export const Wrapper = styled.div<{ selected: boolean; showLoader: boolean }>`
     `};
 
     &:focus {
-      background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.primary1)};
+      background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.bg2)};
     }
     &:hover {
-      background-color: ${({ theme }) => darken(0.05, theme.primary1)};
+      background-color: ${({ selected, theme }) => (selected ? lighten(0.1, theme.bg1) : lighten(0.1, theme.bg2))};
     }
 
     path {
-      stroke: ${({ selected, theme }) =>
-        selected ? theme.buttonCurrencySelect.colorSelected : theme.buttonCurrencySelect.color};
+      stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
       stroke-width: 1.5px;
     }
   }

@@ -16,16 +16,16 @@ export const Wrapper = styled.div`
   ${SearchInput} {
     border: none;
     transition: background 0.3s ease-in-out;
-    ${({ theme }) => theme.neumorphism.boxShadow}
+    background: ${({ theme }) => theme.grey1};
   }
 
   ${SearchInput}::placeholder {
     font-size: 16px;
-    color: ${({ theme }) => transparentize(0.5, theme.text1)};
+    color: ${({ theme }) => transparentize(0.2, theme.text1)};
   }
 
   ${SearchInput}:focus::placeholder {
-    color: ${({ theme }) => transparentize(0.7, theme.text1)};
+    color: ${({ theme }) => transparentize(0.9, theme.text1)};
   }
 
   ${Separator} {
@@ -34,7 +34,6 @@ export const Wrapper = styled.div`
 `
 
 const ToggleWrapper = styled(RowBetween)`
-  background-color: ${({ theme }) => theme.bg4};
   border-radius: 12px;
   padding: 6px;
 `
@@ -47,7 +46,7 @@ const ToggleOption = styled.div<{ active?: boolean }>`
   justify-content: center;
   border-radius: 12px;
   font-weight: 600;
-  background-color: ${({ theme, active }) => (active ? theme.bg1 : theme.bg4)};
+  background-color: ${({ theme, active }) => (active ? theme.bg1 : theme.bg1)};
   color: ${({ theme, active }) => (active ? theme.text1 : theme.disabled)};
   user-select: none;
 

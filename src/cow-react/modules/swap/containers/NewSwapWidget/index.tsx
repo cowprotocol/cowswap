@@ -42,6 +42,7 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 import { useSetupTradeState } from '@cow/modules/trade'
+import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 
 export function NewSwapWidget() {
   useSetupTradeState()
@@ -178,7 +179,6 @@ export function NewSwapWidget() {
     userAllowedSlippage,
     isFeeGreater,
     fee,
-    isWrapUnwrapMode,
     discount: subsidyAndBalance.subsidy.discount || 0,
   }
 
@@ -192,8 +192,9 @@ export function NewSwapWidget() {
           <TradeRates {...tradeRatesProps} />
           <NewSwapWarningsTop {...swapWarningsTopProps} />
           <SwapButtons {...swapButtonContext} />
+          <NewSwapWarningsBottom {...swapWarningsBottomProps} />
         </styledEl.ContainerBox>
-        <NewSwapWarningsBottom {...swapWarningsBottomProps} />
+        <NetworkAlert />
       </styledEl.Container>
     </>
   )

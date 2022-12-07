@@ -1,13 +1,16 @@
 import React from 'react'
 import { InfoIcon } from 'components/InfoIcon'
 import * as styledEl from './styled'
+import styled from 'styled-components/macro'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { formatSmartAmount } from 'utils/format'
+import { isAddress, shortenAddress } from 'utils'
+import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
 
+const Wrapper = styled.div`
+  margin: 10px 0;
+`
 export interface LimitOrdersDetailsProps {
-  activeRate: string
-  activeRateFiatAmount: CurrencyAmount<Currency> | null
+  activeRateDisplay: ActiveRateDisplay
   tradeContext: TradeFlowContext
 }
 
@@ -21,36 +24,25 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
 
 // TODO: apply design
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { account, sellToken, buyToken, validTo, recipient } = props.tradeContext.postOrderParams
+  const { account, validTo, recipient, recipientAddressOrName } = props.tradeContext.postOrderParams
   const expiryDate = new Date(validTo * 1000)
 
   return (
-    <div>
+    <Wrapper>
       <styledEl.DetailsRow>
-        <div>
-          <span>Limit Price</span> <InfoIcon content={'Limit price info TODO'} />
-        </div>
-        <div>
-          <span>
-            1 {sellToken.symbol} = {props.activeRate} {buyToken.symbol}
-          </span>
-          <br />
-          <span title={props.activeRateFiatAmount?.toExact() + ' ' + buyToken.symbol}>
-            (~${formatSmartAmount(props.activeRateFiatAmount)})
-          </span>
-        </div>
+        <styledEl.StyledRateInfo activeRateDisplay={props.activeRateDisplay} />
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
           <span>Expiry</span> <InfoIcon content={'Expiry info TODO'} />
         </div>
         <div>
-          <span>({expiryDate.toLocaleString(undefined, dateTimeFormat)})</span>
+          <span>{expiryDate.toLocaleString(undefined, dateTimeFormat)}</span>
         </div>
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>MEW protection</span> <InfoIcon content={'MEW protection info TODO'} />
+          <span>MEV protection</span> <InfoIcon content={'MEV protection info TODO'} />
         </div>
         <div>
           <span>{/*TODO*/}Active</span>
@@ -64,16 +56,18 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>{/*TODO*/}Fill or kill</span>
         </div>
       </styledEl.DetailsRow>
-      {recipient && recipient !== account && (
+      {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>
             <span>Recipient</span> <InfoIcon content={'Recipient info TODO'} />
           </div>
           <div>
-            <span>{recipient}</span>
+            <span title={recipientAddressOrName}>
+              {isAddress(recipientAddressOrName) ? shortenAddress(recipientAddressOrName) : recipientAddressOrName}
+            </span>
           </div>
         </styledEl.DetailsRow>
       )}
-    </div>
+    </Wrapper>
   )
 }

@@ -72,7 +72,7 @@ export const SwapButtonBox = ({ children, showLoading = false, showButton = fals
   showLoading ? (
     <TradeLoading showButton={showButton} />
   ) : (
-    <Text fontSize={16} fontWeight={500}>
+    <Text fontSize={18} fontWeight={600}>
       {children}
     </Text>
   )

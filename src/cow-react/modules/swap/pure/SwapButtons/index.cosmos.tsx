@@ -3,11 +3,15 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { SwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import { useSelect } from 'react-cosmos/fixture'
 import { SwapButtons, SwapButtonsContext } from './index'
+import { Field } from 'state/swap/actions'
 
 const currency = WETH_GOERLI
 const amount = 200000000
 
 const swapButtonsContext: SwapButtonsContext = {
+  onCurrencySelection(field: Field, currency): void {
+    console.log('Currency selected', field, currency)
+  },
   swapButtonState: SwapButtonState.RegularSwap,
   chainId: 1,
   wrappedToken: WETH_GOERLI,

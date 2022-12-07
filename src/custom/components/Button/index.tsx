@@ -2,20 +2,17 @@ import { HTMLAttributes } from 'react'
 import styled from 'styled-components/macro'
 import { ButtonProps } from 'rebass/styled-components'
 import { ChevronDown, Star } from 'react-feather'
+import { transparentize, darken, lighten } from 'polished'
 import useTheme from 'hooks/useTheme'
-
 import { RowBetween } from 'components/Row'
 
 import {
   // Import only the basic buttons
   ButtonPrimary as ButtonPrimaryMod,
-  ButtonLight as ButtonLightMod,
   ButtonGray as ButtonGrayMod,
-  ButtonSecondary as ButtonSecondaryMod,
   ButtonOutlined as ButtonOutlinedMod,
   ButtonEmpty as ButtonEmptyMod,
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
-  // ButtonErrorStyle as ButtonErrorStyleMod
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
 import { ButtonSize } from 'theme'
@@ -24,34 +21,34 @@ export * from './ButtonMod'
 
 export const ButtonPrimary = styled(ButtonPrimaryMod)`
   // CSS overrides
-  ${({ theme }) => theme.buttonPrimary.background}
-  font-size: ${({ theme }) => theme.buttonPrimary.fontSize};
-  font-weight: ${({ theme }) => theme.buttonPrimary.fontWeight};
-  border: ${({ theme }) => theme.buttonPrimary.border};
-  box-shadow: ${({ theme }) => theme.buttonPrimary.boxShadow};
-  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
-  color: ${({ theme }) => theme.primaryText1};
-  ${({ theme }) => theme.cursor};
-  overflow: hidden;
+  background: ${({ theme }) => theme.bg2};
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  box-shadow: none;
+  border-radius: 16px;
+  color: ${({ theme }) => theme.white};
   position: relative;
-  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
-
-  > div {
-    font-size: ${({ theme }) => theme.buttonPrimary.fontSize};
-    font-weight: ${({ theme }) => theme.buttonPrimary.fontWeight};
-  }
+  min-height: 58px;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  margin: 0;
+  /* ${({ theme }) => theme.cursor}; */ // TODO: add behind feature flag
 
   &:focus,
   &:hover,
   &:active {
-    border: ${({ theme }) => theme.buttonPrimary.border};
     box-shadow: none;
-    transform: translateY(3px) scale(0.99);
-    ${({ theme }) => theme.buttonPrimary.background}
+    transform: none;
+    color: ${({ theme }) => theme.white};
   }
+
+  &:hover {
+    background: ${({ theme }) => lighten(0.08, theme.bg2)};
+  }
+
   &:disabled {
-    background-color: ${({ theme }) => theme.disabled};
-    color: ${({ theme }) => theme.primaryText1};
+    background-color: ${({ theme }) => theme.grey1};
+    color: ${({ theme }) => transparentize(0.4, theme.text1)};
     background-image: none;
     border: 0;
     cursor: auto;
@@ -60,7 +57,7 @@ export const ButtonPrimary = styled(ButtonPrimaryMod)`
   }
 `
 
-export const ButtonLight = styled(ButtonLightMod)`
+export const ButtonLight = styled(ButtonPrimary)`
   // CSS override
   ${({ theme }) => theme.buttonLight.background}
   color: ${({ theme }) => theme.primaryText1};
@@ -82,20 +79,23 @@ export const ButtonLight = styled(ButtonLightMod)`
     box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
     background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
   }
+
   &:hover {
     background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
   }
+
   &:active {
     box-shadow: ${({ theme }) => theme.buttonLight.boxShadow};
     background-color: ${({ theme }) => theme.buttonLight.backgroundHover};
   }
+
   &:disabled {
     opacity: 0.4;
     cursor: auto;
     animation: none;
     color: ${({ theme }) => theme.primaryText1};
 
-    :hover {
+    &:hover {
       cursor: auto;
       background-color: ${({ theme }) => theme.primary5};
       box-shadow: none;
@@ -106,14 +106,15 @@ export const ButtonLight = styled(ButtonLightMod)`
 `
 
 export const ButtonGray = styled(ButtonGrayMod)`
-  // CSS overrides
+  box-shadow: none;
+
   &:hover,
   &:focus {
-    box-shadow: none;
+    box-shadow: 0 6px 8px rgb(0 0 0 / 6%);
   }
 `
 
-export const ButtonSecondary = styled(ButtonSecondaryMod)`
+export const ButtonSecondary = styled(ButtonPrimary)`
   // CSS overrides
   transition: box-shadow 0.1s ease-in-out;
 
@@ -144,8 +145,6 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
   &:focus,
   &:hover,
   &:active {
-    ${({ theme }) => theme.buttonPrimary.background}
-    border: ${({ theme }) => theme.buttonPrimary.border};
     box-shadow: none;
     transform: translateY(3px);
   }
@@ -161,26 +160,30 @@ export const ButtonOutlined = styled(ButtonOutlinedMod)`
 export const ButtonConfirmedStyle = styled(ButtonConfirmedStyleMod)`
   // CSS overrides
   background-color: ${({ theme }) => theme.disabled};
-  color: ${({ theme }) => theme.primaryText1};
+  color: ${({ theme }) => theme.text1};
   background-image: none;
   border: 0;
   cursor: auto;
   animation: none;
-  font-size: ${({ theme }) => theme.buttonPrimary.fontSize};
-  font-weight: ${({ theme }) => theme.buttonPrimary.fontWeight};
   border: none;
   box-shadow: none;
-  border-radius: ${({ theme }) => theme.buttonPrimary.borderRadius};
 `
 
 export const ButtonErrorStyle = styled(ButtonPrimary)`
   // CSS overrides
   background: ${({ theme }) => theme.red1};
+  color: ${({ theme }) => theme.bg1};
+  transition: background 0.15s ease-in-out;
 
   &:focus,
   &:hover,
   &:active {
     background: ${({ theme }) => theme.red1};
+    color: ${({ theme }) => theme.bg1};
+  }
+
+  &:hover {
+    background: ${({ theme }) => darken(0.08, theme.red1)};
   }
 `
 
@@ -193,11 +196,13 @@ const HoverIcon = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  margin-right: 8px;
+  margin: 0 8px 0 0;
+  opacity: 0.75;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
 
-  :hover {
-    cursor: pointer;
-    opacity: 0.6;
+  &:hover {
+    opacity: 1;
   }
 `
 
@@ -253,14 +258,14 @@ export function ButtonDropdownLight({
 
 export const ButtonStar = ({
   fill = 'transparent',
-  size = '15px',
+  size = '18px',
   stroke,
   ...rest
 }: { fill?: string; size?: string; stroke: string } & HTMLAttributes<HTMLDivElement>) => {
   const theme = useTheme()
   return (
     <HoverIcon {...rest}>
-      <Star stroke={stroke || theme.text3} fill={fill} size={size} />
+      <Star stroke={stroke || theme.text1} fill={fill} size={size} />
     </HoverIcon>
   )
 }

@@ -1,35 +1,40 @@
-import { useAtom } from 'jotai'
-import { limitOrdersSettingsAtom, LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
+import { useSetAtom } from 'jotai'
+import {
+  limitOrdersSettingsAtom,
+  LimitOrdersSettingsState,
+  updateLimitOrdersSettingsAtom,
+} from '../../state/limitOrdersSettingsAtom'
 import { Settings } from '../../pure/Settings'
 import { ExpertModeModal } from '@cow/common/pure/ExpertModeModal'
 import React, { useCallback, useState } from 'react'
-import { Trans } from '@lingui/macro'
 import { Dropdown } from '@cow/common/pure/Dropdown'
 import * as styledEl from './styled'
+import { useAtomValue } from 'jotai/utils'
 
 export function SettingsWidget() {
-  const [settingsState, setSettingsState] = useAtom(limitOrdersSettingsAtom)
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const [showExpertConfirm, setShowExpertConfirm] = useState(false)
 
   const onStateChanged = useCallback(
-    (state: LimitOrdersSettingsState) => {
+    (state: Partial<LimitOrdersSettingsState>) => {
       const isExpertModeOn = !settingsState.expertMode && state.expertMode
       const isExpertModeOff = settingsState.expertMode && !state.expertMode
 
       if (isExpertModeOn) {
         setShowExpertConfirm(true)
       } else if (isExpertModeOff) {
-        setSettingsState({ expertMode: false, showRecipient: false })
+        updateSettingsState({ expertMode: false, showRecipient: false })
       } else {
-        setSettingsState(state)
+        updateSettingsState(state)
       }
     },
-    [settingsState, setSettingsState]
+    [settingsState, updateSettingsState]
   )
   const onEnableExpertMode = useCallback(() => {
-    setSettingsState({ expertMode: true, showRecipient: true })
+    updateSettingsState({ expertMode: true, showRecipient: true })
     setShowExpertConfirm(false)
-  }, [setSettingsState, setShowExpertConfirm])
+  }, [updateSettingsState, setShowExpertConfirm])
 
   return (
     <>
@@ -38,9 +43,6 @@ export function SettingsWidget() {
         ignoreOutsideClicks={showExpertConfirm}
       >
         <styledEl.SettingsButton>
-          <styledEl.SettingsTitle>
-            <Trans>Settings</Trans>
-          </styledEl.SettingsTitle>
           <styledEl.SettingsIcon />
           {settingsState.expertMode && (
             <styledEl.ExpertModeIndicator>

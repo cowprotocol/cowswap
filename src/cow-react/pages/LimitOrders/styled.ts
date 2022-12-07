@@ -1,22 +1,36 @@
 import styled from 'styled-components/macro'
-import { MEDIA_WIDTHS } from 'theme'
 
-export const PageWrapper = styled.div`
+export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   width: 100%;
-  max-width: ${MEDIA_WIDTHS.upToLarge}px;
   display: grid;
-  grid-template-columns: 480px 1fr;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.limit};
+  margin: 0 auto;
+  grid-template-columns: ${({ theme, isUnlocked }) => (isUnlocked ? theme.appBody.maxWidth.swap : '')} 1fr;
   grid-column-gap: 20px;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-  max-width: ${MEDIA_WIDTHS.upToMedium}px;
-`}
-
   ${({ theme }) => theme.mediaWidth.upToMedium`
+    display: flex;
+    flex-flow: column wrap;
+
+    > div:last-child {
+      margin: 20px;
+    }
+  `};
+
+  > div:last-child {
+    display: ${({ isUnlocked }) => (isUnlocked ? '' : 'none')};
+  }
+`
+// Form + banner
+export const PrimaryWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  max-width: 640px;
-`}
+  flex-flow: column wrap;
+  gap: 16px;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  margin: 0 auto;
 `
 
-export const Column = styled.div``
+// Graph + orders table
+export const SecondaryWrapper = styled.div`
+  display: flex;
+`

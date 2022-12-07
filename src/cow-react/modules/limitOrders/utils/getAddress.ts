@@ -1,7 +1,7 @@
 import { Currency } from '@uniswap/sdk-core'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 
-export function getAddress(currency: Currency): string | null {
+export function getAddress(currency: Currency | null | undefined): string | null {
   if (!currency || currency.isNative) {
     return null
   }

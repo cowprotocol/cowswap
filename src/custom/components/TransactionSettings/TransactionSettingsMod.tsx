@@ -16,15 +16,21 @@ import { RowBetween, RowFixed } from 'components/Row'
 
 // MOD imports
 import {
-  INPUT_OUTPUT_EXPLANATION,
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
   MIN_SLIPPAGE_BPS,
   MAX_SLIPPAGE_BPS,
   LOW_SLIPPAGE_BPS,
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
+  PERCENTAGE_PRECISION,
+  MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from '@cow/modules/swap/pure/Row/RowDeadline'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 
@@ -44,14 +50,16 @@ export const FancyButton = styled.button`
   font-size: 1rem;
   width: auto;
   min-width: 3.5rem;
-  border: 1px solid ${({ theme }) => theme.bg3};
+  /* border: 1px solid ${({ theme }) => theme.bg3}; */
+  border: 0; // mod
   outline: none;
-  background: ${({ theme }) => theme.bg1};
+  /* background: ${({ theme }) => theme.bg1}; */
+  background: ${({ theme }) => theme.bg2}; // mod
   :hover {
-    border: 1px solid ${({ theme }) => theme.bg4};
+    /* border: 1px solid ${({ theme }) => theme.bg4}; */
   }
   :focus {
-    border: 1px solid ${({ theme }) => theme.primary1};
+    /* border: 1px solid ${({ theme }) => theme.primary1}; */
   }
 `
 
@@ -60,11 +68,18 @@ const Option = styled(FancyButton)<{ active: boolean }>`
   :hover {
     cursor: pointer;
   }
-  background-color: ${({ active, theme }) => active && theme.primary1};
-  color: ${({ active, theme }) => (active ? theme.white : theme.text1)};
+
+  &:disabled {
+    border: none;
+    pointer-events: none;
+  }
+  /* background-color: ${({ active, theme }) => active && theme.primary1}; */
+  background-color: ${({ active, theme }) => (active ? theme.bg2 : theme.grey1)}; // MOD
+  /* color: ${({ active, theme }) => (active ? theme.white : theme.text1)}; */
+  color: ${({ active, theme }) => (active ? theme.white : theme.text1)}; // MOD
 `
 
-const Input = styled.input`
+export const Input = styled.input`
   background: ${({ theme }) => theme.bg1};
   font-size: 16px;
   width: auto;
@@ -113,6 +128,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWeb3React()
   const theme = useContext(ThemeContext)
 
+  const isEthFlow = useIsEthFlow()
+  const { native: nativeCurrency } = useDetectNativeToken()
+
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
 
@@ -149,9 +167,13 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   }
 
   const tooLow =
-    userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
+    !isEthFlow &&
+    userSlippageTolerance !== 'auto' &&
+    userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh =
-    userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
+    !isEthFlow &&
+    userSlippageTolerance !== 'auto' &&
+    userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
@@ -166,7 +188,11 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         const parsed: number = Math.floor(Number.parseFloat(value) * 60)
         if (
           !Number.isInteger(parsed) || // Check deadline is a number
-          parsed < MINIMUM_ORDER_VALID_TO_TIME_SECONDS || // Check deadline is not too small
+          parsed <
+            (isEthFlow
+              ? // 10 minute low threshold for eth flow
+                MINIMUM_ETH_FLOW_DEADLINE_SECONDS
+              : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
           parsed > MAX_DEADLINE_MINUTES * 60 // Check deadline is not too big
         ) {
           setDeadlineError(DeadlineError.InvalidInput)
@@ -195,14 +221,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             color={theme.text1}
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
-              <Trans>
-                <p>Your slippage is MEV protected: all orders are submitted with tight spread (0.1%) on-chain.</p>
-                <p>
-                  The slippage you pick here enables a resubmission of your order in case of unfavourable price
-                  movements.
-                </p>
-                <p>{INPUT_OUTPUT_EXPLANATION}</p>
-              </Trans>
+              isEthFlow
+                ? getNativeSlippageTooltip([nativeCurrency.symbol, nativeCurrency.wrapped.symbol])
+                : getNonNativeSlippageTooltip()
             }
           />
         </RowFixed>
@@ -212,10 +233,16 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               parseSlippageInput('')
             }}
             active={userSlippageTolerance === 'auto'}
+            disabled={isEthFlow}
           >
             <Trans>Auto</Trans>
           </Option>
-          <OptionCustom active={userSlippageTolerance !== 'auto'} warning={!!slippageError} tabIndex={-1}>
+          <OptionCustom
+            disabled={isEthFlow}
+            active={userSlippageTolerance !== 'auto' && !isEthFlow}
+            warning={!!slippageError}
+            tabIndex={-1}
+          >
             <RowBetween>
               {tooLow || tooHigh ? (
                 <SlippageEmojiContainer>
@@ -225,9 +252,12 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 </SlippageEmojiContainer>
               ) : null}
               <Input
+                disabled={isEthFlow}
                 placeholder={placeholderSlippage.toFixed(2)}
                 value={
-                  slippageInput.length > 0
+                  isEthFlow
+                    ? ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)
+                    : slippageInput.length > 0
                     ? slippageInput
                     : userSlippageTolerance === 'auto'
                     ? ''
@@ -249,7 +279,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             style={{
               fontSize: '14px',
               paddingTop: '7px',
-              color: slippageError ? 'red' : '#F3841E',
+              // color: slippageError ? 'red' : '#F3841E',
+              color: slippageError ? theme.danger : theme.warning, // MOD
             }}
           >
             {slippageError ? (
@@ -274,8 +305,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               color={theme.text1}
               text={
                 <Trans>
-                  Your swap expires and will not execute if it is pending for longer than the selected duration.
-                  {INPUT_OUTPUT_EXPLANATION}
+                  {isEthFlow
+                    ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])
+                    : getNonNativeOrderDeadlineTooltip()}
                 </Trans>
               }
             />

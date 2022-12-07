@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
-import { StyledInfo } from '../../styled'
-import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/RowReceivedAfterSlippage'
+import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
+import { RowReceivedAfterSlippageProps } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
 
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -34,7 +34,7 @@ export function RowReceivedAfterSlippageContent(props: RowReceivedAfterSlippageC
         </TextWrapper>
         {showHelpers && (
           <MouseoverTooltipContent content={getMinimumReceivedTooltip(allowedSlippage, isExactIn)} wrap>
-            <StyledInfo />
+            <StyledInfoIcon size={16} />
           </MouseoverTooltipContent>
         )}
       </RowFixed>

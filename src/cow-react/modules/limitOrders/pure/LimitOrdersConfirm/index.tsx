@@ -1,25 +1,45 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Trans } from '@lingui/macro'
 import { ButtonSize } from 'theme'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { ButtonPrimary } from 'components/Button'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'
 import { LimitOrdersDetails } from '../LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import * as styledEl from './styled'
+import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
+import { ActiveRateDisplay } from '@cow/modules/limitOrders/hooks/useActiveRateDisplay'
+import { PriceImpact } from 'hooks/usePriceImpact'
+import { CurrencySeparatorBox } from '@cow/modules/limitOrders/containers/LimitOrdersWidget/styled'
+import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext
-  activeRateFiatAmount: CurrencyAmount<Currency> | null
-  activeRate: string
+  activeRateDisplay: ActiveRateDisplay
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
+  rateImpact: number
+  priceImpact: PriceImpact
+  warningsAccepted: boolean
+  Warnings: ReactNode
   onConfirm(): void
 }
 
 export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
-  const { tradeContext, inputCurrencyInfo, outputCurrencyInfo, onConfirm, activeRate, activeRateFiatAmount } = props
+  const {
+    tradeContext,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    onConfirm,
+    activeRateDisplay,
+    rateImpact,
+    Warnings,
+    warningsAccepted,
+    priceImpact,
+  } = props
+
+  const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
+  const isTradeDisabled = isTooLowRate ? !warningsAccepted : false
 
   return (
     <styledEl.ConfirmWrapper>
@@ -28,17 +48,24 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         currencyInfo={inputCurrencyInfo}
         topLabel={inputCurrencyInfo.label}
       />
+      <CurrencySeparatorBox withRecipient={false}>
+        <CurrencyArrowSeparator
+          withRecipient={false}
+          isCollapsed={false}
+          isLoading={false}
+          hasSeparatorLine={true}
+          onSwitchTokens={() => null}
+        />
+      </CurrencySeparatorBox>
       <CurrencyPreview
         id="output-currency-preview"
         currencyInfo={outputCurrencyInfo}
         topLabel={outputCurrencyInfo.label}
+        priceImpactParams={priceImpact}
       />
-      <LimitOrdersDetails
-        tradeContext={tradeContext}
-        activeRate={activeRate}
-        activeRateFiatAmount={activeRateFiatAmount}
-      />
-      <ButtonPrimary onClick={onConfirm} disabled={false} buttonSize={ButtonSize.BIG}>
+      <LimitOrdersDetails tradeContext={tradeContext} activeRateDisplay={activeRateDisplay} />
+      {Warnings}
+      <ButtonPrimary onClick={onConfirm} disabled={isTradeDisabled} buttonSize={ButtonSize.BIG}>
         <Trans>Confirm</Trans>
       </ButtonPrimary>
     </styledEl.ConfirmWrapper>

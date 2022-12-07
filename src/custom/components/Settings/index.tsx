@@ -1,15 +1,16 @@
 import { WithClassName } from 'types'
 
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 import { RowFixed } from 'components/Row'
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 import { Percent } from '@uniswap/sdk-core'
 
 const Settings = styled(SettingsMod)`
   ${MenuFlyout} {
-    box-shadow: 0px 0px 0px rgb(0 0 0 / 1%), 0px 4px 8px rgb(0 0 0 / 0%), 0px 16px 24px rgb(0 0 0 / 60%),
-      0px 24px 32px rgb(0 0 0 / 20%);
-    background-color: ${({ theme }) => theme.bg5};
+    box-shadow: ${({ theme }) => theme.boxShadow2};
+    border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
+    background-color: ${({ theme }) => theme.bg1};
     color: ${({ theme }) => theme.text1};
   }
 
@@ -28,37 +29,39 @@ const Settings = styled(SettingsMod)`
     border: none;
     background-color: transparent;
     margin: 0;
-    height: 35px;
     padding: 0;
-    border-radius: 35px;
-    color: ${({ theme }) => theme.text1};
 
     &:hover,
     &:focus {
       cursor: pointer;
       outline: none;
-    }
-
-    > b {
-      margin: 0 4px 0 0;
+      color: ${({ theme }) => theme.text1};
     }
 
     svg {
       opacity: 1;
-      margin: 2px 0 0;
+      margin: 0;
       transition: transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
     }
 
     &:hover > svg {
       transform: rotate(180deg);
     }
+
+    &:hover svg > path,
+    &:hover svg > circle {
+      stroke: ${({ theme }) => theme.text1};
+    }
   }
 
   ${StyledMenuIcon} {
     height: 20px;
     width: 20px;
-    > * {
-      stroke: ${({ theme }) => theme.text1};
+
+    > path,
+    > circle {
+      stroke: ${({ theme }) => transparentize(0.3, theme.text1)};
+      transition: stroke 0.3s ease-in-out;
     }
   }
 
@@ -120,7 +123,6 @@ export interface SettingsTabProp extends WithClassName {
 function SettingsButton({ toggleSettings, expertMode }: SettingsButtonProps) {
   return (
     <StyledMenuButton onClick={toggleSettings} id="open-settings-dialog-button">
-      <b>Settings</b>
       <StyledMenuIcon />
       {expertMode ? (
         <EmojiWrapper>

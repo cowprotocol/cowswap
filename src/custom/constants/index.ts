@@ -1,5 +1,5 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
-
+import { transactions as EthFlowTransactions } from '@cowprotocol/ethflowcontract/broadcast/Deploy.sol/5/deployment.json'
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -43,6 +43,13 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
+
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
+  // [ChainId.MAINNET]: CoWSwapEthFlow[ChainId.MAINNET].address,
+  // [ChainId.RINKEBY]: CoWSwapEthFlow[ChainId.RINKEBY].address,
+  // [ChainId.GNOSIS_CHAIN]: CoWSwapEthFlow[ChainId.GNOSIS_CHAIN].address,
+  [ChainId.GOERLI]: EthFlowTransactions[0].contractAddress,
+}
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
@@ -91,6 +98,8 @@ export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min
 export const PRICE_API_TIMEOUT_MS = 10000 // 10s
 export const GP_ORDER_UPDATE_INTERVAL = 30 * 1000 // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
+// Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
+export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
 
 export const WETH_LOGO_URI =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'

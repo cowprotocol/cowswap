@@ -1,21 +1,33 @@
 import * as styledEl from './styled'
-
-import { LimitOrdersWidget, ChartWidget, Orders, QuoteUpdater, InfoPopup } from '@cow/modules/limitOrders'
+import {
+  LimitOrdersWidget,
+  QuoteUpdater,
+  InfoPopup,
+  MarketPriceUpdater,
+  ActiveRateUpdater,
+  OrdersWidget,
+  limitOrdersAtom,
+} from '@cow/modules/limitOrders'
+import { useAtomValue } from 'jotai/utils'
 
 export default function LimitOrderPage() {
+  const { isUnlocked } = useAtomValue(limitOrdersAtom)
+
   return (
     <>
       <QuoteUpdater />
-      <styledEl.PageWrapper>
-        <styledEl.Column>
+      <MarketPriceUpdater />
+      <ActiveRateUpdater />
+      <styledEl.PageWrapper isUnlocked={isUnlocked}>
+        <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />
-          <InfoPopup />
-        </styledEl.Column>
+          {isUnlocked && <InfoPopup />}
+        </styledEl.PrimaryWrapper>
 
-        <styledEl.Column>
-          <ChartWidget />
-          <Orders />
-        </styledEl.Column>
+        <styledEl.SecondaryWrapper>
+          {/*<ChartWidget />*/}
+          <OrdersWidget />
+        </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>
   )

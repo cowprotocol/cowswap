@@ -2,30 +2,60 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { useWeb3React } from '@web3-react/core'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/contracts'
-import { Token } from '@uniswap/sdk-core'
-import { parseUnits } from '@ethersproject/units'
+import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
+import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
+import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import useENSAddress from 'hooks/useENSAddress'
+import { useLimitOrdersDeadline } from '@cow/modules/limitOrders/hooks/useLimitOrdersDeadline'
 
 export function useQuoteRequestParams(): FeeQuoteParams | null {
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient, deadline } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
+  const deadlineTimestamp = useLimitOrdersDeadline()
   const { chainId, account } = useWeb3React()
+  const { exactTypedValue } = useTypedValue()
+  const { address: recipientEnsAddress } = useENSAddress(recipient)
 
-  const isFullInput = !!(deadline && chainId && inputCurrencyAmount && inputCurrency && outputCurrency)
+  return useMemo(() => {
+    if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId || !deadlineTimestamp) {
+      return null
+    }
 
-  const feeQuoteParams: FeeQuoteParams | null = isFullInput
-    ? {
-        chainId,
-        validTo: Math.round(Date.now() / 1000 + 60 * deadline),
-        receiver: recipient || account,
-        kind: OrderKind.SELL,
-        sellToken: (inputCurrency as Token).address,
-        buyToken: (outputCurrency as Token).address,
-        amount: parseUnits(inputCurrencyAmount.toExact(), inputCurrency?.decimals).toString(),
-        fromDecimals: inputCurrency.decimals,
-        toDecimals: outputCurrency.decimals,
-      }
-    : null
+    const sellToken = getAddress(inputCurrency)
+    const buyToken = getAddress(outputCurrency)
+    const fromDecimals = inputCurrency?.decimals
+    const toDecimals = outputCurrency?.decimals
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(() => feeQuoteParams, [JSON.stringify(feeQuoteParams)])
+    const amount =
+      orderKind === OrderKind.SELL
+        ? parseUnits(exactTypedValue, fromDecimals).toString()
+        : parseUnits(exactTypedValue, toDecimals).toString()
+
+    if (!amount || !sellToken || !buyToken) {
+      return null
+    }
+
+    return {
+      chainId,
+      validTo: deadlineTimestamp,
+      receiver: recipientEnsAddress || recipient || account,
+      kind: orderKind,
+      sellToken,
+      buyToken,
+      amount,
+      fromDecimals,
+      toDecimals,
+      isEthFlow: false, // EthFlow is not compatible with limit orders
+    }
+  }, [
+    account,
+    chainId,
+    exactTypedValue,
+    inputCurrency,
+    orderKind,
+    outputCurrency,
+    recipient,
+    recipientEnsAddress,
+    deadlineTimestamp,
+  ])
 }

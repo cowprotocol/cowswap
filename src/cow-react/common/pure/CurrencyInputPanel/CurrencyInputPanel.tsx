@@ -22,7 +22,9 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   loading: boolean
   disabled?: boolean
+  isRateLoading?: boolean
   showSetMax?: boolean
+  disableNonToken?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
@@ -39,6 +41,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     currencyInfo,
     className,
     priceImpactParams,
+    disableNonToken = false,
     showSetMax = false,
     disabled = false,
     onCurrencySelection,
@@ -46,6 +49,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     allowsOffchainSigning,
     subsidyAndBalance,
     topLabel,
+    isRateLoading,
   } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
@@ -84,7 +88,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
-        <styledEl.CurrencyInputBox flexibleWidth={true}>
+        <styledEl.CurrencyInputBox>
           <div>
             <CurrencySelectButton
               onClick={() => setCurrencySearchModalOpen(true)}
@@ -102,22 +106,27 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           </div>
         </styledEl.CurrencyInputBox>
 
-        <styledEl.CurrencyInputBox flexibleWidth={false}>
+        <styledEl.CurrencyInputBox>
           <div>
             {balance && !disabled && (
               <>
                 <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
                   <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+                  {showSetMax && balance.greaterThan(0) && (
+                    <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
+                  )}
                 </styledEl.BalanceText>
-                {showSetMax && balance.greaterThan(0) && (
-                  <styledEl.SetMaxBtn onClick={handleMaxInput}>(Max)</styledEl.SetMaxBtn>
-                )}
               </>
             )}
           </div>
           <div>
             <styledEl.FiatAmountText>
-              <FiatValue priceImpactLoading={priceImpactLoading} fiatValue={fiatAmount} priceImpact={priceImpact} />
+              <FiatValue
+                isLoading={isRateLoading}
+                priceImpactLoading={priceImpactLoading}
+                fiatValue={fiatAmount}
+                priceImpact={priceImpact}
+              />
             </styledEl.FiatAmountText>
           </div>
         </styledEl.CurrencyInputBox>
@@ -140,7 +149,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         otherSelectedCurrency={currency}
         showCommonBases={true}
         showCurrencyAmount={true}
-        disableNonToken={false}
+        disableNonToken={disableNonToken}
       />
     </>
   )

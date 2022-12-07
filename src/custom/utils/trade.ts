@@ -1,18 +1,18 @@
-import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { isAddress, shortenAddress } from 'utils'
-import { OrderStatus, OrderKind, ChangeOrderStatusParams, Order } from 'state/orders/actions'
+import { ChangeOrderStatusParams, Order, OrderKind, OrderStatus } from 'state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { sendSignedOrderCancellation, sendOrder as sendOrderApi, OrderID } from '@cow/api/gnosisProtocol'
+import { OrderID, sendOrder as sendOrderApi, sendSignedOrderCancellation } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
-import { RADIX_DECIMAL, AMOUNT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION, RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSmart } from 'utils/format'
 import { SigningScheme } from '@cowprotocol/contracts'
-import { getTrades, getProfileData } from '@cow/api/gnosisProtocol/api'
+import { getProfileData, getTrades } from '@cow/api/gnosisProtocol/api'
 
-export interface PostOrderParams {
+export type PostOrderParams = {
   account: string
   chainId: ChainId
   signer: Signer
@@ -28,7 +28,16 @@ export interface PostOrderParams {
   recipientAddressOrName: string | null
   allowsOffchainSigning: boolean
   appDataHash: string
+  class: 'market' | 'limit'
   quoteId?: number
+}
+
+export type UnsignedOrderAdditionalParams = PostOrderParams & {
+  orderId: string
+  summary: string
+  signature: string
+  isOnChain?: boolean
+  orderCreationHash?: string
 }
 
 function _getSummary(params: PostOrderParams): string {
@@ -67,24 +76,18 @@ function _getSummary(params: PostOrderParams): string {
   }
 }
 
-export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
-  const {
-    kind,
-    chainId,
-    inputAmount,
-    outputAmount,
-    sellToken,
-    buyToken,
-    feeAmount,
-    validTo,
-    account,
-    signer,
-    recipient,
-    allowsOffchainSigning,
-    appDataHash,
-    sellAmountBeforeFee,
-    quoteId,
-  } = params
+export function getOrderParams(params: PostOrderParams): {
+  summary: string
+  quoteId: number | undefined
+  order: UnsignedOrder
+} {
+  const { kind, inputAmount, outputAmount, sellToken, buyToken, feeAmount, validTo, recipient, appDataHash, quoteId } =
+    params
+  const sellTokenAddress = sellToken.address
+
+  if (!sellTokenAddress) {
+    throw new Error(`Order params invalid sellToken address for token: ${JSON.stringify(sellToken, undefined, 2)}`)
+  }
 
   // fee adjusted input amount
   const sellAmount = inputAmount.quotient.toString(RADIX_DECIMAL)
@@ -95,18 +98,89 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   const summary = _getSummary(params)
   const receiver = recipient
 
-  const unsignedOrder: UnsignedOrder = {
-    sellToken: sellToken.address,
-    buyToken: buyToken.address,
-    sellAmount,
-    buyAmount,
-    validTo,
-    appData: appDataHash,
-    feeAmount: feeAmount?.quotient.toString() || '0',
-    kind,
-    receiver,
-    partiallyFillable: false, // Always fill or kill
+  return {
+    summary,
+    quoteId,
+    order: {
+      sellToken: sellTokenAddress,
+      buyToken: buyToken.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : buyToken.address,
+      sellAmount,
+      buyAmount,
+      validTo,
+      appData: appDataHash,
+      feeAmount: feeAmount?.quotient.toString() || '0',
+      kind,
+      receiver,
+      partiallyFillable: false, // Always fill or kill
+    },
   }
+}
+
+export type MapUnsignedOrderToOrderParams = {
+  unsignedOrder: UnsignedOrder
+  additionalParams: UnsignedOrderAdditionalParams
+}
+
+export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: MapUnsignedOrderToOrderParams): Order {
+  const {
+    orderId,
+    account,
+    summary,
+    sellToken,
+    buyToken,
+    allowsOffchainSigning,
+    isOnChain,
+    signature,
+    sellAmountBeforeFee,
+    orderCreationHash,
+  } = additionalParams
+  const status = _getOrderStatus(allowsOffchainSigning, isOnChain)
+
+  return {
+    ...unsignedOrder,
+
+    // Basic order params
+    id: orderId,
+    owner: account,
+    summary,
+    inputToken: sellToken,
+    outputToken: buyToken,
+    class: additionalParams.class,
+
+    // Status
+    status,
+    creationTime: new Date().toISOString(),
+
+    // EthFlow
+    orderCreationHash,
+
+    // Signature
+    signature,
+
+    // Additional API info
+    apiAdditionalInfo: undefined,
+
+    // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
+    sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
+  }
+}
+
+function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | undefined): OrderStatus {
+  if (isOnChain) {
+    return OrderStatus.CREATING
+  } else if (!allowsOffchainSigning) {
+    return OrderStatus.PRESIGNATURE_PENDING
+  } else {
+    return OrderStatus.PENDING
+  }
+}
+
+export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
+  const { chainId, account, signer, allowsOffchainSigning } = params
+
+  // Prepare order
+  const { summary, quoteId, order: unsignedOrder } = getOrderParams(params)
+  const receiver = unsignedOrder.receiver
 
   let signingScheme: SigningScheme
   let signature: string | undefined
@@ -133,31 +207,10 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
     owner: account,
   })
 
-  const creationTime = new Date().toISOString()
-
-  const pendingOrderParams: Order = {
-    ...unsignedOrder,
-
-    // Basic order params
-    id: orderId,
-    owner: account,
-    summary,
-    inputToken: sellToken,
-    outputToken: buyToken,
-
-    // Status
-    status: allowsOffchainSigning ? OrderStatus.PENDING : OrderStatus.PRESIGNATURE_PENDING,
-    creationTime,
-
-    // Signature
-    signature,
-
-    // Additional API info
-    apiAdditionalInfo: undefined,
-
-    // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
-    sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
-  }
+  const pendingOrderParams: Order = mapUnsignedOrderToOrder({
+    unsignedOrder,
+    additionalParams: { ...params, orderId, summary, signature },
+  })
 
   return {
     chainId,

@@ -6,81 +6,99 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
-import { darken } from 'polished'
-import useDebounce from 'hooks/useDebounce'
-import { StyledInfo } from '@cow/modules/swap/pure/styled'
+import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
+import { useIsDarkMode } from 'state/user/hooks'
 
 interface HighFeeContainerProps {
   padding?: string
   margin?: string
   width?: string
-  bgColour?: string
-  textColour?: string
+  level?: number
+  isDarkMode?: boolean
 }
 
-const WarningCheckboxContainer = styled.div`
+const WarningCheckboxContainer = styled.span`
   display: flex;
+  width: 100%;
+  margin: 0 auto;
   font-weight: bold;
   gap: 2px;
   justify-content: center;
   align-items: center;
+  border-radius: 16px;
+  padding: 0;
+  margin: 10px auto;
+
+  > input {
+    cursor: pointer;
+    margin: 1px 4px 0 0;
+  }
 `
 
 const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   ...props,
   hideInput: true,
 }))<HighFeeContainerProps>`
-  background: ${({ theme, bgColour }) => bgColour || theme.info};
-  color: ${({ theme, textColour }) => textColour || theme.infoText};
-
-  padding: ${({ padding = '5px 12px' }) => padding};
+  --warningColor: ${({ theme, level }) =>
+    level === HIGH_TIER_FEE
+      ? theme.danger
+      : level === MEDIUM_TIER_FEE
+      ? theme.warning
+      : LOW_TIER_FEE
+      ? theme.alert
+      : theme.info};
+  color: ${({ theme }) => theme.text1};
+  padding: ${({ padding = '16px' }) => padding};
   width: ${({ width = '100%' }) => width};
-  border-radius: 7px;
+  border-radius: 16px;
   margin: ${({ margin = '0 auto 12px auto' }) => margin};
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: inherit;
+    background: var(--warningColor);
+    opacity: ${({ isDarkMode }) => (isDarkMode ? 0.25 : 0.15)};
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
 
   > div {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    gap: 5px;
-
-    font-size: 13px;
+    gap: 8px;
+    font-size: 14px;
     font-weight: 500;
+    text-align: center;
 
-    svg {
-      &:first-child {
-        margin-right: 5px;
-      }
-      stroke: ${({ theme, textColour }) => textColour || theme.infoText};
-    }
-
-    > ${WarningCheckboxContainer} {
-      font-size: 10px;
-      margin-left: auto;
-      min-width: max-content;
-
-      > input {
-        cursor: pointer;
-        margin: 1px 4px 0 0;
-      }
+    > svg:first-child {
+      stroke: var(--warningColor);
     }
   }
 `
 
-const ErrorStyledInfo = styled(StyledInfo)`
+const ErrorStyledInfoIcon = styled(StyledInfoIcon)`
   color: ${({ theme }) => theme.infoText};
 `
-const HIGH_TIER_FEE = { level: '30', colour: '#FF7676' }
-const MEDIUM_TIER_FEE = { level: '20', colour: '#FFC7AF' }
-const LOW_TIER_FEE = { level: '10', colour: '#FFEDAF' }
+const HIGH_TIER_FEE = 30
+const MEDIUM_TIER_FEE = 20
+const LOW_TIER_FEE = 10
 
 // checks fee as percentage (30% not a decimal)
 function _getWarningInfo(feePercentage?: Fraction) {
-  if (!feePercentage || feePercentage.lessThan(LOW_TIER_FEE.level)) {
-    return { colour: undefined, level: undefined }
-  } else if (feePercentage.lessThan(MEDIUM_TIER_FEE.level)) {
+  if (!feePercentage || feePercentage.lessThan(LOW_TIER_FEE)) {
+    return undefined
+  } else if (feePercentage.lessThan(MEDIUM_TIER_FEE)) {
     return LOW_TIER_FEE
-  } else if (feePercentage.lessThan(HIGH_TIER_FEE.level)) {
+  } else if (feePercentage.lessThan(HIGH_TIER_FEE)) {
     return MEDIUM_TIER_FEE
   } else {
     return HIGH_TIER_FEE
@@ -105,18 +123,6 @@ const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) 
   </div>
 )
 
-const NoImpactWarningMessage = (
-  <div>
-    <small>
-      We are unable to calculate the price impact for this order.
-      <br />
-      <br />
-      You may still move forward but{' '}
-      <strong>please review carefully that the receive amounts are what you expect.</strong>
-    </small>
-  </div>
-)
-
 export type WarningProps = {
   trade?: TradeGp
   acceptedStatus?: boolean
@@ -128,65 +134,37 @@ export type WarningProps = {
 export const HighFeeWarning = (props: WarningProps) => {
   const { acceptedStatus, acceptWarningCb, trade } = props
   const theme = useContext(ThemeContext)
+  const darkMode = useIsDarkMode()
 
   const { isHighFee, feePercentage } = useHighFeeWarning(trade)
-  const [bgColour, textColour, level] = useMemo(() => {
-    const { colour: baseColour, level } = _getWarningInfo(feePercentage)
-    return [baseColour, baseColour && darken(0.7, baseColour), level]
+  const [level] = useMemo(() => {
+    const level = _getWarningInfo(feePercentage)
+    return [level]
   }, [feePercentage])
 
   if (!isHighFee) return null
 
   return (
-    <WarningContainer {...props} bgColour={bgColour} textColour={textColour}>
+    <WarningContainer {...props} level={level} isDarkMode={darkMode}>
       <div>
-        <AlertTriangle size={18} />
-        <div>Fees exceed {level}% of the swap amount!</div>{' '}
+        <AlertTriangle size={24} />
+        Fees exceed {level}% of the swap amount!{' '}
         <MouseoverTooltipContent
           bgColor={theme.bg1}
           color={theme.text1}
           wrap
           content={<HighFeeWarningMessage feePercentage={feePercentage} />}
         >
-          <ErrorStyledInfo />
-        </MouseoverTooltipContent>
-        {acceptWarningCb && (
-          <WarningCheckboxContainer>
-            <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
-            Swap anyway
-          </WarningCheckboxContainer>
-        )}
+          <ErrorStyledInfoIcon />
+        </MouseoverTooltipContent>{' '}
       </div>
-    </WarningContainer>
-  )
-}
 
-export const NoImpactWarning = (props: WarningProps) => {
-  const { acceptedStatus, acceptWarningCb, hide } = props
-  const theme = useContext(ThemeContext)
-
-  const debouncedHide = useDebounce(hide, 2000)
-  const [bgColour, textColour] = [LOW_TIER_FEE.colour, darken(0.7, HIGH_TIER_FEE.colour)]
-
-  if (!!debouncedHide) return null
-
-  return (
-    <WarningContainer {...props} bgColour={bgColour} textColour={textColour}>
-      <div>
-        <AlertTriangle size={18} />
-        <div>
-          Price impact <strong>unknown</strong> - trade carefully
-        </div>{' '}
-        <MouseoverTooltipContent bgColor={theme.bg1} color={theme.text1} content={NoImpactWarningMessage} wrap>
-          <ErrorStyledInfo />
-        </MouseoverTooltipContent>
-        {acceptWarningCb && (
-          <WarningCheckboxContainer>
-            <input id="price-impact-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} />{' '}
-            Swap anyway
-          </WarningCheckboxContainer>
-        )}
-      </div>
+      {acceptWarningCb && (
+        <WarningCheckboxContainer>
+          <input id="fees-exceed-checkbox" type="checkbox" onChange={acceptWarningCb} checked={!!acceptedStatus} /> Swap
+          anyway
+        </WarningCheckboxContainer>
+      )}
     </WarningContainer>
   )
 }

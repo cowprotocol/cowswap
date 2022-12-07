@@ -8,7 +8,6 @@ import {
   MenuItem,
   MenuWrapper,
   StyledChevronDown,
-  Subtitle,
   AccountHeading,
   RemoveTokens,
   LeftSection,
@@ -108,8 +107,8 @@ export default function TokensOverview() {
 
     if (!provider) {
       return (
-        <CardsLoader style={{ minHeight: '200px' }}>
-          <CardsSpinner size="24px" />
+        <CardsLoader>
+          <CardsSpinner size="42px" />
         </CardsLoader>
       )
     } else if (!isChainSupported) {
@@ -163,60 +162,60 @@ export default function TokensOverview() {
 
   return (
     <Trace page={PageName.ACCOUNT_TOKENS_PAGE} shouldLogImpression>
-      <Overview useFlex={false} padding={'20px 30px 30px'}>
+      {isChainSupported && (
+        <AccountHeading>
+          <LeftSection>
+            <MenuWrapper ref={node as any}>
+              <MenuButton onClick={toggleMenu}>
+                <Trans>{PageView[selectedView].label}</Trans>
+                <StyledChevronDown size={14} />
+              </MenuButton>
+
+              {isMenuOpen ? (
+                <Menu>
+                  {Object.entries(PageView).map(([key, value]) => (
+                    <MenuItem
+                      key={key}
+                      active={selectedView === key}
+                      onClick={() => handleMenuClick(key as PageViewKeys)}
+                    >
+                      <span>{value.label}</span>
+                      {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              ) : null}
+            </MenuWrapper>
+          </LeftSection>
+
+          {selectedView === PageViewKeys.FAVORITE_TOKENS && (
+            <RemoveTokens onClick={handleRestoreTokens}>
+              <span>
+                (<Trans>Reset favourites</Trans>)
+              </span>
+            </RemoveTokens>
+          )}
+
+          <SearchInputFormatter>
+            <TokenSearchInput
+              type="text"
+              id="token-search-input"
+              placeholder={t`Search by name, symbol or address`}
+              autoComplete="off"
+              value={query}
+              onChange={handleSearch}
+            />
+
+            {!!query.length && (
+              <ClearSearchInput>
+                <CloseIcon size={24} onClick={handleSearchClear} />
+              </ClearSearchInput>
+            )}
+          </SearchInputFormatter>
+        </AccountHeading>
+      )}
+      <Overview>
         <PageTitle title="Tokens Overview" />
-        {isChainSupported && (
-          <AccountHeading>
-            <LeftSection>
-              <MenuWrapper ref={node as any}>
-                <MenuButton onClick={toggleMenu}>
-                  <Subtitle>
-                    <Trans>{PageView[selectedView].label}</Trans>
-                  </Subtitle>
-                  <StyledChevronDown size={14} />
-                </MenuButton>
-
-                {isMenuOpen ? (
-                  <Menu>
-                    {Object.entries(PageView).map(([key, value]) => (
-                      <MenuItem
-                        key={key}
-                        active={selectedView === key}
-                        onClick={() => handleMenuClick(key as PageViewKeys)}
-                      >
-                        <span>{value.label}</span>
-                        {selectedView === key ? <Check size={20} color={theme.green1} /> : null}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                ) : null}
-              </MenuWrapper>
-
-              {selectedView === PageViewKeys.FAVORITE_TOKENS && (
-                <RemoveTokens onClick={handleRestoreTokens}>
-                  (<Trans>Reset favourites</Trans>)
-                </RemoveTokens>
-              )}
-            </LeftSection>
-
-            <SearchInputFormatter>
-              <TokenSearchInput
-                type="text"
-                id="token-search-input"
-                placeholder={t`Search name/symbol or paste address`}
-                autoComplete="off"
-                value={query}
-                onChange={handleSearch}
-              />
-
-              {!!query.length && (
-                <ClearSearchInput>
-                  <CloseIcon size={24} onClick={handleSearchClear} />
-                </ClearSearchInput>
-              )}
-            </SearchInputFormatter>
-          </AccountHeading>
-        )}
 
         {renderTableContent()}
       </Overview>

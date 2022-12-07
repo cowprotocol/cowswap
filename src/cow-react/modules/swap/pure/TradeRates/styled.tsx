@@ -3,20 +3,37 @@ import { Repeat } from 'react-feather'
 import QuestionHelper from 'components/QuestionHelper'
 
 export const Box = styled.div`
-  margin: 15px 10px;
-  font-size: 13px;
+  margin: 16px 8px;
 `
 
 export const Row = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.1rem;
-
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
+  color: ${({ theme }) => theme.text1};
 
-  > :last-child {
-    text-align: right;
+  > div {
+    display: flex;
+    align-items: center;
+
+    &:first-child {
+      font-weight: 400;
+    }
+
+    &:first-child > span {
+      opacity: 0.8;
+    }
+
+    &:last-child {
+      text-align: right;
+    }
+  }
+
+  &:hover {
+    > div {
+      opacity: 1;
+    }
   }
 `
 
@@ -25,7 +42,6 @@ export const PriceSwitchButton = styled(Repeat)`
   border-radius: 20px;
   background: ${({ theme }) => theme.bg4};
   padding: 4px;
-
   vertical-align: middle;
   line-height: 0;
 `
@@ -37,14 +53,20 @@ export const QuestionHelperWrapped = styled(QuestionHelper)`
 `
 
 export const Discount = styled.span`
-  margin-top: 2px;
-  display: inline-block;
+  margin: auto;
+  display: flex;
   cursor: pointer;
   padding: 2px 8px;
-  background-color: ${({ theme }) => theme.bg4};
-  border-radius: 5px;
+  background: ${({ theme }) => theme.grey1};
   color: ${({ theme }) => theme.text1};
+  border-radius: 5px;
   font-weight: 400;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
+  }
 `
 
 export const LightText = styled.span`

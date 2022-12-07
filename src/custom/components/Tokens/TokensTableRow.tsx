@@ -1,17 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
-import { RowFixed } from 'components/Row'
 import useTheme from 'hooks/useTheme'
 import {
   ApproveLabel,
   BalanceValue,
   Cell,
   CustomLimit,
-  HideLarge,
   IndexNumber,
-  Label,
-  LargeOnly,
-  ResponsiveGrid,
   ResponsiveLogo,
   TableButton,
   TokenText,
@@ -35,6 +30,8 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { Link } from 'react-router-dom'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
+import SVG from 'react-inlinesvg'
+import EtherscanImage from 'assets/cow-swap/etherscan-icon.svg'
 
 type DataRowParams = {
   tokenData: Token
@@ -120,13 +117,13 @@ const DataRow = ({
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
     if (!balance && account) {
-      return <Loader />
+      return <Loader stroke={theme.text3} />
     } else if (hasZeroBalance) {
       return <BalanceValue hasBalance={false}>0</BalanceValue>
     } else {
       return <FiatBalanceCell balance={balance} />
     }
-  }, [account, balance, hasZeroBalance])
+  }, [account, balance, hasZeroBalance, theme])
 
   const displayApproveContent = useMemo(() => {
     if (isPendingApprove) {
@@ -134,7 +131,7 @@ const DataRow = ({
     } else if (!isApproved && !hasNoAllowance) {
       return (
         <CustomLimit>
-          <TableButton onClick={handleApprove} color={theme.primary1}>
+          <TableButton onClick={handleApprove} color={theme.text1}>
             Approve all
           </TableButton>
           <ApproveLabel
@@ -147,14 +144,14 @@ const DataRow = ({
       )
     } else if (!isApproved || hasNoAllowance) {
       return (
-        <TableButton onClick={handleApprove} color={theme.primary1}>
+        <TableButton onClick={handleApprove} color={theme.text1}>
           Approve
         </TableButton>
       )
     } else {
       return <ApproveLabel color={theme.green1}>Approved ✓</ApproveLabel>
     }
-  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.primary1])
+  }, [currentAllowance, handleApprove, isApproved, isPendingApprove, hasNoAllowance, theme.green1, theme.text1])
 
   useEffect(() => {
     if (approvalState === ApprovalState.PENDING) {
@@ -165,35 +162,22 @@ const DataRow = ({
   }, [approvalState, prevApprovalState, approving])
 
   return (
-    <ResponsiveGrid>
+    <>
       <Cell>
         <FavouriteTokenButton tokenData={tokenData} />
         <IndexNumber>{index + 1}</IndexNumber>
       </Cell>
 
       <Cell>
-        <RowFixed>
+        <Link title={tokenData.name} to={tradeLink(tokenData, OrderKind.SELL)}>
           <ResponsiveLogo currency={tokenData} />
-        </RowFixed>
-
-        <ExtLink title={tokenData.name} href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
           <TokenText>
-            <LargeOnly style={{ marginLeft: '10px' }}>
-              <Label>{tokenData.symbol}</Label>
-            </LargeOnly>
-
-            <HideLarge style={{ marginLeft: '10px' }}>
-              <RowFixed>
-                <Label fontWeight={400} ml="8px" color={theme.text1}>
-                  {tokenData.name}
-                </Label>
-                <Label ml="8px" color={theme.primary5}>
-                  ({tokenData.symbol})
-                </Label>
-              </RowFixed>
-            </HideLarge>
+            <span>
+              <b>{tokenData.name}</b>
+              <i>{tokenData.symbol}</i>
+            </span>
           </TokenText>
-        </ExtLink>
+        </Link>
       </Cell>
 
       <Cell>
@@ -203,19 +187,14 @@ const DataRow = ({
       <Cell>{fiatValue}</Cell>
 
       <Cell>
-        <Link to={tradeLink(tokenData, OrderKind.BUY)}>
-          <TableButton color={theme.green1}>Buy</TableButton>
-        </Link>
+        <ExtLink href={getBlockExplorerUrl(chainId, tokenData.address, 'token')}>
+          <TableButton>
+            <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
+          </TableButton>
+        </ExtLink>
+        {displayApproveContent}
       </Cell>
-
-      <Cell>
-        <Link to={tradeLink(tokenData, OrderKind.SELL)}>
-          <TableButton color={theme.red1}>Sell</TableButton>
-        </Link>
-      </Cell>
-
-      <Cell>{displayApproveContent}</Cell>
-    </ResponsiveGrid>
+    </>
   )
 }
 

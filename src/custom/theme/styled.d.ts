@@ -21,22 +21,27 @@ export interface Colors extends ColorsUniswap {
   border: Color
   border2: Color
   disabled: Color
-  shimmer1: Color
-  shimmer2: color
   scrollbarBg: Color
   scrollbarThumb: Color
   tableHeadBG: Color
   tableRowBG: Color
   info: Color
   warning: Color
+  alert: Color
+  danger: Color
+  alert: Color
   error: Color
   infoText: Color
   warningText: Color
-  errorText: Color
   cardBackground: Color
   cardBorder: Color
   cardShadow1: Color
   cardShadow2: Color
+  blueDark1: Color
+  blueDark2: Color
+  blueLight1: Color
+  grey1: Color
+  red1: Color
 }
 
 declare module 'styled-components' {
@@ -62,10 +67,16 @@ declare module 'styled-components' {
 
   // Override theme
   export interface DefaultTheme extends DefaultThemeUniswap, Colors {
-    // css snippets
-    logo: {
-      src?: string
-      alt?: string
+    shimmer: FlattenSimpleInterpolation
+    textShadow1: string
+    boxShadow1: string
+    boxShadow2: string
+    input: {
+      bg1: Color
+    }
+    button: {
+      bg1: Color
+      text1: Color
     }
     util: {
       invertImageForDarkMode: string | null
@@ -75,14 +86,9 @@ declare module 'styled-components' {
       background?: FlattenSimpleInterpolation
     }
     appBody: {
-      boxShadow: string
-      boxShadowMobile: string
-      borderRadius: string
-      border: string
-      borderMobile: string
-      padding: string
       maxWidth: {
-        normal: string
+        swap: string
+        limit: string
         content: string
       }
     }
@@ -145,14 +151,6 @@ declare module 'styled-components' {
       colorSelected?: string
     }
     buttonSizes: Record<ButtonSize, FlattenSimpleInterpolation>
-    buttonPrimary: {
-      background?: FlattenSimpleInterpolation
-      fontSize?: string
-      fontWeight?: string
-      border?: string
-      borderRadius?: string
-      boxShadow?: string
-    }
     buttonOutlined: {
       background?: FlattenSimpleInterpolation
       fontSize?: string
