@@ -7,7 +7,6 @@ import { CurrencyField } from './CurrencyField'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
-import { StyledScrollarea } from 'components/SearchModal/CommonBases/CommonBasesMod'
 import { FeeField } from './FeeField'
 import { FieldLabel } from './FieldLabel'
 import { PriceField } from './PriceField'
@@ -29,18 +28,25 @@ interface ReceiptProps {
   executionPrice: Fraction | null
 }
 
-// TODO: Anxo please add texts
-enum Tooltip {
-  LIMIT_PRICE = 'You will receive this price or better for your tokens.',
-  EXECUTION_PRICE = 'An order’s actual execution price will vary based on the market price and network fees.',
-  FILLED = 'CoW Swap doesn’t currently support partial fills. Your order will either be filled completely or not at all.',
-  SURPLUS = 'The amount of extra tokens you get on top of your limit price.',
-  FEE = 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
-  CREATED = 'Your order was created on this date & time. It will remain open until it expires or is filled.',
-  EXPIRY = "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
-  ORDER_TYPE = 'Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify). \n' +
-    '\n' +
-    'All orders are currently fill or kill, but support for partially fillable limit orders is coming soon!',
+const tooltips: { [key: string]: string | JSX.Element } = {
+  LIMIT_PRICE: 'You will receive this price or better for your tokens.',
+  EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
+  FILLED:
+    'CoW Swap doesn’t currently support partial fills. Your order will either be filled completely or not at all.',
+  SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
+  FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
+  CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
+  EXPIRY:
+    "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
+  ORDER_TYPE: (
+    <span>
+      Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you
+      set) or limit orders (which fill at a price you specify).
+      <br />
+      <br />
+      All orders are currently fill or kill, but support for partially fillable limit orders is coming soon!
+    </span>
+  ),
 }
 
 // TODO: add cosmos fixture for this component
@@ -69,62 +75,60 @@ export function ReceiptModal({
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
 
-        <StyledScrollarea>
-          <styledEl.Body>
-            <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
-            <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
+        <styledEl.Body>
+          <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
+          <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
 
-            <styledEl.Field border="rounded-top">
-              <FieldLabel label="Status" />
-              <StatusField order={order} />
-            </styledEl.Field>
+          <styledEl.Field border="rounded-top">
+            <FieldLabel label="Status" />
+            <StatusField order={order} />
+          </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Limit price" tooltip={Tooltip.LIMIT_PRICE} />
-              <PriceField order={order} price={limitPrice} />
-            </styledEl.Field>
+          <styledEl.Field>
+            <FieldLabel label="Limit price" tooltip={tooltips.LIMIT_PRICE} />
+            <PriceField order={order} price={limitPrice} />
+          </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Execution price" tooltip={Tooltip.EXECUTION_PRICE} />
-              <PriceField order={order} price={executionPrice} />
-            </styledEl.Field>
+          <styledEl.Field>
+            <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />
+            <PriceField order={order} price={executionPrice} />
+          </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Filled" tooltip={Tooltip.FILLED} />
-              <FilledField order={order} sellAmount={sellAmount} buyAmount={buyAmount} />
-            </styledEl.Field>
+          <styledEl.Field>
+            <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
+            <FilledField order={order} sellAmount={sellAmount} buyAmount={buyAmount} />
+          </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Order surplus" tooltip={Tooltip.SURPLUS} />
-              <SurplusField order={order} />
-            </styledEl.Field>
+          <styledEl.Field>
+            <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
+            <SurplusField order={order} />
+          </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Fee" tooltip={Tooltip.FEE} />
-              <FeeField order={order} />
-            </styledEl.Field>
+          <styledEl.Field>
+            <FieldLabel label="Fee" tooltip={tooltips.FEE} />
+            <FeeField order={order} />
+          </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Created" tooltip={Tooltip.CREATED} />
-              <DateField date={order.parsedCreationtime} />
-            </styledEl.Field>
+          <styledEl.Field>
+            <FieldLabel label="Created" tooltip={tooltips.CREATED} />
+            <DateField date={order.parsedCreationtime} />
+          </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Expiry" tooltip={Tooltip.EXPIRY} />
-              <DateField date={order.expirationTime} />
-            </styledEl.Field>
+          <styledEl.Field>
+            <FieldLabel label="Expiry" tooltip={tooltips.EXPIRY} />
+            <DateField date={order.expirationTime} />
+          </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Order type" tooltip={Tooltip.ORDER_TYPE} />
-              <OrderTypeField order={order} />
-            </styledEl.Field>
+          <styledEl.Field>
+            <FieldLabel label="Order type" tooltip={tooltips.ORDER_TYPE} />
+            <OrderTypeField order={order} />
+          </styledEl.Field>
 
-            <styledEl.Field border="rounded-bottom">
-              <FieldLabel label="Order ID" />
-              <OrderIDField order={order} chainId={chainId} />
-            </styledEl.Field>
-          </styledEl.Body>
-        </StyledScrollarea>
+          <styledEl.Field border="rounded-bottom">
+            <FieldLabel label="Order ID" />
+            <OrderIDField order={order} chainId={chainId} />
+          </styledEl.Field>
+        </styledEl.Body>
       </styledEl.Wrapper>
     </GpModal>
   )

@@ -19,9 +19,10 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
   border: 0;
   padding: 6px 3px;
   z-index: 10;
+  font-size: 13px;
 
   > div div {
-    font-size: 14px;
+    font-size: inherit;
   }
 `
 

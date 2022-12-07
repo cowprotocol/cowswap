@@ -13,7 +13,6 @@ const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
     // XDAI and WXDAI are stable-coins
     .concat(NATIVE_CURRENCY_BUY_ADDRESS),
   [SupportedChainId.GOERLI]: [USDC_GOERLI, USDT_GOERLI, DAI_GOERLI].map((token) => token.address.toLowerCase()),
-  [SupportedChainId.RINKEBY]: [],
 }
 
 /**

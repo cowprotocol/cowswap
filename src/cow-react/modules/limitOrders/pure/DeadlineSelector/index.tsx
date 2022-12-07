@@ -71,10 +71,10 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           </styledEl.ListItem>
         </li>
       ))}
-      <styledEl.ListItem>
+      {/* <styledEl.ListItem>
         <Trans>Custom</Trans>
         <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} />
-      </styledEl.ListItem>
+      </styledEl.ListItem> */}
     </styledEl.ListWrapper>
   )
 

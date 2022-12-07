@@ -69,7 +69,7 @@ export const HeaderElement = styled(HeaderElementUni)`
     width: 100%;
     border-radius: 0;
     height: 64px;
-    background-color: ${({ theme }) => transparentize(0.75, theme.bg1)};
+    background-color: ${({ theme }) => theme.bg1};
     border-top: 1px solid ${({ theme }) => theme.grey1};
     backdrop-filter: blur(21px);
     padding: 10px 16px;

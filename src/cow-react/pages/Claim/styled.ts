@@ -344,10 +344,6 @@ export const ClaimTable = styled.div`
     font-size: 16px;
     grid-template-columns: min-content auto auto 240px;
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      display: block;
-    `};
-
     input[type='checkbox'] {
       ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 42px;

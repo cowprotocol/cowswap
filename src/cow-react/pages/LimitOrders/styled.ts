@@ -29,6 +29,7 @@ export const PrimaryWrapper = styled.div`
 // Graph + orders table
 export const SecondaryWrapper = styled.div`
   display: flex;
+  width: 100%;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-flow: column wrap;

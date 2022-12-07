@@ -25,7 +25,7 @@ export const TransactionState = styled(ExternalLink)<{ pending: boolean; success
   display: flex;
   justify-content: space-between;
   align-items: center;
-  text-decoration: none !important;
+  /* text-decoration: none !important; */
   border-radius: 0.5rem;
   padding: 0.25rem 0rem;
   font-weight: 500;

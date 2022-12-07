@@ -9,6 +9,7 @@ import { LimitOrdersConfirm } from './index'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import React from 'react'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -50,7 +51,6 @@ const tradeContext: TradeFlowContext = {
     class: OrderClass.LIMIT,
     account: '0x000',
     chainId: 1,
-    signer: {} as any,
     kind: OrderKind.SELL,
     inputAmount: inputCurrencyInfo.rawAmount!,
     outputAmount: outputCurrencyInfo.rawAmount!,
@@ -58,13 +58,15 @@ const tradeContext: TradeFlowContext = {
     feeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
     sellToken: inputCurrency,
     buyToken: outputCurrency,
-    validTo: Date.now() + 10000000,
     recipient: '0xaaa',
     recipientAddressOrName: null,
     allowsOffchainSigning: true,
     appDataHash: '0xabc',
   },
   rateImpact: 0,
+  appData: {} as any,
+  addAppDataToUploadQueue: () => void 0,
+  provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,
   dispatch: (() => void 0) as any,
@@ -92,6 +94,7 @@ const Fixtures = {
   default: (
     <LimitOrdersConfirm
       rateInfoParams={rateInfoParams}
+      settingsState={defaultLimitOrdersSettings}
       rateImpact={1}
       priceImpact={priceImpact}
       tradeContext={tradeContext}

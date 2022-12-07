@@ -26,9 +26,6 @@ const KLEROS_LIST = 't2crtokens.eth'
 const GEMINI_LIST = 'https://www.gemini.com/uniswap/manifest.json'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
-// Rinkeby Default
-const RINKEBY_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/rinkeby-token-list.json'
-
 // Goerli Default
 const GOERLI_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/goerli-token-list.json'
 
@@ -38,7 +35,7 @@ const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
 export const UNSUPPORTED_LIST_URLS: NetworkLists = {
   [ChainId.MAINNET]: [BA_LIST],
   // [ChainId.KOVAN]: [BA_LIST],
-  [ChainId.RINKEBY]: [BA_LIST],
+  // [ChainId.RINKEBY]: [BA_LIST],
   // [ChainId.ROPSTEN]: [BA_LIST],
   [ChainId.GOERLI]: [BA_LIST],
   [ChainId.GNOSIS_CHAIN]: [BA_LIST],
@@ -75,10 +72,10 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
   //   chainId: ChainId.KOVAN,
   //   networkLists: [COMPOUND_LIST],
   // }),
-  [ChainId.RINKEBY]: buildNetworkDefaultLists({
-    chainId: ChainId.RINKEBY,
-    networkLists: [RINKEBY_LIST, COMPOUND_LIST],
-  }),
+  // [ChainId.RINKEBY]: buildNetworkDefaultLists({
+  //   chainId: ChainId.RINKEBY,
+  //   networkLists: [RINKEBY_LIST, COMPOUND_LIST],
+  // }),
   // [ChainId.ROPSTEN]: buildNetworkDefaultLists({
   //   chainId: ChainId.ROPSTEN,
   //   networkLists: [COMPOUND_LIST],
@@ -97,7 +94,7 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
 export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
   [ChainId.MAINNET]: [COW_DAO_LIST, GEMINI_LIST],
   // [ChainId.KOVAN]: [GEMINI_LIST],
-  [ChainId.RINKEBY]: [COW_DAO_LIST, RINKEBY_LIST],
+  // [ChainId.RINKEBY]: [COW_DAO_LIST, RINKEBY_LIST],
   // [ChainId.ROPSTEN]: [GEMINI_LIST],
   [ChainId.GNOSIS_CHAIN]: [COW_DAO_LIST, HONEY_SWAP_XDAI],
   [ChainId.GOERLI]: [COW_DAO_LIST, GOERLI_LIST],
