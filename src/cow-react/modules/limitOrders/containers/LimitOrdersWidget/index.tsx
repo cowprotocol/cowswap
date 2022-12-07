@@ -188,8 +188,16 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     tradeContext,
   } = props
 
+  const inputCurrency = inputCurrencyInfo.currency
+  const outputCurrency = outputCurrencyInfo.currency
+
+  const isTradePriceUpdating = useMemo(() => {
+    if (isWrapOrUnwrap || !inputCurrency || !outputCurrency) return false
+
+    return isRateLoading
+  }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
+
   const currenciesLoadingInProgress = false
-  const isTradePriceUpdating = isRateLoading
   const showSetMax = true
 
   const subsidyAndBalance: BalanceAndSubsidy = {
