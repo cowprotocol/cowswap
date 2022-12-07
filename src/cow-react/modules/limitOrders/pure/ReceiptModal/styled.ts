@@ -5,17 +5,28 @@ export const Wrapper = styled.div`
   border-radius: 16px;
   background: ${({ theme }) => theme.bg1};
   width: 100%;
-  overflow-y: hidden;
-  padding-bottom: 1.2rem;
+  margin: 1.2rem 0;
+  overflow-y: auto;
+  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
+  scroll-behavior: smooth;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-height: 80vh;
-  `}
+  &::-webkit-scrollbar {
+    background: ${({ theme }) => `${theme.card.background2}`} !important;
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => `${theme.card.border}`} !important;
+    border: 3px solid transparent;
+    border-radius: 14px;
+    background-clip: padding-box;
+  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    margin: 70px 0;
     overflow-y: auto;
+    overflow-x: auto;
     padding-bottom: 0;
+    max-height: 100vh;
   `}
 `
 
@@ -25,6 +36,7 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  padding-top: 0;
 `
 
 export const Title = styled.h3`
@@ -35,6 +47,8 @@ export const Title = styled.h3`
 export const Body = styled(AutoRow)`
   box-sizing: border-box;
   max-height: 700px;
+  padding: 1rem;
+  padding-top: 0;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     max-height: 70vh;

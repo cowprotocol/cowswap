@@ -2,7 +2,11 @@ import { useOnCurrencySelection } from './useOnCurrencySelection'
 import { useCallback } from 'react'
 import type { Field } from 'state/swap/actions'
 
-export function useOnImportDismiss() {
+export interface OnImportDismissCallback {
+  (unknownFields: Field[]): void
+}
+
+export function useOnImportDismiss(): OnImportDismissCallback {
   const onCurrencySelection = useOnCurrencySelection()
 
   return useCallback(

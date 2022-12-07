@@ -108,15 +108,6 @@ export const Content = styled.div`
     line-height: 1.6;
   }
 
-  a {
-    color: ${({ theme }) => theme.text1};
-    transition: color 0.2s ease-in-out;
-
-    &:hover {
-      color: ${({ theme }) => theme.textLink};
-    }
-  }
-
   ol > ol {
     margin: 0 0 24px;
   }

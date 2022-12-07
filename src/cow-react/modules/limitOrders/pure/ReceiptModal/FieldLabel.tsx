@@ -3,7 +3,7 @@ import { InfoIcon } from 'components/InfoIcon'
 
 interface Props {
   label: string
-  tooltip?: string
+  tooltip?: string | JSX.Element
 }
 
 export function FieldLabel({ label, tooltip }: Props) {

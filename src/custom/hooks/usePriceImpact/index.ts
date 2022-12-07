@@ -3,7 +3,7 @@ import useFiatValuePriceImpact from './useFiatValuePriceImpact'
 import useFallbackPriceImpact from './useFallbackPriceImpact'
 import { ParsedAmounts, PriceImpactTrade } from './types'
 import { QuoteError } from 'state/price/actions'
-import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import { getAddress } from '@cow/utils/getAddress'
 
 export interface PriceImpactParams {
   abTrade?: PriceImpactTrade

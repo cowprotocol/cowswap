@@ -46,6 +46,7 @@ interface LimitOrdersFormParams {
   quote: LimitOrdersQuoteState | null
   activeRate: Fraction | null
   isWrapOrUnwrap: boolean
+  isRateLoading: boolean
 }
 
 function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState {
@@ -60,6 +61,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     quote,
     isWrapOrUnwrap,
     activeRate,
+    isRateLoading,
   } = params
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
@@ -115,7 +117,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.InsufficientBalance
   }
 
-  if (!isWrapOrUnwrap && (!currentAllowance || !quote)) {
+  if (!isWrapOrUnwrap && (isRateLoading || !currentAllowance || !quote)) {
     return LimitOrdersFormState.Loading
   }
 
@@ -140,7 +142,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { isSupportedWallet } = useWalletInfo()
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
   const quote = useAtomValue(limitOrdersQuoteAtom)
-  const { activeRate } = useAtomValue(limitRateAtom)
+  const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
   const { inputCurrency, outputCurrency, recipient } = tradeState
@@ -165,6 +167,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
     quote,
     activeRate,
     isWrapOrUnwrap,
+    isRateLoading: isLoading,
   }
 
   return useSafeMemo(() => {

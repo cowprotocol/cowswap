@@ -13,6 +13,7 @@ import { TagInfo } from 'state/lists/wrappedTokenInfo'
 import { formatSmart } from 'utils/format'
 import Column from 'components/Column'
 import { MenuItem as MenuItemMod } from '@src/components/SearchModal/styleds'
+import { transparentize } from 'polished'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {
@@ -22,8 +23,10 @@ const UNSUPPORTED_TOKEN_TAG = [
   },
 ]
 
-const Tag = styled(TagMod)<{ bg?: string }>`
-  background: ${({ bg, theme }) => bg || theme.bg1};
+const Tag = styled(TagMod)<{ tag?: TagInfo }>`
+  // Todo: Prevent usage of !important
+  background: ${({ tag, theme }) => (tag?.id === '0' ? transparentize(0.85, theme.danger) : theme.grey1)};
+  color: ${({ tag, theme }) => (tag?.id === '0' ? theme.danger : theme.text1)}!important;
   max-width: 6.1rem;
 `
 
@@ -97,7 +100,7 @@ function TagDescriptor({ tags, bg, children }: { children?: React.ReactNode; tag
   return (
     <TagContainer>
       <MouseoverTooltip text={tag.description}>
-        <Tag bg={bg} key={tag.id}>
+        <Tag tag={tag} key={tag.id}>
           {tag.name}
         </Tag>
       </MouseoverTooltip>
@@ -119,7 +122,7 @@ function TagDescriptor({ tags, bg, children }: { children?: React.ReactNode; tag
 function TokenTags({ /* currency, */ isUnsupported }: { /* currency: Currency; */ isUnsupported: boolean }) {
   if (isUnsupported) {
     return (
-      <TagDescriptor bg="#f3a1a1" tags={UNSUPPORTED_TOKEN_TAG}>
+      <TagDescriptor tags={UNSUPPORTED_TOKEN_TAG}>
         <TagLink>
           <HashLink to={UNSUPPORTED_TOKENS_FAQ_URL} target="_blank" onClick={(e) => e.stopPropagation()}>
             FAQ

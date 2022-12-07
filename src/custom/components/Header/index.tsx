@@ -42,7 +42,7 @@ import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
-  [ChainId.RINKEBY]: 'Rinkeby',
+  // [ChainId.RINKEBY]: 'Rinkeby',
   // [ChainId.ROPSTEN]: 'Ropsten',
   [ChainId.GOERLI]: 'Görli',
   // [ChainId.KOVAN]: 'Kovan',

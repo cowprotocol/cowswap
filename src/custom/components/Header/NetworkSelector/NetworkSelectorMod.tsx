@@ -187,10 +187,18 @@ export const SelectorControls = styled.div<{ supportedChain: boolean }>`
   padding: 6px 8px;
   ${({ supportedChain, theme }) =>
     !supportedChain &&
+    // `
+    //   color: white;
+    //   background-color: ${theme.red1};
+    //   border: 2px solid ${theme.red1};
+    // `}
+
+    // MOD
+    // Todo: Prevent usage of !important
     `
-      color: white;
-      background-color: ${theme.red1};
-      border: 2px solid ${theme.red1};
+      color: ${theme.danger}!important;
+      background: ${transparentize(0.85, theme.danger)}!important;
+      border: 2px solid ${transparentize(0.5, theme.danger)}!important;
     `}
   :focus {
     background-color: ${({ theme }) => darken(0.1, theme.red1)};
@@ -440,7 +448,9 @@ export default function NetworkSelector() {
           failedSwitchNetwork: chainId as SupportedChainId,
           unsupportedNetwork: true,
           styles: css`
-            background: ${({ theme }) => theme.yellow3};
+            /* background: ${({ theme }) => theme.yellow3}; */
+            background: ${({ theme }) => theme.alert}; // mod
+            color: ${({ theme }) => theme.black}; // mod
           `,
         },
         POPUP_KEY,
