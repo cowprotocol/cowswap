@@ -170,6 +170,7 @@ export const Progress = styled.div<{ active: number | string }>`
 
 export const InlineWrapper = styled.div`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
