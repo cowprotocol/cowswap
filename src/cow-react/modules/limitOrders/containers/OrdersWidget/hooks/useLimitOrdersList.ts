@@ -31,6 +31,7 @@ export interface ParsedOrder extends Order {
   parsedCreationtime?: Date
 }
 
+const ORDERS_LIMIT = 100
 const pendingOrderStatuses: OrderStatus[] = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.PENDING]
 
 export function useLimitOrdersList(): LimitOrdersList {
@@ -68,7 +69,7 @@ export function useLimitOrdersList(): LimitOrdersList {
   }, [allNonEmptyOrders, ordersFilter])
 
   return useMemo(() => {
-    return allSortedOrders.reduce(
+    const { pending, history } = allSortedOrders.reduce(
       (acc, order) => {
         if (pendingOrderStatuses.includes(order.status)) {
           acc.pending.push(order)
@@ -80,5 +81,7 @@ export function useLimitOrdersList(): LimitOrdersList {
       },
       { pending: [], history: [] } as LimitOrdersList
     )
+
+    return { pending: pending.slice(0, ORDERS_LIMIT), history: history.slice(0, ORDERS_LIMIT) }
   }, [allSortedOrders])
 }
