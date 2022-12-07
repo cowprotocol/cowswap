@@ -2,10 +2,9 @@ import styled from 'styled-components/macro'
 import { AutoRow } from 'components/Row'
 
 export const Wrapper = styled.div`
-  border-radius: 16px;
   background: ${({ theme }) => theme.bg1};
   width: 100%;
-  margin: 1.2rem 0;
+  margin: 14px 0;
   overflow-y: auto;
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
@@ -35,138 +34,153 @@ export const Header = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  padding-top: 0;
+  padding: 0 16px 16px;
 `
 
 export const Title = styled.h3`
-  font-size: 1rem;
+  font-size: 16px;
   margin: 0;
 `
 
 export const Body = styled(AutoRow)`
   box-sizing: border-box;
-  max-height: 700px;
-  padding: 1rem;
-  padding-top: 0;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    max-height: 70vh;
-  `}
+  max-height: 80vh;
+  padding: 0 10px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     max-height: 100%;
   `}
 `
 
-export const Field = styled.div<{ border?: 'rounded-full' | 'rounded-top' | 'rounded-bottom' }>`
+export const FieldsWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  gap: 2px;
+`
+
+export const Field = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background: ${({ theme }) => theme.input.bg1};
-  margin-bottom: 5px;
+  padding: 12px 16px;
+  background: ${({ theme }) => theme.grey1};
   width: 100%;
-  border-radius: ${({ border }) => {
-    if (border === 'rounded-full') return '1rem'
-    else if (border === 'rounded-top') return '1rem 1rem 0 0'
-    else if (border === 'rounded-bottom') return '0 0 1rem 1rem'
-    else return ''
-  }};
-`
+  font-size: 13px;
 
-export const CurrencyField = styled(Field)`
-  margin-bottom: 10px;
-  flex-direction: column;
-  align-items: flex-start;
-`
+  &:first-child {
+    border-radius: 16px 16px 0 0;
+  }
 
-export const CurrencyValue = styled.span`
-  font-size: 1.4rem;
-  font-weight: 600;
-`
-
-export const FieldBody = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  width: 100%;
-
-  & .open-currency-select-button {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: auto;
-    `}
+  &:last-child {
+    border-radius: 0 0 16px 16px;
   }
 `
 
-export const FieldTitle = styled.span`
-  font-size: 0.9rem;
+export const CurrencyField = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  background: ${({ theme }) => theme.grey1};
+  width: 100%;
+  border-radius: 16px;
+  margin: 0 0 10px;
+  gap: 10px;
+
+  > b {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    & .open-currency-select-button {
+      ${({ theme }) => theme.mediaWidth.upToSmall`
+        width: auto;
+    `}
+    }
+  }
+`
+
+export const CurrencyValue = styled.span`
+  font-size: 26px;
   font-weight: 600;
 `
 
 export const LabelText = styled.span`
-  font-size: 0.8rem;
+  opacity: 0.8;
 `
 
-export const Label = styled.div``
+export const Label = styled.div`
+  display: flex;
+  gap: 4px;
+
+  // TODO: Override required to remove inline styles from StyledInfoIcon parent.
+  // Need to refactor and remove the inline styles.
+  > div > div {
+    padding: 0 !important;
+  }
+`
 
 export const Value = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  font-size: 0.8rem;
-
-  & a {
-    font-size: 0.9rem;
-  }
+  gap: 12px 6px;
+  padding: 0 0 0 12px;
+  text-align: right;
+  line-height: 1.4;
+  font-weight: 500;
 `
 
 export const Progress = styled.div<{ active: number | string }>`
+  --height: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   position: relative;
-  height: 4px;
+  height: var(--height);
   width: 150px;
-  background: ${({ theme }) => theme.bg3};
-  margin-right: 5px;
 
-  &:after {
+  &::before {
+    display: inline-block;
     content: '';
-    position: absolute;
     height: 100%;
-    background: green;
-    width: ${({ active }) => `${active}%`};
+    width: 100%;
+    border-radius: var(--height);
+    background: ${({ theme, active }) =>
+      `linear-gradient(90deg, ${theme.success} ${active}%, ${theme.bg3} ${active}%)`};
   }
-`
 
-export const ProgressPercent = styled.span`
-  color: ${({ theme }) => theme.green1};
+  &::after {
+    display: inline-block;
+    content: '${({ active }) => `${active}%`}';
+    color: ${({ theme }) => theme.success};
+  }
 `
 
 export const InlineWrapper = styled.div`
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
-  font-size: 0.75rem;
-
-  & > * {
-    margin-left: 2px;
-  }
+  gap: 6px;
 `
 
 export const Surplus = styled.span`
-  color: ${({ theme }) => theme.green1};
+  color: ${({ theme }) => theme.success};
 `
 
-export const SurplusValue = styled.strong`
-  margin-left: 10px;
-`
-
-export const RateValue = styled.div`
-  font-size: 12px;
-`
+export const RateValue = styled.div``
 
 export const OrderTypeValue = styled.span`
   &:first-letter {
