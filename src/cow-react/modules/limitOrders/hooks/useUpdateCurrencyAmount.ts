@@ -26,7 +26,7 @@ export function useUpdateCurrencyAmount() {
       if (inputCurrencyAmount !== undefined) {
         // Calculate OUTPUT amount by applying the rate
         const outputWithRate = applyLimitRate(inputCurrencyAmount, Field.INPUT)
-        update.outputCurrencyAmount = outputWithRate
+        update.outputCurrencyAmount = outputWithRate?.quotient.toString()
 
         // Update order type only if keeOrderKind param is not true
         if (!keepOrderKind) {
@@ -38,7 +38,7 @@ export function useUpdateCurrencyAmount() {
       if (outputCurrencyAmount !== undefined) {
         // Calculate INPUT amount by applying the rate
         const inputWithRate = applyLimitRate(outputCurrencyAmount, Field.OUTPUT)
-        update.inputCurrencyAmount = inputWithRate
+        update.inputCurrencyAmount = inputWithRate?.quotient.toString()
 
         // Update order type only if keeOrderKind param is not true
         if (!keepOrderKind) {
