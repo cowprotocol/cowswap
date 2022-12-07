@@ -2,10 +2,9 @@ import styled from 'styled-components/macro'
 import { AutoRow } from 'components/Row'
 
 export const Wrapper = styled.div`
-  border-radius: 16px;
   background: ${({ theme }) => theme.bg1};
   width: 100%;
-  margin: 1.2rem 0;
+  margin: 14px 0 0;
   overflow-y: auto;
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
@@ -71,7 +70,7 @@ export const Field = styled.div`
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
+  padding: 12px 16px;
   background: ${({ theme }) => theme.grey1};
   width: 100%;
   font-size: 13px;
@@ -122,9 +121,20 @@ export const CurrencyValue = styled.span`
   font-weight: 600;
 `
 
-export const LabelText = styled.span``
+export const LabelText = styled.span`
+  opacity: 0.8;
+`
 
-export const Label = styled.div``
+export const Label = styled.div`
+  display: flex;
+  gap: 4px;
+
+  // TODO: Override required to remove inline styles from StyledInfoIcon parent.
+  // Need to refactor and remove the inline styles.
+  > div > div {
+    padding: 0 !important;
+  }
+`
 
 export const Value = styled.div`
   flex: 1;
@@ -132,6 +142,10 @@ export const Value = styled.div`
   flex-direction: column;
   align-items: flex-end;
   gap: 12px 6px;
+  padding: 0 0 0 12px;
+  text-align: right;
+  line-height: 1.4;
+  font-weight: 500;
 `
 
 export const Progress = styled.div<{ active: number | string }>`
