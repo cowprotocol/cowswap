@@ -9,7 +9,7 @@ module.exports = {
     // e.g. options.maximumFileSizeToCacheInBytes = 10 * 1024 * 1024;
     return {
       ...options,
-      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+      maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
       exclude: [...options.exclude, /emergency\.js$/],
     }
   },
