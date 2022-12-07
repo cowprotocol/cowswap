@@ -46,5 +46,5 @@ export function Progress2({ order, refund, cancelation }: EthFlowStepperProps) {
     }
   }, [state, refundTx, cancelationTx, isCanceled, isRefunded])
 
-  return <Progress status={progressStatus} value={progress} max={100} />
+  return <Progress status={progressStatus} value={progress} />
 }

@@ -251,6 +251,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                   withRecipient={showRecipient}
                   isLoading={isTradePriceUpdating}
                   hasSeparatorLine={true}
+                  border={true}
                 />
                 {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
               </styledEl.CurrencySeparatorBox>

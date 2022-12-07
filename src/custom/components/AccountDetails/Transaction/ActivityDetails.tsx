@@ -26,6 +26,7 @@ import { getActivityState } from 'hooks/useActivityDerivedState'
 import { V_COW, COW } from 'constants/tokens'
 import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
+import { StatusDetails } from './StatusDetails'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -232,72 +233,79 @@ export function ActivityDetails(props: {
   }
 
   return (
-    <Summary>
-      <span>
-        {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
+    <>
+      <Summary>
+        <span>
+          {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
 
-        {/* Token Approval Currency Logo */}
-        {!isOrder && singleToken && (
-          <ActivityVisual>
-            <CurrencyLogo currency={singleToken} size={'24px'} />
-          </ActivityVisual>
-        )}
+          {/* Token Approval Currency Logo */}
+          {!isOrder && singleToken && (
+            <ActivityVisual>
+              <CurrencyLogo currency={singleToken} size={'24px'} />
+            </ActivityVisual>
+          )}
 
-        {/* Order Currency Logo */}
-        {inputToken && outputToken && (
-          <ActivityVisual>
-            <CurrencyLogo currency={inputToken} size={'24px'} />
-            <CurrencyLogo currency={outputToken} size={'24px'} />
-          </ActivityVisual>
-        )}
-      </span>
-      <SummaryInner>
-        <b>{activityName}</b>
-        {isOrder ? (
-          <>
-            <SummaryInnerRow>
-              <b>From{kind === 'buy' && ' at most'}</b>
-              <i>{from}</i>
-            </SummaryInnerRow>
-            <SummaryInnerRow>
-              <b>To{kind === 'sell' && ' at least'}</b>
-              <i>{to}</i>
-            </SummaryInnerRow>
-            <SummaryInnerRow>
-              <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
-              <i>
-                <RateInfo noLabel={true} rateInfoParams={rateInfoParams} />
-              </i>
-            </SummaryInnerRow>
-            <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
-              {fulfillmentTime ? (
-                <>
-                  <b>Filled on</b>
-                  <i>{fulfillmentTime}</i>
-                </>
-              ) : (
-                <>
-                  <b>Valid to</b>
-                  <i>{validTo}</i>
-                </>
-              )}
-            </SummaryInnerRow>
-          </>
-        ) : (
-          summary ?? id
-        )}
+          {/* Order Currency Logo */}
+          {inputToken && outputToken && (
+            <ActivityVisual>
+              <CurrencyLogo currency={inputToken} size={'24px'} />
+              <CurrencyLogo currency={outputToken} size={'24px'} />
+            </ActivityVisual>
+          )}
+        </span>
 
-        {activityLinkUrl && (
-          <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
-            View details ↗
-          </ActivityLink>
-        )}
-        <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
-        <EthFlowStepper order={order} />
-        {showProgressBar && (
-          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
-        )}
-      </SummaryInner>
-    </Summary>
+        <SummaryInner>
+          <b>{activityName}</b>
+          {isOrder ? (
+            <>
+              <SummaryInnerRow>
+                <b>From{kind === 'buy' && ' at most'}</b>
+                <i>{from}</i>
+              </SummaryInnerRow>
+              <SummaryInnerRow>
+                <b>To{kind === 'sell' && ' at least'}</b>
+                <i>{to}</i>
+              </SummaryInnerRow>
+              <SummaryInnerRow>
+                <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
+                <i>
+                  <RateInfo noLabel={true} rateInfoParams={rateInfoParams} />
+                </i>
+              </SummaryInnerRow>
+              <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
+                {fulfillmentTime ? (
+                  <>
+                    <b>Filled on</b>
+                    <i>{fulfillmentTime}</i>
+                  </>
+                ) : (
+                  <>
+                    <b>Valid to</b>
+                    <i>{validTo}</i>
+                  </>
+                )}
+              </SummaryInnerRow>
+            </>
+          ) : (
+            summary ?? id
+          )}
+
+          {activityLinkUrl && (
+            <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
+              View details ↗
+            </ActivityLink>
+          )}
+          <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+        </SummaryInner>
+
+        {/* Status Details: icon, cancel, links */}
+        <StatusDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+      </Summary>
+
+      <EthFlowStepper order={order} />
+      {showProgressBar && (
+        <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
+      )}
+    </>
   )
 }

@@ -13,6 +13,7 @@ export const GpModal = styled(Modal)<{
 }>`
   > [data-reach-dialog-content] {
     color: ${({ theme }) => theme.text1};
+    width: 100%;
     max-width: ${({ maxWidth = 470 }) => `${maxWidth}px`};
     border: ${({ border = 'inherit' }) => `${border}`};
     z-index: 100;
@@ -20,10 +21,6 @@ export const GpModal = styled(Modal)<{
     margin: auto;
     transition: max-width 0.4s ease;
     background-color: ${({ theme }) => theme.bg1};
-
-    ${({ theme }) => theme.mediaWidth.upToLarge`
-      width: 623px;
-    `}
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100%;

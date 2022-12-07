@@ -368,7 +368,7 @@ function Fixture() {
     <>
       <EthFlowStepper {...props} />
       <h3>Params</h3>
-      <div style={{ fontSize: '0.8em' }}>
+      <div>
         <pre>{JSON.stringify(props, null, 2)}</pre>
       </div>
     </>

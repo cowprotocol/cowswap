@@ -442,6 +442,7 @@ export const NoResults = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 200px;
     margin: 0 auto 0 0;
+    overflow-x: auto;
   `};
 
   > h3 {

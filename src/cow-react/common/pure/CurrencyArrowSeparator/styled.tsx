@@ -4,11 +4,12 @@ import { loadingAnimationMixin } from './style-mixins'
 
 export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; hasSeparatorLine?: boolean }>`
   display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
-  margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-12px auto' : '6px auto')};
+  margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-12px auto' : '2px auto')};
+  cursor: pointer;
   position: relative;
   z-index: 2;
-  width: ${({ withRecipient }) => (withRecipient ? '28px' : '100%')};
-  height: 28px;
+  width: ${({ withRecipient }) => (withRecipient ? '26px' : '100%')};
+  height: 26px;
   justify-content: ${({ withRecipient }) => (withRecipient ? 'intial' : 'center')};
   transition: width 0.3s ease-in-out;
 
@@ -27,20 +28,27 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
     `}
 `
 
-export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
+export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean }>`
+  --size: 26px;
   position: absolute;
-  left: calc(50% - 14px);
+  left: calc(50% - var(--size) / 2);
+  top: 0;
+  bottom: 0;
   height: 100%;
   text-align: center;
   transform-style: preserve-3d;
   transform-origin: center right;
   transition: transform 0.25s;
-  border: 1px solid ${({ theme }) => theme.grey1};
+  border: ${({ border, theme }) => (border ? `1px solid ${theme.grey1}` : '0')};
   box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
   background: ${({ theme }) => (theme.darkMode ? theme.grey1 : theme.white)};
   border-radius: 8px;
-  width: 28px;
-  margin: 0 auto;
+  width: var(--size);
+  margin: auto;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 
   ${({ isLoading }) => isLoading && loadingAnimationMixin}
 `
@@ -48,9 +56,9 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
 export const ArrowDownIcon = styled(ArrowDown)`
   stroke: ${({ theme }) => theme.text1};
   stroke-width: 2px;
-  width: 100%;
-  height: 100%;
   padding: 3px;
+  height: 100%;
+  width: 100%;
   cursor: pointer;
 `
 

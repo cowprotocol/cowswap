@@ -82,9 +82,18 @@ const AmountItem = styled.div`
   gap: 6px;
   white-space: nowrap;
 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    white-space: normal;
+  `};
+
   > div {
     display: flex;
     align-items: center;
+  }
+
+  > span {
+    white-space: normal;
+    word-break: break-all;
   }
 `
 
@@ -145,8 +154,9 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
       <div>
         <CurrencyLogo currency={amount.currency} size="24px" />
       </div>
-      <span>{formatSmart(amount)}</span>
-      <span>{amount.currency.symbol}</span>
+      <span>
+        {formatSmart(amount)} {amount.currency.symbol}
+      </span>
     </AmountItem>
   )
 }
