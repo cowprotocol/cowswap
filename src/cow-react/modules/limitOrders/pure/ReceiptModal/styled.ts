@@ -4,7 +4,7 @@ import { AutoRow } from 'components/Row'
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg1};
   width: 100%;
-  margin: 14px 0 0;
+  margin: 14px 0;
   overflow-y: auto;
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
@@ -45,7 +45,7 @@ export const Title = styled.h3`
 export const Body = styled(AutoRow)`
   box-sizing: border-box;
   max-height: 70vh;
-  padding: 0 10px 10px;
+  padding: 0 10px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     max-height: 100%;
