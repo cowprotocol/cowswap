@@ -33,7 +33,7 @@ export interface WrapUnwrapCallbackParams {
   useModals?: boolean
 }
 
-export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<TransactionResponse>
+export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<TransactionResponse | null>
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
 
@@ -151,7 +151,7 @@ export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | null | u
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true }
-): Promise<TransactionResponse> {
+): Promise<TransactionResponse | null> {
   const { useModals } = params
   const {
     wrapType,
@@ -191,6 +191,10 @@ export async function wrapUnwrapCallback(
 
     const errorMessage = (isRejected ? 'Reject' : 'Error') + ' Signing transaction'
     console.error(errorMessage, error)
+
+    if (isRejected) {
+      return null
+    }
 
     throw typeof error === 'string' ? new Error(error) : error
   }
