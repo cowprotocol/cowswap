@@ -4,7 +4,11 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { Percent } from '@uniswap/sdk-core'
 
 const PROVIDER_REJECT_REQUEST_CODE = 4001 // See https://eips.ethereum.org/EIPS/eip-1193
-const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = ['User denied message signature', 'User rejected the transaction']
+const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
+  'User denied message signature',
+  'User rejected the transaction',
+  'User rejected signing',
+]
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
@@ -151,7 +155,11 @@ export function isRejectRequestProviderError(error: any) {
 
     // Check for some specific messages returned by some wallets when rejecting requests
     const message = getProviderErrorMessage(error)
-    if (PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) => message.includes(rejectMessage))) {
+    if (
+      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) =>
+        message.toLowerCase().includes(rejectMessage.toLowerCase())
+      )
+    ) {
       return true
     }
   }

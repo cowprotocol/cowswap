@@ -51,6 +51,8 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   isRefunded?: boolean
   // TODO: add refund hash here when working on that
 
+  cancellationHash?: string // Filled when a hard cancellation is triggered. Be it ethflow or regular order
+
   // Additional information from the order available in the API
   apiAdditionalInfo?: OrderInfoApi
 
@@ -107,6 +109,7 @@ export interface AddPendingOrderParams {
   order: SerializedOrder
 }
 export type ChangeOrderStatusParams = { id: OrderID; chainId: ChainId }
+export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
 
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
 
@@ -153,6 +156,8 @@ export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxP
 )
 
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
+
+export const setOrderCancellationHash = createAction<SetOrderCancellationHashParams>('order/setOrderCancellationHash')
 
 export const requestOrderCancellation = createAction<ChangeOrderStatusParams>('order/requestOrderCancellation')
 
