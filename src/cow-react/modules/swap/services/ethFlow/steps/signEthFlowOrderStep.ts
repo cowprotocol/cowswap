@@ -89,6 +89,7 @@ export async function signEthFlowOrderStep(
         orderId,
         signature: '',
         summary,
+        quoteId,
         orderCreationHash: txReceipt.hash,
         isOnChain: true, // always on-chain
       },

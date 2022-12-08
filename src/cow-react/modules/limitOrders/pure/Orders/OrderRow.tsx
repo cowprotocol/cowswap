@@ -190,20 +190,20 @@ export interface OrderRowProps {
   isRateInversed: boolean
   orderParams: OrderParams
   onClick: () => void
-  showOrderCancelationModal(order: Order): void
-  isSmartContractWallet: boolean
+  getShowCancellationModal(order: Order): (() => void) | null
 }
 
 export function OrderRow({
   order,
   RowElement,
   isRateInversed,
-  showOrderCancelationModal,
+  getShowCancellationModal,
   orderParams,
   onClick,
-  isSmartContractWallet,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
+
+  const showCancellationModal = getShowCancellationModal(order)
 
   const withWarning = !hasEnoughBalance || !hasEnoughAllowance
 
@@ -245,12 +245,12 @@ export function OrderRow({
         </StatusBox>
       </div>
       <div>
-        {!isSmartContractWallet && order.status === OrderStatus.PENDING && !order.isCancelling && (
+        {showCancellationModal && (
           <CancelOrderBtn
             title="Cancel order"
             onClick={(event) => {
               event.stopPropagation()
-              showOrderCancelationModal(order)
+              showCancellationModal()
             }}
           >
             <Trash2 size={16} />

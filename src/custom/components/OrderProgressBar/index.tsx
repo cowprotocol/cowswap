@@ -30,7 +30,8 @@ import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 
 import { getExplorerOrderLink } from 'utils/explorer'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
-import { CancelButton } from '@cow/common/containers/CancelButton'
+import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
+import { CancelButton } from '@cow/common/pure/CancelButton'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
@@ -45,7 +46,7 @@ type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, chainId, hideWhenFinished = false } = props
-  const { order, isConfirmed, isCancellable, isUnfillable = false } = activityDerivedState
+  const { order, isConfirmed, isUnfillable = false } = activityDerivedState
   const { validTo, creationTime } = useMemo(() => {
     if (order?.creationTime && order?.validTo) {
       return {
@@ -67,6 +68,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const [executionState, setExecutionState] = useState<ExecutionState>('cow')
   const [percentage, setPercentage] = useState(getPercentage(elapsedSeconds, expirationInSeconds, chainId))
   const isSmartContractWallet = useIsSmartContractWallet()
+
+  const getShowCancellationModal = useCancelOrder()
+  const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const fadeOutTransition = useTransition(isPending, null, {
     from: { opacity: 1 },
@@ -211,16 +215,10 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 <OrangeClockIcon size={16} />
                 <StatusMsg>
                   Order Status: <strong>Your limit price is out of market.</strong>{' '}
-                  {isCancellable ? (
+                  {showCancellationModal ? (
                     <>
                       {' '}
-                      You can wait or{' '}
-                      <CancelButton
-                        chainId={chainId}
-                        orderId={activityDerivedState.id}
-                        summary={activityDerivedState.summary}
-                        type={'soft'}
-                      />
+                      You can wait or <CancelButton onClick={showCancellationModal} />
                     </>
                   ) : null}
                 </StatusMsg>
@@ -257,16 +255,10 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
                 <StatusMsg>
                   Order Status:{' '}
                   <strong>The network looks slower than usual. Our solvers are adjusting gas fees for you!</strong>
-                  {isCancellable ? (
+                  {showCancellationModal ? (
                     <>
                       {' '}
-                      You can wait or{' '}
-                      <CancelButton
-                        chainId={chainId}
-                        orderId={activityDerivedState.id}
-                        summary={activityDerivedState.summary}
-                        type={'soft'}
-                      />
+                      You can wait or <CancelButton onClick={showCancellationModal} />
                     </>
                   ) : null}
                 </StatusMsg>

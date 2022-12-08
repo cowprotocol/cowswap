@@ -27,6 +27,7 @@ import { V_COW, COW } from 'constants/tokens'
 import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import { StatusDetails } from './StatusDetails'
+import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -154,7 +155,10 @@ export function ActivityDetails(props: {
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
 
+  const getShowCancellationModal = useCancelOrder()
+
   const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
+  const showCancellationModal = activityDerivedState.order ? getShowCancellationModal(activityDerivedState.order) : null
 
   if (!order && !enhancedTransaction) return null
 
@@ -299,7 +303,7 @@ export function ActivityDetails(props: {
         </SummaryInner>
 
         {/* Status Details: icon, cancel, links */}
-        <StatusDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+        <StatusDetails showCancellationModal={showCancellationModal} activityDerivedState={activityDerivedState} />
       </Summary>
 
       <EthFlowStepper order={order} />

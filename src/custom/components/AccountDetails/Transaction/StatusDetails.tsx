@@ -13,7 +13,7 @@ import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { getActivityState } from 'hooks/useActivityDerivedState'
-import { CancelButton } from '@cow/common/containers/CancelButton'
+import { CancelButton } from '@cow/common/pure/CancelButton'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -68,8 +68,13 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
   }
 }
 
-export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
-  const { activityDerivedState, chainId } = props
+export type StatusDetailsProps = {
+  activityDerivedState: ActivityDerivedState
+  showCancellationModal: (() => void) | null
+}
+
+export function StatusDetails(props: StatusDetailsProps) {
+  const { activityDerivedState, showCancellationModal } = props
 
   const {
     status,
@@ -81,7 +86,6 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     isExpired,
     isTransaction,
     isCancelled,
-    isCancellable,
     isCreating,
   } = activityDerivedState
 
@@ -116,15 +120,9 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
         {_getStateLabel(activityDerivedState)}
       </StatusLabel>
 
-      {isCancellable && (
+      {showCancellationModal && (
         <StatusLabelBelow>
-          {/* Cancel order */}
-          <CancelButton
-            chainId={chainId}
-            orderId={activityDerivedState.id}
-            summary={activityDerivedState.summary}
-            type={'soft'}
-          />
+          <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>
       )}
     </StatusLabelWrapper>
