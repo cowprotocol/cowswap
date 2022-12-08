@@ -1,9 +1,9 @@
 import { CanonicalMarketParams, getCanonicalMarket } from 'utils/misc'
-import { CurrencyAmount, Currency, TradeType, Price, Percent, Fraction } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency, TradeType, Price, Percent } from '@uniswap/sdk-core'
 import { Trade } from '@uniswap/v2-sdk'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
+import { ONE_FRACTION } from 'constants/misc'
 
-const ONE = new Fraction('1')
 export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>
 
 export type TradeWithFee = Omit<Trade<Currency, Currency, TradeType>, 'nextMidPrice' | 'exactIn' | 'exactOut'> & {
@@ -49,7 +49,7 @@ export function _minimumAmountOut(pct: Percent, trade: TradeGp) {
     return trade.outputAmount
   }
 
-  return trade.outputAmount.multiply(ONE.subtract(pct))
+  return trade.outputAmount.multiply(ONE_FRACTION.subtract(pct))
 }
 
 export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
@@ -57,7 +57,7 @@ export function _maximumAmountIn(pct: Percent, trade: TradeGp) {
     return trade.inputAmount
   }
 
-  return trade.inputAmountWithFee.multiply(ONE.add(pct))
+  return trade.inputAmountWithFee.multiply(ONE_FRACTION.add(pct))
 }
 
 interface TradeGpConstructor {
