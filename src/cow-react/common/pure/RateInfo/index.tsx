@@ -39,7 +39,6 @@ const Wrapper = styled.div<{ stylized: boolean }>`
 const RateLabel = styled.div`
   display: flex;
   align-items: center;
-  color: ${({ theme }) => transparentize(0.2, theme.text1)};
   font-weight: 400;
   gap: 5px;
 `

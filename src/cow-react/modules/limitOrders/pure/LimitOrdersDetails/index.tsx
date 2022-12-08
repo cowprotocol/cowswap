@@ -50,7 +50,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       </styledEl.DetailsRow>
       <styledEl.DetailsRow>
         <div>
-          <span>MEV protection</span>
+          <span>Protection from MEV</span>
           <InfoIcon
             content={
               'On CoW Swap, your limit orders - just like market orders - are protected from MEV by default! So there’s no need to worry about MEV attacks like frontrunning or sandwiching.'
