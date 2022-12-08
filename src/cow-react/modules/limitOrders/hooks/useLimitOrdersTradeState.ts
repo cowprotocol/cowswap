@@ -23,7 +23,7 @@ export interface LimitOrdersTradeState {
 }
 
 function tryParseFractionalAmount(currency: Currency | null, amount: string | null): CurrencyAmount<Currency> | null {
-  if (!amount || !currency) return null
+  if (!amount || !currency || !+amount) return null
 
   try {
     return currency ? CurrencyAmount.fromFractionalAmount(currency, amount, 1) : null
