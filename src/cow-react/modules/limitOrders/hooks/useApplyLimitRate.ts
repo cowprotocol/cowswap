@@ -23,17 +23,20 @@ export function useApplyLimitRate() {
       const { decimals: outputDecimals } = outputCurrency
 
       /**
-       * Consider a trade DAI (decimals 18) -> USDC (decimals 6)
-       * 1. When input 9 DAI, the value equals 9000000000000000000
-       * Then we should divide it until 6 decimals to get value for USDC = 9000000
-       * 2. When input 9 USDC, the value equals 9000000
-       * Then we should multiply it until 18 decimals to get value for DAI = 9000000000000000000
+       * Consider a trade DAI (decimals 18) <-> USDC (decimals 6)
+       * 1. When input is 9 DAI, the value equals 9000000000000000000
+       * Then we should divide it to get value for USDC = 9000000 (6 decimals)
+       *
+       * 2. When input is 9 USDC, the value equals 9000000
+       * Then we should multiply to get value for DAI = 9000000000000000000 (18 decimals)
        */
       const shouldMultiplyInput = field === Field.INPUT && inputDecimals < outputDecimals
       const shouldMultiplyOutput = field === Field.OUTPUT && outputDecimals < inputDecimals
       const decimalsShift = JSBI.BigInt(10 ** Math.abs(inputDecimals - outputDecimals))
 
       const parsedValue = ((fraction) => {
+        if (inputDecimals === outputDecimals) return fraction
+
         if (shouldMultiplyInput || shouldMultiplyOutput) {
           return fraction.multiply(decimalsShift)
         }
