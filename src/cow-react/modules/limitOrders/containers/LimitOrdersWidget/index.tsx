@@ -39,6 +39,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
+import { formatSmart } from 'utils/format'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -83,7 +84,7 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
-    viewAmount: inputCurrencyAmount?.toSignificant(6) || '',
+    viewAmount: formatSmart(inputCurrencyAmount) || '',
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -93,9 +94,7 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'Your receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
-    viewAmount: isWrapOrUnwrap
-      ? inputCurrencyAmount?.toSignificant(6) || ''
-      : outputCurrencyAmount?.toSignificant(6) || '',
+    viewAmount: formatSmart(isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount) || '',
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
