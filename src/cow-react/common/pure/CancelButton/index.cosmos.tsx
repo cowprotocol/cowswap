@@ -1,42 +1,9 @@
-import { CancelButton, CancelButtonProps, SoftCancellationContext } from '@cow/common/pure/CancelButton/index'
-import { useState } from 'react'
+import { CancelButton, CancelButtonProps } from '.'
 
-const softCancellationContext: SoftCancellationContext = {
-  cancelOrder() {
-    console.log('cancelling!!!')
-  },
-  isWaitingSignature: false,
-}
-
-function Wrapper(props: Partial<CancelButtonProps>) {
-  const [showCancelModal, setShowCancelModal] = useState(false)
-
-  const p: CancelButtonProps = {
-    onDismiss() {
-      setShowCancelModal(false)
-    },
-    chainId: 1,
-    error: null,
-    orderId: '0x23424',
-    type: 'soft',
-    summary: 'This was the order that got cancelled bla bla',
-    softCancellationContext,
-    showCancelModal,
-    onCancelButtonClick() {
-      setShowCancelModal(true)
-    },
-    ...props,
-  }
-  return <CancelButton {...p} />
-}
+const props: CancelButtonProps = { onClick: () => alert('Button clicked!') }
 
 const Fixtures = {
-  default: <Wrapper />,
-  error: <Wrapper error={'Something went wrong with this modal'} />,
-  // soft cancellation
-  softCancellationWaitingSignature: (
-    <Wrapper softCancellationContext={{ ...softCancellationContext, isWaitingSignature: true }} />
-  ),
+  default: <CancelButton {...props} />,
 }
 
 export default Fixtures

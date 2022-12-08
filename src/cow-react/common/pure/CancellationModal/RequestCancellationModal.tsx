@@ -1,23 +1,24 @@
 import React, { useState } from 'react'
 import styled from 'styled-components/macro'
+import { NavHashLink } from 'react-router-hash-link'
 
 import { LinkStyledButton } from 'theme'
 
 import { ButtonPrimary } from 'components/Button'
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
+
 import { Routes } from '@cow/constants/routes'
 
-import { NavHashLink } from 'react-router-hash-link'
-
 export type RequestCancellationModalProps = {
-  onDismiss: () => void
-  onClick: () => void
   summary?: string
   shortId: string
+  type: 'offChain' | 'onChain'
+  onDismiss: () => void
+  triggerCancellation: () => void
 }
 
 export function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {
-  const { onDismiss, onClick, summary, shortId } = props
+  const { onDismiss, triggerCancellation, summary, shortId, type } = props
 
   const [showMore, setShowMore] = useState(false)
 
@@ -34,14 +35,19 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
           </p>
           <CancellationSummary>{summary}</CancellationSummary>
           <p>
-            Keep in mind this is a soft cancellation{' '}
+            {`This is an ${type === 'onChain' ? 'on-chain' : 'off-chain'} cancellation `}
             <LinkStyledButton onClick={toggleShowMore}>[{showMore ? '- less' : '+ more'}]</LinkStyledButton>
           </p>
           {showMore && (
             <>
               <p>
-                This means that a solver might already have included the order in a solution even if this cancellation
-                is successful. Read more in the{' '}
+                {type === 'onChain'
+                  ? 'On-chain cancellations require a regular on-chain transaction and cost gas.'
+                  : 'Off-chain cancellations require a signature and are free.'}
+              </p>
+              <p>
+                Keep in mind a solver might already have included the order in a solution even if this cancellation is
+                successful. Read more in the{' '}
                 <NavHashLink target="_blank" rel="noreferrer" to={`${Routes.FAQ_TRADING}#can-i-cancel-an-order`}>
                   FAQ
                 </NavHashLink>
@@ -51,12 +57,12 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
           )}
         </>
       )}
-      bottomContent={() => <ButtonPrimary onClick={onClick}>Request cancellation</ButtonPrimary>}
+      bottomContent={() => <ButtonPrimary onClick={triggerCancellation}>Request cancellation</ButtonPrimary>}
     />
   )
 }
 
-export const CancellationSummary = styled.span`
+const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
