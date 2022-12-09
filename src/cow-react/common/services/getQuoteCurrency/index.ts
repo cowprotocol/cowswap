@@ -33,6 +33,20 @@ export function getQuoteCurrency(
   const inputCurrency = inputCurrencyAmount.currency
   const outputCurrency = outputCurrencyAmount.currency
 
+  const quoteCurrencyByStableCoin = getQuoteCurrencyByStableCoin(chainId, inputCurrency, outputCurrency)
+
+  if (quoteCurrencyByStableCoin) return quoteCurrencyByStableCoin
+
+  return inputCurrencyAmount.lessThan(outputCurrencyAmount) ? inputCurrency : outputCurrency
+}
+
+export function getQuoteCurrencyByStableCoin(
+  chainId: SupportedChainId | undefined,
+  inputCurrency: Currency | null,
+  outputCurrency: Currency | null
+): Currency | null {
+  if (!chainId || !inputCurrency || !outputCurrency) return null
+
   const stableCoins = STABLE_COINS[chainId]
 
   const inputAddress = inputCurrency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : inputCurrency.address.toLowerCase()
@@ -44,5 +58,5 @@ export function getQuoteCurrency(
   if (isInputStableCoin) return outputCurrency
   if (isOutputStableCoin) return inputCurrency
 
-  return inputCurrencyAmount.lessThan(outputCurrencyAmount) ? inputCurrency : outputCurrency
+  return null
 }

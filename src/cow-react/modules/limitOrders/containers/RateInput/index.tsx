@@ -10,7 +10,7 @@ import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 import { formatSmart } from 'utils/format'
-import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
+import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from '@cow/common/services/getQuoteCurrency'
 import { useWeb3React } from '@web3-react/core'
 import { getAddress } from '@cow/utils/getAddress'
 
@@ -83,8 +83,11 @@ export function RateInput() {
   }, [activeRate, executionRate, isLoadingExecutionRate, initialRate, inputCurrencyId, outputCurrencyId])
 
   // Apply smart quote selection
+  // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
   useEffect(() => {
-    const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
+    const quoteCurrency =
+      getQuoteCurrencyByStableCoin(chainId, inputCurrency, outputCurrency) ||
+      getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
     const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
     updateLimitRateState({ isInversed: quoteCurrencyAddress !== inputCurrencyAddress })
