@@ -166,7 +166,7 @@
     "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:abi-ethflow && yarn contracts:add:export && yarn contracts:compile:abi-uniswap && yarn contracts:compile:v3",
     "prei18n:extract": "touch src/locales/en-US.po",
-    "postinstall": "npm-run-all -p contracts:compile i18n:compile patch-package",
+    "postinstall": "patch-package",
     "patch-package": "patch-package",
     "i18n:extract": "cross-env NODE_ENV=development lingui extract --locale en-US",
     "i18n:compile": "yarn i18n:extract && lingui compile",
