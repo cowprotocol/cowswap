@@ -65,7 +65,7 @@ export function ReceiptModal({
   }
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
-  const outputLabel = order.kind === OrderKind.SELL ? 'Your receive at least' : 'You receive exactly'
+  const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>

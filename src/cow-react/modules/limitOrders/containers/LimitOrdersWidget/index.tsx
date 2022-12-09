@@ -91,7 +91,7 @@ export function LimitOrdersWidget() {
   }
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isWrapOrUnwrap ? undefined : isSellOrder ? 'Your receive at least' : 'You receive exactly',
+    label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
     viewAmount: formatSmart(isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount) || '',
