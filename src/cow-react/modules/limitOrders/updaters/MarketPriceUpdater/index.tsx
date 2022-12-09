@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
@@ -16,7 +16,7 @@ export function MarketPriceUpdater() {
   const { price, isLoading } = useGetInitialPrice()
   const prevPrice = usePrevious(price)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     updateLimitRateState({
       // Don't change isLoading flag when price is already set
       isLoading: isInitialPriceSet ? false : isLoading,
@@ -25,7 +25,7 @@ export function MarketPriceUpdater() {
     })
   }, [isInitialPriceSet, price, isLoading, updateLimitRateState])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Remove current execution rate on empty fields or zero value
     if (isFractionFalsy(inputCurrencyAmount) || isFractionFalsy(outputCurrencyAmount)) {
       updateLimitRateState({ executionRate: null })
@@ -33,7 +33,7 @@ export function MarketPriceUpdater() {
   }, [inputCurrencyAmount, outputCurrencyAmount, executionRate, updateLimitRateState])
 
   // Set initial price once
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!price || isInitialPriceSet || isLoading || prevPrice?.equalTo(price)) return
 
     setIsInitialPriceSet(true)
@@ -41,7 +41,7 @@ export function MarketPriceUpdater() {
   }, [isInitialPriceSet, updateLimitRateState, price, isLoading, prevPrice])
 
   // Reset initial price set flag when any token was changed
-  useEffect(() => {
+  useLayoutEffect(() => {
     setIsInitialPriceSet(false)
   }, [inputCurrency, outputCurrency])
 

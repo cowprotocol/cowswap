@@ -32,7 +32,6 @@ export function getQuoteCurrency(
 
   const inputCurrency = inputCurrencyAmount.currency
   const outputCurrency = outputCurrencyAmount.currency
-  const isInputAmountSmallerThatOutput = +inputCurrencyAmount.toExact() < +outputCurrencyAmount.toExact()
 
   const stableCoins = STABLE_COINS[chainId]
 
@@ -45,5 +44,5 @@ export function getQuoteCurrency(
   if (isInputStableCoin) return outputCurrency
   if (isOutputStableCoin) return inputCurrency
 
-  return isInputAmountSmallerThatOutput ? inputCurrency : outputCurrency
+  return inputCurrencyAmount.lessThan(outputCurrencyAmount) ? inputCurrency : outputCurrency
 }
