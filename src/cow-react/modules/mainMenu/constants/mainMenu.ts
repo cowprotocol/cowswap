@@ -1,7 +1,5 @@
 import { Routes } from '@cow/constants/routes'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
-import { LIMIT_ORDERS_ENABLED } from '@cow/constants/featureFlags'
-import { FeatureFlag } from '@cow/utils/featureFlags'
 import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
 
 // Assets
@@ -13,7 +11,6 @@ import IMAGE_TWITTER from 'assets/cow-swap/twitter.svg'
 import IMAGE_PIE from 'assets/cow-swap/pie.svg'
 import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
 import IMAGE_GAME from 'assets/cow-swap/game.gif'
-import { isBarn } from 'utils/environments'
 
 export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
   return !!(item.title && item.url)
@@ -33,25 +30,23 @@ export const ACCOUNT_MENU: InternalLink[] = [
 ]
 
 export const MAIN_MENU: MenuTreeItem[] = [
-  FeatureFlag.get(LIMIT_ORDERS_ENABLED) || isBarn
-    ? {
-        kind: MenuItemKind.DROP_DOWN,
-        title: 'Trade',
-        items: [
+  {
+    kind: MenuItemKind.DROP_DOWN,
+    title: 'Trade',
+    items: [
+      {
+        links: [
+          { id: MainMenuItemId.SWAP, kind: MenuItemKind.DYNAMIC_LINK, title: 'Swap', url: Routes.SWAP },
           {
-            links: [
-              { id: MainMenuItemId.SWAP, kind: MenuItemKind.DYNAMIC_LINK, title: 'Swap', url: Routes.SWAP },
-              {
-                id: MainMenuItemId.LIMIT_ORDERS,
-                kind: MenuItemKind.DYNAMIC_LINK,
-                title: 'Limit orders',
-                url: Routes.LIMIT_ORDER,
-              },
-            ],
+            id: MainMenuItemId.LIMIT_ORDERS,
+            kind: MenuItemKind.DYNAMIC_LINK,
+            title: 'Limit orders',
+            url: Routes.LIMIT_ORDER,
           },
         ],
-      }
-    : { id: MainMenuItemId.SWAP, kind: MenuItemKind.DYNAMIC_LINK, title: 'Swap', url: Routes.SWAP },
+      },
+    ],
+  },
   {
     kind: MenuItemKind.DROP_DOWN,
     title: 'Account',
