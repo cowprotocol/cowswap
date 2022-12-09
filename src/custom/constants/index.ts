@@ -198,4 +198,5 @@ export const FAQ_MENU_LINKS = [
   { title: 'Token', url: '/faq/token' },
   { title: 'Trading', url: '/faq/trading' },
   { title: 'Affiliate', url: '/faq/affiliate' },
+  { title: 'Limit orders', url: '/faq/limit-order' },
 ]

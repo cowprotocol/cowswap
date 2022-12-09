@@ -1,0 +1,229 @@
+import { Page, Content } from '@cow/modules/application/pure/Page'
+
+import { ExternalLinkFaq, Wrapper } from './styled'
+import { Footer } from '.'
+import { useToC } from './hooks'
+import ToC from './ToC'
+import { FaqMenu } from './Menu'
+import { PageTitle } from '@cow/modules/application/containers/PageTitle'
+
+// AmplitudeAnalytics
+import { PageName } from 'components/AmplitudeAnalytics/constants'
+import { Trace } from 'components/AmplitudeAnalytics/Trace'
+
+export default function TokenFaq() {
+  const { toc, faqRef } = useToC()
+
+  return (
+    <Trace page={PageName.FAQ_LIMIT_ORDERS_PAGE} shouldLogImpression>
+      <Wrapper ref={faqRef}>
+        <PageTitle title="Limit orders FAQ" />
+        <FaqMenu />
+        <Page>
+          <ToC toc={toc} name="Limit orders FAQ" />
+          <Content>
+            <h2 id="limit-orders">Limit orders</h2>
+
+            <h3 id="what-are-limit-orders">What are limit orders?</h3>
+            <p>Limit orders are orders to buy or sell tokens at a specified price or better.</p>
+            <p>
+              A buy limit order allows a trader to specify the maximum price they are willing to pay for a token, while
+              a sell limit order allows a trader to specify the minimum price they are willing to sell a token for.
+            </p>
+            <p>
+              Limit orders are different from market orders, which are orders to buy or sell a token at the best
+              available price.
+            </p>
+            <p>
+              Limit orders can be useful for traders who want to control the price at which they buy or sell a token.
+              For example, a trader who wants to buy a token but is concerned about it going up in price can place a buy
+              limit order at a lower price to ensure they get the token at a price they are comfortable with. Similarly,
+              a trader who wants to sell a token but is concerned about it going down in price can place a sell limit
+              order at a higher price to ensure they get a price they are comfortable with for the token.
+            </p>
+            <p>
+              You can use limit orders to control the price you pay or the price you get – over any time horizon (up to
+              one year). Using limit orders is like setting a trap for the price you want.
+            </p>
+
+            <h3 id="what-type-of-limit-orders-does-cow-protocol-support">
+              What types of limit orders does CoW Protocol support?
+            </h3>
+            <p>
+              Currently, CoW Protocol only supports fill-or-kill limit orders. With fill-or-kill, the limit order is
+              executed in its entirety, or not at all.
+            </p>
+            <p>
+              In the future, CoW Protocol will support partial-fill limit orders as well. With partial-fill limit
+              orders, the limit order does not need to be executed in full. It may be executed in part, so long as the
+              limit price is respected. This would be relevant, for example, if a{' '}
+              <ExternalLinkFaq href="https://docs.cow.fi/off-chain-services/solvers">solver</ExternalLinkFaq> is able to
+              find liquidity to fill half of an order but not all of it.
+            </p>
+
+            <h3 id="when-will-i-be-able-to-place-partially-fillable-limit-orders">
+              When will I be able to place partially-fillable limit orders?
+            </h3>
+            <p>
+              Solvers are currently not capable of handling partially-fillable limit orders, but they’re actively
+              working on it. If you are interested in seeing partially-fillable orders asap, please{' '}
+              <ExternalLinkFaq href="https://t.me/+60olZD2C2HswMzRh">reach out</ExternalLinkFaq> – you could help build
+              a solver that specializes in these types of orders!
+            </p>
+
+            <h3 id="how-do-fees-work">How do fees work?</h3>
+            <p>
+              Placing and canceling limit orders is completely free on CoW Protocol. (This is notably not the case for
+              all DEXs and DEX aggregators – which often charge for placing orders, canceling orders, or both.) CoW
+              Protocol does, however, take a fee when your order is executed. This fee covers transaction fees for the
+              liquidity pools your order is sourced from. CoW Protocol takes no fee for itself.
+            </p>
+            <p>
+              Fees are taken from the surplus CoW Protocol generates for your order – that is, by executing your order
+              at a better price than your limit price. CoW Protocol is capable of finding much better prices than are
+              otherwise available due to its unique batch auction mechanism; in situations where it can’t find a better
+              price, it will wait until the market price is sufficient to cover both your limit price and the network
+              fees. This means that your order may not execute exactly when the market price hits your limit price.
+            </p>
+            <p>
+              For example, if you place a limit order to buy 10 ETH for $10,000 and network fees are $5, the market
+              price of ETH would need to hit ~$999.50 for the trade to go through. BUT, if we find a full CoW when the
+              market price of ETH hits $1000, CoW Swap will save you $30 in AMM fees (assuming a 0.3% AMM swap fee on
+              UniV2), take the $5 in network fees from that $30, and give you 10.0125 ETH (a nice surplus of 0.0125 ETH
+              more than you initially expected to get).
+            </p>
+            <p>
+              CoW Swap’s unique fee model for limit orders ensures that you will always get the token amount you ordered
+              at the limit price you set – or better.
+            </p>
+
+            <h3 id="do-i-really-not-pay-fees-for-placing-limit-orders">
+              Do I really not pay fees for placing limit orders?{' '}
+            </h3>
+            <p>Yes. Placing a limit order with CoW Protocol is completely FREE.</p>
+
+            <h3 id="do-i-really-not-pay-fees-for-canceling-limit-orders">
+              Do I really not pay fees for canceling limit orders?
+            </h3>
+            <p>Yes. Canceling a limit order with CoW Protocol is completely FREE.</p>
+
+            <h3 id="what-if-my-limit-order-reverts-or-expires">What if my limit order reverts or expires?</h3>
+            <p>
+              Limit orders placed through CoW Protocol cannot revert. You therefore don’t need to pay fees for reverted
+              orders. If an order expires, you won’t pay for that either.
+            </p>
+
+            <h3 id="so-i-can-shamelessly-place-a-bunch-of-orders">
+              So I can shamelessly place a bunch of orders, cancel them, and do it again without fear of being charged
+              until my orders go through?
+            </h3>
+            <p>Yes. Exactly.</p>
+
+            <h3 id="do-my-funds-get-locked">Do my funds get locked when I place a limit order?</h3>
+            <p>No. You can place many orders at once, no matter what balance you hold in your wallet.</p>
+            <p>
+              CoW Protocol fills your orders as they hit their limit prices, and stops filling them once you run out of
+              the relevant tokens in your wallet.{' '}
+            </p>
+            <p>
+              If you have outstanding orders but not enough balance to cover them, your orders will become fillable the
+              moment you top up your wallet balance – and, if the limit price you set is available when you top up your
+              balance, your order will be executed immediately.
+            </p>
+
+            <h3 id="who-is-the-counterparty">Who is the counterparty in CoW Protocol’s limit orders?</h3>
+            <p>
+              Limit orders on CoW Protocol don’t need a counterparty to function properly. CoW Protocol – through its
+              decentralized network of solvers – sources liquidity from AMMs, DEX aggregators, private market makers,
+              and other CoW Protocol users. As soon as a solver is able to find an execution path that meets the
+              conditions of a limit order, CoW Protocol will execute the order.
+            </p>
+
+            <h3 id="what-does-surplus-capturing-limit-orders-mean">What does “surplus-capturing limit orders” mean?</h3>
+            <p>
+              CoW Protocol’s limit orders are different from all other DeFi limit orders because they are
+              surplus-capturing.
+            </p>
+            <p>
+              Surplus-capturing means that the protocol tries to improve prices even more than what users expect when
+              they place their limit orders. CoW Protocol can do this by matching{' '}
+              <ExternalLinkFaq href="https://docs.cow.fi/overview/coincidence-of-wants">
+                Coincidences of Wants
+              </ExternalLinkFaq>{' '}
+              within batches, and by capturing favorable price movements between the time orders are sent and the time
+              they are settled on-chain.
+            </p>
+            <p>
+              For example, if you have an outstanding limit order to buy ETH at $1000 and the price drops from $1005 to
+              $995 between two blocks, you will only pay $995 (giving you a $5 surplus per ETH). On any other exchange
+              your limit order will be matched at the original $1000 price.
+            </p>
+
+            <h3 id="how-will-i-know-when-my-order-is-filled">How will I know when my order is filled?</h3>
+            <p>
+              If you trade through CoW Swap, and your limit order fills while you have the dApp open, a nice MOOOO sound
+              will play to let you know when your order is filled.
+            </p>
+            <p>
+              If you miss the MOOOO sound, you can always check your order history in{' '}
+              <ExternalLinkFaq href="https://swap.cow.fi/#/1/limit-orders/WETH?tab=history&page=1">
+                CoW Swap
+              </ExternalLinkFaq>{' '}
+              and in the <ExternalLinkFaq href="https://explorer.cow.fi">CoW Explorer</ExternalLinkFaq>.
+            </p>
+
+            <h3 id="why-isnt-my-order-getting-filled">
+              Why isn’t my order getting filled when the market price hits my limit price?
+            </h3>
+            <p>
+              There are a few possible reasons for this:
+              <ul>
+                <li>
+                  Though the market price reached your limit price, there wasn’t enough liquidity to fill your order.
+                  CoW Swap currently only supports fill-or-kill orders, so if there isn’t enough liquidity to fill an
+                  order completely, the order doesn’t get filled at all. We are planning to enable partially fillable
+                  orders soon, which will mitigate this risk substantially.
+                </li>
+                <li>
+                  CoW Swap covers fees on limit orders by executing the order at a slightly better price than the limit
+                  price. If the market price exactly hit your limit price but did not exceed it, then CoW Swap would not
+                  be able to cover your fee and your order would not execute.
+                </li>
+              </ul>
+            </p>
+
+            <h3 id="why-do-i-see-orders-i-didnt-place">
+              Why do I see orders I didn’t place in my limit order history?
+            </h3>
+            <p>
+              The order history panel visible in the limit orders tab of CoW Swap shows both limit orders and market
+              orders. This is so you can have a full picture of your recent trading activity while placing your limit
+              orders.
+            </p>
+
+            <h3 id="why-cant-i-trade-eth">Why can’t I trade ETH?</h3>
+            <p>
+              You can’t trade ETH directly because ETH is not an ERC-20 token. Limit orders on CoW Protocol currently
+              only work for ERC-20 tokens. If you wish to sell ETH using limit orders on CoW Protocol, you can wrap your
+              ETH and place the limit order with WETH.
+            </p>
+
+            <h3 id="why-did-my-limit-order-expire">Why did my limit order expire?</h3>
+            <p>
+              Your limit order expired because the time limit you set when you placed your order expired. Unfortunately,
+              the market price you tried to achieve was not available while your order was live.
+            </p>
+            <p>
+              But you can try again :-). The expired order did not cost you anything and placing orders is free of
+              charge!
+            </p>
+
+            <h3 id="why-did-the-cow-go-to-outer-space">Why did the cow go to outer space?</h3>
+            <p>Because he wanted to see the moooooo-n.</p>
+            <Footer />
+          </Content>
+        </Page>
+      </Wrapper>
+    </Trace>
+  )
+}
