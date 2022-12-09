@@ -1,16 +1,17 @@
 import { Dropdown } from '@cow/common/pure/Dropdown'
-import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
+import { LimitOrderDeadline, limitOrdersDeadlines, maxCustomDeadline } from './deadlines'
 
 import { useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
+import ms from 'ms.macro'
 
-// function limitDateString(date: Date): string {
-//   const [first, second] = date.toISOString().split(':')
+function limitDateString(date: Date): string {
+  const [first, second] = date.toISOString().split(':')
 
-//   return [first, second].join(':')
-// }
+  return [first, second].join(':')
+}
 
 const customDateOptions: Intl.DateTimeFormatOptions = {
   year: '2-digit',
@@ -29,11 +30,11 @@ export interface DeadlineSelectorProps {
 }
 
 export function DeadlineSelector(props: DeadlineSelectorProps) {
-  const { deadline, customDeadline, selectDeadline } = props
+  const { deadline, customDeadline, selectDeadline, selectCustomDeadline } = props
   const currentDeadlineNode = useRef<HTMLButtonElement>()
 
-  // const min = limitDateString(new Date(Date.now() + ms`30min`))
-  // const max = limitDateString(new Date(Date.now() + maxCustomDeadline))
+  const min = limitDateString(new Date(Date.now() + ms`30min`))
+  const max = limitDateString(new Date(Date.now() + maxCustomDeadline))
 
   const existingDeadline = useMemo(() => {
     return limitOrdersDeadlines.find((item) => item === deadline)
@@ -52,14 +53,14 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     [selectDeadline]
   )
 
-  // const onChange = useCallback(
-  //   (event) => {
-  //     const customDeadline = Math.round(new Date(event.target.value).getTime() / 1000)
-  //
-  //     selectCustomDeadline(customDeadline)
-  //   },
-  //   [selectCustomDeadline]
-  // )
+  const onChange = useCallback(
+    (event) => {
+      const customDeadline = Math.round(new Date(event.target.value).getTime() / 1000)
+
+      selectCustomDeadline(customDeadline)
+    },
+    [selectCustomDeadline]
+  )
 
   const list = (
     <styledEl.ListWrapper>
@@ -70,10 +71,10 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           </styledEl.ListItem>
         </li>
       ))}
-      {/* <styledEl.ListItem>
+      <styledEl.ListItem>
         <Trans>Custom</Trans>
         <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} />
-      </styledEl.ListItem> */}
+      </styledEl.ListItem>
     </styledEl.ListWrapper>
   )
 
