@@ -64,9 +64,13 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
         logoURIs.push(getNativeLogoURI(currency.chainId))
       } else if (currency.isToken) {
         // mod
-        const logoURI = getOverriddenTokenLogoURI(currency)
+        const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
+        if (imageOverride) {
+          return [imageOverride]
+        }
+        const logoURI = getTokenLogoURI(currency.address, currency.chainId)
         if (logoURI) {
-          return [logoURI]
+          logoURIs.push(logoURI)
         }
       }
     }
