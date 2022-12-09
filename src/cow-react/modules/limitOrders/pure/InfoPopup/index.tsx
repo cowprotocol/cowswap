@@ -12,7 +12,10 @@ export function InfoPopup() {
       <div>
         CoW Swap will cover your gas fee by executing your order at a slightly better price than the limit price you
         set. For this reason, your order may not be filled exactly when the market price reaches your limit price.{' '}
-        <HashLink to="/faq/limit-order#how-do-fees-work">Learn more</HashLink>
+        <br />
+        <HashLink to="/faq/limit-order#how-do-fees-work">
+          <strong>Learn more</strong>
+        </HashLink>
       </div>
     </styledEl.InfoPopup>
   )

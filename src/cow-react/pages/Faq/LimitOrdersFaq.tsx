@@ -67,7 +67,7 @@ export default function TokenFaq() {
             <p>
               Solvers are currently not capable of handling partially-fillable limit orders, but they’re actively
               working on it. If you are interested in seeing partially-fillable orders asap, please{' '}
-              <ExternalLinkFaq href="https://t.me/+60olZD2C2HswMzRh">reach-out</ExternalLinkFaq> – you could help build
+              <ExternalLinkFaq href="https://t.me/+60olZD2C2HswMzRh">reach out</ExternalLinkFaq> – you could help build
               a solver that specializes in these types of orders!
             </p>
 
