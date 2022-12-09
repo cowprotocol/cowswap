@@ -7,6 +7,7 @@ import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@src/custom/constants'
 
 export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }
 
@@ -22,7 +23,7 @@ export function useQuoteRequestParams(): LimitOrdersQuoteParams | null {
     }
 
     const sellToken = getAddress(inputCurrency)
-    const buyToken = getAddress(outputCurrency)
+    const buyToken = !outputCurrency.isNative ? getAddress(outputCurrency) : NATIVE_CURRENCY_BUY_ADDRESS
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
