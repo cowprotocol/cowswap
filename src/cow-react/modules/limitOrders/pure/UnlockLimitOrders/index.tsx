@@ -1,57 +1,40 @@
 import React from 'react'
 import * as styledEl from './styled'
-import { CheckCircle, Activity } from 'react-feather'
-import { ExternalLink } from 'theme'
 import { ButtonPrimary } from 'components/Button'
+import SVG from 'react-inlinesvg'
+import iconCompleted from 'assets/cow-swap/check.svg'
+import iconProgress from 'assets/cow-swap/loading.svg'
+import { HashLink } from 'react-router-hash-link'
 
-const iconMap = {
-  completed: CheckCircle,
-  pending: Activity,
-}
-
-interface ItemProps {
-  type: keyof typeof iconMap
-  children: React.ReactNode
-}
-
-function Item({ type, children }: ItemProps) {
-  const Icon = iconMap[type]
-
-  return (
-    <styledEl.Item>
-      <styledEl.Icon type={type}>
-        <Icon size={20} />
-      </styledEl.Icon>
-      <span>{children}</span>
-    </styledEl.Item>
-  )
-}
+const BULLET_LIST_CONTENT = [
+  { id: 1, content: 'Set any limit price and time horizon' },
+  { id: 2, content: 'FREE order placement and cancellation' },
+  { id: 3, content: 'Place multiple orders using the same balance' },
+  { id: 4, content: 'Always receive 100% of your order surplus' },
+  { id: 5, content: 'Protection from MEV by default' },
+  { id: 6, iconType: 'progress', content: 'Orders are fill or kill. Partial fills coming soon!' },
+]
 
 export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }) {
   return (
     <styledEl.Container>
       <styledEl.TitleSection>
-        <styledEl.Title>Want to try out limit orders?</styledEl.Title>
-        <styledEl.SubTitle>Unlock the beta version!</styledEl.SubTitle>
+        <h3>Want to try out limit orders?</h3>
+        <span>Unlock the BETA version!</span>
       </styledEl.TitleSection>
 
-      <styledEl.BodySection>
-        <styledEl.BodyColumn>
-          <Item type="completed">Set your limit price and CoW Protocol executes</Item>
-          <Item type="completed">FREE order placement and cancellations</Item>
-          <Item type="completed">Place unlimited orders: balances are not locked</Item>
-        </styledEl.BodyColumn>
-
-        <styledEl.BodyColumn>
-          <Item type="completed">Always receive 100% of the order surplus</Item>
-          <Item type="completed">Your order is protected from MEV by default!</Item>
-          <Item type="pending">Orders are Fill-or-Kill. Partial fills coming soon!</Item>
-        </styledEl.BodyColumn>
-      </styledEl.BodySection>
+      {BULLET_LIST_CONTENT && (
+        <styledEl.List>
+          {BULLET_LIST_CONTENT.map(({ id, iconType, content }) => (
+            <li key={id} data-icon={iconType || null}>
+              <SVG src={iconType && iconType === 'progress' ? iconProgress : iconCompleted} /> {content}
+            </li>
+          ))}
+        </styledEl.List>
+      )}
 
       <styledEl.ControlSection>
-        {/* TODO: update href with a correct external link */}
-        <ExternalLink href={'https://www.google.com'}>Learn more about limit orders ↗</ExternalLink>
+        <HashLink to="/faq/limit-order">Learn more about limit orders ↗</HashLink>
         <ButtonPrimary onClick={handleUnlock}>Unlock limit orders (BETA)</ButtonPrimary>
       </styledEl.ControlSection>
     </styledEl.Container>

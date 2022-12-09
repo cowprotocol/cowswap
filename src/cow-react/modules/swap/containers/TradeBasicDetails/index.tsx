@@ -7,6 +7,8 @@ import { LowerSectionWrapper } from '@cow/modules/swap/pure/styled'
 import { RowFee } from '@cow/modules/swap/containers/Row/RowFee'
 import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
@@ -25,9 +27,12 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
+  const isEthFlow = useIsEthFlow()
+  const { isWrapOrUnwrap } = useDetectNativeToken()
 
   const showRowFee = trade || fee
-  const showRowSlippage = isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)
+  const showRowSlippage =
+    (isEthFlow || isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) && !isWrapOrUnwrap
   const showRowReceivedAfterSlippage = isExpertMode && trade
 
   return (

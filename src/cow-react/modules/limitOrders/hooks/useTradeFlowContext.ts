@@ -9,17 +9,24 @@ import { useAppData } from 'hooks/useAppData'
 import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import useENSAddress from 'hooks/useENSAddress'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
-import { useLimitOrdersDeadline } from './useLimitOrdersDeadline'
+import { OrderClass } from '@src/custom/state/orders/actions'
+import { useAtomValue } from 'jotai/utils'
+import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
+import { useUpdateAtom } from 'jotai/utils'
+import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
+import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account, provider } = useWeb3React()
   const state = useLimitOrdersTradeState()
-  const deadlineTimestamp = useLimitOrdersDeadline()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
-  const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE })
+  const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE, orderClass: OrderClass.LIMIT })
+  const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
+  const quoteState = useAtomValue(limitOrdersQuoteAtom)
+  const rateImpact = useRateImpact()
 
   if (
     !chainId ||
@@ -41,6 +48,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const sellToken = state.inputCurrency as Token
   const buyToken = state.outputCurrency as Token
   const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
+  const quoteId = quoteState.response?.id || undefined
 
   return {
     chainId,
@@ -48,23 +56,26 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     allowsOffchainSigning,
     isGnosisSafeWallet,
     dispatch,
+    provider,
+    addAppDataToUploadQueue,
+    appData,
+    rateImpact,
     postOrderParams: {
-      class: 'limit',
+      class: OrderClass.LIMIT,
       kind: state.orderKind,
       account,
       chainId,
       sellToken,
       buyToken,
-      validTo: deadlineTimestamp,
       recipient,
       recipientAddressOrName,
       allowsOffchainSigning,
       feeAmount,
-      signer: provider.getSigner(),
       inputAmount: state.inputCurrencyAmount,
       outputAmount: state.outputCurrencyAmount,
       sellAmountBeforeFee: state.inputCurrencyAmount,
       appDataHash: appData.hash,
+      quoteId,
     },
   }
 }

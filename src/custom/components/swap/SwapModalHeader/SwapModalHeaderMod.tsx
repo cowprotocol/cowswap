@@ -31,7 +31,7 @@ import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { WarningProps } from 'components/SwapWarnings'
-import { Price } from '@cow/modules/swap/pure/Price'
+import { RateInfo, RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -51,6 +51,13 @@ export const ArrowWrapper = styled.div`
   z-index: 2;
 `
 
+const StyledRateInfo = styled(RateInfo)`
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 auto;
+  /* width: 90%; */
+`
+
 // MOD
 export interface SwapModalHeaderProps {
   trade: TradeGp
@@ -64,6 +71,7 @@ export interface SwapModalHeaderProps {
   HighFeeWarning: React.FC<WarningProps>
   NoImpactWarning: React.ReactNode
   allowsOffchainSigning: boolean
+  rateInfoParams: RateInfoParams
 }
 
 export default function SwapModalHeader({
@@ -78,6 +86,7 @@ export default function SwapModalHeader({
   HighFeeWarning,
   NoImpactWarning,
   allowsOffchainSigning,
+  rateInfoParams,
 }: /*
 {
   trade: InterfaceTrade<Currency, Currency, TradeType>
@@ -156,7 +165,11 @@ SwapModalHeaderProps) {
         </AutoColumn>
       </LightCard>
       {!!exactInLabel && (
-        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+        <AuxInformationContainer
+          margin="-4px auto 4px"
+          hideInput
+          // borderColor={transparentize(0.5, theme.bg0)}
+        >
           <FeeInformationTooltip
             amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
@@ -234,11 +247,7 @@ SwapModalHeaderProps) {
           />
         </AuxInformationContainer>
       )}
-      <Price
-        trade={trade}
-        // width="90%"
-        margin="auto"
-      />
+      <StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />
       {/*<RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
         <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
       </RowBetween>*/}
@@ -266,13 +275,12 @@ SwapModalHeaderProps) {
           </RowBetween>
         </SwapShowAcceptChanges>
       ) : null}
-
       <AutoColumn
         justify="flex-start"
         gap="sm"
         style={{
           // padding: '.75rem 1rem'
-          padding: '24px 16px 16px', // MOD
+          padding: '24px 10px 16px', // MOD
         }}
       >
         {trade.tradeType === TradeType.EXACT_INPUT ? (

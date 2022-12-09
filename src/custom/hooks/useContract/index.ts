@@ -20,6 +20,7 @@ import { useWeb3React } from '@web3-react/core'
 import { getContract } from 'utils'
 
 import { useContract } from '@src/hooks/useContract'
+import { isEns, isProd, isStaging } from 'utils/environments'
 
 export * from '@src/hooks/useContract'
 export * from './useContractMod'
@@ -28,9 +29,14 @@ export * from './useContractMod'
 
 export function useEthFlowContract(): CoWSwapEthFlow | null {
   const { chainId } = useWeb3React()
+
+  const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
+
+  const contractAddress = chainId ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv][chainId] : undefined
+
   return useContract<CoWSwapEthFlow>(
     // TODO: get the networks.json when contracts deployed
-    chainId ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[chainId] : undefined,
+    contractAddress,
     COWSWAP_ETHFLOW_ABI,
     true
   )
@@ -56,7 +62,6 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
   if (chainId) {
     switch (chainId) {
       case ChainId.MAINNET:
-      case ChainId.RINKEBY:
       case ChainId.GOERLI: // TODO: check this
         address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
         break

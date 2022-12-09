@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 import { useAsyncMemo } from 'use-async-memo'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
-import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
-import { DEFAULT_DECIMALS } from 'custom/constants'
+import { getAddress } from '@cow/utils/getAddress'
+import ms from 'ms.macro'
+import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 
 type PriceResult = number | Error | undefined
 
-const parsePrice = (price: number, currency: Currency) => price * 10 ** (DEFAULT_DECIMALS + getDecimals(currency))
+const PRICE_UPDATE_INTERVAL = ms`10sec`
 
 async function requestPriceForCurrency(chainId: number | undefined, currency: Currency | null): Promise<PriceResult> {
   const currencyAddress = getAddress(currency)
@@ -43,41 +43,56 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
   }
 }
 
-// Fetches the INPUT and OUTPUT price and calculates initial Active rate
-// When return null it means we failed on price loading
-export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
-  const { chainId } = useWeb3React()
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const [isInputPriceLoading, setInputPriceLoading] = useState(false)
-  const [isOutputPriceLoading, setOutputPriceLoading] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-
-  const inputPrice = useAsyncMemo(() => {
-    setInputPriceLoading(true)
-    return requestPriceForCurrency(chainId, inputCurrency).finally(() => {
-      setInputPriceLoading(false)
-    })
-  }, [chainId, inputCurrency])
-
-  const outputPrice = useAsyncMemo(() => {
-    setOutputPriceLoading(true)
-    return requestPriceForCurrency(chainId, outputCurrency).finally(() => {
-      setOutputPriceLoading(false)
-    })
-  }, [chainId, outputCurrency])
-
-  const price = useMemo(() => {
+async function requestPrice(
+  chainId: number | undefined,
+  inputCurrency: Currency | null,
+  outputCurrency: Currency | null
+): Promise<Fraction | null> {
+  return Promise.all([
+    requestPriceForCurrency(chainId, inputCurrency),
+    requestPriceForCurrency(chainId, outputCurrency),
+  ]).then(([inputPrice, outputPrice]) => {
     if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
       return null
     }
 
-    return new Fraction(inputPrice, outputPrice)
-  }, [outputPrice, inputPrice])
+    const result = new Fraction(inputPrice, outputPrice)
 
-  // To avoid loading state blinking
+    console.debug('Updated limit orders initial price: ', result.toSignificant(18))
+
+    return result
+  })
+}
+
+// Fetches the INPUT and OUTPUT price and calculates initial Active rate
+// When return null it means we failed on price loading
+// TODO: rename it to useNativeBasedPrice
+export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
+  const { chainId } = useWeb3React()
+  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const [isLoading, setIsLoading] = useState(false)
+  const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())
+
+  const price = useAsyncMemo(
+    () => {
+      setIsLoading(true)
+
+      return requestPrice(chainId, inputCurrency, outputCurrency).finally(() => {
+        setIsLoading(false)
+      })
+    },
+    [chainId, inputCurrency, outputCurrency, updateTimestamp],
+    null
+  )
+
+  // Update initial price every 10 seconds
   useEffect(() => {
-    setIsLoading(isInputPriceLoading || isOutputPriceLoading)
-  }, [isInputPriceLoading, isOutputPriceLoading])
+    const interval = setInterval(() => {
+      setUpdateTimestamp(Date.now())
+    }, PRICE_UPDATE_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return { price, isLoading }
 }

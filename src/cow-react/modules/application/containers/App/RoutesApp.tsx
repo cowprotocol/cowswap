@@ -28,6 +28,7 @@ const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ '@c
 const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ '@cow/pages/Faq/TokenFaq'))
 const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ '@cow/pages/Faq/TradingFaq'))
 const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ '@cow/pages/Faq/AffiliateFaq'))
+const LimitOrdersFaq = lazy(() => import(/* webpackChunkName: "limit_orders_faq" */ '@cow/pages/Faq/LimitOrdersFaq'))
 
 function createRedirectExternal(url: string) {
   return () => {
@@ -59,6 +60,7 @@ export function RoutesApp() {
             <Route exact strict path={Routes.FAQ_TOKEN} component={TokenFaq} />
             <Route exact strict path={Routes.FAQ_TRADING} component={TradingFaq} />
             <Route exact strict path={Routes.FAQ_AFFILIATE} component={AffiliateFaq} />
+            <Route exact strict path={Routes.FAQ_LIMIT_ORDERS} component={LimitOrdersFaq} />
             <Route exact strict path={Routes.PLAY_COWRUNNER} component={CowRunner} />
             <Route exact strict path={Routes.PLAY_MEVSLICER} component={MevSlicer} />
             <Route exact strict path={Routes.ANYSWAP_AFFECTED} component={AnySwapAffectedUsers} />

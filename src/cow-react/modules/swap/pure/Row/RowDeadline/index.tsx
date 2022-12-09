@@ -41,21 +41,22 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
   userDeadline: number
 }
 
-export function RowDeadlineContent(props: RowDeadlineProps) {
-  const { userDeadline, showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
+// TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
 
-  if (!isEthFlow || userDeadline > MINIMUM_ETH_FLOW_DEADLINE_SECONDS) return null
+export function RowDeadlineContent(props: RowDeadlineProps) {
+  const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
 
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
         <TextWrapper>
-          <Trans>
-            Transaction expiration{' '}
-            <ThemedText.Warn display="inline-block" override>
-              (modified)
-            </ThemedText.Warn>
-          </Trans>
+          {showSettingOnClick ? (
+            <ClickableText onClick={toggleSettings}>
+              <DeadlineTextContents isEthFlow={isEthFlow} />
+            </ClickableText>
+          ) : (
+            <DeadlineTextContents isEthFlow={isEthFlow} />
+          )}
         </TextWrapper>
         <MouseoverTooltipContent wrap content={getNativeOrderDeadlineTooltip(symbols)}>
           <StyledInfoIcon size={16} />
@@ -69,5 +70,21 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
         )}
       </TextWrapper>
     </StyledRowBetween>
+  )
+}
+
+type DeadlineTextContentsProps = { isEthFlow: boolean }
+
+function DeadlineTextContents({ isEthFlow }: DeadlineTextContentsProps) {
+  return (
+    <>
+      <Trans>Transaction expiration</Trans>
+      {isEthFlow && (
+        <>
+          {' '}
+          <ThemedText.Warn override>(modified)</ThemedText.Warn>
+        </>
+      )}
+    </>
   )
 }

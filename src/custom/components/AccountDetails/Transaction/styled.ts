@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'styled-components/macro'
 import { StyledSVG } from 'components/Loader'
-import { LinkStyledButton } from 'theme'
+import { LinkStyledButton, StyledLink } from 'theme'
 import { TransactionState as OldTransactionState } from '../TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
@@ -13,13 +13,12 @@ export const TransactionWrapper = styled.div`
   box-sizing: border-box;
   font-size: initial;
   display: flex;
-  padding: 22px;
+  padding: 0;
   border: 1px solid ${({ theme }) => transparentize(0.9, theme.text1)};
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: column wrap;
-    padding: 20px;
   `};
 
   ${RowFixed} {
@@ -83,8 +82,9 @@ export const Summary = styled.div`
   display: grid;
   flex-flow: row wrap;
   width: 100%;
+  padding: 22px;
   grid-template-rows: 1fr;
-  grid-template-columns: 80px max-content;
+  grid-template-columns: 80px auto min-content;
   color: ${({ theme }) => theme.text1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -120,7 +120,7 @@ export const SummaryInner = styled.div`
   width: auto;
   margin: 0;
   opacity: 1;
-  font-size: 13px;
+  font-size: 14px;
   word-break: break-word;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -146,6 +146,16 @@ export const SummaryInner = styled.div`
       font-size: 18px;
       grid-column: 1 / -1;
     `}
+  }
+
+  > a {
+    color: ${({ theme }) => theme.text1};
+    text-decoration: underline;
+    font-size: 14px;
+
+    &:hover {
+      color: ${({ theme }) => theme.text3};
+    }
   }
 `
 
@@ -194,6 +204,11 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
       text-decoration: line-through;
     }
   }
+
+  + ${StyledLink} {
+    align-self: center;
+    margin: 16px 0 0;
+  }
 `
 
 export const TransactionStatusText = styled.div`
@@ -227,6 +242,8 @@ export const StatusLabelWrapper = styled.div`
   `};
 `
 
+// TODO: Consolidate status label logic with StatusItem
+// in src/cow-react/modules/limitOrders/pure/Orders/OrderRow.tsx
 export const StatusLabel = styled.div<{
   isTransaction: boolean
   isPending: boolean

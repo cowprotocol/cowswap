@@ -1,14 +1,19 @@
 import React, { useMemo } from 'react'
-import { Flag, Check } from 'react-feather'
+import Finish from 'assets/cow-swap/finish.svg'
+import Checkmark from 'assets/cow-swap/checkmark.svg'
+import Refund from 'assets/cow-swap/refund.svg'
 import styled from 'styled-components/macro'
-import { ExplorerLinkStyled, EthFlowStepperProps, SmartOrderStatus } from '..'
-import { Step, StepProps } from '../Step'
+import { EthFlowStepperProps, SmartOrderStatus } from '..'
+import { Step, StepProps, ExplorerLinkStyled } from '../Step'
 
 const RefundMessage = styled.span`
-  color: #0d5ed9;
+  color: ${({ theme }) => theme.text1};
+  font-weight: 500;
 `
 
-const ExpiredMessage = styled.span``
+const ExpiredMessage = styled.span`
+  color: ${({ theme }) => theme.warning};
+`
 
 export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelation }: EthFlowStepperProps) {
   const { state, isExpired, rejectedReason } = order
@@ -31,42 +36,42 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
       return {
         label: 'Receive ' + tokenLabel,
         state: 'pending',
-        icon: Flag,
+        icon: Finish,
       }
     }
     if (isIndexing) {
       return {
         label: 'Receive ' + tokenLabel,
         state: 'not-started',
-        icon: Flag,
+        icon: Finish,
       }
     }
     if (isFilled) {
       return {
         label: 'Received ' + tokenLabel,
         state: 'success',
-        icon: Check,
+        icon: Checkmark,
       }
     }
     if (isCanceled || isRefunded) {
       return {
         label: nativeTokenSymbol + ' Refunded',
         state: 'success',
-        icon: Check,
+        icon: Refund,
       }
     }
     if (isIndexed) {
       return {
         label: 'Receive ' + tokenLabel,
         state: 'pending',
-        icon: Flag,
+        icon: Finish,
       }
     }
 
     return {
       label: 'Receive ' + tokenLabel,
       state: 'not-started',
-      icon: Flag,
+      icon: Finish,
     }
   }, [nativeTokenSymbol, tokenLabel, expiredBeforeCreate, isIndexing, isFilled, isCanceled, isRefunded, isIndexed])
 
@@ -99,7 +104,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
   return (
     <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
       <>
-        {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order is Expired</ExpiredMessage>}
+        {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order has expired</ExpiredMessage>}
         {wontReceiveToken && !(refundTx || cancelationTx) && <RefundMessage>Initiating ETH Refund...</RefundMessage>}
         {refundLink}
       </>

@@ -10,12 +10,17 @@ export interface LimitOrdersSettingsState {
   readonly customDeadlineTimestamp: Timestamp | null
 }
 
-export const limitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>('limit-orders-settings-atom', {
+export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   expertMode: false,
   showRecipient: false,
   deadlineMilliseconds: defaultLimitOrderDeadline.value,
   customDeadlineTimestamp: null,
-})
+}
+
+export const limitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
+  'limit-orders-settings-atom:v1',
+  defaultLimitOrdersSettings
+)
 
 export const updateLimitOrdersSettingsAtom = atom(null, (get, set, nextState: Partial<LimitOrdersSettingsState>) => {
   set(limitOrdersSettingsAtom, () => {

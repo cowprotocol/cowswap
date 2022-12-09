@@ -1,4 +1,4 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
 import { OrderKind } from '@cowprotocol/contracts'
@@ -26,7 +26,16 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
   }
 }
 
-export const limitOrdersAtom = atomWithStorage<LimitOrdersState>('limit-orders-atom', getDefaultLimitOrdersState(null))
+export const limitOrdersAtom = atomWithStorage<LimitOrdersState>(
+  'limit-orders-atom:v2',
+  getDefaultLimitOrdersState(null),
+  /**
+   * atomWithStorage() has build-in feature to persist state between all tabs
+   * To disable this feature we pass our own instance of storage
+   * https://github.com/pmndrs/jotai/pull/1004/files
+   */
+  createJSONStorage(() => localStorage)
+)
 
 export const updateLimitOrdersAtom = atom(null, (get, set, nextState: Partial<LimitOrdersState>) => {
   set(limitOrdersAtom, () => {

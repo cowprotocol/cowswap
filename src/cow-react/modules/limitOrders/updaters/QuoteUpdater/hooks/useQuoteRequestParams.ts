@@ -5,24 +5,25 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
-import { getAddress } from '@cow/modules/limitOrders/utils/getAddress'
+import { getAddress } from '@cow/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
-import { useLimitOrdersDeadline } from '@cow/modules/limitOrders/hooks/useLimitOrdersDeadline'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@src/custom/constants'
 
-export function useQuoteRequestParams(): FeeQuoteParams | null {
+export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }
+
+export function useQuoteRequestParams(): LimitOrdersQuoteParams | null {
   const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
-  const deadlineTimestamp = useLimitOrdersDeadline()
   const { chainId, account } = useWeb3React()
   const { exactTypedValue } = useTypedValue()
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId || !deadlineTimestamp) {
+    if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId) {
       return null
     }
 
     const sellToken = getAddress(inputCurrency)
-    const buyToken = getAddress(outputCurrency)
+    const buyToken = !outputCurrency.isNative ? getAddress(outputCurrency) : NATIVE_CURRENCY_BUY_ADDRESS
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
@@ -37,7 +38,6 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
 
     return {
       chainId,
-      validTo: deadlineTimestamp,
       receiver: recipientEnsAddress || recipient || account,
       kind: orderKind,
       sellToken,
@@ -47,15 +47,5 @@ export function useQuoteRequestParams(): FeeQuoteParams | null {
       toDecimals,
       isEthFlow: false, // EthFlow is not compatible with limit orders
     }
-  }, [
-    account,
-    chainId,
-    exactTypedValue,
-    inputCurrency,
-    orderKind,
-    outputCurrency,
-    recipient,
-    recipientEnsAddress,
-    deadlineTimestamp,
-  ])
+  }, [account, chainId, exactTypedValue, inputCurrency, orderKind, outputCurrency, recipient, recipientEnsAddress])
 }

@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { CopyIcon, TransactionStatusText } from 'components/Copy'
-import { LinkStyledButton, StyledLink } from 'theme'
+import { StyledLink } from 'theme'
 import {
   WalletName,
   AccountSection as AccountSectionMod,
@@ -231,27 +231,28 @@ export const LowerSection = styled.div`
     background-color: inherit;
     padding: 0 0 48px;
 
-    ${StyledLink} {
-      align-self: center;
-      margin: 20px 0;
+    > ${StyledLink} {
+      width: 100%;
+      text-align: center;
+      margin: 24px auto 0;
     }
   }
 
-  h5 {
+  > span > h5 {
     margin: 0;
     font-weight: 500;
     color: inherit;
     line-height: 1;
     display: flex;
     align-items: center;
+
     > span {
       opacity: 0.6;
       margin: 0 0 0 4px;
     }
   }
 
-  ${LinkStyledButton}, ${StyledLink} {
-    opacity: 0.7;
+  > span > ${StyledLink} {
     color: ${({ theme }) => theme.text1};
     text-decoration: underline;
     font-size: 14px;
@@ -262,8 +263,10 @@ export const LowerSection = styled.div`
   }
 `
 
+// TODO: Prevent beyond 3 level selector nestings
 export const LowerSectionSimple = styled(LowerSection)`
-  padding: 0 12px;
+  padding: 0;
+
   > div {
     padding: 0;
 

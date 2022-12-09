@@ -2,7 +2,6 @@ import { Currency } from '@uniswap/sdk-core'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import styled from 'styled-components/macro'
 import { AlertTriangle } from 'react-feather'
-import { useIsDarkMode } from 'state/user/hooks'
 
 interface RateImpactAcknowledge {
   withAcknowledge: boolean
@@ -16,24 +15,24 @@ export interface RateImpactWarningProps extends Partial<RateImpactAcknowledge> {
   className?: string
 }
 
-const RateImpactWarningBox = styled.div<{ withAcknowledge: boolean; darkMode: boolean }>`
+const RateImpactWarningBox = styled.div<{ withAcknowledge: boolean }>`
   display: flex;
   align-items: center;
   border-radius: ${({ withAcknowledge }) => (withAcknowledge ? '18px 18px 0 0' : '18px')};
   padding: 15px;
   gap: 15px;
-  color: ${({ darkMode }) => (darkMode ? '#ffb7b1' : '#860b00')};
+  color: ${({ theme }) => (theme.darkMode ? '#ffb7b1' : '#860b00')};
   background: rgba(255, 59, 41, 0.2);
 `
 
-const ReadMoreLink = styled.a<{ darkMode: boolean }>`
+const ReadMoreLink = styled.a`
   display: block;
   margin-top: 5px;
-  color: ${({ darkMode }) => (darkMode ? '#ffb7b1' : '#860b00')};
+  color: ${({ theme }) => (theme.darkMode ? '#ffb7b1' : '#860b00')};
 `
 
-const AcknowledgeBox = styled.div<{ darkMode: boolean }>`
-  color: ${({ darkMode }) => (darkMode ? '#ffb7b1' : '#860b00')};
+const AcknowledgeBox = styled.div`
+  color: ${({ theme }) => (theme.darkMode ? '#ffb7b1' : '#860b00')};
   background: rgba(255, 59, 41, 0.4);
   text-align: center;
   padding: 15px 0;
@@ -56,27 +55,26 @@ export function RateImpactWarning({
   inputCurrency,
   className,
 }: RateImpactWarningProps) {
-  const darkMode = useIsDarkMode()
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
   if (!isTooLowRate) return null
 
   return (
     <div className={className}>
-      <RateImpactWarningBox darkMode={darkMode} withAcknowledge={withAcknowledge}>
+      <RateImpactWarningBox withAcknowledge={withAcknowledge}>
         <div>
           <AlertTriangle size={32} />
         </div>
         <div>
-          Your limit price is {Math.abs(rateImpact)}% lower than current market price. You will be selling your{' '}
-          {inputCurrency.symbol} at a loss!
-          <ReadMoreLink darkMode={darkMode} href="TODO">
+          Your limit price is {Math.abs(rateImpact)}% lower than current market price. You could be selling your{' '}
+          {inputCurrency.symbol} at a loss (although CoW Swap will always try to give you the best price regardless).
+          <ReadMoreLink target="_blank" href="https://www.investopedia.com/terms/l/limitorder.asp">
             Read more about limit orders
           </ReadMoreLink>
         </div>
       </RateImpactWarningBox>
       {withAcknowledge && (
-        <AcknowledgeBox darkMode={darkMode}>
+        <AcknowledgeBox>
           <label>
             <input
               type="checkbox"

@@ -1,14 +1,15 @@
 import { Field } from 'state/swap/actions'
-import { CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
-import { OrderKind } from 'state/orders/actions'
+import { OrderClass, OrderKind } from 'state/orders/actions'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersConfirm } from './index'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import React from 'react'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -47,10 +48,9 @@ const outputCurrencyInfo: CurrencyInfo = {
 
 const tradeContext: TradeFlowContext = {
   postOrderParams: {
-    class: 'limit',
+    class: OrderClass.LIMIT,
     account: '0x000',
     chainId: 1,
-    signer: {} as any,
     kind: OrderKind.SELL,
     inputAmount: inputCurrencyInfo.rawAmount!,
     outputAmount: outputCurrencyInfo.rawAmount!,
@@ -58,12 +58,15 @@ const tradeContext: TradeFlowContext = {
     feeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
     sellToken: inputCurrency,
     buyToken: outputCurrency,
-    validTo: Date.now() + 10000000,
     recipient: '0xaaa',
     recipientAddressOrName: null,
     allowsOffchainSigning: true,
     appDataHash: '0xabc',
   },
+  rateImpact: 0,
+  appData: {} as any,
+  addAppDataToUploadQueue: () => void 0,
+  provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,
   dispatch: (() => void 0) as any,
@@ -71,10 +74,10 @@ const tradeContext: TradeFlowContext = {
   isGnosisSafeWallet: false,
 }
 
-const activeRateDisplay = {
-  inputCurrency,
-  outputCurrency,
-  activeRate: new Fraction(50000000, 20000000),
+const rateInfoParams = {
+  chainId: 5,
+  inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
+  outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
   inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
@@ -90,7 +93,8 @@ const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceI
 const Fixtures = {
   default: (
     <LimitOrdersConfirm
-      activeRateDisplay={activeRateDisplay}
+      rateInfoParams={rateInfoParams}
+      settingsState={defaultLimitOrdersSettings}
       rateImpact={1}
       priceImpact={priceImpact}
       tradeContext={tradeContext}

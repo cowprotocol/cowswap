@@ -1,43 +1,130 @@
-import { Order, OrderStatus } from 'state/orders/actions'
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
-import * as styledEl from './OrdersTable.styled'
-import { useEffect, useState } from 'react'
+import styled from 'styled-components/macro'
+import { useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
-import { formatSmart } from 'utils/format'
+import { OrderRow } from './OrderRow'
+import { InvertRateControl } from '@cow/common/pure/RateInfo'
+import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { transparentize } from 'polished'
+import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
+import { getOrderParams } from './utils/getOrderParams'
+import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
+
+const TableBox = styled.div`
+  display: block;
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  padding: 0 0 24px;
+  scrollbar-color: ${({ theme }) => `${theme.grey1} ${theme.text1}`};
+  scroll-behavior: smooth;
+  position: relative;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+    display: flex;
+    flex-flow: column wrap;
+  `};
+`
+
+const Header = styled.div`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 114px 70px;
+  align-items: center;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: repeat(3,minmax(190px, 1fr)) 120px 100px;
+  `};
+
+  > div {
+    padding: 12px 16px;
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 400;
+  }
+`
+
+const RowElement = styled(Header)`
+  background: transparent;
+  transition: background 0.15s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => transparentize(0.9, theme.text3)};
+  }
+
+  > div {
+    font-size: 13px;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+`
+
+const Rows = styled.div`
+  display: block;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+   display: flex;
+   flex-flow: column wrap;
+  `};
+
+  &::-webkit-scrollbar {
+    height: 6px;
+    background: ${({ theme }) => `${theme.grey1}`};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => `${theme.text1}`};
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-track {
+    height: 5px;
+  }
+`
+
+const StyledInvertRateControl = styled(InvertRateControl)`
+  display: inline-flex;
+  margin-left: 5px;
+`
 
 export interface OrdersTableProps {
+  currentPageNumber: number
+  isSmartContractWallet: boolean
+  chainId: SupportedChainId | undefined
   orders: Order[]
+  balancesAndAllowances: BalancesAndAllowances
+  showOrderCancelationModal(order: Order): void
 }
 
-const orderStatusTitleMap: { [key in OrderStatus]: string } = {
-  [OrderStatus.PENDING]: 'Open',
-  [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
-  [OrderStatus.FULFILLED]: 'Filled',
-  [OrderStatus.EXPIRED]: 'Expired',
-  [OrderStatus.CANCELLED]: 'Cancelled',
-  [OrderStatus.CREATING]: 'Creating',
-  [OrderStatus.REFUNDED]: 'Expired',
-  [OrderStatus.REFUNDING]: 'Expired',
-  [OrderStatus.REJECTED]: 'Expired',
-}
+export function OrdersTable({
+  chainId,
+  orders,
+  balancesAndAllowances,
+  showOrderCancelationModal,
+  currentPageNumber,
+  isSmartContractWallet,
+}: OrdersTableProps) {
+  const [isRateInversed, setIsRateInversed] = useState(false)
 
-const pageSize = 10
-
-export function OrdersTable({ orders }: OrdersTableProps) {
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const step = currentPage * pageSize
-  const ordersPage = orders.slice(step - pageSize, step)
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [orders])
+  const selectReceiptOrder = useSelectReceiptOrder()
+  const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
+  const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step).sort(ordersSorter)
 
   return (
     <>
-      <styledEl.TableBox>
-        <styledEl.Header>
+      <TableBox>
+        <Header>
           <div>
             <Trans>Sell</Trans>
           </div>
@@ -45,52 +132,38 @@ export function OrdersTable({ orders }: OrdersTableProps) {
             <Trans>Receive</Trans>
           </div>
           <div>
-            <Trans>Limit price</Trans>
+            <span>
+              <Trans>Limit price</Trans>
+            </span>
+            <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
           </div>
           <div>
             <Trans>Status</Trans>
           </div>
-        </styledEl.Header>
-        <styledEl.Rows>
-          {ordersPage.map((order) => {
-            const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-            const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
-            const price = new Fraction(order.buyAmount.toString(), order.sellAmount.toString())
-
-            return (
-              <styledEl.Row key={order.id}>
-                <div>
-                  <styledEl.CurrencyAmountItem amount={sellAmount} />
-                </div>
-                <div>
-                  <styledEl.CurrencyAmountItem amount={buyAmount} />
-                </div>
-                <div>
-                  <styledEl.RateValue>
-                    1 {order.inputToken.symbol} ={' '}
-                    <span title={price.toSignificant(18) + ' ' + order.outputToken.symbol}>
-                      {formatSmart(price)} {order.outputToken.symbol}
-                    </span>
-                  </styledEl.RateValue>
-                </div>
-                <div>
-                  <styledEl.StatusItem cancelling={!!order.isCancelling} status={order.status}>
-                    {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
-                  </styledEl.StatusItem>
-                </div>
-              </styledEl.Row>
-            )
-          })}
-        </styledEl.Rows>
-      </styledEl.TableBox>
+          <div>{/*Cancel order column*/}</div>
+        </Header>
+        <Rows>
+          {ordersPage.map((order) => (
+            <OrderRow
+              key={order.id}
+              order={order}
+              orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+              RowElement={RowElement}
+              isRateInversed={isRateInversed}
+              isSmartContractWallet={isSmartContractWallet}
+              showOrderCancelationModal={showOrderCancelationModal}
+              onClick={() => selectReceiptOrder(order.id)}
+            />
+          ))}
+        </Rows>
+      </TableBox>
 
       {/* Only show pagination if more than 1 page available */}
-      {orders.length > pageSize && (
+      {orders.length > LIMIT_ORDERS_PAGE_SIZE && (
         <OrdersTablePagination
-          pageSize={pageSize}
+          pageSize={LIMIT_ORDERS_PAGE_SIZE}
           totalCount={orders.length}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
+          currentPage={currentPageNumber}
         />
       )}
     </>

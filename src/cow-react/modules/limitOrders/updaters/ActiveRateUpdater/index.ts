@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useWeb3React } from '@web3-react/core'
 import { OrderKind } from '@cowprotocol/contracts'
@@ -13,7 +13,7 @@ import { updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrder
 export function ActiveRateUpdater() {
   const { chainId } = useWeb3React()
   const { orderKind, ...limitState } = useLimitOrdersTradeState()
-  const { isInversed, activeRate, isLoading } = useAtomValue(limitRateAtom)
+  const { isInversed, activeRate } = useAtomValue(limitRateAtom)
 
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
@@ -21,13 +21,13 @@ export function ActiveRateUpdater() {
   const prevIsInversed = usePrevious(isInversed)
   const prevChainId = usePrevious(chainId)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Handle active rate change
     if (isInversed === prevIsInversed && activeRate) {
       const field = orderKind === OrderKind.SELL ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
 
       updateCurrencyAmount({
-        [field]: limitState[field]?.toExact(),
+        [field]: limitState[field]?.quotient.toString(),
         keepOrderKind: true,
       })
     }
@@ -43,17 +43,12 @@ export function ActiveRateUpdater() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRate])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Clear active rate on network change
     if (prevChainId && prevChainId !== chainId) {
       updateLimitRateState({ activeRate: null })
     }
-
-    // Clear active rate when its loading (currency changed)
-    if (isLoading) {
-      updateLimitRateState({ activeRate: null })
-    }
-  }, [chainId, isLoading, prevChainId, updateLimitRateState])
+  }, [chainId, prevChainId, updateLimitRateState])
 
   return null
 }

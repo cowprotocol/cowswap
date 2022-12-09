@@ -15,8 +15,7 @@ import {
   ActivityVisual,
 } from './styled'
 
-import { getLimitPrice, getExecutionPrice } from 'state/orders/utils'
-import { DEFAULT_PRECISION, V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -25,6 +24,9 @@ import { useToken } from 'hooks/Tokens'
 import { ActivityStatus } from 'hooks/useRecentActivity'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { V_COW, COW } from 'constants/tokens'
+import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
+import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
+import { StatusDetails } from './StatusDetails'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -151,47 +153,54 @@ export function ActivityDetails(props: {
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress || (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId])
   const singleToken = useToken(tokenAddress) || null
+
   const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
 
   if (!order && !enhancedTransaction) return null
 
   // Order Summary default object
   let orderSummary: OrderSummaryType
+  let rateInfoParams: RateInfoParams = {
+    chainId,
+    inputCurrencyAmount: null,
+    outputCurrencyAmount: null,
+    activeRateFiatAmount: null,
+    inversedActiveRateFiatAmount: null,
+  }
+  let isOrderFulfilled = false
+
   if (order) {
-    const { inputToken, sellAmount, feeAmount, outputToken, buyAmount, validTo, kind, fulfillmentTime } = order
+    const {
+      inputToken,
+      sellAmount,
+      feeAmount: feeAmountRaw,
+      outputToken,
+      buyAmount,
+      validTo,
+      kind,
+      fulfillmentTime,
+    } = order
 
-    const sellAmt = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
-    const feeAmt = CurrencyAmount.fromRawAmount(inputToken, feeAmount.toString())
+    const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
     const outputAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
-    const sellTokenDecimals = order?.inputToken?.decimals ?? DEFAULT_PRECISION
-    const buyTokenDecimals = order?.outputToken?.decimals ?? DEFAULT_PRECISION
+    const feeAmount = CurrencyAmount.fromRawAmount(inputToken, feeAmountRaw.toString())
 
-    const limitPrice = formatSmart(
-      getLimitPrice({
-        buyAmount: order.buyAmount.toString(),
-        sellAmount: order.sellAmount.toString(),
-        buyTokenDecimals,
-        sellTokenDecimals,
-        inverted: true, // TODO: handle invert price
-      })
-    )
+    isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
 
-    let executionPrice: string | undefined
-    if (order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED) {
-      const { executedSellAmountBeforeFees, executedBuyAmount } = order.apiAdditionalInfo
-      executionPrice = formatSmart(
-        getExecutionPrice({
-          executedSellAmountBeforeFees,
-          executedBuyAmount,
-          buyTokenDecimals,
-          sellTokenDecimals,
-          inverted: true, // TODO: Handle invert price
-        })
-      )
-    }
+    const { executedSellAmountBeforeFees, executedBuyAmount } = order.apiAdditionalInfo || {}
+    const rateInputCurrencyAmount = isOrderFulfilled
+      ? CurrencyAmount.fromRawAmount(inputToken, executedSellAmountBeforeFees?.toString() || '0')
+      : inputAmount
+    const rateOutputCurrencyAmount = isOrderFulfilled
+      ? CurrencyAmount.fromRawAmount(outputToken, executedBuyAmount?.toString() || '0')
+      : outputAmount
 
-    const getPriceFormat = (price: string): string => {
-      return `${price} ${sellAmt.currency.symbol} per ${outputAmount.currency.symbol}`
+    rateInfoParams = {
+      chainId,
+      inputCurrencyAmount: rateInputCurrencyAmount,
+      outputCurrencyAmount: rateOutputCurrencyAmount,
+      activeRateFiatAmount: null,
+      inversedActiveRateFiatAmount: null,
     }
 
     const DateFormatOptions: Intl.DateTimeFormatOptions = {
@@ -201,10 +210,8 @@ export function ActivityDetails(props: {
 
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
-      from: `${formatSmart(sellAmt.add(feeAmt))} ${sellAmt.currency.symbol}`,
+      from: `${formatSmart(inputAmount.add(feeAmount))} ${inputAmount.currency.symbol}`,
       to: `${formatSmart(outputAmount)} ${outputAmount.currency.symbol}`,
-      limitPrice: limitPrice && getPriceFormat(limitPrice),
-      executionPrice: executionPrice && getPriceFormat(executionPrice),
       validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
       fulfillmentTime: fulfillmentTime
         ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)
@@ -215,7 +222,7 @@ export function ActivityDetails(props: {
     orderSummary = DEFAULT_ORDER_SUMMARY
   }
 
-  const { kind, from, to, executionPrice, limitPrice, fulfillmentTime, validTo } = orderSummary
+  const { kind, from, to, fulfillmentTime, validTo } = orderSummary
   const activityName = isOrder ? `${kind} order` : 'Transaction'
   let inputToken = activityDerivedState?.order?.inputToken || null
   let outputToken = activityDerivedState?.order?.outputToken || null
@@ -226,80 +233,79 @@ export function ActivityDetails(props: {
   }
 
   return (
-    <Summary>
-      <span>
-        {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
+    <>
+      <Summary>
+        <span>
+          {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
 
-        {/* Token Approval Currency Logo */}
-        {!isOrder && singleToken && (
-          <ActivityVisual>
-            <CurrencyLogo currency={singleToken} size={'24px'} />
-          </ActivityVisual>
-        )}
+          {/* Token Approval Currency Logo */}
+          {!isOrder && singleToken && (
+            <ActivityVisual>
+              <CurrencyLogo currency={singleToken} size={'24px'} />
+            </ActivityVisual>
+          )}
 
-        {/* Order Currency Logo */}
-        {inputToken && outputToken && (
-          <ActivityVisual>
-            <CurrencyLogo currency={inputToken} size={'24px'} />
-            <CurrencyLogo currency={outputToken} size={'24px'} />
-          </ActivityVisual>
-        )}
-      </span>
-      <SummaryInner>
-        <b>{activityName}</b>
-        {isOrder ? (
-          <>
-            <SummaryInnerRow>
-              <b>From{kind === 'buy' && ' at most'}</b>
-              <i>{from}</i>
-            </SummaryInnerRow>
-            <SummaryInnerRow>
-              <b>To{kind === 'sell' && ' at least'}</b>
-              <i>{to}</i>
-            </SummaryInnerRow>
-            <SummaryInnerRow>
-              {executionPrice ? (
-                <>
-                  {' '}
-                  <b>Exec. price</b>
-                  <i>{executionPrice}</i>
-                </>
-              ) : (
-                <>
-                  {' '}
-                  <b>Limit price</b>
-                  <i>{limitPrice}</i>
-                </>
-              )}
-            </SummaryInnerRow>
-            <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
-              {fulfillmentTime ? (
-                <>
-                  <b>Filled on</b>
-                  <i>{fulfillmentTime}</i>
-                </>
-              ) : (
-                <>
-                  <b>Valid to</b>
-                  <i>{validTo}</i>
-                </>
-              )}
-            </SummaryInnerRow>
-          </>
-        ) : (
-          summary ?? id
-        )}
+          {/* Order Currency Logo */}
+          {inputToken && outputToken && (
+            <ActivityVisual>
+              <CurrencyLogo currency={inputToken} size={'24px'} />
+              <CurrencyLogo currency={outputToken} size={'24px'} />
+            </ActivityVisual>
+          )}
+        </span>
 
-        {activityLinkUrl && (
-          <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
-            View details ↗
-          </ActivityLink>
-        )}
-        <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
-        {showProgressBar && (
-          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
-        )}
-      </SummaryInner>
-    </Summary>
+        <SummaryInner>
+          <b>{activityName}</b>
+          {isOrder ? (
+            <>
+              <SummaryInnerRow>
+                <b>From{kind === 'buy' && ' at most'}</b>
+                <i>{from}</i>
+              </SummaryInnerRow>
+              <SummaryInnerRow>
+                <b>To{kind === 'sell' && ' at least'}</b>
+                <i>{to}</i>
+              </SummaryInnerRow>
+              <SummaryInnerRow>
+                <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
+                <i>
+                  <RateInfo noLabel={true} rateInfoParams={rateInfoParams} />
+                </i>
+              </SummaryInnerRow>
+              <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
+                {fulfillmentTime ? (
+                  <>
+                    <b>Filled on</b>
+                    <i>{fulfillmentTime}</i>
+                  </>
+                ) : (
+                  <>
+                    <b>Valid to</b>
+                    <i>{validTo}</i>
+                  </>
+                )}
+              </SummaryInnerRow>
+            </>
+          ) : (
+            summary ?? id
+          )}
+
+          {activityLinkUrl && (
+            <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
+              View details ↗
+            </ActivityLink>
+          )}
+          <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+        </SummaryInner>
+
+        {/* Status Details: icon, cancel, links */}
+        <StatusDetails chainId={chainId} activityDerivedState={activityDerivedState} />
+      </Summary>
+
+      <EthFlowStepper order={order} />
+      {showProgressBar && (
+        <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} hideWhenFinished={true} />
+      )}
+    </>
   )
 }

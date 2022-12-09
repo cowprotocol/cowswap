@@ -21,6 +21,11 @@ export enum OrderStatus {
   REFUNDED = 'refunded',
 }
 
+export enum OrderClass {
+  LIMIT = 'limit',
+  MARKET = 'market',
+}
+
 // Abstract type for the order used in the Dapp. It's composed out of 3 types of props:
 //  - Information present in the order creation type used in the API to post new orders
 //  - Additional information available in the API
@@ -31,7 +36,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   id: OrderID // Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // Address, without '0x' prefix
   summary: string // Description of the order, for dapp use only, readable by user
-  class: 'market' | 'limit' // Flag to distinguish order class
+  class: OrderClass // Flag to distinguish order class
 
   // Status
   status: OrderStatus
@@ -75,6 +80,7 @@ export type OrderInfoApi = Pick<
   | 'executedSellAmount'
   | 'executedSellAmountBeforeFees'
   | 'executedFeeAmount'
+  | 'executedSurplusFee'
   | 'invalidated'
   | 'ethflowData'
 >

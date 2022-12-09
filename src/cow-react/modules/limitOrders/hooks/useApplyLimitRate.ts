@@ -5,32 +5,39 @@ import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { Fraction } from '@uniswap/sdk-core'
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
+import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
 
 // Applies rate to provided value which can be INPUT or OUTPUT
 export function useApplyLimitRate() {
   const { activeRate } = useAtomValue(limitRateAtom)
+  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
 
   return useCallback(
-    (value: string | null, field: Field): string | null | undefined => {
-      if (!value || !Number(value) || !activeRate || activeRate.equalTo(0)) {
+    (value: string | null, field: Field): Fraction | null => {
+      if (!value || !Number(value) || !activeRate || activeRate.equalTo(0) || !inputCurrency || !outputCurrency) {
         return null
       }
 
-      let output: Fraction | null = null
-      const parsedValue = toFraction(value)
+      const { decimals: inputDecimals } = inputCurrency
+      const { decimals: outputDecimals } = outputCurrency
 
-      // If the field is INPUT we will MULTIPLY passed value and rate
+      const parsedValue = adjustDecimals(
+        toFraction(value),
+        field === Field.INPUT ? inputDecimals : outputDecimals,
+        field === Field.INPUT ? outputDecimals : inputDecimals
+      )
+
       if (field === Field.INPUT) {
-        output = parsedValue.multiply(activeRate)
-
-        // If the field is OUTPUT we will DIVIDE passed value and rate
-      } else if (field === Field.OUTPUT) {
-        output = parsedValue.divide(activeRate)
+        return parsedValue.multiply(activeRate)
       }
 
-      // We need to return string and we also limit the decimals
-      return output?.toSignificant(6)
+      if (field === Field.OUTPUT) {
+        return parsedValue.divide(activeRate)
+      }
+
+      return null
     },
-    [activeRate]
+    [activeRate, inputCurrency, outputCurrency]
   )
 }

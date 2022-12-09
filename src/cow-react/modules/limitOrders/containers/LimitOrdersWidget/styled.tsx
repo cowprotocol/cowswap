@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
-import { RateInfo } from '@cow/modules/limitOrders/pure/RateInfo'
+import { RateInfo } from '@cow/common/pure/RateInfo'
 import { NumericalInput } from '@cow/modules/limitOrders/containers/RateInput/styled'
 import { DropdownBox } from '@cow/common/pure/Dropdown/styled'
 

@@ -10,6 +10,7 @@ import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAto
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
 import { CancelableResult } from 'utils/async'
+import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 
 export function useHandleResponse() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
@@ -36,11 +37,16 @@ export function useHandleResponse() {
         const adjustedBuy = JSBI.multiply(JSBI.BigInt(buyAmount), JSBI.BigInt(10 ** getDecimals(inputCurrency)))
         const adjustedSell = JSBI.multiply(JSBI.BigInt(sellAmount), JSBI.BigInt(10 ** getDecimals(outputCurrency)))
 
-        // Create executionRate fraction
+        // Create execution rate fraction
         const executionRate = new Fraction(adjustedBuy, adjustedSell)
 
+        // Apply -0.1% to execution rate
+        const change = String(0.1 / 100)
+        const toSubtract = executionRate.multiply(toFraction(change))
+        const adjustedExecutionRate = executionRate.subtract(toSubtract)
+
         // Update the rate state
-        updateLimitRateState({ executionRate })
+        updateLimitRateState({ executionRate: adjustedExecutionRate })
 
         // Update limit order quote
         setLimitOrdersQuote({ response: data })

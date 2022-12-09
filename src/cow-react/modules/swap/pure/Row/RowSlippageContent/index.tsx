@@ -20,13 +20,17 @@ export const ClickableText = styled.button`
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
+
+  > div {
+    display: inline-block;
+  }
 `
 
 export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined) => (
   <Trans>
     <p>Your slippage is MEV protected.</p>
     <p>
-      When swapping {symbols?.[0] || 'a native currency'}, slippage tolerance is defaulted to{' '}
+      When swapping {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
       {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching, even in
       volatile market situations.
     </p>
@@ -50,6 +54,8 @@ export interface RowSlippageContentProps extends RowSlippageProps {
   styleProps?: RowStyleProps
 }
 
+// TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
+
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const { showSettingOnClick, toggleSettings, displaySlippage, isEthFlow, symbols, styleProps } = props
 
@@ -57,19 +63,12 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     <StyledRowBetween {...styleProps}>
       <RowFixed>
         <TextWrapper>
-          {isEthFlow ? (
-            <Trans>
-              Slippage tolerance{' '}
-              <ThemedText.Warn display="inline-block" override>
-                (modified)
-              </ThemedText.Warn>
-            </Trans>
-          ) : showSettingOnClick ? (
+          {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <Trans>Slippage tolerance</Trans>
+              <SlippageTextContents isEthFlow={isEthFlow} />
             </ClickableText>
           ) : (
-            <Trans>Slippage tolerance</Trans>
+            <SlippageTextContents isEthFlow={isEthFlow} />
           )}
         </TextWrapper>
         <MouseoverTooltipContent
@@ -87,5 +86,21 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         )}
       </TextWrapper>
     </StyledRowBetween>
+  )
+}
+
+type SlippageTextContentsProps = { isEthFlow: boolean }
+
+function SlippageTextContents({ isEthFlow }: SlippageTextContentsProps) {
+  return (
+    <>
+      <Trans>Slippage tolerance</Trans>
+      {isEthFlow && (
+        <>
+          {' '}
+          <ThemedText.Warn override>(modified)</ThemedText.Warn>
+        </>
+      )}
+    </>
   )
 }

@@ -5,7 +5,7 @@ import Badge from 'components/Badge'
 import { getChainInfo } from 'constants/chainInfo'
 // import { SupportedL2ChainId } from 'constants/chains'
 // import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
-import { ReactNode /*, useCallback*/, useContext /*, useState*/ } from 'react'
+import { ReactNode /*, useCallback*/, useContext /*, useState*/, useMemo } from 'react'
 import { AlertCircle, AlertTriangle /*, ArrowUpCircle, CheckCircle */ } from 'react-feather'
 import { Text } from 'rebass'
 import { useIsTransactionConfirmed, useTransaction } from 'state/transactions/hooks'
@@ -282,6 +282,7 @@ export function L2Content({
   hash,
   pendingText,
   inline,
+  isLimitOrderSubmit,
 }: {
   onDismiss: () => void
   hash: string | undefined
@@ -289,6 +290,7 @@ export function L2Content({
   currencyToAdd?: Currency | undefined
   pendingText: ReactNode
   inline?: boolean // not in modal
+  isLimitOrderSubmit?: boolean
 }) {
   const theme = useContext(ThemeContext)
 
@@ -302,6 +304,25 @@ export function L2Content({
     : undefined
 
   const info = getChainInfo(chainId)
+
+  const displayIcon = useMemo(() => {
+    if (isLimitOrderSubmit) {
+      return <AnimatedConfirmation />
+    } else if (!confirmed) {
+      return <CustomLightSpinner src={Circle} alt="loader" size={inline ? '40px' : '90px'} />
+    } else {
+      return transactionSuccess ? (
+        <AnimatedConfirmation />
+      ) : (
+        <AlertCircle strokeWidth={1} size={inline ? '40px' : '90px'} color={theme.red1} />
+      )
+    }
+  }, [confirmed, inline, isLimitOrderSubmit, theme.red1, transactionSuccess])
+
+  const displayButtonText = useMemo(() => {
+    if (isLimitOrderSubmit || !inline) return 'Close'
+    else return 'Return'
+  }, [inline, isLimitOrderSubmit])
 
   return (
     <Wrapper>
@@ -317,24 +338,13 @@ export function L2Content({
             <CloseIcon onClick={onDismiss} />
           </RowBetween>
         )}
-        <ConfirmedIcon inline={inline}>
-          {confirmed ? (
-            transactionSuccess ? (
-              // <CheckCircle strokeWidth={1} size={inline ? '40px' : '90px'} color={theme.green1} />
-              <AnimatedConfirmation />
-            ) : (
-              <AlertCircle strokeWidth={1} size={inline ? '40px' : '90px'} color={theme.red1} />
-            )
-          ) : (
-            <CustomLightSpinner src={Circle} alt="loader" size={inline ? '40px' : '90px'} />
-          )}
-        </ConfirmedIcon>
+        <ConfirmedIcon inline={inline}>{displayIcon}</ConfirmedIcon>
         <AutoColumn gap="12px" justify={'center'}>
           <Text fontWeight={500} fontSize={20} textAlign="center">
             {!hash ? (
               <Trans>Confirm transaction in wallet</Trans>
             ) : !confirmed ? (
-              <Trans>Transaction Submitted</Trans>
+              <Trans>{isLimitOrderSubmit ? 'Order' : 'Transaction'} Submitted</Trans>
             ) : transactionSuccess ? (
               <Trans>Success</Trans>
             ) : (
@@ -347,7 +357,7 @@ export function L2Content({
           {chainId && hash ? (
             <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
               <Text fontWeight={500} fontSize={14} color={theme.primary1}>
-                <Trans>View on Explorer</Trans>
+                <Trans>View on Explorer ↗</Trans>
               </Text>
             </ExternalLink>
           ) : (
@@ -367,7 +377,7 @@ export function L2Content({
           </Text>
           <ButtonPrimary onClick={onDismiss} style={{ margin: '4px 0 0 0' }}>
             <Text fontWeight={500} fontSize={20}>
-              {inline ? <Trans>Return</Trans> : <Trans>Close</Trans>}
+              <Trans>{displayButtonText}</Trans>
             </Text>
           </ButtonPrimary>
         </AutoColumn>
@@ -413,7 +423,7 @@ export default function TransactionConfirmationModal({
   // confirmation screen
   return (
     // <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
-    <GpModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={hash ? 623 : 470}>
+    <GpModal isOpen={isOpen} onDismiss={_onDismiss} maxHeight={90} maxWidth={hash ? 850 : 470}>
       {isL2ChainId(chainId) && (hash || attemptingTxn) ? (
         <L2Content chainId={chainId} hash={hash} onDismiss={onDismiss} pendingText={pendingText} />
       ) : attemptingTxn ? (

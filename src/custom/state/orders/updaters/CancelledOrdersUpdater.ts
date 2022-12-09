@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
 import { OrderFulfillmentData } from 'state/orders/actions'
-import { OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
+import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { CANCELLED_ORDERS_PENDING_TIME } from 'constants/index'
@@ -114,7 +114,7 @@ export function CancelledOrdersUpdater(): null {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId, account), OPERATOR_API_POLL_INTERVAL)
+    const interval = setInterval(() => updateOrders(chainId, account), MARKET_OPERATOR_API_POLL_INTERVAL)
 
     return () => clearInterval(interval)
   }, [account, chainId, updateOrders])

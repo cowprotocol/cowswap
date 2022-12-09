@@ -38,6 +38,11 @@ export const MarketPriceButton = styled.button`
   border-radius: 9px;
   padding: 5px 8px;
   font-size: 11px;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
 `
 
 export const Body = styled.div`
@@ -51,6 +56,10 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   border: none;
   width: 100%;
   text-align: left;
+
+  &::placeholder {
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
 `
 
 export const ActiveCurrency = styled.button`

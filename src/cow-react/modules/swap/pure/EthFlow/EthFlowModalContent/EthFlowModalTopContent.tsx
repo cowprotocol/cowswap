@@ -7,25 +7,34 @@ import { EthFlowState } from '@cow/modules/swap/services/ethFlow/types'
 const ModalMessage = styled.div`
   display: flex;
   flex-flow: row wrap;
-  padding: 0;
+  padding: 16px 0 0;
   width: 100%;
-  color: ${({ theme }) => theme.wallet.color};
-  font-size: 15px;
+  color: ${({ theme }) => transparentize(0.15, theme.text1)};
+  font-size: 14px;
   line-height: 1.3;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin-top: 2rem;
   `}
+
+  > p {
+    margin: 0 0 16px;
+  }
 `
 
 const LowBalanceMessage = styled(ModalMessage)`
-  margin: 0 0 8px;
-  background-color: ${({ theme }) => transparentize(0.2, theme.warning)};
-  color: ${({ theme }) => theme.text2};
-  padding: 8px 12px;
-  border-radius: 10px;
+  margin: 0 0 10px;
+  background-color: ${({ theme }) => transparentize(0.86, theme.danger)};
+  color: ${({ theme }) => theme.danger};
+  padding: 16px;
+  border-radius: 16px;
   width: 100%;
   box-sizing: border-box;
+  line-height: 1.5;
+
+  > strong {
+    display: contents;
+  }
 `
 
 export type BalanceChecks = { isLowBalance: boolean; txsRemaining: string | null } | undefined
@@ -58,7 +67,7 @@ export function EthFlowModalTopContent({ descriptions, state, balanceChecks, nat
               <strong>insufficient for any further on-chain transactions.</strong>
             ) : (
               <>
-                sufficient for{' '}
+                only sufficient for{' '}
                 <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s).</strong>
               </>
             )}

@@ -2,13 +2,12 @@ import SafeServiceClient, { SafeInfoResponse, SafeMultisigTransactionResponse } 
 import { registerOnWindow } from 'utils/misc'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
-import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
+import EthersAdapter from '@safe-global/safe-ethers-lib'
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 
 const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'https://safe-transaction.gnosis.io',
-  [ChainId.RINKEBY]: 'https://safe-transaction.rinkeby.gnosis.io',
   [ChainId.GNOSIS_CHAIN]: 'https://safe-transaction.xdai.gnosis.io',
   [ChainId.GOERLI]: 'https://safe-transaction.goerli.gnosis.io',
 }
@@ -16,7 +15,6 @@ const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
 const SAFE_BASE_URL = 'https://gnosis-safe.io'
 const CHAIN_SHORT_NAME: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'eth', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-1.json
-  [ChainId.RINKEBY]: 'rin', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-4.json
   [ChainId.GNOSIS_CHAIN]: 'xdai', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
   [ChainId.GOERLI]: 'gor', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-5.json
 }
@@ -43,7 +41,7 @@ function createSafeServiceClient(txServiceUrl: string, library: Web3Provider): S
   const provider = new Web3Provider(library.send.bind(library) as JsonRpcFetchFunc)
   const ethAdapter = new EthersAdapter({
     ethers,
-    signer: provider.getSigner(0),
+    signerOrProvider: provider.getSigner(0),
   })
 
   return new SafeServiceClient({ txServiceUrl, ethAdapter })

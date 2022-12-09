@@ -51,9 +51,14 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   padding: ${({ padding = '16px' }) => padding};
   width: ${({ width = '100%' }) => width};
   border-radius: 16px;
+  border: 0;
   margin: ${({ margin = '0 auto 12px auto' }) => margin};
   position: relative;
   z-index: 1;
+
+  &:hover {
+    border: 0;
+  }
 
   &::before {
     content: '';

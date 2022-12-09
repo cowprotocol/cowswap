@@ -1,4 +1,6 @@
 import React from 'react'
+// eslint-disable-next-line no-restricted-imports
+import { t } from '@lingui/macro'
 import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
 import * as styledEl from '@cow/modules/swap/containers/NewSwapWidget/styled'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
@@ -6,7 +8,7 @@ import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { swapPagePropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export const SwapForm = React.memo(function (props: SwapFormProps) {
   const {
@@ -26,17 +28,17 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
   const maxBalance = inputCurrencyInfo.balance ? maxAmountSpend(inputCurrencyInfo.balance) : undefined
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
-  const isSupportedNetwork = isSupportedChainId(chainId)
+  const isEthFlow = useIsEthFlow()
 
   console.debug('SWAP PAGE RENDER: ', props)
 
   return (
-    <>
+    <styledEl.SwapFormWrapper>
       <styledEl.SwapHeaderStyled allowedSlippage={allowedSlippage} />
 
       <CurrencyInputPanel
         id="swap-currency-input"
-        disabled={!isSupportedNetwork}
+        chainId={chainId}
         loading={currenciesLoadingInProgress}
         onCurrencySelection={onCurrencySelection}
         onUserInput={onUserInput}
@@ -55,7 +57,11 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       </styledEl.CurrencySeparatorBox>
       <CurrencyInputPanel
         id="swap-currency-output"
-        disabled={!isSupportedNetwork}
+        chainId={chainId}
+        inputDisabled={isEthFlow}
+        inputTooltip={
+          isEthFlow ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}` : undefined
+        }
         loading={currenciesLoadingInProgress}
         onCurrencySelection={onCurrencySelection}
         onUserInput={onUserInput}
@@ -67,6 +73,6 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
       {showRecipientControls && recipient !== null && (
         <styledEl.RemoveRecipientStyled recipient={recipient} onChangeRecipient={onChangeRecipient} />
       )}
-    </>
+    </styledEl.SwapFormWrapper>
   )
 }, swapPagePropsChecker)

@@ -11,7 +11,7 @@ export const InfoPopup = styled.div`
   line-height: 1.3;
   background: ${({ theme }) => `linear-gradient(90deg, ${theme.bg1} 0%, ${lighten(0.03, theme.bg1)} 100%)`};
   border-radius: 16px;
-  padding: 20px 40px 16px 20px;
+  padding: 15px 34px 15px 15px;
 
   > div > svg {
     width: 32px;

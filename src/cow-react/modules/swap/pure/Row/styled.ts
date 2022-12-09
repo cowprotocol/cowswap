@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { RowBetween } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { RowStyleProps } from './types'
+import { transparentize } from 'polished'
 
 const StyledMouseoverTooltipContent = styled(MouseoverTooltipContent)``
 
@@ -17,14 +18,16 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
     font-weight: ${({ fontWeight = 500 }) => fontWeight};
 
     &:first-child {
-      opacity: 0.8;
+      color: ${({ theme }) => transparentize(0.2, theme.text1)};
       font-weight: 400;
-    }
-  }
 
-  &:hover {
-    ${TextWrapper} {
-      opacity: 1;
+      &:hover {
+        color: ${({ theme }) => theme.text1};
+      }
+    }
+
+    &:last-child {
+      text-align: right;
     }
 
     &:last-child {
