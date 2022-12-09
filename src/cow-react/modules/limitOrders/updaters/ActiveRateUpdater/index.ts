@@ -27,7 +27,7 @@ export function ActiveRateUpdater() {
       const field = orderKind === OrderKind.SELL ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
 
       updateCurrencyAmount({
-        [field]: limitState[field]?.toExact(),
+        [field]: limitState[field]?.quotient.toString(),
         keepOrderKind: true,
       })
     }

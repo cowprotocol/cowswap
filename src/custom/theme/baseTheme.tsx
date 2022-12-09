@@ -465,5 +465,13 @@ export const ThemedGlobalStyle = createGlobalStyle`
     }
   }*/
   // END - Modal overrides
+  
+  a {
+    text-decoration: none;
+
+    :hover {
+      text-decoration: underline;
+    }
+  }
 
 `

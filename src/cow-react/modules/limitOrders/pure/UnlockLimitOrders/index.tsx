@@ -4,6 +4,7 @@ import { ButtonPrimary } from 'components/Button'
 import SVG from 'react-inlinesvg'
 import iconCompleted from 'assets/cow-swap/check.svg'
 import iconProgress from 'assets/cow-swap/loading.svg'
+import { HashLink } from 'react-router-hash-link'
 
 const BULLET_LIST_CONTENT = [
   { id: 1, content: 'Set any limit price and time horizon' },
@@ -33,8 +34,7 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
       )}
 
       <styledEl.ControlSection>
-        {/* TODO: update href with a correct external link */}
-        {/*TODO HIDDEN: <ExternalLink href={'https://www.google.com'}>Learn more about limit orders ↗</ExternalLink>*/}
+        <HashLink to="/faq/limit-order">Learn more about limit orders ↗</HashLink>
         <ButtonPrimary onClick={handleUnlock}>Unlock limit orders (BETA)</ButtonPrimary>
       </styledEl.ControlSection>
     </styledEl.Container>
