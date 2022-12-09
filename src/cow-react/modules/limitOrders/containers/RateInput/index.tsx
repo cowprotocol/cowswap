@@ -9,6 +9,7 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
+import { formatSmart } from 'utils/format'
 
 export function RateInput() {
   // Rate state
@@ -41,7 +42,7 @@ export function RateInput() {
 
     const rate = isInversed ? activeRate.invert() : activeRate
 
-    return rate.toSignificant(6)
+    return formatSmart(rate) || ''
   }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
 
   // Handle set market price
