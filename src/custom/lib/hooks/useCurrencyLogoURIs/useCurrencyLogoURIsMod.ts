@@ -1,4 +1,4 @@
-import { Currency, Token } from '@uniswap/sdk-core'
+import { Currency } from '@uniswap/sdk-core'
 import { SupportedChainId } from 'constants/chains'
 import useHttpLocations from 'hooks/useHttpLocations'
 import { useMemo } from 'react'
@@ -67,8 +67,11 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
         // Explicit overrides should take priority, otherwise append potential other logoURIs to existing candidates
         const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
         if (imageOverride) {
-          return [imageOverride]
+          // Add image override with higher priority
+          logoURIs.unshift(imageOverride)
         }
+
+        // Last resource, we get the logo from @Uniswap/assets
         const logoURI = getTokenLogoURI(currency.address, currency.chainId)
         if (logoURI) {
           logoURIs.push(logoURI)
@@ -77,10 +80,4 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
     }
     return logoURIs
   }, [currency, locations])
-}
-
-export function getOverriddenTokenLogoURI(currency: Token) {
-  const imageOverride = ADDRESS_IMAGE_OVERRIDE[currency.address]
-  const logoURI = imageOverride || getTokenLogoURI(currency.address, currency.chainId)
-  return logoURI
 }
