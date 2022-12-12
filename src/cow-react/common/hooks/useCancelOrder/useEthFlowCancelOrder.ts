@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useEthFlowContract } from 'hooks/useContract'
 import { Order } from 'state/orders/actions'
-import { useSetOrderCancellationHash } from 'state/orders/hooks'
+import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'state/orders/hooks'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { logSwapFlowError } from '@cow/modules/swap/services/utils/logger'
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from '@cow/modules/swap/services/ethFlow/const'
@@ -14,6 +14,7 @@ export function useEthFlowCancelOrder() {
   const { chainId } = useWeb3React()
   const cancelEthFlowCallback = getCancelEthFlowOrderCallback(useEthFlowContract())
   const setOrderCancellationHash = useSetOrderCancellationHash()
+  const cancelPendingOrder = useRequestOrderCancellation()
 
   return useCallback(
     async (order: Order) => {
@@ -23,11 +24,11 @@ export function useEthFlowCancelOrder() {
 
       const receipt = await cancelEthFlowCallback(order)
       if (receipt?.hash) {
-        // TODO: set cancelling as well?
+        cancelPendingOrder({ id: order.id, chainId })
         setOrderCancellationHash({ chainId, id: order.id, hash: receipt.hash })
       }
     },
-    [cancelEthFlowCallback, chainId, setOrderCancellationHash]
+    [cancelEthFlowCallback, cancelPendingOrder, chainId, setOrderCancellationHash]
   )
 }
 
