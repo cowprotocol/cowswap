@@ -33,7 +33,11 @@ export interface ParsedOrder extends Order {
 }
 
 const ORDERS_LIMIT = 100
-const pendingOrderStatuses: OrderStatus[] = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.PENDING]
+const pendingOrderStatuses: OrderStatus[] = [
+  OrderStatus.PRESIGNATURE_PENDING,
+  OrderStatus.PENDING,
+  OrderStatus.CREATING,
+]
 
 export function useLimitOrdersList(): LimitOrdersList {
   const { chainId, account } = useWeb3React()
