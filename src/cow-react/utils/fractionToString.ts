@@ -3,7 +3,7 @@ import { Fraction } from '@uniswap/sdk-core'
 export function fractionToString(f: Fraction | null | undefined): string {
   if (!f) return ''
   const { numerator, denominator } = f
-  return JSON.stringify({ numerator, denominator })
+  return JSON.stringify({ numerator: numerator + '', denominator: denominator + '' })
 }
 
 export function stringToFraction(s: string | null | undefined): Fraction | null {
