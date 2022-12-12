@@ -40,6 +40,7 @@ import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChe
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
 import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
+import { maxAmountSpend } from '@src/utils/maxAmountSpend'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -78,13 +79,14 @@ export function LimitOrdersWidget() {
     [settingState.showRecipient, isWrapOrUnwrap]
   )
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
+  const inputViewAmount = tokenViewAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
-    viewAmount: tokenViewAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL),
+    viewAmount: inputViewAmount,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -94,11 +96,9 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
-    viewAmount: tokenViewAmount(
-      isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
-      outputCurrencyBalance,
-      orderKind === OrderKind.BUY
-    ),
+    viewAmount: isWrapOrUnwrap
+      ? inputViewAmount
+      : tokenViewAmount(outputCurrencyAmount, outputCurrencyBalance, orderKind === OrderKind.BUY),
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -212,7 +212,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
 
   const currenciesLoadingInProgress = false
-  const showSetMax = !!inputCurrencyInfo.balance && !inputCurrencyInfo.rawAmount?.equalTo(inputCurrencyInfo.balance)
+  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
+  const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
