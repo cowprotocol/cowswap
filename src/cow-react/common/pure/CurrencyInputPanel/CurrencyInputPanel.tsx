@@ -82,7 +82,11 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   )
   const handleMaxInput = useCallback(() => {
     const maxBalance = maxAmountSpend(balance || undefined)
-    maxBalance && onUserInputDispatch(maxBalance.toExact())
+    if (!maxBalance) {
+      return
+    }
+
+    onUserInputDispatch(maxBalance.toExact())
     setMaxSellTokensAnalytics()
   }, [balance, onUserInputDispatch])
 
@@ -93,7 +97,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     }
 
     setTypedValue(viewAmount)
-  }, [typedValue, viewAmount])
+    // We don't need triggering from typedValue changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewAmount])
 
   const numericalInput = (
     <styledEl.NumericalInput

@@ -39,7 +39,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
-import { formatSmart } from 'utils/format'
+import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -84,7 +84,7 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
-    viewAmount: formatSmart(inputCurrencyAmount) || '',
+    viewAmount: tokenViewAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL),
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -94,7 +94,11 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
-    viewAmount: formatSmart(isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount) || '',
+    viewAmount: tokenViewAmount(
+      isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
+      outputCurrencyBalance,
+      orderKind === OrderKind.BUY
+    ),
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -108,20 +112,15 @@ export function LimitOrdersWidget() {
         field === Field.INPUT ? inputCurrency : outputCurrency
       )?.quotient.toString()
 
-      if (isWrapOrUnwrap) {
+      if (isWrapOrUnwrap || field === Field.INPUT) {
         updateCurrencyAmount({
           inputCurrencyAmount: value,
-        })
-        return
-      }
-
-      if (field === Field.INPUT) {
-        updateCurrencyAmount({
-          inputCurrencyAmount: value,
+          orderKind: OrderKind.SELL,
         })
       } else {
         updateCurrencyAmount({
           outputCurrencyAmount: value,
+          orderKind: OrderKind.BUY,
         })
       }
     },
@@ -213,7 +212,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
 
   const currenciesLoadingInProgress = false
-  const showSetMax = true
+  const showSetMax = inputCurrencyInfo.rawAmount?.toExact() !== inputCurrencyInfo.balance?.toExact()
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
