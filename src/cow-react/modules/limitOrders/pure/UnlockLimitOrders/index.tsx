@@ -27,7 +27,10 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
         <styledEl.List>
           {BULLET_LIST_CONTENT.map(({ id, iconType, content }) => (
             <li key={id} data-icon={iconType || null}>
-              <SVG src={iconType && iconType === 'progress' ? iconProgress : iconCompleted} /> {content}
+              <span>
+                <SVG src={iconType && iconType === 'progress' ? iconProgress : iconCompleted} />
+              </span>{' '}
+              {content}
             </li>
           ))}
         </styledEl.List>
