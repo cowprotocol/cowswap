@@ -18,16 +18,16 @@ import { transactionConfirmAtom } from '@cow/modules/swap/state/transactionConfi
 import { ApplicationModal } from '@src/state/application/reducer'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
+import { confirmDispatch, ConfirmEvent } from '@cow/modules/limitOrders/containers/LimitOrdersConfirmModal/events'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
   priceImpact: PriceImpact
   inputCurrencyAmount: CurrencyAmount<Currency> | null
-  openConfirmScreen(): void
 }
 
 export function TradeButtons(props: TradeButtonsProps) {
-  const { tradeContext, openConfirmScreen, priceImpact, inputCurrencyAmount } = props
+  const { tradeContext, priceImpact, inputCurrencyAmount } = props
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const formState = useLimitOrdersFormState()
   const tradeState = useLimitOrdersTradeState()
@@ -65,9 +65,9 @@ export function TradeButtons(props: TradeButtonsProps) {
           setConfirmationState({ isPending: false, orderHash: null })
         })
     } else {
-      openConfirmScreen()
+      confirmDispatch(ConfirmEvent.OPEN, null)
     }
-  }, [handleSetError, settingsState, tradeContext, openConfirmScreen, setConfirmationState, priceImpact])
+  }, [handleSetError, settingsState, tradeContext, setConfirmationState, priceImpact])
 
   const button = limitOrdersTradeButtonsMap[formState]
 

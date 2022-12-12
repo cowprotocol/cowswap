@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { CloseIcon } from 'theme'
@@ -21,14 +21,13 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { ConfirmEvent, confirmSubscribe } from '@cow/modules/limitOrders/containers/LimitOrdersConfirmModal/events'
 
 export interface LimitOrdersConfirmModalProps {
-  isOpen: boolean
   tradeContext: TradeFlowContext
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
   priceImpact: PriceImpact
-  onDismiss(): void
 }
 
 function PendingText({
@@ -58,7 +57,8 @@ function PendingText({
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
-  const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss, priceImpact } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, tradeContext, priceImpact } = props
+  const [isOpen, setIsOpen] = useState(false)
   const { chainId } = useWalletInfo()
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
@@ -74,6 +74,10 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const onDismissConfirmation = useCallback(() => {
     setConfirmationState({ isPending: false, orderHash: null })
   }, [setConfirmationState])
+
+  const onDismiss = () => {
+    setIsOpen(false)
+  }
 
   const doTrade = useCallback(() => {
     if (!tradeContext) return
@@ -97,6 +101,21 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         }
       })
   }, [onDismiss, handleSetError, settingsState, setConfirmationState, tradeContext, onDismissConfirmation, priceImpact])
+
+  useEffect(() => {
+    const unsubOpen = confirmSubscribe(ConfirmEvent.OPEN, () => {
+      setIsOpen(true)
+    })
+
+    const unsubClose = confirmSubscribe(ConfirmEvent.CLOSE, () => {
+      setIsOpen(false)
+    })
+
+    return () => {
+      unsubOpen()
+      unsubClose()
+    }
+  }, [])
 
   const operationType = OperationType.ORDER_SIGN
   const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />

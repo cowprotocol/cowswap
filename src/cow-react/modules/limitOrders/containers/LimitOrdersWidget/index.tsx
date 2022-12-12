@@ -4,7 +4,7 @@ import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { AddRecipient } from '@cow/common/pure/AddRecipient'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
@@ -224,7 +224,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
-  const [showConfirmation, setShowConfirmation] = useState(false)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
@@ -297,7 +296,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                   inputCurrencyAmount={inputCurrencyInfo.rawAmount}
                   tradeContext={tradeContext}
                   priceImpact={priceImpact}
-                  openConfirmScreen={() => setShowConfirmation(true)}
                 />
               </styledEl.TradeButtonBox>
             </>
@@ -309,12 +307,10 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       <TradeApproveWidget />
       {tradeContext && (
         <LimitOrdersConfirmModal
-          isOpen={showConfirmation}
           tradeContext={tradeContext}
           priceImpact={priceImpact}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
-          onDismiss={() => setShowConfirmation(false)}
         />
       )}
       {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
