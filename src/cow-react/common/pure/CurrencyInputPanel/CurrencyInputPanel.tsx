@@ -67,10 +67,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 
-  useEffect(() => {
-    setTypedValue(viewAmount)
-  }, [viewAmount])
-
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
       onCurrencySelection(field, currency)
@@ -91,8 +87,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   }, [balance, onUserInputDispatch])
 
   useEffect(() => {
+    // Don't override typedValue, when viewAmount from props and typedValue are zero (0 or 0. or 0.000)
+    if (!viewAmount && (!typedValue || parseFloat(typedValue) === 0)) {
+      return
+    }
+
     setTypedValue(viewAmount)
-  }, [viewAmount])
+  }, [typedValue, viewAmount])
 
   const numericalInput = (
     <styledEl.NumericalInput
