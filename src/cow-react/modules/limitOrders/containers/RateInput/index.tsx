@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
@@ -28,6 +28,7 @@ export function RateInput() {
     initialRate,
   } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
@@ -85,15 +86,32 @@ export function RateInput() {
   // Apply smart quote selection
   // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
   useEffect(() => {
+    // Don't set quote currency until amounts are not set
+    if (isQuoteCurrencySet || isFractionFalsy(inputCurrencyAmount) || isFractionFalsy(outputCurrencyAmount)) {
+      return
+    }
+
     const quoteCurrency =
       getQuoteCurrencyByStableCoin(chainId, inputCurrency, outputCurrency) ||
       getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
     const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
     updateLimitRateState({ isInversed: quoteCurrencyAddress !== inputCurrencyAddress })
-    // To avoid recalculation of quote currency on amount changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, inputCurrency, outputCurrency, updateLimitRateState])
+    setIsQuoteCurrencySet(true)
+  }, [
+    isQuoteCurrencySet,
+    chainId,
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    updateLimitRateState,
+  ])
+
+  // Reset isQuoteCurrencySet flag on currencies changes
+  useEffect(() => {
+    setIsQuoteCurrencySet(false)
+  }, [inputCurrency, outputCurrency])
 
   return (
     <styledEl.Wrapper>
