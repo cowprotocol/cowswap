@@ -99,14 +99,14 @@ export function LimitOrdersWidget() {
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
+
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      if (!inputCurrency || !outputCurrency) return
+      const currency = field === Field.INPUT ? inputCurrency : outputCurrency
 
-      const value = tryParseCurrencyAmount(
-        typedValue,
-        field === Field.INPUT ? inputCurrency : outputCurrency
-      )?.quotient.toString()
+      if (!currency) return
+
+      const value = tryParseCurrencyAmount(typedValue, currency)?.quotient.toString()
 
       if (isWrapOrUnwrap) {
         updateCurrencyAmount({
