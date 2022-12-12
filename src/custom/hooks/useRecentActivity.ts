@@ -143,9 +143,9 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     isPending = order.status === OrderStatus.PENDING
     isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING
     isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
-    isCancelling = (order.isCancelling || false) && isPending
-    isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
     isCreating = order.status === OrderStatus.CREATING
+    isCancelling = (order.isCancelling || false) && (isPending || isCreating)
+    isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
     isRefunding = false // TODO: wire up refunding state
     isRefunded = order.isRefunded || false
 
