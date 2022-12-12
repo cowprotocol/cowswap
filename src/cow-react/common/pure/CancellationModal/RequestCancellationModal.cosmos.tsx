@@ -12,8 +12,8 @@ const props: Omit<RequestCancellationModalProps, 'type'> = {
 }
 
 const Fixtures = {
-  offChain: <RequestCancellationModal {...props} type={'offChain'} />,
-  onChain: <RequestCancellationModal {...props} type={'onChain'} />,
+  offChain: <RequestCancellationModal {...props} type="offChain" />,
+  onChain: <RequestCancellationModal {...props} type="onChain" />,
 }
 
 export default Fixtures
