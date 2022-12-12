@@ -212,7 +212,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
 
   const currenciesLoadingInProgress = false
-  const showSetMax = inputCurrencyInfo.rawAmount?.toExact() !== inputCurrencyInfo.balance?.toExact()
+  const showSetMax = !!inputCurrencyInfo.balance && inputCurrencyInfo.rawAmount?.equalTo(inputCurrencyInfo.balance)
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
