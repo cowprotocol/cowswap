@@ -87,7 +87,13 @@ export function RateInput() {
   // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
   useEffect(() => {
     // Don't set quote currency until amounts are not set
-    if (isQuoteCurrencySet || isFractionFalsy(inputCurrencyAmount) || isFractionFalsy(outputCurrencyAmount)) {
+    if (
+      isQuoteCurrencySet ||
+      isFractionFalsy(inputCurrencyAmount) ||
+      isFractionFalsy(outputCurrencyAmount) ||
+      !inputCurrency ||
+      !outputCurrency
+    ) {
       return
     }
 
