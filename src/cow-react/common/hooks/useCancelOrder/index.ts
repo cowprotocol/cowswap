@@ -40,7 +40,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
     (order: Order) => {
       // Check the 'cancellability'
 
-      const isEthFlowOrder = !!getIsEthFlowOrder(order)
+      const isEthFlowOrder = getIsEthFlowOrder(order)
 
       // 1. EthFlow orders will never be able to be cancelled offChain
       // 2. The wallet must support offChain singing

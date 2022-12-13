@@ -73,6 +73,6 @@ function isEthFlowOrderExpired(order: Order | undefined): boolean {
 }
 
 // TODO: move this somewhere else?
-export function getIsEthFlowOrder(order: Order | undefined): boolean | undefined {
+export function getIsEthFlowOrder(order: Order | undefined): boolean {
   return order?.inputToken.address === NATIVE_CURRENCY_BUY_ADDRESS
 }
