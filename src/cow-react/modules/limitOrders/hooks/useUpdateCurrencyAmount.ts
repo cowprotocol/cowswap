@@ -5,7 +5,7 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { LimitOrdersState, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useApplyLimitRate } from '@cow/modules/limitOrders/hooks/useApplyLimitRate'
 import { Field } from 'state/swap/actions'
-import { fractionToString } from '@cow/utils/fractionToString'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 import { Fraction } from '@uniswap/sdk-core'
 import { Writeable } from '@cow/types'
 
@@ -33,8 +33,8 @@ export function useUpdateCurrencyAmount() {
       if (inputCurrencyAmount !== undefined) {
         // Calculate OUTPUT amount by applying the rate
         const outputWithRate = applyLimitRate(inputCurrencyAmount, Field.INPUT)
-        update.outputCurrencyAmount = fractionToString(outputWithRate)
-        update.inputCurrencyAmount = fractionToString(inputCurrencyAmount)
+        update.outputCurrencyAmount = FractionUtils.serializeFractionToJSON(outputWithRate)
+        update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(inputCurrencyAmount)
 
         // Update order type only if keeOrderKind param is not true
         if (!keepOrderKind) {
@@ -46,8 +46,8 @@ export function useUpdateCurrencyAmount() {
       if (outputCurrencyAmount !== undefined) {
         // Calculate INPUT amount by applying the rate
         const inputWithRate = applyLimitRate(outputCurrencyAmount, Field.OUTPUT)
-        update.inputCurrencyAmount = fractionToString(inputWithRate)
-        update.outputCurrencyAmount = fractionToString(outputCurrencyAmount)
+        update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(inputWithRate)
+        update.outputCurrencyAmount = FractionUtils.serializeFractionToJSON(outputCurrencyAmount)
 
         // Update order type only if keeOrderKind param is not true
         if (!keepOrderKind) {

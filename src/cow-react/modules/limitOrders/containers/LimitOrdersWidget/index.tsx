@@ -40,7 +40,7 @@ import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChe
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
 import { formatSmart } from 'utils/format'
-import { fractionToString } from '@cow/utils/fractionToString'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -135,8 +135,8 @@ export function LimitOrdersWidget() {
       updateLimitOrdersState({
         inputCurrencyId: outputCurrencyId,
         outputCurrencyId: inputCurrencyId,
-        inputCurrencyAmount: fractionToString(outputCurrencyAmount),
-        outputCurrencyAmount: fractionToString(inputCurrencyAmount),
+        inputCurrencyAmount: FractionUtils.serializeFractionToJSON(outputCurrencyAmount),
+        outputCurrencyAmount: FractionUtils.serializeFractionToJSON(inputCurrencyAmount),
         orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
       })
     }

@@ -7,7 +7,7 @@ import { OrderKind } from '@cowprotocol/contracts'
 import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
-import { stringToFraction } from '@cow/utils/fractionToString'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export interface LimitOrdersTradeState {
   readonly inputCurrency: Currency | null
@@ -27,7 +27,7 @@ function tryParseFractionalAmount(currency: Currency | null, amount: string | nu
   if (!amount || !currency) return null
 
   try {
-    const fraction = stringToFraction(amount)
+    const fraction = FractionUtils.parseFractionFromJSON(amount)
 
     if (!fraction) return null
 
