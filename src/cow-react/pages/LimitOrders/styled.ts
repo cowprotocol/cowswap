@@ -8,7 +8,7 @@ export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   grid-template-columns: ${({ theme, isUnlocked }) => (isUnlocked ? theme.appBody.maxWidth.swap : '')} 1fr;
   grid-column-gap: 20px;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     display: flex;
     flex-flow: column wrap;
   `};
@@ -31,7 +31,7 @@ export const SecondaryWrapper = styled.div`
   display: flex;
   width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     flex-flow: column wrap;
     margin: 56px 0;
   `};
