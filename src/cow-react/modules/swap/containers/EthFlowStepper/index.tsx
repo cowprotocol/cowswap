@@ -68,6 +68,10 @@ function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStat
   return undefined
 }
 
+function isEthFlowOrderExpired(order: Order | undefined): boolean {
+  return order?.status === 'expired' || isOrderExpired({ validTo: order?.validTo as number })
+}
+
 // TODO: move this somewhere else?
 export function getIsEthFlowOrder(order: Order | undefined): boolean | undefined {
   return order?.inputToken.address === NATIVE_CURRENCY_BUY_ADDRESS
