@@ -78,7 +78,8 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
   const isRefunding = !!refundTx && !isRefunded
   const isCanceling = !!cancellationTx && !isCancelled
   const isOrderRejected = !!rejectedReason
-  const wontReceiveToken = isExpired || isOrderRejected || isRefunding || isCanceling || isCancelled || isRefunded
+  const wontReceiveToken =
+    !isFilled && (isExpired || isOrderRejected || isRefunding || isCanceling || isCancelled || isRefunded)
   const isSuccess = stepState === 'success'
 
   let refundLink: JSX.Element | undefined
