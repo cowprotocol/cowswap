@@ -7,6 +7,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { Order, OrderStatus } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { safeTokenName } from '@cowprotocol/cow-js'
+import { isOrderExpired } from 'state/orders/utils'
 
 type EthFlowStepperProps = {
   order: Order | undefined
@@ -31,7 +32,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       createOrderTx: order.orderCreationHash || '',
       orderId: order.id,
       state,
-      isExpired: order.status === 'expired',
+      isExpired: isEthFlowOrderExpired(order),
       // rejectedReason?: TODO: address when dealing with rejections
     },
     // TODO: fill these in when dealing with rejections
