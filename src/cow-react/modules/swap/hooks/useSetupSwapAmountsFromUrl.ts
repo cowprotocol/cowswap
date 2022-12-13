@@ -44,14 +44,10 @@ export function useSetupSwapAmountsFromUrl() {
 
     if (sellAmount) {
       onUserInput(Field.INPUT, sellAmount)
-      cleanParams()
-      return
+    } else if (buyAmount) {
+      onUserInput(Field.OUTPUT, buyAmount)
     }
 
-    if (buyAmount) {
-      onUserInput(Field.OUTPUT, buyAmount)
-      cleanParams()
-      return
-    }
+    cleanParams()
   }, [params, onUserInput, cleanParams])
 }
