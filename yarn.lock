@@ -1231,7 +1231,7 @@
     paraswap "^5.2.0"
     paraswap-core "^1.0.2"
 
-"@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#1.0.0-artifacts":
+"@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#v1.0.0-artifacts":
   version "0.0.0-rc.4"
   resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/a751d53bf248881bbee27df42ddf73ffc69f7c0a"
 
