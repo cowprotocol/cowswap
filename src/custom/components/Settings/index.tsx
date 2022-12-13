@@ -12,6 +12,11 @@ const Settings = styled(SettingsMod)`
     border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
     background-color: ${({ theme }) => theme.bg1};
     color: ${({ theme }) => theme.text1};
+    padding: 0;
+    margin: 0;
+    top: 36px;
+    right: 0;
+    width: 280px;
   }
 
   ${RowFixed} {
