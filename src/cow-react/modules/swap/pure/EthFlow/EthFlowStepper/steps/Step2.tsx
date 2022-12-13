@@ -12,8 +12,8 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
   const { state, isExpired, orderId, rejectedReason } = order
   const isCreating = state === SmartOrderStatus.CREATING
   const isIndexing = state === SmartOrderStatus.CREATION_MINED
-  const isOrderCreated = !(isCreating || isIndexing)
   const isCancelled = cancellation.isCancelled
+  const isOrderCreated = order.isCreated
 
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 

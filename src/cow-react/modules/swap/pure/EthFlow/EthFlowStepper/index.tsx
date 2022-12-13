@@ -24,6 +24,7 @@ export interface EthFlowStepperProps {
     orderId: string
     state: SmartOrderStatus
     isExpired: boolean
+    isCreated: boolean
     rejectedReason?: string
   }
 

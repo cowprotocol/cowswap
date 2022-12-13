@@ -33,6 +33,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       orderId: order.id,
       state,
       isExpired: isEthFlowOrderExpired(order),
+      isCreated: !!order.apiAdditionalInfo,
       // rejectedReason?: TODO: address when dealing with rejections
     },
     // TODO: fill these in when dealing with rejections
