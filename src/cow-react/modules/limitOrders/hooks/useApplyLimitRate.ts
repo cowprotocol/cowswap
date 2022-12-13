@@ -4,7 +4,6 @@ import { useAtomValue } from 'jotai'
 import { Field } from 'state/swap/actions'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { Fraction } from '@uniswap/sdk-core'
-import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
 
@@ -14,8 +13,8 @@ export function useApplyLimitRate() {
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
 
   return useCallback(
-    (value: string | null, field: Field): Fraction | null => {
-      if (!value || !Number(value) || !activeRate || activeRate.equalTo(0) || !inputCurrency || !outputCurrency) {
+    (value: Fraction | null, field: Field): Fraction | null => {
+      if (!value || value.equalTo(0) || !activeRate || activeRate.equalTo(0) || !inputCurrency || !outputCurrency) {
         return null
       }
 
@@ -23,7 +22,7 @@ export function useApplyLimitRate() {
       const { decimals: outputDecimals } = outputCurrency
 
       const parsedValue = adjustDecimals(
-        toFraction(value),
+        value,
         field === Field.INPUT ? inputDecimals : outputDecimals,
         field === Field.INPUT ? outputDecimals : inputDecimals
       )

@@ -41,6 +41,7 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
 import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
 import { maxAmountSpend } from '@src/utils/maxAmountSpend'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -109,7 +110,7 @@ export function LimitOrdersWidget() {
 
       if (!currency) return
 
-      const value = tryParseCurrencyAmount(typedValue, currency)?.quotient.toString()
+      const value = tryParseCurrencyAmount(typedValue, currency)
 
       if (isWrapOrUnwrap || field === Field.INPUT) {
         updateCurrencyAmount({
@@ -133,8 +134,8 @@ export function LimitOrdersWidget() {
       updateLimitOrdersState({
         inputCurrencyId: outputCurrencyId,
         outputCurrencyId: inputCurrencyId,
-        inputCurrencyAmount: outputCurrencyAmount?.quotient.toString(),
-        outputCurrencyAmount: inputCurrencyAmount?.quotient.toString(),
+        inputCurrencyAmount: FractionUtils.serializeFractionToJSON(outputCurrencyAmount),
+        outputCurrencyAmount: FractionUtils.serializeFractionToJSON(inputCurrencyAmount),
         orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
       })
     }

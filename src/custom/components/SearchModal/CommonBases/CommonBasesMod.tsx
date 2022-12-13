@@ -14,7 +14,7 @@ import { currencyId } from 'utils/currencyId'
 import QuestionHelper from 'components/QuestionHelper'
 import { BaseWrapper, CommonBasesRow, MobileWrapper } from '.' // mod
 import { useFavouriteOrCommonTokens } from 'hooks/useFavouriteOrCommonTokens'
-import { getOverriddenTokenLogoURI } from 'lib/hooks/useCurrencyLogoURIs/useCurrencyLogoURIsMod'
+import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 
 /* const MobileWrapper = styled(AutoColumn)`
@@ -151,11 +151,11 @@ export default function CommonBases({
 /** helper component to retrieve a base currency from the active token lists */
 function CurrencyLogoFromList({ currency }: { currency: Currency }) {
   const token = useTokenInfoFromActiveList(currency)
+  const logoUris = useCurrencyLogoURIs(currency)
 
   let tokenAux = token
-  if (token instanceof WrappedTokenInfo) {
-    const logoURI = getOverriddenTokenLogoURI(token)
-    tokenAux = logoURI ? new WrappedTokenInfo({ ...token.tokenInfo, logoURI }, token.list) : token
+  if (token instanceof WrappedTokenInfo && logoUris.length > 0) {
+    tokenAux = new WrappedTokenInfo({ ...token.tokenInfo, logoURI: logoUris[0] }, token.list)
   }
 
   return <CurrencyLogo currency={tokenAux} style={{ marginRight: 8 }} />
