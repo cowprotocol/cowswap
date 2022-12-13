@@ -91,10 +91,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   }, [balance, onUserInputDispatch])
 
   useEffect(() => {
+    const areValuesSame = parseFloat(viewAmount) === parseFloat(typedValue)
+
+    // Don't override typedValue when, for example: viewAmount = 5  and typedValue = 5.
+    if (areValuesSame) return
+
     // Don't override typedValue, when viewAmount from props and typedValue are zero (0 or 0. or 0.000)
-    if (!viewAmount && (!typedValue || parseFloat(typedValue) === 0)) {
-      return
-    }
+    if (!viewAmount && (!typedValue || parseFloat(typedValue) === 0)) return
 
     setTypedValue(viewAmount)
     // We don't need triggering from typedValue changes
