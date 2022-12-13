@@ -39,13 +39,23 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   return useCallback(
     (order: Order) => {
       // Check the 'cancellability'
-      const isOffChainCancellable = allowsOffchainSigning && order?.status === OrderStatus.PENDING
-      // TODO: For now only ethflow orders are cancellable. Adjust when implementing general hard cancellations
+
+      const isEthFlowOrder = !!getIsEthFlowOrder(order)
+
+      // 1. EthFlow orders will never be able to be cancelled offChain
+      // 2. The wallet must support offChain singing
+      // 3. The order must be PENDING
+      const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
+
+      // 1. To be EthFlow cancellable the order must be an EthFlow order
+      // 2. It can be cancelled when the order is CREATING or PENDING
       const isEthFlowCancellable =
-        !!getIsEthFlowOrder(order) && (order?.status === OrderStatus.PENDING || order?.status === OrderStatus.CREATING)
+        isEthFlowOrder && (order?.status === OrderStatus.CREATING || order?.status === OrderStatus.PENDING)
+
+      // TODO: For now only ethflow orders are cancellable. Adjust when implementing general hard cancellations
       const isCancellable = !order.isCancelling && (isOffChainCancellable || isEthFlowCancellable)
 
-      // Return if order is not cancellable
+      // When the order is not cancellable, there won't be a callback
       if (!isCancellable) {
         return null
       }
@@ -74,7 +84,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
         setContext({ isPendingSignature: false })
       }
 
-      // The callback returned that triggered the modal
+      // The callback returned that triggers the modal
       return () => {
         // Updates the cancellation context with details pertaining the order
         setContext({
