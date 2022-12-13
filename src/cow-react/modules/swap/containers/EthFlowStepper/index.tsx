@@ -40,10 +40,10 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       // refundTx?: string
       isRefunded: false,
     },
-    // TODO: fill these in when dealing with cancellations
-    cancelation: {
-      // cancelationTx?: string
-      isCanceled: false,
+    cancellation: {
+      cancellationTx: order.cancellationHash,
+      //  TODO: wire this up also with the cancellation tx once that's implemented
+      isCancelled: order.status === 'cancelled',
     },
   }
 
