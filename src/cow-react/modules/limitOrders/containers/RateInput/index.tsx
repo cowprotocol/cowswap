@@ -55,13 +55,19 @@ export function RateInput() {
     updateLimitRateState({
       activeRate: isFractionFalsy(executionRate) ? initialRate : executionRate,
       isTypedValue: false,
+      isRateFromUrl: false,
     })
   }, [executionRate, initialRate, updateLimitRateState])
 
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
-      updateLimitRateState({ typedValue, activeRate: toFraction(typedValue, isInversed), isTypedValue: true })
+      updateLimitRateState({
+        typedValue,
+        activeRate: toFraction(typedValue, isInversed),
+        isTypedValue: true,
+        isRateFromUrl: false,
+      })
     },
     [isInversed, updateLimitRateState]
   )

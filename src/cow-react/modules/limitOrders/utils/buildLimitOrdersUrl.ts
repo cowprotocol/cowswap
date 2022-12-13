@@ -1,5 +1,6 @@
 import { Location } from 'history'
 import { LIMIT_ORDERS_TABS } from '@cow/modules/limitOrders/const/limitOrdersTabs'
+import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from '@cow/modules/trade/const/tradeUrl'
 
 const LIMIT_ORDERS_TAB_KEY = 'tab'
 const LIMIT_ORDERS_PAGE_KEY = 'page'
@@ -16,6 +17,10 @@ export function buildLimitOrdersUrl(
   { tabId, pageNumber }: Partial<LimitOrdersPageParams>
 ): string {
   const query = new URLSearchParams(search)
+
+  // Delete amounts keys, see useSetupLimitOrderAmountsFromUrl()
+  query.delete(TRADE_URL_BUY_AMOUNT_KEY)
+  query.delete(TRADE_URL_SELL_AMOUNT_KEY)
 
   if (tabId) {
     query.set(LIMIT_ORDERS_TAB_KEY, tabId)

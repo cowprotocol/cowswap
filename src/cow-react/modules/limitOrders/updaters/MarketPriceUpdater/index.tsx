@@ -9,7 +9,7 @@ import usePrevious from '@src/hooks/usePrevious'
 // Fetch and update initial price for the selected token pair
 export function MarketPriceUpdater() {
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const { executionRate } = useAtomValue(limitRateAtom)
+  const { executionRate, isRateFromUrl } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
   const [isInitialPriceSet, setIsInitialPriceSet] = useState(false)
@@ -34,11 +34,11 @@ export function MarketPriceUpdater() {
 
   // Set initial price once
   useLayoutEffect(() => {
-    if (!price || isInitialPriceSet || isLoading || prevPrice?.equalTo(price)) return
+    if (!price || isInitialPriceSet || isLoading || prevPrice?.equalTo(price) || isRateFromUrl) return
 
     setIsInitialPriceSet(true)
     updateLimitRateState({ isLoading, activeRate: price, isTypedValue: false })
-  }, [isInitialPriceSet, updateLimitRateState, price, isLoading, prevPrice])
+  }, [isInitialPriceSet, updateLimitRateState, price, isLoading, prevPrice, isRateFromUrl])
 
   // Reset initial price set flag when any token was changed
   useLayoutEffect(() => {
