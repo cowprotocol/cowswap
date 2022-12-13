@@ -40,6 +40,7 @@ import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChe
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
 import { formatSmart } from 'utils/format'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -101,12 +102,11 @@ export function LimitOrdersWidget() {
   }
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      if (!inputCurrency || !outputCurrency) return
+      const currency = field === Field.INPUT ? inputCurrency : outputCurrency
 
-      const value = tryParseCurrencyAmount(
-        typedValue,
-        field === Field.INPUT ? inputCurrency : outputCurrency
-      )?.quotient.toString()
+      if (!currency) return
+
+      const value = tryParseCurrencyAmount(typedValue, currency)
 
       if (isWrapOrUnwrap) {
         updateCurrencyAmount({
@@ -135,8 +135,8 @@ export function LimitOrdersWidget() {
       updateLimitOrdersState({
         inputCurrencyId: outputCurrencyId,
         outputCurrencyId: inputCurrencyId,
-        inputCurrencyAmount: outputCurrencyAmount?.quotient.toString(),
-        outputCurrencyAmount: inputCurrencyAmount?.quotient.toString(),
+        inputCurrencyAmount: FractionUtils.serializeFractionToJSON(outputCurrencyAmount),
+        outputCurrencyAmount: FractionUtils.serializeFractionToJSON(inputCurrencyAmount),
         orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
       })
     }
