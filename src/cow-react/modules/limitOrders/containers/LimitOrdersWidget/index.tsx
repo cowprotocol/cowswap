@@ -40,6 +40,7 @@ import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChe
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
 import { formatSmart } from 'utils/format'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -232,6 +233,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   return (
     <>
       <styledEl.Container>
+        <AffiliateStatusCheck />
         <styledEl.ContainerBox>
           <styledEl.Header>
             <TradeWidgetLinks />
