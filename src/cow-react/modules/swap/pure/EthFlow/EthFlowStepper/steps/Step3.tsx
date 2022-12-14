@@ -83,7 +83,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
   const isSuccess = stepState === 'success'
 
   let refundLink: JSX.Element | undefined
-  if (cancellationTx && !isRefunded) {
+  if (cancellationTx && !isRefunded && !isFilled) {
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
@@ -106,7 +106,9 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
     <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
       <>
         {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order has expired</ExpiredMessage>}
-        {wontReceiveToken && !(refundTx || cancellationTx) && <RefundMessage>Initiating ETH Refund...</RefundMessage>}
+        {wontReceiveToken && !(refundTx || cancellationTx) && !isCancelled && (
+          <RefundMessage>Initiating ETH Refund...</RefundMessage>
+        )}
         {refundLink}
       </>
     </Step>
