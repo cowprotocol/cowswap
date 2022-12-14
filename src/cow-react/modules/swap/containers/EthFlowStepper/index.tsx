@@ -72,10 +72,10 @@ function mapOrderToEthFlowStepperState(
   if (order) {
     const { status } = order
 
-    if (ORDER_INDEXED_STATUSES.includes(status) || cancellationTx?.receipt) {
-      return SmartOrderStatus.INDEXED
-    } else if (status === 'fulfilled') {
+    if (status === 'fulfilled') {
       return SmartOrderStatus.FILLED
+    } else if (ORDER_INDEXED_STATUSES.includes(status) || cancellationTx?.receipt) {
+      return SmartOrderStatus.INDEXED
     } else if (status === 'creating') {
       if (creationTx?.receipt) {
         return SmartOrderStatus.CREATION_MINED
