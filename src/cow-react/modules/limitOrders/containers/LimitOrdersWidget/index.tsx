@@ -110,7 +110,7 @@ export function LimitOrdersWidget() {
 
       if (!currency) return
 
-      const value = tryParseCurrencyAmount(typedValue, currency)
+      const value = tryParseCurrencyAmount(typedValue, currency) || null
 
       if (isWrapOrUnwrap || field === Field.INPUT) {
         updateCurrencyAmount({
