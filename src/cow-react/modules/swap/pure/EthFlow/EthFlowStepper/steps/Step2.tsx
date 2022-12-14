@@ -4,7 +4,7 @@ import X from 'assets/cow-swap/x.svg'
 import Checkmark from 'assets/cow-swap/checkmark.svg'
 import Exclamation from 'assets/cow-swap/exclamation.svg'
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
-import { Step, StepProps, ExplorerLinkStyled } from '../Step'
+import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 type Step2Config = StepProps & { error?: string }
 
@@ -14,6 +14,7 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
   const isIndexing = state === SmartOrderStatus.CREATION_MINED
   const isCancelled = cancellation.isCancelled
   const isOrderCreated = order.isCreated
+  const isFilled = state === SmartOrderStatus.FILLED
 
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
@@ -57,7 +58,7 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
       }
     }
 
-    if (isCancelled) {
+    if (isCancelled && !isFilled) {
       return {
         label: 'Order Cancelled',
         state: 'skipped',
@@ -70,7 +71,7 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
       state: 'success',
       icon: Checkmark,
     }
-  }, [expiredBeforeCreate, isCancelled, isCreating, isIndexing, rejectedReason])
+  }, [expiredBeforeCreate, isCancelled, isCreating, isFilled, isIndexing, rejectedReason])
 
   const errorMessage = error || rejectedReason
   return (
