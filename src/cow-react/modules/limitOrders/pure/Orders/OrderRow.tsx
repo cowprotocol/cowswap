@@ -1,14 +1,17 @@
+import { useContext } from 'react'
 import { formatSmart } from 'utils/format'
-import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
+import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { AlertTriangle, Trash2 } from 'react-feather'
+import { Trash2 } from 'react-feather'
 import { transparentize } from 'polished'
 import { OrderParams } from './utils/getOrderParams'
 import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
+import AlertTriangle from 'assets/cow-swap/alert.svg'
+import SVG from 'react-inlinesvg'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -29,7 +32,7 @@ const StatusBox = styled.div`
   align-items: center;
 `
 
-export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean }>`
+export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean; withWarning?: boolean }>`
   --statusColor: ${({ theme, status, cancelling }) =>
     cancelling
       ? theme.text1
@@ -54,7 +57,7 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean 
   justify-content: center;
   color: var(--statusColor);
   padding: 7px 10px;
-  border-radius: 3px;
+
   position: relative;
   z-index: 2;
   font-size: 12px;
@@ -72,7 +75,7 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean 
     background: var(--statusColor);
     opacity: 0.14;
     z-index: 1;
-    border-radius: 9px;
+    border-radius: ${({ withWarning }) => (withWarning ? '9px 0 0 9px' : '9px')};
   }
 `
 
@@ -99,14 +102,18 @@ const AmountItem = styled.div`
 
 const WarningIndicator = styled.button`
   margin: 0;
-  padding: 0;
-  background: #ffcb67;
-  color: ${({ theme }) => theme.warningText};
+  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+  color: ${({ theme }) => theme.alert};
   line-height: 0;
   border: 0;
-  height: 27px;
-  width: 27px;
-  border-radius: 0 4px 4px 0;
+  padding: 0 5px;
+  height: 29px;
+  width: auto;
+  border-radius: 0 9px 9px 0;
+
+  svg > path {
+    fill: ${({ theme }) => theme.alert};
+  }
 `
 
 const WarningContent = styled.div`
@@ -206,6 +213,7 @@ export function OrderRow({
   const showCancellationModal = getShowCancellationModal(order)
 
   const withWarning = !hasEnoughBalance || !hasEnoughAllowance
+  const theme = useContext(ThemeContext)
 
   return (
     <RowElement onClick={onClick}>
@@ -222,14 +230,14 @@ export function OrderRow({
       </div>
       <div>
         <StatusBox>
-          <StatusItem cancelling={!!order.isCancelling} status={order.status}>
+          <StatusItem cancelling={!!order.isCancelling} status={order.status} withWarning={withWarning}>
             {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
           </StatusItem>
           {withWarning && (
             <WarningIndicator>
               <MouseoverTooltipContent
                 wrap={false}
-                bgColor={'#ffcb67'}
+                bgColor={theme.alert}
                 content={
                   <WarningContent>
                     {!hasEnoughBalance && balanceWarning(order.inputToken.symbol || '')}
@@ -238,7 +246,7 @@ export function OrderRow({
                 }
                 placement="bottom"
               >
-                <AlertTriangle size={16} />
+                <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
               </MouseoverTooltipContent>
             </WarningIndicator>
           )}
