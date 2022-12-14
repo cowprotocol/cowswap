@@ -32,9 +32,9 @@ export interface EthFlowStepperProps {
     isRefunded: boolean
   }
 
-  cancelation: {
-    cancelationTx?: string
-    isCanceled: boolean
+  cancellation: {
+    cancellationTx?: string
+    isCancelled: boolean
   }
 }
 
