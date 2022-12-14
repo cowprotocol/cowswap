@@ -61,7 +61,7 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
     if (isCancelled && !isFilled) {
       return {
         label: 'Order Cancelled',
-        state: 'skipped',
+        state: 'cancelled',
         icon: Exclamation,
       }
     }
