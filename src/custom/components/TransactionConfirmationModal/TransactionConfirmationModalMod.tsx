@@ -38,13 +38,19 @@ import { getEtherscanLink as getExplorerLink } from 'utils'
 
 export const Wrapper = styled.div`
   width: 100%;
-  padding: 1rem;
+  /* padding: 1rem; */
   /* -- mod -- */
+  padding: 16px;
   display: flex;
   flex-flow: column nowrap;
   overflow-y: auto;
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
+
+  /* -- mod -- */
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    background: ${({ theme }) => `${theme.grey1}`};
+  `}
 
   &::-webkit-scrollbar {
     width: 14px;
@@ -67,6 +73,10 @@ export const Wrapper = styled.div`
 `
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`
   padding: ${({ inline }) => (inline ? '0' : '0')};
+  /* -- mod -- */
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 60px 0 0;
+  `}
 `
 
 export const BottomSection = styled(Section)`
@@ -227,7 +237,7 @@ export function ConfirmationModalContent({
         {/* <RowBetween> */}
         <GPModalHeader>
           <Text
-            fontWeight={500}
+            fontWeight={600} // MOD
             fontSize={titleSize || 16} // MOD
             style={styles} //MOD
           >
