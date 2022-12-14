@@ -16,6 +16,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
+import { cancelOrdersBatch } from 'state/orders/actions'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -93,6 +94,14 @@ function finalizeEthereumTransaction(
       },
       hash
     )
+  } else {
+    // When it IS an EthFlow related tx, take action depending on the type
+    const { orderId, subType } = transaction.ethFlow
+
+    if (subType === 'cancellation') {
+      // For now, only handling the cancellation events
+      dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
+    }
   }
 }
 
