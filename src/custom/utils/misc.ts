@@ -9,7 +9,7 @@ const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User rejected the transaction',
   'user rejected transaction',
   'User rejected signing',
-  'user rejected signing',
+  'Transaction was rejected',
 ]
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
