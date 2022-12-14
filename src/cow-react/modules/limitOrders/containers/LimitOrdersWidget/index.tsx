@@ -39,7 +39,9 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
-import { formatSmart } from 'utils/format'
+import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
+import { maxAmountSpend } from '@src/utils/maxAmountSpend'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -78,13 +80,14 @@ export function LimitOrdersWidget() {
     [settingState.showRecipient, isWrapOrUnwrap]
   )
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
+  const inputViewAmount = tokenViewAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
     rawAmount: inputCurrencyAmount,
-    viewAmount: formatSmart(inputCurrencyAmount) || '',
+    viewAmount: inputViewAmount,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -94,34 +97,30 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
-    viewAmount: formatSmart(isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount) || '',
+    viewAmount: isWrapOrUnwrap
+      ? inputViewAmount
+      : tokenViewAmount(outputCurrencyAmount, outputCurrencyBalance, orderKind === OrderKind.BUY),
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
   }
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      if (!inputCurrency || !outputCurrency) return
+      const currency = field === Field.INPUT ? inputCurrency : outputCurrency
 
-      const value = tryParseCurrencyAmount(
-        typedValue,
-        field === Field.INPUT ? inputCurrency : outputCurrency
-      )?.quotient.toString()
+      if (!currency) return
 
-      if (isWrapOrUnwrap) {
+      const value = tryParseCurrencyAmount(typedValue, currency) || null
+
+      if (isWrapOrUnwrap || field === Field.INPUT) {
         updateCurrencyAmount({
           inputCurrencyAmount: value,
-        })
-        return
-      }
-
-      if (field === Field.INPUT) {
-        updateCurrencyAmount({
-          inputCurrencyAmount: value,
+          orderKind: OrderKind.SELL,
         })
       } else {
         updateCurrencyAmount({
           outputCurrencyAmount: value,
+          orderKind: OrderKind.BUY,
         })
       }
     },
@@ -135,8 +134,8 @@ export function LimitOrdersWidget() {
       updateLimitOrdersState({
         inputCurrencyId: outputCurrencyId,
         outputCurrencyId: inputCurrencyId,
-        inputCurrencyAmount: outputCurrencyAmount?.quotient.toString(),
-        outputCurrencyAmount: inputCurrencyAmount?.quotient.toString(),
+        inputCurrencyAmount: FractionUtils.serializeFractionToJSON(outputCurrencyAmount),
+        outputCurrencyAmount: FractionUtils.serializeFractionToJSON(inputCurrencyAmount),
         orderKind: orderKind === OrderKind.SELL ? OrderKind.BUY : OrderKind.SELL,
       })
     }
@@ -213,7 +212,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
 
   const currenciesLoadingInProgress = false
-  const showSetMax = true
+  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
+  const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {

@@ -21,7 +21,7 @@ function SettingsBox({ title, tooltip, value, toggle, disabled = false }: Settin
     <styledEl.SettingsBox disabled={disabled}>
       <styledEl.SettingsBoxTitle>
         <Trans>{title}</Trans>
-        <QuestionHelper bgColor={theme.bg3} color={theme.text1} text={<Trans>{tooltip}</Trans>} />
+        <QuestionHelper bgColor={theme.grey1} color={theme.text1} text={<Trans>{tooltip}</Trans>} />
       </styledEl.SettingsBoxTitle>
       <Toggle isActive={value} toggle={toggle} />
     </styledEl.SettingsBox>

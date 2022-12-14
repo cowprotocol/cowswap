@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
 
 export const SettingsTitle = styled.h3`
   font-weight: 600;
@@ -8,12 +9,13 @@ export const SettingsTitle = styled.h3`
 `
 
 export const SettingsContainer = styled.div`
-  margin-top: 12px;
-  background: ${({ theme }) => theme.bg5};
-  padding: 1rem;
+  margin: 12px 0 0;
+  padding: 16px;
   border-radius: 12px;
-  box-shadow: 0 0 0 rgb(0 0 0 / 1%), 0 4px 8px rgb(0 0 0 / 0%), 0 16px 24px rgb(0 0 0 / 60%),
-    0 24px 32px rgb(0 0 0 / 20%);
+  box-shadow: ${({ theme }) => theme.boxShadow2};
+  border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
+  background: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1};
 `
 
 export const SettingsBox = styled.div<{ disabled: boolean }>`

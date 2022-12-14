@@ -9,7 +9,6 @@ const TooltipContainer = styled.div`
   padding: 0.6rem 1rem;
   font-weight: 400;
   word-break: break-word;
-  font-size: smaller; //  mod
 
   /* background: ${({ theme }) => theme.bg0};
   border-radius: 12px;

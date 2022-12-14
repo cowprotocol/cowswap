@@ -35,7 +35,7 @@ export const FeesDiscount: React.FC<FeesDiscountProps> = ({ onClick, theme, ...b
           <Trans>Fees discount</Trans>{' '}
           <MouseoverTooltipContent
             content={SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'}
-            bgColor={theme.bg1}
+            bgColor={theme.grey1}
             color={theme.text1}
             wrap
           >

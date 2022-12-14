@@ -269,7 +269,8 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                   <Trans>Expert Mode</Trans>
                 </ThemedText.Black>
                 <QuestionHelper
-                  bgColor={theme.bg3}
+                  // bgColor={theme.bg3}
+                  bgColor={theme.grey1} // mod
                   color={theme.text1}
                   text={
                     <Trans>Allow high price impact trades and skip the confirm screen. Use at your own risk.</Trans>
@@ -301,7 +302,8 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                   <Trans>Toggle Recipient</Trans>
                 </ThemedText.Black>
                 <QuestionHelper
-                  bgColor={theme.bg3}
+                  // bgColor={theme.bg3}
+                  bgColor={theme.grey1} // mod
                   color={theme.text1}
                   text={
                     <Trans>Allows you to choose a destination address for the swap other than the connected one.</Trans>

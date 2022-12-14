@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useUpdateAtom } from 'jotai/utils'
 
@@ -32,7 +32,7 @@ export function useFetchMarketPrice() {
   const handleResponse = useHandleResponse()
 
   // Main hook updater
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleFetchQuote = () => {
       if (!feeQuoteParams || isWrapOrUnwrap) {
         return
@@ -56,7 +56,7 @@ export function useFetchMarketPrice() {
   }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote, isWrapOrUnwrap])
 
   // Turn on the loading if some of these dependencies have changed and remove execution rate
-  useEffect(() => {
+  useLayoutEffect(() => {
     updateLimitRateState({ isLoadingExecutionRate: true, executionRate: null })
   }, [chainId, inputCurrency, outputCurrency, orderKind, account, updateLimitRateState])
 

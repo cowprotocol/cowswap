@@ -67,10 +67,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 
-  useEffect(() => {
-    setTypedValue(viewAmount)
-  }, [viewAmount])
-
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
       onCurrencySelection(field, currency)
@@ -86,12 +82,26 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   )
   const handleMaxInput = useCallback(() => {
     const maxBalance = maxAmountSpend(balance || undefined)
-    maxBalance && onUserInputDispatch(maxBalance.toExact())
+    if (!maxBalance) {
+      return
+    }
+
+    onUserInputDispatch(maxBalance.toExact())
     setMaxSellTokensAnalytics()
   }, [balance, onUserInputDispatch])
 
   useEffect(() => {
+    const areValuesSame = parseFloat(viewAmount) === parseFloat(typedValue)
+
+    // Don't override typedValue when, for example: viewAmount = 5  and typedValue = 5.
+    if (areValuesSame) return
+
+    // Don't override typedValue, when viewAmount from props and typedValue are zero (0 or 0. or 0.000)
+    if (!viewAmount && (!typedValue || parseFloat(typedValue) === 0)) return
+
     setTypedValue(viewAmount)
+    // We don't need triggering from typedValue changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewAmount])
 
   const numericalInput = (
