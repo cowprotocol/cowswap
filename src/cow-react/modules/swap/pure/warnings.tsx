@@ -1,5 +1,5 @@
 import { HighFeeWarning } from 'components/SwapWarnings'
-import { CompatibilityIssuesWarning } from '@cow/modules/swap/pure/CompatibilityIssuesWarning'
+import { CompatibilityIssuesWarning } from '@cow/modules/trade/pure/CompatibilityIssuesWarning'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'
 import React from 'react'

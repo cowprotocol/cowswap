@@ -18,6 +18,9 @@ import { transactionConfirmAtom } from '@cow/modules/swap/state/transactionConfi
 import { ApplicationModal } from '@src/state/application/reducer'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
+import { CompatibilityIssuesWarning } from '@cow/modules/trade/pure/CompatibilityIssuesWarning'
+import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
@@ -40,6 +43,9 @@ export function TradeButtons(props: TradeButtonsProps) {
   const closeModals = useCloseModals()
   const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
   const { handleSetError, ErrorModal } = useErrorModal()
+  const { isSupportedWallet } = useWalletInfo()
+  const { inputCurrency, outputCurrency } = tradeState
+  const isSwapUnsupported = useIsSwapUnsupported(inputCurrency, outputCurrency)
 
   const wrapUnwrapParams: WrapUnwrapParams = {
     isNativeIn: !!inputCurrencyAmount?.currency.isNative,
@@ -69,19 +75,30 @@ export function TradeButtons(props: TradeButtonsProps) {
     }
   }, [handleSetError, settingsState, tradeContext, openConfirmScreen, setConfirmationState, priceImpact])
 
-  const button = limitOrdersTradeButtonsMap[formState]
+  const buttonFactory = limitOrdersTradeButtonsMap[formState]
 
-  if (typeof button === 'function') {
-    return button({ tradeState, toggleWalletModal, quote, wrapUnwrapParams })
-  }
+  const isButtonDisabled = (typeof buttonFactory !== 'function' && buttonFactory.disabled) || !warningsAccepted
+  const showWarnings = !!(inputCurrency && outputCurrency && isSwapUnsupported)
 
-  const isButtonDisabled = button.disabled || !warningsAccepted
+  const Button =
+    typeof buttonFactory === 'function' ? (
+      buttonFactory({ tradeState, toggleWalletModal, quote, wrapUnwrapParams })
+    ) : (
+      <SwapButton onClick={doTrade} disabled={isButtonDisabled}>
+        <Trans>{buttonFactory.text}</Trans>
+      </SwapButton>
+    )
 
   return (
     <>
-      <SwapButton onClick={doTrade} disabled={isButtonDisabled}>
-        <Trans>{button.text}</Trans>
-      </SwapButton>
+      {Button}
+      {showWarnings && (
+        <CompatibilityIssuesWarning
+          currencyIn={inputCurrency}
+          currencyOut={outputCurrency}
+          isSupportedWallet={isSupportedWallet}
+        />
+      )}
       <ErrorModal />
     </>
   )
