@@ -9,7 +9,7 @@ export const MenuItem = styled.div`
 `
 
 export const Link = styled(NavLink)<{ isActive?: boolean }>`
-  text-decoration: none;
+  text-decoration: none !important;
   padding: 0 5px;
   opacity: 0.5;
   display: flex;
@@ -17,6 +17,10 @@ export const Link = styled(NavLink)<{ isActive?: boolean }>`
 
   &.active {
     opacity: 1;
+  }
+
+  &:hover:not(.active) {
+    opacity: 0.7;
   }
 `
 
