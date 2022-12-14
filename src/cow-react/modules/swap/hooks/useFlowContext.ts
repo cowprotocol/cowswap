@@ -167,6 +167,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
   const isGnosisSafeWallet = !!gnosisSafeInfo
 
   const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : trade.outputAmount.currency.wrapped
+  const marketLabel = [sellToken?.symbol, buyToken.symbol].join(',')
 
   if (!sellToken || !buyToken) {
     return null
@@ -176,7 +177,8 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     account,
     recipient,
     recipientAddress: recipientAddressOrName,
-    trade,
+    marketLabel,
+    orderClass: OrderClass.MARKET,
   }
 
   const validTo = calculateValidTo(deadline)
