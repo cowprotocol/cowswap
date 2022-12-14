@@ -6,6 +6,7 @@ import { useOnCurrencySelection as useOnCurrencySelectionCommon } from '@cow/mod
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useUpdateAtom } from 'jotai/utils'
 import { updateLimitOrdersAtom } from '@cow/modules/limitOrders'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
@@ -32,7 +33,7 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
           const newDecimals = currency.decimals
 
           updateLimitOrdersState({
-            [amountField]: adjustDecimals(amount, prevDecimals, newDecimals).quotient.toString(),
+            [amountField]: FractionUtils.serializeFractionToJSON(adjustDecimals(amount, prevDecimals, newDecimals)),
           })
         }
       }

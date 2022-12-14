@@ -155,7 +155,7 @@ export const HighFeeWarning = (props: WarningProps) => {
         <AlertTriangle size={24} />
         Fees exceed {level}% of the swap amount!{' '}
         <MouseoverTooltipContent
-          bgColor={theme.bg1}
+          bgColor={theme.bg3}
           color={theme.text1}
           wrap
           content={<HighFeeWarningMessage feePercentage={feePercentage} />}

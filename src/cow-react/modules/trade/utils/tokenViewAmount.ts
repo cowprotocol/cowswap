@@ -3,7 +3,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 
 export function tokenViewAmount(
-  amount: CurrencyAmount<Currency> | undefined,
+  amount: CurrencyAmount<Currency> | undefined | null,
   balance: CurrencyAmount<Currency> | null,
   isIndependentField: boolean
 ): string {
