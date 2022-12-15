@@ -44,6 +44,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
           tradeState.orderKind === OrderKind.SELL ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
 
         updateCurrencyAmount({
+          activeRate,
           [field]: tradeState[field],
           keepOrderKind: true,
         })

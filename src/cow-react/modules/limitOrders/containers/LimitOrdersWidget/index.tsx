@@ -73,7 +73,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-  const { isLoading: isRateLoading } = useAtomValue(limitRateAtom)
+  const { isLoading: isRateLoading, activeRate } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
@@ -116,17 +116,19 @@ export function LimitOrdersWidget() {
 
       if (isWrapOrUnwrap || field === Field.INPUT) {
         updateCurrencyAmount({
+          activeRate,
           inputCurrencyAmount: value,
           orderKind: OrderKind.SELL,
         })
       } else {
         updateCurrencyAmount({
+          activeRate,
           outputCurrencyAmount: value,
           orderKind: OrderKind.BUY,
         })
       }
     },
-    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency]
+    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate]
   )
 
   const onSwitchTokens = useCallback(() => {

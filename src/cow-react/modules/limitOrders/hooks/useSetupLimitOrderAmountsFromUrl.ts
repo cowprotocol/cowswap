@@ -59,9 +59,9 @@ export function useSetupLimitOrderAmountsFromUrl() {
     const hasUpdates = Object.keys(update).length > 1
 
     if (hasUpdates) {
-      // Clean params only when an update was applied or currecies are loaded
+      // Clean params only when an update was applied or currencies are loaded
       if (inputCurrency || outputCurrency) {
-        cleanParams()
+        setTimeout(cleanParams)
       }
 
       updateLimitOrdersState(update)
