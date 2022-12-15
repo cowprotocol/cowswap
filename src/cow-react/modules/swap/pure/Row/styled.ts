@@ -1,6 +1,6 @@
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
-import { RowBetween } from 'components/Row'
+import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { RowStyleProps } from './types'
 import { transparentize } from 'polished'
@@ -11,6 +11,11 @@ export const TextWrapper = styled(Text)``
 
 export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   min-height: 24px;
+  gap: 3px;
+
+  ${RowFixed} {
+    gap: 3px;
+  }
 
   ${TextWrapper} {
     color: ${({ theme }) => theme.text1};

@@ -20,6 +20,7 @@ export const Row = styled.div`
 
     &:first-child {
       font-weight: 400;
+      gap: 3px;
     }
 
     &:first-child > span {
