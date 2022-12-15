@@ -20,7 +20,7 @@ export function useEthFlowContext(): EthFlowContext | null {
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
   // TODO: Nitpic: Detect also collisions using the API (orderId exists)
-  const existsOrderId = useCallback(
+  const existsInFlightOrderId = useCallback(
     (orderId: string) => ethFlowInFlightOrderIds.includes(orderId),
     [ethFlowInFlightOrderIds]
   )
@@ -37,7 +37,7 @@ export function useEthFlowContext(): EthFlowContext | null {
     ...baseContext,
     contract,
     addTransaction,
-    existsOrderId,
+    existsInFlightOrderId,
     addInFlightOrderId,
   }
 }

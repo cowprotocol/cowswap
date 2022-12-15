@@ -30,7 +30,7 @@ function incrementFee(params: PostOrderParams): PostOrderParams {
 export async function calculateUniqueOrderId(
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow,
-  existsOrderId: (orderId: string) => boolean
+  existsInFlightOrderId: (orderId: string) => boolean
 ): Promise<UniqueOrderIdResult> {
   logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
   const { chainId } = orderParams
@@ -51,11 +51,11 @@ export async function calculateUniqueOrderId(
     validTo: MAX_VALID_TO_EPOCH,
   })
 
-  if (existsOrderId(orderId)) {
+  if (existsInFlightOrderId(orderId)) {
     logTradeFlow('ETH FLOW', '[EthFlow::calculateOrderId] Collision detected', orderId)
 
     // Recursive call, increment one fee until we get an unique order Id
-    return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, existsOrderId)
+    return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, existsInFlightOrderId)
   }
 
   logTradeFlow('ETH FLOW', '[EthFlow::calculateOrderId] Order Id is Unique', orderId)
