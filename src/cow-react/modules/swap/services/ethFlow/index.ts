@@ -18,7 +18,7 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
 
   try {
     logSwapFlow('ETH FLOW', 'STEP 3: sign order')
-    const { order, orderId } = await signEthFlowOrderStep(input.orderParams, input.contract).finally(() => {
+    const { order, orderId, txReceipt } = await signEthFlowOrderStep(input.orderParams, input.contract).finally(() => {
       input.callbacks.closeModals()
     })
 
@@ -31,6 +31,8 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
       },
       input.dispatch
     )
+    // TODO: maybe move this into addPendingOrderStep?
+    input.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
 
     logSwapFlow('ETH FLOW', 'STEP 5: add app data to upload queue')
     input.callbacks.addAppDataToUploadQueue({ chainId: input.context.chainId, orderId, appData: input.appDataInfo })

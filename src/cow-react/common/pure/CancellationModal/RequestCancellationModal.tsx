@@ -66,5 +66,9 @@ const CancellationSummary = styled.span`
   padding: 12px;
   margin: 0;
   border-radius: 6px;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.grey1};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    background: ${({ theme }) => theme.bg1};
+  `}
 `

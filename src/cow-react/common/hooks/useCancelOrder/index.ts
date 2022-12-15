@@ -49,8 +49,11 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
 
       // 1. To be EthFlow cancellable the order must be an EthFlow order
       // 2. It can be cancelled when the order is CREATING or PENDING
+      // 3. It cannot be cancelled if there's a cancellationHash already
       const isEthFlowCancellable =
-        isEthFlowOrder && (order?.status === OrderStatus.CREATING || order?.status === OrderStatus.PENDING)
+        isEthFlowOrder &&
+        (order?.status === OrderStatus.CREATING || order?.status === OrderStatus.PENDING) &&
+        !order.cancellationHash
 
       // TODO: For now only ethflow orders are cancellable. Adjust when implementing general hard cancellations
       const isCancellable = !order.isCancelling && (isOffChainCancellable || isEthFlowCancellable)

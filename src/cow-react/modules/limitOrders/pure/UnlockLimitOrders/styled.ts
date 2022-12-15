@@ -79,18 +79,3 @@ export const ControlSection = styled.div`
     display: block;
   }
 `
-
-export const Item = styled.div`
-  display: flex;
-  padding: 10px 5px;
-  font-size: 0.8rem;
-`
-
-export const Icon = styled.div<{ type: string }>`
-  margin-right: 10px;
-  color: ${({ type, theme }) => {
-    if (type === 'completed') return theme.green1
-    if (type === 'pending') return theme.yellow1
-    return theme.primary1
-  }};
-`
