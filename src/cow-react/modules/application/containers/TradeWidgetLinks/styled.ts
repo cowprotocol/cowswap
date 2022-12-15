@@ -22,7 +22,7 @@ export const Link = styled(NavLink)<{ isActive?: boolean }>`
   align-items: center;
   text-decoration: none;
   color: ${({ theme }) => transparentize(0.4, theme.text1)};
-  gap: 5px;
+  gap: 3px;
   font-weight: inherit;
   line-height: 1;
   transition: color 0.15s ease-in-out;
