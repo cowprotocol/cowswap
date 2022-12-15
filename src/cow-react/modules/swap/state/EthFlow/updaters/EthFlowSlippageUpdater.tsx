@@ -5,7 +5,7 @@ import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cow/utils/localStorage'
 import { SerializedSlippage, SerializedSlippageSettings, Slippage, SlippageSettings } from './types'
 
-export const ETH_FLOW_SLIPPAGE = new Percent(2, 100) // 2%
+export const ETH_FLOW_SLIPPAGE = new Percent(1, 1000) // 2%
 const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
 
 export function EthFlowSlippageUpdater() {
