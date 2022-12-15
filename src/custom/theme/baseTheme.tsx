@@ -41,12 +41,13 @@ export function colors(darkMode: boolean): Colors {
     // States NEW
     danger: darkMode ? '#EB3030' : '#D41300',
     warning: darkMode ? '#ED6237' : '#D94719',
-    alert: darkMode ? '#ffc824' : '#ffc311',
+    alert: darkMode ? '#DB971E' : '#DB971E',
     success: darkMode ? '#00D897' : '#007B28',
     pending: '#43758C', // deprecate
     attention: '#ff5722', // deprecate
 
     // DEPRECATED but keeping because of dependencies
+    bg3: darkMode ? '#07162D' : '#ECF1F8',
     primary1: darkMode ? '#0d5ed9' : '#052B65',
     primary3: darkMode ? '#0d5ed9' : '#052B65',
     primary4: darkMode ? '#0d5ed9' : '#052B65',
@@ -59,7 +60,6 @@ export function colors(darkMode: boolean): Colors {
     text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
 
     // ****** backgrounds ******
-    bg3: darkMode ? '#163861' : '#d5e8f0',
     bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
     bg6: darkMode ? '#163861' : '#b0dfee',
