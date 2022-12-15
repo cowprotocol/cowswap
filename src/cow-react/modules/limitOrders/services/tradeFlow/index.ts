@@ -9,13 +9,13 @@ import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOr
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { Web3Provider } from '@ethersproject/providers'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
-import confirmPriceImpactWithoutFee from '@src/components/swap/confirmPriceImpactWithoutFee'
+import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { swapFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
-import { OrderClass } from '@src/custom/state/orders/actions'
+import { OrderClass } from 'custom/state/orders/actions'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
