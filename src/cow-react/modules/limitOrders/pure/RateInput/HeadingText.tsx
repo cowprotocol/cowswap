@@ -1,5 +1,6 @@
 import { RateImpactIndicator } from '@cow/modules/limitOrders/pure/RateImpactIndicator'
 import { Currency } from '@uniswap/sdk-core'
+import styled from 'styled-components/macro'
 
 type Props = {
   currency: string | undefined
@@ -7,15 +8,24 @@ type Props = {
   rateImpact: number
 }
 
+const Wrapper = styled.span`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 0 3px;
+`
+
 export function HeadingText({ inputCurrency, currency, rateImpact }: Props) {
   if (!currency) {
-    return <span>Select input and output</span>
+    return <Wrapper>Select input and output</Wrapper>
   }
 
   return (
-    <span>
+    <Wrapper>
       Price per {currency}
       {<RateImpactIndicator inputCurrency={inputCurrency} rateImpact={rateImpact} />}
-    </span>
+    </Wrapper>
   )
 }
