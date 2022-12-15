@@ -7,6 +7,7 @@ import { formatSmart } from 'utils/format'
 import { RowSlippageContent } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { useIsExpertMode } from '@src/state/user/hooks'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -17,7 +18,8 @@ export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowS
   const toggleSettings = useToggleSettingsMenu()
 
   const isEthFlow = useIsEthFlow()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const isExpertMode = useIsExpertMode()
+  const { native: nativeCurrency, isWrapOrUnwrap } = useDetectNativeToken()
 
   const props = useMemo(
     () => ({
@@ -29,6 +31,9 @@ export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowS
     }),
     [allowedSlippage, nativeCurrency, isEthFlow, showSettingOnClick]
   )
+  if ((!isEthFlow && !isExpertMode) || isWrapOrUnwrap) {
+    return null
+  }
 
   return <RowSlippageContent {...props} toggleSettings={toggleSettings} />
 }
