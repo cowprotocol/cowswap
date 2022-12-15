@@ -17,6 +17,8 @@ import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
 import { cancelOrdersBatch } from 'state/orders/actions'
+import { useSetAtom } from 'jotai'
+import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIds'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -49,6 +51,7 @@ interface CheckEthereumTransactions {
   getSafeInfo: GetSafeInfo
   dispatch: Dispatch
   addPopup: ReturnType<typeof useAddPopup>
+  removeInFlightOrderId: (update: string) => void
 }
 
 type Cancel = () => void
@@ -62,6 +65,11 @@ function finalizeEthereumTransaction(
 ) {
   const { chainId, addPopup, dispatch } = params
   const { hash } = transaction
+
+  const ethFlowInfo = transaction.ethFlow
+  if (ethFlowInfo) {
+    params.removeInFlightOrderId(ethFlowInfo.orderId)
+  }
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)
 
@@ -185,6 +193,7 @@ export default function Updater(): null {
   const getReceipt = useGetReceipt()
   const getSafeInfo = useGetSafeInfo()
   const addPopup = useAddPopup()
+  const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
 
   // Get, from the pending transaction, the ones that we should re-check
   const shouldCheckFilter = useMemo(() => {
@@ -207,6 +216,7 @@ export default function Updater(): null {
       getSafeInfo,
       addPopup,
       dispatch,
+      removeInFlightOrderId,
     })
 
     return () => {
