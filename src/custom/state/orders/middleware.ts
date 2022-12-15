@@ -108,7 +108,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       return result
     }
 
-    const { pending, fulfilled, expired, cancelled } = orders
+    const { pending, fulfilled, expired, cancelled, creating } = orders
 
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
@@ -158,7 +158,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } else {
       // construct Expired Order Popups for each Order
       action.payload.ids.forEach((id) => {
-        const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id]
+        const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id] || creating?.[id]
         if (orderObject) {
           const { summary, class: orderClass } = orderObject.order
 
