@@ -63,9 +63,10 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     const smartFeeFiatValue = formatSmart(feeFiatValue, FIAT_PRECISION)
     const smartFeeTokenValue = formatSmart(displayFee, AMOUNT_PRECISION)
-    const feeToken = smartFeeTokenValue ? `${smartFeeTokenValue} ${feeCurrencySymbol}` : '🎉 Free!'
+    const feeAmountWithCurrency = `${smartFeeTokenValue} ${feeCurrencySymbol} ${isEthFLow ? ' + gas' : ''}`
+    const feeToken = smartFeeTokenValue ? feeAmountWithCurrency : '🎉 Free!'
     const fullDisplayFee = formatMax(displayFee, displayFee?.currency.decimals) || '-'
-    const includeGasMessage = allowsOffchainSigning ? ' (incl. gas costs)' : ''
+    const includeGasMessage = allowsOffchainSigning && !isEthFLow ? ' (incl. gas costs)' : ''
 
     return {
       showHelpers,
@@ -76,7 +77,7 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
       includeGasMessage,
       tooltip,
     }
-  }, [allowsOffchainSigning, fee, feeFiatValue, realizedFee, showHelpers, tooltip])
+  }, [allowsOffchainSigning, fee, feeFiatValue, isEthFLow, realizedFee, showHelpers, tooltip])
 
   return <RowFeeContent {...props} />
 }
