@@ -51,12 +51,12 @@ export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<number
   prod: {
     [ChainId.MAINNET]: EthFlowProd[ChainId.MAINNET].address,
     [ChainId.GNOSIS_CHAIN]: EthFlowProd[ChainId.GNOSIS_CHAIN].address,
-    [ChainId.GOERLI]: EthFlowProd[ChainId.GOERLI].address,
+    [ChainId.GOERLI]: '0xF55E40061fe3dFfB7aE166B46A008dfc2aDA510f',
   },
   barn: {
     [ChainId.MAINNET]: EthFlowBarn[ChainId.MAINNET].address,
     [ChainId.GNOSIS_CHAIN]: EthFlowBarn[ChainId.GNOSIS_CHAIN].address,
-    [ChainId.GOERLI]: EthFlowBarn[ChainId.GOERLI].address,
+    [ChainId.GOERLI]: '0xF55E40061fe3dFfB7aE166B46A008dfc2aDA510f',
   },
 }
 
