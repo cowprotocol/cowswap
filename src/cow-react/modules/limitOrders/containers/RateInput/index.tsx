@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
@@ -10,8 +10,12 @@ import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 import { formatSmart } from 'utils/format'
+import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from '@cow/common/services/getQuoteCurrency'
+import { useWeb3React } from '@web3-react/core'
+import { getAddress } from '@cow/utils/getAddress'
 
 export function RateInput() {
+  const { chainId } = useWeb3React()
   // Rate state
   const {
     isInversed,
@@ -24,9 +28,10 @@ export function RateInput() {
     initialRate,
   } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
 
   // Limit order state
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
   const rateImpact = useRateImpact()
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
   const inputCurrencyId = inputCurrency?.symbol
@@ -62,9 +67,9 @@ export function RateInput() {
   )
 
   // Handle toggle primary field
-  const handleToggle = () => {
+  const handleToggle = useCallback(() => {
     updateLimitRateState({ isInversed: !isInversed, isTypedValue: false })
-  }
+  }, [isInversed, updateLimitRateState])
 
   const isDisabledMPrice = useMemo(() => {
     if (isLoadingExecutionRate) return true
@@ -77,6 +82,42 @@ export function RateInput() {
       return !!initialRate && activeRate?.equalTo(initialRate)
     }
   }, [activeRate, executionRate, isLoadingExecutionRate, initialRate, inputCurrencyId, outputCurrencyId])
+
+  // Apply smart quote selection
+  // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
+  useEffect(() => {
+    // Don't set quote currency until amounts are not set
+    if (
+      isQuoteCurrencySet ||
+      isFractionFalsy(inputCurrencyAmount) ||
+      isFractionFalsy(outputCurrencyAmount) ||
+      !inputCurrency ||
+      !outputCurrency
+    ) {
+      return
+    }
+
+    const quoteCurrency =
+      getQuoteCurrencyByStableCoin(chainId, inputCurrency, outputCurrency) ||
+      getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
+    const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
+
+    updateLimitRateState({ isInversed: quoteCurrencyAddress !== inputCurrencyAddress })
+    setIsQuoteCurrencySet(true)
+  }, [
+    isQuoteCurrencySet,
+    chainId,
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    updateLimitRateState,
+  ])
+
+  // Reset isQuoteCurrencySet flag on currencies changes
+  useEffect(() => {
+    setIsQuoteCurrencySet(false)
+  }, [inputCurrency, outputCurrency])
 
   return (
     <styledEl.Wrapper>

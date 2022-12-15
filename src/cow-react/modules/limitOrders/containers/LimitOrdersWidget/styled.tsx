@@ -23,7 +23,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 10px;
+  padding: 8px;
   margin: 0;
   font-weight: 500;
   font-size: 16px;

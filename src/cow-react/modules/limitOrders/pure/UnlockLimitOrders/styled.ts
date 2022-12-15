@@ -49,17 +49,24 @@ export const List = styled.ul`
     padding: 0;
   }
 
-  > li > svg {
-    --size: 17px;
+  > li > span {
+    --size: 18px;
     width: var(--size);
     height: var(--size);
+    display: block;
   }
 
-  > li > svg > path {
+  > li > span > svg {
+    width: var(--size);
+    height: var(--size);
+    display: block;
+  }
+
+  > li > span > svg > path {
     fill: ${({ theme }) => theme.success};
   }
 
-  > li[data-icon='progress'] > svg > path {
+  > li[data-icon='progress'] > span > svg > path {
     fill: ${({ theme }) => theme.warning};
   }
 `
