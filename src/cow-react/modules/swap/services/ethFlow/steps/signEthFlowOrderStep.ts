@@ -1,5 +1,4 @@
 import { NativeCurrency } from '@uniswap/sdk-core'
-import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 
 import { hashOrder, packOrderUidParams } from '@cowprotocol/contracts'
@@ -11,6 +10,7 @@ import { getDomain, UnsignedOrder } from 'utils/signatures'
 import { Order, OrderClass } from 'state/orders/actions'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { ETHFLOW_GAS_LIMIT_DEFAULT } from '@cow/modules/swap/services/ethFlow/const'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -24,9 +24,6 @@ export type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData'
 }
 export type EthFlowResponse = { txReceipt: ContractTransaction; order: Order; orderId: string }
 export type EthFlowSwapCallback = (orderParams: EthFlowOrderParams) => Promise<EthFlowResponse>
-
-// Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
-const ETHFLOW_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
 
 export async function signEthFlowOrderStep(
   orderParams: PostOrderParams,
@@ -92,6 +89,7 @@ export async function signEthFlowOrderStep(
         orderId,
         signature: '',
         summary,
+        quoteId,
         orderCreationHash: txReceipt.hash,
         isOnChain: true, // always on-chain
       },

@@ -10,7 +10,8 @@ import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAto
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
 import { CancelableResult } from 'utils/async'
-import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
+import { MARKET_RATE_ADJUSTMENT } from '@cow/modules/limitOrders/const/trade'
+import { ONE_FRACTION } from '@src/constants/misc'
 
 export function useHandleResponse() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
@@ -41,9 +42,7 @@ export function useHandleResponse() {
         const executionRate = new Fraction(adjustedBuy, adjustedSell)
 
         // Apply -0.1% to execution rate
-        const change = String(0.1 / 100)
-        const toSubtract = executionRate.multiply(toFraction(change))
-        const adjustedExecutionRate = executionRate.subtract(toSubtract)
+        const adjustedExecutionRate = executionRate.multiply(ONE_FRACTION.subtract(MARKET_RATE_ADJUSTMENT))
 
         // Update the rate state
         updateLimitRateState({ executionRate: adjustedExecutionRate })

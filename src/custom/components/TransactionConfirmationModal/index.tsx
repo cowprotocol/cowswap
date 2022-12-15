@@ -375,7 +375,7 @@ export function getOperationMessage(operationType: OperationType, chainId: numbe
     case OperationType.APPROVE_TOKEN:
       return 'Approving token'
     case OperationType.ORDER_CANCEL:
-      return 'Soft canceling your order'
+      return 'Canceling your order'
     case OperationType.REVOKE_APPROVE_TOKEN:
       return 'Revoking token approval'
     case OperationType.CONVERT_VCOW:

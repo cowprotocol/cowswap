@@ -140,12 +140,18 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     // setup variables accordingly...
     id = order.id
 
-    isPending = order.status === OrderStatus.PENDING
-    isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING
+    isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING // Smart contract orders only
+    isCreating = order.status === OrderStatus.CREATING // EthFlow orders only
+    isPending = order.status === OrderStatus.PENDING // All orders
     isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
-    isCancelling = (order.isCancelling || false) && isPending
+    // `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
+    // We can only do so if the order is in a "pending" state.
+    // `isPending` is used for all orders when they are "OPEN".
+    // `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
+    // After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
+    // Thus, we add both here to tell if the order is being cancelled
+    isCancelling = (order.isCancelling || false) && (isPending || isCreating)
     isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
-    isCreating = order.status === OrderStatus.CREATING
     isRefunding = false // TODO: wire up refunding state
     isRefunded = order.isRefunded || false
 

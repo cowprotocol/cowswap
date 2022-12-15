@@ -8,6 +8,7 @@ const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User denied message signature',
   'User rejected the transaction',
   'user rejected transaction',
+  'User rejected signing',
 ]
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
@@ -155,7 +156,11 @@ export function isRejectRequestProviderError(error: any) {
 
     // Check for some specific messages returned by some wallets when rejecting requests
     const message = getProviderErrorMessage(error)
-    if (PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) => message.includes(rejectMessage))) {
+    if (
+      PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some((rejectMessage) =>
+        message.toLowerCase().includes(rejectMessage.toLowerCase())
+      )
+    ) {
       return true
     }
   }

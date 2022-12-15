@@ -100,20 +100,18 @@ const StyledInvertRateControl = styled(InvertRateControl)`
 
 export interface OrdersTableProps {
   currentPageNumber: number
-  isSmartContractWallet: boolean
   chainId: SupportedChainId | undefined
   orders: Order[]
   balancesAndAllowances: BalancesAndAllowances
-  showOrderCancelationModal(order: Order): void
+  getShowCancellationModal(order: Order): (() => void) | null
 }
 
 export function OrdersTable({
   chainId,
   orders,
   balancesAndAllowances,
-  showOrderCancelationModal,
+  getShowCancellationModal,
   currentPageNumber,
-  isSmartContractWallet,
 }: OrdersTableProps) {
   const [isRateInversed, setIsRateInversed] = useState(false)
 
@@ -150,8 +148,7 @@ export function OrdersTable({
               orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
               RowElement={RowElement}
               isRateInversed={isRateInversed}
-              isSmartContractWallet={isSmartContractWallet}
-              showOrderCancelationModal={showOrderCancelationModal}
+              getShowCancellationModal={getShowCancellationModal}
               onClick={() => selectReceiptOrder(order.id)}
             />
           ))}

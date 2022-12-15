@@ -1,4 +1,4 @@
-import { Percent } from '@uniswap/sdk-core'
+import { Percent, Fraction } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -40,3 +40,5 @@ export const TWO_PERCENT = new Percent(JSBI.BigInt(200), BIPS_BASE)
 export const ONE_HUNDRED_PERCENT = new Percent('1')
 
 export const IS_SIDE_BANNER_VISIBLE_KEY = 'IS_SIDEBAR_BANNER_VISIBLE'
+
+export const ONE_FRACTION = new Fraction(1, 1)

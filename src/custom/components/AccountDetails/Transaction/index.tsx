@@ -67,7 +67,6 @@ export interface ActivityDerivedState {
   isCancelled: boolean
   isPresignaturePending: boolean
   isUnfillable?: boolean
-  isCancellable: boolean
   // EthFlow flags
   isCreating: boolean
   isRefunding: boolean
@@ -85,7 +84,7 @@ export interface ActivityDerivedState {
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {
   const { chainId } = useWeb3React()
 
-  // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
+  // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
   const activityDerivedState = useActivityDerivedState({ chainId, activity })
 
   if (!activityDerivedState || !chainId) return null
