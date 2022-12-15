@@ -7,6 +7,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { Order, OrderStatus } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { safeTokenName } from '@cowprotocol/cow-js'
+import { isOrderExpired } from 'state/orders/utils'
 
 type EthFlowStepperProps = {
   order: Order | undefined
@@ -31,7 +32,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       createOrderTx: order.orderCreationHash || '',
       orderId: order.id,
       state,
-      isExpired: order.status === 'expired',
+      isExpired: isEthFlowOrderExpired(order),
       // rejectedReason?: TODO: address when dealing with rejections
     },
     // TODO: fill these in when dealing with rejections
@@ -39,10 +40,10 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       // refundTx?: string
       isRefunded: false,
     },
-    // TODO: fill these in when dealing with cancellations
-    cancelation: {
-      // cancelationTx?: string
-      isCanceled: false,
+    cancellation: {
+      cancellationTx: order.cancellationHash,
+      //  TODO: wire this up also with the cancellation tx once that's implemented
+      isCancelled: order.status === 'cancelled',
     },
   }
 
@@ -68,7 +69,11 @@ function mapOrderToEthFlowStepperState(order: Order | undefined): SmartOrderStat
   return undefined
 }
 
+function isEthFlowOrderExpired(order: Order | undefined): boolean {
+  return order?.status === 'expired' || isOrderExpired({ validTo: order?.validTo as number })
+}
+
 // TODO: move this somewhere else?
-export function getIsEthFlowOrder(order: Order | undefined): boolean | undefined {
+export function getIsEthFlowOrder(order: Order | undefined): boolean {
   return order?.inputToken.address === NATIVE_CURRENCY_BUY_ADDRESS
 }

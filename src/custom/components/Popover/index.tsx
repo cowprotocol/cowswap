@@ -12,11 +12,11 @@ export interface PopoverContainerProps {
 }
 
 const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
-  background: ${({ theme, bgColor }) => bgColor || theme.bg1};
+  background: ${({ theme, bgColor }) => bgColor || theme.grey1};
   color: ${({ theme, color }) => color || theme.text1};
-  box-shadow: 0 4px 16px 0 ${({ theme }) => transparentize(0.8, theme.shadow1)};
+  box-shadow: ${({ theme }) => theme.boxShadow2};
+  border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
   border-radius: 12px;
-  border: 0;
   padding: 6px 3px;
   z-index: 10;
   font-size: 13px;
@@ -28,7 +28,7 @@ const PopoverContainer = styled(PopoverContainerMod)<PopoverContainerProps>`
 
 const Arrow = styled(ArrowMod)<Omit<PopoverContainerProps, 'color' | 'show'>>`
   ::before {
-    background: ${({ theme, bgColor }) => bgColor || theme.bg1};
+    background: ${({ theme, bgColor }) => bgColor || theme.grey1};
   }
 `
 

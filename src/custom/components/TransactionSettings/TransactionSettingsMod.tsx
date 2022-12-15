@@ -215,7 +215,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             <Trans>MEV protected slippage</Trans>
           </ThemedText.Black>
           <QuestionHelper
-            bgColor={theme.bg3}
+            // bgColor={theme.bg3}
+            bgColor={theme.grey1} // mod
             color={theme.text1}
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
@@ -291,7 +292,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               <Trans>Swap deadline</Trans>
             </ThemedText.Black>
             <QuestionHelper
-              bgColor={theme.bg3}
+              // bgColor={theme.bg3}
+              bgColor={theme.grey1} // mod
               color={theme.text1}
               text={
                 <Trans>
