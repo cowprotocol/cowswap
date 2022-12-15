@@ -22,15 +22,15 @@ export function useSetupSwapAmountsFromUrl() {
   const cleanParams = useCallback(() => {
     const queryParams = new URLSearchParams(search)
 
-    queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
+    queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
 
     history.push(pathname + '?' + queryParams)
   }, [history, pathname, search])
 
   useLayoutEffect(() => {
-    const sellAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
-    const buyAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))
+    const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))
+    const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
 
     if (sellAmount) {
       onUserInput(Field.INPUT, sellAmount)

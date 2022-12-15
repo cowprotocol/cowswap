@@ -5,12 +5,14 @@ import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitial
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 import usePrevious from '@src/hooks/usePrevious'
+import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 
 // Fetch and update initial price for the selected token pair
 export function MarketPriceUpdater() {
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const { executionRate, isRateFromUrl } = useAtomValue(limitRateAtom)
+  const { executionRate } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const updateRate = useUpdateActiveRate()
 
   const [isInitialPriceSet, setIsInitialPriceSet] = useState(false)
   const { price, isLoading } = useGetInitialPrice()
@@ -34,11 +36,12 @@ export function MarketPriceUpdater() {
 
   // Set initial price once
   useLayoutEffect(() => {
-    if (!price || isInitialPriceSet || isLoading || prevPrice?.equalTo(price) || isRateFromUrl) return
+    if (!price || isInitialPriceSet || isLoading || prevPrice?.equalTo(price)) return
 
     setIsInitialPriceSet(true)
-    updateLimitRateState({ isLoading, activeRate: price, isTypedValue: false })
-  }, [isInitialPriceSet, updateLimitRateState, price, isLoading, prevPrice, isRateFromUrl])
+    updateRate({ activeRate: price, isTypedValue: false, isRateFromUrl: false })
+    updateLimitRateState({ isLoading })
+  }, [isInitialPriceSet, updateLimitRateState, updateRate, price, isLoading, prevPrice])
 
   // Reset initial price set flag when any token was changed
   useLayoutEffect(() => {
