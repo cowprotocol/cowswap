@@ -38,6 +38,6 @@ export type SwapFlowContext = BaseFlowContext & {
 export type EthFlowContext = BaseFlowContext & {
   contract: CoWSwapEthFlow
   addTransaction: ReturnType<typeof useTransactionAdder>
-  existsOrderId: (orderId: string) => boolean
+  existsInFlightOrderId: (orderId: string) => boolean
   addInFlightOrderId: (orderId: string) => void
 }
