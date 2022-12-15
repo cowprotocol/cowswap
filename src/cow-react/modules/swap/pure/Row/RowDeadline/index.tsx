@@ -45,6 +45,7 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
 
 export function RowDeadlineContent(props: RowDeadlineProps) {
   const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
+  const deadlineTooltipContent = isEthFlow ? getNativeOrderDeadlineTooltip(symbols) : getNonNativeOrderDeadlineTooltip()
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -58,7 +59,7 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
             <DeadlineTextContents isEthFlow={isEthFlow} />
           )}
         </TextWrapper>
-        <MouseoverTooltipContent wrap content={getNativeOrderDeadlineTooltip(symbols)}>
+        <MouseoverTooltipContent wrap content={deadlineTooltipContent}>
           <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
       </RowFixed>
