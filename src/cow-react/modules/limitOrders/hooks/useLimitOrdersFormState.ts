@@ -70,12 +70,30 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   const inputAmountIsNotSet = !inputCurrencyAmount || inputCurrencyAmount.equalTo(0)
   const outputAmountIsNotSet = !outputCurrencyAmount || outputCurrencyAmount.equalTo(0)
 
-  if (!account) {
-    return LimitOrdersFormState.WalletIsNotConnected
+  if (quote?.error) {
+    return LimitOrdersFormState.QuoteError
   }
 
   if (!inputCurrency || !outputCurrency) {
     return LimitOrdersFormState.NeedToSelectToken
+  }
+
+  if (isWrapOrUnwrap) {
+    if (inputAmountIsNotSet && outputAmountIsNotSet) {
+      return LimitOrdersFormState.AmountIsNotSet
+    }
+  } else {
+    if (inputAmountIsNotSet || outputAmountIsNotSet) {
+      if (!activeRate || activeRate.equalTo(0)) {
+        return LimitOrdersFormState.PriceIsNotSet
+      }
+
+      return LimitOrdersFormState.AmountIsNotSet
+    }
+  }
+
+  if (!account) {
+    return LimitOrdersFormState.WalletIsNotConnected
   }
 
   // TODO: Do we need the check in Limit orders?
@@ -93,20 +111,6 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
   if (isReadonlyGnosisSafeUser) {
     return LimitOrdersFormState.ReadonlyGnosisSafeUser
-  }
-
-  if (isWrapOrUnwrap) {
-    if (inputAmountIsNotSet && outputAmountIsNotSet) {
-      return LimitOrdersFormState.AmountIsNotSet
-    }
-  } else {
-    if (inputAmountIsNotSet || outputAmountIsNotSet) {
-      if (!activeRate || activeRate.equalTo(0)) {
-        return LimitOrdersFormState.PriceIsNotSet
-      }
-
-      return LimitOrdersFormState.AmountIsNotSet
-    }
   }
 
   if (!inputCurrencyBalance) {
@@ -127,10 +131,6 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
   if (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) {
     return LimitOrdersFormState.NotApproved
-  }
-
-  if (quote?.error) {
-    return LimitOrdersFormState.QuoteError
   }
 
   return LimitOrdersFormState.CanTrade
