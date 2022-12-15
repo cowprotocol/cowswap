@@ -91,7 +91,7 @@ export const ethFlowConfigs: {
     title: `Swap with Wrapped ${nativeSymbol}`,
     buttonText: `Wrap ${nativeSymbol}`,
     descriptions: isExpertMode
-      ? [`Continue this trade by wrapping your ${nativeSymbol}.`, expertCommonDescription]
+      ? [expertCommonDescription]
       : [
           `To continue, click below to wrap your ${nativeSymbol} to ${wrappedSymbol} via an on-chain ERC20 transaction.`,
         ],
