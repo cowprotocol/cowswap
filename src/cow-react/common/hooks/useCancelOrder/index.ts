@@ -8,7 +8,7 @@ import { Order, OrderStatus } from 'state/orders/actions'
 import { useCloseModal, useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
-import { getSwapErrorMessage } from '@cow/modules/swap/services/common/steps/swapErrorHelper'
+import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 
 import { useEthFlowCancelOrder } from './useEthFlowCancelOrder'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'

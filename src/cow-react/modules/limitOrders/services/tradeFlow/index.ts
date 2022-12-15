@@ -1,6 +1,6 @@
 import { PostOrderParams, signAndPostOrder } from 'utils/trade'
 import { presignOrderStep } from '@cow/modules/swap/services/swapFlow/steps/presignOrderStep'
-import { addPendingOrderStep } from '@cow/modules/swap/services/common/steps/addPendingOrderStep'
+import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderStep'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AppDispatch } from 'state'
 import { GPv2Settlement } from '@cow/abis/types'
@@ -11,10 +11,10 @@ import { Web3Provider } from '@ethersproject/providers'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 import confirmPriceImpactWithoutFee from '@src/components/swap/confirmPriceImpactWithoutFee'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
-import { swapFlowAnalytics } from '@cow/modules/swap/services/common/steps/analytics'
-import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
-import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/common/steps/analytics'
-import { getSwapErrorMessage } from '@cow/modules/swap/services/common/steps/swapErrorHelper'
+import { swapFlowAnalytics } from '@cow/modules/trade/utils/analytics'
+import { logTradeFlow } from '@cow/modules/trade/utils/logger'
+import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
+import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@src/custom/state/orders/actions'
 
 export interface TradeFlowContext {
@@ -50,33 +50,33 @@ export async function tradeFlow(
     orderClass: OrderClass.LIMIT,
   }
 
-  logSwapFlow('LIMIT ORDER FLOW', 'STEP 1: confirm price impact')
+  logTradeFlow('LIMIT ORDER FLOW', 'STEP 1: confirm price impact')
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
   if (!isTooLowRate && priceImpact.priceImpact && !confirmPriceImpactWithoutFee(priceImpact.priceImpact)) {
     throw new PriceImpactDeclineError()
   }
 
-  logSwapFlow('LIMIT ORDER FLOW', 'STEP 2: send transaction')
+  logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: send transaction')
   swapFlowAnalytics.swap(swapFlowAnalyticsContext)
   beforeTrade?.()
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
 
   try {
-    logSwapFlow('LIMIT ORDER FLOW', 'STEP 3: sign and post order')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: sign and post order')
     const { id: orderId, order } = await signAndPostOrder({
       ...params.postOrderParams,
       signer: params.provider.getSigner(),
       validTo,
     })
 
-    logSwapFlow('LIMIT ORDER FLOW', 'STEP 4: presign order (optional)')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: presign order (optional)')
     const presignTx = await (params.allowsOffchainSigning
       ? Promise.resolve(null)
       : presignOrderStep(orderId, params.settlementContract))
 
-    logSwapFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
       {
         id: orderId,
@@ -89,14 +89,14 @@ export async function tradeFlow(
       params.dispatch
     )
 
-    logSwapFlow('LIMIT ORDER FLOW', 'STEP 6: add app data to upload queue')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: add app data to upload queue')
     params.addAppDataToUploadQueue({ chainId: params.chainId, orderId, appData: params.appData })
 
     swapFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error) {
-    logSwapFlow('LIMIT ORDER FLOW', 'STEP 7: ERROR: ', error)
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     swapFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

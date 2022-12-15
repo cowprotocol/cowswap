@@ -4,9 +4,9 @@ import { SwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManage
 import { PostOrderParams } from 'utils/trade'
 import { AddOrderCallback } from 'state/orders/hooks'
 import { CoWSwapEthFlow, GPv2Settlement } from '@cow/abis/types'
-import { AppDispatch } from 'state'
+import { AppDispatch } from '@src/state'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
-import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/common/steps/analytics'
+import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
 
 export interface BaseFlowContext {
   context: {
