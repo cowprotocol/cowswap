@@ -7,6 +7,7 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'state/
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { logSwapFlowError } from '@cow/modules/swap/services/utils/logger'
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from '@cow/modules/swap/services/ethFlow/const'
+import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
 
@@ -15,6 +16,7 @@ export function useEthFlowCancelOrder() {
   const cancelEthFlowCallback = getCancelEthFlowOrderCallback(useEthFlowContract())
   const setOrderCancellationHash = useSetOrderCancellationHash()
   const cancelPendingOrder = useRequestOrderCancellation()
+  const addTransaction = useTransactionAdder()
 
   return useCallback(
     async (order: Order) => {
@@ -25,10 +27,11 @@ export function useEthFlowCancelOrder() {
       const receipt = await cancelEthFlowCallback(order)
       if (receipt?.hash) {
         cancelPendingOrder({ id: order.id, chainId })
+        addTransaction({ hash: receipt.hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
         setOrderCancellationHash({ chainId, id: order.id, hash: receipt.hash })
       }
     },
-    [cancelEthFlowCallback, cancelPendingOrder, chainId, setOrderCancellationHash]
+    [addTransaction, cancelEthFlowCallback, cancelPendingOrder, chainId, setOrderCancellationHash]
   )
 }
 

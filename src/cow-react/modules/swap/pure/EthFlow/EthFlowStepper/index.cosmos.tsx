@@ -15,6 +15,7 @@ const defaultOrderProps = {
   orderId: ORDER_ID,
   state: SmartOrderStatus.CREATING,
   isExpired: false,
+  isCreated: false,
 }
 const defaultProps: EthFlowStepperProps = {
   nativeTokenSymbol: 'xDAI',
