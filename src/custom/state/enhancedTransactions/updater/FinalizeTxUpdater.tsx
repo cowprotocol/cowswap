@@ -223,7 +223,17 @@ export default function Updater(): null {
       // Cancel all promises
       promiseCancellations.forEach((cancel) => cancel())
     }
-  }, [chainId, provider, transactions, lastBlockNumber, dispatch, addPopup, getReceipt, getSafeInfo])
+  }, [
+    chainId,
+    provider,
+    transactions,
+    lastBlockNumber,
+    dispatch,
+    addPopup,
+    getReceipt,
+    getSafeInfo,
+    removeInFlightOrderId,
+  ])
 
   return null
 }
