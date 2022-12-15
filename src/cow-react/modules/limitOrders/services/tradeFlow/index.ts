@@ -40,11 +40,11 @@ export async function tradeFlow(
   settingsState: LimitOrdersSettingsState,
   beforeTrade?: () => void
 ): Promise<string | null> {
-  const { account, recipient, recipientAddressOrName, sellToken, buyToken } = params.postOrderParams
+  const { account, recipientAddressOrName, sellToken, buyToken } = params.postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,
-    recipient,
+    recipient: recipientAddressOrName,
     recipientAddress: recipientAddressOrName,
     marketLabel,
     orderClass: OrderClass.LIMIT,

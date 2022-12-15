@@ -21,8 +21,8 @@ export const swapFlowAnalytics = {
       signSwapAnalytics('Sign', orderClass, marketLabel)
     } else {
       ;(recipientAddress ?? recipient) === account
-        ? signSwapAnalytics('SignAndSend', orderClass, marketLabel)
-        : signSwapAnalytics('SignToSelf', orderClass, marketLabel)
+        ? signSwapAnalytics('SignToSelf', orderClass, marketLabel)
+        : signSwapAnalytics('SignAndSend', orderClass, marketLabel)
     }
   },
   error(error: any, errorMessage: string, context: SwapFlowAnalyticsContext) {
