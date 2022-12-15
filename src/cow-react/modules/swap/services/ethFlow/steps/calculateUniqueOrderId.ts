@@ -2,16 +2,10 @@ import { hashOrder, packOrderUidParams } from '@cowprotocol/contracts'
 import { CoWSwapEthFlow } from '@cow/abis/types'
 import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
 import { getOrderParams, PostOrderParams } from 'utils/trade'
-import { getDomain, UnsignedOrder } from 'utils/signatures'
+import { getDomain } from 'utils/signatures'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
-export type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData' | 'validTo' | 'orderId'> & {
-  quoteId: number
-  appData: string
-  validTo: string
-  summary: string
-}
 export interface UniqueOrderIdResult {
   orderId: string
   orderParams: PostOrderParams // most cases, will be the same as the ones in the parameter, but it might be modified to make the order unique
