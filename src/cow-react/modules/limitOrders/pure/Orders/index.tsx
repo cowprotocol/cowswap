@@ -5,6 +5,7 @@ import { Widget } from '../Widget'
 import { transparentize } from 'polished'
 import cowMeditatingV2 from 'assets/cow-swap/meditating-cow-v2.svg'
 import { Trans } from '@lingui/macro'
+import { ExternalLink } from 'theme'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;
@@ -98,9 +99,8 @@ export function Orders({
   isWalletConnected,
   isOpenOrdersTab,
   balancesAndAllowances,
-  showOrderCancelationModal,
+  getShowCancellationModal,
   currentPageNumber,
-  isSmartContractWallet,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -123,7 +123,9 @@ export function Orders({
           <p>
             <Trans>
               You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
-              Create one for free!
+              <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
+                Create one for free!
+              </ExternalLink>
             </Trans>
           </p>
         </Content>
@@ -132,12 +134,11 @@ export function Orders({
 
     return (
       <OrdersTable
-        isSmartContractWallet={isSmartContractWallet}
         currentPageNumber={currentPageNumber}
         chainId={chainId}
         orders={orders}
         balancesAndAllowances={balancesAndAllowances}
-        showOrderCancelationModal={showOrderCancelationModal}
+        getShowCancellationModal={getShowCancellationModal}
       />
     )
   }

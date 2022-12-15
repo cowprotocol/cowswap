@@ -1,18 +1,16 @@
 import { Orders } from '../../pure/Orders'
 import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useHistory, useLocation } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
 import { GP_VAULT_RELAYER } from 'constants/index'
-import { CancellationModal, CancellationModalProps } from 'components/AccountDetails/Transaction/CancelationModal'
-import { pendingOrderSummary } from '@cow/common/helpers/pendingOrderSummary'
 import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
-import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
+import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -22,10 +20,8 @@ export function OrdersWidget() {
   const location = useLocation()
   const history = useHistory()
   const ordersList = useLimitOrdersList()
-  const isSmartContractWallet = useIsSmartContractWallet()
   const { chainId, account } = useWeb3React()
-
-  const [cancelModalProps, setCancelModalProps] = useState<CancellationModalProps | null>(null)
+  const getShowCancellationModal = useCancelOrder()
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -56,23 +52,6 @@ export function OrdersWidget() {
     ordersList.pending
   )
 
-  const showOrderCancelationModal = useCallback(
-    (order: Order) => {
-      if (!chainId) return
-
-      setCancelModalProps({
-        isOpen: true,
-        chainId,
-        orderId: order.id,
-        summary: pendingOrderSummary(order),
-        onDismiss() {
-          setCancelModalProps(null)
-        },
-      })
-    },
-    [chainId]
-  )
-
   // Set page params initially once
   useEffect(() => {
     history.push(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }))
@@ -87,13 +66,11 @@ export function OrdersWidget() {
         tabs={tabs}
         orders={orders}
         isOpenOrdersTab={isOpenOrdersTab}
-        isSmartContractWallet={isSmartContractWallet}
         currentPageNumber={currentPageNumber}
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
-        showOrderCancelationModal={showOrderCancelationModal}
+        getShowCancellationModal={getShowCancellationModal}
       />
-      {cancelModalProps && <CancellationModal {...cancelModalProps} />}
       <OrdersReceiptModal />
     </>
   )

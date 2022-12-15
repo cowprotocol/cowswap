@@ -16,22 +16,21 @@ export function useActivityDerivedState({
   chainId: number | undefined
   activity: ActivityDescriptors
 }): ActivityDerivedState | null {
-  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
+  const { gnosisSafeInfo } = useWalletInfo()
 
-  // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
+  // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
   return useMemo(
-    () => getActivityDerivedState({ chainId, activityData: activity, allowsOffchainSigning, gnosisSafeInfo }),
-    [chainId, activity, allowsOffchainSigning, gnosisSafeInfo]
+    () => getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo }),
+    [chainId, activity, gnosisSafeInfo]
   )
 }
 
 function getActivityDerivedState(props: {
   chainId?: number
   activityData: ActivityDescriptors | null
-  allowsOffchainSigning: boolean
   gnosisSafeInfo?: SafeInfoResponse
 }): ActivityDerivedState | null {
-  const { chainId, activityData, allowsOffchainSigning, gnosisSafeInfo } = props
+  const { chainId, activityData, gnosisSafeInfo } = props
   if (!activityData || chainId === undefined) {
     return null
   }
@@ -44,7 +43,6 @@ function getActivityDerivedState(props: {
 
   // Calculate some convenient status flags
   const isPending = status === ActivityStatus.PENDING
-  const isCancellable = allowsOffchainSigning && isPending && isOrder
 
   const activityLinkUrl = getActivityLinkUrl({ id, chainId, enhancedTransaction, order })
 
@@ -64,8 +62,7 @@ function getActivityDerivedState(props: {
     isExpired: status === ActivityStatus.EXPIRED,
     isCancelling: status === ActivityStatus.CANCELLING,
     isCancelled: status === ActivityStatus.CANCELLED,
-    isCancellable,
-    isUnfillable: isCancellable && (activity as Order).isUnfillable,
+    isUnfillable: (activity as Order).isUnfillable,
     isCreating: status === ActivityStatus.CREATING,
     isRefunding: false, // TODO: wire up refunding/refunded states
     isRefunded: order?.isRefunded || false,

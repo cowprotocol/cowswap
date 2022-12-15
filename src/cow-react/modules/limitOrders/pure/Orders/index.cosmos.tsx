@@ -29,10 +29,14 @@ export default (
     currentPageNumber={1}
     orders={ordersMock}
     tabs={tabs}
-    isSmartContractWallet={false}
     isOpenOrdersTab={true}
     isWalletConnected={true}
     balancesAndAllowances={balancesAndAllowances}
-    showOrderCancelationModal={() => console.log('showOrderCancelationModal')}
+    getShowCancellationModal={(order) => {
+      if (order.status === 'pending') {
+        return () => alert('cancelling!')
+      }
+      return null
+    }}
   />
 )

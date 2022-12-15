@@ -42,6 +42,7 @@ import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurr
 import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
 import { maxAmountSpend } from '@src/utils/maxAmountSpend'
 import { FractionUtils } from '@cow/utils/fractionUtils'
+import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -110,7 +111,7 @@ export function LimitOrdersWidget() {
 
       if (!currency) return
 
-      const value = tryParseCurrencyAmount(typedValue, currency)
+      const value = tryParseCurrencyAmount(typedValue, currency) || null
 
       if (isWrapOrUnwrap || field === Field.INPUT) {
         updateCurrencyAmount({
@@ -232,6 +233,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   return (
     <>
       <styledEl.Container>
+        <AffiliateStatusCheck />
         <styledEl.ContainerBox>
           <styledEl.Header>
             <TradeWidgetLinks />
