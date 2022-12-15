@@ -4,8 +4,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { OrderKind } from 'state/orders/actions'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
-import { LimitOrdersState, updateLimitOrdersAtom } from '@cow/modules/limitOrders'
-import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
+import { updateLimitOrdersAtom } from '@cow/modules/limitOrders'
 
 type RateUpdateParams = Pick<LimitRateState, 'activeRate' | 'isTypedValue' | 'isRateFromUrl'>
 
@@ -20,12 +19,6 @@ export function useUpdateActiveRate(): UpdateRateCallback {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateRateState = useUpdateAtom(updateLimitRateAtom)
 
-  const tradeState = useSafeMemoObject({
-    inputCurrencyAmount,
-    outputCurrencyAmount,
-    orderKind,
-  })
-
   const { isRateFromUrl: currentIsRateFromUrl } = rateState
 
   return useCallback(
@@ -35,31 +28,35 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       updateRateState(update)
 
       if (activeRate) {
-        // Don't update amounts when rate is come from URL. See useSetupLimitOrderAmountsFromUrl()
+        // Don't update amounts when rate is set from URL. See useSetupLimitOrderAmountsFromUrl()
         if (currentIsRateFromUrl || isRateFromUrl) {
           return
         }
 
-        const field: keyof LimitOrdersState =
-          tradeState.orderKind === OrderKind.SELL ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
-
         updateCurrencyAmount({
           activeRate,
-          [field]: tradeState[field],
-          keepOrderKind: true,
+          amount: orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount,
+          orderKind,
         })
       }
 
+      // Clear input/output amount based on the orderKind, when there is no active rate
       if (activeRate === null) {
-        const field: keyof LimitOrdersState =
-          tradeState.orderKind === OrderKind.SELL ? 'outputCurrencyAmount' : 'inputCurrencyAmount'
-
-        // Clear input/output amount based on the orderKind, when there is no active rate
-        updateLimitOrdersState({
-          [field]: null,
-        })
+        if (orderKind === OrderKind.SELL) {
+          updateLimitOrdersState({ outputCurrencyAmount: null })
+        } else {
+          updateLimitOrdersState({ inputCurrencyAmount: null })
+        }
       }
     },
-    [tradeState, updateCurrencyAmount, updateRateState, updateLimitOrdersState, currentIsRateFromUrl]
+    [
+      orderKind,
+      inputCurrencyAmount,
+      outputCurrencyAmount,
+      updateCurrencyAmount,
+      updateRateState,
+      updateLimitOrdersState,
+      currentIsRateFromUrl,
+    ]
   )
 }

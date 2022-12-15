@@ -12,10 +12,8 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null
-  inputCurrencyAmount?: Fraction | null
-  outputCurrencyAmount?: Fraction | null
-  orderKind?: OrderKind
-  keepOrderKind?: boolean
+  amount: Fraction | null
+  orderKind: OrderKind
 }
 
 export function useUpdateCurrencyAmount() {
@@ -24,52 +22,23 @@ export function useUpdateCurrencyAmount() {
 
   return useCallback(
     (params: CurrencyAmountProps) => {
-      const update: Partial<Writeable<LimitOrdersState>> = {}
-      const { activeRate, inputCurrencyAmount, outputCurrencyAmount, keepOrderKind } = params
+      const { activeRate, amount, orderKind } = params
+      const field = orderKind === OrderKind.SELL ? Field.INPUT : Field.OUTPUT
 
-      if (params.orderKind) {
-        update.orderKind = params.orderKind
+      const calculatedAmount = calculateAmountForRate({
+        activeRate,
+        amount,
+        field,
+        inputCurrency,
+        outputCurrency,
+      })
+
+      const update: Partial<Writeable<LimitOrdersState>> = {
+        orderKind,
+        inputCurrencyAmount: FractionUtils.serializeFractionToJSON(field === Field.INPUT ? amount : calculatedAmount),
+        outputCurrencyAmount: FractionUtils.serializeFractionToJSON(field === Field.OUTPUT ? amount : calculatedAmount),
       }
 
-      // Handle INPUT amount change
-      if (inputCurrencyAmount !== undefined) {
-        // Calculate OUTPUT amount by applying the rate
-        const outputWithRate = calculateAmountForRate({
-          activeRate,
-          amount: inputCurrencyAmount,
-          field: Field.INPUT,
-          inputCurrency,
-          outputCurrency,
-        })
-        update.outputCurrencyAmount = FractionUtils.serializeFractionToJSON(outputWithRate)
-        update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(inputCurrencyAmount)
-
-        // Update order type only if keeOrderKind param is not true
-        if (!keepOrderKind) {
-          update.orderKind = OrderKind.SELL
-        }
-      }
-
-      // Handle OUTPUT amount change
-      if (outputCurrencyAmount !== undefined) {
-        // Calculate INPUT amount by applying the rate
-        const inputWithRate = calculateAmountForRate({
-          activeRate,
-          amount: outputCurrencyAmount,
-          field: Field.OUTPUT,
-          inputCurrency,
-          outputCurrency,
-        })
-        update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(inputWithRate)
-        update.outputCurrencyAmount = FractionUtils.serializeFractionToJSON(outputCurrencyAmount)
-
-        // Update order type only if keeOrderKind param is not true
-        if (!keepOrderKind) {
-          update.orderKind = OrderKind.BUY
-        }
-      }
-
-      // Continue with the state update
       updateLimitOrdersState(update)
     },
     [inputCurrency, outputCurrency, updateLimitOrdersState]

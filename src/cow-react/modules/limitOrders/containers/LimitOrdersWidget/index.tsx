@@ -115,19 +115,11 @@ export function LimitOrdersWidget() {
 
       const value = tryParseCurrencyAmount(typedValue, currency) || null
 
-      if (isWrapOrUnwrap || field === Field.INPUT) {
-        updateCurrencyAmount({
-          activeRate,
-          inputCurrencyAmount: value,
-          orderKind: OrderKind.SELL,
-        })
-      } else {
-        updateCurrencyAmount({
-          activeRate,
-          outputCurrencyAmount: value,
-          orderKind: OrderKind.BUY,
-        })
-      }
+      updateCurrencyAmount({
+        activeRate,
+        amount: value,
+        orderKind: isWrapOrUnwrap || field === Field.INPUT ? OrderKind.SELL : OrderKind.BUY,
+      })
     },
     [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate]
   )
