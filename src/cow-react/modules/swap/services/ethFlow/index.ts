@@ -18,6 +18,8 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
     appDataInfo,
     dispatch,
     orderParams: orderParamsOriginal,
+    existsOrderId,
+    addInFlightOrderId,
   } = input
 
   logSwapFlow('ETH FLOW', 'STEP 1: confirm price impact')
@@ -31,13 +33,15 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
   swapConfirmManager.sendTransaction(context.trade)
 
   logSwapFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
-  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract)
+  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract, existsOrderId)
 
   try {
     logSwapFlow('ETH FLOW', 'STEP 4: sign order')
-    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract).finally(() => {
-      callbacks.closeModals()
-    })
+    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract, addInFlightOrderId).finally(
+      () => {
+        callbacks.closeModals()
+      }
+    )
 
     logSwapFlow('ETH FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
@@ -51,8 +55,8 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
     // TODO: maybe move this into addPendingOrderStep?
     input.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
 
-    logSwapFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
-    callbacks.addAppDataToUploadQueue({ chainId: context.chainId, orderId, appData: appDataInfo })
+    logSwapFlow('ETH FLOW', 'STEP 5: add app data to upload queue')
+    input.callbacks.addAppDataToUploadQueue({ chainId: input.context.chainId, orderId, appData: appDataInfo })
 
     logSwapFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     swapConfirmManager.transactionSent(orderId)

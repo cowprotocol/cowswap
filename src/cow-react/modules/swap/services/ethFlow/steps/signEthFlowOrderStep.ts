@@ -30,7 +30,8 @@ export type EthFlowSwapCallback = (orderParams: EthFlowOrderParams) => Promise<E
 export async function signEthFlowOrderStep(
   orderId: string,
   orderParams: PostOrderParams,
-  ethFlowContract: CoWSwapEthFlow
+  ethFlowContract: CoWSwapEthFlow,
+  addInFlightOrderId: (orderId: string) => void
 ): Promise<EthFlowResponse> {
   logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
@@ -63,6 +64,7 @@ export async function signEthFlowOrderStep(
     gasLimit: calculateGasMargin(estimatedGas),
     value: orderParams.sellAmountBeforeFee.quotient.toString(),
   })
+  addInFlightOrderId(orderId)
 
   logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
 

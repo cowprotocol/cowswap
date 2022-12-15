@@ -8,7 +8,6 @@ import { useCallback } from 'react'
 import {
   ethFlowInFlightOrderIdsAtom,
   addInFlightOrderIdAtom,
-  removeInFlightOrderIdAtom,
 } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIds'
 import { useSetAtom, useAtom } from 'jotai'
 
@@ -19,8 +18,8 @@ export function useEthFlowContext(): EthFlowContext | null {
 
   const [ethFlowInFlightOrderIds] = useAtom(ethFlowInFlightOrderIdsAtom)
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
-  const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
 
+  // TODO: Nitpic: Detect also collisions using the API (orderId exists)
   const existsOrderId = useCallback(
     (orderId: string) => ethFlowInFlightOrderIds.includes(orderId),
     [ethFlowInFlightOrderIds]
@@ -40,6 +39,5 @@ export function useEthFlowContext(): EthFlowContext | null {
     addTransaction,
     existsOrderId,
     addInFlightOrderId,
-    removeInFlightOrderId,
   }
 }
