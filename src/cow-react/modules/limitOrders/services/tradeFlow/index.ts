@@ -101,6 +101,6 @@ export async function tradeFlow(
 
     swapFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
-    return null
+    throw error
   }
 }
