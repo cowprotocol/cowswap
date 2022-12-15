@@ -9,7 +9,10 @@ import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOr
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
 const Wrapper = styled.div`
-  margin: 10px 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.text1};
+  padding: 8px;
 `
 export interface LimitOrdersDetailsProps {
   rateInfoParams: RateInfoParams
