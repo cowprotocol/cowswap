@@ -1,3 +1,5 @@
+import { CurrencyAmount } from '@uniswap/sdk-core'
+
 import { hashOrder, packOrderUidParams } from '@cowprotocol/contracts'
 import { CoWSwapEthFlow } from '@cow/abis/types'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
@@ -11,9 +13,24 @@ export interface UniqueOrderIdResult {
   orderParams: PostOrderParams // most cases, will be the same as the ones in the parameter, but it might be modified to make the order unique
 }
 
+function incrementFee(params: PostOrderParams): PostOrderParams {
+  const nativeCurrency = params.feeAmount?.currency
+
+  if (!nativeCurrency) {
+    throw new Error('Missing currency for Eth Flow Fee') // Not a realistic case, just to make TS happy
+  }
+
+  const oneWei = CurrencyAmount.fromRawAmount(nativeCurrency, 1)
+  return {
+    ...params,
+    feeAmount: params.feeAmount?.add(oneWei), // Increment fee by one wei
+  }
+}
+
 export async function calculateUniqueOrderId(
   orderParams: PostOrderParams,
-  ethFlowContract: CoWSwapEthFlow
+  ethFlowContract: CoWSwapEthFlow,
+  existsOrderId: (orderId: string) => boolean
 ): Promise<UniqueOrderIdResult> {
   logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
   const { chainId } = orderParams
@@ -34,11 +51,14 @@ export async function calculateUniqueOrderId(
     validTo: MAX_VALID_TO_EPOCH,
   })
 
-  logTradeFlow('ETH FLOW', '[EthFlow::calculateOrderId] Calculate Order Id', orderId)
+  if (existsOrderId(orderId)) {
+    logTradeFlow('ETH FLOW', '[EthFlow::calculateOrderId] Collision detected', orderId)
 
-  // TODO: Detect if there's another order that has been created with the same order Id
-  // TODO: Detect collisions using the API (orderId exists)
-  // TODO: Do recursive call: calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract)
+    // Recursive call, increment one fee until we get an unique order Id
+    return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, existsOrderId)
+  }
+
+  logTradeFlow('ETH FLOW', '[EthFlow::calculateOrderId] Order Id is Unique', orderId)
 
   return {
     orderId,

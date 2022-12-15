@@ -18,6 +18,8 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
     appDataInfo,
     dispatch,
     orderParams: orderParamsOriginal,
+    existsOrderId,
+    addInFlightOrderId,
   } = input
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
@@ -31,13 +33,15 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
   swapConfirmManager.sendTransaction(context.trade)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
-  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract)
+  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract, existsOrderId)
 
   try {
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')
-    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract).finally(() => {
-      callbacks.closeModals()
-    })
+    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract, addInFlightOrderId).finally(
+      () => {
+        callbacks.closeModals()
+      }
+    )
 
     logTradeFlow('ETH FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
