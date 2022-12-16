@@ -19,7 +19,7 @@ export function useEthFlowContext(): EthFlowContext | null {
   const ethFlowInFlightOrderIds = useAtomValue(ethFlowInFlightOrderIdsAtom)
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
-  const existsInFlightOrderId = useCallback(
+  const checkInFlightOrderIdExists = useCallback(
     (orderId: string) => ethFlowInFlightOrderIds.includes(orderId),
     [ethFlowInFlightOrderIds]
   )
@@ -36,7 +36,7 @@ export function useEthFlowContext(): EthFlowContext | null {
     ...baseContext,
     contract,
     addTransaction,
-    existsInFlightOrderId,
+    checkInFlightOrderIdExists,
     addInFlightOrderId,
   }
 }
