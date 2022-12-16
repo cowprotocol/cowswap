@@ -68,7 +68,7 @@ const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
     left: 0;
     border-radius: inherit;
     background: var(--warningColor);
-    opacity: ${({ isDarkMode }) => (isDarkMode ? 0.25 : 0.15)};
+    opacity: ${({ isDarkMode }) => (isDarkMode ? 0.2 : 0.15)};
     z-index: -1;
     width: 100%;
     height: 100%;

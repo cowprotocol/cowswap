@@ -34,17 +34,14 @@ const TableBox = styled.div`
 const Header = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) 114px 70px;
+  grid-template-columns: repeat(2, minmax(150px, 1fr)) minmax(150px, 1.5fr) minmax(85px, min-content) 36px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: repeat(3,minmax(190px, 1fr)) 120px 100px;
-  `};
+  padding: 0 16px;
 
   > div {
-    padding: 12px 16px;
+    padding: 12px 0;
     overflow: hidden;
     font-size: 13px;
     font-weight: 400;
