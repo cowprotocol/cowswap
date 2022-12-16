@@ -177,3 +177,6 @@ export type SetIsOrderUnfillableParams = {
 }
 
 export const setIsOrderUnfillable = createAction<SetIsOrderUnfillableParams>('order/setIsOrderUnfillable')
+
+export type SetIsOrderRefundedBatch = { chainId: ChainId; ids: OrderID[] }
+export const setIsOrderRefundedBatch = createAction<SetIsOrderRefundedBatch>('order/setIsOrderRefundedBatch')

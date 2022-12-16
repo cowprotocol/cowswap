@@ -13,6 +13,7 @@ import {
   preSignOrders,
   requestOrderCancellation,
   SerializedOrder,
+  setIsOrderRefundedBatch,
   setIsOrderUnfillable,
   setOrderCancellationHash,
   updateLastCheckedBlock,
@@ -381,5 +382,18 @@ export default createReducer(initialState, (builder) =>
       if (orderObject?.order) {
         orderObject.order.isUnfillable = isUnfillable
       }
+    })
+    .addCase(setIsOrderRefundedBatch, (state, action) => {
+      prefillState(state, action)
+
+      const { chainId, ids } = action.payload
+
+      ids.forEach((id) => {
+        const orderObject = getOrderById(state, chainId, id)
+
+        if (orderObject) {
+          orderObject.order.isRefunded = true
+        }
+      })
     })
 )

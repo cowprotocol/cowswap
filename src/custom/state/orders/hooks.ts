@@ -15,6 +15,8 @@ import {
   preSignOrders,
   requestOrderCancellation,
   SerializedOrder,
+  SetIsOrderRefundedBatch,
+  setIsOrderRefundedBatch,
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
   setOrderCancellationHash,
@@ -82,6 +84,7 @@ export type UpdatePresignGnosisSafeTxCallback = (
   updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams
 ) => void
 export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
+export type SetIsOrderRefundedBatchCallback = (params: SetIsOrderRefundedBatch) => void
 
 function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
@@ -345,4 +348,9 @@ export const useRequestOrderCancellation = (): CancelOrderCallback => {
 export const useSetIsOrderUnfillable = (): SetIsOrderUnfillable => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((params: SetIsOrderUnfillableParams) => dispatch(setIsOrderUnfillable(params)), [dispatch])
+}
+
+export const useSetIsOrderRefundedBatch = (): SetIsOrderRefundedBatchCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((params: SetIsOrderRefundedBatch) => dispatch(setIsOrderRefundedBatch(params)), [dispatch])
 }
