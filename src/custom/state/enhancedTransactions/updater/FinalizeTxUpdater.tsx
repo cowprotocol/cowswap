@@ -18,7 +18,7 @@ import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
 import { cancelOrdersBatch } from 'state/orders/actions'
 import { useSetAtom } from 'jotai'
-import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIds'
+import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
