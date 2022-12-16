@@ -9,14 +9,14 @@ import {
   ethFlowInFlightOrderIdsAtom,
   addInFlightOrderIdAtom,
 } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
-import { useSetAtom, useAtom } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
   const baseProps = useBaseFlowContextSetup()
   const addTransaction = useTransactionAdder()
 
-  const [ethFlowInFlightOrderIds] = useAtom(ethFlowInFlightOrderIdsAtom)
+  const ethFlowInFlightOrderIds = useAtomValue(ethFlowInFlightOrderIdsAtom)
   const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
 
   // TODO: Nitpic: Detect also collisions using the API (orderId exists)
