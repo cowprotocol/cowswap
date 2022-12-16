@@ -58,7 +58,6 @@ export interface RowSlippageContentProps extends RowSlippageProps {
 
 export function RowSlippageContent(props: RowSlippageContentProps) {
   const { showSettingOnClick, toggleSettings, displaySlippage, isEthFlow, symbols, styleProps } = props
-  const tooltipContent = isEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip()
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -72,7 +71,10 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
             <SlippageTextContents isEthFlow={isEthFlow} />
           )}
         </TextWrapper>
-        <MouseoverTooltipContent wrap content={tooltipContent}>
+        <MouseoverTooltipContent
+          wrap
+          content={isEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip()}
+        >
           <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
       </RowFixed>
