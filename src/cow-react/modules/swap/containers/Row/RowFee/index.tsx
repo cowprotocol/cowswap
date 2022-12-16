@@ -15,7 +15,7 @@ export const GASLESS_FEE_TOOLTIP_MSG =
 export const PRESIGN_FEE_TOOLTIP_MSG =
   'These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.'
 
-const getEthFlowFeeTooltipMsg = (native: string) =>
+const getEthFlowFeeTooltipMsg = (native = 'a native currency') =>
   `Trades on CoW Swap usually don’t require you to pay gas in ${native}. However, when selling ${native}, you do have to pay a small gas fee to cover the cost of wrapping your ${native}.`
 
 // computes price breakdown for the trade
@@ -51,7 +51,7 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
 
   const tooltip = useMemo(() => {
     if (isEthFLow) {
-      return getEthFlowFeeTooltipMsg(native.symbol || 'ETH')
+      return getEthFlowFeeTooltipMsg(native.symbol)
     } else if (allowsOffchainSigning) {
       return GASLESS_FEE_TOOLTIP_MSG
     } else {
