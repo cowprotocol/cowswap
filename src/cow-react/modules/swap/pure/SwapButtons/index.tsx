@@ -154,9 +154,18 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
-  [SwapButtonState.EthFlowSwap]: (props: SwapButtonsContext) => (
+  [SwapButtonState.RegularEthFlowSwap]: (props: SwapButtonsContext) => (
+    <EthFlowSwapButton isExpertMode={false} {...props} />
+  ),
+  [SwapButtonState.ExpertModeEthFlowSwap]: (props: SwapButtonsContext) => (
+    <EthFlowSwapButton isExpertMode={true} {...props} />
+  ),
+}
+
+function EthFlowSwapButton(props: SwapButtonsContext & { isExpertMode: boolean }) {
+  return (
     <>
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.isExpertMode ? props.handleSwap : props.openSwapConfirm}>
         <styledEl.SwapButtonBox>
           <Trans>Swap</Trans>
         </styledEl.SwapButtonBox>
@@ -167,7 +176,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
         wrapCallback={props.onEthFlow}
       />
     </>
-  ),
+  )
 }
 
 export const SwapButtons = React.memo(function (props: SwapButtonsContext) {
