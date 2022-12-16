@@ -1,5 +1,5 @@
 import { SwapFlowContext } from '../types'
-import { swapFlowAnalytics } from '../../../trade/utils/analytics'
+import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
 import { signAndPostOrder } from 'utils/trade'
 import { presignOrderStep } from './steps/presignOrderStep'
 import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderStep'
@@ -13,7 +13,7 @@ export async function swapFlow(input: SwapFlowContext, priceImpactParams: PriceI
   if (priceImpactParams?.priceImpact && !confirmPriceImpactWithoutFee(priceImpactParams.priceImpact)) return
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')
-  swapFlowAnalytics.swap(input.swapFlowAnalyticsContext)
+  tradeFlowAnalytics.swap(input.swapFlowAnalyticsContext)
   input.swapConfirmManager.sendTransaction(input.context.trade)
 
   try {
@@ -45,12 +45,12 @@ export async function swapFlow(input: SwapFlowContext, priceImpactParams: PriceI
 
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     input.swapConfirmManager.transactionSent(orderId)
-    swapFlowAnalytics.sign(input.swapFlowAnalyticsContext)
+    tradeFlowAnalytics.sign(input.swapFlowAnalyticsContext)
   } catch (error) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    swapFlowAnalytics.error(error, swapErrorMessage, input.swapFlowAnalyticsContext)
+    tradeFlowAnalytics.error(error, swapErrorMessage, input.swapFlowAnalyticsContext)
 
     input.swapConfirmManager.setSwapError(swapErrorMessage)
   }

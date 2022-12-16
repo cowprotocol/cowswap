@@ -11,7 +11,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
-import { swapFlowAnalytics } from '@cow/modules/trade/utils/analytics'
+import { tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
@@ -58,7 +58,7 @@ export async function tradeFlow(
   }
 
   logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: send transaction')
-  swapFlowAnalytics.swap(swapFlowAnalyticsContext)
+  tradeFlowAnalytics.swap(swapFlowAnalyticsContext)
   beforeTrade?.()
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
@@ -92,14 +92,14 @@ export async function tradeFlow(
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: add app data to upload queue')
     params.addAppDataToUploadQueue({ chainId: params.chainId, orderId, appData: params.appData })
 
-    swapFlowAnalytics.sign(swapFlowAnalyticsContext)
+    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error) {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    swapFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     throw error
   }

@@ -1,5 +1,5 @@
 import { EthFlowContext } from '@cow/modules/swap/services/types'
-import { swapFlowAnalytics } from '@cow/modules/trade/utils/analytics'
+import { tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 import { signEthFlowOrderStep } from '@cow/modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
@@ -27,7 +27,7 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
   // TODO: check if we need own eth flow analytics or more generic
-  swapFlowAnalytics.swap(swapFlowAnalyticsContext)
+  tradeFlowAnalytics.swap(swapFlowAnalyticsContext)
   swapConfirmManager.sendTransaction(context.trade)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
@@ -56,12 +56,12 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
 
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     swapConfirmManager.transactionSent(orderId)
-    swapFlowAnalytics.sign(swapFlowAnalyticsContext)
+    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
   } catch (error) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    swapFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     swapConfirmManager.setSwapError(swapErrorMessage)
   }

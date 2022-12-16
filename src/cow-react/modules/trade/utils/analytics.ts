@@ -10,7 +10,7 @@ export interface SwapFlowAnalyticsContext {
   orderClass: OrderClass
 }
 
-export const swapFlowAnalytics = {
+export const tradeFlowAnalytics = {
   swap(context: SwapFlowAnalyticsContext) {
     swapAnalytics('Send', context.orderClass, context.marketLabel)
   },
