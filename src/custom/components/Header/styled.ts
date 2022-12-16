@@ -323,6 +323,24 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
   }
 `
 
+export const WinterHat = styled.div`
+  display: flex;
+  position: absolute;
+  top: -10px;
+  left: 6px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    left: 0;
+    right: 0;
+    margin: auto;
+  `}
+
+  > svg {
+    height: 15px;
+    width: auto;
+  }
+`
+
 export const UniIcon = styled.div`
   display: flex;
   position: relative;
