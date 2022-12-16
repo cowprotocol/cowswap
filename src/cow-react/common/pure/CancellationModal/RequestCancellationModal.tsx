@@ -17,6 +17,12 @@ export type RequestCancellationModalProps = {
   triggerCancellation: () => void
 }
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  margin: 36px auto 0;
+`
+
 export function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {
   const { onDismiss, triggerCancellation, summary, shortId, type } = props
 
@@ -29,7 +35,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
       title={`Cancel order ${shortId}`}
       onDismiss={onDismiss}
       topContent={() => (
-        <>
+        <Wrapper>
           <p>
             Are you sure you want to cancel order <strong>{shortId}</strong>?
           </p>
@@ -55,7 +61,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
               </p>
             </>
           )}
-        </>
+        </Wrapper>
       )}
       bottomContent={() => <ButtonPrimary onClick={triggerCancellation}>Request cancellation</ButtonPrimary>}
     />
@@ -67,8 +73,4 @@ const CancellationSummary = styled.span`
   margin: 0;
   border-radius: 6px;
   background: ${({ theme }) => theme.grey1};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    background: ${({ theme }) => theme.bg1};
-  `}
 `
