@@ -8,7 +8,7 @@ import { useCallback } from 'react'
 import {
   ethFlowInFlightOrderIdsAtom,
   addInFlightOrderIdAtom,
-} from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIds'
+} from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import { useSetAtom, useAtom } from 'jotai'
 
 export function useEthFlowContext(): EthFlowContext | null {
