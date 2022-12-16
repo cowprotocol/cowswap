@@ -32,6 +32,7 @@ export const enum PageName {
   FAQ_TRADING_PAGE = 'faq-trading-page',
   FAQ_AFFILIATE_PAGE = 'faq-affiliate-page',
   FAQ_LIMIT_ORDERS_PAGE = 'faq-limit-orders-page',
+  FAQ_ETH_FLOW = 'faq-eth-flow',
   TOC_PAGE = 'toc-page',
 }
 
