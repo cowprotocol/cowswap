@@ -3,6 +3,16 @@
  * The function compares previous and next props by values using JSON.stringify. It returns true when props are equal and vice versa
  */
 export function genericPropsChecker(prev: any, next: any): boolean {
+  const isEqual = aux(prev, next)
+  const tPrev = typeof prev
+  const tNext = typeof next
+
+  console.log('flight genericPropsChecker. Equal?', isEqual, { tPrev, tNext, prev, next })
+
+  return isEqual
+}
+
+function aux(prev: any, next: any): boolean {
   if (typeof prev === 'object' && prev !== null) {
     const prevKeys = Object.keys(prev)
     const nextKeys = Object.keys(next)

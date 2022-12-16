@@ -40,4 +40,5 @@ export type EthFlowContext = BaseFlowContext & {
   addTransaction: ReturnType<typeof useTransactionAdder>
   existsInFlightOrderId: (orderId: string) => boolean
   addInFlightOrderId: (orderId: string) => void
+  ethFlowInFlightOrderIds: string[]
 }

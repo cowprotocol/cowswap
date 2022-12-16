@@ -19,6 +19,9 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { cancelOrdersBatch } from 'state/orders/actions'
 import { useSetAtom } from 'jotai'
 import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import ms from 'ms.macro'
+
+const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`90s` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -55,9 +58,6 @@ interface CheckEthereumTransactions {
 }
 
 type Cancel = () => void
-
-// async function checkEthereumTransactions(transaction: EnhancedTransactionDetails) {}
-
 function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
   transaction: EnhancedTransactionDetails,
@@ -68,7 +68,7 @@ function finalizeEthereumTransaction(
 
   const ethFlowInfo = transaction.ethFlow
   if (ethFlowInfo) {
-    params.removeInFlightOrderId(ethFlowInfo.orderId)
+    // setTimeout(() => params.removeInFlightOrderId(ethFlowInfo.orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
   }
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)

@@ -34,6 +34,7 @@ export interface SwapButtonsContext {
   hasEnoughWrappedBalanceForSwap: boolean
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void
+  ethFlowInFlightOrderIds: string[]
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
@@ -158,7 +159,7 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
     <>
       <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
         <styledEl.SwapButtonBox>
-          <Trans>Swap</Trans>
+          <Trans>Swap ({props.ethFlowInFlightOrderIds?.length})</Trans>
         </styledEl.SwapButtonBox>
       </ButtonError>
       <EthFlowBanner
@@ -171,7 +172,19 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
 }
 
 export const SwapButtons = React.memo(function (props: SwapButtonsContext) {
-  console.debug('RENDER SWAP BUTTON: ', props)
+  console.debug('flight RENDER SWAP BUTTON: ', props.ethFlowInFlightOrderIds)
 
-  return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
+  const interceptedProps = {
+    ...props,
+    handleSwap: () => {
+      console.log('flight RENDER SWAP BUTTON: Handling Freaking Swap with ', props.ethFlowInFlightOrderIds)
+      props.handleSwap()
+    },
+    openSwapConfirm: () => {
+      console.log('flight RENDER SWAP BUTTON: Handling Freaking Open Swap and Confirm ', props.ethFlowInFlightOrderIds)
+      props.openSwapConfirm()
+    },
+  }
+
+  return <div id="swap-button">{swapButtonStateMap[interceptedProps.swapButtonState](interceptedProps)}</div>
 }, genericPropsChecker)

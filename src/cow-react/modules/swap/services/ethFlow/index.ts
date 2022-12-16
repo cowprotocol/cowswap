@@ -18,9 +18,21 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
     appDataInfo,
     dispatch,
     orderParams: orderParamsOriginal,
-    existsInFlightOrderId,
+    // existsInFlightOrderId,
     addInFlightOrderId,
+    ethFlowInFlightOrderIds,
   } = input
+
+  console.log('[ETH-FLOW flight] 😭😭😭😭 ethFlowInFlightOrderIds', ethFlowInFlightOrderIds)
+  const existsInFlightOrderId = (orderId: string) => {
+    console.log(
+      '[ETH-FLOW flight] STEP exists orderId in-flight?',
+      orderId,
+      ethFlowInFlightOrderIds,
+      ethFlowInFlightOrderIds.includes(orderId) ? '❌' : '✅'
+    )
+    return ethFlowInFlightOrderIds.includes(orderId)
+  }
 
   logSwapFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !confirmPriceImpactWithoutFee(priceImpactParams.priceImpact)) {

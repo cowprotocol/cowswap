@@ -52,13 +52,13 @@ export async function calculateUniqueOrderId(
   })
 
   if (existsInFlightOrderId(orderId)) {
-    logSwapFlow('ETH FLOW', '[EthFlow::calculateOrderId] Collision detected', orderId)
+    logSwapFlow('ETH FLOW', '[EthFlow::calculateOrderId] 🔥 Collision detected', orderId)
 
     // Recursive call, increment one fee until we get an unique order Id
     return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, existsInFlightOrderId)
   }
 
-  logSwapFlow('ETH FLOW', '[EthFlow::calculateOrderId] Order Id is Unique', orderId)
+  logSwapFlow('ETH FLOW', '[EthFlow::calculateOrderId] 👍 Order Id is Unique', orderId)
 
   return {
     orderId,

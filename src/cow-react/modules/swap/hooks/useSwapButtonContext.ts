@@ -13,7 +13,6 @@ import {
   useWrapType,
   useWrapUnwrapError,
 } from 'hooks/useWrapCallback'
-import { useCallback } from 'react'
 import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
@@ -80,18 +79,32 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapCallback = useWrapCallback(wrapUnwrapAmount)
   const inputAmount = tryParseCurrencyAmount(typedValue, currencyIn ?? undefined)
   const approvalState = useTradeApproveState(inputAmount || null)
-
-  const handleSwap = useCallback(() => {
+  const handleSwap = () => {
     if (!swapFlowContext && !ethFlowContext) return
 
     if (swapFlowContext) {
       logSwapFlow('SWAP FLOW', 'Start swap flow')
       swapFlow(swapFlowContext, priceImpactParams)
     } else if (ethFlowContext) {
-      logSwapFlow('ETH FLOW', 'Start eth flow')
+      logSwapFlow('ETH FLOW', 'Start eth flow', ethFlowContext?.ethFlowInFlightOrderIds)
+
       ethFlow(ethFlowContext, priceImpactParams)
     }
-  }, [swapFlowContext, ethFlowContext, priceImpactParams])
+  }
+  console.log('[ETH FLOW flight] handleSwap fn REDEFINED', ethFlowContext?.ethFlowInFlightOrderIds)
+  // // uwc-debug
+  // const handleSwap = useCallback(() => {
+  //   if (!swapFlowContext && !ethFlowContext) return
+
+  //   if (swapFlowContext) {
+  //     logSwapFlow('SWAP FLOW', 'Start swap flow')
+  //     swapFlow(swapFlowContext, priceImpactParams)
+  //   } else if (ethFlowContext) {
+  //     logSwapFlow('ETH FLOW', 'Start eth flow')
+  //     ethFlow(ethFlowContext, priceImpactParams)
+  //   }
+  // }, [swapFlowContext, ethFlowContext, priceImpactParams])
+  // FIXME: "contract" and "orderParam" adds a circular reference to swapFlowContext causing the "swapFlowContext" to have NO EFFECT!
 
   const contextExists = ethFlowContext || swapFlowContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
@@ -122,6 +135,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   })
 
   return {
+    ethFlowInFlightOrderIds: ethFlowContext?.ethFlowInFlightOrderIds || [], // TODO: Remove
     swapButtonState,
     inputAmount,
     chainId,

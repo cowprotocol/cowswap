@@ -113,6 +113,7 @@ export function NewSwapWidget() {
     openNativeWrapModal,
     priceImpactParams,
   })
+  console.log('[flight] swap Button context redefined')
 
   const swapFormProps: SwapFormProps = {
     chainId,
@@ -198,6 +199,7 @@ export function NewSwapWidget() {
           <SwapForm {...swapFormProps} />
           {showTradeRates && <TradeRates {...tradeRatesProps} />}
           <NewSwapWarningsTop {...swapWarningsTopProps} />
+          IN FLIGHT ({swapButtonContext.ethFlowInFlightOrderIds.length})
           <SwapButtons {...swapButtonContext} />
           <NewSwapWarningsBottom {...swapWarningsBottomProps} />
         </styledEl.ContainerBox>
