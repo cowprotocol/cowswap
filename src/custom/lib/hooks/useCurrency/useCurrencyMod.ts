@@ -1,17 +1,19 @@
-import { arrayify } from '@ethersproject/bytes'
-import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, Token } from '@uniswap/sdk-core'
+// import { arrayify } from '@ethersproject/bytes'
+// import { parseBytes32String } from '@ethersproject/strings'
+import { Currency /*, Token*/ } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { useBytes32TokenContract, useTokenContract } from 'hooks/useContract'
-import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
+// import { useBytes32TokenContract, useTokenContract } from 'hooks/useContract'
+// import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
 import { isChainAllowed } from 'utils/switchChain'
 
-import { TOKEN_SHORTHANDS } from '../../constants/tokens'
-import { isAddress } from '../../utils'
-import { supportedChainId } from '../../utils/supportedChainId'
+import { TOKEN_SHORTHANDS } from 'constants/tokens'
+// import { isAddress } from 'utils'
+import { supportedChainId } from 'utils/supportedChainId'
+import { TokenMap, useTokenFromMapOrNetwork } from '@src/lib/hooks/useCurrency'
 
+/*
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
 
@@ -33,7 +35,7 @@ export function parseStringOrBytes32(
  * Returns null if token is loading or null was passed.
  * Returns undefined if tokenAddress is invalid or token does not exist.
  */
-export function useTokenFromNetwork(tokenAddress: string | null | undefined): Token | null | undefined {
+/*export function useTokenFromNetwork(tokenAddress: string | null | undefined): Token | null | undefined {
   const { chainId, connector } = useWeb3React()
   const chainAllowed = chainId && isChainAllowed(connector, chainId)
 
@@ -77,21 +79,21 @@ export function useTokenFromNetwork(tokenAddress: string | null | undefined): To
   ])
 }
 
-export type TokenMap = { [address: string]: Token }
-
+type TokenMap = { [address: string]: Token }
+*/
 /**
  * Returns a Token from the tokenAddress.
  * Returns null if token is loading or null was passed.
  * Returns undefined if tokenAddress is invalid or token does not exist.
  */
-export function useTokenFromMapOrNetwork(tokens: TokenMap, tokenAddress?: string | null): Token | null | undefined {
+/*export function useTokenFromMapOrNetwork(tokens: TokenMap, tokenAddress?: string | null): Token | null | undefined {
   const address = isAddress(tokenAddress)
   const token: Token | undefined = address ? tokens[address] : undefined
 
   const tokenFromNetwork = useTokenFromNetwork(token ? undefined : address ? address : undefined)
 
   return tokenFromNetwork ?? token
-}
+}*/
 
 /**
  * Returns a Currency from the currencyId.
@@ -101,7 +103,7 @@ export function useTokenFromMapOrNetwork(tokens: TokenMap, tokenAddress?: string
 export function useCurrencyFromMap(tokens: TokenMap, currencyId?: string | null): Currency | null | undefined {
   const nativeCurrency = useNativeCurrency()
   const { chainId, connector } = useWeb3React()
-  const isNative = Boolean(nativeCurrency && currencyId?.toUpperCase() === 'ETH')
+  const isNative = Boolean(nativeCurrency && ['ETH', 'XDAI'].includes(currencyId?.toUpperCase() || '')) // MOD!!
   const shorthandMatchAddress = useMemo(() => {
     const chain = supportedChainId(chainId)
     return chain && currencyId ? TOKEN_SHORTHANDS[currencyId.toUpperCase()]?.[chain] : undefined
