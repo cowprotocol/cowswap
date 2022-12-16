@@ -47,11 +47,6 @@ export const Wrapper = styled.div`
   scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
   scroll-behavior: smooth;
 
-  /* -- mod -- */
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    background: ${({ theme }) => `${theme.grey1}`};
-  `}
-
   &::-webkit-scrollbar {
     width: 14px;
     background: ${({ theme }) => `${theme.card.background2}`};
@@ -73,10 +68,6 @@ export const Wrapper = styled.div`
 `
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`
   padding: ${({ inline }) => (inline ? '0' : '0')};
-  /* -- mod -- */
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    margin: 60px 0 0;
-  `}
 `
 
 export const BottomSection = styled(Section)`
