@@ -259,6 +259,18 @@ export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   }, [state])
 }
 
+export const useExpiredOrders = ({ chainId }: GetOrdersParams): Order[] => {
+  const state = useSelector<AppState, PartialOrdersMap | undefined>(
+    (state) => chainId && state.orders?.[chainId]?.expired
+  )
+
+  return useMemo(() => {
+    if (!state) return []
+
+    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
+  }, [state])
+}
+
 export const useAddOrUpdateOrders = (): AddOrUpdateOrdersCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
