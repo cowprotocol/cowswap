@@ -131,6 +131,7 @@ function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string
     stateForChain.pending[id] ||
     stateForChain.presignaturePending[id] ||
     stateForChain.cancelled[id] ||
+    stateForChain.expired[id] ||
     stateForChain.fulfilled[id] ||
     stateForChain.creating[id] ||
     stateForChain.rejected[id] ||
