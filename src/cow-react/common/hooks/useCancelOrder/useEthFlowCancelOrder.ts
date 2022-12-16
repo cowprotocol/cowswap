@@ -5,7 +5,7 @@ import { useEthFlowContract } from 'hooks/useContract'
 import { Order } from 'state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'state/orders/hooks'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { logSwapFlowError } from '@cow/modules/swap/services/utils/logger'
+import { logTradeFlowError } from '@cow/modules/trade/utils/logger'
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from '@cow/modules/swap/services/ethFlow/const'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
@@ -54,7 +54,11 @@ function getCancelEthFlowOrderCallback(ethFlowContract: ReturnType<typeof useEth
     }
 
     const estimatedGas = await ethFlowContract.estimateGas.invalidateOrder(cancelOrderParams).catch((error) => {
-      logSwapFlowError(LOG_LABEL, `Error estimating createOrder gas. Using default ${ETHFLOW_GAS_LIMIT_DEFAULT}`, error)
+      logTradeFlowError(
+        LOG_LABEL,
+        `Error estimating createOrder gas. Using default ${ETHFLOW_GAS_LIMIT_DEFAULT}`,
+        error
+      )
       return ETHFLOW_GAS_LIMIT_DEFAULT
     })
 

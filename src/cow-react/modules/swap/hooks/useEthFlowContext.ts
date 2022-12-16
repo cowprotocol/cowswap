@@ -1,7 +1,7 @@
 import { OrderKind } from '@cowprotocol/contracts'
 import { useEthFlowContract } from 'hooks/useContract'
 import { useBaseFlowContextSetup, getFlowContext } from '@cow/modules/swap/hooks/useFlowContext'
-import { EthFlowContext } from '@cow/modules/swap/services/common/types'
+import { EthFlowContext } from '@cow/modules/swap/services/types'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 

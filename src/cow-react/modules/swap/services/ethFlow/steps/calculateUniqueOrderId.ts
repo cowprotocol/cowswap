@@ -1,6 +1,6 @@
 import { hashOrder, packOrderUidParams } from '@cowprotocol/contracts'
 import { CoWSwapEthFlow } from '@cow/abis/types'
-import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
+import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { getOrderParams, PostOrderParams } from 'utils/trade'
 import { getDomain } from 'utils/signatures'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
@@ -15,7 +15,7 @@ export async function calculateUniqueOrderId(
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow
 ): Promise<UniqueOrderIdResult> {
-  logSwapFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
+  logTradeFlow('ETH FLOW', '[EthFlow::calculateUniqueOrderId] - Calculate unique order Id', orderParams)
   const { chainId } = orderParams
 
   const { order } = getOrderParams(orderParams)
@@ -34,7 +34,7 @@ export async function calculateUniqueOrderId(
     validTo: MAX_VALID_TO_EPOCH,
   })
 
-  logSwapFlow('ETH FLOW', '[EthFlow::calculateOrderId] Calculate Order Id', orderId)
+  logTradeFlow('ETH FLOW', '[EthFlow::calculateOrderId] Calculate Order Id', orderId)
 
   // TODO: Detect if there's another order that has been created with the same order Id
   // TODO: Detect collisions using the API (orderId exists)

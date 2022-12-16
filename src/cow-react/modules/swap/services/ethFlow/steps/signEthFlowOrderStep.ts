@@ -2,7 +2,7 @@ import { NativeCurrency } from '@uniswap/sdk-core'
 import { ContractTransaction } from '@ethersproject/contracts'
 
 import { CoWSwapEthFlow } from '@cow/abis/types'
-import { logSwapFlow, logSwapFlowError } from '@cow/modules/swap/services/utils/logger'
+import { logTradeFlow, logTradeFlowError } from '@cow/modules/trade/utils/logger'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
 import { UnsignedOrder } from 'utils/signatures'
@@ -32,7 +32,7 @@ export async function signEthFlowOrderStep(
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow
 ): Promise<EthFlowResponse> {
-  logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
+  logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
   const { order, quoteId, summary } = getOrderParams(orderParams)
 
@@ -51,7 +51,7 @@ export async function signEthFlowOrderStep(
   const estimatedGas = await ethFlowContract.estimateGas
     .createOrder(auxOrderParams, { value: orderParams.sellAmountBeforeFee.quotient.toString() })
     .catch((error) => {
-      logSwapFlowError(
+      logTradeFlowError(
         'ETH FLOW',
         '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + ETHFLOW_GAS_LIMIT_DEFAULT,
         error
@@ -64,7 +64,7 @@ export async function signEthFlowOrderStep(
     value: orderParams.sellAmountBeforeFee.quotient.toString(),
   })
 
-  logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
+  logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
 
   return {
     txReceipt,
