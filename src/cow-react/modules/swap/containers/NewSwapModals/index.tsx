@@ -6,7 +6,6 @@ import CowSubsidyModal from 'components/CowSubsidyModal'
 import { useCloseModals } from 'state/application/hooks'
 import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApproveWidget'
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
-import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 
 export interface NewSwapModalsProps {
   chainId: number | undefined
@@ -16,7 +15,8 @@ export interface NewSwapModalsProps {
   ethFlowProps: EthFlowProps
 }
 
-export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
+// FIXME: This component was memoized, but that was removed because it was catching the callback "directSwapCallback". ALthough the function was recreated, the NewModal was not re-rendering the component
+export const NewSwapModals = function (props: NewSwapModalsProps) {
   const { chainId, showNativeWrapModal, showCowSubsidyModal, confirmSwapProps, ethFlowProps } = props
 
   const closeModals = useCloseModals()
@@ -33,4 +33,4 @@ export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
       <TradeApproveWidget />
     </>
   )
-}, genericPropsChecker)
+}
