@@ -52,14 +52,18 @@ export default function EthFlowFAQ() {
               order on CoW Protocol for the user.
             </p>
             <p>
-              Selling ETH different from selling other tokens on CoW Protocol{' '}
+              Selling ETH different from selling other tokens on CoW Protocol:{' '}
               <ul>
                 <li>ETH is not an ERC20 token</li>
                 <li>CoW Protocol can only handle ERC20 tokens, so you need to wrap ETH to trade it</li>
                 <li>
-                  We created a contract that wraps ETH for you, called the CoW ETH Flow Contract (Note that this
-                  contract works differently than how you are used to interacting with CoW Protocol as it adds an
-                  intermediary step where you send your eth. )
+                  We created a contract that wraps ETH for you, called the CoW ETH Flow Contract
+                  <p>
+                    <strong>
+                      Note that this contract works differently than how you are used to interacting with CoW Protocol
+                      as it adds an intermediary step where you send your eth.
+                    </strong>
+                  </p>
                 </li>
               </ul>
             </p>
@@ -129,11 +133,11 @@ export default function EthFlowFAQ() {
                   When submitting your transaction through your wallet, it was sent with a low gas price. The order in
                   which transactions are validated on the blockchain depends on the gas price you set: high gas fee
                   transactions can get validated faster, and low gas fee ones have to wait longer to get validated. You
-                  can check Etherscan for the time they estimate your transaction will take to get validated.
+                  can check Etherscan for the time they estimate your transaction will take to get validated
                 </li>
                 <li>
                   You have sent multiple transactions at once with your wallet and the first transaction with a low gas
-                  price delays the rest.
+                  price delays the rest
                 </li>
               </ul>
             </p>
@@ -323,7 +327,7 @@ export default function EthFlowFAQ() {
             </p>
 
             <h3 id="why-is-my-rder-refunded-after-creation-failed">
-              Why is my order being refunded after “order creation failed - expired before creation?
+              Why is my order being refunded after “order creation failed - expired before creation”?
             </h3>
             <p>
               Since the ETH held by the contract on your behalf is no longer needed there because the order creation
