@@ -40,7 +40,7 @@ export const Wrapper = styled.div`
   width: 100%;
   /* padding: 1rem; */
   /* -- mod -- */
-  padding: 16px;
+  padding: 0 16px 16px;
   display: flex;
   flex-flow: column nowrap;
   overflow-y: auto;
