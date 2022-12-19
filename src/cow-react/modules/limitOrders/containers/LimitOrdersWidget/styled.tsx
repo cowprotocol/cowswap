@@ -78,8 +78,8 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 `
 
 export const StyledRateInfo = styled(RateInfo)`
-  margin-top: 15px;
-  font-size: 14px;
+  padding: 8px 8px 0;
+  font-size: 13px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
