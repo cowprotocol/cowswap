@@ -24,7 +24,7 @@ function incrementFee(params: PostOrderParams): PostOrderParams {
   return {
     ...params,
     feeAmount: params.feeAmount?.add(oneWei), // Increment fee by one wei
-    sellAmountBeforeFee: params.sellAmountBeforeFee?.add(oneWei),
+    sellAmountBeforeFee: params.sellAmountBeforeFee?.subtract(oneWei), // Deduct the sellAmount so the ETH sent is the same
   }
 }
 
