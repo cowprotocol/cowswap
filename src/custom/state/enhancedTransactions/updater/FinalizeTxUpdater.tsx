@@ -21,7 +21,7 @@ import { useSetAtom } from 'jotai'
 import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import ms from 'ms.macro'
 
-const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`45s` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
+const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
