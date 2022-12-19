@@ -24,6 +24,7 @@ function incrementFee(params: PostOrderParams): PostOrderParams {
   return {
     ...params,
     feeAmount: params.feeAmount?.add(oneWei), // Increment fee by one wei
+    sellAmountBeforeFee: params.sellAmountBeforeFee?.add(oneWei),
   }
 }
 
