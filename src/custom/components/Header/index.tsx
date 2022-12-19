@@ -18,6 +18,7 @@ import {
   Wrapper,
   Title,
   LogoImage,
+  WinterHat,
   HeaderModWrapper,
   UniIcon,
   AccountElement,
@@ -31,7 +32,7 @@ import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
-import { cowSwapLogo } from 'theme/cowSwapAssets'
+import { cowSwapLogo, winterThemeHat } from 'theme/cowSwapAssets'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
@@ -136,6 +137,9 @@ export default function Header() {
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
               <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
+                <WinterHat>
+                  <SVG src={winterThemeHat(darkMode)} />
+                </WinterHat>
                 <SVG src={cowSwapLogo(darkMode)} />
               </LogoImage>
             </UniIcon>
