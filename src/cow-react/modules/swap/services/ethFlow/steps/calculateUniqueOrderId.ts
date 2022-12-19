@@ -24,7 +24,7 @@ function incrementFee(params: PostOrderParams): PostOrderParams {
   return {
     ...params,
     feeAmount: params.feeAmount?.add(oneWei), // Increment fee by one wei
-    sellAmountBeforeFee: params.sellAmountBeforeFee?.subtract(oneWei), // Deduct the sellAmount so the ETH sent is the same
+    inputAmount: params.inputAmount?.subtract(oneWei), // Deduct the sellAmount so the ETH sent is the same
   }
 }
 
@@ -52,14 +52,18 @@ export async function calculateUniqueOrderId(
     validTo: MAX_VALID_TO_EPOCH,
   })
 
+  const logParams = {
+    sellAmount: orderParams.inputAmount.quotient.toString(),
+    fee: orderParams.feeAmount?.quotient.toString(),
+  }
   if (checkInFlightOrderIdExists(orderId)) {
-    logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ❌ Collision detected', orderId)
+    logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ❌ Collision detected: ' + orderId, logParams)
 
     // Recursive call, increment one fee until we get an unique order Id
     return calculateUniqueOrderId(incrementFee(orderParams), ethFlowContract, checkInFlightOrderIdExists)
   }
 
-  logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ✅ Order Id is Unique', orderId)
+  logTradeFlow('ETH FLOW', '[calculateUniqueOrderId] ✅ Order Id is Unique' + orderId, logParams)
 
   return {
     orderId,
