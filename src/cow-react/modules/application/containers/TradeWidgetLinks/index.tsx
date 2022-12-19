@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Routes } from '@cow/constants/routes'
 
-import { RowFixed } from 'components/Row'
 import { useMemo } from 'react'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
@@ -20,7 +19,7 @@ export function TradeWidgetLinks() {
   )
 
   return (
-    <RowFixed>
+    <styledEl.Wrapper>
       <styledEl.MenuItem>
         <styledEl.Link activeClassName="active" to={parameterizeTradeRoute(tradeContext, Routes.SWAP)}>
           <Trans>Swap</Trans>
@@ -30,11 +29,11 @@ export function TradeWidgetLinks() {
       <styledEl.MenuItem>
         <styledEl.Link activeClassName="active" to={parameterizeTradeRoute(tradeContext, Routes.LIMIT_ORDER)}>
           <Trans>Limit</Trans>
+          <styledEl.Badge>
+            <Trans>Beta</Trans>
+          </styledEl.Badge>
         </styledEl.Link>
-        <styledEl.Badge>
-          <Trans>Beta</Trans>
-        </styledEl.Badge>
       </styledEl.MenuItem>
-    </RowFixed>
+    </styledEl.Wrapper>
   )
 }

@@ -1,35 +1,57 @@
 import styled from 'styled-components/macro'
 import { NavLink } from 'react-router-dom'
-
-export const MenuItem = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  font-weight: 500;
-  margin-right: 6px;
-`
-
-export const Link = styled(NavLink)<{ isActive?: boolean }>`
-  text-decoration: none;
-  padding: 0 5px;
-  opacity: 0.5;
-  color: ${({ theme }) => (theme.darkMode ? theme.text1 : theme.text2)};
-  text-decoration-color: ${({ theme }) => theme.blue1}!important;
-
-  &.active,
-  &.active + div {
-    opacity: 1;
-  }
-`
+import { transparentize } from 'polished'
 
 export const Badge = styled.div`
-  background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.white};
-  pointer-events: none;
-  opacity: 0.5;
+  background: ${({ theme }) => theme.grey1};
+  color: ${({ theme }) => transparentize(0.4, theme.text1)};
   border: none;
   cursor: pointer;
   border-radius: 16px;
   font-size: 10px;
-  padding: 4px 8px;
+  font-weight: inherit;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  letter-spacing: 0.2px;
+  font-weight: 600;
+  transition: color 0.15s ease-in-out;
+`
+
+export const Link = styled(NavLink)<{ isActive?: boolean }>`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: ${({ theme }) => transparentize(0.4, theme.text1)};
+  gap: 3px;
+  font-weight: inherit;
+  line-height: 1;
+  transition: color 0.15s ease-in-out;
+
+  &.active {
+    font-weight: 600;
+  }
+
+  &:hover,
+  &.active,
+  &.active + div,
+  &:hover > ${Badge}, &.active > ${Badge} {
+    color: ${({ theme }) => theme.text1};
+  }
+`
+
+export const Wrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+
+  ${Link} {
+    text-decoration: none;
+  }
+`
+
+export const MenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
 `
