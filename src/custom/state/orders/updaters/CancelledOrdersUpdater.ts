@@ -57,11 +57,18 @@ export function CancelledOrdersUpdater(): null {
         // Filter orders:
         // - Owned by the current connected account
         // - Created in the last 5 min, no further
-        const pending = cancelledRef.current.filter(({ owner, creationTime: creationTimeString }) => {
-          const creationTime = new Date(creationTimeString).getTime()
+        // - Not EthFlow orders already cancelled
+        const pending = cancelledRef.current.filter(
+          ({ owner, creationTime: creationTimeString, status, cancellationHash }) => {
+            const creationTime = new Date(creationTimeString).getTime()
 
-          return owner.toLowerCase() === lowerCaseAccount && now - creationTime < CANCELLED_ORDERS_PENDING_TIME
-        })
+            return (
+              owner.toLowerCase() === lowerCaseAccount &&
+              now - creationTime < CANCELLED_ORDERS_PENDING_TIME &&
+              !(cancellationHash && status === 'cancelled')
+            )
+          }
+        )
 
         if (pending.length === 0) {
           // console.debug(`[CancelledOrdersUpdater] No orders are being cancelled`)

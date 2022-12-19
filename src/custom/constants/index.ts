@@ -48,11 +48,14 @@ export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 type Env = 'barn' | 'prod'
 
 export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<number, string>>> = {
-  // TODO: add other networks when available
   prod: {
+    [ChainId.MAINNET]: EthFlowProd[ChainId.MAINNET].address,
+    [ChainId.GNOSIS_CHAIN]: EthFlowProd[ChainId.GNOSIS_CHAIN].address,
     [ChainId.GOERLI]: EthFlowProd[ChainId.GOERLI].address,
   },
   barn: {
+    [ChainId.MAINNET]: EthFlowBarn[ChainId.MAINNET].address,
+    [ChainId.GNOSIS_CHAIN]: EthFlowBarn[ChainId.GNOSIS_CHAIN].address,
     [ChainId.GOERLI]: EthFlowBarn[ChainId.GOERLI].address,
   },
 }
@@ -199,4 +202,5 @@ export const FAQ_MENU_LINKS = [
   { title: 'Trading', url: '/faq/trading' },
   { title: 'Affiliate', url: '/faq/affiliate' },
   { title: 'Limit orders', url: '/faq/limit-order' },
+  { title: 'Selling Native tokens', url: '/faq/sell-native' },
 ]

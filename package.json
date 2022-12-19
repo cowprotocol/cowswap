@@ -24,7 +24,7 @@
   },
   "types": "./dist/widgets.d.ts",
   "private": true,
-  "version": "1.26.1",
+  "version": "1.27.0-RC.0",
   "engines": {
     "node": ">=16.0.0 <17.0.0"
   },
@@ -166,7 +166,7 @@
     "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:abi-ethflow && yarn contracts:add:export && yarn contracts:compile:abi-uniswap && yarn contracts:compile:v3",
     "prei18n:extract": "touch src/locales/en-US.po",
-    "postinstall": "npm-run-all -p contracts:compile i18n:compile patch-package",
+    "postinstall": "patch-package",
     "patch-package": "patch-package",
     "i18n:extract": "cross-env NODE_ENV=development lingui extract --locale en-US",
     "i18n:compile": "yarn i18n:extract && lingui compile",
@@ -213,7 +213,7 @@
     "@cowprotocol/contracts": "^1.3.1",
     "@cowprotocol/cow-js": "^1.0.0-RC.0",
     "@cowprotocol/cow-runner-game": "^0.2.9",
-    "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#0.0.0-rc4-artifacts",
+    "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts",
     "@davatar/react": "1.8.1",
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",

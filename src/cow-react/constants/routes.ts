@@ -19,6 +19,7 @@ export enum Routes {
   FAQ_TRADING = '/faq/trading',
   FAQ_AFFILIATE = '/faq/affiliate',
   FAQ_LIMIT_ORDERS = '/faq/limit-order',
+  FAQ_ETH_FLOW = '/faq/sell-native',
   PLAY_COWRUNNER = '/play/cow-runner',
   PLAY_MEVSLICER = '/play/mev-slicer',
   ANYSWAP_AFFECTED = '/anyswap-affected-users',

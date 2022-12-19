@@ -15,10 +15,10 @@ const ExpiredMessage = styled.span`
   color: ${({ theme }) => theme.warning};
 `
 
-export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelation }: EthFlowStepperProps) {
+export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellation }: EthFlowStepperProps) {
   const { state, isExpired, rejectedReason } = order
   const { isRefunded, refundTx } = refund
-  const { isCanceled, cancelationTx } = cancelation
+  const { isCancelled, cancellationTx } = cancellation
 
   const isIndexing = state === SmartOrderStatus.CREATION_MINED
   const isIndexed = state === SmartOrderStatus.INDEXED
@@ -53,7 +53,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
         icon: Checkmark,
       }
     }
-    if (isCanceled || isRefunded) {
+    if (isCancelled || isRefunded) {
       return {
         label: nativeTokenSymbol + ' Refunded',
         state: 'success',
@@ -73,24 +73,25 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
       state: 'not-started',
       icon: Finish,
     }
-  }, [nativeTokenSymbol, tokenLabel, expiredBeforeCreate, isIndexing, isFilled, isCanceled, isRefunded, isIndexed])
+  }, [nativeTokenSymbol, tokenLabel, expiredBeforeCreate, isIndexing, isFilled, isCancelled, isRefunded, isIndexed])
 
   const isRefunding = !!refundTx && !isRefunded
-  const isCanceling = !!cancelationTx && !isCanceled
+  const isCanceling = !!cancellationTx && !isCancelled
   const isOrderRejected = !!rejectedReason
-  const wontReceiveToken = isExpired || isOrderRejected || isRefunding || isCanceling || isCanceled || isRefunded
+  const wontReceiveToken =
+    !isFilled && (isExpired || isOrderRejected || isRefunding || isCanceling || isCancelled || isRefunded)
   const isSuccess = stepState === 'success'
 
   let refundLink: JSX.Element | undefined
-  if (cancelationTx && !isRefunded) {
+  if (cancellationTx && !isRefunded && !isFilled) {
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
         label={isCanceling ? 'Initiating ETH Refund...' : 'ETH refunded successfully'}
-        id={cancelationTx}
+        id={cancellationTx}
       />
     )
-  } else if ((refundTx && !(expiredBeforeCreate || cancelationTx)) || (refundTx && isRefunded)) {
+  } else if ((refundTx && !(expiredBeforeCreate || cancellationTx)) || (refundTx && isRefunded)) {
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
@@ -105,7 +106,9 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancelatio
     <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
       <>
         {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order has expired</ExpiredMessage>}
-        {wontReceiveToken && !(refundTx || cancelationTx) && <RefundMessage>Initiating ETH Refund...</RefundMessage>}
+        {wontReceiveToken && !(refundTx || cancellationTx) && !isCancelled && (
+          <RefundMessage>Initiating ETH Refund...</RefundMessage>
+        )}
         {refundLink}
       </>
     </Step>

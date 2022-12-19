@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react'
 import { Progress, EthFlowStepperProps, SmartOrderStatus, ProgressProps } from '..'
 
-export function Progress2({ order, refund, cancelation }: EthFlowStepperProps) {
+export function Progress2({ order, refund, cancellation }: EthFlowStepperProps) {
   const { state } = order
   const { isRefunded, refundTx } = refund
-  const { isCanceled, cancelationTx } = cancelation
+  const { isCancelled, cancellationTx } = cancellation
 
   const { status: progressStatus, value: progress } = useMemo<ProgressProps>(() => {
     const isIndexing = state === SmartOrderStatus.CREATION_MINED
     const isFilled = state === SmartOrderStatus.FILLED
     const isCreating = state === SmartOrderStatus.CREATING
-    const isTerminalState = isRefunded || isCanceled || isFilled
+    const isTerminalState = isRefunded || isCancelled || isFilled
 
     if (isTerminalState) {
       return {
@@ -19,7 +19,7 @@ export function Progress2({ order, refund, cancelation }: EthFlowStepperProps) {
       }
     }
 
-    if (refundTx || cancelationTx) {
+    if (refundTx || cancellationTx) {
       return {
         status: 'pending',
         value: 66,
@@ -33,7 +33,7 @@ export function Progress2({ order, refund, cancelation }: EthFlowStepperProps) {
       }
     }
 
-    if (refundTx || cancelationTx) {
+    if (refundTx || cancellationTx) {
       return {
         status: 'pending',
         value: 66,
@@ -44,7 +44,7 @@ export function Progress2({ order, refund, cancelation }: EthFlowStepperProps) {
       status: 'pending',
       value: 33,
     }
-  }, [state, refundTx, cancelationTx, isCanceled, isRefunded])
+  }, [state, refundTx, cancellationTx, isCancelled, isRefunded])
 
   return <Progress status={progressStatus} value={progress} />
 }

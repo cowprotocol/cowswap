@@ -6,7 +6,8 @@ import { AddOrderCallback } from 'state/orders/hooks'
 import { CoWSwapEthFlow, GPv2Settlement } from '@cow/abis/types'
 import { AppDispatch } from 'state'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
-import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/common/steps/analytics'
+import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
+import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 export interface BaseFlowContext {
   context: {
@@ -36,4 +37,5 @@ export type SwapFlowContext = BaseFlowContext & {
 }
 export type EthFlowContext = BaseFlowContext & {
   contract: CoWSwapEthFlow
+  addTransaction: ReturnType<typeof useTransactionAdder>
 }

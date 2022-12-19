@@ -15,6 +15,7 @@ const defaultOrderProps = {
   orderId: ORDER_ID,
   state: SmartOrderStatus.CREATING,
   isExpired: false,
+  isCreated: false,
 }
 const defaultProps: EthFlowStepperProps = {
   nativeTokenSymbol: 'xDAI',
@@ -23,8 +24,8 @@ const defaultProps: EthFlowStepperProps = {
   refund: {
     isRefunded: false,
   },
-  cancelation: {
-    isCanceled: false,
+  cancellation: {
+    isCancelled: false,
   },
 }
 
@@ -159,9 +160,9 @@ const STEPS: Step[] = [
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
       },
-      cancelation: {
-        cancelationTx: TX,
-        isCanceled: false,
+      cancellation: {
+        cancellationTx: TX,
+        isCancelled: false,
       },
     },
   },
@@ -173,9 +174,9 @@ const STEPS: Step[] = [
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
       },
-      cancelation: {
-        cancelationTx: TX,
-        isCanceled: true,
+      cancellation: {
+        cancellationTx: TX,
+        isCancelled: true,
       },
     },
   },
@@ -232,9 +233,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancelation: {
-        cancelationTx: TX,
-        isCanceled: false,
+      cancellation: {
+        cancellationTx: TX,
+        isCancelled: false,
       },
     },
   },
@@ -247,9 +248,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancelation: {
-        cancelationTx: TX,
-        isCanceled: true,
+      cancellation: {
+        cancellationTx: TX,
+        isCancelled: true,
       },
     },
   },
@@ -262,9 +263,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancelation: {
-        cancelationTx: TX,
-        isCanceled: false,
+      cancellation: {
+        cancellationTx: TX,
+        isCancelled: false,
       },
       refund: {
         refundTx: TX,
@@ -281,9 +282,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancelation: {
-        cancelationTx: TX,
-        isCanceled: false,
+      cancellation: {
+        cancellationTx: TX,
+        isCancelled: false,
       },
       refund: {
         refundTx: TX,
@@ -300,9 +301,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancelation: {
-        cancelationTx: TX,
-        isCanceled: true,
+      cancellation: {
+        cancellationTx: TX,
+        isCancelled: true,
       },
       refund: {
         refundTx: TX,
@@ -319,9 +320,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancelation: {
-        cancelationTx: TX,
-        isCanceled: true,
+      cancellation: {
+        cancellationTx: TX,
+        isCancelled: true,
       },
       refund: {
         refundTx: TX,

@@ -10,8 +10,6 @@ const expertCommonDescription = 'Transaction signature required, please check yo
 const commonSingularTxProgressDescription = 'Transaction in progress. See below for live status updates.'
 const commonFailedSingularTxGasLimitDescription =
   'Check that you are providing a sufficient gas limit for the transaction in your wallet.'
-const ethFlowDescription = (nativeSymbol: string) =>
-  `CoW Swap does not currently support native ${nativeSymbol} trades. This will be supported very shortly, so stay tuned!`
 
 export const ethFlowConfigs: {
   [key in EthFlowState]: (context: {
@@ -86,8 +84,6 @@ export const ethFlowConfigs: {
     title: 'Wrap and approve',
     buttonText: '',
     descriptions: [
-      ethFlowDescription(nativeSymbol),
-      `Continue this trade by wrapping your ${nativeSymbol}.`,
       `2 pending on-chain transactions: ${nativeSymbol} wrap and approve. Please check your connected wallet for both signature requests.`,
     ],
   }),
@@ -95,13 +91,8 @@ export const ethFlowConfigs: {
     title: `Swap with Wrapped ${nativeSymbol}`,
     buttonText: `Wrap ${nativeSymbol}`,
     descriptions: isExpertMode
-      ? [
-          ethFlowDescription(nativeSymbol),
-          `Continue this trade by wrapping your ${nativeSymbol}.`,
-          expertCommonDescription,
-        ]
+      ? [expertCommonDescription]
       : [
-          ethFlowDescription(nativeSymbol),
           `To continue, click below to wrap your ${nativeSymbol} to ${wrappedSymbol} via an on-chain ERC20 transaction.`,
         ],
   }),
@@ -109,20 +100,15 @@ export const ethFlowConfigs: {
     title: `Approve ${wrappedSymbol}`,
     buttonText: `Approve ${wrappedSymbol}`,
     descriptions: [
-      ethFlowDescription(nativeSymbol),
-      `For now, use your existing ${wrappedSymbol} balance to continue this trade.`,
       isExpertMode
         ? expertCommonDescription
-        : `Additionally, it is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
+        : `It is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
     ],
   }),
   [EthFlowState.SwapReady]: ({ nativeSymbol, wrappedSymbol }) => ({
     title: `Continue swap with ${wrappedSymbol}`,
     buttonText: 'Swap',
-    descriptions: [
-      ethFlowDescription(nativeSymbol),
-      `To continue, click SWAP below to use your existing ${wrappedSymbol} balance and trade.`,
-    ],
+    descriptions: [`To continue, click SWAP below to use your existing ${wrappedSymbol} balance and trade.`],
   }),
   [EthFlowState.Loading]: () => ({
     title: 'Loading operation',

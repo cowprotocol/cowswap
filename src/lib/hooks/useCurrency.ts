@@ -77,7 +77,7 @@ export function useTokenFromNetwork(tokenAddress: string | null | undefined): To
   ])
 }
 
-type TokenMap = { [address: string]: Token }
+export type TokenMap = { [address: string]: Token }
 
 /**
  * Returns a Token from the tokenAddress.

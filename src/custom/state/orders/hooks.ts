@@ -17,6 +17,7 @@ import {
   SerializedOrder,
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
+  setOrderCancellationHash,
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
 } from './actions'
@@ -58,6 +59,8 @@ type GetOrdersByIdParams = {
 
 type GetOrdersParams = Partial<Pick<GetRemoveOrderParams, 'chainId'>>
 type CancelOrderParams = GetRemoveOrderParams
+type SetOrderCancellationHashParams = CancelOrderParams & { hash: string }
+
 interface UpdateOrdersBatchParams {
   ids: OrderID[]
   chainId: ChainId
@@ -72,6 +75,7 @@ export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParam
 export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
 export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
 export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
+export type SetOrderCancellationHashCallback = (setOrderCancellationHashParams: SetOrderCancellationHashParams) => void
 export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
 export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
 export type UpdatePresignGnosisSafeTxCallback = (
@@ -323,6 +327,11 @@ export const useCancelOrdersBatch = (): CancelOrdersBatchCallback => {
     (cancelOrdersBatchParams: CancelOrdersBatchParams) => dispatch(cancelOrdersBatch(cancelOrdersBatchParams)),
     [dispatch]
   )
+}
+
+export const useSetOrderCancellationHash = (): SetOrderCancellationHashCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((params: SetOrderCancellationHashParams) => dispatch(setOrderCancellationHash(params)), [dispatch])
 }
 
 export const useRequestOrderCancellation = (): CancelOrderCallback => {

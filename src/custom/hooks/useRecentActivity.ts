@@ -87,6 +87,7 @@ export default function useRecentActivity() {
         .filter((tx) => tx.from.toLowerCase() === accountLowerCase)
         // Only recent transactions
         .filter(isTransactionRecent)
+        .filter(isNotEthFlowTx)
         .map((tx) => ({
           ...tx,
           // we need to adjust Transaction object and add "id" + "status" to match Orders type
@@ -140,12 +141,18 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     // setup variables accordingly...
     id = order.id
 
-    isPending = order.status === OrderStatus.PENDING
-    isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING
+    isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING // Smart contract orders only
+    isCreating = order.status === OrderStatus.CREATING // EthFlow orders only
+    isPending = order.status === OrderStatus.PENDING // All orders
     isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
-    isCancelling = (order.isCancelling || false) && isPending
+    // `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
+    // We can only do so if the order is in a "pending" state.
+    // `isPending` is used for all orders when they are "OPEN".
+    // `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
+    // After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
+    // Thus, we add both here to tell if the order is being cancelled
+    isCancelling = (order.isCancelling || false) && (isPending || isCreating)
     isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
-    isCreating = order.status === OrderStatus.CREATING
     isRefunding = false // TODO: wire up refunding state
     isRefunded = order.isRefunded || false
 
@@ -293,4 +300,8 @@ export function useRecentActivityLastPendingOrder() {
     // Disabling hook to avoid unnecessary re-renders
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(pending)])
+}
+
+export function isNotEthFlowTx(tx: EnhancedTransactionDetails): boolean {
+  return !tx.ethFlow
 }

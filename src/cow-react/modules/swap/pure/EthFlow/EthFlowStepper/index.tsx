@@ -24,6 +24,7 @@ export interface EthFlowStepperProps {
     orderId: string
     state: SmartOrderStatus
     isExpired: boolean
+    isCreated: boolean
     rejectedReason?: string
   }
 
@@ -32,9 +33,9 @@ export interface EthFlowStepperProps {
     isRefunded: boolean
   }
 
-  cancelation: {
-    cancelationTx?: string
-    isCanceled: boolean
+  cancellation: {
+    cancellationTx?: string
+    isCancelled: boolean
   }
 }
 

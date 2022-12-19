@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 
-export type StatusIconState = 'success' | 'pending' | 'not-started' | 'error'
+export type StatusIconState = 'success' | 'pending' | 'not-started' | 'error' | 'cancelled'
 
 const Content = styled.span`
   display: flex;

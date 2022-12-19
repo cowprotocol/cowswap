@@ -26,8 +26,7 @@ export function useSelectedOrder(): ParsedOrder | null {
     }
 
     const allOrders = Object.values(orders).flat()
-    const order = allOrders.find(({ id }) => id === orderId) || null
 
-    return order
+    return allOrders.find(({ id }) => id === orderId) || null
   }, [orderId, orders])
 }

@@ -1,16 +1,13 @@
 import { NativeCurrency } from '@uniswap/sdk-core'
-import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 
-import { hashOrder, packOrderUidParams } from '@cowprotocol/contracts'
 import { CoWSwapEthFlow } from '@cow/abis/types'
-import { logSwapFlow, logSwapFlowError } from '@cow/modules/swap/services/utils/logger'
+import { logTradeFlow, logTradeFlowError } from '@cow/modules/trade/utils/logger'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
-import { getDomain, UnsignedOrder } from 'utils/signatures'
+import { UnsignedOrder } from 'utils/signatures'
 import { Order, OrderClass } from 'state/orders/actions'
-import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
-import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { ETHFLOW_GAS_LIMIT_DEFAULT } from '@cow/modules/swap/services/ethFlow/const'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -22,18 +19,20 @@ export type EthFlowCreateOrderParams = Omit<UnsignedOrder, 'quoteId' | 'appData'
   validTo: string
   summary: string
 }
-export type EthFlowResponse = { txReceipt: ContractTransaction; order: Order; orderId: string }
+
+export type EthFlowResponse = {
+  txReceipt: ContractTransaction
+  order: Order
+}
+
 export type EthFlowSwapCallback = (orderParams: EthFlowOrderParams) => Promise<EthFlowResponse>
 
-// Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
-const ETHFLOW_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
-
 export async function signEthFlowOrderStep(
+  orderId: string,
   orderParams: PostOrderParams,
   ethFlowContract: CoWSwapEthFlow
 ): Promise<EthFlowResponse> {
-  logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
-  const { chainId } = orderParams
+  logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
   const { order, quoteId, summary } = getOrderParams(orderParams)
 
@@ -52,7 +51,7 @@ export async function signEthFlowOrderStep(
   const estimatedGas = await ethFlowContract.estimateGas
     .createOrder(auxOrderParams, { value: orderParams.sellAmountBeforeFee.quotient.toString() })
     .catch((error) => {
-      logSwapFlowError(
+      logTradeFlowError(
         'ETH FLOW',
         '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + ETHFLOW_GAS_LIMIT_DEFAULT,
         error
@@ -65,21 +64,7 @@ export async function signEthFlowOrderStep(
     value: orderParams.sellAmountBeforeFee.quotient.toString(),
   })
 
-  const domain = getDomain(orderParams.chainId)
-  // Different validTo when signing because EthFlow contract expects it to be max for all orders
-  const orderDigest = hashOrder(domain, {
-    ...order,
-    validTo: MAX_VALID_TO_EPOCH,
-    sellToken: WRAPPED_NATIVE_CURRENCY[chainId].address,
-  })
-  // Generate the orderId from owner, orderDigest, and max validTo
-  const orderId = packOrderUidParams({
-    orderDigest,
-    owner: ethFlowContract.address,
-    validTo: MAX_VALID_TO_EPOCH,
-  })
-
-  logSwapFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
+  logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
 
   return {
     txReceipt,
@@ -92,10 +77,10 @@ export async function signEthFlowOrderStep(
         orderId,
         signature: '',
         summary,
+        quoteId,
         orderCreationHash: txReceipt.hash,
         isOnChain: true, // always on-chain
       },
     }),
-    orderId,
   }
 }

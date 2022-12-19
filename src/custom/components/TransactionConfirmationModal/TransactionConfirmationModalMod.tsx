@@ -38,8 +38,9 @@ import { getEtherscanLink as getExplorerLink } from 'utils'
 
 export const Wrapper = styled.div`
   width: 100%;
-  padding: 1rem;
+  /* padding: 1rem; */
   /* -- mod -- */
+  padding: 16px;
   display: flex;
   flex-flow: column nowrap;
   overflow-y: auto;
@@ -227,7 +228,7 @@ export function ConfirmationModalContent({
         {/* <RowBetween> */}
         <GPModalHeader>
           <Text
-            fontWeight={500}
+            fontWeight={600} // MOD
             fontSize={titleSize || 16} // MOD
             style={styles} //MOD
           >
