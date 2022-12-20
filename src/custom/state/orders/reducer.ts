@@ -47,9 +47,7 @@ export type OrderLists = {
   expired: PartialOrdersMap
   cancelled: PartialOrdersMap
   creating: PartialOrdersMap
-  rejected: PartialOrdersMap
-  refunding: PartialOrdersMap
-  refunded: PartialOrdersMap
+  invalid: PartialOrdersMap
 }
 
 export interface OrdersStateNetwork extends OrderLists {
@@ -64,7 +62,7 @@ export interface PrefillStateRequired {
   chainId: ChainId
 }
 
-export type EthFlowOrderTypes = 'creating' | 'rejected' | 'refunding' | 'refunded'
+export type EthFlowOrderTypes = 'creating' | 'invalid'
 export type PreSignOrderTypes = 'presignaturePending'
 export type OrderTypeKeys = 'pending' | PreSignOrderTypes | 'expired' | 'fulfilled' | 'cancelled' | EthFlowOrderTypes
 
@@ -75,9 +73,7 @@ export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
   'fulfilled',
   'cancelled',
   'creating',
-  'rejected',
-  'refunding',
-  'refunded',
+  'invalid',
 ]
 export const ORDERS_LIST: OrderLists = {
   pending: {},
@@ -86,9 +82,7 @@ export const ORDERS_LIST: OrderLists = {
   expired: {},
   cancelled: {},
   creating: {},
-  rejected: {},
-  refunding: {},
-  refunded: {},
+  invalid: {},
 }
 
 function getDefaultLastCheckedBlock(chainId: ChainId): number {
@@ -135,9 +129,7 @@ function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string
     stateForChain.expired[id] ||
     stateForChain.fulfilled[id] ||
     stateForChain.creating[id] ||
-    stateForChain.rejected[id] ||
-    stateForChain.refunding[id] ||
-    stateForChain.refunded[id]
+    stateForChain.invalid[id]
   )
 }
 
@@ -149,9 +141,7 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.expired[id]
   delete stateForChain.cancelled[id]
   delete stateForChain.creating[id]
-  delete stateForChain.rejected[id]
-  delete stateForChain.refunding[id]
-  delete stateForChain.refunded[id]
+  delete stateForChain.invalid[id]
 }
 
 function addOrderToState(
@@ -194,7 +184,6 @@ export default createReducer(initialState, (builder) =>
       switch (order.status) {
         // EthFlow or PreSign orders have their respective buckets
         case OrderStatus.CREATING: // ethflow orders
-        case OrderStatus.REFUNDING: // ethflow orders
         case OrderStatus.PRESIGNATURE_PENDING: // pre-sign orders
           addOrderToState(state, chainId, id, order.status, order)
           break
@@ -222,7 +211,6 @@ export default createReducer(initialState, (builder) =>
         }
       })
     })
-    // TODO: addCase for ethflow from creating -> open | rejected
     // TODO: addCase for ethflow from open -> refunded
     .addCase(updatePresignGnosisSafeTx, (state, action) => {
       prefillState(state, action)
@@ -254,9 +242,7 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.PENDING, id) ||
           popOrder(state, chainId, OrderStatus.PRESIGNATURE_PENDING, id) ||
           popOrder(state, chainId, OrderStatus.CREATING, id) ||
-          popOrder(state, chainId, OrderStatus.REJECTED, id) ||
-          popOrder(state, chainId, OrderStatus.REFUNDING, id) ||
-          popOrder(state, chainId, OrderStatus.REFUNDED, id)
+          popOrder(state, chainId, OrderStatus.INVALID, id)
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
         // merge existing and new order objects
