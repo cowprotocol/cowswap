@@ -106,7 +106,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
-        label={isCanceling ? 'Initiating ETH Refund...' : 'ETH refunded successfully'}
+        label={isCanceling ? `Initiating ${nativeTokenSymbol} Refund...` : `${nativeTokenSymbol} refunded successfully`}
         id={cancellationTx}
       />
     )
@@ -114,7 +114,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
-        label={isRefunding ? 'Receiving ETH Refund...' : 'ETH refunded successfully'}
+        label={isRefunding ? `Receiving ${nativeTokenSymbol} Refund...` : `${nativeTokenSymbol} refunded successfully`}
         id={refundTx}
       />
     )
@@ -124,9 +124,11 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
   return (
     <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
       <>
-        {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order has expired</ExpiredMessage>}
-        {!isRefunded && wontReceiveToken && !(refundTx || cancellationTx) && !isCancelled && (
-          <RefundMessage>Initiating ETH Refund...</RefundMessage>
+        {!isInvalid && isExpired && !(isSuccess || isOrderRejected) && (
+          <ExpiredMessage>Order has expired</ExpiredMessage>
+        )}
+        {!isInvalid && !isRefunded && wontReceiveToken && !(refundTx || cancellationTx) && !isCancelled && (
+          <RefundMessage>Initiating {nativeTokenSymbol} Refund...</RefundMessage>
         )}
         {isInvalid && <RefundMessage>{nativeTokenSymbol} Refunded</RefundMessage>}
         {refundLink}
