@@ -11,7 +11,6 @@ import {
   expireOrdersBatch,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
-  invalidateOrdersBatch,
   Order,
   preSignOrders,
   requestOrderCancellation,
@@ -70,7 +69,6 @@ interface UpdateOrdersBatchParams {
 }
 
 type ExpireOrdersBatchParams = UpdateOrdersBatchParams
-type InvalidateOrdersBatchParams = UpdateOrdersBatchParams
 type CancelOrdersBatchParams = UpdateOrdersBatchParams
 type PresignOrdersParams = UpdateOrdersBatchParams
 
@@ -78,7 +76,6 @@ export type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersPa
 export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
 export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
 export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
-export type InvalidateOrdersBatchCallback = (invalidateOrdersBatchParams: InvalidateOrdersBatchParams) => void
 export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 export type SetOrderCancellationHashCallback = (setOrderCancellationHashParams: SetOrderCancellationHashParams) => void
 export type CancelOrdersBatchCallback = (cancelOrdersBatchParams: CancelOrdersBatchParams) => void
