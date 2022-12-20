@@ -96,11 +96,11 @@ export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token }
 
 export const ORDER_ID_SHORT_LENGTH = 8
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
-export const DEFAULT_ORDER_DELAY = 20000 // 20s
-export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
-export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min
-export const PRICE_API_TIMEOUT_MS = 10000 // 10s
-export const GP_ORDER_UPDATE_INTERVAL = 30 * 1000 // 30s
+export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
+export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
+export const EXPIRED_ORDERS_PENDING_TIME = ms`15min` // 15min
+export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
+export const GP_ORDER_UPDATE_INTERVAL = ms`30s` // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS

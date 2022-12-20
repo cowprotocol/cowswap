@@ -106,7 +106,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
     <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
       <>
         {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order has expired</ExpiredMessage>}
-        {wontReceiveToken && !(refundTx || cancellationTx) && !isCancelled && (
+        {!isRefunded && wontReceiveToken && !(refundTx || cancellationTx) && !isCancelled && (
           <RefundMessage>Initiating ETH Refund...</RefundMessage>
         )}
         {refundLink}

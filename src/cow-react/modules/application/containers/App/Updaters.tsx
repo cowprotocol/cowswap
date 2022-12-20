@@ -14,6 +14,7 @@ import {
   CancelledOrdersUpdater,
   PendingOrdersUpdater,
   UnfillableOrdersUpdater,
+  ExpiredOrdersUpdater,
 } from 'state/orders/updaters'
 
 import { UploadToIpfsUpdater } from 'state/appData/updater'
@@ -31,6 +32,7 @@ export function Updaters() {
       <MulticallUpdater />
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
+      <ExpiredOrdersUpdater />
       <FeesUpdater />
       <UnfillableOrdersUpdater />
       <GpOrdersUpdater />
