@@ -141,6 +141,7 @@ export interface UpdatePresignGnosisSafeTxParams {
   safeTransaction: SafeMultisigTransactionResponse
 }
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
+export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
 
 export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/addOrUpdateOrders')
@@ -154,6 +155,8 @@ export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxP
 )
 
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
+
+export const invalidateOrdersBatch = createAction<InvalidateOrdersBatchParams>('order/invalidateOrdersBatch')
 
 export const setOrderCancellationHash = createAction<SetOrderCancellationHashParams>('order/setOrderCancellationHash')
 

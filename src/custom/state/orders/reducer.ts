@@ -8,6 +8,7 @@ import {
   clearOrders,
   expireOrdersBatch,
   fulfillOrdersBatch,
+  invalidateOrdersBatch,
   OrderInfoApi,
   OrderStatus,
   preSignOrders,
@@ -303,6 +304,25 @@ export default createReducer(initialState, (builder) =>
           orderObject.order.isCancelling = false
 
           addOrderToState(state, chainId, id, 'expired', orderObject.order)
+        }
+      })
+    })
+    .addCase(invalidateOrdersBatch, (state, action) => {
+      prefillState(state, action)
+      const { ids, chainId } = action.payload
+
+      // if there are any newly fulfilled orders
+      // update them
+      ids.forEach((id) => {
+        const orderObject = getOrderById(state, chainId, id)
+
+        if (orderObject) {
+          deleteOrderById(state, chainId, id)
+
+          orderObject.order.status = OrderStatus.INVALID
+          orderObject.order.isCancelling = false
+
+          addOrderToState(state, chainId, id, 'invalid', orderObject.order)
         }
       })
     })
