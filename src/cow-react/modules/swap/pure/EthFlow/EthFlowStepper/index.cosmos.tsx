@@ -151,6 +151,57 @@ const STEPS: Step[] = [
       },
     },
   },
+  {
+    description: '[INVALID] 1. Just Invalid',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INVALID,
+        rejectedReason: ORDER_REJECTED_REASON,
+      },
+    },
+  },
+  {
+    description: '[INVALID] 2. Invalid Refunding',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INVALID,
+        rejectedReason: ORDER_REJECTED_REASON,
+      },
+      refund: {
+        refundTx: TX,
+        isRefunded: false,
+      },
+    },
+  },
+  {
+    description: '[INVALID] 3. Invalid Refunded',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INVALID,
+        rejectedReason: ORDER_REJECTED_REASON,
+      },
+      refund: {
+        refundTx: TX,
+        isRefunded: true,
+      },
+    },
+  },
+  {
+    description: '[INVALID+NO_REASON] Invalid no reason description',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INVALID,
+      },
+    },
+  },
 
   {
     description: '[CANCEL] 1. Open and Canceling',
