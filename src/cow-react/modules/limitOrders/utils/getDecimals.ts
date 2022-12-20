@@ -6,7 +6,7 @@ export function getDecimals(currency: Currency): number {
     ALI: 18,
   }
 
-  if (!currency.decimals) return DEFAULT_DECIMALS
+  if (currency.decimals === undefined) return DEFAULT_DECIMALS
   if (currency.symbol && currency.symbol in customMap) return customMap[currency.symbol]
 
   return currency.decimals
