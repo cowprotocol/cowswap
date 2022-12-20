@@ -51,8 +51,6 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
       return 'Filled'
     case 'executed':
       return 'Executed'
-    case 'refunded':
-    case 'refunding':
     case 'expired':
       return 'Expired'
     case 'failed':
@@ -84,6 +82,7 @@ export function StatusDetails(props: StatusDetailsProps) {
     isPresignaturePending,
     isConfirmed,
     isExpired,
+    isInvalid,
     isTransaction,
     isCancelled,
     isCreating,
@@ -105,6 +104,8 @@ export function StatusDetails(props: StatusDetailsProps) {
           <SVG src={OrderCheckImage} description="Order Filled" />
         ) : isExpired && isTransaction ? (
           <SVG src={OrderCancelledImage} description="Transaction Failed" />
+        ) : isInvalid ? (
+          <SVG src={OrderCancelledImage} description="Failed" />
         ) : isExpired ? (
           <SVG src={OrderExpiredImage} description="Order Expired" />
         ) : isCreating ? (
