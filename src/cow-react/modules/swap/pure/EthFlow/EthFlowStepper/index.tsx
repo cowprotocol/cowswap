@@ -13,6 +13,7 @@ export enum SmartOrderStatus {
   CREATION_MINED = 'CREATED',
   INDEXED = 'INDEXED',
   FILLED = 'FILLED',
+  INVALID = 'INVALID',
 }
 
 export interface EthFlowStepperProps {

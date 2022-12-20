@@ -15,6 +15,7 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
   const isCancelled = cancellation.isCancelled
   const isOrderCreated = order.isCreated
   const isFilled = state === SmartOrderStatus.FILLED
+  const isInvalid = state === SmartOrderStatus.INVALID
 
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
 
@@ -50,7 +51,7 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
       }
     }
 
-    if (rejectedReason) {
+    if (rejectedReason || isInvalid) {
       return {
         label: 'Order Creation Failed',
         state: 'error',
@@ -71,7 +72,7 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
       state: 'success',
       icon: Checkmark,
     }
-  }, [expiredBeforeCreate, isCancelled, isCreating, isFilled, isIndexing, rejectedReason])
+  }, [expiredBeforeCreate, isCancelled, isCreating, isFilled, isIndexing, isInvalid, rejectedReason])
 
   const errorMessage = error || rejectedReason
   return (
