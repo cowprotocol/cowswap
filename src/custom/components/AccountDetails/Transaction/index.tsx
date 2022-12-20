@@ -42,7 +42,7 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
       return PILL_COLOUR_MAP.CANCELLED_ORDER
     case ActivityStatus.CREATING:
       return PILL_COLOUR_MAP.CREATING
-    case ActivityStatus.FAILED:
+    case ActivityStatus.INVALID:
       return PILL_COLOUR_MAP.FAILED
   }
 }
@@ -69,8 +69,7 @@ export interface ActivityDerivedState {
   isUnfillable?: boolean
   // EthFlow flags
   isCreating: boolean
-  isRefunding: boolean
-  isRefunded: boolean
+  isInvalid: boolean
   // TODO: refactor these convenience flags
 
   // Possible activity types
