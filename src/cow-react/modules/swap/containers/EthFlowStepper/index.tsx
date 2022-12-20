@@ -74,6 +74,8 @@ function mapOrderToEthFlowStepperState(
 
     if (status === 'fulfilled') {
       return SmartOrderStatus.FILLED
+    } else if (status === 'invalid' || isTxFailed(creationTx)) {
+      return SmartOrderStatus.INVALID
     } else if (ORDER_INDEXED_STATUSES.includes(status) || cancellationTx?.receipt) {
       return SmartOrderStatus.INDEXED
     } else if (status === 'creating') {
@@ -92,6 +94,10 @@ function isEthFlowOrderExpired(order: Order | undefined): boolean {
 
 function isEthFlowOrderCancelled(order: Order, cancellationTx: EnhancedTransactionDetails | undefined): boolean {
   return order.status === 'cancelled' || !!cancellationTx?.receipt
+}
+
+function isTxFailed(tx: EnhancedTransactionDetails | undefined): boolean {
+  return tx?.receipt?.status !== undefined && tx?.receipt?.status !== 1
 }
 
 // TODO: move this somewhere else?
