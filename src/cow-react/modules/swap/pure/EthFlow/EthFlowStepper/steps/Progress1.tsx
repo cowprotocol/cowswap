@@ -1,11 +1,15 @@
 import React, { useMemo } from 'react'
-import { Progress, EthFlowStepperProps, SmartOrderStatus, ProgressProps } from '..'
+import { EthFlowStepperProps, Progress, ProgressProps, SmartOrderStatus } from '..'
 
 export function Progress1({ order }: EthFlowStepperProps) {
   const { state, isExpired } = order
   const isCreating = state === SmartOrderStatus.CREATING
+  const isInvalid = state === SmartOrderStatus.INVALID
 
   const { status: progressStatus, value: progress } = useMemo<ProgressProps>(() => {
+    if (isInvalid) {
+      return { value: 0, status: 'error' }
+    }
     if (isCreating) {
       if (isExpired) {
         return {
@@ -24,7 +28,7 @@ export function Progress1({ order }: EthFlowStepperProps) {
       value: 100,
       status: 'pending',
     }
-  }, [isCreating, isExpired])
+  }, [isCreating, isExpired, isInvalid])
 
   return <Progress status={progressStatus} value={progress} />
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import Send from 'assets/cow-swap/send.svg'
 import Exclamation from 'assets/cow-swap/exclamation.svg'
 import Checkmark from 'assets/cow-swap/checkmark.svg'
+import X from 'assets/cow-swap/x.svg'
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { StatusIconState } from '../StatusIcon'
 import { Step, ExplorerLinkStyled } from '../Step'
@@ -9,6 +10,7 @@ import { Step, ExplorerLinkStyled } from '../Step'
 export function Step1({ nativeTokenSymbol, order }: EthFlowStepperProps) {
   const { state, isExpired, createOrderTx } = order
   const isCreating = state === SmartOrderStatus.CREATING
+  const isInvalid = state === SmartOrderStatus.INVALID
 
   let label: string, stepState: StatusIconState, icon: string
   if (isCreating) {
@@ -20,6 +22,10 @@ export function Step1({ nativeTokenSymbol, order }: EthFlowStepperProps) {
       stepState = 'pending'
       icon = Send
     }
+  } else if (isInvalid) {
+    label = 'Transaction failed'
+    stepState = 'error'
+    icon = X
   } else {
     label = 'Sent ' + nativeTokenSymbol
     stepState = 'success'

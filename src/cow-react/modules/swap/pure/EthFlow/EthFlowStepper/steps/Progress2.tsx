@@ -11,40 +11,26 @@ export function Progress2({ order, refund, cancellation }: EthFlowStepperProps) 
     const isFilled = state === SmartOrderStatus.FILLED
     const isCreating = state === SmartOrderStatus.CREATING
     const isTerminalState = isRefunded || isCancelled || isFilled
+    const isInvalid = state === SmartOrderStatus.INVALID
+
+    if (isInvalid) {
+      return { status: 'error', value: 0 }
+    }
 
     if (isTerminalState) {
-      return {
-        status: 'success',
-        value: 100,
-      }
+      return { status: 'success', value: 100 }
     }
 
     if (refundTx || cancellationTx) {
-      return {
-        status: 'pending',
-        value: 66,
-      }
+      return { status: 'pending', value: 66 }
     }
 
     if (isCreating || isIndexing) {
-      return {
-        status: 'not-started',
-        value: 0,
-      }
+      return { status: 'not-started', value: 0 }
     }
 
-    if (refundTx || cancellationTx) {
-      return {
-        status: 'pending',
-        value: 66,
-      }
-    }
-
-    return {
-      status: 'pending',
-      value: 33,
-    }
-  }, [state, refundTx, cancellationTx, isCancelled, isRefunded])
+    return { status: 'pending', value: 33 }
+  }, [state, isRefunded, isCancelled, refundTx, cancellationTx])
 
   return <Progress status={progressStatus} value={progress} />
 }

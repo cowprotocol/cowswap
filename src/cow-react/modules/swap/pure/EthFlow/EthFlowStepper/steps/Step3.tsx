@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import Finish from 'assets/cow-swap/finish.svg'
 import Checkmark from 'assets/cow-swap/checkmark.svg'
 import Refund from 'assets/cow-swap/refund.svg'
+import Exclamation from 'assets/cow-swap/exclamation.svg'
 import styled from 'styled-components/macro'
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'
@@ -25,6 +26,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
   const isCreating = state === SmartOrderStatus.CREATING
   const isFilled = state === SmartOrderStatus.FILLED
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
+  const isInvalid = state === SmartOrderStatus.INVALID
 
   // Get the label, state and icon
   const {
@@ -60,6 +62,13 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
         icon: Refund,
       }
     }
+    if (isInvalid) {
+      return {
+        label: 'Receive ' + tokenLabel,
+        state: 'not-started',
+        icon: Exclamation,
+      }
+    }
     if (isIndexed) {
       return {
         label: 'Receive ' + tokenLabel,
@@ -73,7 +82,17 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
       state: 'not-started',
       icon: Finish,
     }
-  }, [nativeTokenSymbol, tokenLabel, expiredBeforeCreate, isIndexing, isFilled, isCancelled, isRefunded, isIndexed])
+  }, [
+    expiredBeforeCreate,
+    isIndexing,
+    isFilled,
+    isCancelled,
+    isRefunded,
+    isInvalid,
+    isIndexed,
+    tokenLabel,
+    nativeTokenSymbol,
+  ])
 
   const isRefunding = !!refundTx && !isRefunded
   const isCanceling = !!cancellationTx && !isCancelled
@@ -109,6 +128,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
         {!isRefunded && wontReceiveToken && !(refundTx || cancellationTx) && !isCancelled && (
           <RefundMessage>Initiating ETH Refund...</RefundMessage>
         )}
+        {isInvalid && <RefundMessage>{nativeTokenSymbol} Refunded</RefundMessage>}
         {refundLink}
       </>
     </Step>
