@@ -71,7 +71,6 @@ function finalizeEthereumTransaction(
 
   const ethFlowInfo = transaction.ethFlow
   if (ethFlowInfo) {
-    params.removeInFlightOrderId(ethFlowInfo.orderId)
     setTimeout(() => params.removeInFlightOrderId(ethFlowInfo.orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
   }
 
