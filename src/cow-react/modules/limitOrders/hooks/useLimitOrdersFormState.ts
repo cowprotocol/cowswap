@@ -8,7 +8,7 @@ import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTra
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import useENSAddress from 'hooks/useENSAddress'
 import { isAddress } from 'utils'
 import { useAtomValue } from 'jotai/utils'
@@ -32,6 +32,7 @@ export enum LimitOrdersFormState {
   InsufficientBalance = 'InsufficientBalance',
   CantLoadBalances = 'CantLoadBalances',
   QuoteError = 'QuoteError',
+  ZeroPrice = 'ZeroPrice',
 }
 
 interface LimitOrdersFormParams {
@@ -47,6 +48,8 @@ interface LimitOrdersFormParams {
   activeRate: Fraction | null
   isWrapOrUnwrap: boolean
   isRateLoading: boolean
+  buyAmount: CurrencyAmount<Currency> | null
+  sellAmount: CurrencyAmount<Currency> | null
 }
 
 function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState {
@@ -62,6 +65,8 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     isWrapOrUnwrap,
     activeRate,
     isRateLoading,
+    sellAmount,
+    buyAmount,
   } = params
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
@@ -133,6 +138,13 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.QuoteError
   }
 
+  if (
+    (!sellAmount?.equalTo(0) && buyAmount?.toExact() === '0') ||
+    (!buyAmount?.equalTo(0) && buyAmount?.toExact() === '0')
+  ) {
+    return LimitOrdersFormState.ZeroPrice
+  }
+
   return LimitOrdersFormState.CanTrade
 }
 
@@ -147,6 +159,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
 
   const { inputCurrency, outputCurrency, recipient } = tradeState
   const sellAmount = tradeState.inputCurrencyAmount
+  const buyAmount = tradeState.outputCurrencyAmount
   const sellToken = inputCurrency?.isToken ? inputCurrency : undefined
   const spender = chainId ? GP_VAULT_RELAYER[chainId] : undefined
 
@@ -168,6 +181,8 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
     activeRate,
     isWrapOrUnwrap,
     isRateLoading: isLoading,
+    buyAmount,
+    sellAmount,
   }
 
   return useSafeMemo(() => {

@@ -4,11 +4,25 @@ import { useBaseFlowContextSetup, getFlowContext } from '@cow/modules/swap/hooks
 import { EthFlowContext } from '@cow/modules/swap/services/types'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
+import { useCallback } from 'react'
+import {
+  ethFlowInFlightOrderIdsAtom,
+  addInFlightOrderIdAtom,
+} from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { useSetAtom, useAtomValue } from 'jotai'
 
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
   const baseProps = useBaseFlowContextSetup()
   const addTransaction = useTransactionAdder()
+
+  const ethFlowInFlightOrderIds = useAtomValue(ethFlowInFlightOrderIdsAtom)
+  const addInFlightOrderId = useSetAtom(addInFlightOrderIdAtom)
+
+  const checkInFlightOrderIdExists = useCallback(
+    (orderId: string) => ethFlowInFlightOrderIds.includes(orderId),
+    [ethFlowInFlightOrderIds]
+  )
 
   const baseContext = getFlowContext({
     baseProps,
@@ -22,5 +36,7 @@ export function useEthFlowContext(): EthFlowContext | null {
     ...baseContext,
     contract,
     addTransaction,
+    checkInFlightOrderIdExists,
+    addInFlightOrderId,
   }
 }

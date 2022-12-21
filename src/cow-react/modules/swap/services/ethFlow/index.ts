@@ -8,7 +8,7 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderStep'
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 
-export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImpact): Promise<void> {
+export async function ethFlow(ethFlowContext: EthFlowContext, priceImpactParams: PriceImpact): Promise<void> {
   const {
     swapFlowAnalyticsContext,
     context,
@@ -18,7 +18,9 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
     appDataInfo,
     dispatch,
     orderParams: orderParamsOriginal,
-  } = input
+    checkInFlightOrderIdExists,
+    addInFlightOrderId,
+  } = ethFlowContext
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !confirmPriceImpactWithoutFee(priceImpactParams.priceImpact)) {
@@ -31,13 +33,19 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
   swapConfirmManager.sendTransaction(context.trade)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')
-  const { orderId, orderParams } = await calculateUniqueOrderId(orderParamsOriginal, contract)
+  const { orderId, orderParams } = await calculateUniqueOrderId(
+    orderParamsOriginal,
+    contract,
+    checkInFlightOrderIdExists
+  )
 
   try {
     logTradeFlow('ETH FLOW', 'STEP 4: sign order')
-    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract).finally(() => {
-      callbacks.closeModals()
-    })
+    const { order, txReceipt } = await signEthFlowOrderStep(orderId, orderParams, contract, addInFlightOrderId).finally(
+      () => {
+        callbacks.closeModals()
+      }
+    )
 
     logTradeFlow('ETH FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
@@ -49,7 +57,7 @@ export async function ethFlow(input: EthFlowContext, priceImpactParams: PriceImp
       dispatch
     )
     // TODO: maybe move this into addPendingOrderStep?
-    input.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
+    ethFlowContext.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
 
     logTradeFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
     callbacks.addAppDataToUploadQueue({ chainId: context.chainId, orderId, appData: appDataInfo })
