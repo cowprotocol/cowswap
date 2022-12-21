@@ -47,11 +47,7 @@ export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
 `
 
 export const SwapHeaderStyled = styled(SwapHeader)`
-  padding: 8px 8px 16px;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 0 0 16px;
-  `};
+  padding: 4px 4px 16px 8px;
 `
 
 export const RemoveRecipientStyled = styled(RemoveRecipient)`
