@@ -89,12 +89,14 @@ const WalletIcon = styled.div`
 `
 
 export const GPModalHeader = styled(RowBetween)`
+  padding: 16px 0 0;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 16px;
+    padding: 16px 0 0;
     background: ${({ theme }) => theme.bg1};
     z-index: 20;
   `}
