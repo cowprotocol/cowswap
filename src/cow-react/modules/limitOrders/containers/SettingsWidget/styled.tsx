@@ -59,8 +59,8 @@ export const ExpertModeIndicator = styled.div`
 `
 
 export const SettingsIcon = styled(SettingsIconRaw)`
-  height: 18px;
-  width: 18px;
+  height: 20px;
+  width: 20px;
 
   > path,
   > circle {

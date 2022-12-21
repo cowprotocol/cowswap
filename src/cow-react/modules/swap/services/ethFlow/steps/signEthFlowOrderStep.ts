@@ -30,17 +30,19 @@ export type EthFlowSwapCallback = (orderParams: EthFlowOrderParams) => Promise<E
 export async function signEthFlowOrderStep(
   orderId: string,
   orderParams: PostOrderParams,
-  ethFlowContract: CoWSwapEthFlow
+  ethFlowContract: CoWSwapEthFlow,
+  addInFlightOrderId: (orderId: string) => void
 ): Promise<EthFlowResponse> {
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] - signing orderParams onchain', orderParams)
 
+  const etherValue = orderParams.sellAmountBeforeFee
   const { order, quoteId, summary } = getOrderParams(orderParams)
 
   if (!quoteId) {
     throw new Error('[EthFlow::SignEthFlowOrderStep] No quoteId passed')
   }
 
-  const auxOrderParams: EthFlowCreateOrderParams = {
+  const ethOrderParams: EthFlowCreateOrderParams = {
     ...order,
     quoteId,
     appData: order.appData.toString(),
@@ -48,8 +50,9 @@ export async function signEthFlowOrderStep(
     summary,
   }
 
+  const ethTxOptions = { value: etherValue.quotient.toString() }
   const estimatedGas = await ethFlowContract.estimateGas
-    .createOrder(auxOrderParams, { value: orderParams.sellAmountBeforeFee.quotient.toString() })
+    .createOrder(ethOrderParams, { value: etherValue.quotient.toString() })
     .catch((error) => {
       logTradeFlowError(
         'ETH FLOW',
@@ -59,10 +62,11 @@ export async function signEthFlowOrderStep(
       return ETHFLOW_GAS_LIMIT_DEFAULT
     })
 
-  const txReceipt = await ethFlowContract.createOrder(auxOrderParams, {
+  const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
+    ...ethTxOptions,
     gasLimit: calculateGasMargin(estimatedGas),
-    value: orderParams.sellAmountBeforeFee.quotient.toString(),
   })
+  addInFlightOrderId(orderId)
 
   logTradeFlow('ETH FLOW', '[EthFlow::SignEthFlowOrderStep] Sent transaction onchain', orderId, txReceipt)
 
