@@ -13,7 +13,20 @@ export enum SmartOrderStatus {
   CREATION_MINED = 'CREATED',
   INDEXED = 'INDEXED',
   FILLED = 'FILLED',
-  INVALID = 'INVALID',
+}
+
+type TxState = {
+  /**
+   * undefined: there's no tx to track
+   * string: tx was created and can be tracked
+   */
+  hash?: string
+  /**
+   * undefined: not started/mining
+   * true: transaction failed
+   * false: transaction succeeded
+   */
+  failed?: boolean
 }
 
 export interface EthFlowStepperProps {
@@ -21,23 +34,33 @@ export interface EthFlowStepperProps {
   tokenLabel: string
 
   order: {
-    createOrderTx: string
     orderId: string
     state: SmartOrderStatus
+    /**
+     * To track if the order is past the expiration date
+     */
     isExpired: boolean
+    /**
+     * To track if the order has been created on the backend
+     */
     isCreated: boolean
     rejectedReason?: string
   }
 
-  refund: {
-    refundTx?: string
-    isRefunded: boolean
-  }
+  /**
+   * To track smart order tx creation
+   */
+  creation: TxState
 
-  cancellation: {
-    cancellationTx?: string
-    isCancelled: boolean
-  }
+  /**
+   * To track refund tx
+   */
+  refund: TxState
+
+  /**
+   * To track cancellation tx
+   */
+  cancellation: TxState
 }
 
 const Wrapper = styled.div`

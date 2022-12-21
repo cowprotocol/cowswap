@@ -36,26 +36,31 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
     return null
   }
 
+  const creationTxFailed = didTxFail(creationTx)
+
+  const rejectedReason = creationTxFailed ? 'Transaction failed' : undefined
+
   const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
     tokenLabel: safeTokenName(order.outputToken),
     order: {
-      // The creation hash is only available in the device where the order is placed
-      createOrderTx: creationHash || '',
       orderId: order.id,
       state,
       isExpired: isEthFlowOrderExpired(order),
       isCreated: !!order.apiAdditionalInfo,
-      // rejectedReason?: TODO: address when dealing with rejections
+      rejectedReason,
     },
-    // TODO: fill these in when dealing with rejections
+    creation: {
+      hash: creationHash,
+      failed: creationTxFailed,
+    },
     refund: {
-      // refundTx?: string
-      isRefunded: order.isRefunded || false,
+      // hash?: string // TODO: fill in when backend provides it
+      failed: didRefundFail(order),
     },
     cancellation: {
-      cancellationTx: cancellationHash,
-      isCancelled: isEthFlowOrderCancelled(order, cancellationTx),
+      hash: cancellationHash,
+      failed: didCancellationFail(order, cancellationTx),
     },
   }
 
@@ -74,16 +79,12 @@ function mapOrderToEthFlowStepperState(
 
     if (status === 'fulfilled') {
       return SmartOrderStatus.FILLED
-    } else if (status === 'invalid' || isTxFailed(creationTx)) {
-      return SmartOrderStatus.INVALID
     } else if (ORDER_INDEXED_STATUSES.includes(status) || cancellationTx?.receipt) {
       return SmartOrderStatus.INDEXED
-    } else if (status === 'creating') {
-      if (creationTx?.receipt) {
-        return SmartOrderStatus.CREATION_MINED
-      }
-      return SmartOrderStatus.CREATING
+    } else if (status === 'creating' && creationTx?.receipt) {
+      return SmartOrderStatus.CREATION_MINED
     }
+    return SmartOrderStatus.CREATING
   }
   return undefined
 }
@@ -92,12 +93,25 @@ function isEthFlowOrderExpired(order: Order | undefined): boolean {
   return order?.status === 'expired' || isOrderExpired({ validTo: order?.validTo as number })
 }
 
-function isEthFlowOrderCancelled(order: Order, cancellationTx: EnhancedTransactionDetails | undefined): boolean {
-  return order.status === 'cancelled' || !!cancellationTx?.receipt
+function didTxFail(tx: EnhancedTransactionDetails | undefined): boolean | undefined {
+  if (tx?.receipt?.status === undefined) {
+    return undefined
+  }
+  return tx.receipt.status !== 1
 }
 
-function isTxFailed(tx: EnhancedTransactionDetails | undefined): boolean {
-  return tx?.receipt?.status !== undefined && tx?.receipt?.status !== 1
+function didCancellationFail(order: Order, tx: EnhancedTransactionDetails | undefined): boolean | undefined {
+  if (order.status === OrderStatus.CANCELLED) {
+    return false
+  }
+  return didTxFail(tx)
+}
+
+function didRefundFail(order: Order): boolean | undefined {
+  if (order.isRefunded === undefined) {
+    return undefined
+  }
+  return !order.isRefunded
 }
 
 // TODO: move this somewhere else?

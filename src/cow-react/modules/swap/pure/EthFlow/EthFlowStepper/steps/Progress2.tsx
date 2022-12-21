@@ -1,19 +1,19 @@
 import React, { useMemo } from 'react'
 import { Progress, EthFlowStepperProps, SmartOrderStatus, ProgressProps } from '..'
 
-export function Progress2({ order, refund, cancellation }: EthFlowStepperProps) {
+export function Progress2({ order, creation, refund, cancellation }: EthFlowStepperProps) {
   const { state } = order
-  const { isRefunded, refundTx } = refund
-  const { isCancelled, cancellationTx } = cancellation
+  const { failed: creationFailed } = creation
+  const { hash: refundHash, failed: refundFailed } = refund
+  const { hash: cancellationHash, failed: cancellationFailed } = cancellation
 
   const { status: progressStatus, value: progress } = useMemo<ProgressProps>(() => {
     const isIndexing = state === SmartOrderStatus.CREATION_MINED
     const isFilled = state === SmartOrderStatus.FILLED
     const isCreating = state === SmartOrderStatus.CREATING
-    const isTerminalState = isRefunded || isCancelled || isFilled
-    const isInvalid = state === SmartOrderStatus.INVALID
+    const isTerminalState = refundFailed !== undefined || cancellationFailed !== undefined || isFilled
 
-    if (isInvalid) {
+    if (creationFailed) {
       return { status: 'error', value: 0 }
     }
 
@@ -21,7 +21,7 @@ export function Progress2({ order, refund, cancellation }: EthFlowStepperProps) 
       return { status: 'success', value: 100 }
     }
 
-    if (refundTx || cancellationTx) {
+    if (refundHash || cancellationHash) {
       return { status: 'pending', value: 66 }
     }
 
@@ -30,7 +30,7 @@ export function Progress2({ order, refund, cancellation }: EthFlowStepperProps) 
     }
 
     return { status: 'pending', value: 33 }
-  }, [state, isRefunded, isCancelled, refundTx, cancellationTx])
+  }, [cancellationFailed, cancellationHash, creationFailed, refundFailed, refundHash, state])
 
   return <Progress status={progressStatus} value={progress} />
 }
