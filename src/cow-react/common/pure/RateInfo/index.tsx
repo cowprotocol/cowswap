@@ -9,6 +9,7 @@ import { SupportedChainId } from 'constants/chains'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { usePrice } from '@cow/common/hooks/usePrice'
 import { transparentize } from 'polished'
+import { DEFAULT_DECIMALS } from '@cowprotocol/cow-js'
 
 export interface RateInfoParams {
   chainId: SupportedChainId | undefined
@@ -155,7 +156,13 @@ export function RateInfo({
       )}
       <div>
         <RateWrapper onClick={() => setCurrentIsInversed((state) => !state)}>
-          <span title={currentActiveRate.toFixed(rateOutputCurrency.decimals) + ' ' + rateOutputCurrency.symbol}>
+          <span
+            title={
+              currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
+              ' ' +
+              rateOutputCurrency.symbol
+            }
+          >
             1 {rateInputCurrency.symbol} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
           </span>{' '}
           {!!fiatAmount && <FiatRate>(≈${formatSmart(fiatAmount, 2)})</FiatRate>}
