@@ -23,7 +23,7 @@ export const GpModal = styled(Modal)<{
     background-color: ${({ theme }) => theme.bg1};
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      max-height: 100%;
+      max-height: 100vh;
       max-width: 100%;
       height: 100%;
       width: 100vw;

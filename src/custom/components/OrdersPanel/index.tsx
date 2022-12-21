@@ -82,6 +82,12 @@ const Header = styled.div`
   align-items: center;
   transition: opacity 0.2s ease-in-out;
   color: ${({ theme }) => theme.text1};
+  background: ${({ theme }) => theme.bg1};
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     top: 0;
@@ -101,6 +107,10 @@ const Header = styled.div`
   > strong {
     font-size: 24px;
     color: inherit;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 18px;
+    `};
   }
 `
 
