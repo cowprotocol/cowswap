@@ -139,9 +139,11 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
       }
     `,
     colorScrollbar: css`
-      scrollbar-color: ${transparentize(0.5, darkMode ? colorsTheme.text1 : colorsTheme.text1)} ${colorsTheme.bg1};
+      // Firefox only
+      scrollbar-color: ${transparentize(0.5, colorsTheme.text2)} ${colorsTheme.grey1};
       scroll-behavior: smooth;
 
+      // Webkit browsers only
       &::-webkit-scrollbar {
         background: ${transparentize(0.6, colorsTheme.grey1)};
         width: 8px;
@@ -154,16 +156,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         border-radius: 14px;
         background-clip: padding-box;
       }
-
-      /* &::-webkit-resizer,
-      &::-webkit-scrollbar-button,
-      &::-webkit-scrollbar-corner {
-        height: 6px;
-      }
-
-      &::-webkit-scrollbar-track {
-        height: 5px;
-      } */
     `,
     textShadow1: `
       ${
