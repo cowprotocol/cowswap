@@ -129,6 +129,12 @@ export const MAIN_MENU: MenuTreeItem[] = [
             url: Routes.TERMS_CONDITIONS,
             iconSVG: IMAGE_DOCS,
           },
+          {
+            id: MainMenuItemId.OTHER_PRIVACY_POLICY,
+            title: 'Privacy Policy',
+            url: Routes.PRIVACY_POLICY,
+            iconSVG: IMAGE_DOCS,
+          },
         ],
       },
     ],
