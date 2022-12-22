@@ -336,11 +336,24 @@ const STEPS: Step[] = [
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
-        isExpired: false,
+        isExpired: true,
       },
       creation: { ...defaultProps.creation, failed: false },
       cancellation: { hash: TX, failed: true },
       refund: { failed: false },
+    },
+  },
+  {
+    description: '[TX-FAILED-CANCELLATION] Cancellation tx failed - order filled',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.FILLED,
+        isExpired: false,
+      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX, failed: true },
     },
   },
   {
@@ -350,7 +363,7 @@ const STEPS: Step[] = [
       order: {
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
-        isExpired: false,
+        isExpired: true,
       },
       creation: { ...defaultProps.creation, failed: false },
       refund: { hash: TX, failed: true },
