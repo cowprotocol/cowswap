@@ -435,6 +435,8 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
       return `${prefix} Cancelled`
     case ActivityStatus.CANCELLING:
       return `${prefix} Cancelling`
+    case ActivityStatus.INVALID:
+      return `${prefix} Failed`
     default:
       return `${prefix} Submitted`
   }
@@ -576,7 +578,10 @@ function DisplayLink({ id, chainId }: DisplayLinkProps) {
     return null
   }
 
-  const ethFlowHash = orderCreationHash && status === OrderStatus.CREATING ? orderCreationHash : undefined
+  const ethFlowHash =
+    orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.INVALID)
+      ? orderCreationHash
+      : undefined
   const href = ethFlowHash
     ? getBlockExplorerUrl(chainId, ethFlowHash, 'transaction')
     : getEtherscanLink(chainId, id, 'transaction')

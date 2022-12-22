@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import Finish from 'assets/cow-swap/finish.svg'
 import Checkmark from 'assets/cow-swap/checkmark.svg'
 import Refund from 'assets/cow-swap/refund.svg'
+import Exclamation from 'assets/cow-swap/exclamation.svg'
 import styled from 'styled-components/macro'
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'
@@ -15,16 +16,18 @@ const ExpiredMessage = styled.span`
   color: ${({ theme }) => theme.warning};
 `
 
-export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellation }: EthFlowStepperProps) {
+export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, cancellation }: EthFlowStepperProps) {
   const { state, isExpired, rejectedReason } = order
-  const { isRefunded, refundTx } = refund
-  const { isCancelled, cancellationTx } = cancellation
+  const { failed: creationFailed } = creation
+  const { hash: refundHash, failed: refundFailed } = refund
+  const { hash: cancellationHash, failed: cancellationFailed } = cancellation
 
   const isIndexing = state === SmartOrderStatus.CREATION_MINED
   const isIndexed = state === SmartOrderStatus.INDEXED
   const isCreating = state === SmartOrderStatus.CREATING
   const isFilled = state === SmartOrderStatus.FILLED
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
+  const isRefunded = refundFailed === false || cancellationFailed === false
 
   // Get the label, state and icon
   const {
@@ -32,6 +35,13 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
     state: stepState,
     icon,
   } = useMemo<StepProps>(() => {
+    if (creationFailed) {
+      return {
+        label: 'Receive ' + tokenLabel,
+        state: 'not-started',
+        icon: Exclamation,
+      }
+    }
     if (expiredBeforeCreate) {
       return {
         label: 'Receive ' + tokenLabel,
@@ -53,7 +63,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
         icon: Checkmark,
       }
     }
-    if (isCancelled || isRefunded) {
+    if (isRefunded) {
       return {
         label: nativeTokenSymbol + ' Refunded',
         state: 'success',
@@ -73,30 +83,30 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
       state: 'not-started',
       icon: Finish,
     }
-  }, [nativeTokenSymbol, tokenLabel, expiredBeforeCreate, isIndexing, isFilled, isCancelled, isRefunded, isIndexed])
+  }, [expiredBeforeCreate, isIndexing, isFilled, isRefunded, creationFailed, isIndexed, tokenLabel, nativeTokenSymbol])
 
-  const isRefunding = !!refundTx && !isRefunded
-  const isCanceling = !!cancellationTx && !isCancelled
+  const isRefunding = !!refundHash && refundFailed === undefined
+  const isCanceling = !!cancellationHash && cancellationFailed === undefined
   const isOrderRejected = !!rejectedReason
-  const wontReceiveToken =
-    !isFilled && (isExpired || isOrderRejected || isRefunding || isCanceling || isCancelled || isRefunded)
+  const wontReceiveToken = !isFilled && (isExpired || isOrderRejected || isRefunding || isCanceling || isRefunded)
   const isSuccess = stepState === 'success'
 
   let refundLink: JSX.Element | undefined
-  if (cancellationTx && !isRefunded && !isFilled) {
+
+  if (cancellationHash && refundFailed !== false && !isFilled) {
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
-        label={isCanceling ? 'Initiating ETH Refund...' : 'ETH refunded successfully'}
-        id={cancellationTx}
+        label={isCanceling ? `Initiating ${nativeTokenSymbol} Refund...` : `${nativeTokenSymbol} refunded successfully`}
+        id={cancellationHash}
       />
     )
-  } else if ((refundTx && !(expiredBeforeCreate || cancellationTx)) || (refundTx && isRefunded)) {
+  } else if ((refundHash && !(expiredBeforeCreate || cancellationHash)) || (refundHash && isRefunded)) {
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
-        label={isRefunding ? 'Receiving ETH Refund...' : 'ETH refunded successfully'}
-        id={refundTx}
+        label={isRefunding ? `Receiving ${nativeTokenSymbol} Refund...` : `${nativeTokenSymbol} refunded successfully`}
+        id={refundHash}
       />
     )
   }
@@ -105,10 +115,15 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, refund, cancellati
   return (
     <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
       <>
-        {isExpired && !(isSuccess || isOrderRejected) && <ExpiredMessage>Order has expired</ExpiredMessage>}
-        {!isRefunded && wontReceiveToken && !(refundTx || cancellationTx) && !isCancelled && (
-          <RefundMessage>Initiating ETH Refund...</RefundMessage>
+        {!creationFailed && isExpired && !(isSuccess || isOrderRejected) && (
+          <ExpiredMessage>Order has expired</ExpiredMessage>
         )}
+        {!creationFailed &&
+          !isRefunded &&
+          wontReceiveToken &&
+          !(refundHash || cancellationHash) &&
+          cancellationFailed === undefined && <RefundMessage>Initiating {nativeTokenSymbol} Refund...</RefundMessage>}
+        {creationFailed && <RefundMessage>{nativeTokenSymbol} Refunded</RefundMessage>}
         {refundLink}
       </>
     </Step>

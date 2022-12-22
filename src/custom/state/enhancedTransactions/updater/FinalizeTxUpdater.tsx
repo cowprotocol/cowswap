@@ -16,7 +16,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
-import { cancelOrdersBatch } from 'state/orders/actions'
+import { cancelOrdersBatch, invalidateOrdersBatch } from 'state/orders/actions'
 import { useSetAtom } from 'jotai'
 import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import ms from 'ms.macro'
@@ -69,11 +69,6 @@ function finalizeEthereumTransaction(
   const { chainId, addPopup, dispatch } = params
   const { hash } = transaction
 
-  const ethFlowInfo = transaction.ethFlow
-  if (ethFlowInfo) {
-    setTimeout(() => params.removeInFlightOrderId(ethFlowInfo.orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
-  }
-
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)
 
   dispatch(
@@ -93,8 +88,9 @@ function finalizeEthereumTransaction(
     })
   )
 
-  if (!transaction.ethFlow) {
-    // Do NOT trigger the pop-ups when this is an EthFlow related tx
+  const ethFlowInfo = transaction.ethFlow
+
+  if (!ethFlowInfo) {
     addPopup(
       {
         txn: {
@@ -107,10 +103,21 @@ function finalizeEthereumTransaction(
     )
   } else {
     // When it IS an EthFlow related tx, take action depending on the type
-    const { orderId, subType } = transaction.ethFlow
+    const { orderId, subType } = ethFlowInfo
+
+    // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
+    setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
+
+    if (subType === 'creation') {
+      // If creation failed, mark order as invalid
+      if (receipt.status !== 1) {
+        dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
+      }
+    }
 
     if (subType === 'cancellation') {
-      // For now, only handling the cancellation events
+      // If cancellation succeeded, mark order as cancelled
+      // TODO: this might fail too. Handle the case of cancellation failure
       dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
     }
   }
