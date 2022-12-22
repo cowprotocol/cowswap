@@ -21,6 +21,7 @@ export const GpModal = styled(Modal)<{
     margin: auto;
     transition: max-width 0.4s ease;
     background-color: ${({ theme }) => theme.bg1};
+    ${({ theme }) => theme.colorScrollbar};
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
       max-height: 100vh;

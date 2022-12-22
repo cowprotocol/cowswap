@@ -68,6 +68,7 @@ declare module 'styled-components' {
   // Override theme
   export interface DefaultTheme extends DefaultThemeUniswap, Colors {
     shimmer: FlattenSimpleInterpolation
+    colorScrollbar: FlattenSimpleInterpolation
     textShadow1: string
     boxShadow1: string
     boxShadow2: string

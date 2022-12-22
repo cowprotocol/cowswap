@@ -18,9 +18,8 @@ const TableBox = styled.div`
   border-radius: 16px;
   border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 0 24px;
-  scrollbar-color: ${({ theme }) => `${theme.grey1} ${theme.text1}`};
-  scroll-behavior: smooth;
   position: relative;
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -68,26 +67,12 @@ const RowElement = styled(Header)`
 
 const Rows = styled.div`
   display: block;
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
    display: flex;
    flex-flow: column wrap;
   `};
-
-  &::-webkit-scrollbar {
-    height: 6px;
-    background: ${({ theme }) => `${theme.grey1}`};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${theme.text1}`};
-    border: 3px solid transparent;
-    background-clip: padding-box;
-  }
-
-  &::-webkit-scrollbar-track {
-    height: 5px;
-  }
 `
 
 const StyledInvertRateControl = styled(InvertRateControl)`

@@ -327,9 +327,8 @@ export const TableButton = styled(BaseButton)<{ color?: string; outlined?: boole
 export const Table = styled.div`
   display: flex;
   flex-flow: column wrap;
-  overflow-y: auto;
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-  scroll-behavior: smooth;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
   width: 100%;
   min-height: 400px;
   font-size: 14px;
@@ -339,25 +338,11 @@ export const Table = styled.div`
   padding: 0;
   background: transparent;
   transition: background 0.1s ease-in-out;
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 250px;
   `};
-
-  &::-webkit-scrollbar {
-    height: 6px;
-    background: ${({ theme }) => `${theme.card.background2}`} !important;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${theme.card.border}`} !important;
-    border: 3px solid transparent;
-    background-clip: padding-box;
-  }
-
-  &::-webkit-scrollbar-track {
-    height: 5px;
-  }
 `
 
 export const TokenText = styled.div`

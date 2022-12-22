@@ -6,20 +6,7 @@ export const Wrapper = styled.div`
   width: 100%;
   margin: 0 0 14px;
   overflow-y: auto;
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-  scroll-behavior: smooth;
-
-  &::-webkit-scrollbar {
-    background: ${({ theme }) => `${theme.card.background2}`} !important;
-    width: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${theme.card.border}`} !important;
-    border: 3px solid transparent;
-    border-radius: 14px;
-    background-clip: padding-box;
-  }
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     overflow-y: auto;
