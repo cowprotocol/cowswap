@@ -34,7 +34,7 @@ const TableBox = styled.div`
 const Header = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(2, minmax(150px, 1fr)) minmax(150px, 1.5fr) minmax(85px, 0.5fr) 36px;
+  grid-template-columns: repeat(2, minmax(150px, 1fr)) minmax(150px, 1.5fr) minmax(85px, 0.65fr) 36px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
