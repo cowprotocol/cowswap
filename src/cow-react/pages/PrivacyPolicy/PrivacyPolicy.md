@@ -36,22 +36,22 @@ In most cases ultimate decisions to (i) transact on the blockchain using your wa
 
 ### 2. How We Use Personal Data
 
-#### When visiting our website or websites we host on behalf of clients
+**When visiting our website or websites we host on behalf of clients**
 
 We may collect and process Personal Data about your use of our website or websites we host on behalf of clients. This data may include:
 
-1. The browser types and versions used;
-2. The operating system used by the accessing system;
-3. The website from which an accessing system reaches the website (so-called referrers);
-4. Behaviour: subpage, duration, and revisit;
-5. The date and time of access to the website, The Internet protocol address (“IP address”);
-6. The Internet service provider of the accessing system;
-7. session by device; and
-8. Any other similar data and information that may be used in the event of attacks on our information technology systems.
+- The browser types and versions used;
+- The operating system used by the accessing system;
+- The website from which an accessing system reaches the website (so-called referrers);
+- Behaviour: subpage, duration, and revisit;
+- The date and time of access to the website, The Internet protocol address (“IP address”);
+- The Internet service provider of the accessing system;
+- session by device; and
+- Any other similar data and information that may be used in the event of attacks on our information technology systems.
 
 This data may be processed in order to deliver the content of our website or websites we host on behalf of clients correctly, to optimise the content of our website or websites we host on behalf of clients to ensure the long-term viability of our information technology systems and website technology, and to provide law enforcement authorities with the information necessary for criminal prosecution in case of a cyber-attack. The legal basis for this processing is the legitimate business interests, namely monitoring and improving our website or websites we host on behalf of clients and the proper protection against risks.
 
-#### When using swap.cow.fi or other interfaces of a decentralised exchange protocol hosted by us on behalf of clients
+**When using swap.cow.fi or other interfaces of a decentralised exchange protocol hosted by us on behalf of clients**
 
 We may collect and process personal data. The data will be stored in different instances.
 
@@ -75,8 +75,8 @@ The legal basis for this processing is that it is necessary to transact accordin
   - Your wallet address;
   - Recipient’s wallet address;
   - Both sides of the swapped tokens;
-  - Prices.
-  - AppData hash (hash of the IPFS content pointing to the appData submitted with the intent to trade)
+  - Prices;
+  - AppData hash (hash of the IPFS content pointing to the appData submitted with the intent to trade).
 
 The legal basis for this processing is that it is necessary to transact successfully according to your wishes. The data will be stored on the Blockchain. Given the technological design of the blockchain, as explained above, this data will become public and it will not likely be possible to delete or change the data at any given time.
 
@@ -87,7 +87,7 @@ The legal basis for this processing is that it is necessary to transact successf
 
 The legal basis for this processing is that it is necessary to transact according to your indicated preferences.
 
-#### **Participating in User Experience Research**
+**Participating in User Experience Research**
 
 When you participate in our user experience research - or user experience research we conduct on behalf of our clients - we may collect and process some personal data. This data may include:
 
@@ -99,9 +99,10 @@ When you participate in our user experience research - or user experience resear
 - usage of tokens, blockchains, exchanges.
 
 In addition, we may take a recording of you while testing the website or website we host on behalf of our clients for internal use. The basis for this collection and processing is our legitimate business interest or that of our clients in monitoring and improving our services. You are never required to share information you are not comfortable sharing.
+
 The legal basis for this processing is your consent as provided before participating in user experience research.
 
-#### Participating in our Bug Bounties and Challenges or those of our clients
+**Participating in our Bug Bounties and Challenges or those of our clients**
 
 When participating in bug bounties or challenges we may collect and process personal data. This data may include:
 
@@ -109,7 +110,7 @@ When participating in bug bounties or challenges we may collect and process pers
 - your name;
 - the data is used and processed in order to credit the participant the right payment for the reported bug.
 
-#### When visiting our Twitter, Medium or other social media or those of our clients
+**When visiting our Twitter, Medium or other social media or those of our clients**
 
 We may collect and process Personal Data about your use of our Twitter, Medium or other social media. This data may include:
 
@@ -118,7 +119,7 @@ We may collect and process Personal Data about your use of our Twitter, Medium o
 - a history of IP addresses used to access a shortened URL.
 - This data is collected and processed for the purposes to track the success of the marketing campaigns, blog posts, and other marketing material; and for user demographics in order to identify target markets. This data is collected and processed for the purpose of improving the content of our shared links pursuant to our legitimate interests (or those of our clients). When visiting the mentioned services different data protection regulations apply, please familiarise yourself with their Privacy Policies.
 
-#### Other uses of your Personal Data
+**Other uses of your Personal Data**
 
 We may process any of your Personal Data where it is necessary to establish, exercise, or defend legal claims. The legal basis for this process is our legitimate interests, namely the protection and assertion of our legal rights, your legal rights and the legal rights of others, including our clients.
 
@@ -126,73 +127,73 @@ Further, we may process your Personal data where such processing is necessary in
 
 ### 3. Use of Third Party Applications
 
-- #### Amazon Webserver
+**Amazon Webserver**
 
-  We may use the Amazon Web Server (AWS) to store log and database data. For further information and the applicable data protection provisions of AWS please visit [https://aws.amazon.com/privacy/?nc1=f_pr](https://aws.amazon.com/privacy/?nc1=f_pr)
+We may use the Amazon Web Server (AWS) to store log and database data. For further information and the applicable data protection provisions of AWS please visit [https://aws.amazon.com/privacy/?nc1=f_pr](https://aws.amazon.com/privacy/?nc1=f_pr)
 
-- #### Blockchain
+**Blockchain**
 
-  Refer to the Section “Your information and the Blockchain” above.
-  Intents to trade submitted - if successful - will be stored on the blockchain and will be displayed permanently and public, this is part of the nature of the blockchain.
-  If you are new to this field, we highly recommend informing yourself about blockchain technology before using the website.
+Refer to the Section “Your information and the Blockchain” above.
+Intents to trade submitted - if successful - will be stored on the blockchain and will be displayed permanently and public, this is part of the nature of the blockchain.
+If you are new to this field, we highly recommend informing yourself about blockchain technology before using the website.
 
-- #### Calendly
+**Calendly**
 
-  We may use Calendly for scheduling. For further information and the applicable data protection provisions please visit [https://calendly.com/privacy](https://calendly.com/privacy)
+We may use Calendly for scheduling. For further information and the applicable data protection provisions please visit [https://calendly.com/privacy](https://calendly.com/privacy)
 
-- #### Discord
+**Discord**
 
-  We may use Discord for community management for our clients. For further information and the applicable data protection provisions of Discord please visit [https://discord.com/privacy](https://discord.com/privacy)
+We may use Discord for community management for our clients. For further information and the applicable data protection provisions of Discord please visit [https://discord.com/privacy](https://discord.com/privacy)
 
-- #### Discourse
+**Discourse**
 
-  We may use Discourse for discussion. For further information and the applicable data protection provisions of Discourse please visit https://www.discourse.org/privacy
+We may use Discourse for discussion. For further information and the applicable data protection provisions of Discourse please visit [https://www.discourse.org/privacy](https://www.discourse.org/privacy)
 
-- #### Dovetail
+**Dovetail**
 
-  We may use Dovetail for storing recordings and interviews as a user testing tool. For further information and the applicable data protection provisions please visit [https://dovetailapp.com/help/privacy-policy/](https://dovetailapp.com/help/privacy-policy/)
+We may use Dovetail for storing recordings and interviews as a user testing tool. For further information and the applicable data protection provisions please visit [https://dovetailapp.com/help/privacy-policy/](https://dovetailapp.com/help/privacy-policy/)
 
-- #### Google Workspace
+**Google Workspace**
 
-  We may use Google Workspace (Drive, Sheets etc.) for storing user interviews and other personal data. For further [https://policies.google.com/privacy](https://policies.google.com/privacy)
+We may use Google Workspace (Drive, Sheets etc.) for storing user interviews and other personal data. For further [https://policies.google.com/privacy](https://policies.google.com/privacy)
 
-- #### Infura
+**Infura**
 
-  We may use Infura to easily take blockchain applications from testing to scaled deployment. For further information and the applicable data protection provisions of Infura [https://consensys.net/privacy-policy/](https://consensys.net/privacy-policy/)
+We may use Infura to easily take blockchain applications from testing to scaled deployment. For further information and the applicable data protection provisions of Infura [https://consensys.net/privacy-policy/](https://consensys.net/privacy-policy/)
 
-- #### Maze
+**Maze**
 
-  We may use Maze as a user testing tool. For further information and the applicable data protection provisions of Maze please visit [https://maze.co/privacy-policy/](https://maze.co/privacy-policy/)
+We may use Maze as a user testing tool. For further information and the applicable data protection provisions of Maze please visit [https://maze.co/privacy-policy/](https://maze.co/privacy-policy/)
 
-- #### Miro
+**Miro**
 
-  We may use Miro for whiteboard and other collaborative visualisation. For further information and the applicable data protection provisions please visit [https://miro.com/legal/privacy-policy/](https://miro.com/legal/privacy-policy/)
+We may use Miro for whiteboard and other collaborative visualisation. For further information and the applicable data protection provisions please visit [https://miro.com/legal/privacy-policy/](https://miro.com/legal/privacy-policy/)
 
-- #### Support Channels
+**Support Channels**
 
-  In order to provide user support on our behalf or on behalf of our clients, we will use different channels like Discord, Discourse, Github or Telegram to facilitate the resolution of any questions and concerns should these arise. By accepting this Privacy Policy, you are deemed to consent to providing the following Personal Data to persons looking to resolve any dispute:
+In order to provide user support on our behalf or on behalf of our clients, we will use different channels like Discord, Discourse, Github or Telegram to facilitate the resolution of any questions and concerns should these arise. By accepting this Privacy Policy, you are deemed to consent to providing the following Personal Data to persons looking to resolve any dispute:
 
-  1.  Name and surname
-  2.  Detailed enquiry description;
-  3.  The date and time that the issue arose;
-  4.  The outcome sought.
+- Name and surname
+- Detailed enquiry description;
+- The date and time that the issue arose;
+- The outcome sought.
 
-- #### Transmitting Social Media Links
+**Transmitting Social Media Links**
 
-  When linking social media links, those services might also collect Personal Data. Please refer to their privacy policies for more information.
+When linking social media links, those services might also collect Personal Data. Please refer to their privacy policies for more information.
 
-- #### Typeform
+**Typeform**
 
-  We use typeform for the registration and submission process. Typeform allows the creation of customised forms for several purposes.
-  Further information and the applicable data protection provisions of typeform please visit [https://admin.typeform.com/to/dwk6gt](https://admin.typeform.com/to/dwk6gt).
-  Typeform’s purpose and function is further explained under the following Link [https://www.typeform.com/product/](https://www.typeform.com/product/).
+We use typeform for the registration and submission process. Typeform allows the creation of customised forms for several purposes.
+Further information and the applicable data protection provisions of typeform please visit [https://admin.typeform.com/to/dwk6gt](https://admin.typeform.com/to/dwk6gt).
+Typeform’s purpose and function is further explained under the following Link [https://www.typeform.com/product/](https://www.typeform.com/product/)
 
-- #### Vercel
+**Vercel**
 
-  We may use Vercel for optimising website development. For further information and the applicable data protection provisions of Vercel please visit [https://vercel.com/legal/privacy-policy](https://vercel.com/legal/privacy-policy)
+We may use Vercel for optimising website development. For further information and the applicable data protection provisions of Vercel please visit [https://vercel.com/legal/privacy-policy](https://vercel.com/legal/privacy-policy)
 
-- #### Zoom
-  We may use Zoom for active user research interviews and taking recordings. These records may be stored on Zoom Cloud. For further information and the applicable data protection provisions please visit [https://explore.zoom.us/en/privacy/](https://explore.zoom.us/en/privacy/)
+**Zoom**
+We may use Zoom for active user research interviews and taking recordings. These records may be stored on Zoom Cloud. For further information and the applicable data protection provisions please visit [https://explore.zoom.us/en/privacy/](https://explore.zoom.us/en/privacy/)
 
 ### 4. Sharing Your Personal Data
 
@@ -230,7 +231,7 @@ You have certain rights under applicable legislation, and in particular under Re
   - we unlawfully processed your personal information; and
   - erasure is required to comply with a legal obligation that applies to us.
 
-  <b style="color: red;">However, when interacting with the blockchain we may not be able to ensure that your personal data is deleted. This is because the blockchain is a public decentralised network and blockchain technology does not generally allow for data to be deleted and your right to erasure may not be able to be fully enforced. In these circumstances we will only be able to ensure that all personal data that is held by us is permanently deleted.</b>
+  <em>However, when interacting with the blockchain we may not be able to ensure that your personal data is deleted. This is because the blockchain is a public decentralised network and blockchain technology does not generally allow for data to be deleted and your right to erasure may not be able to be fully enforced. In these circumstances we will only be able to ensure that all personal data that is held by us is permanently deleted.</em>
 
   We will proceed to comply with an erasure request without delay unless continued retention is necessary for:
 
@@ -250,7 +251,7 @@ You have certain rights under applicable legislation, and in particular under Re
   - where processing is unlawful you may request, instead of requesting erasure, that we restrict the use of the unlawfully processed personal information;
   - we no longer need to process your personal information but need to retain your information for the establishment, exercise, or defence of legal claims.
 
-You also have the right to object to processing of your personal information under certain circumstances, such as where the processing is based on your consent and you withdraw that consent. This may impact the services we can provide and we will explain this to you if you decide to exercise this right.
+  You also have the right to object to processing of your personal information under certain circumstances, such as where the processing is based on your consent and you withdraw that consent. This may impact the services we can provide and we will explain this to you if you decide to exercise this right.
 
 - #### Right to data portability
 
@@ -261,11 +262,12 @@ You also have the right to object to processing of your personal information und
   We do not use automated decision-making, but where any automated decision-making takes place, you have the right in this case to express your point of view and to contest the decision, as well as request that decisions based on automated processing concerning you or significantly affecting you and based on your personal data are made by natural persons, not only by computers.
 
 - #### Right to object to direct marketing (‘opting out’)
+
   You have a choice about whether or not you wish to receive information from us. We will not contact you for marketing purposes unless:
 
-You have a business relationship with us or one of our clients, and we rely on our legitimate interests or that of our clients as the lawful basis for processing (as described above) you have otherwise given your prior consent.
+  You have a business relationship with us or one of our clients, and we rely on our legitimate interests or that of our clients as the lawful basis for processing (as described above) you have otherwise given your prior consent.
 
-You can change your marketing preferences at any time by contacting us. On each and every marketing communication, we will always provide the option for you to exercise your right to object to the processing of your personal data for marketing purposes (known as ‘opting-out’) by clicking on the ‘unsubscribe’ button on our marketing emails or choosing a similar opt-out option on any forms we use to collect your data. You may also opt-out at any time by contacting us on the below details. Please note that any administrative or service-related communications (to offer our services, or notify you of an update to this Privacy Policy or applicable terms of business, etc.) will solely be directed at our clients or business partners, and such communications generally do not offer an option to unsubscribe as they are necessary to provide the services requested. Therefore, please be aware that your ability to opt-out from receiving marketing and promotional materials does not change our right to contact you regarding your use of our website or websites we host on behalf of clients or as part of a contractual relationship we may have with you.
+  You can change your marketing preferences at any time by contacting us. On each and every marketing communication, we will always provide the option for you to exercise your right to object to the processing of your personal data for marketing purposes (known as ‘opting-out’) by clicking on the ‘unsubscribe’ button on our marketing emails or choosing a similar opt-out option on any forms we use to collect your data. You may also opt-out at any time by contacting us on the below details. Please note that any administrative or service-related communications (to offer our services, or notify you of an update to this Privacy Policy or applicable terms of business, etc.) will solely be directed at our clients or business partners, and such communications generally do not offer an option to unsubscribe as they are necessary to provide the services requested. Therefore, please be aware that your ability to opt-out from receiving marketing and promotional materials does not change our right to contact you regarding your use of our website or websites we host on behalf of clients or as part of a contractual relationship we may have with you.
 
 - #### Right to request access
 
@@ -280,19 +282,19 @@ You can change your marketing preferences at any time by contacting us. On each 
   If you wish to raise a complaint on how we have handled your personal data, you can contact us as set out below and we will then investigate the matter.
 
 - #### Right to complain with a relevant supervisory authority
+
   If we have not responded to you within a reasonable time or if you feel that your complaint has not been resolved to your satisfaction, you are entitled to make a complaint to the Data Protection Commissioner under the Data Protection Act.
   You may do so in the EU member state of your habitual residence, your place of work or the place of the alleged infringement. In Portugal, the supervisory authority is the:
-  <pre>
-  CNPD - Comissão Nacional de Proteção de Dados
-  Av. D. Carlos I, 134, 1º
-  1200-651 Lisboa
-  T (+351) 213 928 400
-  F (+351) 213 976 832
-  geral@cnpd.pt
-  https://www.cnpd.pt/
-  </pre>
 
-You also have the right to lodge a complaint with the supervisory authority in the country of your habitual residence, place of work, or the place where you allege an infringement of one or more of our rights has taken place, if that is based in the EEA.
+  CNPD - Comissão Nacional de Proteção de Dados <br>
+  Av. D. Carlos I, 134, 1º <br>
+  1200-651 Lisboa <br>
+  T (+351) 213 928 400 <br>
+  F (+351) 213 976 832 <br>
+  <a href="mailto:geral@cnpd.pt">geral@cnpd.pt</a> <br>
+  <a href="https://www.cnpd.pt/">https://www.cnpd.pt/</a> <br>
+
+  You also have the right to lodge a complaint with the supervisory authority in the country of your habitual residence, place of work, or the place where you allege an infringement of one or more of our rights has taken place, if that is based in the EEA.
 
 ### 7. Storing Personal Data
 
@@ -306,4 +308,4 @@ We may make changes to this Policy from time to time. Where we do so, we will no
 
 This website is hosted by Nomev Labs, Lda on behalf of a client. We are registered in Portugal under registration number PT516811924, and our registered office is located at Rua António Maria Cardoso, No 25, piso 4, 1200-027 Lisboa.
 
-If you have any queries concerning your rights under this Privacy Policy, please contact us at legal@nomev.io
+If you have any queries concerning your rights under this Privacy Policy, please contact us at <a href="mailto:legal@nomev.io">legal@nomev.io</a>
