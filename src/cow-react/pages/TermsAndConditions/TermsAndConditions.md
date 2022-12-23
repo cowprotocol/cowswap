@@ -1,10 +1,10 @@
-**Terms & Conditions**
+<h1>Terms & Conditions<h1>
 
 <i><b>Last updated: November 2022</b></i>
 
 <b>Welcome to https://cow.fi/, a website-hosted user interface (the "Interface") provided by Nomev Labs, Lda. ("we", "our", or "us") on behalf of and as instructed by CoW DAO. The Interface provides access to the CoW Protocol, a decentralised protocol on the Ethereum and Gnosis Chain blockchains (all EVM compatible chains) that allows users to trade certain digital assets ("the Protocol"). The Interface is one, but not the exclusive, means of accessing the Protocol.</b>
 
-<b>Please read these Terms carefully before using the Interface. By using the Interface, you confirm that you accept these Terms and agree to comply with them. If you do not agree, you must not use the Interface. If you think that there is an error in these Terms, please contact us at legal@nomev.io</b>
+<b>Please read these Terms carefully before using the Interface. By using the Interface, you confirm that you accept these Terms and agree to comply with them. If you do not agree, you must not use the Interface. If you think that there is an error in these Terms, please contact us at <a href="mailto:legal@nomev.io">legal@nomev.io</a></b>
 
 **TERMS AND CONDITIONS (“TERMS”)**
 
@@ -16,7 +16,7 @@
 
 **2. BY USING THE INTERFACE, YOU ACCEPT THESE TERMS**
 
-1.  These are the general terms and conditions ("Terms") that apply to the use of the Interface.
+1.  These are the general terms and conditions <strong>("Terms")</strong> that apply to the use of the Interface.
 2.  By using the Interface, you confirm that you (1) accept and agree to these Terms and that you agree to comply with them. If you do not agree, you must not use the Interface.
 3.  You are responsible for ensuring that all persons who access or use the Interface through your device or internet connection are aware of these Terms, and that they comply with them.
 4.  We may amend these Terms at our sole discretion. We regularly do so. Every time you wish to use the Interface, please check these Terms to ensure you understand the terms that apply at that time.
@@ -26,7 +26,7 @@
 **3. WHAT YOU REQUIRE TO USE THE INTERFACE**
 
 1.  Users may use the Interface to interact with the Protocol and buy or sell EVM compatible tokens by submitting orders into a batch auction running on the Protocol.
-2.  A detailed FAQ guide on how to use the Interface may be found in the “FAQ” section on the Interface.
+2.  A detailed FAQ guide on how to use the Interface may be found in the <a href="https://swap.cow.fi/#/faq" target="_blank" rel="noopener nofollow">“FAQ”</a> section on the Interface.
 3.  To use the Interface you require:
     1.  A wallet compatible with the Ethereum Blockchain, Gnosis Chain or an Ethereum Virtual Machine compatible validation mechanism, depending on which network you interact with the Protocol. We currently support EOA (Externally Owned Account) type of wallets that support <a href="https://ethereum-magicians.org/t/eip-712-eth-signtypeddata-as-a-standard-for-machine-verifiable-and-human-readable-typed-data-signing/397" target="_blank" rel="noopener nofollow">EIP712</a> as well as certain Smart contract wallets. However, not all smart contract wallets implement the standards the same way we do and might therefore not fully support integration with the Interface.
     2.  An ERC 20 token to trade (or ETH).
@@ -51,7 +51,7 @@ We do not levy any fees on users of the Interface, however, the user incurs a fe
 
 3.  You are also responsible for ensuring that all persons who access the Interface through your internet connection are aware of these Terms and that they comply with them.
 
-**7. YOU ARE RESPONSIBLE TO SECURE YOUR CRYPTOGRAPHIC ASSETS, WE DO NOT TAKE CUSTODY**
+**6. YOU ARE RESPONSIBLE TO SECURE YOUR CRYPTOGRAPHIC ASSETS, WE DO NOT TAKE CUSTODY**
 
 1.  You must control the wallet you use in connection with the Interface.
 2.  You are responsible for implementing all appropriate measures for securing the wallet you use for the Interface, including any private key(s), seed words or other credentials necessary to access such storage mechanism(s). By using the Interface, we do not gain custody of any of your private keys.
@@ -71,7 +71,7 @@ None of the information available on the Interface, or made otherwise available 
 
 2.  Subject to your compliance with these Terms, we grant you a limited, revocable, non-exclusive, non-transferable, non-sublicensable licence to access the Interface. This licence does not include any resale, commercial or derivative use of the Interface. We reserve and retain all rights not expressly granted to you in these Terms. The Interface may not be reproduced, sold, or otherwise exploited for any commercial purpose without our express prior written consent. You may not frame or utilise framing techniques to enclose any trademark, logo, or other proprietary information of us without our express prior written consent. You may not misuse the Interface and may only use it as permitted by law. If you breach our intellectual property rights in violation of these Terms, your licence to use the Interface will automatically be revoked and terminated immediately.
 
-**11. WE ARE NOT RESPONSIBLE FOR BUGS AND YOU MUST NOT INTRODUCE THEM**
+**10. WE ARE NOT RESPONSIBLE FOR BUGS AND YOU MUST NOT INTRODUCE THEM**
 
 1.  We do not guarantee that the Interface will be secure or free from bugs or viruses.
 2.  You are responsible for configuring your information technology and computer programmes to access the Interface. You should use your own virus protection software.
@@ -81,7 +81,7 @@ None of the information available on the Interface, or made otherwise available 
 **11. RULES ABOUT YOU LINKING TO OUR PLATFORM**
 
 1.  You may link to the Interface, provided you do so in a way that is fair and legal and does not damage our reputation or take advantage of it. You must not establish a link in such a way as to suggest any form of association, approval or endorsement on our part where none exists. You must not establish a link to the Interface in any website without the website’s authorisation.
-2.  The website in which you are linking must comply in all respects with the content standards set out in these Terms. If you wish to link to or make any use of content on the Interface other than that set out above, please contact us via legal@nomev.io
+2.  The website in which you are linking must comply in all respects with the content standards set out in these Terms. If you wish to link to or make any use of content on the Interface other than that set out above, please contact us via <a href="mailto:legal@nomev.io">legal@nomev.io</a>
 
 **12. YOUR WARRANTIES AND REPRESENTATIONS TO US**
 
@@ -103,7 +103,7 @@ None of the information available on the Interface, or made otherwise available 
     14. you shall not use the Interface to trade cryptographic assets that are proceeds of criminal or fraudulent activity;
     15. the Interface, Protocol, the Ethereum Blockchain, Gnosis Chain and Ethereum Virtual Machine compatible validation mechanisms are in an early development stage and we accordingly do not guarantee an error-free process and give no price or liquidity guarantee;
     16. you are using the Interface at your own risk;
-    17. the risks of using the Interface are substantial and include, but are not limited to, the ones set out in the APPENDIX, which is hereby expressly incorporated into these Terms, and you are willing to accept the risk of loss associated therewith.
+    17. the risks of using the Interface are substantial and include, but are not limited to, the ones set out in the [**APPENDIX**](#appendix), which is hereby expressly incorporated into these Terms, and you are willing to accept the risk of loss associated therewith.
 
 **13. YOUR INDEMNIFICATION AND LIABILITY TO US**
 
@@ -126,7 +126,7 @@ To the fullest extent permitted by law, you acknowledge and agree that we owe no
 
 **17. HOW TO RESOLVE COMPLAINTS AND DISPUTES**
 
-If an alleged breach, controversy, claim, dispute or difference arises out of or in connection with the present Terms about or in connection to this Interface between you and us (a “Dispute”), you agree to seek to resolve the matter with us amicably by referring the matter to legal@nomev.io. For any claim not relating to or connected to the Interface please contact CoW DAO via CoW Forum at <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">https://forum.cow.fi/</a> with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking.
+If an alleged breach, controversy, claim, dispute or difference arises out of or in connection with the present Terms about or in connection to this Interface between you and us <strong>(a “Dispute”)<strong>, you agree to seek to resolve the matter with us amicably by referring the matter to <a href="mailto:legal@nomev.io">legal@nomev.io</a>. For any claim not relating to or connected to the Interface please contact CoW DAO via CoW Forum at <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">https://forum.cow.fi/</a> with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking.
 
 **18. DISPUTE RESOLUTION**
 
