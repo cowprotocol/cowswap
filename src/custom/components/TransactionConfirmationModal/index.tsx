@@ -34,11 +34,25 @@ const Wrapper = styled.div`
 `
 
 const Section = styled.div`
-  padding: 24px;
+  padding: 0 16px 16px;
   align-items: center;
   justify-content: flex-start;
   display: flex;
   flex-flow: column wrap;
+`
+
+const Header = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: ${({ theme }) => theme.bg1};
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 0;
+  z-index: 20;
 `
 
 export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
@@ -89,17 +103,13 @@ const WalletIcon = styled.div`
 `
 
 export const GPModalHeader = styled(RowBetween)`
-  padding: 16px 0 0;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 16px 0 0;
-    background: ${({ theme }) => theme.bg1};
-    z-index: 20;
-  `}
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 0;
+  background: ${({ theme }) => theme.bg1};
+  z-index: 20;
 `
 
 const InternalLink = styled(Link)``
@@ -541,7 +551,9 @@ export function TransactionSubmittedContent({
   return (
     <Wrapper>
       <Section>
-        <CloseIconWrapper onClick={onDismiss} />
+        <Header>
+          <CloseIconWrapper onClick={onDismiss} />
+        </Header>
         <Text fontWeight={600} fontSize={28}>
           {getTitleStatus(activityDerivedState)}
         </Text>

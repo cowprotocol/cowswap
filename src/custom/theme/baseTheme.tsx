@@ -13,8 +13,6 @@ import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 // Modal override items
 import { HeaderText } from '@src/components/WalletModal/Option'
-import { AutoColumn } from 'components/Column'
-import { RowBetween } from 'components/Row'
 
 export { ThemedText } from '@src/theme'
 export * from '@src/theme/components'
@@ -123,7 +121,6 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
           background-image: radial-gradient(50% 500px at 50% -6%, hsl(216deg 100% 20% / 70%) 0%, #071832 50%, #06162d 100%),radial-gradient(circle at -70% 50%, hsla(215,100%,20%,0.7) 0, transparent 50%);`
           : `background: linear-gradient(45deg, #EAE9FF 14.64%, ${colorsTheme.blueLight1} 85.36%)`};
         background-attachment: fixed;
-        scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};
       `,
     },
     shimmer: css`
@@ -139,6 +136,25 @@ export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
         100% {
           transform: translateX(100%);
         }
+      }
+    `,
+    colorScrollbar: css`
+      // Firefox only
+      scrollbar-color: ${transparentize(0.5, colorsTheme.text2)} ${colorsTheme.grey1};
+      scroll-behavior: smooth;
+
+      // Webkit browsers only
+      &::-webkit-scrollbar {
+        background: ${transparentize(0.6, colorsTheme.grey1)};
+        width: 8px;
+        height: 8px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: ${transparentize(0.7, colorsTheme.text2)};
+        border: 3px solid ${transparentize(0.7, colorsTheme.text2)};
+        border-radius: 14px;
+        background-clip: padding-box;
       }
     `,
     textShadow1: `
@@ -373,27 +389,7 @@ export const UniThemedGlobalStyle = css`
   }
   body {
     min-height: 100vh;
-    /* background-position: 0 -30vh; */
-    /* background-repeat: no-repeat; */
-    /* background-image: ${({ theme }) =>
-      `radial-gradient(50% 50% at 50% 50%, ${transparentize(0.9, theme.primary1)} 0%, ${transparentize(
-        1,
-        theme.bg1
-      )} 100%)`}; */
-    /* scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-    scroll-behavior: smooth; */
-
-    /* &::-webkit-scrollbar {
-      width: 14px;
-      background: ${({ theme }) => `${theme.card.background2}`};
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: ${({ theme }) => `${theme.card.border}`};
-      border: 3px solid transparent;
-      border-radius: 14px;
-      background-clip: padding-box;
-    } */
+    scrollbar-color: ${({ theme }) => theme.colorScrollbar};
   }
 `
 
@@ -433,10 +429,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
       top: 0!important;
       bottom: 0!important;
     `}
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      bottom: 64px!important;
-    `}
   }
 
   // Appzi Container override
@@ -453,18 +445,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ${HeaderText} {
     color: ${({ theme }) => theme.text1};
   }
-
-  /* TODO: No longer using ModalContentWrapper. Check/style ExpertModeModal instead */
-  /* \${ModalContentWrapper} {
-    background-color: ${({ theme }) => theme.bg1};
-    border: 0;
-
-    ${RowBetween} > div,
-    ${AutoColumn} > div {
-      color: ${({ theme }) => theme.text1};
-    }
-  }*/
-  // END - Modal overrides
   
   a {
     text-decoration: none;

@@ -40,30 +40,10 @@ export const Wrapper = styled.div`
   width: 100%;
   /* padding: 1rem; */
   /* -- mod -- */
-  padding: 0 16px 16px;
+  padding: 0 16px;
   display: flex;
   flex-flow: column nowrap;
-  overflow-y: auto;
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-  scroll-behavior: smooth;
-
-  &::-webkit-scrollbar {
-    width: 14px;
-    background: ${({ theme }) => `${theme.card.background2}`};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${theme.card.border}`};
-    border: 3px solid transparent;
-    border-radius: 14px;
-    background-clip: padding-box;
-  }
-
-  &::-webkit-resizer,
-  &::-webkit-scrollbar-button,
-  &::-webkit-scrollbar-corner {
-    height: 6px;
-  }
+  ${({ theme }) => theme.colorScrollbar};
   /* -- mod -- */
 `
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`
@@ -73,9 +53,9 @@ export const Section = styled(AutoColumn)<{ inline?: boolean }>`
 export const BottomSection = styled(Section)`
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    margin-bottom: 16px;
-  `}/* -- mod -- */
+
+  /* -- mod -- */
+  padding: 0 0 16px;
 `
 
 const ConfirmedIcon = styled(ColumnCenter)<{ inline?: boolean }>`

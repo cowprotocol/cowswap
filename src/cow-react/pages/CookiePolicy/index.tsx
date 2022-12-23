@@ -5,6 +5,7 @@ import styled from 'styled-components/macro'
 
 const Wrapper = styled(MarkdownPage)`
   ${GdocsListStyle}
+  ${({ theme }) => theme.colorScrollbar};
 
   #table-container {
     overflow-x: scroll;

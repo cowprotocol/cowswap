@@ -4,28 +4,16 @@ import { AutoRow } from 'components/Row'
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg1};
   width: 100%;
-  margin: 14px 0;
+  margin: 0 0 14px;
   overflow-y: auto;
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-  scroll-behavior: smooth;
-
-  &::-webkit-scrollbar {
-    background: ${({ theme }) => `${theme.card.background2}`} !important;
-    width: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${theme.card.border}`} !important;
-    border: 3px solid transparent;
-    border-radius: 14px;
-    background-clip: padding-box;
-  }
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     overflow-y: auto;
     overflow-x: auto;
-    padding-bottom: 0;
+    padding: 0;
     max-height: 100vh;
+    margin: 0;
   `}
 `
 
@@ -35,6 +23,13 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0 16px 16px;
+  background: ${({ theme }) => theme.bg1};
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px;
+  z-index: 20;
 `
 
 export const Title = styled.h3`
@@ -57,6 +52,10 @@ export const FieldsWrapper = styled.div`
   flex-flow: column wrap;
   width: 100%;
   gap: 2px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 0 54px;
+  `}
 `
 
 export const Field = styled.div`
