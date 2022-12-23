@@ -119,6 +119,10 @@ This Cookie Policy sets out some further detail on how and why we use these tech
 
 _Table: Overview of cookies placed and the consequences if the cookies are not placed_
 
+![cookie-policy-1.png](https://raw.githubusercontent.com/cowprotocol/cowswap/088e9ef3f018804be9850c0fc65fa3eea26c88d6/src/custom/assets/cow-swap/cookie-policy/cookie-policy-1.png)
+![cookie-policy-2.png](https://raw.githubusercontent.com/cowprotocol/cowswap/088e9ef3f018804be9850c0fc65fa3eea26c88d6/src/custom/assets/cow-swap/cookie-policy/cookie-policy-2.png)
+![cookie-policy-3.png](https://raw.githubusercontent.com/cowprotocol/cowswap/088e9ef3f018804be9850c0fc65fa3eea26c88d6/src/custom/assets/cow-swap/cookie-policy/cookie-policy-3.png)
+
 <div id="table-container">
     <table>
         <thead>
@@ -140,12 +144,6 @@ _Table: Overview of cookies placed and the consequences if the cookies are not p
                 <td>__cookielawinfo_checkbox_performance</td>
                 <td>Cookie set by GDPR cookie consent plug-in. Cookie used to save the agreement of the user for category “performance”.</td>
                 <td>1 year from set/update</td>
-                <td>User activity won't be tracked</td>
-            </tr>
-            <tr>
-                <td>__utmb</td>
-                <td>Used to determine new sessions/visits. The cookie is created when the javascript library executes and no existing __utmb cookies exists. The cookie is updated every time data is sent to Google Analytics.</td>
-                <td>30 mins from set/update</td>
                 <td>User activity won't be tracked</td>
             </tr>
             <tr>
