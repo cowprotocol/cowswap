@@ -126,7 +126,7 @@ To the fullest extent permitted by law, you acknowledge and agree that we owe no
 
 **17. HOW TO RESOLVE COMPLAINTS AND DISPUTES**
 
-If an alleged breach, controversy, claim, dispute or difference arises out of or in connection with the present Terms about or in connection to this Interface between you and us <strong>(a “Dispute”)<strong>, you agree to seek to resolve the matter with us amicably by referring the matter to <a href="mailto:legal@nomev.io">legal@nomev.io</a>. For any claim not relating to or connected to the Interface please contact CoW DAO via CoW Forum at <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">https://forum.cow.fi/</a> with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking.
+If an alleged breach, controversy, claim, dispute or difference arises out of or in connection with the present Terms about or in connection to this Interface between you and us <strong>(a “Dispute”)</strong>, you agree to seek to resolve the matter with us amicably by referring the matter to <a href="mailto:legal@nomev.io">legal@nomev.io</a>. For any claim not relating to or connected to the Interface please contact CoW DAO via CoW Forum at <a href="https://forum.cow.fi/" target="_blank" rel="noopener nofollow">https://forum.cow.fi/</a> with a detailed description, the date and time the issue arose, your handle to contact you on and the outcome you are seeking.
 
 **18. DISPUTE RESOLUTION**
 
