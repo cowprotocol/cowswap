@@ -6,6 +6,7 @@ import { EXPIRED_ORDERS_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import { useWeb3React } from '@web3-react/core'
 import { useEffect, useCallback, useRef } from 'react'
 import { getOrder } from '@cow/api/gnosisProtocol'
+import { SetIsOrderRefundedBatch } from 'state/orders/actions'
 
 export function ExpiredOrdersUpdater(): null {
   const { chainId: _chainId, account } = useWeb3React()
@@ -36,11 +37,11 @@ export function ExpiredOrdersUpdater(): null {
         // - Owned by the current connected account
         // - Created in the last 5 min, no further
         // - Not yet refunded
-        const pending = expiredRef.current.filter(({ owner, creationTime: creationTimeString, isRefunded }) => {
+        const pending = expiredRef.current.filter(({ owner, creationTime: creationTimeString, refundHash }) => {
           const creationTime = new Date(creationTimeString).getTime()
 
           return (
-            owner.toLowerCase() === lowerCaseAccount && now - creationTime < EXPIRED_ORDERS_PENDING_TIME && !isRefunded
+            owner.toLowerCase() === lowerCaseAccount && now - creationTime < EXPIRED_ORDERS_PENDING_TIME && !refundHash
           )
         })
 
@@ -55,16 +56,17 @@ export function ExpiredOrdersUpdater(): null {
 
         const resolvedPromises = await Promise.allSettled(ordersPromises)
 
-        const ids: string[] = []
+        const items: SetIsOrderRefundedBatch['items'] = []
+
         resolvedPromises.forEach((promise) => {
-          if (promise.status === 'fulfilled' && promise.value?.ethflowData?.isRefunded) {
-            ids.push(promise.value.uid)
+          if (promise.status === 'fulfilled' && promise.value?.ethflowData?.refundTxHash) {
+            items.push({ id: promise.value.uid, refundHash: promise.value?.ethflowData?.refundTxHash })
           }
         })
 
-        ids.length && setIsOrderRefundedBatch({ chainId, ids })
+        items.length && setIsOrderRefundedBatch({ chainId, items })
 
-        console.debug(`[ExpiredOrdersUpdater] ${ids.length} orders have been refunded`, ids)
+        console.debug(`[ExpiredOrdersUpdater] ${items.length} orders have been refunded`, items)
       } finally {
         isUpdating.current = false
       }
