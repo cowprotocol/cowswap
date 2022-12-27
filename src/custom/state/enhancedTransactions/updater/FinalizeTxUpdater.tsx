@@ -114,6 +114,16 @@ function finalizeEthereumTransaction(
       // If creation failed, mark order as invalid
       if (receipt.status !== 1) {
         dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
+        addPopup(
+          {
+            txn: {
+              hash,
+              success: false,
+              summary: `Failed to place order selling ${nativeCurrency.symbol}`,
+            },
+          },
+          hash
+        )
       }
     }
 
