@@ -17,7 +17,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
-import { cancelOrdersBatch, invalidateOrdersBatch } from 'state/orders/actions'
+import { cancelOrdersBatch, invalidateOrdersBatch, updateOrder } from 'state/orders/actions'
 import { useSetAtom } from 'jotai'
 import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import ms from 'ms.macro'
@@ -111,9 +111,11 @@ function finalizeEthereumTransaction(
     setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
 
     if (subType === 'creation') {
-      // If creation failed, mark order as invalid
       if (receipt.status !== 1) {
+        // If creation failed:
+        // 1. Mark order as invalid
         dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
+        // 2. Show failure tx pop-up
         addPopup(
           {
             txn: {
@@ -128,9 +130,25 @@ function finalizeEthereumTransaction(
     }
 
     if (subType === 'cancellation') {
-      // If cancellation succeeded, mark order as cancelled
-      // TODO: this might fail too. Handle the case of cancellation failure
-      dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
+      if (receipt.status === 1) {
+        // If cancellation succeeded, mark order as cancelled
+        dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
+      } else {
+        // If cancellation failed:
+        // 1. Update order state and remove the isCancelling flag and cancellationHash
+        dispatch(updateOrder({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }))
+        // 2. Show failure tx pop-up
+        addPopup(
+          {
+            txn: {
+              hash,
+              success: false,
+              summary: `Failed to cancel order selling ${nativeCurrencySymbol}`,
+            },
+          },
+          hash
+        )
+      }
     }
   }
 }
