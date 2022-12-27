@@ -97,7 +97,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, 
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
-        label={isCanceling ? `Initiating ${nativeTokenSymbol} Refund...` : `${nativeTokenSymbol} refunded successfully`}
+        label={isCanceling ? `Initiating ${nativeTokenSymbol} Refund...` : 'View transaction'}
         id={cancellationHash}
       />
     )
@@ -105,7 +105,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, 
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
-        label={isRefunding ? `Receiving ${nativeTokenSymbol} Refund...` : `${nativeTokenSymbol} refunded successfully`}
+        label={isRefunding ? `Receiving ${nativeTokenSymbol} Refund...` : 'View transaction'}
         id={refundHash}
       />
     )
