@@ -56,7 +56,7 @@ interface CheckEthereumTransactions {
   dispatch: Dispatch
   addPopup: ReturnType<typeof useAddPopup>
   removeInFlightOrderId: (update: string) => void
-  nativeCurrency: ReturnType<typeof useNativeCurrency>
+  nativeCurrencySymbol: string
 }
 
 type Cancel = () => void
@@ -68,7 +68,7 @@ function finalizeEthereumTransaction(
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions
 ) {
-  const { chainId, addPopup, dispatch, nativeCurrency } = params
+  const { chainId, addPopup, dispatch, nativeCurrencySymbol } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)
@@ -119,7 +119,7 @@ function finalizeEthereumTransaction(
             txn: {
               hash,
               success: false,
-              summary: `Failed to place order selling ${nativeCurrency.symbol}`,
+              summary: `Failed to place order selling ${nativeCurrencySymbol}`,
             },
           },
           hash
@@ -216,7 +216,7 @@ export default function Updater(): null {
   const getSafeInfo = useGetSafeInfo()
   const addPopup = useAddPopup()
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
-  const nativeCurrency = useNativeCurrency()
+  const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 
   // Get, from the pending transaction, the ones that we should re-check
   const shouldCheckFilter = useMemo(() => {
@@ -240,7 +240,7 @@ export default function Updater(): null {
       addPopup,
       dispatch,
       removeInFlightOrderId,
-      nativeCurrency,
+      nativeCurrencySymbol,
     })
 
     return () => {
@@ -257,7 +257,7 @@ export default function Updater(): null {
     getReceipt,
     getSafeInfo,
     removeInFlightOrderId,
-    nativeCurrency,
+    nativeCurrencySymbol,
   ])
 
   return null
