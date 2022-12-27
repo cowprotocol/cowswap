@@ -61,14 +61,12 @@ interface CheckEthereumTransactions {
 
 type Cancel = () => void
 
-// async function checkEthereumTransactions(transaction: EnhancedTransactionDetails) {}
-
 function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions
 ) {
-  const { chainId, addPopup, dispatch, nativeCurrencySymbol } = params
+  const { chainId, addPopup, dispatch } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt)
@@ -90,9 +88,7 @@ function finalizeEthereumTransaction(
     })
   )
 
-  const ethFlowInfo = transaction.ethFlow
-
-  if (!ethFlowInfo) {
+  if (!transaction.ethFlow) {
     addPopup(
       {
         txn: {
@@ -104,51 +100,60 @@ function finalizeEthereumTransaction(
       hash
     )
   } else {
-    // When it IS an EthFlow related tx, take action depending on the type
-    const { orderId, subType } = ethFlowInfo
+    finalizeEthFlowTx(transaction.ethFlow, receipt, params, hash)
+  }
+}
 
-    // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
-    setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
+function finalizeEthFlowTx(
+  ethFlowInfo: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' },
+  receipt: TransactionReceipt,
+  params: CheckEthereumTransactions,
+  hash: string
+): void {
+  const { orderId, subType } = ethFlowInfo
+  const { chainId, dispatch, addPopup, nativeCurrencySymbol } = params
 
-    if (subType === 'creation') {
-      if (receipt.status !== 1) {
-        // If creation failed:
-        // 1. Mark order as invalid
-        dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
-        // 2. Show failure tx pop-up
-        addPopup(
-          {
-            txn: {
-              hash,
-              success: false,
-              summary: `Failed to place order selling ${nativeCurrencySymbol}`,
-            },
+  // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
+  setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
+
+  if (subType === 'creation') {
+    if (receipt.status !== 1) {
+      // If creation failed:
+      // 1. Mark order as invalid
+      dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
+      // 2. Show failure tx pop-up
+      addPopup(
+        {
+          txn: {
+            hash,
+            success: false,
+            summary: `Failed to place order selling ${nativeCurrencySymbol}`,
           },
-          hash
-        )
-      }
+        },
+        hash
+      )
     }
+  }
 
-    if (subType === 'cancellation') {
-      if (receipt.status === 1) {
-        // If cancellation succeeded, mark order as cancelled
-        dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
-      } else {
-        // If cancellation failed:
-        // 1. Update order state and remove the isCancelling flag and cancellationHash
-        dispatch(updateOrder({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }))
-        // 2. Show failure tx pop-up
-        addPopup(
-          {
-            txn: {
-              hash,
-              success: false,
-              summary: `Failed to cancel order selling ${nativeCurrencySymbol}`,
-            },
+  if (subType === 'cancellation') {
+    if (receipt.status === 1) {
+      // If cancellation succeeded, mark order as cancelled
+      dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
+    } else {
+      // If cancellation failed:
+      // 1. Update order state and remove the isCancelling flag and cancellationHash
+      dispatch(updateOrder({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }))
+      // 2. Show failure tx pop-up
+      addPopup(
+        {
+          txn: {
+            hash,
+            success: false,
+            summary: `Failed to cancel order selling ${nativeCurrencySymbol}`,
           },
-          hash
-        )
-      }
+        },
+        hash
+      )
     }
   }
 }
