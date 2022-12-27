@@ -35,7 +35,7 @@ export function Step1({ nativeTokenSymbol, order, creation }: EthFlowStepperProp
 
   return (
     <Step state={stepState} icon={icon} label={label}>
-      {hash && <ExplorerLinkStyled type="transaction" label="View Transaction" id={hash} />}
+      {hash && <ExplorerLinkStyled type="transaction" label="View transaction" id={hash} />}
     </Step>
   )
 }
