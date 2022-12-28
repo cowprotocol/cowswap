@@ -152,7 +152,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       slippageToleranceAnalytics('Default', isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
       setUserSlippageTolerance('auto')
     } else {
-      const parsed = Math.floor(Number.parseFloat(value) * 100)
+      const parsed = Math.round(Number.parseFloat(value) * 100)
 
       if (
         !Number.isInteger(parsed) ||
