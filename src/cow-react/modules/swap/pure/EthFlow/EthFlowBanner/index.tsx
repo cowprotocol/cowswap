@@ -2,8 +2,7 @@ import { Trans } from '@lingui/macro'
 import { ChevronUp, ChevronDown } from 'react-feather'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
-import { PERCENTAGE_PRECISION } from 'constants/index'
+import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'constants/index'
 import { EthFlowBannerCallbacks } from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
 import savingsIcon from 'assets/cow-swap/savings.svg'
 import SVG from 'react-inlinesvg'
@@ -59,7 +58,8 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
             <ul>
               <li>Lower overall fees</li>
               <li>
-                Lower default slippage (instead of {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% minimum)
+                Lower default slippage (instead of {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}%
+                minimum)
               </li>
               <li>No fees for failed transactions</li>
             </ul>
