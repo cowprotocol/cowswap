@@ -28,7 +28,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
     wrapCallback,
   } = props
   return (
-    <styledEl.BannerWrapper onClick={showBannerCallback}>
+    <styledEl.BannerWrapper onClick={showBannerCallback} id="classic-eth-flow-banner">
       <styledEl.ClosedBannerWrapper>
         <SVG title="Switch to WETH" src={savingsIcon} />
         <b>
@@ -65,9 +65,13 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
             </ul>
 
             {hasEnoughWrappedBalance ? (
-              <ButtonPrimary onClick={switchCurrencyCallback}>Switch to {wrapped.symbol} </ButtonPrimary>
+              <ButtonPrimary id="switch-to-wrapped" onClick={switchCurrencyCallback}>
+                Switch to {wrapped.symbol}{' '}
+              </ButtonPrimary>
             ) : (
-              <ButtonPrimary onClick={wrapCallback}>Wrap my {native.symbol} and swap</ButtonPrimary>
+              <ButtonPrimary id="wrap-native" onClick={wrapCallback}>
+                Wrap my {native.symbol} and swap
+              </ButtonPrimary>
             )}
           </Trans>
         </styledEl.BannerInnerWrapper>
