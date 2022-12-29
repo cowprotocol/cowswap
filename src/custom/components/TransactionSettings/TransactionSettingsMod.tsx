@@ -152,7 +152,17 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       slippageToleranceAnalytics('Default', isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
       setUserSlippageTolerance('auto')
     } else {
-      const parsed = Math.floor(Number.parseFloat(value) * 100)
+      let v = value
+
+      // Prevent inserting more than 2 decimal precision
+      if (value.split('.')[1]?.length > 2) {
+        // indexOf + 3 because we are cutting it off at `.XX`
+        v = value.slice(0, value.indexOf('.') + 3)
+        // Update the input to remove the extra numbers from UI input
+        setSlippageInput(v)
+      }
+
+      const parsed = Math.round(Number.parseFloat(v) * 100)
 
       if (
         !Number.isInteger(parsed) ||
@@ -161,7 +171,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
       ) {
         slippageToleranceAnalytics('Default', isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
-        if (value !== '.') {
+        if (v !== '.') {
           setSlippageError(SlippageError.InvalidInput)
         }
       } else {
