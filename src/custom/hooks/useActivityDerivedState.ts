@@ -95,7 +95,7 @@ export function getActivityLinkUrl(params: {
       return getSafeWebUrl(chainId, safe) ?? undefined
     }
   } else if (order) {
-    if (order.orderCreationHash && (order.status === OrderStatus.CREATING || order.status === OrderStatus.INVALID)) {
+    if (order.orderCreationHash && (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED)) {
       // It's a EthFlow transaction: Etherscan link
       return getEtherscanLink(chainId, order.orderCreationHash, 'transaction')
     } else {

@@ -152,7 +152,7 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     // Thus, we add both here to tell if the order is being cancelled
     isCancelling = (order.isCancelling || false) && (isPending || isCreating)
     isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
-    isInvalid = order.status === OrderStatus.INVALID
+    isFailed = order.status === OrderStatus.FAILED
 
     activity = order
     type = ActivityType.ORDER

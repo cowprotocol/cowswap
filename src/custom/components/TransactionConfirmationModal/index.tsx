@@ -591,7 +591,7 @@ function DisplayLink({ id, chainId }: DisplayLinkProps) {
   }
 
   const ethFlowHash =
-    orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.INVALID)
+    orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED)
       ? orderCreationHash
       : undefined
   const href = ethFlowHash

@@ -45,7 +45,7 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean;
       ? theme.warning
       : status === OrderStatus.CANCELLED
       ? theme.danger
-      : status === OrderStatus.INVALID
+      : status === OrderStatus.FAILED
       ? theme.danger
       : status === (OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING || OrderStatus)
       ? theme.text1
