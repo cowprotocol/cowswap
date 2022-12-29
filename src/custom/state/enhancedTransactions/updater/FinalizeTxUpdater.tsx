@@ -7,6 +7,7 @@ import { useAppDispatch } from 'state/hooks'
 // import { SupportedChainId } from 'constants/chains'
 import { useAddPopup } from 'state/application/hooks'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { GetReceipt, useGetReceipt } from 'hooks/useGetReceipt'
@@ -16,7 +17,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
-import { cancelOrdersBatch, invalidateOrdersBatch } from 'state/orders/actions'
+import { cancelOrdersBatch, invalidateOrdersBatch, updateOrder } from 'state/orders/actions'
 import { useSetAtom } from 'jotai'
 import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import ms from 'ms.macro'
@@ -55,11 +56,10 @@ interface CheckEthereumTransactions {
   dispatch: Dispatch
   addPopup: ReturnType<typeof useAddPopup>
   removeInFlightOrderId: (update: string) => void
+  nativeCurrencySymbol: string
 }
 
 type Cancel = () => void
-
-// async function checkEthereumTransactions(transaction: EnhancedTransactionDetails) {}
 
 function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
@@ -88,9 +88,7 @@ function finalizeEthereumTransaction(
     })
   )
 
-  const ethFlowInfo = transaction.ethFlow
-
-  if (!ethFlowInfo) {
+  if (!transaction.ethFlow) {
     addPopup(
       {
         txn: {
@@ -102,23 +100,60 @@ function finalizeEthereumTransaction(
       hash
     )
   } else {
-    // When it IS an EthFlow related tx, take action depending on the type
-    const { orderId, subType } = ethFlowInfo
+    finalizeEthFlowTx(transaction.ethFlow, receipt, params, hash)
+  }
+}
 
-    // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
-    setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
+function finalizeEthFlowTx(
+  ethFlowInfo: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' },
+  receipt: TransactionReceipt,
+  params: CheckEthereumTransactions,
+  hash: string
+): void {
+  const { orderId, subType } = ethFlowInfo
+  const { chainId, dispatch, addPopup, nativeCurrencySymbol } = params
 
-    if (subType === 'creation') {
-      // If creation failed, mark order as invalid
-      if (receipt.status !== 1) {
-        dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
-      }
+  // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
+  setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
+
+  if (subType === 'creation') {
+    if (receipt.status !== 1) {
+      // If creation failed:
+      // 1. Mark order as invalid
+      dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
+      // 2. Show failure tx pop-up
+      addPopup(
+        {
+          txn: {
+            hash,
+            success: false,
+            summary: `Failed to place order selling ${nativeCurrencySymbol}`,
+          },
+        },
+        hash
+      )
     }
+  }
 
-    if (subType === 'cancellation') {
+  if (subType === 'cancellation') {
+    if (receipt.status === 1) {
       // If cancellation succeeded, mark order as cancelled
-      // TODO: this might fail too. Handle the case of cancellation failure
       dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
+    } else {
+      // If cancellation failed:
+      // 1. Update order state and remove the isCancelling flag and cancellationHash
+      dispatch(updateOrder({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }))
+      // 2. Show failure tx pop-up
+      addPopup(
+        {
+          txn: {
+            hash,
+            success: false,
+            summary: `Failed to cancel order selling ${nativeCurrencySymbol}`,
+          },
+        },
+        hash
+      )
     }
   }
 }
@@ -204,6 +239,7 @@ export default function Updater(): null {
   const getSafeInfo = useGetSafeInfo()
   const addPopup = useAddPopup()
   const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
+  const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 
   // Get, from the pending transaction, the ones that we should re-check
   const shouldCheckFilter = useMemo(() => {
@@ -227,6 +263,7 @@ export default function Updater(): null {
       addPopup,
       dispatch,
       removeInFlightOrderId,
+      nativeCurrencySymbol,
     })
 
     return () => {
@@ -243,6 +280,7 @@ export default function Updater(): null {
     getReceipt,
     getSafeInfo,
     removeInFlightOrderId,
+    nativeCurrencySymbol,
   ])
 
   return null

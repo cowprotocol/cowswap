@@ -18,6 +18,7 @@ import {
   setIsOrderUnfillable,
   setOrderCancellationHash,
   updateLastCheckedBlock,
+  updateOrder,
   updatePresignGnosisSafeTx,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
@@ -261,6 +262,17 @@ export default createReducer(initialState, (builder) =>
         // add order to respective state
         addOrderToState(state, chainId, id, status, order)
       })
+    })
+    .addCase(updateOrder, (state, action) => {
+      prefillState(state, action)
+
+      const { chainId, order } = action.payload
+
+      const orderObj = getOrderById(state, chainId, order.id)
+
+      if (orderObj) {
+        orderObj.order = { ...orderObj.order, ...order }
+      }
     })
     .addCase(fulfillOrdersBatch, (state, action) => {
       prefillState(state, action)

@@ -124,6 +124,11 @@ export interface AddOrUpdateOrdersParams {
   orders: SerializedOrder[]
 }
 
+export interface UpdateOrderParams {
+  chainId: ChainId
+  order: Partial<Omit<SerializedOrder, 'id'>> & Pick<SerializedOrder, 'id'>
+}
+
 export interface FulfillOrdersBatchParams {
   ordersData: OrderFulfillmentData[]
   chainId: ChainId
@@ -145,6 +150,8 @@ export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
 
 export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/addOrUpdateOrders')
+
+export const updateOrder = createAction<UpdateOrderParams>('order/updateOrder')
 
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
 
