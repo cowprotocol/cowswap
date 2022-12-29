@@ -23,6 +23,9 @@ import {
   HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
+  MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
+  HIGH_ETH_FLOW_SLIPPAGE_BIPS,
+  MINIMUM_ETH_FLOW_SLIPPAGE,
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
@@ -146,13 +149,17 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     setSlippageError(false)
 
     if (value.length === 0) {
-      slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
+      slippageToleranceAnalytics('Default', isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
       setUserSlippageTolerance('auto')
     } else {
       const parsed = Math.floor(Number.parseFloat(value) * 100)
 
-      if (!Number.isInteger(parsed) || parsed < MIN_SLIPPAGE_BPS || parsed > MAX_SLIPPAGE_BPS) {
-        slippageToleranceAnalytics('Default', DEFAULT_SLIPPAGE_BPS)
+      if (
+        !Number.isInteger(parsed) ||
+        parsed < (isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : MIN_SLIPPAGE_BPS) ||
+        parsed > MAX_SLIPPAGE_BPS
+      ) {
+        slippageToleranceAnalytics('Default', isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
         if (value !== '.') {
           setSlippageError(SlippageError.InvalidInput)
@@ -165,13 +172,11 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   }
 
   const tooLow =
-    !isEthFlow &&
     userSlippageTolerance !== 'auto' &&
-    userSlippageTolerance.lessThan(new Percent(LOW_SLIPPAGE_BPS, 10_000))
+    userSlippageTolerance.lessThan(new Percent(isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : LOW_SLIPPAGE_BPS, 10_000))
   const tooHigh =
-    !isEthFlow &&
     userSlippageTolerance !== 'auto' &&
-    userSlippageTolerance.greaterThan(new Percent(HIGH_SLIPPAGE_BPS, 10_000))
+    userSlippageTolerance.greaterThan(new Percent(isEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BIPS : HIGH_SLIPPAGE_BPS, 10_000))
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
@@ -275,7 +280,11 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             }}
           >
             {slippageError ? (
-              <Trans>Enter a valid slippage percentage</Trans>
+              <Trans>
+                Enter slippage percentage between{' '}
+                {isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE.toFixed(0) : MIN_SLIPPAGE_BPS / 100}% and{' '}
+                {MAX_SLIPPAGE_BPS / 100}%
+              </Trans>
             ) : tooLow ? (
               <Trans>Your transaction may expire</Trans>
             ) : (

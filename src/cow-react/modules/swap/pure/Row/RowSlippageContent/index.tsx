@@ -4,11 +4,10 @@ import { Trans } from '@lingui/macro'
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/types'
-import { INPUT_OUTPUT_EXPLANATION, PERCENTAGE_PRECISION } from 'constants/index'
+import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'constants/index'
 import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { ThemedText } from 'theme/index'
-import { ETH_FLOW_SLIPPAGE } from '@cow/modules/swap/state/EthFlow/updaters/EthFlowSlippageUpdater'
 import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 
 export const ClickableText = styled.button`
@@ -30,8 +29,8 @@ export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undef
   <Trans>
     <p>
       When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
-      {ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching, even in
-      volatile market conditions.
+      {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order matching,
+      even in volatile market conditions.
     </p>
     <p>Orders on CoW Swap are always protected from MEV, so your slippage tolerance cannot be exploited.</p>
   </Trans>
