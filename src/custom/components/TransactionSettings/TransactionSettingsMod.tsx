@@ -272,7 +272,15 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 onChange={(e) => parseSlippageInput(e.target.value)}
                 onBlur={() => {
                   setSlippageInput('')
-                  setSlippageError(false)
+                  setSlippageError((curr) => {
+                    // When ethFlow and there was an error
+                    // Set the slippage to minimum allowed
+                    // Otherwise it'll default to last value used
+                    if (curr && isEthFlow) {
+                      setUserSlippageTolerance(MINIMUM_ETH_FLOW_SLIPPAGE)
+                    }
+                    return false
+                  })
                 }}
                 color={slippageError ? 'red' : ''}
               />
