@@ -150,7 +150,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
 
     if (value.length === 0) {
       slippageToleranceAnalytics('Default', isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
-      setUserSlippageTolerance('auto')
+      setUserSlippageTolerance(isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE : 'auto')
     } else {
       let v = value
 
