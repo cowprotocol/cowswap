@@ -445,7 +445,7 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
       return `${prefix} Cancelled`
     case ActivityStatus.CANCELLING:
       return `${prefix} Cancelling`
-    case ActivityStatus.INVALID:
+    case ActivityStatus.FAILED:
       return `${prefix} Failed`
     default:
       return `${prefix} Submitted`

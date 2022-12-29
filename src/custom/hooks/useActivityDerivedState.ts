@@ -64,7 +64,7 @@ function getActivityDerivedState(props: {
     isCancelled: status === ActivityStatus.CANCELLED,
     isUnfillable: (activity as Order).isUnfillable,
     isCreating: status === ActivityStatus.CREATING,
-    isInvalid: status === ActivityStatus.INVALID,
+    isFailed: status === ActivityStatus.FAILED,
 
     // Convenient casting
     order,
@@ -128,7 +128,7 @@ export function getActivityState({
   isPresignaturePending,
   isCancelled,
   isCreating,
-  isInvalid,
+  isFailed,
   enhancedTransaction,
 }: ActivityDerivedState): ActivityState {
   if (isPending) {
@@ -167,7 +167,7 @@ export function getActivityState({
     return 'creating'
   }
 
-  if (isInvalid) {
+  if (isFailed) {
     return 'failed'
   }
 
