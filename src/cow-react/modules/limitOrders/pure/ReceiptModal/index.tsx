@@ -68,7 +68,9 @@ export function ReceiptModal({
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
 
   const showCreationTxLink =
-    (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) && order.orderCreationHash
+    (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
+    order.orderCreationHash &&
+    !order.apiAdditionalInfo
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
