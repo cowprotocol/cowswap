@@ -26,6 +26,7 @@ import { Provider as AtomProvider } from 'jotai'
 
 import Popups from 'components/Popups'
 import { Updaters } from '@cow/modules/application/containers/App/Updaters'
+import { initWorker } from '@cow/modules/tokensList'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -66,3 +67,5 @@ ReactDOM.render(
 if (process.env.REACT_APP_SERVICE_WORKER !== 'false') {
   serviceWorkerRegistration.register()
 }
+
+initWorker()

@@ -1,0 +1,26 @@
+{
+  "1": [
+    {"url": "https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json", "isActive": false},
+    {"url": "tokenlist.aave.eth", "isActive": false},
+    {"url": "synths.snx.eth", "isActive": false},
+    {"url": "https://umaproject.org/uma.tokenlist.json", "isActive": false},
+    {"url": "wrapped.tokensoft.eth", "isActive": false},
+    {"url": "https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json", "isActive": false},
+    {"url": "https://raw.githubusercontent.com/opynfinance/opyn-tokenlist/master/opyn-squeeth-tokenlist.json", "isActive": false},
+    {"url": "https://app.tryroll.com/tokens.json", "isActive": false},
+    {"url": "defi.cmc.eth", "isActive": false},
+    {"url": "stablecoin.cmc.eth", "isActive": false},
+    {"url": "t2crtokens.eth", "isActive": false},
+    {"url": "https://www.gemini.com/uniswap/manifest.json", "isActive": true},
+    {"url": "https://files.cow.fi/tokens/CowSwap.json", "isActive": true},
+    {"url": "https://files.cow.fi/tokens/CoinGecko.json", "isActive": false}
+  ],
+  "100": [
+    {"url": "https://files.cow.fi/tokens/CowSwap.json", "isActive": true},
+    {"url": "https://tokens.honeyswap.org", "isActive": true}
+  ],
+  "5": [
+    {"url": "https://raw.githubusercontent.com/cowprotocol/cowswap/main/src/custom/tokens/goerli-token-list.json", "isActive": true},
+    {"url": "https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json", "isActive": false}
+  ]
+}
