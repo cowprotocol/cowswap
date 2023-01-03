@@ -27,3 +27,6 @@ export interface TokensListConfig {
   keywords: string[]
   tokens: RawToken[]
 }
+
+// Because importing of SupportedChainid adds the whole '@cowprotocol/cow-sdk' to the bundle
+export const supportedChains = [1, 5, 100]

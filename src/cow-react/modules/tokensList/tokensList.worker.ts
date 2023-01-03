@@ -1,11 +1,9 @@
 /* eslint-disable no-restricted-globals */
 
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenDto, TokensListConfig, TokensListsWorkerEvents, TokensListVersion } from './types'
-import { DB_VERSION, LISTS_VERSION_SCHEMA_ID, tokensListDB, tokensSchemaId } from './tokensList.db'
+import { supportedChains, TokenDto, TokensListConfig, TokensListsWorkerEvents, TokensListVersion } from './types'
+import { initTokensListsDB, LISTS_VERSION_SCHEMA_ID, tokensListDB, tokensSchemaId } from './tokensList.db'
 import listsConfig from './listsConfig.json'
-
-const supportedChains = [1, 5, 100]
 
 const EVENTS: { [key in TokensListsWorkerEvents]: any } = {
   [TokensListsWorkerEvents.NETWORK_CHANGED]: updateTokensForChainId,
@@ -21,7 +19,7 @@ self.addEventListener(
   false
 )
 
-initDB()
+initTokensListsDB()
 
 /* ****************************************** */
 
@@ -34,10 +32,14 @@ async function updateTokensForChainId(chainId: SupportedChainId) {
 
   if (allTokens.length) {
     await tokensListDB.table(tokensSchemaId(chainId)).bulkPut(allTokens)
-    console.log(`Updated tokens lists for chainId: ${chainId}:`, allTokens)
+    console.debug(`Updated tokens lists for chainId: ${chainId}:`, allTokens)
   }
 
   self.postMessage({ event: TokensListsWorkerEvents.NETWORK_CHANGED, data: chainId })
+}
+
+async function loadTokensList(url: string): Promise<TokensListConfig> {
+  return fetch(url).then((res) => res.json())
 }
 
 async function processTokensListConfig(
@@ -60,22 +62,4 @@ async function processTokensListConfig(
 
 function tokensListVersionToString(version: TokensListVersion): string {
   return [version.major, version.minor, version.patch].join('.')
-}
-
-async function loadTokensList(url: string): Promise<TokensListConfig> {
-  return fetch(url).then((res) => res.json())
-}
-
-function initDB() {
-  const version = tokensListDB.version(DB_VERSION)
-  const tokensSchemas = supportedChains.reduce((acc, chainId) => {
-    acc[tokensSchemaId(chainId)] = '++address,name,symbol,decimals,logoURI'
-
-    return acc
-  }, {} as { [key: string]: string })
-
-  version.stores({
-    ...tokensSchemas,
-    [LISTS_VERSION_SCHEMA_ID]: '++name,chainId,version',
-  })
 }

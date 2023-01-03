@@ -10,11 +10,14 @@ import { isL2ChainId } from 'utils/chains'
 import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/lists/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { useUserAddedTokens } from 'state/user/hooks' */
-import { useCombinedActiveList, /*TokenAddressMap,*/ useUnsupportedTokenList } from 'state/lists/hooks'
+import { /*TokenAddressMap,*/ useUnsupportedTokenList } from 'state/lists/hooks'
 
 // MOD imports
 import { useTokensFromMap } from '@src/hooks/Tokens'
 import { useMemo } from 'react'
+import { useUserAddedTokens } from '@src/state/user/hooks'
+import { useAtomValue } from 'jotai/utils'
+import { tokensListState } from '@cow/modules/tokensList/state'
 
 export * from '@src/hooks/Tokens'
 
@@ -179,14 +182,19 @@ export function useCurrency(currencyId?: string | null): Currency | null | undef
   return useCurrencyFromMap(tokens, currencyId)
 } */
 
+// TODO: get rid of custom hook and create our own one
 export function useAllTokens(): { [address: string]: Token } {
-  const allTokens = useCombinedActiveList()
-  const tokensFromMap = useTokensFromMap(allTokens, true)
-  const tokensList = Object.values(tokensFromMap)
-  // This trick removes infinite hook cals
-  // TODO: useCombinedActiveList() - mustn't fire so frequently
-  const tokensListString = tokensList.map((item) => item.address + item.symbol + item.chainId + item.decimals).join('/')
+  const allTokens = useAtomValue(tokensListState)
+  const userAddedTokens = useUserAddedTokens()
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useMemo(() => tokensFromMap, [tokensListString])
+  const userAddedTokensMap = useMemo(() => {
+    return userAddedTokens.reduce((acc, val) => {
+      acc[val.address] = val
+      return acc
+    }, {} as { [address: string]: Token })
+  }, [userAddedTokens])
+
+  return useMemo(() => {
+    return { ...allTokens, ...userAddedTokensMap }
+  }, [allTokens, userAddedTokensMap])
 }

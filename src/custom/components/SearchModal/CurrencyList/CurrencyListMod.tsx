@@ -14,10 +14,8 @@ import styled from 'styled-components/macro'
 import TokenListLogo from 'assets/svg/tokenlist.svg'
 import { useIsUserAddedToken } from 'hooks/Tokens'
 import { useCurrencyBalance } from 'state/connection/hooks'
-import { useCombinedActiveList } from 'state/lists/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { ThemedText } from 'theme'
-import { isTokenOnList } from 'utils'
 import Column from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from 'components/Loader'
@@ -31,6 +29,8 @@ import { MenuItem } from '.' // mod
 import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { useAtomValue } from 'jotai/utils'
+import { tokensListState } from '@cow/modules/tokensList/state'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -139,8 +139,11 @@ function CurrencyRow({
 }) {
   const { account } = useWeb3React()
   const key = currencyKey(currency)
-  const selectedTokenList = useCombinedActiveList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency.isToken ? currency : undefined)
+  const tokensList = useAtomValue(tokensListState)
+  const isOnSelectedList = useMemo(
+    () => (currency ? currency.isToken && !!tokensList[currency.address] : false),
+    [currency, tokensList]
+  )
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
