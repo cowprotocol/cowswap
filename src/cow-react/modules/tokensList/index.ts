@@ -1,3 +1,7 @@
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import TokensListWorker from 'worker-loader!./tokensList.worker'
+
 export let tokensListWorker: Worker | null = null
 
 const EVENTS: { [key: string]: string } = {
@@ -5,7 +9,7 @@ const EVENTS: { [key: string]: string } = {
 }
 
 export function initWorker() {
-  const worker = new Worker('workers/tokensList/worker.js', { type: 'module' })
+  const worker: Worker = new TokensListWorker()
 
   worker.addEventListener('message', ({ data }) => {
     const event = data?.event
