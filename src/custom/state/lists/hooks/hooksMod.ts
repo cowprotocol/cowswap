@@ -180,7 +180,7 @@ export function useCombinedActiveList(): TokenAddressMap {
   // MOD: added here to use the scoped functions
   const activeListUrls = useActiveListUrls()
   const activeTokens = useCombinedTokenMapFromUrls(activeListUrls)
-  const defaultTokenMap = listToTokenMap(DEFAULT_TOKEN_LIST)
+  const defaultTokenMap = useDefaultTokenList()
   return combineMaps(activeTokens, defaultTokenMap)
 }
 

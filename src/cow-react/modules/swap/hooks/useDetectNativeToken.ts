@@ -17,6 +17,7 @@ export function useDetectNativeToken() {
   const tradeState = useTradeState()
   const { inputCurrencyId, outputCurrencyId } = tradeState?.state || {}
 
+  // TODO: creates a high load on useAllTokens()
   const input = useTokenBySymbolOrAddress(inputCurrencyId)
   const output = useTokenBySymbolOrAddress(outputCurrencyId)
 

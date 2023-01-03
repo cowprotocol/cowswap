@@ -219,6 +219,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     recipient,
   } = useSwapState()
 
+  // TODO: creates a high load on useAllTokens()
   const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
