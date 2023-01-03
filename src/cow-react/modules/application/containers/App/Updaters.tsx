@@ -20,8 +20,10 @@ import { UploadToIpfsUpdater } from 'state/appData/updater'
 import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
 import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from '@cow/modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from '@cow/modules/tokensList/TokensListUpdater'
+import { TradeType, useTradeTypeInfo } from '@cow/modules/trade'
 
 export function Updaters() {
+  const info = useTradeTypeInfo()
   return (
     <>
       <RadialGradientByChainUpdater />
@@ -32,7 +34,7 @@ export function Updaters() {
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
-      <FeesUpdater />
+      {info?.tradeType === TradeType.SWAP && <FeesUpdater />}
       <UnfillableOrdersUpdater />
       <GpOrdersUpdater />
       <GasUpdater />
