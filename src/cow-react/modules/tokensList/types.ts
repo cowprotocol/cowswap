@@ -1,11 +1,5 @@
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 export enum TokensListsWorkerEvents {
   NETWORK_CHANGED,
-}
-
-export type TokensListsByChainId = {
-  [key in SupportedChainId]: { url: string; isActive: boolean }[]
 }
 
 export interface RawToken {
@@ -17,14 +11,18 @@ export interface RawToken {
   chainId: number
 }
 
+export type TokenDto = Omit<RawToken, 'chainId'>
+
+export type TokensListVersion = {
+  patch: number
+  minor: number
+  major: number
+}
+
 export interface TokensListConfig {
   name: string
   timestamp: string
-  version: {
-    patch: number
-    minor: number
-    major: number
-  }
+  version: TokensListVersion
   logoURL: string
   keywords: string[]
   tokens: RawToken[]
