@@ -106,7 +106,10 @@ const [web3Fortmatic, web3FortmaticHooks] = initializeConnector<Connector>((acti
   return new AsyncConnector(
     () => {
       return Promise.all([import('fortmatic'), import('@web3-react/eip1193')]).then(([Fortmatic, { EIP1193 }]) => {
-        return new EIP1193({ actions, provider: new Fortmatic(process.env.REACT_APP_FORTMATIC_KEY).getProvider() })
+        return new EIP1193({
+          actions,
+          provider: new Fortmatic.default(process.env.REACT_APP_FORTMATIC_KEY).getProvider(),
+        })
       })
     },
     actions,
