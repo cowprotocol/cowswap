@@ -64,8 +64,7 @@ function getActivityDerivedState(props: {
     isCancelled: status === ActivityStatus.CANCELLED,
     isUnfillable: (activity as Order).isUnfillable,
     isCreating: status === ActivityStatus.CREATING,
-    isRefunding: false, // TODO: wire up refunding/refunded states
-    isRefunded: order?.isRefunded || false,
+    isInvalid: status === ActivityStatus.INVALID,
 
     // Convenient casting
     order,
@@ -96,7 +95,7 @@ export function getActivityLinkUrl(params: {
       return getSafeWebUrl(chainId, safe) ?? undefined
     }
   } else if (order) {
-    if (order.orderCreationHash && order.status === OrderStatus.CREATING) {
+    if (order.orderCreationHash && (order.status === OrderStatus.CREATING || order.status === OrderStatus.INVALID)) {
       // It's a EthFlow transaction: Etherscan link
       return getEtherscanLink(chainId, order.orderCreationHash, 'transaction')
     } else {
@@ -119,8 +118,6 @@ type ActivityState =
   | 'signing'
   | 'cancelling'
   | 'creating'
-  | 'refunding'
-  | 'refunded'
 
 export function getActivityState({
   isPending,
@@ -131,8 +128,7 @@ export function getActivityState({
   isPresignaturePending,
   isCancelled,
   isCreating,
-  isRefunding,
-  isRefunded,
+  isInvalid,
   enhancedTransaction,
 }: ActivityDerivedState): ActivityState {
   if (isPending) {
@@ -171,12 +167,8 @@ export function getActivityState({
     return 'creating'
   }
 
-  if (isRefunding) {
-    return 'refunding'
-  }
-
-  if (isRefunded) {
-    return 'refunded'
+  if (isInvalid) {
+    return 'failed'
   }
 
   return 'open'

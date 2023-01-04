@@ -20,6 +20,7 @@ export type AddTransactionParams = WithChainId &
     | 'safeTransaction'
     | 'swapVCow'
     | 'swapLockedGNOvCow'
+    | 'ethFlow'
   >
 
 export const addTransaction = createAction<AddTransactionParams>('enhancedTransactions/addTransaction')

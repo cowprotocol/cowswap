@@ -22,7 +22,7 @@ const HighFeeWarning = styled(HighFeeWarningBase)``
 
 const Wrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    margin: 32px auto 0;
+    margin: 0 auto;
   `};
 
   ${SwapShowAcceptChanges} {

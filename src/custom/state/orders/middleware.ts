@@ -1,12 +1,13 @@
-import { Middleware, isAnyOf, MiddlewareAPI, Dispatch, AnyAction } from '@reduxjs/toolkit'
+import { AnyAction, Dispatch, isAnyOf, Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
 
 import { addPopup } from 'state/application/reducer'
 import { AppState } from 'state'
 import * as OrderActions from './actions'
+import { OrderClass, SerializedOrder } from './actions'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import { OrderIDWithPopup, OrderTxTypes, PopupPayload, buildCancellationPopupSummary, setPopupData } from './helpers'
+import { buildCancellationPopupSummary, OrderIDWithPopup, OrderTxTypes, PopupPayload, setPopupData } from './helpers'
 import { registerOnWindow } from 'utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sound'
 // import ReactGA from 'react-ga4'
@@ -15,7 +16,6 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { OrderClass } from './actions'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
@@ -76,11 +76,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } else if (isCancelOrderAction(action)) {
       // action is order/cancelOrder
       // Cancelled Order Popup
-      popup = setPopupData(OrderTxTypes.METATXN, {
-        success: true,
-        summary: buildCancellationPopupSummary(id, summary),
-        id,
-      })
+      popup = _buildCancellationPopup(orderObject.order)
       orderAnalytics('Canceled', orderClass)
     } else {
       // action is order/expireOrder
@@ -108,7 +104,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       return result
     }
 
-    const { pending, fulfilled, expired, cancelled } = orders
+    const { pending, fulfilled, expired, cancelled, creating } = orders
 
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
@@ -143,13 +139,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
         if (orderObject) {
           const { order } = orderObject
 
-          const summary = order.summary
-
-          const popup = setPopupData(OrderTxTypes.METATXN, {
-            success: true,
-            summary: buildCancellationPopupSummary(id, summary),
-            id,
-          })
+          const popup = _buildCancellationPopup(order)
           orderAnalytics('Canceled', order.class)
 
           idsAndPopups.push({ id, popup })
@@ -158,7 +148,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } else {
       // construct Expired Order Popups for each Order
       action.payload.ids.forEach((id) => {
-        const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id]
+        const orderObject = pending?.[id] || fulfilled?.[id] || expired?.[id] || creating?.[id]
         if (orderObject) {
           const { summary, class: orderClass } = orderObject.order
 
@@ -227,6 +217,8 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     cowSound = getCowSoundError()
   } else if (isCancelOrderAction(action)) {
     cowSound = getCowSoundError()
+  } else if (isFailedTxAction(action)) {
+    cowSound = getCowSoundError()
   }
 
   if (cowSound) {
@@ -236,6 +228,15 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   }
 
   return result
+}
+
+const isAddPopup = isAnyOf(addPopup)
+
+/**
+ * Checks whether the action is `addPopup` for a `txn` which failed
+ */
+function isFailedTxAction(action: unknown): boolean {
+  return isAddPopup(action) && action.payload?.content?.txn?.success === false
 }
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
@@ -284,8 +285,7 @@ function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): Orde
     return
   }
 
-  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, rejected, refunded, refunding } =
-    orders
+  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, invalid } = orders
 
   return (
     pending?.[id] ||
@@ -294,8 +294,29 @@ function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): Orde
     expired?.[id] ||
     cancelled?.[id] ||
     creating?.[id] ||
-    rejected?.[id] ||
-    refunding?.[id] ||
-    refunded?.[id]
+    invalid?.[id]
   )
+}
+
+function _buildCancellationPopup(order: SerializedOrder) {
+  const { cancellationHash, apiAdditionalInfo, id, summary } = order
+
+  if (cancellationHash && !apiAdditionalInfo) {
+    // EthFlow order which has been cancelled and does not exist on the backend
+    // Use the `tx` popup
+    return setPopupData(OrderTxTypes.TXN, {
+      success: true,
+      summary: buildCancellationPopupSummary(id, summary),
+      hash: cancellationHash,
+      id,
+    })
+  } else {
+    // Regular order being cancelled
+    // Use `metatx` popup
+    return setPopupData(OrderTxTypes.METATXN, {
+      success: true,
+      summary: buildCancellationPopupSummary(id, summary),
+      id,
+    })
+  }
 }

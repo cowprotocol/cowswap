@@ -8,7 +8,7 @@ import { AddOrderCallback, useAddPendingOrder } from 'state/orders/hooks'
 import { useAppData } from 'hooks/useAppData'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
-import { SwapFlowAnalyticsContext } from '@cow/modules/swap/services/common/steps/analytics'
+import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
 import useENSAddress from 'hooks/useENSAddress'
 import { SwapConfirmManager, useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import { useWETHContract } from 'hooks/useContract'
@@ -25,7 +25,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { Web3Provider } from '@ethersproject/providers'
-import { BaseFlowContext } from '@cow/modules/swap/services/common/types'
+import { BaseFlowContext } from '@cow/modules/swap/services/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
 import { OrderClass } from 'state/orders/actions'
@@ -167,6 +167,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
   const isGnosisSafeWallet = !!gnosisSafeInfo
 
   const buyToken = isBuyEth ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : trade.outputAmount.currency.wrapped
+  const marketLabel = [sellToken?.symbol, buyToken.symbol].join(',')
 
   if (!sellToken || !buyToken) {
     return null
@@ -176,7 +177,8 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     account,
     recipient,
     recipientAddress: recipientAddressOrName,
-    trade,
+    marketLabel,
+    orderClass: OrderClass.MARKET,
   }
 
   const validTo = calculateValidTo(deadline)

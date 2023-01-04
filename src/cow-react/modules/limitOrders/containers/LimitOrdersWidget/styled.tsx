@@ -23,7 +23,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
+  padding: 4px 4px 10px 8px;
   margin: 0;
   font-weight: 500;
   font-size: 16px;
@@ -78,8 +78,8 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 `
 
 export const StyledRateInfo = styled(RateInfo)`
-  margin-top: 15px;
-  font-size: 14px;
+  padding: 8px 8px 0;
+  font-size: 13px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;

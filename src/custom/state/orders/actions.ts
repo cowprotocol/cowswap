@@ -15,10 +15,7 @@ export enum OrderStatus {
   EXPIRED = 'expired',
   CANCELLED = 'cancelled',
   CREATING = 'creating',
-  // TODO: not sure all of those states will be exposed by the backend
-  REJECTED = 'rejected',
-  REFUNDING = 'refunding',
-  REFUNDED = 'refunded',
+  INVALID = 'invalid',
 }
 
 export enum OrderClass {
@@ -127,6 +124,11 @@ export interface AddOrUpdateOrdersParams {
   orders: SerializedOrder[]
 }
 
+export interface UpdateOrderParams {
+  chainId: ChainId
+  order: Partial<Omit<SerializedOrder, 'id'>> & Pick<SerializedOrder, 'id'>
+}
+
 export interface FulfillOrdersBatchParams {
   ordersData: OrderFulfillmentData[]
   chainId: ChainId
@@ -144,9 +146,12 @@ export interface UpdatePresignGnosisSafeTxParams {
   safeTransaction: SafeMultisigTransactionResponse
 }
 export type ExpireOrdersBatchParams = BatchOrdersUpdateParams
+export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
 export type CancelOrdersBatchParams = BatchOrdersUpdateParams
 
 export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/addOrUpdateOrders')
+
+export const updateOrder = createAction<UpdateOrderParams>('order/updateOrder')
 
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
 
@@ -157,6 +162,8 @@ export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxP
 )
 
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
+
+export const invalidateOrdersBatch = createAction<InvalidateOrdersBatchParams>('order/invalidateOrdersBatch')
 
 export const setOrderCancellationHash = createAction<SetOrderCancellationHashParams>('order/setOrderCancellationHash')
 
@@ -177,3 +184,6 @@ export type SetIsOrderUnfillableParams = {
 }
 
 export const setIsOrderUnfillable = createAction<SetIsOrderUnfillableParams>('order/setIsOrderUnfillable')
+
+export type SetIsOrderRefundedBatch = { chainId: ChainId; ids: OrderID[] }
+export const setIsOrderRefundedBatch = createAction<SetIsOrderRefundedBatch>('order/setIsOrderRefundedBatch')

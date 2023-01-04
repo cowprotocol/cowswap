@@ -6,12 +6,17 @@ import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { RowFeeContent } from '@cow/modules/swap/pure/Row/RowFeeContent'
 import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
 
 export const PRESIGN_FEE_TOOLTIP_MSG =
   'These fees cover the gas costs for executing the order once it has been placed. However - since you are using a smart contract wallet - you will need to pay the gas for signing an on-chain tx in order to place it.'
+
+const getEthFlowFeeTooltipMsg = (native = 'a native currency') =>
+  `Trades on CoW Swap usually don’t require you to pay gas in ${native}. However, when selling ${native}, you do have to pay a small gas fee to cover the cost of wrapping your ${native}.`
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: TradeGp | null): {
@@ -40,6 +45,20 @@ export interface RowFeeProps extends RowWithShowHelpersProps {
 
 export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
+
+  const isEthFLow = useIsEthFlow()
+  const native = useNativeCurrency()
+
+  const tooltip = useMemo(() => {
+    if (isEthFLow) {
+      return getEthFlowFeeTooltipMsg(native.symbol)
+    } else if (allowsOffchainSigning) {
+      return GASLESS_FEE_TOOLTIP_MSG
+    } else {
+      return PRESIGN_FEE_TOOLTIP_MSG
+    }
+  }, [allowsOffchainSigning, isEthFLow, native.symbol])
+
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const props = useMemo(() => {
@@ -47,10 +66,10 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     const smartFeeFiatValue = formatSmart(feeFiatValue, FIAT_PRECISION)
     const smartFeeTokenValue = formatSmart(displayFee, AMOUNT_PRECISION)
-    const feeToken = smartFeeTokenValue ? `${smartFeeTokenValue} ${feeCurrencySymbol}` : '🎉 Free!'
+    const feeAmountWithCurrency = `${smartFeeTokenValue} ${feeCurrencySymbol} ${isEthFLow ? ' + gas' : ''}`
+    const feeToken = smartFeeTokenValue ? feeAmountWithCurrency : '🎉 Free!'
     const fullDisplayFee = formatMax(displayFee, displayFee?.currency.decimals) || '-'
-    const includeGasMessage = allowsOffchainSigning ? ' (incl. gas costs)' : ''
-    const tooltip = allowsOffchainSigning ? GASLESS_FEE_TOOLTIP_MSG : PRESIGN_FEE_TOOLTIP_MSG
+    const includeGasMessage = allowsOffchainSigning && !isEthFLow ? ' (incl. gas costs)' : ''
 
     return {
       showHelpers,
@@ -61,7 +80,7 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
       includeGasMessage,
       tooltip,
     }
-  }, [allowsOffchainSigning, fee, feeFiatValue, realizedFee, showHelpers])
+  }, [allowsOffchainSigning, fee, feeFiatValue, isEthFLow, realizedFee, showHelpers, tooltip])
 
   return <RowFeeContent {...props} />
 }

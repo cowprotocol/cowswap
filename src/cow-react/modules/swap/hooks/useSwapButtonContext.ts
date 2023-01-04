@@ -14,7 +14,7 @@ import {
   useWrapUnwrapError,
 } from 'hooks/useWrapCallback'
 import { useCallback } from 'react'
-import { logSwapFlow } from '@cow/modules/swap/services/utils/logger'
+import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
@@ -85,10 +85,10 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     if (!swapFlowContext && !ethFlowContext) return
 
     if (swapFlowContext) {
-      logSwapFlow('SWAP FLOW', 'Start swap flow')
+      logTradeFlow('SWAP FLOW', 'Start swap flow')
       swapFlow(swapFlowContext, priceImpactParams)
     } else if (ethFlowContext) {
-      logSwapFlow('ETH FLOW', 'Start eth flow')
+      logTradeFlow('ETH FLOW', 'Start eth flow')
       ethFlow(ethFlowContext, priceImpactParams)
     }
   }, [swapFlowContext, ethFlowContext, priceImpactParams])

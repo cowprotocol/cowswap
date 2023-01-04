@@ -7,6 +7,7 @@ import { useAppDispatch } from 'state/hooks'
 // import { SupportedChainId } from 'constants/chains'
 import { useAddPopup } from 'state/application/hooks'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { GetReceipt, useGetReceipt } from 'hooks/useGetReceipt'
@@ -16,6 +17,12 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
+import { cancelOrdersBatch, invalidateOrdersBatch, updateOrder } from 'state/orders/actions'
+import { useSetAtom } from 'jotai'
+import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import ms from 'ms.macro'
+
+const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
 type TxInterface = Pick<
   EnhancedTransactionDetails,
@@ -48,11 +55,11 @@ interface CheckEthereumTransactions {
   getSafeInfo: GetSafeInfo
   dispatch: Dispatch
   addPopup: ReturnType<typeof useAddPopup>
+  removeInFlightOrderId: (update: string) => void
+  nativeCurrencySymbol: string
 }
 
 type Cancel = () => void
-
-// async function checkEthereumTransactions(transaction: EnhancedTransactionDetails) {}
 
 function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
@@ -81,16 +88,74 @@ function finalizeEthereumTransaction(
     })
   )
 
-  addPopup(
-    {
-      txn: {
-        hash: receipt.transactionHash,
-        success: receipt.status === 1 && transaction.replacementType !== 'cancel',
-        summary: transaction.summary,
+  if (!transaction.ethFlow) {
+    addPopup(
+      {
+        txn: {
+          hash: receipt.transactionHash,
+          success: receipt.status === 1 && transaction.replacementType !== 'cancel',
+          summary: transaction.summary,
+        },
       },
-    },
-    hash
-  )
+      hash
+    )
+  } else {
+    finalizeEthFlowTx(transaction.ethFlow, receipt, params, hash)
+  }
+}
+
+function finalizeEthFlowTx(
+  ethFlowInfo: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' },
+  receipt: TransactionReceipt,
+  params: CheckEthereumTransactions,
+  hash: string
+): void {
+  const { orderId, subType } = ethFlowInfo
+  const { chainId, dispatch, addPopup, nativeCurrencySymbol } = params
+
+  // Remove inflight order ids, after a delay to avoid creating the same again in quick succession
+  setTimeout(() => params.removeInFlightOrderId(orderId), DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS)
+
+  if (subType === 'creation') {
+    if (receipt.status !== 1) {
+      // If creation failed:
+      // 1. Mark order as invalid
+      dispatch(invalidateOrdersBatch({ chainId, ids: [orderId] }))
+      // 2. Show failure tx pop-up
+      addPopup(
+        {
+          txn: {
+            hash,
+            success: false,
+            summary: `Failed to place order selling ${nativeCurrencySymbol}`,
+          },
+        },
+        hash
+      )
+    }
+  }
+
+  if (subType === 'cancellation') {
+    if (receipt.status === 1) {
+      // If cancellation succeeded, mark order as cancelled
+      dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
+    } else {
+      // If cancellation failed:
+      // 1. Update order state and remove the isCancelling flag and cancellationHash
+      dispatch(updateOrder({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }))
+      // 2. Show failure tx pop-up
+      addPopup(
+        {
+          txn: {
+            hash,
+            success: false,
+            summary: `Failed to cancel order selling ${nativeCurrencySymbol}`,
+          },
+        },
+        hash
+      )
+    }
+  }
 }
 
 function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] {
@@ -173,6 +238,8 @@ export default function Updater(): null {
   const getReceipt = useGetReceipt()
   const getSafeInfo = useGetSafeInfo()
   const addPopup = useAddPopup()
+  const removeInFlightOrderId = useSetAtom(removeInFlightOrderIdAtom)
+  const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 
   // Get, from the pending transaction, the ones that we should re-check
   const shouldCheckFilter = useMemo(() => {
@@ -195,13 +262,26 @@ export default function Updater(): null {
       getSafeInfo,
       addPopup,
       dispatch,
+      removeInFlightOrderId,
+      nativeCurrencySymbol,
     })
 
     return () => {
       // Cancel all promises
       promiseCancellations.forEach((cancel) => cancel())
     }
-  }, [chainId, provider, transactions, lastBlockNumber, dispatch, addPopup, getReceipt, getSafeInfo])
+  }, [
+    chainId,
+    provider,
+    transactions,
+    lastBlockNumber,
+    dispatch,
+    addPopup,
+    getReceipt,
+    getSafeInfo,
+    removeInFlightOrderId,
+    nativeCurrencySymbol,
+  ])
 
   return null
 }

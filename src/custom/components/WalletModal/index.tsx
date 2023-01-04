@@ -16,11 +16,10 @@ function CustomTerms() {
   return (
     <TermsWrapper>
       <Trans>
-        By connecting a wallet, you agree to GnosisDAO&apos;s{' '}
+        By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s{' '}
         <StyledInternalLink style={{ marginRight: 5 }} to={Routes.TERMS_CONDITIONS} target="_blank">
-          Terms &amp; Conditions
+          Terms &amp; Conditions.
         </StyledInternalLink>
-        and acknowledge that you have read, understood, and agree to them.{' '}
       </Trans>
     </TermsWrapper>
   )

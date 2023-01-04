@@ -2,6 +2,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import styled from 'styled-components/macro'
 import { AlertTriangle } from 'react-feather'
+import { transparentize, lighten, darken } from 'polished'
 
 interface RateImpactAcknowledge {
   withAcknowledge: boolean
@@ -19,24 +20,34 @@ const RateImpactWarningBox = styled.div<{ withAcknowledge: boolean }>`
   display: flex;
   align-items: center;
   border-radius: ${({ withAcknowledge }) => (withAcknowledge ? '18px 18px 0 0' : '18px')};
-  padding: 15px;
-  gap: 15px;
-  color: ${({ theme }) => (theme.darkMode ? '#ffb7b1' : '#860b00')};
-  background: rgba(255, 59, 41, 0.2);
+  padding: 16px;
+  gap: 16px;
+  color: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.danger) : darken(0.05, theme.danger))};
+  background: ${({ theme }) =>
+    theme.darkMode ? transparentize(0.8, theme.danger) : transparentize(0.85, theme.danger)};
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
 `
 
 const ReadMoreLink = styled.a`
   display: block;
-  margin-top: 5px;
-  color: ${({ theme }) => (theme.darkMode ? '#ffb7b1' : '#860b00')};
+  color: inherit;
+  margin: 16px 0 0;
+  text-decoration: underline;
+
+  &:hover {
+    color: ${({ theme }) => theme.text1};
+  }
 `
 
 const AcknowledgeBox = styled.div`
-  color: ${({ theme }) => (theme.darkMode ? '#ffb7b1' : '#860b00')};
-  background: rgba(255, 59, 41, 0.4);
+  color: ${({ theme }) => (theme.darkMode ? lighten(0.2, theme.danger) : darken(0.05, theme.danger))};
+  background: ${({ theme }) =>
+    theme.darkMode ? transparentize(0.8, theme.danger) : transparentize(0.85, theme.danger)};
   text-align: center;
-  padding: 15px 0;
-  border-radius: 0 0 18px 18px;
+  padding: 16px 0;
+  border-radius: 0 0 16px 16px;
 
   label {
     cursor: pointer;

@@ -91,7 +91,7 @@ const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
  * where orderDigest = keccak256(orderStruct). bytes32.
  */
 export type OrderID = string
-export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'presignaturePending' | 'open'
+export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'invalid' | 'presignaturePending' | 'open'
 
 // TODO: replace it by import from SDK
 export interface OrderMetaData {

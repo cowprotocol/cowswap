@@ -39,6 +39,7 @@ export interface EnhancedTransactionDetails {
   claim?: { recipient: string; cowAmountRaw?: string; indices: number[] }
   swapVCow?: boolean
   swapLockedGNOvCow?: boolean
+  ethFlow?: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' }
 
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
@@ -88,6 +89,7 @@ export default createReducer(initialState, (builder) =>
             data,
             swapVCow,
             swapLockedGNOvCow,
+            ethFlow,
           },
         }
       ) => {
@@ -113,6 +115,7 @@ export default createReducer(initialState, (builder) =>
           claim,
           swapVCow,
           swapLockedGNOvCow,
+          ethFlow,
         }
         transactions[chainId] = txs
       }
