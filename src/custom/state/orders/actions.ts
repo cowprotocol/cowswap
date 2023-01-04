@@ -46,7 +46,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
   // EthFlow
   orderCreationHash?: string
   isRefunded?: boolean
-  // TODO: add refund hash here when working on that
+  refundHash?: string
 
   cancellationHash?: string // Filled when a hard cancellation is triggered. Be it ethflow or regular order
 
@@ -82,6 +82,7 @@ export type OrderInfoApi = Pick<
   | 'executedSurplusFee'
   | 'invalidated'
   | 'ethflowData'
+  | 'onchainOrderData'
 >
 
 /**
@@ -185,5 +186,6 @@ export type SetIsOrderUnfillableParams = {
 
 export const setIsOrderUnfillable = createAction<SetIsOrderUnfillableParams>('order/setIsOrderUnfillable')
 
-export type SetIsOrderRefundedBatch = { chainId: ChainId; ids: OrderID[] }
+type RefundItem = { id: OrderID; refundHash: string }
+export type SetIsOrderRefundedBatch = { chainId: ChainId; items: RefundItem[] }
 export const setIsOrderRefundedBatch = createAction<SetIsOrderRefundedBatch>('order/setIsOrderRefundedBatch')

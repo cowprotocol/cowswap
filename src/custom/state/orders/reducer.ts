@@ -404,13 +404,14 @@ export default createReducer(initialState, (builder) =>
     .addCase(setIsOrderRefundedBatch, (state, action) => {
       prefillState(state, action)
 
-      const { chainId, ids } = action.payload
+      const { chainId, items } = action.payload
 
-      ids.forEach((id) => {
+      items.forEach(({ id, refundHash }) => {
         const orderObject = getOrderById(state, chainId, id)
 
         if (orderObject) {
           orderObject.order.isRefunded = true
+          orderObject.order.refundHash = refundHash
         }
       })
     })
