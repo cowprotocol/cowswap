@@ -1,0 +1,13 @@
+diff --git a/node_modules/web3/package.json b/node_modules/web3/package.json
+index 32160f4..965c280 100644
+--- a/node_modules/web3/package.json
++++ b/node_modules/web3/package.json
+@@ -8,7 +8,7 @@
+         "node": ">=8.0.0"
+     },
+     "main": "lib/index.js",
+-    "browser": "dist/web3.min.js",
++    "browser": "lib/index.js",
+     "bugs": {
+         "url": "https://github.com/ethereum/web3.js/issues"
+     },
