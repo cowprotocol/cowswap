@@ -1,4 +1,3 @@
-import WalletConnectProvider from '@walletconnect/ethereum-provider'
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import useENSName from '@src/hooks/useENSName'
@@ -42,7 +41,7 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return true
 }
 
-function getWcPeerMetadata(provider: WalletConnectProvider | undefined): WalletMetaData {
+function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
   // fix for this https://github.com/gnosis/cowswap/issues/1929
   const defaultOutput = { walletName: undefined, icon: undefined }
 
@@ -70,7 +69,7 @@ export function useWalletMetaData(): WalletMetaData {
     if (connectionType === ConnectionType.WALLET_CONNECT) {
       const wc = provider?.provider
 
-      if (wc instanceof WalletConnectProvider) {
+      if ((wc as any)?.isWalletConnect) {
         return getWcPeerMetadata(wc)
       }
     }
