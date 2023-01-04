@@ -41,7 +41,7 @@ function GnosisSafeTxDetails(props: {
   activityDerivedState: ActivityDerivedState
 }): JSX.Element | null {
   const { chainId, activityDerivedState } = props
-  const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled, isInvalid } =
+  const { gnosisSafeInfo, enhancedTransaction, status, isOrder, order, isExpired, isCancelled, isFailed } =
     activityDerivedState
   const gnosisSafeThreshold = gnosisSafeInfo?.threshold
   const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
@@ -75,7 +75,7 @@ function GnosisSafeTxDetails(props: {
     signaturesMessage = <span>Cancelled order</span>
   } else if (isExpired) {
     signaturesMessage = <span>Expired order</span>
-  } else if (isInvalid) {
+  } else if (isFailed) {
     signaturesMessage = <span>Invalid order</span>
   } else if (alreadySigned) {
     signaturesMessage = <span>Enough signatures</span>

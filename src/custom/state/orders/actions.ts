@@ -15,7 +15,7 @@ export enum OrderStatus {
   EXPIRED = 'expired',
   CANCELLED = 'cancelled',
   CREATING = 'creating',
-  INVALID = 'invalid',
+  FAILED = 'failed',
 }
 
 export enum OrderClass {

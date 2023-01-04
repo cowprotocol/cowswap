@@ -49,7 +49,7 @@ export type OrderLists = {
   expired: PartialOrdersMap
   cancelled: PartialOrdersMap
   creating: PartialOrdersMap
-  invalid: PartialOrdersMap
+  failed: PartialOrdersMap
 }
 
 export interface OrdersStateNetwork extends OrderLists {
@@ -64,7 +64,7 @@ export interface PrefillStateRequired {
   chainId: ChainId
 }
 
-export type EthFlowOrderTypes = 'creating' | 'invalid'
+export type EthFlowOrderTypes = 'creating' | 'failed'
 export type PreSignOrderTypes = 'presignaturePending'
 export type OrderTypeKeys = 'pending' | PreSignOrderTypes | 'expired' | 'fulfilled' | 'cancelled' | EthFlowOrderTypes
 
@@ -75,7 +75,7 @@ export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
   'fulfilled',
   'cancelled',
   'creating',
-  'invalid',
+  'failed',
 ]
 export const ORDERS_LIST: OrderLists = {
   pending: {},
@@ -84,7 +84,7 @@ export const ORDERS_LIST: OrderLists = {
   expired: {},
   cancelled: {},
   creating: {},
-  invalid: {},
+  failed: {},
 }
 
 function getDefaultLastCheckedBlock(chainId: ChainId): number {
@@ -131,7 +131,7 @@ function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string
     stateForChain.expired[id] ||
     stateForChain.fulfilled[id] ||
     stateForChain.creating[id] ||
-    stateForChain.invalid[id]
+    stateForChain.failed[id]
   )
 }
 
@@ -143,7 +143,7 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.expired[id]
   delete stateForChain.cancelled[id]
   delete stateForChain.creating[id]
-  delete stateForChain.invalid[id]
+  delete stateForChain.failed[id]
 }
 
 function addOrderToState(
@@ -244,7 +244,7 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.PENDING, id) ||
           popOrder(state, chainId, OrderStatus.PRESIGNATURE_PENDING, id) ||
           popOrder(state, chainId, OrderStatus.CREATING, id) ||
-          popOrder(state, chainId, OrderStatus.INVALID, id)
+          popOrder(state, chainId, OrderStatus.FAILED, id)
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
         // merge existing and new order objects
@@ -331,10 +331,10 @@ export default createReducer(initialState, (builder) =>
         if (orderObject) {
           deleteOrderById(state, chainId, id)
 
-          orderObject.order.status = OrderStatus.INVALID
+          orderObject.order.status = OrderStatus.FAILED
           orderObject.order.isCancelling = false
 
-          addOrderToState(state, chainId, id, 'invalid', orderObject.order)
+          addOrderToState(state, chainId, id, 'failed', orderObject.order)
         }
       })
     })
