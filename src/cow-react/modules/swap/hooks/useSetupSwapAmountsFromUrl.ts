@@ -5,15 +5,6 @@ import { Field } from 'state/swap/actions'
 import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from '@cow/modules/trade/const/tradeUrl'
 import { getIntOrFloat } from '@cow/utils/getIntOrFloat'
 
-function validateAmount(amount: string | null): string | null {
-  if (!amount) return null
-
-  // Allow only int or float
-  if (/^\d+\.?\d*$/.test(amount)) return amount
-
-  return null
-}
-
 /**
  * Parse sell/buy amount from URL and apply to Swap widget
  * Examples:
