@@ -5,7 +5,7 @@ import { TokenDto, TokensListsWorkerEvents } from '@cow/modules/tokensList/types
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getTokensListFromDB } from './tokensList.db'
 import { useUpdateAtom } from 'jotai/utils'
-import { TokensListState, tokensListState } from './state'
+import { TokensListBySymbolState, tokensListBySymbolState, TokensListState, tokensListState } from './state'
 import { deserializeToken } from '@src/state/user/hooks'
 
 function tokensDtoToState(chainId: SupportedChainId, allTokens: TokenDto[]): TokensListState {
@@ -18,15 +18,30 @@ function tokensDtoToState(chainId: SupportedChainId, allTokens: TokenDto[]): Tok
   }, {} as TokensListState)
 }
 
+function tokensDtoToBySymbolState(allTokens: TokenDto[]): TokensListBySymbolState {
+  return allTokens.reduce((acc, val) => {
+    const symbol = val.symbol.toLowerCase()
+
+    acc[symbol] = acc[symbol] || []
+
+    acc[symbol].push(val)
+    return acc
+  }, {} as TokensListBySymbolState)
+}
+
 export function TokensListUpdater() {
   const { chainId } = useWeb3React()
   const updateState = useUpdateAtom(tokensListState)
+  const updateTokensBySymbol = useUpdateAtom(tokensListBySymbolState)
 
   const fillStateFromDB = useCallback(
     (chainId: SupportedChainId) => {
-      getTokensListFromDB(chainId).then((tokens) => updateState(tokensDtoToState(chainId, tokens)))
+      getTokensListFromDB(chainId).then((tokens) => {
+        updateState(tokensDtoToState(chainId, tokens))
+        updateTokensBySymbol(tokensDtoToBySymbolState(tokens))
+      })
     },
-    [updateState]
+    [updateState, updateTokensBySymbol]
   )
 
   useEffect(() => {

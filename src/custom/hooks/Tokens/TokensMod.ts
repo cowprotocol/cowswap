@@ -14,8 +14,6 @@ import { /*TokenAddressMap,*/ useUnsupportedTokenList } from 'state/lists/hooks'
 
 // MOD imports
 import { useTokensFromMap } from '@src/hooks/Tokens'
-import { useMemo } from 'react'
-import { useUserAddedTokens } from '@src/state/user/hooks'
 import { useAtomValue } from 'jotai/utils'
 import { tokensListState } from '@cow/modules/tokensList/state'
 
@@ -182,19 +180,6 @@ export function useCurrency(currencyId?: string | null): Currency | null | undef
   return useCurrencyFromMap(tokens, currencyId)
 } */
 
-// TODO: get rid of custom hook and create our own one
 export function useAllTokens(): { [address: string]: Token } {
-  const allTokens = useAtomValue(tokensListState)
-  const userAddedTokens = useUserAddedTokens()
-
-  const userAddedTokensMap = useMemo(() => {
-    return userAddedTokens.reduce((acc, val) => {
-      acc[val.address] = val
-      return acc
-    }, {} as { [address: string]: Token })
-  }, [userAddedTokens])
-
-  return useMemo(() => {
-    return { ...allTokens, ...userAddedTokensMap }
-  }, [allTokens, userAddedTokensMap])
+  return useAtomValue(tokensListState)
 }
