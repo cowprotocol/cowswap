@@ -107,6 +107,8 @@ async function _updateCreatingOrders(
             isRefunded: orderData.ethflowData?.isRefunded,
             refundHash: orderData.ethflowData?.refundTxHash || undefined,
             openSince: Date.now(),
+            status: OrderStatus.PENDING, // seen once, can be moved to pending bucket
+            apiAdditionalInfo: orderData,
           }
           addOrUpdateOrders({ chainId, orders: [updatedOrder] })
         })
