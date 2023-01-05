@@ -21,7 +21,12 @@ import { /*Card,*/ LightCard } from 'components/Card'
 // import Modal from '../Modal'
 import { CoinbaseWalletOption /*, OpenCoinbaseWalletOption */ } from 'components/WalletModal/CoinbaseWalletOption'
 import { FortmaticOption } from 'components/WalletModal/FortmaticOption'
-import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from 'components/WalletModal/InjectedOption'
+import {
+  InjectedOption,
+  InstallMetaMaskOption,
+  MetaMaskOption,
+  OpenMetaMaskOption,
+} from 'components/WalletModal/InjectedOption'
 import PendingView from 'components/WalletModal/PendingView'
 import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
 import { WalletConnect } from '@web3-react/walletconnect'
@@ -246,6 +251,8 @@ export default function WalletModal({
     if (!isInjected) {
       if (!isMobile) {
         injectedOption = <InstallMetaMaskOption />
+      } else {
+        injectedOption = <OpenMetaMaskOption />
       }
     } else if (!isCoinbaseWallet) {
       if (isMetaMask) {
