@@ -4,6 +4,9 @@ import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem
 
 // Assets
 import IMAGE_DOCS from 'assets/cow-swap/doc.svg'
+import IMAGE_TERMS_AND_CONDITIONS from 'assets/cow-swap/terms-and-conditions.svg'
+import IMAGE_COOKIE_POLICY from 'assets/cow-swap/cookie-policy.svg'
+import IMAGE_PRIVACY_POLICY from 'assets/cow-swap/privacy-policy.svg'
 import IMAGE_INFO from 'assets/cow-swap/info.svg'
 import IMAGE_CODE from 'assets/cow-swap/code.svg'
 import IMAGE_DISCORD from 'assets/cow-swap/discord.svg'
@@ -127,19 +130,19 @@ export const MAIN_MENU: MenuTreeItem[] = [
             id: MainMenuItemId.OTHER_TERMS_AND_CONDITIONS,
             title: 'Terms and Conditions',
             url: Routes.TERMS_CONDITIONS,
-            iconSVG: IMAGE_DOCS,
+            iconSVG: IMAGE_TERMS_AND_CONDITIONS,
           },
           {
             id: MainMenuItemId.OTHER_COOKIE_POLICY,
             title: 'Cookie Policy',
             url: Routes.COOKIE_POLICY,
-            iconSVG: IMAGE_DOCS,
+            iconSVG: IMAGE_COOKIE_POLICY,
           },
           {
             id: MainMenuItemId.OTHER_PRIVACY_POLICY,
             title: 'Privacy Policy',
             url: Routes.PRIVACY_POLICY,
-            iconSVG: IMAGE_DOCS,
+            iconSVG: IMAGE_PRIVACY_POLICY,
           },
         ],
       },
