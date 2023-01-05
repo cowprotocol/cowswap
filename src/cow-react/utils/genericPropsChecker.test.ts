@@ -30,7 +30,10 @@ describe('genericPropsChecker() to check component props via React.memo', () => 
   describe('When props is an object', () => {
     describe('Must compare them deeply using recursion', () => {
       it('And return true, when objects are equal', () => {
-        const result = genericPropsChecker({ options: { foo: { bar: 1 } } }, { options: { foo: { bar: 1 } } })
+        const result = genericPropsChecker(
+          { options: { foo: { bar: 1 } } }, //
+          { options: { foo: { bar: 1 } } } //
+        )
 
         expect(result).toBe(true)
       })
