@@ -44,9 +44,11 @@ import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 import { useSetupTradeState } from '@cow/modules/trade'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
+import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwapAmountsFromUrl'
 
 export function NewSwapWidget() {
   useSetupTradeState()
+  useSetupSwapAmountsFromUrl()
 
   const { chainId, account } = useWeb3React()
   const { allowedSlippage, currencies, currenciesIds, v2Trade: trade } = useDerivedSwapInfo()

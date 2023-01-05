@@ -11,7 +11,7 @@ import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 
-export default function TokenFaq() {
+export default function LimitOrderFAQ() {
   const { toc, faqRef } = useToC()
 
   return (

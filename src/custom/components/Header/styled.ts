@@ -227,7 +227,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       gap 36px;
       opacity: 0.7;
     `};
-  }}
+  }
 
   ${MenuTitle} {
     ${({ theme }) => theme.mediaWidth.upToLarge`
@@ -320,6 +320,24 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
     width: inherit;
     height: inherit;
     object-fit: contain;
+  }
+`
+
+export const WinterHat = styled.div`
+  display: flex;
+  position: absolute;
+  top: -10px;
+  left: 6px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    left: 0;
+    right: 0;
+    margin: auto;
+  `}
+
+  > svg {
+    height: 15px;
+    width: auto;
   }
 `
 

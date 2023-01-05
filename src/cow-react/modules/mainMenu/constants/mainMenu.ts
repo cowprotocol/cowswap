@@ -23,6 +23,7 @@ export const FAQ_MENU: InternalLink[] = [
   { id: MainMenuItemId.FAQ_TRADING, title: 'Trading', url: Routes.FAQ_TRADING },
   { id: MainMenuItemId.FAQ_AFFILIATE, title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
   { id: MainMenuItemId.FAQ_LIMIT_ORDERS, title: 'Limit orders', url: Routes.FAQ_LIMIT_ORDERS },
+  { id: MainMenuItemId.FAQ_ETH_FLOW, title: 'Selling Native tokens', url: Routes.FAQ_ETH_FLOW },
 ]
 
 export const ACCOUNT_MENU: InternalLink[] = [

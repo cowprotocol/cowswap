@@ -15,11 +15,9 @@ const PercentBox = styled.span<{ isPositive: boolean; isTooLowRate: boolean }>`
   font-size: 12px;
   display: inline-flex;
   align-items: center;
-  color: ${({ isPositive, isTooLowRate }) => (isPositive ? 'green' : isTooLowRate ? 'red' : 'grey')};
-
-  svg {
-    margin-left: 5px;
-  }
+  gap: 2px;
+  color: ${({ isPositive, isTooLowRate, theme }) =>
+    isPositive ? theme.success : isTooLowRate ? theme.danger : theme.text1};
 `
 const ImpactTooltip = styled.span`
   display: block;

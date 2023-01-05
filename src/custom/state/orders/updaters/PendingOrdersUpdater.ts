@@ -105,6 +105,7 @@ async function _updateCreatingOrders(
             ...order,
             validTo: orderData.ethflowData?.userValidTo || order.validTo,
             isRefunded: orderData.ethflowData?.isRefunded,
+            refundHash: orderData.ethflowData?.refundTxHash || undefined,
           }
           addOrUpdateOrders({ chainId, orders: [updatedOrder] })
         })

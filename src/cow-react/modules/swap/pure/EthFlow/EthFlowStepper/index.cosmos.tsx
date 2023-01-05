@@ -11,21 +11,18 @@ const TX = '0x183fa3b48c676bf9c5613e3e20b67a7250acc94af8e65dbe57787f47e5e54c75'
 const ORDER_REJECTED_REASON = 'Price quote expired'
 
 const defaultOrderProps = {
-  createOrderTx: TX,
   orderId: ORDER_ID,
   state: SmartOrderStatus.CREATING,
   isExpired: false,
+  isCreated: false,
 }
 const defaultProps: EthFlowStepperProps = {
   nativeTokenSymbol: 'xDAI',
   tokenLabel: 'USDC',
   order: defaultOrderProps,
-  refund: {
-    isRefunded: false,
-  },
-  cancellation: {
-    isCancelled: false,
-  },
+  creation: { hash: TX },
+  refund: {},
+  cancellation: {},
 }
 
 interface Step {
@@ -46,6 +43,7 @@ const STEPS: Step[] = [
         ...defaultOrderProps,
         state: SmartOrderStatus.CREATION_MINED,
       },
+      creation: { ...defaultProps.creation, failed: false },
     },
   },
   {
@@ -56,6 +54,7 @@ const STEPS: Step[] = [
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
       },
+      creation: { ...defaultProps.creation, failed: false },
     },
   },
   {
@@ -66,6 +65,7 @@ const STEPS: Step[] = [
         ...defaultOrderProps,
         state: SmartOrderStatus.FILLED,
       },
+      creation: { ...defaultProps.creation, failed: false },
     },
   },
   {
@@ -77,6 +77,7 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
+      creation: { ...defaultProps.creation, failed: false },
     },
   },
   {
@@ -88,10 +89,8 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      refund: {
-        refundTx: TX,
-        isRefunded: false,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      refund: { hash: TX },
     },
   },
   {
@@ -103,10 +102,8 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      refund: {
-        refundTx: TX,
-        isRefunded: true,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      refund: { hash: TX, failed: false },
     },
   },
   {
@@ -118,6 +115,7 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         rejectedReason: ORDER_REJECTED_REASON,
       },
+      creation: { ...defaultProps.creation, failed: false },
     },
   },
   {
@@ -129,10 +127,8 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         rejectedReason: ORDER_REJECTED_REASON,
       },
-      refund: {
-        refundTx: TX,
-        isRefunded: false,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      refund: { hash: TX },
     },
   },
   {
@@ -144,10 +140,8 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         rejectedReason: ORDER_REJECTED_REASON,
       },
-      refund: {
-        refundTx: TX,
-        isRefunded: true,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      refund: { hash: TX, failed: false },
     },
   },
 
@@ -159,10 +153,8 @@ const STEPS: Step[] = [
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
       },
-      cancellation: {
-        cancellationTx: TX,
-        isCancelled: false,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX },
     },
   },
   {
@@ -173,10 +165,8 @@ const STEPS: Step[] = [
         ...defaultOrderProps,
         state: SmartOrderStatus.INDEXED,
       },
-      cancellation: {
-        cancellationTx: TX,
-        isCancelled: true,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX, failed: false },
     },
   },
   {
@@ -189,6 +179,7 @@ const STEPS: Step[] = [
         rejectedReason: ORDER_REJECTED_REASON,
         isExpired: true,
       },
+      creation: { ...defaultProps.creation, failed: false },
     },
   },
   {
@@ -201,10 +192,8 @@ const STEPS: Step[] = [
         rejectedReason: ORDER_REJECTED_REASON,
         isExpired: true,
       },
-      refund: {
-        refundTx: TX,
-        isRefunded: false,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      refund: { hash: TX },
     },
   },
   {
@@ -217,10 +206,8 @@ const STEPS: Step[] = [
         rejectedReason: ORDER_REJECTED_REASON,
         isExpired: true,
       },
-      refund: {
-        refundTx: TX,
-        isRefunded: true,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      refund: { hash: TX, failed: false },
     },
   },
   {
@@ -232,10 +219,8 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancellation: {
-        cancellationTx: TX,
-        isCancelled: false,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX },
     },
   },
   {
@@ -247,10 +232,8 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancellation: {
-        cancellationTx: TX,
-        isCancelled: true,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX, failed: false },
     },
   },
   {
@@ -262,14 +245,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancellation: {
-        cancellationTx: TX,
-        isCancelled: false,
-      },
-      refund: {
-        refundTx: TX,
-        isRefunded: false,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX },
+      refund: { hash: TX },
     },
   },
   {
@@ -281,14 +259,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancellation: {
-        cancellationTx: TX,
-        isCancelled: false,
-      },
-      refund: {
-        refundTx: TX,
-        isRefunded: true,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX },
+      refund: { hash: TX, failed: false },
     },
   },
   {
@@ -300,14 +273,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancellation: {
-        cancellationTx: TX,
-        isCancelled: true,
-      },
-      refund: {
-        refundTx: TX,
-        isRefunded: false,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX, failed: false },
+      refund: { hash: TX },
     },
   },
   {
@@ -319,14 +287,9 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.INDEXED,
         isExpired: true,
       },
-      cancellation: {
-        cancellationTx: TX,
-        isCancelled: true,
-      },
-      refund: {
-        refundTx: TX,
-        isRefunded: true,
-      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX, failed: false },
+      refund: { hash: TX, failed: false },
     },
   },
   {
@@ -338,6 +301,7 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.CREATING,
         isExpired: true,
       },
+      creation: { ...defaultProps.creation, failed: false },
     },
   },
   {
@@ -349,6 +313,60 @@ const STEPS: Step[] = [
         state: SmartOrderStatus.CREATION_MINED,
         isExpired: true,
       },
+      creation: { ...defaultProps.creation, failed: false },
+    },
+  },
+  {
+    description: '[TX-FAILED-CREATION] Creation tx failed',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.CREATING,
+        isExpired: false,
+        rejectedReason: 'Transaction failed',
+      },
+      creation: { ...defaultProps.creation, failed: true },
+    },
+  },
+  {
+    description: '[TX-FAILED-CANCELLATION] Cancellation tx failed - refund succeeded',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        isExpired: true,
+      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX, failed: true },
+      refund: { failed: false },
+    },
+  },
+  {
+    description: '[TX-FAILED-CANCELLATION] Cancellation tx failed - order filled',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.FILLED,
+        isExpired: false,
+      },
+      creation: { ...defaultProps.creation, failed: false },
+      cancellation: { hash: TX, failed: true },
+    },
+  },
+  {
+    description: '[TX-FAILED-REFUND] Refund tx failed (can it?)',
+    props: {
+      ...defaultProps,
+      order: {
+        ...defaultOrderProps,
+        state: SmartOrderStatus.INDEXED,
+        isExpired: true,
+      },
+      creation: { ...defaultProps.creation, failed: false },
+      refund: { hash: TX, failed: true },
     },
   },
 ]

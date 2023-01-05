@@ -24,10 +24,10 @@ export interface LimitOrdersWarningsProps {
 }
 
 const StyledNoImpactWarning = styled(NoImpactWarning)`
-  margin-top: 10px;
+  margin: 10px auto;
 `
 const StyledRateImpactWarning = styled(RateImpactWarning)`
-  margin-top: 10px;
+  margin: 10px auto;
 `
 
 export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
@@ -44,6 +44,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const showPriceImpactWarning =
     !!chainId && !expertMode && !!account && !!priceImpact.error && formState === LimitOrdersFormState.CanTrade
+
+  const isVisible = showPriceImpactWarning || rateImpact < 0
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -68,7 +70,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     [updateLimitOrdersWarnings]
   )
 
-  return (
+  return isVisible ? (
     <div className={className}>
       {showPriceImpactWarning && (
         <StyledNoImpactWarning
@@ -87,5 +89,5 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
         />
       )}
     </div>
-  )
+  ) : null
 }

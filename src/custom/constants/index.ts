@@ -96,14 +96,17 @@ export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token }
 
 export const ORDER_ID_SHORT_LENGTH = 8
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
-export const DEFAULT_ORDER_DELAY = 20000 // 20s
-export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
-export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min
-export const PRICE_API_TIMEOUT_MS = 10000 // 10s
-export const GP_ORDER_UPDATE_INTERVAL = 30 * 1000 // 30s
+export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
+export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
+export const EXPIRED_ORDERS_PENDING_TIME = ms`15min` // 15min
+export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
+export const GP_ORDER_UPDATE_INTERVAL = ms`30s` // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
+export const MINIMUM_ETH_FLOW_SLIPPAGE_BIPS = 200 // 2%
+export const MINIMUM_ETH_FLOW_SLIPPAGE = new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BIPS, 10_000) // 2%
+export const HIGH_ETH_FLOW_SLIPPAGE_BIPS = 1_000 // 10%
 
 export const WETH_LOGO_URI =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
@@ -202,4 +205,5 @@ export const FAQ_MENU_LINKS = [
   { title: 'Trading', url: '/faq/trading' },
   { title: 'Affiliate', url: '/faq/affiliate' },
   { title: 'Limit orders', url: '/faq/limit-order' },
+  { title: 'Selling Native tokens', url: '/faq/sell-native' },
 ]

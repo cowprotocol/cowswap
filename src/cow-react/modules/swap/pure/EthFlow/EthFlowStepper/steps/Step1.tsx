@@ -2,16 +2,23 @@ import React from 'react'
 import Send from 'assets/cow-swap/send.svg'
 import Exclamation from 'assets/cow-swap/exclamation.svg'
 import Checkmark from 'assets/cow-swap/checkmark.svg'
+import X from 'assets/cow-swap/x.svg'
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { StatusIconState } from '../StatusIcon'
 import { Step, ExplorerLinkStyled } from '../Step'
 
-export function Step1({ nativeTokenSymbol, order }: EthFlowStepperProps) {
-  const { state, isExpired, createOrderTx } = order
+export function Step1({ nativeTokenSymbol, order, creation }: EthFlowStepperProps) {
+  const { state, isExpired } = order
   const isCreating = state === SmartOrderStatus.CREATING
+  const { hash, failed } = creation
 
   let label: string, stepState: StatusIconState, icon: string
-  if (isCreating) {
+
+  if (failed) {
+    label = 'Transaction failed'
+    stepState = 'error'
+    icon = X
+  } else if (isCreating) {
     label = 'Sending ' + nativeTokenSymbol
     if (isExpired) {
       stepState = 'error'
@@ -28,7 +35,7 @@ export function Step1({ nativeTokenSymbol, order }: EthFlowStepperProps) {
 
   return (
     <Step state={stepState} icon={icon} label={label}>
-      {createOrderTx && <ExplorerLinkStyled type="transaction" label="View Transaction" id={createOrderTx} />}
+      {hash && <ExplorerLinkStyled type="transaction" label="View transaction" id={hash} />}
     </Step>
   )
 }

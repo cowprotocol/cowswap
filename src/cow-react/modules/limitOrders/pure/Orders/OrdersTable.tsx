@@ -18,9 +18,8 @@ const TableBox = styled.div`
   border-radius: 16px;
   border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 0 24px;
-  scrollbar-color: ${({ theme }) => `${theme.grey1} ${theme.text1}`};
-  scroll-behavior: smooth;
   position: relative;
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -34,18 +33,14 @@ const TableBox = styled.div`
 const Header = styled.div`
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) 114px 70px;
+  grid-template-columns: repeat(2, minmax(150px, 1fr)) minmax(150px, 1.5fr) 120px 36px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: repeat(3,minmax(190px, 1fr)) 120px 100px;
-  `};
+  padding: 0 16px;
 
   > div {
-    padding: 12px 16px;
-    overflow: hidden;
+    padding: 12px 0;
     font-size: 13px;
     font-weight: 400;
   }
@@ -71,26 +66,12 @@ const RowElement = styled(Header)`
 
 const Rows = styled.div`
   display: block;
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
    display: flex;
    flex-flow: column wrap;
   `};
-
-  &::-webkit-scrollbar {
-    height: 6px;
-    background: ${({ theme }) => `${theme.grey1}`};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${theme.text1}`};
-    border: 3px solid transparent;
-    background-clip: padding-box;
-  }
-
-  &::-webkit-scrollbar-track {
-    height: 5px;
-  }
 `
 
 const StyledInvertRateControl = styled(InvertRateControl)`

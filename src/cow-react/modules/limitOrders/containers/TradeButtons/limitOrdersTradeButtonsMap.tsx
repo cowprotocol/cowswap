@@ -46,7 +46,7 @@ export function SwapButton({
   onClick?: () => void
 }) {
   return (
-    <ButtonPrimary onClick={onClick} disabled={disabled} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary fontSize={'16px !important'} onClick={onClick} disabled={disabled} buttonSize={ButtonSize.BIG}>
       <Trans>{children}</Trans>
     </ButtonPrimary>
   )
@@ -103,6 +103,10 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.CantLoadBalances]: {
     disabled: true,
     text: "Couldn't load balances",
+  },
+  [LimitOrdersFormState.ZeroPrice]: {
+    disabled: true,
+    text: 'Invalid price. Try increasing input/output amount.',
   },
   [LimitOrdersFormState.QuoteError]: ({ quote }: TradeButtonsParams) => {
     return (

@@ -15,6 +15,8 @@ import {
   preSignOrders,
   requestOrderCancellation,
   SerializedOrder,
+  SetIsOrderRefundedBatch,
+  setIsOrderRefundedBatch,
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
   setOrderCancellationHash,
@@ -82,6 +84,7 @@ export type UpdatePresignGnosisSafeTxCallback = (
   updatePresignGnosisSafeTxParams: UpdatePresignGnosisSafeTxParams
 ) => void
 export type SetIsOrderUnfillable = (params: SetIsOrderUnfillableParams) => void
+export type SetIsOrderRefundedBatchCallback = (params: SetIsOrderRefundedBatch) => void
 
 function _concatOrdersState(state: OrdersStateNetwork, keys: OrderTypeKeys[]) {
   if (!state) return []
@@ -135,9 +138,7 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
       orders?.presignaturePending[id] ||
       orders?.cancelled[id] ||
       orders?.creating[id] ||
-      orders?.rejected[id] ||
-      orders?.refunding[id] ||
-      orders?.refunded[id]
+      orders?.failed[id]
 
     return _deserializeOrder(serialisedOrder)
   })
@@ -178,9 +179,7 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
       ...state.expired,
       ...state.cancelled,
       ...state.creating,
-      ...state.refunding,
-      ...state.rejected,
-      ...state.refunded,
+      ...state.failed,
     }
   }, [state])
 }
@@ -214,7 +213,6 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
         pending: PartialOrdersMap
         presignaturePending: PartialOrdersMap
         creating: PartialOrdersMap
-        refunding: PartialOrdersMap
       }
     | undefined
   >((state) => {
@@ -227,18 +225,14 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
       pending: ordersState.pending || {},
       presignaturePending: ordersState.presignaturePending || {},
       creating: ordersState.creating || {},
-      refunding: ordersState.refunding || {},
     }
   })
 
   return useMemo(() => {
     if (!state) return []
 
-    const { pending, presignaturePending, creating, refunding } = state
-    const allPending = Object.values(pending)
-      .concat(Object.values(presignaturePending))
-      .concat(Object.values(creating))
-      .concat(Object.values(refunding))
+    const { pending, presignaturePending, creating } = state
+    const allPending = Object.values(pending).concat(Object.values(presignaturePending)).concat(Object.values(creating))
 
     return allPending.map(_deserializeOrder).filter(isTruthy)
   }, [state])
@@ -247,6 +241,18 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
 export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
     (state) => chainId && state.orders?.[chainId]?.cancelled
+  )
+
+  return useMemo(() => {
+    if (!state) return []
+
+    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
+  }, [state])
+}
+
+export const useExpiredOrders = ({ chainId }: GetOrdersParams): Order[] => {
+  const state = useSelector<AppState, PartialOrdersMap | undefined>(
+    (state) => chainId && state.orders?.[chainId]?.expired
   )
 
   return useMemo(() => {
@@ -345,4 +351,9 @@ export const useRequestOrderCancellation = (): CancelOrderCallback => {
 export const useSetIsOrderUnfillable = (): SetIsOrderUnfillable => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback((params: SetIsOrderUnfillableParams) => dispatch(setIsOrderUnfillable(params)), [dispatch])
+}
+
+export const useSetIsOrderRefundedBatch = (): SetIsOrderRefundedBatchCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((params: SetIsOrderRefundedBatch) => dispatch(setIsOrderRefundedBatch(params)), [dispatch])
 }

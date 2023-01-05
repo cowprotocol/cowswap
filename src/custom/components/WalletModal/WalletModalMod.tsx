@@ -52,7 +52,9 @@ const Wrapper = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-y: auto; /* MOD */
+  /* MOD */
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
 `
 
 export const HeaderRow = styled.div`

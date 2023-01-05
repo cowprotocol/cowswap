@@ -379,42 +379,6 @@ export const CancellationSummary = styled.span`
   background: ${({ theme }) => theme.bg1};
 `
 
-export const TransactionAlertMessage = styled.div<{ type?: string }>`
-  display: flex;
-  justify-content: center;
-  color: ${({ theme, type }) => (type === 'attention' ? theme.attention : theme.danger)};
-  margin: 24px 0 0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  line-height: 1.4;
-  background: ${({ theme, type }) =>
-    type === 'attention' ? transparentize(0.9, theme.attention) : transparentize(0.9, theme.danger)};
-  width: 100%;
-  height: auto;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-column: 1 / -1;
-    flex-flow: column wrap;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
-    padding: 16px 32px;
-    margin: 12px 0 0;
-  `};
-
-  > svg,
-  > img {
-    margin: 0 6px 0 0;
-    fill: ${({ theme, type }) => (type === 'attention' ? theme.attention : theme.danger)};
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      margin: 0 0 12px;
-    `};
-  }
-`
-
 export const TransactionInnerDetail = styled.div`
   display: flex;
   flex-flow: column wrap;

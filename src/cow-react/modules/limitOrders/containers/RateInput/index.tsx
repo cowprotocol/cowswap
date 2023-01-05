@@ -76,7 +76,7 @@ export function RateInput() {
 
     if (!outputCurrencyId || !inputCurrencyId) return true
 
-    if (executionRate) {
+    if (executionRate && !executionRate.equalTo(0)) {
       return activeRate?.equalTo(executionRate)
     } else {
       return !!initialRate && activeRate?.equalTo(initialRate)

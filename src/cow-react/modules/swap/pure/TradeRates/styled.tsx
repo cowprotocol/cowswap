@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { Repeat } from 'react-feather'
 import QuestionHelper from 'components/QuestionHelper'
 import { RateInfo } from '@cow/common/pure/RateInfo'
+import { transparentize } from 'polished'
 
 export const Box = styled.div`
   margin: 12px 8px;
@@ -13,6 +14,8 @@ export const Row = styled.div`
   font-size: 13px;
   font-weight: 400;
   color: ${({ theme }) => theme.text1};
+  min-height: 24px;
+  gap: 3px;
 
   > div {
     display: flex;
@@ -20,20 +23,20 @@ export const Row = styled.div`
 
     &:first-child {
       font-weight: 400;
+      gap: 3px;
     }
 
     &:first-child > span {
-      opacity: 0.8;
+      color: ${({ theme }) => transparentize(0.2, theme.text1)};
+      transition: color 0.15s ease-in-out;
+
+      &:hover {
+        color: ${({ theme }) => theme.text1};
+      }
     }
 
     &:last-child {
       text-align: right;
-    }
-  }
-
-  &:hover {
-    > div {
-      opacity: 1;
     }
   }
 `

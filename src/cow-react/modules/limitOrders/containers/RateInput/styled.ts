@@ -69,6 +69,7 @@ export const ActiveCurrency = styled.button`
   background: none;
   cursor: pointer;
   padding: 0;
+  margin: 0 0 0 auto;
 `
 
 export const ActiveSymbol = styled.span`
