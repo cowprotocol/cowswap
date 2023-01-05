@@ -130,6 +130,12 @@ export const MAIN_MENU: MenuTreeItem[] = [
             iconSVG: IMAGE_DOCS,
           },
           {
+            id: MainMenuItemId.OTHER_COOKIE_POLICY,
+            title: 'Cookie Policy',
+            url: Routes.COOKIE_POLICY,
+            iconSVG: IMAGE_DOCS,
+          },
+          {
             id: MainMenuItemId.OTHER_PRIVACY_POLICY,
             title: 'Privacy Policy',
             url: Routes.PRIVACY_POLICY,
