@@ -83,6 +83,10 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.NeedToSelectToken
   }
 
+  if (!account) {
+    return LimitOrdersFormState.WalletIsNotConnected
+  }
+
   if (isWrapOrUnwrap) {
     if (inputAmountIsNotSet && outputAmountIsNotSet) {
       return LimitOrdersFormState.AmountIsNotSet
@@ -95,10 +99,6 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
       return LimitOrdersFormState.AmountIsNotSet
     }
-  }
-
-  if (!account) {
-    return LimitOrdersFormState.WalletIsNotConnected
   }
 
   // TODO: Do we need the check in Limit orders?
