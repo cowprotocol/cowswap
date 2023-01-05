@@ -258,6 +258,7 @@ export default createReducer(initialState, (builder) =>
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
               isCancelling: newOrder.isCancelling,
               class: newOrder.class,
+              openSince: newOrder.openSince || orderObj.order.openSince,
               status,
             }
           : { ...newOrder, validTo }
