@@ -1,5 +1,5 @@
 import { useCombinedActiveList } from 'state/lists/hooks'
-import { useTokensFromMap } from '@src/hooks/Tokens'
+import { useTokensFromMap } from 'hooks/Tokens'
 import { useUpdateAtom } from 'jotai/utils'
 import { tokensByAddressAtom, tokensBySymbolAtom } from '@cow/modules/tokensList/tokensListAtom'
 import { useEffect } from 'react'
