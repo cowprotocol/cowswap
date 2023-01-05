@@ -181,7 +181,10 @@ export default createReducer(initialState, (builder) =>
       prefillState(state, action)
       const { order, id, chainId } = action.payload
 
-      order.openSince = order.status === OrderStatus.PRESIGNATURE_PENDING ? undefined : Date.now()
+      order.openSince =
+        order.status === OrderStatus.PRESIGNATURE_PENDING || order.status === OrderStatus.CREATING
+          ? undefined
+          : Date.now()
 
       switch (order.status) {
         // EthFlow or PreSign orders have their respective buckets
