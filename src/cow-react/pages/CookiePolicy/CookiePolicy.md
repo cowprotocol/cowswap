@@ -119,10 +119,6 @@ This Cookie Policy sets out some further detail on how and why we use these tech
 
 _Table: Overview of cookies placed and the consequences if the cookies are not placed_
 
-![cookie-policy-1.png](https://raw.githubusercontent.com/cowprotocol/cowswap/088e9ef3f018804be9850c0fc65fa3eea26c88d6/src/custom/assets/cow-swap/cookie-policy/cookie-policy-1.png)
-![cookie-policy-2.png](https://raw.githubusercontent.com/cowprotocol/cowswap/088e9ef3f018804be9850c0fc65fa3eea26c88d6/src/custom/assets/cow-swap/cookie-policy/cookie-policy-2.png)
-![cookie-policy-3.png](https://raw.githubusercontent.com/cowprotocol/cowswap/088e9ef3f018804be9850c0fc65fa3eea26c88d6/src/custom/assets/cow-swap/cookie-policy/cookie-policy-3.png)
-
 <div id="table-container">
     <table>
         <thead>
