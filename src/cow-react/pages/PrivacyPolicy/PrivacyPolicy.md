@@ -1,6 +1,6 @@
 # Privacy Policy
 
-### (Last Updated: November 2022)
+### Last updated: November 2022
 
 This Policy sets out what Personal Data we collect, how we process it and how long we retain it. This Policy applies to all of our processing activities where we act as a data controller or where we act as data controller on behalf of clients. In this policy, “we”, “us” and “our” refers to Nomev Labs, Lda and affiliates. For more information about us, see the “Our Details” section at the end of this policy.
 
