@@ -17,7 +17,6 @@ import { useCallback } from 'react'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
-import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { getSwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import { SwapButtonsContext } from '@cow/modules/swap/pure/SwapButtons'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
@@ -59,7 +58,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { onCurrencySelection } = useSwapActionHandlers()
 
   const currencyIn = currencies[Field.INPUT]
-  const currencyOut = currencies[Field.OUTPUT]
 
   const { quote, isGettingNewQuote } = useGetQuoteAndStatus({
     token: currenciesIds.INPUT,
@@ -97,7 +95,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
   const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
-  const isSwapSupported = useIsSwapUnsupported(currencyIn, currencyOut)
+  const isSwapUnsupported = false
   const isSmartContractWallet = useIsSmartContractWallet()
 
   const swapButtonState = getSwapButtonState({
@@ -106,7 +104,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
     isExpertMode,
-    isSwapSupported,
+    isSwapUnsupported,
     isNativeIn: isNativeInSwap,
     wrappedToken,
     wrapType,

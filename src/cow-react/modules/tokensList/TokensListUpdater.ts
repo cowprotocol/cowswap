@@ -1,30 +1,36 @@
-import { useCombinedActiveList } from 'state/lists/hooks'
-import { useTokensFromMap } from 'hooks/Tokens'
 import { useUpdateAtom } from 'jotai/utils'
 import { tokensByAddressAtom, tokensBySymbolAtom } from '@cow/modules/tokensList/tokensListAtom'
 import { useEffect } from 'react'
+import { useTokensListWithDefaults } from 'state/lists/hooks/hooksMod'
 import { Token } from '@uniswap/sdk-core'
+import { deserializeToken } from 'state/user/hooks'
 
 export function TokensListUpdater() {
-  const allTokens = useCombinedActiveList()
-  const tokensFromMap = useTokensFromMap(allTokens, true)
+  const allTokens = useTokensListWithDefaults()
   const updateTokensByAddress = useUpdateAtom(tokensByAddressAtom)
   const updateTokensBySymbol = useUpdateAtom(tokensBySymbolAtom)
 
   useEffect(() => {
-    updateTokensByAddress(tokensFromMap)
-    updateTokensBySymbol(
-      Object.keys(tokensFromMap).reduce((acc, key) => {
-        const val = tokensFromMap[key]
-        const symbol = (val.symbol || '').toLowerCase()
+    const tokensByAddressMap: { [address: string]: Token } = {}
+    const tokensBySymbolMap: { [address: string]: Token[] } = {}
 
-        acc[symbol] = acc[symbol] || []
-        acc[symbol].push(val)
+    allTokens.forEach((token) => {
+      const wrappedToken = deserializeToken(token)
 
-        return acc
-      }, {} as { [symbol: string]: Token[] })
-    )
-  }, [tokensFromMap, updateTokensByAddress, updateTokensBySymbol])
+      tokensByAddressMap[token.address.toLowerCase()] = wrappedToken
+      tokensBySymbolMap[token.symbol] = tokensBySymbolMap[token.symbol] || []
+
+      const existedTokenBySymbol = tokensBySymbolMap[token.symbol].find(
+        (token) => token.address.toLowerCase() === wrappedToken.address.toLowerCase()
+      )
+      if (!existedTokenBySymbol) {
+        tokensBySymbolMap[token.symbol].push(wrappedToken)
+      }
+    })
+
+    updateTokensByAddress(tokensByAddressMap)
+    updateTokensBySymbol(tokensBySymbolMap)
+  }, [allTokens, updateTokensByAddress, updateTokensBySymbol])
 
   return null
 }

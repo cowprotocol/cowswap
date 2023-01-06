@@ -6,18 +6,16 @@ import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'components/Card'
 import QuestionHelper from 'components/QuestionHelper'
 import useTheme from 'hooks/useTheme'
-import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
+import { CSSProperties, MutableRefObject, useCallback } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import TokenListLogo from 'assets/svg/tokenlist.svg'
-import { useIsUserAddedToken } from 'hooks/Tokens'
+import { useAllTokens, useIsUserAddedToken } from 'hooks/Tokens'
 import { useCurrencyBalance } from 'state/connection/hooks'
-import { useCombinedActiveList } from 'state/lists/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { ThemedText } from 'theme'
-import { isTokenOnList } from 'utils'
 import Column from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from 'components/Loader'
@@ -28,7 +26,6 @@ import { LoadingRows /*, MenuItem*/ } from 'components/SearchModal/styleds'
 
 // MOD imports
 import { MenuItem } from '.' // mod
-import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 
@@ -139,8 +136,8 @@ function CurrencyRow({
 }) {
   const { account } = useWeb3React()
   const key = currencyKey(currency)
-  const selectedTokenList = useCombinedActiveList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency.isToken ? currency : undefined)
+  const allTokens = useAllTokens()
+  const isOnSelectedList = currency?.isToken && !!allTokens[currency.address]
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
@@ -275,15 +272,6 @@ export default function CurrencyList({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
-  const itemData: (Currency | BreakLine)[] = useMemo(() => {
-    if (otherListTokens && otherListTokens?.length > 0) {
-      return [...currencies, BREAK_LINE, ...otherListTokens]
-    }
-    return currencies
-  }, [currencies, otherListTokens])
-
-  const checkIsUnsupported = useIsUnsupportedToken() // gp-added
-
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
       const row: Currency | BreakLine = data[index]
@@ -301,8 +289,6 @@ export default function CurrencyList({
       const token = currency?.wrapped
 
       const showImport = index > currencies.length
-
-      const isUnsupported = checkIsUnsupported(token?.address) // gp-added
 
       if (isLoading) {
         return (
@@ -326,7 +312,7 @@ export default function CurrencyList({
             otherSelected={otherSelected}
             BalanceComponent={BalanceComponent} // gp-swap added
             TokenTagsComponent={TokenTagsComponent} // gp-swap added
-            isUnsupported={isUnsupported}
+            isUnsupported={false}
             showCurrencyAmount={showCurrencyAmount}
             eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
           />
@@ -346,13 +332,12 @@ export default function CurrencyList({
       isLoading,
       isAddressSearch,
       searchQuery,
-      checkIsUnsupported,
       BalanceComponent,
       TokenTagsComponent,
     ]
   )
 
-  const itemKey = useCallback((index: number, data: typeof itemData) => {
+  const itemKey = useCallback((index: number, data: typeof currencies) => {
     const currency = data[index]
     if (isBreakLine(currency)) return BREAK_LINE
     return currencyKey(currency)
@@ -364,8 +349,8 @@ export default function CurrencyList({
         height={height}
         ref={fixedListRef as any}
         width="100%"
-        itemData={itemData}
-        itemCount={itemData.length}
+        itemData={currencies}
+        itemCount={currencies.length}
         itemSize={56}
         itemKey={itemKey}
       >
