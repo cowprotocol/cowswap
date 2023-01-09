@@ -3,6 +3,10 @@ import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from '@cow/mod
 import { useEffect } from 'react'
 import { useTokensListWithDefaults } from 'state/lists/hooks/hooksMod'
 
+/**
+ * This updater protects from redundant recalculations
+ * Using it we call useTokensListWithDefaults() and map it's result only once
+ */
 export function TokensListUpdater() {
   const allTokens = useTokensListWithDefaults()
   const updateTokensByAddress = useUpdateAtom(tokensByAddressAtom)
