@@ -18,8 +18,6 @@ import RedirectAnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers/
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
 
-import { WinterFooter } from '@cow/modules/winterEdition' // Winter Theme
-
 export function App() {
   // const location = useLocation()
 
@@ -45,7 +43,6 @@ export function App() {
         </styledEl.BodyWrapper>
         <styledEl.FooterWrapper>
           <Footer />
-          <WinterFooter /> {/* Winter Themed Footer */}
         </styledEl.FooterWrapper>
       </styledEl.AppWrapper>
     </ErrorBoundary>

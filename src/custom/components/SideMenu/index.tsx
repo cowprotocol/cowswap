@@ -18,7 +18,6 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
   ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
   padding: 0;
   position: relative;
-  margin: 0 auto;
 `}
 
   > ul {
@@ -33,7 +32,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
     background: ${({ theme }) => transparentize(0.9, theme.text1)};
     border-radius: 16px;
     padding: 12px;
-    margin: 0;
+    margin: 0 0 24px;
   `}
   }
 
