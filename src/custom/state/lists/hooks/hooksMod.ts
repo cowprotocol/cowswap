@@ -50,8 +50,10 @@ export function useTokensListWithDefaults(): TokenInfo[] {
   const allTokens = useTokensListFromUrls(activeListUrls)
 
   return useMemo(() => {
-    const defaultTokens = DEFAULT_TOKEN_LIST.tokens.filter((token) => token.chainId === chainId)
-    return allTokens.concat(defaultTokens)
+    if (!chainId) return []
+
+    const defaultTokens = DEFAULT_TOKEN_LIST.tokens
+    return allTokens.concat(defaultTokens).filter((token) => token.chainId === chainId)
   }, [allTokens, chainId])
 }
 

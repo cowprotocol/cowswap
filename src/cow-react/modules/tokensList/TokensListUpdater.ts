@@ -1,9 +1,7 @@
 import { useUpdateAtom } from 'jotai/utils'
-import { tokensByAddressAtom, tokensBySymbolAtom } from '@cow/modules/tokensList/tokensListAtom'
+import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from '@cow/modules/tokensList/tokensListAtom'
 import { useEffect } from 'react'
 import { useTokensListWithDefaults } from 'state/lists/hooks/hooksMod'
-import { Token } from '@uniswap/sdk-core'
-import { deserializeToken } from 'state/user/hooks'
 
 export function TokensListUpdater() {
   const allTokens = useTokensListWithDefaults()
@@ -11,11 +9,18 @@ export function TokensListUpdater() {
   const updateTokensBySymbol = useUpdateAtom(tokensBySymbolAtom)
 
   useEffect(() => {
-    const tokensByAddressMap: { [address: string]: Token } = {}
-    const tokensBySymbolMap: { [address: string]: Token[] } = {}
+    const tokensByAddressMap: { [address: string]: TokenWithLogo } = {}
+    const tokensBySymbolMap: { [address: string]: TokenWithLogo[] } = {}
 
     allTokens.forEach((token) => {
-      const wrappedToken = deserializeToken(token)
+      const wrappedToken: TokenWithLogo = new TokenWithLogo(
+        token.logoURI,
+        token.chainId,
+        token.address,
+        token.decimals,
+        token.symbol,
+        token.name
+      )
       const addressLowerCase = token.address.toLowerCase()
       const symbolLowerCase = token.symbol.toLowerCase()
 
