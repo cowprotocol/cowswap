@@ -109,8 +109,8 @@ export function useIsTradeUnsupported(
   outputCurrency: Currency | null | undefined
 ): boolean {
   const isUnsupportedToken = useIsUnsupportedTokenGp()
-  const isInputCurrencyUnsupported = inputCurrency?.isNative ? true : !!isUnsupportedToken(inputCurrency?.address)
-  const isOutputCurrencyUnsupported = outputCurrency?.isNative ? true : !!isUnsupportedToken(outputCurrency?.address)
+  const isInputCurrencyUnsupported = inputCurrency?.isNative ? false : !isUnsupportedToken(inputCurrency?.address)
+  const isOutputCurrencyUnsupported = outputCurrency?.isNative ? false : !isUnsupportedToken(outputCurrency?.address)
 
   return isInputCurrencyUnsupported || isOutputCurrencyUnsupported
 }
