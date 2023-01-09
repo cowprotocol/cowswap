@@ -433,10 +433,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
       top: 0!important;
       bottom: 0!important;
     `}
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      bottom: 64px!important;
-    `}
   }
 
   // Appzi Container override
