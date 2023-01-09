@@ -16,6 +16,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { supportedChainId } from 'utils/supportedChainId'
 import { shallowEqual } from 'react-redux'
 import { TokenInfo } from '@uniswap/token-lists'
+import { Currency } from '@uniswap/sdk-core'
 
 export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
   const { chainId: connectedChainId } = useWeb3React()
@@ -99,4 +100,15 @@ export function useIsUnsupportedTokenGp() {
     },
     [chainId, gpUnsupportedTokens]
   )
+}
+
+export function useIsTradeUnsupported(
+  inputCurrency: Currency | null | undefined,
+  outputCurrency: Currency | null | undefined
+): boolean {
+  const isUnsupportedToken = useIsUnsupportedTokenGp()
+  const isInputCurrencyUnsupported = inputCurrency?.isNative ? true : !!isUnsupportedToken(inputCurrency?.address)
+  const isOutputCurrencyUnsupported = outputCurrency?.isNative ? true : !!isUnsupportedToken(outputCurrency?.address)
+
+  return isInputCurrencyUnsupported || isOutputCurrencyUnsupported
 }

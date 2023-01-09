@@ -16,15 +16,17 @@ export function TokensListUpdater() {
 
     allTokens.forEach((token) => {
       const wrappedToken = deserializeToken(token)
+      const addressLowerCase = token.address.toLowerCase()
+      const symbolLowerCase = token.symbol.toLowerCase()
 
-      tokensByAddressMap[token.address.toLowerCase()] = wrappedToken
-      tokensBySymbolMap[token.symbol] = tokensBySymbolMap[token.symbol] || []
+      tokensByAddressMap[addressLowerCase] = wrappedToken
+      tokensBySymbolMap[symbolLowerCase] = tokensBySymbolMap[symbolLowerCase] || []
 
-      const existedTokenBySymbol = tokensBySymbolMap[token.symbol].find(
-        (token) => token.address.toLowerCase() === wrappedToken.address.toLowerCase()
+      const existedTokenBySymbol = tokensBySymbolMap[symbolLowerCase].find(
+        (token) => token.address.toLowerCase() === addressLowerCase
       )
       if (!existedTokenBySymbol) {
-        tokensBySymbolMap[token.symbol].push(wrappedToken)
+        tokensBySymbolMap[symbolLowerCase].push(wrappedToken)
       }
     })
 

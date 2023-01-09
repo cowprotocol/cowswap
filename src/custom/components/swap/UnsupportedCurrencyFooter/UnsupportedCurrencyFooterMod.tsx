@@ -15,6 +15,7 @@ import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'theme'
 
 // MOD imports
 import { getEtherscanLink } from 'utils'
+import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
@@ -78,7 +79,7 @@ UnsupportedCurrencyFooterParams) {
         })
       : []
 
-  const isUnsupportedToken = (tokenAddress: string) => false
+  const isUnsupportedToken = useIsUnsupportedTokenGp()
 
   return (
     <DetailsFooter show={show}>

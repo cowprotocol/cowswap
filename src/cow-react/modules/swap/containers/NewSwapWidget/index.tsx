@@ -44,6 +44,7 @@ import { useSetupTradeState } from '@cow/modules/trade'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwapAmountsFromUrl'
+import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
 
 export function NewSwapWidget() {
   useSetupTradeState()
@@ -54,7 +55,7 @@ export function NewSwapWidget() {
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
   const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
-  const isSwapUnsupported = false
+  const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
   const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()
   const subsidyAndBalance = useCowBalanceAndSubsidy()

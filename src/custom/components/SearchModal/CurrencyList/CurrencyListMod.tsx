@@ -28,6 +28,7 @@ import { LoadingRows /*, MenuItem*/ } from 'components/SearchModal/styleds'
 import { MenuItem } from '.' // mod
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -137,7 +138,7 @@ function CurrencyRow({
   const { account } = useWeb3React()
   const key = currencyKey(currency)
   const allTokens = useAllTokens()
-  const isOnSelectedList = currency?.isToken && !!allTokens[currency.address]
+  const isOnSelectedList = currency?.isToken && !!allTokens[currency.address.toLowerCase()]
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
@@ -272,6 +273,8 @@ export default function CurrencyList({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
+  const isUnsupportedToken = useIsUnsupportedTokenGp()
+
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
       const row: Currency | BreakLine = data[index]
@@ -289,6 +292,8 @@ export default function CurrencyList({
       const token = currency?.wrapped
 
       const showImport = index > currencies.length
+
+      const isUnsupported = !!isUnsupportedToken(token?.address)
 
       if (isLoading) {
         return (
@@ -312,7 +317,7 @@ export default function CurrencyList({
             otherSelected={otherSelected}
             BalanceComponent={BalanceComponent} // gp-swap added
             TokenTagsComponent={TokenTagsComponent} // gp-swap added
-            isUnsupported={false}
+            isUnsupported={isUnsupported}
             showCurrencyAmount={showCurrencyAmount}
             eventProperties={formatAnalyticsEventProperties(token, index, data, searchQuery, isAddressSearch)}
           />
@@ -332,6 +337,7 @@ export default function CurrencyList({
       isLoading,
       isAddressSearch,
       searchQuery,
+      isUnsupportedToken,
       BalanceComponent,
       TokenTagsComponent,
     ]
