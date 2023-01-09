@@ -29,7 +29,7 @@ export function InstallMetaMaskOption() {
   return <Option {...METAMASK_PROPS} header={<Trans>Install MetaMask</Trans>} link={'https://metamask.io/'} />
 }
 
-export function OpenMetaMaskOption() {
+export function OpenMetaMaskMobileOption() {
   return (
     <Option {...METAMASK_PROPS} header={<Trans>Open MetaMask</Trans>} link={METAMASK_DEEP_LINK + window.location} />
   )

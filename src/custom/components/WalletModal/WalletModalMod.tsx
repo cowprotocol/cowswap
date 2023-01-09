@@ -25,7 +25,7 @@ import {
   InjectedOption,
   InstallMetaMaskOption,
   MetaMaskOption,
-  OpenMetaMaskOption,
+  OpenMetaMaskMobileOption,
 } from 'components/WalletModal/InjectedOption'
 import PendingView from 'components/WalletModal/PendingView'
 import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
@@ -252,7 +252,7 @@ export default function WalletModal({
       if (!isMobile) {
         injectedOption = <InstallMetaMaskOption />
       } else {
-        injectedOption = <OpenMetaMaskOption />
+        injectedOption = <OpenMetaMaskMobileOption />
       }
     } else if (!isCoinbaseWallet) {
       if (isMetaMask) {
