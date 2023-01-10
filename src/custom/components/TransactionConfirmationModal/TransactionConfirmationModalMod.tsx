@@ -322,7 +322,11 @@ export function L2Content({
           </RowBetween>
         )}
         <ConfirmedIcon inline={inline}>{displayIcon}</ConfirmedIcon>
-        <AutoColumn gap="12px" justify={'center'}>
+        <AutoColumn
+          gap="12px"
+          justify={'center'}
+          style={{ margin: '0 0 16px' }} // MOD
+        >
           <Text fontWeight={500} fontSize={20} textAlign="center">
             {!hash ? (
               <Trans>Confirm transaction in wallet</Trans>
