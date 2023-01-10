@@ -9,6 +9,8 @@ export interface LimitRateState {
   readonly activeRate: Fraction | null
   readonly executionRate: Fraction | null
   readonly isTypedValue: boolean
+  // To avoid price overriding when it's already set from useSetupLimitOrderAmountsFromUrl()
+  readonly isRateFromUrl: boolean
   readonly typedValue: string | null
 }
 
@@ -20,6 +22,7 @@ const initLimitRateState = () => ({
   activeRate: null,
   executionRate: null,
   isTypedValue: false,
+  isRateFromUrl: false,
   typedValue: null,
 })
 
