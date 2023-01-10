@@ -1,18 +1,25 @@
 name: PR comments
 
 on:
+  # Runs on every comment on both issues and PRs
   issue_comment:
     types: [created, updated]
 
 jobs:
   pr_commented:
     name: PR comment
+    # Only trigger it for PRs
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
       - name: Event log
         run: |
-          echo $EVENT
+          echo "Trying to get the damn event data logged" >> $GITHUB_STEP_SUMMARY
+          echo $EVENT >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "And a different way in case one of them fail" >> $GITHUB_STEP_SUMMARY
+          echo $RAW_EVENT >> $GITHUB_STEP_SUMMARY
         env:
-          EVENT: ${{ github.event }}
+          RAW_EVENT: ${{ github.event }}
+          EVENT: ${{ toJSON(github.event) }}
 
