@@ -21,6 +21,11 @@ import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { CompatibilityIssuesWarning } from '@cow/modules/trade/pure/CompatibilityIssuesWarning'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
+import styled from 'styled-components/macro'
+
+const CompatibilityIssuesWarningWrapper = styled.div`
+  margin-top: -10px;
+`
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
@@ -93,11 +98,13 @@ export function TradeButtons(props: TradeButtonsProps) {
     <>
       {Button}
       {showWarnings && (
-        <CompatibilityIssuesWarning
-          currencyIn={inputCurrency}
-          currencyOut={outputCurrency}
-          isSupportedWallet={isSupportedWallet}
-        />
+        <CompatibilityIssuesWarningWrapper>
+          <CompatibilityIssuesWarning
+            currencyIn={inputCurrency}
+            currencyOut={outputCurrency}
+            isSupportedWallet={isSupportedWallet}
+          />
+        </CompatibilityIssuesWarningWrapper>
       )}
       <ErrorModal />
     </>

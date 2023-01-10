@@ -20,7 +20,7 @@ export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
   CanTrade = 'CanTrade',
   Loading = 'Loading',
-  // SwapIsUnsupported = 'SwapIsUnsupported',
+  SwapIsUnsupported = 'SwapIsUnsupported',
   WrapUnwrap = 'WrapUnwrap',
   InvalidRecipient = 'InvalidRecipient',
   WalletIsUnsupported = 'WalletIsUnsupported',
@@ -37,7 +37,7 @@ export enum LimitOrdersFormState {
 
 interface LimitOrdersFormParams {
   account: string | undefined
-  isSwapSupported: boolean
+  isSwapUnsupported: boolean
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
   currentAllowance: CurrencyAmount<Token> | undefined
@@ -67,6 +67,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     isRateLoading,
     sellAmount,
     buyAmount,
+    isSwapUnsupported,
   } = params
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
@@ -87,6 +88,10 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.WalletIsNotConnected
   }
 
+  if (isSwapUnsupported) {
+    return LimitOrdersFormState.SwapIsUnsupported
+  }
+
   if (isWrapOrUnwrap) {
     if (inputAmountIsNotSet && outputAmountIsNotSet) {
       return LimitOrdersFormState.AmountIsNotSet
@@ -100,11 +105,6 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
       return LimitOrdersFormState.AmountIsNotSet
     }
   }
-
-  // TODO: Do we need the check in Limit orders?
-  // if (!isSwapSupported) {
-  //   return LimitOrdersFormState.SwapIsUnsupported
-  // }
 
   if (recipient !== null && !recipientEnsAddress && !isAddress(recipient)) {
     return LimitOrdersFormState.InvalidRecipient
@@ -165,13 +165,13 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
 
   const currentAllowance = useTokenAllowance(sellToken, account ?? undefined, spender)
   const approvalState = useTradeApproveState(sellAmount)
-  const isSwapSupported = useIsSwapUnsupported(inputCurrency, outputCurrency)
+  const isSwapUnsupported = useIsSwapUnsupported(inputCurrency, outputCurrency)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   const params: LimitOrdersFormParams = {
     account,
     isReadonlyGnosisSafeUser,
-    isSwapSupported,
+    isSwapUnsupported,
     isSupportedWallet,
     approvalState,
     currentAllowance,

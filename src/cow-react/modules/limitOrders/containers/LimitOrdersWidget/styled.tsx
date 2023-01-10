@@ -48,6 +48,9 @@ export const SettingsButton = styled.div`
 
 export const TradeButtonBox = styled.div`
   margin: 10px 0 0;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
 `
 
 export const RateWrapper = styled.div`
