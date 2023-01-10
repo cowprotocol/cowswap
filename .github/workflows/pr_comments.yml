@@ -17,9 +17,10 @@ jobs:
           echo "Trying to get the damn event data logged" >> $GITHUB_STEP_SUMMARY
           echo $EVENT >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "And a different way in case one of them fail" >> $GITHUB_STEP_SUMMARY
-          echo $RAW_EVENT >> $GITHUB_STEP_SUMMARY
+#          echo "And a different way in case one of them fail" >> $GITHUB_STEP_SUMMARY
+#          echo $RAW_EVENT >> $GITHUB_STEP_SUMMARY
         env:
-          RAW_EVENT: ${{ github.event }}
+          # This is causing the workflow to fail with: `A mapping was not expected`.
+#          RAW_EVENT: ${{ github.event }}
           EVENT: ${{ toJSON(github.event) }}
 
