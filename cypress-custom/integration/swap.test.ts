@@ -23,7 +23,7 @@ describe('Swap (custom)', () => {
   it('can swap ETH for DAI', () => {
     cy.visit(`/${CHAIN_ID}/swap/ETH/${DAI}`)
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
-    cy.get('#swap-currency-input .token-amount-input').type('0.001', { force: true, delay: 200 })
+    cy.get('#swap-currency-input .token-amount-input').type('0.1', { force: true, delay: 200 })
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
     cy.get('#swap-button > button').should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')

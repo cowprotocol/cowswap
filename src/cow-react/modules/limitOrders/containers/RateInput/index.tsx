@@ -13,6 +13,7 @@ import { formatSmart } from 'utils/format'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from '@cow/common/services/getQuoteCurrency'
 import { useWeb3React } from '@web3-react/core'
 import { getAddress } from '@cow/utils/getAddress'
+import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -27,6 +28,7 @@ export function RateInput() {
     isTypedValue,
     initialRate,
   } = useAtomValue(limitRateAtom)
+  const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
 
@@ -43,7 +45,8 @@ export function RateInput() {
   // Handle rate display
   const displayedRate = useMemo(() => {
     if (isTypedValue) return typedValue || ''
-    else if (!activeRate || !areBothCurrencies || activeRate.equalTo(0)) return ''
+
+    if (!activeRate || !areBothCurrencies || activeRate.equalTo(0)) return ''
 
     const rate = isInversed ? activeRate.invert() : activeRate
 
@@ -52,18 +55,24 @@ export function RateInput() {
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
-    updateLimitRateState({
+    updateRate({
       activeRate: isFractionFalsy(executionRate) ? initialRate : executionRate,
       isTypedValue: false,
+      isRateFromUrl: false,
     })
-  }, [executionRate, initialRate, updateLimitRateState])
+  }, [executionRate, initialRate, updateRate])
 
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
-      updateLimitRateState({ typedValue, activeRate: toFraction(typedValue, isInversed), isTypedValue: true })
+      updateLimitRateState({ typedValue })
+      updateRate({
+        activeRate: toFraction(typedValue, isInversed),
+        isTypedValue: true,
+        isRateFromUrl: false,
+      })
     },
-    [isInversed, updateLimitRateState]
+    [isInversed, updateRate, updateLimitRateState]
   )
 
   // Handle toggle primary field

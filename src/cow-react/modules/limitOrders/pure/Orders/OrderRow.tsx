@@ -20,7 +20,7 @@ export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.EXPIRED]: 'Expired',
   [OrderStatus.CANCELLED]: 'Cancelled',
   [OrderStatus.CREATING]: 'Creating',
-  [OrderStatus.INVALID]: 'Invalid',
+  [OrderStatus.FAILED]: 'Failed',
 }
 
 const RateValue = styled.span``
@@ -45,8 +45,8 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean;
       ? theme.warning
       : status === OrderStatus.CANCELLED
       ? theme.danger
-      : status === OrderStatus.INVALID
-      ? theme.text3
+      : status === OrderStatus.FAILED
+      ? theme.danger
       : status === (OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING || OrderStatus)
       ? theme.text1
       : theme.text1};

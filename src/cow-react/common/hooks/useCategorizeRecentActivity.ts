@@ -6,7 +6,7 @@ const PENDING_STATES = [OrderStatus.PENDING, OrderStatus.PRESIGNATURE_PENDING, O
 
 const isPending = (data: TransactionAndOrder) => PENDING_STATES.includes(data.status)
 
-const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.INVALID]
+const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
 
 const isConfirmed = (data: TransactionAndOrder) => CONFIRMED_STATES.includes(data.status)
 

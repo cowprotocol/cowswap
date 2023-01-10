@@ -285,7 +285,7 @@ function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): Orde
     return
   }
 
-  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, invalid } = orders
+  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, failed } = orders
 
   return (
     pending?.[id] ||
@@ -294,7 +294,7 @@ function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): Orde
     expired?.[id] ||
     cancelled?.[id] ||
     creating?.[id] ||
-    invalid?.[id]
+    failed?.[id]
   )
 }
 
