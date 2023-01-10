@@ -14,7 +14,7 @@ import { Text } from 'rebass'
 import { CheckCircle, UserCheck } from 'react-feather'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
-import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
+import { ConfirmationModalContent as ConfirmationModalContentMod, Wrapper } from './TransactionConfirmationModalMod'
 import { getStatusIcon } from 'components/AccountDetails'
 import { OrderProgressBar } from 'components/OrderProgressBar'
 import { shortenAddress } from 'utils'
@@ -28,10 +28,6 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { useOrder } from 'state/orders/hooks'
 import { OrderStatus } from 'state/orders/actions'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
-
-const Wrapper = styled.div`
-  width: 100%;
-`
 
 const Section = styled.div`
   padding: 0 16px 16px;

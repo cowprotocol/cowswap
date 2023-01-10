@@ -43,6 +43,9 @@ export const Wrapper = styled.div`
   padding: 0 16px;
   display: flex;
   flex-flow: column nowrap;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
+  height: inherit;
   ${({ theme }) => theme.colorScrollbar};
   /* -- mod -- */
 `
