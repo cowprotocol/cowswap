@@ -14,9 +14,7 @@ jobs:
     steps:
       - name: Event log
         run: |
-          echo "```" >> $GITHUB_STEP_SUMMARY
           echo $EVENT >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
         env:
           EVENT: ${{ toJSON(github.event) }}
 
