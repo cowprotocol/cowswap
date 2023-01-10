@@ -48,13 +48,18 @@ export function useTokensListWithDefaults(): TokenInfo[] {
   const { chainId } = useWeb3React()
   const activeListUrls = useActiveListUrls()
   const allTokens = useTokensListFromUrls(activeListUrls)
+  const allUserAddedTokens = useAppSelector(({ user: { tokens } }) => tokens)
 
   return useMemo(() => {
     if (!chainId) return []
 
+    const userAddedTokens = Object.values(allUserAddedTokens[chainId]) as TokenInfo[]
     const defaultTokens = DEFAULT_TOKEN_LIST.tokens
-    return allTokens.concat(defaultTokens).filter((token) => token.chainId === chainId)
-  }, [allTokens, chainId])
+    return allTokens
+      .concat(defaultTokens)
+      .concat(userAddedTokens)
+      .filter((token) => token.chainId === chainId)
+  }, [allTokens, chainId, allUserAddedTokens])
 }
 
 export function useActiveListUrls(): string[] | undefined {
@@ -113,4 +118,15 @@ export function useIsTradeUnsupported(
   const isOutputCurrencyUnsupported = outputCurrency?.isNative ? false : !!isUnsupportedToken(outputCurrency?.address)
 
   return isInputCurrencyUnsupported || isOutputCurrencyUnsupported
+}
+
+export function useInactiveListUrls(): string[] {
+  // MOD: adds { chainId } support to the hooks
+  const { chainId: connectedChainId } = useWeb3React()
+  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
+  const lists = useAllLists()
+  const allActiveListUrls = useActiveListUrls()
+  return Object.keys(lists).filter(
+    (url) => !allActiveListUrls?.includes(url) && !UNSUPPORTED_LIST_URLS[chainId].includes(url)
+  )
 }

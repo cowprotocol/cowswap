@@ -20,7 +20,7 @@ import { Text } from 'rebass'
 import { useAllTokenBalances } from 'state/connection/hooks'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
-import { useAllTokens, useIsUserAddedToken, useToken } from 'hooks/Tokens'
+import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
 import { ButtonText, CloseIcon, /* , IconWrapper, */ ThemedText } from 'theme'
 import { isAddress } from 'utils'
 import Column from 'components/Column'
@@ -187,6 +187,11 @@ export function CurrencySearch({
   const node = useRef<HTMLDivElement>()
   useOnClickOutside(node, open ? toggle : undefined)
 
+  // if no results on main list, show option to expand into inactive
+  const filteredInactiveTokens = useSearchInactiveTokenLists(
+    filteredTokens.length === 0 || (debouncedQuery.length > 2 && !isAddressSearch) ? debouncedQuery : undefined
+  )
+
   // Timeout token loader after 3 seconds to avoid hanging in a loading state.
   useEffect(() => {
     const tokenLoaderTimer = setTimeout(() => {
@@ -232,13 +237,14 @@ export function CurrencySearch({
           <Column style={{ padding: '20px 0', height: '100%' }}>
             <ImportRow token={searchToken} showImportView={showImportView} setImportToken={setImportToken} />
           </Column>
-        ) : filteredSortedTokens?.length > 0 ? (
+        ) : filteredSortedTokens?.length > 0 || filteredInactiveTokens?.length > 0 ? (
           <div style={{ flex: '1' }}>
             <AutoSizer disableWidth>
               {({ height }) => (
                 <CurrencyList
                   height={height}
                   currencies={disableNonToken ? filteredSortedTokens : filteredSortedTokensWithETH}
+                  otherListTokens={filteredInactiveTokens}
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
                   selectedCurrency={selectedCurrency}

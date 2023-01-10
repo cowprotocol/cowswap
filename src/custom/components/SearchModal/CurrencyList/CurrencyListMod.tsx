@@ -6,7 +6,7 @@ import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'components/Card'
 import QuestionHelper from 'components/QuestionHelper'
 import useTheme from 'hooks/useTheme'
-import { CSSProperties, MutableRefObject, useCallback } from 'react'
+import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
@@ -259,7 +259,7 @@ export default function CurrencyList({
 }: {
   height: number
   currencies: Currency[]
-  otherListTokens?: WrappedTokenInfo[]
+  otherListTokens?: Currency[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherCurrency?: Currency | null
@@ -274,6 +274,13 @@ export default function CurrencyList({
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
   const isUnsupportedToken = useIsUnsupportedTokenGp()
+
+  const itemData: (Currency | BreakLine)[] = useMemo(() => {
+    if (otherListTokens && otherListTokens?.length > 0) {
+      return [...currencies, BREAK_LINE, ...otherListTokens]
+    }
+    return currencies
+  }, [currencies, otherListTokens])
 
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
@@ -343,7 +350,7 @@ export default function CurrencyList({
     ]
   )
 
-  const itemKey = useCallback((index: number, data: typeof currencies) => {
+  const itemKey = useCallback((index: number, data: typeof itemData) => {
     const currency = data[index]
     if (isBreakLine(currency)) return BREAK_LINE
     return currencyKey(currency)
@@ -355,8 +362,8 @@ export default function CurrencyList({
         height={height}
         ref={fixedListRef as any}
         width="100%"
-        itemData={currencies}
-        itemCount={currencies.length}
+        itemData={itemData}
+        itemCount={itemData.length}
         itemSize={56}
         itemKey={itemKey}
       >
