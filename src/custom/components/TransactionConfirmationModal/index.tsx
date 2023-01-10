@@ -445,7 +445,7 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
       return `${prefix} Cancelled`
     case ActivityStatus.CANCELLING:
       return `${prefix} Cancelling`
-    case ActivityStatus.INVALID:
+    case ActivityStatus.FAILED:
       return `${prefix} Failed`
     default:
       return `${prefix} Submitted`
@@ -591,7 +591,7 @@ function DisplayLink({ id, chainId }: DisplayLinkProps) {
   }
 
   const ethFlowHash =
-    orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.INVALID)
+    orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED)
       ? orderCreationHash
       : undefined
   const href = ethFlowHash

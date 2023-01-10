@@ -55,7 +55,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       failed: creationTxFailed,
     },
     refund: {
-      // hash?: string // TODO: fill in when backend provides it
+      hash: order.refundHash,
       failed: didRefundFail(order),
     },
     cancellation: {
@@ -111,7 +111,7 @@ function didRefundFail(order: Order): boolean | undefined {
   if (order.isRefunded === undefined) {
     return undefined
   }
-  return !order.isRefunded
+  return !order.refundHash
 }
 
 // TODO: move this somewhere else?

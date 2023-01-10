@@ -138,7 +138,7 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
       orders?.presignaturePending[id] ||
       orders?.cancelled[id] ||
       orders?.creating[id] ||
-      orders?.invalid[id]
+      orders?.failed[id]
 
     return _deserializeOrder(serialisedOrder)
   })
@@ -179,7 +179,7 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
       ...state.expired,
       ...state.cancelled,
       ...state.creating,
-      ...state.invalid,
+      ...state.failed,
     }
   }, [state])
 }

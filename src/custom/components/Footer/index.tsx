@@ -11,11 +11,35 @@ const Wrapper = styled.div`
   justify-content: space-evenly;
   position: relative;
   width: 100%;
-  margin: 300px auto 0;
+  margin: 0;
   padding: 0 24px 16px;
+
+  > svg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    z-index: -1;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      left: initial;
+      bottom: initial;
+      top: 0;
+      margin: 24px auto 0;
+    `}
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin: 120px auto 0;
+    `}
+  }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-flow: column wrap;
+    margin: 24px auto 0;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 56px auto 160px;
   `}
 `
@@ -27,6 +51,9 @@ const FooterVersion = styled(Version)`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     margin: 0 auto;
+  `}
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-flow: column wrap;
     width: 100%;
     gap: 24px;
@@ -39,40 +66,6 @@ const FooterVersion = styled(Version)`
   }
 `
 
-const ImageWrapper = styled.div`
-  display: flex;
-  position: absolute;
-  overflow: hidden;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: auto;
-  z-index: -1;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    left: initial;
-    bottom: initial;
-    top: calc(100% - 100px);
-    margin: 50px auto 0;
-    height: 360px;
-  `}
-
-  > svg {
-    max-width: 100%;
-    width: 100%;
-    max-height: 100%;
-    height: 100%;
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      transform: scale(1.7);
-    `}
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      transform: scale(2);
-    `}
-  }
-`
-
 export default function Footer() {
   const darkMode = useIsDarkMode()
 
@@ -80,9 +73,7 @@ export default function Footer() {
     <Wrapper>
       <FooterVersion />
       <Polling />
-      <ImageWrapper>
-        <SVG src={footerImage(darkMode)} description="CoW Swap footer image" />
-      </ImageWrapper>
+      <SVG src={footerImage(darkMode)} description="CoW Swap footer image" />
     </Wrapper>
   )
 }

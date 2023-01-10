@@ -4,7 +4,6 @@ import {
   QuoteUpdater,
   InfoPopup,
   MarketPriceUpdater,
-  ActiveRateUpdater,
   OrdersWidget,
   limitOrdersAtom,
 } from '@cow/modules/limitOrders'
@@ -17,7 +16,6 @@ export default function LimitOrderPage() {
     <>
       <QuoteUpdater />
       <MarketPriceUpdater />
-      <ActiveRateUpdater />
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />

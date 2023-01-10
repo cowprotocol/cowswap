@@ -82,7 +82,7 @@ export function StatusDetails(props: StatusDetailsProps) {
     isPresignaturePending,
     isConfirmed,
     isExpired,
-    isInvalid,
+    isFailed,
     isTransaction,
     isCancelled,
     isCreating,
@@ -104,7 +104,7 @@ export function StatusDetails(props: StatusDetailsProps) {
           <SVG src={OrderCheckImage} description="Order Filled" />
         ) : isExpired && isTransaction ? (
           <SVG src={OrderCancelledImage} description="Transaction Failed" />
-        ) : isInvalid ? (
+        ) : isFailed ? (
           <SVG src={OrderCancelledImage} description="Failed" />
         ) : isExpired ? (
           <SVG src={OrderExpiredImage} description="Order Expired" />

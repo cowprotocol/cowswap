@@ -289,8 +289,8 @@ export default function EthFlowFAQ() {
               How can I check I actually received the refund after my order expired?
             </h3>
             <p>
-              You can click on the hyperlink “ETH refunded successfully” on the progress modal which will redirect you
-              to etherscan.io to see the actual transaction on the blockchain.
+              You can click on the hyperlink “View transaction” on the progress modal which will redirect you to
+              etherscan.io to see the actual transaction on the blockchain.
             </p>
             <p>
               You can search for your wallet address on etherscan.io and see that the balance is right where it should
