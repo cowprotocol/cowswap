@@ -230,12 +230,14 @@ export function TransactionErrorContent({ message, onDismiss }: { message: React
   return (
     <Wrapper>
       <Section>
-        <RowBetween>
+        <GPModalHeader>
+          {/* <RowBetween> */}
           <Text fontWeight={500} fontSize={20}>
             <Trans>Error</Trans>
           </Text>
           <CloseIcon onClick={onDismiss} />
-        </RowBetween>
+        </GPModalHeader>
+        {/* </RowBetween> */}
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
           <Text
