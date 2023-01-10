@@ -2,8 +2,7 @@ type SoundType = 'SEND' | 'SUCCESS' | 'SUCCESS_CLAIM' | 'ERROR'
 type Sounds = Record<SoundType, string>
 
 const COW_SOUNDS: Sounds = {
-  // SEND: '/audio/send.mp3',
-  SEND: '/audio/send-winterTheme.mp3', // Winter Theme
+  SEND: '/audio/send.mp3',
   SUCCESS: '/audio/success.mp3',
   SUCCESS_CLAIM: '/audio/success-claim.mp3',
   ERROR: '/audio/error.mp3',

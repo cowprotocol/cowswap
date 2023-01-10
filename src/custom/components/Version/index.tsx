@@ -96,7 +96,7 @@ const VersionsLinkWrapper = styled.span`
   opacity: 0.5;
   transition: opacity 0.3s ease-in-out;
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
     opacity: 1;
     font-size: 13px;
     width: 100%;

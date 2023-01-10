@@ -31,7 +31,7 @@ export enum ActivityStatus {
   CANCELLING,
   CANCELLED,
   CREATING,
-  INVALID,
+  FAILED,
 }
 
 enum TxReceiptStatus {
@@ -132,7 +132,7 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     isCancelling: boolean,
     isCancelled: boolean,
     isCreating: boolean,
-    isInvalid: boolean,
+    isFailed: boolean,
     date: Date
 
   if (!tx && order) {
@@ -152,7 +152,7 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     // Thus, we add both here to tell if the order is being cancelled
     isCancelling = (order.isCancelling || false) && (isPending || isCreating)
     isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
-    isInvalid = order.status === OrderStatus.INVALID
+    isFailed = order.status === OrderStatus.FAILED
 
     activity = order
     type = ActivityType.ORDER
@@ -172,7 +172,7 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     isCancelling = isCancelTx && isPending
     isCancelled = isCancelTx && !isPending && isReceiptConfirmed
     isCreating = false
-    isInvalid = false
+    isFailed = false
 
     activity = tx
     type = ActivityType.TX
@@ -197,8 +197,8 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     status = ActivityStatus.CONFIRMED
   } else if (isCreating) {
     status = ActivityStatus.CREATING
-  } else if (isInvalid) {
-    status = ActivityStatus.INVALID
+  } else if (isFailed) {
+    status = ActivityStatus.FAILED
   } else {
     status = ActivityStatus.EXPIRED
   }
