@@ -4,6 +4,10 @@ export const ConfirmModalWrapper = styled.div`
   padding: 0;
   border-radius: 16px;
   background: ${({ theme }) => theme.bg1};
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
+  height: inherit;
+  ${({ theme }) => theme.colorScrollbar};
 `
 
 export const ConfirmHeader = styled.div`
