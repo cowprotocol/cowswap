@@ -42,10 +42,12 @@ import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurr
 import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
 import { maxAmountSpend } from '@src/utils/maxAmountSpend'
 import { FractionUtils } from '@cow/utils/fractionUtils'
+import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
+  useSetupLimitOrderAmountsFromUrl()
   useDisableNativeTokenSelling()
 
   const { chainId } = useWeb3React()
@@ -72,7 +74,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-  const { isLoading: isRateLoading } = useAtomValue(limitRateAtom)
+  const { isLoading: isRateLoading, activeRate } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
@@ -113,19 +115,13 @@ export function LimitOrdersWidget() {
 
       const value = tryParseCurrencyAmount(typedValue, currency) || null
 
-      if (isWrapOrUnwrap || field === Field.INPUT) {
-        updateCurrencyAmount({
-          inputCurrencyAmount: value,
-          orderKind: OrderKind.SELL,
-        })
-      } else {
-        updateCurrencyAmount({
-          outputCurrencyAmount: value,
-          orderKind: OrderKind.BUY,
-        })
-      }
+      updateCurrencyAmount({
+        activeRate,
+        amount: value,
+        orderKind: isWrapOrUnwrap || field === Field.INPUT ? OrderKind.SELL : OrderKind.BUY,
+      })
     },
-    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency]
+    [updateCurrencyAmount, isWrapOrUnwrap, inputCurrency, outputCurrency, activeRate]
   )
 
   const onSwitchTokens = useCallback(() => {
