@@ -1,5 +1,3 @@
-import { checkAndThrowIfJsonSerialisableError } from 'utils/logging'
-
 type ApiActionType = 'get' | 'create' | 'delete'
 
 export interface ApiErrorObject {
@@ -37,6 +35,7 @@ export enum ApiErrorCodes {
   UnsupportedBuyTokenDestination = 'UnsupportedBuyTokenDestination',
   UnsupportedSellTokenSource = 'UnsupportedSellTokenSource',
   UnsupportedOrderType = 'UnsupportedOrderType',
+  TooManyLimitOrders = 'TooManyLimitOrders',
   UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR',
@@ -67,6 +66,7 @@ export enum ApiErrorCodeDetails {
   UnsupportedBuyTokenDestination = 'Buy token destination is unsupported. Please try again with a different destination.',
   UnsupportedSellTokenSource = 'Sell token source is unsupported. Please try again with a different source.',
   UnsupportedOrderType = 'Order type unsupported. Please try again with a different order type.',
+  TooManyLimitOrders = 'The limit of open limit orders has been reached. You can currently have up to 10 open limit orders.',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network.',
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network.',
@@ -97,14 +97,8 @@ export default class OperatorError extends Error {
   // https://github.com/cowprotocol/services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
   static apiErrorDetails = ApiErrorCodeDetails
 
-  public static async getErrorMessage(response: Response, action: ApiActionType) {
+  public static getErrorMessage(orderPostError: ApiErrorObject, action: ApiActionType): string {
     try {
-      // don't attempt json parse if not json response...
-      checkAndThrowIfJsonSerialisableError(response)
-      // clone response body
-      const clonedResponse = response.clone()
-      const orderPostError: ApiErrorObject = await clonedResponse.json()
-
       if (orderPostError.errorType) {
         const errorMessage = OperatorError.apiErrorDetails[orderPostError.errorType]
         // shouldn't fall through as this error constructor expects the error code to exist but just in case
@@ -118,11 +112,11 @@ export default class OperatorError extends Error {
       return _mapActionToErrorDetail(action)
     }
   }
-  static async getErrorFromStatusCode(response: Response, action: 'create' | 'delete'): Promise<string> {
-    switch (response.status) {
+  static getErrorFromStatusCode(statusCode: number, errorObject: ApiErrorObject, action: 'create' | 'delete'): string {
+    switch (statusCode) {
       case 400:
       case 404:
-        return this.getErrorMessage(response, action)
+        return this.getErrorMessage(errorObject, action)
 
       case 403:
         return `The order cannot be ${action === 'create' ? 'accepted' : 'cancelled'}. Your account is deny-listed.`
@@ -138,7 +132,7 @@ export default class OperatorError extends Error {
           `[OperatorError::getErrorFromStatusCode] Error ${
             action === 'create' ? 'creating' : 'cancelling'
           } the order, status code:`,
-          response.status || 'unknown'
+          statusCode || 'unknown'
         )
         return `Error ${action === 'create' ? 'creating' : 'cancelling'} the order`
     }

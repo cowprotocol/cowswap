@@ -3,12 +3,11 @@ import { useMemo } from 'react'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
-import { Order } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { getEtherscanLink } from 'utils'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { ActivityDescriptors, ActivityStatus, ActivityType, useSingleActivityDescriptor } from 'hooks/useRecentActivity'
+import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { ChainId } from '../state/lists/actions'
 
 export function useActivityDerivedState({
   chainId,
@@ -17,29 +16,21 @@ export function useActivityDerivedState({
   chainId: number | undefined
   activity: ActivityDescriptors
 }): ActivityDerivedState | null {
-  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
+  const { gnosisSafeInfo } = useWalletInfo()
 
-  // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
+  // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
   return useMemo(
-    () => getActivityDerivedState({ chainId, activityData: activity, allowsOffchainSigning, gnosisSafeInfo }),
-    [chainId, activity, allowsOffchainSigning, gnosisSafeInfo]
+    () => getActivityDerivedState({ chainId, activityData: activity, gnosisSafeInfo }),
+    [chainId, activity, gnosisSafeInfo]
   )
-}
-
-export function useSingleActivityState(params: { chainId?: ChainId; id: string }) {
-  const { chainId, id = '' } = params
-  const singleActivity = useSingleActivityDescriptor({ chainId, id })
-
-  return useActivityDerivedState({ chainId, activity: singleActivity as ActivityDescriptors })
 }
 
 function getActivityDerivedState(props: {
   chainId?: number
   activityData: ActivityDescriptors | null
-  allowsOffchainSigning: boolean
   gnosisSafeInfo?: SafeInfoResponse
 }): ActivityDerivedState | null {
-  const { chainId, activityData, allowsOffchainSigning, gnosisSafeInfo } = props
+  const { chainId, activityData, gnosisSafeInfo } = props
   if (!activityData || chainId === undefined) {
     return null
   }
@@ -52,7 +43,6 @@ function getActivityDerivedState(props: {
 
   // Calculate some convenient status flags
   const isPending = status === ActivityStatus.PENDING
-  const isCancellable = allowsOffchainSigning && isPending && isOrder
 
   const activityLinkUrl = getActivityLinkUrl({ id, chainId, enhancedTransaction, order })
 
@@ -72,8 +62,9 @@ function getActivityDerivedState(props: {
     isExpired: status === ActivityStatus.EXPIRED,
     isCancelling: status === ActivityStatus.CANCELLING,
     isCancelled: status === ActivityStatus.CANCELLED,
-    isCancellable,
-    isUnfillable: isCancellable && (activity as Order).isUnfillable,
+    isUnfillable: (activity as Order).isUnfillable,
+    isCreating: status === ActivityStatus.CREATING,
+    isFailed: status === ActivityStatus.FAILED,
 
     // Convenient casting
     order,
@@ -84,7 +75,7 @@ function getActivityDerivedState(props: {
   }
 }
 
-function getActivityLinkUrl(params: {
+export function getActivityLinkUrl(params: {
   chainId: number
   id: string
   enhancedTransaction?: EnhancedTransactionDetails
@@ -96,16 +87,21 @@ function getActivityLinkUrl(params: {
     const { transactionHash, safeTransaction } = enhancedTransaction
 
     if (transactionHash) {
-      // Is an Ethereum transaction: Etherscan link
+      // It's an Ethereum transaction: Etherscan link
       return getEtherscanLink(chainId, transactionHash, 'transaction')
     } else if (safeTransaction && safeTransaction) {
-      // Its a safe transaction: Gnosis Safe Web link
+      // It's a safe transaction: Gnosis Safe Web link
       const { safe } = safeTransaction
       return getSafeWebUrl(chainId, safe) ?? undefined
     }
   } else if (order) {
-    // Its an order: GP Explorer link
-    return getExplorerOrderLink(chainId, id)
+    if (order.orderCreationHash && (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED)) {
+      // It's a EthFlow transaction: Etherscan link
+      return getEtherscanLink(chainId, order.orderCreationHash, 'transaction')
+    } else {
+      // It's an order: GP Explorer link
+      return getExplorerOrderLink(chainId, id)
+    }
   }
 
   return undefined
@@ -121,6 +117,7 @@ type ActivityState =
   | 'pending'
   | 'signing'
   | 'cancelling'
+  | 'creating'
 
 export function getActivityState({
   isPending,
@@ -130,6 +127,8 @@ export function getActivityState({
   isCancelling,
   isPresignaturePending,
   isCancelled,
+  isCreating,
+  isFailed,
   enhancedTransaction,
 }: ActivityDerivedState): ActivityState {
   if (isPending) {
@@ -162,6 +161,14 @@ export function getActivityState({
 
   if (isCancelled) {
     return 'cancelled'
+  }
+
+  if (isCreating) {
+    return 'creating'
+  }
+
+  if (isFailed) {
+    return 'failed'
   }
 
   return 'open'

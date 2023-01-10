@@ -34,8 +34,8 @@ export default function FavouriteTokenButton({ tokenData }: FavouriteTokenButton
 
   return (
     <StyledButtonStar
-      stroke={theme.yellow2}
-      fill={isFavouriteToken ? theme.yellow2 : undefined}
+      stroke={theme.text1}
+      fill={isFavouriteToken ? theme.text1 : undefined}
       onClick={handleFavouriteToken}
     />
   )

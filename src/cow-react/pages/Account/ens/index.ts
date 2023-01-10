@@ -5,7 +5,6 @@ import { EnsNamesQuery } from '@cow/pages/Account/ens/types'
 const CHAIN_SUBGRAPH_URL: Record<number, string> = {
   [SupportedChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
   [SupportedChainId.GOERLI]: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli',
-  [SupportedChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby',
 }
 
 const DOMAINS_BY_ADDRESS_QUERY = gql`

@@ -1,9 +1,8 @@
-import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
-
-const ONE = new Fraction(1, 1)
+import { ONE_FRACTION } from 'constants/misc'
 
 export function calculateSlippageAmount(value: CurrencyAmount<Currency>, slippage: Percent): [JSBI, JSBI] {
-  if (slippage.lessThan(0) || slippage.greaterThan(ONE)) throw new Error('Unexpected slippage')
-  return [value.multiply(ONE.subtract(slippage)).quotient, value.multiply(ONE.add(slippage)).quotient]
+  if (slippage.lessThan(0) || slippage.greaterThan(ONE_FRACTION)) throw new Error('Unexpected slippage')
+  return [value.multiply(ONE_FRACTION.subtract(slippage)).quotient, value.multiply(ONE_FRACTION.add(slippage)).quotient]
 }

@@ -23,7 +23,7 @@ cypress.env.json
 # builds
 /build
 /dts
-/cosmos-export
+/public/cosmos
 /dist
 
 # misc
@@ -58,3 +58,6 @@ yalc.lock
 
 # public
 public/version.json
+
+# vercel
+.vercel

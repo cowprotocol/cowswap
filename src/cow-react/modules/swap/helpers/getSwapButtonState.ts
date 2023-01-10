@@ -3,6 +3,7 @@ import { WrapType } from 'hooks/useWrapCallback'
 import { QuoteError } from 'state/price/actions'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import TradeGp from 'state/swap/TradeGp'
+import { getEthFlowEnabled } from '@cow/modules/swap/helpers/getEthFlowEnabled'
 
 export enum SwapButtonState {
   SwapIsUnsupported = 'SwapIsUnsupported',
@@ -25,7 +26,8 @@ export enum SwapButtonState {
   ExpertModeSwap = 'ExpertModeSwap',
   RegularSwap = 'RegularSwap',
   SwapWithWrappedToken = 'SwapWithWrappedToken',
-  WrapAndSwap = 'WrapAndSwap',
+  RegularEthFlowSwap = 'EthFlowSwap',
+  ExpertModeEthFlowSwap = 'ExpertModeEthFlowSwap',
 }
 
 export interface SwapButtonStateParams {
@@ -39,13 +41,13 @@ export interface SwapButtonStateParams {
   quoteError: QuoteError | undefined | null
   inputError?: string
   approvalState: ApprovalState
-  approvalSubmitted: boolean
   feeWarningAccepted: boolean
   impactWarningAccepted: boolean
   isGettingNewQuote: boolean
   swapCallbackError: string | null
   trade: TradeGp | undefined | null
   isNativeIn: boolean
+  isSmartContractWallet: boolean
   wrappedToken: Token
 }
 
@@ -65,10 +67,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
-    !input.inputError &&
-    (approvalState === ApprovalState.NOT_APPROVED ||
-      approvalState === ApprovalState.PENDING ||
-      (input.approvalSubmitted && approvalState === ApprovalState.APPROVED))
+    !input.inputError && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
@@ -124,11 +123,11 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (input.isNativeIn) {
-    if (input.wrappedToken.symbol) {
+    if (getEthFlowEnabled(input.isSmartContractWallet)) {
+      return input.isExpertMode ? SwapButtonState.ExpertModeEthFlowSwap : SwapButtonState.RegularEthFlowSwap
+    } else {
       return SwapButtonState.SwapWithWrappedToken
     }
-
-    return SwapButtonState.WrapAndSwap
   }
 
   if (input.isExpertMode) {

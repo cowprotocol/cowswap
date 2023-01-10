@@ -14,11 +14,11 @@ export const AutoColumn = styled(AutoColumnUni)`
     &::after {
       content: "";
       display: block;
-      background: linear-gradient(to left, ${({ theme }) => theme.bg3} 0%, ${({ theme }) =>
-    transparentize(1, theme.bg3)} 100%);
+      background: linear-gradient(to left, ${({ theme }) => theme.bg1} 0%, ${({ theme }) =>
+    transparentize(1, theme.bg1)} 100%);
       pointer-events: none;
       height: 100%;
-      width: 70px;
+      width: 80px;
       position: absolute;
       right: 0;
       top: 0;
@@ -34,21 +34,7 @@ export const CommonBasesRow = styled(AutoRow)`
     overflow-x: scroll;
     padding: 0 100px 0 0;
     position: relative;
-    scrollbar-color: ${({ theme }) => theme.scrollbarThumb} ${({ theme }) => theme.scrollbarBg};
-    scroll-behavior: smooth;
-
-    &::-webkit-scrollbar {
-      height: 10px;
-      background: ${({ theme }) => theme.scrollbarBg};
-      border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: ${({ theme }) => theme.scrollbarThumb};
-      border: 3px solid transparent;
-      border-radius: 10px;
-      background-clip: padding-box;
-    }
+    ${({ theme }) => theme.colorScrollbar};
   `}
 `
 
@@ -78,7 +64,8 @@ export const MobileWrapper = styled(AutoColumn)<{ showOverflow?: boolean }>`
     /* display: none; */
   `};
 
-  overflow-y: auto;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
   max-height: 135px;
   padding-bottom: 20px;
 `

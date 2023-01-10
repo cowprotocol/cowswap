@@ -16,6 +16,7 @@ export function useSetOldestValidBlock(): (block: number) => void {
   return useCallback(
     (block: number) => {
       if (!chainId) return
+      // @ts-ignore // MOD!
       updateValidBlock((oldestBlockMap) => {
         oldestBlockMap[chainId] = Math.max(block, oldestBlockMap[chainId] || 0)
       })
@@ -28,6 +29,7 @@ export function useGetIsValidBlock(maxBlockAge = DEFAULT_MAX_BLOCK_AGE): (block:
   const { chainId } = useWeb3React()
   const currentBlock = useBlockNumber()
   const oldestBlockMap = useAtomValue(oldestBlockMapAtom)
+  // @ts-ignore // MOD!
   const oldestBlock = chainId ? oldestBlockMap[chainId] : 0
   return useCallback(
     (block: number) => {

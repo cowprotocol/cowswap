@@ -164,8 +164,3 @@ The plan:
 2. Deploy a new version to production
 
 `emergency.js` is not cached by browser and loaded before all.
-
-## Feature flags
-
-`localStorage.setItem('enableNewSwap', '1')` - enable refactored swap interface
-`localStorage.setItem('enableLimitOrders', '1')` - enable limit orders page (WORK IN PROGRESS)

@@ -7,7 +7,6 @@ import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapp
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
 
-import { StatusDetails } from './StatusDetails'
 // import { StateIcon } from './StateIcon'
 import { Order } from 'state/orders/actions'
 import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
@@ -17,10 +16,12 @@ const PILL_COLOUR_MAP = {
   CONFIRMED: 'success',
   PENDING_ORDER: 'pending',
   PRESIGNATURE_PENDING: 'pending',
+  CREATING: 'pending',
   PENDING_TX: 'pending',
   EXPIRED_ORDER: 'attention',
   CANCELLED_ORDER: 'attention',
   CANCELLING_ORDER: 'attention',
+  FAILED: 'attention',
 }
 
 export function determinePillColour(status: ActivityStatus, type: ActivityType) {
@@ -39,6 +40,10 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
       return PILL_COLOUR_MAP.CANCELLING_ORDER
     case ActivityStatus.CANCELLED:
       return PILL_COLOUR_MAP.CANCELLED_ORDER
+    case ActivityStatus.CREATING:
+      return PILL_COLOUR_MAP.CREATING
+    case ActivityStatus.FAILED:
+      return PILL_COLOUR_MAP.FAILED
   }
 }
 
@@ -62,7 +67,10 @@ export interface ActivityDerivedState {
   isCancelled: boolean
   isPresignaturePending: boolean
   isUnfillable?: boolean
-  isCancellable: boolean
+  // EthFlow flags
+  isCreating: boolean
+  isFailed: boolean
+  // TODO: refactor these convenience flags
 
   // Possible activity types
   enhancedTransaction?: EnhancedTransactionDetails
@@ -75,7 +83,7 @@ export interface ActivityDerivedState {
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {
   const { chainId } = useWeb3React()
 
-  // Get some derived information about the activity. It helps to simplify the rendering of the sub-components
+  // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
   const activityDerivedState = useActivityDerivedState({ chainId, activity })
 
   if (!activityDerivedState || !chainId) return null
@@ -112,9 +120,6 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
             />
           </ActivityDetailsText>
         </RowFixed>
-
-        {/* Status Details: icon, cancel, links */}
-        <StatusDetails chainId={chainId} activityDerivedState={activityDerivedState} />
       </TransactionWrapper>
     </Wrapper>
   )

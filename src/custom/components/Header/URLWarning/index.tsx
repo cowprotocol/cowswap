@@ -19,8 +19,8 @@ const Wrapper = styled.div`
     justify-content: center;
     font-size: 12px;
     padding: 8px;
-    background-color: ${({ theme }) => theme.primary1};
-    color: ${({ theme }) => theme.text2};
+    background-color: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
 
     > div {
       align-items: center;

@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import ReactAppzi from 'react-appzi'
 import { userAgent, majorBrowserVersion, isImTokenBrowser } from 'utils/userAgent'
 import { environmentName, isProdLike } from 'utils/environments'
+import ms from 'ms.macro'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
@@ -23,6 +24,8 @@ export const NPS_KEY = process.env.REACT_APP_APPZI_NPS_KEY || isProdLike ? PROD_
 
 const APPZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
 const EVENT = 'message'
+
+const PENDING_TOO_LONG_TIME = ms`5 min`
 
 type EventCallback = (event: any) => void
 
@@ -118,6 +121,12 @@ function restyleAppziNps(event: any) {
 export function openNpsAppzi() {
   applyOnceRestyleAppziNps()
   window.appzi?.openWidget(NPS_KEY)
+}
+
+export function isOrderInPendingTooLong(openSince: number | undefined): boolean {
+  const now = Date.now()
+
+  return !!openSince && now - openSince > PENDING_TOO_LONG_TIME
 }
 
 // Different triggers for each NPS survey.

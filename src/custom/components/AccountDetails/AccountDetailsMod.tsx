@@ -27,7 +27,7 @@ export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 1rem 1rem;
   font-weight: 500;
-  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
+  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.text1 : 'inherit')};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
   `};
@@ -211,7 +211,7 @@ export const WalletAction = styled(ButtonSecondary)`
 `
 
 export const MainWalletAction = styled(WalletAction)`
-  color: ${({ theme }) => theme.primary1};
+  color: ${({ theme }) => theme.text1};
 `
 
 // function renderTransactions(transactions: string[]) {

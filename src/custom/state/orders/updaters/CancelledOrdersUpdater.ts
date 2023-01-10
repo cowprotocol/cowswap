@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
 import { OrderFulfillmentData } from 'state/orders/actions'
-import { OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
+import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { CANCELLED_ORDERS_PENDING_TIME } from 'constants/index'
@@ -57,11 +57,18 @@ export function CancelledOrdersUpdater(): null {
         // Filter orders:
         // - Owned by the current connected account
         // - Created in the last 5 min, no further
-        const pending = cancelledRef.current.filter(({ owner, creationTime: creationTimeString }) => {
-          const creationTime = new Date(creationTimeString).getTime()
+        // - Not EthFlow orders already cancelled
+        const pending = cancelledRef.current.filter(
+          ({ owner, creationTime: creationTimeString, status, cancellationHash }) => {
+            const creationTime = new Date(creationTimeString).getTime()
 
-          return owner.toLowerCase() === lowerCaseAccount && now - creationTime < CANCELLED_ORDERS_PENDING_TIME
-        })
+            return (
+              owner.toLowerCase() === lowerCaseAccount &&
+              now - creationTime < CANCELLED_ORDERS_PENDING_TIME &&
+              !(cancellationHash && status === 'cancelled')
+            )
+          }
+        )
 
         if (pending.length === 0) {
           // console.debug(`[CancelledOrdersUpdater] No orders are being cancelled`)
@@ -114,7 +121,7 @@ export function CancelledOrdersUpdater(): null {
       return
     }
 
-    const interval = setInterval(() => updateOrders(chainId, account), OPERATOR_API_POLL_INTERVAL)
+    const interval = setInterval(() => updateOrders(chainId, account), MARKET_OPERATOR_API_POLL_INTERVAL)
 
     return () => clearInterval(interval)
   }, [account, chainId, updateOrders])

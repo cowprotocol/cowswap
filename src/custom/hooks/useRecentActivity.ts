@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'state/enhancedTransactions/hooks'
-import { useOrder, useOrders, useOrdersById } from 'state/orders/hooks'
+import { useOrder, useOrders, useOrdersById, usePendingOrders } from 'state/orders/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { getDateTimestamp } from 'utils/time'
+import { getDateTimestamp } from '@cow/utils/time'
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
-import { isPending } from 'components/Web3Status'
 
 export interface AddedOrder extends Order {
   addedTime: number
@@ -31,15 +30,13 @@ export enum ActivityStatus {
   EXPIRED,
   CANCELLING,
   CANCELLED,
+  CREATING,
+  FAILED,
 }
 
 enum TxReceiptStatus {
   PENDING,
   CONFIRMED,
-}
-
-export function isAnOrder(element: TransactionAndOrder): element is AddedOrder {
-  return 'inputToken' in element && 'outputToken' in element
 }
 
 /**
@@ -90,6 +87,7 @@ export default function useRecentActivity() {
         .filter((tx) => tx.from.toLowerCase() === accountLowerCase)
         // Only recent transactions
         .filter(isTransactionRecent)
+        .filter(isNotEthFlowTx)
         .map((tx) => ({
           ...tx,
           // we need to adjust Transaction object and add "id" + "status" to match Orders type
@@ -133,6 +131,8 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     isConfirmed: boolean,
     isCancelling: boolean,
     isCancelled: boolean,
+    isCreating: boolean,
+    isFailed: boolean,
     date: Date
 
   if (!tx && order) {
@@ -140,11 +140,19 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     // setup variables accordingly...
     id = order.id
 
-    isPending = order.status === OrderStatus.PENDING
-    isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING
+    isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING // Smart contract orders only
+    isCreating = order.status === OrderStatus.CREATING // EthFlow orders only
+    isPending = order.status === OrderStatus.PENDING // All orders
     isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
-    isCancelling = (order.isCancelling || false) && isPending
+    // `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
+    // We can only do so if the order is in a "pending" state.
+    // `isPending` is used for all orders when they are "OPEN".
+    // `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
+    // After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
+    // Thus, we add both here to tell if the order is being cancelled
+    isCancelling = (order.isCancelling || false) && (isPending || isCreating)
     isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
+    isFailed = order.status === OrderStatus.FAILED
 
     activity = order
     type = ActivityType.ORDER
@@ -163,6 +171,8 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     isConfirmed = !isPending && isReceiptConfirmed
     isCancelling = isCancelTx && isPending
     isCancelled = isCancelTx && !isPending && isReceiptConfirmed
+    isCreating = false
+    isFailed = false
 
     activity = tx
     type = ActivityType.TX
@@ -185,6 +195,10 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
     status = ActivityStatus.CANCELLED
   } else if (isConfirmed) {
     status = ActivityStatus.CONFIRMED
+  } else if (isCreating) {
+    status = ActivityStatus.CREATING
+  } else if (isFailed) {
+    status = ActivityStatus.FAILED
   } else {
     status = ActivityStatus.EXPIRED
   }
@@ -225,12 +239,12 @@ export function useSingleActivityDescriptor({
   id,
 }: {
   chainId?: ChainId
-  id: string
+  id?: string
 }): ActivityDescriptors | null {
   const allTransactions = useAllTransactions()
   const order = useOrder({ id, chainId })
 
-  const tx = allTransactions?.[id]
+  const tx = id ? allTransactions?.[id] : undefined
 
   return useMemo(() => {
     if (!chainId) return null
@@ -269,14 +283,20 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
 }
 
 export function useRecentActivityLastPendingOrder() {
-  const allRecentActivity = useRecentActivity()
+  const { chainId } = useWeb3React()
+  const pending = usePendingOrders({ chainId })
 
   return useMemo(() => {
-    const pendings = allRecentActivity.filter(isPending)
-    const lastOrder = pendings[pendings.length - 1]
+    if (!pending.length) {
+      return null
+    }
+    return pending[pending.length - 1] || null
 
-    if (!lastOrder || !isAnOrder(lastOrder)) return null
+    // Disabling hook to avoid unnecessary re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(pending)])
+}
 
-    return lastOrder
-  }, [allRecentActivity])
+export function isNotEthFlowTx(tx: EnhancedTransactionDetails): boolean {
+  return !tx.ethFlow
 }

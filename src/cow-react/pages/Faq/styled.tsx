@@ -5,14 +5,8 @@ import { ButtonPrimary } from 'components/Button'
 import { transparentize } from 'polished'
 
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`
-  color: ${({ theme }) => theme.text1};
   text-decoration: underline;
   font-weight: normal;
-  transition: color 0.2s ease-in-out;
-
-  &:hover {
-    color: ${({ theme }) => theme.textLink};
-  }
 `
 
 export const Wrapper = styled.div`
@@ -35,11 +29,11 @@ export const Wrapper = styled.div`
       color: ${({ theme }) => theme.text1};
 
       > thead {
-        background: ${({ theme }) => theme.tableHeadBG};
+        background: ${({ theme }) => theme.bg3};
       }
 
       > tbody > tr {
-        background: ${({ theme }) => theme.tableRowBG};
+        background: ${({ theme }) => theme.grey1};
       }
 
       > tbody > tr > td > span[role='img'] {
@@ -62,10 +56,6 @@ export const Wrapper = styled.div`
     }
   }
 
-  h2 {
-    color: ${({ theme }) => theme.primary1};
-  }
-
   > div:not(:first-child) {
     margin: 2rem 0;
   }
@@ -74,7 +64,7 @@ export const Wrapper = styled.div`
     > div > ul {
       margin: 12px 0 24px;
       padding: 0 0 0 20px;
-      color: ${({ theme }) => theme.primary1};
+      color: ${({ theme }) => theme.text3};
       line-height: 1.2;
     }
 

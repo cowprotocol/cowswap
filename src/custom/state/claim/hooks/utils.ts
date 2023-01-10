@@ -94,8 +94,6 @@ function _repoNetworkIdMapping(id: SupportedChainId): string {
   switch (id) {
     case SupportedChainId.MAINNET:
       return 'mainnet'
-    case SupportedChainId.RINKEBY:
-      return 'rinkeby'
     case SupportedChainId.GNOSIS_CHAIN:
       return 'gnosis-chain'
     case SupportedChainId.GOERLI:

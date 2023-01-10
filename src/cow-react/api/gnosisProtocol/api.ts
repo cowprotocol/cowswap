@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { OrderKind, QuoteQuery } from '@cowprotocol/contracts'
+import { BUY_ETH_ADDRESS, OrderKind, QuoteQuery } from '@cowprotocol/contracts'
 import { stringify } from 'qs'
 import {
   getSigningSchemeApiValue,
@@ -8,7 +8,7 @@ import {
   SigningSchemeValue,
   UnsignedOrder,
 } from 'utils/signatures'
-import { APP_DATA_HASH, GAS_FEE_ENDPOINTS, RAW_CODE_LINK } from 'constants/index'
+import { APP_DATA_HASH, RAW_CODE_LINK } from 'constants/index'
 import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
 import { environmentName, isBarn, isDev, isLocal, isPr } from 'utils/environments'
 import OperatorError, {
@@ -25,7 +25,6 @@ import QuoteError, {
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { LegacyFeeQuoteParams as FeeQuoteParams, LegacyPriceQuoteParams as PriceQuoteParams } from './legacy/types'
 
-import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import * as Sentry from '@sentry/browser'
 import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'utils/logging'
 import { ZERO_ADDRESS } from 'constants/misc'
@@ -33,12 +32,12 @@ import { getAppDataHash } from 'constants/appDataHash'
 import { Context } from '@sentry/types'
 import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'state/gas/atoms'
+import { OrderClass } from 'state/orders/actions'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
       [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
-      [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_STAGING_RINKEBY || 'https://barn.api.cow.fi/rinkeby/api',
       [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
       [ChainId.GOERLI]: process.env.REACT_APP_API_URL_STAGING_GOERLI || 'https://barn.api.cow.fi/goerli/api',
     }
@@ -47,7 +46,6 @@ function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   // Production, staging, ens, ...
   return {
     [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://api.cow.fi/mainnet/api',
-    [ChainId.RINKEBY]: process.env.REACT_APP_API_URL_PROD_RINKEBY || 'https://api.cow.fi/rinkeby/api',
     [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
     [ChainId.GOERLI]: process.env.REACT_APP_API_URL_PROD_GOERLI || 'https://api.cow.fi/goerli/api',
   }
@@ -73,7 +71,6 @@ function getPriceStrategyUrl(): Record<ChainId, string> {
 
   return {
     [ChainId.MAINNET]: url + '/strategy-1.json',
-    [ChainId.RINKEBY]: url + '/strategy-4.json',
     [ChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
     [ChainId.GOERLI]: url + '/strategy-5.json',
   }
@@ -94,8 +91,9 @@ const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
  * where orderDigest = keccak256(orderStruct). bytes32.
  */
 export type OrderID = string
-export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'presignaturePending' | 'open'
+export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'invalid' | 'presignaturePending' | 'open'
 
+// TODO: replace it by import from SDK
 export interface OrderMetaData {
   creationDate: string
   owner: string
@@ -105,6 +103,7 @@ export interface OrderMetaData {
   executedSellAmount: string
   executedSellAmountBeforeFees: string
   executedFeeAmount: string
+  executedSurplusFee: string | null
   invalidated: false
   sellToken: string
   buyToken: string
@@ -119,6 +118,22 @@ export interface OrderMetaData {
   signingScheme: SigningSchemeValue
   status: ApiOrderStatus
   receiver: string
+  class: OrderClass
+  // EthFlow related fields
+  ethflowData: EthFlowData
+  onchainOrderData?: OnChainOrderData
+}
+
+type EthFlowData = {
+  userValidTo: number
+  isRefunded: boolean // TODO: remove once `isRefundable` is implemented
+  isRefundable?: boolean | null // TODO: not yet available from the API
+  refundTxHash?: string | null
+}
+
+type OnChainOrderData = {
+  sender: string
+  placementError?: string | null
 }
 
 export interface TradeMetaData {
@@ -264,7 +279,9 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
 
   if (!response.ok) {
     // Raise an exception
-    const errorMessage = await OperatorError.getErrorFromStatusCode(response, 'delete')
+    const errorObject: ApiErrorObject = await response.json()
+    const errorMessage = OperatorError.getErrorFromStatusCode(response.status, errorObject, 'delete')
+
     throw new Error(errorMessage)
   }
 
@@ -311,10 +328,9 @@ async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedO
     // Handle response
     if (!response.ok) {
       // Raise an exception
-      const [errorObject, description] = await Promise.all<[Promise<ApiErrorObject>, Promise<string>]>([
-        response.json(),
-        OperatorError.getErrorFromStatusCode(response, 'create'),
-      ])
+      const errorObject: ApiErrorObject = await response.json()
+      const description = OperatorError.getErrorFromStatusCode(response.status, errorObject, 'create')
+
       // create the OperatorError from the constructed error message and the original error
       const error = new OperatorError(Object.assign({}, errorObject, { description }))
 
@@ -367,8 +383,15 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
   }
 }
 
+// ETH-FLOW orders require different quote params
+// check the isEthFlow flag and set in quote req obj
+const ETH_FLOW_AUX_QUOTE_PARAMS = {
+  signingScheme: 'eip1271',
+  onchainOrder: true,
+}
+
 function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
-  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality } = params
+  const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality, isEthFlow } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
   const baseParams = {
@@ -383,25 +406,30 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
     priceQuality,
   }
 
-  const finalParams: QuoteQuery =
-    kind === OrderKind.SELL
-      ? {
-          kind: OrderKind.SELL,
-          sellAmountBeforeFee: amount,
-          ...baseParams,
-        }
-      : {
-          kind: OrderKind.BUY,
-          buyAmountAfterFee: amount,
-          ...baseParams,
-        }
+  if (isEthFlow) {
+    console.debug('[API:CowSwap] ETH FLOW ORDER, setting onchainOrder: true, and signingScheme: eip1271')
+  }
 
-  return finalParams
+  if (kind === OrderKind.SELL) {
+    return {
+      ...baseParams,
+      ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),
+      kind: OrderKind.SELL,
+      sellAmountBeforeFee: amount,
+    }
+  } else {
+    return {
+      kind: OrderKind.BUY,
+      buyAmountAfterFee: amount,
+      ...baseParams,
+    }
+  }
 }
 
 export async function getQuote(params: FeeQuoteParams) {
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
+
   const response = await _post(chainId, '/quote', quoteParams)
 
   return _handleQuoteResponse<SimpleGetQuoteResponse>(response, params)
@@ -427,11 +455,12 @@ export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<Pri
     ...params,
     buyToken: baseToken,
     sellToken: quoteToken,
+    isEthFlow: false,
   })
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
-  console.log(`[api:${API_NAME}] Get order for `, chainId, orderId)
+  console.debug(`[api:${API_NAME}] Get order for `, chainId, orderId)
   try {
     const response = await _get(chainId, `/orders/${orderId}`)
 
@@ -439,7 +468,9 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
       const errorResponse: ApiErrorObject = await response.json()
       throw new OperatorError(errorResponse)
     } else {
-      return response.json()
+      const order = await response.json()
+
+      return transformEthFlowOrder(order)
     }
   } catch (error) {
     console.error('Error getting order information:', error)
@@ -448,7 +479,7 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
 }
 
 export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<OrderMetaData[]> {
-  console.log(`[api:${API_NAME}] Get orders for `, chainId, owner, limit, offset)
+  console.debug(`[api:${API_NAME}] Get orders for `, chainId, owner, limit, offset)
 
   const queryString = stringify({ limit, offset }, { addQueryPrefix: true })
 
@@ -459,7 +490,9 @@ export async function getOrders(chainId: ChainId, owner: string, limit = 1000, o
       const errorResponse: ApiErrorObject = await response.json()
       throw new OperatorError(errorResponse)
     } else {
-      return response.json()
+      const orders = await response.json()
+
+      return orders.map(transformEthFlowOrder)
     }
   } catch (error) {
     console.error('Error getting orders information:', error)
@@ -543,36 +576,42 @@ export interface GChainFeeEndpointResponse {
   fast: number
   slow: number
 }
-// Values are returned as floats in gwei
-const ONE_GWEI = 1_000_000_000
 
-export interface GasFeeEndpointResponse {
-  lastUpdate: string
-  lowest: string
-  safeLow?: string
-  standard: string
-  fast: string
-  fastest?: string
+export interface NativePrice {
+  price: number
 }
 
-export async function getGasPrices(chainId: ChainId = DEFAULT_NETWORK_FOR_LISTS): Promise<GasFeeEndpointResponse> {
-  const response = await fetch(GAS_FEE_ENDPOINTS[chainId])
-  const json = await response.json()
+export async function getNativePrice(chainId: ChainId, address: string): Promise<NativePrice | null> {
+  console.log(`[api:${API_NAME}] Get native price for`, chainId, address)
 
-  if (chainId === ChainId.GNOSIS_CHAIN) {
-    // Different endpoint for GChain with a different format. Need to transform it
-    return _transformGChainGasPrices(json)
+  try {
+    const response = await _get(chainId, `/token/${address}/native_price`)
+
+    if (!response.ok) {
+      const errorResponse = await response.json()
+      throw new Error(errorResponse)
+    } else {
+      return response.json()
+    }
+  } catch (error) {
+    console.error('Error getting native price:', error)
+    throw new Error('Error getting native price: ' + error)
   }
-  return json
 }
 
-function _transformGChainGasPrices({ slow, average, fast }: GChainFeeEndpointResponse): GasFeeEndpointResponse {
-  return {
-    lastUpdate: new Date().toISOString(),
-    lowest: Math.floor(slow * ONE_GWEI).toString(),
-    standard: Math.floor(average * ONE_GWEI).toString(),
-    fast: Math.floor(fast * ONE_GWEI).toString(),
+// TODO: won't be necessary once SDK is integrated
+function transformEthFlowOrder(order: OrderMetaData): OrderMetaData {
+  const { ethflowData } = order
+
+  if (!ethflowData) {
+    return order
   }
+
+  const { userValidTo: validTo } = ethflowData
+  const owner = order.onchainOrderData?.sender || order.owner
+  const sellToken = BUY_ETH_ADDRESS
+
+  return { ...order, validTo, owner, sellToken }
 }
 
 // Register some globals for convenience
@@ -584,5 +623,6 @@ registerOnWindow({
     sendSignedOrder: sendOrder,
     apiGet: _get,
     apiPost: _post,
+    getNativePrice,
   },
 })

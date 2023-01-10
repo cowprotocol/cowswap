@@ -1,9 +1,8 @@
 // ENUM with routes
 export enum Routes {
   HOME = '/',
-  SWAP = '/swap',
-  SWAP_OUTPUT_CURRENCY = '/swap/:outputCurrency',
-  LIMIT_ORDER = '/limit-order',
+  SWAP = '/:chainId?/swap/:inputCurrencyId?/:outputCurrencyId?',
+  LIMIT_ORDER = '/:chainId?/limit-orders/:inputCurrencyId?/:outputCurrencyId?',
   SEND = '/send',
   ACCOUNT = '/account',
   ACCOUNT_TOKENS = '/account/tokens',
@@ -19,6 +18,8 @@ export enum Routes {
   FAQ_TOKEN = '/faq/token',
   FAQ_TRADING = '/faq/trading',
   FAQ_AFFILIATE = '/faq/affiliate',
+  FAQ_LIMIT_ORDERS = '/faq/limit-order',
+  FAQ_ETH_FLOW = '/faq/sell-native',
   PLAY_COWRUNNER = '/play/cow-runner',
   PLAY_MEVSLICER = '/play/mev-slicer',
   PLAY_SUPER_COW_BRO = '/play/super-cow-bro',

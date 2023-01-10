@@ -1,4 +1,4 @@
-import { ButtonPrimary } from 'components/Button/ButtonMod'
+import { ButtonPrimary } from 'custom/components/Button'
 import { Page, Content } from '@cow/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 
@@ -65,11 +65,10 @@ export default function MevSlicer() {
       <p>
         <img src={ninjaCowImg} alt="Ninja Cow" />
       </p>
-      <p>
-        <ButtonPrimary padding="8px" $borderRadius="8px" onClick={openGame}>
-          Play MEV Slicer
-        </ButtonPrimary>
-      </p>
+
+      <ButtonPrimary padding="8px" $borderRadius="8px" onClick={openGame}>
+        Play MEV Slicer
+      </ButtonPrimary>
 
       <Content></Content>
     </Wrapper>

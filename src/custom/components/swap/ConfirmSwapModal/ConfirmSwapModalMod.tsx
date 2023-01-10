@@ -17,6 +17,7 @@ import SwapModalHeader from 'components/swap/SwapModalHeader'
 import TradeGp from 'state/swap/TradeGp'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { SwapConfirmState } from '@cow/modules/swap/state/swapConfirmAtom'
+import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -51,6 +52,7 @@ export default function ConfirmSwapModal({
   recipient,
   priceImpact,
   PendingTextComponent,
+  rateInfoParams,
 }: {
   swapConfirmState: SwapConfirmState
   trade: TradeGp | undefined
@@ -61,6 +63,7 @@ export default function ConfirmSwapModal({
   onConfirm: () => void
   onDismiss: () => void
   PendingTextComponent: (props: { trade: TradeGp | undefined }) => JSX.Element // mod
+  rateInfoParams: RateInfoParams // mod
 }) {
   const { swapErrorMessage, showConfirm, attemptingTxn, txHash, tradeToConfirm: originalTrade } = swapConfirmState
   const { allowsOffchainSigning } = useWalletInfo()
@@ -73,6 +76,7 @@ export default function ConfirmSwapModal({
     return trade ? (
       <SwapModalHeader
         trade={trade}
+        rateInfoParams={rateInfoParams}
         allowsOffchainSigning={allowsOffchainSigning}
         allowedSlippage={allowedSlippage}
         priceImpact={priceImpact}
@@ -81,7 +85,16 @@ export default function ConfirmSwapModal({
         onAcceptChanges={onAcceptChanges}
       />
     ) : null
-  }, [trade, allowsOffchainSigning, allowedSlippage, priceImpact, recipient, showAcceptChanges, onAcceptChanges])
+  }, [
+    trade,
+    allowsOffchainSigning,
+    allowedSlippage,
+    priceImpact,
+    recipient,
+    showAcceptChanges,
+    onAcceptChanges,
+    rateInfoParams,
+  ])
 
   const modalBottom = useCallback(() => {
     return trade ? (

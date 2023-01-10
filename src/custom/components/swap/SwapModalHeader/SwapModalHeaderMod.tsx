@@ -31,24 +31,39 @@ import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { WarningProps } from 'components/SwapWarnings'
-import { Price } from '@cow/modules/swap/pure/Price'
+import { RateInfo, RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export const ArrowWrapper = styled.div`
-  padding: 4px;
-  border-radius: 12px;
-  height: 32px;
-  width: 32px;
+  --size: 26px;
+  padding: 0;
+  height: var(--size);
+  width: var(--size);
   position: relative;
-  margin-top: -18px;
-  margin-bottom: -18px;
-  left: calc(50% - 16px);
+  margin: -13px 0;
+  left: calc(50% - var(--size) / 2);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.bg1};
-  border: 2px solid;
-  border-color: ${({ theme }) => theme.bg0};
   z-index: 2;
+  border-radius: 8px;
+  border: ${({ theme }) => `2px solid ${theme.grey1}`};
+  box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => (theme.darkMode ? theme.grey1 : theme.white)};
+
+  > svg {
+    stroke-width: 2px;
+    padding: 1px;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+  }
+`
+
+const StyledRateInfo = styled(RateInfo)`
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 auto;
+  /* width: 90%; */
 `
 
 // MOD
@@ -62,8 +77,9 @@ export interface SwapModalHeaderProps {
   onAcceptChanges: () => void
   LightCard: LightCardType
   HighFeeWarning: React.FC<WarningProps>
-  NoImpactWarning: React.FC<WarningProps>
+  NoImpactWarning: React.ReactNode
   allowsOffchainSigning: boolean
+  rateInfoParams: RateInfoParams
 }
 
 export default function SwapModalHeader({
@@ -78,6 +94,7 @@ export default function SwapModalHeader({
   HighFeeWarning,
   NoImpactWarning,
   allowsOffchainSigning,
+  rateInfoParams,
 }: /*
 {
   trade: InterfaceTrade<Currency, Currency, TradeType>
@@ -117,7 +134,10 @@ SwapModalHeaderProps) {
   const fullOutputWithoutFee = formatMax(trade?.outputAmountWithoutFee, trade?.outputAmount.currency.decimals) || '-'
 
   return (
-    <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
+    <AutoColumn
+      gap={'4px'}
+      // style={{ marginTop: '1rem' }}
+    >
       <LightCard flatBorder={!!exactInLabel} padding="0.75rem 1rem">
         <AutoColumn gap={'8px'}>
           <RowBetween>
@@ -137,7 +157,6 @@ SwapModalHeaderProps) {
               <TruncatedText
                 fontSize={24}
                 fontWeight={500}
-                color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.primary1 : ''}
                 title={`${fullInputWithoutFee} ${trade.inputAmount.currency.symbol || ''}`}
               >
                 {formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
@@ -156,7 +175,11 @@ SwapModalHeaderProps) {
         </AutoColumn>
       </LightCard>
       {!!exactInLabel && (
-        <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
+        <AuxInformationContainer
+          margin="-4px auto 4px"
+          hideInput
+          // borderColor={transparentize(0.5, theme.bg0)}
+        >
           <FeeInformationTooltip
             amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
@@ -234,19 +257,22 @@ SwapModalHeaderProps) {
           />
         </AuxInformationContainer>
       )}
-      <Price trade={trade} width="90%" margin="auto" />
+      <StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />
       {/*<RowBetween style={{ marginTop: '0.25rem', padding: '0 1rem' }}>
         <TradePrice price={trade.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
       </RowBetween>*/}
-      <LightCard style={{ padding: '.75rem', marginTop: '0.5rem' }}>
-        <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
-      </LightCard>
+      {/* <LightCard style={{ padding: '.75rem', marginTop: '0.5rem' }}> */}
+      <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} />
+      {/* </LightCard> */}
       {showAcceptChanges ? (
         <SwapShowAcceptChanges justify="flex-start" gap={'0px'}>
           <RowBetween>
             <RowFixed>
               <AlertTriangle size={20} style={{ marginRight: '8px', minWidth: 24 }} />
-              <ThemedText.Main color={theme.primary1}>
+              <ThemedText.Main
+                // color={theme.primary1}
+                color={theme.text1} // MOD
+              >
                 <Trans>Price Updated</Trans>
               </ThemedText.Main>
             </RowFixed>
@@ -259,8 +285,14 @@ SwapModalHeaderProps) {
           </RowBetween>
         </SwapShowAcceptChanges>
       ) : null}
-
-      <AutoColumn justify="flex-start" gap="sm" style={{ padding: '.75rem 1rem' }}>
+      <AutoColumn
+        justify="flex-start"
+        gap="sm"
+        style={{
+          // padding: '.75rem 1rem'
+          padding: '24px 10px 16px', // MOD
+        }}
+      >
         {trade.tradeType === TradeType.EXACT_INPUT ? (
           <ThemedText.Italic fontWeight={400} textAlign="left" style={{ width: '100%' }}>
             <Trans>
@@ -299,7 +331,7 @@ SwapModalHeaderProps) {
       {/* High Fee Warning */}
       <HighFeeWarning trade={trade} />
       {/* No Impact Warning */}
-      {!priceImpact && <NoImpactWarning margin="0" />}
+      {!priceImpact && NoImpactWarning}
     </AutoColumn>
   )
 }

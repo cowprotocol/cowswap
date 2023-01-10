@@ -12,22 +12,24 @@ export function CompatibilityIssuesWarning(props: CompatibilityIssuesWarningProp
   const { currencyIn, currencyOut, isSupportedWallet } = props
   const currenciesPair = [currencyIn, currencyOut]
 
-  return !isSupportedWallet ? (
-    <UnsupportedCurrencyFooter
-      show={true}
-      currencies={currenciesPair}
-      showDetailsText="Read more about unsupported wallets"
-      detailsText={
-        <>
-          <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
-          <p>
-            Read more in the <HashLink to="/faq/protocol#wallet-not-supported">FAQ</HashLink>.
-          </p>
-        </>
-      }
-      detailsTitle="This wallet is not yet supported"
-    />
-  ) : (
-    <UnsupportedCurrencyFooter show={true} currencies={currenciesPair} />
-  )
+  if (!isSupportedWallet) {
+    return (
+      <UnsupportedCurrencyFooter
+        show={true}
+        currencies={currenciesPair}
+        showDetailsText="Read more about unsupported wallets"
+        detailsText={
+          <>
+            <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
+            <p>
+              Read more in the <HashLink to="/faq/protocol#wallet-not-supported">FAQ</HashLink>.
+            </p>
+          </>
+        }
+        detailsTitle="This wallet is not yet supported"
+      />
+    )
+  }
+
+  return <UnsupportedCurrencyFooter show={true} currencies={currenciesPair} />
 }

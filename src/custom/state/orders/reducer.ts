@@ -4,20 +4,21 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import {
   addOrUpdateOrders,
   addPendingOrder,
-  cancelOrder,
   cancelOrdersBatch,
   clearOrders,
-  expireOrder,
   expireOrdersBatch,
-  fulfillOrder,
   fulfillOrdersBatch,
+  invalidateOrdersBatch,
+  OrderInfoApi,
   OrderStatus,
   preSignOrders,
-  removeOrder,
   requestOrderCancellation,
   SerializedOrder,
+  setIsOrderRefundedBatch,
   setIsOrderUnfillable,
+  setOrderCancellationHash,
   updateLastCheckedBlock,
+  updateOrder,
   updatePresignGnosisSafeTx,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
@@ -47,6 +48,8 @@ export type OrderLists = {
   fulfilled: PartialOrdersMap
   expired: PartialOrdersMap
   cancelled: PartialOrdersMap
+  creating: PartialOrdersMap
+  failed: PartialOrdersMap
 }
 
 export interface OrdersStateNetwork extends OrderLists {
@@ -61,14 +64,27 @@ export interface PrefillStateRequired {
   chainId: ChainId
 }
 
-export type OrderTypeKeys = 'pending' | 'presignaturePending' | 'expired' | 'fulfilled' | 'cancelled'
-export const ORDER_LIST_KEYS: OrderTypeKeys[] = ['pending', 'presignaturePending', 'expired', 'fulfilled', 'cancelled']
+export type EthFlowOrderTypes = 'creating' | 'failed'
+export type PreSignOrderTypes = 'presignaturePending'
+export type OrderTypeKeys = 'pending' | PreSignOrderTypes | 'expired' | 'fulfilled' | 'cancelled' | EthFlowOrderTypes
+
+export const ORDER_LIST_KEYS: OrderTypeKeys[] = [
+  'pending',
+  'presignaturePending',
+  'expired',
+  'fulfilled',
+  'cancelled',
+  'creating',
+  'failed',
+]
 export const ORDERS_LIST: OrderLists = {
   pending: {},
   presignaturePending: {},
   fulfilled: {},
   expired: {},
   cancelled: {},
+  creating: {},
+  failed: {},
 }
 
 function getDefaultLastCheckedBlock(chainId: ChainId): number {
@@ -112,8 +128,10 @@ function getOrderById(state: Required<OrdersState>, chainId: ChainId, id: string
     stateForChain.pending[id] ||
     stateForChain.presignaturePending[id] ||
     stateForChain.cancelled[id] ||
+    stateForChain.expired[id] ||
     stateForChain.fulfilled[id] ||
-    stateForChain.expired[id]
+    stateForChain.creating[id] ||
+    stateForChain.failed[id]
   )
 }
 
@@ -124,6 +142,8 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.presignaturePending[id]
   delete stateForChain.expired[id]
   delete stateForChain.cancelled[id]
+  delete stateForChain.creating[id]
+  delete stateForChain.failed[id]
 }
 
 function addOrderToState(
@@ -149,6 +169,12 @@ function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id:
   return orderObj
 }
 
+const STATES_FOR_ORDERS_NOT_YET_OPEN = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+
+function getValidTo(apiAdditionalInfo: OrderInfoApi | undefined, order: SerializedOrder): number {
+  return (apiAdditionalInfo?.ethflowData?.userValidTo || order.validTo) as number
+}
+
 const initialState: OrdersState = {}
 
 export default createReducer(initialState, (builder) =>
@@ -157,10 +183,18 @@ export default createReducer(initialState, (builder) =>
       prefillState(state, action)
       const { order, id, chainId } = action.payload
 
-      const orderStateList = order.status === OrderStatus.PRESIGNATURE_PENDING ? 'presignaturePending' : 'pending'
-      order.openSince = order.status === OrderStatus.PRESIGNATURE_PENDING ? undefined : Date.now()
+      order.openSince = STATES_FOR_ORDERS_NOT_YET_OPEN.includes(order.status) ? undefined : Date.now()
 
-      addOrderToState(state, chainId, id, orderStateList, order)
+      switch (order.status) {
+        // EthFlow or PreSign orders have their respective buckets
+        case OrderStatus.CREATING: // ethflow orders
+        case OrderStatus.PRESIGNATURE_PENDING: // pre-sign orders
+          addOrderToState(state, chainId, id, order.status, order)
+          break
+        default:
+          // Regular orders go into the pending bucket
+          addOrderToState(state, chainId, id, 'pending', order)
+      }
     })
     .addCase(preSignOrders, (state, action) => {
       prefillState(state, action)
@@ -181,6 +215,7 @@ export default createReducer(initialState, (builder) =>
         }
       })
     })
+    // TODO: addCase for ethflow from open -> refunded
     .addCase(updatePresignGnosisSafeTx, (state, action) => {
       prefillState(state, action)
       const { orderId, chainId, safeTransaction } = action.payload
@@ -189,11 +224,6 @@ export default createReducer(initialState, (builder) =>
       if (orderObject) {
         orderObject.order.presignGnosisSafeTx = safeTransaction
       }
-    })
-    .addCase(removeOrder, (state, action) => {
-      prefillState(state, action)
-      const { id, chainId } = action.payload
-      deleteOrderById(state, chainId, id)
     })
     .addCase(addOrUpdateOrders, (state, action) => {
       prefillState(state, action)
@@ -214,37 +244,37 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.EXPIRED, id) ||
           popOrder(state, chainId, OrderStatus.CANCELLED, id) ||
           popOrder(state, chainId, OrderStatus.PENDING, id) ||
-          popOrder(state, chainId, OrderStatus.PRESIGNATURE_PENDING, id)
+          popOrder(state, chainId, OrderStatus.PRESIGNATURE_PENDING, id) ||
+          popOrder(state, chainId, OrderStatus.CREATING, id) ||
+          popOrder(state, chainId, OrderStatus.FAILED, id)
 
+        const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
         // merge existing and new order objects
         const order = orderObj
           ? {
               ...orderObj.order,
+              validTo,
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
               isCancelling: newOrder.isCancelling,
+              class: newOrder.class,
+              openSince: newOrder.openSince || orderObj.order.openSince,
               status,
             }
-          : newOrder
+          : { ...newOrder, validTo }
 
         // add order to respective state
         addOrderToState(state, chainId, id, status, order)
       })
     })
-    .addCase(fulfillOrder, (state, action) => {
+    .addCase(updateOrder, (state, action) => {
       prefillState(state, action)
-      const { id, chainId, fulfillmentTime, transactionHash } = action.payload
-      const orderObject = getOrderById(state, chainId, id)
 
-      if (orderObject) {
-        deleteOrderById(state, chainId, id)
+      const { chainId, order } = action.payload
 
-        orderObject.order.status = OrderStatus.FULFILLED
-        orderObject.order.fulfillmentTime = fulfillmentTime
+      const orderObj = getOrderById(state, chainId, order.id)
 
-        orderObject.order.fulfilledTransactionHash = transactionHash
-        orderObject.order.isCancelling = false
-
-        addOrderToState(state, chainId, id, 'fulfilled', orderObject.order)
+      if (orderObj) {
+        orderObj.order = { ...orderObj.order, ...order }
       }
     })
     .addCase(fulfillOrdersBatch, (state, action) => {
@@ -264,27 +294,14 @@ export default createReducer(initialState, (builder) =>
 
           orderObject.order.fulfilledTransactionHash = transactionHash
           orderObject.order.isCancelling = false
+          // EthFlow orders validTo is different
+          orderObject.order.validTo = getValidTo(apiAdditionalInfo, orderObject.order)
 
           orderObject.order.apiAdditionalInfo = apiAdditionalInfo
 
           addOrderToState(state, chainId, id, 'fulfilled', orderObject.order)
         }
       })
-    })
-    .addCase(expireOrder, (state, action) => {
-      prefillState(state, action)
-      const { id, chainId } = action.payload
-
-      const orderObject = getOrderById(state, chainId, id)
-
-      if (orderObject) {
-        deleteOrderById(state, chainId, id)
-
-        orderObject.order.status = OrderStatus.EXPIRED
-        orderObject.order.isCancelling = false
-
-        addOrderToState(state, chainId, id, 'expired', orderObject.order)
-      }
     })
     .addCase(expireOrdersBatch, (state, action) => {
       prefillState(state, action)
@@ -305,6 +322,35 @@ export default createReducer(initialState, (builder) =>
         }
       })
     })
+    .addCase(invalidateOrdersBatch, (state, action) => {
+      prefillState(state, action)
+      const { ids, chainId } = action.payload
+
+      // if there are any newly fulfilled orders
+      // update them
+      ids.forEach((id) => {
+        const orderObject = getOrderById(state, chainId, id)
+
+        if (orderObject) {
+          deleteOrderById(state, chainId, id)
+
+          orderObject.order.status = OrderStatus.FAILED
+          orderObject.order.isCancelling = false
+
+          addOrderToState(state, chainId, id, 'failed', orderObject.order)
+        }
+      })
+    })
+    .addCase(setOrderCancellationHash, (state, action) => {
+      prefillState(state, action)
+      const { id, chainId, hash } = action.payload
+
+      const orderObject = getOrderById(state, chainId, id)
+
+      if (orderObject) {
+        orderObject.order.cancellationHash = hash
+      }
+    })
     .addCase(requestOrderCancellation, (state, action) => {
       prefillState(state, action)
       const { id, chainId } = action.payload
@@ -313,21 +359,6 @@ export default createReducer(initialState, (builder) =>
 
       if (orderObject) {
         orderObject.order.isCancelling = true
-      }
-    })
-    .addCase(cancelOrder, (state, action) => {
-      prefillState(state, action)
-      const { id, chainId } = action.payload
-
-      const orderObject = getOrderById(state, chainId, id)
-
-      if (orderObject) {
-        deleteOrderById(state, chainId, id)
-
-        orderObject.order.status = OrderStatus.CANCELLED
-        orderObject.order.isCancelling = false
-
-        addOrderToState(state, chainId, id, 'cancelled', orderObject.order)
       }
     })
     .addCase(cancelOrdersBatch, (state, action) => {
@@ -372,5 +403,19 @@ export default createReducer(initialState, (builder) =>
       if (orderObject?.order) {
         orderObject.order.isUnfillable = isUnfillable
       }
+    })
+    .addCase(setIsOrderRefundedBatch, (state, action) => {
+      prefillState(state, action)
+
+      const { chainId, items } = action.payload
+
+      items.forEach(({ id, refundHash }) => {
+        const orderObject = getOrderById(state, chainId, id)
+
+        if (orderObject) {
+          orderObject.order.isRefunded = true
+          orderObject.order.refundHash = refundHash
+        }
+      })
     })
 )

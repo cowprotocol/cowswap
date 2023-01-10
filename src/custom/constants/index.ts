@@ -1,5 +1,6 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
-
+import { CoWSwapEthFlow as EthFlowBarn } from '@cowprotocol/ethflowcontract/networks.barn.json'
+import { CoWSwapEthFlow as EthFlowProd } from '@cowprotocol/ethflowcontract/networks.prod.json'
 import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -30,6 +31,8 @@ export const PERCENTAGE_PRECISION = 2
 export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
+export const AVG_APPROVE_COST_GWEI = '50000'
+
 export const APP_DATA_HASH = getAppDataHash()
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
@@ -42,16 +45,29 @@ export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 // Smart contract wallets are filtered out by default, no need to add them to this list
 export const UNSUPPORTED_WC_WALLETS = new Set(['DeFi Wallet', 'WallETH'])
 
+type Env = 'barn' | 'prod'
+
+export const COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, Partial<Record<number, string>>> = {
+  prod: {
+    [ChainId.MAINNET]: EthFlowProd[ChainId.MAINNET].address,
+    [ChainId.GNOSIS_CHAIN]: EthFlowProd[ChainId.GNOSIS_CHAIN].address,
+    [ChainId.GOERLI]: EthFlowProd[ChainId.GOERLI].address,
+  },
+  barn: {
+    [ChainId.MAINNET]: EthFlowBarn[ChainId.MAINNET].address,
+    [ChainId.GNOSIS_CHAIN]: EthFlowBarn[ChainId.GNOSIS_CHAIN].address,
+    [ChainId.GOERLI]: EthFlowBarn[ChainId.GOERLI].address,
+  },
+}
+
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2Settlement[ChainId.MAINNET].address,
-  [ChainId.RINKEBY]: GPv2Settlement[ChainId.RINKEBY].address,
   [ChainId.GNOSIS_CHAIN]: GPv2Settlement[ChainId.GNOSIS_CHAIN].address,
   [ChainId.GOERLI]: GPv2Settlement[ChainId.GOERLI].address,
 }
 
 export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: GPv2VaultRelayer[ChainId.MAINNET].address,
-  [ChainId.RINKEBY]: GPv2VaultRelayer[ChainId.RINKEBY].address,
   [ChainId.GNOSIS_CHAIN]: GPv2VaultRelayer[ChainId.GNOSIS_CHAIN].address,
   [ChainId.GOERLI]: GPv2VaultRelayer[ChainId.GOERLI].address,
 }
@@ -59,22 +75,19 @@ export const GP_VAULT_RELAYER: Partial<Record<number, string>> = {
 export const V_COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
   [ChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
-  [ChainId.RINKEBY]: '0x9386177e95A853070076Df2403b9D547D653126D',
-  [ChainId.GOERLI]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
+  [ChainId.GOERLI]: '0x7B878668Cd1a3adF89764D3a331E0A7BB832192D',
 }
 
 export const COW_CONTRACT_ADDRESS: Record<number, string> = {
   [ChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [ChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
-  [ChainId.RINKEBY]: '0xbdf1e19f8c78A77fb741b44EbA5e4c0C8DBAeF91',
-  [ChainId.GOERLI]: '0x3430d04E42a722c5Ae52C5Bffbf1F230C2677600',
+  [ChainId.GOERLI]: '0x91056D4A53E1faa1A84306D4deAEc71085394bC8',
 }
 
 // See https://github.com/cowprotocol/contracts/commit/821b5a8da213297b0f7f1d8b17c893c5627020af#diff-12bbbe13cd5cf42d639e34a39d8795021ba40d3ee1e1a8282df652eb161a11d6R13
 export const NATIVE_CURRENCY_BUY_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token } = {
   [ChainId.MAINNET]: new Token(ChainId.MAINNET, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.RINKEBY]: new Token(ChainId.RINKEBY, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   // [ChainId.ROPSTEN]: new Token(ChainId.ROPSTEN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   [ChainId.GOERLI]: new Token(ChainId.GOERLI, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
   // [ChainId.KOVAN]: new Token(ChainId.KOVAN, NATIVE_CURRENCY_BUY_ADDRESS, 18, 'ETH', 'Ether'),
@@ -83,12 +96,17 @@ export const NATIVE_CURRENCY_BUY_TOKEN: { [chainId in ChainId | number]: Token }
 
 export const ORDER_ID_SHORT_LENGTH = 8
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
-export const DEFAULT_ORDER_DELAY = 20000 // 20s
-export const PENDING_ORDERS_BUFFER = 60 * 1000 // 60s
-export const CANCELLED_ORDERS_PENDING_TIME = 5 * 60 * 1000 // 5min
-export const PRICE_API_TIMEOUT_MS = 10000 // 10s
-export const GP_ORDER_UPDATE_INTERVAL = 30 * 1000 // 30s
+export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
+export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
+export const EXPIRED_ORDERS_PENDING_TIME = ms`15min` // 15min
+export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
+export const GP_ORDER_UPDATE_INTERVAL = ms`30s` // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
+// Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
+export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
+export const MINIMUM_ETH_FLOW_SLIPPAGE_BIPS = 200 // 2%
+export const MINIMUM_ETH_FLOW_SLIPPAGE = new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BIPS, 10_000) // 2%
+export const HIGH_ETH_FLOW_SLIPPAGE_BIPS = 1_000 // 10%
 
 export const WETH_LOGO_URI =
   'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
@@ -113,17 +131,16 @@ export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-ro
 export const MEV_TOTAL = '606 Million'
 export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
-// 30 minutes
-export const GAS_PRICE_UPDATE_THRESHOLD = 30 * 60 * 1000
+export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
 export const GAS_FEE_ENDPOINTS = {
-  [ChainId.MAINNET]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
-  // No ropsten = main
-  // [ChainId.ROPSTEN]: 'https://safe-relay.gnosis.io/api/v1/gas-station/',
-  [ChainId.RINKEBY]: 'https://safe-relay.rinkeby.gnosis.io/api/v1/gas-station/',
-  [ChainId.GOERLI]: 'https://safe-relay.goerli.gnosis.io/api/v1/gas-station/',
-  // no kovan = main
-  // [ChainId.KOVAN]: 'https://safe-relay.kovan.gnosis.io/api/v1/gas-station/',
+  [ChainId.MAINNET]: 'https://api.blocknative.com/gasprices/blockprices',
   [ChainId.GNOSIS_CHAIN]: 'https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle',
+  [ChainId.GOERLI]: '',
+}
+export const GAS_API_KEYS = {
+  [ChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY,
+  [ChainId.GNOSIS_CHAIN]: '',
+  [ChainId.GOERLI]: '',
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = '/faq/trading#what-token-pairs-does-cowswap-allow-to-trade'
@@ -169,7 +186,6 @@ const COW_SDK_OPTIONS = {
 
 export const COW_SDK: Record<ChainId, CowSdk<ChainId>> = {
   [ChainId.MAINNET]: new CowSdk(ChainId.MAINNET, COW_SDK_OPTIONS),
-  [ChainId.RINKEBY]: new CowSdk(ChainId.RINKEBY, COW_SDK_OPTIONS),
   [ChainId.GOERLI]: new CowSdk(ChainId.GOERLI, COW_SDK_OPTIONS),
   [ChainId.GNOSIS_CHAIN]: new CowSdk(ChainId.GNOSIS_CHAIN, COW_SDK_OPTIONS),
 }
@@ -188,4 +204,6 @@ export const FAQ_MENU_LINKS = [
   { title: 'Token', url: '/faq/token' },
   { title: 'Trading', url: '/faq/trading' },
   { title: 'Affiliate', url: '/faq/affiliate' },
+  { title: 'Limit orders', url: '/faq/limit-order' },
+  { title: 'Selling Native tokens', url: '/faq/sell-native' },
 ]

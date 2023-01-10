@@ -1,9 +1,13 @@
 import styled from 'styled-components/macro'
-import { ButtonPrimary } from '../Button'
 import FeedbackIcon from './../../assets/cow-swap/feedback.svg'
 import { isAppziEnabled, openFeedbackAppzi } from 'utils/appzi'
+import SVG from 'react-inlinesvg'
+import { transparentize } from 'polished'
 
-const Wrapper = styled(ButtonPrimary)`
+const Wrapper = styled.div`
+  background: ${({ theme }) => transparentize(0.3, theme.bg2)};
+  backdrop-filter: blur(5px);
+  border: 0;
   border-radius: 46px;
   font-size: 100%;
   height: 46px;
@@ -12,56 +16,52 @@ const Wrapper = styled(ButtonPrimary)`
   margin: 0;
   z-index: 0;
   position: fixed;
-  bottom: 60px;
-  right: 16px;
+  bottom: 46px;
+  right: 21px;
   overflow: visible;
-  z-index: 2;
+  z-index: 10;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: background 0.5s ease-in-out, transform 0.5s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    background: ${({ theme }) => transparentize(0.1, theme.bg2)};
+  `};
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    object-fit: contain;
+    fill: ${({ theme }) => transparentize(0.2, theme.white)};
+    transform: rotate(0);
+    transition: fill 0.5s ease-in-out, transform 0.5s ease-in-out;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      fill: ${({ theme }) => theme.white};
+    `};
+  }
+
+  &:hover {
+    background: ${({ theme }) => transparentize(0.1, theme.bg2)};
+    transform: translateY(-3px);
+
+    > svg {
+      fill: ${({ theme }) => theme.white};
+      transform: rotate(-360deg);
+    }
+  }
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     left: 14px;
-    height: 42px;
-    width: 42px;
+    height: 38px;
+    width: 38px;
     bottom: 11px;
     right: initial;
     z-index: 10;
     box-shadow: none;
     border-width: 3px;
   `};
-
-  &::after {
-    content: 'Give feedback!';
-    display: block;
-    position: absolute;
-    top: 0;
-    color: ${({ theme }) => theme.black};
-    background: ${({ theme }) => theme.primary1};
-    padding: 9px;
-    font-size: 12px;
-    border-radius: 14px;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, top 0.2s ease-in-out;
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: none;
-    `}
-
-  &:hover::after {
-    top: -60px;
-    visibility: visible;
-    opacity: 1;
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      display: none;
-    `};
-  }
-
-  > img {
-    width: 100%;
-    height: 100%;
-    padding: 8px;
-    object-fit: contain;
-  }
 `
 
 export default function Appzi() {
@@ -71,7 +71,7 @@ export default function Appzi() {
 
   return (
     <Wrapper onClick={openFeedbackAppzi}>
-      <img src={FeedbackIcon} alt="Provide Feedback" />
+      <SVG src={FeedbackIcon} description="Provide Feedback" />
     </Wrapper>
   )
 }

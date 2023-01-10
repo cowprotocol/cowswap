@@ -20,7 +20,7 @@ export {
 const ETHERSCAN_URLS: { [chainId in ChainId]: string } = {
   1: 'etherscan.io',
   // 3: 'ropsten.etherscan.io',
-  4: 'rinkeby.etherscan.io',
+  // 4: 'rinkeby.etherscan.io',
   5: 'goerli.etherscan.io',
   // 42: 'kovan.etherscan.io',
   100: 'gnosisscan.io',

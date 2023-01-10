@@ -170,7 +170,7 @@ export default function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <WalletWrapper>
-              {getStatusIcon(connector, walletInfo)}
+              {getStatusIcon(connector, walletInfo, 24)}
 
               {(ENSName || account) && (
                 <Copy toCopy={ENSName ? ENSName : account ? account : ''}>

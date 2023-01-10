@@ -4,8 +4,7 @@ import { ButtonSize } from 'theme'
 
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { transparentize } from 'polished'
-import { cowSwapBackground, cowSwapLogo } from 'theme/cowSwapAssets'
+import { transparentize, lighten } from 'polished'
 
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
@@ -14,10 +13,6 @@ import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 // Modal override items
 import { HeaderText } from '@src/components/WalletModal/Option'
-import { AutoColumn } from 'components/Column'
-import { RowBetween } from 'components/Row'
-import { ModalContentWrapper } from 'components/Settings/SettingsMod'
-import { NPS_KEY } from 'utils/appzi'
 
 export { ThemedText } from '@src/theme'
 export * from '@src/theme/components'
@@ -26,20 +21,43 @@ export function colors(darkMode: boolean): Colors {
   return {
     ...colorsUniswap(darkMode),
 
-    // ****** base ******
-    white: darkMode ? '#c5daef' : '#ffffff',
-    black: darkMode ? '#021E34' : '#000000',
+    // CoW Swap V2 colors ======================
+    white: darkMode ? '#CAE9FF' : '#ffffff',
+    black: '#07162D',
+    blueDark1: '#07162D',
+    blueDark2: '#052B65',
+    blueLight1: '#CAE9FF',
+    grey1: darkMode ? '#07162D' : '#ECF1F8',
+
+    bg1: darkMode ? '#0c264b' : '#ffffff',
+    bg2: darkMode ? '#0d5ed9' : '#052B65',
+
+    text1: darkMode ? '#CAE9FF' : '#052B65',
+    text2: darkMode ? '#86B2DC' : '#506B93',
+    text3: darkMode ? '#428dff' : '#0d5ed9',
+
+    // States NEW
+    danger: darkMode ? '#EB3030' : '#D41300',
+    warning: darkMode ? '#ED6237' : '#D94719',
+    alert: darkMode ? '#DB971E' : '#DB971E',
+    success: darkMode ? '#00D897' : '#007B28',
+    pending: '#43758C', // deprecate
+    attention: '#ff5722', // deprecate
+
+    // DEPRECATED but keeping because of dependencies
+    bg3: darkMode ? '#07162D' : '#ECF1F8',
+    primary1: darkMode ? '#0d5ed9' : '#052B65',
+    primary3: darkMode ? '#0d5ed9' : '#052B65',
+    primary4: darkMode ? '#0d5ed9' : '#052B65',
+    primary5: darkMode ? '#0d5ed9' : '#052B65',
+    red1: darkMode ? '#EB3030' : '#D41300',
+    error: darkMode ? '#EB3030' : '#D41300',
+    // ==========================================
 
     // ****** text ******
-    text1: darkMode ? '#c5daef' : '#000000',
-    text2: darkMode ? '#021E34' : '#000000',
-    text3: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#000000',
     text4: darkMode ? 'rgba(197, 218, 239, 0.7)' : '#000000b8',
 
-    // ****** backgrounds / greys ******
-    bg1: darkMode ? '#163861' : '#D5E9F0',
-    bg2: darkMode ? '#c5daef' : '#ffffff',
-    bg3: darkMode ? '#163861' : '#d5e8f0',
+    // ****** backgrounds ******
     bg4: darkMode ? '#021E34' : '#ffffff',
     bg5: darkMode ? '#1d4373' : '#D5E9F0',
     bg6: darkMode ? '#163861' : '#b0dfee',
@@ -48,12 +66,6 @@ export function colors(darkMode: boolean): Colors {
 
     // ****** specialty colors ******
     advancedBG: darkMode ? '#163861' : '#d5e8f0',
-
-    // ****** primary colors ******
-    primary1: darkMode ? '#D67B5A' : '#FF784A',
-    primary3: darkMode ? '#D67B5A' : '#FF784A',
-    primary4: darkMode ? '#ff5d25' : '#ff5d25',
-    primary5: darkMode ? '#D67B5A' : '#FF784A',
 
     // ****** color text ******
     primaryText1: darkMode ? '#021E34' : '#000000',
@@ -67,17 +79,12 @@ export function colors(darkMode: boolean): Colors {
     blue2: darkMode ? '#a3beff' : '#0c40bf',
     purple: '#8958FF',
     yellow: '#fff6dc',
+    yellow1: darkMode ? '#ebd6a2' : '#ffc107',
     orange: '#FF784A',
     greenShade: '#376c57',
     blueShade: '#0f2644',
     blueShade2: '#011e34',
     blueShade3: darkMode ? '#1c416e' : '#bdd6e1',
-
-    // states
-    success: darkMode ? '#00d897' : '#00815a',
-    danger: darkMode ? '#f7a7a7' : '#8f0000',
-    pending: '#43758C',
-    attention: '#ff5722',
 
     // ****** other ******
     border: darkMode ? '#021E34' : '#000000',
@@ -90,8 +97,6 @@ export function colors(darkMode: boolean): Colors {
     disabled: darkMode ? 'rgba(197, 218, 239, 0.4)' : '#afcbda',
     redShade: darkMode ? '#842100' : '#AE2C00',
     textLink: darkMode ? '#ffffff' : '#AE2C00',
-    shimmer1: darkMode ? 'rgb(22 56 97 / 20%)' : 'rgb(175 203 218 / 20%)',
-    shimmer2: darkMode ? 'rgb(22 56 97 / 50%)' : 'rgb(175 203 218 / 40%)',
     scrollbarBg: darkMode ? '#01182a' : '#d5e8f0',
     scrollbarThumb: darkMode ? '#152c3e' : '#adc2ce',
 
@@ -102,32 +107,78 @@ export function colors(darkMode: boolean): Colors {
     // banner styles
     info: darkMode ? '#615845' : '#FFEDAF',
     infoText: darkMode ? '#ffca4a' : '#564D00',
-    warning: '#FFEDAF',
     warningText: '#564D00',
-    error: '#FFC7AF',
-    errorText: '#560000',
   }
 }
 
-export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean, colorsTheme: Colors) {
-  const background = cowSwapBackground(darkMode, shouldBlurBackground)
-
+export function themeVariables(darkMode: boolean, colorsTheme: Colors) {
   return {
     body: {
       background: css`
-        background: url(data:image/svg+xml;base64,${background}) no-repeat 100% / cover fixed,
-          ${darkMode
-            ? 'linear-gradient(180deg,rgba(20, 45, 78, 1) 10%, rgba(22, 58, 100, 1) 30%)'
-            : 'linear-gradient(180deg,rgba(164, 211, 227, 1) 5%, rgba(255, 255, 255, 1) 40%)'};
+        ${darkMode
+          ? `
+          background-color: ${colorsTheme.blueDark1};
+          background-image: radial-gradient(50% 500px at 50% -6%, hsl(216deg 100% 20% / 70%) 0%, #071832 50%, #06162d 100%),radial-gradient(circle at -70% 50%, hsla(215,100%,20%,0.7) 0, transparent 50%);`
+          : `background: linear-gradient(45deg, #EAE9FF 14.64%, ${colorsTheme.blueLight1} 85.36%)`};
         background-attachment: fixed;
-        scrollbar-color: ${colorsTheme.scrollbarThumb} ${colorsTheme.scrollbarBg};
       `,
     },
-    logo: {
-      src: `data:image/svg+xml;base64,${cowSwapLogo(darkMode)}`,
-      alt: 'CoW Swap Logo',
-      width: '137px',
-      height: '44px',
+    shimmer: css`
+      background-image: linear-gradient(
+        90deg,
+        transparent 0,
+        ${transparentize(0.7, colorsTheme.bg1)} 20%,
+        ${lighten(0.07, transparentize(0.6, colorsTheme.bg1))} 60%,
+        transparent
+      );
+      animation: shimmer 2s infinite;
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    `,
+    colorScrollbar: css`
+      // Firefox only
+      scrollbar-color: ${transparentize(0.5, colorsTheme.text2)} ${colorsTheme.grey1};
+      scroll-behavior: smooth;
+
+      // Webkit browsers only
+      &::-webkit-scrollbar {
+        background: ${transparentize(0.6, colorsTheme.grey1)};
+        width: 8px;
+        height: 8px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: ${transparentize(0.7, colorsTheme.text2)};
+        border: 3px solid ${transparentize(0.7, colorsTheme.text2)};
+        border-radius: 14px;
+        background-clip: padding-box;
+      }
+    `,
+    textShadow1: `
+      ${
+        darkMode
+          ? `0px 0px 26px ${transparentize(0.9, colorsTheme.text1)}, 0px 0px 28px ${transparentize(
+              0.8,
+              colorsTheme.text1
+            )}`
+          : 'none'
+      }
+    `,
+    boxShadow1: darkMode ? '0 24px 32px rgba(0, 0, 0, 0.06)' : '0 12px 12px rgba(5, 43, 101, 0.06)',
+    boxShadow2: '0 4px 12px 0 rgb(0 0 0 / 15%)',
+    boxShadow3: `0 4px 12px 0 ${transparentize(0.9, colorsTheme.text3)}`,
+    gradient1: `linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1})`,
+    input: {
+      bg1: darkMode ? '#07162D' : '#ECF1F8',
+    },
+    button: {
+      bg1: darkMode
+        ? 'linear-gradient(90deg, #0852C5 0%, #1970F8 100%), linear-gradient(0deg, #0852C5, #0852C5), #0F5BD0;'
+        : '#052B65',
+      text1: darkMode ? colorsTheme.text1 : '#FFFFFF',
     },
     util: {
       invertImageForDarkMode: darkMode ? 'filter: invert(1) grayscale(1);' : null,
@@ -151,14 +202,9 @@ export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean,
       }
     `,
     appBody: {
-      boxShadow: `4px 4px 0 ${colorsTheme.black}`,
-      boxShadowMobile: `0 4px 0 ${colorsTheme.black}`,
-      borderRadius: '16px',
-      border: `3px solid ${colorsTheme.black}`,
-      borderMobile: 'none',
-      padding: '12px 6px',
       maxWidth: {
-        normal: '460px',
+        swap: '470px',
+        limit: '1350px',
         content: '680px',
       },
     },
@@ -201,7 +247,7 @@ export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean,
     `,
     card: {
       background: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
+        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg1});
       `,
       background2: darkMode ? '#01182a' : colorsTheme.bg3,
       background3: css`
@@ -209,12 +255,12 @@ export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean,
       `,
       border: `${darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`,
       boxShadow: css`
-        background: linear-gradient(145deg, ${colorsTheme.bg3}, ${colorsTheme.bg4});
+        background: linear-gradient(145deg, ${colorsTheme.bg1}, ${colorsTheme.grey1});
         box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
       `,
     },
     iconGradientBorder: css`
-      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.primary1} 360grad);
+      background: conic-gradient(${colorsTheme.bg3} 40grad, 80grad, ${colorsTheme.bg2} 360grad);
     `,
     header: {
       border: 'none',
@@ -253,16 +299,6 @@ export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean,
         borderSize: `2px`,
       },
     },
-    buttonPrimary: {
-      background: css`
-        background: ${colorsTheme.primary1};
-        color: ${colorsTheme.black};
-      `,
-      fontWeight: '800',
-      border: `4px solid ${colorsTheme.black}`,
-      borderRadius: '16px',
-      boxShadow: `4px 4px 0px ${colorsTheme.black}`,
-    },
     buttonOutlined: {
       background: css`
         background: ${colorsTheme.bg1};
@@ -286,10 +322,10 @@ export function themeVariables(darkMode: boolean, shouldBlurBackground: boolean,
     },
     buttonCurrencySelect: {
       background: colorsTheme.bg1,
-      border: `2px solid ${colorsTheme.black}`,
-      boxShadow: `2px 2px 0px ${colorsTheme.black}`,
-      color: darkMode ? colorsTheme.text2 : colorsTheme.text1,
-      colorSelected: darkMode ? colorsTheme.white : colorsTheme.text1,
+      border: `0`,
+      boxShadow: `0px 4px 8px rgba(0, 0, 0, 0.06);`,
+      color: colorsTheme.text1,
+      colorSelected: colorsTheme.text1,
     },
     bgLinearGradient: css`
       background-image: linear-gradient(270deg, ${colorsTheme.purple} 30%, ${colorsTheme.blue1} 70%);
@@ -353,27 +389,7 @@ export const UniThemedGlobalStyle = css`
   }
   body {
     min-height: 100vh;
-    background-position: 0 -30vh;
-    background-repeat: no-repeat;
-    background-image: ${({ theme }) =>
-      `radial-gradient(50% 50% at 50% 50%, ${transparentize(0.9, theme.primary1)} 0%, ${transparentize(
-        1,
-        theme.bg1
-      )} 100%)`};
-    scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-    scroll-behavior: smooth;
-
-    &::-webkit-scrollbar {
-      width: 14px;
-      background: ${({ theme }) => `${theme.card.background2}`};
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: ${({ theme }) => `${theme.card.border}`};
-      border: 3px solid transparent;
-      border-radius: 14px;
-      background-clip: padding-box;
-    }
+    scrollbar-color: ${({ theme }) => theme.colorScrollbar};
   }
 `
 
@@ -394,18 +410,25 @@ export const ThemedGlobalStyle = createGlobalStyle`
   *, *:after, *:before { box-sizing:border-box; }
 
   body {
-    background-position: initial;
-    background-repeat: no-repeat;
-    background-image: initial;
 
     &.noScroll {
       overflow: hidden;
     }
   }
 
-  ::selection { 
-    background: ${({ theme }) => theme.primary1};
-    color: ${({ theme }) => theme.text2};
+  ::selection {
+    background: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
+  }
+
+  // TODO: Can be removed once we control this component
+  [data-reach-dialog-overlay] {
+    z-index: 10!important;
+
+    ${({ theme }) => theme.mediaWidth.upToMedium`
+      top: 0!important;
+      bottom: 0!important;
+    `}
   }
 
   // Appzi Container override
@@ -413,177 +436,22 @@ export const ThemedGlobalStyle = createGlobalStyle`
     display: none!important; // Force hiding Appzi container when not opened
   }
 
-  body[class*='appzi-f-w-open-'] {
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      overflow: hidden;
-    `}
-  }
-
   body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
     z-index: 2147483004!important;
     display: block!important;
-
-    // Appzi NPS override =============================
-    &.appzi-nps-${NPS_KEY} {
-      width: 100%!important;
-      max-width: 500px!important;
-      height: 100%!important;
-      max-height: 460px!important;
-      top: 0!important;
-      bottom: 0!important;
-      margin: auto!important;
-      transform: none!important;
-      left: 0!important;
-      right: 0!important;
-      z-index: 2147483004!important;
-      padding: 12px 0!important;
-
-      ${({ theme }) => theme.mediaWidth.upToSmall`
-        max-height: 100%!important;
-        max-width: 100%!important;
-        padding: 0!important;
-      `}
-
-      &::before {
-        content: "";
-        background: ${({ theme }) => transparentize(0.6, theme.bg1)};
-        width: 100vw;
-        height: 100vh;
-        position: fixed;
-        left: 0;
-        top: 0;
-        backdrop-filter: blur(3px);
-        z-index: -1;
-      }
-
-      > div[data-appzi-dom] {
-        right: 10px;
-        top: 21px;
-        position: absolute;
-        z-index: 99999;
-        width: 100%!important;
-        left: initial!important;
-        bottom: initial;
-        margin: 0 0 0 auto;
-        height: 42px!important;
-      }
-
-      > div[data-appzi-dom] > div {
-        background-size: 26px 26px!important;
-        height: 42px!important;
-        width: 42px!important;
-        position: relative;
-        top: 0!important;
-        right: 0!important;
-        left: initial!important;
-        margin: 0 0 0 auto!important;
-
-        ${({ theme }) => theme.mediaWidth.upToSmall`
-          top: 10px!important;
-          right: 10px!important;
-        `}
-      }
-
-      #nps-l {
-        font-size: 18px!important;
-        line-height: 1.2!important;
-      }
-
-      #nps-wrapper-inner > div {
-        max-width: 100%!important;
-
-      }
-
-      .digit {
-        font-size: 15px!important;
-        height: 30px!important;
-        width: 30px!important;
-        line-height: 30px!important;
-      }
-
-      .nps {
-        max-width: 100%!important;
-        width: 100%!important;
-
-        > div {
-          margin: 0!important;
-        }
-
-        > div span {
-          color: ${({ theme }) => theme.text1}!important;
-        }
-
-        > div > div {
-          justify-content: space-between!important;
-          display: flex!important;
-          width: 100%!important;
-         }
-      }
-    }
-    // ===================================================
-
-    > div[data-appzi-dom] > div {
-      opacity: 1!important;
-    }
-
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      transform: none!important;
-      left: 16px!important;
-      bottom: 72px!important;
-      top: initial!important;
-      right: initial!important;
-      position: fixed!important;
-    `}
-
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-      transform: none !important;
-      left: 0 !important;
-      bottom: initial !important;
-      top: 0 !important;
-      right: initial !important;
-      position: fixed !important;
-      height: 100%!important;
-      width: 100%!important;
-      overflow-x: hidden!important;
-      overflow-y: auto!important;
-      opacity: 1!important;
-      transition: none!important;
-
-      > div[data-appzi-dom='1'] {
-        position: fixed!important;
-        top: 10px!important;
-        right: 0!important;
-        height: 30px!important;
-        width: 30px!important;
-        z-index: 2147483004!important;
-      }
-
-      > div[data-appzi-dom='1'] > div {
-        position: fixed!important;
-        top: 10px !important;
-        right: 15px !important;
-        opacity: 1 !important;
-      }
-    `}
-  }
-
-  body.noScroll div[id*='appzi-wfo-'] {
-    ${({ theme }) => theme.mediaWidth.upToMedium`
-      display: none!important;
-    `}
   }
 
   // START - Modal overrides
   ${HeaderText} {
     color: ${({ theme }) => theme.text1};
   }
+  
+  a {
+    text-decoration: none;
 
-  ${ModalContentWrapper} {
-    ${RowBetween} > div,
-    ${AutoColumn} > div {
-      color: ${({ theme }) => theme.text2};
+    :hover {
+      text-decoration: underline;
     }
   }
-  // END - Modal overrides
 
 `

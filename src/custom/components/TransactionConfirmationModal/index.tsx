@@ -9,7 +9,7 @@ import { CloseIcon } from 'theme'
 import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import { RowBetween } from 'components/Row'
-import { getEtherscanLink, getExplorerLabel } from 'utils'
+import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from 'utils'
 import { Text } from 'rebass'
 import { CheckCircle, UserCheck } from 'react-feather'
 import GameIcon from 'assets/cow-swap/game.gif'
@@ -25,24 +25,43 @@ import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDeri
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
 import AddToMetamask from 'components/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
+import { useOrder } from 'state/orders/hooks'
+import { OrderStatus } from 'state/orders/actions'
+import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 
 const Wrapper = styled.div`
   width: 100%;
 `
 
 const Section = styled.div`
-  padding: 24px;
+  padding: 0 16px 16px;
   align-items: center;
   justify-content: flex-start;
   display: flex;
   flex-flow: column wrap;
 `
 
+const Header = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: ${({ theme }) => theme.bg1};
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 0;
+  z-index: 20;
+`
+
 export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
-  opacity: 0.5;
+  opacity: 0.6;
   transition: opacity 0.2s ease-in-out;
+  height: 28px;
+  width: 28px;
 
   &:hover {
     opacity: 1;
@@ -84,15 +103,13 @@ const WalletIcon = styled.div`
 `
 
 export const GPModalHeader = styled(RowBetween)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 16px;
-    background: ${({ theme }) => theme.bg1};
-    z-index: 20;
-  `}
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 0;
+  background: ${({ theme }) => theme.bg1};
+  z-index: 20;
 `
 
 const InternalLink = styled(Link)``
@@ -113,7 +130,7 @@ const ButtonGroup = styled.div`
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin: 12px 0 24px;
+  margin: 12px 0 0;
   width: 100%;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
@@ -165,8 +182,8 @@ const UpperSection = styled.div`
 const LowerSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  background: ${({ theme }) => theme.bg4};
-  padding: 40px;
+  background: ${({ theme }) => theme.grey1};
+  padding: 32px;
   margin: 16px auto 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -176,13 +193,13 @@ const LowerSection = styled.div`
   > h3 {
     text-align: center;
     width: 100%;
-    font-size: 21px;
+    font-size: 24px;
     margin: 0 auto 42px;
   }
 
   > h3 > span:last-of-type {
     display: block;
-    font-weight: 400;
+    font-weight: 300;
   }
 `
 
@@ -271,9 +288,9 @@ const StepsWrapper = styled.div`
 
   > hr {
     flex: 1 1 auto;
-    height: 1px;
+    height: 2px;
     border: 0;
-    background: ${({ theme }) => theme.border2};
+    background: ${({ theme }) => theme.bg1};
     margin: auto;
     position: absolute;
     width: 100%;
@@ -288,7 +305,7 @@ const StepsWrapper = styled.div`
     content: '';
     height: 4px;
     width: 100%;
-    background: ${({ theme }) => theme.bg4};
+    background: ${({ theme }) => theme.grey1};
     display: block;
     margin: 0;
     animation: Shrink 1s forwards linear;
@@ -296,12 +313,14 @@ const StepsWrapper = styled.div`
   }
 
   > div > p {
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.4;
     text-align: center;
   }
 
   > div > p > span {
+    display: block;
+    margin: 6px auto 0;
     opacity: 0.7;
   }
 
@@ -368,7 +387,7 @@ export function getOperationMessage(operationType: OperationType, chainId: numbe
     case OperationType.APPROVE_TOKEN:
       return 'Approving token'
     case OperationType.ORDER_CANCEL:
-      return 'Soft canceling your order'
+      return 'Canceling your order'
     case OperationType.REVOKE_APPROVE_TOKEN:
       return 'Revoking token approval'
     case OperationType.CONVERT_VCOW:
@@ -406,7 +425,7 @@ function getSubmittedMessage(operationLabel: string, operationType: OperationTyp
     case OperationType.ORDER_SIGN:
       return t`The order is submitted and ready to be settled.`
     default:
-      return t`The ${operationLabel} is submitted.`
+      return `The ${operationLabel} is submitted.`
   }
 }
 
@@ -415,27 +434,22 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
     return ''
   }
 
-  let title = activityDerivedState.isOrder ? 'Order' : 'Transaction'
+  const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
 
   switch (activityDerivedState.status) {
     case ActivityStatus.CONFIRMED:
-      title += ' Confirmed'
-      break
+      return `${prefix} Confirmed`
     case ActivityStatus.EXPIRED:
-      title += ' Expired'
-      break
+      return `${prefix} Expired`
     case ActivityStatus.CANCELLED:
-      title += ' Cancelled'
-      break
+      return `${prefix} Cancelled`
     case ActivityStatus.CANCELLING:
-      title += ' Cancelling'
-      break
+      return `${prefix} Cancelling`
+    case ActivityStatus.FAILED:
+      return `${prefix} Failed`
     default:
-      title += ' Submitted'
-      break
+      return `${prefix} Submitted`
   }
-
-  return title
 }
 
 export function ConfirmationPendingContent({
@@ -524,11 +538,11 @@ export function TransactionSubmittedContent({
   chainId: ChainId
   currencyToAdd?: Currency | undefined
 }) {
-  const theme = useContext(ThemeContext)
   const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
   const activityState = activityDerivedState && getActivityState(activityDerivedState)
   const showProgressBar = activityState === 'open' || activityState === 'filled'
+  const { order } = activityDerivedState || {}
 
   if (!supportedChainId(chainId)) {
     return null
@@ -537,17 +551,14 @@ export function TransactionSubmittedContent({
   return (
     <Wrapper>
       <Section>
-        <CloseIconWrapper onClick={onDismiss} />
-        <Text fontWeight={500} fontSize={20}>
+        <Header>
+          <CloseIconWrapper onClick={onDismiss} />
+        </Header>
+        <Text fontWeight={600} fontSize={28}>
           {getTitleStatus(activityDerivedState)}
         </Text>
-        {supportedChainId(chainId) && hash && (
-          <ExternalLinkCustom href={getEtherscanLink(chainId, hash, 'transaction')}>
-            <Text fontWeight={500} fontSize={14} color={theme.primary1}>
-              {getExplorerLabel(chainId, hash, 'transaction')} ↗
-            </Text>
-          </ExternalLinkCustom>
-        )}
+        <DisplayLink id={hash} chainId={chainId} />
+        <EthFlowStepper order={order} />
         {activityDerivedState && showProgressBar && (
           <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
@@ -563,6 +574,37 @@ export function TransactionSubmittedContent({
         </ButtonGroup>
       </Section>
     </Wrapper>
+  )
+}
+
+type DisplayLinkProps = {
+  id: string | undefined
+  chainId: number
+}
+
+function DisplayLink({ id, chainId }: DisplayLinkProps) {
+  const theme = useContext(ThemeContext)
+  const { orderCreationHash, status } = useOrder({ id, chainId }) || {}
+
+  if (!id || !chainId) {
+    return null
+  }
+
+  const ethFlowHash =
+    orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED)
+      ? orderCreationHash
+      : undefined
+  const href = ethFlowHash
+    ? getBlockExplorerUrl(chainId, ethFlowHash, 'transaction')
+    : getEtherscanLink(chainId, id, 'transaction')
+  const label = getExplorerLabel(chainId, ethFlowHash || id, 'transaction')
+
+  return (
+    <ExternalLinkCustom href={href}>
+      <Text fontWeight={500} fontSize={14} color={theme.text3}>
+        {label} ↗
+      </Text>
+    </ExternalLinkCustom>
   )
 }
 

@@ -13,14 +13,12 @@ interface PopupContentProps {
 type FollowingTxPopupProps = Omit<TooltipProps, 'text'> & PopupContentProps
 
 const TooltipWrapper = styled(Tooltip)`
-  & {
-    z-index: 2;
-  }
   > .arrow- {
     z-index: 1;
   }
+
   > div {
-    max-width: 23rem !important;
+    max-width: 370px;
   }
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
@@ -69,14 +67,14 @@ const AutoColumnWrapper = styled(AutoColumn)`
 const StyledClose = styled(IconClose)`
   top: 0.5rem;
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    right:0.5rem; 
+    right:0.5rem;
   `};
 `
 
-const PopupContent = ({ onCheck: onCheckout, onClose }: PopupContentProps) => {
+const PopupContent = ({ onCheck, onClose }: PopupContentProps) => {
   const _onCheckout = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation()
-    onCheckout()
+    onCheck()
   }
 
   return (
@@ -89,7 +87,7 @@ const PopupContent = ({ onCheck: onCheckout, onClose }: PopupContentProps) => {
         </Text>
         <span>
           <label>
-            <input type="checkbox" onChange={_onCheckout} /> Don&apos;t show it again
+            <input type="checkbox" onChange={_onCheckout} /> Don&apos;t show this again
           </label>
         </span>
       </AutoColumnWrapper>
@@ -97,20 +95,15 @@ const PopupContent = ({ onCheck: onCheckout, onClose }: PopupContentProps) => {
   )
 }
 
-export default function FollowPendingTxPopupUI({
+export function FollowPendingTxPopupUI({
   show,
   children,
-  onCheck: onCheckout,
+  onCheck,
   onClose,
   ...rest
 }: FollowingTxPopupProps): JSX.Element {
   return (
-    <TooltipWrapper
-      show={show}
-      placement="left"
-      text={<PopupContent onClose={onClose} onCheck={onCheckout} />}
-      {...rest}
-    >
+    <TooltipWrapper show={show} placement="left" text={<PopupContent onClose={onClose} onCheck={onCheck} />} {...rest}>
       <div onClick={onClose} onKeyDown={onClose} role="button" tabIndex={0}>
         {children}
       </div>

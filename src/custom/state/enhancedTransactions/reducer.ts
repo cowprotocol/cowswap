@@ -10,6 +10,7 @@ import {
 } from 'state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { SerializableTransactionReceipt } from '@src/state/transactions/types'
+import { OrderClass } from '../orders/actions'
 
 export enum HashType {
   ETHEREUM_TX = 'ETHEREUM_TX',
@@ -38,6 +39,7 @@ export interface EnhancedTransactionDetails {
   claim?: { recipient: string; cowAmountRaw?: string; indices: number[] }
   swapVCow?: boolean
   swapLockedGNOvCow?: boolean
+  ethFlow?: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' }
 
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
@@ -45,6 +47,8 @@ export interface EnhancedTransactionDetails {
   // Cancelling/Replacing
   replacementType?: ReplacementType // if the user cancelled or speedup the tx it will be reflected here
   linkedTransactionHash?: string
+
+  class?: OrderClass // Flag to distinguish order class
 }
 
 export interface EnhancedTransactionState {
@@ -85,6 +89,7 @@ export default createReducer(initialState, (builder) =>
             data,
             swapVCow,
             swapLockedGNOvCow,
+            ethFlow,
           },
         }
       ) => {
@@ -110,6 +115,7 @@ export default createReducer(initialState, (builder) =>
           claim,
           swapVCow,
           swapLockedGNOvCow,
+          ethFlow,
         }
         transactions[chainId] = txs
       }

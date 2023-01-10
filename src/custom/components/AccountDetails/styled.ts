@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { CopyIcon, TransactionStatusText } from 'components/Copy'
-import { LinkStyledButton, StyledLink } from 'theme'
+import { StyledLink } from 'theme'
 import {
   WalletName,
   AccountSection as AccountSectionMod,
@@ -81,6 +81,7 @@ export const Wrapper = styled.div`
     margin: 0 0 0 8px;
     align-self: center;
     font-size: 21px;
+    color: ${({ theme }) => theme.text1};
   }
 
   ${WalletName} {
@@ -116,8 +117,17 @@ export const Wrapper = styled.div`
       margin: 12px auto 0;
     `};
 
-    > a {
+    > a,
+    > button {
       align-items: center;
+      background: transparent;
+      min-height: initial;
+      cursor: pointer;
+      animation: none;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
 
     > a:not(:last-child) {
@@ -154,7 +164,7 @@ export const InfoCard = styled.div`
   margin: 0 24px 24px;
   border-radius: 16px;
   padding: 24px;
-  ${({ theme }) => theme.card.background3};
+  background: ${({ theme }) => theme.grey1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px 10px 24px;
@@ -221,40 +231,42 @@ export const LowerSection = styled.div`
     background-color: inherit;
     padding: 0 0 48px;
 
-    ${StyledLink} {
-      align-self: center;
-      margin: 20px 0;
+    > ${StyledLink} {
+      width: 100%;
+      text-align: center;
+      margin: 24px auto 0;
     }
   }
 
-  h5 {
+  > span > h5 {
     margin: 0;
     font-weight: 500;
     color: inherit;
     line-height: 1;
     display: flex;
     align-items: center;
+
     > span {
       opacity: 0.6;
       margin: 0 0 0 4px;
     }
   }
 
-  ${LinkStyledButton}, ${StyledLink} {
-    opacity: 0.7;
+  > span > ${StyledLink} {
     color: ${({ theme }) => theme.text1};
-
     text-decoration: underline;
     font-size: 14px;
 
     &:hover {
-      color: ${({ theme }) => theme.textLink};
+      color: ${({ theme }) => theme.text3};
     }
   }
 `
 
+// TODO: Prevent beyond 3 level selector nestings
 export const LowerSectionSimple = styled(LowerSection)`
-  padding: 0 12px;
+  padding: 0;
+
   > div {
     padding: 0;
 
@@ -322,8 +334,8 @@ const NetworkCardUni = styled(YellowCard)`
 `
 
 export const NetworkCard = styled(NetworkCardUni)`
-  background-color: ${({ theme }) => theme.networkCard.background};
-  color: ${({ theme }) => theme.networkCard.text};
+  background-color: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1};
   padding: 6px 8px;
   font-size: 13px;
   margin: 0 8px 0 0;

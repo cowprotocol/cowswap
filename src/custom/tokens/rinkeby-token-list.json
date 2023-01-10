@@ -1,12 +1,12 @@
 {
-  "name": "GP Rinkeby",
+  "name": "CoW Swap Rinkeby",
   "version": {
     "major": 0,
     "minor": 1,
     "patch": 0
   },
-  "keywords": ["GP", "Rinkeby", "tokens", "trusted"],
-  "logoURI": "https://avatars.githubusercontent.com/u/24954468?s=200&v=4",
+  "keywords": ["CowSwap", "Rinkeby", "tokens", "trusted"],
+  "logoURI": "https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo",
   "timestamp": "2021-02-22T13:09:54.363Z",
   "tokens": [
     {
@@ -23,7 +23,7 @@
       "symbol": "COW",
       "decimals": 18,
       "address": "0xbdf1e19f8c78A77fb741b44EbA5e4c0C8DBAeF91",
-      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB/logo.png"
+      "logoURI": "https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo"
     },
     {
       "name": "USDT",

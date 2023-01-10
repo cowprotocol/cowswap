@@ -38,7 +38,6 @@ type Mutable<T> = {
  * An empty result, useful as a default.
  */
 export const EMPTY_LIST: TokenAddressMap = {
-  [ChainId.RINKEBY]: {},
   [ChainId.MAINNET]: {},
   [ChainId.GNOSIS_CHAIN]: {},
   [ChainId.GOERLI]: {},
@@ -250,7 +249,7 @@ export function useIsUnsupportedTokenFromLists() {
     (addressToCheck?: string) => {
       const checkSummedAddress = isAddress(addressToCheck)
 
-      if (!checkSummedAddress || !chainId || !allUnsupportedTokens[chainId][checkSummedAddress]) return false
+      if (!checkSummedAddress || !chainId || !allUnsupportedTokens[chainId]?.[checkSummedAddress]) return false
 
       const { address } = allUnsupportedTokens[chainId][checkSummedAddress].token
 

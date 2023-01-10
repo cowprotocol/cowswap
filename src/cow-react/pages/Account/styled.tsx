@@ -11,25 +11,24 @@ import SVG from 'react-inlinesvg'
 import SpinnerLoader from 'components/Loader'
 
 export const Container = styled.div`
-  max-width: 910px;
+  max-width: 100%;
   width: 100%;
   z-index: 1;
 `
 
 export const Wrapper = styled(Page)`
   ${GdocsListStyle}
-
-  max-width: 910px;
   width: 100%;
+  max-width: 100%;
   min-height: unset;
   padding-top: 16px;
   display: flex;
   justify-content: flex-end;
   flex-flow: column wrap;
   margin: 0;
-  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
-  box-shadow: none;
-  border: 1px solid ${({ theme }) => theme.cardBorder};
+  background: ${({ theme }) => theme.bg1};
+  box-shadow: ${({ theme }) => theme.boxShadow1};
+  border: none;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 16px;
@@ -45,9 +44,11 @@ export const Wrapper = styled(Page)`
 `
 
 export const ExtLink = styled(ExternalLink)`
+  color: ${({ theme }) => theme.text3};
+
   &:hover,
   &:focus {
-    color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.text3};
   }
 `
 
@@ -59,7 +60,7 @@ export const ChildWrapper = styled.div`
   justify-content: center;
   border-radius: 21px;
   padding: 20px;
-  background-color: ${({ theme }) => theme.cardBackground};
+  background-color: ${({ theme }) => theme.grey1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-column-start: 1;
@@ -147,11 +148,10 @@ export const FlexWrap = styled.div`
 `
 
 export const StyledContainer = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-  }
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -177,7 +177,7 @@ export const FlexCol = styled.div`
 
   span:not([role='img']) {
     font-size: 14px;
-    color: ${({ theme }) => theme.text6};
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
     text-align: center;
     display: flex;
     align-items: center;
@@ -202,21 +202,8 @@ export const Loader = styled.div<{ isLoading: boolean }>`
         bottom: 0;
         left: 0;
         transform: translateX(-100%);
-        background-image: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0) 0,
-          ${theme.shimmer1} 20%,
-          ${theme.shimmer2} 60%,
-          rgba(255, 255, 255, 0)
-        );
-        animation: shimmer 2s infinite;
+        ${theme.shimmer}; // shimmer effect
         content: '';
-      }
-
-      @keyframes shimmer {
-        100% {
-          transform: translateX(100%);
-        }
       }
     `}
 `
@@ -225,6 +212,7 @@ export const ProfileGridWrap = styled(GridWrap)`
   grid-template-columns: 1fr auto;
   justify-content: space-between;
   align-items: center;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     > :first-child,
     > :nth-child(2) {
@@ -232,6 +220,7 @@ export const ProfileGridWrap = styled(GridWrap)`
       grid-column-end: auto;
     }
   `};
+
   ${({ theme }) => theme.mediaWidth.upToVerySmall`
     > :first-child,
     > :nth-child(2) {
@@ -249,18 +238,23 @@ export const CardsWrapper = styled.div`
   margin: 16px 0 16px 0;
   padding: 0;
   z-index: 2;
+
   > div {
     flex: 1 1 300px;
   }
+
   > div:last-child:nth-child(odd) {
     flex: 1 1 100%;
   }
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;
     flex-flow: column wrap;
+
     > div {
       flex: 1 1 100%;
     }
+
     > div:last-child:nth-child(odd) {
       flex: 1 1 100%;
     }
@@ -273,13 +267,14 @@ export const Card = styled.div<{ showLoader?: boolean }>`
   flex: 1;
   min-height: 192px;
   margin: 0;
-  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
+  background: ${({ theme }) => theme.bg1};
   box-shadow: none;
   padding: 24px;
   gap: 24px 0;
   border-radius: 16px;
-  border: 1px solid ${({ theme }) => theme.cardBorder};
+  border: none;
   align-items: flex-end;
+
   ${({ showLoader, theme }) =>
     showLoader &&
     css`
@@ -292,36 +287,32 @@ export const Card = styled.div<{ showLoader?: boolean }>`
         bottom: 0;
         left: 0;
         transform: translateX(-100%);
-        background-image: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0) 0,
-          ${theme.shimmer1} 20%,
-          ${theme.shimmer2} 60%,
-          rgba(255, 255, 255, 0)
-        );
-        animation: shimmer 2s infinite;
+        ${theme.shimmer}; // shimmer effect
         content: '';
       }
-      @keyframes shimmer {
-        100% {
-          transform: translateX(100%);
-        }
-      }
     `}
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     min-height: 130px;
     padding: 24px 16px;
   `};
+
   ${ButtonPrimary} {
     height: 52px;
+
     > svg {
       height: 100%;
-      width: auto;
+      width: 16px;
       object-fit: contain;
       margin: 0 0 0 6px;
       transform: translateX(0);
       transition: transform 0.2s ease-in-out;
+
+      > path {
+        fill: ${({ theme }) => theme.white};
+      }
     }
+
     &:hover > svg {
       transform: translateX(2px);
     }
@@ -331,8 +322,8 @@ export const Card = styled.div<{ showLoader?: boolean }>`
 export const BannerCard = styled(BannerExplainer)`
   min-height: 192px;
   border-radius: 16px;
-  background: ${({ theme }) => transparentize(0.3, theme.bg1)};
-  border: 1px solid ${({ theme }) => theme.cardBorder};
+  background: ${({ theme }) => theme.bg1};
+  border: none;
   padding: 0 100px 0 24px;
   flex: 1;
   overflow: hidden;
@@ -344,7 +335,6 @@ export const BannerCard = styled(BannerExplainer)`
   `}
 
   &:hover {
-    border: 1px solid ${({ theme }) => theme.cardBorder};
   }
 
   > span {
@@ -362,7 +352,7 @@ export const BannerCard = styled(BannerExplainer)`
       font-size: 24px;
 
       @supports (-webkit-background-clip: text) {
-        background: ${({ theme }) => `linear-gradient(80deg, ${theme.primary1}, ${theme.primary1}, #5ea2fb)`};
+        background: ${({ theme }) => `linear-gradient(80deg, ${theme.text1}, ${theme.text1}, #5ea2fb)`};
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
@@ -411,7 +401,7 @@ export const BannerCard = styled(BannerExplainer)`
       color: ${({ theme }) => theme.text1};
 
       &:hover {
-        color: ${({ theme }) => theme.primary1};
+        color: ${({ theme }) => theme.text3};
       }
     }
   }
@@ -470,7 +460,7 @@ export const CardActions = styled.div<{ justify?: string; content?: string }>`
     margin: 0;
     padding: 0;
     line-height: 1;
-    color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
     display: flex;
     align-items: center;
     text-decoration: underline;
@@ -483,8 +473,8 @@ export const CardActions = styled.div<{ justify?: string; content?: string }>`
     `};
 
     &:hover {
-      text-decoration-color: ${({ theme }) => theme.primary1};
-      color: ${({ theme }) => theme.primary1};
+      text-decoration-color: ${({ theme }) => theme.text1};
+      color: ${({ theme }) => theme.text1};
     }
   }
 
@@ -568,7 +558,7 @@ export const BalanceDisplay = styled.div<{ titleSize?: number; altColor?: boolea
     display: flex;
     align-items: center;
     gap: 0 6px;
-    color: ${({ theme, altColor }) => (altColor ? theme.primary1 : theme.text1)};
+    color: ${({ theme, altColor }) => (altColor ? theme.text3 : theme.text1)};
     font-size: ${({ titleSize }) => (titleSize ? `${titleSize}px` : '21px')};
 
     ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -594,7 +584,7 @@ export const ConvertWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 200px;
   align-items: center;
-  background: ${({ theme }) => theme.cardBackground};
+  background: ${({ theme }) => theme.grey1};
   border-radius: 16px;
   padding: 16px;
   width: 100%;
@@ -635,7 +625,7 @@ export const VestingBreakdown = styled.div`
   }
 
   > span:last-of-type > p {
-    color: ${({ theme }) => theme.primary1};
+    color: ${({ theme }) => theme.text1};
   }
 `
 
@@ -665,12 +655,14 @@ export const CardsLoader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px;
+  height: 100%;
+  width: 100%;
 `
 export const CardsSpinner = styled(SpinnerLoader)`
-  margin-left: 30px;
+  margin: auto;
+
   & path {
-    stroke: ${({ theme }) => (theme.darkMode ? theme.text1 : theme.primary1)};
+    stroke: ${({ theme }) => theme.text1};
   }
 `
 

@@ -1,4 +1,10 @@
+import { OrderClass } from 'state/orders/actions'
 import { Category, sendEvent } from '../index'
+
+const LABEL_FROM_CLASS: Record<OrderClass, string> = {
+  limit: 'Limit Order',
+  market: 'Market Order',
+}
 
 type ExpirationType = 'Default' | 'Custom'
 export function orderExpirationTimeAnalytics(type: ExpirationType, value: number) {
@@ -38,35 +44,34 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
 }
 
 export type SwapAction = 'Send' | 'Error' | 'Reject'
-export function swapAnalytics(action: SwapAction, label?: string, value?: number) {
+export function swapAnalytics(action: SwapAction, orderClass: OrderClass, label?: string, value?: number) {
+  const classLabel = LABEL_FROM_CLASS[orderClass]
+
   sendEvent({
     category: Category.SWAP,
-    action: `${action} Swap Order`,
+    action: `${action} ${classLabel}`,
     label,
     value,
   })
 }
 
-const signSwapActions = {
-  Sign: 'Signed: Swap',
-  SignAndSend: 'Signed: Swap and send',
-  SignToSelf: 'Signed: Swap and send to self',
-}
+export type SignSwapAction = 'Sign' | 'SignAndSend' | 'SignToSelf' // TODO: Does it make sense to differenciate these options?
+export function signSwapAnalytics(action: SignSwapAction, orderClass: OrderClass, label?: string) {
+  const classLabel = LABEL_FROM_CLASS[orderClass]
 
-export type SignSwapAction = 'Sign' | 'SignAndSend' | 'SignToSelf'
-export function signSwapAnalytics(action: SignSwapAction, label?: string) {
   sendEvent({
     category: Category.SWAP,
-    action: signSwapActions[action],
+    action: `${action} ${classLabel}`,
     label,
   })
 }
 
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
-export function orderAnalytics(action: OrderType, label?: string) {
+export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?: string) {
+  const classLabel = LABEL_FROM_CLASS[orderClass]
   sendEvent({
     category: Category.SWAP,
-    action: `${action} Swap Order`,
+    action: `${action} ${classLabel}`,
     label,
   })
 }

@@ -13,6 +13,7 @@ import { TagInfo } from 'state/lists/wrappedTokenInfo'
 import { formatSmart } from 'utils/format'
 import Column from 'components/Column'
 import { MenuItem as MenuItemMod } from '@src/components/SearchModal/styleds'
+import { transparentize } from 'polished'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {
@@ -22,8 +23,10 @@ const UNSUPPORTED_TOKEN_TAG = [
   },
 ]
 
-const Tag = styled(TagMod)<{ bg?: string }>`
-  background: ${({ bg, theme }) => bg || theme.bg1};
+const Tag = styled(TagMod)<{ tag?: TagInfo }>`
+  // Todo: Prevent usage of !important
+  background: ${({ tag, theme }) => (tag?.id === '0' ? transparentize(0.85, theme.danger) : theme.grey1)};
+  color: ${({ tag, theme }) => (tag?.id === '0' ? theme.danger : theme.text1)}!important;
   max-width: 6.1rem;
 `
 
@@ -46,6 +49,17 @@ const Wrapper = styled.div`
       max-width: 220px;
       width: 100%;
 
+      // Token symbol name
+      &:first-of-type {
+        color: ${({ theme }) => theme.text1};
+      }
+
+      // Token full name
+      &:last-of-type {
+        color: ${({ theme }) => theme.text2};
+        font-weight: 400;
+      }
+
       ${({ theme }) => theme.mediaWidth.upToSmall`
         max-width: 140px;
       `};
@@ -53,7 +67,9 @@ const Wrapper = styled.div`
   }
 
   ${StyledLogo} {
-    background: ${({ theme }) => theme.bg1};
+    height: 36px;
+    width: 36px;
+    border-radius: 36px;
   }
 
   ${TagMod} {
@@ -65,7 +81,7 @@ const Wrapper = styled.div`
   }
 
   ${LightGreyCard} {
-    background: ${({ theme }) => theme.bg4};
+    background: ${({ theme }) => theme.bg1};
   }
 
   ${LightGreyCard} ${RowFixed} > div {
@@ -75,7 +91,7 @@ const Wrapper = styled.div`
 
 export const MenuItem = styled(MenuItemMod)`
   &:hover {
-    background-color: ${({ theme, disabled }) => !disabled && theme.bg4};
+    background-color: ${({ theme, disabled }) => !disabled && theme.grey1};
   }
 `
 
@@ -84,7 +100,7 @@ function TagDescriptor({ tags, bg, children }: { children?: React.ReactNode; tag
   return (
     <TagContainer>
       <MouseoverTooltip text={tag.description}>
-        <Tag bg={bg} key={tag.id}>
+        <Tag tag={tag} key={tag.id}>
           {tag.name}
         </Tag>
       </MouseoverTooltip>
@@ -106,7 +122,7 @@ function TagDescriptor({ tags, bg, children }: { children?: React.ReactNode; tag
 function TokenTags({ /* currency, */ isUnsupported }: { /* currency: Currency; */ isUnsupported: boolean }) {
   if (isUnsupported) {
     return (
-      <TagDescriptor bg="#f3a1a1" tags={UNSUPPORTED_TOKEN_TAG}>
+      <TagDescriptor tags={UNSUPPORTED_TOKEN_TAG}>
         <TagLink>
           <HashLink to={UNSUPPORTED_TOKENS_FAQ_URL} target="_blank" onClick={(e) => e.stopPropagation()}>
             FAQ

@@ -10,16 +10,18 @@ import { AppDataInfo } from 'state/appData/types'
 import { useReferralAddress } from 'state/affiliate/hooks'
 import { useAppCode } from 'hooks/useAppCode'
 import { percentToBips } from 'utils/misc'
+import { OrderClass } from 'state/orders/actions'
 
 type UseAppDataParams = {
   chainId?: SupportedChainId
   allowedSlippage: Percent
+  orderClass: OrderClass
 }
 
 /**
  * Fetches and updates appDataInfo whenever a dependency changes
  */
-export function useAppData({ chainId, allowedSlippage }: UseAppDataParams): AppDataInfo | null {
+export function useAppData({ chainId, allowedSlippage, orderClass }: UseAppDataParams): AppDataInfo | null {
   // AppDataInfo, from Jotai
   const [appDataInfo, setAppDataInfo] = useAtom(appDataInfoAtom)
   // Referrer address, from Redux
@@ -39,7 +41,7 @@ export function useAppData({ chainId, allowedSlippage }: UseAppDataParams): AppD
       return
     }
 
-    const params: BuildAppDataParams = { chainId, slippageBips, referrerAccount, appCode }
+    const params: BuildAppDataParams = { chainId, slippageBips, referrerAccount, appCode, orderClass }
 
     const updateAppData = async (): Promise<void> => {
       try {
@@ -60,7 +62,7 @@ export function useAppData({ chainId, allowedSlippage }: UseAppDataParams): AppD
     }
 
     updateAppData()
-  }, [appCode, chainId, referrerAccount, setAppDataInfo, slippageBips])
+  }, [appCode, chainId, referrerAccount, setAppDataInfo, slippageBips, orderClass])
 
   return appDataInfo
 }

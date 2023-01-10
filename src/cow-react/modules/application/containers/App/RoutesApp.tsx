@@ -2,7 +2,7 @@ import Loader from 'components/Loader'
 import { Suspense, lazy } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-import { RedirectPathToSwapOnly, RedirectToSwap } from 'pages/Swap/redirects'
+import { RedirectPathToSwapOnly } from 'pages/Swap/redirects'
 import { Routes } from '@cow/constants/routes'
 
 import AnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers'
@@ -10,12 +10,7 @@ import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'cons
 import { Loading } from 'components/FlashingLoading'
 
 import Account from '@cow/pages/Account'
-import Swap from '@cow/pages/Swap'
-import { NewSwapPage } from '@cow/pages/NewSwap'
-
-import { isBarn } from 'utils/environments'
-
-const isNewSwapEnabled = localStorage.getItem('enableNewSwap') || isBarn
+import { NewSwapPage, NewSwapPageRedirect } from '@cow/pages/NewSwap'
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '@cow/pages/PrivacyPolicy'))
@@ -34,6 +29,8 @@ const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ '@c
 const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ '@cow/pages/Faq/TokenFaq'))
 const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ '@cow/pages/Faq/TradingFaq'))
 const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ '@cow/pages/Faq/AffiliateFaq'))
+const LimitOrdersFaq = lazy(() => import(/* webpackChunkName: "limit_orders_faq" */ '@cow/pages/Faq/LimitOrdersFaq'))
+const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ '@cow/pages/Faq/EthFlowFaq'))
 
 function createRedirectExternal(url: string) {
   return () => {
@@ -53,9 +50,10 @@ export function RoutesApp() {
           <Switch>
             <Redirect from="/claim" to={Routes.ACCOUNT} />
             <Redirect from="/profile" to={Routes.ACCOUNT} />
-            <Route exact strict path={Routes.SWAP} component={isNewSwapEnabled ? NewSwapPage : Swap} />
-            <Route exact strict path={Routes.LIMIT_ORDER} component={LimitOrders} />
-            <Route exact strict path={Routes.SWAP_OUTPUT_CURRENCY} component={RedirectToSwap} />
+            {/*Redirect from the old URL format to a new one*/}
+            <Route exact strict path="/swap" component={NewSwapPageRedirect} />
+            <Route exact path={Routes.SWAP} component={NewSwapPage} />
+            <Route exact path={Routes.LIMIT_ORDER} component={LimitOrders} />
             <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
             <Route exact strict path={Routes.ABOUT} component={About} />
 
@@ -64,6 +62,8 @@ export function RoutesApp() {
             <Route exact strict path={Routes.FAQ_TOKEN} component={TokenFaq} />
             <Route exact strict path={Routes.FAQ_TRADING} component={TradingFaq} />
             <Route exact strict path={Routes.FAQ_AFFILIATE} component={AffiliateFaq} />
+            <Route exact strict path={Routes.FAQ_LIMIT_ORDERS} component={LimitOrdersFaq} />
+            <Route exact strict path={Routes.FAQ_ETH_FLOW} component={EthFlowFaq} />
             <Route exact strict path={Routes.PLAY_COWRUNNER} component={CowRunner} />
             <Route exact strict path={Routes.PLAY_MEVSLICER} component={MevSlicer} />
             <Route exact strict path={Routes.PLAY_SUPER_COW_BRO} component={SuperCowBro} />

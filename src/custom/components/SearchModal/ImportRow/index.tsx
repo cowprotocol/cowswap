@@ -4,6 +4,7 @@ import styled from 'styled-components/macro'
 import ImportRowMod, { TokenSection } from './ImportRowMod'
 import { AutoRow } from 'components/Row'
 import { StyledListLogo } from '@src/components/ListLogo'
+import { ButtonPrimary } from 'components/Button'
 
 interface ImportRowProps {
   token: Token
@@ -37,6 +38,11 @@ const Wrapper = styled.div`
   ${AutoRow} > div {
     color: ${({ theme }) => theme.text1};
     margin: 0;
+  }
+
+  ${TokenSection} > ${ButtonPrimary} {
+    min-height: auto;
+    font-size: 16px;
   }
 `
 

@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 import * as Sentry from '@sentry/browser'
 
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
-import { useSwapState } from 'state/swap/hooks'
-import { useCurrency } from 'hooks/Tokens'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useAppSelector } from 'state/hooks'
 import { SentryTag } from 'utils/logging'
@@ -38,12 +37,12 @@ export default function Updater(): null {
   const windowVisible = useIsWindowVisible()
 
   const {
-    INPUT: { currencyId: sellTokenAddress },
-    OUTPUT: { currencyId: buyTokenAddress },
-  } = useSwapState()
+    currencies: { INPUT: sellCurrency, OUTPUT: buyCurrency },
+    currenciesIds: { INPUT: sellCurrencyId, OUTPUT: buyCurrencyId },
+  } = useDerivedSwapInfo()
 
-  const { symbol: buySymbol, name: buyName } = useCurrency(buyTokenAddress) || {}
-  const { symbol: sellSymbol, name: sellName } = useCurrency(sellTokenAddress) || {}
+  const { symbol: buySymbol, name: buyName } = buyCurrency || {}
+  const { symbol: sellSymbol, name: sellName } = sellCurrency || {}
 
   useEffect(() => {
     if (windowVisible) {
@@ -53,8 +52,8 @@ export default function Updater(): null {
         // setup a context
         scope.setContext('user', {
           user: account || SentryTag.DISCONNECTED,
-          sellToken: `${sellTokenAddress} <${sellSymbol || sellName}>`,
-          buyToken: `${buyTokenAddress} <${buySymbol || buyName}>`,
+          sellToken: `${sellCurrencyId} <${sellSymbol || sellName}>`,
+          buyToken: `${buyCurrencyId} <${buySymbol || buyName}>`,
         })
         // also set tags for each session
         scope.setTag('chainId', chainId)
@@ -75,8 +74,8 @@ export default function Updater(): null {
     sellName,
     buySymbol,
     buyName,
-    sellTokenAddress,
-    buyTokenAddress,
+    sellCurrencyId,
+    buyCurrencyId,
     // window visibility check
     windowVisible,
   ])

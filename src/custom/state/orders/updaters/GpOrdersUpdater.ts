@@ -28,6 +28,7 @@ function _getTokenFromMapping(
   return tokens[getAddress(address)] || tokens[address]
 }
 
+// TODO: update this for ethflow states
 const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   cancelled: OrderStatus.CANCELLED,
   expired: OrderStatus.EXPIRED,
@@ -43,9 +44,20 @@ function _transformGpOrderToStoreOrder(
   chainId: ChainId,
   allTokens: { [address: string]: Token | null }
 ): Order | undefined {
-  const { uid: id, sellToken, buyToken, creationDate: creationTime, receiver } = order
+  const {
+    uid: id,
+    sellToken,
+    buyToken,
+    creationDate: creationTime,
+    receiver,
+    ethflowData,
+    owner,
+    onchainOrderData,
+  } = order
 
-  const inputToken = _getTokenFromMapping(sellToken, chainId, allTokens)
+  const isEthFlow = Boolean(ethflowData)
+
+  const inputToken = _getInputToken(isEthFlow, chainId, sellToken, allTokens)
   const outputToken = _getTokenFromMapping(buyToken, chainId, allTokens)
 
   const apiStatus = classifyOrder(order)
@@ -76,12 +88,34 @@ function _transformGpOrderToStoreOrder(
     receiver,
     apiAdditionalInfo: order,
     isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
+    // EthFlow related
+    owner: onchainOrderData?.sender || owner,
+    validTo: ethflowData?.userValidTo || order.validTo,
+    isRefunded: ethflowData?.isRefunded, // TODO: this will be removed from the API
+    refundHash: ethflowData?.refundTxHash || undefined,
   }
   // The function to compute the summary needs the Order instance to exist already
   // That's why it's not used before and an empty string is set instead
   storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order }) || ''
 
+  // EthFlow adjustments
+  // It can happen that EthFlow cancellation is identified in the app before the API is aware
+  // In that case
+  if (order.ethflowData && order.status === 'cancelled') {
+    storeOrder.status = OrderStatus.CANCELLED
+    storeOrder.isCancelling = false
+  }
+
   return storeOrder
+}
+
+function _getInputToken(
+  isEthFlow: boolean,
+  chainId: ChainId,
+  sellToken: string,
+  allTokens: { [address: string]: Token | null }
+): ReturnType<typeof _getTokenFromMapping> {
+  return isEthFlow ? NATIVE_CURRENCY_BUY_TOKEN[chainId] : _getTokenFromMapping(sellToken, chainId, allTokens)
 }
 
 function _getMissingTokensAddresses(

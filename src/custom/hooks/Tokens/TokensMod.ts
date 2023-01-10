@@ -14,7 +14,7 @@ import { useCombinedActiveList, /*TokenAddressMap,*/ useUnsupportedTokenList } f
 
 // MOD imports
 import { useTokensFromMap } from '@src/hooks/Tokens'
-import { useThrottle } from 'hooks/useThrottle'
+import { useMemo } from 'react'
 
 export * from '@src/hooks/Tokens'
 
@@ -182,6 +182,11 @@ export function useCurrency(currencyId?: string | null): Currency | null | undef
 export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useCombinedActiveList()
   const tokensFromMap = useTokensFromMap(allTokens, true)
+  const tokensList = Object.values(tokensFromMap)
+  // This trick removes infinite hook cals
+  // TODO: useCombinedActiveList() - mustn't fire so frequently
+  const tokensListString = tokensList.map((item) => item.address + item.symbol + item.chainId + item.decimals).join('/')
 
-  return useThrottle(tokensFromMap, 1000)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => tokensFromMap, [tokensListString])
 }

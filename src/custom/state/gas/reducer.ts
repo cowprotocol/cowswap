@@ -15,8 +15,6 @@ export default createReducer(initialState, (builder) =>
     if (chainId) {
       state[chainId] = {
         ...rest,
-        // We don't use the last update of the endpoint, we use the one of the client time
-        lastUpdate: new Date().toISOString(),
       }
     }
   })

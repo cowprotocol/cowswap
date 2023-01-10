@@ -2,9 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import { Provider } from '@ethersproject/providers'
-import type { VCow, VCowInterface } from '../VCow'
+import { Contract, Signer, utils } from "ethers";
+import { Provider } from "@ethersproject/providers";
+import type { VCow, VCowInterface } from "../VCow";
 
 const _abi = [
   {
@@ -12,262 +12,262 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'enum ClaimingInterface.ClaimType',
-        name: 'claimType',
-        type: 'uint8',
+        internalType: "enum ClaimingInterface.ClaimType",
+        name: "claimType",
+        type: "uint8",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'claimant',
-        type: 'address',
+        internalType: "address",
+        name: "claimant",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'claimableAmount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "claimableAmount",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'claimedAmount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "claimedAmount",
+        type: "uint256",
       },
     ],
-    name: 'Claimed',
-    type: 'event',
+    name: "Claimed",
+    type: "event",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
       {
-        internalType: 'enum ClaimingInterface.ClaimType',
-        name: 'claimType',
-        type: 'uint8',
+        internalType: "enum ClaimingInterface.ClaimType",
+        name: "claimType",
+        type: "uint8",
       },
       {
-        internalType: 'address',
-        name: 'claimant',
-        type: 'address',
+        internalType: "address",
+        name: "claimant",
+        type: "address",
       },
       {
-        internalType: 'uint256',
-        name: 'claimableAmount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "claimableAmount",
+        type: "uint256",
       },
       {
-        internalType: 'uint256',
-        name: 'claimedAmount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "claimedAmount",
+        type: "uint256",
       },
       {
-        internalType: 'bytes32[]',
-        name: 'merkleProof',
-        type: 'bytes32[]',
+        internalType: "bytes32[]",
+        name: "merkleProof",
+        type: "bytes32[]",
       },
     ],
-    name: 'claim',
+    name: "claim",
     outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256[]',
-        name: 'indices',
-        type: 'uint256[]',
+        internalType: "uint256[]",
+        name: "indices",
+        type: "uint256[]",
       },
       {
-        internalType: 'enum ClaimingInterface.ClaimType[]',
-        name: 'claimTypes',
-        type: 'uint8[]',
+        internalType: "enum ClaimingInterface.ClaimType[]",
+        name: "claimTypes",
+        type: "uint8[]",
       },
       {
-        internalType: 'address[]',
-        name: 'claimants',
-        type: 'address[]',
+        internalType: "address[]",
+        name: "claimants",
+        type: "address[]",
       },
       {
-        internalType: 'uint256[]',
-        name: 'claimableAmounts',
-        type: 'uint256[]',
+        internalType: "uint256[]",
+        name: "claimableAmounts",
+        type: "uint256[]",
       },
       {
-        internalType: 'uint256[]',
-        name: 'claimedAmounts',
-        type: 'uint256[]',
+        internalType: "uint256[]",
+        name: "claimedAmounts",
+        type: "uint256[]",
       },
       {
-        internalType: 'bytes32[][]',
-        name: 'merkleProofs',
-        type: 'bytes32[][]',
+        internalType: "bytes32[][]",
+        name: "merkleProofs",
+        type: "bytes32[][]",
       },
       {
-        internalType: 'uint256[]',
-        name: 'sentEth',
-        type: 'uint256[]',
+        internalType: "uint256[]",
+        name: "sentEth",
+        type: "uint256[]",
       },
     ],
-    name: 'claimMany',
+    name: "claimMany",
     outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
     ],
-    name: 'isClaimed',
+    name: "isClaimed",
     outputs: [
       {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'merkleRoot',
+    name: "merkleRoot",
     outputs: [
       {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'deploymentTimestamp',
+    name: "deploymentTimestamp",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'gnoPrice',
+    name: "gnoPrice",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'usdcPrice',
+    name: "usdcPrice",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'nativeTokenPrice',
+    name: "nativeTokenPrice",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'user',
-        type: 'address',
+        internalType: "address",
+        name: "user",
+        type: "address",
       },
     ],
-    name: 'swappableBalanceOf',
+    name: "swappableBalanceOf",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'user',
-        type: 'address',
+        internalType: "address",
+        name: "user",
+        type: "address",
       },
     ],
-    name: 'balanceOf',
+    name: "balanceOf",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'swapAll',
+    name: "swapAll",
     outputs: [
       {
-        internalType: 'uint256',
-        name: 'swappedBalance',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "swappedBalance",
+        type: "uint256",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
-]
+];
 
 export class VCow__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): VCowInterface {
-    return new utils.Interface(_abi) as VCowInterface
+    return new utils.Interface(_abi) as VCowInterface;
   }
   static connect(address: string, signerOrProvider: Signer | Provider): VCow {
-    return new Contract(address, _abi, signerOrProvider) as VCow
+    return new Contract(address, _abi, signerOrProvider) as VCow;
   }
 }

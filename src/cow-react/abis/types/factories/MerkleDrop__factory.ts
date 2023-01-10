@@ -2,42 +2,45 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import { Provider } from '@ethersproject/providers'
-import type { MerkleDrop, MerkleDropInterface } from '../MerkleDrop'
+import { Contract, Signer, utils } from "ethers";
+import { Provider } from "@ethersproject/providers";
+import type { MerkleDrop, MerkleDropInterface } from "../MerkleDrop";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
       {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
       {
-        internalType: 'bytes32[]',
-        name: 'merkleProof',
-        type: 'bytes32[]',
+        internalType: "bytes32[]",
+        name: "merkleProof",
+        type: "bytes32[]",
       },
     ],
-    name: 'claim',
+    name: "claim",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
-]
+];
 
 export class MerkleDrop__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): MerkleDropInterface {
-    return new utils.Interface(_abi) as MerkleDropInterface
+    return new utils.Interface(_abi) as MerkleDropInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): MerkleDrop {
-    return new Contract(address, _abi, signerOrProvider) as MerkleDrop
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): MerkleDrop {
+    return new Contract(address, _abi, signerOrProvider) as MerkleDrop;
   }
 }

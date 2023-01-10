@@ -1,4 +1,3 @@
-import TradeGp from 'state/swap/TradeGp'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 
 export type ParsedAmounts = {
@@ -6,7 +5,16 @@ export type ParsedAmounts = {
   OUTPUT: CurrencyAmount<Currency> | undefined
 }
 
+export interface PriceImpactTrade {
+  inputAmount: CurrencyAmount<Currency> | null
+  outputAmount: CurrencyAmount<Currency> | null
+  inputAmountWithoutFee?: CurrencyAmount<Currency>
+  outputAmountWithoutFee?: CurrencyAmount<Currency>
+}
+
 export interface FallbackPriceImpactParams {
-  abTrade?: TradeGp
+  abTrade?: PriceImpactTrade
   isWrapping: boolean
+  sellToken: string | null
+  buyToken: string | null
 }

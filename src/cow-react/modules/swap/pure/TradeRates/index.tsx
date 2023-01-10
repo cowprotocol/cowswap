@@ -4,13 +4,12 @@ import { InfoIcon } from 'components/InfoIcon'
 import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
 import { useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { Price } from '@cow/modules/swap/pure/Price'
 import TradeGp from 'state/swap/TradeGp'
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
-import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
+import { RowDeadline } from '@cow/modules/swap/containers/Row/RowDeadline'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { genericPropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
 import { TradeBasicDetails } from '@cow/modules/swap/containers/TradeBasicDetails'
+import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
+import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 const SUBSIDY_INFO_MESSAGE_EXTENDED =
   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
@@ -24,6 +23,7 @@ export interface TradeRatesProps {
   isFeeGreater: boolean
   discount: number
   fee: CurrencyAmount<Currency> | null
+  rateInfoParams: RateInfoParams
 }
 
 export const TradeRates = React.memo(function (props: TradeRatesProps) {
@@ -32,20 +32,22 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     fee,
     trade,
     isExpertMode,
-    allowedSlippage,
     allowsOffchainSigning,
     userAllowedSlippage,
     discount,
+    rateInfoParams,
   } = props
   const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
+  const showPrice = !!trade
+  const showTradeBasicDetails = (isFeeGreater || trade) && fee
+  const showRowDeadline = !!trade
+
   return (
     <styledEl.Box>
-      {trade && <Price trade={trade} />}
-      {!isExpertMode && !allowedSlippage.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT) && (
-        <RowSlippage allowedSlippage={allowedSlippage} fontWeight={400} rowHeight={24} />
-      )}
-      {(isFeeGreater || trade) && fee && (
+      {showPrice && <styledEl.StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />}
+      {/* SLIPPAGE & FEE */}
+      {showTradeBasicDetails && (
         <TradeBasicDetails
           allowedSlippage={userAllowedSlippage}
           isExpertMode={isExpertMode}
@@ -54,6 +56,9 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
           fee={fee}
         />
       )}
+      {/* TRANSACTION DEADLINE */}
+      {showRowDeadline && <RowDeadline />}
+      {/* DISCOUNTS */}
       <styledEl.Row>
         <div>
           <span>Fees discount</span>

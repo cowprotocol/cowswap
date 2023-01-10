@@ -12,8 +12,8 @@ import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
-import { CancelButton } from './CancelButton'
 import { getActivityState } from 'hooks/useActivityDerivedState'
+import { CancelButton } from '@cow/common/pure/CancelButton'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -59,13 +59,20 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
       return 'Cancelling...'
     case 'cancelled':
       return 'Cancelled'
+    case 'creating':
+      return 'Creating...'
     default:
       return 'Open'
   }
 }
 
-export function StatusDetails(props: { chainId: number; activityDerivedState: ActivityDerivedState }) {
-  const { activityDerivedState, chainId } = props
+export type StatusDetailsProps = {
+  activityDerivedState: ActivityDerivedState
+  showCancellationModal: (() => void) | null
+}
+
+export function StatusDetails(props: StatusDetailsProps) {
+  const { activityDerivedState, showCancellationModal } = props
 
   const {
     status,
@@ -75,9 +82,10 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
     isPresignaturePending,
     isConfirmed,
     isExpired,
+    isFailed,
     isTransaction,
     isCancelled,
-    isCancellable,
+    isCreating,
   } = activityDerivedState
 
   return (
@@ -88,6 +96,7 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
         isPending={isPending}
         isCancelling={isCancelling}
         isPresignaturePending={isPresignaturePending}
+        isCreating={isCreating}
       >
         {isConfirmed && isTransaction ? (
           <SVG src={OrderCheckImage} description="Transaction Confirmed" />
@@ -95,8 +104,13 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
           <SVG src={OrderCheckImage} description="Order Filled" />
         ) : isExpired && isTransaction ? (
           <SVG src={OrderCancelledImage} description="Transaction Failed" />
+        ) : isFailed ? (
+          <SVG src={OrderCancelledImage} description="Failed" />
         ) : isExpired ? (
           <SVG src={OrderExpiredImage} description="Order Expired" />
+        ) : isCreating ? (
+          // TODO: use another icon for Creating state
+          <SVG src={OrderExpiredImage} description="Creating Order" />
         ) : isCancelled ? (
           <SVG src={OrderCancelledImage} description="Order Cancelled" />
         ) : isPresignaturePending ? (
@@ -107,10 +121,9 @@ export function StatusDetails(props: { chainId: number; activityDerivedState: Ac
         {_getStateLabel(activityDerivedState)}
       </StatusLabel>
 
-      {isCancellable && (
+      {showCancellationModal && (
         <StatusLabelBelow>
-          {/* Cancel order */}
-          <CancelButton chainId={chainId} activityDerivedState={activityDerivedState} />
+          <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>
       )}
     </StatusLabelWrapper>

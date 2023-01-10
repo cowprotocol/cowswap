@@ -3,7 +3,7 @@ import { timestamp } from '@cowprotocol/contracts'
 
 import { useWeb3React } from '@web3-react/core'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
-import { Order } from 'state/orders/actions'
+import { Order, OrderClass } from 'state/orders/actions'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -16,6 +16,9 @@ import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { priceOutOfRangeAnalytics } from 'components/analytics'
 import { GpPriceStrategy } from 'state/gas/atoms'
 import { supportedChainId } from 'utils/supportedChainId'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -38,19 +41,29 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     quoteToken = order.sellToken
   }
 
+  const isEthFlow = order.sellToken === NATIVE_CURRENCY_BUY_ADDRESS
+  if (isEthFlow) {
+    console.debug('[UnfillableOrderUpdater] - Native sell swap detected. Using wrapped token address for quotes')
+  }
+
   const quoteParams = {
     chainId,
     amount,
     kind: order.kind,
-    sellToken: order.sellToken,
+    // we need to get wrapped token quotes (native quotes will fail)
+    sellToken: isEthFlow ? WRAPPED_NATIVE_CURRENCY[chainId].address : order.sellToken,
     buyToken: order.buyToken,
     baseToken,
     quoteToken,
     fromDecimals: order.inputToken.decimals,
     toDecimals: order.outputToken.decimals,
-    validTo: timestamp(order.validTo),
+    // Limit order may have arbitrary validTo, but API doesn't allow values greater than 1 hour
+    // To avoid ExcessiveValidTo error we use PRICE_QUOTE_VALID_TO_TIME
+    validTo:
+      order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
     userAddress: order.owner,
     receiver: order.receiver,
+    isEthFlow,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
@@ -105,7 +118,10 @@ export function UnfillableOrdersUpdater(): null {
 
       const lowerCaseAccount = account.toLowerCase()
       // Only check pending orders of the connected account
-      const pending = pendingRef.current.filter(({ owner }) => owner.toLowerCase() === lowerCaseAccount)
+      // Exclude limit orders because we don't need "unfillable" flag for them
+      const pending = pendingRef.current.filter(
+        (order) => order.owner.toLowerCase() === lowerCaseAccount && order.class !== OrderClass.LIMIT
+      )
 
       if (pending.length === 0) {
         return

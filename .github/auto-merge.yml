@@ -1,0 +1,34 @@
+# Configuration for probot-auto-merge - https://github.com/bobvanderlinden/probot-auto-merge
+
+# At least 2 reviews
+minApprovals:
+  MEMBER: 2
+
+# Update before merge
+updateBranch: true
+
+# Delete branch after merge
+deleteBranchAfterMerge: true
+
+# It should squash the merge
+mergeMethod: squash
+
+# Message for the merge commmit
+mergeCommitMessage: |
+  {title} (#{number})
+
+  {body}
+
+# Do not merge automatically into main
+blockingBaseBranches:
+- main
+
+# Merge automatically into develop, hotfix, and release branches
+requiredBaseBranches:
+- develop
+- regex: ^release/
+- regex: ^hotfix/
+
+# don't merge if tag is... well DONT_MERGE
+blockingLabels:
+- DONT_MERGE

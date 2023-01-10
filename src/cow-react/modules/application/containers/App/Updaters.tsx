@@ -2,7 +2,6 @@ import { MulticallUpdater } from 'lib/state/multicall'
 import ApplicationUpdater from 'state/application/updater'
 import ListsUpdater from 'state/lists/updater'
 import LogsUpdater from 'state/logs/updater'
-import TransactionUpdater from 'state/transactions/updater'
 import UserUpdater from 'state/user/updater'
 import GnosisSafeUpdater from 'state/gnosisSafe/updater'
 import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
@@ -15,10 +14,12 @@ import {
   CancelledOrdersUpdater,
   PendingOrdersUpdater,
   UnfillableOrdersUpdater,
+  ExpiredOrdersUpdater,
 } from 'state/orders/updaters'
 
 import { UploadToIpfsUpdater } from 'state/appData/updater'
 import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
+import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from '@cow/modules/swap/state/EthFlow/updaters'
 
 export function Updaters() {
   return (
@@ -27,11 +28,11 @@ export function Updaters() {
       <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />
-      <TransactionUpdater />
       <EnhancedTransactionUpdater />
       <MulticallUpdater />
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
+      <ExpiredOrdersUpdater />
       <FeesUpdater />
       <UnfillableOrdersUpdater />
       <GpOrdersUpdater />
@@ -41,6 +42,8 @@ export function Updaters() {
       <UploadToIpfsUpdater />
       <GnosisSafeUpdater />
       <GasPriceStrategyUpdater />
+      <EthFlowSlippageUpdater />
+      <EthFlowDeadlineUpdater />
     </>
   )
 }

@@ -58,7 +58,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
 export const L1_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   // SupportedChainId.ROPSTEN,
-  SupportedChainId.RINKEBY,
+  // SupportedChainId.RINKEBY,
   SupportedChainId.GOERLI,
   /* SupportedChainId.KOVAN,
   SupportedChainId.POLYGON,

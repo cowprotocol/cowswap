@@ -4,9 +4,11 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { LowerSectionWrapper } from '@cow/modules/swap/pure/styled'
-import { RowFee } from 'components/swap/TradeSummary/RowFee'
-import { RowSlippage } from 'components/swap/TradeSummary/RowSlippage'
-import { RowReceivedAfterSlippage } from 'components/swap/TradeSummary/RowReceivedAfterSlippage'
+import { RowFee } from '@cow/modules/swap/containers/Row/RowFee'
+import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
+import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
@@ -25,11 +27,18 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
+  const isEthFlow = useIsEthFlow()
+  const { isWrapOrUnwrap } = useDetectNativeToken()
+
+  const showRowFee = trade || fee
+  const showRowSlippage =
+    (isEthFlow || isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) && !isWrapOrUnwrap
+  const showRowReceivedAfterSlippage = isExpertMode && trade
 
   return (
     <LowerSectionWrapper {...boxProps}>
       {/* Fees */}
-      {(trade || fee) && (
+      {showRowFee && (
         <RowFee
           trade={trade}
           showHelpers={true}
@@ -38,20 +47,10 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
           feeFiatValue={feeFiatValue}
         />
       )}
-
-      {isExpertMode && trade && (
-        <>
-          {/* Slippage */}
-          <RowSlippage allowedSlippage={allowedSlippagePercent} />
-
-          {/* Min/Max received */}
-          <RowReceivedAfterSlippage
-            trade={trade}
-            allowedSlippage={allowedSlippagePercent}
-            showHelpers={true}
-            allowsOffchainSigning={allowsOffchainSigning}
-          />
-        </>
+      {/* Slippage */}
+      {showRowSlippage && <RowSlippage allowedSlippage={allowedSlippagePercent} />}
+      {showRowReceivedAfterSlippage && (
+        <RowReceivedAfterSlippage trade={trade} allowedSlippage={allowedSlippagePercent} showHelpers={true} />
       )}
     </LowerSectionWrapper>
   )

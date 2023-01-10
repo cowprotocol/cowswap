@@ -65,6 +65,8 @@ const Wrapper = styled(Page)`
   width: 100vw;
   max-width: 60vw;
   margin: 120px 0;
+  position: relative;
+  z-index: 2;
 
   @media screen and (max-width: ${MEDIA_WIDTHS.upToSmall}px) {
     max-width: 95vw;

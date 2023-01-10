@@ -1,13 +1,10 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { AutoColumn } from 'components/Column'
 import TokensTableRow from './TokensTableRow'
 import {
   Label,
   Wrapper,
-  TableHeader,
-  TableBody,
   PageButtons,
   Arrow,
   ArrowButton,
@@ -15,21 +12,19 @@ import {
   Table,
   PaginationText,
   IndexLabel,
-  InfoCircle,
+  Row,
+  TableHeader,
+  NoResults,
 } from './styled'
 import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
-import { useHistory } from 'react-router-dom'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
-import { OrderKind } from '@cowprotocol/contracts'
-import { MouseoverTooltip } from 'components/Tooltip'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import useFilterTokens from 'hooks/useFilterTokens'
 
-const MAX_ITEMS = 10
+const MAX_ITEMS = 20
 
 enum SORT_FIELD {
   NAME = 'name',
@@ -70,7 +65,6 @@ export default function TokenTable({
   debouncedQuery,
 }: TokenTableParams) {
   // const { account } = useWeb3React()
-  const native = useNativeCurrency()
 
   const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
@@ -107,17 +101,6 @@ export default function TokenTable({
 
   // token index
   const getTokenIndex = useCallback((i: number) => (page - 1) * MAX_ITEMS + i, [page])
-
-  // buy and sell
-  const history = useHistory()
-
-  const handleBuyOrSell = useCallback(
-    (token: Token, type: OrderKind) => {
-      const typeQuery = type === OrderKind.BUY ? 'outputCurrency' : 'inputCurrency'
-      history.push(`/swap?${typeQuery}=${token.address}`)
-    },
-    [history]
-  )
 
   const { ErrorModal } = useErrorModal()
 
@@ -209,42 +192,28 @@ export default function TokenTable({
     <Wrapper>
       <ErrorModal />
       <TransactionConfirmationModal />
-      {tokensData && sortedTokens.length !== 0 ? (
-        <AutoColumn>
-          <Table ref={tableRef}>
-            <TableHeader>
-              <IndexLabel>#</IndexLabel>
-              <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
-                <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
-              </ClickableText>
-              <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
-                <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
-              </ClickableText>
-              <Label>Value</Label>
-              <Label>Buy</Label>
-              <Label>Sell</Label>
-              <Label>
-                <span>Approve</span>
-                <MouseoverTooltip
-                  text={
-                    <Trans>
-                      Enable token for trading. This only need to be done once. Once it is enabled, you can place orders
-                      for free using meta-transactions (no {native.name} is required)
-                    </Trans>
-                  }
-                >
-                  <InfoCircle size="20" color={'white'} />
-                </MouseoverTooltip>
-              </Label>
-            </TableHeader>
 
-            <TableBody>
-              {sortedTokens.map((data, i) => {
-                if (data) {
-                  return (
+      <>
+        <Table ref={tableRef}>
+          <TableHeader>
+            <IndexLabel>#</IndexLabel>
+            <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
+              <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
+            </ClickableText>
+            <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
+              <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
+            </ClickableText>
+            <Label>Value</Label>
+            <Label>Actions</Label>
+          </TableHeader>
+
+          {tokensData && sortedTokens.length !== 0 ? (
+            sortedTokens.map((data, i) => {
+              if (data) {
+                return (
+                  <Row key={data.address}>
                     <TokensTableRow
                       key={data.address}
-                      handleBuyOrSell={handleBuyOrSell}
                       toggleWalletModal={toggleWalletModal}
                       balance={balances && balances[0][data.address]}
                       openTransactionConfirmationModal={openModal}
@@ -252,13 +221,19 @@ export default function TokenTable({
                       index={getTokenIndex(i)}
                       tokenData={data}
                     />
-                  )
-                }
-                return null
-              })}
-            </TableBody>
-          </Table>
+                  </Row>
+                )
+              }
+              return null
+            })
+          ) : (
+            <NoResults>
+              <h3>No results found ¯\_(ツ)_/¯</h3>
+            </NoResults>
+          )}
+        </Table>
 
+        {tokensData && sortedTokens.length !== 0 && (
           <PageButtons>
             <ArrowButton onClick={() => setPage(1)}>
               <Arrow faded={page === 1}>{'<<'}</Arrow>
@@ -280,10 +255,8 @@ export default function TokenTable({
               <Arrow faded={page === maxPage}>{'>>'}</Arrow>
             </ArrowButton>
           </PageButtons>
-        </AutoColumn>
-      ) : (
-        <small>{'No results found :('}</small>
-      )}
+        )}
+      </>
     </Wrapper>
   )
 }

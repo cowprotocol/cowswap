@@ -48,7 +48,7 @@ const UnpaddedLinkStyledButton = styled(LinkStyledButton)`
   opacity: ${({ disabled }) => (disabled ? '0.4' : '1')};
 `
 
-const PopoverContainer = styled.div<{ show: boolean }>`
+export const PopoverContainer = styled.div<{ show: boolean }>`
   z-index: 100;
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
@@ -230,21 +230,10 @@ ListRowProps & { listUrl: string }) {
 
 export const ListContainer = styled.div`
   height: 100%;
-  overflow-y: auto;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
   /* MOD */
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-  scroll-behavior: smooth;
-
-  &::-webkit-scrollbar {
-    width: 10px;
-    background: ${({ theme }) => `${theme.card.background2}`} !important;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${theme.card.border}`} !important;
-    border: 3px solid transparent;
-    border-radius: 14px;
-    background-clip: padding-box;
-  }
+  ${({ theme }) => theme.colorScrollbar};
 `
 
 export function ManageLists({

@@ -5,13 +5,13 @@ import { useWeb3React } from '@web3-react/core'
 import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'hooks/useGasPrice'
 import useMachineTimeMs from 'hooks/useMachineTime'
-import useTheme from 'hooks/useTheme'
+// import useTheme from 'hooks/useTheme'
 import JSBI from 'jsbi'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import ms from 'ms.macro'
 import { useEffect, useState } from 'react'
 // import styled, { keyframes } from 'styled-components/macro'
-import { ExternalLink, ThemedText } from 'theme'
+import { ExternalLink } from 'theme'
 // import { ExplorerDataType , getExplorerLink } from 'utils/getExplorerLink'
 
 import { MouseoverTooltip } from 'components/Tooltip'
@@ -118,7 +118,7 @@ export default function Polling() {
   const [isHover, setIsHover] = useState(false)
   const machineTime = useMachineTimeMs(NETWORK_HEALTH_CHECK_MS)
   const blockTime = useCurrentBlockTimestamp()
-  const theme = useTheme()
+  // const theme = useTheme()
 
   const ethGasPrice = useGasPrice()
   const priceGwei = ethGasPrice ? JSBI.divide(ethGasPrice, JSBI.BigInt(1000000000)) : undefined
@@ -155,18 +155,22 @@ export default function Polling() {
           <ExternalLink href={'https://etherscan.io/gastracker'}>
             {priceGwei ? (
               <RowFixed style={{ marginRight: '8px' }}>
-                <ThemedText.Main fontSize="11px" mr="8px" color={theme.text3}>
-                  <MouseoverTooltip
-                    text={
-                      <Trans>
-                        The current fast gas amount for sending a transaction on L1. Gas fees are paid in
-                        Ethereum&apos;s native currency Ether (ETH) and denominated in GWEI.
-                      </Trans>
-                    }
-                  >
-                    {priceGwei.toString()} <Trans>gwei</Trans>
-                  </MouseoverTooltip>
-                </ThemedText.Main>
+                {/* <ThemedText.Main
+                  fontSize="11px"
+                  mr="8px"
+                  color={theme.text3}
+                > */}
+                <MouseoverTooltip
+                  text={
+                    <Trans>
+                      The current fast gas amount for sending a transaction on L1. Gas fees are paid in Ethereum&apos;s
+                      native currency Ether (ETH) and denominated in GWEI.
+                    </Trans>
+                  }
+                >
+                  {priceGwei.toString()} <Trans>gwei</Trans>
+                </MouseoverTooltip>
+                {/* </ThemedText.Main> */}
                 <StyledGasDot />
               </RowFixed>
             ) : null}

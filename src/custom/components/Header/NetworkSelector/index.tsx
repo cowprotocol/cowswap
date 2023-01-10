@@ -1,10 +1,16 @@
 import styled from 'styled-components/macro'
-import NetworkSelectorMod, { SelectorLabel, SelectorControls, FlyoutMenu } from './NetworkSelectorMod'
+import NetworkSelectorMod, {
+  SelectorLabel,
+  SelectorControls,
+  FlyoutMenu,
+  FlyoutMenuContents,
+} from './NetworkSelectorMod'
 import { transparentize } from 'polished'
 export { getChainNameFromId, getParsedChainId } from './NetworkSelectorMod'
 
 const Wrapper = styled.div`
   display: flex;
+  cursor: pointer;
 
   ${FlyoutMenu} {
     top: 38px;
@@ -17,7 +23,21 @@ const Wrapper = styled.div`
     `};
   }
 
+  ${FlyoutMenuContents} {
+    min-width: 175px;
+    z-index: 99;
+    padding: 16px;
+    border: 1px solid ${({ theme }) => transparentize(0.6, theme.white)};
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      top: 50px;
+      box-shadow: 0 0 0 100vh ${({ theme }) => transparentize(0.1, theme.black)}};
+    `};
+  }
+
   ${SelectorLabel} {
+    margin-right: 2px;
+
     ${({ theme }) => theme.mediaWidth.upToMedium`
       display: none;
     `};
@@ -28,6 +48,7 @@ const Wrapper = styled.div`
     border: 2px solid transparent;
     padding: 6px;
     transition: border 0.2s ease-in-out;
+    background: transparent;
 
     > img {
       width: 24px;
@@ -39,7 +60,7 @@ const Wrapper = styled.div`
     ${SelectorLabel} + svg {
       width: 18px;
       height: 18px;
-      stroke-width: 3px;
+      stroke-width: 2px;
     }
 
     &:hover {

@@ -7,11 +7,12 @@ on:
   push:
     branches: [main, develop]
     tags: [v*]
-
+  workflow_dispatch: # Manually trigger it via UI/CLI/API
 
 env:
   REPO_NAME_SLUG: cowswap
   PR_NUMBER: ${{ github.event.number }}
+  NODE_VERSION: lts/gallium
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
@@ -32,11 +33,11 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Set output of cache
         id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn cache
         uses: actions/cache@v2
@@ -82,7 +83,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
@@ -111,6 +112,7 @@ jobs:
       #   uses: coverallsapp/github-action@v1.1.2
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
+
   lint:
     name: Lint
     needs: setup
@@ -123,7 +125,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
@@ -169,7 +171,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
@@ -191,6 +193,11 @@ jobs:
             src/locales
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
+      - name: Build Cosmos
+        id: build-cosmos
+        if: env.PR_NUMBER # only build cosmos on PRs
+        run: yarn cosmos:export
+
       - name: Build Web Apps
         run: yarn build
 
@@ -199,6 +206,39 @@ jobs:
         with:
           name: website
           path: build
+
+  vercel-dev:
+    # Deploys to Vercel dev environment
+    name: Vercel dev
+    needs: [test, lint]
+    if: github.ref == 'refs/heads/develop'
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: dev
+
+  vercel-pre-prod:
+    # Deploys to Vercel staging and barn environments
+    name: Vercel pre-prod
+    needs: [test, lint]
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    strategy:
+      matrix:
+        env_name: [barn, staging] # deploys both in parallel
+    with:
+      env_name: ${{ matrix.env_name }}
+
+  vercel-prod:
+    # Deploys to Vercel prod environment
+    name: Vercel prod
+    needs: [test, lint]
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: prod
 
   deploy:
     name: Deploy
@@ -227,7 +267,8 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            * **🔭 [GP Swap](${{ env.REVIEW_FEATURE_URL }})**: CoW Protocol v2 Swap UI
+            * **🔭 [CoW Swap preview](${{ env.REVIEW_FEATURE_URL }})**: CoW Swap UI
+            * **🌌 [Cosmos](${{ env.REVIEW_FEATURE_URL }}/cosmos/)**: Cosmos
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
         if: env.PR_NUMBER
@@ -244,7 +285,7 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+        run: echo "VERSION=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_OUTPUT
 
       - name: 'Production deployment: Upload release build files to be deployed'
         if: startsWith(github.ref, 'refs/tags/v')
@@ -272,12 +313,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
-
-      # - name: Download website
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: website
+          node-version: ${{ env.NODE_VERSION }}
 
       # Install deps only
       - name: Cypress install dependencies

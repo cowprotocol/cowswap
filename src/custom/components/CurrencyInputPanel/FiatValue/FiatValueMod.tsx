@@ -20,25 +20,40 @@ export function FiatValue({
   priceImpact,
   priceImpactLoading, // mod
   className, // mod
+  isLoading, // mod
 }: {
   fiatValue: CurrencyAmount<Currency> | null | undefined
   priceImpact?: Percent
   priceImpactLoading?: boolean
   className?: string // mod
+  isLoading?: boolean // mod
 }) {
   const theme = useTheme()
   const priceImpactColor = useMemo(() => {
     if (!priceImpact) return undefined
-    if (priceImpact.lessThan('0')) return theme.green1
+    if (priceImpact.lessThan('0'))
+      // return theme.green1
+      return theme.success // MOD
     const severity = warningSeverity(priceImpact)
-    if (severity < 1) return theme.text3
-    if (severity < 3) return theme.yellow1
+    // if (severity < 1) return theme.text3
+    if (severity < 1) return theme.text1 // MOD
+    // if (severity < 3) return theme.yellow1
+    if (severity < 3) return theme.danger // MOD
     return theme.red1
-  }, [priceImpact, theme.green1, theme.red1, theme.text3, theme.yellow1])
+  }, [
+    priceImpact,
+    // theme.green1,
+    theme.success, // MOD
+    theme.red1,
+    // theme.text3,
+    theme.text1, // MOD
+    // theme.yellow1
+    theme.danger, // MOD
+  ])
 
   return (
     <ThemedText.Body className={className} fontSize={14} color={fiatValue ? theme.text1 : theme.text4}>
-      {fiatValue ? (
+      {fiatValue && !isLoading ? (
         <Trans>
           ≈ $
           <HoverInlineText

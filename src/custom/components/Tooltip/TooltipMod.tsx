@@ -9,7 +9,6 @@ const TooltipContainer = styled.div`
   padding: 0.6rem 1rem;
   font-weight: 400;
   word-break: break-word;
-  font-size: smaller; //  mod
 
   /* background: ${({ theme }) => theme.bg0};
   border-radius: 12px;
@@ -66,7 +65,7 @@ export function MouseoverTooltipContent({
   return (
     <TooltipContent {...rest} show={show} content={disableHover ? null : content}>
       <div
-        style={{ display: 'inline-block', lineHeight: 0, padding: '0.25rem' }}
+        // style={{ display: 'inline-block', lineHeight: 0, padding: '0.25rem' }}
         onMouseEnter={open}
         onMouseLeave={close}
       >

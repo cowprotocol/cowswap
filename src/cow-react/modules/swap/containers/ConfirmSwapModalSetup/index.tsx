@@ -5,7 +5,6 @@ import { Percent } from '@uniswap/sdk-core'
 import { Field } from 'state/swap/actions'
 import { useAtomValue } from 'jotai/utils'
 import { swapConfirmAtom } from '@cow/modules/swap/state/swapConfirmAtom'
-import { HandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwap'
 import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { useSwapActionHandlers } from 'state/swap/hooks'
@@ -13,6 +12,8 @@ import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useCloseModals } from 'state/application/hooks'
 import { transactionConfirmAtom } from '@cow/modules/swap/state/transactionConfirmAtom'
+import { HandleSwapCallback } from '@cow/modules/swap/pure/SwapButtons'
+import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export interface ConfirmSwapModalSetupProps {
   trade: TradeGp | undefined
@@ -20,11 +21,12 @@ export interface ConfirmSwapModalSetupProps {
   allowedSlippage: Percent
   handleSwap: HandleSwapCallback
   priceImpact?: Percent
+  rateInfoParams: RateInfoParams
   dismissNativeWrapModal(): void
 }
 
 export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
-  const { trade, recipient, allowedSlippage, priceImpact, handleSwap, dismissNativeWrapModal } = props
+  const { trade, recipient, allowedSlippage, priceImpact, handleSwap, dismissNativeWrapModal, rateInfoParams } = props
 
   const swapConfirmState = useAtomValue(swapConfirmAtom)
   const { operationType, pendingText } = useAtomValue(transactionConfirmAtom)
@@ -53,6 +55,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
   return (
     <>
       <ConfirmSwapModal
+        rateInfoParams={rateInfoParams}
         swapConfirmState={swapConfirmState}
         trade={trade}
         onAcceptChanges={handleAcceptChanges}

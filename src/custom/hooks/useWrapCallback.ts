@@ -13,11 +13,12 @@ import { getOperationMessage, OperationType } from '../components/TransactionCon
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { isRejectRequestProviderError } from '../utils/misc'
 import { wrapAnalytics } from 'components/analytics'
-import { useDerivedSwapInfo, useDetectNativeToken } from 'state/swap/hooks'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useCloseModals } from 'state/application/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useCurrencyBalance } from 'state/connection/hooks'
 import { useTransactionConfirmModal } from '@cow/modules/swap/hooks/useTransactionConfirmModal'
+import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -28,11 +29,11 @@ export enum WrapType {
   UNWRAP,
 }
 
-interface WrapUnwrapCallbackParams {
+export interface WrapUnwrapCallbackParams {
   useModals?: boolean
 }
 
-export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<TransactionResponse>
+export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<TransactionResponse | null>
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
 
@@ -56,7 +57,7 @@ export function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<C
   const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT?.wrapped)
 
   // is an native currency trade but wrapped token has enough balance
-  return !!(wrappedBalance && inputAmount && wrappedBalance.greaterThan(inputAmount))
+  return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))
 }
 
 export function useWrapType(): WrapType {
@@ -91,7 +92,9 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
   return !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
 }
 
-export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapContext | null {
+export function useWrapUnwrapContext(
+  inputAmount: CurrencyAmount<Currency> | null | undefined
+): WrapUnwrapContext | null {
   const { chainId } = useWeb3React()
   const closeModals = useCloseModals()
   const wethContract = useWETHContract()
@@ -112,9 +115,9 @@ export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | und
   const amountHex = `0x${inputAmount.quotient.toString(RADIX_HEX)}`
   const operationType = isWrap ? OperationType.WRAP_ETHER : OperationType.UNWRAP_WETH
   const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
-  const baseSummary = t`${formatSmart(inputAmount, AMOUNT_PRECISION)} ${baseSummarySuffix}`
-  const summary = t`${isWrap ? 'Wrap' : 'Unwrap'} ${baseSummary}`
-  const confirmationMessage = t`${isWrap ? 'Wrapping' : 'Unwrapping'} ${baseSummary}`
+  const baseSummary = `${formatSmart(inputAmount, AMOUNT_PRECISION)} ${baseSummarySuffix}`
+  const summary = `${isWrap ? 'Wrap' : 'Unwrap'} ${baseSummary}`
+  const confirmationMessage = `${isWrap ? 'Wrapping' : 'Unwrapping'} ${baseSummary}`
   const operationMessage = getOperationMessage(operationType, chainId)
 
   return {
@@ -133,7 +136,7 @@ export function useWrapUnwrapContext(inputAmount: CurrencyAmount<Currency> | und
 /**
  * Given the selected input and output currency, return a wrap callback
  */
-export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | undefined): WrapUnwrapCallback | null {
+export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | null | undefined): WrapUnwrapCallback | null {
   const context = useWrapUnwrapContext(inputAmount)
 
   if (!context) {
@@ -148,7 +151,7 @@ export function useWrapCallback(inputAmount: CurrencyAmount<Currency> | undefine
 export async function wrapUnwrapCallback(
   context: WrapUnwrapContext,
   params: WrapUnwrapCallbackParams = { useModals: true }
-): Promise<TransactionResponse> {
+): Promise<TransactionResponse | null> {
   const { useModals } = params
   const {
     wrapType,
@@ -188,6 +191,10 @@ export async function wrapUnwrapCallback(
 
     const errorMessage = (isRejected ? 'Reject' : 'Error') + ' Signing transaction'
     console.error(errorMessage, error)
+
+    if (isRejected) {
+      return null
+    }
 
     throw typeof error === 'string' ? new Error(error) : error
   }

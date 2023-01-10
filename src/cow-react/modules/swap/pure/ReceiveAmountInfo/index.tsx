@@ -21,6 +21,13 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const typeString = type === 'from' ? '+' : '-'
   const hasFee = feeAmount !== '0'
 
+  const FeePercent = (
+    <span>
+      <Trans>Fee</Trans>
+      {hasFee && discount ? ` [-${discount}%]` : ''}
+    </span>
+  )
+
   return (
     <styledEl.Box>
       <div>
@@ -32,19 +39,18 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
         </span>
       </div>
       <div>
-        <span className={discount ? 'green' : ''}>
-          <Trans>Fee</Trans>
-          {hasFee && discount ? ` [-${discount}%]` : ''}
-        </span>
+        {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
         {hasFee ? (
           <span>
             {typeString}
             {feeAmount} {currency.symbol}
           </span>
         ) : (
-          <strong className="green">
-            <Trans>Free</Trans>
-          </strong>
+          <styledEl.GreenText>
+            <strong>
+              <Trans>Free</Trans>
+            </strong>
+          </styledEl.GreenText>
         )}
       </div>
       {allowsOffchainSigning && (
@@ -52,9 +58,11 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <span>
             <Trans>Gas cost</Trans>
           </span>
-          <styledEl.GasCost>
-            <Trans>Free</Trans>
-          </styledEl.GasCost>
+          <styledEl.GreenText>
+            <strong>
+              <Trans>Free</Trans>
+            </strong>
+          </styledEl.GreenText>
         </div>
       )}
       <styledEl.TotalAmount>

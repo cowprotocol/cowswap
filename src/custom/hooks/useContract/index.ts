@@ -1,25 +1,41 @@
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { GP_SETTLEMENT_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import {
+  COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
+  GP_SETTLEMENT_CONTRACT_ADDRESS,
+  V_COW_CONTRACT_ADDRESS,
+} from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
+import { abi as COWSWAP_ETHFLOW_ABI } from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
 import GPv2_SETTLEMENT_ABI from '@cow/abis/GPv2Settlement.json'
 import V_COW_ABI from '@cow/abis/vCow.json'
 import ENS_ABI from 'abis/ens-registrar.json'
 import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
-import { GPv2Settlement, VCow, Erc20 } from '@cow/abis/types'
+import { CoWSwapEthFlow, GPv2Settlement, VCow, Erc20 } from '@cow/abis/types'
 
 import { useWeb3React } from '@web3-react/core'
 import { getContract } from 'utils'
 
 import { useContract } from '@src/hooks/useContract'
+import { isEns, isProd, isStaging } from 'utils/environments'
 
 export * from '@src/hooks/useContract'
 export * from './useContractMod'
 
 // Custom (non-MOD) hooks
+
+export function useEthFlowContract(): CoWSwapEthFlow | null {
+  const { chainId } = useWeb3React()
+
+  const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
+
+  const contractAddress = chainId ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv][chainId] : undefined
+
+  return useContract<CoWSwapEthFlow>(contractAddress, COWSWAP_ETHFLOW_ABI, true)
+}
 
 export function useGP2SettlementContract(): GPv2Settlement | null {
   const { chainId } = useWeb3React()
@@ -41,7 +57,6 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
   if (chainId) {
     switch (chainId) {
       case ChainId.MAINNET:
-      case ChainId.RINKEBY:
       case ChainId.GOERLI: // TODO: check this
         address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
         break

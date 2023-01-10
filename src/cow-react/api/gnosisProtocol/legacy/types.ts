@@ -1,10 +1,4 @@
-import {
-  FeeInformation,
-  FeeQuoteParams,
-  PriceInformation,
-  PriceQuoteParams,
-  SupportedChainId as ChainId,
-} from '@cowprotocol/cow-sdk'
+import { FeeInformation, FeeQuoteParams, PriceInformation, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'state/gas/atoms'
 
 export interface LegacyQuoteParams {
@@ -32,9 +26,13 @@ export type LegacyFeeQuoteParams = FeeQuoteParams & {
   chainId: ChainId
   priceQuality?: string
   isBestQuote?: boolean
+  isEthFlow: boolean
 }
 
-export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'sellToken' | 'buyToken'> & PriceQuoteParams
+export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'isEthFlow' | 'sellToken' | 'buyToken'> & {
+  baseToken: string
+  quoteToken: string
+}
 
 export type LegacyPriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
 export type LegacyPriceInformationWithSource = PriceInformation & { source: LegacyPriceSource; data?: any }

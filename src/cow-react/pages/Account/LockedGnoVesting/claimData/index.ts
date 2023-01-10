@@ -1,6 +1,5 @@
 import { SupportedChainId } from 'constants/chains'
 import mainnetIndex from './mainnet.json'
-import rinkebyIndex from './rinkeby.json'
 import gnosisChainIndex from './gnosisChain.json'
 import goerliIndex from './goerli.json'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -13,14 +12,12 @@ interface Claim {
 
 const indexFiles = {
   [SupportedChainId.MAINNET]: mainnetIndex,
-  [SupportedChainId.RINKEBY]: rinkebyIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
   [SupportedChainId.GOERLI]: goerliIndex,
 }
 
 const chainNames = {
   [SupportedChainId.MAINNET]: 'mainnet',
-  [SupportedChainId.RINKEBY]: 'rinkeby',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
   [SupportedChainId.GOERLI]: 'goerli',
 }
@@ -47,10 +44,7 @@ export const fetchClaim = async (address: string, chainId: SupportedChainId): Pr
 // see: https://github.com/gnosis/locked-gno-cow-merkle-distro/blob/main/chunkClaimData.js
 // Our index json gives the first address of each chunk.
 // This function returns the chunk index for the given address, or -1 if the address is lower than the lowest address in the index.
-const lookupChunkIndex = (
-  chunkIndexJson: typeof mainnetIndex | typeof rinkebyIndex | typeof gnosisChainIndex,
-  address: string
-) => {
+const lookupChunkIndex = (chunkIndexJson: typeof mainnetIndex | typeof gnosisChainIndex, address: string) => {
   let nextChunkIndex = chunkIndexJson.findIndex((a) => address < a)
   if (nextChunkIndex === -1) nextChunkIndex = chunkIndexJson.length
   return nextChunkIndex - 1
