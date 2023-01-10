@@ -1,20 +1,46 @@
 name: PR comments
 
 on:
-  # Runs on every comment on both issues and PRs
   issue_comment:
-    types: [created, edited]
+    types: edited
+
+env:
+  APP_NAME: Cosmos 🌃
+  APP_PATH: /cosmos/
 
 jobs:
   pr_commented:
     name: PR comment
-    # Only trigger it for PRs
-    if: ${{ github.event.issue.pull_request }}
+    if: github.event.comment.sender.login == 'vercel[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Event log
-        run: |
-          echo $EVENT >> $GITHUB_STEP_SUMMARY
-        env:
-          EVENT: ${{ toJSON(github.event) }}
+      - name: Get new body
+        id: getBody
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const body = context.payload.comment.body
+            const match = body.match(/Preview]\((.*?)\)/)
+            const url = match?.[1]
 
+            if (!url) {
+              console.log('Couldn\'t get the url from the comment body', { match, body })
+              return ''
+            }
+
+            const toAppend = `\$1\n\n[**${process.env.APP_NAME}** ↗︎](${url}${process.env.APP_PATH})`
+
+            return body.replace(/(vercel\.app\) \| .*? \|)([\s\S]*$)/m, toAppend)
+          result-encoding: string
+
+      - name: 'Debug: print body result'
+        run: echo "${{ steps.getBody.outputs.result }}"
+
+      - name: Update comment
+        if: steps.getBody.outputs.result != ''
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          body: ${{ steps.getBody.outputs.result }}
+          reactions: eyes
+          edit-mode: replace
