@@ -16,24 +16,6 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
     case SupportedChainId.MAINNET:
     case SupportedChainId.GOERLI:
       return [RPC_URLS[chainId]]
-    // case SupportedChainId.ROPSTEN:
-    // case SupportedChainId.KOVAN:
-    // case SupportedChainId.OPTIMISM:
-    //   return ['https://mainnet.optimism.io']
-    // case SupportedChainId.OPTIMISTIC_KOVAN:
-    //   return ['https://kovan.optimism.io']
-    // case SupportedChainId.ARBITRUM_ONE:
-    //   return ['https://arb1.arbitrum.io/rpc']
-    // case SupportedChainId.ARBITRUM_RINKEBY:
-    //   return ['https://rinkeby.arbitrum.io/rpc']
-    // case SupportedChainId.POLYGON:
-    //   return ['https://polygon-rpc.com/']
-    // case SupportedChainId.POLYGON_MUMBAI:
-    //   return ['https://rpc-endpoints.superfluid.dev/mumbai']
-    // case SupportedChainId.CELO:
-    //   return ['https://forno.celo.org']
-    // case SupportedChainId.CELO_ALFAJORES:
-    //   return ['https://alfajores-forno.celo-testnet.org']
     case SupportedChainId.GNOSIS_CHAIN:
       return ['https://rpc.gnosischain.com/']
     default:
