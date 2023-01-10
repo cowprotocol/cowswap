@@ -1,5 +1,5 @@
 window.addEventListener('load', function () {
-  var serverUrl = 'ws://dev.angelrf.com:8801'
+  var serverUrl = 'ws://localhost:8801'
 
   //сцена
   var scene = new Scene({

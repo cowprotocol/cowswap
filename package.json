@@ -106,6 +106,7 @@
     "inter-ui": "^3.13.1",
     "jest-fetch-mock": "^3.0.3",
     "jest-styled-components": "^7.0.5",
+    "nodejs-websocket": "^1.7.2",
     "npm-run-all": "^4.1.5",
     "patch-package": "^6.4.7",
     "polyfill-object.fromentries": "^1.0.1",
@@ -178,6 +179,7 @@
     "cosmos:export": "cross-env NODE_ENV=development cosmos-export",
     "widgets:build": "rollup --config --failAfterWarnings --configPlugin typescript2",
     "sitemap": "node src/custom/sitemap",
+    "start-cow-bro-server": "node public/games/SuperCowBro/server/index.js",
     "writeVersion": "node src/custom/writeVersion"
   },
   "jest": {

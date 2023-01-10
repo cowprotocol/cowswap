@@ -127,6 +127,12 @@ export const MAIN_MENU: MenuTreeItem[] = [
           { id: MainMenuItemId.OTHER_COW_RUNNER, title: 'CoW Runner', url: Routes.PLAY_COWRUNNER, icon: IMAGE_GAME },
           { id: MainMenuItemId.OTHER_MEV_SLICER, title: 'MEV Slicer', url: Routes.PLAY_MEVSLICER, icon: IMAGE_SLICER },
           {
+            id: MainMenuItemId.PLAY_SUPER_COW_BRO,
+            title: 'Super CoW Bro',
+            url: Routes.PLAY_SUPER_COW_BRO,
+            icon: IMAGE_GAME,
+          },
+          {
             id: MainMenuItemId.OTHER_TERMS_AND_CONDITIONS,
             title: 'Terms and Conditions',
             url: Routes.TERMS_CONDITIONS,
