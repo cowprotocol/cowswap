@@ -1,0 +1,1 @@
+Please update your wallet's network configuration to Gnosis Chain's new recommended RPC: https://rpc.gnosis.gateway.fm. For more info visit [Gnosis Chain RPC providers](https://docs.gnosischain.com/tools/rpc/#gateway)
