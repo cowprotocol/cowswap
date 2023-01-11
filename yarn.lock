@@ -15902,11 +15902,6 @@ node-vibrant@^3.2.1-alpha.1:
     "@vibrant/quantizer-mmcq" "^3.2.1-alpha.1"
     url "^0.11.0"
 
-nodejs-websocket@^1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/nodejs-websocket/-/nodejs-websocket-1.7.2.tgz#94abd1e248f57d4d1c663dec3831015c6dad98a6"
-  integrity sha512-PFX6ypJcCNDs7obRellR0DGTebfUhw1SXGKe2zpB+Ng1DQJhdzbzx1ob+AvJCLzy2TJF4r8cCDqMQqei1CZdPQ==
-
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4, normalize-package-data@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.5.0.tgz#e66db1838b200c1dfc233225d12cb36520e234a8"

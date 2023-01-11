@@ -8,6 +8,19 @@ const Wrapper = styled(Page)`
   max-width: 950px;
 `
 
+const IframeStyled = styled.iframe`
+  margin: 0 auto;
+  display: block;
+  border: 1px solid #000;
+  box-sizing: content-box;
+`
+
+const Title = styled.p`
+  margin: 40px 0 20px 0;
+  text-align: center;
+  font-size: 22px;
+`
+
 const GAME_NAME = 'Super CoW Bro'
 
 export default function SuperCowBro() {
@@ -18,26 +31,19 @@ export default function SuperCowBro() {
   return (
     <Wrapper>
       <PageTitle title={GAME_NAME + ' 🤟'} />
-      <p>
+      <Title>
         Try to <strong>collect $COINS</strong> 🤑 and <strong>scape</strong> from the deadly{' '}
         <strong>Sandwitch attacks</strong> 🔪🥪
-      </p>
-      <ul>
-        <ol>
-          <li>Write the name of your CoW</li>
-          <li>Select your level of difficulty</li>
-          <li>Press PLAY!</li>
-        </ol>
-      </ul>
+      </Title>
 
       <Content>
-        <iframe
-          src="/games/SuperCowBro/index.html"
+        <IframeStyled
+          src="https://cowrunner.herokuapp.com"
           title={GAME_NAME}
-          width="100%"
-          height="650px"
+          width="840px"
+          height="480px"
           frameBorder="0"
-        ></iframe>
+        ></IframeStyled>
       </Content>
     </Wrapper>
   )
