@@ -128,6 +128,7 @@ const ButtonGroup = styled.div`
   gap: 12px;
   margin: 12px 0 0;
   width: 100%;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
   `}
@@ -168,7 +169,7 @@ const ButtonCustom = styled.button`
 const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  padding: 16px;
+  padding: 16px 0;
 
   > div {
     padding: 0;
@@ -180,10 +181,10 @@ const LowerSection = styled.div`
   flex-flow: column wrap;
   background: ${({ theme }) => theme.grey1};
   padding: 32px;
-  margin: 16px auto 0;
+  margin: 16px auto;
+  border-radius: 16px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: 100%;
   `}
 
   > h3 {
