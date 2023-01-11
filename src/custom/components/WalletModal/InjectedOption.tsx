@@ -30,9 +30,7 @@ export function InstallMetaMaskOption() {
 }
 
 export function OpenMetaMaskMobileOption() {
-  return (
-    <Option {...METAMASK_PROPS} header={<Trans>Open MetaMask</Trans>} link={METAMASK_DEEP_LINK + window.location} />
-  )
+  return <Option {...METAMASK_PROPS} header={<Trans>MetaMask</Trans>} link={METAMASK_DEEP_LINK + window.location} />
 }
 
 export function MetaMaskOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
