@@ -1,24 +1,19 @@
 import styled from 'styled-components/macro'
-import * as CSS from 'csstype'
 
 // with font size convert to rems
-export const Txt = styled.span<
-  Partial<
-    CSS.Properties & {
-      fs?: number
-      secondary?: boolean
-      center?: boolean
-    }
-  >
->`
+export const Txt = styled.span<{
+  fontSize?: number
+  fontWeight?: number
+  lineHeight?: number
+  center?: boolean
+  gap?: number
+}>`
   display: inline-flex;
   align-items: center;
-  text-align: ${(props) => (props.center ? 'center' : 'left')};
-  font-size: ${(props) => (props.fs ? props.fs : 12)}px;
-  line-height: ${(props) => (props.fs ? props.fs * 1.21 + 'px' : 1.21)};
-  color: ${({ theme, secondary }) => (secondary ? theme.text6 : theme.text1)};
-  ${({ theme, fs }) => theme.mediaWidth.upToMedium`
-    font-size: ${fs ? fs * 0.8 : 12}px;
-  `}
-  min-height: 22px;
+  text-align: ${({ center }) => (center ? 'center' : 'left')};
+  font-size: ${({ fontSize }) => `${fontSize ? fontSize : 12}px`};
+  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : 'normal')};
+  line-height: ${({ lineHeight }) => (lineHeight ? `${lineHeight}px` : 1.2)};
+  color: ${({ theme }) => theme.text1};
+  gap: ${({ gap }) => (gap ? `${gap}px` : 0)};
 `
