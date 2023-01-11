@@ -9,9 +9,18 @@ env:
   APP_PATH: /cosmos/
 
 jobs:
+  summary_debug:
+    name: Summary debug
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo $EVENT >> $GITHUB_STEP_SUMMARY
+        env:
+          EVENT: ${{ toJSON(github.event) }}
+
   pr_commented:
     name: PR comment
-    if: github.event.comment.sender.login == 'vercel[bot]'
+    if: ${{ github.event.comment.sender.login == 'vercel[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Get new body
@@ -37,7 +46,7 @@ jobs:
         run: echo "${{ steps.getBody.outputs.result }}"
 
       - name: Update comment
-        if: steps.getBody.outputs.result != ''
+        if: ${{ steps.getBody.outputs.result != '' }}
         uses: peter-evans/create-or-update-comment@v2
         with:
           comment-id: ${{ github.event.comment.id }}
