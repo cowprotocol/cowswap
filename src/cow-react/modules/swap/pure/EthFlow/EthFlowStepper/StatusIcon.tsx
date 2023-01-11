@@ -9,6 +9,10 @@ const Content = styled.span`
   display: flex;
   flex-flow: column wrap;
   gap: 6px;
+
+  > a {
+    white-space: pre;
+  }
 `
 
 const StepIcon = styled.div<{ status: StatusIconState }>`
