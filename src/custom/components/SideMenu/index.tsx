@@ -17,6 +17,7 @@ export const SideMenu = styled.div<{ isAccountPage?: boolean }>`
 
   ${({ theme, isAccountPage }) => theme.mediaWidth[isAccountPage ? 'upToMedium' : 'upToSmall']`
   padding: 0;
+  margin: 0;
   position: relative;
 `}
 
