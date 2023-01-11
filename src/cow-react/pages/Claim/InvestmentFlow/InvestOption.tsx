@@ -14,7 +14,7 @@ import {
   UserMessage,
   WarningWrapper,
 } from '../styled'
-import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'

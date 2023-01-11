@@ -3,7 +3,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
 
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import {
   Summary,
   SummaryInner,

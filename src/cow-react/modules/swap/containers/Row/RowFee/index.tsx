@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
 
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from '@cow/utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { RowFeeContent } from '@cow/modules/swap/pure/Row/RowFeeContent'

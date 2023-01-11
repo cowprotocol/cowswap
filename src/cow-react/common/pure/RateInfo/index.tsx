@@ -1,4 +1,4 @@
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'

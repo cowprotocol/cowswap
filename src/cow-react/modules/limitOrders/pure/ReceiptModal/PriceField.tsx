@@ -1,7 +1,7 @@
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { Fraction } from '@uniswap/sdk-core'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 
 interface Props {
   order: ParsedOrder

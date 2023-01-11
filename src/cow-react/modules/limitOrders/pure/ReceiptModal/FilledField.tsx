@@ -2,7 +2,7 @@
 import { useMemo } from 'react'
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from '@cow/utils/format'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { BigNumber } from 'bignumber.js'

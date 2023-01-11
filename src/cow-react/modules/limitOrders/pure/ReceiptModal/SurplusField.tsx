@@ -1,7 +1,7 @@
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { OrderKind } from 'state/orders/actions'
 import * as styledEl from './styled'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 interface Props {

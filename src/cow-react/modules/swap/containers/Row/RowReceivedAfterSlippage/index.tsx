@@ -4,7 +4,7 @@ import { Percent, TradeType } from '@uniswap/sdk-core'
 import { RowReceivedAfterSlippageContent } from '@cow/modules/swap/pure/Row/RowReceivedAfterSlippageContent'
 
 import { Field } from 'state/swap/actions'
-import { formatMax } from 'utils/format'
+import { formatMax } from '@cow/utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/typings'

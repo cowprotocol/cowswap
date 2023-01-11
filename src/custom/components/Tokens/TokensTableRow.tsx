@@ -12,7 +12,7 @@ import {
   TokenText,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from '@cow/utils/format'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'

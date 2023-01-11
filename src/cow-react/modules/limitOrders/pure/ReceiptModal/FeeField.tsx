@@ -1,5 +1,5 @@
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 

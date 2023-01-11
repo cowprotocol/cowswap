@@ -1,7 +1,7 @@
 import { Order, OrderFulfillmentData, OrderKind, OrderStatus } from 'state/orders/actions'
 import { getOrder, OrderID, OrderMetaData } from '@cow/api/gnosisProtocol'
 import { stringToCurrency } from 'state/swap/extension'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { SupportedChainId as ChainId } from 'constants/chains'

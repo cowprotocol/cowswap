@@ -9,7 +9,7 @@ import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hoo
 import { AMOUNT_PRECISION } from 'constants/index'
 
 import { supportedChainId } from 'utils/supportedChainId'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
 // Components

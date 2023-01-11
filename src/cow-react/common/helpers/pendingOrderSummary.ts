@@ -1,5 +1,5 @@
 import { Order, OrderKind } from 'state/orders/actions'
-import { formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from '@cow/utils/format'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 export function pendingOrderSummary(order: Order): string {

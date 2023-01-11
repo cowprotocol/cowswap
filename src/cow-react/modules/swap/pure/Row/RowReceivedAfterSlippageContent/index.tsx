@@ -7,7 +7,7 @@ import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 
 import { getMinimumReceivedTooltip } from 'utils/tooltips'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { StyledRowBetween, TextWrapper } from '../styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/types'

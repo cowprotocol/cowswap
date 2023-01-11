@@ -26,7 +26,7 @@ import { LoadingRows /*, MenuItem*/ } from 'components/SearchModal/styleds'
 
 // MOD imports
 import { MenuItem } from '.' // mod
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 

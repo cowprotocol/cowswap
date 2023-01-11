@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'

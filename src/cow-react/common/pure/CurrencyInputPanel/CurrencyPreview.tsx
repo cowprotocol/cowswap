@@ -1,7 +1,7 @@
 import React from 'react'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
-import { formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from '@cow/utils/format'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
