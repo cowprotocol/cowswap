@@ -17,7 +17,7 @@ import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 import { replaceURLParam } from 'utils/routes'
 import { isChainAllowed, switchChain } from 'utils/switchChain'
-import { isMobile } from 'utils/userAgent'
+// import { isMobile } from 'utils/userAgent'
 
 // Mod imports
 import {
@@ -33,6 +33,7 @@ import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWa
 import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
 import { useTradeTypeInfo } from '@cow/modules/trade'
+import { useMediaQuery, upToMedium } from 'hooks/useMediaQuery'
 
 /* const ActiveRowLinkList = styled.div`
   display: flex;
@@ -463,6 +464,9 @@ export default function NetworkSelector() {
     }
   }, [addPopup, chainId, dispatch, isUnsupportedNetwork, removePopup])
 
+  // Mod: Detect viewport changes and set isUpToMedium
+  const isUpToMedium = useMediaQuery(upToMedium)
+
   if (!chainId || !provider || isSmartContractWallet) {
     return null
   }
@@ -472,9 +476,9 @@ export default function NetworkSelector() {
   return (
     <SelectorWrapper
       ref={node}
-      onMouseEnter={openModal}
-      onMouseLeave={closeModal}
-      onClick={isMobile ? toggleModal : undefined}
+      onMouseEnter={!isUpToMedium ? openModal : undefined}
+      onMouseLeave={!isUpToMedium ? closeModal : undefined}
+      onClick={isUpToMedium ? toggleModal : undefined}
     >
       <SelectorControls supportedChain={!!isChainSupported}>
         {isChainSupported ? (
