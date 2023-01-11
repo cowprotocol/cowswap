@@ -80,16 +80,16 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.QuoteError
   }
 
-  if (!inputCurrency || !outputCurrency) {
-    return LimitOrdersFormState.NeedToSelectToken
+  if (isSwapUnsupported) {
+    return LimitOrdersFormState.SwapIsUnsupported
   }
 
   if (!account) {
     return LimitOrdersFormState.WalletIsNotConnected
   }
 
-  if (isSwapUnsupported) {
-    return LimitOrdersFormState.SwapIsUnsupported
+  if (!inputCurrency || !outputCurrency) {
+    return LimitOrdersFormState.NeedToSelectToken
   }
 
   if (isWrapOrUnwrap) {
