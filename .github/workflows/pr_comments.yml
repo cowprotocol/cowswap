@@ -44,4 +44,3 @@ jobs:
           body: ${{ steps.getBody.outputs.result }}
           reactions: eyes
           edit-mode: replace
-          # pointless comment, remove me
