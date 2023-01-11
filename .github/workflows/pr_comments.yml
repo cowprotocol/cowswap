@@ -18,12 +18,12 @@ jobs:
         env:
           EVENT: ${{ toJSON(github.event) }}
           COMMENT: ${{ toJSON(github.event.comment) }}
-          SENDER: ${{ toJSON(github.event.comment.sender) }}
-          LOGIN: ${{ github.event.comment.sender.login }}
+          SENDER: ${{ toJSON(github.event.sender) }}
+          LOGIN: ${{ github.event.sender.login }}
 
   pr_commented:
     name: PR comment
-    if: ${{ github.event.comment.sender.login == 'vercel[bot]' }}
+    if: ${{ github.event.sender.login == 'vercel[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Get new body
