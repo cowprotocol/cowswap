@@ -169,6 +169,8 @@ function popOrder(state: OrdersState, chainId: ChainId, status: OrderStatus, id:
   return orderObj
 }
 
+const STATES_FOR_ORDERS_NOT_YET_OPEN = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+
 function getValidTo(apiAdditionalInfo: OrderInfoApi | undefined, order: SerializedOrder): number {
   return (apiAdditionalInfo?.ethflowData?.userValidTo || order.validTo) as number
 }
@@ -181,7 +183,7 @@ export default createReducer(initialState, (builder) =>
       prefillState(state, action)
       const { order, id, chainId } = action.payload
 
-      order.openSince = order.status === OrderStatus.PRESIGNATURE_PENDING ? undefined : Date.now()
+      order.openSince = STATES_FOR_ORDERS_NOT_YET_OPEN.includes(order.status) ? undefined : Date.now()
 
       switch (order.status) {
         // EthFlow or PreSign orders have their respective buckets
@@ -255,6 +257,7 @@ export default createReducer(initialState, (builder) =>
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
               isCancelling: newOrder.isCancelling,
               class: newOrder.class,
+              openSince: newOrder.openSince || orderObj.order.openSince,
               status,
             }
           : { ...newOrder, validTo }
