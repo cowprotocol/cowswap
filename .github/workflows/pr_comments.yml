@@ -17,8 +17,9 @@ jobs:
           echo $EVENT >> $GITHUB_STEP_SUMMARY
         env:
           EVENT: ${{ toJSON(github.event) }}
-      - run: |
-          echo ${{ github.event.comment.sender.login }}
+          COMMENT: ${{ toJSON(github.event.comment) }}
+          SENDER: ${{ toJSON(github.event.comment.sender) }}
+          LOGIN: ${{ github.event.comment.sender.login }}
 
   pr_commented:
     name: PR comment
