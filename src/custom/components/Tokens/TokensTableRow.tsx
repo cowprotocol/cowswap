@@ -12,7 +12,7 @@ import {
   TokenText,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import { formatMax, formatSmart } from '@cow/utils/format'
+import { formatMax, formatSmart, formatSymbol } from '@cow/utils/format'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
@@ -174,7 +174,7 @@ const DataRow = ({
           <TokenText>
             <span>
               <b>{tokenData.name}</b>
-              <i>{tokenData.symbol}</i>
+              <i>{formatSymbol(tokenData.symbol)}</i>
             </span>
           </TokenText>
         </Link>

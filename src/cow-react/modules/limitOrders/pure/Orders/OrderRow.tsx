@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { formatSmart } from '@cow/utils/format'
+import { formatSmart, formatSymbol } from '@cow/utils/format'
 import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -162,7 +162,7 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
         <CurrencyLogo currency={amount.currency} size="24px" />
       </div>
       <span>
-        {formatSmart(amount)} {amount.currency.symbol}
+        {formatSmart(amount)} {formatSymbol(amount.currency.symbol)}
       </span>
     </AmountItem>
   )

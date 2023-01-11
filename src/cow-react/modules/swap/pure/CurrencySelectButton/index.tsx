@@ -2,6 +2,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import { Currency } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
+import { formatSymbol } from '@cow/utils/format'
 
 export interface CurrencySelectButtonProps {
   currency?: Currency
@@ -24,7 +25,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
     >
       {currency ? <CurrencyLogo currency={currency} size={'24px'} /> : <div></div>}
       <styledEl.CurrencySymbol className="token-symbol-container" $stubbed={$stubbed}>
-        {currency ? currency.symbol : <Trans>Select a token</Trans>}
+        {currency ? formatSymbol(currency.symbol) : <Trans>Select a token</Trans>}
       </styledEl.CurrencySymbol>
       {readonlyMode ? null : $stubbed ? <styledEl.ArrowDown $stubbed={$stubbed} /> : <styledEl.ArrowDown />}
     </styledEl.CurrencySelectWrapper>

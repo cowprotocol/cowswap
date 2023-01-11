@@ -3,7 +3,7 @@ import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
-import { formatSmartAmount } from '@cow/utils/format'
+import { formatSmartAmount, formatSymbol } from '@cow/utils/format'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
@@ -137,7 +137,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             {balance && !disabled && (
               <>
                 <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
-                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {formatSymbol(currency?.symbol)}
                   {showSetMax && balance.greaterThan(0) && (
                     <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
                   )}

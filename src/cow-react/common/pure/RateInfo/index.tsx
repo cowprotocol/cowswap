@@ -1,4 +1,4 @@
-import { formatSmart } from '@cow/utils/format'
+import { formatSmart, formatSymbol } from '@cow/utils/format'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
@@ -166,10 +166,10 @@ export function RateInfo({
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
               ' ' +
-              rateOutputCurrency.symbol
+              formatSymbol(rateOutputCurrency.symbol)
             }
           >
-            1 {rateInputCurrency.symbol} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
+            1 {formatSymbol(rateInputCurrency.symbol)} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
           </span>{' '}
           {!!fiatAmount && <FiatRate>(≈${formatSmart(fiatAmount, 2)})</FiatRate>}
         </RateWrapper>

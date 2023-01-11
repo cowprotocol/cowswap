@@ -1,6 +1,7 @@
 import { RateImpactIndicator } from '@cow/modules/limitOrders/pure/RateImpactIndicator'
 import { Currency } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
+import { formatSymbol } from '@cow/utils/format'
 
 type Props = {
   currency: string | undefined
@@ -24,7 +25,7 @@ export function HeadingText({ inputCurrency, currency, rateImpact }: Props) {
 
   return (
     <Wrapper>
-      Price per {currency}
+      Price per {formatSymbol(currency)}
       {<RateImpactIndicator inputCurrency={inputCurrency} rateImpact={rateImpact} />}
     </Wrapper>
   )

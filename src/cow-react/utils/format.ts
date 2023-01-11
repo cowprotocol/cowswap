@@ -191,3 +191,9 @@ export function truncateOnMaxDecimals(value: string, decimals: number): string {
   const regex = new RegExp(`(\\d*\\.\\d{${decimals}})\\d*`)
   return value.replace(regex, '$1')
 }
+
+const MAX_SYMBOL_LENGTH = 8
+
+export function formatSymbol(symbol: string | undefined): string | undefined {
+  return symbol && symbol.length > MAX_SYMBOL_LENGTH ? symbol.slice(0, MAX_SYMBOL_LENGTH) + '...' : symbol
+}
