@@ -38,7 +38,7 @@ export const GreenText = styled.span`
 export const Column = styled.div<{ isTotal?: boolean }>`
   display: grid;
   grid-template-columns: auto max-content;
-  gap: 16px;
+  gap: 24px;
   border-top: ${({ theme, isTotal }) => (isTotal ? `1px solid ${transparentize(0.7, theme.text1)}` : 'none')};
   font-weight: ${({ theme, isTotal }) => (isTotal ? `bold` : 'normal')};
   padding: ${({ theme, isTotal }) => (isTotal ? `calc(var(--gap) * 2) 0 0` : '0')};
