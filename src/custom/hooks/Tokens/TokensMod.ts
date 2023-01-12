@@ -27,8 +27,6 @@ export function useAllTokens(): { [address: string]: Token } {
   return useAtomValue(tokensByAddressAtom)
 }
 
-export function useSearchInactiveTokenLists(search: string | undefined, minResults = 10): Token[] {
-// strcitSearch means, that checkBySymbolAndAddress() will be used instead of getTokenFilter()
 export function useSearchInactiveTokenLists(
   search: string | undefined,
   minResults = 10,
