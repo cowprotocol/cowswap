@@ -53,7 +53,7 @@ export function useTokensListWithDefaults(): TokenInfo[] {
   return useMemo(() => {
     if (!chainId) return []
 
-    const userAddedTokens = Object.values(allUserAddedTokens[chainId]) as TokenInfo[]
+    const userAddedTokens = Object.values(allUserAddedTokens[chainId] || {}) as TokenInfo[]
     const defaultTokens = DEFAULT_TOKEN_LIST.tokens
     return allTokens
       .concat(defaultTokens)
