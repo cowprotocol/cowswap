@@ -20,7 +20,7 @@ export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
   CanTrade = 'CanTrade',
   Loading = 'Loading',
-  // SwapIsUnsupported = 'SwapIsUnsupported',
+  SwapIsUnsupported = 'SwapIsUnsupported',
   WrapUnwrap = 'WrapUnwrap',
   InvalidRecipient = 'InvalidRecipient',
   WalletIsUnsupported = 'WalletIsUnsupported',
@@ -37,7 +37,7 @@ export enum LimitOrdersFormState {
 
 interface LimitOrdersFormParams {
   account: string | undefined
-  isSwapSupported: boolean
+  isSwapUnsupported: boolean
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
   currentAllowance: CurrencyAmount<Token> | undefined
@@ -67,6 +67,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     isRateLoading,
     sellAmount,
     buyAmount,
+    isSwapUnsupported,
   } = params
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
@@ -75,29 +76,20 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   const inputAmountIsNotSet = !inputCurrencyAmount || inputCurrencyAmount.equalTo(0)
   const outputAmountIsNotSet = !outputCurrencyAmount || outputCurrencyAmount.equalTo(0)
 
+  if (quote?.error) {
+    return LimitOrdersFormState.QuoteError
+  }
+
+  if (isSwapUnsupported) {
+    return LimitOrdersFormState.SwapIsUnsupported
+  }
+
   if (!account) {
     return LimitOrdersFormState.WalletIsNotConnected
   }
 
   if (!inputCurrency || !outputCurrency) {
     return LimitOrdersFormState.NeedToSelectToken
-  }
-
-  // TODO: Do we need the check in Limit orders?
-  // if (!isSwapSupported) {
-  //   return LimitOrdersFormState.SwapIsUnsupported
-  // }
-
-  if (recipient !== null && !recipientEnsAddress && !isAddress(recipient)) {
-    return LimitOrdersFormState.InvalidRecipient
-  }
-
-  if (!isSupportedWallet) {
-    return LimitOrdersFormState.WalletIsUnsupported
-  }
-
-  if (isReadonlyGnosisSafeUser) {
-    return LimitOrdersFormState.ReadonlyGnosisSafeUser
   }
 
   if (isWrapOrUnwrap) {
@@ -112,6 +104,18 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
       return LimitOrdersFormState.AmountIsNotSet
     }
+  }
+
+  if (recipient !== null && !recipientEnsAddress && !isAddress(recipient)) {
+    return LimitOrdersFormState.InvalidRecipient
+  }
+
+  if (!isSupportedWallet) {
+    return LimitOrdersFormState.WalletIsUnsupported
+  }
+
+  if (isReadonlyGnosisSafeUser) {
+    return LimitOrdersFormState.ReadonlyGnosisSafeUser
   }
 
   if (!inputCurrencyBalance) {
@@ -132,10 +136,6 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
   if (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) {
     return LimitOrdersFormState.NotApproved
-  }
-
-  if (quote?.error) {
-    return LimitOrdersFormState.QuoteError
   }
 
   if (
@@ -165,13 +165,13 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
 
   const currentAllowance = useTokenAllowance(sellToken, account ?? undefined, spender)
   const approvalState = useTradeApproveState(sellAmount)
-  const isSwapSupported = useIsSwapUnsupported(inputCurrency, outputCurrency)
+  const isSwapUnsupported = useIsSwapUnsupported(inputCurrency, outputCurrency)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   const params: LimitOrdersFormParams = {
     account,
     isReadonlyGnosisSafeUser,
-    isSwapSupported,
+    isSwapUnsupported,
     isSupportedWallet,
     approvalState,
     currentAllowance,

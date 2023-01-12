@@ -35,6 +35,7 @@ export function useFetchMarketPrice() {
   useLayoutEffect(() => {
     const handleFetchQuote = () => {
       if (!feeQuoteParams || isWrapOrUnwrap) {
+        setLimitOrdersQuote({})
         return
       }
 
