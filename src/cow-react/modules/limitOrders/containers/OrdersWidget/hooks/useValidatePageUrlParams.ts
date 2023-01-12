@@ -14,7 +14,9 @@ export function useValidatePageUrlParams(orders: Order[], currentTabId: string, 
     const params = parseLimitOrdersPageParams(location.search)
 
     const shouldResetPageNumber =
-      currentPageNumber > pagesCount || currentPageNumber < 1 || currentPageNumber !== params.pageNumber
+      (pagesCount > 0 && currentPageNumber > pagesCount) ||
+      currentPageNumber < 1 ||
+      currentPageNumber !== params.pageNumber
     const shouldResetTabId = currentTabId !== params.tabId
 
     if (shouldResetPageNumber || shouldResetTabId) {
