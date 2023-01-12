@@ -6,7 +6,6 @@ import { GP_VAULT_RELAYER } from 'constants/index'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
 import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
-import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import useENSAddress from 'hooks/useENSAddress'
@@ -15,6 +14,7 @@ import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
@@ -165,7 +165,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
 
   const currentAllowance = useTokenAllowance(sellToken, account ?? undefined, spender)
   const approvalState = useTradeApproveState(sellAmount)
-  const isSwapUnsupported = useIsSwapUnsupported(inputCurrency, outputCurrency)
+  const isSwapUnsupported = useIsTradeUnsupported(inputCurrency, outputCurrency)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   const params: LimitOrdersFormParams = {

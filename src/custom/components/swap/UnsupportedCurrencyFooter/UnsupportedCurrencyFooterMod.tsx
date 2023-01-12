@@ -11,11 +11,11 @@ import { useState } from 'react'
 import styled from 'styled-components/macro'
 import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'theme'
 
-import { useIsUnsupportedToken } from 'state/lists/hooks'
 // import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 
 // MOD imports
 import { getEtherscanLink } from 'utils'
+import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
@@ -79,9 +79,7 @@ UnsupportedCurrencyFooterParams) {
         })
       : []
 
-  // const unsupportedTokens = useUnsupportedTokens()
-
-  const isUnsupportedToken = useIsUnsupportedToken()
+  const isUnsupportedToken = useIsUnsupportedTokenGp()
 
   return (
     <DetailsFooter show={show}>

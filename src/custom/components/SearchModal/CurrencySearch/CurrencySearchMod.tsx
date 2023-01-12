@@ -275,7 +275,7 @@ export function CurrencySearch({
         <Footer>
           <Row justify="center">
             <ButtonText onClick={showManageView} color={theme.primary1} className="list-token-manage-button">
-              {/* 
+              {/*
             <RowFixed>
               <IconWrapper size="16px" marginRight="6px" stroke={theme.primaryText1}>
                 <Edit />
