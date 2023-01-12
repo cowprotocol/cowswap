@@ -1,4 +1,4 @@
-import { formatSmart, formatSymbol } from '@cow/utils/format'
+import { formatSmart } from '@cow/utils/format'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
@@ -10,6 +10,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { usePrice } from '@cow/common/hooks/usePrice'
 import { transparentize } from 'polished'
 import { DEFAULT_DECIMALS } from '@cowprotocol/cow-js'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export interface RateInfoParams {
   chainId: SupportedChainId | undefined
@@ -165,11 +166,12 @@ export function RateInfo({
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
-              ' ' +
-              formatSymbol(rateOutputCurrency.symbol)
+                ' ' +
+                rateOutputCurrency.symbol || ''
             }
           >
-            1 {formatSymbol(rateInputCurrency.symbol)} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
+            1 <TokenSymbol token={rateInputCurrency} /> = {formatSmart(currentActiveRate)}{' '}
+            <TokenSymbol token={rateOutputCurrency} />
           </span>{' '}
           {!!fiatAmount && <FiatRate>(≈${formatSmart(fiatAmount, 2)})</FiatRate>}
         </RateWrapper>

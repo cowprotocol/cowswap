@@ -3,6 +3,7 @@ import { OrderKind } from 'state/orders/actions'
 import * as styledEl from './styled'
 import { formatSmart } from '@cow/utils/format'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 interface Props {
   order: ParsedOrder
@@ -26,7 +27,7 @@ export function SurplusField({ order }: Props) {
       <styledEl.InlineWrapper>
         <styledEl.Surplus>+{formattedPercent}%</styledEl.Surplus>
         <span>
-          {formattedSurplus} {surplusToken.symbol}
+          {formattedSurplus} <TokenSymbol token={surplusToken} />
         </span>
       </styledEl.InlineWrapper>
     </styledEl.Value>
