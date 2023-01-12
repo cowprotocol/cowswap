@@ -20,8 +20,8 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { CompatibilityIssuesWarning } from '@cow/modules/trade/pure/CompatibilityIssuesWarning'
 import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useIsSwapUnsupported } from 'hooks/useIsSwapUnsupported'
 import styled from 'styled-components/macro'
+import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
 
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
@@ -50,7 +50,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const { handleSetError, ErrorModal } = useErrorModal()
   const { isSupportedWallet } = useWalletInfo()
   const { inputCurrency, outputCurrency } = tradeState
-  const isSwapUnsupported = useIsSwapUnsupported(inputCurrency, outputCurrency)
+  const isSwapUnsupported = useIsTradeUnsupported(inputCurrency, outputCurrency)
 
   const wrapUnwrapParams: WrapUnwrapParams = {
     isNativeIn: !!inputCurrencyAmount?.currency.isNative,
