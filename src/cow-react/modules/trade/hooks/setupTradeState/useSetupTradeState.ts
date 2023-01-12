@@ -10,10 +10,10 @@ import usePrevious from 'hooks/usePrevious'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 
-function areCurrenciesTheSame(tradeStateFromUrl: TradeState): boolean {
-  if (!tradeStateFromUrl.inputCurrencyId && !tradeStateFromUrl.outputCurrencyId) return false
+function areCurrenciesTheSame({ inputCurrencyId, outputCurrencyId }: TradeState): boolean {
+  if (!inputCurrencyId && !outputCurrencyId) return false
 
-  return tradeStateFromUrl.inputCurrencyId?.toLowerCase() === tradeStateFromUrl.outputCurrencyId?.toLowerCase()
+  return inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
 }
 
 /**
