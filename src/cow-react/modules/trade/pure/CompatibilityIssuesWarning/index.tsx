@@ -1,6 +1,8 @@
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import { HashLink } from 'react-router-hash-link'
 import { Currency } from '@uniswap/sdk-core'
+import React from 'react'
+import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 
 export interface CompatibilityIssuesWarningProps {
   currencyIn: Currency
@@ -8,7 +10,7 @@ export interface CompatibilityIssuesWarningProps {
   isSupportedWallet: boolean
 }
 
-export function CompatibilityIssuesWarning(props: CompatibilityIssuesWarningProps) {
+export const CompatibilityIssuesWarning = React.memo((props: CompatibilityIssuesWarningProps) => {
   const { currencyIn, currencyOut, isSupportedWallet } = props
   const currenciesPair = [currencyIn, currencyOut]
 
@@ -32,4 +34,4 @@ export function CompatibilityIssuesWarning(props: CompatibilityIssuesWarningProp
   }
 
   return <UnsupportedCurrencyFooter show={true} currencies={currenciesPair} />
-}
+}, genericPropsChecker)
