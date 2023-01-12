@@ -1,5 +1,5 @@
 import React from 'react'
-import * as styledEl from './styled'
+import { Box, GreenText, TextAmount, Column } from './styled'
 import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
@@ -29,50 +29,62 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   )
 
   return (
-    <styledEl.Box>
-      <div>
+    <Box>
+      <Column>
         <span>
           <Trans>Before fee</Trans>
         </span>
-        <span>
-          {amountBeforeFees} {currency.symbol}
-        </span>
-      </div>
-      <div>
-        {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
+        <TextAmount>
+          {/* // Split amountBeforeFees string into integers and decimals to style them differently (e.g. 1.2345 -> 1.23 45)  */}
+          <span>{amountBeforeFees.split('.')[0]}</span>
+          <span>.</span>
+          <span>{amountBeforeFees.split('.')[1]}</span>
+          <span>{currency.symbol}</span>
+        </TextAmount>
+      </Column>
+      <Column>
+        {discount ? <GreenText>{FeePercent}</GreenText> : FeePercent}
         {hasFee ? (
-          <span>
-            {typeString}
-            {feeAmount} {currency.symbol}
-          </span>
+          <TextAmount>
+            <span>
+              {typeString}
+              {feeAmount.split('.')[0]}
+            </span>
+            <span>.</span>
+            <span>{feeAmount.split('.')[1]}</span>
+            <span>{currency.symbol}</span>
+          </TextAmount>
         ) : (
-          <styledEl.GreenText>
+          <GreenText>
             <strong>
               <Trans>Free</Trans>
             </strong>
-          </styledEl.GreenText>
+          </GreenText>
         )}
-      </div>
+      </Column>
       {allowsOffchainSigning && (
-        <div>
+        <Column>
           <span>
             <Trans>Gas cost</Trans>
           </span>
-          <styledEl.GreenText>
+          <GreenText>
             <strong>
               <Trans>Free</Trans>
             </strong>
-          </styledEl.GreenText>
-        </div>
+          </GreenText>
+        </Column>
       )}
-      <styledEl.TotalAmount>
+      <Column isTotal={true}>
         <span>
           <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
         </span>
-        <span>
-          {amountAfterFees} {currency.symbol}
-        </span>
-      </styledEl.TotalAmount>
-    </styledEl.Box>
+        <TextAmount>
+          <span>{amountAfterFees.split('.')[0]}</span>
+          <span>.</span>
+          <span>{amountAfterFees.split('.')[1]}</span>
+          <span>{currency.symbol}</span>
+        </TextAmount>
+      </Column>
+    </Box>
   )
 }

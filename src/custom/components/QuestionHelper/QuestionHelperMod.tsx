@@ -48,7 +48,7 @@ export default function QuestionHelper({ text, className, QuestionMark, ...toolt
   const [show, setShow] = useState<boolean>(false)
 
   const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+  const close = useCallback(() => setShow(true), [setShow])
 
   return (
     <QuestionHelperContainer className={className}>
