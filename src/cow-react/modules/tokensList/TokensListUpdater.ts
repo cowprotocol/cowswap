@@ -28,7 +28,10 @@ export function TokensListUpdater() {
       const addressLowerCase = token.address.toLowerCase()
       const symbolLowerCase = token.symbol.toLowerCase()
 
-      tokensByAddressMap[addressLowerCase] = wrappedToken
+      if (!tokensByAddressMap[addressLowerCase]) {
+        tokensByAddressMap[addressLowerCase] = wrappedToken
+      }
+
       tokensBySymbolMap[symbolLowerCase] = tokensBySymbolMap[symbolLowerCase] || []
 
       const isTokenInTheSymbolMap = !!tokensBySymbolMap[symbolLowerCase].find(
