@@ -1,12 +1,8 @@
 import { formatSymbol } from '@cow/utils/format'
+import { Currency } from '@uniswap/sdk-core'
 
 export type Props = {
-  token:
-    | {
-        symbol?: string | undefined
-        name?: string | undefined
-      }
-    | undefined
+  token: Pick<Currency, 'symbol' | 'name'> | undefined | null
   length?: number
 }
 
