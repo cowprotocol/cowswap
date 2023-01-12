@@ -5,10 +5,11 @@ import { Currency } from '@uniswap/sdk-core'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
 import { DECIMAL_SEPARATOR } from '@cow/constants/format'
+import { decomposeDecimal } from '@cow/utils/number'
 
 function DecimalAmount(props: { prefix?: string; value: string; symbol?: string }) {
   const { prefix, value, symbol } = props
-  const [integerPart, decimalPart] = value.split(DECIMAL_SEPARATOR)
+  const [integerPart, decimalPart] = decomposeDecimal(value)
   return (
     <TextAmount>
       <span>
