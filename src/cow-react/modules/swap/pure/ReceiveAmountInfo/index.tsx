@@ -4,6 +4,23 @@ import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
+import { DECIMAL_SEPARATOR } from '@cow/constants/format'
+
+function DecimalAmount(props: { prefix?: string; value: string; symbol?: string }) {
+  const { prefix, value, symbol } = props
+  const [integerPart, decimalPart] = value.split(DECIMAL_SEPARATOR)
+  return (
+    <TextAmount>
+      <span>
+        {prefix ? prefix + ' ' : ''}
+        {integerPart}
+      </span>
+      <span>{DECIMAL_SEPARATOR}</span>
+      <span>{decimalPart}</span>
+      <span>{symbol}</span>
+    </TextAmount>
+  )
+}
 
 export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo
@@ -34,26 +51,12 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
         <span>
           <Trans>Before fee</Trans>
         </span>
-        <TextAmount>
-          {/* // Split amountBeforeFees string into integers and decimals to style them differently (e.g. 1.2345 -> 1.23 45)  */}
-          <span>{amountBeforeFees.split('.')[0]}</span>
-          <span>.</span>
-          <span>{amountBeforeFees.split('.')[1]}</span>
-          <span>{currency.symbol}</span>
-        </TextAmount>
+        <DecimalAmount value={amountBeforeFees} symbol={currency.symbol} />
       </Column>
       <Column>
         {discount ? <GreenText>{FeePercent}</GreenText> : FeePercent}
         {hasFee ? (
-          <TextAmount>
-            <span>
-              {typeString}
-              {feeAmount.split('.')[0]}
-            </span>
-            <span>.</span>
-            <span>{feeAmount.split('.')[1]}</span>
-            <span>{currency.symbol}</span>
-          </TextAmount>
+          <DecimalAmount prefix={typeString} value={amountBeforeFees} symbol={currency.symbol} />
         ) : (
           <GreenText>
             <strong>
@@ -78,12 +81,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
         <span>
           <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
         </span>
-        <TextAmount>
-          <span>{amountAfterFees.split('.')[0]}</span>
-          <span>.</span>
-          <span>{amountAfterFees.split('.')[1]}</span>
-          <span>{currency.symbol}</span>
-        </TextAmount>
+        <DecimalAmount value={amountAfterFees} symbol={currency.symbol} />
       </Column>
     </Box>
   )
