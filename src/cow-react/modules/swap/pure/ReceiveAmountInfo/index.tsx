@@ -57,7 +57,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
       <Column>
         {discount ? <GreenText>{FeePercent}</GreenText> : FeePercent}
         {hasFee ? (
-          <DecimalAmount prefix={typeString} value={amountBeforeFees} symbol={currency.symbol} />
+          <DecimalAmount prefix={typeString} value={feeAmount} symbol={currency.symbol} />
         ) : (
           <GreenText>
             <strong>
