@@ -14,7 +14,7 @@ import { Text } from 'rebass'
 import { CheckCircle, UserCheck } from 'react-feather'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
-import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
+import { ConfirmationModalContent as ConfirmationModalContentMod, Wrapper } from './TransactionConfirmationModalMod'
 import { getStatusIcon } from 'components/AccountDetails'
 import { OrderProgressBar } from 'components/OrderProgressBar'
 import { shortenAddress } from 'utils'
@@ -28,10 +28,6 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { useOrder } from 'state/orders/hooks'
 import { OrderStatus } from 'state/orders/actions'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
-
-const Wrapper = styled.div`
-  width: 100%;
-`
 
 const Section = styled.div`
   padding: 0 16px 16px;
@@ -132,6 +128,7 @@ const ButtonGroup = styled.div`
   gap: 12px;
   margin: 12px 0 0;
   width: 100%;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
   `}
@@ -172,7 +169,7 @@ const ButtonCustom = styled.button`
 const UpperSection = styled.div`
   display: flex;
   flex-flow: column wrap;
-  padding: 16px;
+  padding: 16px 0;
 
   > div {
     padding: 0;
@@ -184,10 +181,10 @@ const LowerSection = styled.div`
   flex-flow: column wrap;
   background: ${({ theme }) => theme.grey1};
   padding: 32px;
-  margin: 16px auto 0;
+  margin: 16px auto;
+  border-radius: 16px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: 100%;
   `}
 
   > h3 {

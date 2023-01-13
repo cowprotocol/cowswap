@@ -43,11 +43,17 @@ export const Wrapper = styled.div`
   padding: 0 16px;
   display: flex;
   flex-flow: column nowrap;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
+  height: inherit;
   ${({ theme }) => theme.colorScrollbar};
-  /* -- mod -- */
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 10px;
+  `}/* -- mod -- */
 `
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`
-  padding: ${({ inline }) => (inline ? '0' : '0')};
+  padding: ${({ inline }) => (inline ? '0 0 16px' : '0')};
 `
 
 export const BottomSection = styled(Section)`
