@@ -137,7 +137,7 @@ handing them to the solvers.
 
 The reference implementation of the API is [gp-v2-services](https://github.com/cowprotocol/services).
 
-The API endpoint is configured using the environment variable ` {XDAI|RINKEBY|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
+The API endpoint is configured using the environment variable ` {XDAI|GOERLI|MAINNET}` to e.g. `"http://localhost:8080/api"` when running the services locally.
 
 ### Wallet Connect bridge
 
