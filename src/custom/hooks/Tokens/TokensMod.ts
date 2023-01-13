@@ -12,7 +12,7 @@ import { useUserAddedTokens } from 'state/user/hooks' */
 
 // MOD imports
 import { useAtomValue } from 'jotai/utils'
-import { tokensByAddressAtom } from '@cow/modules/tokensList/tokensListAtom'
+import { tokensByAddressAtom } from '@cow/modules/tokensList/state/tokensListAtom'
 import { Token } from '@uniswap/sdk-core'
 import { useAllLists, useInactiveListUrls } from 'state/lists/hooks'
 import { useWeb3React } from '@web3-react/core'
