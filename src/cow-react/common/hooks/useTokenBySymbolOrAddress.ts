@@ -5,7 +5,7 @@ import { useFavouriteTokens } from 'state/user/hooks'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
-import { tokensByAddressAtom, tokensBySymbolAtom } from '@cow/modules/tokensList/tokensListAtom'
+import { tokensByAddressAtom, tokensBySymbolAtom } from '@cow/modules/tokensList/state/tokensListAtom'
 
 const checkBySymbolAndAddress = (token: Token, symbolOrAddress: string) =>
   token.address.toLowerCase() === symbolOrAddress.toLowerCase() ||
