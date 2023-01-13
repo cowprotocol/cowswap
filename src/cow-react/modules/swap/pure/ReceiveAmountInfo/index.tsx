@@ -7,9 +7,11 @@ import { Trans } from '@lingui/macro'
 import { DECIMAL_SEPARATOR } from '@cow/constants/format'
 import { decomposeDecimal } from '@cow/utils/number'
 
+const EXACT_DECIMALS = 4
+
 function DecimalAmount(props: { prefix?: string; value: string; symbol?: string }) {
   const { prefix, value, symbol } = props
-  const [integerPart, decimalPart] = decomposeDecimal(value)
+  const [integerPart, decimalPart] = decomposeDecimal(value, EXACT_DECIMALS)
   return (
     <TextAmount>
       <span>
