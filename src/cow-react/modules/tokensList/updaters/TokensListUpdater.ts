@@ -1,5 +1,5 @@
 import { useUpdateAtom } from 'jotai/utils'
-import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from '@cow/modules/tokensList/tokensListAtom'
+import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from '@cow/modules/tokensList/state/tokensListAtom'
 import { useEffect } from 'react'
 import { useTokensListWithDefaults } from 'state/lists/hooks/hooksMod'
 
