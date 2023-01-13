@@ -241,6 +241,7 @@ const formatAnalyticsEventProperties = (
     : { search_token_address_input: isAddressSearch }),
 })
 
+// TODO: refactor the component
 export default function CurrencyList({
   height,
   currencies,
@@ -279,6 +280,8 @@ export default function CurrencyList({
 
   const itemData: (Currency | BreakLine)[] = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {
+      // otherListTokens - it's a list of tokens from inactive lists
+      // here we remove tokens that already exist in the active lists
       const filteredOtherListTokens = otherListTokens.filter((token) =>
         token.isToken ? !allTokens[token.address.toLowerCase()] : true
       )
