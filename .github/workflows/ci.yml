@@ -137,7 +137,7 @@ jobs:
           key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
 
       - name: Run linters
-        uses: wearerequired/lint-action@v1
+        uses: wearerequired/lint-action@v2
         with:
           github_token: ${{ secrets.github_token }}
           eslint: true
