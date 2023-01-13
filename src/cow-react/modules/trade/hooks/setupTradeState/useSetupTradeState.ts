@@ -10,19 +10,25 @@ import usePrevious from 'hooks/usePrevious'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 
+function areCurrenciesTheSame({ inputCurrencyId, outputCurrencyId }: TradeState): boolean {
+  if (!inputCurrencyId && !outputCurrencyId) return false
+
+  return inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
+}
+
 /**
  * Case: we have WETH/COW tokens pair in the sore
  * User decided to select WETH as output currency, and navigated to WETH/WETH
  * In this case, we reverse tokens pair and the result will be: COW/WETH
  */
 function getUpdatedCurrenciesIds(tradeStateFromUrl: TradeState, tradeStateFromStore: TradeState): TradeCurrenciesIds {
-  const areCurrenciesTheSame = tradeStateFromUrl.inputCurrencyId === tradeStateFromUrl.outputCurrencyId
+  const currenciesAreTheSame = areCurrenciesTheSame(tradeStateFromUrl)
 
-  const inputCurrencyId = areCurrenciesTheSame
+  const inputCurrencyId = currenciesAreTheSame
     ? tradeStateFromStore.outputCurrencyId
     : tradeStateFromUrl.inputCurrencyId
 
-  const outputCurrencyId = areCurrenciesTheSame
+  const outputCurrencyId = currenciesAreTheSame
     ? tradeStateFromStore.inputCurrencyId
     : tradeStateFromUrl.outputCurrencyId
 
@@ -56,6 +62,8 @@ export function useSetupTradeState(): void {
   const providerChainIdWasChanged = !!currentChainId && !!prevCurrentChainId && currentChainId !== prevCurrentChainId
 
   const skipUpdate = useMemo(() => {
+    if (areCurrenciesTheSame(tradeStateFromUrl)) return false
+
     if (chainIdFromUrlWasChanged && !!account) return true
 
     if (providerChainIdWasChanged) return false

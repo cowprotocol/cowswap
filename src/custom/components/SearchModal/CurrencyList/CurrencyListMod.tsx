@@ -121,6 +121,7 @@ function CurrencyRow({
   showCurrencyAmount,
   eventProperties,
   isUnsupported, // gp-swap added
+  allTokens,
   TokenTagsComponent = TokenTags, // gp-swap added
   BalanceComponent = Balance, // gp-swap added
 }: {
@@ -132,12 +133,12 @@ function CurrencyRow({
   showCurrencyAmount?: boolean
   eventProperties: Record<string, unknown>
   isUnsupported: boolean // gp-added
+  allTokens: { [address: string]: Token } // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
   const { account } = useWeb3React()
   const key = currencyKey(currency)
-  const allTokens = useAllTokens()
   const isOnSelectedList = currency?.isToken && !!allTokens[currency.address.toLowerCase()]
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
@@ -240,6 +241,7 @@ const formatAnalyticsEventProperties = (
     : { search_token_address_input: isAddressSearch }),
 })
 
+// TODO: refactor the component
 export default function CurrencyList({
   height,
   currencies,
@@ -273,14 +275,21 @@ export default function CurrencyList({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
+  const allTokens = useAllTokens()
   const isUnsupportedToken = useIsUnsupportedTokenGp()
 
   const itemData: (Currency | BreakLine)[] = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {
-      return [...currencies, BREAK_LINE, ...otherListTokens]
+      // otherListTokens - it's a list of tokens from inactive lists
+      // here we remove tokens that already exist in the active lists
+      const filteredOtherListTokens = otherListTokens.filter((token) =>
+        token.isToken ? !allTokens[token.address.toLowerCase()] : true
+      )
+
+      return [...currencies, BREAK_LINE, ...filteredOtherListTokens]
     }
     return currencies
-  }, [currencies, otherListTokens])
+  }, [currencies, otherListTokens, allTokens])
 
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
@@ -318,6 +327,7 @@ export default function CurrencyList({
         return (
           <CurrencyRow
             style={style}
+            allTokens={allTokens}
             currency={currency}
             isSelected={isSelected}
             onSelect={handleSelect}
@@ -347,6 +357,7 @@ export default function CurrencyList({
       isUnsupportedToken,
       BalanceComponent,
       TokenTagsComponent,
+      allTokens,
     ]
   )
 

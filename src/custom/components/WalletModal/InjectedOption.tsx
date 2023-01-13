@@ -23,8 +23,14 @@ const METAMASK_PROPS = {
   id: 'metamask',
 }
 
+const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
+
 export function InstallMetaMaskOption() {
   return <Option {...METAMASK_PROPS} header={<Trans>Install MetaMask</Trans>} link={'https://metamask.io/'} />
+}
+
+export function OpenMetaMaskMobileOption() {
+  return <Option {...METAMASK_PROPS} header={<Trans>MetaMask</Trans>} link={METAMASK_DEEP_LINK + window.location} />
 }
 
 export function MetaMaskOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
