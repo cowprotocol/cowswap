@@ -41,7 +41,7 @@ jobs:
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-yarn-cache
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
@@ -51,7 +51,7 @@ jobs:
 
       - name: Cache node_modules
         id: cache-node-modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
@@ -63,7 +63,7 @@ jobs:
 
       - name: Cache generated files
         id: cache-generated-files
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             src/types/v3
@@ -89,7 +89,7 @@ jobs:
 
       - name: Load dependencies
         id: cache-node-modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
@@ -98,7 +98,7 @@ jobs:
 
       - name: Load generated files
         id: cache-generated-files
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             src/types/v3
@@ -132,7 +132,7 @@ jobs:
 
       - name: Load dependencies
         id: cache-node-modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-${{ hashFiles('**/yarn.lock') }}
@@ -141,7 +141,7 @@ jobs:
 
       - name: Load generated files
         id: cache-generated-files
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             src/types/v3
