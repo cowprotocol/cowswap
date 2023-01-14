@@ -14,7 +14,7 @@ import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
+import { isUnsupportedTokenInQuote } from '@cow/modules/limitOrders/utils/isUnsupportedTokenInQuote'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
@@ -157,7 +157,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
-  const { inputCurrency, outputCurrency, recipient } = tradeState
+  const { inputCurrency, recipient } = tradeState
   const sellAmount = tradeState.inputCurrencyAmount
   const buyAmount = tradeState.outputCurrencyAmount
   const sellToken = inputCurrency?.isToken ? inputCurrency : undefined
@@ -165,7 +165,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
 
   const currentAllowance = useTokenAllowance(sellToken, account ?? undefined, spender)
   const approvalState = useTradeApproveState(sellAmount)
-  const isSwapUnsupported = useIsTradeUnsupported(inputCurrency, outputCurrency)
+  const isSwapUnsupported = isUnsupportedTokenInQuote(quote)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   const params: LimitOrdersFormParams = {
