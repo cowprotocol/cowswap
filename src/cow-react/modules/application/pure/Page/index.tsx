@@ -36,10 +36,6 @@ export const Content = styled.div`
   margin: 0 0 28px;
   display: block;
 
-  a {
-    word-break: break-all;
-  }
-
   > h2 {
     font-size: 24px;
     margin: 24px 0 16px;
