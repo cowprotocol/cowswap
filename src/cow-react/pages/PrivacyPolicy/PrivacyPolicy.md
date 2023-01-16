@@ -173,7 +173,7 @@ We may use Miro for whiteboard and other collaborative visualisation. For furthe
 
 In order to provide user support on our behalf or on behalf of our clients, we will use different channels like Discord, Discourse, Github or Telegram to facilitate the resolution of any questions and concerns should these arise. By accepting this Privacy Policy, you are deemed to consent to providing the following Personal Data to persons looking to resolve any dispute:
 
-- Name and surname
+- Name and surname;
 - Detailed enquiry description;
 - The date and time that the issue arose;
 - The outcome sought.
@@ -186,7 +186,7 @@ When linking social media links, those services might also collect Personal Data
 
 We use typeform for the registration and submission process. Typeform allows the creation of customised forms for several purposes.
 Further information and the applicable data protection provisions of typeform please visit [https://admin.typeform.com/to/dwk6gt](https://admin.typeform.com/to/dwk6gt).
-Typeform’s purpose and function is further explained under the following Link [https://www.typeform.com/product/](https://www.typeform.com/product/)
+Typeform’s purpose and function is further explained under the following link [https://www.typeform.com/product/](https://www.typeform.com/product/)
 
 **Vercel**
 
@@ -292,7 +292,7 @@ You have certain rights under applicable legislation, and in particular under Re
   T (+351) 213 928 400 <br>
   F (+351) 213 976 832 <br>
   <a href="mailto:geral@cnpd.pt">geral@cnpd.pt</a> <br>
-  <a href="https://www.cnpd.pt/">https://www.cnpd.pt/</a> <br>
+  <a target="_blank" href="https://www.cnpd.pt/">https://www.cnpd.pt/</a> <br>
 
   You also have the right to lodge a complaint with the supervisory authority in the country of your habitual residence, place of work, or the place where you allege an infringement of one or more of our rights has taken place, if that is based in the EEA.
 
