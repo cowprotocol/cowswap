@@ -6,10 +6,7 @@ import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter
 import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
 import { tokensByAddressAtom, tokensBySymbolAtom } from '@cow/modules/tokensList/state/tokensListAtom'
-
-const checkBySymbolAndAddress = (token: Token, symbolOrAddress: string) =>
-  token.address.toLowerCase() === symbolOrAddress.toLowerCase() ||
-  token.symbol?.toLowerCase() === symbolOrAddress.toLowerCase()
+import { checkBySymbolAndAddress } from '@cow/utils/checkBySymbolAndAddress'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | NativeCurrency | null {
   const { chainId } = useWeb3React()
