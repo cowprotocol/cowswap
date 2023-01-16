@@ -36,7 +36,7 @@ export const Content = styled.div`
   margin: 0 0 28px;
   display: block;
 
-  a {
+  p > a {
     word-break: break-all;
   }
 
