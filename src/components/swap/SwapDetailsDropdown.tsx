@@ -165,8 +165,9 @@ export default function SwapDetailsDropdown({
             )}
             {trade ? (
               <LoadingOpacityContainer $loading={syncing}>
+                {/*TODO: FIX TYPE*/}
                 <TradePrice
-                  price={trade.executionPrice}
+                  price={trade.executionPrice as any}
                   showInverted={showInverted}
                   setShowInverted={setShowInverted}
                 />

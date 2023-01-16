@@ -397,7 +397,7 @@ export default function NetworkSelector() {
         await switchChain(connector, targetChain)
 
         setChainIdToUrl(targetChain)
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to switch networks', error)
 
         dispatch(updateConnectionError({ connectionType, error: error.message }))

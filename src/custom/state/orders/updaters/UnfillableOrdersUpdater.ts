@@ -67,7 +67,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
-  } catch (e) {
+  } catch (e: any) {
     return null
   }
 }

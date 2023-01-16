@@ -147,7 +147,7 @@ export default function useCowUsdPrice(currency?: Currency) {
         }
 
         return setBestUsdPrice(price)
-      } catch (err) {
+      } catch (err: any) {
         console.error('[useCowUsdPrice] Error getting best price', err)
         return batchedUpdate(() => {
           setError(new Error(err))
@@ -180,7 +180,7 @@ function useGetPriceQuote({ price, error, currencyAmount }: GetPriceQuoteParams)
     try {
       // return price.quote(currencyAmount)
       return price.invert().quote(currencyAmount)
-    } catch (error) {
+    } catch (error: any) {
       return null
     }
     // }, [currencyAmount, price])
@@ -258,7 +258,7 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
       )
 
       return setPrice(usdPrice)
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         '[useStablecoinPrice::useCoingeckoUsdPrice]::Error getting USD price from Coingecko for token',
         tokenAddress,
@@ -342,7 +342,7 @@ export function useStablecoinAmountFromFiatValue(fiatValue: string | null | unde
     try {
       // parse USD string into CurrencyAmount based on stablecoin decimals
       return tryParseCurrencyAmount(parsedForDecimals, stablecoin)
-    } catch (error) {
+    } catch (error: any) {
       return undefined
     }
   }, [chainId, fiatValue, stablecoin])

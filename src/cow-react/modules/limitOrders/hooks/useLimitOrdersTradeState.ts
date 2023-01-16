@@ -32,7 +32,7 @@ function tryParseFractionalAmount(currency: Currency | null, amount: string | nu
     if (!fraction) return null
 
     return currency ? CurrencyAmount.fromFractionalAmount(currency, fraction.numerator, fraction.denominator) : null
-  } catch (e) {
+  } catch (e: any) {
     return null
   }
 }

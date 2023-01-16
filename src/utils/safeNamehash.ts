@@ -5,7 +5,7 @@ export function safeNamehash(name?: string): string | undefined {
 
   try {
     return namehash(name)
-  } catch (error) {
+  } catch (error: any) {
     console.debug(error)
     return undefined
   }

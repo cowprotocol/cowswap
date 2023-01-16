@@ -58,7 +58,7 @@ export async function handleDocument(this: HandlerContext, { event, request }: R
     if (!cachedResponse) {
       return new Response(response.body, response)
     }
-  } catch (e) {
+  } catch (e: any) {
     if (!cachedResponse) throw e
     return CachedDocument.from(cachedResponse)
   }

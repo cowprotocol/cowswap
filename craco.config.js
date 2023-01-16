@@ -39,17 +39,6 @@ module.exports = {
       plugin: CracoWorkboxPlugin,
     },
   ],
-  babel: {
-    plugins: [
-      '@babel/plugin-proposal-nullish-coalescing-operator',
-      [
-        '@simbathesailor/babel-plugin-use-what-changed',
-        {
-          active: process.env.NODE_ENV === 'development', // boolean
-        },
-      ],
-    ],
-  },
   webpack: {
     plugins,
     alias: {
@@ -63,6 +52,10 @@ module.exports = {
       resolve: {
         ...webpackConfig.resolve,
         modules: [path.resolve(__dirname, 'src/custom'), ...webpackConfig.resolve.modules],
+        fallback: {
+          http: require.resolve('stream-http'),
+          https: require.resolve('https-browserify'),
+        },
       },
     }),
   },

@@ -296,7 +296,7 @@ export default function NetworkSelector() {
       try {
         dispatch(updateConnectionError({ connectionType, error: undefined }))
         await switchChain(connector, targetChain)
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to switch networks', error)
 
         dispatch(updateConnectionError({ connectionType, error: error.message }))

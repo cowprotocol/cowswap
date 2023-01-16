@@ -190,7 +190,7 @@ export function useSetUserSlippageTolerance(): (slippageTolerance: Percent | 'au
       try {
         value =
           userSlippageTolerance === 'auto' ? 'auto' : JSBI.toNumber(userSlippageTolerance.multiply(10_000).quotient)
-      } catch (error) {
+      } catch (error: any) {
         value = 'auto'
       }
       dispatch(

@@ -150,7 +150,7 @@ export default function StakingModal({ isOpen, onDismiss, stakingInfo, userLiqui
     if (gatherPermitSignature) {
       try {
         await gatherPermitSignature()
-      } catch (error) {
+      } catch (error: any) {
         // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
         if (error?.code !== 4001) {
           await approveCallback()

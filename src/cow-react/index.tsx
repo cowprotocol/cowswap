@@ -1,13 +1,12 @@
 import '@reach/dialog/styles.css'
 import 'inter-ui'
-import 'polyfills'
+import './polyfills'
 
 import 'components/analytics'
 import '@cow/utils/sentry'
 
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 import { StrictMode } from 'react'
-import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 
@@ -26,6 +25,7 @@ import { Provider as AtomProvider } from 'jotai'
 
 import Popups from 'components/Popups'
 import { Updaters } from '@cow/modules/application/containers/App/Updaters'
+import { createRoot } from 'react-dom/client'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -35,7 +35,9 @@ if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root')!)
+
+root.render(
   <StrictMode>
     <FixedGlobalStyle />
     <Provider store={store}>
@@ -59,8 +61,7 @@ ReactDOM.render(
         </HashRouter>
       </AtomProvider>
     </Provider>
-  </StrictMode>,
-  document.getElementById('root')
+  </StrictMode>
 )
 
 if (process.env.REACT_APP_SERVICE_WORKER !== 'false') {

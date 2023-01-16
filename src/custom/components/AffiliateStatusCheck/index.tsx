@@ -94,7 +94,7 @@ export default function AffiliateStatusCheck() {
       if (userHasTrades) {
         return
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
       setError('Affiliate program: There was an error loading trades. Please try again later.')
       return

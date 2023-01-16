@@ -213,7 +213,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           orderExpirationTimeAnalytics('Custom', parsed)
           setDeadline(parsed)
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error(error)
         setDeadlineError(DeadlineError.InvalidInput)
       }

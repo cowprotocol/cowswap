@@ -25,7 +25,7 @@ export default async function fetchTokenList(
     let contentHashUri
     try {
       contentHashUri = await resolveENSContentHash(parsedENS.ensName)
-    } catch (error) {
+    } catch (error: any) {
       const message = `failed to resolve ENS name: ${parsedENS.ensName}`
       console.debug(message, error)
       throw new Error(message)
@@ -33,7 +33,7 @@ export default async function fetchTokenList(
     let translatedUri
     try {
       translatedUri = contenthashToUri(contentHashUri)
-    } catch (error) {
+    } catch (error: any) {
       const message = `failed to translate contenthash to URI: ${contentHashUri}`
       console.debug(message, error)
       throw new Error(message)
@@ -49,7 +49,7 @@ export default async function fetchTokenList(
     let response
     try {
       response = await fetch(url, { credentials: 'omit' })
-    } catch (error) {
+    } catch (error: any) {
       const message = `failed to fetch list: ${listUrl}`
       console.debug(message, error)
       if (isLast) throw new Error(message)

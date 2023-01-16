@@ -121,7 +121,7 @@ export function useSwapApprovalOptimizedTrade(
         default:
           return undefined
       }
-    } catch (e) {
+    } catch (e: any) {
       // TODO(#2989): remove try-catch
       console.debug(e)
       return undefined

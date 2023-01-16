@@ -182,7 +182,7 @@ export async function wrapUnwrapCallback(
     useModals && closeModals()
 
     return txReceipt
-  } catch (error) {
+  } catch (error: any) {
     useModals && closeModals()
 
     const isRejected = isRejectRequestProviderError(error)

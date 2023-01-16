@@ -68,6 +68,7 @@ export function useSetupTradeState(): void {
 
     if (providerChainIdWasChanged) return false
 
+    console.log('AAA', {tradeStateFromUrl, state: tradeState?.state})
     return tradeState ? shouldSkipUpdate(tradeStateFromUrl, tradeState.state) : true
   }, [tradeState, tradeStateFromUrl, providerChainIdWasChanged, chainIdFromUrlWasChanged, account])
 

@@ -41,7 +41,7 @@ export const sdk = !BLOCKNATIVE_API_KEY
             })
           },
         })
-      } catch (error) {
+      } catch (error: any) {
         console.error('[blocknative] Instantiating BlocknativeSdk failed', error)
         const { sentryError, tags } = constructSentryError(error, { message: 'Instantiating BlocknativeSdk failed' })
         Sentry.captureException(sentryError, {

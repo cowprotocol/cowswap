@@ -14,7 +14,7 @@ function useCheckIsSmartContract(): boolean | undefined {
     try {
       const code = await provider.getCode(account)
       return code !== '0x'
-    } catch (e) {
+    } catch (e: any) {
       console.debug(`checkIsSmartContractWallet: failed to check address ${account}`, e.message)
       return false
     }
