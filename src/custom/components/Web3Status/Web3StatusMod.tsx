@@ -20,8 +20,8 @@ import { RowBetween } from 'components/Row'
 // import WalletModal from '../WalletModal'
 
 // MOD imports
-import { Web3StatusGeneric as Web3StatusGenericUni } from '@src/components/Web3Status'
 import FollowPendingTxPopup, { useCloseFollowTxPopupIfNotPendingOrder } from 'components/Popups/FollowPendingTxPopup'
+import { ButtonSecondary } from 'components/Button'
 
 /* const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -34,10 +34,8 @@ import FollowPendingTxPopup, { useCloseFollowTxPopupIfNotPendingOrder } from 'co
 `*/
 
 // mod
-export const Web3StatusGeneric = styled(Web3StatusGenericUni)`
-  margin-left: 0px;
-  margin-right: 0px;
-`
+export const Web3StatusGeneric = styled(ButtonSecondary)``
+
 const Web3StatusError = styled(Web3StatusGeneric)`
   background-color: ${({ theme }) => theme.red1};
   border: 1px solid ${({ theme }) => theme.red1};
@@ -50,19 +48,17 @@ const Web3StatusError = styled(Web3StatusGeneric)`
 `
 
 export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
-  background-color: ${({ theme }) => theme.primary4};
-  border: none;
+  /* border: none; */
+  /* color: ${({ theme }) => theme.primaryText1}; */
+  /* font-weight: 500; */
 
-  color: ${({ theme }) => theme.primaryText1};
-  font-weight: 500;
-
-  :hover,
+  /* :hover,
   :focus {
     border: 1px solid ${({ theme }) => darken(0.05, theme.primary4)};
     color: ${({ theme }) => theme.primaryText1};
-  }
+  } */
 
-  ${({ faded }) =>
+  /* ${({ faded }) =>
     faded &&
     css`
       background-color: ${({ theme }) => theme.primary5};
@@ -74,7 +70,7 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
         border: 1px solid ${({ theme }) => darken(0.05, theme.primary4)};
         color: ${({ theme }) => darken(0.05, theme.primaryText1)};
       }
-    `}
+    `} */
 `
 
 export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`

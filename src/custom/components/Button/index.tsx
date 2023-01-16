@@ -116,11 +116,15 @@ export const ButtonGray = styled(ButtonGrayMod)`
 
 export const ButtonSecondary = styled(ButtonPrimary)`
   // CSS overrides
-  transition: box-shadow 0.1s ease-in-out;
+  min-height: 0;
+  border: 0;
+  border-radius: 21px;
+  box-shadow: none;
+  padding: 6px 8px;
+  transform: none;
 
   &:hover,
   &:focus {
-    box-shadow: none;
   }
 `
 
