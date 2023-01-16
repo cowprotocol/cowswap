@@ -1,6 +1,6 @@
 <h1>Terms & Conditions<h1>
 
-<i><b>Last updated: November 2022</b></i>
+<b>Last updated: November 2022</b>
 
 <b>Welcome to https://cow.fi/, a website-hosted user interface (the "Interface") provided by Nomev Labs, Lda. ("we", "our", or "us") on behalf of and as instructed by CoW DAO. The Interface provides access to the CoW Protocol, a decentralised protocol on the Ethereum and Gnosis Chain blockchains (all EVM compatible chains) that allows users to trade certain digital assets ("the Protocol"). The Interface is one, but not the exclusive, means of accessing the Protocol.</b>
 
