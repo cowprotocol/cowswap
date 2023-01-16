@@ -6,6 +6,7 @@ import { ArrowUpRight } from 'react-feather'
 import { useDarkModeManager } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { ExternalLink, HideSmall } from 'theme'
+import { transparentize } from 'polished'
 
 import { AutoRow } from 'components/Row'
 
@@ -97,8 +98,15 @@ type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
   },
 } */
 
+const StyledArrowUpRight = styled(ArrowUpRight)`
+  margin-left: 12px;
+  width: 24px;
+  height: 24px;
+`
+
 const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boolean; logoUrl: string }>`
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => transparentize(0.4, theme.bg1)}; // MOD
+  transition: color 0.2s ease-in-out, background 0.2s ease-in-out; // MOD
   border-radius: 20px;
   display: flex;
   flex-direction: row;
@@ -112,16 +120,35 @@ const ContentWrapper = styled.div<{ chainId: NetworkAlertChains; darkMode: boole
     background-size: 300px;
     content: '';
     height: 300px;
-    opacity: 0.1;
+    opacity: 0.08; // MOD
     position: absolute;
-    transform: rotate(25deg) translate(-90px, -40px);
+    transform: rotate(25deg) translate(-100px, -90px); // MOD
     width: 300px;
-    z-index: -1;
+    z-index: 0;
   }
 
-  // mod
-  :hover {
-    background-color: ${({ theme }) => theme.bg7};
+  // MOD
+  ${BodyText},
+  ${StyledArrowUpRight} {
+    color: ${({ theme }) => theme.text2};
+    stroke: ${({ theme }) => theme.text2};
+    text-decoration: none;
+    transition: transform 0.2s ease-in-out, stroke 0.2s ease-in-out, color 0.2s ease-in-out;
+  }
+
+  &:hover {
+    background: ${({ theme }) => theme.bg1};
+
+    ${BodyText},
+    ${StyledArrowUpRight} {
+      color: ${({ theme }) => theme.text1};
+      stroke: ${({ theme }) => theme.text1};
+      transform: rotate(0);
+    }
+
+    ${StyledArrowUpRight} {
+      transform: rotate(45deg);
+    }
   }
 `
 const Header = styled.h2`
@@ -141,12 +168,6 @@ const LinkOutToBridge = styled(ExternalLink)`
   margin-right: 12px;
   text-decoration: none !important;
   width: 100%;
-`
-
-const StyledArrowUpRight = styled(ArrowUpRight)`
-  margin-left: 12px;
-  width: 24px;
-  height: 24px;
 `
 
 /* const TEXT_COLORS: { [chainId in NetworkAlertChains]: string } = {
