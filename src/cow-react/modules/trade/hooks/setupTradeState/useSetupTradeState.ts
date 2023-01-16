@@ -48,7 +48,7 @@ function shouldSkipUpdate(tradeStateFromUrl: TradeState, tradeStateFromStore: Tr
   return chainIdIsNotChanged && recipientIsNotChanged && inputCurrencyIsNotChanged && outputCurrencyIsNotChanged
 }
 
-function compareChainIds(aChainId: Nullish<number>, bChainId: Nullish<number>): boolean {
+function areChainIdsTheSame(aChainId: Nullish<number>, bChainId: Nullish<number>): boolean {
   return !!aChainId && !!bChainId && aChainId !== bChainId
 }
 
@@ -63,9 +63,9 @@ export function useSetupTradeState(): void {
   const prevChainIdFromUrl = usePrevious(chainIdFromUrl)
   const prevCurrentChainId = usePrevious(currentChainId)
 
-  const chainIdFromUrlWasChanged = compareChainIds(chainIdFromUrl, prevChainIdFromUrl)
+  const chainIdFromUrlWasChanged = areChainIdsTheSame(chainIdFromUrl, prevChainIdFromUrl)
   const chainIdFromProviderWasChanged =
-    compareChainIds(currentChainId, prevCurrentChainId) || compareChainIds(currentChainId, chainIdFromUrl)
+    areChainIdsTheSame(currentChainId, prevCurrentChainId) || areChainIdsTheSame(currentChainId, chainIdFromUrl)
 
   const skipUpdate = useMemo(() => {
     if (areCurrenciesTheSame(tradeStateFromUrl)) return false
