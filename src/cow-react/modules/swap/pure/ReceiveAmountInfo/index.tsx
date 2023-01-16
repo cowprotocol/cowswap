@@ -7,9 +7,11 @@ import { Trans } from '@lingui/macro'
 import { DECIMAL_SEPARATOR } from '@cow/constants/format'
 import { decomposeDecimal } from '@cow/utils/number'
 
+const EXACT_DECIMALS = 4
+
 function DecimalAmount(props: { prefix?: string; value: string; symbol?: string }) {
   const { prefix, value, symbol } = props
-  const [integerPart, decimalPart] = decomposeDecimal(value)
+  const [integerPart, decimalPart] = decomposeDecimal(value, EXACT_DECIMALS)
   return (
     <TextAmount>
       <span>
@@ -57,7 +59,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
       <Column>
         {discount ? <GreenText>{FeePercent}</GreenText> : FeePercent}
         {hasFee ? (
-          <DecimalAmount prefix={typeString} value={amountBeforeFees} symbol={currency.symbol} />
+          <DecimalAmount prefix={typeString} value={feeAmount} symbol={currency.symbol} />
         ) : (
           <GreenText>
             <strong>
