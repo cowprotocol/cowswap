@@ -50,11 +50,11 @@ Device Identifiers. A device identifier is a unique label that can be used to id
 
 This information may include:
 
-- the IP and logical address of the server you are using (but the last digits are anonymized so we cannot identify you).
-- the top level domain name from which you access the internet (for example .ie, .com, etc)
-- the type of browser you are using,
-- the date and time you access our website
-- the internet address linking to our website.
+- the IP and logical address of the server you are using (but the last digits are anonymized so we cannot identify you);
+- the top level domain name from which you access the internet (for example .ie, .com, etc);
+- the type of browser you are using;
+- the date and time you access our website;
+- the internet address linking to our website;
 
 This website also uses cookies to:
 

@@ -36,9 +36,11 @@ export const Content = styled.div`
   margin: 0 0 28px;
   display: block;
 
-  p > a {
-    word-break: break-all;
-  }
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    p > a {
+      word-break: break-all;
+    }
+  `}
 
   > h2 {
     font-size: 24px;

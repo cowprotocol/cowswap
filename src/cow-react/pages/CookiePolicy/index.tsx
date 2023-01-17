@@ -9,31 +9,50 @@ const Wrapper = styled(MarkdownPage)`
   ${({ theme }) => theme.colorScrollbar};
 
   #table-container {
+    margin: auto;
+    max-width: 100%;
     overflow-x: scroll;
 
     > table {
+      width: 100%;
       min-width: 800px;
+      border-spacing: 1px;
+      color: ${({ theme }) => theme.text1};
 
-      thead,
-      tr:nth-child(even) {
-        background: ${({ theme }) => theme.grey1};
-        color: ${({ theme }) => theme.text2};
+      > thead {
+        background: ${({ theme }) => theme.bg3};
       }
-    }
 
-    th,
-    td {
-      min-width: 8.5rem;
-      text-align: left;
-      padding: 0.5rem 0.4rem;
-    }
+      > tbody > tr {
+        background: ${({ theme }) => theme.grey1};
+      }
 
-    ${({ theme }) => theme.mediaWidth.upToSmall`
+      > tbody > tr > td > span[role='img'] {
+        font-size: 18px;
+      }
+
+      th,
+      td {
+        min-width: 200px;
+        text-align: left;
+        padding: 6px 12px;
+
+        &:not(:first-child) {
+          text-align: center;
+        }
+      }
+
+      th {
+        padding: 16px 12px;
+      }
+
+      ${({ theme }) => theme.mediaWidth.upToSmall`
       td:first-child {
-        max-width: 100px;
+        max-width: 70px;
         word-break: break-all;
       }
     `};
+    }
   }
 `
 
