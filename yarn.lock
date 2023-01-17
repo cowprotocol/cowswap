@@ -12224,6 +12224,13 @@ jest-snapshot@^27.5.1:
     pretty-format "^27.5.1"
     semver "^7.3.2"
 
+jest-styled-components@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/jest-styled-components/-/jest-styled-components-7.1.1.tgz#faf19c733e0de4bbef1f9151955b99e839b7df48"
+  integrity sha512-OUq31R5CivBF8oy81dnegNQrRW13TugMol/Dz6ZnFfEyo03exLASod7YGwyHGuayYlKmCstPtz0RQ1+NrAbIIA==
+  dependencies:
+    "@adobe/css-tools" "^4.0.1"
+
 jest-util@^27.5.1:
   version "27.5.1"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-27.5.1.tgz#3ba9771e8e31a0b85da48fe0b0891fb86c01c2f9"

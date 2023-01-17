@@ -9,10 +9,9 @@ import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
 
 import { V3_CORE_FACTORY_ADDRESSES } from '../constants/addresses'
-import { IUniswapV3PoolStateInterface } from '../types/v3/IUniswapV3PoolState'
 
 const IUniswapV3PoolStateABI = IUniswapV3PoolState.abi
-const POOL_STATE_INTERFACE = new Interface(IUniswapV3PoolStateABI) as IUniswapV3PoolStateInterface
+const POOL_STATE_INTERFACE = new Interface(IUniswapV3PoolStateABI)
 
 // Classes are expensive to instantiate, so this caches the recently instantiated pools.
 // This avoids re-instantiating pools as the other pools in the same request are loaded.
