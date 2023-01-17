@@ -10,12 +10,6 @@
     "build": "craco build",
     "test": "craco test"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -175,11 +169,9 @@
     "assert": "^2.0.0",
     "craco-workbox": "^0.2.0",
     "create-react-app": "^5.0.1",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-config-react-app": "^7.0.1",
     "https-browserify": "^1.0.0",
     "jest-fetch-mock": "^3.0.3",
-    "prettier": "^2.8.3",
     "react-cosmos": "^5.7.2",
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0",

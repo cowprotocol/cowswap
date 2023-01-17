@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Routes, Route, useLocation, Outlet } from 'react-router-dom'
+import { useLocation, Outlet } from 'react-router-dom'
 import { AccountMenu } from './Menu'
 import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 import { Content, Title } from '@cow/modules/application/pure/Page'
