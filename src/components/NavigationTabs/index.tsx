@@ -22,7 +22,7 @@ const Tabs = styled.div`
   justify-content: space-evenly;
 `
 
-const activeClassName = 'ACTIVE'
+const activeClassName = 'active'
 
 const StyledNavLink = styled(NavLink).attrs({
   activeClassName,
@@ -71,7 +71,6 @@ const StyledArrowLeft = styled(ArrowLeft)`
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
   return (
     <Tabs style={{ marginBottom: '20px', display: 'none', padding: '1rem 1rem 0 1rem' }}>
-      {/*TODO: FIX CRC*/}
       <StyledNavLink id={`swap-nav-link`} to={'/swap'} className={({ isActive }) => (isActive ? 'ACTIVE' : undefined)}>
         <Trans>Swap</Trans>
       </StyledNavLink>

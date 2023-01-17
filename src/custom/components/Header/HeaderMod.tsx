@@ -137,7 +137,7 @@ export const HeaderLinks = styled(Row)`
   overflow: auto;
   align-items: center;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    justify-self: start;  
+    justify-self: start;
     `};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-self: center;
@@ -224,7 +224,7 @@ export const Title = styled.a`
   position: relative;
 ` */
 
-const activeClassName = 'ACTIVE'
+const activeClassName = 'active'
 
 export const StyledNavLink = styled(NavLink).attrs({
   activeClassName,

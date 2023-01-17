@@ -185,7 +185,7 @@ const UniIcon = styled.div`
   position: relative;
 `
 
-const activeClassName = 'ACTIVE'
+const activeClassName = 'active'
 
 const StyledNavLink = styled(NavLink).attrs({
   activeClassName,
@@ -280,19 +280,10 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           <Trans>Swap</Trans>
         </StyledNavLink>
-        {/*TODO: FIX CRC*/}
         <StyledNavLink
           data-cy="pool-nav-link"
           id={`pool-nav-link`}
           to={'/pool'}
-          className={({ isActive }) => (isActive ? 'ACTIVE' : undefined)}
-          // isActive={(match, { pathname }) =>
-          //   Boolean(match) ||
-          //   pathname.startsWith('/add') ||
-          //   pathname.startsWith('/remove') ||
-          //   pathname.startsWith('/increase') ||
-          //   pathname.startsWith('/find')
-          // }
         >
           <Trans>Pool</Trans>
         </StyledNavLink>

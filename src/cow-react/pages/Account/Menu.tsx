@@ -8,7 +8,7 @@ export function AccountMenu() {
       <ul>
         {ACCOUNT_MENU_LINKS.map(({ title, url }, i) => (
           <li key={i}>
-            <NavLink to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
+            <NavLink end to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
               {title}
             </NavLink>
           </li>
