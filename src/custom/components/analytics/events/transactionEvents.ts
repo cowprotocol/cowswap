@@ -69,7 +69,7 @@ export function signSwapAnalytics(action: SignSwapAction, orderClass: OrderClass
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
 export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?: string) {
   const classLabel = LABEL_FROM_CLASS[orderClass]
-  const eventAction = action === 'Posted' ? 'Posted order' : `${action} ${classLabel}`
+  const eventAction = action === 'Posted' ? 'Posted Order' : `${action} ${classLabel}`
 
   sendEvent({
     category: Category.SWAP,
