@@ -181,3 +181,5 @@ _Table: Overview of cookies placed and the consequences if the cookies are not p
         </tbody>
     </table>
 </div>
+
+<button onClick="(() => {window.scrollTo({ top: 0, behavior: 'smooth' })})();return false;" id="back-to-top">Back to top ↑</button>

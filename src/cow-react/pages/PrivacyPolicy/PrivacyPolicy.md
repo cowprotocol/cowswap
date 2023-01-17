@@ -309,3 +309,5 @@ We may make changes to this Policy from time to time. Where we do so, we will no
 This website is hosted by Nomev Labs, Lda on behalf of a client. We are registered in Portugal under registration number PT516811924, and our registered office is located at Rua António Maria Cardoso, No 25, piso 4, 1200-027 Lisboa.
 
 If you have any queries concerning your rights under this Privacy Policy, please contact us at <a href="mailto:legal@nomev.io">legal@nomev.io</a>
+
+<button onClick="(() => {window.scrollTo({ top: 0, behavior: 'smooth' })})();return false;" id="back-to-top">Back to top ↑</button>

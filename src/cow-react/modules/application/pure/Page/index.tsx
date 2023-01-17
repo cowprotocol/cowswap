@@ -123,8 +123,32 @@ export const Content = styled.div`
   }
 `
 
+export const BackToTopStyle = css`
+  #back-to-top {
+    background: #052b65;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    box-shadow: none;
+    border-radius: 16px;
+    color: #ffffff;
+    position: relative;
+    min-height: 58px;
+    padding: 16px;
+    transform: perspective(1px) translateZ(0);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+    :hover {
+      background: #073c8c;
+    }
+  }
+`
+
 export const GdocsListStyle = css`
   /* List styles */
+  ${BackToTopStyle}
+
   > ul,
   ol {
     margin: 24px 0;
