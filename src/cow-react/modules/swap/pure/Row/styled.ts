@@ -15,6 +15,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
 
   ${RowFixed} {
     gap: 3px;
+    min-width: 200px;
   }
 
   ${TextWrapper} {

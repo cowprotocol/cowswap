@@ -75,7 +75,7 @@ const InvertIcon = styled.div`
   }
 `
 
-const RateWrapper = styled.button`
+export const RateWrapper = styled.button`
   display: inline;
   background: none;
   border: 0;

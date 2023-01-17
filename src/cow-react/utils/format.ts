@@ -192,9 +192,9 @@ export function truncateOnMaxDecimals(value: string, decimals: number): string {
   return value.replace(regex, '$1')
 }
 
-const DEFAULT_MAX_SYMBOL_LENGTH = 40
+const DEFAULT_MAX_SYMBOL_LENGTH = 12
 
-export function formatSymbol(symbol: string | undefined, length?: number): string | undefined {
-  const maxLength = length || DEFAULT_MAX_SYMBOL_LENGTH
+export function formatSymbol(symbol: string | undefined, length?: number, maxLength?: number): string | undefined {
+  maxLength = maxLength ? maxLength : length || DEFAULT_MAX_SYMBOL_LENGTH
   return symbol && symbol.length > maxLength ? symbol.slice(0, maxLength) + '...' : symbol
 }
