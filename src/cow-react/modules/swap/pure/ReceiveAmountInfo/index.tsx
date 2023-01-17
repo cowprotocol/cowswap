@@ -4,6 +4,7 @@ import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
+import { formatSymbol } from '@cow/utils/format'
 
 export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo
@@ -35,7 +36,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <Trans>Before fee</Trans>
         </span>
         <span>
-          {amountBeforeFees} {currency.symbol}
+          {amountBeforeFees} {formatSymbol(currency.symbol)}
         </span>
       </div>
       <div>
@@ -43,7 +44,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
         {hasFee ? (
           <span>
             {typeString}
-            {feeAmount} {currency.symbol}
+            {feeAmount} {formatSymbol(currency.symbol)}
           </span>
         ) : (
           <styledEl.GreenText>
@@ -70,7 +71,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
         </span>
         <span>
-          {amountAfterFees} {currency.symbol}
+          {amountAfterFees} {formatSymbol(currency.symbol)}
         </span>
       </styledEl.TotalAmount>
     </styledEl.Box>

@@ -6,6 +6,7 @@ import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
+import { formatSymbol } from '@cow/utils/format'
 
 interface BuiltItProps {
   className: string
@@ -34,7 +35,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
           </div>
           <div>
             <styledEl.NumericalInput
-              title={rawAmount?.toExact() + ' ' + currency?.symbol}
+              title={rawAmount?.toExact() + ' ' + formatSymbol(currency?.symbol)}
               className="token-amount-input"
               readOnly={true}
               value={viewAmount}
@@ -48,8 +49,8 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
           <div>
             {balance && (
               <>
-                <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
-                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+                <styledEl.BalanceText title={balance.toExact() + ' ' + formatSymbol(currency?.symbol)}>
+                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {formatSymbol(currency?.symbol)}
                 </styledEl.BalanceText>
               </>
             )}
