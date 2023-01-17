@@ -280,11 +280,7 @@ export default function Header() {
         <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           <Trans>Swap</Trans>
         </StyledNavLink>
-        <StyledNavLink
-          data-cy="pool-nav-link"
-          id={`pool-nav-link`}
-          to={'/pool'}
-        >
+        <StyledNavLink data-cy="pool-nav-link" id={`pool-nav-link`} to={'/pool'}>
           <Trans>Pool</Trans>
         </StyledNavLink>
         {(!chainId || chainId === SupportedChainId.MAINNET) && (
