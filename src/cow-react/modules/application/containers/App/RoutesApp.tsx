@@ -1,15 +1,15 @@
 import Loader from 'components/Loader'
 import { Suspense, lazy } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 
 import { RedirectPathToSwapOnly } from 'pages/Swap/redirects'
-import { Routes } from '@cow/constants/routes'
+import { Routes as RoutesEnum } from '@cow/constants/routes'
 
 import AnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
 import { Loading } from 'components/FlashingLoading'
 
-import Account from '@cow/pages/Account'
+import Account, { AccountOverview } from '@cow/pages/Account'
 import { NewSwapPage, NewSwapPageRedirect } from '@cow/pages/NewSwap'
 
 // Async routes
@@ -31,6 +31,10 @@ const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ '
 const LimitOrdersFaq = lazy(() => import(/* webpackChunkName: "limit_orders_faq" */ '@cow/pages/Faq/LimitOrdersFaq'))
 const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ '@cow/pages/Faq/EthFlowFaq'))
 
+// Account
+const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ '@cow/pages/Account/Tokens'))
+const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ '@cow/pages/error/NotFound'))
+
 function createRedirectExternal(url: string) {
   return () => {
     window.location.replace(url)
@@ -41,43 +45,145 @@ function createRedirectExternal(url: string) {
 export function RoutesApp() {
   return (
     <Suspense fallback={<Loader />}>
-      <Switch>
-        {/* Optimistic routes */}
-        <Route strict path={Routes.ACCOUNT} component={Account} />
-        {/* Lazy routes */}
-        <Suspense fallback={Loading}>
-          <Switch>
-            <Redirect from="/claim" to={Routes.ACCOUNT} />
-            <Redirect from="/profile" to={Routes.ACCOUNT} />
-            {/*Redirect from the old URL format to a new one*/}
-            <Route exact strict path="/swap" component={NewSwapPageRedirect} />
-            <Route exact path={Routes.SWAP} component={NewSwapPage} />
-            <Route exact path={Routes.LIMIT_ORDER} component={LimitOrders} />
-            <Route exact strict path={Routes.SEND} component={RedirectPathToSwapOnly} />
-            <Route exact strict path={Routes.ABOUT} component={About} />
+      <Routes>
+        <Route path={RoutesEnum.ACCOUNT} element={<Account />}>
+          <Route path={RoutesEnum.ACCOUNT} element={<AccountOverview />} />
+          <Route path={RoutesEnum.ACCOUNT_TOKENS} element={<AccountTokensOverview />} />
+          <Route element={<AccountNotFound />} />
+        </Route>
+        <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
+        <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
+        <Route path="/swap" element={<NewSwapPageRedirect />} />
+        <Route path={RoutesEnum.SWAP} element={<NewSwapPage />} />
+        <Route
+          path={RoutesEnum.LIMIT_ORDER}
+          element={
+            <Suspense fallback={Loading}>
+              <LimitOrders />
+            </Suspense>
+          }
+        />
+        <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
+        <Route
+          path={RoutesEnum.ABOUT}
+          element={
+            <Suspense fallback={Loading}>
+              <About />
+            </Suspense>
+          }
+        />
 
-            <Route exact path={Routes.FAQ} component={Faq} />
-            <Route exact strict path={Routes.FAQ_PROTOCOL} component={ProtocolFaq} />
-            <Route exact strict path={Routes.FAQ_TOKEN} component={TokenFaq} />
-            <Route exact strict path={Routes.FAQ_TRADING} component={TradingFaq} />
-            <Route exact strict path={Routes.FAQ_AFFILIATE} component={AffiliateFaq} />
-            <Route exact strict path={Routes.FAQ_LIMIT_ORDERS} component={LimitOrdersFaq} />
-            <Route exact strict path={Routes.FAQ_ETH_FLOW} component={EthFlowFaq} />
-            <Route exact strict path={Routes.PLAY_COWRUNNER} component={CowRunner} />
-            <Route exact strict path={Routes.PLAY_MEVSLICER} component={MevSlicer} />
-            <Route exact strict path={Routes.ANYSWAP_AFFECTED} component={AnySwapAffectedUsers} />
-            <Route exact strict path={Routes.PRIVACY_POLICY} component={PrivacyPolicy} />
-            <Route exact strict path={Routes.COOKIE_POLICY} component={CookiePolicy} />
-            <Route exact strict path={Routes.TERMS_CONDITIONS} component={TermsAndConditions} />
-            <Route exact strict path={Routes.CHAT} component={createRedirectExternal(DISCORD_LINK)} />
-            <Route exact strict path={Routes.DOCS} component={createRedirectExternal(DOCS_LINK)} />
-            <Route exact strict path={Routes.STATS} component={createRedirectExternal(DUNE_DASHBOARD_LINK)} />
-            <Route exact strict path={Routes.TWITTER} component={createRedirectExternal(TWITTER_LINK)} />
-            <Route exact strict path={Routes.HOME} component={RedirectPathToSwapOnly} />
-            <Route component={NotFound} />
-          </Switch>
-        </Suspense>
-      </Switch>
+        <Route
+          path={RoutesEnum.FAQ}
+          element={
+            <Suspense fallback={Loading}>
+              <Faq />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.FAQ_PROTOCOL}
+          element={
+            <Suspense fallback={Loading}>
+              <ProtocolFaq />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.FAQ_TOKEN}
+          element={
+            <Suspense fallback={Loading}>
+              <TokenFaq />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.FAQ_TRADING}
+          element={
+            <Suspense fallback={Loading}>
+              <TradingFaq />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.FAQ_AFFILIATE}
+          element={
+            <Suspense fallback={Loading}>
+              <AffiliateFaq />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.FAQ_LIMIT_ORDERS}
+          element={
+            <Suspense fallback={Loading}>
+              <LimitOrdersFaq />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.FAQ_ETH_FLOW}
+          element={
+            <Suspense fallback={Loading}>
+              <EthFlowFaq />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.PLAY_COWRUNNER}
+          element={
+            <Suspense fallback={Loading}>
+              <CowRunner />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.PLAY_MEVSLICER}
+          element={
+            <Suspense fallback={Loading}>
+              <MevSlicer />
+            </Suspense>
+          }
+        />
+        <Route path={RoutesEnum.ANYSWAP_AFFECTED} element={<AnySwapAffectedUsers />} />
+        <Route
+          path={RoutesEnum.PRIVACY_POLICY}
+          element={
+            <Suspense fallback={Loading}>
+              <PrivacyPolicy />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.COOKIE_POLICY}
+          element={
+            <Suspense fallback={Loading}>
+              <CookiePolicy />
+            </Suspense>
+          }
+        />
+        <Route
+          path={RoutesEnum.TERMS_CONDITIONS}
+          element={
+            <Suspense fallback={Loading}>
+              <TermsAndConditions />
+            </Suspense>
+          }
+        />
+        <Route path={RoutesEnum.CHAT} loader={createRedirectExternal(DISCORD_LINK)} />
+        <Route path={RoutesEnum.DOCS} loader={createRedirectExternal(DOCS_LINK)} />
+        <Route path={RoutesEnum.STATS} loader={createRedirectExternal(DUNE_DASHBOARD_LINK)} />
+        <Route path={RoutesEnum.TWITTER} loader={createRedirectExternal(TWITTER_LINK)} />
+        <Route path={RoutesEnum.HOME} element={<RedirectPathToSwapOnly />} />
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={Loading}>
+              <NotFound />
+            </Suspense>
+          }
+        />
+      </Routes>
     </Suspense>
   )
 }

@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { buildLimitOrdersUrl } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 
 export interface OrdersTablePaginationProps {
@@ -33,6 +33,7 @@ const PageButton = styled(Link)<{ active?: boolean }>`
 `
 
 export function OrdersTablePagination({ pageSize, totalCount, currentPage }: OrdersTablePaginationProps) {
+  const location = useLocation()
   const pagesCount = Math.ceil(totalCount / pageSize)
 
   return (
@@ -44,7 +45,7 @@ export function OrdersTablePagination({ pageSize, totalCount, currentPage }: Ord
           <PageButton
             key={index}
             active={index === currentPage}
-            to={(location) => buildLimitOrdersUrl(location, { pageNumber: index })}
+            to={buildLimitOrdersUrl(location, { pageNumber: index })}
           >
             {index}
           </PageButton>

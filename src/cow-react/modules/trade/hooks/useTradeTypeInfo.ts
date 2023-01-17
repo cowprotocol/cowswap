@@ -1,6 +1,5 @@
-import { matchPath, useLocation } from 'react-router-dom'
+import { matchPath, useLocation, PathMatch } from 'react-router-dom'
 import { Routes } from '@cow/constants/routes'
-import { match } from 'react-router'
 import { TradeStateFromUrl } from '@cow/modules/trade/types/TradeState'
 import { useMemo } from 'react'
 
@@ -12,17 +11,14 @@ export enum TradeType {
 export interface TradeTypeInfo {
   tradeType: TradeType
   route: Routes
-  match: match<TradeStateFromUrl>
+  match: PathMatch<keyof TradeStateFromUrl>
 }
 
 export function useTradeTypeInfo(): TradeTypeInfo | null {
   const location = useLocation()
 
   const [swapMatch, limitOrderMatch] = useMemo(() => {
-    return [
-      matchPath<TradeStateFromUrl>(location.pathname, Routes.SWAP),
-      matchPath<TradeStateFromUrl>(location.pathname, Routes.LIMIT_ORDER),
-    ]
+    return [matchPath(location.pathname, Routes.SWAP), matchPath(location.pathname, Routes.LIMIT_ORDER)]
   }, [location.pathname])
 
   return useMemo(() => {

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from '@cow/constants/routes'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
@@ -82,8 +82,8 @@ export default function Header() {
     !isOrdersPanelOpen && removeBodyClass('noScroll')
   }
 
-  const history = useHistory()
-  const handleBalanceButtonClick = () => history.push('/account')
+  const navigate = useNavigate()
+  const handleBalanceButtonClick = () => navigate('/account')
   const isUpToLarge = useMediaQuery(upToLarge)
   const isUpToMedium = useMediaQuery(upToMedium)
   const isUpToSmall = useMediaQuery(upToSmall)

@@ -24,7 +24,7 @@ import JSBI from 'jsbi'
 import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { AlertCircle, AlertTriangle, ArrowDown } from 'react-feather'
-import { Redirect, RouteComponentProps } from 'react-router'
+import { Navigate } from 'react-router'
 import { Text } from 'rebass'
 import { useAppDispatch } from 'state/hooks'
 import { Bound, resetMintState } from 'state/mint/v3/actions'
@@ -52,6 +52,7 @@ import { calculateGasMargin } from '../../utils/calculateGasMargin'
 import { currencyId } from '../../utils/currencyId'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { BodyWrapper } from '../AppBody'
+import { useParams } from 'react-router-dom'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -662,11 +663,8 @@ function V2PairMigration({
   )
 }
 
-export default function MigrateV2Pair({
-  match: {
-    params: { address },
-  },
-}: RouteComponentProps<{ address: string }>) {
+export default function MigrateV2Pair() {
+  const { address } = useParams<{ address: string }>()
   // reset mint state on component mount, and as a cleanup (on unmount)
   const dispatch = useAppDispatch()
   useEffect(() => {
@@ -721,7 +719,7 @@ export default function MigrateV2Pair({
       !token0Address)
   ) {
     console.error('Invalid pair address')
-    return <Redirect to="/migrate/v2" />
+    return <Navigate to="/migrate/v2" />
   }
 
   return (
