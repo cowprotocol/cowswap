@@ -62,6 +62,12 @@
   "resolutions": {
     "@walletconnect/ethereum-provider": "1.7.1"
   },
+  "jest": {
+    "moduleNameMapper": {
+      "@cow/(.*)": "<rootDir>/src/cow-react/$1",
+      "@src/(.*)": "<rootDir>/src/$1"
+    }
+  },
   "dependencies": {
     "@amplitude/analytics-browser": "^1.1.4",
     "@babel/runtime": "^7.17.0",
@@ -193,6 +199,7 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.0.0",
+    "@testing-library/react-hooks": "^8.0.1",
     "@typechain/ethers-v5": "^10.2.0",
     "@types/d3": "^7.4.0",
     "@types/ms.macro": "^2.0.0",
