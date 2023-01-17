@@ -379,11 +379,10 @@ export const TokenText = styled.div`
   > span > i {
     opacity: 0.6;
     font-style: normal;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     width: 100%;
     display: inline-block;
-    text-transform: uppercase;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
