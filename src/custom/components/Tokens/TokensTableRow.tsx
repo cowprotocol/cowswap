@@ -174,10 +174,10 @@ const DataRow = ({
           <ResponsiveLogo currency={tokenData} />
           <TokenText>
             <span>
-              <b>{tokenData.name}</b>
-              <i>
+              <b>
                 <TokenSymbol token={tokenData} />
-              </i>
+              </b>
+              <i>{tokenData.name}</i>
             </span>
           </TokenText>
         </Link>
