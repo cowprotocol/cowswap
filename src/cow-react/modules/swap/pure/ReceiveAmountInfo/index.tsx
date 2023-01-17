@@ -1,9 +1,29 @@
 import React from 'react'
-import * as styledEl from './styled'
+import { Box, GreenText, TextAmount, Column } from './styled'
 import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
+import { DECIMAL_SEPARATOR } from '@cow/constants/format'
+import { decomposeDecimal } from '@cow/utils/number'
+
+const EXACT_DECIMALS = 4
+
+function DecimalAmount(props: { prefix?: string; value: string; symbol?: string }) {
+  const { prefix, value, symbol } = props
+  const [integerPart, decimalPart] = decomposeDecimal(value, EXACT_DECIMALS)
+  return (
+    <TextAmount>
+      <span>
+        {prefix ? prefix + ' ' : ''}
+        {integerPart}
+      </span>
+      <span>{DECIMAL_SEPARATOR}</span>
+      <span>{decimalPart}</span>
+      <span>{symbol}</span>
+    </TextAmount>
+  )
+}
 
 export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo
@@ -29,50 +49,43 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   )
 
   return (
-    <styledEl.Box>
-      <div>
+    <Box>
+      <Column>
         <span>
           <Trans>Before fee</Trans>
         </span>
-        <span>
-          {amountBeforeFees} {currency.symbol}
-        </span>
-      </div>
-      <div>
-        {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
+        <DecimalAmount value={amountBeforeFees} symbol={currency.symbol} />
+      </Column>
+      <Column>
+        {discount ? <GreenText>{FeePercent}</GreenText> : FeePercent}
         {hasFee ? (
-          <span>
-            {typeString}
-            {feeAmount} {currency.symbol}
-          </span>
+          <DecimalAmount prefix={typeString} value={feeAmount} symbol={currency.symbol} />
         ) : (
-          <styledEl.GreenText>
+          <GreenText>
             <strong>
               <Trans>Free</Trans>
             </strong>
-          </styledEl.GreenText>
+          </GreenText>
         )}
-      </div>
+      </Column>
       {allowsOffchainSigning && (
-        <div>
+        <Column>
           <span>
             <Trans>Gas cost</Trans>
           </span>
-          <styledEl.GreenText>
+          <GreenText>
             <strong>
               <Trans>Free</Trans>
             </strong>
-          </styledEl.GreenText>
-        </div>
+          </GreenText>
+        </Column>
       )}
-      <styledEl.TotalAmount>
+      <Column isTotal={true}>
         <span>
           <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
         </span>
-        <span>
-          {amountAfterFees} {currency.symbol}
-        </span>
-      </styledEl.TotalAmount>
-    </styledEl.Box>
+        <DecimalAmount value={amountAfterFees} symbol={currency.symbol} />
+      </Column>
+    </Box>
   )
 }
