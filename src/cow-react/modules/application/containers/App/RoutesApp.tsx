@@ -10,7 +10,7 @@ import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'cons
 import { Loading } from 'components/FlashingLoading'
 
 import Account, { AccountOverview } from '@cow/pages/Account'
-import { NewSwapPage, NewSwapPageRedirect } from '@cow/pages/NewSwap'
+import { NewSwapPage } from '@cow/pages/NewSwap'
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '@cow/pages/PrivacyPolicy'))
@@ -46,15 +46,20 @@ export function RoutesApp() {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
+        {/*Account*/}
         <Route path={RoutesEnum.ACCOUNT} element={<Account />}>
           <Route path={RoutesEnum.ACCOUNT} element={<AccountOverview />} />
           <Route path={RoutesEnum.ACCOUNT_TOKENS} element={<AccountTokensOverview />} />
-          <Route element={<AccountNotFound />} />
+          <Route path="*" element={<AccountNotFound />} />
         </Route>
         <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
         <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
-        <Route path="/swap" element={<NewSwapPageRedirect />} />
+
+        {/*Swap*/}
         <Route path={RoutesEnum.SWAP} element={<NewSwapPage />} />
+        <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
+
+        {/*Limit orders*/}
         <Route
           path={RoutesEnum.LIMIT_ORDER}
           element={
@@ -63,7 +68,8 @@ export function RoutesApp() {
             </Suspense>
           }
         />
-        <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
+
+        {/*About*/}
         <Route
           path={RoutesEnum.ABOUT}
           element={
@@ -73,6 +79,7 @@ export function RoutesApp() {
           }
         />
 
+        {/*FAQ*/}
         <Route
           path={RoutesEnum.FAQ}
           element={
@@ -129,6 +136,8 @@ export function RoutesApp() {
             </Suspense>
           }
         />
+
+        {/*Games*/}
         <Route
           path={RoutesEnum.PLAY_COWRUNNER}
           element={
