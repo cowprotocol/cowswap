@@ -218,6 +218,7 @@
     "create-react-app": "^5.0.1",
     "cypress": "^12.3.0",
     "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-cypress": "^2.12.1",
     "https-browserify": "^1.0.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-styled-components": "^7.1.1",
