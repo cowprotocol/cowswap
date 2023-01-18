@@ -59,7 +59,7 @@ export function useSetupTradeState(): void {
   const prevCurrentChainId = usePrevious(currentChainId)
 
   const chainIdFromUrlWasChanged = !!chainIdFromUrl && chainIdFromUrl !== prevChainIdFromUrl
-  const providerChainIdWasChanged = !!currentChainId && !!prevCurrentChainId && currentChainId !== prevCurrentChainId
+  const providerChainIdWasChanged = !!currentChainId && currentChainId !== prevCurrentChainId
 
   const skipUpdate = useMemo(() => {
     if (areCurrenciesTheSame(tradeStateFromUrl)) return false
@@ -154,6 +154,7 @@ export function useSetupTradeState(): void {
    * Update state in the store when something was changed (chainId or URL params)
    */
   useLayoutEffect(() => {
+    console.log('AAABBB', { skipUpdate, isChainIdSet })
     if (!isChainIdSet || skipUpdate) return
 
     updateStateAndNavigate()
