@@ -13,7 +13,7 @@ export function TokenSymbol({ token, length, maxLength }: Props) {
   if (!symbol && !name) return null
 
   const fullSymbol = symbol || name
-  const abbreviateSymbol = formatSymbol(fullSymbol, length, maxLength)
+  const abbreviateSymbol = formatSymbol(fullSymbol, maxLength ? maxLength : length)
 
   return <span title={fullSymbol}>{abbreviateSymbol}</span>
 }
