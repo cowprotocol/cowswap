@@ -37,7 +37,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const isEthFlow = useIsEthFlow()
 
   const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
-  const { type, amountAfterFees, amountBeforeFees, feeAmount } = receiveAmountInfo
+  const { type, feeAmount, amountAfterFeesRaw, amountBeforeFeesRaw } = receiveAmountInfo
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
@@ -57,7 +57,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
         <span>
           <Trans>Before fee</Trans>
         </span>
-        <DecimalAmount value={amountBeforeFees} symbol={currency.symbol} />
+        <DecimalAmount value={amountBeforeFeesRaw?.toExact() || '0'} symbol={currency.symbol} />
       </Column>
       <Column>
         {discount ? <GreenText>{FeePercent}</GreenText> : FeePercent}
@@ -87,7 +87,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
         <span>
           <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
         </span>
-        <DecimalAmount value={amountAfterFees} symbol={currency.symbol} />
+        <DecimalAmount value={amountAfterFeesRaw.toExact()} symbol={currency.symbol} />
       </Column>
     </Box>
   )

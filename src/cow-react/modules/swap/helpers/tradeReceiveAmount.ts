@@ -6,6 +6,7 @@ export interface ReceiveAmountInfo {
   type: 'from' | 'to'
   amountBeforeFees: string
   amountAfterFees: string
+  amountBeforeFeesRaw: CurrencyAmount<Currency> | undefined
   amountAfterFeesRaw: CurrencyAmount<Currency>
   feeAmount: string
 }
@@ -13,6 +14,10 @@ export interface ReceiveAmountInfo {
 export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
   return {
     type: 'from',
+    amountBeforeFeesRaw:
+      trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.lessThan(trade.fee.amount)
+        ? undefined
+        : trade.inputAmountWithoutFee,
     amountBeforeFees:
       trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.lessThan(trade.fee.amount)
         ? '0'
@@ -26,6 +31,7 @@ export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
 export function getOutputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
   return {
     type: 'to',
+    amountBeforeFeesRaw: trade.outputAmountWithoutFee,
     amountBeforeFees: formatSmartAmount(trade.outputAmountWithoutFee) || '0',
     amountAfterFeesRaw: trade.outputAmount,
     amountAfterFees: formatSmartAmount(trade.outputAmount) || '0',

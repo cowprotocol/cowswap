@@ -7,7 +7,6 @@ import { OrderClass, OrderKind } from 'state/orders/actions'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersConfirm } from './index'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
-import React from 'react'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
@@ -21,6 +20,7 @@ const inputCurrencyInfo: CurrencyInfo = {
     type: 'from',
     amountBeforeFees: '30',
     amountAfterFees: '20',
+    amountBeforeFeesRaw: CurrencyAmount.fromRawAmount(inputCurrency, 30 * 10 ** 18),
     amountAfterFeesRaw: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
     feeAmount: '10',
   },
@@ -37,6 +37,7 @@ const outputCurrencyInfo: CurrencyInfo = {
     type: 'from',
     amountBeforeFees: '30',
     amountAfterFees: '20',
+    amountBeforeFeesRaw: CurrencyAmount.fromRawAmount(outputCurrency, 30 * 10 ** 18),
     amountAfterFeesRaw: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
     feeAmount: '10',
   },
