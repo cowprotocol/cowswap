@@ -154,7 +154,6 @@ export function useSetupTradeState(): void {
    * Update state in the store when something was changed (chainId or URL params)
    */
   useLayoutEffect(() => {
-    console.log('AAABBB', { skipUpdate, isChainIdSet })
     if (!isChainIdSet || skipUpdate) return
 
     updateStateAndNavigate()

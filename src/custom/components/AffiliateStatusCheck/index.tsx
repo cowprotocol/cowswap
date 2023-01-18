@@ -136,7 +136,7 @@ export default function AffiliateStatusCheck() {
       setAffiliateState('OWN_LINK')
 
       if (referralAddressQueryParam) {
-        navigate('/account' + location.search)
+        navigate({ pathname: '/account', search: location.search })
       }
       return
     }

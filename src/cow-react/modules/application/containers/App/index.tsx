@@ -20,7 +20,6 @@ export function App() {
   return (
     <ErrorBoundary>
       <RedirectAnySwapAffectedUsers />
-      {/*TODO: FIX CRC*/}
       <DarkModeQueryParamReader />
       <ApeModeQueryParamReader />
       <styledEl.AppWrapper>
