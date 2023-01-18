@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { WithClassName } from 'types'
 import { Widget } from '@cow/modules/application/pure/Widget'
+import { lighten } from 'polished'
 
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;
@@ -129,8 +130,40 @@ export const Content = styled.div`
   }
 `
 
+export const BackToTopStyle = css`
+  #back-to-top {
+    border: 1px solid transparent;
+    background: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    box-shadow: none;
+    border-radius: 16px;
+    position: relative;
+    min-height: 58px;
+    padding: 16px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:focus,
+    &:hover,
+    &:active {
+      box-shadow: none;
+      transform: none;
+      color: ${({ theme }) => theme.white};
+    }
+
+    &:hover {
+      background: ${({ theme }) => lighten(0.08, theme.bg2)};
+    }
+  }
+`
+
 export const GdocsListStyle = css`
   /* List styles */
+  ${BackToTopStyle}
+
   > ul,
   ol {
     margin: 24px 0;

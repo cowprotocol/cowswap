@@ -181,3 +181,5 @@ If you do not accept changes which are made to this Cookie Policy, or take any m
         </tbody>
     </table>
 </div>
+
+<button onClick="(() => {window.scrollTo({ top: 0, behavior: 'smooth' })})();return false;" id="back-to-top">Back to top ↑</button>
