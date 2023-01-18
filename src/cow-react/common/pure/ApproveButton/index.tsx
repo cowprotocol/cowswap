@@ -10,6 +10,7 @@ import { useContext, useMemo } from 'react'
 import { Currency } from '@uniswap/sdk-core'
 import { ThemeContext } from 'styled-components/macro'
 import { ApprovalState } from 'hooks/useApproveCallback'
+import { formatSymbol } from '@cow/utils/format'
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
@@ -21,7 +22,7 @@ export function ApproveButton(props: ApproveButtonProps) {
   const { currency, state, onClick } = props
 
   const theme = useContext(ThemeContext)
-  const symbol = currency?.symbol
+  const symbol = formatSymbol(currency?.symbol)
   const isPending = state === ApprovalState.PENDING
   const isConfirmed = state === ApprovalState.APPROVED
   const disabled = state !== ApprovalState.NOT_APPROVED

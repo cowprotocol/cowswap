@@ -195,6 +195,6 @@ export function truncateOnMaxDecimals(value: string, decimals: number): string {
 const DEFAULT_MAX_SYMBOL_LENGTH = 12
 
 export function formatSymbol(symbol: string | undefined, length?: number): string | undefined {
-  const maxLength = length || DEFAULT_MAX_SYMBOL_LENGTH
+  const maxLength = length ? length : DEFAULT_MAX_SYMBOL_LENGTH
   return symbol && symbol.length > maxLength ? symbol.slice(0, maxLength) + '...' : symbol
 }

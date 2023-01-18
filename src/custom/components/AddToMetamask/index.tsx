@@ -101,12 +101,12 @@ export default function AddToMetamask(props: AddToMetamaskProps) {
       {!success ? (
         <RowFixed>
           <StyledIcon src={MetaMaskLogo} />{' '}
-          {shortLabel ? 'Add token' : `Add ${formatSymbol(currency.symbol)} to Metamask`}
+          {shortLabel ? 'Add token' : `Add ${formatSymbol(currency?.symbol)} to Metamask`}
         </RowFixed>
       ) : (
         <RowFixed>
           <CheckCircleCustom size={'16px'} stroke={theme.green1} />
-          Added {formatSymbol(currency.symbol)}{' '}
+          Added {formatSymbol(currency?.symbol)}{' '}
         </RowFixed>
       )}
     </ButtonCustom>

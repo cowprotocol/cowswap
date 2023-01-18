@@ -25,7 +25,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
     >
       {currency ? <CurrencyLogo currency={currency} size={'24px'} /> : <div></div>}
       <styledEl.CurrencySymbol className="token-symbol-container" $stubbed={$stubbed}>
-        {currency ? <TokenSymbol token={currency} maxLength={40} /> : <Trans>Select a token</Trans>}
+        {currency ? <TokenSymbol token={currency} length={40} /> : <Trans>Select a token</Trans>}
       </styledEl.CurrencySymbol>
       {readonlyMode ? null : $stubbed ? <styledEl.ArrowDown $stubbed={$stubbed} /> : <styledEl.ArrowDown />}
     </styledEl.CurrencySelectWrapper>

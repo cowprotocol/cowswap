@@ -123,7 +123,7 @@ export default function CommonBases({
                 >
                   <CurrencyLogoFromList currency={currency} />
                   <Text fontWeight={500} fontSize={16}>
-                    {formatSymbol(currency.symbol, 6)} {/* MOD */}
+                    {formatSymbol(currency?.symbol, 6)} {/* MOD */}
                   </Text>
                 </BaseWrapper>
               </TraceEvent>

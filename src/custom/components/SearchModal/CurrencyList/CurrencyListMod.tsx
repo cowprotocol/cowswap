@@ -29,6 +29,7 @@ import { MenuItem } from '.' // mod
 import { formatSmart } from '@cow/utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
+import { formatSymbol } from '@cow/utils/format'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -162,7 +163,7 @@ function CurrencyRow({
         <CurrencyLogo currency={currency} size={'24px'} />
         <Column>
           <Text title={currency.name} fontWeight={500}>
-            {currency.symbol}
+            {formatSymbol(currency.symbol)} {/* MOD */}
           </Text>
           <ThemedText.DarkGray ml="0px" fontSize={'12px'} fontWeight={300}>
             {!currency.isNative && !isOnSelectedList && customAdded ? (

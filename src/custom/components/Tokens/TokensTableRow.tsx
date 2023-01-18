@@ -170,7 +170,7 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <Link title={tokenData.name} to={tradeLink(tokenData, OrderKind.SELL)}>
+        <Link to={tradeLink(tokenData, OrderKind.SELL)}>
           <ResponsiveLogo currency={tokenData} />
           <TokenText>
             <span>
