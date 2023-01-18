@@ -6,6 +6,7 @@ import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
 import { DECIMAL_SEPARATOR } from '@cow/constants/format'
 import { decomposeDecimal } from '@cow/utils/number'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 const EXACT_DECIMALS = 4
 
@@ -33,6 +34,8 @@ export interface ReceiveAmountInfoTooltipProps {
 }
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
+  const isEthFlow = useIsEthFlow()
+
   const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
   const { type, amountAfterFees, amountBeforeFees, feeAmount } = receiveAmountInfo
   const { subsidy } = subsidyAndBalance
@@ -68,7 +71,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           </GreenText>
         )}
       </Column>
-      {allowsOffchainSigning && (
+      {allowsOffchainSigning && !isEthFlow && (
         <Column>
           <span>
             <Trans>Gas cost</Trans>
