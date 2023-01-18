@@ -1,5 +1,4 @@
 import { DECIMAL_SEPARATOR } from '@cow/constants/format'
-import { decomposeDecimal } from '@cow/utils/number'
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
@@ -16,7 +15,7 @@ export default function tryParseCurrencyAmount<T extends Currency>(
     return undefined
   }
   try {
-    const [quotient, remainder] = decomposeDecimal(value)
+    const [quotient, remainder] = value.split(DECIMAL_SEPARATOR)
     const fixedNumber = remainder ? quotient + DECIMAL_SEPARATOR + remainder.slice(0, currency.decimals) : quotient
     const typedValueParsed = parseUnits(fixedNumber, currency.decimals).toString()
     if (typedValueParsed !== '0') {
