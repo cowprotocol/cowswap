@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import WalletModal from 'components/WalletModal'
-import { Web3StatusInner, Web3StatusConnect, Web3StatusConnected, Text } from './Web3StatusMod'
+import { Web3StatusInner, Web3StatusConnected } from './Web3StatusMod'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
@@ -27,33 +27,13 @@ export const Wrapper = styled.div`
     width: max-content;
   }
 
-  ${Web3StatusConnect} {
-    background-color: ${({ theme }) => theme.bg2};
-    color: ${({ theme }) => theme.white};
-    border: 0;
-  }
-
   ${Web3StatusConnected} {
-    border-radius: 21px;
-    color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.grey1};
     height: 100%;
     width: 100%;
-    border: 0;
-    box-shadow: none;
-    padding: 6px 8px;
-    transform: none;
-
-    &:hover {
-      border: 0;
-    }
 
     > div > svg > path {
       stroke: ${({ theme }) => theme.text3};
     }
-  }
-
-  ${Text} {
   }
 `
 

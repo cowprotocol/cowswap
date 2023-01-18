@@ -341,14 +341,13 @@ export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
   pointer-events: auto;
   width: auto;
 
+  &:hover {
+    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
+  }
+
   ${({ theme }) => theme.mediaWidth.upToMedium`
     height: 100%;
   `}
-
-  &:hover,
-  &:focus {
-    border: 2px solid ${({ theme }) => transparentize(0.7, theme.text1)};
-  }
 
   ${BalanceText} {
     min-width: initial;
