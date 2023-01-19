@@ -1,18 +1,17 @@
 import { isAddress } from 'utils'
 import { useCallback } from 'react'
-import { useAllTokensList } from '@cow/common/hooks/useAllTokensList'
+import { useAtomValue } from 'jotai/utils'
+import { tokensBySymbolAtom } from '@cow/modules/tokensList/state/tokensListAtom'
 
 export function useAreThereTokensWithSameSymbol(): (tokenAddressOrSymbol: string | null | undefined) => boolean {
-  const allTokens = useAllTokensList()
+  const tokensBySymbol = useAtomValue(tokensBySymbolAtom)
 
   return useCallback(
     (tokenAddressOrSymbol: string | null | undefined) => {
       if (!tokenAddressOrSymbol || isAddress(tokenAddressOrSymbol)) return false
 
-      const tokens = allTokens.filter((token) => token.symbol === tokenAddressOrSymbol)
-
-      return tokens.length > 1
+      return tokensBySymbol[tokenAddressOrSymbol]?.length > 1
     },
-    [allTokens]
+    [tokensBySymbol]
   )
 }

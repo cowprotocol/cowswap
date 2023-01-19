@@ -24,11 +24,9 @@ const SideBar = styled.div`
   z-index: 102;
   padding: 0;
   cursor: default;
-  overflow-y: auto; // fallback for 'overlay'
-  overflow-y: overlay;
+  overflow-y: hidden;
   box-shadow: ${({ theme }) => theme.boxShadow1};
   background: ${({ theme }) => theme.bg1};
-  scrollbar-color: ${({ theme }) => `${transparentize(0.5, theme.text1)} ${theme.bg1}`};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -36,27 +34,6 @@ const SideBar = styled.div`
     max-width: 100%;
     border-radius: 0;
   `};
-
-  &::-webkit-scrollbar {
-    width: 16px;
-    border-radius: 16px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${transparentize(0.5, theme.text1)}`};
-    border: 4px solid transparent;
-    border-radius: 16px;
-    background-clip: padding-box;
-  }
-
-  &::-webkit-resizer,
-  &::-webkit-scrollbar-button,
-  &::-webkit-scrollbar-corner {
-    height: 6px;
-  }
 `
 
 const SidebarBackground = styled.div`
@@ -82,6 +59,12 @@ const Header = styled.div`
   align-items: center;
   transition: opacity 0.2s ease-in-out;
   color: ${({ theme }) => theme.text1};
+  background: ${({ theme }) => theme.bg1};
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     top: 0;
@@ -101,6 +84,10 @@ const Header = styled.div`
   > strong {
     font-size: 24px;
     color: inherit;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      font-size: 18px;
+    `};
   }
 `
 
@@ -120,8 +107,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: stretch;
-  height: auto;
+  height: inherit;
   width: 100%;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
+  ${({ theme }) => theme.colorScrollbar};
 `
 
 export interface OrdersPanelProps {

@@ -9,6 +9,13 @@ import { switchChain } from 'utils/switchChain'
 import usePrevious from 'hooks/usePrevious'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+import { Nullish } from '@cow/types'
+
+function areCurrenciesTheSame({ inputCurrencyId, outputCurrencyId }: TradeState): boolean {
+  if (!inputCurrencyId && !outputCurrencyId) return false
+
+  return inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
+}
 
 /**
  * Case: we have WETH/COW tokens pair in the sore
@@ -16,13 +23,13 @@ import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter
  * In this case, we reverse tokens pair and the result will be: COW/WETH
  */
 function getUpdatedCurrenciesIds(tradeStateFromUrl: TradeState, tradeStateFromStore: TradeState): TradeCurrenciesIds {
-  const areCurrenciesTheSame = tradeStateFromUrl.inputCurrencyId === tradeStateFromUrl.outputCurrencyId
+  const currenciesAreTheSame = areCurrenciesTheSame(tradeStateFromUrl)
 
-  const inputCurrencyId = areCurrenciesTheSame
+  const inputCurrencyId = currenciesAreTheSame
     ? tradeStateFromStore.outputCurrencyId
     : tradeStateFromUrl.inputCurrencyId
 
-  const outputCurrencyId = areCurrenciesTheSame
+  const outputCurrencyId = currenciesAreTheSame
     ? tradeStateFromStore.inputCurrencyId
     : tradeStateFromUrl.outputCurrencyId
 
@@ -41,6 +48,10 @@ function shouldSkipUpdate(tradeStateFromUrl: TradeState, tradeStateFromStore: Tr
   return chainIdIsNotChanged && recipientIsNotChanged && inputCurrencyIsNotChanged && outputCurrencyIsNotChanged
 }
 
+function areChainIdsTheSame(aChainId: Nullish<number>, bChainId: Nullish<number>): boolean {
+  return !!aChainId && !!bChainId && aChainId !== bChainId
+}
+
 export function useSetupTradeState(): void {
   const { chainId: currentChainId, connector, account } = useWeb3React()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
@@ -52,16 +63,19 @@ export function useSetupTradeState(): void {
   const prevChainIdFromUrl = usePrevious(chainIdFromUrl)
   const prevCurrentChainId = usePrevious(currentChainId)
 
-  const chainIdFromUrlWasChanged = !!chainIdFromUrl && chainIdFromUrl !== prevChainIdFromUrl
-  const providerChainIdWasChanged = !!currentChainId && !!prevCurrentChainId && currentChainId !== prevCurrentChainId
+  const chainIdFromUrlWasChanged = areChainIdsTheSame(chainIdFromUrl, prevChainIdFromUrl)
+  const chainIdFromProviderWasChanged =
+    areChainIdsTheSame(currentChainId, prevCurrentChainId) || areChainIdsTheSame(currentChainId, chainIdFromUrl)
 
   const skipUpdate = useMemo(() => {
+    if (areCurrenciesTheSame(tradeStateFromUrl)) return false
+
     if (chainIdFromUrlWasChanged && !!account) return true
 
-    if (providerChainIdWasChanged) return false
+    if (chainIdFromProviderWasChanged) return false
 
     return tradeState ? shouldSkipUpdate(tradeStateFromUrl, tradeState.state) : true
-  }, [tradeState, tradeStateFromUrl, providerChainIdWasChanged, chainIdFromUrlWasChanged, account])
+  }, [tradeState, tradeStateFromUrl, chainIdFromProviderWasChanged, chainIdFromUrlWasChanged, account])
 
   const newChainId = useMemo(() => {
     const providerChainId = currentChainId || SupportedChainId.MAINNET
@@ -71,7 +85,7 @@ export function useSetupTradeState(): void {
 
     if (!account) {
       // When wallet is not connected and network was changed in the provider, then use chainId from provider
-      if (providerChainIdWasChanged) {
+      if (chainIdFromProviderWasChanged) {
         return providerChainId
       } else {
         // When wallet is not connected, then use chainId from URL by priority and fallback to provider's value
@@ -81,13 +95,13 @@ export function useSetupTradeState(): void {
       // When wallet is connected, then always use chainId from provider
       return providerChainId
     }
-  }, [account, providerChainIdWasChanged, chainIdFromUrl, currentChainId])
+  }, [account, chainIdFromProviderWasChanged, chainIdFromUrl, currentChainId])
 
   const updateStateAndNavigate = useCallback(() => {
     if (!tradeState) return
 
     // Reset state to default when chainId was changed in the provider
-    const newState: TradeState = providerChainIdWasChanged
+    const newState: TradeState = chainIdFromProviderWasChanged
       ? getDefaultTradeState(newChainId)
       : {
           chainId: newChainId,
@@ -103,7 +117,7 @@ export function useSetupTradeState(): void {
       inputCurrencyId: newState.inputCurrencyId || null,
       outputCurrencyId: newState.outputCurrencyId || null,
     })
-  }, [tradeNavigate, newChainId, providerChainIdWasChanged, tradeState, tradeStateFromUrl])
+  }, [tradeNavigate, newChainId, chainIdFromProviderWasChanged, tradeState, tradeStateFromUrl])
 
   /**
    * STEP 1

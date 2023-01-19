@@ -72,10 +72,10 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     disabled: false,
     text: 'Review limit order',
   },
-  // [LimitOrdersFormState.SwapIsUnsupported]: {
-  //   disabled: true,
-  //   text: 'Unsupported Token',
-  // },
+  [LimitOrdersFormState.SwapIsUnsupported]: {
+    disabled: true,
+    text: 'Unsupported token',
+  },
   [LimitOrdersFormState.WalletIsUnsupported]: {
     disabled: true,
     text: 'Wallet Unsupported',

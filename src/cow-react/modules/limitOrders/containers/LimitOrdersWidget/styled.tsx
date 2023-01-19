@@ -47,10 +47,10 @@ export const SettingsButton = styled.div`
 `
 
 export const TradeButtonBox = styled.div`
-  gap: 10px;
-  display: flex;
-  flex-flow: column wrap;
   margin: 10px 0 0;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
 `
 
 export const RateWrapper = styled.div`
@@ -78,8 +78,8 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 `
 
 export const StyledRateInfo = styled(RateInfo)`
-  margin-top: 15px;
-  font-size: 14px;
+  padding: 8px 8px 0;
+  font-size: 13px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: flex;

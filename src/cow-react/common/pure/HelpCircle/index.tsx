@@ -4,6 +4,9 @@ import { questionIcon } from 'assets/cow-swap/question'
 import SVG from 'react-inlinesvg'
 
 const HelpCircleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
   > svg {
     opacity: 0.5;
     transition: opacity 0.2s ease-in-out;

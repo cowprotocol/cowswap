@@ -25,7 +25,8 @@ export const MobilePopupWrapper = styled.div<{ show: boolean }>`
     height: 100%;
     align-content: flex-start;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: auto; // fallback for 'overlay'
+    overflow-y: overlay;
   }
 `
 

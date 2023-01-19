@@ -5,7 +5,6 @@ import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 // import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { AutoRow } from 'components/Row'
-import { useTokenInfoFromActiveList } from 'hooks/useTokenInfoFromActiveList'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 import { currencyId } from 'utils/currencyId'
@@ -14,8 +13,6 @@ import { currencyId } from 'utils/currencyId'
 import QuestionHelper from 'components/QuestionHelper'
 import { BaseWrapper, CommonBasesRow, MobileWrapper } from '.' // mod
 import { useFavouriteOrCommonTokens } from 'hooks/useFavouriteOrCommonTokens'
-import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 
 /* const MobileWrapper = styled(AutoColumn)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -49,21 +46,10 @@ export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
 `
 
 export const StyledScrollarea = styled.div`
-  overflow-y: auto;
-  scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-  scroll-behavior: smooth;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
   padding: 0 20px;
-
-  &::-webkit-scrollbar {
-    width: 10px;
-    background: ${({ theme }) => `${theme.card.background2}`} !important;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => `${theme.card.border}`} !important;
-    border: 3px solid transparent;
-    border-radius: 14px;
-    background-clip: padding-box;
-  }
+  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     overflow-y: hidden;
@@ -150,13 +136,5 @@ export default function CommonBases({
 
 /** helper component to retrieve a base currency from the active token lists */
 function CurrencyLogoFromList({ currency }: { currency: Currency }) {
-  const token = useTokenInfoFromActiveList(currency)
-  const logoUris = useCurrencyLogoURIs(currency)
-
-  let tokenAux = token
-  if (token instanceof WrappedTokenInfo && logoUris.length > 0) {
-    tokenAux = new WrappedTokenInfo({ ...token.tokenInfo, logoURI: logoUris[0] }, token.list)
-  }
-
-  return <CurrencyLogo currency={tokenAux} style={{ marginRight: 8 }} />
+  return <CurrencyLogo currency={currency} style={{ marginRight: 8 }} />
 }

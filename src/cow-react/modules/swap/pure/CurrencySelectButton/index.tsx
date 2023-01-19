@@ -12,7 +12,7 @@ export interface CurrencySelectButtonProps {
 
 export function CurrencySelectButton(props: CurrencySelectButtonProps) {
   const { currency, onClick, loading, readonlyMode = false } = props
-  const stubbed = !currency || false
+  const $stubbed = !currency || false
 
   return (
     <styledEl.CurrencySelectWrapper
@@ -20,13 +20,13 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
       readonlyMode={readonlyMode}
       onClick={onClick}
       isLoading={loading}
-      stubbed={stubbed}
+      $stubbed={$stubbed}
     >
       {currency ? <CurrencyLogo currency={currency} size={'24px'} /> : <div></div>}
-      <styledEl.CurrencySymbol className="token-symbol-container" stubbed={stubbed}>
+      <styledEl.CurrencySymbol className="token-symbol-container" $stubbed={$stubbed}>
         {currency ? currency.symbol : <Trans>Select a token</Trans>}
       </styledEl.CurrencySymbol>
-      {readonlyMode ? null : stubbed ? <styledEl.ArrowDown stubbed={stubbed} /> : <styledEl.ArrowDown />}
+      {readonlyMode ? null : $stubbed ? <styledEl.ArrowDown $stubbed={$stubbed} /> : <styledEl.ArrowDown />}
     </styledEl.CurrencySelectWrapper>
   )
 }

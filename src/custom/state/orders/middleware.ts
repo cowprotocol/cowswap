@@ -217,6 +217,8 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     cowSound = getCowSoundError()
   } else if (isCancelOrderAction(action)) {
     cowSound = getCowSoundError()
+  } else if (isFailedTxAction(action)) {
+    cowSound = getCowSoundError()
   }
 
   if (cowSound) {
@@ -226,6 +228,15 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   }
 
   return result
+}
+
+const isAddPopup = isAnyOf(addPopup)
+
+/**
+ * Checks whether the action is `addPopup` for a `txn` which failed
+ */
+function isFailedTxAction(action: unknown): boolean {
+  return isAddPopup(action) && action.payload?.content?.txn?.success === false
 }
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
@@ -274,8 +285,7 @@ function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): Orde
     return
   }
 
-  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, rejected, refunded, refunding } =
-    orders
+  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, failed } = orders
 
   return (
     pending?.[id] ||
@@ -284,9 +294,7 @@ function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): Orde
     expired?.[id] ||
     cancelled?.[id] ||
     creating?.[id] ||
-    rejected?.[id] ||
-    refunding?.[id] ||
-    refunded?.[id]
+    failed?.[id]
   )
 }
 

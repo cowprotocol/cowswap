@@ -21,15 +21,20 @@ import { /*Card,*/ LightCard } from 'components/Card'
 // import Modal from '../Modal'
 import { CoinbaseWalletOption /*, OpenCoinbaseWalletOption */ } from 'components/WalletModal/CoinbaseWalletOption'
 import { FortmaticOption } from 'components/WalletModal/FortmaticOption'
-import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from 'components/WalletModal/InjectedOption'
+import {
+  InjectedOption,
+  InstallMetaMaskOption,
+  MetaMaskOption,
+  OpenMetaMaskMobileOption,
+} from 'components/WalletModal/InjectedOption'
 import PendingView from 'components/WalletModal/PendingView'
 import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
-import { WalletConnect } from '@web3-react/walletconnect'
 
 // MOD imports
 import ModalMod from '@src/components/Modal'
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
+import type { WalletConnect } from '@web3-react/walletconnect'
 
 export const CloseIcon = styled.div`
   position: absolute;
@@ -52,7 +57,9 @@ const Wrapper = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-y: auto; /* MOD */
+  /* MOD */
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
 `
 
 export const HeaderRow = styled.div`
@@ -213,8 +220,10 @@ export default function WalletModal({
 
         // MOD: Important for balances to load when connected to Gnosis-chain via WalletConnect
         if (getConnection(connector) === walletConnectConnection) {
-          if (connector instanceof WalletConnect) {
-            const { http, rpc, signer } = connector.provider
+          const provider: any = connector.provider
+
+          if (provider && provider.isWalletConnect) {
+            const { http, rpc, signer } = (connector as WalletConnect).provider
             const chainId = signer.connection.chainId
             // don't default to SupportedChainId.Mainnet - throw instead
             if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
@@ -244,6 +253,8 @@ export default function WalletModal({
     if (!isInjected) {
       if (!isMobile) {
         injectedOption = <InstallMetaMaskOption />
+      } else {
+        injectedOption = <OpenMetaMaskMobileOption />
       }
     } else if (!isCoinbaseWallet) {
       if (isMetaMask) {

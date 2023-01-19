@@ -1,4 +1,4 @@
-import { useAllTokens, useCurrency } from 'hooks/Tokens'
+import { useAllTokens, useSearchInactiveTokenLists } from 'hooks/Tokens'
 import { Token } from '@uniswap/sdk-core'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -16,11 +16,16 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
   const { chainId, onDismiss } = props
 
   const tradeState = useTradeState()
-  // token warning stuff
-  const [loadedInputCurrency, loadedOutputCurrency] = [
-    useCurrency(tradeState?.state?.inputCurrencyId),
-    useCurrency(tradeState?.state?.outputCurrencyId),
-  ]
+  const loadedInputCurrency = useSearchInactiveTokenLists(
+    tradeState?.state?.inputCurrencyId || undefined,
+    1,
+    true //
+  )?.[0]
+  const loadedOutputCurrency = useSearchInactiveTokenLists(
+    tradeState?.state?.outputCurrencyId || undefined,
+    1,
+    true
+  )?.[0]
 
   const urlLoadedTokens: Token[] = useMemo(
     () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
@@ -40,7 +45,7 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
       urlLoadedTokens &&
       urlLoadedTokens
         .filter((token: Token) => {
-          return !Boolean(token.address in defaultTokens)
+          return !Boolean(token.address.toLowerCase() in defaultTokens)
         })
         .filter((token: Token) => {
           // Any token addresses that are loaded from the shorthands map do not need to show the import URL

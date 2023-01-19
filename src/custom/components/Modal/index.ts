@@ -21,14 +21,14 @@ export const GpModal = styled(Modal)<{
     margin: auto;
     transition: max-width 0.4s ease;
     background-color: ${({ theme }) => theme.bg1};
+    overflow: hidden;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      max-height: 100%;
+      max-height: 100vh;
       max-width: 100%;
       height: 100%;
       width: 100vw;
       border-radius: 0;
-      overflow-y: auto;
     `}
 
     ${HeaderRow} {

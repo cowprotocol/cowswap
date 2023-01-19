@@ -34,21 +34,29 @@ import { WarningProps } from 'components/SwapWarnings'
 import { RateInfo, RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export const ArrowWrapper = styled.div`
-  padding: 4px;
-  border-radius: 12px;
-  height: 32px;
-  width: 32px;
+  --size: 26px;
+  padding: 0;
+  height: var(--size);
+  width: var(--size);
   position: relative;
-  margin-top: -18px;
-  margin-bottom: -18px;
-  left: calc(50% - 16px);
+  margin: -13px 0;
+  left: calc(50% - var(--size) / 2);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.bg1};
-  border: 2px solid;
-  border-color: ${({ theme }) => theme.bg0};
   z-index: 2;
+  border-radius: 8px;
+  border: ${({ theme }) => `2px solid ${theme.grey1}`};
+  box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => (theme.darkMode ? theme.grey1 : theme.white)};
+
+  > svg {
+    stroke-width: 2px;
+    padding: 1px;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+  }
 `
 
 const StyledRateInfo = styled(RateInfo)`
@@ -126,7 +134,10 @@ SwapModalHeaderProps) {
   const fullOutputWithoutFee = formatMax(trade?.outputAmountWithoutFee, trade?.outputAmount.currency.decimals) || '-'
 
   return (
-    <AutoColumn gap={'4px'} style={{ marginTop: '1rem' }}>
+    <AutoColumn
+      gap={'4px'}
+      // style={{ marginTop: '1rem' }}
+    >
       <LightCard flatBorder={!!exactInLabel} padding="0.75rem 1rem">
         <AutoColumn gap={'8px'}>
           <RowBetween>

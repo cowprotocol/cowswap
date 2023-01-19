@@ -12,7 +12,7 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
   const { state, isExpired, orderId, rejectedReason } = order
   const isCreating = state === SmartOrderStatus.CREATING
   const isIndexing = state === SmartOrderStatus.CREATION_MINED
-  const isCancelled = cancellation.isCancelled
+  const isCancelled = cancellation.failed === false // if undefined: not cancelled, if true: cancellation failed
   const isOrderCreated = order.isCreated
   const isFilled = state === SmartOrderStatus.FILLED
 
@@ -25,6 +25,14 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
     icon,
     error,
   } = useMemo<Step2Config>(() => {
+    if (rejectedReason) {
+      return {
+        label: 'Order Creation Failed',
+        error: rejectedReason,
+        state: 'error',
+        icon: X,
+      }
+    }
     if (expiredBeforeCreate) {
       return {
         label: 'Order Creation Failed',
@@ -50,14 +58,6 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
       }
     }
 
-    if (rejectedReason) {
-      return {
-        label: 'Order Creation Failed',
-        state: 'error',
-        icon: X,
-      }
-    }
-
     if (isCancelled && !isFilled) {
       return {
         label: 'Order Cancelled',
@@ -73,10 +73,9 @@ export function Step2({ order, cancellation }: EthFlowStepperProps) {
     }
   }, [expiredBeforeCreate, isCancelled, isCreating, isFilled, isIndexing, rejectedReason])
 
-  const errorMessage = error || rejectedReason
   return (
-    <Step state={stepState} icon={icon} label={label} errorMessage={errorMessage}>
-      <>{isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}</>
+    <Step state={stepState} icon={icon} label={label} errorMessage={error}>
+      {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
     </Step>
   )
 }

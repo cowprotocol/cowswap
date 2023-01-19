@@ -91,7 +91,7 @@ const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
  * where orderDigest = keccak256(orderStruct). bytes32.
  */
 export type OrderID = string
-export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'presignaturePending' | 'open'
+export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'invalid' | 'presignaturePending' | 'open'
 
 // TODO: replace it by import from SDK
 export interface OrderMetaData {
@@ -121,12 +121,19 @@ export interface OrderMetaData {
   class: OrderClass
   // EthFlow related fields
   ethflowData: EthFlowData
-  onchainUser?: string
+  onchainOrderData?: OnChainOrderData
 }
 
 type EthFlowData = {
   userValidTo: number
-  isRefunded: boolean
+  isRefunded: boolean // TODO: remove once `isRefundable` is implemented
+  isRefundable?: boolean | null // TODO: not yet available from the API
+  refundTxHash?: string | null
+}
+
+type OnChainOrderData = {
+  sender: string
+  placementError?: string | null
 }
 
 export interface TradeMetaData {
@@ -601,7 +608,7 @@ function transformEthFlowOrder(order: OrderMetaData): OrderMetaData {
   }
 
   const { userValidTo: validTo } = ethflowData
-  const owner = order.onchainUser || order.owner
+  const owner = order.onchainOrderData?.sender || order.owner
   const sellToken = BUY_ETH_ADDRESS
 
   return { ...order, validTo, owner, sellToken }

@@ -227,7 +227,7 @@ export const HeaderLinks = styled(HeaderLinksMod)<{ isMobileMenuOpen: boolean }>
       gap 36px;
       opacity: 0.7;
     `};
-  }}
+  }
 
   ${MenuTitle} {
     ${({ theme }) => theme.mediaWidth.upToLarge`

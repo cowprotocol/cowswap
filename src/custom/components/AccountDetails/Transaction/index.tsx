@@ -69,8 +69,7 @@ export interface ActivityDerivedState {
   isUnfillable?: boolean
   // EthFlow flags
   isCreating: boolean
-  isRefunding: boolean
-  isRefunded: boolean
+  isFailed: boolean
   // TODO: refactor these convenience flags
 
   // Possible activity types

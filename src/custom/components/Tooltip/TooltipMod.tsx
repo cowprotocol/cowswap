@@ -65,7 +65,7 @@ export function MouseoverTooltipContent({
   return (
     <TooltipContent {...rest} show={show} content={disableHover ? null : content}>
       <div
-        style={{ display: 'inline-block', lineHeight: 0, padding: '0.25rem' }}
+        // style={{ display: 'inline-block', lineHeight: 0, padding: '0.25rem' }}
         onMouseEnter={open}
         onMouseLeave={close}
       >

@@ -20,9 +20,7 @@ export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.EXPIRED]: 'Expired',
   [OrderStatus.CANCELLED]: 'Cancelled',
   [OrderStatus.CREATING]: 'Creating',
-  [OrderStatus.REFUNDED]: 'Expired',
-  [OrderStatus.REFUNDING]: 'Expired',
-  [OrderStatus.REJECTED]: 'Expired',
+  [OrderStatus.FAILED]: 'Failed',
 }
 
 const RateValue = styled.span``
@@ -33,6 +31,7 @@ const StatusBox = styled.div`
 `
 
 export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean; withWarning?: boolean }>`
+  --height: 28px;
   --statusColor: ${({ theme, status, cancelling }) =>
     cancelling
       ? theme.text1
@@ -44,11 +43,11 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean;
       ? theme.success
       : status === OrderStatus.EXPIRED
       ? theme.warning
-      : status === (OrderStatus.CANCELLED || OrderStatus.REJECTED)
+      : status === OrderStatus.CANCELLED
       ? theme.danger
-      : status === OrderStatus.REFUNDED
-      ? theme.text3
-      : status === (OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING || OrderStatus.REFUNDING)
+      : status === OrderStatus.FAILED
+      ? theme.danger
+      : status === (OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING || OrderStatus)
       ? theme.text1
       : theme.text1};
 
@@ -56,12 +55,12 @@ export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean;
   align-items: center;
   justify-content: center;
   color: var(--statusColor);
-  padding: 7px 10px;
-
+  padding: 0 10px;
   position: relative;
   z-index: 2;
   font-size: 12px;
   font-weight: 600;
+  height: var(--height);
   width: 100%;
 
   &::before {
@@ -101,14 +100,15 @@ const AmountItem = styled.div`
 `
 
 const WarningIndicator = styled.button`
+  --height: 28px;
   margin: 0;
   background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
   color: ${({ theme }) => theme.alert};
   line-height: 0;
   border: 0;
   padding: 0 5px;
-  height: 29px;
   width: auto;
+  height: var(--height);
   border-radius: 0 9px 9px 0;
 
   svg > path {

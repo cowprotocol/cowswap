@@ -42,6 +42,13 @@ const RateLabel = styled.div`
   align-items: center;
   font-weight: 400;
   gap: 5px;
+  text-align: left;
+  transition: color 0.15s ease-in-out;
+  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+
+  &:hover {
+    color: ${({ theme }) => theme.text1};
+  }
 `
 
 const InvertIcon = styled.div`
@@ -77,7 +84,7 @@ const RateWrapper = styled.button`
   color: inherit;
   font-size: 13px;
   letter-spacing: -0.1px;
-  text-align: left;
+  text-align: right;
   font-weight: 500;
 `
 

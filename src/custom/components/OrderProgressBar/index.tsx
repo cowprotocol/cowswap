@@ -47,11 +47,14 @@ type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
 export function OrderProgressBar(props: OrderProgressBarProps) {
   const { activityDerivedState, chainId, hideWhenFinished = false } = props
   const { order, isConfirmed, isUnfillable = false } = activityDerivedState
+
+  const orderOpenTime = order?.openSince || order?.creationTime || order?.apiAdditionalInfo?.creationDate
+
   const { validTo, creationTime } = useMemo(() => {
-    if (order?.creationTime && order?.validTo) {
+    if (orderOpenTime && order?.validTo) {
       return {
         validTo: new Date((order?.validTo as number) * 1000),
-        creationTime: new Date(order?.apiAdditionalInfo?.creationDate ?? order?.creationTime),
+        creationTime: new Date(orderOpenTime),
       }
     }
 
@@ -59,7 +62,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
       validTo: null,
       creationTime: null,
     }
-  }, [order?.apiAdditionalInfo, order?.creationTime, order?.validTo])
+  }, [order?.validTo, orderOpenTime])
   const { elapsedSeconds, expirationInSeconds, isPending } = useGetProgressBarInfo({
     activityDerivedState,
     validTo,

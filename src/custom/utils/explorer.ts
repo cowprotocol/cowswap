@@ -5,9 +5,9 @@ import { isLocal, isDev, isPr, isStaging, isBarn } from './environments'
 function _getExplorerUrlByEnvironment() {
   let baseUrl: string | undefined
   if (isLocal || isDev || isPr) {
-    baseUrl = process.env.REACT_APP_EXPLORER_URL_DEV || 'https://protocol-explorer.dev.gnosisdev.com'
+    baseUrl = process.env.REACT_APP_EXPLORER_URL_DEV || 'https://dev.explorer.cow.fi'
   } else if (isStaging) {
-    baseUrl = process.env.REACT_APP_EXPLORER_URL_STAGING || 'https://protocol-explorer.staging.gnosisdev.com'
+    baseUrl = process.env.REACT_APP_EXPLORER_URL_STAGING || 'https://staging.explorer.cow.fi'
   } else if (isBarn) {
     baseUrl = process.env.REACT_APP_EXPLORER_URL_BARN || 'https://barn.explorer.cow.fi'
   } else {
@@ -18,7 +18,7 @@ function _getExplorerUrlByEnvironment() {
   return {
     [ChainId.MAINNET]: baseUrl,
     [ChainId.GOERLI]: `${baseUrl}/goerli`,
-    [ChainId.GNOSIS_CHAIN]: `${baseUrl}/xdai`,
+    [ChainId.GNOSIS_CHAIN]: `${baseUrl}/gc`,
   }
 }
 

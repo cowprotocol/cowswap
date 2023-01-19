@@ -12,12 +12,10 @@ import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
 import TokenListLogo from 'assets/svg/tokenlist.svg'
-import { useIsUserAddedToken } from 'hooks/Tokens'
+import { useAllTokens, useIsUserAddedToken } from 'hooks/Tokens'
 import { useCurrencyBalance } from 'state/connection/hooks'
-import { useCombinedActiveList } from 'state/lists/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { ThemedText } from 'theme'
-import { isTokenOnList } from 'utils'
 import Column from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Loader from 'components/Loader'
@@ -28,9 +26,9 @@ import { LoadingRows /*, MenuItem*/ } from 'components/SearchModal/styleds'
 
 // MOD imports
 import { MenuItem } from '.' // mod
-import { useIsUnsupportedToken } from 'state/lists/hooks/hooksMod'
 import { formatSmart } from 'utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
+import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -80,20 +78,9 @@ export const TokenListLogoWrapper = styled.img`
 
 export const StyledScrollarea = styled.div`
   div:first-of-type {
-    /* overflow-y: auto; */
-    scrollbar-color: ${({ theme }) => `${theme.card.border} ${theme.card.background2}`};
-    scroll-behavior: smooth;
-
-    &::-webkit-scrollbar {
-      width: 10px;
-      background: ${({ theme }) => `${theme.card.background2}`} !important;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: ${({ theme }) => `${theme.card.border}`} !important;
-      border: 3px solid transparent;
-      border-radius: 14px;
-      background-clip: padding-box;
-  }
+    overflow-y: auto; // fallback for 'overlay'
+    overflow-y: overlay;
+    ${({ theme }) => theme.colorScrollbar};
 `
 
 function TokenTags({ currency }: { currency: Currency }) {
@@ -134,6 +121,7 @@ function CurrencyRow({
   showCurrencyAmount,
   eventProperties,
   isUnsupported, // gp-swap added
+  allTokens,
   TokenTagsComponent = TokenTags, // gp-swap added
   BalanceComponent = Balance, // gp-swap added
 }: {
@@ -145,13 +133,13 @@ function CurrencyRow({
   showCurrencyAmount?: boolean
   eventProperties: Record<string, unknown>
   isUnsupported: boolean // gp-added
+  allTokens: { [address: string]: Token } // gp-added
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
   const { account } = useWeb3React()
   const key = currencyKey(currency)
-  const selectedTokenList = useCombinedActiveList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency.isToken ? currency : undefined)
+  const isOnSelectedList = currency?.isToken && !!allTokens[currency.address.toLowerCase()]
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
@@ -253,6 +241,7 @@ const formatAnalyticsEventProperties = (
     : { search_token_address_input: isAddressSearch }),
 })
 
+// TODO: refactor the component
 export default function CurrencyList({
   height,
   currencies,
@@ -272,7 +261,7 @@ export default function CurrencyList({
 }: {
   height: number
   currencies: Currency[]
-  otherListTokens?: WrappedTokenInfo[]
+  otherListTokens?: Currency[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherCurrency?: Currency | null
@@ -286,14 +275,21 @@ export default function CurrencyList({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
+  const allTokens = useAllTokens()
+  const isUnsupportedToken = useIsUnsupportedTokenGp()
+
   const itemData: (Currency | BreakLine)[] = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {
-      return [...currencies, BREAK_LINE, ...otherListTokens]
+      // otherListTokens - it's a list of tokens from inactive lists
+      // here we remove tokens that already exist in the active lists
+      const filteredOtherListTokens = otherListTokens.filter((token) =>
+        token.isToken ? !allTokens[token.address.toLowerCase()] : true
+      )
+
+      return [...currencies, BREAK_LINE, ...filteredOtherListTokens]
     }
     return currencies
-  }, [currencies, otherListTokens])
-
-  const checkIsUnsupported = useIsUnsupportedToken() // gp-added
+  }, [currencies, otherListTokens, allTokens])
 
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
@@ -313,7 +309,7 @@ export default function CurrencyList({
 
       const showImport = index > currencies.length
 
-      const isUnsupported = checkIsUnsupported(token?.address) // gp-added
+      const isUnsupported = !!isUnsupportedToken(token?.address)
 
       if (isLoading) {
         return (
@@ -331,6 +327,7 @@ export default function CurrencyList({
         return (
           <CurrencyRow
             style={style}
+            allTokens={allTokens}
             currency={currency}
             isSelected={isSelected}
             onSelect={handleSelect}
@@ -357,9 +354,10 @@ export default function CurrencyList({
       isLoading,
       isAddressSearch,
       searchQuery,
-      checkIsUnsupported,
+      isUnsupportedToken,
       BalanceComponent,
       TokenTagsComponent,
+      allTokens,
     ]
   )
 

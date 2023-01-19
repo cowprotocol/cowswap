@@ -35,7 +35,7 @@ export interface SwapButtonStateParams {
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
   isExpertMode: boolean
-  isSwapSupported: boolean
+  isSwapUnsupported: boolean
   wrapType: WrapType
   wrapInputError: string | undefined
   quoteError: QuoteError | undefined | null
@@ -78,7 +78,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     if (quoteErrorState) return quoteErrorState
   }
 
-  if (input.isSwapSupported) {
+  if (input.isSwapUnsupported) {
     return SwapButtonState.SwapIsUnsupported
   }
 

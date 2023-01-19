@@ -138,9 +138,7 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
       orders?.presignaturePending[id] ||
       orders?.cancelled[id] ||
       orders?.creating[id] ||
-      orders?.rejected[id] ||
-      orders?.refunding[id] ||
-      orders?.refunded[id]
+      orders?.failed[id]
 
     return _deserializeOrder(serialisedOrder)
   })
@@ -181,9 +179,7 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
       ...state.expired,
       ...state.cancelled,
       ...state.creating,
-      ...state.refunding,
-      ...state.rejected,
-      ...state.refunded,
+      ...state.failed,
     }
   }, [state])
 }
@@ -217,7 +213,6 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
         pending: PartialOrdersMap
         presignaturePending: PartialOrdersMap
         creating: PartialOrdersMap
-        refunding: PartialOrdersMap
       }
     | undefined
   >((state) => {
@@ -230,18 +225,14 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
       pending: ordersState.pending || {},
       presignaturePending: ordersState.presignaturePending || {},
       creating: ordersState.creating || {},
-      refunding: ordersState.refunding || {},
     }
   })
 
   return useMemo(() => {
     if (!state) return []
 
-    const { pending, presignaturePending, creating, refunding } = state
-    const allPending = Object.values(pending)
-      .concat(Object.values(presignaturePending))
-      .concat(Object.values(creating))
-      .concat(Object.values(refunding))
+    const { pending, presignaturePending, creating } = state
+    const allPending = Object.values(pending).concat(Object.values(presignaturePending)).concat(Object.values(creating))
 
     return allPending.map(_deserializeOrder).filter(isTruthy)
   }, [state])
