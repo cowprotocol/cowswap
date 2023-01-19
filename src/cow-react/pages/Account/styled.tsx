@@ -114,6 +114,7 @@ export const ItemTitle = styled.h3`
   font-size: 18px;
   line-height: 1.21;
   color: ${({ theme }) => theme.text1};
+  gap: 4px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     margin: 0 0 10px 0;

@@ -18,7 +18,7 @@ function _getExplorerUrlByEnvironment() {
   return {
     [ChainId.MAINNET]: baseUrl,
     [ChainId.GOERLI]: `${baseUrl}/goerli`,
-    [ChainId.GNOSIS_CHAIN]: `${baseUrl}/xdai`,
+    [ChainId.GNOSIS_CHAIN]: `${baseUrl}/gc`,
   }
 }
 

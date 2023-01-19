@@ -20,7 +20,7 @@ export type RequestCancellationModalProps = {
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
-  margin: 36px auto 0;
+  margin: 0 auto;
 `
 
 export function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {

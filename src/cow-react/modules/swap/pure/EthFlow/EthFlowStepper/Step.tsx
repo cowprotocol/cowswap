@@ -6,7 +6,7 @@ import { ExplorerLink } from 'components/ExplorerLink'
 export const ExplorerLinkStyled = styled(ExplorerLink)``
 
 const StepWrapper = styled.div`
-  height: 100%;
+  height: auto;
   width: auto;
   text-align: center;
   display: flex;
