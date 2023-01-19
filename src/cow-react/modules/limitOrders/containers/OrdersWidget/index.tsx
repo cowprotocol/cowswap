@@ -54,7 +54,7 @@ export function OrdersWidget() {
 
   // Set page params initially once
   useEffect(() => {
-    navigate(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }))
+    navigate(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useValidatePageUrlParams(orders, currentTabId, currentPageNumber)

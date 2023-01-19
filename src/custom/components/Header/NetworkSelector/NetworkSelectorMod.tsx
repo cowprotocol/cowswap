@@ -378,10 +378,13 @@ export default function NetworkSelector() {
       // Don't set chainId as query parameter because swap and limit orders have different routing scheme
       if (tradeTypeInfo) return
 
-      navigate({
-        pathname: location.pathname,
-        search: replaceURLParam(location.search, 'chain', getChainNameFromId(chainId)),
-      })
+      navigate(
+        {
+          pathname: location.pathname,
+          search: replaceURLParam(location.search, 'chain', getChainNameFromId(chainId)),
+        },
+        { replace: true }
+      )
     },
     [tradeTypeInfo, navigate, location]
   )

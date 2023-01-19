@@ -24,7 +24,8 @@ export function useValidatePageUrlParams(orders: Order[], currentTabId: string, 
         buildLimitOrdersUrl(location, {
           pageNumber: shouldResetPageNumber ? 1 : undefined,
           tabId: shouldResetTabId ? currentTabId : undefined,
-        })
+        }),
+        { replace: true }
       )
     }
   }, [navigate, location, currentTabId, currentPageNumber, orders.length])

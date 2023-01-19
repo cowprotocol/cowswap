@@ -25,7 +25,7 @@ export function useSetupSwapAmountsFromUrl() {
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
 
-    navigate(pathname + '?' + queryParams)
+    navigate({ pathname, search: queryParams.toString() }, { replace: true })
   }, [navigate, pathname, search])
 
   useLayoutEffect(() => {
