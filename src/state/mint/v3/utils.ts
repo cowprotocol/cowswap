@@ -1,4 +1,3 @@
-import { decomposeDecimal } from '@cow/utils/number'
 import { Price, Token } from '@uniswap/sdk-core'
 import {
   encodeSqrtRatioX96,
@@ -19,7 +18,7 @@ export function tryParsePrice(baseToken?: Token, quoteToken?: Token, value?: str
     return undefined
   }
 
-  const [whole, fraction] = decomposeDecimal(value)
+  const [whole, fraction] = value.split('.')
 
   const decimals = fraction?.length ?? 0
   const withoutDecimals = JSBI.BigInt((whole ?? '') + (fraction ?? ''))
