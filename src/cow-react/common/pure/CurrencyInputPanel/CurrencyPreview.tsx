@@ -7,6 +7,7 @@ import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { formatSymbol } from '@cow/utils/format'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 interface BuiltItProps {
   className: string
@@ -50,7 +51,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
             {balance && (
               <>
                 <styledEl.BalanceText title={balance.toExact() + ' ' + formatSymbol(currency?.symbol)}>
-                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {formatSymbol(currency?.symbol)}
+                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {<TokenSymbol token={currency} />}
                 </styledEl.BalanceText>
               </>
             )}

@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { Currency } from '@uniswap/sdk-core'
-import { formatSymbol } from '@cow/utils/format'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 interface RateImpactProps {
   rateImpact: number
@@ -40,8 +40,8 @@ export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactPro
       {isPositive &&
         `Your order will execute when the market price is ${displayedPercent}% better than the current market price.`}
       {!isPositive &&
-        `This price is ${displayedPercent}% lower than current market price. You could be selling your ${formatSymbol(
-          inputCurrency?.symbol
+        `This price is ${displayedPercent}% lower than current market price. You could be selling your ${(
+          <TokenSymbol token={inputCurrency} />
         )} at a loss! Click on "Market price" to set your limit price to the current market price.`}
     </ImpactTooltip>
   )

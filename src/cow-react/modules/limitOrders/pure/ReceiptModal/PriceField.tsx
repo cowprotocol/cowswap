@@ -15,7 +15,7 @@ export function PriceField({ order, price }: Props) {
     <styledEl.Value>
       {price ? (
         <styledEl.RateValue>
-          1 {formatSymbol(order.inputToken.symbol)} ={' '}
+          1 {<TokenSymbol token={order.inputToken} />} ={' '}
           <span title={price.toSignificant(18) + ' ' + formatSymbol(order.outputToken.symbol)}>
             {formatSmart(price)} <TokenSymbol token={order.outputToken} />
           </span>

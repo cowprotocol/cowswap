@@ -4,7 +4,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import styled from 'styled-components/macro'
-import { formatSymbol } from '@cow/utils/format'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 const inputCurrency = WETH_GOERLI
 const outputCurrency = DAI_GOERLI
@@ -84,9 +84,9 @@ function SmartQuoteSelection() {
               return (
                 <Box key={i}>
                   <p>
-                    {inputCurrencyAmount?.toExact()} {formatSymbol(inputCurrencyAmount?.currency.symbol)}
+                    {inputCurrencyAmount?.toExact()} {<TokenSymbol token={inputCurrencyAmount?.currency} />}
                     {' -> '}
-                    {outputCurrencyAmount?.toExact()} {formatSymbol(outputCurrencyAmount?.currency.symbol)}{' '}
+                    {outputCurrencyAmount?.toExact()} {<TokenSymbol token={outputCurrencyAmount?.currency} />}{' '}
                   </p>
                   <RateInfo noLabel={true} rateInfoParams={rate} />
                 </Box>

@@ -3,7 +3,7 @@ import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade
 import styled from 'styled-components/macro'
 import { AlertTriangle } from 'react-feather'
 import { transparentize, lighten, darken } from 'polished'
-import { formatSymbol } from '@cow/utils/format'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 interface RateImpactAcknowledge {
   withAcknowledge: boolean
@@ -79,7 +79,7 @@ export function RateImpactWarning({
         </div>
         <div>
           Your limit price is {Math.abs(rateImpact)}% lower than current market price. You could be selling your{' '}
-          {formatSymbol(inputCurrency.symbol)} at a loss (although CoW Swap will always try to give you the best price
+          <TokenSymbol token={inputCurrency} /> at a loss (although CoW Swap will always try to give you the best price
           regardless).
           <ReadMoreLink target="_blank" href="https://www.investopedia.com/terms/l/limitorder.asp">
             Read more about limit orders

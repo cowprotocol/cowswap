@@ -11,7 +11,7 @@ import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { TransactionConfirmState } from '@cow/modules/swap/state/transactionConfirmAtom'
 import { TradeLoadingButton } from '@cow/modules/trade/pure/TradeLoadingButton'
-import { formatSymbol } from '@cow/utils/format'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export interface WrapUnwrapParams {
   isNativeIn: boolean
@@ -121,7 +121,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.InsufficientBalance]: ({ tradeState }: TradeButtonsParams) => {
     return (
       <SwapButton disabled={true}>
-        <Trans>Insufficient {formatSymbol(tradeState.inputCurrency?.symbol)} balance</Trans>
+        <Trans>Insufficient {<TokenSymbol token={tradeState.inputCurrency} />} balance</Trans>
       </SwapButton>
     )
   },
