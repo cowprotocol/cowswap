@@ -226,9 +226,7 @@ export const Title = styled.a`
 
 const activeClassName = 'active'
 
-export const StyledNavLink = styled(NavLink).attrs({
-  activeClassName,
-})`
+export const StyledNavLink = styled(NavLink)`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: left;
   border-radius: 3rem;

@@ -24,9 +24,7 @@ const Tabs = styled.div`
 
 const activeClassName = 'active'
 
-const StyledNavLink = styled(NavLink).attrs({
-  activeClassName,
-})`
+const StyledNavLink = styled(NavLink)`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
   justify-content: center;

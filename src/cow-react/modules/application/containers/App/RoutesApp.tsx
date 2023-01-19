@@ -43,10 +43,10 @@ function createRedirectExternal(url: string) {
   }
 }
 
-type LazyRouteProps = { route: RoutesEnum; element: ReactNode }
+type LazyRouteProps = { route: RoutesEnum; element: ReactNode; key?: number }
 
-function LazyRoute({ route, element }: LazyRouteProps) {
-  return <Route path={route} element={<Suspense fallback={Loading}>{element}</Suspense>} />
+function LazyRoute({ route, element, key }: LazyRouteProps) {
+  return <Route key={key} path={route} element={<Suspense fallback={Loading}>{element}</Suspense>} />
 }
 
 const lazyRoutes: LazyRouteProps[] = [
@@ -83,7 +83,7 @@ export function RoutesApp() {
         <Route path={RoutesEnum.SWAP} element={<NewSwapPage />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
-        {lazyRoutes.map(LazyRoute)}
+        {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
 
         <Route path={RoutesEnum.ANYSWAP_AFFECTED} element={<AnySwapAffectedUsers />} />
         <Route path={RoutesEnum.CHAT} loader={createRedirectExternal(DISCORD_LINK)} />

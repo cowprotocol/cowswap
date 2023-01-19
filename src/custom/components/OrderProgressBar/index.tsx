@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useTransition } from 'react-spring'
+import { useTransition } from '@react-spring/web'
 import {
   ProgressBarWrapper,
   ProgressBarInnerWrapper,
@@ -75,7 +75,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   const getShowCancellationModal = useCancelOrder()
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
-  const fadeOutTransition = useTransition(isPending, null, {
+  const fadeOutTransition = useTransition(isPending, {
     from: { opacity: 1 },
     leave: { opacity: 0 },
     trail: 3000,
@@ -289,14 +289,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   return (
     <>
       {hideWhenFinished ? (
-        fadeOutTransition.map(({ item, props, key }) => {
-          return (
-            item && (
-              <ProgressBarWrapper key={key} style={props}>
-                {progressBar()}
-              </ProgressBarWrapper>
-            )
-          )
+        fadeOutTransition((props, item) => {
+          return item && <ProgressBarWrapper style={props}>{progressBar()}</ProgressBarWrapper>
         })
       ) : (
         <ProgressBarWrapper>{progressBar()}</ProgressBarWrapper>

@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect } from 'react'
 import { X } from 'react-feather'
-import { animated } from 'react-spring'
-import { useSpring } from 'react-spring/web'
+import { animated, useSpring } from '@react-spring/web'
 import styled, { FlattenInterpolation, ThemeContext, ThemeProps, DefaultTheme } from 'styled-components/macro'
 
 import { useRemovePopup } from 'state/application/hooks'

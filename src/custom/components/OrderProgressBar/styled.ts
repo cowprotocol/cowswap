@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { animated } from 'react-spring'
+import { animated } from '@react-spring/web'
 import { CheckCircle, Clock } from 'react-feather'
 import CowProtocolLogo from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
@@ -125,8 +125,8 @@ export const GreenClockIcon = styled(Clock)`
   color: ${({ theme }) => theme.success};
   width: 24px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 13px; 
-    margin: 0 0.3rem 0 0; 
+    width: 13px;
+    margin: 0 0.3rem 0 0;
   `};
 `
 
@@ -136,7 +136,7 @@ export const GreenCheckIcon = styled(CheckCircle)`
   width: 24px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 13px;
-    margin: 0 0.3rem 0 0; 
+    margin: 0 0.3rem 0 0;
   `};
 `
 
@@ -145,8 +145,8 @@ export const OrangeClockIcon = styled(Clock)`
   color: ${({ theme }) => theme.yellow1};
   width: 24px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 13px; 
-    margin: 0 0.3rem 0 0; 
+    width: 13px;
+    margin: 0 0.3rem 0 0;
   `};
 `
 
@@ -161,7 +161,7 @@ export const StatusMsgContainer = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-  
+
     svg {
       flex-shrink: 0;
     }
@@ -192,7 +192,7 @@ export const StatusGraph = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding: 0.4rem 0.8rem; 
+    padding: 0.4rem 0.8rem;
   `};
 `
 
@@ -207,7 +207,7 @@ export const StatusMsg = styled.p`
   color: ${({ theme }) => theme.text1};
   margin: 0;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 0.835rem; 
+    font-size: 0.835rem;
   `};
   button {
     color: ${({ theme }) => theme.orange} !important;
