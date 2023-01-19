@@ -7,7 +7,7 @@
         "paths": [
           {
             "name": "ethers",
-            "message": "Please import from '@ethersproject/module' directly to support tree-shaking.",
+            "message": "Please import from '@ethersproject/module' directly to support tree-shaking."
           },
           {
             "name": "styled-components",
