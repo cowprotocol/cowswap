@@ -8,6 +8,7 @@ import { RowFeeContent } from '@cow/modules/swap/pure/Row/RowFeeContent'
 import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { formatSymbol } from '@cow/utils/format'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
@@ -63,7 +64,7 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
   // so we can take both
   const props = useMemo(() => {
     const displayFee = realizedFee || fee
-    const feeCurrencySymbol = displayFee?.currency.symbol || '-'
+    const feeCurrencySymbol = formatSymbol(displayFee?.currency.symbol) || '-'
     const smartFeeFiatValue = formatSmart(feeFiatValue, FIAT_PRECISION)
     const smartFeeTokenValue = formatSmart(displayFee, AMOUNT_PRECISION)
     const feeAmountWithCurrency = `${smartFeeTokenValue} ${feeCurrencySymbol} ${isEthFLow ? ' + gas' : ''}`

@@ -4,7 +4,6 @@ import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
 import { FiatRate } from '@cow/common/pure/RateInfo/'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps, RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export interface RowFeeContentProps extends RowWithShowHelpersProps {
   includeGasMessage: string
@@ -39,7 +38,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
       </RowFixed>
 
       <TextWrapper title={`${fullDisplayFee} ${feeCurrencySymbol}`}>
-        <TokenSymbol token={{ symbol: feeToken }} /> {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
+        {feeToken} {feeUsd && <FiatRate>{feeUsd}</FiatRate>}
       </TextWrapper>
     </StyledRowBetween>
   )

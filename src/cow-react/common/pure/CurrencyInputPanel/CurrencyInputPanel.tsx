@@ -17,6 +17,7 @@ import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { formatSymbol } from '@cow/utils/format'
 
 interface BuiltItProps {
   className: string
@@ -137,7 +138,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
           <div>
             {balance && !disabled && (
               <>
-                <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
+                <styledEl.BalanceText title={balance.toExact() + ' ' + formatSymbol(currency?.symbol)}>
                   <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} <TokenSymbol token={currency} />
                   {showSetMax && balance.greaterThan(0) && (
                     <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>

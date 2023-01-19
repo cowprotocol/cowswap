@@ -19,6 +19,7 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
   border-radius: 16px;
   padding: 6px;
   transition: background-color 0.15s ease-in-out;
+  max-width: 190px;
 
   &:hover {
     // TODO: Check what 'readonlyMode' does and proper style it.
@@ -29,6 +30,10 @@ export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbe
 
 export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
   margin: 0 3px;
+  width: 12px;
+  height: 7px;
+  min-width: 12px;
+  min-height: 7px;
 
   > path {
     stroke: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
@@ -43,7 +48,7 @@ export const ArrowDown = styled(DropDown)<{ $stubbed?: boolean }>`
 export const CurrencySymbol = styled.div<{ $stubbed: boolean }>`
   font-size: 19px;
   font-weight: 500;
-  white-space: nowrap;
+  text-align: left;
   color: ${({ $stubbed, theme }) => ($stubbed ? theme.white : theme.text1)};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

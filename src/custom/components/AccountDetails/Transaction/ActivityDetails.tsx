@@ -28,6 +28,7 @@ import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import { StatusDetails } from './StatusDetails'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
+import { formatSymbol } from '@cow/utils/format'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -217,8 +218,8 @@ export function ActivityDetails(props: {
 
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
-      from: `${formatSmart(inputAmount.add(feeAmount))} ${inputAmount.currency.symbol}`,
-      to: `${formatSmart(outputAmount)} ${outputAmount.currency.symbol}`,
+      from: `${formatSmart(inputAmount.add(feeAmount))} ${formatSymbol(inputAmount.currency.symbol)}`,
+      to: `${formatSmart(outputAmount)} ${formatSymbol(outputAmount.currency.symbol)}`,
       validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
       fulfillmentTime: fulfillmentTime
         ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)

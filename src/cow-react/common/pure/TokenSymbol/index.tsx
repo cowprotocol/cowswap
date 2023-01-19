@@ -9,9 +9,7 @@ export type Props = {
 export function TokenSymbol({ token, length }: Props) {
   const { symbol, name } = token || {}
 
-  if (!symbol || !name) {
-    return null
-  }
+  if (!symbol && !name) return null
 
   const fullSymbol = symbol || name
   const abbreviateSymbol = formatSymbol(fullSymbol, length)

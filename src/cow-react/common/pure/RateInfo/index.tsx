@@ -58,6 +58,8 @@ const InvertIcon = styled.div`
   color: ${({ theme }) => theme.text1};
   width: var(--size);
   height: var(--size);
+  min-width: var(--size);
+  min-height: var(--size);
   border-radius: var(--size);
   display: flex;
   align-items: center;
@@ -73,7 +75,7 @@ const InvertIcon = styled.div`
   }
 `
 
-const RateWrapper = styled.button`
+export const RateWrapper = styled.button`
   display: inline;
   background: none;
   border: 0;
@@ -84,7 +86,7 @@ const RateWrapper = styled.button`
   color: inherit;
   font-size: 13px;
   letter-spacing: -0.1px;
-  text-align: left;
+  text-align: right;
   font-weight: 500;
 `
 

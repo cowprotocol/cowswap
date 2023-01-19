@@ -22,6 +22,7 @@ import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/sty
 import { ImportTokensRowProps } from '.' // mod
 import useNetworkName from 'hooks/useNetworkName'
 import { getEtherscanLink as getExplorerLink } from 'utils'
+import { formatSymbol } from '@cow/utils/format'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -89,7 +90,7 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
             <CurrencyLogo currency={token} size={'20px'} />
             <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
               <ThemedText.Main ml={'10px'} fontWeight={600}>
-                {token.symbol}
+                {formatSymbol(token.symbol)} {/* MOD */}
               </ThemedText.Main>
             </ExternalLink>
           </RowFixed>
