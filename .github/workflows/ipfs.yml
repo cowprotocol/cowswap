@@ -11,6 +11,7 @@ env:
   # Duplicated keys as these are required by `ipfs-deploy`
   IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
   IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
+  NODE_VERSION: lts/gallium
 
 jobs:
   ipfs:
@@ -24,7 +25,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: lts/*
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Set output of cache
         id: yarn-cache
