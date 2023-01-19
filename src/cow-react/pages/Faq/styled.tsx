@@ -15,6 +15,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
     display: flex;
     flex-flow: column wrap;
   `}

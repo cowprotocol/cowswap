@@ -7,6 +7,7 @@ import { formatMax, formatSmart } from 'utils/format'
 import useTheme from 'hooks/useTheme'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
@@ -114,6 +115,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
   } = props
 
   const theme = useTheme()
+  const isEthFlow = useIsEthFlow()
 
   const { subsidy } = useCowBalanceAndSubsidy()
 
@@ -140,7 +142,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
                 </span>{' '}
               </FeeTooltipLine>
               <FeeBreakdownLine {...props} discount={subsidy.discount} symbol={symbol} />
-              {allowsOffchainSigning && (
+              {allowsOffchainSigning && !isEthFlow && (
                 <FeeTooltipLine>
                   <span>Gas costs</span>
                   <strong className="green">Free</strong>

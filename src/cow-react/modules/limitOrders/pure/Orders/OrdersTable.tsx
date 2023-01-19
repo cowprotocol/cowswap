@@ -17,17 +17,26 @@ const TableBox = styled.div`
   display: block;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
-  padding: 0 0 24px;
+  padding: 0;
   position: relative;
-  ${({ theme }) => theme.colorScrollbar};
+  overflow: hidden;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
-    overflow-y: hidden;
-    overflow-x: auto;
     display: flex;
     flex-flow: column wrap;
   `};
+`
+
+const TableInner = styled.div`
+  display: block;
+  width: inherit;
+  height: inherit;
+  padding: 0 0 24px;
+  overflow-y: hidden;
+  overflow-x: auto; // fallback for 'overlay'
+  overflow-x: overlay;
+  ${({ theme }) => theme.colorScrollbar};
 `
 
 const Header = styled.div`
@@ -103,37 +112,39 @@ export function OrdersTable({
   return (
     <>
       <TableBox>
-        <Header>
-          <div>
-            <Trans>Sell</Trans>
-          </div>
-          <div>
-            <Trans>Receive</Trans>
-          </div>
-          <div>
-            <span>
-              <Trans>Limit price</Trans>
-            </span>
-            <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
-          </div>
-          <div>
-            <Trans>Status</Trans>
-          </div>
-          <div>{/*Cancel order column*/}</div>
-        </Header>
-        <Rows>
-          {ordersPage.map((order) => (
-            <OrderRow
-              key={order.id}
-              order={order}
-              orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
-              RowElement={RowElement}
-              isRateInversed={isRateInversed}
-              getShowCancellationModal={getShowCancellationModal}
-              onClick={() => selectReceiptOrder(order.id)}
-            />
-          ))}
-        </Rows>
+        <TableInner>
+          <Header>
+            <div>
+              <Trans>Sell</Trans>
+            </div>
+            <div>
+              <Trans>Receive</Trans>
+            </div>
+            <div>
+              <span>
+                <Trans>Limit price</Trans>
+              </span>
+              <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
+            </div>
+            <div>
+              <Trans>Status</Trans>
+            </div>
+            <div>{/*Cancel order column*/}</div>
+          </Header>
+          <Rows>
+            {ordersPage.map((order) => (
+              <OrderRow
+                key={order.id}
+                order={order}
+                orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+                RowElement={RowElement}
+                isRateInversed={isRateInversed}
+                getShowCancellationModal={getShowCancellationModal}
+                onClick={() => selectReceiptOrder(order.id)}
+              />
+            ))}
+          </Rows>
+        </TableInner>
       </TableBox>
 
       {/* Only show pagination if more than 1 page available */}

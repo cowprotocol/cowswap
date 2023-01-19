@@ -4,6 +4,7 @@ import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo
@@ -13,6 +14,8 @@ export interface ReceiveAmountInfoTooltipProps {
 }
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
+  const isEthFlow = useIsEthFlow()
+
   const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
   const { type, amountAfterFees, amountBeforeFees, feeAmount } = receiveAmountInfo
   const { subsidy } = subsidyAndBalance
@@ -53,7 +56,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           </styledEl.GreenText>
         )}
       </div>
-      {allowsOffchainSigning && (
+      {allowsOffchainSigning && !isEthFlow && (
         <div>
           <span>
             <Trans>Gas cost</Trans>
