@@ -7,6 +7,16 @@ const DAI = '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60'
 const WETH = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
 const QUOTE_APPLY_TIMEOUT = 1000
 
+function acceptFeesExceedWarning() {
+  cy.wait(QUOTE_APPLY_TIMEOUT)
+  cy.get('body').then(($body) => {
+    const feesExceedCheckbox = $body.find('#fees-exceed-checkbox')
+    if (feesExceedCheckbox.length > 0) {
+      feesExceedCheckbox.get(0).click()
+    }
+  })
+}
+
 describe('Swap (custom)', () => {
   // uses WETH instead of ETH
   it('can swap WETH for DAI', () => {
@@ -25,6 +35,7 @@ describe('Swap (custom)', () => {
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('0.1', { force: true, delay: 200 })
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
+    acceptFeesExceedWarning()
     cy.get('#swap-button > button').should('contain.text', 'Swap').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
   })
@@ -36,13 +47,7 @@ describe('Swap (custom)', () => {
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('0.05', { force: true, delay: 400 })
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
-    cy.wait(QUOTE_APPLY_TIMEOUT)
-    cy.get('body').then(($body) => {
-      const feesExceedCheckbox = $body.find('#fees-exceed-checkbox')
-      if (feesExceedCheckbox.length > 0) {
-        feesExceedCheckbox.get(0).click()
-      }
-    })
+    acceptFeesExceedWarning()
     cy.get('#classic-eth-flow-banner').should('contain', 'Switch to the classic WETH').click()
     cy.get('#switch-to-wrapped').should('contain', 'Switch to WETH').click()
     cy.get('#swap-currency-input .token-symbol-container').should('contain', 'WETH')

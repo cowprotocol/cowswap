@@ -6,6 +6,11 @@ const LABEL_FROM_CLASS: Record<OrderClass, string> = {
   market: 'Market Order',
 }
 
+function getClassLabel(orderClass: OrderClass, label?: string) {
+  const classLabel = LABEL_FROM_CLASS[orderClass]
+  return label ? `${label}::${classLabel}` : classLabel
+}
+
 type ExpirationType = 'Default' | 'Custom'
 export function orderExpirationTimeAnalytics(type: ExpirationType, value: number) {
   sendEvent({
@@ -45,34 +50,28 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
 
 export type SwapAction = 'Send' | 'Error' | 'Reject'
 export function swapAnalytics(action: SwapAction, orderClass: OrderClass, label?: string, value?: number) {
-  const classLabel = LABEL_FROM_CLASS[orderClass]
-
   sendEvent({
     category: Category.SWAP,
-    action: `${action} ${classLabel}`,
-    label,
+    action,
+    label: getClassLabel(orderClass, label),
     value,
   })
 }
 
-export type SignSwapAction = 'Sign' | 'SignAndSend' | 'SignToSelf' // TODO: Does it make sense to differenciate these options?
-export function signSwapAnalytics(action: SignSwapAction, orderClass: OrderClass, label?: string) {
-  const classLabel = LABEL_FROM_CLASS[orderClass]
-
+export function signSwapAnalytics(orderClass: OrderClass, label?: string) {
   sendEvent({
     category: Category.SWAP,
-    action: `${action} ${classLabel}`,
-    label,
+    action: 'Sign',
+    label: getClassLabel(orderClass, label),
   })
 }
 
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
 export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?: string) {
-  const classLabel = LABEL_FROM_CLASS[orderClass]
   sendEvent({
     category: Category.SWAP,
-    action: `${action} ${classLabel}`,
-    label,
+    action,
+    label: getClassLabel(orderClass, label),
   })
 }
 

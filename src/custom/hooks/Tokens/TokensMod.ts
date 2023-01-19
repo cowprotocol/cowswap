@@ -12,13 +12,14 @@ import { useUserAddedTokens } from 'state/user/hooks' */
 
 // MOD imports
 import { useAtomValue } from 'jotai/utils'
-import { tokensByAddressAtom } from '@cow/modules/tokensList/tokensListAtom'
+import { tokensByAddressAtom } from '@cow/modules/tokensList/state/tokensListAtom'
 import { Token } from '@uniswap/sdk-core'
 import { useAllLists, useInactiveListUrls } from 'state/lists/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { useMemo } from 'react'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { deserializeToken } from 'state/user/hooks'
+import { checkBySymbolAndAddress } from '@cow/utils/checkBySymbolAndAddress'
 
 export * from '@src/hooks/Tokens'
 
@@ -26,7 +27,11 @@ export function useAllTokens(): { [address: string]: Token } {
   return useAtomValue(tokensByAddressAtom)
 }
 
-export function useSearchInactiveTokenLists(search: string | undefined, minResults = 10): Token[] {
+export function useSearchInactiveTokenLists(
+  search: string | undefined,
+  minResults = 10,
+  strictSearch = false
+): Token[] {
   const lists = useAllLists()
   const inactiveUrls = useInactiveListUrls()
   const { chainId } = useWeb3React()
@@ -43,7 +48,9 @@ export function useSearchInactiveTokenLists(search: string | undefined, minResul
       if (!list) continue
 
       for (const tokenInfo of list.tokens) {
-        if (tokenInfo.chainId === chainId && tokenFilter(tokenInfo)) {
+        const isTokenMatched = strictSearch ? checkBySymbolAndAddress(tokenInfo, search) : tokenFilter(tokenInfo)
+
+        if (tokenInfo.chainId === chainId && isTokenMatched) {
           try {
             const tokenAddress = tokenInfo.address.toLowerCase()
 
@@ -59,5 +66,5 @@ export function useSearchInactiveTokenLists(search: string | undefined, minResul
       }
     }
     return result
-  }, [activeTokens, chainId, inactiveUrls, lists, minResults, search])
+  }, [activeTokens, chainId, inactiveUrls, lists, minResults, search, strictSearch])
 }

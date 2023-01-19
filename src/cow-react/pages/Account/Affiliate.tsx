@@ -64,27 +64,25 @@ export default function Affiliate() {
           {account && (
             <Loader isLoading={isLoading}>
               <StyledContainer>
-                <Txt>
+                <Txt gap={4}>
                   <RefreshCcw size={16} />
-                  &nbsp;&nbsp;
-                  <Txt secondary>
-                    Last updated
-                    <MouseoverTooltipContent content="Data is updated on the background periodically." wrap>
-                      <HelpCircle size={14} />
-                    </MouseoverTooltipContent>
-                    :&nbsp;
-                  </Txt>
+                  <Txt gap={4}>Last updated: </Txt>
                   {!lastUpdated ? (
                     '-'
                   ) : (
                     <MouseoverTooltipContent content={<TimeFormatted date={profileData?.lastUpdated} />} wrap>
-                      <strong>{lastUpdated}</strong>
+                      <Txt fontSize={14} fontWeight={600}>
+                        {lastUpdated}
+                      </Txt>
                     </MouseoverTooltipContent>
                   )}
+                  <MouseoverTooltipContent content="Data is updated on the background periodically." wrap>
+                    <HelpCircle size={14} />
+                  </MouseoverTooltipContent>
                 </Txt>
                 {hasOrders && (
                   <ExtLink href={getExplorerAddressLink(chainId, account)}>
-                    <Txt secondary>View all orders ↗</Txt>
+                    <Txt fontSize={14}>View all orders ↗</Txt>
                   </ExtLink>
                 )}
               </StyledContainer>
@@ -95,10 +93,10 @@ export default function Affiliate() {
         <NotificationMessages /* error={error} */ chainId={chainId} />
 
         <ChildWrapper>
-          <Txt fs={16}>
+          <Txt fontSize={16}>
             <strong>Your referral url</strong>
           </Txt>
-          <Txt fs={14} center>
+          <Txt fontSize={14} center>
             {referralLink ? (
               <>
                 <span style={{ wordBreak: 'break-all', display: 'inline-block' }}>
@@ -128,7 +126,7 @@ export default function Affiliate() {
         <GridWrap horizontal>
           <ChildWrapper>
             <ItemTitle>
-              Trades&nbsp;
+              Trades
               <MouseoverTooltipContent content="Statistics regarding your own trades." wrap>
                 <HelpCircle size={14} />
               </MouseoverTooltipContent>
@@ -142,7 +140,7 @@ export default function Affiliate() {
                   <strong>{formatInt(profileData?.totalTrades)}</strong>
                 </Loader>
                 <Loader isLoading={isLoading}>
-                  <span>
+                  <Txt gap={4}>
                     Total trades
                     {isTradesTooltipVisible && (
                       <MouseoverTooltipContent
@@ -152,7 +150,7 @@ export default function Affiliate() {
                         <HelpCircle size={14} />
                       </MouseoverTooltipContent>
                     )}
-                  </span>
+                  </Txt>
                 </Loader>
               </FlexCol>
               <FlexCol>
@@ -170,7 +168,7 @@ export default function Affiliate() {
           </ChildWrapper>
           <ChildWrapper>
             <ItemTitle>
-              Referrals&nbsp;
+              Referrals
               <MouseoverTooltipContent
                 content="Statistics regarding trades by people who used your referral link."
                 wrap

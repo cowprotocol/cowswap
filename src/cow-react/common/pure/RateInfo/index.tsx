@@ -43,6 +43,7 @@ const RateLabel = styled.div`
   align-items: center;
   font-weight: 400;
   gap: 5px;
+  text-align: left;
   transition: color 0.15s ease-in-out;
   color: ${({ theme }) => transparentize(0.2, theme.text1)};
 

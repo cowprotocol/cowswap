@@ -24,11 +24,9 @@ const SideBar = styled.div`
   z-index: 102;
   padding: 0;
   cursor: default;
-  overflow-y: auto; // fallback for 'overlay'
-  overflow-y: overlay;
+  overflow-y: hidden;
   box-shadow: ${({ theme }) => theme.boxShadow1};
   background: ${({ theme }) => theme.bg1};
-  ${({ theme }) => theme.colorScrollbar};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -109,8 +107,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: stretch;
-  height: auto;
+  height: inherit;
   width: 100%;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
+  ${({ theme }) => theme.colorScrollbar};
 `
 
 export interface OrdersPanelProps {

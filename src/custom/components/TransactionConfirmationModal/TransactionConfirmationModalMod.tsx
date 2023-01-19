@@ -43,11 +43,17 @@ export const Wrapper = styled.div`
   padding: 0 16px;
   display: flex;
   flex-flow: column nowrap;
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
+  height: inherit;
   ${({ theme }) => theme.colorScrollbar};
-  /* -- mod -- */
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 10px;
+  `}/* -- mod -- */
 `
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`
-  padding: ${({ inline }) => (inline ? '0' : '0')};
+  padding: ${({ inline }) => (inline ? '0 0 16px' : '0')};
 `
 
 export const BottomSection = styled(Section)`
@@ -230,12 +236,14 @@ export function TransactionErrorContent({ message, onDismiss }: { message: React
   return (
     <Wrapper>
       <Section>
-        <RowBetween>
+        <GPModalHeader>
+          {/* <RowBetween> */}
           <Text fontWeight={500} fontSize={20}>
             <Trans>Error</Trans>
           </Text>
           <CloseIcon onClick={onDismiss} />
-        </RowBetween>
+        </GPModalHeader>
+        {/* </RowBetween> */}
         <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
           <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
           <Text
@@ -320,7 +328,11 @@ export function L2Content({
           </RowBetween>
         )}
         <ConfirmedIcon inline={inline}>{displayIcon}</ConfirmedIcon>
-        <AutoColumn gap="12px" justify={'center'}>
+        <AutoColumn
+          gap="12px"
+          justify={'center'}
+          style={{ margin: '0 0 16px' }} // MOD
+        >
           <Text fontWeight={500} fontSize={20} textAlign="center">
             {!hash ? (
               <Trans>Confirm transaction in wallet</Trans>
