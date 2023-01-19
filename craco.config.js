@@ -63,6 +63,9 @@ module.exports = {
       resolve: {
         ...webpackConfig.resolve,
         modules: [path.resolve(__dirname, 'src/custom'), ...webpackConfig.resolve.modules],
+        /**
+         * BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+         */
         fallback: {
           http: require.resolve('stream-http'),
           https: require.resolve('https-browserify'),

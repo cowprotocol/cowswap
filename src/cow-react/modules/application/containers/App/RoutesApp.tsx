@@ -1,6 +1,6 @@
 import Loader from 'components/Loader'
-import { Suspense, lazy } from 'react'
-import { Route, Routes, Navigate } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { RedirectPathToSwapOnly } from 'pages/Swap/redirects'
 import { Routes as RoutesEnum } from '@cow/constants/routes'
@@ -11,6 +11,7 @@ import { Loading } from 'components/FlashingLoading'
 
 import Account, { AccountOverview } from '@cow/pages/Account'
 import { NewSwapPage } from '@cow/pages/NewSwap'
+import { ReactNode } from 'react'
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '@cow/pages/PrivacyPolicy'))
@@ -42,6 +43,29 @@ function createRedirectExternal(url: string) {
   }
 }
 
+type LazyRouteProps = { route: RoutesEnum; element: ReactNode }
+
+function LazyRoute({ route, element }: LazyRouteProps) {
+  return <Route path={route} element={<Suspense fallback={Loading}>{element}</Suspense>} />
+}
+
+const lazyRoutes: LazyRouteProps[] = [
+  { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrders /> },
+  { route: RoutesEnum.ABOUT, element: <About /> },
+  { route: RoutesEnum.FAQ, element: <Faq /> },
+  { route: RoutesEnum.FAQ_PROTOCOL, element: <ProtocolFaq /> },
+  { route: RoutesEnum.FAQ_TOKEN, element: <TokenFaq /> },
+  { route: RoutesEnum.FAQ_TRADING, element: <TradingFaq /> },
+  { route: RoutesEnum.FAQ_AFFILIATE, element: <AffiliateFaq /> },
+  { route: RoutesEnum.FAQ_LIMIT_ORDERS, element: <LimitOrdersFaq /> },
+  { route: RoutesEnum.FAQ_ETH_FLOW, element: <EthFlowFaq /> },
+  { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
+  { route: RoutesEnum.PLAY_MEVSLICER, element: <MevSlicer /> },
+  { route: RoutesEnum.PRIVACY_POLICY, element: <PrivacyPolicy /> },
+  { route: RoutesEnum.COOKIE_POLICY, element: <CookiePolicy /> },
+  { route: RoutesEnum.TERMS_CONDITIONS, element: <TermsAndConditions /> },
+]
+
 export function RoutesApp() {
   return (
     <Suspense fallback={<Loader />}>
@@ -59,126 +83,9 @@ export function RoutesApp() {
         <Route path={RoutesEnum.SWAP} element={<NewSwapPage />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
-        {/*Limit orders*/}
-        <Route
-          path={RoutesEnum.LIMIT_ORDER}
-          element={
-            <Suspense fallback={Loading}>
-              <LimitOrders />
-            </Suspense>
-          }
-        />
+        {lazyRoutes.map(LazyRoute)}
 
-        {/*About*/}
-        <Route
-          path={RoutesEnum.ABOUT}
-          element={
-            <Suspense fallback={Loading}>
-              <About />
-            </Suspense>
-          }
-        />
-
-        {/*FAQ*/}
-        <Route
-          path={RoutesEnum.FAQ}
-          element={
-            <Suspense fallback={Loading}>
-              <Faq />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.FAQ_PROTOCOL}
-          element={
-            <Suspense fallback={Loading}>
-              <ProtocolFaq />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.FAQ_TOKEN}
-          element={
-            <Suspense fallback={Loading}>
-              <TokenFaq />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.FAQ_TRADING}
-          element={
-            <Suspense fallback={Loading}>
-              <TradingFaq />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.FAQ_AFFILIATE}
-          element={
-            <Suspense fallback={Loading}>
-              <AffiliateFaq />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.FAQ_LIMIT_ORDERS}
-          element={
-            <Suspense fallback={Loading}>
-              <LimitOrdersFaq />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.FAQ_ETH_FLOW}
-          element={
-            <Suspense fallback={Loading}>
-              <EthFlowFaq />
-            </Suspense>
-          }
-        />
-
-        {/*Games*/}
-        <Route
-          path={RoutesEnum.PLAY_COWRUNNER}
-          element={
-            <Suspense fallback={Loading}>
-              <CowRunner />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.PLAY_MEVSLICER}
-          element={
-            <Suspense fallback={Loading}>
-              <MevSlicer />
-            </Suspense>
-          }
-        />
         <Route path={RoutesEnum.ANYSWAP_AFFECTED} element={<AnySwapAffectedUsers />} />
-        <Route
-          path={RoutesEnum.PRIVACY_POLICY}
-          element={
-            <Suspense fallback={Loading}>
-              <PrivacyPolicy />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.COOKIE_POLICY}
-          element={
-            <Suspense fallback={Loading}>
-              <CookiePolicy />
-            </Suspense>
-          }
-        />
-        <Route
-          path={RoutesEnum.TERMS_CONDITIONS}
-          element={
-            <Suspense fallback={Loading}>
-              <TermsAndConditions />
-            </Suspense>
-          }
-        />
         <Route path={RoutesEnum.CHAT} loader={createRedirectExternal(DISCORD_LINK)} />
         <Route path={RoutesEnum.DOCS} loader={createRedirectExternal(DOCS_LINK)} />
         <Route path={RoutesEnum.STATS} loader={createRedirectExternal(DUNE_DASHBOARD_LINK)} />

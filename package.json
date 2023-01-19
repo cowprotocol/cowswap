@@ -9,7 +9,6 @@
     "start": "craco start",
     "build": "yarn i18n:compile && craco build && yarn writeVersion",
     "test": "NODE_PATH=src/custom craco test --env=jsdom",
-    "start:default": "craco start",
     "start:ssl": "HTTPS=true yarn start",
     "start:service-worker": "yarn build && yarn serve",
     "mock": "REACT_APP_MOCK=true yarn start",
