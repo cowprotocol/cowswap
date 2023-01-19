@@ -60,7 +60,7 @@ yarn cypress
 If we want to use the Cypress UI, and live reloading on the web app:
 
 ```bash
-yarn start:default
+yarn start
 yarn cypress
 ```
 

@@ -223,7 +223,7 @@ jobs:
           #   very likely it's related to Web3StatusMod!
           #   when un-commenting this, we need to uncomment also the "Download website" I added in this PR and prevent cypres from buildig the project again
           # start: yarn serve:ci
-          start: yarn start:default
+          start: yarn start
           wait-on: http://localhost:3000
           wait-on-timeout: 200
         env:
