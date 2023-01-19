@@ -321,6 +321,20 @@ export const LogoImage = styled.div<{ isMobileMenuOpen?: boolean }>`
     height: inherit;
     object-fit: contain;
   }
+
+  // Special Lunar year / bunny ears theme
+  > svg.imageBunnyEars {
+    position: absolute;
+    top: -14px;
+    left: 1px;
+    width: 126px;
+    height: 55px;
+    object-fit: contain;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+     left: -4px;
+    `}
+  }
 `
 
 export const UniIcon = styled.div`
