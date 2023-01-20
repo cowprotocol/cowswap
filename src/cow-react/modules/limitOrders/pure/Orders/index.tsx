@@ -56,7 +56,7 @@ const Content = styled.div`
 
     > svg {
       padding: 28px;
-      fill: ${({ theme }) => theme.text1};
+      fill: ${({ theme }) => transparentize(0.3, theme.text1)};
     }
   }
 
@@ -98,6 +98,18 @@ const Header = styled.span`
   > h2 {
     font-size: 24px;
     margin: 0;
+  }
+`
+
+// Todo: Makes this arrow default behavior of <ExternalLink />
+const ExternalArrow = styled.span`
+  display: inline-block;
+  &::after {
+    content: ' ↗';
+    display: inline-block;
+    padding: 0 0 0 1px;
+    font-weight: bold;
+    font-size: 11px;
   }
 `
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
@@ -151,7 +163,8 @@ export function Orders({
               You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
               Create one for free!{' '}
               <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
-                Learn more.
+                Learn more
+                <ExternalArrow />
               </ExternalLink>
             </Trans>
           </p>
