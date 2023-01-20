@@ -16,7 +16,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
 
 // Every 10s
-const REFETCH_CHECK_INTERVAL = 1000
+const REFETCH_CHECK_INTERVAL = 10000
 
 const getQuoteOnlyResolveLast = onlyResolvesLast<SimpleGetQuoteResponse>(getQuote)
 
