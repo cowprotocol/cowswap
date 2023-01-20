@@ -3,19 +3,11 @@ const path = require('path')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CracoWorkboxPlugin = require('craco-workbox')
-const BrotliPlugin = require('brotli-webpack-plugin')
 const { version } = require('./package.json')
 
 // see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview
 
-const plugins = [
-  new BrotliPlugin({
-    asset: '[path].br[query]',
-    test: /\.(js|css|html|svg)$/,
-    threshold: 10240,
-    minRatio: 0.8,
-  }),
-]
+const plugins = []
 const SENTRY_AUTH_TOKEN = process.env.REACT_APP_SENTRY_AUTH_TOKEN
 const SENTRY_RELEASE_VERSION = 'CowSwap@v' + version
 const ANALYZE_BUNDLE = process.env.REACT_APP_ANALYZE_BUNDLE
