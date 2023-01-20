@@ -1,5 +1,6 @@
 {
   "extends": ["react-app", "react-app/jest", "plugin:cypress/recommended"],
+  "plugins": ["unused-imports"],
   "rules": {
     "no-restricted-imports": [
       "error",
@@ -14,6 +15,17 @@
             "message": "Please import from styled-components/macro."
           }
         ]
+      }
+    ],
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
       }
     ]
   }
