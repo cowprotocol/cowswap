@@ -30,6 +30,8 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
 
+import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
+
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
@@ -213,6 +215,8 @@ export function UnfillableOrdersUpdater(): null {
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
+
+  const isWindowVisible = useIsWindowVisible()
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {
