@@ -8,6 +8,7 @@ import useTheme from 'hooks/useTheme'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
@@ -92,7 +93,7 @@ const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownPro
       {smartFee ? (
         <span>
           {typeString}
-          {smartFee} {symbol}
+          {smartFee} <TokenSymbol token={{ symbol }} />
         </span>
       ) : (
         <strong className="green">Free</strong>
@@ -138,7 +139,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
               <FeeTooltipLine>
                 <span>Before fee</span>
                 <span>
-                  {amountBeforeFees} {symbol}
+                  {amountBeforeFees} <TokenSymbol token={{ symbol }} />
                 </span>{' '}
               </FeeTooltipLine>
               <FeeBreakdownLine {...props} discount={subsidy.discount} symbol={symbol} />
@@ -152,7 +153,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
               <FeeTooltipLine>
                 <strong>{type}</strong>
                 <strong>
-                  {amountAfterFees} {symbol}
+                  {amountAfterFees} <TokenSymbol token={{ symbol }} />
                 </strong>{' '}
               </FeeTooltipLine>
             </FeeInnerWrapper>
