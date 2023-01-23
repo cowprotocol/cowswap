@@ -2462,14 +2462,14 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@lingui/babel-plugin-extract-messages@^3.15.0":
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/@lingui/babel-plugin-extract-messages/-/babel-plugin-extract-messages-3.15.0.tgz#370c5fa3a677252c13fc6709ee56defbffb692fc"
-  integrity sha512-iMQmJIkC18Zwc/IDpm3Oclj3KMDQuvipCS2yVHr0MyaeOCeOZ3ZoLVeaa8pfE5pImzlHJ0ss8RRm/St54JElhw==
+"@lingui/babel-plugin-extract-messages@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.npmjs.org/@lingui/babel-plugin-extract-messages/-/babel-plugin-extract-messages-3.9.0.tgz"
+  integrity sha512-twxAdsIfRihUGQzJ9ZIKZbZAny/Aq3hVpY8Q2rDHEynD2/WhBv0MD/OeqXwfj/C0sGyG1Tgnq17NaCqQu9UX2g==
   dependencies:
     "@babel/generator" "^7.11.6"
     "@babel/runtime" "^7.11.2"
-    "@lingui/conf" "^3.15.0"
+    "@lingui/conf" "^3.9.0"
     mkdirp "^1.0.4"
 
 "@lingui/cli@^3.15.0":
@@ -2482,7 +2482,7 @@
     "@babel/plugin-syntax-jsx" "^7.10.4"
     "@babel/runtime" "^7.11.2"
     "@babel/types" "^7.11.5"
-    "@lingui/babel-plugin-extract-messages" "^3.15.0"
+    "@lingui/babel-plugin-extract-messages" "^3.9.0"
     "@lingui/conf" "^3.15.0"
     babel-plugin-macros "^3.0.1"
     bcp-47 "^1.0.7"
