@@ -13,7 +13,6 @@ import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmou
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { formatSymbol } from '@cow/utils/format'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -159,7 +158,7 @@ const CancelOrderBtn = styled.button`
 
 function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (
-    <AmountItem title={amount.toExact() + ' ' + formatSymbol(amount.currency.symbol)}>
+    <AmountItem title={amount.toExact() + ' ' + amount.currency.symbol}>
       <div>
         <CurrencyLogo currency={amount.currency} size="24px" />
       </div>

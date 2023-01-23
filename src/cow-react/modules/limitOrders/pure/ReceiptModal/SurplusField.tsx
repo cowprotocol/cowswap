@@ -4,7 +4,6 @@ import * as styledEl from './styled'
 import { formatSmart } from '@cow/utils/format'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { formatSymbol } from '@cow/utils/format'
 
 interface Props {
   order: ParsedOrder
@@ -24,7 +23,7 @@ export function SurplusField({ order }: Props) {
   const formattedPercent = surplusPercentage?.multipliedBy(100)?.toFixed(2)
 
   return (
-    <styledEl.Value title={`${parsedSurplus.toExact()} ${formatSymbol(surplusToken.symbol)}`}>
+    <styledEl.Value title={`${parsedSurplus.toExact()} ${surplusToken.symbol}`}>
       <styledEl.InlineWrapper>
         <styledEl.Surplus>+{formattedPercent}%</styledEl.Surplus>
         <span>
