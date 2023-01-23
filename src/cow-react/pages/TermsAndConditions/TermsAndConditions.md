@@ -26,7 +26,7 @@
 **3. WHAT YOU REQUIRE TO USE THE INTERFACE**
 
 1.  Users may use the Interface to interact with the Protocol and buy or sell EVM compatible tokens by submitting orders into a batch auction running on the Protocol.
-2.  A detailed FAQ guide on how to use the Interface may be found in the <a href="https://swap.cow.fi/#/faq" target="_blank" rel="noopener nofollow">“FAQ”</a> section on the Interface.
+2.  A detailed FAQ guide on how to use the Interface may be found in the <a href="#/faq" target="_blank" rel="noopener nofollow">“FAQ”</a> section on the Interface.
 3.  To use the Interface you require:
     1.  A wallet compatible with the Ethereum Blockchain, Gnosis Chain or an Ethereum Virtual Machine compatible validation mechanism, depending on which network you interact with the Protocol. We currently support EOA (Externally Owned Account) type of wallets that support <a href="https://ethereum-magicians.org/t/eip-712-eth-signtypeddata-as-a-standard-for-machine-verifiable-and-human-readable-typed-data-signing/397" target="_blank" rel="noopener nofollow">EIP712</a> as well as certain Smart contract wallets. However, not all smart contract wallets implement the standards the same way we do and might therefore not fully support integration with the Interface.
     2.  An ERC 20 token to trade (or ETH).

@@ -4,8 +4,11 @@ import { OrdersTable, OrdersTableProps } from './OrdersTable'
 import { Widget } from '../Widget'
 import { transparentize } from 'polished'
 import cowMeditatingV2 from 'assets/cow-swap/meditating-cow-v2.svg'
+import imageConnectWallet from 'assets/cow-swap/wallet-plus.svg'
 import { Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
+import SVG from 'react-inlinesvg'
+import Web3Status, { Wrapper as Web3StatusWrapper } from 'components/Web3Status'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;
@@ -40,7 +43,8 @@ const Content = styled.div`
       transform: rotate(360deg);
     }
 
-    > img {
+    > img,
+    > svg {
       max-width: 100%;
       max-height: 100%;
       width: 100%;
@@ -48,6 +52,11 @@ const Content = styled.div`
       object-fit: contain;
       display: inline;
       padding: 16px;
+    }
+
+    > svg {
+      padding: 28px;
+      fill: ${({ theme }) => transparentize(0.3, theme.text1)};
     }
   }
 
@@ -62,10 +71,14 @@ const Content = styled.div`
   > p {
     font-size: 15px;
     line-height: 1.4;
-    margin: 0 auto;
+    margin: 0 auto 21px;
     font-weight: 400;
     text-align: center;
-    opacity: 0.7;
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
+
+  ${Web3StatusWrapper} {
+    margin: 0 auto;
   }
 `
 
@@ -87,6 +100,18 @@ const Header = styled.span`
     margin: 0;
   }
 `
+
+// Todo: Makes this arrow default behavior of <ExternalLink />
+const ExternalArrow = styled.span`
+  display: inline-block;
+  &::after {
+    content: ' ↗';
+    display: inline-block;
+    padding: 0 0 0 1px;
+    font-weight: bold;
+    font-size: 11px;
+  }
+`
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
@@ -106,7 +131,20 @@ export function Orders({
     if (!isWalletConnected) {
       return (
         <Content>
-          <p>To use limit orders, please connect your wallet to one of our supported networks.</p>
+          <span>
+            <SVG src={imageConnectWallet} description="connect wallet" />
+          </span>
+          <h3>
+            <Trans>Connect a wallet</Trans>
+          </h3>
+          <p>
+            <Trans>
+              To use limit orders, please connect your wallet <br />
+              to one of our supported networks.
+            </Trans>
+          </p>
+
+          <Web3Status />
         </Content>
       )
     }
@@ -123,8 +161,10 @@ export function Orders({
           <p>
             <Trans>
               You don&apos;t have any {isOpenOrdersTab ? 'open' : ''} orders at the moment. <br />
+              Create one for free!{' '}
               <ExternalLink href="https://cow-protocol.medium.com/how-to-user-cow-swaps-surplus-capturing-limit-orders-24324326dc9e">
-                Create one for free!
+                Learn more
+                <ExternalArrow />
               </ExternalLink>
             </Trans>
           </p>
