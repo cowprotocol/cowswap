@@ -1,4 +1,11 @@
+import { useState } from 'react'
 import { Dropdown } from '@cow/common/pure/Dropdown'
+
+import { CloseIcon } from 'theme'
+import { DatePicker } from '@blueprintjs/datetime'
+import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
+
+import { GpModal as Modal } from '@src/custom/components/Modal'
 import { LimitOrderDeadline, limitOrdersDeadlines, maxCustomDeadline } from './deadlines'
 
 import { useCallback, useMemo, useRef } from 'react'
@@ -62,6 +69,12 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     [selectCustomDeadline]
   )
 
+  // Create isopen state for modal and close modal on dismiss or select deadline from list items (see list)
+  const [isOpen, setIsOpen] = useState(false)
+  const onDismiss = useCallback(() => {
+    setIsOpen(false)
+  }, [setIsOpen])
+
   const list = (
     <styledEl.ListWrapper>
       {limitOrdersDeadlines.map((item) => (
@@ -71,10 +84,22 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           </styledEl.ListItem>
         </li>
       ))}
-      <styledEl.ListItem>
+
+      <styledEl.ListItem onClick={() => setIsOpen(true)}>
         <Trans>Custom</Trans>
-        <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} />
+        {/* <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} /> */}
       </styledEl.ListItem>
+
+      <Modal isOpen={isOpen} onDismiss={() => false}>
+        <div>
+          <CloseIcon onClick={() => onDismiss()} />
+          <span>Custom select</span>
+          <DatePicker timePrecision="minute" minDate={new Date(min)} maxDate={new Date(max)} showActionsBar />
+
+          <button onClick={() => onDismiss()}>Cancel</button>
+          <button onClick={() => onDismiss()}>Set date</button>
+        </div>
+      </Modal>
     </styledEl.ListWrapper>
   )
 
