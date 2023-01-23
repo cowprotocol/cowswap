@@ -221,7 +221,7 @@ export const StyledCoWLink = styled(ExternalLink)`
   opacity: 1 !important;
 
   span {
-    color: ${({ theme }) => theme.orange};
+    color: ${({ theme }) => theme.text3};
   }
 
   :hover {

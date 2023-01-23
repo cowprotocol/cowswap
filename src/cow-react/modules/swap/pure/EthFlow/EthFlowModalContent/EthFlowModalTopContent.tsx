@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 
 import styled from 'styled-components/macro'
-import { transparentize } from 'polished'
+import { transparentize, darken } from 'polished'
 import { EthFlowState } from '@cow/modules/swap/services/ethFlow/types'
 
 const ModalMessage = styled.div`
@@ -24,8 +24,8 @@ const ModalMessage = styled.div`
 
 const LowBalanceMessage = styled(ModalMessage)`
   margin: 0 0 10px;
-  background-color: ${({ theme }) => transparentize(0.86, theme.danger)};
-  color: ${({ theme }) => theme.danger};
+  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+  color: ${({ theme }) => (theme.darkMode ? theme.alert : darken(0.2, theme.alert))};
   padding: 16px;
   border-radius: 16px;
   width: 100%;
