@@ -93,8 +93,10 @@ export function ExpertModeModal(props: ExpertModeModalProps) {
           error={true}
           padding={'12px'}
           onClick={() => {
-            const confirmWord = t`confirm test`
-            if (window.prompt(t`Please type the word "${confirmWord}" to enable expert mode.`) === confirmWord) {
+            const confirmWordTest = t`confirm test`
+            if (
+              window.prompt(t`Please type the word "${confirmWordTest}" to enable expert mode.`) === confirmWordTest
+            ) {
               onEnable()
             }
           }}
