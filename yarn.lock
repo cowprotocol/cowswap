@@ -2482,7 +2482,7 @@
     "@babel/plugin-syntax-jsx" "^7.10.4"
     "@babel/runtime" "^7.11.2"
     "@babel/types" "^7.11.5"
-    "@lingui/babel-plugin-extract-messages" "^3.9.0"
+    "@lingui/babel-plugin-extract-messages" "^3.15.0"
     "@lingui/conf" "^3.15.0"
     babel-plugin-macros "^3.0.1"
     bcp-47 "^1.0.7"
@@ -2513,6 +2513,18 @@
   version "3.15.0"
   resolved "https://registry.yarnpkg.com/@lingui/conf/-/conf-3.15.0.tgz#0866bdf92bc72525dd657270c454a2fbe9277b87"
   integrity sha512-gDGBbqWo6+B3PNjxTGl2asVdd8hC6w+iGsEPonvMw7GFmXb99qybBGdV2ofDlwlT9vChcPwMVtrYE6H0fTZuzA==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    chalk "^4.1.0"
+    cosmiconfig "^7.0.0"
+    cosmiconfig-typescript-loader "^2.0.1"
+    jest-validate "^26.5.2"
+    lodash.get "^4.4.2"
+
+"@lingui/conf@^3.9.0":
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/@lingui/conf/-/conf-3.16.0.tgz#ada1da0f21c8d6174d1caf483fae2a395b3c394d"
+  integrity sha512-65X3TySGzeYjVNE3YZDpF6LTYxpUiSRSyTJjEGB7ZSPpuL6VDMEUGCDsnur2ix8D+I8w0ife6ks4HPQt6owZmw==
   dependencies:
     "@babel/runtime" "^7.11.2"
     chalk "^4.1.0"
