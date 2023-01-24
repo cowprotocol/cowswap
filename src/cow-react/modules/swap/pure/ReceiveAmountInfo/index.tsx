@@ -14,6 +14,8 @@ export interface ReceiveAmountInfoTooltipProps {
   allowsOffchainSigning: boolean
 }
 
+const MAX_TOKEN_SYMBOL_LENGTH = 6
+
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const isEthFlow = useIsEthFlow()
 
@@ -39,7 +41,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <Trans>Before fee</Trans>
         </span>
         <span>
-          {amountBeforeFees} {<TokenSymbol token={currency} />}
+          {amountBeforeFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
         </span>
       </div>
       <div>
@@ -47,7 +49,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
         {hasFee ? (
           <span>
             {typeString}
-            {feeAmount} {<TokenSymbol token={currency} />}
+            {feeAmount} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
           </span>
         ) : (
           <styledEl.GreenText>
@@ -74,7 +76,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
         </span>
         <span>
-          {amountAfterFees} {<TokenSymbol token={currency} />}
+          {amountAfterFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
         </span>
       </styledEl.TotalAmount>
     </styledEl.Box>

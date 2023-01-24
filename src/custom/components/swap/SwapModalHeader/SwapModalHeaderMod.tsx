@@ -182,6 +182,7 @@ SwapModalHeaderProps) {
           hideInput
           // borderColor={transparentize(0.5, theme.bg0)}
         >
+          {/* TODO: replace <FeeInformationTooltip/> with <ReceiveAmountInfoTooltip /> */}
           <FeeInformationTooltip
             amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}

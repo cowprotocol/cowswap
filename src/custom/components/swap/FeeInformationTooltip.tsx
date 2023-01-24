@@ -78,6 +78,8 @@ const FeeInnerWrapper = styled.div`
   gap: 2px;
 `
 
+const MAX_TOKEN_SYMBOL_LENGTH = 6
+
 type FeeBreakdownProps = FeeInformationTooltipProps & {
   symbol: string | undefined
   discount: number
@@ -93,7 +95,7 @@ const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownPro
       {smartFee ? (
         <span>
           {typeString}
-          {smartFee} <TokenSymbol token={{ symbol }} />
+          {smartFee} <TokenSymbol token={{ symbol }} length={MAX_TOKEN_SYMBOL_LENGTH} />
         </span>
       ) : (
         <strong className="green">Free</strong>
@@ -101,6 +103,8 @@ const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownPro
     </FeeTooltipLine>
   )
 }
+
+// TODO: this looks duplicated by <ReceiveAmountInfoTooltip />. Consider replacing it with that to avoid duplication
 
 export default function FeeInformationTooltip(props: FeeInformationTooltipProps) {
   const {
@@ -139,7 +143,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
               <FeeTooltipLine>
                 <span>Before fee</span>
                 <span>
-                  {amountBeforeFees} <TokenSymbol token={{ symbol }} />
+                  {amountBeforeFees} <TokenSymbol token={{ symbol }} length={MAX_TOKEN_SYMBOL_LENGTH} />
                 </span>{' '}
               </FeeTooltipLine>
               <FeeBreakdownLine {...props} discount={subsidy.discount} symbol={symbol} />
@@ -153,7 +157,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
               <FeeTooltipLine>
                 <strong>{type}</strong>
                 <strong>
-                  {amountAfterFees} <TokenSymbol token={{ symbol }} />
+                  {amountAfterFees} <TokenSymbol token={{ symbol }} length={MAX_TOKEN_SYMBOL_LENGTH} />
                 </strong>{' '}
               </FeeTooltipLine>
             </FeeInnerWrapper>
