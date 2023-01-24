@@ -157,10 +157,15 @@ export const CustomInput = styled.input`
   background: ${({ theme }) => theme.bg1};
 
   &::-webkit-calendar-picker-indicator {
+    filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};
   }
 
   &::-webkit-datetime-edit {
     color: ${({ theme }) => theme.text1};
+  }
+
+  &::-webkit-datetime-edit[disabled] {
+    color: ${({ theme }) => transparentize(0.7, theme.text1)};
   }
 `
 
