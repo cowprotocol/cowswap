@@ -169,25 +169,40 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   )
 }
 
-const balanceWarning = (tokenSymbol: string) => (
+const balanceWarning = (symbol: string) => (
   <WarningParagraph>
     <h3>Insufficient balance for this limit order</h3>
     <p>
-      Your wallet currently has insufficient <strong>{tokenSymbol}</strong> balance to execute this order.
+      Your wallet currently has insufficient{' '}
+      <strong>
+        <TokenSymbol token={{ symbol }} />
+      </strong>{' '}
+      balance to execute this order.
       <br />
-      The order is still open and will become executable when you top up your <strong>{tokenSymbol}</strong> balance.
+      The order is still open and will become executable when you top up your{' '}
+      <strong>
+        <TokenSymbol token={{ symbol }} />
+      </strong>{' '}
+      balance.
     </p>
   </WarningParagraph>
 )
 
-const allowanceWarning = (tokenSymbol: string) => (
+const allowanceWarning = (symbol: string) => (
   <WarningParagraph>
     <h3>Insufficient approval for this limit order</h3>
     <p>
       This order is still open and valid, but you haven’t given CoW Swap sufficient allowance to spend{' '}
-      <strong>{tokenSymbol}</strong>.
+      <strong>
+        <TokenSymbol token={{ symbol }} />
+      </strong>
+      .
       <br />
-      The order will become executable when you approve <strong>{tokenSymbol}</strong> in your account token page.
+      The order will become executable when you approve{' '}
+      <strong>
+        <TokenSymbol token={{ symbol }} />
+      </strong>{' '}
+      in your account token page.
     </p>
   </WarningParagraph>
 )
