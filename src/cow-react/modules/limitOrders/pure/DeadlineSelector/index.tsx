@@ -1,11 +1,27 @@
+import { useState } from 'react'
 import { Dropdown } from '@cow/common/pure/Dropdown'
 import { LimitOrderDeadline, limitOrdersDeadlines, maxCustomDeadline } from './deadlines'
+import { GpModal as Modal } from '@src/custom/components/Modal'
 
 import { useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
-import * as styledEl from './styled'
+import {
+  ListWrapper,
+  ListItem,
+  Wrapper,
+  Header,
+  Current,
+  ModalWrapper,
+  ModalHeader,
+  ModalFooter,
+  ModalContent,
+  CloseIcon,
+  CustomInput,
+  CustomLabel,
+} from './styled'
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
+import { ButtonPrimary, ButtonSecondary } from '@src/components/Button'
 
 function limitDateString(date: Date): string {
   const [first, second] = date.toISOString().split(':')
@@ -62,33 +78,71 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     [selectCustomDeadline]
   )
 
+  const [isOpen, setIsOpen] = useState(false)
+  const openModal = () => {
+    currentDeadlineNode.current?.click() // Close dropdown
+    setIsOpen(true)
+  }
+  const onDismiss = () => setIsOpen(false)
+
   const list = (
-    <styledEl.ListWrapper>
+    <ListWrapper>
       {limitOrdersDeadlines.map((item) => (
         <li key={item.value}>
-          <styledEl.ListItem onClick={() => setDeadline(item)}>
+          <ListItem onClick={() => setDeadline(item)}>
             <Trans>{item.title}</Trans>
-          </styledEl.ListItem>
+          </ListItem>
         </li>
       ))}
-      <styledEl.ListItem>
+      <ListItem onClick={openModal}>
         <Trans>Custom</Trans>
-        <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} />
-      </styledEl.ListItem>
-    </styledEl.ListWrapper>
+      </ListItem>
+    </ListWrapper>
   )
 
   return (
-    <styledEl.Wrapper>
-      <styledEl.Header>
+    <Wrapper>
+      <Header>
         <Trans>Expiry</Trans>
-      </styledEl.Header>
+      </Header>
       <Dropdown content={list}>
-        <styledEl.Current ref={currentDeadlineNode as any} isCustom={!!customDeadline}>
+        <Current ref={currentDeadlineNode as any} isCustom={!!customDeadline}>
           <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
           <ChevronDown size="18" />
-        </styledEl.Current>
+        </Current>
       </Dropdown>
-    </styledEl.Wrapper>
+
+      {/* Custom deadline modal */}
+      <Modal isOpen={isOpen} onDismiss={onDismiss}>
+        <ModalWrapper>
+          <ModalHeader>
+            <h3>
+              <Trans>Set custom deadline</Trans>
+            </h3>
+            <CloseIcon onClick={onDismiss} />
+          </ModalHeader>
+          <ModalContent>
+            <CustomLabel htmlFor="meeting-time">
+              <Trans>Choose a custom deadline for your limit order:</Trans>
+              <CustomInput
+                type="datetime-local"
+                onChange={onChange}
+                min={min}
+                max={max}
+                value={customDeadline || min}
+              />
+            </CustomLabel>
+          </ModalContent>
+          <ModalFooter>
+            <ButtonSecondary onClick={onDismiss}>Cancel</ButtonSecondary>
+            <ButtonPrimary onClick={onDismiss}>
+              <Trans>Set custom date</Trans>
+            </ButtonPrimary>
+          </ModalFooter>
+        </ModalWrapper>
+      </Modal>
+    </Wrapper>
   )
 }
+
+// write bash cron job to run this script every day at 00:00
