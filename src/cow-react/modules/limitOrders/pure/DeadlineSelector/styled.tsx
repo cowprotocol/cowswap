@@ -153,10 +153,10 @@ export const CustomInput = styled.input`
   border: 1px solid ${({ theme }) => transparentize(0.7, theme.text1)};
   color: ${({ theme }) => theme.text1};
   padding: 4px 8px;
+  outline: 0;
+  background: ${({ theme }) => theme.bg1};
 
   &::-webkit-calendar-picker-indicator {
-    outline: red;
-    backround: red;
   }
 
   &::-webkit-datetime-edit {
