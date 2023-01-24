@@ -265,7 +265,10 @@ export function useAddUserToken(): (token: Token) => void {
   const dispatch = useAppDispatch()
   return useCallback(
     (token: Token) => {
-      dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
+      const t = serializeToken(token)
+      t.symbol += ' this is a very long token name REVERT ME!!!'
+      t.name = t.symbol
+      dispatch(addSerializedToken({ serializedToken: t }))
     },
     [dispatch]
   )
