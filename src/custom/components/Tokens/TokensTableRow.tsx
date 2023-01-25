@@ -12,7 +12,7 @@ import {
   TokenText,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from '@cow/utils/format'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
@@ -32,6 +32,7 @@ import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTra
 import { Routes } from '@cow/constants/routes'
 import SVG from 'react-inlinesvg'
 import EtherscanImage from 'assets/cow-swap/etherscan-icon.svg'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 type DataRowParams = {
   tokenData: Token
@@ -169,12 +170,14 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <Link title={tokenData.name} to={tradeLink(tokenData, OrderKind.SELL)}>
+        <Link to={tradeLink(tokenData, OrderKind.SELL)}>
           <ResponsiveLogo currency={tokenData} />
           <TokenText>
             <span>
-              <b>{tokenData.name}</b>
-              <i>{tokenData.symbol}</i>
+              <b>
+                <TokenSymbol token={tokenData} />
+              </b>
+              <i>{tokenData.name}</i>
             </span>
           </TokenText>
         </Link>

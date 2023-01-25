@@ -12,7 +12,7 @@ import {
 } from '@cow/pages/Account/styled'
 import { useWeb3React } from '@web3-react/core'
 import { getBlockExplorerUrl } from 'utils'
-import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { ButtonPrimary } from 'custom/components/Button'

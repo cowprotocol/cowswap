@@ -46,12 +46,16 @@ export const MarketPriceButton = styled.button`
 `
 
 export const Body = styled.div`
-  padding: 0;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
+  gap: 8px;
 `
 
 export const NumericalInput = styled(Input)<{ $loading: boolean }>`
+  display: flex;
+  align-items: center;
   background: none;
   border: none;
   width: 100%;
@@ -65,25 +69,33 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
 export const ActiveCurrency = styled.button`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   border: none;
   background: none;
-  cursor: pointer;
   padding: 0;
   margin: 0 0 0 auto;
+  gap: 8px;
+  max-width: 130px;
+  width: auto;
+  cursor: pointer;
 `
 
 export const ActiveSymbol = styled.span`
   color: ${({ theme }) => theme.text1};
-  font-size: 0.85rem;
-  margin-right: 5px;
+  font-size: 13px;
   font-weight: 500;
+  text-align: right;
+  padding: 10px 0;
 `
 
 export const ActiveIcon = styled.div`
+  --size: 20px;
   background-color: ${({ theme }) => theme.bg1};
   color: ${({ theme }) => theme.text1};
-  width: 20px;
-  height: 20px;
+  width: var(--size);
+  min-width: var(--size);
+  height: var(--size);
+  min-height: var(--size);
   border-radius: 50%;
   display: flex;
   align-items: center;

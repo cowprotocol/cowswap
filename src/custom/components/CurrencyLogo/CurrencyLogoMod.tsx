@@ -8,6 +8,8 @@ import Logo from 'components/Logo'
 export const StyledLogo = styled(Logo)<{ size: string; $native: boolean }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
+  min-width: ${({ size }) => size}; // MOD
+  min-height: ${({ size }) => size}; // MOD
   /* background: radial-gradient(white 50%, #ffffff00 calc(75% + 1px), #ffffff00 100%);
   border-radius: 50%;
   -mox-box-shadow: 0 0 1px ${({ $native }) => ($native ? 'white' : 'black')};

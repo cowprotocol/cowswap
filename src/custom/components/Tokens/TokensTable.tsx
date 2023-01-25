@@ -198,7 +198,7 @@ export default function TokenTable({
           <TableHeader>
             <IndexLabel>#</IndexLabel>
             <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
-              <Trans>Name {arrow(SORT_FIELD.NAME)}</Trans>
+              <Trans>Token {arrow(SORT_FIELD.NAME)}</Trans>
             </ClickableText>
             <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
               <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>

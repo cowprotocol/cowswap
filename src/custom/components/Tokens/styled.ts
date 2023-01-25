@@ -357,28 +357,32 @@ export const TokenText = styled.div`
 
   > span {
     display: flex;
+    flex-flow: column wrap;
     align-items: center;
+    justify-content: flex-start;
     max-width: inherit;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    gap: 2px;
   }
 
   > span > b {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 100%;
-    font-weight: 500;
+    width: 100%;
+    font-weight: 600;
     display: inline-block;
   }
 
   > span > i {
     opacity: 0.6;
-    margin: 0 0 0 4px;
     font-style: normal;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
     display: inline-block;
-    text-transform: uppercase;
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
