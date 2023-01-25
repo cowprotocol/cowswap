@@ -56,14 +56,14 @@ function _getClientOrThrow(chainId: number, library: Web3Provider): SafeServiceC
   return client
 }
 
-export function getSafeWebUrl(chaindId: number, safeAddress: string): string | null {
+export function getSafeWebUrl(chaindId: number, safeAddress: string, safeTxHash: string): string | null {
   const chainShortName = CHAIN_SHORT_NAME[chaindId]
 
   if (!chainShortName) {
     return null
   }
 
-  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions`
+  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
 }
 
 export function getSafeTransaction(
