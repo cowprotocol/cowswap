@@ -40,9 +40,11 @@ export function ApproveButton(props: ApproveButtonProps) {
       return (
         <>
           {/* we need to shorten this string on mobile */}
-          <Trans>
-            Allow CoW Swap to use your <TokenSymbol token={currency} />
-          </Trans>
+          <span>
+            <Trans>
+              Allow CoW Swap to use your <TokenSymbol token={currency} />
+            </Trans>
+          </span>
           <MouseoverTooltip
             text={
               <Trans>

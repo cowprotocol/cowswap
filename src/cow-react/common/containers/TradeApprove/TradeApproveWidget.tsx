@@ -12,7 +12,11 @@ export function TradeApproveWidget() {
       isOpen={approveInProgress}
       operationType={OperationType.APPROVE_TOKEN}
       currencyToAdd={currency}
-      pendingText={`Approving ${(<TokenSymbol token={currency} />)} for trading`}
+      pendingText={
+        <>
+          Approving <TokenSymbol token={currency} /> for trading
+        </>
+      }
       onDismiss={() => setState({ currency, approveInProgress: false })}
       attemptingTxn={true}
     />
