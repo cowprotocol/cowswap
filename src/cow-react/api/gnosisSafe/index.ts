@@ -7,15 +7,15 @@ import EthersAdapter from '@safe-global/safe-ethers-lib'
 import { ethers } from 'ethers'
 
 const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
-  [ChainId.MAINNET]: 'https://safe-transaction.gnosis.io',
-  [ChainId.GNOSIS_CHAIN]: 'https://safe-transaction.xdai.gnosis.io',
-  [ChainId.GOERLI]: 'https://safe-transaction.goerli.gnosis.io',
+  [ChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
+  [ChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
+  [ChainId.GOERLI]: 'https://safe-transaction-goerli.safe.global',
 }
 
-const SAFE_BASE_URL = 'https://gnosis-safe.io'
+const SAFE_BASE_URL = 'https://app.safe.global'
 const CHAIN_SHORT_NAME: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'eth', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-1.json
-  [ChainId.GNOSIS_CHAIN]: 'xdai', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
+  [ChainId.GNOSIS_CHAIN]: 'gno', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
   [ChainId.GOERLI]: 'gor', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-5.json
 }
 
@@ -56,14 +56,14 @@ function _getClientOrThrow(chainId: number, library: Web3Provider): SafeServiceC
   return client
 }
 
-export function getSafeWebUrl(chaindId: number, safeAddress: string): string | null {
+export function getSafeWebUrl(chaindId: number, safeAddress: string, safeTxHash: string): string | null {
   const chainShortName = CHAIN_SHORT_NAME[chaindId]
 
   if (!chainShortName) {
     return null
   }
 
-  return `${SAFE_BASE_URL}/app/${chainShortName}:${safeAddress}/transactions/queue` // TODO: This will change soon in https://github.com/gnosis/safe-react/issues/970
+  return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}/transactions/tx?id=multisig_${safeAddress}_${safeTxHash}`
 }
 
 export function getSafeTransaction(

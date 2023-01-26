@@ -26,8 +26,8 @@ export function GnosisSafeLink(props: {
     return null
   }
 
-  const { safe } = safeTransaction
-  const safeUrl = getSafeWebUrl(chainId, safe)
+  const { safe, safeTxHash } = safeTransaction
+  const safeUrl = getSafeWebUrl(chainId, safe, safeTxHash)
 
   // Only show the link to the safe, if we have the "safeUrl"
   if (safeUrl === null) {
