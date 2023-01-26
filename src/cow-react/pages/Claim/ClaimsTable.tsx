@@ -4,7 +4,7 @@ import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from '@cow/pag
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
-import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 

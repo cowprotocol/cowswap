@@ -25,13 +25,14 @@ import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from '@cow/utils/format'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
 import { WarningProps } from 'components/SwapWarnings'
 import { RateInfo, RateInfoParams } from '@cow/common/pure/RateInfo'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export const ArrowWrapper = styled.div`
   --size: 26px;
@@ -150,7 +151,8 @@ SwapModalHeaderProps) {
             <RowFixed gap={'0px'}>
               <CurrencyLogo currency={trade.inputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
               <Text fontSize={20} fontWeight={500}>
-                {trade.inputAmount.currency.symbol}
+                {/* {trade.inputAmount.currency.symbol} */}
+                <TokenSymbol token={trade.inputAmount.currency} /> {/* // MOD */}
               </Text>
             </RowFixed>
             <RowFixed gap={'0px'}>
@@ -180,6 +182,7 @@ SwapModalHeaderProps) {
           hideInput
           // borderColor={transparentize(0.5, theme.bg0)}
         >
+          {/* TODO: replace <FeeInformationTooltip/> with <ReceiveAmountInfoTooltip /> */}
           <FeeInformationTooltip
             amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
             amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
@@ -219,7 +222,8 @@ SwapModalHeaderProps) {
             <RowFixed gap={'0px'}>
               <CurrencyLogo currency={trade.outputAmount.currency} size={'20px'} style={{ marginRight: '12px' }} />
               <Text fontSize={20} fontWeight={500}>
-                {trade.outputAmount.currency.symbol}
+                {/* {trade.outputAmount.currency.symbol} */}
+                <TokenSymbol token={trade.outputAmount.currency} /> {/* // MOD */}
               </Text>
             </RowFixed>
             <RowFixed gap={'0px'}>
@@ -299,7 +303,9 @@ SwapModalHeaderProps) {
               Output is estimated. You will receive at least{' '}
               <b>
                 {/* {trade.minimumAmountOut(allowedSlippage).toSignificant(6)} {trade.outputAmount.currency.symbol} */}
-                {formatSmart(slippageOut, AMOUNT_PRECISION) || '-'} {trade.outputAmount.currency.symbol}
+                {formatSmart(slippageOut, AMOUNT_PRECISION) || '-'} <TokenSymbol token={trade.outputAmount.currency} />{' '}
+                {/* // MOD */}
+                {/* {trade.outputAmount.currency.symbol} */}
               </b>{' '}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
             </Trans>
@@ -310,7 +316,9 @@ SwapModalHeaderProps) {
               Input is estimated. You will sell at most{' '}
               <b>
                 {/* {trade.maximumAmountIn(allowedSlippage).toSignificant(6)} {trade.inputAmount.currency.symbol} */}
-                {formatSmart(slippageIn, AMOUNT_PRECISION) || '-'} {trade.inputAmount.currency.symbol}
+                {formatSmart(slippageIn, AMOUNT_PRECISION) || '-'}
+                {/* {trade.inputAmount.currency.symbol} */}
+                <TokenSymbol token={trade.inputAmount.currency} /> {/* // MOD */}
               </b>{' '}
               {/* or the transaction will revert. */}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}

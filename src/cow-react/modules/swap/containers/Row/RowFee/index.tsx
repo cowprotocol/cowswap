@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
 
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmart, formatSymbol } from '@cow/utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { RowFeeContent } from '@cow/modules/swap/pure/Row/RowFeeContent'
@@ -66,7 +66,9 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
     const smartFeeFiatValue = formatSmart(feeFiatValue, FIAT_PRECISION)
     const smartFeeTokenValue = formatSmart(displayFee, AMOUNT_PRECISION)
-    const feeAmountWithCurrency = `${smartFeeTokenValue} ${feeCurrencySymbol} ${isEthFLow ? ' + gas' : ''}`
+    const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${
+      isEthFLow ? ' + gas' : ''
+    }`
     const feeToken = smartFeeTokenValue ? feeAmountWithCurrency : '🎉 Free!'
     const fullDisplayFee = formatMax(displayFee, displayFee?.currency.decimals) || '-'
     const includeGasMessage = allowsOffchainSigning && !isEthFLow ? ' (incl. gas costs)' : ''

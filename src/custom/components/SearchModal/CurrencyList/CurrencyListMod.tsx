@@ -26,9 +26,10 @@ import { LoadingRows /*, MenuItem*/ } from 'components/SearchModal/styleds'
 
 // MOD imports
 import { MenuItem } from '.' // mod
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -163,7 +164,7 @@ function CurrencyRow({
         <CurrencyLogo currency={currency} size={'24px'} />
         <Column>
           <Text title={currency.name} fontWeight={500}>
-            {currency.symbol}
+            <TokenSymbol token={currency} /> {/* MOD */}
           </Text>
           <ThemedText.DarkGray ml="0px" fontSize={'12px'} fontWeight={300}>
             {!currency.isNative && !isOnSelectedList && customAdded ? (

@@ -12,7 +12,7 @@ import {
   TokenText,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from '@cow/utils/format'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
@@ -21,7 +21,6 @@ import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useWeb3React } from '@web3-react/core'
 import { AMOUNT_PRECISION, GP_VAULT_RELAYER } from 'constants/index'
-import { OrderKind } from '@cowprotocol/contracts'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
 import Loader from 'components/Loader'
@@ -32,6 +31,8 @@ import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTra
 import { Routes } from '@cow/constants/routes'
 import SVG from 'react-inlinesvg'
 import EtherscanImage from 'assets/cow-swap/etherscan-icon.svg'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
 
 type DataRowParams = {
   tokenData: Token
@@ -51,16 +52,19 @@ const DataRow = ({
   toggleWalletModal,
 }: DataRowParams) => {
   const { account, chainId = ChainId.MAINNET } = useWeb3React()
+  const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
 
   const theme = useTheme()
   const tradeLink = useCallback(
-    (token: Token, kind: OrderKind) => {
-      const inputCurrencyId = kind === OrderKind.SELL ? token.symbol : undefined
-      const outputCurrencyId = kind === OrderKind.BUY ? token.symbol : undefined
+    ({ symbol, address }: Token) => {
+      const inputCurrencyId = areThereTokensWithSameSymbol(symbol) ? address : symbol
 
-      return parameterizeTradeRoute({ chainId: chainId.toString(), inputCurrencyId, outputCurrencyId }, Routes.SWAP)
+      return parameterizeTradeRoute(
+        { chainId: chainId.toString(), inputCurrencyId, outputCurrencyId: undefined },
+        Routes.SWAP
+      )
     },
-    [chainId]
+    [areThereTokensWithSameSymbol, chainId]
   )
 
   // allowance
@@ -169,12 +173,14 @@ const DataRow = ({
       </Cell>
 
       <Cell>
-        <Link title={tokenData.name} to={tradeLink(tokenData, OrderKind.SELL)}>
+        <Link to={tradeLink(tokenData)}>
           <ResponsiveLogo currency={tokenData} />
           <TokenText>
             <span>
-              <b>{tokenData.name}</b>
-              <i>{tokenData.symbol}</i>
+              <b>
+                <TokenSymbol token={tokenData} />
+              </b>
+              <i>{tokenData.name}</i>
             </span>
           </TokenText>
         </Link>
