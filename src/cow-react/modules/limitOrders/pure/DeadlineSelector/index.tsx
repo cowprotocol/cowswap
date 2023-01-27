@@ -22,12 +22,6 @@ import {
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary, ButtonSecondary } from '@src/components/Button'
 
-function limitDateString(date: Date): string {
-  const [first, second] = date.toISOString().split(':')
-
-  return [first, second].join(':')
-}
-
 const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: '2-digit',
   month: 'short',
@@ -41,28 +35,22 @@ export interface DeadlineSelectorProps {
   deadline: LimitOrderDeadline | undefined
   customDeadline: number | null
   selectDeadline(deadline: LimitOrderDeadline): void
-  selectCustomDeadline(deadline: number): void
+  selectCustomDeadline(deadline: number | null): void
 }
 
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const { deadline, customDeadline, selectDeadline, selectCustomDeadline } = props
 
   const currentDeadlineNode = useRef<HTMLButtonElement | null>(null)
+  const [[minDate, maxDate], setMinMax] = useState<[Date, Date]>(_calculateMinMax)
 
-  // Min and Max dates are fixed for as long as the component is mounted
-  const [minDate, maxDate] = useMemo(() => {
-    const now = Date.now()
-
-    return [new Date(now + MIN_CUSTOM_DEADLINE), new Date(now + MAX_CUSTOM_DEADLINE)]
-  }, [])
-
-  const min = limitDateString(minDate)
-  const max = limitDateString(maxDate)
+  const min = _limitDateString(minDate)
+  const max = _limitDateString(maxDate)
 
   const [error, setError] = useState<string | null>(null)
-  const [value, setValue] = useState<string>(customDeadline ? limitDateString(new Date(customDeadline * 1000)) : min)
+  const [value, setValue] = useState<string>(customDeadline ? _limitDateString(customDeadline) : min)
 
-  // Validate `value` from datetime-local input and store it if valid
+  // Validate `value` from datetime-local input
   useEffect(() => {
     try {
       const newDeadline = new Date(value).getTime()
@@ -72,9 +60,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       } else if (newDeadline > maxDate.getTime()) {
         setError(`Must be before ${maxDate.toLocaleDateString()} ${maxDate.toLocaleTimeString()}`)
       } else {
-        // Only update deadline if it's within a valid range
         setError(null)
-        selectCustomDeadline(Math.round(newDeadline / 1000))
       }
     } catch (e) {
       console.error(`[DeadlineSelector] Failed to parse input value to Date`, value, e)
@@ -94,9 +80,10 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   const setDeadline = useCallback(
     (deadline: LimitOrderDeadline) => {
       selectDeadline(deadline)
+      selectCustomDeadline(null) // reset custom deadline
       currentDeadlineNode.current?.click() // Close dropdown
     },
-    [selectDeadline]
+    [selectCustomDeadline, selectDeadline]
   )
 
   // Sets value from input, if it exists
@@ -108,8 +95,18 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   const openModal = () => {
     currentDeadlineNode.current?.click() // Close dropdown
     setIsOpen(true)
+    setError(null)
+    setMinMax(_calculateMinMax()) // Update min/max every time modal is open
+    setValue(customDeadline ? _limitDateString(customDeadline) : min) // reset input to clear unsaved values
   }
   const onDismiss = () => setIsOpen(false)
+
+  const setCustomDeadline = useCallback(() => {
+    const newDeadline = Math.round(new Date(value).getTime() / 1000)
+
+    selectCustomDeadline(newDeadline)
+    onDismiss()
+  }, [onDismiss, selectCustomDeadline, value])
 
   const list = (
     <ListWrapper>
@@ -165,7 +162,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           </ModalContent>
           <ModalFooter>
             <ButtonSecondary onClick={onDismiss}>Cancel</ButtonSecondary>
-            <ButtonPrimary onClick={onDismiss} disabled={!!error}>
+            <ButtonPrimary onClick={setCustomDeadline} disabled={!!error}>
               <Trans>Set custom date</Trans>
             </ButtonPrimary>
           </ModalFooter>
@@ -173,4 +170,21 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       </Modal>
     </Wrapper>
   )
+}
+
+function _limitDateString(date: Date | number): string {
+  const _date = typeof date === 'number' ? new Date(date * 1000) : date
+
+  const [first, second] = _date.toISOString().split(':')
+
+  return [first, second].join(':')
+}
+
+function _calculateMinMax(): [Date, Date] {
+  const now = Date.now()
+  return [_trimSeconds(new Date(now + MIN_CUSTOM_DEADLINE)), _trimSeconds(new Date(now + MAX_CUSTOM_DEADLINE))]
+}
+
+function _trimSeconds(date: Date): Date {
+  return new Date(new Date(date.setMilliseconds(0)).setSeconds(0))
 }
