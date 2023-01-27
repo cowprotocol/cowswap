@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dropdown } from '@cow/common/pure/Dropdown'
-import { LimitOrderDeadline, limitOrdersDeadlines, maxCustomDeadline } from './deadlines'
+import { LimitOrderDeadline, limitOrdersDeadlines, MAX_CUSTOM_DEADLINE, MIN_CUSTOM_DEADLINE } from './deadlines'
 import { GpModal as Modal } from '@src/custom/components/Modal'
 
 import { useCallback, useMemo, useRef } from 'react'
@@ -20,7 +20,6 @@ import {
   CustomLabel,
 } from './styled'
 import { Trans } from '@lingui/macro'
-import ms from 'ms.macro'
 import { ButtonPrimary, ButtonSecondary } from '@src/components/Button'
 
 function limitDateString(date: Date): string {
@@ -29,7 +28,7 @@ function limitDateString(date: Date): string {
   return [first, second].join(':')
 }
 
-const customDateOptions: Intl.DateTimeFormatOptions = {
+const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: '2-digit',
   month: 'short',
   day: 'numeric',
@@ -47,18 +46,49 @@ export interface DeadlineSelectorProps {
 
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const { deadline, customDeadline, selectDeadline, selectCustomDeadline } = props
-  const currentDeadlineNode = useRef<HTMLButtonElement>()
 
-  const min = limitDateString(new Date(Date.now() + ms`30min`))
-  const max = limitDateString(new Date(Date.now() + maxCustomDeadline))
+  const currentDeadlineNode = useRef<HTMLButtonElement | null>(null)
 
-  const existingDeadline = useMemo(() => {
-    return limitOrdersDeadlines.find((item) => item === deadline)
-  }, [deadline])
+  // Min and Max dates are fixed for as long as the component is mounted
+  const [minDate, maxDate] = useMemo(() => {
+    const now = Date.now()
+
+    return [new Date(now + MIN_CUSTOM_DEADLINE), new Date(now + MAX_CUSTOM_DEADLINE)]
+  }, [])
+
+  const min = limitDateString(minDate)
+  const max = limitDateString(maxDate)
+
+  const [error, setError] = useState<string | null>(null)
+  const [value, setValue] = useState<string>(customDeadline ? limitDateString(new Date(customDeadline * 1000)) : min)
+
+  // Validate `value` from datetime-local input and store it if valid
+  useEffect(() => {
+    try {
+      const newDeadline = new Date(value).getTime()
+
+      if (newDeadline < minDate.getTime()) {
+        setError(`Must be after ${minDate.toLocaleDateString()} ${minDate.toLocaleTimeString()}`)
+      } else if (newDeadline > maxDate.getTime()) {
+        setError(`Must be before ${maxDate.toLocaleDateString()} ${maxDate.toLocaleTimeString()}`)
+      } else {
+        // Only update deadline if it's within a valid range
+        setError(null)
+        selectCustomDeadline(Math.round(newDeadline / 1000))
+      }
+    } catch (e) {
+      console.error(`[DeadlineSelector] Failed to parse input value to Date`, value, e)
+      setError(`Failed to parse date and time provided`)
+    }
+  }, [maxDate, minDate, selectCustomDeadline, value])
+
+  const existingDeadline = useMemo(() => limitOrdersDeadlines.find((item) => item === deadline), [deadline])
 
   const customDeadlineTitle = useMemo(() => {
-    if (!customDeadline) return ''
-    return new Date(customDeadline * 1000).toLocaleString(undefined, customDateOptions)
+    if (!customDeadline) {
+      return ''
+    }
+    return new Date(customDeadline * 1000).toLocaleString(undefined, CUSTOM_DATE_OPTIONS)
   }, [customDeadline])
 
   const setDeadline = useCallback(
@@ -69,14 +99,10 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     [selectDeadline]
   )
 
-  const onChange = useCallback(
-    (event) => {
-      const customDeadline = Math.round(new Date(event.target.value).getTime() / 1000)
-
-      selectCustomDeadline(customDeadline)
-    },
-    [selectCustomDeadline]
-  )
+  // Sets value from input, if it exists
+  const onChange = useCallback(({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    value && setValue(value)
+  }, [])
 
   const [isOpen, setIsOpen] = useState(false)
   const openModal = () => {
@@ -106,7 +132,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
         <Trans>Expiry</Trans>
       </Header>
       <Dropdown content={list}>
-        <Current ref={currentDeadlineNode as any} isCustom={!!customDeadline}>
+        <Current ref={currentDeadlineNode} isCustom={!!customDeadline}>
           <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
           <ChevronDown size="18" />
         </Current>
@@ -122,20 +148,24 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
             <CloseIcon onClick={onDismiss} />
           </ModalHeader>
           <ModalContent>
-            <CustomLabel htmlFor="meeting-time">
+            <CustomLabel htmlFor="custom-deadline">
               <Trans>Choose a custom deadline for your limit order:</Trans>
               <CustomInput
                 type="datetime-local"
+                id="custom-deadline"
                 onChange={onChange}
                 min={min}
                 max={max}
-                value={customDeadline || min}
+                value={value}
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
               />
             </CustomLabel>
+            {/* TODO: style me!!! */}
+            {error && <div>{error}</div>}
           </ModalContent>
           <ModalFooter>
             <ButtonSecondary onClick={onDismiss}>Cancel</ButtonSecondary>
-            <ButtonPrimary onClick={onDismiss}>
+            <ButtonPrimary onClick={onDismiss} disabled={!!error}>
               <Trans>Set custom date</Trans>
             </ButtonPrimary>
           </ModalFooter>
@@ -144,5 +174,3 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     </Wrapper>
   )
 }
-
-// write bash cron job to run this script every day at 00:00
