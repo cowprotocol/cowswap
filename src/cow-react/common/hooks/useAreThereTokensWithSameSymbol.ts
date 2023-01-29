@@ -10,7 +10,7 @@ export function useAreThereTokensWithSameSymbol(): (tokenAddressOrSymbol: string
     (tokenAddressOrSymbol: string | null | undefined) => {
       if (!tokenAddressOrSymbol || isAddress(tokenAddressOrSymbol)) return false
 
-      return tokensBySymbol[tokenAddressOrSymbol]?.length > 1
+      return tokensBySymbol[tokenAddressOrSymbol.toLowerCase()]?.length > 1
     },
     [tokensBySymbol]
   )

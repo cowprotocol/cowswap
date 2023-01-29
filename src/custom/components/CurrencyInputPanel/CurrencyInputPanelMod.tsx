@@ -24,7 +24,7 @@ import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 
 // MOD imports
 import { WithClassName } from 'types'
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from '@cow/utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
 import { TextWrapper } from '@src/components/HoverInlineText' // mod
@@ -119,7 +119,7 @@ export const AuxInformationContainer = styled(Container)<{
       word-break: break-all;
       text-align: right;
 
-      ${({ theme }) => theme.mediaWidth.upToSmall`  
+      ${({ theme }) => theme.mediaWidth.upToSmall`
         text-align: left;
         align-items: flex-start;
         width: 100%;

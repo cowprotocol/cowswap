@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 
 import ConfirmSwapModalMod from './ConfirmSwapModalMod'
 import TradeGp from 'state/swap/TradeGp'
-import { formatMax, formatSmart } from 'utils/format'
+import { formatMax, formatSmart } from '@cow/utils/format'
 import { AMOUNT_PRECISION } from 'constants/index'
 
 export * from './ConfirmSwapModalMod'

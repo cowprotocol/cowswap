@@ -65,7 +65,6 @@ export async function signEthFlowOrderStep(
   const txReceipt = await ethFlowContract.createOrder(ethOrderParams, {
     ...ethTxOptions,
     gasLimit: calculateGasMargin(estimatedGas),
-    value: ethTxOptions.value === '1000000000000000000' ? 0 : ethTxOptions.value,
   })
   addInFlightOrderId(orderId)
 

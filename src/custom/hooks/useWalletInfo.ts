@@ -11,7 +11,7 @@ import { gnosisSafeAtom } from 'state/gnosisSafe/atoms'
 import { useMemo } from 'react'
 
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
-const SAFE_ICON_URL = 'https://apps.gnosis-safe.io/wallet-connect/favicon.ico'
+const SAFE_ICON_URL = 'https://app.safe.global/favicon.ico'
 
 export interface ConnectedWalletInfo {
   chainId?: number

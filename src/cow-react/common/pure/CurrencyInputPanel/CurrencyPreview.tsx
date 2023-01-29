@@ -1,11 +1,12 @@
 import React from 'react'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
-import { formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from '@cow/utils/format'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 interface BuiltItProps {
   className: string
@@ -49,7 +50,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
             {balance && (
               <>
                 <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
-                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {<TokenSymbol token={currency} />}
                 </styledEl.BalanceText>
               </>
             )}

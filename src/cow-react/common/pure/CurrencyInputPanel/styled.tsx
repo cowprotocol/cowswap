@@ -16,15 +16,15 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: bo
   pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    gap: 10px;
-    padding: 12px;
+    padding: 16px 12px 24px;
   `}
 `
 
 export const CurrencyInputBox = styled.div`
   display: grid;
   width: 100%;
-  grid-template-columns: auto auto;
+  grid-template-columns: repeat(2, auto);
+  word-break: break-all;
   gap: 16px;
   margin: 0;
   font-weight: 400;

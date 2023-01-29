@@ -6,7 +6,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp } from '@cow/api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
-import { formatAtoms } from 'utils/format'
+import { formatAtoms } from '@cow/utils/format'
 import { PRICE_API_TIMEOUT_MS, SWR_OPTIONS } from 'constants/index'
 import {
   getPriceQuote as getPriceQuoteParaswap,

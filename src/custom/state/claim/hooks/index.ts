@@ -15,7 +15,7 @@ import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { GpEther, V_COW } from 'constants/tokens'
 
-import { formatSmartLocaleAware } from 'utils/format'
+import { formatSmartLocaleAware } from '@cow/utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { isAddress } from 'utils'
 

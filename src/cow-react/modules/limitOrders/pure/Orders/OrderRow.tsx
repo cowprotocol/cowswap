@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -12,6 +12,7 @@ import { OrderParams } from './utils/getOrderParams'
 import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -162,31 +163,46 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
         <CurrencyLogo currency={amount.currency} size="24px" />
       </div>
       <span>
-        {formatSmart(amount)} {amount.currency.symbol}
+        {formatSmart(amount)} <TokenSymbol token={amount.currency} />
       </span>
     </AmountItem>
   )
 }
 
-const balanceWarning = (tokenSymbol: string) => (
+const balanceWarning = (symbol: string) => (
   <WarningParagraph>
     <h3>Insufficient balance for this limit order</h3>
     <p>
-      Your wallet currently has insufficient <strong>{tokenSymbol}</strong> balance to execute this order.
+      Your wallet currently has insufficient{' '}
+      <strong>
+        <TokenSymbol token={{ symbol }} />
+      </strong>{' '}
+      balance to execute this order.
       <br />
-      The order is still open and will become executable when you top up your <strong>{tokenSymbol}</strong> balance.
+      The order is still open and will become executable when you top up your{' '}
+      <strong>
+        <TokenSymbol token={{ symbol }} />
+      </strong>{' '}
+      balance.
     </p>
   </WarningParagraph>
 )
 
-const allowanceWarning = (tokenSymbol: string) => (
+const allowanceWarning = (symbol: string) => (
   <WarningParagraph>
     <h3>Insufficient approval for this limit order</h3>
     <p>
       This order is still open and valid, but you haven’t given CoW Swap sufficient allowance to spend{' '}
-      <strong>{tokenSymbol}</strong>.
+      <strong>
+        <TokenSymbol token={{ symbol }} />
+      </strong>
+      .
       <br />
-      The order will become executable when you approve <strong>{tokenSymbol}</strong> in your account token page.
+      The order will become executable when you approve{' '}
+      <strong>
+        <TokenSymbol token={{ symbol }} />
+      </strong>{' '}
+      in your account token page.
     </p>
   </WarningParagraph>
 )

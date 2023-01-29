@@ -1,6 +1,6 @@
 import { Percent } from '@uniswap/sdk-core'
 import { PERCENTAGE_PRECISION } from '../constants'
-import { formatSmart } from './format'
+import { formatSmart } from '@cow/utils/format'
 
 export function getMinimumReceivedTooltip(allowedSlippage: Percent, isExactIn: boolean): string {
   const slippagePercent = allowedSlippage
