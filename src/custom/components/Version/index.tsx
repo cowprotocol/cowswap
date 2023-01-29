@@ -1,8 +1,8 @@
 import styled from 'styled-components/macro'
 import { ExternalLink } from 'theme'
 
-import pckg from '@src/../package.json'
-import contractsPckg from '@cowprotocol/contracts/package.json'
+import pkg from '@src/../package.json'
+import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getEtherscanLink } from 'utils'
 import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
@@ -24,13 +24,13 @@ const VERSIONS: Record<
   }
 > = {
   Web: {
-    version: 'v' + pckg.version,
+    version: 'v' + pkg.version,
     href() {
       return CODE_LINK
     },
   },
   'Vault Relayer': {
-    version: 'v' + contractsPckg.version,
+    version: 'v' + contractsPkg.version,
     href(chainId: ChainId) {
       // return Etherscan by default
       return _getContractsUrls(chainId, GP_VAULT_RELAYER)
@@ -42,7 +42,7 @@ const VERSIONS: Record<
     },
   },
   'Settlement Contract': {
-    version: 'v' + contractsPckg.version,
+    version: 'v' + contractsPkg.version,
     href(chainId: ChainId) {
       // return Etherscan by default
       return _getContractsUrls(chainId, GP_SETTLEMENT_CONTRACT_ADDRESS)
