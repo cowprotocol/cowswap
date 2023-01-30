@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { formatSmartLocaleAware } from 'utils/format'
+import { formatSmartLocaleAware } from '@cow/utils/format'
 import { COW_SUBSIDY_DATA } from './constants'
 import { CowSubsidy } from '.'
 import { transparentize, lighten } from 'polished'
@@ -114,14 +114,14 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     &:last-child::after {
       border-radius: 3px 3px 16px 16px;
     }
-    
+
     > td {
       color: ${theme.white};
       font-weight: 500;
 
       &:first-child {
         display: flex;
-        align-items: center; 
+        align-items: center;
         justify-content: center;
       }
 

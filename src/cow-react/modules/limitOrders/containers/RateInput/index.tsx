@@ -9,11 +9,12 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from '@cow/common/services/getQuoteCurrency'
 import { useWeb3React } from '@web3-react/core'
 import { getAddress } from '@cow/utils/getAddress'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -39,8 +40,8 @@ export function RateInput() {
   const inputCurrencyId = inputCurrency?.symbol
   const outputCurrencyId = outputCurrency?.symbol
 
-  const primaryCurrency = isInversed ? outputCurrencyId : inputCurrencyId
-  const secondaryCurrency = isInversed ? inputCurrencyId : outputCurrencyId
+  const primaryCurrency = isInversed ? outputCurrency : inputCurrency
+  const secondaryCurrency = isInversed ? inputCurrency : outputCurrency
 
   // Handle rate display
   const displayedRate = useMemo(() => {
@@ -151,7 +152,9 @@ export function RateInput() {
         )}
 
         <styledEl.ActiveCurrency onClick={handleToggle}>
-          <styledEl.ActiveSymbol>{secondaryCurrency}</styledEl.ActiveSymbol>
+          <styledEl.ActiveSymbol>
+            <TokenSymbol token={secondaryCurrency} />
+          </styledEl.ActiveSymbol>
           <styledEl.ActiveIcon>
             <RefreshCw size={12} />
           </styledEl.ActiveIcon>

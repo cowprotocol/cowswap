@@ -4,6 +4,7 @@ import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export interface ReceiveAmountInfoTooltipProps {
@@ -12,6 +13,8 @@ export interface ReceiveAmountInfoTooltipProps {
   subsidyAndBalance: BalanceAndSubsidy
   allowsOffchainSigning: boolean
 }
+
+const MAX_TOKEN_SYMBOL_LENGTH = 6
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const isEthFlow = useIsEthFlow()
@@ -38,7 +41,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <Trans>Before fee</Trans>
         </span>
         <span>
-          {amountBeforeFees} {currency.symbol}
+          {amountBeforeFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
         </span>
       </div>
       <div>
@@ -46,7 +49,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
         {hasFee ? (
           <span>
             {typeString}
-            {feeAmount} {currency.symbol}
+            {feeAmount} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
           </span>
         ) : (
           <styledEl.GreenText>
@@ -73,7 +76,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <Trans>{type === 'from' ? 'From' : 'To'}</Trans>
         </span>
         <span>
-          {amountAfterFees} {currency.symbol}
+          {amountAfterFees} {<TokenSymbol token={currency} length={MAX_TOKEN_SYMBOL_LENGTH} />}
         </span>
       </styledEl.TotalAmount>
     </styledEl.Box>

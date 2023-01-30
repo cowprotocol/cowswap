@@ -14,7 +14,7 @@ import {
   UserMessage,
   WarningWrapper,
 } from '../styled'
-import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware, formatSymbol } from '@cow/utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
@@ -43,21 +43,25 @@ import { getProviderErrorMessage } from 'utils/misc'
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>
-    `You don't have ${symbol} balance to invest. Add sufficient ${symbol} balance or go back and uncheck ${symbol} as an investment option.`,
+    `You don't have ${formatSymbol(symbol)} balance to invest. Add sufficient ${formatSymbol(
+      symbol
+    )} balance or go back and uncheck ${formatSymbol(symbol)} as an investment option.`,
 
-  InsufficientBalanceSelf: (symbol = '') => `Insufficient ${symbol} balance to cover investment amount`,
+  InsufficientBalanceSelf: (symbol = '') => `Insufficient ${formatSymbol(symbol)} balance to cover investment amount`,
   InsufficientBalanceBehalf: (symbol = '') =>
-    `Your ${symbol} balance is not enough to cover 100% of the investment amount.`,
+    `Your ${formatSymbol(symbol)} balance is not enough to cover 100% of the investment amount.`,
 
   OverMaxInvestment: `Your investment amount can not be above the maximum investment allowed`,
   InvestmentIsZero: `Your investment amount can not be zero`,
-  NotApproved: (symbol = '') => `Please approve ${symbol} token`,
-  WaitForApproval: (symbol = '') => `Approving ${symbol}. Please wait until the transaction is mined.`,
+  NotApproved: (symbol = '') => `Please approve ${formatSymbol(symbol)} token`,
+  WaitForApproval: (symbol = '') => `Approving ${formatSymbol(symbol)}. Please wait until the transaction is mined.`,
 }
 
 const WarningMessages = {
   InsufficientNativeBalance: (symbol = '', amount = '') =>
-    `You might not have enough ${symbol} to pay for the network transaction fee (estimated ${amount} ${symbol})`,
+    `You might not have enough ${formatSymbol(
+      symbol
+    )} to pay for the network transaction fee (estimated ${amount} ${formatSymbol(symbol)})`,
   NotMaxInvested: `Please note: after executing the transaction in the last step, you will not be able to invest anymore.`,
 }
 

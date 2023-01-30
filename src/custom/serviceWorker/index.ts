@@ -6,12 +6,12 @@ import { precacheAndRoute } from 'workbox-precaching'
 import { PrecacheEntry } from 'workbox-precaching/_types'
 import { registerRoute, Route } from 'workbox-routing'
 import { CacheFirst } from 'workbox-strategies'
-import pckg from '@src/../package.json'
+import pkg from '@src/../package.json'
 
 import { DocumentRoute } from './document'
 import { toURL } from './utils'
 
-const WEB_VERSION = pckg.version
+const WEB_VERSION = pkg.version
 
 declare const self: ServiceWorkerGlobalScope
 

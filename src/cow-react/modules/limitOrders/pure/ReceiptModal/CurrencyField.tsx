@@ -1,7 +1,7 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 
 interface Props {
   label: string

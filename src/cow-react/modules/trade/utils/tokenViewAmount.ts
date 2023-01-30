@@ -1,4 +1,4 @@
-import { formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from '@cow/utils/format'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 

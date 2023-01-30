@@ -8,7 +8,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
-import { formatSmart } from 'utils/format'
+import { formatSmart, formatSymbol } from '@cow/utils/format'
 import { getOperationMessage, OperationType } from '../components/TransactionConfirmationModal'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { isRejectRequestProviderError } from '../utils/misc'
@@ -89,7 +89,7 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
     return t`Enter an amount`
   }
 
-  return !sufficientBalance ? t`Insufficient ${symbol} balance` : undefined
+  return !sufficientBalance ? t`Insufficient ${formatSymbol(symbol)} balance` : undefined
 }
 
 export function useWrapUnwrapContext(

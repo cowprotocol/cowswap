@@ -5,6 +5,7 @@ import { TransactionState as OldTransactionState } from '../TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
+import { RateWrapper } from '@cow/common/pure/RateInfo'
 
 export const TransactionWrapper = styled.div`
   width: 100%;
@@ -208,6 +209,10 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   + ${StyledLink} {
     align-self: center;
     margin: 16px 0 0;
+  }
+
+  ${RateWrapper} {
+    text-align: left;
   }
 `
 

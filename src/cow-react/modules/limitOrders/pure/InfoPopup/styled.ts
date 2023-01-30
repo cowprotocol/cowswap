@@ -28,6 +28,9 @@ export const InfoPopup = styled.div`
     &::after {
       content: ' ↗';
       display: inline-block;
+      padding: 0 0 0 1px;
+      font-weight: bold;
+      font-size: 11px;
     }
   }
 `

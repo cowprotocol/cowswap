@@ -8,7 +8,7 @@ import { OrderID, sendOrder as sendOrderApi, sendSignedOrderCancellation } from 
 import { Signer } from '@ethersproject/abstract-signer'
 import { AMOUNT_PRECISION, RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { formatSmart } from 'utils/format'
+import { formatSmart, formatSymbol } from '@cow/utils/format'
 import { SigningScheme } from '@cowprotocol/contracts'
 import { getProfileData, getTrades } from '@cow/api/gnosisProtocol/api'
 
@@ -57,8 +57,8 @@ function _getSummary(params: PostOrderParams): string {
     kind === OrderKind.BUY ? 'at most ' : '',
     kind === OrderKind.SELL ? 'at least ' : '',
   ]
-  const inputSymbol = sellToken.symbol
-  const outputSymbol = buyToken.symbol
+  const inputSymbol = formatSymbol(sellToken.symbol)
+  const outputSymbol = formatSymbol(buyToken.symbol)
   const inputAmountValue = formatSmart(feeAmount ? inputAmount.add(feeAmount) : inputAmount, AMOUNT_PRECISION)
   const outputAmountValue = formatSmart(outputAmount, AMOUNT_PRECISION)
 

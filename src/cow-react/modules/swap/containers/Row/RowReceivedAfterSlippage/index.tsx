@@ -4,7 +4,7 @@ import { Percent, TradeType } from '@uniswap/sdk-core'
 import { RowReceivedAfterSlippageContent } from '@cow/modules/swap/pure/Row/RowReceivedAfterSlippageContent'
 
 import { Field } from 'state/swap/actions'
-import { formatMax } from 'utils/format'
+import { formatMax } from '@cow/utils/format'
 import TradeGp from 'state/swap/TradeGp'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/typings'
@@ -27,9 +27,6 @@ export function RowReceivedAfterSlippage({ trade, allowedSlippage, showHelpers }
       isExactIn: trade.tradeType === TradeType.EXACT_INPUT,
       get swapAmount() {
         return this.isExactIn ? this.slippageOut : this.slippageIn
-      },
-      get symbol() {
-        return this.isExactIn ? trade.outputAmount.currency.symbol : trade.inputAmount.currency.symbol
       },
       get fullOutAmount() {
         return formatMax(this.swapAmount, this.swapAmount?.currency.decimals) || '-'

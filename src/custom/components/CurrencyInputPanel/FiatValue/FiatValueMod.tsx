@@ -12,7 +12,7 @@ import { MouseoverTooltip } from 'components/Tooltip'
 
 // MOD imports
 import { FIAT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index' // mod
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import Loader from 'components/Loader'
 
 export function FiatValue({

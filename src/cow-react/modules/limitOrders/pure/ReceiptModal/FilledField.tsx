@@ -2,11 +2,12 @@
 import { useMemo } from 'react'
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from '@cow/utils/format'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 interface Props {
   order: ParsedOrder
@@ -101,14 +102,14 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
         <span>
           <b title={filledAmountDecimal?.toString() + ' ' + mainSymbol}>
             {/* Executed part (bought/sold tokens) */}
-            {formattedFilledAmount} {mainSymbol}
+            {formattedFilledAmount} <TokenSymbol token={{ symbol: mainSymbol }} />
           </b>{' '}
           {!fullyFilled && (
             // Show the total amount to buy/sell. Only for orders that are not 100% executed
             <>
               of{' '}
               <b title={mainAmount.toExact() + ' ' + mainSymbol}>
-                {formattedMainAmount} {mainSymbol}
+                {formattedMainAmount} <TokenSymbol token={{ symbol: mainSymbol }} />
               </b>{' '}
             </>
           )}
@@ -120,7 +121,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
             <>
               for a total of{' '}
               <b title={swappedAmountDecimal.toString() + ' ' + swappedSymbol}>
-                {formattedSwappedAmount} {swappedSymbol}
+                {formattedSwappedAmount} <TokenSymbol token={{ symbol: swappedSymbol }} />
               </b>
             </>
           )}

@@ -12,6 +12,7 @@ import { transparentize } from 'polished'
 import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { getOrderParams } from './utils/getOrderParams'
 import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
+import { RateWrapper } from '@cow/common/pure/RateInfo'
 
 const TableBox = styled.div`
   display: block;
@@ -70,6 +71,10 @@ const RowElement = styled(Header)`
 
   &:last-child {
     border-bottom: 0;
+  }
+
+  ${RateWrapper} {
+    text-align: left;
   }
 `
 

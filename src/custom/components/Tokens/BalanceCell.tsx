@@ -1,7 +1,7 @@
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { BalanceValue } from './styled'
-import { formatSmart, formatMax } from 'utils/format'
+import { formatSmart, formatMax } from '@cow/utils/format'
 import Loader from 'components/Loader'
 import useTheme from 'hooks/useTheme'
 
