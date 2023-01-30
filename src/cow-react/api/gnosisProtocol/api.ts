@@ -388,6 +388,7 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
 const ETH_FLOW_AUX_QUOTE_PARAMS = {
   signingScheme: 'eip1271',
   onchainOrder: true,
+  verificationGasLimit: 0, // Ethflow orders are subsidies in the backend (VerificationGasLimit of 0 is allowed)
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
