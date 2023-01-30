@@ -121,7 +121,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.InsufficientBalance]: ({ tradeState }: TradeButtonsParams) => {
     return (
       <SwapButton disabled={true}>
-        <Trans>Insufficient {<TokenSymbol token={tradeState.inputCurrency} />} balance</Trans>
+        <Trans>Insufficient&nbsp;{<TokenSymbol token={tradeState.inputCurrency} />}&nbsp;balance</Trans>
       </SwapButton>
     )
   },
