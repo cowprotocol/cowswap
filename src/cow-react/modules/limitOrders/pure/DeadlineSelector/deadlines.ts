@@ -5,7 +5,7 @@ export interface LimitOrderDeadline {
   value: number
 }
 
-export const MIN_CUSTOM_DEADLINE = ms`30min`
+export const MIN_CUSTOM_DEADLINE = ms`10min`
 export const MAX_CUSTOM_DEADLINE = Math.round(ms`1y` / 2) // A half of year
 
 export const defaultLimitOrderDeadline: LimitOrderDeadline = { title: '7 Days', value: ms`7d` }
