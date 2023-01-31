@@ -12,6 +12,7 @@ import { HashRouter } from 'react-router-dom'
 
 import Blocklist from 'components/Blocklist'
 import Web3Provider from 'components/Web3Provider'
+import { Web3OnboardProvider } from './modules/onboard/components/Web3OnboardProvider'
 import { LanguageProvider } from 'i18n'
 import { App } from '@cow/modules/application/containers/App'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
@@ -44,19 +45,21 @@ root.render(
       <AtomProvider>
         <HashRouter>
           <LanguageProvider>
-            <Web3Provider>
-              <Blocklist>
-                <BlockNumberProvider>
-                  <Updaters />
-                  <ThemeProvider>
-                    <ThemedGlobalStyle />
-                    <Popups />
-                    <AppziButton />
-                    <App />
-                  </ThemeProvider>
-                </BlockNumberProvider>
-              </Blocklist>
-            </Web3Provider>
+            <Web3OnboardProvider>
+              <Web3Provider>
+                <Blocklist>
+                  <BlockNumberProvider>
+                    <Updaters />
+                    <ThemeProvider>
+                      <ThemedGlobalStyle />
+                      <Popups />
+                      <AppziButton />
+                      <App />
+                    </ThemeProvider>
+                  </BlockNumberProvider>
+                </Blocklist>
+              </Web3Provider>
+            </Web3OnboardProvider>
           </LanguageProvider>
         </HashRouter>
       </AtomProvider>
