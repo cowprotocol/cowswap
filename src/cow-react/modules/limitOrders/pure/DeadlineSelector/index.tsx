@@ -105,7 +105,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     setMinMax(_calculateMinMax()) // Update min/max every time modal is open
     setValue(customDeadline ? _limitDateString(customDeadline) : min) // reset input to clear unsaved values
   }
-  const onDismiss = () => setIsOpen(false)
+  const onDismiss = useCallback(() => setIsOpen(false), [])
 
   const setCustomDeadline = useCallback(() => {
     const newDeadline = Math.round(new Date(value).getTime() / 1000)
