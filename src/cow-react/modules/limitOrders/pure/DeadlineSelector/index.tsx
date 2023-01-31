@@ -159,6 +159,8 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
                 type="datetime-local"
                 id="custom-deadline"
                 onChange={onChange}
+                // For some reason, `min/max` values require the same format as `value`,
+                // but they don't need to be in the user's timezone
                 min={min}
                 max={max}
                 value={value}
