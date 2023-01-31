@@ -87,9 +87,15 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   )
 
   // Sets value from input, if it exists
-  const onChange = useCallback(({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-    value && setValue(value)
-  }, [])
+  const onChange = useCallback(
+    ({ target: { value, valueAsNumber } }: React.ChangeEvent<HTMLInputElement>) => {
+      // Some browsers offer a `clear` button in their date picker
+      // That action sets the value to `''`
+      // In that case, use the default min value
+      setValue(value || _formatDateToLocalTime(minDate))
+    },
+    [minDate]
+  )
 
   const [isOpen, setIsOpen] = useState(false)
   const openModal = () => {
