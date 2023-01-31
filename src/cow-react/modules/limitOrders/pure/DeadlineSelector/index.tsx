@@ -108,7 +108,9 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   const onDismiss = useCallback(() => setIsOpen(false), [])
 
   const setCustomDeadline = useCallback(() => {
-    const newDeadline = Math.round(new Date(value).getTime() / 1000)
+    // `value` is a timezone aware string
+    // thus, we append the timezone offset (if any) when building the date object
+    const newDeadline = Math.round(new Date(value + _getTimeZoneOffset()).getTime() / 1000)
 
     selectCustomDeadline(newDeadline)
     onDismiss()
