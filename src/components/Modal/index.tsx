@@ -1,8 +1,8 @@
 import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { transparentize } from 'polished'
 import React from 'react'
-import { animated, useSpring, useTransition } from 'react-spring'
-import { useGesture } from 'react-use-gesture'
+import { animated, useSpringValue, useTransition } from '@react-spring/web'
+import { useGesture } from '@use-gesture/react'
 import styled, { css } from 'styled-components/macro'
 
 import { isMobile } from '../../utils/userAgent'
@@ -96,20 +96,18 @@ export default function Modal({
   className,
   children,
 }: ModalProps) {
-  const fadeTransition = useTransition(isOpen, null, {
+  const fadeTransition = useTransition(isOpen, {
     config: { duration: 200 },
     from: { opacity: 0 },
     enter: { opacity: 1 },
     leave: { opacity: 0 },
   })
 
-  const [{ y }, set] = useSpring(() => ({ y: 0, config: { mass: 1, tension: 210, friction: 20 } }))
+  const y = useSpringValue(0, { config: { mass: 1, tension: 210, friction: 20 } })
   const bind = useGesture({
     onDrag: (state) => {
-      set({
-        y: state.down ? state.movement[1] : 0,
-      })
-      if (state.movement[1] > 300 || (state.velocity > 3 && state.direction[1] > 0)) {
+      y.set(state.down ? state.movement[1] : 0)
+      if (state.movement[1] > 300 || (state.velocity[1] > 3 && state.direction[1] > 0)) {
         onDismiss()
       }
     },
@@ -117,12 +115,11 @@ export default function Modal({
 
   return (
     <>
-      {fadeTransition.map(
-        ({ item, key, props }) =>
+      {fadeTransition((props, item) => {
+        return (
           item && (
             <StyledDialogOverlay
               className={className}
-              key={key}
               style={props}
               onDismiss={onDismiss}
               initialFocusRef={initialFocusRef}
@@ -147,7 +144,8 @@ export default function Modal({
               </StyledDialogContent>
             </StyledDialogOverlay>
           )
-      )}
+        )
+      })}
     </>
   )
 }

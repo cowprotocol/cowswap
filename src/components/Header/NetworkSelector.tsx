@@ -8,7 +8,7 @@ import usePrevious from 'hooks/usePrevious'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useRef } from 'react'
 import { ArrowDownCircle, ChevronDown } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'state/application/hooks'
 import { addPopup, ApplicationModal } from 'state/application/reducer'
 import { updateConnectionError } from 'state/connection/reducer'
@@ -283,7 +283,8 @@ export default function NetworkSelector() {
   const openModal = useOpenModal(ApplicationModal.NETWORK_SELECTOR)
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
-  const history = useHistory()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const info = getChainInfo(chainId)
 
@@ -296,7 +297,7 @@ export default function NetworkSelector() {
       try {
         dispatch(updateConnectionError({ connectionType, error: undefined }))
         await switchChain(connector, targetChain)
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to switch networks', error)
 
         dispatch(updateConnectionError({ connectionType, error: error.message }))
@@ -315,23 +316,32 @@ export default function NetworkSelector() {
 
     // when network change originates from wallet or dropdown selector, just update URL
     if (chainId !== previousChainId && chainId !== urlChainId) {
-      history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+      navigate({
+        pathname: location.pathname,
+        search: replaceURLParam(location.search, 'chain', getChainNameFromId(chainId)),
+      })
       // otherwise assume network change originates from URL
     } else if (urlChainId && urlChainId !== previousUrlChainId && urlChainId !== chainId) {
       onSelectChain(urlChainId, true).catch(() => {
         // we want app network <-> chainId param to be in sync, so if user changes the network by changing the URL
         // but the request fails, revert the URL back to current chainId
-        history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+        navigate({
+          pathname: location.pathname,
+          search: replaceURLParam(location.search, 'chain', getChainNameFromId(chainId)),
+        })
       })
     }
-  }, [chainId, urlChainId, previousChainId, previousUrlChainId, onSelectChain, history])
+  }, [chainId, urlChainId, previousChainId, previousUrlChainId, onSelectChain, navigate, location])
 
   // set chain parameter on initial load if not there
   useEffect(() => {
     if (chainId && !urlChainId) {
-      history.replace({ search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)) })
+      navigate({
+        pathname: location.pathname,
+        search: replaceURLParam(location.search, 'chain', getChainNameFromId(chainId)),
+      })
     }
-  }, [chainId, history, urlChainId, urlChain])
+  }, [chainId, navigate, location, urlChainId, urlChain])
 
   if (!chainId || !info || !provider) {
     return null

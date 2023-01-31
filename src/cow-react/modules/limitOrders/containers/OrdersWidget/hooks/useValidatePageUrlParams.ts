@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Order } from 'state/orders/actions'
 import { LIMIT_ORDERS_PAGE_SIZE } from '../../../const/limitOrdersTabs'
 import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '../../../utils/buildLimitOrdersUrl'
@@ -7,7 +7,7 @@ import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '../../../utils/
 // Reset page params if they are invalid
 export function useValidatePageUrlParams(orders: Order[], currentTabId: string, currentPageNumber: number) {
   const location = useLocation()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   useLayoutEffect(() => {
     const pagesCount = Math.ceil(orders.length / LIMIT_ORDERS_PAGE_SIZE)
@@ -20,12 +20,13 @@ export function useValidatePageUrlParams(orders: Order[], currentTabId: string, 
     const shouldResetTabId = currentTabId !== params.tabId
 
     if (shouldResetPageNumber || shouldResetTabId) {
-      history.push(
+      navigate(
         buildLimitOrdersUrl(location, {
           pageNumber: shouldResetPageNumber ? 1 : undefined,
           tabId: shouldResetTabId ? currentTabId : undefined,
-        })
+        }),
+        { replace: true }
       )
     }
-  }, [history, location, currentTabId, currentPageNumber, orders.length])
+  }, [navigate, location, currentTabId, currentPageNumber, orders.length])
 }

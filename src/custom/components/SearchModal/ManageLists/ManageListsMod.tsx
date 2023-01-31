@@ -463,7 +463,7 @@ export function ManageLists({
       )}
       <Separator />
       <ListContainer>
-        <AutoColumn gap="md">
+        <AutoColumn gap="md" id="tokens-lists-table">
           {filteredLists.map((listUrl) => (
             // <ListRow key={listUrl} listUrl={listUrl} />
             <ListRow key={listUrl} listUrl={listUrl} {...listRowProps} />

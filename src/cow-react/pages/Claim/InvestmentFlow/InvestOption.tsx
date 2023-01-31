@@ -171,7 +171,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
       setApproving(true)
       const summary = `Approve ${token?.symbol || 'token'} for investing in vCOW`
       await approveCallback({ modalMessage: summary, transactionSummary: summary })
-    } catch (error) {
+    } catch (error: any) {
       console.error('[InvestOption]: Issue approving.', error)
       handleSetError(getProviderErrorMessage(error))
     } finally {
@@ -193,7 +193,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
         modalMessage: summary,
         transactionSummary: summary,
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error('[InvestOption]: Issue revoking approval.', error)
       handleSetError(getProviderErrorMessage(error))
     } finally {

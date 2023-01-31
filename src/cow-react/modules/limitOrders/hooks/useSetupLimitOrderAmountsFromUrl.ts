@@ -1,4 +1,4 @@
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 import { LimitOrdersState, updateLimitOrdersAtom } from '@cow/modules/limitOrders'
@@ -20,7 +20,7 @@ import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateAct
  * In case when both sellAmount and buyAmount specified, the price will be automatically calculated
  */
 export function useSetupLimitOrderAmountsFromUrl() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { search, pathname } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
@@ -33,8 +33,8 @@ export function useSetupLimitOrderAmountsFromUrl() {
     queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
 
-    history.push(pathname + '?' + queryParams)
-  }, [history, pathname, search])
+    navigate({ pathname, search: queryParams.toString() }, { replace: true })
+  }, [navigate, pathname, search])
 
   useLayoutEffect(() => {
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))

@@ -1,4 +1,4 @@
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 import { useSwapActionHandlers } from 'state/swap/hooks'
 import { Field } from 'state/swap/actions'
@@ -15,7 +15,7 @@ import { getIntOrFloat } from '@cow/utils/getIntOrFloat'
  */
 export function useSetupSwapAmountsFromUrl() {
   const { search, pathname } = useLocation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const params = useMemo(() => new URLSearchParams(search), [search])
   const { onUserInput } = useSwapActionHandlers()
 
@@ -25,8 +25,8 @@ export function useSetupSwapAmountsFromUrl() {
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
 
-    history.push(pathname + '?' + queryParams)
-  }, [history, pathname, search])
+    navigate({ pathname, search: queryParams.toString() }, { replace: true })
+  }, [navigate, pathname, search])
 
   useLayoutEffect(() => {
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))

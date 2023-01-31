@@ -1,6 +1,13 @@
-import { userAgent } from '@src/utils/userAgent'
+import { UAParser } from 'ua-parser-js'
 
-export * from '@src/utils/userAgent'
+const userAgentRaw = window.navigator.userAgent
+const parser = new UAParser(userAgentRaw)
+const { type } = parser.getDevice()
+
+export const userAgent = parser.getResult()
+
+export const isMobile = type === 'mobile' || type === 'tablet'
+export const isImTokenBrowser = /imToken/.test(userAgentRaw)
 
 function getBrowserMajorVersion() {
   const major = userAgent.browser.version?.split('.')[0]

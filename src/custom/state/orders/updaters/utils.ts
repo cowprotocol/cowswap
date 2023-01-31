@@ -68,7 +68,7 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
   let orderFromApi: OrderMetaData | null = null
   try {
     orderFromApi = await getOrder(chainId, orderFromStore.id)
-  } catch (e) {
+  } catch (e: any) {
     console.debug(
       `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`
     )

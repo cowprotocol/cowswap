@@ -150,7 +150,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         } else {
           setDeadline(parsed)
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error(error)
         setDeadlineError(DeadlineError.InvalidInput)
       }

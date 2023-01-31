@@ -46,7 +46,7 @@ export async function swapFlow(input: SwapFlowContext, priceImpactParams: PriceI
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     input.swapConfirmManager.transactionSent(orderId)
     tradeFlowAnalytics.sign(input.swapFlowAnalyticsContext)
-  } catch (error) {
+  } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 

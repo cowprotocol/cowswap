@@ -8,7 +8,7 @@ export function FaqMenu() {
       <ul>
         {FAQ_MENU_LINKS.map(({ title, url }, i) => (
           <li key={i}>
-            <NavLink exact to={url} activeClassName={'active'}>
+            <NavLink end to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
               {title}
             </NavLink>
           </li>

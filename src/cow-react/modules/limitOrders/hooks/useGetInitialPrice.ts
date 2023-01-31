@@ -38,7 +38,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
     }
 
     return price
-  } catch (error) {
+  } catch (error: any) {
     return error
   }
 }

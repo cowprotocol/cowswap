@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Signer, utils } from "ethers";
-import { Provider } from "@ethersproject/providers";
+import type { Provider } from "@ethersproject/providers";
 import type { TokenDistro, TokenDistroInterface } from "../TokenDistro";
 
 const _abi = [
@@ -38,7 +38,7 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+] as const;
 
 export class TokenDistro__factory {
   static readonly abi = _abi;

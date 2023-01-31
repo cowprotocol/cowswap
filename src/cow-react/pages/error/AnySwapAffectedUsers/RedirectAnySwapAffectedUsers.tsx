@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import useIsAnySwapAffectedUser from './useIsAnySwapAffectedUser'
 
 const WARNING_PAGE = '/anyswap-affected-users'
 
 export default function RedirectAnySwapAffectedUsers() {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { pathname } = useLocation()
 
   // Detect if the user is affected by the hack
@@ -16,9 +16,9 @@ export default function RedirectAnySwapAffectedUsers() {
     // eslint-disable-next-line no-restricted-globals
     if (isAnySwapAffectedUser && location.pathname !== WARNING_PAGE) {
       // Redirect to warning page
-      history.push(WARNING_PAGE)
+      navigate(WARNING_PAGE)
     }
-  }, [isAnySwapAffectedUser, history, pathname])
+  }, [isAnySwapAffectedUser, navigate, pathname])
 
   return null
 }

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { MouseEventHandler, useCallback, useMemo } from 'react'
 import { Token } from '@uniswap/sdk-core'
 import { useFavouriteTokens, useToggleFavouriteToken } from 'state/user/hooks'
 import { ButtonStar } from 'components/Button'
@@ -19,7 +19,7 @@ export default function FavouriteTokenButton({ tokenData }: FavouriteTokenButton
 
   const toggleFavouriteToken = useToggleFavouriteToken()
 
-  const handleFavouriteToken = useCallback(
+  const handleFavouriteToken: MouseEventHandler = useCallback(
     (event) => {
       event.preventDefault()
       toggleFavouriteToken(tokenData)

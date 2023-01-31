@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { transparentize } from 'polished'
 import { buildLimitOrdersUrl } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 
@@ -53,6 +53,7 @@ export interface OrdersTabsProps {
 }
 
 export function OrdersTabs({ tabs }: OrdersTabsProps) {
+  const location = useLocation()
   const activeTabIndex = Math.max(
     tabs.findIndex((i) => i.isActive),
     0
@@ -64,7 +65,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
         <TabButton
           key={index}
           active={(index === activeTabIndex).toString()}
-          to={(location) => buildLimitOrdersUrl(location, { tabId: tab.id, pageNumber: 1 })}
+          to={buildLimitOrdersUrl(location, { tabId: tab.id, pageNumber: 1 })}
         >
           <Trans>{tab.title}</Trans> <span>({tab.count})</span>
         </TabButton>

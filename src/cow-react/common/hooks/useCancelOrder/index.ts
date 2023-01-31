@@ -80,7 +80,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           await cancelFn(order)
           // When done, dismiss the modal
           onDismiss()
-        } catch (e) {
+        } catch (e: any) {
           const swapErrorMessage = getSwapErrorMessage(e)
           setContext({ error: swapErrorMessage })
         }

@@ -34,7 +34,6 @@ import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
 import ModalMod from '@src/components/Modal'
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
-import type { WalletConnect } from '@web3-react/walletconnect'
 
 export const CloseIcon = styled.div`
   position: absolute;
@@ -223,7 +222,7 @@ export default function WalletModal({
           const provider: any = connector.provider
 
           if (provider && provider.isWalletConnect) {
-            const { http, rpc, signer } = (connector as WalletConnect).provider
+            const { http, rpc, signer } = (connector as any).provider
             const chainId = signer.connection.chainId
             // don't default to SupportedChainId.Mainnet - throw instead
             if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
@@ -232,7 +231,7 @@ export default function WalletModal({
         }
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
-      } catch (error) {
+      } catch (error: any) {
         console.debug(`web3-react connection error: ${error}`)
         dispatch(updateConnectionError({ connectionType, error: error.message }))
       }

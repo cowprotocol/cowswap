@@ -1,4 +1,4 @@
-import 'cow-react'
+import './cow-react'
 
 // import '@reach/dialog/styles.css'
 // import 'inter-ui'

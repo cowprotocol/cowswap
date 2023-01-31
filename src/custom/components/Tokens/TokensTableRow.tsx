@@ -103,7 +103,7 @@ const DataRow = ({
       setApproving(true)
       const summary = `Approve ${tokenData?.symbol || 'token'}`
       await approve({ modalMessage: summary, transactionSummary: summary })
-    } catch (error) {
+    } catch (error: any) {
       console.error(`[TokensTableRow]: Issue approving.`, error)
       handleSetError(error?.message)
     } finally {

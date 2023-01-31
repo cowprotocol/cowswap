@@ -95,7 +95,7 @@ export async function tradeFlow(
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
-  } catch (error) {
+  } catch (error: any) {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 

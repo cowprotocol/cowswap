@@ -525,7 +525,7 @@ export function useClaimCallback(account: string | null | undefined): {
         // Because I want to handle errors here.
         // Not awaiting means the caller will have to deal with that, which I don't want in this case
         return await vCowContract.estimateGas.claimMany(...args)
-      } catch (e) {
+      } catch (e: any) {
         console.debug('Failed to estimate gas for claiming:', e.message)
         return
       }

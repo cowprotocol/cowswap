@@ -8,7 +8,7 @@ import {
 } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
-import { abi as COWSWAP_ETHFLOW_ABI } from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
+import CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
 import GPv2_SETTLEMENT_ABI from '@cow/abis/GPv2Settlement.json'
 import V_COW_ABI from '@cow/abis/vCow.json'
 import ENS_ABI from 'abis/ens-registrar.json'
@@ -26,6 +26,8 @@ export * from '@src/hooks/useContract'
 export * from './useContractMod'
 
 // Custom (non-MOD) hooks
+
+const COWSWAP_ETHFLOW_ABI = CoWSwapEthFlowJson.abi
 
 export function useEthFlowContract(): CoWSwapEthFlow | null {
   const { chainId } = useWeb3React()
@@ -86,7 +88,7 @@ function _getContract<T extends Contract = Contract>(
   if (!address) return null
   try {
     return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined) as T
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to get contract', error)
     return null
   }
