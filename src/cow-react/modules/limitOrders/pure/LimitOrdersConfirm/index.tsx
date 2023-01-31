@@ -45,7 +45,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
   const isTradeDisabled = isTooLowRate ? !warningsAccepted : false
 
   return (
-    <styledEl.ConfirmWrapper>
+    <styledEl.ConfirmWrapper id="limit-orders-confirm">
       <CurrencyPreview
         id="input-currency-preview"
         currencyInfo={inputCurrencyInfo}

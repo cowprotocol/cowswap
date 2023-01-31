@@ -145,7 +145,7 @@ export function RateInput() {
         ) : (
           <styledEl.NumericalInput
             $loading={false}
-            className="rate-limit-amount-input"
+            id="rate-limit-amount-input"
             value={displayedRate}
             onUserInput={handleUserInput}
           />

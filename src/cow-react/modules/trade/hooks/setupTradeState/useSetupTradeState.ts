@@ -53,13 +53,16 @@ function areChainIdsTheSame(aChainId: Nullish<number>, bChainId: Nullish<number>
 }
 
 export function useSetupTradeState(): void {
-  const { chainId: currentChainId, connector, account } = useWeb3React()
+  const { chainId: providerChainId, connector, account } = useWeb3React()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const tradeState = useTradeState()
 
   const chainIdFromUrl = tradeStateFromUrl.chainId
+  // When there is no account from provider, then we consider provider as not connected and use chainId from URL as current
+  const currentChainId = (account ? providerChainId : chainIdFromUrl) || providerChainId
+
   const prevChainIdFromUrl = usePrevious(chainIdFromUrl)
   const prevCurrentChainId = usePrevious(currentChainId)
 
