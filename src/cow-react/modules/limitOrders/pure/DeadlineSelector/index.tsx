@@ -48,7 +48,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   const max = _limitDateString(maxDate)
 
   const [error, setError] = useState<string | null>(null)
-  const [value, setValue] = useState<string>(customDeadline ? _limitDateString(customDeadline) : min)
+  const [value, setValue] = useState<string>('')
 
   // Validate `value` from datetime-local input
   useEffect(() => {
