@@ -56,9 +56,9 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       const newDeadline = new Date(value).getTime()
 
       if (newDeadline < minDate.getTime()) {
-        setError(`Must be after ${minDate.toLocaleDateString()} ${minDate.toLocaleTimeString()}`)
+        setError(`Must be after ${minDate.toLocaleString()} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`)
       } else if (newDeadline > maxDate.getTime()) {
-        setError(`Must be before ${maxDate.toLocaleDateString()} ${maxDate.toLocaleTimeString()}`)
+        setError(`Must be before ${maxDate.toLocaleString()} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`)
       } else {
         setError(null)
       }
