@@ -63,7 +63,7 @@ function Link({ link, context }: InternalExternalLinkProps) {
   }
 
   return (
-    <StyledNavLink exact to={internalUrl} onClick={handleMobileMenuOnClick}>
+    <StyledNavLink to={internalUrl} end onClick={handleMobileMenuOnClick}>
       {menuImage}
       {title}
     </StyledNavLink>

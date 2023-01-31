@@ -103,7 +103,7 @@ export function useRoutingAPITrade<TTradeType extends TradeType>(
         state: isSyncing ? TradeState.SYNCING : TradeState.VALID,
         trade,
       }
-    } catch (e) {
+    } catch (e: any) {
       return { state: TradeState.INVALID, trade: undefined }
     }
   }, [

@@ -3,7 +3,7 @@ import { Trans } from '@lingui/macro'
 
 import { AMOUNT_PRECISION } from 'constants/index'
 import { ClaimSummaryTitle, ClaimTotal, ClaimSummary as ClaimSummaryWrapper } from '@cow/pages/Claim/styled'
-import { formatMax, formatSmartLocaleAware } from 'utils/format'
+import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { CowSubsidyInfoProps } from 'components/CowSubsidyModal'
 

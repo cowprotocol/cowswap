@@ -1,6 +1,7 @@
 import { Order, OrderKind } from 'state/orders/actions'
-import { formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from '@cow/utils/format'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+import { formatSymbol } from '@cow/utils/format'
 
 export function pendingOrderSummary(order: Order): string {
   const { kind, buyAmount, sellAmount, inputToken, outputToken, feeAmount } = order
@@ -13,7 +14,7 @@ export function pendingOrderSummary(order: Order): string {
   )
   const outputAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
 
-  return `Swap ${inputPrefix}${formatSmartAmount(inputAmount)} ${
+  return `Swap ${inputPrefix}${formatSmartAmount(inputAmount)} ${formatSymbol(
     inputAmount.currency.symbol
-  } for ${outputPrefix}${formatSmartAmount(outputAmount)} ${outputAmount.currency.symbol}`
+  )} for ${outputPrefix}${formatSmartAmount(outputAmount)} ${formatSymbol(outputAmount.currency.symbol)}`
 }

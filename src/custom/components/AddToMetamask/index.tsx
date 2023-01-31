@@ -9,6 +9,7 @@ import { RowFixed } from 'components/Row'
 import MetaMaskLogo from 'assets/images/metamask.png'
 import { addTokenToMetamaskAnalytics } from 'components/analytics'
 import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export type AddToMetamaskProps = {
   currency: Currency | undefined
@@ -99,12 +100,19 @@ export default function AddToMetamask(props: AddToMetamaskProps) {
     <ButtonCustom onClick={addToken}>
       {!success ? (
         <RowFixed>
-          <StyledIcon src={MetaMaskLogo} /> {shortLabel ? 'Add token' : `Add ${currency.symbol} to Metamask`}
+          <StyledIcon src={MetaMaskLogo} />{' '}
+          {shortLabel ? (
+            'Add token'
+          ) : (
+            <>
+              Add <TokenSymbol token={currency} /> to Metamask
+            </>
+          )}
         </RowFixed>
       ) : (
         <RowFixed>
           <CheckCircleCustom size={'16px'} stroke={theme.green1} />
-          Added {currency.symbol}{' '}
+          Added <TokenSymbol token={currency} />
         </RowFixed>
       )}
     </ButtonCustom>

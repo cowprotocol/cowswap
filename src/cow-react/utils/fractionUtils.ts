@@ -13,7 +13,7 @@ export class FractionUtils {
     try {
       const { numerator, denominator } = JSON.parse(s)
       return new Fraction(numerator, denominator)
-    } catch (e) {
+    } catch (e: any) {
       return null
     }
   }

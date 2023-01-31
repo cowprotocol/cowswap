@@ -8,7 +8,7 @@ import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter
 import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { useCallback, useContext, useState } from 'react'
 import { Plus } from 'react-feather'
-import { RouteComponentProps } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components/macro'
 
@@ -47,13 +47,11 @@ import { PoolPriceBar } from './PoolPriceBar'
 
 const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
-export default function AddLiquidity({
-  match: {
-    params: { currencyIdA, currencyIdB },
-  },
-  history,
-}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+export default function AddLiquidity() {
   const { account, chainId, provider } = useWeb3React()
+  const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const theme = useContext(ThemeContext)
 
@@ -284,27 +282,27 @@ export default function AddLiquidity({
     (currencyA: Currency) => {
       const newCurrencyIdA = currencyId(currencyA)
       if (newCurrencyIdA === currencyIdB) {
-        history.push(`/add/v2/${currencyIdB}/${currencyIdA}`)
+        navigate(`/add/v2/${currencyIdB}/${currencyIdA}`)
       } else {
-        history.push(`/add/v2/${newCurrencyIdA}/${currencyIdB}`)
+        navigate(`/add/v2/${newCurrencyIdA}/${currencyIdB}`)
       }
     },
-    [currencyIdB, history, currencyIdA]
+    [currencyIdB, navigate, currencyIdA]
   )
   const handleCurrencyBSelect = useCallback(
     (currencyB: Currency) => {
       const newCurrencyIdB = currencyId(currencyB)
       if (currencyIdA === newCurrencyIdB) {
         if (currencyIdB) {
-          history.push(`/add/v2/${currencyIdB}/${newCurrencyIdB}`)
+          navigate(`/add/v2/${currencyIdB}/${newCurrencyIdB}`)
         } else {
-          history.push(`/add/v2/${newCurrencyIdB}`)
+          navigate(`/add/v2/${newCurrencyIdB}`)
         }
       } else {
-        history.push(`/add/v2/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
+        navigate(`/add/v2/${currencyIdA ? currencyIdA : 'ETH'}/${newCurrencyIdB}`)
       }
     },
-    [currencyIdA, history, currencyIdB]
+    [currencyIdA, navigate, currencyIdB]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -316,7 +314,7 @@ export default function AddLiquidity({
     setTxHash('')
   }, [onFieldAInput, txHash])
 
-  const isCreate = history.location.pathname.includes('/create')
+  const isCreate = location.pathname.includes('/create')
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
 

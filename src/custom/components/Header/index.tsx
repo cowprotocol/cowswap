@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from '@cow/constants/routes'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
@@ -9,7 +9,7 @@ import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hoo
 import { AMOUNT_PRECISION } from 'constants/index'
 
 import { supportedChainId } from 'utils/supportedChainId'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
 // Components
@@ -31,7 +31,7 @@ import OrdersPanel from 'components/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
-import { cowSwapLogo, imageBunnyEars } from 'theme/cowSwapAssets'
+import { cowSwapLogo } from 'theme/cowSwapAssets'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
@@ -82,8 +82,8 @@ export default function Header() {
     !isOrdersPanelOpen && removeBodyClass('noScroll')
   }
 
-  const history = useHistory()
-  const handleBalanceButtonClick = () => history.push('/account')
+  const navigate = useNavigate()
+  const handleBalanceButtonClick = () => navigate('/account')
   const isUpToLarge = useMediaQuery(upToLarge)
   const isUpToMedium = useMediaQuery(upToMedium)
   const isUpToSmall = useMediaQuery(upToSmall)
@@ -136,9 +136,6 @@ export default function Header() {
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
               <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
-                {/* Special Lunar year / bunny ears theme */}
-                <SVG src={imageBunnyEars(darkMode)} className="imageBunnyEars" />
-                {/* Default logo */}
                 <SVG src={cowSwapLogo(darkMode)} />
               </LogoImage>
             </UniIcon>

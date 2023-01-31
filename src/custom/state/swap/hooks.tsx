@@ -47,6 +47,7 @@ import { AppState } from 'state'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
+import { formatSymbol } from '@cow/utils/format'
 
 export * from '@src/state/swap/hooks'
 
@@ -333,7 +334,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     }
 
     if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-      inputError = t`Insufficient ${amountIn.currency.symbol} balance`
+      inputError = t`Insufficient ${formatSymbol(amountIn.currency.symbol)} balance`
     }
 
     return inputError

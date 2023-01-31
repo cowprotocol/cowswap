@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
@@ -123,7 +123,7 @@ export function useSetupTradeState(): void {
    * STEP 1
    * Unlock network switching in the provider when chainId was changed in the URL
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (chainIdFromUrlWasChanged) {
       setIsChainIdSet(false)
     }
@@ -134,7 +134,7 @@ export function useSetupTradeState(): void {
    * Set chainId from URL into wallet provider once on page load
    * It's needed because useWeb3React() returns mainnet chainId by default
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isChainIdSet || !chainIdFromUrl || !currentChainId) return
     let isSubscribed = true
 
@@ -159,7 +159,7 @@ export function useSetupTradeState(): void {
    * STEP 3
    * Update state in the store when something was changed (chainId or URL params)
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isChainIdSet || skipUpdate) return
 
     updateStateAndNavigate()

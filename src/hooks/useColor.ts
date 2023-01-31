@@ -29,7 +29,7 @@ async function getColorFromToken(token: Token): Promise<string | null> {
 
   try {
     return await getColorFromUriPath(logoURI)
-  } catch (e) {
+  } catch (e: any) {
     if (logoURI === URIForEthToken(address)) {
       return null
     }
@@ -37,7 +37,7 @@ async function getColorFromToken(token: Token): Promise<string | null> {
     try {
       logoURI = URIForEthToken(address)
       return await getColorFromUriPath(logoURI)
-    } catch (e) {}
+    } catch (e: any) {}
   }
 
   return null
@@ -50,7 +50,7 @@ export async function getColorFromUriPath(uri: string): Promise<string | null> {
 
   try {
     palette = await Vibrant.from(formattedPath).getPalette()
-  } catch (err) {
+  } catch (err: any) {
     return null
   }
   if (!palette?.Vibrant) {

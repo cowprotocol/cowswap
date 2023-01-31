@@ -31,7 +31,7 @@ export default function AddressSelector(props: AddressSelectorProps) {
 
     try {
       return shortenAddress(item)
-    } catch (error) {
+    } catch (error: any) {
       return item
     }
   }, [])

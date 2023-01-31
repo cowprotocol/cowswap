@@ -13,6 +13,7 @@ import { currencyId } from 'utils/currencyId'
 import QuestionHelper from 'components/QuestionHelper'
 import { BaseWrapper, CommonBasesRow, MobileWrapper } from '.' // mod
 import { useFavouriteOrCommonTokens } from 'hooks/useFavouriteOrCommonTokens'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 /* const MobileWrapper = styled(AutoColumn)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -122,7 +123,7 @@ export default function CommonBases({
                 >
                   <CurrencyLogoFromList currency={currency} />
                   <Text fontWeight={500} fontSize={16}>
-                    {currency.symbol}
+                    <TokenSymbol token={currency} length={6} /> {/* MOD */}
                   </Text>
                 </BaseWrapper>
               </TraceEvent>

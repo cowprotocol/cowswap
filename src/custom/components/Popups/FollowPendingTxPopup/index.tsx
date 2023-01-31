@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback, useRef } from 'react'
+import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
 
 import { useIsExpertMode } from '@src/state/user/hooks'
 import { useRecentActivityLastPendingOrder } from 'hooks/useRecentActivity'
@@ -61,7 +61,7 @@ const useShowingPopupFirstTime = (orderId: OrderID | undefined) => {
   return { showPopup: firstTimePopupOrderAppears && showingPopup, firstTimePopupOrderAppears }
 }
 
-const FollowPendingTxPopup: React.FC = ({ children }): JSX.Element => {
+const FollowPendingTxPopup: React.FC<PropsWithChildren> = ({ children }): JSX.Element => {
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
   const setHidePendingTxPopupPermanently = useUpdateAtom(handleHidePopupPermanentlyAtom)
   const isExpertMode = useIsExpertMode()

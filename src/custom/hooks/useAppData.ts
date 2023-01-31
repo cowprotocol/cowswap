@@ -55,7 +55,7 @@ export function useAppData({ chainId, allowedSlippage, orderClass }: UseAppDataP
           // For some reason failed to calculate the appDataHash, use a default hash
           throw new Error("Couldn't calculate appDataHash")
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error(`[useAppData] failed to generate appData, falling back to default`, params, e.message)
         setAppDataInfo({ hash: APP_DATA_HASH })
       }

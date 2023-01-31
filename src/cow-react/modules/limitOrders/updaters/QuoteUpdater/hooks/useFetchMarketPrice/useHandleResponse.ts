@@ -49,7 +49,7 @@ export function useHandleResponse() {
 
         // Update limit order quote
         setLimitOrdersQuote({ response: data })
-      } catch (error) {
+      } catch (error: any) {
         console.debug('[useFetchMarketPrice] Failed to fetch exection price', error)
         updateLimitRateState({ executionRate: null })
       }

@@ -21,13 +21,19 @@ export function TradeWidgetLinks() {
   return (
     <styledEl.Wrapper>
       <styledEl.MenuItem>
-        <styledEl.Link activeClassName="active" to={parameterizeTradeRoute(tradeContext, Routes.SWAP)}>
+        <styledEl.Link
+          className={({ isActive }) => (isActive ? 'active' : undefined)}
+          to={parameterizeTradeRoute(tradeContext, Routes.SWAP)}
+        >
           <Trans>Swap</Trans>
         </styledEl.Link>
       </styledEl.MenuItem>
 
       <styledEl.MenuItem>
-        <styledEl.Link activeClassName="active" to={parameterizeTradeRoute(tradeContext, Routes.LIMIT_ORDER)}>
+        <styledEl.Link
+          className={({ isActive }) => (isActive ? 'active' : undefined)}
+          to={parameterizeTradeRoute(tradeContext, Routes.LIMIT_ORDER)}
+        >
           <Trans>Limit</Trans>
           <styledEl.Badge>
             <Trans>Beta</Trans>

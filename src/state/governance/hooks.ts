@@ -154,7 +154,7 @@ function useFormattedProposalCreatedLogs(
         const startBlock = parseInt(parsed.startBlock?.toString())
         try {
           description = parsed.description
-        } catch (error) {
+        } catch (error: any) {
           // replace invalid UTF-8 in the description with replacement characters
           let onError = Utf8ErrorFuncs.replace
 

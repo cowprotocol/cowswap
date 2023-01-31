@@ -124,7 +124,7 @@ async function _getTokenInfo(params: GetTokenInfoParams): Promise<TokenInfo | nu
   try {
     // If no decimals, stop here
     decimals = await decimalsPromise
-  } catch (e) {
+  } catch (e: any) {
     console.debug(`[useTokenLazy::callback] no decimals, stopping`, address, account, chainId, e)
 
     cancelNamePromise()

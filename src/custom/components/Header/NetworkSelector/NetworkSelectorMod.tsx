@@ -8,7 +8,7 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useRef } from 'react'
 import { AlertTriangle, ChevronDown } from 'react-feather'
-import { useHistory } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'state/application/hooks'
 import { /*addPopup,*/ ApplicationModal } from 'state/application/reducer'
 import { updateConnectionError } from 'state/connection/reducer'
@@ -360,7 +360,8 @@ export default function NetworkSelector() {
   const openModal = useOpenModal(ApplicationModal.NETWORK_SELECTOR)
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
-  const history = useHistory()
+  const navigate = useNavigate()
+  const location = useLocation()
   const tradeTypeInfo = useTradeTypeInfo()
   const isSmartContractWallet = useIsSmartContractWallet() // mod
   const isUnsupportedNetwork = !supportedChainId(chainId)
@@ -378,11 +379,15 @@ export default function NetworkSelector() {
       // Don't set chainId as query parameter because swap and limit orders have different routing scheme
       if (tradeTypeInfo) return
 
-      history.replace({
-        search: replaceURLParam(history.location.search, 'chain', getChainNameFromId(chainId)),
-      })
+      navigate(
+        {
+          pathname: location.pathname,
+          search: replaceURLParam(location.search, 'chain', getChainNameFromId(chainId)),
+        },
+        { replace: true }
+      )
     },
-    [tradeTypeInfo, history]
+    [tradeTypeInfo, navigate, location]
   )
 
   const onSelectChain = useCallback(
@@ -398,7 +403,7 @@ export default function NetworkSelector() {
         await switchChain(connector, targetChain)
 
         setChainIdToUrl(targetChain)
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to switch networks', error)
 
         dispatch(updateConnectionError({ connectionType, error: error.message }))

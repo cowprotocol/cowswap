@@ -6,7 +6,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import Row, { RowBetween, RowFixed } from 'components/Row'
 import { useToken } from 'hooks/Tokens'
 import { useWeb3React } from '@web3-react/core'
-import { RefObject, useCallback, useMemo, useRef, useState } from 'react'
+import { ChangeEventHandler, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { useRemoveUserAddedToken, useUserAddedTokens } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { ButtonText, ExternalLink, ExternalLinkIcon, ThemedText, TrashIcon } from 'theme'
@@ -22,6 +22,7 @@ import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/sty
 import { ImportTokensRowProps } from '.' // mod
 import useNetworkName from 'hooks/useNetworkName'
 import { getEtherscanLink as getExplorerLink } from 'utils'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -58,7 +59,7 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
-  const handleInput = useCallback((event) => {
+  const handleInput: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
@@ -89,7 +90,7 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
             <CurrencyLogo currency={token} size={'20px'} />
             <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
               <ThemedText.Main ml={'10px'} fontWeight={600}>
-                {token.symbol}
+                <TokenSymbol token={token} /> {/* MOD */}
               </ThemedText.Main>
             </ExternalLink>
           </RowFixed>

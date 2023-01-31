@@ -23,4 +23,8 @@ export const TotalAmount = styled.div`
   font-weight: bold;
   margin-top: 8px;
   padding-top: 8px;
+
+  > span:first-child {
+    white-space: nowrap;
+  }
 `

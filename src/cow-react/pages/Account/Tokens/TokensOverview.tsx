@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { Trans, t } from '@lingui/macro'
-import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
+import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 import { Token } from '@uniswap/sdk-core'
 import {
   Menu,
@@ -139,7 +139,7 @@ export default function TokensOverview() {
     selectedView,
   ])
 
-  const handleSearch = useCallback(
+  const handleSearch: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
       const input = event.target.value.trim()
       const checksummedInput = isAddress(input)

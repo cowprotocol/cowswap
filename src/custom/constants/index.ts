@@ -1,7 +1,7 @@
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
-import { CoWSwapEthFlow as EthFlowBarn } from '@cowprotocol/ethflowcontract/networks.barn.json'
-import { CoWSwapEthFlow as EthFlowProd } from '@cowprotocol/ethflowcontract/networks.prod.json'
-import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
+import ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
+import ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
+import networksJson from '@cowprotocol/contracts/networks.json'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getAppDataHash } from './appDataHash'
@@ -9,6 +9,10 @@ import ms from 'ms.macro'
 
 import { CowSdk } from '@cowprotocol/cow-sdk'
 import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'constants/ipfs'
+
+const { GPv2Settlement, GPv2VaultRelayer } = networksJson
+const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow
+const EthFlowProd = ethFlowProdJson.CoWSwapEthFlow
 
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
 export const MAX_SLIPPAGE_BPS = 5000 // 50%

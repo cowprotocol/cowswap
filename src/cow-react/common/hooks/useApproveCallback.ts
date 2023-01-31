@@ -23,7 +23,7 @@ async function estimateApprove(
       approveAmount: MaxUint256,
       gasLimit: await tokenContract.estimateGas.approve(spender, MaxUint256),
     }
-  } catch (e) {
+  } catch (e: any) {
     // general fallback for tokens who restrict approval amounts
     try {
       const approveAmount = amountToApprove.quotient.toString()
@@ -32,7 +32,7 @@ async function estimateApprove(
         approveAmount,
         gasLimit: await tokenContract.estimateGas.approve(spender, approveAmount),
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         '[useApproveCallbackMod] Error estimating gas for approval. Using default gas limit ' +
           APPROVE_GAS_LIMIT_DEFAULT.toString(),

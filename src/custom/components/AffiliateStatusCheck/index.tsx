@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import NotificationBanner from 'components/NotificationBanner'
 import { useReferralAddress, useResetReferralAddress, useSetReferralAddressActive } from 'state/affiliate/hooks'
@@ -25,7 +25,7 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 export default function AffiliateStatusCheck() {
   const resetReferralAddress = useResetReferralAddress()
   const setReferralAddressActive = useSetReferralAddressActive()
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
   const { account, chainId } = useWeb3React()
   const referralAddress = useReferralAddress()
@@ -83,7 +83,7 @@ export default function AffiliateStatusCheck() {
     if (fulfilledOrders.length >= 1 && isFirstTrade.current) {
       setAffiliateState(null)
       isFirstTrade.current = false
-      history.replace({ search: '' })
+      navigate({ pathname: location.pathname, search: '' })
       resetReferralAddress()
       return
     }
@@ -94,7 +94,7 @@ export default function AffiliateStatusCheck() {
       if (userHasTrades) {
         return
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
       setError('Affiliate program: There was an error loading trades. Please try again later.')
       return
@@ -106,7 +106,8 @@ export default function AffiliateStatusCheck() {
     account,
     chainId,
     fulfilledOrders.length,
-    history,
+    navigate,
+    location,
     referralAddressIsValid,
     resetReferralAddress,
     setAffiliateState,
@@ -135,7 +136,7 @@ export default function AffiliateStatusCheck() {
       setAffiliateState('OWN_LINK')
 
       if (referralAddressQueryParam) {
-        history.push('/account' + location.search)
+        navigate({ pathname: '/account', search: location.search })
       }
       return
     }
@@ -143,7 +144,7 @@ export default function AffiliateStatusCheck() {
     handleAffiliateState()
   }, [
     account,
-    history,
+    navigate,
     chainId,
     handleAffiliateState,
     location.search,

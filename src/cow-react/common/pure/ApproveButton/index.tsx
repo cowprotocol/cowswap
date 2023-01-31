@@ -10,6 +10,7 @@ import { useContext, useMemo } from 'react'
 import { Currency } from '@uniswap/sdk-core'
 import { ThemeContext } from 'styled-components/macro'
 import { ApprovalState } from 'hooks/useApproveCallback'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
@@ -21,7 +22,6 @@ export function ApproveButton(props: ApproveButtonProps) {
   const { currency, state, onClick } = props
 
   const theme = useContext(ThemeContext)
-  const symbol = currency?.symbol
   const isPending = state === ApprovalState.PENDING
   const isConfirmed = state === ApprovalState.APPROVED
   const disabled = state !== ApprovalState.NOT_APPROVED
@@ -30,7 +30,9 @@ export function ApproveButton(props: ApproveButtonProps) {
     if (isConfirmed) {
       return (
         <>
-          <Trans>You can now trade {symbol}</Trans>
+          <Trans>
+            You can now trade <TokenSymbol token={currency} />
+          </Trans>
           <CheckCircle size="24" color={theme.text1} />
         </>
       )
@@ -38,21 +40,25 @@ export function ApproveButton(props: ApproveButtonProps) {
       return (
         <>
           {/* we need to shorten this string on mobile */}
-          <Trans>Allow CoW Swap to use your {symbol}</Trans>
+          <span>
+            <Trans>
+              Allow CoW Swap to use your <TokenSymbol token={currency} />
+            </Trans>
+          </span>
           <MouseoverTooltip
             text={
               <Trans>
-                You must give the CoW Protocol smart contracts permission to use your {symbol}. You only have to do this
-                once per token.
+                You must give the CoW Protocol smart contracts permission to use your <TokenSymbol token={currency} />.
+                You only have to do this once per token.
               </Trans>
             }
           >
-            {isPending ? <Loader stroke={theme.white} /> : <HelpCircle size="24" color={theme.white} />}
+            {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" color={theme.white} />}
           </MouseoverTooltip>
         </>
       )
     }
-  }, [symbol, theme, isPending, isConfirmed])
+  }, [currency, theme, isPending, isConfirmed])
 
   return (
     <ButtonConfirmed

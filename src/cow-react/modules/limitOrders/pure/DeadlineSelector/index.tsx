@@ -1,7 +1,7 @@
 import { Dropdown } from '@cow/common/pure/Dropdown'
 import { LimitOrderDeadline, limitOrdersDeadlines, maxCustomDeadline } from './deadlines'
 
-import { useCallback, useMemo, useRef } from 'react'
+import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
@@ -53,7 +53,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     [selectDeadline]
   )
 
-  const onChange = useCallback(
+  const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
       const customDeadline = Math.round(new Date(event.target.value).getTime() / 1000)
 

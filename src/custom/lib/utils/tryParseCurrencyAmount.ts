@@ -20,7 +20,7 @@ export default function tryParseCurrencyAmount<T extends Currency>(
     if (typedValueParsed !== '0') {
       return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(typedValueParsed))
     }
-  } catch (error) {
+  } catch (error: any) {
     // fails if the user specifies too many decimal places of precision (or maybe exceed max uint?)
     console.debug(`Failed to parse input amount: "${value}"`, error)
   }

@@ -60,9 +60,28 @@ module.exports = {
     // https://webpack.js.org/configuration
     configure: (webpackConfig) => ({
       ...webpackConfig,
+      // https://github.com/facebook/create-react-app/discussions/11767#discussioncomment-2421668
+      ignoreWarnings: [
+        (warning) => {
+          return (
+            warning.module &&
+            warning.module.resource.includes('node_modules') &&
+            warning.details &&
+            warning.details.includes('source-map-loader')
+          )
+        },
+      ],
       resolve: {
         ...webpackConfig.resolve,
         modules: [path.resolve(__dirname, 'src/custom'), ...webpackConfig.resolve.modules],
+        /**
+         * BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+         */
+        fallback: {
+          http: require.resolve('stream-http'),
+          https: require.resolve('https-browserify'),
+          crypto: require.resolve('crypto-browserify'),
+        },
       },
     }),
   },

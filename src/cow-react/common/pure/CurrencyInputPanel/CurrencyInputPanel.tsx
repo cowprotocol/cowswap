@@ -3,7 +3,7 @@ import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
-import { formatSmartAmount } from 'utils/format'
+import { formatSmartAmount } from '@cow/utils/format'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
@@ -16,6 +16,7 @@ import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MouseoverTooltip } from 'components/Tooltip'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 interface BuiltItProps {
   className: string
@@ -137,7 +138,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             {balance && !disabled && (
               <>
                 <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
-                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {currency?.symbol}
+                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} <TokenSymbol token={currency} />
                   {showSetMax && balance.greaterThan(0) && (
                     <styledEl.SetMaxBtn onClick={handleMaxInput}>Max</styledEl.SetMaxBtn>
                   )}

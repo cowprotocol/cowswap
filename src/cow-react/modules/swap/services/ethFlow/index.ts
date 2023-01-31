@@ -65,7 +65,7 @@ export async function ethFlow(ethFlowContext: EthFlowContext, priceImpactParams:
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     swapConfirmManager.transactionSent(orderId)
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
-  } catch (error) {
+  } catch (error: any) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 

@@ -31,7 +31,7 @@ export default function useFetchProfile(): FetchProfileState {
         } else {
           setProfile(emptyState)
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error(error)
         setProfile((profile) => ({
           ...profile,

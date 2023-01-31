@@ -38,7 +38,7 @@ export default function Identicon({ account: customAccount, size = 16 }: Identic
       return () => {
         try {
           current?.removeChild(icon)
-        } catch (e) {
+        } catch (e: any) {
           console.error('Avatar icon not found')
         }
       }

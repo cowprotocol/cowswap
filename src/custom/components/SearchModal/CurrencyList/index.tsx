@@ -10,7 +10,7 @@ import { HashLink } from 'react-router-hash-link'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { TagInfo } from 'state/lists/wrappedTokenInfo'
-import { formatSmart } from 'utils/format'
+import { formatSmart } from '@cow/utils/format'
 import Column from 'components/Column'
 import { MenuItem as MenuItemMod } from '@src/components/SearchModal/styleds'
 import { transparentize } from 'polished'
