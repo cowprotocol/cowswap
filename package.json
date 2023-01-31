@@ -24,7 +24,7 @@
   },
   "types": "./dist/widgets.d.ts",
   "private": true,
-  "version": "1.29.2",
+  "version": "1.29.3",
   "engines": {
     "node": ">=16.0.0 <17.0.0"
   },
