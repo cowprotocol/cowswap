@@ -1,4 +1,4 @@
-import { useAllTokens, useSearchInactiveTokenLists } from 'hooks/Tokens'
+import { useSearchInactiveTokenLists } from 'hooks/Tokens'
 import { Token } from '@uniswap/sdk-core'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -6,6 +6,8 @@ import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { Field } from 'state/swap/actions'
+import { useAtomValue } from 'jotai/utils'
+import { tokensByAddressAtom, tokensBySymbolAtom } from '@cow/modules/tokensList/state/tokensListAtom'
 
 export interface ImportTokenModalProps {
   chainId: number
@@ -33,19 +35,23 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
   )
 
   // dismiss warning if all imported tokens are in active lists
-  const defaultTokens = useAllTokens()
+  const tokensByAddress = useAtomValue(tokensByAddressAtom)
+  const tokensBySymbol = useAtomValue(tokensBySymbolAtom)
   // example: https://cowswap.dev.gnosisdev.com/#/swap?chain=mainnet&inputCurrency=0xe0b7927c4af23765cb51314a0e0521a9645f0e2a&outputCurrency=0x539F3615C1dBAfa0D008d87504667458acBd16Fa
   const importTokensNotInDefault = useMemo(() => {
     // We should return an empty array until the defaultTokens are loaded
     // Otherwise WETH will be in urlLoadedTokens but defaultTokens will be empty
     // Fix for https://github.com/cowprotocol/cowswap/issues/534
-    if (!Object.keys(defaultTokens).length) return []
+    if (!Object.keys(tokensByAddress).length) return []
 
     return (
       urlLoadedTokens &&
       urlLoadedTokens
         .filter((token: Token) => {
-          return !Boolean(token.address.toLowerCase() in defaultTokens)
+          return (
+            !Boolean(token.address.toLowerCase() in tokensByAddress) &&
+            !Boolean(token.symbol && token.symbol.toLowerCase() in tokensBySymbol)
+          )
         })
         .filter((token: Token) => {
           // Any token addresses that are loaded from the shorthands map do not need to show the import URL
@@ -63,7 +69,7 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
           return !isTokenInShorthands && !isTokenInWrapped
         })
     )
-  }, [chainId, defaultTokens, urlLoadedTokens])
+  }, [chainId, tokensByAddress, tokensBySymbol, urlLoadedTokens])
 
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
 
