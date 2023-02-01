@@ -45,6 +45,22 @@ function _trimSeconds(date: Date): Date {
 }
 
 /**
+ * Gets the datetime-local input initial value based on current stored value and min allowed
+ *
+ * If a value was previously saved, but it's older than min, use min instead
+ */
+export function getInputStartDate(customDeadline: number | null, minDate: Date): Date {
+  if (customDeadline) {
+    const customDate = new Date(customDeadline * 1000)
+
+    if (customDate > minDate) {
+      return customDate
+    }
+  }
+  return minDate
+}
+
+/**
  * Get client side timezone offset
  *
  * @returns {(+|-)HH:mm} - Where `HH` is 2 digits hours and `mm` 2 digits minutes.

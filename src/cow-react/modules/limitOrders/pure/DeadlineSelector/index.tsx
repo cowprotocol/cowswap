@@ -24,6 +24,7 @@ import { ButtonPrimary, ButtonSecondary } from '@src/components/Button'
 import {
   calculateMinMax,
   formatDateToLocalTime,
+  getInputStartDate,
   getTimeZoneOffset,
   limitDateString,
 } from '@cow/modules/limitOrders/pure/DeadlineSelector/utils'
@@ -105,13 +106,17 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   )
 
   const [isOpen, setIsOpen] = useState(false)
-  const openModal = () => {
+
+  const openModal = useCallback(() => {
     currentDeadlineNode.current?.click() // Close dropdown
     setIsOpen(true)
     setError(null)
-    setMinMax(calculateMinMax()) // Update min/max every time modal is open
-    setValue(formatDateToLocalTime(customDeadline || minDate)) // reset input to clear unsaved values
-  }
+
+    const minMax = calculateMinMax()
+    setMinMax(minMax) // Update min/max every time modal is open
+    setValue(formatDateToLocalTime(getInputStartDate(customDeadline, minMax[0]))) // reset input to clear unsaved values
+  }, [customDeadline])
+
   const onDismiss = useCallback(() => setIsOpen(false), [])
 
   const setCustomDeadline = useCallback(() => {
