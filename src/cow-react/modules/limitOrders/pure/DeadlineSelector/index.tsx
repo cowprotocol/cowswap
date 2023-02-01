@@ -175,7 +175,11 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
               />
             </CustomLabel>
             {/* TODO: style me!!! */}
-            {error && <div>{error}</div>}
+            {error && (
+              <div>
+                <Trans>{error}</Trans>
+              </div>
+            )}
           </ModalContent>
           <ModalFooter>
             <ButtonSecondary onClick={onDismiss}>Cancel</ButtonSecondary>
