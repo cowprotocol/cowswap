@@ -174,6 +174,11 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
                 // The `pattern` is not used at all in `datetime-local` input, but is in place
                 // to enforce it when it isn't support. In that case it's rendered as a regular `text` input
                 pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+                onFocus={(event: React.FocusEvent<HTMLInputElement>) => {
+                  // Bug fix for resetting input with `reset` button iOS
+                  // See https://github.com/facebook/react/issues/8938
+                  event.target.defaultValue = ''
+                }}
               />
             </CustomLabel>
             {/* TODO: style me!!! */}
