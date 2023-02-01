@@ -8,8 +8,8 @@ function pickToken(symbol: string, role: 'input' | 'output') {
 
 describe('Limit orders', () => {
   it('Confirmation modal must contains values that were entered while creating', () => {
-    const inputAmount = '0.001'
-    const outputAmount = '90000000000000'
+    const inputAmount = '0.1'
+    const outputAmount = '2000000000000'
 
     cy.visit(`/#/${CHAIN_ID}/limit-orders`)
     cy.get('#unlock-limit-orders-btn').click()
@@ -21,7 +21,8 @@ describe('Limit orders', () => {
     cy.get('#rate-limit-amount-input').clear().type(outputAmount, { force: true })
     cy.get('#review-limit-order-btn').click()
 
+    cy.get('#limit-orders-currency-output .token-amount-input').should('have.value', '200B')
     cy.get('#limit-orders-confirm #input-currency-preview .token-amount-input').should('have.value', inputAmount)
-    cy.get('#limit-orders-confirm #output-currency-preview .token-amount-input').should('have.value', '90B')
+    cy.get('#limit-orders-confirm #output-currency-preview .token-amount-input').should('have.value', '200B')
   })
 })
