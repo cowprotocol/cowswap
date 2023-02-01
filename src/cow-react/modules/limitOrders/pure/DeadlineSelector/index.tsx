@@ -60,11 +60,12 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   useEffect(() => {
     try {
       const newDeadline = new Date(value).getTime()
+      const { timeZone } = Intl.DateTimeFormat().resolvedOptions()
 
       if (newDeadline < minDate.getTime()) {
-        setError(`Must be after ${minDate.toLocaleString()} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`)
+        setError(`Must be after ${minDate.toLocaleString()} ${timeZone}`)
       } else if (newDeadline > maxDate.getTime()) {
-        setError(`Must be before ${maxDate.toLocaleString()} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`)
+        setError(`Must be before ${maxDate.toLocaleString()} ${timeZone}`)
       } else {
         setError(null)
       }
