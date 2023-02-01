@@ -22,10 +22,10 @@ import { SwapShowAcceptChanges, TruncatedText } from 'components/swap/styleds'
 
 // MOD imports
 import TradeGp from 'state/swap/TradeGp'
-import { AMOUNT_PRECISION, INPUT_OUTPUT_EXPLANATION } from 'constants/index'
+import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
-import { formatMax, formatSmart } from '@cow/utils/format'
+import { formatMax } from '@cow/utils/format'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
@@ -33,6 +33,7 @@ import { transparentize } from 'polished'
 import { WarningProps } from 'components/SwapWarnings'
 import { RateInfo, RateInfoParams } from '@cow/common/pure/RateInfo'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
 
 export const ArrowWrapper = styled.div`
   --size: 26px;
@@ -161,7 +162,7 @@ SwapModalHeaderProps) {
                 fontWeight={500}
                 title={`${fullInputWithoutFee} ${trade.inputAmount.currency.symbol || ''}`}
               >
-                {formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
+                {tokenViewAmount(trade.inputAmountWithoutFee)}
               </TruncatedText>
             </RowFixed>
             {/*<RowFixed gap={'0px'}>
@@ -184,8 +185,8 @@ SwapModalHeaderProps) {
         >
           {/* TODO: replace <FeeInformationTooltip/> with <ReceiveAmountInfoTooltip /> */}
           <FeeInformationTooltip
-            amountAfterFees={formatSmart(trade.inputAmountWithFee, AMOUNT_PRECISION)}
-            amountBeforeFees={formatSmart(trade.inputAmountWithoutFee, AMOUNT_PRECISION)}
+            amountAfterFees={tokenViewAmount(trade.inputAmountWithFee)}
+            amountBeforeFees={tokenViewAmount(trade.inputAmountWithoutFee)}
             feeAmount={trade.fee.feeAsCurrency}
             allowsOffchainSigning={allowsOffchainSigning}
             label={exactInLabel}
@@ -232,7 +233,7 @@ SwapModalHeaderProps) {
                 fontWeight={500}
                 title={`${fullOutputWithoutFee} ${trade.outputAmount.currency.symbol || ''}`}
               >
-                {formatSmart(trade.outputAmountWithoutFee, AMOUNT_PRECISION)}
+                {tokenViewAmount(trade.outputAmountWithoutFee)}
               </TruncatedText>
             </RowFixed>
           </RowBetween>
@@ -249,8 +250,8 @@ SwapModalHeaderProps) {
       {!!exactOutLabel && (
         <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
           <FeeInformationTooltip
-            amountAfterFees={formatSmart(trade.outputAmount, AMOUNT_PRECISION)}
-            amountBeforeFees={formatSmart(trade.outputAmountWithoutFee, AMOUNT_PRECISION)}
+            amountAfterFees={tokenViewAmount(trade.outputAmount)}
+            amountBeforeFees={tokenViewAmount(trade.outputAmountWithoutFee)}
             feeAmount={trade.outputAmountWithoutFee?.subtract(trade.outputAmount)}
             label={exactOutLabel}
             allowsOffchainSigning={allowsOffchainSigning}
@@ -303,8 +304,7 @@ SwapModalHeaderProps) {
               Output is estimated. You will receive at least{' '}
               <b>
                 {/* {trade.minimumAmountOut(allowedSlippage).toSignificant(6)} {trade.outputAmount.currency.symbol} */}
-                {formatSmart(slippageOut, AMOUNT_PRECISION) || '-'} <TokenSymbol token={trade.outputAmount.currency} />{' '}
-                {/* // MOD */}
+                {tokenViewAmount(slippageOut) || '-'} <TokenSymbol token={trade.outputAmount.currency} /> {/* // MOD */}
                 {/* {trade.outputAmount.currency.symbol} */}
               </b>{' '}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
@@ -316,7 +316,7 @@ SwapModalHeaderProps) {
               Input is estimated. You will sell at most{' '}
               <b>
                 {/* {trade.maximumAmountIn(allowedSlippage).toSignificant(6)} {trade.inputAmount.currency.symbol} */}
-                {formatSmart(slippageIn, AMOUNT_PRECISION) || '-'}
+                {tokenViewAmount(slippageIn) || '-'}
                 {/* {trade.inputAmount.currency.symbol} */}
                 <TokenSymbol token={trade.inputAmount.currency} /> {/* // MOD */}
               </b>{' '}
