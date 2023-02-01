@@ -171,6 +171,8 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
                 min={min}
                 max={max}
                 value={value}
+                // The `pattern` is not used at all in `datetime-local` input, but is in place
+                // to enforce it when it isn't support. In that case it's rendered as a regular `text` input
                 pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
               />
             </CustomLabel>
