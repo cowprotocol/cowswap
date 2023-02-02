@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
 
 import { useWeb3React } from '@web3-react/core'
@@ -20,7 +20,7 @@ import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { usePolling } from '@cow/common/hooks/usePolling'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -162,19 +162,11 @@ export function UnfillableOrdersUpdater(): null {
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag])
 
-  const isWindowVisible = useIsWindowVisible()
-
-  useEffect(() => {
-    if (!chainId || !account || !isWindowVisible) {
-      console.debug('[UnfillableOrdersUpdater] No need to fetch unfillable orders')
-      return
-    }
-
-    console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
-    updatePending()
-    const interval = setInterval(updatePending, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
-    return () => clearInterval(interval)
-  }, [updatePending, chainId, account, isWindowVisible])
+  usePolling({
+    doPolling: updatePending,
+    name: 'UnfillableOrdersUpdater',
+    pollingTimeMs: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,
+  })
 
   return null
 }
