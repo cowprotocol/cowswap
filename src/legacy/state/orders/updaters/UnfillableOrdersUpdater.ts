@@ -30,7 +30,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
 
-import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
