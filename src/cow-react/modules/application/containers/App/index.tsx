@@ -1,4 +1,5 @@
 import { initializeAnalytics } from 'components/AmplitudeAnalytics'
+import { useAnalyticsReporter } from '@src/custom/components/analytics'
 import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import ErrorBoundary from 'components/ErrorBoundary'
@@ -16,6 +17,7 @@ import * as styledEl from './styled'
 
 export function App() {
   initializeAnalytics()
+  useAnalyticsReporter()
 
   return (
     <ErrorBoundary>
