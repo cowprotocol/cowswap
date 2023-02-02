@@ -316,9 +316,7 @@ SwapModalHeaderProps) {
               Input is estimated. You will sell at most{' '}
               <b>
                 {/* {trade.maximumAmountIn(allowedSlippage).toSignificant(6)} {trade.inputAmount.currency.symbol} */}
-                {tokenViewAmount(slippageIn) || '-'}
-                {/* {trade.inputAmount.currency.symbol} */}
-                <TokenSymbol token={trade.inputAmount.currency} /> {/* // MOD */}
+                {tokenViewAmount(slippageIn) || '-'} <TokenSymbol token={trade.inputAmount.currency} /> {/* // MOD */}
               </b>{' '}
               {/* or the transaction will revert. */}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}

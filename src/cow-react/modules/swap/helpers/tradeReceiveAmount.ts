@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import { formatSmartAmount } from '@cow/utils/format'
 import TradeGp from 'state/swap/TradeGp'
-import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
 
 export interface ReceiveAmountInfo {
   type: 'from' | 'to'
@@ -16,19 +16,19 @@ export function getInputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
     amountBeforeFees:
       trade.tradeType === TradeType.EXACT_INPUT && trade.inputAmountWithFee.lessThan(trade.fee.amount)
         ? '0'
-        : tokenViewAmount(trade.inputAmountWithoutFee) || '0',
+        : formatSmartAmount(trade.inputAmountWithoutFee) || '0',
     amountAfterFeesRaw: trade.inputAmountWithFee,
-    amountAfterFees: tokenViewAmount(trade.inputAmountWithFee) || '0',
-    feeAmount: tokenViewAmount(trade.fee.feeAsCurrency) || '0',
+    amountAfterFees: formatSmartAmount(trade.inputAmountWithFee) || '0',
+    feeAmount: formatSmartAmount(trade.fee.feeAsCurrency) || '0',
   }
 }
 
 export function getOutputReceiveAmountInfo(trade: TradeGp): ReceiveAmountInfo {
   return {
     type: 'to',
-    amountBeforeFees: tokenViewAmount(trade.outputAmountWithoutFee) || '0',
+    amountBeforeFees: formatSmartAmount(trade.outputAmountWithoutFee) || '0',
     amountAfterFeesRaw: trade.outputAmount,
-    amountAfterFees: tokenViewAmount(trade.outputAmount) || '0',
-    feeAmount: tokenViewAmount(trade.outputAmountWithoutFee?.subtract(trade.outputAmount)) || '0',
+    amountAfterFees: formatSmartAmount(trade.outputAmount) || '0',
+    feeAmount: formatSmartAmount(trade.outputAmountWithoutFee?.subtract(trade.outputAmount)) || '0',
   }
 }
