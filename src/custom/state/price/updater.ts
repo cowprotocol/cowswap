@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { DEFAULT_DECIMALS } from 'custom/constants'
 
@@ -23,6 +23,7 @@ import { useOrderValidTo } from 'state/user/hooks'
 import { isAddress } from 'utils'
 import useENSAddress from 'hooks/useENSAddress'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { usePolling } from '@cow/common/hooks/usePolling'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -168,9 +169,9 @@ export default function FeesUpdater(): null {
   const sellTokenAddressInvalid = sellCurrency && !sellCurrency.isNative && !isAddress(sellCurrencyId)
   const buyTokenAddressInvalid = buyCurrency && !buyCurrency.isNative && !isAddress(buyCurrencyId)
 
-  // Update if any parameter is changing
-  useEffect(() => {
-    // Don't refetch if:
+  // Callback to re-fetch both the fee and the price
+  const refetchQuoteIfRequired = useCallback(() => {
+    // refetch if:
     //  - window is not visible
     //  - some parameter is missing
     //  - it is a wrapping operation
@@ -236,43 +237,28 @@ export default function FeesUpdater(): null {
     if (!unsupportedToken && lastUnsupportedCheck) {
       setLastUnsupportedCheck(null)
     }
+    // IS an unsupported token and it's been greater than the threshold time
+    const unsupportedNeedsCheck = unsupportedTokenNeedsRecheck(unsupportedToken, lastUnsupportedCheck)
 
-    // Callback to re-fetch both the fee and the price
-    const refetchQuoteIfRequired = () => {
-      // IS an unsupported token and it's been greater than the threshold time
-      const unsupportedNeedsCheck = unsupportedTokenNeedsRecheck(unsupportedToken, lastUnsupportedCheck)
+    // if no token is unsupported and needs refetching
+    const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
 
-      // if no token is unsupported and needs refetching
-      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
+    if (unsupportedNeedsCheck || hasToRefetch) {
+      // Decide if this is a new quote, or just a refresh
+      const thereIsPreviousPrice = !!quoteInfo?.price?.amount
+      const isPriceRefresh = quoteInfo
+        ? thereIsPreviousPrice && quoteUsingSameParameters(quoteParams, quoteInfo)
+        : false
 
-      if (unsupportedNeedsCheck || hasToRefetch) {
-        // Decide if this is a new quote, or just a refresh
-        const thereIsPreviousPrice = !!quoteInfo?.price?.amount
-        const isPriceRefresh = quoteInfo
-          ? thereIsPreviousPrice && quoteUsingSameParameters(quoteParams, quoteInfo)
-          : false
+      setLastUnsupportedCheck(Date.now())
 
-        setLastUnsupportedCheck(Date.now())
-
-        refetchQuote({
-          quoteParams,
-          fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
-          previousFee: quoteInfo?.fee,
-          isPriceRefresh,
-        }).catch((error) => console.error('Error re-fetching the quote', error))
-      }
+      refetchQuote({
+        quoteParams,
+        fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
+        previousFee: quoteInfo?.fee,
+        isPriceRefresh,
+      }).catch((error) => console.error('Error re-fetching the quote', error))
     }
-
-    // Refetch fee and price if any parameter changes
-    refetchQuoteIfRequired()
-
-    // Periodically re-fetch the fee/price, even if the user don't change the parameters
-    // Note that refetchFee won't refresh if it doesn't need to (i.e. the quote is valid for a long time)
-    const intervalId = setInterval(() => {
-      refetchQuoteIfRequired()
-    }, REFETCH_CHECK_INTERVAL)
-
-    return () => clearInterval(intervalId)
   }, [
     isEthFlow,
     isWindowVisible,
@@ -296,6 +282,12 @@ export default function FeesUpdater(): null {
     buyTokenAddressInvalid,
     sellTokenAddressInvalid,
   ])
+
+  usePolling({
+    doPolling: refetchQuoteIfRequired,
+    name: 'FeesUpdater',
+    pollingTimeMs: REFETCH_CHECK_INTERVAL,
+  })
 
   return null
 }
