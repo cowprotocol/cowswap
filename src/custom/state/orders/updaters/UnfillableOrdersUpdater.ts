@@ -20,7 +20,7 @@ import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 
-import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure

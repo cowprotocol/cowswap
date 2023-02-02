@@ -13,7 +13,7 @@ import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { onlyResolvesLast } from 'utils/async'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 // Every 10s
 const REFETCH_CHECK_INTERVAL = 10000
