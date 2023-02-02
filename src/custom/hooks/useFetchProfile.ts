@@ -2,6 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 import { getProfileData } from '@cow/api/gnosisProtocol'
 import { ProfileData } from '@cow/api/gnosisProtocol/api'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 type FetchProfileState = {
   profileData: ProfileData | null
@@ -20,9 +21,16 @@ const FETCH_INTERVAL_IN_MINUTES = 5
 export default function useFetchProfile(): FetchProfileState {
   const { account, chainId } = useWeb3React()
   const [profile, setProfile] = useState<FetchProfileState>(emptyState)
+  const isWindowVisible = useIsWindowVisible()
 
   useEffect(() => {
+    if (!isWindowVisible) {
+      console.debug('[useFetchProfile] No need to fetch profile info')
+      return
+    }
+
     async function fetchAndSetProfileData() {
+      console.debug('[useFetchProfile] Fetching profile info')
       try {
         if (chainId && account) {
           setProfile((profile) => ({ ...profile, isLoading: true, error: '' }))
@@ -41,11 +49,12 @@ export default function useFetchProfile(): FetchProfileState {
       }
     }
 
+    console.debug('[useFetchProfile] No need to fetch profile info')
     const intervalId = setInterval(fetchAndSetProfileData, FETCH_INTERVAL_IN_MINUTES * 60_000)
 
     fetchAndSetProfileData()
     return () => clearInterval(intervalId)
-  }, [account, chainId])
+  }, [account, chainId, isWindowVisible])
 
   return profile
 }
