@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import { useCallback, useLayoutEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useUpdateAtom } from 'jotai/utils'
 
@@ -13,7 +13,7 @@ import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { onlyResolvesLast } from 'utils/async'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { usePolling } from '@cow/common/hooks/usePolling'
 
 // Every 10s
 const REFETCH_CHECK_INTERVAL = 10000
@@ -32,39 +32,32 @@ export function useFetchMarketPrice() {
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersTradeState()
   const handleResponse = useHandleResponse()
 
-  const isWindowVisible = useIsWindowVisible()
-
-  // Main hook updater
-  useLayoutEffect(() => {
-    if (!feeQuoteParams || isWrapOrUnwrap || !isWindowVisible) {
-      console.debug('[useFetchMarketPrice] No need to fetch quotes')
-      return
-    }
-
-    console.debug('[useFetchMarketPrice] Periodically fetch quotes')
-    const handleFetchQuote = () => {
-      console.debug('[useFetchMarketPrice] Fetching price')
-      getQuoteOnlyResolveLast(feeQuoteParams)
-        .then(handleResponse)
-        .catch((error: GpQuoteError) => {
-          setLimitOrdersQuote({ error })
-          updateLimitRateState({ executionRate: null })
-        })
-        .finally(() => updateLimitRateState({ isLoadingExecutionRate: false }))
-    }
-
-    handleFetchQuote()
-
-    // Run the interval
-    const intervalId = setInterval(handleFetchQuote, REFETCH_CHECK_INTERVAL)
-
-    return () => clearInterval(intervalId)
-  }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote, isWrapOrUnwrap, isWindowVisible])
-
   // Turn on the loading if some of these dependencies have changed and remove execution rate
   useLayoutEffect(() => {
     updateLimitRateState({ isLoadingExecutionRate: true, executionRate: null })
   }, [chainId, inputCurrency, outputCurrency, orderKind, account, updateLimitRateState])
+
+  const handleFetchQuote = useCallback(() => {
+    if (!feeQuoteParams || isWrapOrUnwrap) {
+      console.debug('[useFetchMarketPrice] No need to fetch quotes')
+      return
+    }
+
+    console.debug('[useFetchMarketPrice] Fetching price')
+    getQuoteOnlyResolveLast(feeQuoteParams)
+      .then(handleResponse)
+      .catch((error: GpQuoteError) => {
+        setLimitOrdersQuote({ error })
+        updateLimitRateState({ executionRate: null })
+      })
+      .finally(() => updateLimitRateState({ isLoadingExecutionRate: false }))
+  }, [feeQuoteParams, handleResponse, isWrapOrUnwrap, setLimitOrdersQuote, updateLimitRateState])
+
+  usePolling({
+    doPolling: handleFetchQuote,
+    name: 'useFetchMarketPrice',
+    pollingTimeMs: REFETCH_CHECK_INTERVAL,
+  })
 
   return null
 }
