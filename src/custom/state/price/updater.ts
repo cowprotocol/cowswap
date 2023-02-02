@@ -11,7 +11,6 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { Field } from 'state/swap/actions'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
 
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import { useWeb3React } from '@web3-react/core'
@@ -161,7 +160,6 @@ export default function FeesUpdater(): null {
   const refetchQuote = useRefetchQuoteCallback()
   const setQuoteError = useSetQuoteError()
 
-  const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const { validTo } = useOrderValidTo()
 
@@ -180,7 +178,6 @@ export default function FeesUpdater(): null {
       !sellCurrencyId ||
       !buyCurrencyId ||
       !typedValue ||
-      !isWindowVisible ||
       sellTokenAddressInvalid ||
       buyTokenAddressInvalid
     )
@@ -261,7 +258,6 @@ export default function FeesUpdater(): null {
     }
   }, [
     isEthFlow,
-    isWindowVisible,
     isOnline,
     chainId,
     sellCurrencyId,
