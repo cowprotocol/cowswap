@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
@@ -19,6 +19,7 @@ import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useWalletInfo } from 'modules/wallet'
 
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
+import { usePolling } from 'common/hooks/usePolling'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { getAddress } from 'utils/getAddress'
 
@@ -157,8 +158,7 @@ export default function FeesUpdater(): null {
   const sellTokenAddressInvalid = sellCurrency && !sellCurrency.isNative && !isAddress(sellCurrencyId)
   const buyTokenAddressInvalid = buyCurrency && !buyCurrency.isNative && !isAddress(buyCurrencyId)
 
-  // Update if any parameter is changing
-  useEffect(() => {
+  const refetchQuoteIfRequired = useCallback(() => {
     // Don't refetch if:
     //  - window is not visible
     //  - some parameter is missing
@@ -221,37 +221,23 @@ export default function FeesUpdater(): null {
 
     const unsupportedToken = isUnsupportedTokenGp(sellCurrencyId) || isUnsupportedTokenGp(buyCurrencyId)
 
-    // Callback to re-fetch both the fee and the price
-    const refetchQuoteIfRequired = () => {
-      // if no token is unsupported and needs refetching
-      const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
+    // if no token is unsupported and needs refetching
+    const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
 
-      if (hasToRefetch) {
-        // Decide if this is a new quote, or just a refresh
-        const thereIsPreviousPrice = !!quoteInfo?.price?.amount
-        const isPriceRefresh = quoteInfo
-          ? thereIsPreviousPrice && quoteUsingSameParameters(quoteParams, quoteInfo)
-          : false
+    if (hasToRefetch) {
+      // Decide if this is a new quote, or just a refresh
+      const thereIsPreviousPrice = !!quoteInfo?.price?.amount
+      const isPriceRefresh = quoteInfo
+        ? thereIsPreviousPrice && quoteUsingSameParameters(quoteParams, quoteInfo)
+        : false
 
-        refetchQuote({
-          quoteParams,
-          fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
-          previousFee: quoteInfo?.fee,
-          isPriceRefresh,
-        }).catch((error) => console.error('Error re-fetching the quote', error))
-      }
+      refetchQuote({
+        quoteParams,
+        fetchFee: true, // TODO: Review this, because probably now doesn't make any sense to not query the feee in some situations. Actually the endpoint will change to one that returns fee and quote together
+        previousFee: quoteInfo?.fee,
+        isPriceRefresh,
+      }).catch((error) => console.error('Error re-fetching the quote', error))
     }
-
-    // Refetch fee and price if any parameter changes
-    refetchQuoteIfRequired()
-
-    // Periodically re-fetch the fee/price, even if the user don't change the parameters
-    // Note that refetchFee won't refresh if it doesn't need to (i.e. the quote is valid for a long time)
-    const intervalId = setInterval(() => {
-      refetchQuoteIfRequired()
-    }, REFETCH_CHECK_INTERVAL)
-
-    return () => clearInterval(intervalId)
   }, [
     isEthFlow,
     isWindowVisible,
@@ -274,6 +260,18 @@ export default function FeesUpdater(): null {
     buyTokenAddressInvalid,
     sellTokenAddressInvalid,
   ])
+
+  /**
+   * Periodically fetch quotes
+   */
+  usePolling({
+    doPolling: refetchQuoteIfRequired,
+    name: 'FeesUpdater',
+    pollingTimeMs: REFETCH_CHECK_INTERVAL,
+  })
+
+  // Query quotes if any relevant parameter changes
+  useEffect(() => refetchQuoteIfRequired, [refetchQuoteIfRequired])
 
   return null
 }
