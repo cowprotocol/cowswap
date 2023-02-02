@@ -239,7 +239,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {isUnlocked ? (
             <>
               <CurrencyInputPanel
-                id="swap-currency-input"
+                id="limit-orders-currency-input"
                 disableNonToken={false}
                 chainId={chainId}
                 loading={currenciesLoadingInProgress}
@@ -269,7 +269,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
               </styledEl.CurrencySeparatorBox>
               <CurrencyInputPanel
-                id="swap-currency-output"
+                id="limit-orders-currency-output"
                 disableNonToken={false}
                 chainId={chainId}
                 loading={currenciesLoadingInProgress}
