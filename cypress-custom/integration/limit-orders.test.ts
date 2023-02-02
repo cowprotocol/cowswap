@@ -21,8 +21,8 @@ describe('Limit orders', () => {
     cy.get('#rate-limit-amount-input').clear().type(outputAmount, { force: true })
     cy.get('#review-limit-order-btn').click()
 
-    cy.get('#limit-orders-currency-output .token-amount-input').should('have.value', '200B')
+    cy.get('#limit-orders-currency-output .token-amount-input').should('have.value', outputAmount)
     cy.get('#limit-orders-confirm #input-currency-preview .token-amount-input').should('have.value', inputAmount)
-    cy.get('#limit-orders-confirm #output-currency-preview .token-amount-input').should('have.value', '200B')
+    cy.get('#limit-orders-confirm #output-currency-preview .token-amount-input').should('have.value', outputAmount)
   })
 })
