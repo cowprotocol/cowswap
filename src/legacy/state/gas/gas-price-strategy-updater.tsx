@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useCallback } from 'react'
 
 import ms from 'ms.macro'
 
@@ -9,6 +9,7 @@ import { gasPriceStrategyAtom } from 'legacy/state/gas/atoms'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getPriceStrategy } from 'api/gnosisProtocol/priceApi'
+import { usePolling } from 'common/hooks/usePolling'
 
 const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 
@@ -16,29 +17,25 @@ export function GasPriceStrategyUpdater(): null {
   const { chainId } = useWalletInfo()
   const setGasPriceStrategy = useSetAtom(gasPriceStrategyAtom)
 
-  useEffect(() => {
+  const updateCallback = useCallback(() => {
     if (!chainId) return
 
-    const updateCallback = () => {
-      getPriceStrategy(chainId)
-        .then((response) => {
-          setGasPriceStrategy(response.primary)
-        })
-        .catch((err: Error) => {
-          console.error('[GasPiceStrategyUpdater] Error getting GP price strategy::', err)
+    getPriceStrategy(chainId)
+      .then((response) => {
+        setGasPriceStrategy(response.primary)
+      })
+      .catch((err: Error) => {
+        console.error('[GasPiceStrategyUpdater] Error getting GP price strategy::', err)
 
-          setGasPriceStrategy(DEFAULT_GP_PRICE_STRATEGY)
-        })
-    }
-
-    const intervalId = setInterval(updateCallback, GP_PRICE_STRATEGY_INTERVAL_TIME)
-
-    updateCallback()
-
-    return () => {
-      clearInterval(intervalId)
-    }
+        setGasPriceStrategy(DEFAULT_GP_PRICE_STRATEGY)
+      })
   }, [chainId, setGasPriceStrategy])
+
+  usePolling({
+    doPolling: updateCallback,
+    name: 'GasPriceStrategyUpdater',
+    pollingTimeMs: GP_PRICE_STRATEGY_INTERVAL_TIME,
+  })
 
   return null
 }
