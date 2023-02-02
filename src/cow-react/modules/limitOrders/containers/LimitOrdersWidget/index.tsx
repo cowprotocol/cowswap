@@ -83,7 +83,7 @@ export function LimitOrdersWidget() {
     [settingState.showRecipient, isWrapOrUnwrap]
   )
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
-  const inputViewAmount = tokenViewAmount(inputCurrencyAmount)
+  const inputViewAmount = tokenViewAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -100,7 +100,9 @@ export function LimitOrdersWidget() {
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You receive at least' : 'You receive exactly',
     currency: outputCurrency,
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
-    viewAmount: isWrapOrUnwrap ? inputViewAmount : tokenViewAmount(outputCurrencyAmount),
+    viewAmount: isWrapOrUnwrap
+      ? inputViewAmount
+      : tokenViewAmount(outputCurrencyAmount, outputCurrencyBalance, orderKind === OrderKind.BUY),
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
