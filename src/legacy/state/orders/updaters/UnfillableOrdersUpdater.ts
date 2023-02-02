@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -29,8 +29,7 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { useWalletInfo } from 'modules/wallet'
 
 import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
-
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { usePolling } from 'common/hooks/usePolling'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -216,19 +215,11 @@ export function UnfillableOrdersUpdater(): null {
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
-  const isWindowVisible = useIsWindowVisible()
-
-  useEffect(() => {
-    if (!chainId || !account || !isWindowVisible) {
-      console.debug('[UnfillableOrdersUpdater] No need to fetch unfillable orders')
-      return
-    }
-
-    console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
-    updatePending()
-    const interval = setInterval(updatePending, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
-    return () => clearInterval(interval)
-  }, [updatePending, chainId, account, isWindowVisible])
+  usePolling({
+    doPolling: updatePending,
+    name: 'UnfillableOrdersUpdater',
+    pollingTimeMs: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,
+  })
 
   return null
 }
