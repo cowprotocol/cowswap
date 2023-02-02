@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Currency, Fraction } from '@uniswap/sdk-core'
-import { useAsyncMemo } from 'use-async-memo'
 
 import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/utils/getAddress'
 import ms from 'ms.macro'
 import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { usePolling } from '@cow/common/hooks/usePolling'
 
 type PriceResult = number | Error | undefined
 
@@ -72,36 +71,23 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
   const { chainId } = useWeb3React()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const [isLoading, setIsLoading] = useState(false)
-  const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())
-  const isWindowVisible = useIsWindowVisible()
 
-  const price = useAsyncMemo(
-    () => {
-      setIsLoading(true)
+  const [price, setPrice] = useState<Fraction | null>(null)
 
-      console.debug('[useGetInitialPrice] Fetching price')
-      return requestPrice(chainId, inputCurrency, outputCurrency).finally(() => {
+  const fetchPrice = useCallback(() => {
+    setIsLoading(true)
+    requestPrice(chainId, inputCurrency, outputCurrency)
+      .then(setPrice)
+      .finally(() => {
         setIsLoading(false)
       })
-    },
-    [chainId, inputCurrency, outputCurrency, updateTimestamp],
-    null
-  )
+  }, [chainId, inputCurrency, outputCurrency])
 
-  // Update initial price every 10 seconds
-  useEffect(() => {
-    if (!isWindowVisible) {
-      console.debug('[useGetInitialPrice] No need to fetch quotes')
-      return
-    }
-
-    console.debug('[useGetInitialPrice] Periodically fetch price')
-    const interval = setInterval(() => {
-      setUpdateTimestamp(Date.now())
-    }, PRICE_UPDATE_INTERVAL)
-
-    return () => clearInterval(interval)
-  }, [isWindowVisible])
+  usePolling({
+    doPolling: fetchPrice,
+    name: 'useGetInitialPrice',
+    pollingTimeMs: PRICE_UPDATE_INTERVAL,
+  })
 
   return { price, isLoading }
 }
