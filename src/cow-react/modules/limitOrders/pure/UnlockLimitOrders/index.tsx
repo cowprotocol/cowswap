@@ -40,7 +40,9 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
         <ExternalLink href="https://cow-protocol.medium.com/the-cow-has-no-limits-342e7eae8794">
           Learn more about limit orders ↗
         </ExternalLink>
-        <ButtonPrimary onClick={handleUnlock}>Unlock limit orders (BETA)</ButtonPrimary>
+        <ButtonPrimary id="unlock-limit-orders-btn" onClick={handleUnlock}>
+          Unlock limit orders (BETA)
+        </ButtonPrimary>
       </styledEl.ControlSection>
     </styledEl.Container>
   )
