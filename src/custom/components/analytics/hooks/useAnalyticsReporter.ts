@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
-import { Path } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 // Mod imports
@@ -35,7 +35,9 @@ export function initGATracker() {
 }
 
 // tracks web vitals and pageviews
-export function useAnalyticsReporter({ pathname, search }: Path) {
+export function useAnalyticsReporter() {
+  const { pathname, search } = useLocation()
+
   // Handle chain id custom dimension
   const { chainId, connector, account } = useWeb3React()
   useEffect(() => {
