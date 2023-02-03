@@ -93,7 +93,7 @@ function SlippageTextContents({ isEthFlow }: SlippageTextContentsProps) {
   return (
     <TransactionText>
       <Trans>Slippage tolerance</Trans>
-      {isEthFlow && (<i>(modified)</i>)}
+      {isEthFlow && <i>(modified)</i>}
     </TransactionText>
   )
 }

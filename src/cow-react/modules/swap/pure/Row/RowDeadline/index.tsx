@@ -79,7 +79,7 @@ function DeadlineTextContents({ isEthFlow }: DeadlineTextContentsProps) {
   return (
     <TransactionText>
       <Trans>Transaction expiration</Trans>
-      {isEthFlow && (<i>(modified)</i>)}
+      {isEthFlow && <i>(modified)</i>}
     </TransactionText>
   )
 }
