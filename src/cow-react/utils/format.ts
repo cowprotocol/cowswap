@@ -11,19 +11,7 @@ import {
   LONG_PRECISION,
 } from 'constants/index'
 
-const TEN = new BigNumber(10)
-
-export const numberFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0,
-})
-
-export function formatAtoms(amount: string, decimals: number): string {
-  return new BigNumber(amount).div(TEN.pow(decimals)).toString(10)
-}
-
-export interface FormatSmartOptions {
+interface FormatSmartOptions {
   thousandSeparator?: boolean
   smallLimit?: string
   isLocaleAware?: boolean
