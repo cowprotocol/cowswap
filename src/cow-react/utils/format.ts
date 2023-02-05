@@ -2,13 +2,7 @@ import BigNumber from 'bignumber.js'
 
 import { formatSmart as _formatSmart } from '@cowprotocol/cow-js'
 import { Currency, CurrencyAmount, Percent, Fraction } from '@uniswap/sdk-core'
-import {
-  DEFAULT_DECIMALS,
-  DEFAULT_PRECISION,
-  DEFAULT_SMALL_LIMIT,
-  FULL_PRICE_PRECISION,
-  LONG_PRECISION,
-} from 'constants/index'
+import { DEFAULT_DECIMALS, DEFAULT_PRECISION, DEFAULT_SMALL_LIMIT, FULL_PRICE_PRECISION } from 'constants/index'
 
 interface FormatSmartOptions {
   thousandSeparator?: boolean
@@ -126,36 +120,6 @@ export function formatSmart(
     smallLimit: _buildSmallLimit(options?.smallLimit, smallLimitPrecision),
     isLocaleAware: !!options?.isLocaleAware,
   })
-}
-
-/**
- * Formats Fraction with max precision
- *
- * If value has less that `decimals` precision, show the value with 1 significant digit
- * E.g.:
- *   Token decimals: `2`; value: `0.0014123`
- *   => `0.001`
- *
- *   Token decimals: `5`; value: `0.0014123`
- *   => `0.00141`
- *
- *   Token decimals: `10`; value: `412310.0014123`
- *   => `412310.0014123000`
- *
- * @param value
- * @param decimals
- * @deprecated use FractionUtils.fractionLikeToExact
- */
-export function formatMax(value?: Fraction, decimals?: number): string | undefined {
-  if (!value) {
-    return
-  }
-  let amount = value.toFixed(decimals ?? LONG_PRECISION)
-
-  if (+amount === 0) {
-    amount = value.toSignificant(1)
-  }
-  return amount
 }
 
 const DEFAULT_MAX_SYMBOL_LENGTH = 12

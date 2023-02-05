@@ -3,12 +3,13 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
 import QuestionHelper from 'components/QuestionHelper'
 import styled from 'styled-components/macro'
-import { formatMax, formatSmart } from '@cow/utils/format'
+import { formatSmart } from '@cow/utils/format'
 import useTheme from 'hooks/useTheme'
-import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION } from 'constants/index'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
@@ -124,9 +125,9 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
 
   const { subsidy } = useCowBalanceAndSubsidy()
 
-  const [symbol, fullFeeAmount] = useMemo(() => {
+  const symbol = useMemo(() => {
     const amount = trade?.[type === 'From' ? 'inputAmount' : 'outputAmount']
-    return amount ? [amount.currency.symbol || '', formatMax(amount, amount.currency.decimals) || '-'] : []
+    return amount?.currency.symbol
   }, [trade, type])
 
   if (!trade || !showHelper) return null
@@ -164,8 +165,13 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
           }
         />
       </span>
-      <FeeAmountAndFiat title={`${fullFeeAmount} ${symbol}`}>
-        {amountAfterFees} {showFiat && fiatValue && <small>≈ ${formatSmart(fiatValue, FIAT_PRECISION)}</small>}
+      <FeeAmountAndFiat>
+        {amountAfterFees}{' '}
+        {showFiat && fiatValue && (
+          <small>
+            <FiatAmount amount={fiatValue} />
+          </small>
+        )}
       </FeeAmountAndFiat>
     </FeeInformationTooltipWrapper>
   )

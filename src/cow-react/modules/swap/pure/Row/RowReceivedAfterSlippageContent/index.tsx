@@ -13,13 +13,12 @@ import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export interface RowReceivedAfterSlippageContentProps extends RowReceivedAfterSlippageProps {
   isExactIn: boolean
-  fullOutAmount: string
   swapAmount: CurrencyAmount<Currency> | undefined
   styleProps?: RowStyleProps
 }
 
 export function RowReceivedAfterSlippageContent(props: RowReceivedAfterSlippageContentProps) {
-  const { trade, showHelpers, allowedSlippage, isExactIn, fullOutAmount, swapAmount, styleProps = {} } = props
+  const { trade, showHelpers, allowedSlippage, isExactIn, swapAmount, styleProps = {} } = props
   return (
     <StyledRowBetween {...styleProps}>
       <RowFixed>
@@ -37,7 +36,7 @@ export function RowReceivedAfterSlippageContent(props: RowReceivedAfterSlippageC
         )}
       </RowFixed>
 
-      <TextWrapper textAlign="right" title={`${fullOutAmount} ${swapAmount?.currency?.symbol}`}>
+      <TextWrapper textAlign="right">
         <TokenAmount amount={swapAmount} defaultValue="-" tokenSymbol={swapAmount?.currency} />
       </TextWrapper>
     </StyledRowBetween>

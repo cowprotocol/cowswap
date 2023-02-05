@@ -25,7 +25,6 @@ import TradeGp from 'state/swap/TradeGp'
 import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
-import { formatMax } from '@cow/utils/format'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
@@ -132,9 +131,6 @@ SwapModalHeaderProps) {
     ]
   }, [trade])
 
-  const fullInputWithoutFee = formatMax(trade?.inputAmountWithoutFee, trade?.inputAmount.currency.decimals) || '-'
-  const fullOutputWithoutFee = formatMax(trade?.outputAmountWithoutFee, trade?.outputAmount.currency.decimals) || '-'
-
   return (
     <AutoColumn
       gap={'4px'}
@@ -157,11 +153,7 @@ SwapModalHeaderProps) {
               </Text>
             </RowFixed>
             <RowFixed gap={'0px'}>
-              <TruncatedText
-                fontSize={24}
-                fontWeight={500}
-                title={`${fullInputWithoutFee} ${trade.inputAmount.currency.symbol || ''}`}
-              >
+              <TruncatedText fontSize={24} fontWeight={500}>
                 <TokenAmount amount={trade.inputAmountWithoutFee} />
               </TruncatedText>
             </RowFixed>
@@ -228,11 +220,7 @@ SwapModalHeaderProps) {
               </Text>
             </RowFixed>
             <RowFixed gap={'0px'}>
-              <TruncatedText
-                fontSize={24}
-                fontWeight={500}
-                title={`${fullOutputWithoutFee} ${trade.outputAmount.currency.symbol || ''}`}
-              >
+              <TruncatedText fontSize={24} fontWeight={500}>
                 {<TokenAmount amount={trade.outputAmountWithoutFee} />}
               </TruncatedText>
             </RowFixed>

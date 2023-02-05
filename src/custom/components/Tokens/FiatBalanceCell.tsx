@@ -3,8 +3,9 @@ import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FIAT_PRECISION } from 'constants/index'
 import { BalanceValue, InfoCircle, FiatValue } from './styled'
-import { formatMax, formatSmart } from '@cow/utils/format'
+import { formatSmart } from '@cow/utils/format'
 import { MouseoverTooltip } from 'components/Tooltip'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
 type FiatBalanceCellProps = {
   balance: CurrencyAmount<Token> | undefined
@@ -19,9 +20,9 @@ export default function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
   })
 
   return (
-    <BalanceValue title={formatMax(fiatValue || undefined, fiatValue?.currency.decimals)} hasBalance={!!hasBalance}>
+    <BalanceValue hasBalance={!!hasBalance}>
       {formattedFiatValue ? (
-        <span>$ {formattedFiatValue}</span>
+        <FiatAmount amount={fiatValue} accurate={true} />
       ) : (
         <FiatValue>
           <span>$ 0.00</span>
