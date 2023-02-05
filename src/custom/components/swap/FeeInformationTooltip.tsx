@@ -3,13 +3,13 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
 import QuestionHelper from 'components/QuestionHelper'
 import styled from 'styled-components/macro'
-import { formatSmart } from '@cow/utils/format'
 import useTheme from 'hooks/useTheme'
-import { AMOUNT_PRECISION } from 'constants/index'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { formatTokenAmount } from '@cow/utils/amountFormat'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
@@ -88,7 +88,7 @@ type FeeBreakdownProps = FeeInformationTooltipProps & {
 const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownProps) => {
   const typeString = type === 'From' ? '+' : '-'
 
-  const smartFee = formatSmart(feeAmount, AMOUNT_PRECISION)
+  const smartFee = formatTokenAmount(feeAmount)
 
   return (
     <FeeTooltipLine>
@@ -96,7 +96,7 @@ const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownPro
       {smartFee ? (
         <span>
           {typeString}
-          {smartFee} <TokenSymbol token={{ symbol }} length={MAX_TOKEN_SYMBOL_LENGTH} />
+          <TokenAmount amount={feeAmount} tokenSymbol={{ symbol }} />
         </span>
       ) : (
         <strong className="green">Free</strong>

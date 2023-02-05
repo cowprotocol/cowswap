@@ -1,7 +1,7 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
-import { formatSmart } from '@cow/utils/format'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 interface Props {
   label: string
@@ -16,7 +16,9 @@ export function CurrencyField({ label, token, amount }: Props) {
 
       <div>
         <CurrencySelectButton readonlyMode={true} loading={false} currency={token} />
-        <styledEl.CurrencyValue>{formatSmart(amount)}</styledEl.CurrencyValue>
+        <styledEl.CurrencyValue>
+          <TokenAmount amount={amount} />
+        </styledEl.CurrencyValue>
       </div>
     </styledEl.CurrencyField>
   )
