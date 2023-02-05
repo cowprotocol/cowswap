@@ -7,11 +7,9 @@ import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 
 import { getMinimumReceivedTooltip } from 'utils/tooltips'
-import { formatSmart } from '@cow/utils/format'
-import { AMOUNT_PRECISION } from 'constants/index'
 import { StyledRowBetween, TextWrapper } from '../styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/types'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export interface RowReceivedAfterSlippageContentProps extends RowReceivedAfterSlippageProps {
   isExactIn: boolean
@@ -40,8 +38,7 @@ export function RowReceivedAfterSlippageContent(props: RowReceivedAfterSlippageC
       </RowFixed>
 
       <TextWrapper textAlign="right" title={`${fullOutAmount} ${swapAmount?.currency?.symbol}`}>
-        {`${formatSmart(swapAmount, AMOUNT_PRECISION) || '-'} `}
-        <TokenSymbol token={swapAmount?.currency} />
+        <TokenAmount amount={swapAmount} defaultValue="-" tokenSymbol={swapAmount?.currency} />
       </TextWrapper>
     </StyledRowBetween>
   )

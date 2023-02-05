@@ -14,7 +14,7 @@ import { useWeb3React } from '@web3-react/core'
 import { getAddress } from '@cow/utils/getAddress'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
+import { formatAmountInput } from '@cow/utils/amountFormat'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -51,7 +51,7 @@ export function RateInput() {
 
     const rate = isInversed ? activeRate.invert() : activeRate
 
-    return tokenViewAmount(rate)
+    return formatAmountInput(rate)
   }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
 
   // Handle set market price

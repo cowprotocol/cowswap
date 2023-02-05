@@ -107,6 +107,7 @@ function _adjustCurrencyAmountPrecision(value: CurrencyAmount<Currency>): { amou
  * @param decimalsToShow
  * @param options
  * @returns string or undefined
+ * @deprecated use cow-react/utils/amountFormat
  */
 export function formatSmart(
   value: CurrencyAmount<Currency> | Percent | BigNumber | Fraction | null | undefined,
@@ -140,11 +141,17 @@ export function formatSmart(
   })
 }
 
+/**
+ * @deprecated use cow-react/utils/amountFormat
+ */
 export function formatSmartLocaleAware(...params: Parameters<typeof formatSmart>): ReturnType<typeof formatSmart> {
   const [value, decimalsToShow, options = {}] = params
   return formatSmart(value, decimalsToShow, { ...options, isLocaleAware: true, thousandSeparator: true })
 }
 
+/**
+ * @deprecated use cow-react/utils/amountFormat
+ */
 export function formatSmartAmount(
   value: CurrencyAmount<Currency> | Percent | BigNumber | Fraction | null | undefined
 ): string | undefined {
@@ -167,6 +174,7 @@ export function formatSmartAmount(
  *
  * @param value
  * @param decimals
+ * @deprecated use FractionUtils.fractionLikeToExact
  */
 export function formatMax(value?: Fraction, decimals?: number): string | undefined {
   if (!value) {
@@ -180,21 +188,9 @@ export function formatMax(value?: Fraction, decimals?: number): string | undefin
   return amount
 }
 
-/**
- * Truncated given `value` on `decimals`.
- * E.g.: value=10.001; decimals=2 => 10.00
- *
- * @param value
- * @param decimals
- */
-export function truncateOnMaxDecimals(value: string, decimals: number): string {
-  const regex = new RegExp(`(\\d*\\.\\d{${decimals}})\\d*`)
-  return value.replace(regex, '$1')
-}
-
 const DEFAULT_MAX_SYMBOL_LENGTH = 12
 
-export function formatSymbol(symbol: string | undefined, length?: number): string | undefined {
-  const maxLength = length ? length : DEFAULT_MAX_SYMBOL_LENGTH
+// TODO: move to another file
+export function formatSymbol(symbol: string | undefined, maxLength = DEFAULT_MAX_SYMBOL_LENGTH): string | undefined {
   return symbol && symbol.length > maxLength ? symbol.slice(0, maxLength) + '...' : symbol
 }

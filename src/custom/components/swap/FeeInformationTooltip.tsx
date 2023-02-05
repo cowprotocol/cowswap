@@ -14,8 +14,8 @@ interface FeeInformationTooltipProps {
   trade?: TradeGp
   label: React.ReactNode
   showHelper: boolean
-  amountBeforeFees?: string
-  amountAfterFees?: string
+  amountBeforeFees?: React.ReactNode
+  amountAfterFees?: React.ReactNode
   feeAmount?: CurrencyAmount<Currency>
   type: 'From' | 'To'
   fiatValue: CurrencyAmount<Token> | null

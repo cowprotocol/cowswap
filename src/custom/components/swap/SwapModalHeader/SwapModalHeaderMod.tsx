@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { /* Currency, */ Percent, TradeType } from '@uniswap/sdk-core'
-import { useContext, useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 // import { InterfaceTrade } from 'state/routing/types'
@@ -33,7 +33,7 @@ import { transparentize } from 'polished'
 import { WarningProps } from 'components/SwapWarnings'
 import { RateInfo, RateInfoParams } from '@cow/common/pure/RateInfo'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export const ArrowWrapper = styled.div`
   --size: 26px;
@@ -162,7 +162,7 @@ SwapModalHeaderProps) {
                 fontWeight={500}
                 title={`${fullInputWithoutFee} ${trade.inputAmount.currency.symbol || ''}`}
               >
-                {tokenViewAmount(trade.inputAmountWithoutFee)}
+                <TokenAmount amount={trade.inputAmountWithoutFee} />
               </TruncatedText>
             </RowFixed>
             {/*<RowFixed gap={'0px'}>
@@ -185,8 +185,8 @@ SwapModalHeaderProps) {
         >
           {/* TODO: replace <FeeInformationTooltip/> with <ReceiveAmountInfoTooltip /> */}
           <FeeInformationTooltip
-            amountAfterFees={tokenViewAmount(trade.inputAmountWithFee)}
-            amountBeforeFees={tokenViewAmount(trade.inputAmountWithoutFee)}
+            amountAfterFees={<TokenAmount amount={trade.inputAmountWithFee} />}
+            amountBeforeFees={<TokenAmount amount={trade.inputAmountWithoutFee} />}
             feeAmount={trade.fee.feeAsCurrency}
             allowsOffchainSigning={allowsOffchainSigning}
             label={exactInLabel}
@@ -233,7 +233,7 @@ SwapModalHeaderProps) {
                 fontWeight={500}
                 title={`${fullOutputWithoutFee} ${trade.outputAmount.currency.symbol || ''}`}
               >
-                {tokenViewAmount(trade.outputAmountWithoutFee)}
+                {<TokenAmount amount={trade.outputAmountWithoutFee} />}
               </TruncatedText>
             </RowFixed>
           </RowBetween>
@@ -250,8 +250,8 @@ SwapModalHeaderProps) {
       {!!exactOutLabel && (
         <AuxInformationContainer margin="-4px auto 4px" hideInput borderColor={transparentize(0.5, theme.bg0)}>
           <FeeInformationTooltip
-            amountAfterFees={tokenViewAmount(trade.outputAmount)}
-            amountBeforeFees={tokenViewAmount(trade.outputAmountWithoutFee)}
+            amountAfterFees={<TokenAmount amount={trade.outputAmount} />}
+            amountBeforeFees={<TokenAmount amount={trade.outputAmountWithoutFee} />}
             feeAmount={trade.outputAmountWithoutFee?.subtract(trade.outputAmount)}
             label={exactOutLabel}
             allowsOffchainSigning={allowsOffchainSigning}
@@ -304,7 +304,8 @@ SwapModalHeaderProps) {
               Output is estimated. You will receive at least{' '}
               <b>
                 {/* {trade.minimumAmountOut(allowedSlippage).toSignificant(6)} {trade.outputAmount.currency.symbol} */}
-                {tokenViewAmount(slippageOut) || '-'} <TokenSymbol token={trade.outputAmount.currency} /> {/* // MOD */}
+                <TokenAmount amount={slippageOut} defaultValue="-" tokenSymbol={trade.outputAmount.currency} />{' '}
+                {/* // MOD */}
                 {/* {trade.outputAmount.currency.symbol} */}
               </b>{' '}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
@@ -316,7 +317,8 @@ SwapModalHeaderProps) {
               Input is estimated. You will sell at most{' '}
               <b>
                 {/* {trade.maximumAmountIn(allowedSlippage).toSignificant(6)} {trade.inputAmount.currency.symbol} */}
-                {tokenViewAmount(slippageIn) || '-'} <TokenSymbol token={trade.inputAmount.currency} /> {/* // MOD */}
+                <TokenAmount amount={slippageIn} defaultValue="-" tokenSymbol={trade.inputAmount.currency} />{' '}
+                {/* // MOD */}
               </b>{' '}
               {/* or the transaction will revert. */}
               or the swap will not execute. {INPUT_OUTPUT_EXPLANATION}
