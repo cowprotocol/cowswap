@@ -8,10 +8,11 @@ import { SupportedChainId } from 'constants/chains'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { usePrice } from '@cow/common/hooks/usePrice'
 import { transparentize } from 'polished'
-import { DEFAULT_DECIMALS } from '@cowprotocol/cow-js'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
+
+const DEFAULT_DECIMALS = 4
 
 export interface RateInfoParams {
   chainId: SupportedChainId | undefined
