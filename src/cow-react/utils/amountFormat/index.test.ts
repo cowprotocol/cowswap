@@ -7,6 +7,12 @@ describe('Amounts formatting', () => {
   const getAmount = (value: string, decimalsShift: number) =>
     CurrencyAmount.fromRawAmount(DAI_GOERLI, value + '0'.repeat(decimals + decimalsShift))
 
+  it('Zero amount', () => {
+    const result = formatTokenAmount(getAmount('0', 0))
+
+    expect(result).toBe('0')
+  })
+
   it('Extra small amount', () => {
     const result = formatTokenAmount(getAmount('1', -decimals))
 

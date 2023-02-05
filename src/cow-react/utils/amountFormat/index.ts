@@ -34,7 +34,7 @@ export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precisi
     : ''
   const result = formattedQuotient + formattedRemainder + suffix
 
-  return +result === 0 ? lessThanPrecisionSymbol(precision) : result
+  return remainder.greaterThan(0) && +result === 0 ? lessThanPrecisionSymbol(precision) : result
 }
 
 export function formatAmountInput(

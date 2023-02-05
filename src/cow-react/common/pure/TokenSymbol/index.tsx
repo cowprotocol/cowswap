@@ -15,9 +15,10 @@ export function TokenSymbol({ token, length, className }: TokenSymbolProps) {
 
   const fullSymbol = symbol || name
   const abbreviateSymbol = formatSymbol(fullSymbol, length)
+  const title = fullSymbol === abbreviateSymbol ? undefined : fullSymbol
 
   return (
-    <span className={className} title={fullSymbol}>
+    <span className={className} title={title}>
       {abbreviateSymbol}
     </span>
   )
