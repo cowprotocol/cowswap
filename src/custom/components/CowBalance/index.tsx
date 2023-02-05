@@ -1,11 +1,10 @@
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { AMOUNT_PRECISION } from 'constants/index'
 import { ClaimSummaryTitle, ClaimTotal, ClaimSummary as ClaimSummaryWrapper } from '@cow/pages/Claim/styled'
-import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { CowSubsidyInfoProps } from 'components/CowSubsidyModal'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 const Wrapper = styled(ClaimSummaryWrapper)`
   border-radius: 100px;
@@ -44,9 +43,9 @@ const CowBalance = ({ balance, title }: CowBalanceProps) => {
       <div>
         <ClaimTotal>
           <b>Your combined balance</b>
-          <p title={`${balance ? formatMax(balance, balance.currency.decimals) : '0'} vCOW`}>
+          <p>
             {' '}
-            {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || '0'} (v)COW
+            <TokenAmount amount={balance} defaultValue="0" tokenSymbol={balance?.currency} />
           </p>
         </ClaimTotal>
       </div>

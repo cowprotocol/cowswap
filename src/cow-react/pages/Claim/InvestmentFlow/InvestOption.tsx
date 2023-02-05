@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 import { BigNumber } from '@ethersproject/bignumber'
 import SVG from 'react-inlinesvg'
 
@@ -14,7 +14,7 @@ import {
   UserMessage,
   WarningWrapper,
 } from '../styled'
-import { formatMax, formatSmartLocaleAware, formatSymbol } from '@cow/utils/format'
+import { formatSymbol } from '@cow/utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
@@ -31,7 +31,6 @@ import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { calculateInvestmentAmounts, calculatePercentage } from 'state/claim/hooks/utils'
-import { AMOUNT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
 import { useGasPrices } from 'state/gas/hooks'
 import { AVG_APPROVE_COST_GWEI } from 'constants/index'
 import { EnhancedUserClaimData } from '../types'
@@ -40,6 +39,8 @@ import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { IS_TESTING_ENV } from '../const'
 import { InvestmentFlowProps } from '.'
 import { getProviderErrorMessage } from 'utils/misc'
+import { formatTokenAmount } from '@cow/utils/amountFormat'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>
@@ -266,7 +267,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     if (noBalance || !parsedAmount) {
       percentageValue = '0'
     } else {
-      percentageValue = _formatPercentage(calculatePercentage(parsedAmount, maxCost))
+      percentageValue = formatTokenAmount(calculatePercentage(parsedAmount, maxCost)) || '0'
     }
     setPercentage(percentageValue)
 
@@ -317,7 +318,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     }
 
     if (isNative && gasCost && parsedAmount.add(gasCost).greaterThan(balance)) {
-      warnings.push(WarningMessages.InsufficientNativeBalance(token?.symbol, formatSmartLocaleAware(gasCost)))
+      warnings.push(WarningMessages.InsufficientNativeBalance(token?.symbol, formatTokenAmount(gasCost)))
     }
 
     setInputWarnings(warnings.length ? warnings : [])
@@ -338,15 +339,16 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
         <InvestSummary>
           <span>
             <b>Price</b>{' '}
-            <i title={formatMax(price)}>
-              {formatSmartLocaleAware(price) || '0'} vCOW per {currencyAmount?.currency?.symbol}
+            <i>
+              <TokenAmount amount={price} defaultValue="0" tokenSymbol={price?.quoteCurrency} /> per{' '}
+              {currencyAmount?.currency?.symbol}
             </i>
           </span>
 
           <span>
             <b>Max. investment available</b>{' '}
-            <i title={maxCost && `${formatMax(maxCost, maxCost.currency.decimals)} ${maxCost.currency.symbol}`}>
-              {formatSmartLocaleAware(maxCost, AMOUNT_PRECISION) || '0'} {maxCost?.currency?.symbol}
+            <i>
+              <TokenAmount amount={maxCost} defaultValue="0" tokenSymbol={maxCost?.currency} />
             </i>
           </span>
 
@@ -409,12 +411,8 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
             <label>
               <span>
                 <b>Balance:</b>
-                <i
-                  title={
-                    balance && `${formatMax(balance, balance.currency.decimals)} ${currencyAmount?.currency?.symbol}`
-                  }
-                >
-                  {formatSmartLocaleAware(balance, AMOUNT_PRECISION) || 0} {currencyAmount?.currency?.symbol}
+                <i>
+                  <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currencyAmount?.currency} />
                 </i>
                 {/* Button should use the max possible amount the user can invest, considering their balance + max investment allowed */}
                 {!noBalance && isSelfClaiming && (
@@ -433,8 +431,8 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
               />
               <b>{currencyAmount?.currency?.symbol}</b>
             </label>
-            <i title={vCowAmount && `${formatMax(vCowAmount, vCowAmount.currency.decimals)} vCOW`}>
-              Receive: {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || 0} vCOW
+            <i>
+              Receive: <TokenAmount amount={vCowAmount} defaultValue="0" tokenSymbol={vCowAmount?.currency} />
             </i>
             {/* Insufficient balance validation error */}
             {inputError && (
@@ -458,8 +456,4 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
       </span>
     </InvestTokenGroup>
   )
-}
-
-function _formatPercentage(percentage: Percent): string {
-  return formatSmartLocaleAware(percentage, PERCENTAGE_PRECISION) || '0'
 }

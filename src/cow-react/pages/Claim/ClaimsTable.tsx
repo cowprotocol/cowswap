@@ -4,7 +4,6 @@ import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from '@cow/pag
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
-import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
@@ -13,10 +12,10 @@ import Circle from 'assets/images/blue-loader.svg'
 import { Countdown } from '@cow/pages/Claim/Countdown'
 import { getPaidClaims, getIndexes } from 'state/claim/hooks/utils'
 import { useEffect } from 'react'
-import { AMOUNT_PRECISION } from 'constants/index'
 import { ExternalLink } from 'theme/index'
 import SVG from 'react-inlinesvg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export type ClaimsTableProps = Pick<ClaimCommonTypes, 'claims' | 'hasClaims' | 'isAirdropOnly'>
 
@@ -77,27 +76,23 @@ const ClaimsTableRow = ({
           {!isFree && <i>with {currencyAmount?.currency?.symbol}</i>}
         </span>
       </td>
-      <td data-title="Amount" title={`${formatMax(claimAmount, claimAmount.currency.decimals)} vCOW`}>
-        {formatSmartLocaleAware(claimAmount, AMOUNT_PRECISION) || 0} vCOW
+      <td data-title="Amount">
+        <TokenAmount amount={claimAmount} tokenSymbol={claimAmount.currency} />
       </td>
       <td data-title="Details">
         {price && (
           <span>
-            Price:{' '}
-            <b title={formatMax(price)}>{`${formatSmartLocaleAware(price) || 0} vCOW per ${
-              currencyAmount?.currency?.symbol
-            }`}</b>
+            Price: {/*TODO: check quoteCurrency*/}
+            <b>
+              <TokenAmount amount={price} tokenSymbol={price.quoteCurrency} /> per {currencyAmount?.currency?.symbol}
+            </b>
           </span>
         )}
         <span>
           Cost:{' '}
-          <b title={cost && `${formatMax(cost, cost.currency.decimals)} ${cost.currency.symbol}`}>
+          <b>
             {' '}
-            {isFree ? (
-              <span className="green">Free!</span>
-            ) : (
-              `${formatSmartLocaleAware(cost, AMOUNT_PRECISION) || 0} ${cost?.currency?.symbol}`
-            )}
+            {isFree ? <span className="green">Free!</span> : <TokenAmount amount={cost} tokenSymbol={cost?.currency} />}
           </b>
         </span>
         <span>

@@ -15,7 +15,6 @@ import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 
 import { GpEther, V_COW } from 'constants/tokens'
 
-import { formatSmartLocaleAware } from '@cow/utils/format'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { isAddress } from 'utils'
 
@@ -55,11 +54,11 @@ import {
 } from '../actions'
 import { EnhancedUserClaimData } from '@cow/pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
-import { AMOUNT_PRECISION } from 'constants/index'
 import useIsMounted from 'hooks/useIsMounted'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { ClaimInfo } from 'state/claim/reducer'
 import { CallState } from '@uniswap/redux-multicall'
+import { formatTokenAmount } from '@cow/utils/amountFormat'
 
 export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
 
@@ -572,7 +571,7 @@ export function useClaimCallback(account: string | null | undefined): {
       }
 
       const vCowAmount = CurrencyAmount.fromRawAmount(vCowToken, totalClaimedAmount)
-      const formattedVCowAmount = formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'
+      const formattedVCowAmount = formatTokenAmount(vCowAmount) || '0'
 
       const extendedArgs = _extendFinalArg(args, {
         from: connectedAccount, // add the `from` as the connected account

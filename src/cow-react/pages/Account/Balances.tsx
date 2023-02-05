@@ -234,7 +234,9 @@ export default function Profile() {
                       <HelpCircle size={14} />
                     </MouseoverTooltipContent>
                   </i>
-                  <b>{vCowBalanceVested}</b>
+                  <b>
+                    <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" />
+                  </b>
                 </BalanceDisplay>
                 <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
                   {renderConvertToCowContent()}
