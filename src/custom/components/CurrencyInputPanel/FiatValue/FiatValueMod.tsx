@@ -1,8 +1,6 @@
-import { Trans } from '@lingui/macro'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import HoverInlineText from 'components/HoverInlineText'
 import { useMemo } from 'react'
 
 import useTheme from 'hooks/useTheme'
@@ -13,7 +11,8 @@ import { MouseoverTooltip } from 'components/Tooltip'
 // MOD imports
 import { PERCENTAGE_PRECISION } from 'constants/index' // mod
 import Loader from 'components/Loader'
-import { formatAmountWithPrecision, formatFiatAmount } from '@cow/utils/amountFormat'
+import { formatAmountWithPrecision } from '@cow/utils/amountFormat'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
 export function FiatValue({
   fiatValue,
@@ -53,14 +52,7 @@ export function FiatValue({
 
   return (
     <ThemedText.Body className={className} fontSize={14} color={fiatValue ? theme.text1 : theme.text4}>
-      {fiatValue && !isLoading ? (
-        <Trans>
-          ≈ $
-          <HoverInlineText text={formatFiatAmount(fiatValue)} />
-        </Trans>
-      ) : (
-        ''
-      )}
+      {fiatValue && !isLoading ? <FiatAmount amount={fiatValue} /> : ''}
       {priceImpact ? (
         <span style={{ color: priceImpactColor }}>
           {' '}
