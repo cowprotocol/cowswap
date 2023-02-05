@@ -132,14 +132,6 @@ export function formatSmart(
 /**
  * @deprecated use cow-react/utils/amountFormat
  */
-export function formatSmartLocaleAware(...params: Parameters<typeof formatSmart>): ReturnType<typeof formatSmart> {
-  const [value, decimalsToShow, options = {}] = params
-  return formatSmart(value, decimalsToShow, { ...options, isLocaleAware: true, thousandSeparator: true })
-}
-
-/**
- * @deprecated use cow-react/utils/amountFormat
- */
 export function formatSmartAmount(
   value: CurrencyAmount<Currency> | Percent | BigNumber | Fraction | null | undefined
 ): string | undefined {
