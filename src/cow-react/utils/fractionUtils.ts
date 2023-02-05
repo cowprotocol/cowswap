@@ -1,6 +1,7 @@
 import { CurrencyAmount, Fraction, Price, BigintIsh } from '@uniswap/sdk-core'
 import { FractionLike, Nullish } from '@cow/types'
 import { FULL_PRICE_PRECISION } from 'constants/index'
+import { trimTrailingZeros } from '@cow/utils/trimTrailingZeros'
 
 export class FractionUtils {
   static serializeFractionToJSON(fraction: Nullish<Fraction>): string {
@@ -25,15 +26,19 @@ export class FractionUtils {
 
     if (amount.equalTo(0)) return '0'
 
-    if (amount instanceof CurrencyAmount) {
-      return amount.toFixed(amount.currency.decimals) || ''
-    }
+    return trimTrailingZeros(
+      (() => {
+        if (amount instanceof CurrencyAmount) {
+          return amount.toFixed(amount.currency.decimals) || ''
+        }
 
-    if (amount instanceof Price) {
-      return amount.toFixed(amount.quoteCurrency.decimals) || ''
-    }
+        if (amount instanceof Price) {
+          return amount.toFixed(amount.quoteCurrency.decimals) || ''
+        }
 
-    return amount.toFixed(max) || ''
+        return amount.toFixed(max) || ''
+      })()
+    )
   }
 
   static fractionLikeToFraction(amount: FractionLike): Fraction {

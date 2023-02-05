@@ -27,10 +27,12 @@ export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precisi
 
   // Apply the language formatting for the amount
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
-  const formattedQuotient = INTL_NUMBER_FORMAT.format(BigInt(quotient.toString()))
+  const formattedQuotient = INTL_NUMBER_FORMAT.format(BigInt(trimTrailingZeros(quotient.toString())))
   // Trim the remainder up to precision
-  const formattedRemainder = remainder.greaterThan(0) ? `${remainder.toFixed(precision).slice(1)}` : ''
-  const result = trimTrailingZeros(formattedQuotient + formattedRemainder) + suffix
+  const formattedRemainder = remainder.greaterThan(0)
+    ? trimTrailingZeros(`${remainder.toFixed(precision).slice(1)}`)
+    : ''
+  const result = formattedQuotient + formattedRemainder + suffix
 
   return +result === 0 ? lessThanPrecisionSymbol(precision) : result
 }

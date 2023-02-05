@@ -15,7 +15,8 @@ export interface TokenAmountProps {
 const highlight = !!localStorage.getItem('amountsRefactoring')
 
 export function TokenAmount({ amount, defaultValue, className, tokenSymbol }: TokenAmountProps) {
-  const title = FractionUtils.fractionLikeToExact(amount, LONG_PRECISION)
+  const title =
+    FractionUtils.fractionLikeToExact(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
 
   return (
     <>
