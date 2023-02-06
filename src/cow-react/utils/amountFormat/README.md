@@ -36,3 +36,5 @@ Or `formatAmountWithPrecision(amount, precision)` if you need custom precision.
 
 Examples:
 `<FiatAmount amount={amount}` - looks like `≈ $2 001.54`
+
+The precision for fiat amounts is always `2`
