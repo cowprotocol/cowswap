@@ -3,8 +3,9 @@
 The application needs to display amounts of different sizes, from extremely small to extremely large, while maintaining accuracy.
 
 There are two types of amounts:
- - token amount: `100 000.54 COW`
- - fiat amounts: `≈ $1 946 628.4`
+
+- token amount: `100 000.54 COW`
+- fiat amounts: `≈ $1 946 628.4`
 
 ### Language-sensitive number formatting
 
@@ -13,6 +14,7 @@ The solution uses [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/W
 ### Precision
 
 The `smart` precision algorithm:
+
 1. When an amount is less than `1`, then precision is `6` (`0.003411`)
 2. When an amount is less than `100_000`, then precision is `4` (`2 002.5901`)
 3. When an amount is less than `1M`, then precision is `3` (`640 123.012`)
