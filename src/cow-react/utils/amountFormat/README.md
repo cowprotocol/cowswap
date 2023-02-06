@@ -13,13 +13,13 @@ The solution uses [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/W
 ### Precision
 
 The `smart` precision algorithm:
-1. When an amount is less than `1`, then precision is `6`
-2. When an amount is less than `100_000`, then precision is `4`
-3. When an amount is less than `1M`, then precision is `3`
-4. When an amount is less than `10M`, then precision is `2`
-5. When an amount is greater than `10M`, then precision is `3`
-6. When an amount is greater than `1B`, then precision is `3` AND the suffix `B` adds
-7. When an amount is greater than `1T`, then precision is `3` AND the suffix `T` adds
+1. When an amount is less than `1`, then precision is `6` (`0.003411`)
+2. When an amount is less than `100_000`, then precision is `4` (`2 002.5901`)
+3. When an amount is less than `1M`, then precision is `3` (`640 123.012`)
+4. When an amount is less than `10M`, then precision is `2` (`2 700 000.08`)
+5. When an amount is greater than `10M`, then precision is `3` (`65 200 000.102`)
+6. When an amount is greater than `1B`, then precision is `3` AND plus suffix `B` (`12.502B`)
+7. When an amount is greater than `1T`, then precision is `3` AND plus suffix `T` adds (`6.2T`)
 
 ## Token amounts
 
