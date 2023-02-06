@@ -15,13 +15,12 @@ export function getPrecisionForAmount(amount: Nullish<FractionLike>): number {
 
   const fraction = FractionUtils.fractionLikeToFraction(amount)
   const smartPrecision = (() => {
-    if (FractionUtils.gte(fraction, BILLION)) return 3
-
     if (FractionUtils.lte(fraction, ONE)) return 6
     if (FractionUtils.lte(fraction, HUNDRED_K)) return 4
     if (FractionUtils.lte(fraction, MILLION)) return 3
     if (FractionUtils.lte(fraction, TEN_MILLION)) return 2
-    return 1
+
+    return 3
   })()
 
   // Some tokens have decimals = 0
