@@ -15,8 +15,8 @@ interface Props {
 }
 
 // TODO: using .toNumber() we potentially lose accuracy
-function LegacyBigNumberToCurrencyAmount(currency: Token, value: BigNumber | undefined): CurrencyAmount<Token> {
-  return CurrencyAmount.fromRawAmount(currency, (value?.toNumber() || 0) * 10 ** currency.decimals)
+function legacyBigNumberToCurrencyAmount(currency: Token, value: BigNumber | undefined): CurrencyAmount<Token> {
+  return CurrencyAmount.fromRawAmount(currency, Math.ceil((value?.toNumber() || 0) * 10 ** currency.decimals))
 }
 
 export function FilledField({ order, sellAmount, buyAmount }: Props) {
@@ -72,10 +72,10 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
 
   const filledAmountDecimal = filledAmountWithFee?.div(new BigNumber(10 ** mainToken.decimals))
-  const formattedFilledAmount = LegacyBigNumberToCurrencyAmount(mainToken, filledAmountDecimal)
+  const formattedFilledAmount = legacyBigNumberToCurrencyAmount(mainToken, filledAmountDecimal)
 
   const swappedAmountDecimal = swappedAmountWithFee.div(new BigNumber(10 ** swappedToken.decimals))
-  const formattedSwappedAmount = LegacyBigNumberToCurrencyAmount(mainToken, swappedAmountDecimal)
+  const formattedSwappedAmount = legacyBigNumberToCurrencyAmount(mainToken, swappedAmountDecimal)
 
   const formattedPercentage = useMemo(() => {
     if (!filledPercentage) {
