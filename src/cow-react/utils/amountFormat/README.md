@@ -27,6 +27,8 @@ Examples:
 `<TokenAmount amount={amount} tokenSymbol={amount.currency} />` - looks like `400 DAI`
 `<TokenAmount amount={amount} />` - looks like `6 000.11`
 
+The component has `title` attribute and displays the full amount on hover.
+
 The `amount` property has type `FractionLike`. It includes `Fraction`, `Price` and `CurrencyAmount` from `@uniswap/sdk-core`
 
 An amount could be formatted using `formatTokenAmount(amount)` function.
