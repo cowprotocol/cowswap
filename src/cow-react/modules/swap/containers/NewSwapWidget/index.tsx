@@ -44,7 +44,7 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwapAmountsFromUrl'
 import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
-import { formatAmountInput } from '@cow/utils/amountFormat'
+import { formatInputAmount } from '@cow/utils/amountFormat'
 
 export function NewSwapWidget() {
   useSetupTradeState()
@@ -84,7 +84,7 @@ export function NewSwapWidget() {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
     rawAmount: parsedAmounts.INPUT || null,
-    viewAmount: formatAmountInput(parsedAmounts.INPUT, inputCurrencyBalance, independentField === Field.INPUT),
+    viewAmount: formatInputAmount(parsedAmounts.INPUT, inputCurrencyBalance, independentField === Field.INPUT),
     balance: inputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.OUTPUT && trade ? getInputReceiveAmountInfo(trade) : null,
@@ -94,7 +94,7 @@ export function NewSwapWidget() {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
     rawAmount: parsedAmounts.OUTPUT || null,
-    viewAmount: formatAmountInput(parsedAmounts.OUTPUT, outputCurrencyBalance, independentField === Field.OUTPUT),
+    viewAmount: formatInputAmount(parsedAmounts.OUTPUT, outputCurrencyBalance, independentField === Field.OUTPUT),
     balance: outputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,

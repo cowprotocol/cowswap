@@ -21,7 +21,7 @@ export class FractionUtils {
     }
   }
 
-  static fractionLikeToExact(amount: Nullish<FractionLike>, max = FULL_PRICE_PRECISION): string {
+  static fractionLikeToExactString(amount: Nullish<FractionLike>, max = FULL_PRICE_PRECISION): string {
     if (!amount) return ''
 
     if (amount.equalTo(0)) return '0'

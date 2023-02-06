@@ -29,34 +29,28 @@ export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precisi
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
   const formattedQuotient = INTL_NUMBER_FORMAT.format(BigInt(trimTrailingZeros(quotient.toString())))
   // Trim the remainder up to precision
-  const formattedRemainder = remainder.greaterThan(0)
-    ? trimTrailingZeros(`${remainder.toFixed(precision).slice(1)}`)
-    : ''
+  const formattedRemainder = remainder.greaterThan(0) ? trimTrailingZeros(remainder.toFixed(precision).slice(1)) : ''
   const result = formattedQuotient + formattedRemainder + suffix
 
   return remainder.greaterThan(0) && +result === 0 ? lessThanPrecisionSymbol(precision) : result
 }
 
-export function formatAmountInput(
+export function formatInputAmount(
   amount: Nullish<FractionLike>,
-  balance: CurrencyAmount<Currency> | null = null,
+  balance: Nullish<CurrencyAmount<Currency>> = null,
   isIndependentField = false
 ): string {
   if (!amount) return ''
 
-  const maxBalance = balance ? maxAmountSpend(balance) : undefined
-  const isAmountMatchesBalance = !!(maxBalance && amount.equalTo(maxBalance))
+  const usesMaxBalance = balance ? maxAmountSpend(balance) : undefined
+  const amountMatchesBalance = !!(usesMaxBalance && amount.equalTo(usesMaxBalance))
 
-  return trimTrailingZeros(
-    (() => {
-      if (isIndependentField || isAmountMatchesBalance) {
-        return FractionUtils.fractionLikeToExact(amount)
-      }
+  if (isIndependentField || amountMatchesBalance) {
+    return trimTrailingZeros(FractionUtils.fractionLikeToExactString(amount))
+  }
 
-      const precision = getPrecisionForAmount(amount)
-      const result = amount.toFixed(precision)
+  const precision = getPrecisionForAmount(amount)
+  const result = amount.toFixed(precision)
 
-      return +result === 0 ? amount.toSignificant(AMOUNT_PRECISION) : result
-    })()
-  )
+  return trimTrailingZeros(+result === 0 ? amount.toSignificant(AMOUNT_PRECISION) : result)
 }

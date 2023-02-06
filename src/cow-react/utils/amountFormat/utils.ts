@@ -10,18 +10,20 @@ const TEN_MILLION = JSBI.BigInt(10_000_000)
 const BILLION = JSBI.BigInt(1_000_000_000)
 const TRILLION = JSBI.BigInt(1_000_000_000_000)
 
+function getPrecisionForFraction(fraction: Fraction): number {
+  if (FractionUtils.lte(fraction, ONE)) return 6
+  if (FractionUtils.lte(fraction, HUNDRED_K)) return 4
+  if (FractionUtils.lte(fraction, MILLION)) return 3
+  if (FractionUtils.lte(fraction, TEN_MILLION)) return 2
+
+  return 3
+}
+
 export function getPrecisionForAmount(amount: Nullish<FractionLike>): number {
   if (!amount) return 0
 
   const fraction = FractionUtils.fractionLikeToFraction(amount)
-  const smartPrecision = (() => {
-    if (FractionUtils.lte(fraction, ONE)) return 6
-    if (FractionUtils.lte(fraction, HUNDRED_K)) return 4
-    if (FractionUtils.lte(fraction, MILLION)) return 3
-    if (FractionUtils.lte(fraction, TEN_MILLION)) return 2
-
-    return 3
-  })()
+  const smartPrecision = getPrecisionForFraction(fraction)
 
   // Some tokens have decimals = 0
   if (amount instanceof CurrencyAmount && amount.currency.decimals < smartPrecision) {

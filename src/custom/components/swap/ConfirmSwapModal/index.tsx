@@ -3,7 +3,6 @@ import { Trans } from '@lingui/macro'
 import ConfirmSwapModalMod from './ConfirmSwapModalMod'
 import TradeGp from 'state/swap/TradeGp'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import React from 'react'
 
 export * from './ConfirmSwapModalMod'
 

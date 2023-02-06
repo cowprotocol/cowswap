@@ -15,7 +15,7 @@ const highlight = !!localStorage.getItem('amountsRefactoring')
 
 export function FiatAmount({ amount, defaultValue, className, accurate = false }: FiatAmountProps) {
   const formattedAmount = formatFiatAmount(amount)
-  const title = FractionUtils.fractionLikeToExact(amount, LONG_PRECISION)
+  const title = FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION)
   const accuracySymbol = accurate ? '' : '≈ '
 
   return (
