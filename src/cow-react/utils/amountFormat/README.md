@@ -1,0 +1,38 @@
+# Amounts formatting
+
+The application needs to display amounts of different sizes, from extremely small to extremely large, while maintaining accuracy.
+
+There are two types of amounts:
+ - token amount: `100 000.54 COW`
+ - fiat amounts: `≈ $1 946 628.4`
+
+### Language-sensitive number formatting
+
+The solution uses [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) API for numbers formatting.
+
+### Precision
+
+The `smart` precision algorithm:
+1. When an amount is less than `1`, then precision is `6`
+2. When an amount is less than `100_000`, then precision is `4`
+3. When an amount is less than `1M`, then precision is `3`
+4. When an amount is less than `10M`, then precision is `2`
+5. When an amount is greater than `10M`, then precision is `3`
+6. When an amount is greater than `1B`, then precision is `3` AND the suffix `B` adds
+7. When an amount is greater than `1T`, then precision is `3` AND the suffix `T` adds
+
+## Token amounts
+
+Examples:
+`<TokenAmount amount={amount} tokenSymbol={amount.currency} />` - looks like `400 DAI`
+`<TokenAmount amount={amount} />` - looks like `6 000.11`
+
+The `amount` property has type `FractionLike`. It includes `Fraction`, `Price` and `CurrencyAmount` from `@uniswap/sdk-core`
+
+An amount could be formatted using `formatTokenAmount(amount)` function.
+Or `formatAmountWithPrecision(amount, precision)` if you need custom precision.
+
+## Fiat amounts
+
+Examples:
+`<FiatAmount amount={amount}` - looks like `≈ $2 001.54`
