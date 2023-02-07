@@ -244,10 +244,11 @@ function _checkFeeErrorForData(error: GpQuoteError) {
 
 // TODO: move to state/orders/priceUtils
 function formatAtoms(amount: string, decimals: number): string {
-  return BigNumber.from(amount)
+  return BigNumberJs(amount)
     .div(10 ** decimals)
     .toString()
 }
+
 /**
  * (LEGACY) Will be overwritten in the near future
  *  Return the best quote considering all price feeds. The quote contains information about the price and fee

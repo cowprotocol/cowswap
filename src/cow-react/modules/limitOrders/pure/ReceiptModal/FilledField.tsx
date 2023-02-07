@@ -76,7 +76,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
   const formattedFilledAmount = legacyBigNumberToCurrencyAmount(mainToken, filledAmountDecimal)
 
   const swappedAmountDecimal = swappedAmountWithFee.div(new BigNumber(10 ** swappedToken.decimals))
-  const formattedSwappedAmount = legacyBigNumberToCurrencyAmount(mainToken, swappedAmountDecimal)
+  const formattedSwappedAmount = legacyBigNumberToCurrencyAmount(outputToken, swappedAmountDecimal)
 
   const formattedPercentage = useMemo(() => {
     if (!filledPercentage) {
