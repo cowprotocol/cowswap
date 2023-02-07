@@ -4,7 +4,7 @@ import { FractionUtils } from '@cow/utils/fractionUtils'
 import { LONG_PRECISION } from 'constants/index'
 import { FeatureFlag } from '@cow/utils/featureFlags'
 import styled from 'styled-components/macro'
-import { TOKEN_AMOUNT_FEATURE_FLAG } from '@cow/constants/featureFlags'
+import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '@cow/constants/featureFlags'
 
 export interface FiatAmountProps {
   amount: Nullish<FractionLike>
@@ -13,7 +13,7 @@ export interface FiatAmountProps {
   className?: string
 }
 
-const highlight = !!FeatureFlag.get(TOKEN_AMOUNT_FEATURE_FLAG)
+const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
 
 const Wrapper = styled.span<{ highlight: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(113,255,18,0.4)' : '')};

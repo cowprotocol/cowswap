@@ -1,1 +1,1 @@
-export const TOKEN_AMOUNT_FEATURE_FLAG = 'amountsRefactoring'
+export const AMOUNTS_FORMATTING_FEATURE_FLAG = 'highlight-amounts-formatting'
