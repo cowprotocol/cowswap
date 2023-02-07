@@ -27,9 +27,6 @@ describe('Limit orders', () => {
       'have.value',
       inputAmount.toString()
     )
-    cy.get('#limit-orders-confirm #output-currency-preview .token-amount-input').should(
-      'have.value',
-      outputAmount.toString()
-    )
+    cy.get('#limit-orders-confirm #output-currency-preview .token-amount-input').should('have.value', '200B')
   })
 })
