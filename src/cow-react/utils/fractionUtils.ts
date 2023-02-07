@@ -1,7 +1,8 @@
-import { CurrencyAmount, Fraction, Price, BigintIsh } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding } from '@uniswap/sdk-core'
 import { FractionLike, Nullish } from '@cow/types'
 import { FULL_PRICE_PRECISION } from 'constants/index'
 import { trimTrailingZeros } from '@cow/utils/trimTrailingZeros'
+import JSBI from 'jsbi'
 
 export class FractionUtils {
   static serializeFractionToJSON(fraction: Nullish<Fraction>): string {
@@ -46,6 +47,12 @@ export class FractionUtils {
     if (amount instanceof CurrencyAmount) return new Fraction(amount.quotient, amount.decimalScale)
     if (amount instanceof Price) return amount.asFraction.multiply(amount.scalar)
     return amount
+  }
+
+  static round(value: FractionLike, rounding: Rounding = Rounding.ROUND_UP): Fraction {
+    const { quotient, remainder } = FractionUtils.fractionLikeToFraction(value)
+
+    return new Fraction(JSBI.add(quotient, JSBI.BigInt(remainder.toFixed(0, undefined, rounding))), 1)
   }
 
   static gte(fraction: Fraction, value: BigintIsh): boolean {
