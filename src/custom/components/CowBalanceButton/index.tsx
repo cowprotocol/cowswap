@@ -6,7 +6,6 @@ import { transparentize } from 'polished'
 import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;
@@ -87,15 +86,12 @@ export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceBut
     return null
   }
 
-  // We don't need to display decimals symbols, so, we round the balance amount
-  const roundedAmount = FractionUtils.round(balance)
-
   return (
     <Wrapper isLoading={isLoading} onClick={onClick}>
       <CowProtocolLogo />
       {!isUpToSmall && (
         <b>
-          <TokenAmount amount={roundedAmount} defaultValue="0" tokenSymbol={balance?.currency} />
+          <TokenAmount round={true} amount={balance} defaultValue="0" tokenSymbol={balance?.currency} />
         </b>
       )}
     </Wrapper>

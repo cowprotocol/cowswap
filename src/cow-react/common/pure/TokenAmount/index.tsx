@@ -12,6 +12,7 @@ export interface TokenAmountProps {
   defaultValue?: string
   tokenSymbol?: TokenSymbolProps['token']
   className?: string
+  round?: boolean
 }
 
 const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
@@ -20,14 +21,16 @@ const Wrapper = styled.span<{ highlight: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
 `
 
-export function TokenAmount({ amount, defaultValue, className, tokenSymbol }: TokenAmountProps) {
+export function TokenAmount({ amount, defaultValue, className, tokenSymbol, round }: TokenAmountProps) {
   const title =
     FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
+
+  if (!amount) return null
 
   return (
     <>
       <Wrapper title={title} className={className} highlight={highlight}>
-        {formatTokenAmount(amount) || defaultValue}
+        {formatTokenAmount(round ? FractionUtils.round(amount) : amount) || defaultValue}
         {tokenSymbol ? ' ' : ''}
         {tokenSymbol ? <TokenSymbol token={tokenSymbol} /> : ''}
       </Wrapper>
