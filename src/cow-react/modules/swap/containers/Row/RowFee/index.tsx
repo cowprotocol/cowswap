@@ -65,6 +65,7 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
   const props = useMemo(() => {
     const displayFee = realizedFee || fee
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
+    // TODO: delegate formatting to the view layer
     const smartFeeFiatValue = formatFiatAmount(feeFiatValue)
     const smartFeeTokenValue = formatTokenAmount(displayFee)
     const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${

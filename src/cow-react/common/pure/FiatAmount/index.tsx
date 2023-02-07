@@ -2,6 +2,9 @@ import { formatFiatAmount } from '@cow/utils/amountFormat'
 import { FractionLike, Nullish } from '@cow/types'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { LONG_PRECISION } from 'constants/index'
+import { FeatureFlag } from '@cow/utils/featureFlags'
+import styled from 'styled-components/macro'
+import { TOKEN_AMOUNT_FEATURE_FLAG } from '@cow/constants/featureFlags'
 
 export interface FiatAmountProps {
   amount: Nullish<FractionLike>
@@ -10,8 +13,11 @@ export interface FiatAmountProps {
   className?: string
 }
 
-// TODO: remove after testing
-const highlight = !!localStorage.getItem('amountsRefactoring')
+const highlight = !!FeatureFlag.get(TOKEN_AMOUNT_FEATURE_FLAG)
+
+const Wrapper = styled.span<{ highlight: boolean }>`
+  background: ${({ highlight }) => (highlight ? 'rgba(113,255,18,0.4)' : '')};
+`
 
 export function FiatAmount({ amount, defaultValue, className, accurate = false }: FiatAmountProps) {
   const formattedAmount = formatFiatAmount(amount)
@@ -19,9 +25,9 @@ export function FiatAmount({ amount, defaultValue, className, accurate = false }
   const accuracySymbol = accurate ? '' : '≈ '
 
   return (
-    <span title={title} className={className} style={{ background: highlight ? 'rgba(113,255,18,0.4)' : '' }}>
+    <Wrapper title={title} className={className} highlight={highlight}>
       {formattedAmount ? accuracySymbol + '$' : ''}
       {formattedAmount || defaultValue}
-    </span>
+    </Wrapper>
   )
 }

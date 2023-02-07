@@ -3,6 +3,9 @@ import { FractionLike, Nullish } from '@cow/types'
 import { TokenSymbol, TokenSymbolProps } from '@cow/common/pure/TokenSymbol'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { LONG_PRECISION } from 'constants/index'
+import { FeatureFlag } from '@cow/utils/featureFlags'
+import styled from 'styled-components/macro'
+import { TOKEN_AMOUNT_FEATURE_FLAG } from '@cow/constants/featureFlags'
 
 export interface TokenAmountProps {
   amount: Nullish<FractionLike>
@@ -11,8 +14,11 @@ export interface TokenAmountProps {
   className?: string
 }
 
-// TODO: remove after testing
-const highlight = !!localStorage.getItem('amountsRefactoring')
+const highlight = !!FeatureFlag.get(TOKEN_AMOUNT_FEATURE_FLAG)
+
+const Wrapper = styled.span<{ highlight: boolean }>`
+  background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
+`
 
 export function TokenAmount({ amount, defaultValue, className, tokenSymbol }: TokenAmountProps) {
   const title =
@@ -20,11 +26,11 @@ export function TokenAmount({ amount, defaultValue, className, tokenSymbol }: To
 
   return (
     <>
-      <span title={title} className={className} style={{ background: highlight ? 'rgba(196,18,255,0.4)' : '' }}>
+      <Wrapper title={title} className={className} highlight={highlight}>
         {formatTokenAmount(amount) || defaultValue}
         {tokenSymbol ? ' ' : ''}
         {tokenSymbol ? <TokenSymbol token={tokenSymbol} /> : ''}
-      </span>
+      </Wrapper>
     </>
   )
 }

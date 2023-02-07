@@ -15,6 +15,7 @@ interface Props {
 }
 
 // TODO: using .toNumber() we potentially lose accuracy
+// TODO: must be refactored with replacing bignumber.js by @ethersproject/bignumber
 function legacyBigNumberToCurrencyAmount(currency: Token, value: BigNumber | undefined): CurrencyAmount<Token> {
   return CurrencyAmount.fromRawAmount(currency, Math.ceil((value?.toNumber() || 0) * 10 ** currency.decimals))
 }

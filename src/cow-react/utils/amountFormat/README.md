@@ -7,6 +7,9 @@ There are two types of amounts:
 - token amount: `100 000.54 COW`
 - fiat amounts: `≈ $1 946 628.4`
 
+### Feature-flags
+`localStorage.setItem('amountsRefactoring', '1')` - to highlight components with formatted tokens and fiat amounts
+
 ### Language-sensitive number formatting
 
 The solution uses [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) API for numbers formatting.
