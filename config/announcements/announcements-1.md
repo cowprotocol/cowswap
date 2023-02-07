@@ -1,0 +1,1 @@
+A malicious actor was able to steal some fees accured by the protocol. However, user funds are not affected. No need to revoke approvals. [See here for more information](https://twitter.com/CoWSwap/status/1622852472694796288)
