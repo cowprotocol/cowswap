@@ -6,6 +6,8 @@ import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { FractionUtils } from '@cow/utils/fractionUtils'
+import { formatTokenAmount } from '@cow/utils/amountFormat'
 
 interface BuiltItProps {
   className: string
@@ -21,7 +23,7 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
 export function CurrencyPreview(props: CurrencyPreviewProps) {
   const { id, currencyInfo, className, priceImpactParams, topLabel } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
-  const { currency, balance, fiatAmount, viewAmount, rawAmount } = currencyInfo
+  const { currency, balance, fiatAmount, rawAmount } = currencyInfo
 
   return (
     <>
@@ -34,10 +36,10 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
           </div>
           <div>
             <styledEl.NumericalInput
-              title={rawAmount?.toExact() + ' ' + currency?.symbol}
+              title={FractionUtils.fractionLikeToExactString(rawAmount)}
               className="token-amount-input"
               readOnly={true}
-              value={viewAmount}
+              value={formatTokenAmount(rawAmount)}
               onUserInput={() => void 0}
               $loading={false}
             />

@@ -33,7 +33,8 @@ export class FractionUtils {
         }
 
         if (amount instanceof Price) {
-          return amount.toFixed(amount.quoteCurrency.decimals) || ''
+          const decimals = amount.quoteCurrency.decimals === 0 ? max : amount.quoteCurrency.decimals
+          return amount.toFixed(decimals) || ''
         }
 
         return amount.toFixed(max) || ''

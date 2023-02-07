@@ -141,7 +141,7 @@ const DataRow = ({
           <ApproveLabel color={theme.green1}>
             Approved:{' '}
             <strong>
-              <TokenAmount amount={currentAllowance} tokenSymbol={currentAllowance?.currency} />
+              <TokenAmount amount={currentAllowance} />
             </strong>
           </ApproveLabel>
         </CustomLimit>
