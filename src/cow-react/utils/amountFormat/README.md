@@ -11,6 +11,12 @@ There are two types of amounts:
 
 The solution uses [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) API for numbers formatting.
 
+### Trailing zeros
+
+All functions and components mentioned in this documents are using `trimTrailingZeros()` function to avoid values with trailing zeros.
+
+Example: `trimTrailingZeros('12.092000') -> 12.092`
+
 ### Precision
 
 The `smart` precision algorithm:

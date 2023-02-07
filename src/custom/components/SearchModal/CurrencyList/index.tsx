@@ -14,7 +14,6 @@ import Column from 'components/Column'
 import { MenuItem as MenuItemMod } from '@src/components/SearchModal/styleds'
 import { transparentize } from 'polished'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import React from 'react'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {

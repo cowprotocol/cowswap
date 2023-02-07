@@ -88,12 +88,6 @@ export default function Profile() {
     return output
   }, [isLockedGnoLoading, isVCowLoading, provider])
 
-  const vCowBalanceVested = (
-    <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" tokenSymbol={vCowToken} />
-  )
-  const vCowBalanceUnvested = <TokenAmount amount={unvested} defaultValue="0" tokenSymbol={vCowToken} />
-  const vCowBalance = <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />
-
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
@@ -130,10 +124,16 @@ export default function Profile() {
     balanceBreakdown: (
       <VestingBreakdown>
         <span>
-          <i>Unvested</i> <p>{vCowBalanceUnvested}</p>
+          <i>Unvested</i>{' '}
+          <p>
+            <TokenAmount amount={unvested} defaultValue="0" tokenSymbol={vCowToken} />
+          </p>
         </span>
         <span>
-          <i>Vested</i> <p>{vCowBalanceVested}</p>
+          <i>Vested</i>{' '}
+          <p>
+            <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" tokenSymbol={vCowToken} />
+          </p>
         </span>
       </VestingBreakdown>
     ),
@@ -219,7 +219,7 @@ export default function Profile() {
                     <Trans>Total vCOW balance</Trans>
                   </i>
                   <b>
-                    {vCowBalance}{' '}
+                    <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />{' '}
                     <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
                       <HelpCircle size={14} />
                     </MouseoverTooltipContent>

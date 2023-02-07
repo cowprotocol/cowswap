@@ -45,12 +45,6 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
   const { chainId = ChainId.MAINNET, account } = useWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const unvested = allocated.subtract(vested)
-
-  const allocatedFormatted = <TokenAmount amount={allocated} defaultValue="0" tokenSymbol={allocated.currency} />
-  const vestedFormatted = <TokenAmount amount={vested} defaultValue="0" tokenSymbol={vested.currency} />
-  const unvestedFormatted = <TokenAmount amount={unvested} defaultValue="0" tokenSymbol={unvested.currency} />
-  const claimableFormatted = <TokenAmount amount={vested.subtract(claimed)} defaultValue="0" />
-
   const previousAccount = usePrevious(account)
 
   const canClaim =
@@ -138,16 +132,22 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
           <span>
             <i>COW vesting from locked GNO</i>
             <b>
-              {allocatedFormatted}
+              <TokenAmount amount={allocated} defaultValue="0" tokenSymbol={allocated.currency} />
               <MouseoverTooltipContent
                 wrap
                 content={
                   <VestingBreakdown>
                     <span>
-                      <i>Unvested</i> <p>{unvestedFormatted}</p>
+                      <i>Unvested</i>{' '}
+                      <p>
+                        <TokenAmount amount={unvested} defaultValue="0" tokenSymbol={unvested.currency} />
+                      </p>
                     </span>
                     <span>
-                      <i>Vested</i> <p>{vestedFormatted}</p>
+                      <i>Vested</i>{' '}
+                      <p>
+                        <TokenAmount amount={vested} defaultValue="0" tokenSymbol={vested.currency} />
+                      </p>
                     </span>
                   </VestingBreakdown>
                 }
@@ -176,7 +176,9 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                 <HelpCircle size={14} />
               </MouseoverTooltipContent>
             </i>
-            <b>{claimableFormatted}</b>
+            <b>
+              <TokenAmount amount={vested.subtract(claimed)} defaultValue="0" />
+            </b>
           </BalanceDisplay>
           {status === ClaimStatus.CONFIRMED ? (
             <ButtonPrimary disabled>

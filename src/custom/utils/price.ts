@@ -242,6 +242,7 @@ function _checkFeeErrorForData(error: GpQuoteError) {
   }
 }
 
+// TODO: move to state/orders/priceUtils
 function formatAtoms(amount: string, decimals: number): string {
   return BigNumber.from(amount)
     .div(10 ** decimals)

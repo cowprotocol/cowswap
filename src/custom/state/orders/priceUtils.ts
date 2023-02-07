@@ -3,14 +3,14 @@
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { BigNumber } from 'bignumber.js'
 
-interface Token {
+interface PriceTokenInfo {
   amount: BigNumber | string
   decimals?: number
 }
 
 interface CalculatePriceParams {
-  numerator: Token
-  denominator: Token
+  numerator: PriceTokenInfo
+  denominator: PriceTokenInfo
 }
 
 export const ONE_BIG_NUMBER = new BigNumber(1)
