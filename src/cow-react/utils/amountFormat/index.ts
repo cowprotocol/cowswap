@@ -43,7 +43,7 @@ export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precisi
   const formattedRemainder = remainder.greaterThan(0) ? trimTrailingZeros(fixedRemainder.slice(1)) : ''
   const result = formattedQuotient + formattedRemainder + suffix
 
-  return remainder.greaterThan(0) && +result === 0 ? lessThanPrecisionSymbol(precision) : result
+  return amount.greaterThan(0) && +result === 0 ? lessThanPrecisionSymbol(precision) : result
 }
 
 export function formatInputAmount(

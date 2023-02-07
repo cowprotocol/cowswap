@@ -48,5 +48,5 @@ export function trimHugeAmounts(amount: Fraction): Fraction {
 }
 
 export function lessThanPrecisionSymbol(precision: number): string {
-  return `< 0.${'0'.repeat(precision - 1)}1`
+  return `< 0.${'0'.repeat((precision || 4) - 1)}1`
 }
