@@ -1,1 +1,1 @@
-NO need to revoke approvals, user funds are safe. This incident only affects the protocols funds. For more information see this [thread](https://twitter.com/CoWSwap/status/1622852472694796288)
+NO need to revoke approvals, user funds are safe. This incident only affects the protocols funds. For more information see this [thread](https://twitter.com/CoWSwap/status/1622885833782054913?s=20&t=3ckykGZ6Ov41x9cDXsGdEA)
