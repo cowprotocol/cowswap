@@ -1,7 +1,7 @@
 import { FractionLike, Nullish } from '@cow/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION, FIAT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
 import { trimTrailingZeros } from '@cow/utils/trimTrailingZeros'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
@@ -13,6 +13,10 @@ export function formatFiatAmount(amount: Nullish<FractionLike>): string {
 
 export function formatTokenAmount(amount: Nullish<FractionLike>): string {
   return formatAmountWithPrecision(amount, getPrecisionForAmount(amount))
+}
+
+export function formatPercent(percent: Nullish<Percent>): string {
+  return percent ? trimTrailingZeros(percent.toFixed(PERCENTAGE_PRECISION)) : ''
 }
 
 export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precision: number): string {
@@ -29,7 +33,14 @@ export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precisi
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
   const formattedQuotient = INTL_NUMBER_FORMAT.format(BigInt(trimTrailingZeros(quotient.toString())))
   // Trim the remainder up to precision
-  const formattedRemainder = remainder.greaterThan(0) ? trimTrailingZeros(remainder.toFixed(precision).slice(1)) : ''
+  const fixedRemainder = remainder.toFixed(precision, undefined, Rounding.ROUND_HALF_UP)
+
+  // toFixed() could round the remainder up, and the result could be 1.00 or greater
+  if (+fixedRemainder >= 1) {
+    return trimTrailingZeros(fixedRemainder)
+  }
+
+  const formattedRemainder = remainder.greaterThan(0) ? trimTrailingZeros(fixedRemainder.slice(1)) : ''
   const result = formattedQuotient + formattedRemainder + suffix
 
   return remainder.greaterThan(0) && +result === 0 ? lessThanPrecisionSymbol(precision) : result

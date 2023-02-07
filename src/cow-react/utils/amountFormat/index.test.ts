@@ -1,6 +1,7 @@
-import { formatFiatAmount, formatTokenAmount } from './index'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { formatFiatAmount, formatPercent, formatTokenAmount } from './index'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { DAI_GOERLI } from 'utils/goerli/constants'
+import { USDC_GNOSIS_CHAIN } from '../../../custom/utils/gnosis_chain/constants'
 
 describe('Amounts formatting', () => {
   const decimals = DAI_GOERLI.decimals
@@ -103,6 +104,21 @@ describe('Amounts formatting', () => {
       expect(result2).toBe('343.922B')
       expect(result3).toBe('32.443T')
     })
+  })
+
+  describe('Fiat amounts', () => {
+    it('When the amount is almost 1, it must be rounded up to 1', () => {
+      const result = formatFiatAmount(
+        // ~0.995
+        CurrencyAmount.fromFractionalAmount(
+          USDC_GNOSIS_CHAIN,
+          '994582567877074269904770000000000000000000',
+          '999200146079960203000000000000000000'
+        )
+      )
+
+      expect(result).toBe('1')
+    })
 
     it('Precision for fiat amounts is always 3', () => {
       const result1 = formatFiatAmount(getAmount('734436023451', -5))
@@ -110,6 +126,26 @@ describe('Amounts formatting', () => {
 
       expect(result1).toBe('7,344,360.23')
       expect(result2).toBe('60.00B')
+    })
+  })
+
+  describe('Percent', () => {
+    it('Regular percent', () => {
+      const result = formatPercent(new Percent(100, 2000))
+
+      expect(result).toBe('5')
+    })
+
+    it('Negative percent', () => {
+      const result = formatPercent(new Percent(2, 1).multiply(-1))
+
+      expect(result).toBe('-200')
+    })
+
+    it('With decimals', () => {
+      const result = formatPercent(new Percent(31500, 25634562))
+
+      expect(result).toBe('0.12')
     })
   })
 })

@@ -9,9 +9,9 @@ import { warningSeverity } from 'utils/prices'
 import { MouseoverTooltip } from 'components/Tooltip'
 
 // MOD imports
-import { PERCENTAGE_PRECISION } from 'constants/index' // mod
+// mod
 import Loader from 'components/Loader'
-import { formatAmountWithPrecision } from '@cow/utils/amountFormat'
+import { formatPercent } from '@cow/utils/amountFormat'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
 export function FiatValue({
@@ -57,7 +57,7 @@ export function FiatValue({
         <span style={{ color: priceImpactColor }}>
           {' '}
           <MouseoverTooltip text={t`The estimated difference between the USD values of input and output amounts.`}>
-            ({formatAmountWithPrecision(priceImpact.multiply(-1), PERCENTAGE_PRECISION)}%)
+            ({formatPercent(priceImpact.multiply(-1))}%)
           </MouseoverTooltip>
         </span>
       ) : null}

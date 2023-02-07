@@ -5,7 +5,7 @@ import { useToggleSettingsMenu } from 'state/application/hooks'
 import { RowSlippageContent } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import { formatTokenAmount } from '@cow/utils/amountFormat'
+import { formatPercent } from '@cow/utils/amountFormat'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -24,7 +24,7 @@ export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowS
       symbols: [nativeCurrency.symbol],
       showSettingOnClick,
       allowedSlippage,
-      displaySlippage: `${formatTokenAmount(allowedSlippage)}%`,
+      displaySlippage: `${formatPercent(allowedSlippage)}%`,
     }),
     [allowedSlippage, nativeCurrency, isEthFlow, showSettingOnClick]
   )
