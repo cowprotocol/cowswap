@@ -5,3 +5,10 @@ export type Milliseconds = number // Example: 30000 === 30 sec
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] }
 
 export type Nullish<T> = T | null | undefined
+
+declare global {
+  interface Window {
+    fbq: any
+    lintrk: any
+  }
+}

@@ -68,6 +68,11 @@ export function signSwapAnalytics(orderClass: OrderClass, label?: string) {
 
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
 export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?: string) {
+  if (action === 'Posted') {
+    window.fbq?.('track', 'Lead')
+    window.lintrk?.('track', { conversion_id: 10759522 })
+  }
+
   sendEvent({
     category: Category.SWAP,
     action,

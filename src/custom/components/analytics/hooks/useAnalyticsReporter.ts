@@ -8,6 +8,7 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { getConnectionName, getIsMetaMask, getConnection } from 'connection/utils'
 import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '..'
 import { Dimensions } from '../GoogleAnalyticsProvider'
+import usePrevious from 'hooks/usePrevious'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
@@ -34,12 +35,16 @@ export function initGATracker() {
   })
 }
 
+let initiatedPixel = false
+
 // tracks web vitals and pageviews
 export function useAnalyticsReporter() {
   const { pathname, search } = useLocation()
 
   // Handle chain id custom dimension
   const { chainId, connector, account } = useWeb3React()
+  const prevAccount = usePrevious(account)
+
   useEffect(() => {
     // custom dimension 1 - chainId
     googleAnalytics.setDimension(Dimensions.chainId, chainId)
@@ -55,7 +60,13 @@ export function useAnalyticsReporter() {
   useEffect(() => {
     // custom dimension 2 - walletname
     googleAnalytics.setDimension(Dimensions.walletName, account ? walletName : 'Not connected')
-  }, [account, walletName])
+
+    // Handle pixel tracking on wallet connection
+    if (!prevAccount && account) {
+      window.fbq?.('track', 'Contact')
+      window.lintrk?.('track', { conversion_id: 10759514 })
+    }
+  }, [account, walletName, prevAccount])
 
   useEffect(() => {
     googleAnalytics.pageview(`${pathname}${search}`)
@@ -64,5 +75,15 @@ export function useAnalyticsReporter() {
   useEffect(() => {
     reportWebVitals()
     initGATracker()
+  }, [])
+
+  // Handle initiate pixel tracking
+  useEffect(() => {
+    if (!initiatedPixel) {
+      window.fbq?.('track', 'InitiateCheckout')
+      window?.lintrk('track', { conversion_id: 10759506 })
+
+      initiatedPixel = true
+    }
   }, [])
 }
