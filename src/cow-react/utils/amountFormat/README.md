@@ -8,6 +8,7 @@ There are two types of amounts:
 - fiat amounts: `≈ $1 946 628.4`
 
 ### Feature-flags
+
 `localStorage.setItem('amountsRefactoring', '1')` - to highlight components with formatted tokens and fiat amounts
 
 ### Language-sensitive number formatting
