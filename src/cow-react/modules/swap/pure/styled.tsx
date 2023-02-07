@@ -44,3 +44,13 @@ export const StyledInfoIcon = styled(Info)`
     opacity: 1;
   }
 `
+
+export const TransactionText = styled.span`
+  display: flex;
+  gap: 3px;
+  cursor: pointer;
+
+  > i {
+    font-style: normal;
+  }
+`
