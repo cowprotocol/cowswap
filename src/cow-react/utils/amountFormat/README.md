@@ -20,6 +20,7 @@ The solution uses [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/W
 All functions and components mentioned in this documents are using `trimTrailingZeros()` function to avoid values with trailing zeros.
 
 Example: `trimTrailingZeros('12.092000') -> 12.092`
+Example: `trimTrailingZeros('24.000000') -> 24`
 
 ### Precision
 

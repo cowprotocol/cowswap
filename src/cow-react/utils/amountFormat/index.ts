@@ -19,7 +19,11 @@ export function formatPercent(percent: Nullish<Percent>): string {
   return percent ? trimTrailingZeros(percent.toFixed(PERCENTAGE_PRECISION)) : ''
 }
 
-export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precision: number): string {
+export function formatAmountWithPrecision(
+  amount: Nullish<FractionLike>,
+  precision: number,
+  numberFormat = INTL_NUMBER_FORMAT
+): string {
   if (!amount) return ''
 
   // Align fraction-like types to Fraction
@@ -31,7 +35,7 @@ export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precisi
 
   // Apply the language formatting for the amount
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
-  const formattedQuotient = INTL_NUMBER_FORMAT.format(BigInt(trimTrailingZeros(quotient.toString())))
+  const formattedQuotient = numberFormat.format(BigInt(trimTrailingZeros(quotient.toString())))
   // Trim the remainder up to precision
   const fixedRemainder = remainder.toFixed(precision, undefined, Rounding.ROUND_HALF_UP)
 
@@ -40,7 +44,10 @@ export function formatAmountWithPrecision(amount: Nullish<FractionLike>, precisi
     return trimTrailingZeros(fixedRemainder)
   }
 
-  const formattedRemainder = remainder.greaterThan(0) ? trimTrailingZeros(fixedRemainder.slice(1)) : ''
+  const decimalsSeparator = numberFormat.format(1.1)[1]
+  const formattedRemainder = remainder.greaterThan(0)
+    ? decimalsSeparator + trimTrailingZeros(fixedRemainder.slice(2))
+    : ''
   const result = formattedQuotient + formattedRemainder + suffix
 
   return amount.greaterThan(0) && +result === 0 ? lessThanPrecisionSymbol(precision) : result

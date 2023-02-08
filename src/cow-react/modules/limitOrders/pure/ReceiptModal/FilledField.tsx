@@ -1,5 +1,5 @@
 // Code based on https://github.com/cowprotocol/explorer/blob/develop/src/components/orders/FilledProgress/index.tsx
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'

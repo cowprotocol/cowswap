@@ -1,4 +1,4 @@
-import { formatFiatAmount, formatPercent, formatTokenAmount } from './index'
+import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { DAI_GOERLI } from 'utils/goerli/constants'
 import { USDC_GNOSIS_CHAIN } from '../../../custom/utils/gnosis_chain/constants'
@@ -120,7 +120,7 @@ describe('Amounts formatting', () => {
       expect(result).toBe('1')
     })
 
-    it('Precision for fiat amounts is always 3', () => {
+    it('Precision for fiat amounts is always 2', () => {
       const result1 = formatFiatAmount(getAmount('734436023451', -5))
       const result2 = formatFiatAmount(getAmount('60001444', 3))
 
@@ -146,6 +146,29 @@ describe('Amounts formatting', () => {
       const result = formatPercent(new Percent(31500, 25634562))
 
       expect(result).toBe('0.12')
+    })
+  })
+
+  describe('Internationalization', () => {
+    it('ES', () => {
+      const numberFormat = new Intl.NumberFormat('es')
+      const result = formatAmountWithPrecision(getAmount('7850450043', -5), 2, numberFormat)
+
+      expect(result).toBe('78.504,50')
+    })
+
+    it('EN', () => {
+      const numberFormat = new Intl.NumberFormat('en')
+      const result = formatAmountWithPrecision(getAmount('7850450043', -5), 2, numberFormat)
+
+      expect(result).toBe('78,504.50')
+    })
+
+    it('RU', () => {
+      const numberFormat = new Intl.NumberFormat('ru')
+      const result = formatAmountWithPrecision(getAmount('7850450043', -5), 2, numberFormat)
+
+      expect(result).toBe('78 504,50')
     })
   })
 })

@@ -1,4 +1,3 @@
-import React from 'react'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
 import { FiatValue } from 'custom/components/CurrencyInputPanel/FiatValue/FiatValueMod'
@@ -6,8 +5,6 @@ import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { FractionUtils } from '@cow/utils/fractionUtils'
-import { formatTokenAmount } from '@cow/utils/amountFormat'
 
 interface BuiltItProps {
   className: string
@@ -35,14 +32,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
             <CurrencySelectButton currency={currency || undefined} loading={false} readonlyMode={true} />
           </div>
           <div>
-            <styledEl.NumericalInput
-              title={FractionUtils.fractionLikeToExactString(rawAmount)}
-              className="token-amount-input"
-              readOnly={true}
-              value={formatTokenAmount(rawAmount)}
-              onUserInput={() => void 0}
-              $loading={false}
-            />
+            <styledEl.TokenAmountStyled className="token-amount-input" amount={rawAmount} />
           </div>
         </styledEl.CurrencyInputBox>
 
