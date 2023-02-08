@@ -33,9 +33,10 @@ export function formatAmountWithPrecision(
   // For cases when an amount is more than billions
   const { quotient, remainder } = trimHugeAmounts(amountAsFraction)
 
+  const decimalsSeparator = numberFormat.format(1.1)[1]
   // Apply the language formatting for the amount
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
-  const formattedQuotient = numberFormat.format(BigInt(trimTrailingZeros(quotient.toString())))
+  const formattedQuotient = numberFormat.format(BigInt(trimTrailingZeros(quotient.toString(), decimalsSeparator)))
   // Trim the remainder up to precision
   const fixedRemainder = remainder.toFixed(precision, undefined, Rounding.ROUND_HALF_UP)
 
@@ -44,9 +45,8 @@ export function formatAmountWithPrecision(
     return trimTrailingZeros(fixedRemainder)
   }
 
-  const decimalsSeparator = numberFormat.format(1.1)[1]
   const formattedRemainder = remainder.greaterThan(0)
-    ? decimalsSeparator + trimTrailingZeros(fixedRemainder.slice(2))
+    ? decimalsSeparator + trimTrailingZeros(fixedRemainder.slice(1)).slice(1)
     : ''
   const result = formattedQuotient + formattedRemainder + suffix
 

@@ -154,21 +154,21 @@ describe('Amounts formatting', () => {
       const numberFormat = new Intl.NumberFormat('es')
       const result = formatAmountWithPrecision(getAmount('7850450043', -5), 2, numberFormat)
 
-      expect(result).toBe('78.504,50')
+      expect(result).toBe('78.504,5')
     })
 
     it('EN', () => {
       const numberFormat = new Intl.NumberFormat('en')
       const result = formatAmountWithPrecision(getAmount('7850450043', -5), 2, numberFormat)
 
-      expect(result).toBe('78,504.50')
+      expect(result).toBe('78,504.5')
     })
 
     it('RU', () => {
       const numberFormat = new Intl.NumberFormat('ru')
       const result = formatAmountWithPrecision(getAmount('7850450043', -5), 2, numberFormat)
 
-      expect(result).toBe('78 504,50')
+      expect(result).toBe('78 504,5')
     })
   })
 })

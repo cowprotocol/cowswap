@@ -1,12 +1,11 @@
-const DOT = '.'
 const ZERO = '0'
 
-export function trimTrailingZeros(value: string): string {
-  if (!value.includes(DOT)) return value
+export function trimTrailingZeros(value: string, decimalsSeparator = '.'): string {
+  if (!value.includes(decimalsSeparator)) return value
 
   const trimmed = value.slice(0, getFirstTrailingZeroIndex(value))
 
-  if (trimmed[trimmed.length - 1] === DOT) return trimmed.slice(0, -1)
+  if (trimmed[trimmed.length - 1] === decimalsSeparator) return trimmed.slice(0, -1)
 
   return trimmed
 }
