@@ -65,6 +65,8 @@ export function useAnalyticsReporter() {
     if (!prevAccount && account) {
       window.fbq?.('track', 'Contact')
       window.lintrk?.('track', { conversion_id: 10759514 })
+      window.twq?.('event', 'tw-oddz2-oddza', {})
+      window.rdt?.('track', 'SignUp')
     }
   }, [account, walletName, prevAccount])
 
@@ -81,7 +83,9 @@ export function useAnalyticsReporter() {
   useEffect(() => {
     if (!initiatedPixel) {
       window.fbq?.('track', 'InitiateCheckout')
-      window?.lintrk('track', { conversion_id: 10759506 })
+      window.lintrk?.('track', { conversion_id: 10759506 })
+      window.twq?.('event', 'tw-oddz2-oddz8', {})
+      window.rdt?.('track', 'Lead')
 
       initiatedPixel = true
     }

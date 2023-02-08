@@ -71,6 +71,8 @@ export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?
   if (action === 'Posted') {
     window.fbq?.('track', 'Lead')
     window.lintrk?.('track', { conversion_id: 10759522 })
+    window.twq?.('event', 'tw-oddz2-oddzb', {})
+    window.rdt?.('track', 'Purchase')
   }
 
   sendEvent({
