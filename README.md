@@ -164,3 +164,7 @@ The plan:
 2. Deploy a new version to production
 
 `emergency.js` is not cached by browser and loaded before all.
+
+## Nested docs
+
+1. [Amounts formatting](src/cow-react/utils/amountFormat/README.md)

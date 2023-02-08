@@ -1,12 +1,10 @@
-import React from 'react'
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
-import { formatSmartAmount } from '@cow/utils/format'
-import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
+import { FiatValue } from 'custom/components/CurrencyInputPanel/FiatValue/FiatValueMod'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 interface BuiltItProps {
   className: string
@@ -22,7 +20,7 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
 export function CurrencyPreview(props: CurrencyPreviewProps) {
   const { id, currencyInfo, className, priceImpactParams, topLabel } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
-  const { currency, balance, fiatAmount, viewAmount, rawAmount } = currencyInfo
+  const { currency, balance, fiatAmount, rawAmount } = currencyInfo
 
   return (
     <>
@@ -34,14 +32,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
             <CurrencySelectButton currency={currency || undefined} loading={false} readonlyMode={true} />
           </div>
           <div>
-            <styledEl.NumericalInput
-              title={rawAmount?.toExact() + ' ' + currency?.symbol}
-              className="token-amount-input"
-              readOnly={true}
-              value={viewAmount}
-              onUserInput={() => void 0}
-              $loading={false}
-            />
+            <styledEl.TokenAmountStyled className="token-amount-input" amount={rawAmount} />
           </div>
         </styledEl.CurrencyInputBox>
 
@@ -49,8 +40,8 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
           <div>
             {balance && (
               <>
-                <styledEl.BalanceText title={balance.toExact() + ' ' + currency?.symbol}>
-                  <Trans>Balance</Trans>: {formatSmartAmount(balance) || '0'} {<TokenSymbol token={currency} />}
+                <styledEl.BalanceText>
+                  <Trans>Balance</Trans>: <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
                 </styledEl.BalanceText>
               </>
             )}

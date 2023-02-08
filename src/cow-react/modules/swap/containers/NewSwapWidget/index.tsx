@@ -19,7 +19,6 @@ import { useTradePricesUpdate } from '@cow/modules/swap/hooks/useTradePricesUpda
 import { useCurrencyBalance } from 'state/connection/hooks'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from 'state/swap/actions'
-import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import React, { useState } from 'react'
@@ -45,6 +44,7 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwapAmountsFromUrl'
 import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
+import { formatInputAmount } from '@cow/utils/amountFormat'
 
 export function NewSwapWidget() {
   useSetupTradeState()
@@ -80,11 +80,13 @@ export function NewSwapWidget() {
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
 
+  // TODO: unify CurrencyInfo assembling between Swap and Limit orders
+  // TODO: delegate formatting to the view layer
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
     rawAmount: parsedAmounts.INPUT || null,
-    viewAmount: tokenViewAmount(parsedAmounts.INPUT, inputCurrencyBalance, independentField === Field.INPUT),
+    viewAmount: formatInputAmount(parsedAmounts.INPUT, inputCurrencyBalance, independentField === Field.INPUT),
     balance: inputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.OUTPUT && trade ? getInputReceiveAmountInfo(trade) : null,
@@ -94,7 +96,7 @@ export function NewSwapWidget() {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
     rawAmount: parsedAmounts.OUTPUT || null,
-    viewAmount: tokenViewAmount(parsedAmounts.OUTPUT, outputCurrencyBalance, independentField === Field.OUTPUT),
+    viewAmount: formatInputAmount(parsedAmounts.OUTPUT, outputCurrencyBalance, independentField === Field.OUTPUT),
     balance: outputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,

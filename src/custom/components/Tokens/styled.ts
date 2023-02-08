@@ -396,7 +396,7 @@ export const ApproveLabel = styled.span<{ color?: string }>`
 `
 
 export const CustomLimit = styled.div`
-  span:last-child {
+  > span:last-child {
     cursor: default;
     font-size: 10px;
     margin-top: 5px;

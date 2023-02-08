@@ -1,12 +1,11 @@
 import { useMemo } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 
-import { PERCENTAGE_PRECISION } from 'constants/index'
 import { useToggleSettingsMenu } from 'state/application/hooks'
-import { formatSmart } from '@cow/utils/format'
 import { RowSlippageContent } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { formatPercent } from '@cow/utils/amountFormat'
 
 export interface RowSlippageProps {
   allowedSlippage: Percent
@@ -25,7 +24,7 @@ export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowS
       symbols: [nativeCurrency.symbol],
       showSettingOnClick,
       allowedSlippage,
-      displaySlippage: `${formatSmart(allowedSlippage, PERCENTAGE_PRECISION)}%`,
+      displaySlippage: `${formatPercent(allowedSlippage)}%`,
     }),
     [allowedSlippage, nativeCurrency, isEthFlow, showSettingOnClick]
   )

@@ -1,16 +1,15 @@
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import { useClaimState } from 'state/claim/hooks'
 import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } from './styled'
 import { ClaimCommonTypes } from './types'
 import { ClaimStatus } from 'state/claim/actions'
-import { AMOUNT_PRECISION } from 'constants/index'
 import { useTokenBalance } from 'state/connection/hooks'
 import { V_COW } from 'constants/tokens'
 import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
   unclaimedAmount: ClaimCommonTypes['tokenCurrencyAmount'] | undefined
@@ -73,9 +72,9 @@ export function ClaimSummaryView({
         <div>
           <ClaimTotal>
             {totalAvailableText && <b>{totalAvailableText}</b>}
-            <p title={`${formatMax(totalAvailableAmount, totalAvailableAmount.currency.decimals)} vCOW`}>
+            <p>
               {' '}
-              {formatSmartLocaleAware(totalAvailableAmount, AMOUNT_PRECISION) || '0'} vCOW
+              <TokenAmount amount={totalAvailableAmount} defaultValue="0" tokenSymbol={totalAvailableAmount.currency} />
             </p>
           </ClaimTotal>
         </div>

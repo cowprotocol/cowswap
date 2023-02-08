@@ -6,10 +6,10 @@ import {
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
-import { safeTokenName } from '@cowprotocol/cow-js'
 import { isOrderExpired } from 'state/orders/utils'
 import { useAllTransactions } from 'state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
+import { formatSymbol } from '@cow/utils/format'
 
 type EthFlowStepperProps = {
   order: Order | undefined
@@ -42,7 +42,7 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
 
   const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
-    tokenLabel: safeTokenName(order.outputToken),
+    tokenLabel: formatSymbol(order.outputToken.symbol) || '',
     order: {
       orderId: order.id,
       state,

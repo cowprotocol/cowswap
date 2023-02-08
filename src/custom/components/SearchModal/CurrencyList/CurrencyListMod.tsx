@@ -26,10 +26,9 @@ import { LoadingRows /*, MenuItem*/ } from 'components/SearchModal/styleds'
 
 // MOD imports
 import { MenuItem } from '.' // mod
-import { formatSmart } from '@cow/utils/format'
-import { AMOUNT_PRECISION } from 'constants/index'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -65,7 +64,11 @@ export const FixedContentRow = styled.div`
 `
 
 function Balance({ balance }: { balance: CurrencyAmount<Currency> }) {
-  return <StyledBalanceText title={balance.toExact()}>{formatSmart(balance, AMOUNT_PRECISION)}</StyledBalanceText>
+  return (
+    <StyledBalanceText>
+      <TokenAmount amount={balance} />
+    </StyledBalanceText>
+  )
 }
 
 export const TagContainer = styled.div`
