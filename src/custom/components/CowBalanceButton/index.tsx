@@ -91,7 +91,13 @@ export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceBut
       <CowProtocolLogo />
       {!isUpToSmall && (
         <b>
-          <TokenAmount round={true} amount={balance} defaultValue="0" tokenSymbol={{ symbol: '(v)COW' }} />
+          <TokenAmount
+            round={true}
+            hideTokenSymbol={true}
+            amount={balance}
+            defaultValue="0"
+            tokenSymbol={{ symbol: '(v)COW' }}
+          />
         </b>
       )}
     </Wrapper>
