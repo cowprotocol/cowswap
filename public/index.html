@@ -119,14 +119,21 @@
 
   <!-- Reddit Pixel -->
   <script>
-    !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];
-    var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(t,s)}}(window,document);
-    rdt('init','t2_v12pyheq', {"optOut":false,"useDecimalCurrencyValues":true,"aaid":"<AAID-HERE>"});
-    rdt('track', 'PageVisit');
+    !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);rdt('init','t2_v12pyheq', {"optOut":false,"useDecimalCurrencyValues":true,"aaid":"<AAID-HERE>"});rdt('track', 'PageVisit');
   </script>
   <!-- DO NOT MODIFY UNLESS TO REPLACE A USER IDENTIFIER -->
   <!-- End Reddit Pixel -->
+
+  <!-- Start Paved Pixel Snippet -->
+  <script>
+    !function(e,t,n,o,p,i,a){e[o]||((p=e[o]=function(){p.process?p.process.apply(p,arguments):p.queue.push(arguments)}).queue=[],p.t=+new Date,(i=t.createElement(n)).async=1,i.src="https://pvdpix.com/pixel.js?t="+864e5*Math.ceil(new Date/864e5),(a=t.getElementsByTagName(n)[0]).parentNode.insertBefore(i,a))}(window,document,"script","pvd"),pvd("init","97dc323d-7e9e"),pvd("event","pageload");
+  </script>
+  <!-- End Paved Pixel Snippet -->
+
+  <!-- Start Microsoft Ads Pixel Snippet -->
+  <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"343027006"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
+  <!-- End Microsoft Ads Pixel Snippet -->
+
 </body>
 
 </html>

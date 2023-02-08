@@ -67,6 +67,9 @@ export function useAnalyticsReporter() {
       window.lintrk?.('track', { conversion_id: 10759514 })
       window.twq?.('event', 'tw-oddz2-oddza', {})
       window.rdt?.('track', 'SignUp')
+      window.pvd?.('event', 'sign_up')
+      window.uetq = window.uetq || []
+      window.uetq.push('event', 'begin_checkout', {})
     }
   }, [account, walletName, prevAccount])
 
@@ -86,6 +89,9 @@ export function useAnalyticsReporter() {
       window.lintrk?.('track', { conversion_id: 10759506 })
       window.twq?.('event', 'tw-oddz2-oddz8', {})
       window.rdt?.('track', 'Lead')
+      window.pvd?.('event', 'search')
+      window.uetq = window.uetq || []
+      window.uetq.push('event', 'page_view', {})
 
       initiatedPixel = true
     }

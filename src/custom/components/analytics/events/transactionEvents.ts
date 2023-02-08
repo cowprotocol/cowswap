@@ -73,6 +73,9 @@ export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?
     window.lintrk?.('track', { conversion_id: 10759522 })
     window.twq?.('event', 'tw-oddz2-oddzb', {})
     window.rdt?.('track', 'Purchase')
+    window.pvd?.('event', 'purchase')
+    window.uetq = window.uetq || []
+    window.uetq.push('event', 'purchase', {})
   }
 
   sendEvent({
