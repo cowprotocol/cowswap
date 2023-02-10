@@ -13,5 +13,7 @@ declare global {
     lintrk: any // Linkedin
     twq: any // Twitter
     rdt: any // Reddit
+    pvd: any // Paved
+    uetq: any // Microsoft Ads
   }
 }

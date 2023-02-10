@@ -10,6 +10,14 @@ import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '..'
 import { Dimensions } from '../GoogleAnalyticsProvider'
 import usePrevious from 'hooks/usePrevious'
 
+import { PIXEL_EVENTS } from '../pixel/constants'
+import { sendFacebookEvent } from '../pixel/facebook'
+import { sendLinkedinEvent } from '../pixel/linkedin'
+import { sendTwitterEvent } from '../pixel/twitter'
+import { sendRedditEvent } from '../pixel/reddit'
+import { sendPavedEvent } from '../pixel/paved'
+import { sendMicrosoftEvent } from '../pixel/microsoft'
+
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
 }
@@ -63,10 +71,12 @@ export function useAnalyticsReporter() {
 
     // Handle pixel tracking on wallet connection
     if (!prevAccount && account) {
-      window.fbq?.('track', 'Contact')
-      window.lintrk?.('track', { conversion_id: 10759514 })
-      window.twq?.('event', 'tw-oddz2-oddza', {})
-      window.rdt?.('track', 'SignUp')
+      sendFacebookEvent(PIXEL_EVENTS.CONNECT_WALLET)
+      sendLinkedinEvent(PIXEL_EVENTS.CONNECT_WALLET)
+      sendTwitterEvent(PIXEL_EVENTS.CONNECT_WALLET)
+      sendRedditEvent(PIXEL_EVENTS.CONNECT_WALLET)
+      sendPavedEvent(PIXEL_EVENTS.CONNECT_WALLET)
+      sendMicrosoftEvent(PIXEL_EVENTS.CONNECT_WALLET)
     }
   }, [account, walletName, prevAccount])
 
@@ -82,10 +92,12 @@ export function useAnalyticsReporter() {
   // Handle initiate pixel tracking
   useEffect(() => {
     if (!initiatedPixel) {
-      window.fbq?.('track', 'InitiateCheckout')
-      window.lintrk?.('track', { conversion_id: 10759506 })
-      window.twq?.('event', 'tw-oddz2-oddz8', {})
-      window.rdt?.('track', 'Lead')
+      sendFacebookEvent(PIXEL_EVENTS.INIT)
+      sendLinkedinEvent(PIXEL_EVENTS.INIT)
+      sendTwitterEvent(PIXEL_EVENTS.INIT)
+      sendRedditEvent(PIXEL_EVENTS.INIT)
+      sendPavedEvent(PIXEL_EVENTS.INIT)
+      sendMicrosoftEvent(PIXEL_EVENTS.INIT)
 
       initiatedPixel = true
     }
