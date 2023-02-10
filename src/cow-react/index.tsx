@@ -1,6 +1,5 @@
 import '@reach/dialog/styles.css'
 import 'inter-ui'
-import './polyfills'
 
 import 'components/analytics'
 import '@cow/utils/sentry'
