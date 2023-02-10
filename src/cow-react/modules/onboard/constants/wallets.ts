@@ -54,9 +54,9 @@ export const DISABLED_WALLETS_BY_CHAIN: DisabledWallets = {
 
 export const CONNECT_OPTIONS = {
   [WalletOptions.INJECTED]: () => Promise.resolve(injectedModule()),
-  [WalletOptions.COINBASE]: () => import('@web3-onboard/coinbase').then(m => m.default()),
-  [WalletOptions.WALLET_CONNECT]: () => import('@web3-onboard/walletconnect').then(m => m.default(defaultWCOptions)),
-  [WalletOptions.ZENGO]: () => import('@web3-onboard/walletconnect').then(m => m.default(zenGoOptions)),
-  [WalletOptions.KEYSTONE]: () => import('@web3-onboard/keystone').then(m => m.default()),
-  [WalletOptions.LEDGER]: () => import('@web3-onboard/ledger').then(m => m.default()),
+  [WalletOptions.COINBASE]: () => import('@web3-onboard/coinbase').then((m) => m.default()),
+  [WalletOptions.WALLET_CONNECT]: () => import('@web3-onboard/walletconnect').then((m) => m.default(defaultWCOptions)),
+  [WalletOptions.ZENGO]: () => import('@web3-onboard/walletconnect').then((m) => m.default(zenGoOptions)),
+  [WalletOptions.KEYSTONE]: () => import('@web3-onboard/keystone').then((m) => m.default()),
+  [WalletOptions.LEDGER]: () => import('@web3-onboard/ledger').then((m) => m.default()),
 }

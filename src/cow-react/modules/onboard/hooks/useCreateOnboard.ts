@@ -12,7 +12,7 @@ export const useCreateOnboard = () => {
   const chains = [mainet, polygon, gnosisChain, goerli]
 
   useEffect(() => {
-    Promise.all(getWalletsByChain()).then(wallets => {
+    Promise.all(getWalletsByChain()).then((wallets) => {
       setWeb3Onboard(
         init({
           wallets,
