@@ -1,8 +1,4 @@
 import injectedModule from '@web3-onboard/injected-wallets'
-import walletConnectModule from '@web3-onboard/walletconnect'
-import keystoneModule from '@web3-onboard/keystone'
-import ledgerModule from '@web3-onboard/ledger'
-import coinbaseWalletModule from '@web3-onboard/coinbase'
 import { SupportedChainId } from 'constants/chains'
 
 export const WALLET_STORAGE_KEY = 'connectedWallets'
@@ -57,10 +53,10 @@ export const DISABLED_WALLETS_BY_CHAIN: DisabledWallets = {
 }
 
 export const CONNECT_OPTIONS = {
-  [WalletOptions.INJECTED]: () => injectedModule(),
-  [WalletOptions.COINBASE]: () => coinbaseWalletModule(),
-  [WalletOptions.WALLET_CONNECT]: () => walletConnectModule(defaultWCOptions),
-  [WalletOptions.ZENGO]: () => walletConnectModule(zenGoOptions),
-  [WalletOptions.KEYSTONE]: () => keystoneModule(),
-  [WalletOptions.LEDGER]: () => ledgerModule(),
+  [WalletOptions.INJECTED]: () => Promise.resolve(injectedModule()),
+  [WalletOptions.COINBASE]: () => import('@web3-onboard/coinbase').then(m => m.default()),
+  [WalletOptions.WALLET_CONNECT]: () => import('@web3-onboard/walletconnect').then(m => m.default(defaultWCOptions)),
+  [WalletOptions.ZENGO]: () => import('@web3-onboard/walletconnect').then(m => m.default(zenGoOptions)),
+  [WalletOptions.KEYSTONE]: () => import('@web3-onboard/keystone').then(m => m.default()),
+  [WalletOptions.LEDGER]: () => import('@web3-onboard/ledger').then(m => m.default()),
 }
