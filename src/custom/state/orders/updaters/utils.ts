@@ -1,10 +1,10 @@
 import { Order, OrderFulfillmentData, OrderKind, OrderStatus } from 'state/orders/actions'
 import { getOrder, OrderID, OrderMetaData } from '@cow/api/gnosisProtocol'
 import { stringToCurrency } from 'state/swap/extension'
-import { formatSmart, formatSymbol } from '@cow/utils/format'
-import { AMOUNT_PRECISION } from 'constants/index'
+import { formatSymbol } from '@cow/utils/format'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { formatTokenAmount } from '@cow/utils/amountFormat'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
@@ -38,11 +38,9 @@ export function computeOrderSummary({
       const inputPrefix = !isFulfilled && kind === OrderKind.BUY ? 'at most ' : ''
       const outputPrefix = !isFulfilled && kind === OrderKind.SELL ? 'at least ' : ''
 
-      summary = `Swap ${inputPrefix}${formatSmart(inputAmount, AMOUNT_PRECISION)} ${formatSymbol(
+      summary = `Swap ${inputPrefix}${formatTokenAmount(inputAmount)} ${formatSymbol(
         inputAmount.currency.symbol
-      )} for ${outputPrefix}${formatSmart(outputAmount, AMOUNT_PRECISION)} ${formatSymbol(
-        outputAmount.currency.symbol
-      )}`
+      )} for ${outputPrefix}${formatTokenAmount(outputAmount)} ${formatSymbol(outputAmount.currency.symbol)}`
     } else {
       // We only have the API order info, let's at least use that
       summary = `Swap ${sellToken} for ${buyToken}`

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 import ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
 import ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
@@ -13,6 +14,8 @@ import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'constants/ipfs'
 const { GPv2Settlement, GPv2VaultRelayer } = networksJson
 const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow
 const EthFlowProd = ethFlowProdJson.CoWSwapEthFlow
+
+export const ZERO_BIG_NUMBER = new BigNumber(0)
 
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
 export const MAX_SLIPPAGE_BPS = 5000 // 50%

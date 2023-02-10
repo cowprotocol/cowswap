@@ -6,8 +6,6 @@ import { ButtonPrimary } from 'custom/components/Button'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import cowImage from 'assets/cow-swap/cow_v2.svg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
-import { AMOUNT_PRECISION } from 'constants/index'
-import { formatSmartLocaleAware } from '@cow/utils/format'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import CopyHelper from 'components/Copy'
@@ -25,6 +23,7 @@ import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/mis
 import { claimAnalytics } from 'components/analytics'
 import { ButtonSize } from 'theme'
 import { HelpCircle } from '@cow/common/pure/HelpCircle'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 enum ClaimStatus {
   INITIAL,
@@ -46,10 +45,6 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
   const { chainId = ChainId.MAINNET, account } = useWeb3React()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const unvested = allocated.subtract(vested)
-  const allocatedFormatted = formatSmartLocaleAware(allocated, AMOUNT_PRECISION) || '0'
-  const vestedFormatted = formatSmartLocaleAware(vested, AMOUNT_PRECISION) || '0'
-  const unvestedFormatted = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
-  const claimableFormatted = formatSmartLocaleAware(vested.subtract(claimed), AMOUNT_PRECISION) || '0'
   const previousAccount = usePrevious(account)
 
   const canClaim =
@@ -137,16 +132,22 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
           <span>
             <i>COW vesting from locked GNO</i>
             <b>
-              {allocatedFormatted} COW{' '}
+              <TokenAmount amount={allocated} defaultValue="0" tokenSymbol={allocated.currency} />
               <MouseoverTooltipContent
                 wrap
                 content={
                   <VestingBreakdown>
                     <span>
-                      <i>Unvested</i> <p>{unvestedFormatted} COW</p>
+                      <i>Unvested</i>{' '}
+                      <p>
+                        <TokenAmount amount={unvested} defaultValue="0" tokenSymbol={unvested.currency} />
+                      </p>
                     </span>
                     <span>
-                      <i>Vested</i> <p>{vestedFormatted} COW</p>
+                      <i>Vested</i>{' '}
+                      <p>
+                        <TokenAmount amount={vested} defaultValue="0" tokenSymbol={vested.currency} />
+                      </p>
                     </span>
                   </VestingBreakdown>
                 }
@@ -175,7 +176,9 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                 <HelpCircle size={14} />
               </MouseoverTooltipContent>
             </i>
-            <b>{claimableFormatted}</b>
+            <b>
+              <TokenAmount amount={vested.subtract(claimed)} defaultValue="0" />
+            </b>
           </BalanceDisplay>
           {status === ClaimStatus.CONFIRMED ? (
             <ButtonPrimary disabled>

@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
 
-import { formatMax, formatSmart, formatSymbol } from '@cow/utils/format'
+import { formatSymbol } from '@cow/utils/format'
 import TradeGp from 'state/swap/TradeGp'
-import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import { RowFeeContent } from '@cow/modules/swap/pure/Row/RowFeeContent'
 import { RowWithShowHelpersProps } from '@cow/modules/swap/pure/Row/types'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { formatFiatAmount, formatTokenAmount } from '@cow/utils/amountFormat'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export const GASLESS_FEE_TOOLTIP_MSG =
   'On CoW Swap you sign your order (hence no gas costs!). The fees are covering your gas costs already.'
@@ -64,13 +65,14 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
   const props = useMemo(() => {
     const displayFee = realizedFee || fee
     const feeCurrencySymbol = displayFee?.currency.symbol || '-'
-    const smartFeeFiatValue = formatSmart(feeFiatValue, FIAT_PRECISION)
-    const smartFeeTokenValue = formatSmart(displayFee, AMOUNT_PRECISION)
+    // TODO: delegate formatting to the view layer
+    const smartFeeFiatValue = formatFiatAmount(feeFiatValue)
+    const smartFeeTokenValue = formatTokenAmount(displayFee)
     const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${
       isEthFLow ? ' + gas' : ''
     }`
     const feeToken = smartFeeTokenValue ? feeAmountWithCurrency : '🎉 Free!'
-    const fullDisplayFee = formatMax(displayFee, displayFee?.currency.decimals) || '-'
+    const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
     const includeGasMessage = allowsOffchainSigning && !isEthFLow ? ' (incl. gas costs)' : ''
 
     return {

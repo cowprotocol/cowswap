@@ -3,19 +3,20 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import TradeGp from 'state/swap/TradeGp'
 import QuestionHelper from 'components/QuestionHelper'
 import styled from 'styled-components/macro'
-import { formatMax, formatSmart } from '@cow/utils/format'
 import useTheme from 'hooks/useTheme'
-import { AMOUNT_PRECISION, FIAT_PRECISION } from 'constants/index'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { formatTokenAmount } from '@cow/utils/amountFormat'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp
   label: React.ReactNode
   showHelper: boolean
-  amountBeforeFees?: string
-  amountAfterFees?: string
+  amountBeforeFees?: React.ReactNode
+  amountAfterFees?: React.ReactNode
   feeAmount?: CurrencyAmount<Currency>
   type: 'From' | 'To'
   fiatValue: CurrencyAmount<Token> | null
@@ -87,7 +88,7 @@ type FeeBreakdownProps = FeeInformationTooltipProps & {
 const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownProps) => {
   const typeString = type === 'From' ? '+' : '-'
 
-  const smartFee = formatSmart(feeAmount, AMOUNT_PRECISION)
+  const smartFee = formatTokenAmount(feeAmount)
 
   return (
     <FeeTooltipLine>
@@ -95,7 +96,7 @@ const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownPro
       {smartFee ? (
         <span>
           {typeString}
-          {smartFee} <TokenSymbol token={{ symbol }} length={MAX_TOKEN_SYMBOL_LENGTH} />
+          <TokenAmount amount={feeAmount} tokenSymbol={{ symbol }} />
         </span>
       ) : (
         <strong className="green">Free</strong>
@@ -124,9 +125,9 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
 
   const { subsidy } = useCowBalanceAndSubsidy()
 
-  const [symbol, fullFeeAmount] = useMemo(() => {
+  const symbol = useMemo(() => {
     const amount = trade?.[type === 'From' ? 'inputAmount' : 'outputAmount']
-    return amount ? [amount.currency.symbol || '', formatMax(amount, amount.currency.decimals) || '-'] : []
+    return amount?.currency.symbol
   }, [trade, type])
 
   if (!trade || !showHelper) return null
@@ -164,8 +165,13 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
           }
         />
       </span>
-      <FeeAmountAndFiat title={`${fullFeeAmount} ${symbol}`}>
-        {amountAfterFees} {showFiat && fiatValue && <small>≈ ${formatSmart(fiatValue, FIAT_PRECISION)}</small>}
+      <FeeAmountAndFiat>
+        {amountAfterFees}{' '}
+        {showFiat && fiatValue && (
+          <small>
+            <FiatAmount amount={fiatValue} />
+          </small>
+        )}
       </FeeAmountAndFiat>
     </FeeInformationTooltipWrapper>
   )

@@ -7,8 +7,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
-import { AMOUNT_PRECISION, RADIX_HEX } from 'constants/index'
-import { formatSmart, formatSymbol } from '@cow/utils/format'
+import { RADIX_HEX } from 'constants/index'
+import { formatSymbol } from '@cow/utils/format'
 import { getOperationMessage, OperationType } from '../components/TransactionConfirmationModal'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { isRejectRequestProviderError } from '../utils/misc'
@@ -19,6 +19,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useCurrencyBalance } from 'state/connection/hooks'
 import { useTransactionConfirmModal } from '@cow/modules/swap/hooks/useTransactionConfirmModal'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { formatTokenAmount } from '@cow/utils/amountFormat'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -115,7 +116,7 @@ export function useWrapUnwrapContext(
   const amountHex = `0x${inputAmount.quotient.toString(RADIX_HEX)}`
   const operationType = isWrap ? OperationType.WRAP_ETHER : OperationType.UNWRAP_WETH
   const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
-  const baseSummary = `${formatSmart(inputAmount, AMOUNT_PRECISION)} ${baseSummarySuffix}`
+  const baseSummary = `${formatTokenAmount(inputAmount)} ${baseSummarySuffix}`
   const summary = `${isWrap ? 'Wrap' : 'Unwrap'} ${baseSummary}`
   const confirmationMessage = `${isWrap ? 'Wrapping' : 'Unwrapping'} ${baseSummary}`
   const operationMessage = getOperationMessage(operationType, chainId)

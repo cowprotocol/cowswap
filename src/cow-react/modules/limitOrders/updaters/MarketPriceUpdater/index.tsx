@@ -1,11 +1,12 @@
 import { useLayoutEffect, useState } from 'react'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 import usePrevious from '@src/hooks/usePrevious'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
+import { Writeable } from '@cow/types'
 
 // Fetch and update initial price for the selected token pair
 export function MarketPriceUpdater() {
@@ -19,12 +20,17 @@ export function MarketPriceUpdater() {
   const prevPrice = usePrevious(price)
 
   useLayoutEffect(() => {
-    updateLimitRateState({
+    const update: Partial<Writeable<LimitRateState>> = {
+      initialRate: price,
       // Don't change isLoading flag when price is already set
       isLoading: isInitialPriceSet ? false : isLoading,
-      initialRate: price,
-      isTypedValue: false,
-    })
+    }
+
+    if (!isInitialPriceSet) {
+      update.isTypedValue = false
+    }
+
+    updateLimitRateState(update)
   }, [isInitialPriceSet, price, isLoading, updateLimitRateState])
 
   useLayoutEffect(() => {

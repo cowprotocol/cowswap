@@ -24,13 +24,12 @@ import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
 import CowProtocolIcon from 'assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
-import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
-import { AMOUNT_PRECISION } from 'constants/index'
 import { shortenAddress } from 'utils'
 import CopyHelper from 'components/Copy'
 import { ButtonSecondary } from 'components/Button'
 import { ClaimCommonTypes } from './types'
 import { Routes } from '@cow/constants/routes'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://swap.cow.fi/'
@@ -62,8 +61,7 @@ export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
 
   const vCowAmount = currency && CurrencyAmount.fromRawAmount(currency, claimedAmount)
 
-  const formattedVCowAmount = formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION)
-  const formattedMaxVCowAmount = vCowAmount?.greaterThan('0') ? formatMax(vCowAmount, currency?.decimals) : ''
+  const formattedVCowAmount = <TokenAmount amount={vCowAmount} defaultValue="" tokenSymbol={currency} />
 
   return (
     <ConfirmOrLoadingWrapper activeBG={true}>
@@ -77,18 +75,13 @@ export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
         )}
       </ConfirmedIcon>
       <h3>{isConfirmed ? 'Claim successful!' : isFailure ? 'Failed to claim' : 'Claiming'}</h3>
-      {!isConfirmed && (
-        <Trans>
-          <span title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW</span>
-        </Trans>
-      )}
+      {!isConfirmed && formattedVCowAmount}
 
       {isConfirmed && (
         <>
           <Trans>
             <h4>
-              Congratulations on claiming{' '}
-              <b title={formattedMaxVCowAmount && `${formattedMaxVCowAmount} vCOW`}>{formattedVCowAmount} vCOW!</b>
+              Congratulations on claiming <b>{formattedVCowAmount}!</b>
               {isSelfClaiming ? (
                 <AddToMetamask currency={currency} />
               ) : (

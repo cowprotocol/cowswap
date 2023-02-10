@@ -1,14 +1,13 @@
 import styled from 'styled-components/macro'
-import { formatSmartLocaleAware } from '@cow/utils/format'
 import { COW_SUBSIDY_DATA } from './constants'
 import { CowSubsidy } from '.'
 import { transparentize, lighten } from 'polished'
 
-import { BigNumber } from 'bignumber.js'
-import { formatUnits } from '@ethersproject/units'
 import { V_COW } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { useIsDarkMode } from 'state/user/hooks'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 const StyledSubsidyTable = styled.table`
   width: 100%;
@@ -154,7 +153,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
   `}
 `
 
-const COW_DECIMALS = V_COW[SupportedChainId.MAINNET].decimals
+const vCowToken = V_COW[SupportedChainId.MAINNET]
 
 function SubsidyTable({ discount }: CowSubsidy) {
   const darkMode = useIsDarkMode()
@@ -171,12 +170,15 @@ function SubsidyTable({ discount }: CowSubsidy) {
         {/* DATA IS IN ATOMS */}
         {COW_SUBSIDY_DATA.map(([threshold, thresholdDiscount], i) => {
           const selected = discount === thresholdDiscount
-          const formattedThreshold = new BigNumber(formatUnits(threshold, COW_DECIMALS))
+          const formattedThreshold = CurrencyAmount.fromRawAmount(vCowToken, threshold)
 
           return (
             <SubsidyTr key={i} selected={selected} darkMode={darkMode}>
               <td>
-                <span>{i && '>' + formatSmartLocaleAware(formattedThreshold)}</span>
+                <span>
+                  {i && '>'}
+                  {i && <TokenAmount amount={formattedThreshold} />}
+                </span>
               </td>
               <td>{thresholdDiscount}%</td>
             </SubsidyTr>

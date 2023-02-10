@@ -6,8 +6,7 @@ import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'con
 import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'
-import { ThemedText } from 'theme/index'
-import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
+import { StyledInfoIcon, TransactionText } from '@cow/modules/swap/pure/styled'
 import { ClickableText } from '@cow/modules/swap/pure/Row/RowSlippageContent'
 
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
@@ -78,14 +77,9 @@ type DeadlineTextContentsProps = { isEthFlow: boolean }
 
 function DeadlineTextContents({ isEthFlow }: DeadlineTextContentsProps) {
   return (
-    <>
+    <TransactionText>
       <Trans>Transaction expiration</Trans>
-      {isEthFlow && (
-        <>
-          {' '}
-          <ThemedText.Warn override>(modified)</ThemedText.Warn>
-        </>
-      )}
-    </>
+      {isEthFlow && <i>(modified)</i>}
+    </TransactionText>
   )
 }

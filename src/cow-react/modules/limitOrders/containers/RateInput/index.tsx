@@ -9,12 +9,12 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
-import { formatSmart } from '@cow/utils/format'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from '@cow/common/services/getQuoteCurrency'
 import { useWeb3React } from '@web3-react/core'
 import { getAddress } from '@cow/utils/getAddress'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { formatInputAmount } from '@cow/utils/amountFormat'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -51,7 +51,7 @@ export function RateInput() {
 
     const rate = isInversed ? activeRate.invert() : activeRate
 
-    return formatSmart(rate) || ''
+    return formatInputAmount(rate)
   }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
 
   // Handle set market price
