@@ -1,6 +1,14 @@
 import { OrderClass } from 'state/orders/actions'
 import { Category, sendEvent } from '../index'
 
+import { PIXEL_EVENTS } from '../pixel/constants'
+import { sendFacebookEvent } from '../pixel/facebook'
+import { sendLinkedinEvent } from '../pixel/linkedin'
+import { sendTwitterEvent } from '../pixel/twitter'
+import { sendRedditEvent } from '../pixel/reddit'
+import { sendPavedEvent } from '../pixel/paved'
+import { sendMicrosoftEvent } from '../pixel/microsoft'
+
 const LABEL_FROM_CLASS: Record<OrderClass, string> = {
   limit: 'Limit Order',
   market: 'Market Order',
@@ -69,8 +77,12 @@ export function signSwapAnalytics(orderClass: OrderClass, label?: string) {
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
 export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?: string) {
   if (action === 'Posted') {
-    window.fbq?.('track', 'Lead')
-    window.lintrk?.('track', { conversion_id: 10759522 })
+    sendFacebookEvent(PIXEL_EVENTS.POST_TRADE)
+    sendLinkedinEvent(PIXEL_EVENTS.POST_TRADE)
+    sendTwitterEvent(PIXEL_EVENTS.POST_TRADE)
+    sendRedditEvent(PIXEL_EVENTS.POST_TRADE)
+    sendPavedEvent(PIXEL_EVENTS.POST_TRADE)
+    sendMicrosoftEvent(PIXEL_EVENTS.POST_TRADE)
   }
 
   sendEvent({
