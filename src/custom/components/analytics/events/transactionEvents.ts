@@ -2,12 +2,12 @@ import { OrderClass } from 'state/orders/actions'
 import { Category, sendEvent } from '../index'
 
 import { PIXEL_EVENTS } from '../pixel/constants'
-import { sendFacebookEvent } from '../pixel/sendFacebookEvent'
-import { sendLinkedinEvent } from '../pixel/sendLinkedinEvent'
-import { sendTwitterEvent } from '../pixel/sendTwitterEvent'
-import { sendRedditEvent } from '../pixel/sendRedditEvent'
-import { sendPavedEvent } from '../pixel/sendPavedEvent'
-import { sendMicrosoftEvent } from '../pixel/sendMicrosoftEvent'
+import { sendFacebookEvent } from '../pixel/facebook'
+import { sendLinkedinEvent } from '../pixel/linkedin'
+import { sendTwitterEvent } from '../pixel/twitter'
+import { sendRedditEvent } from '../pixel/reddit'
+import { sendPavedEvent } from '../pixel/paved'
+import { sendMicrosoftEvent } from '../pixel/microsoft'
 
 const LABEL_FROM_CLASS: Record<OrderClass, string> = {
   limit: 'Limit Order',

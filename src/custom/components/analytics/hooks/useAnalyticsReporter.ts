@@ -11,12 +11,12 @@ import { Dimensions } from '../GoogleAnalyticsProvider'
 import usePrevious from 'hooks/usePrevious'
 
 import { PIXEL_EVENTS } from '../pixel/constants'
-import { sendFacebookEvent } from '../pixel/sendFacebookEvent'
-import { sendLinkedinEvent } from '../pixel/sendLinkedinEvent'
-import { sendTwitterEvent } from '../pixel/sendTwitterEvent'
-import { sendRedditEvent } from '../pixel/sendRedditEvent'
-import { sendPavedEvent } from '../pixel/sendPavedEvent'
-import { sendMicrosoftEvent } from '../pixel/sendMicrosoftEvent'
+import { sendFacebookEvent } from '../pixel/facebook'
+import { sendLinkedinEvent } from '../pixel/linkedin'
+import { sendTwitterEvent } from '../pixel/twitter'
+import { sendRedditEvent } from '../pixel/reddit'
+import { sendPavedEvent } from '../pixel/paved'
+import { sendMicrosoftEvent } from '../pixel/microsoft'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
