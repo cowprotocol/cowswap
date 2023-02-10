@@ -4,7 +4,7 @@ import QuestionHelper from 'components/QuestionHelper'
 export const ReceiveAmountBox = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 10px;
   border-radius: 0 0 16px 16px;
   font-size: 14px;
   font-weight: 600;

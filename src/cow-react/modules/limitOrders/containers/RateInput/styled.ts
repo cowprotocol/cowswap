@@ -5,9 +5,9 @@ import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.grey1};
-  border-radius: 16px;
-  padding: 10px 16px;
-  flex: 1 1 70%;
+  border-radius: 16px 16px 0 0;
+  padding: 10px 16px 2px;
+  flex: 1 1 100%;
   min-height: 80px;
   justify-content: space-between;
   display: flex;
@@ -46,7 +46,8 @@ export const MarketPriceButton = styled.button`
 `
 
 export const Body = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: min-content 1fr;
   align-items: center;
   justify-content: space-between;
   width: 100%;
@@ -58,8 +59,8 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   align-items: center;
   background: none;
   border: none;
-  width: 100%;
-  text-align: left;
+  width: auto;
+  text-align: right;
 
   &::placeholder {
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
@@ -73,9 +74,8 @@ export const ActiveCurrency = styled.button`
   border: none;
   background: none;
   padding: 0;
-  margin: 0 0 0 auto;
+  margin: 0;
   gap: 8px;
-  max-width: 130px;
   width: auto;
   cursor: pointer;
 `
@@ -104,4 +104,30 @@ export const ActiveIcon = styled.div`
 
 export const RateLoader = styled(Loader)`
   margin: 5px;
+`
+
+export const EstimatedRate = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  min-height: 42px;
+  margin: 0;
+  padding: 12px 10px 14px;
+  font-size: 13px;
+  border-radius: 0 0 16px 16px;
+  font-weight: 400;
+  background: ${({ theme }) => theme.bg1};
+  border: 2px solid ${({ theme }) => theme.grey1};
+
+  > b {
+    display: flex;
+    flex-flow: row nowrap;
+    font-weight: normal;
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
+
+  > span > i {
+    font-style: normal;
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
 `

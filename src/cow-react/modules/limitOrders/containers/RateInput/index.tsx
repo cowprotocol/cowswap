@@ -15,6 +15,8 @@ import { getAddress } from '@cow/utils/getAddress'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
+import QuestionHelper from 'components/QuestionHelper'
+import { Trans } from '@lingui/macro'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -130,36 +132,45 @@ export function RateInput() {
   }, [inputCurrency, outputCurrency])
 
   return (
-    <styledEl.Wrapper>
-      <styledEl.Header>
-        <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
+    <>
+      <styledEl.Wrapper>
+        <styledEl.Header>
+          <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
 
-        <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
-          <span>Market price</span>
-        </styledEl.MarketPriceButton>
-      </styledEl.Header>
+          <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
+            <span>Market price</span>
+          </styledEl.MarketPriceButton>
+        </styledEl.Header>
 
-      <styledEl.Body>
-        {isLoading && areBothCurrencies ? (
-          <styledEl.RateLoader />
-        ) : (
-          <styledEl.NumericalInput
-            $loading={false}
-            id="rate-limit-amount-input"
-            value={displayedRate}
-            onUserInput={handleUserInput}
-          />
-        )}
+        <styledEl.Body>
+          <styledEl.ActiveCurrency onClick={handleToggle}>
+            <styledEl.ActiveSymbol>
+              <TokenSymbol token={secondaryCurrency} />
+            </styledEl.ActiveSymbol>
+            <styledEl.ActiveIcon>
+              <RefreshCw size={12} />
+            </styledEl.ActiveIcon>
+          </styledEl.ActiveCurrency>
 
-        <styledEl.ActiveCurrency onClick={handleToggle}>
-          <styledEl.ActiveSymbol>
-            <TokenSymbol token={secondaryCurrency} />
-          </styledEl.ActiveSymbol>
-          <styledEl.ActiveIcon>
-            <RefreshCw size={12} />
-          </styledEl.ActiveIcon>
-        </styledEl.ActiveCurrency>
-      </styledEl.Body>
-    </styledEl.Wrapper>
+          {isLoading && areBothCurrencies ? (
+            <styledEl.RateLoader />
+          ) : (
+            <styledEl.NumericalInput
+              $loading={false}
+              id="rate-limit-amount-input"
+              value={displayedRate}
+              onUserInput={handleUserInput}
+            />
+          )}
+        </styledEl.Body>
+
+      </styledEl.Wrapper>
+
+      <styledEl.EstimatedRate>
+        <b>Est. execution price <QuestionHelper text={<Trans>-Breakdown Tooltip Text here -</Trans>} /></b>
+        {/* Todo: get estimated execution price */}
+        <span>≈ 1272.1259 USDC <i>($1271.33)</i></span>
+      </styledEl.EstimatedRate>
+    </>
   )
 }

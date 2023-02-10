@@ -53,10 +53,17 @@ export const TradeButtonBox = styled.div`
   flex-direction: column;
 `
 
+export const FooterBox = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  margin: 4px 8px 0;
+  padding: 0;
+`
+
 export const RateWrapper = styled.div`
-  display: grid;
-  grid-template-columns: auto 150px;
-  gap: 6px;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 0;
   text-align: right;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -78,9 +85,10 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 `
 
 export const StyledRateInfo = styled(RateInfo)`
-  padding: 8px 8px 0;
+  padding: 0;
   gap: 4px;
   font-size: 13px;
+  min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
 `

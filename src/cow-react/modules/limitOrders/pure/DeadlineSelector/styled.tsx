@@ -2,29 +2,25 @@ import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`
-  background: ${({ theme }) => theme.grey1};
-  border-radius: 16px;
-  padding: 10px 16px;
-  min-height: 80px;
+  padding: 0;
+  margin: 0;
+  min-height: 24px;
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
+  font-size: 13px;
 `
 
-export const Header = styled.span`
+export const Label = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
   font-weight: 500;
-  width: 100%;
   color: ${({ theme }) => transparentize(0.3, theme.text1)};
 `
 
-export const Current = styled.button<{ isCustom: boolean }>`
+export const Current = styled.button`
   color: ${({ theme }) => theme.text1};
-  font-size: ${({ isCustom }) => (isCustom ? '12px' : '100%')};
-  letter-spacing: ${({ isCustom }) => (isCustom ? '-0.3px' : '0')};
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -41,7 +37,6 @@ export const Current = styled.button<{ isCustom: boolean }>`
   overflow: hidden;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 21px;
   `}
 
   &:hover {

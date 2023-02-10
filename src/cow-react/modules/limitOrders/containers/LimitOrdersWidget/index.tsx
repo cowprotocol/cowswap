@@ -254,7 +254,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {!isWrapOrUnwrap && (
                 <styledEl.RateWrapper>
                   <RateInput />
-                  <DeadlineInput />
                 </styledEl.RateWrapper>
               )}
               <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
@@ -263,7 +262,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                   onSwitchTokens={throttledOnSwitchTokens}
                   withRecipient={showRecipient}
                   isLoading={isTradePriceUpdating}
-                  hasSeparatorLine={true}
+                  hasSeparatorLine={false}
                   border={true}
                 />
                 {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
@@ -286,7 +285,10 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
               )}
 
+              <styledEl.FooterBox>
+              <DeadlineInput />
               {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />}
+              </styledEl.FooterBox>
 
               <LimitOrdersWarnings priceImpact={priceImpact} />
 
