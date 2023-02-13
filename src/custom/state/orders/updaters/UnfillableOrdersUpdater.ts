@@ -20,6 +20,8 @@ import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
+
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
@@ -131,7 +133,8 @@ export function UnfillableOrdersUpdater(): null {
         )
       }
 
-      pending.forEach((order, index) =>
+      pending.forEach((order, index) => {
+        console.debug(`[UnfillableOrdersUpdater] Check order`, order)
         _getOrderPrice(chainId, order, strategy)
           .then((quote) => {
             if (quote) {
@@ -152,20 +155,26 @@ export function UnfillableOrdersUpdater(): null {
               e
             )
           })
-      )
+      })
     } finally {
       isUpdating.current = false
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag])
 
+  const isWindowVisible = useIsWindowVisible()
+
   useEffect(() => {
+    if (!chainId || !account || !isWindowVisible) {
+      console.debug('[UnfillableOrdersUpdater] No need to fetch unfillable orders')
+      return
+    }
+
+    console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
     updatePending()
-
     const interval = setInterval(updatePending, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
-
     return () => clearInterval(interval)
-  }, [updatePending])
+  }, [updatePending, chainId, account, isWindowVisible])
 
   return null
 }
