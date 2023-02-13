@@ -1,5 +1,6 @@
 import { Location } from 'history'
 import { LIMIT_ORDERS_TABS } from '@cow/modules/limitOrders/const/limitOrdersTabs'
+import { Path } from '@remix-run/router/history'
 
 const LIMIT_ORDERS_TAB_KEY = 'tab'
 const LIMIT_ORDERS_PAGE_KEY = 'page'
@@ -14,7 +15,7 @@ export interface LimitOrdersPageParams {
 export function buildLimitOrdersUrl(
   { pathname, search }: Pick<Location, 'pathname' | 'search'>,
   { tabId, pageNumber }: Partial<LimitOrdersPageParams>
-): string {
+): Partial<Path> {
   const query = new URLSearchParams(search)
 
   if (tabId) {
@@ -25,7 +26,7 @@ export function buildLimitOrdersUrl(
     query.set(LIMIT_ORDERS_PAGE_KEY, pageNumber.toString())
   }
 
-  return pathname + '?' + query
+  return { pathname, search: query.toString() }
 }
 
 export function parseLimitOrdersPageParams(search: string): Partial<LimitOrdersPageParams> {

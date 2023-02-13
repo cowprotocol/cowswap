@@ -3,7 +3,7 @@ import { Dropdown } from '@cow/common/pure/Dropdown'
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
 import { GpModal as Modal } from '@src/custom/components/Modal'
 
-import { useCallback, useMemo, useRef } from 'react'
+import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
 import {
   ListWrapper,
@@ -95,7 +95,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   )
 
   // Sets value from input, if it exists
-  const onChange = useCallback(
+  const onChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       // Some browsers offer a `clear` button in their date picker
       // That action sets the value to `''`

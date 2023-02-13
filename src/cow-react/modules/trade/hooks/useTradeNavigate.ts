@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useCallback } from 'react'
 import { useTradeTypeInfo } from '@cow/modules/trade/hooks/useTradeTypeInfo'
 import { TradeCurrenciesIds } from '@cow/modules/trade/types/TradeState'
@@ -12,7 +12,7 @@ interface UseTradeNavigateCallback {
 }
 
 export function useTradeNavigate(): UseTradeNavigateCallback {
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
   const tradeTypeInfo = useTradeTypeInfo()
   const { chainId: currentChainId } = useWeb3React()
@@ -39,8 +39,8 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
 
       if (location.pathname === route) return
 
-      history.push(route + location.search)
+      navigate({ pathname: route, search: location.search })
     },
-    [tradeRoute, history, location.pathname, location.search, fixCurrencyId]
+    [tradeRoute, navigate, location.pathname, location.search, fixCurrencyId]
   )
 }

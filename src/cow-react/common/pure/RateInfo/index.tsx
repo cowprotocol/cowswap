@@ -1,4 +1,3 @@
-import { formatSmart } from 'utils/format'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
@@ -9,7 +8,11 @@ import { SupportedChainId } from 'constants/chains'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { usePrice } from '@cow/common/hooks/usePrice'
 import { transparentize } from 'polished'
-import { DEFAULT_DECIMALS } from '@cowprotocol/cow-js'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
+
+const DEFAULT_DECIMALS = 4
 
 export interface RateInfoParams {
   chainId: SupportedChainId | undefined
@@ -58,6 +61,8 @@ const InvertIcon = styled.div`
   color: ${({ theme }) => theme.text1};
   width: var(--size);
   height: var(--size);
+  min-width: var(--size);
+  min-height: var(--size);
   border-radius: var(--size);
   display: flex;
   align-items: center;
@@ -73,7 +78,7 @@ const InvertIcon = styled.div`
   }
 `
 
-const RateWrapper = styled.button`
+export const RateWrapper = styled.button`
   display: inline;
   background: none;
   border: 0;
@@ -166,13 +171,18 @@ export function RateInfo({
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
-              ' ' +
-              rateOutputCurrency.symbol
+                ' ' +
+                rateOutputCurrency.symbol || ''
             }
           >
-            1 {rateInputCurrency.symbol} = {formatSmart(currentActiveRate)} {rateOutputCurrency.symbol}
+            1 <TokenSymbol token={rateInputCurrency} /> ={' '}
+            <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} />
           </span>{' '}
-          {!!fiatAmount && <FiatRate>(≈${formatSmart(fiatAmount, 2)})</FiatRate>}
+          {!!fiatAmount && (
+            <FiatRate>
+              (<FiatAmount amount={fiatAmount} />)
+            </FiatRate>
+          )}
         </RateWrapper>
       </div>
     </Wrapper>

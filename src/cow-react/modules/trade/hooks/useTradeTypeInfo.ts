@@ -1,7 +1,5 @@
-import { matchPath, useLocation } from 'react-router-dom'
+import { useMatch } from 'react-router-dom'
 import { Routes } from '@cow/constants/routes'
-import { match } from 'react-router'
-import { TradeStateFromUrl } from '@cow/modules/trade/types/TradeState'
 import { useMemo } from 'react'
 
 export enum TradeType {
@@ -12,18 +10,16 @@ export enum TradeType {
 export interface TradeTypeInfo {
   tradeType: TradeType
   route: Routes
-  match: match<TradeStateFromUrl>
 }
 
 export function useTradeTypeInfo(): TradeTypeInfo | null {
-  const location = useLocation()
+  const swapMatchWithChainId = useMatch({ path: '/:chainId/swap/', end: false })
+  const swapMatchWithoutChainId = useMatch({ path: '/swap/', end: false })
+  const limitOrderMatchWithChainId = useMatch({ path: '/:chainId/limit-orders/', end: false })
+  const limitOrderMatchWithoutChainId = useMatch({ path: '/limit-orders/', end: false })
 
-  const [swapMatch, limitOrderMatch] = useMemo(() => {
-    return [
-      matchPath<TradeStateFromUrl>(location.pathname, Routes.SWAP),
-      matchPath<TradeStateFromUrl>(location.pathname, Routes.LIMIT_ORDER),
-    ]
-  }, [location.pathname])
+  const swapMatch = swapMatchWithChainId || swapMatchWithoutChainId
+  const limitOrderMatch = limitOrderMatchWithChainId || limitOrderMatchWithoutChainId
 
   return useMemo(() => {
     if (!swapMatch && !limitOrderMatch) return null
@@ -31,8 +27,6 @@ export function useTradeTypeInfo(): TradeTypeInfo | null {
     return {
       tradeType: swapMatch ? TradeType.SWAP : TradeType.LIMIT_ORDER,
       route: swapMatch ? Routes.SWAP : Routes.LIMIT_ORDER,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      match: (swapMatch || limitOrderMatch)!,
     }
   }, [swapMatch, limitOrderMatch])
 }

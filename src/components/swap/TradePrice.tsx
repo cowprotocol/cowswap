@@ -42,7 +42,7 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
   let formattedPrice: string
   try {
     formattedPrice = showInverted ? price.toSignificant(4) : price.invert()?.toSignificant(4)
-  } catch (error) {
+  } catch (error: any) {
     formattedPrice = '0'
   }
 

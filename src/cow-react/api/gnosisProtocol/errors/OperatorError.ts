@@ -107,7 +107,7 @@ export default class OperatorError extends Error {
         console.error('Unknown reason for bad order submission', orderPostError)
         return orderPostError.description
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error handling a 400 error. Likely a problem deserialising the JSON response')
       return _mapActionToErrorDetail(action)
     }

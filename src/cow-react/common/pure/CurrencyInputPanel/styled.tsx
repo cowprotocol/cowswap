@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { loadingOpacityMixin } from 'components/Loader/styled'
 import Input from 'components/NumericalInput'
 import { transparentize } from 'polished'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: boolean }>`
   display: flex;
@@ -23,7 +24,8 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: bo
 export const CurrencyInputBox = styled.div`
   display: grid;
   width: 100%;
-  grid-template-columns: auto auto;
+  grid-template-columns: repeat(2, auto);
+  word-break: break-all;
   gap: 16px;
   margin: 0;
   font-weight: 400;
@@ -72,6 +74,16 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   }
 
   ${loadingOpacityMixin}
+`
+
+export const TokenAmountStyled = styled(TokenAmount)`
+  font-size: 28px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text1};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 26px;
+  `}
 `
 
 export const BalanceText = styled.span`

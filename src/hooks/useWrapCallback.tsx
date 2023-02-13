@@ -88,7 +88,7 @@ export default function useWrapCallback(
                     currencyAmountRaw: inputAmount?.quotient.toString(),
                     chainId,
                   })
-                } catch (error) {
+                } catch (error: any) {
                   console.error('Could not deposit', error)
                 }
               }
@@ -113,7 +113,7 @@ export default function useWrapCallback(
                     currencyAmountRaw: inputAmount?.quotient.toString(),
                     chainId,
                   })
-                } catch (error) {
+                } catch (error: any) {
                   console.error('Could not withdraw', error)
                 }
               }

@@ -16,7 +16,7 @@ export function useTokenInfoFromActiveList(currency: Currency) {
 
     try {
       return activeList[chainId][currency.wrapped.address].token
-    } catch (e) {
+    } catch (e: any) {
       return currency
     }
   }, [activeList, chainId, currency])

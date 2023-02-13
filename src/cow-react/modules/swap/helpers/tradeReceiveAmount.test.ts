@@ -3,6 +3,7 @@ import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
 import { SupportedChainId } from 'constants/chains'
 import { CurrencyAmount, Price, Token, TradeType } from '@uniswap/sdk-core'
+import { ReactElement } from 'react'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]
@@ -32,13 +33,10 @@ describe('Helpers to build ReceiveAmountInfo', () => {
         )
 
         expect(value.amountAfterFeesRaw.toExact()).toBe('0')
-        expect({ ...value, amountAfterFeesRaw: null }).toEqual({
-          amountAfterFeesRaw: null,
-          amountAfterFees: '0',
-          amountBeforeFees: '0',
-          feeAmount: '3',
-          type: 'from',
-        })
+        expect((value.amountAfterFees as ReactElement).props).toMatchSnapshot()
+        expect((value.amountBeforeFees as ReactElement).props).toMatchSnapshot()
+        expect((value.feeAmount as ReactElement).props).toMatchSnapshot()
+        expect(value.type).toBe('from')
       })
     })
   })
@@ -60,13 +58,10 @@ describe('Helpers to build ReceiveAmountInfo', () => {
       )
 
       expect(value.amountAfterFeesRaw.toExact()).toBe('250')
-      expect({ ...value, amountAfterFeesRaw: null }).toEqual({
-        amountAfterFees: '250',
-        amountAfterFeesRaw: null,
-        amountBeforeFees: '247',
-        feeAmount: '-3',
-        type: 'to',
-      })
+      expect((value.amountAfterFees as ReactElement).props).toMatchSnapshot()
+      expect((value.amountBeforeFees as ReactElement).props).toMatchSnapshot()
+      expect((value.feeAmount as ReactElement).props).toMatchSnapshot()
+      expect(value.type).toBe('to')
     })
   })
 })

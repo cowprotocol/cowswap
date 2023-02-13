@@ -1,4 +1,5 @@
-name: 'CLA Assistant'
+name: "cla"
+
 on:
   issue_comment:
     types: [created]
@@ -6,24 +7,30 @@ on:
     types: [opened, closed, synchronize]
 
 jobs:
-  CLAssistant:
+  cla:
     runs-on: ubuntu-latest
     steps:
-      - name: 'CLA Assistant'
-        if: 
-          github.base_ref != 'main' && 
-          startsWith(github.head_ref, 'uni-merge') == false && 
-          ((github.event.comment.body == 'recheckcla' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target')
-        # Alpha Release
-        uses: gnosis/github-action@master
-        # GitHub token, automatically provided to the action
-        # (No need to define this secret in the repo settings)
+      - name: "Get Team Members"
+        id: team
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.ORG_TOKEN }}
+          result-encoding: string
+          script: |
+            const members = await github.paginate(
+              github.rest.orgs.listMembers,
+              { org: "cowprotocol" },
+            );
+            return members.map(m => m.login).join(",");
+
+      - name: "CLA Assistant"
+        if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
+        uses: contributor-assistant/github-action@v2.1.3-beta
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSONAL_ACCESS_TOKEN : ${{ secrets.ORG_TOKEN }}
         with:
-          path-to-signatures: 'signatures/version1/cla.json'
-          path-to-cla-document: 'https://github.com/cowprotocol/cla/blob/main/Cow%20Services%20CLA.md'
           branch: 'cla-signatures'
-          allowlist: dependabot,mergify,alfetopito,anxolin,W3stside,nenadV91,annamsgeorge,avsavsavs,c3rnst,cmagan,josojo,davidalbela,fedgiac,fleupold,giacomolicari,GabrielCamba,nlordell,alongoni,elena-zh,henrypalacios,matextrem,ramirotw,fairlighteth,lint-action
-          empty-commit-flag: false
-          blockchain-storage-flag: false
+          path-to-signatures: 'signatures/version1/cla.json'
+          path-to-document: 'https://github.com/cowprotocol/cla/blob/main/Nomev%20Labs%20CLA.md'
+          allowlist: '${{ steps.team.outputs.result }},*[bot],lint-action,dependabot,mergify'

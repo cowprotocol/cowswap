@@ -160,7 +160,7 @@ export default function FeesUpdater(): null {
   const refetchQuote = useRefetchQuoteCallback()
   const setQuoteError = useSetQuoteError()
 
-  const windowVisible = useIsWindowVisible()
+  const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const { validTo } = useOrderValidTo()
 
@@ -179,7 +179,7 @@ export default function FeesUpdater(): null {
       !sellCurrencyId ||
       !buyCurrencyId ||
       !typedValue ||
-      !windowVisible ||
+      !isWindowVisible ||
       sellTokenAddressInvalid ||
       buyTokenAddressInvalid
     )
@@ -275,7 +275,7 @@ export default function FeesUpdater(): null {
     return () => clearInterval(intervalId)
   }, [
     isEthFlow,
-    windowVisible,
+    isWindowVisible,
     isOnline,
     chainId,
     sellCurrencyId,

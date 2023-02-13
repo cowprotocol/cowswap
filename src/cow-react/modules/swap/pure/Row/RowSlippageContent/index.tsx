@@ -7,8 +7,7 @@ import { RowStyleProps } from '@cow/modules/swap/pure/Row/types'
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'constants/index'
 import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
-import { ThemedText } from 'theme/index'
-import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
+import { StyledInfoIcon, TransactionText } from '@cow/modules/swap/pure/styled'
 
 export const ClickableText = styled.button`
   background: none;
@@ -92,14 +91,9 @@ type SlippageTextContentsProps = { isEthFlow: boolean }
 
 function SlippageTextContents({ isEthFlow }: SlippageTextContentsProps) {
   return (
-    <>
+    <TransactionText>
       <Trans>Slippage tolerance</Trans>
-      {isEthFlow && (
-        <>
-          {' '}
-          <ThemedText.Warn override>(modified)</ThemedText.Warn>
-        </>
-      )}
-    </>
+      {isEthFlow && <i>(modified)</i>}
+    </TransactionText>
   )
 }

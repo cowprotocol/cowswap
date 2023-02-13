@@ -73,7 +73,7 @@ export function usePositionTokenURI(tokenId: TokenId | undefined): UsePositionTo
         loading: false,
         result: json,
       }
-    } catch (error) {
+    } catch (error: any) {
       return { valid: false, loading: false }
     }
   }, [error, loading, result, tokenId, valid])

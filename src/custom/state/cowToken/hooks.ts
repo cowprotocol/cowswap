@@ -195,6 +195,7 @@ export function useCombinedBalance() {
       if (cowBalance) tmpBalance = JSBI.add(tmpBalance, cowBalance.quotient)
     }
 
+    // TODO: check COW vs vCOW
     const balance = CurrencyAmount.fromRawAmount(cow, tmpBalance)
 
     return { balance, isLoading }

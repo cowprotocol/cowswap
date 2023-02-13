@@ -39,11 +39,11 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
-import { tokenViewAmount } from '@cow/modules/trade/utils/tokenViewAmount'
 import { maxAmountSpend } from '@src/utils/maxAmountSpend'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
+import { formatInputAmount } from '@cow/utils/amountFormat'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -83,7 +83,7 @@ export function LimitOrdersWidget() {
     [settingState.showRecipient, isWrapOrUnwrap]
   )
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
-  const inputViewAmount = tokenViewAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
+  const inputViewAmount = formatInputAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -102,7 +102,7 @@ export function LimitOrdersWidget() {
     rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
     viewAmount: isWrapOrUnwrap
       ? inputViewAmount
-      : tokenViewAmount(outputCurrencyAmount, outputCurrencyBalance, orderKind === OrderKind.BUY),
+      : formatInputAmount(outputCurrencyAmount, outputCurrencyBalance, orderKind === OrderKind.BUY),
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: null,
@@ -239,7 +239,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {isUnlocked ? (
             <>
               <CurrencyInputPanel
-                id="swap-currency-input"
+                id="limit-orders-currency-input"
                 disableNonToken={false}
                 chainId={chainId}
                 loading={currenciesLoadingInProgress}
@@ -269,7 +269,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
               </styledEl.CurrencySeparatorBox>
               <CurrencyInputPanel
-                id="swap-currency-output"
+                id="limit-orders-currency-output"
                 disableNonToken={false}
                 chainId={chainId}
                 loading={currenciesLoadingInProgress}

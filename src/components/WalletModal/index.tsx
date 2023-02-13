@@ -175,7 +175,7 @@ export default function WalletModal({
         await connector.activate()
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
-      } catch (error) {
+      } catch (error: any) {
         console.debug(`web3-react connection error: ${error}`)
         dispatch(updateConnectionError({ connectionType, error: error.message }))
       }

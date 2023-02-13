@@ -1,6 +1,6 @@
 // Util functions that only pertain to/deal with operator API related stuff
 import BigNumber from 'bignumber.js'
-import { ZERO_BIG_NUMBER } from '@cowprotocol/cow-js'
+import { ZERO_BIG_NUMBER } from 'constants/index'
 import { Order } from 'state/orders/actions'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { getOrderExecutedAmounts } from './getOrderExecutedAmounts'

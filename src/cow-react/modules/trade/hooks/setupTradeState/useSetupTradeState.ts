@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
@@ -53,13 +53,16 @@ function areChainIdsTheSame(aChainId: Nullish<number>, bChainId: Nullish<number>
 }
 
 export function useSetupTradeState(): void {
-  const { chainId: currentChainId, connector, account } = useWeb3React()
+  const { chainId: providerChainId, connector, account } = useWeb3React()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const tradeState = useTradeState()
 
   const chainIdFromUrl = tradeStateFromUrl.chainId
+  // When there is no account from provider, then we consider provider as not connected and use chainId from URL as current
+  const currentChainId = (account ? providerChainId : chainIdFromUrl) || providerChainId
+
   const prevChainIdFromUrl = usePrevious(chainIdFromUrl)
   const prevCurrentChainId = usePrevious(currentChainId)
 
@@ -123,7 +126,7 @@ export function useSetupTradeState(): void {
    * STEP 1
    * Unlock network switching in the provider when chainId was changed in the URL
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (chainIdFromUrlWasChanged) {
       setIsChainIdSet(false)
     }
@@ -134,7 +137,7 @@ export function useSetupTradeState(): void {
    * Set chainId from URL into wallet provider once on page load
    * It's needed because useWeb3React() returns mainnet chainId by default
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isChainIdSet || !chainIdFromUrl || !currentChainId) return
     let isSubscribed = true
 
@@ -159,7 +162,7 @@ export function useSetupTradeState(): void {
    * STEP 3
    * Update state in the store when something was changed (chainId or URL params)
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isChainIdSet || skipUpdate) return
 
     updateStateAndNavigate()

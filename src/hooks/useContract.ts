@@ -30,8 +30,7 @@ import {
 } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
-import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall } from 'types/v3'
-import { V3Migrator } from 'types/v3/V3Migrator'
+import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall, V3Migrator } from 'types/v3'
 
 import { getContract } from 'utils'
 
@@ -67,7 +66,7 @@ export function useContract<T extends Contract = Contract>(
     if (!address) return null
     try {
       return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to get contract', error)
       return null
     }

@@ -79,14 +79,8 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 
 export const StyledRateInfo = styled(RateInfo)`
   padding: 8px 8px 0;
+  gap: 4px;
   font-size: 13px;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: flex;
-    flex-flow: column wrap;
-    align-items: flex-start;
-    padding: 8px;
-    margin: 0;
-    gap: 4px;
-  `}
+  display: grid;
+  grid-template-columns: max-content auto;
 `

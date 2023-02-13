@@ -223,7 +223,7 @@ export function GpOrdersUpdater(): null {
 
         // Add orders to redux state
         orders.length && addOrUpdateOrders({ orders, chainId })
-      } catch (e) {
+      } catch (e: any) {
         console.error(`GpOrdersUpdater::Failed to fetch orders`, e)
       }
     },

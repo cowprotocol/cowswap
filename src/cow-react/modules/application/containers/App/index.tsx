@@ -1,10 +1,7 @@
 import { initializeAnalytics } from 'components/AmplitudeAnalytics'
+import { useAnalyticsReporter } from '@src/custom/components/analytics'
 import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
-import {
-  Route,
-  // useLocation
-} from 'react-router-dom'
 import ErrorBoundary from 'components/ErrorBoundary'
 import Header from 'components/Header'
 
@@ -19,23 +16,20 @@ import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
 
 export function App() {
-  // const location = useLocation()
-
   initializeAnalytics()
+  useAnalyticsReporter()
 
   return (
     <ErrorBoundary>
       <RedirectAnySwapAffectedUsers />
-      <Route component={DarkModeQueryParamReader} />
-      <Route component={ApeModeQueryParamReader} />
+      <DarkModeQueryParamReader />
+      <ApeModeQueryParamReader />
       <styledEl.AppWrapper>
         <URLWarning />
         <styledEl.HeaderWrapper>
           <Header />
         </styledEl.HeaderWrapper>
-        <styledEl.BodyWrapper
-        // location={location}
-        >
+        <styledEl.BodyWrapper>
           <TopLevelModals />
           <ReferralLinkUpdater />
           <RoutesApp />

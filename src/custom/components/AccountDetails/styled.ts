@@ -280,7 +280,7 @@ export const LowerSectionSimple = styled(LowerSection)`
 
       // target the activity comp
       > div > ${ActivityDetailsText} > ${Summary} {
-        grid-template-columns: auto;
+        grid-template-columns: auto auto;
 
         > span {
           display: none;

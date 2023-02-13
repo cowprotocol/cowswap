@@ -11,6 +11,7 @@ import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import TransactionConfirmationModal from 'components/TransactionConfirmationModal'
 import { TransactionConfirmState } from '@cow/modules/swap/state/transactionConfirmAtom'
 import { TradeLoadingButton } from '@cow/modules/trade/pure/TradeLoadingButton'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export interface WrapUnwrapParams {
   isNativeIn: boolean
@@ -30,6 +31,7 @@ export interface TradeButtonsParams {
 interface ButtonConfig {
   disabled: boolean
   text: string
+  id?: string
 }
 
 interface ButtonCallback {
@@ -40,13 +42,21 @@ export function SwapButton({
   children,
   disabled,
   onClick,
+  id,
 }: {
   children: React.ReactNode
   disabled: boolean
   onClick?: () => void
+  id?: string
 }) {
   return (
-    <ButtonPrimary fontSize={'16px !important'} onClick={onClick} disabled={disabled} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary
+      id={id}
+      fontSize={'16px !important'}
+      onClick={onClick}
+      disabled={disabled}
+      buttonSize={ButtonSize.BIG}
+    >
       <Trans>{children}</Trans>
     </ButtonPrimary>
   )
@@ -71,6 +81,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.CanTrade]: {
     disabled: false,
     text: 'Review limit order',
+    id: 'review-limit-order-btn',
   },
   [LimitOrdersFormState.SwapIsUnsupported]: {
     disabled: true,
@@ -120,7 +131,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.InsufficientBalance]: ({ tradeState }: TradeButtonsParams) => {
     return (
       <SwapButton disabled={true}>
-        <Trans>Insufficient {tradeState.inputCurrency?.symbol} balance</Trans>
+        <Trans>Insufficient&nbsp;{<TokenSymbol token={tradeState.inputCurrency} />}&nbsp;balance</Trans>
       </SwapButton>
     )
   },

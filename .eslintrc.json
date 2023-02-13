@@ -1,64 +1,7 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      // Allows for the parsing of JSX
-      "jsx": true
-    }
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
-  "ignorePatterns": [
-    "src/lib/",
-    ".github/*",
-    "src/components/RateToggle/index.tsx",
-    "src/types/v3",
-    "src/abis/types",
-    "src/locales/**/*.js",
-    "src/locales/**/en-US.po",
-    "src/state/data/generated.ts",
-    "node_modules",
-    "coverage",
-    "build",
-    "dist",
-    ".DS_Store",
-    ".env.local",
-    ".env.development.local",
-    ".env.test.local",
-    ".env.production.local",
-    ".idea/",
-    ".vscode/",
-    "package-lock.json",
-    "yarn.lock"
-  ],
-  "extends": [
-    "react-app",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended",
-    "prettier/@typescript-eslint",
-    "plugin:cypress/recommended",
-    "plugin:prettier/recommended",
-    "plugin:jsx-a11y/recommended"
-  ],
-  "plugins": ["simple-import-sort", "unused-imports"],
+  "extends": ["react-app", "react-app/jest", "plugin:cypress/recommended"],
+  "plugins": ["unused-imports"],
   "rules": {
-    "unused-imports/no-unused-imports": "error",
-    //    "simple-import-sort/imports": "error",
-    //    "simple-import-sort/exports": "error",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "prettier/prettier": "error",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/ban-ts-ignore": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "react/react-in-jsx-scope": "off",
-    "object-shorthand": ["error", "always"],
     "no-restricted-imports": [
       "error",
       {
@@ -70,11 +13,6 @@
           {
             "name": "styled-components",
             "message": "Please import from styled-components/macro."
-          },
-          {
-            "name": "@lingui/macro",
-            "importNames": ["t"],
-            "message": "Please use <Trans> instead of t."
           }
         ],
         "patterns": [
@@ -88,8 +26,16 @@
         ]
       }
     ],
-    // TODO: review - it is likely an issue with the extended config
-    // mod
-    "react/display-name": "off"
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ]
   }
 }

@@ -34,7 +34,7 @@ function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Disp
           dispatch(replaceTransaction({ chainId, oldHash: currentHash, newHash: e.replaceHash, type: 'cancel' }))
         }
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error('[CancelReplaceTxUpdater][watchTxChanges] Failed to watch tx', { hash }, error)
     }
   }
@@ -50,7 +50,7 @@ function unwatchTxChanges(pendingHashes: string[], chainId: number) {
   for (const hash of pendingHashes) {
     try {
       blocknativeSdk.unsubscribe(hash)
-    } catch (error) {
+    } catch (error: any) {
       console.error('[CancelReplaceTxUpdater][unwatchTxChanges] Failed to unsubscribe', { hash })
     }
   }

@@ -30,9 +30,7 @@ const defaultProps: RowReceivedAfterSlippageProps & RowReceivedAfterSlippageCont
   showHelpers: true,
   allowedSlippage: new Percent(1, 100),
   isExactIn: true,
-  fullOutAmount: '100',
   swapAmount: trade.inputAmountWithFee,
-  symbol: currencyOut.symbol,
 }
 
 export default <RowReceivedAfterSlippageContent {...defaultProps} />

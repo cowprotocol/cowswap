@@ -347,7 +347,7 @@ async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedO
       console.log(`[api:${API_NAME}] Success posting the signed order`, JSON.stringify(uid))
       return uid
     }
-  } catch (error) {
+  } catch (error: any) {
     throw _handleError(error, response, params, 'ORDER')
   }
 }
@@ -378,7 +378,7 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
     } else {
       return response.json()
     }
-  } catch (error) {
+  } catch (error: any) {
     throw _handleError(error, response, params, 'QUOTE')
   }
 }
@@ -388,6 +388,9 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
 const ETH_FLOW_AUX_QUOTE_PARAMS = {
   signingScheme: 'eip1271',
   onchainOrder: true,
+  // Ethflow orders are subsidized in the backend.
+  // This means we can assume the verification gas costs are zero for the quote/fee estimation
+  verificationGasLimit: 0,
 }
 
 function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
@@ -472,7 +475,7 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Order
 
       return transformEthFlowOrder(order)
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error getting order information:', error)
     throw new OperatorError(UNHANDLED_ORDER_ERROR)
   }
@@ -494,7 +497,7 @@ export async function getOrders(chainId: ChainId, owner: string, limit = 1000, o
 
       return orders.map(transformEthFlowOrder)
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error getting orders information:', error)
     throw new OperatorError(UNHANDLED_ORDER_ERROR)
   }
@@ -518,7 +521,7 @@ export async function getTrades(params: GetTradesParams): Promise<TradeMetaData[
     } else {
       return response.json()
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error getting trades:', error)
     throw new Error('Error getting trades: ' + error)
   }
@@ -593,7 +596,7 @@ export async function getNativePrice(chainId: ChainId, address: string): Promise
     } else {
       return response.json()
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error getting native price:', error)
     throw new Error('Error getting native price: ' + error)
   }

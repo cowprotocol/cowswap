@@ -16,7 +16,7 @@ import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import JSBI from 'jsbi'
 import { Context, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
-import { RouteComponentProps } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { TradeState } from 'state/routing/types'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
@@ -65,9 +65,10 @@ const AlertWrapper = styled.div`
   width: 100%;
 `
 
-export default function Swap({ history }: RouteComponentProps) {
+export default function Swap() {
   const { account, chainId } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
+  const navigate = useNavigate()
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -180,8 +181,8 @@ export default function Swap({ history }: RouteComponentProps) {
   // reset if they close warning without tokens in params
   const handleDismissTokenWarning = useCallback(() => {
     setDismissTokenWarning(true)
-    history.push('/swap/')
-  }, [history])
+    navigate('/swap/')
+  }, [navigate])
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -233,7 +234,7 @@ export default function Swap({ history }: RouteComponentProps) {
     if (signatureState === UseERC20PermitState.NOT_SIGNED && gatherPermitSignature) {
       try {
         await gatherPermitSignature()
-      } catch (error) {
+      } catch (error: any) {
         // try to approve if gatherPermitSignature failed for any reason other than the user rejecting it
         if (error?.code !== 4001) {
           await approveCallback()
