@@ -27,6 +27,7 @@ export interface RateInfoProps {
   label?: string
   stylized?: boolean
   noLabel?: boolean
+  prependSymbol?: boolean
   isInversed?: boolean
   rateInfoParams: RateInfoParams
 }
@@ -114,6 +115,7 @@ export function RateInfo({
   stylized = false,
   isInversed = false,
   noLabel = false,
+  prependSymbol = true,
 }: RateInfoProps) {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, inversedActiveRateFiatAmount } =
     rateInfoParams
@@ -175,7 +177,7 @@ export function RateInfo({
                 rateOutputCurrency.symbol || ''
             }
           >
-            1 <TokenSymbol token={rateInputCurrency} /> ={' '}
+            {prependSymbol && <>1 <TokenSymbol token={rateInputCurrency} /> = </>}
             <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} />
           </span>{' '}
           {!!fiatAmount && (

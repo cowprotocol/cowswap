@@ -2,7 +2,6 @@ import { useContext } from 'react'
 import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import CurrencyLogo from 'components/CurrencyLogo'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { Trash2 } from 'react-feather'
@@ -13,6 +12,7 @@ import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import CurrencyLogo from 'components/CurrencyLogo'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -156,16 +156,21 @@ const CancelOrderBtn = styled.button`
   }
 `
 
+const CurrencyLogoPair = styled.div`
+  display: flex;
+`
+
 function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (
     <AmountItem title={amount.toExact() + ' ' + amount.currency.symbol}>
-      <div>
-        <CurrencyLogo currency={amount.currency} size="24px" />
-      </div>
-      <span>
-        <TokenAmount amount={amount} tokenSymbol={amount.currency} />
-      </span>
+      <TokenAmount amount={amount} tokenSymbol={amount.currency} />
     </AmountItem>
+  )
+}
+
+function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
+  return (
+    <CurrencyLogo currency={amount.currency} size="24px" />
   )
 }
 
@@ -233,17 +238,44 @@ export function OrderRow({
 
   return (
     <RowElement onClick={onClick}>
+
+      {/* Order sell/buy tokens */}
       <div>
+        <CurrencyLogoPair>
+          <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
+          <CurrencySymbolItem amount={buyAmount} />
+        </CurrencyLogoPair>
         <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
-      </div>
-      <div>
         <CurrencyAmountItem amount={buyAmount} />
       </div>
+
+      {/* Limit price */}
       <div>
         <RateValue>
-          <RateInfo noLabel={true} isInversed={isRateInversed} rateInfoParams={rateInfoParams} />
+          <RateInfo prependSymbol={false} noLabel={true} isInversed={isRateInversed} rateInfoParams={rateInfoParams} />
         </RateValue>
       </div>
+
+      {/* Est. execution price */}
+      {/* Market price */}
+      <div>
+        <b>1534.62 USDC</b>
+        <i>1531.33 USDC</i>
+      </div>
+
+      {/* Expires */}
+      {/* Created */}
+      <div>
+        <b>6d 5h 23m</b>
+        <i>15 mins ago</i>
+      </div>
+
+      {/* Filled % */}
+      <div>
+        <b>13.12%</b>
+        <progress max="100" value="13.12"></progress>
+      </div>
+
       <div>
         <StatusBox>
           <StatusItem cancelling={!!order.isCancelling} status={order.status} withWarning={withWarning}>

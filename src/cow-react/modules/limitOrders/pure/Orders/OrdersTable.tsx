@@ -120,17 +120,30 @@ export function OrdersTable({
         <TableInner>
           <Header>
             <div>
-              <Trans>Sell</Trans>
+              <Trans>Orders</Trans>
             </div>
-            <div>
-              <Trans>Receive</Trans>
-            </div>
+
             <div>
               <span>
                 <Trans>Limit price</Trans>
               </span>
               <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
             </div>
+
+            <div>
+              <Trans>Est. execution price</Trans>
+              <i><Trans>Market price</Trans></i>
+            </div>
+
+            <div>
+              <Trans>Expires</Trans>
+              <i><Trans>Created</Trans></i>
+            </div>
+
+            <div>
+              <Trans>Filled</Trans>
+            </div>
+
             <div>
               <Trans>Status</Trans>
             </div>

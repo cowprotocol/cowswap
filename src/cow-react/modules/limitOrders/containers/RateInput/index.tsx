@@ -16,7 +16,7 @@ import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateAct
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import QuestionHelper from 'components/QuestionHelper'
-import { Trans } from '@lingui/macro'
+import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -167,7 +167,7 @@ export function RateInput() {
       </styledEl.Wrapper>
 
       <styledEl.EstimatedRate>
-        <b>Est. execution price <QuestionHelper text={<Trans>-Breakdown Tooltip Text here -</Trans>} /></b>
+        <b>Est. execution price <QuestionHelper text={TooltipFeeContent()} /></b>
         {/* Todo: get estimated execution price */}
         <span>≈ 1272.1259 USDC <i>($1271.33)</i></span>
       </styledEl.EstimatedRate>

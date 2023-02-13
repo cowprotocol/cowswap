@@ -75,7 +75,6 @@ export const ActiveCurrency = styled.button`
   background: none;
   padding: 0;
   margin: 0;
-  gap: 8px;
   width: auto;
   cursor: pointer;
 `
@@ -86,6 +85,7 @@ export const ActiveSymbol = styled.span`
   font-weight: 500;
   text-align: right;
   padding: 10px 0;
+  margin: 0 4px 0 0;
 `
 
 export const ActiveIcon = styled.div`
@@ -131,3 +131,4 @@ export const EstimatedRate = styled.div`
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
 `
+

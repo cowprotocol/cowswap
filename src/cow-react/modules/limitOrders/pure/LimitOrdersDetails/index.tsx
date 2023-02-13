@@ -7,6 +7,10 @@ import { isAddress, shortenAddress } from 'utils'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
+import SVG from 'react-inlinesvg'
+import ArrowDownRight from 'assets/cow-swap/arrowDownRight.svg'
+import QuestionHelper from 'components/QuestionHelper'
+import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
 
 const Wrapper = styled.div`
   font-size: 13px;
@@ -38,9 +42,20 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
       <styledEl.DetailsRow>
         <styledEl.StyledRateInfo rateInfoParams={props.rateInfoParams} />
       </styledEl.DetailsRow>
+
+    <styledEl.DetailsRow>
+      <div>
+        <span><SVG src={ArrowDownRight}/>Est. execution price <QuestionHelper text={TooltipFeeContent()} /></span>
+      </div>
+      <div>
+      <span>≈ 1272.1259 USDC <i>($1271.33)</i></span>
+      </div>
+    </styledEl.DetailsRow>
+
+
       <styledEl.DetailsRow>
         <div>
-          <span>Expiry</span>
+          <span>Order expires</span>
           <InfoIcon
             content={
               "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
@@ -51,7 +66,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>{expiryDate.toLocaleString(undefined, dateTimeFormat)}</span>
         </div>
       </styledEl.DetailsRow>
-      <styledEl.DetailsRow>
+      {/* <styledEl.DetailsRow>
         <div>
           <span>Protection from MEV</span>
           <InfoIcon
@@ -63,8 +78,8 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <div>
           <span>Active</span>
         </div>
-      </styledEl.DetailsRow>
-      <styledEl.DetailsRow>
+      </styledEl.DetailsRow> */}
+      {/* <styledEl.DetailsRow>
         <div>
           <span>Order type</span>{' '}
           <InfoIcon
@@ -76,7 +91,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <div>
           <span>Fill or kill</span>
         </div>
-      </styledEl.DetailsRow>
+      </styledEl.DetailsRow> */}
       {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>
