@@ -25,7 +25,7 @@ export function DeadlineInput() {
   )
 
   const selectCustomDeadline = useCallback(
-    (customDeadline: number) => {
+    (customDeadline: number | null) => {
       updateSettingsState({ customDeadlineTimestamp: customDeadline })
     },
     [updateSettingsState]
