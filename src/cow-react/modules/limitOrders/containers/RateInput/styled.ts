@@ -30,7 +30,7 @@ export const Header = styled.div`
 
 export const MarketPriceButton = styled.button`
   background: ${({ theme }) => theme.bg1};
-  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  color: ${({ theme }) => theme.text1};
   white-space: nowrap;
   border: none;
   font-weight: 500;
@@ -38,11 +38,6 @@ export const MarketPriceButton = styled.button`
   border-radius: 9px;
   padding: 5px 8px;
   font-size: 11px;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
-
-  &:hover {
-    color: ${({ theme }) => theme.text1};
-  }
 
   &:disabled {
     cursor: default;

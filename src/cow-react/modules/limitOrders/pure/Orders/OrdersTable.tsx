@@ -13,6 +13,8 @@ import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrde
 import { getOrderParams } from './utils/getOrderParams'
 import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
+import QuestionHelper from 'components/QuestionHelper'
+import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
 
 const TableBox = styled.div`
   display: block;
@@ -42,18 +44,34 @@ const TableInner = styled.div`
 
 const Header = styled.div`
   display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(2, minmax(150px, 1fr)) minmax(150px, 1.5fr) 120px 36px;
+  gap: 16px;
+  grid-template-columns: minmax(max-content,1fr) 0.7fr 0.85fr 0.7fr 48px 108px 36px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 16px;
+`
 
-  > div {
-    padding: 12px 0;
-    font-size: 13px;
-    font-weight: 400;
+const HeaderElement = styled.div<{ doubleRow?: boolean}>`
+  padding: 12px 0;
+  font-size: 12px;
+  font-weight: 400;
+  display: flex;
+
+  > span {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
   }
+
+  ${({ doubleRow }) => doubleRow && `
+    flex-flow: column wrap;
+    gap: 2px;
+
+    > i {
+      opacity: 0.7;
+    }
+  `}
 `
 
 const RowElement = styled(Header)`
@@ -66,7 +84,8 @@ const RowElement = styled(Header)`
   }
 
   > div {
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 400;
   }
 
   &:last-child {
@@ -119,35 +138,35 @@ export function OrdersTable({
       <TableBox>
         <TableInner>
           <Header>
-            <div>
-              <Trans>Orders</Trans>
-            </div>
+            <HeaderElement>
+              <Trans>Order</Trans>
+            </HeaderElement>
 
-            <div>
+            <HeaderElement>
               <span>
                 <Trans>Limit price</Trans>
               </span>
               <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
-            </div>
+            </HeaderElement>
 
-            <div>
-              <Trans>Est. execution price</Trans>
+            <HeaderElement doubleRow>
+              <span><Trans>Est. execution price <QuestionHelper text={TooltipFeeContent()} /></Trans></span>
               <i><Trans>Market price</Trans></i>
-            </div>
+            </HeaderElement>
 
-            <div>
+            <HeaderElement doubleRow>
               <Trans>Expires</Trans>
               <i><Trans>Created</Trans></i>
-            </div>
+            </HeaderElement>
 
-            <div>
+            <HeaderElement>
               <Trans>Filled</Trans>
-            </div>
+            </HeaderElement>
 
-            <div>
+            <HeaderElement>
               <Trans>Status</Trans>
-            </div>
-            <div>{/*Cancel order column*/}</div>
+            </HeaderElement>
+            <HeaderElement>{/*Cancel order column*/}</HeaderElement>
           </Header>
           <Rows>
             {ordersPage.map((order) => (

@@ -29,6 +29,7 @@ const RateValue = styled.span``
 const StatusBox = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
 `
 
 export const StatusItem = styled.div<{ status: OrderStatus; cancelling: boolean; withWarning?: boolean }>`
@@ -140,6 +141,26 @@ const WarningParagraph = styled.div`
   }
 `
 
+const CellElement = styled.div<{ doubleRow?: boolean}>`
+  padding: 12px 0;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+
+  > b {
+    font-weight: 500;
+  }
+
+  ${({ doubleRow }) => doubleRow && `
+    flex-flow: column wrap;
+    gap: 2px;
+
+    > i {
+      opacity: 0.7;
+    }
+  `}
+`
+
 const CancelOrderBtn = styled.button`
   background: none;
   border: 0;
@@ -158,6 +179,45 @@ const CancelOrderBtn = styled.button`
 
 const CurrencyLogoPair = styled.div`
   display: flex;
+
+  > img {
+    border: 2px solid ${({ theme }) => theme.grey1};
+  }
+
+  > img:last-child {
+    margin: 0 0 0 -14px;
+  }
+`
+
+const CurrencyCell = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 6px;
+`
+
+const CurrencyAmountWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 1px;
+`
+
+const ProgressBar = styled.div<{ value: number }>`
+  position: relative;
+  margin: 4px 0 0;
+  height: 6px;
+  width: 100%;
+  background: ${({ theme }) => theme.bg1};
+  border-radius: 6px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: ${({ value }) => value}%;
+    background: ${({ theme }) => theme.text3};
+    border-radius: 2px;
+  }
 `
 
 function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
@@ -170,7 +230,7 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
 
 function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return (
-    <CurrencyLogo currency={amount.currency} size="24px" />
+    <CurrencyLogo currency={amount.currency} size="28px" />
   )
 }
 
@@ -240,43 +300,45 @@ export function OrderRow({
     <RowElement onClick={onClick}>
 
       {/* Order sell/buy tokens */}
-      <div>
+      <CurrencyCell>
         <CurrencyLogoPair>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
           <CurrencySymbolItem amount={buyAmount} />
         </CurrencyLogoPair>
+        <CurrencyAmountWrapper>
         <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
         <CurrencyAmountItem amount={buyAmount} />
-      </div>
+        </CurrencyAmountWrapper>
+      </CurrencyCell>
 
       {/* Limit price */}
-      <div>
+      <CellElement>
         <RateValue>
           <RateInfo prependSymbol={false} noLabel={true} isInversed={isRateInversed} rateInfoParams={rateInfoParams} />
         </RateValue>
-      </div>
+      </CellElement>
 
       {/* Est. execution price */}
       {/* Market price */}
-      <div>
+      <CellElement doubleRow>
         <b>1534.62 USDC</b>
         <i>1531.33 USDC</i>
-      </div>
+      </CellElement>
 
       {/* Expires */}
       {/* Created */}
-      <div>
+      <CellElement doubleRow>
         <b>6d 5h 23m</b>
         <i>15 mins ago</i>
-      </div>
+      </CellElement>
 
       {/* Filled % */}
-      <div>
+      <CellElement doubleRow>
         <b>13.12%</b>
-        <progress max="100" value="13.12"></progress>
-      </div>
+        <ProgressBar value={13.12}></ProgressBar>
+      </CellElement>
 
-      <div>
+      <CellElement>
         <StatusBox>
           <StatusItem cancelling={!!order.isCancelling} status={order.status} withWarning={withWarning}>
             {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
@@ -299,8 +361,8 @@ export function OrderRow({
             </WarningIndicator>
           )}
         </StatusBox>
-      </div>
-      <div>
+      </CellElement>
+      <CellElement>
         {showCancellationModal && (
           <CancelOrderBtn
             title="Cancel order"
@@ -312,7 +374,7 @@ export function OrderRow({
             <Trash2 size={16} />
           </CancelOrderBtn>
         )}
-      </div>
+      </CellElement>
     </RowElement>
   )
 }

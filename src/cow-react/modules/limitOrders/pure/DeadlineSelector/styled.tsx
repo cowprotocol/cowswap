@@ -35,7 +35,7 @@ export const Current = styled.button`
   cursor: pointer;
   padding: 2px 4px 2px 7px;
   background: ${({ theme }) => transparentize(0.5, theme.grey1)};
-  border-radius: 5px;
+  border-radius: 10px;
   font-weight: 400;
   transition: background 0.2s ease-in-out;
 
