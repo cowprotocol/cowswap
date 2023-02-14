@@ -45,7 +45,7 @@ const TableInner = styled.div`
 const Header = styled.div`
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(max-content,1fr) 0.7fr 0.85fr 0.7fr 48px 108px 36px;
+  grid-template-columns: minmax(150px,1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(100px, 0.7fr) 48px 108px 36px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
