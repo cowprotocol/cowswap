@@ -29,6 +29,7 @@ import { MenuItem } from '.' // mod
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -279,6 +280,7 @@ export default function CurrencyList({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
+  const { chainId } = useWeb3React()
   const allTokens = useAllTokens()
   const isUnsupportedToken = useIsUnsupportedTokenGp()
 
@@ -309,7 +311,7 @@ export default function CurrencyList({
       const otherSelected = Boolean(currency && otherCurrency && otherCurrency.equals(currency))
       const handleSelect = () => currency && onCurrencySelect(currency)
 
-      const token = currency?.wrapped
+      const token = isSupportedChainId(chainId) ? currency?.wrapped : undefined
 
       const showImport = index > currencies.length
 
@@ -327,7 +329,7 @@ export default function CurrencyList({
         return (
           <ImportRow style={style} token={token} showImportView={showImportView} setImportToken={setImportToken} dim />
         )
-      } else if (currency) {
+      } else if (currency && token) {
         return (
           <CurrencyRow
             style={style}
