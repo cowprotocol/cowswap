@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { transparentize } from 'polished'
+import { lighten, transparentize } from 'polished'
 
 export const Wrapper = styled.div`
   padding: 0;
@@ -33,14 +33,14 @@ export const Current = styled.button`
   text-overflow: ellipsis;
   overflow: hidden;
   cursor: pointer;
-  padding: 2px 4px 2px 7px;
-  background: ${({ theme }) => transparentize(0.5, theme.grey1)};
+  padding: 1px 3px 1px 6px;
+  background: ${({ theme }) => theme.grey1};
   border-radius: 10px;
   font-weight: 400;
   transition: background 0.2s ease-in-out;
 
   &:hover {
-    background: ${({ theme }) => theme.grey1};
+    background: ${({ theme }) => lighten(0.02, theme.grey1)};
     text-decoration: none;
   }
 
