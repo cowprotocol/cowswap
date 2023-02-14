@@ -21,26 +21,27 @@ export const Label = styled.span`
 
 export const Current = styled.button`
   color: ${({ theme }) => theme.text1};
-  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: none;
-  border: 0;
+  border: 2px solid transparent;
   outline: none;
   margin: 0;
-  padding: 0;
   white-space: nowrap;
   cursor: pointer;
   width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-  `}
+  cursor: pointer;
+  padding: 2px 4px 2px 7px;
+  background: ${({ theme }) => transparentize(0.5, theme.grey1)};
+  border-radius: 5px;
+  font-weight: 400;
+  transition: background 0.2s ease-in-out;
 
   &:hover {
-    text-decoration: underline;
+    background: ${({ theme }) => theme.grey1};
+    text-decoration: none;
   }
 
   > span {
