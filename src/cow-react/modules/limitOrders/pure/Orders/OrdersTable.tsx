@@ -84,7 +84,7 @@ const RowElement = styled(Header)`
   }
 
   > div {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 400;
   }
 

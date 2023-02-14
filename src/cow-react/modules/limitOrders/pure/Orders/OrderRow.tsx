@@ -143,7 +143,7 @@ const WarningParagraph = styled.div`
 
 const CellElement = styled.div<{ doubleRow?: boolean}>`
   padding: 12px 0;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   display: flex;
 
@@ -199,7 +199,7 @@ const CurrencyCell = styled.div`
 const CurrencyAmountWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
-  gap: 1px;
+  gap: 2px;
 `
 
 const ProgressBar = styled.div<{ value: number }>`
