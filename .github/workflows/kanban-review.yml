@@ -25,6 +25,10 @@ jobs:
         with:
           pr_url: ${{github.event.pull_request.html_url}}
           format: IssueNumber
+
+      - name: Install node-fetch
+        run: npm install node-fetch
+
       - name: Move issue to Review/QA status
         run: node scripts/zenhub-automation.js
         env:
