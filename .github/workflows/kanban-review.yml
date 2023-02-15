@@ -4,24 +4,10 @@ on:
   pull_request:
     types: ready_for_review
 
-env:
-  NODE_VERSION: lts/gallium
-
 jobs:
   automate-project-columns:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install node-fetch
-        run: npm install node-fetch
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Find Linked Issues
         id: links
         uses: hossainemruz/linked-issues@main
@@ -29,9 +15,11 @@ jobs:
           pr_url: ${{github.event.pull_request.html_url}}
           format: IssueNumber
 
-      - name: Move issue to Review/QA status
-        run: node scripts/zenhub-automation.js
-        env:
-          ZENHUB_API_TOKEN: ${{ secrets.ZENHUB_API_TOKEN }}
-          pipelineStatus: "review"
-          issuesIds: ${{ steps.links.outputs.issues }}
+      - name: Move issue to In progress status
+        run: >
+          echo ${{ steps.links.outputs.issues }}
+          curl 'https://api.zenhub.com/p2/workspaces/6246bc1e8d5e5b0010c77c74/repositories/475419392/issues/${{ steps.links.outputs.issues }}/moves' \
+            -H 'content-type: application/json' \
+            -H 'x-authentication-token: ${{ secrets.ZENHUB_API_TOKEN }}' \
+            --data-raw '{"pipeline_id":"Z2lkOi8vcmFwdG9yL1BpcGVsaW5lLzI4MzE0Mzg","position":"top"}' \
+            --compressed
