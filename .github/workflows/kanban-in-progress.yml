@@ -2,9 +2,7 @@ name: Kanban flow (in progress)
 
 on:
   pull_request:
-    types:
-     - opened
-     - converted_to_draft
+    types: converted_to_draft
 
 jobs:
   automate-project-columns:
