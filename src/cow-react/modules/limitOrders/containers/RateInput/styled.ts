@@ -123,6 +123,7 @@ export const EstimatedRate = styled.div`
     display: flex;
     flex-flow: row nowrap;
     font-weight: normal;
+    text-align: left;
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
 

@@ -26,7 +26,7 @@ export function TooltipFeeContent() {
       </styledEl.FeeItem>
 
       <styledEl.FeeItem highlighted>
-        <i>Order will execute at</i>
+        {/* <i>Order will execute at</i> */}
         <span>
           <p>Est. execution price</p>
           <b>≈ 1271.1299 USDC</b>

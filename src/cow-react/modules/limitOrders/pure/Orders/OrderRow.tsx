@@ -207,7 +207,7 @@ const ProgressBar = styled.div<{ value: number }>`
   margin: 4px 0 0;
   height: 6px;
   width: 100%;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.darkMode ? theme.bg1 : transparentize(0.92, theme.text1)};
   border-radius: 6px;
 
   &::before {

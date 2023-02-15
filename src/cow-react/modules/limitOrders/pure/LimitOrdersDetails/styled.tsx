@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { RateInfo } from '@cow/common/pure/RateInfo'
-import { transparentize } from 'polished'
+import { QuestionWrapper } from 'components/QuestionHelper'
 
 export const DetailsRow = styled.div`
   display: flex;
@@ -16,14 +16,25 @@ export const DetailsRow = styled.div`
     gap: 3px;
   }
 
-  > div:first-child > span:first-child {
-    transition: color 0.15s ease-in-out;
-    color: ${({ theme }) => transparentize(0.2, theme.text1)};
+  > div > span {
+    display: flex;
+  }
+
+  > div > span > p {
+    opacity: 0.8;
+    padding: 0;
+    margin: 0;
+  }
+
+  > div > span ${QuestionWrapper} {
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
 
     &:hover {
-      color: ${({ theme }) => theme.text1};
+      opacity: 1;
     }
   }
+
 `
 
 export const StyledRateInfo = styled(RateInfo)`

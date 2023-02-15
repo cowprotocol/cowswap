@@ -8,7 +8,7 @@ import { RateInfoParams } from '@cow/common/pure/RateInfo'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import SVG from 'react-inlinesvg'
-import ArrowDownRight from 'assets/cow-swap/arrowDownRight.svg'
+import ArrowDownImage from 'assets/cow-swap/arrowDownRight.svg'
 import QuestionHelper from 'components/QuestionHelper'
 import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
 
@@ -17,6 +17,12 @@ const Wrapper = styled.div`
   font-weight: 400;
   color: ${({ theme }) => theme.text1};
   padding: 8px;
+`
+
+const ArrowDownRight = styled.div`
+  display: flex;
+  opacity: 0.3;
+  margin: 0 3px 0 0;
 `
 export interface LimitOrdersDetailsProps {
   rateInfoParams: RateInfoParams
@@ -45,7 +51,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
 
     <styledEl.DetailsRow>
       <div>
-        <span><SVG src={ArrowDownRight}/>Est. execution price <QuestionHelper text={TooltipFeeContent()} /></span>
+        <span><ArrowDownRight><SVG src={ArrowDownImage}/></ArrowDownRight><p>est. execution price</p> <QuestionHelper text={TooltipFeeContent()} /></span>
       </div>
       <div>
       <span>≈ 1272.1259 USDC <i>($1271.33)</i></span>
@@ -55,7 +61,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
 
       <styledEl.DetailsRow>
         <div>
-          <span>Order expires</span>
+          <span><p>Order expires</p></span>
           <InfoIcon
             content={
               "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
