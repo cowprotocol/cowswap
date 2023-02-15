@@ -2,10 +2,13 @@ name: Kanban flow (in progress)
 
 on:
   pull_request:
-    types: converted_to_draft
+    types:
+      - opened
+      - converted_to_draft
 
 jobs:
   automate-project-columns:
+    if: github.event.pull_request.draft == true
     runs-on: ubuntu-latest
     steps:
       - name: Find Linked Issues
