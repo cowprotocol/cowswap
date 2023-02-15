@@ -5,15 +5,13 @@ import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useGP2SettlementContract } from 'hooks/useContract'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
-import { useAppData } from 'hooks/useAppData'
-import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import useENSAddress from 'hooks/useENSAddress'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { OrderClass } from '@src/custom/state/orders/actions'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useUpdateAtom } from 'jotai/utils'
-import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
+import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atoms'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
@@ -22,7 +20,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
-  const appData = useAppData({ chainId, allowedSlippage: LIMIT_ORDER_SLIPPAGE, orderClass: OrderClass.LIMIT })
+  const appData = useAtomValue(appDataInfoAtom)
   const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
   const quoteState = useAtomValue(limitOrdersQuoteAtom)

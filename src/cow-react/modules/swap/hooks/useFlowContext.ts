@@ -5,7 +5,6 @@ import { GpEther as ETHER } from 'constants/tokens'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { useCloseModals } from 'state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'state/orders/hooks'
-import { useAppData } from 'hooks/useAppData'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
 import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
@@ -17,8 +16,8 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useUserTransactionTTL } from 'state/user/hooks'
-import { useUpdateAtom } from 'jotai/utils'
-import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atoms'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { Weth } from '@cow/abis/types'
 import TradeGp from 'state/swap/TradeGp'
@@ -79,7 +78,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
   const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
 
-  const appData = useAppData({ chainId, allowedSlippage, orderClass: OrderClass.MARKET })
+  const appData = useAtomValue(appDataInfoAtom)
   const closeModals = useCloseModals()
   const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const addOrderCallback = useAddPendingOrder()
