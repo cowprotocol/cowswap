@@ -18,7 +18,7 @@ console.log('ENV:', {
   pipelineStatus
 })
 
-const issueId = issuesIds[0]
+const issueId = issuesIds.split(' ').map(i => i.trim())[0]
 const pipelineId = pipelineStatus === 'review' ? reviewPipelineId : inProgressPipelineId
 const url = `https://api.zenhub.com/p2/workspaces/${workspaceId}/repositories/${repoId}/issues/${issueId}/moves`
 
