@@ -17,7 +17,6 @@ jobs:
 
       - name: Move issue to In progress status
         run: >
-          echo ${{ steps.links.outputs.issues }}
           curl 'https://api.zenhub.com/p2/workspaces/6246bc1e8d5e5b0010c77c74/repositories/475419392/issues/${{ steps.links.outputs.issues }}/moves' \
             -H 'content-type: application/json' \
             -H 'x-authentication-token: ${{ secrets.ZENHUB_API_TOKEN }}' \
