@@ -13,13 +13,16 @@ jobs:
   automate-project-columns:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install node-fetch
+        run: npm install node-fetch
+
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Find Linked Issues
         id: links
@@ -27,9 +30,6 @@ jobs:
         with:
           pr_url: ${{github.event.pull_request.html_url}}
           format: IssueNumber
-
-      - name: Install node-fetch
-        run: npm install node-fetch
 
       - name: Move issue to In progress status
         run: node scripts/zenhub-automation.js
