@@ -23,7 +23,6 @@ const ROLL_LIST = 'https://app.tryroll.com/tokens.json'
 const CMC_ALL_LIST = 'defi.cmc.eth'
 const CMC_STABLECOIN = 'stablecoin.cmc.eth'
 const KLEROS_LIST = 't2crtokens.eth'
-const GEMINI_LIST = 'https://www.gemini.com/uniswap/manifest.json'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
 // Goerli Default
@@ -63,7 +62,6 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       CMC_ALL_LIST,
       CMC_STABLECOIN,
       KLEROS_LIST,
-      GEMINI_LIST,
       COW_DAO_LIST,
       COW_COINGECKO_LIST,
     ],
@@ -92,7 +90,7 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
 
 // default lists to be 'active' aka searched across
 export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
-  [ChainId.MAINNET]: [COW_DAO_LIST, GEMINI_LIST],
+  [ChainId.MAINNET]: [COW_DAO_LIST, COW_COINGECKO_LIST],
   // [ChainId.KOVAN]: [GEMINI_LIST],
   // [ChainId.RINKEBY]: [COW_DAO_LIST, RINKEBY_LIST],
   // [ChainId.ROPSTEN]: [GEMINI_LIST],
