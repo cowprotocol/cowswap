@@ -46,6 +46,8 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
   [ChainId.MAINNET]: buildNetworkDefaultLists({
     chainId: ChainId.MAINNET,
     networkLists: [
+      COW_DAO_LIST,
+      COW_COINGECKO_LIST,
       COMPOUND_LIST,
       AAVE_LIST,
       SYNTHETIX_LIST,
@@ -58,8 +60,6 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       CMC_ALL_LIST,
       CMC_STABLECOIN,
       KLEROS_LIST,
-      COW_DAO_LIST,
-      COW_COINGECKO_LIST,
     ],
   }),
   [ChainId.GOERLI]: buildNetworkDefaultLists({
