@@ -4,10 +4,21 @@ on:
   pull_request:
     types: ready_for_review
 
+env:
+  NODE_VERSION: lts/gallium
+
 jobs:
   automate-project-columns:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
       - name: Find Linked Issues
         id: links
         uses: hossainemruz/linked-issues@main
