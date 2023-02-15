@@ -216,7 +216,7 @@ const ProgressBar = styled.div<{ value: number }>`
     height: 100%;
     width: ${({ value }) => value}%;
     background: ${({ theme }) => theme.text3};
-    border-radius: 2px;
+    border-radius: 6px;
   }
 `
 
