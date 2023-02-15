@@ -19,11 +19,11 @@ export function AppDataUpdater() {
   const slippageBips = percentToBips(allowedSlippage)
   const orderClass = isLimitOrders ? OrderClass.LIMIT : OrderClass.MARKET
 
-  return <AppDataUpdaterMemo chainId={chainId} slippageBips={slippageBips} orderClass={orderClass}/>
+  return <AppDataUpdaterMemo chainId={chainId} slippageBips={slippageBips} orderClass={orderClass} />
 }
 
-const AppDataUpdaterMemo = React.memo(({chainId, slippageBips, orderClass}: UseAppDataParams) => {
-  useAppData({chainId, slippageBips, orderClass})
+const AppDataUpdaterMemo = React.memo(({ chainId, slippageBips, orderClass }: UseAppDataParams) => {
+  useAppData({ chainId, slippageBips, orderClass })
 
   return null
 })
