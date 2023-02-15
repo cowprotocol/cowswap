@@ -15,7 +15,7 @@ if (!issuesIds) throw new Error('issuesIds must be specified')
 
 console.log('ENV:', {
   issuesIds,
-  pipelineStatus
+  pipelineStatus,
 })
 
 const issueId = issuesIds[0]
@@ -26,10 +26,10 @@ fetch(url, {
   method: 'POST',
   headers: {
     'X-Authentication-Token': restApiToken,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({
     pipeline_id: pipelineId,
-    position: 'top'
-  })
-}).then(res => console.log('Zenhub automation HTTP code: ', res.status))
+    position: 'top',
+  }),
+}).then((res) => console.log('Zenhub automation HTTP code: ', res.status))
