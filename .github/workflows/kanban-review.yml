@@ -11,7 +11,7 @@ jobs:
       - uses: nearform/github-action-check-linked-issues@v1
         id: check-linked-issues
         with:
-        exclude-branches: "release/**, dependabot/**"
+          exclude-branches: "release/**, dependabot/**"
       - name: Move issue to Review/QA status
         run: node scripts/zenhub-automation.js
         env:

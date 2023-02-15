@@ -2,7 +2,9 @@ name: Kanban flow (in progress)
 
 on:
   pull_request:
-    types: converted_to_draft
+    types:
+     - opened
+     - converted_to_draft
 
 jobs:
   automate-project-columns:
@@ -11,7 +13,7 @@ jobs:
       - uses: nearform/github-action-check-linked-issues@v1
         id: check-linked-issues
         with:
-        exclude-branches: "release/**, dependabot/**"
+          exclude-branches: "release/**, dependabot/**"
       - name: Move issue to In progress status
         run: node scripts/zenhub-automation.js
         env:
