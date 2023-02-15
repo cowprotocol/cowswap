@@ -1,12 +1,11 @@
 import { createStore, Store } from 'redux'
-import {
-  /* DEFAULT_ACTIVE_LIST_URLS,  */ DEFAULT_LIST_OF_LISTS,
-  DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK,
-} from 'constants/lists'
+import { DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK, DEFAULT_LIST_OF_LISTS_BY_NETWORK } from 'constants/lists'
 import { updateVersion } from 'state/global/actions'
 import { fetchTokenList, acceptListUpdate, addList, removeList, enableList } from 'state/lists/actions'
 import reducer, { ListsStateByNetwork } from '.'
 import { SupportedChainId as ChainId } from 'constants/chains'
+
+const DEFAULT_LIST_OF_LISTS = DEFAULT_LIST_OF_LISTS_BY_NETWORK[ChainId.MAINNET]
 
 const STUB_TOKEN_LIST = {
   name: '',
