@@ -2,19 +2,25 @@ name: Kanban flow (in progress)
 
 on:
   pull_request:
-    types: converted_to_draft
+    types:
+     - opened
+     - converted_to_draft
 
 jobs:
   automate-project-columns:
     runs-on: ubuntu-latest
     steps:
-      - uses: nearform/github-action-check-linked-issues@v1
-        id: check-linked-issues
+      - name: Find Linked Issues
+        id: links
+        uses: hossainemruz/linked-issues@main
         with:
-        exclude-branches: "release/**, dependabot/**"
+          pr_url: ${{github.event.pull_request.html_url}}
+          format: IssueNumber
+
       - name: Move issue to In progress status
-        run: node scripts/zenhub-automation.js
-        env:
-          ZENHUB_API_TOKEN: ${{ secrets.ZENHUB_API_TOKEN }}
-          pipelineStatus: "in-progress"
-          issuesIds: ${{ steps.check-linked-issues.outputs.issues }}
+        run: >
+          curl 'https://api.zenhub.com/p2/workspaces/6246bc1e8d5e5b0010c77c74/repositories/475419392/issues/${{ steps.links.outputs.issues }}/moves' \
+            -H 'content-type: application/json' \
+            -H 'x-authentication-token: ${{ secrets.ZENHUB_API_TOKEN }}' \
+            --data-raw '{"pipeline_id":"Z2lkOi8vcmFwdG9yL1BpcGVsaW5lLzI5NDkzNDU","position":"top"}' \
+            --compressed
