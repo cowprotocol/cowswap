@@ -8,13 +8,13 @@ jobs:
   automate-project-columns:
     runs-on: ubuntu-latest
     steps:
-      - uses: nearform/github-action-check-linked-issues@v1
-        id: check-linked-issues
+      - id: link-issues
+        uses: boneskull/more-linked-issues-action@v0.2.1
         with:
-          exclude-branches: "release/**, dependabot/**"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Move issue to Review/QA status
         run: node scripts/zenhub-automation.js
         env:
           ZENHUB_API_TOKEN: ${{ secrets.ZENHUB_API_TOKEN }}
           pipelineStatus: "review"
-          issuesIds: ${{ steps.check-linked-issues.outputs.issues }}
+          issuesIds: ${{ steps.link-issues.outputs.links }}
