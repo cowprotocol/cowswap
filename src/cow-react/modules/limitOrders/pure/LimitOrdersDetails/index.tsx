@@ -49,19 +49,27 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <styledEl.StyledRateInfo rateInfoParams={props.rateInfoParams} />
       </styledEl.DetailsRow>
 
-    <styledEl.DetailsRow>
-      <div>
-        <span><ArrowDownRight><SVG src={ArrowDownImage}/></ArrowDownRight><p>est. execution price</p> <QuestionHelper text={TooltipFeeContent()} /></span>
-      </div>
-      <div>
-      <span>≈ 1272.1259 USDC <i>($1271.33)</i></span>
-      </div>
-    </styledEl.DetailsRow>
-
+      <styledEl.DetailsRow>
+        <div>
+          <span>
+            <ArrowDownRight>
+              <SVG src={ArrowDownImage} />
+            </ArrowDownRight>
+            <p>est. execution price</p> <QuestionHelper text={TooltipFeeContent()} />
+          </span>
+        </div>
+        <div>
+          <span>
+            ≈ 1272.1259 USDC <i>($1271.33)</i>
+          </span>
+        </div>
+      </styledEl.DetailsRow>
 
       <styledEl.DetailsRow>
         <div>
-          <span><p>Order expires</p></span>
+          <span>
+            <p>Order expires</p>
+          </span>
           <InfoIcon
             content={
               "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"

@@ -142,4 +142,3 @@ export const EstimatedRate = styled.div`
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
 `
-

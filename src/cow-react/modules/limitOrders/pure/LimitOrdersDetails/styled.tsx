@@ -34,7 +34,6 @@ export const DetailsRow = styled.div`
       opacity: 1;
     }
   }
-
 `
 
 export const StyledRateInfo = styled(RateInfo)`

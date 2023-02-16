@@ -10,7 +10,6 @@ const TooltipContainer = styled.div`
   max-width: 300px; // MOD
   padding: 4px 6px; // MOD
 
-
   font-weight: 400;
   word-break: break-word;
 

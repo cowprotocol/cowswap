@@ -45,14 +45,14 @@ const TableInner = styled.div`
 const Header = styled.div`
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(150px,1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(100px, 0.7fr) 48px 108px 36px;
+  grid-template-columns: minmax(150px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(100px, 0.7fr) 48px 108px 36px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 16px;
 `
 
-const HeaderElement = styled.div<{ doubleRow?: boolean}>`
+const HeaderElement = styled.div<{ doubleRow?: boolean }>`
   padding: 12px 0;
   font-size: 12px;
   font-weight: 400;
@@ -64,7 +64,9 @@ const HeaderElement = styled.div<{ doubleRow?: boolean}>`
     align-items: center;
   }
 
-  ${({ doubleRow }) => doubleRow && `
+  ${({ doubleRow }) =>
+    doubleRow &&
+    `
     flex-flow: column wrap;
     gap: 2px;
 
@@ -150,13 +152,21 @@ export function OrdersTable({
             </HeaderElement>
 
             <HeaderElement doubleRow>
-              <span><Trans>Est. execution price <QuestionHelper text={TooltipFeeContent()} /></Trans></span>
-              <i><Trans>Market price</Trans></i>
+              <span>
+                <Trans>
+                  Est. execution price <QuestionHelper text={TooltipFeeContent()} />
+                </Trans>
+              </span>
+              <i>
+                <Trans>Market price</Trans>
+              </i>
             </HeaderElement>
 
             <HeaderElement doubleRow>
               <Trans>Expires</Trans>
-              <i><Trans>Created</Trans></i>
+              <i>
+                <Trans>Created</Trans>
+              </i>
             </HeaderElement>
 
             <HeaderElement>

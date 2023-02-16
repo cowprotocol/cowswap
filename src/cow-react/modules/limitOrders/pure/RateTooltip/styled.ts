@@ -43,7 +43,7 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
   width: 100%;
   margin: ${({ highlighted }) => (highlighted ? '10px 0 0' : '0')};
   padding: ${({ borderTop }) => (borderTop ? '16px 10px 10px' : '10px')};
-  border-radius: ${({ highlighted }) => (highlighted ? '10px': '0')};
+  border-radius: ${({ highlighted }) => (highlighted ? '10px' : '0')};
   background: ${({ theme, highlighted }) => (highlighted ? theme.bg1 : 'transparent')};
   border-top: ${({ theme, borderTop }) => (borderTop ? `1px solid ${transparentize(0.9, theme.text1)}` : 'none')};
   gap: 4px;
@@ -65,5 +65,7 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
     width: 100%;
   }
 
-  > span > p {margin: 0;}
-  `
+  > span > p {
+    margin: 0;
+  }
+`
