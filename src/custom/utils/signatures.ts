@@ -158,14 +158,14 @@ async function _signPayload(
       default:
         _signer = signer
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error('Wallet not supported:', e)
     throw new Error('Wallet not supported')
   }
 
   try {
     signature = (await signFn({ ...payload, signer: _signer, signingScheme })) as EcdsaSignature // Only ECDSA signing supported for now
-  } catch (e) {
+  } catch (e: any) {
     const regexErrorCheck = [METHOD_NOT_FOUND_ERROR_MSG_REGEX, RPC_REQUEST_FAILED_REGEX].some((regex) =>
       // for example 1Inch error doesn't have e.message so we will check the output of toString()
       [e.message, e.toString()].some((msg) => regex.test(msg))

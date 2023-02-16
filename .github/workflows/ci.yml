@@ -201,7 +201,7 @@ jobs:
       # Install deps only
       - name: Cypress install dependencies
         id: cypress-deps
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v5.0.5
         # Do not consider failure a failure. Well, sort of.
         # See https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context
         continue-on-error: true
@@ -217,13 +217,13 @@ jobs:
       # Actually run tests, building repo
       - name: Cypress run
         id: cypress-run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v5.0.5
         with:
           # Uncomment to test the production release. Right now, it doens't work the automatic "connection"
           #   very likely it's related to Web3StatusMod!
           #   when un-commenting this, we need to uncomment also the "Download website" I added in this PR and prevent cypres from buildig the project again
           # start: yarn serve:ci
-          start: yarn start:default
+          start: yarn start
           wait-on: http://localhost:3000
           wait-on-timeout: 200
         env:

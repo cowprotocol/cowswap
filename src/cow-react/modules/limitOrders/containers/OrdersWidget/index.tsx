@@ -3,7 +3,7 @@ import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useEffect, useMemo } from 'react'
 import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
 import { GP_VAULT_RELAYER } from 'constants/index'
@@ -18,7 +18,7 @@ function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] 
 
 export function OrdersWidget() {
   const location = useLocation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWeb3React()
   const getShowCancellationModal = useCancelOrder()
@@ -54,7 +54,7 @@ export function OrdersWidget() {
 
   // Set page params initially once
   useEffect(() => {
-    history.push(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }))
+    navigate(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useValidatePageUrlParams(orders, currentTabId, currentPageNumber)

@@ -6,11 +6,12 @@ import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
 import { OrderID, sendOrder as sendOrderApi, sendSignedOrderCancellation } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
-import { AMOUNT_PRECISION, RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { formatSmart, formatSymbol } from '@cow/utils/format'
+import { formatSymbol } from '@cow/utils/format'
 import { SigningScheme } from '@cowprotocol/contracts'
 import { getProfileData, getTrades } from '@cow/api/gnosisProtocol/api'
+import { formatTokenAmount } from '@cow/utils/amountFormat'
 
 export type PostOrderParams = {
   account: string
@@ -59,8 +60,8 @@ function _getSummary(params: PostOrderParams): string {
   ]
   const inputSymbol = formatSymbol(sellToken.symbol)
   const outputSymbol = formatSymbol(buyToken.symbol)
-  const inputAmountValue = formatSmart(feeAmount ? inputAmount.add(feeAmount) : inputAmount, AMOUNT_PRECISION)
-  const outputAmountValue = formatSmart(outputAmount, AMOUNT_PRECISION)
+  const inputAmountValue = formatTokenAmount(feeAmount ? inputAmount.add(feeAmount) : inputAmount)
+  const outputAmountValue = formatTokenAmount(outputAmount)
 
   const base = `Swap ${inputQuantifier}${inputAmountValue} ${inputSymbol} for ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
 

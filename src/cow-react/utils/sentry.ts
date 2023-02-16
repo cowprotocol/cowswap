@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 
-import { version } from '@src/../package.json'
+import pkg from '@src/../package.json'
 import { environmentName } from 'utils/environments'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from '@cow/api/gnosisProtocol/errors/QuoteError'
 
@@ -12,7 +12,7 @@ if (SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
     integrations: [new Integrations.BrowserTracing()],
-    release: 'CowSwap@v' + version,
+    release: 'CowSwap@v' + pkg.version,
     environment: environmentName,
     ignoreErrors: [...SENTRY_IGNORED_GP_QUOTE_ERRORS],
 

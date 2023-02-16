@@ -62,7 +62,7 @@ export function useContract<T extends Contract = Contract>(
     if (!address) return null
     try {
       return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to get contract', error)
       return null
     }

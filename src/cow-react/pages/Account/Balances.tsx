@@ -12,7 +12,6 @@ import {
 } from '@cow/pages/Account/styled'
 import { useWeb3React } from '@web3-react/core'
 import { getBlockExplorerUrl } from 'utils'
-import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { ButtonPrimary } from 'custom/components/Button'
@@ -22,8 +21,8 @@ import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import { useTokenBalance } from 'state/connection/hooks'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
-import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS, AMOUNT_PRECISION } from 'constants/index'
-import { COW } from 'constants/tokens'
+import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
+import { COW, V_COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
@@ -38,8 +37,7 @@ import { useCowFromLockedGnoBalances } from '@cow/pages/Account/LockedGnoVesting
 import { getProviderErrorMessage } from 'utils/misc'
 import { MetaMask } from '@web3-react/metamask'
 import { HelpCircle } from '@cow/common/pure/HelpCircle'
-
-const COW_DECIMALS = COW[ChainId.MAINNET].decimals
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
@@ -60,8 +58,10 @@ export default function Profile() {
   // Locked GNO balance
   const { loading: isLockedGnoLoading, ...lockedGnoBalances } = useCowFromLockedGnoBalances()
 
+  const cowToken = COW[chainId]
+  const vCowToken = V_COW[chainId]
   // Cow balance
-  const cow = useTokenBalance(account || undefined, chainId ? COW[chainId] : undefined)
+  const cow = useTokenBalance(account || undefined, chainId ? cowToken : undefined)
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
@@ -87,14 +87,6 @@ export default function Profile() {
 
     return output
   }, [isLockedGnoLoading, isVCowLoading, provider])
-
-  const cowBalance = formatSmartLocaleAware(cow, AMOUNT_PRECISION) || '0'
-  const cowBalanceMax = formatMax(cow, COW_DECIMALS) || '0'
-  const vCowBalanceVested = formatSmartLocaleAware(shouldUpdate ? undefined : vested, AMOUNT_PRECISION) || '0'
-  const vCowBalanceVestedMax = vested ? formatMax(shouldUpdate ? undefined : vested, COW_DECIMALS) : '0'
-  const vCowBalanceUnvested = formatSmartLocaleAware(unvested, AMOUNT_PRECISION) || '0'
-  const vCowBalance = formatSmartLocaleAware(total, AMOUNT_PRECISION) || '0'
-  const vCowBalanceMax = total ? formatMax(total, COW_DECIMALS) : '0'
 
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
@@ -132,10 +124,16 @@ export default function Profile() {
     balanceBreakdown: (
       <VestingBreakdown>
         <span>
-          <i>Unvested</i> <p>{vCowBalanceUnvested} vCOW</p>
+          <i>Unvested</i>{' '}
+          <p>
+            <TokenAmount amount={unvested} defaultValue="0" tokenSymbol={vCowToken} />
+          </p>
         </span>
         <span>
-          <i>Vested</i> <p>{vCowBalanceVested} vCOW</p>
+          <i>Vested</i>{' '}
+          <p>
+            <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" tokenSymbol={vCowToken} />
+          </p>
         </span>
       </VestingBreakdown>
     ),
@@ -221,7 +219,7 @@ export default function Profile() {
                     <Trans>Total vCOW balance</Trans>
                   </i>
                   <b>
-                    <span title={`${vCowBalanceMax} vCOW`}>{vCowBalance} vCOW</span>{' '}
+                    <TokenAmount amount={total} defaultValue="0" tokenSymbol={vCowToken} />{' '}
                     <MouseoverTooltipContent content={tooltipText.balanceBreakdown} wrap>
                       <HelpCircle size={14} />
                     </MouseoverTooltipContent>
@@ -236,7 +234,9 @@ export default function Profile() {
                       <HelpCircle size={14} />
                     </MouseoverTooltipContent>
                   </i>
-                  <b title={`${vCowBalanceVestedMax} vCOW`}>{vCowBalanceVested}</b>
+                  <b>
+                    <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" />
+                  </b>
                 </BalanceDisplay>
                 <ButtonPrimary onClick={handleVCowSwap} disabled={isSwapDisabled}>
                   {renderConvertToCowContent()}
@@ -259,7 +259,9 @@ export default function Profile() {
               <img src={CowImage} alt="Cow Balance" height="80" width="80" />
               <span>
                 <i>Available COW balance</i>
-                <b title={`${cowBalanceMax} COW`}>{cowBalance} COW</b>
+                <b>
+                  <TokenAmount amount={cow} defaultValue="0" tokenSymbol={cowToken} />
+                </b>
               </span>
             </BalanceDisplay>
             <CardActions>

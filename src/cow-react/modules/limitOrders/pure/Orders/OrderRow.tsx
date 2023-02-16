@@ -1,5 +1,4 @@
 import { useContext } from 'react'
-import { formatSmart } from '@cow/utils/format'
 import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -13,6 +12,7 @@ import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmou
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -163,7 +163,7 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
         <CurrencyLogo currency={amount.currency} size="24px" />
       </div>
       <span>
-        {formatSmart(amount)} <TokenSymbol token={amount.currency} />
+        <TokenAmount amount={amount} tokenSymbol={amount.currency} />
       </span>
     </AmountItem>
   )

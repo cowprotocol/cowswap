@@ -1,8 +1,6 @@
-import { Trans } from '@lingui/macro'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import HoverInlineText from 'components/HoverInlineText'
 import { useMemo } from 'react'
 
 import useTheme from 'hooks/useTheme'
@@ -11,9 +9,10 @@ import { warningSeverity } from 'utils/prices'
 import { MouseoverTooltip } from 'components/Tooltip'
 
 // MOD imports
-import { FIAT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index' // mod
-import { formatSmart } from '@cow/utils/format'
+// mod
 import Loader from 'components/Loader'
+import { formatPercent } from '@cow/utils/amountFormat'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
 export function FiatValue({
   fiatValue,
@@ -53,24 +52,12 @@ export function FiatValue({
 
   return (
     <ThemedText.Body className={className} fontSize={14} color={fiatValue ? theme.text1 : theme.text4}>
-      {fiatValue && !isLoading ? (
-        <Trans>
-          ≈ $
-          <HoverInlineText
-            text={formatSmart(fiatValue, FIAT_PRECISION, {
-              thousandSeparator: true,
-              isLocaleAware: true,
-            })}
-          />
-        </Trans>
-      ) : (
-        ''
-      )}
+      {fiatValue && !isLoading ? <FiatAmount amount={fiatValue} /> : ''}
       {priceImpact ? (
         <span style={{ color: priceImpactColor }}>
           {' '}
           <MouseoverTooltip text={t`The estimated difference between the USD values of input and output amounts.`}>
-            (<Trans>{formatSmart(priceImpact.multiply(-1), PERCENTAGE_PRECISION)}%</Trans>)
+            ({formatPercent(priceImpact.multiply(-1))}%)
           </MouseoverTooltip>
         </span>
       ) : null}

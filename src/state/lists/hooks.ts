@@ -59,7 +59,7 @@ export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAd
           if (!current) return allTokens
           try {
             return combineMaps(allTokens, tokensToChainTokenMap(current))
-          } catch (error) {
+          } catch (error: any) {
             console.error('Could not show token list due to error', error)
             return allTokens
           }

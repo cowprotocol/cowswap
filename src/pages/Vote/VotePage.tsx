@@ -14,7 +14,7 @@ import ms from 'ms.macro'
 import { useState } from 'react'
 import { ArrowLeft } from 'react-feather'
 // import ReactMarkdown from 'react-markdown'
-import { RouteComponentProps } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { ButtonPrimary } from '../../components/Button'
@@ -152,19 +152,16 @@ function getDateFromBlock(
   return undefined
 }
 
-export default function VotePage({
-  match: {
-    params: { governorIndex, id },
-  },
-}: RouteComponentProps<{ governorIndex: string; id: string }>) {
-  const parsedGovernorIndex = Number.parseInt(governorIndex)
+export default function VotePage() {
+  const { governorIndex, id } = useParams<{ governorIndex: string; id: string }>()
+  const parsedGovernorIndex = Number.parseInt(governorIndex || '')
 
   const { chainId, account } = useWeb3React()
 
   const quorumAmount = useQuorum(parsedGovernorIndex)
 
   // get data for this specific proposal
-  const proposalData: ProposalData | undefined = useProposalData(parsedGovernorIndex, id)
+  const proposalData: ProposalData | undefined = useProposalData(parsedGovernorIndex, id || '')
 
   // update vote option based on button interactions
   const [voteOption, setVoteOption] = useState<VoteOption | undefined>(undefined)

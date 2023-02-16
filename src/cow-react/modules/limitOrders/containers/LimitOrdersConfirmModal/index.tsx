@@ -11,7 +11,6 @@ import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 import { useWalletInfo } from 'hooks/useWalletInfo'
 import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
-import { formatSmartAmount } from '@cow/utils/format'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
@@ -21,6 +20,7 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -38,18 +38,8 @@ function PendingText({
   inputRawAmount: CurrencyAmount<Currency> | null
   outputRawAmount: CurrencyAmount<Currency> | null
 }) {
-  const inputSymbol = inputRawAmount?.currency?.symbol
-  const outputSymbol = outputRawAmount?.currency?.symbol
-  const inputTitle = (
-    <span title={inputRawAmount?.toExact() + ' ' + inputSymbol}>
-      {formatSmartAmount(inputRawAmount)} {inputSymbol}
-    </span>
-  )
-  const outputTitle = (
-    <span title={outputRawAmount?.toExact() + ' ' + outputSymbol}>
-      {formatSmartAmount(outputRawAmount)} {outputSymbol}
-    </span>
-  )
+  const inputTitle = <TokenAmount amount={inputRawAmount} tokenSymbol={inputRawAmount?.currency} />
+  const outputTitle = <TokenAmount amount={outputRawAmount} tokenSymbol={outputRawAmount?.currency} />
   return (
     <>
       Placing limit order {inputTitle} for {outputTitle}

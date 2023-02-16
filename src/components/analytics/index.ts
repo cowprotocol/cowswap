@@ -1,7 +1,8 @@
+import { isDevelopmentEnv } from '@src/utils/env'
 import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
 import { UaEventOptions } from 'react-ga4/types/ga4'
-import { RouteComponentProps } from 'react-router-dom'
+import { Path } from 'react-router-dom'
 import { isMobile } from 'utils/userAgent'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
@@ -49,7 +50,8 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
       ? 'mobileWeb3'
       : 'mobileRegular',
   })
-} else {
+} else if (isDevelopmentEnv()) {
+  console.warn('No Google Analytics ID found. Initializing with debug mode.')
   googleAnalytics.initialize('test', { gtagOptions: { debug_mode: true } })
 }
 
@@ -63,7 +65,7 @@ function reportWebVitals({ name, delta, id }: Metric) {
 }
 
 // tracks web vitals and pageviews
-export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['location']) {
+export function useAnalyticsReporter({ pathname, search }: Path) {
   useEffect(() => {
     getFCP(reportWebVitals)
     getFID(reportWebVitals)

@@ -6,7 +6,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import Row, { RowBetween, RowFixed } from 'components/Row'
 import { useToken } from 'hooks/Tokens'
 import { useWeb3React } from '@web3-react/core'
-import { RefObject, useCallback, useMemo, useRef, useState } from 'react'
+import { ChangeEventHandler, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { useRemoveUserAddedToken, useUserAddedTokens } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { ButtonText, ExternalLink, ExternalLinkIcon, ThemedText, TrashIcon } from 'theme'
@@ -59,7 +59,7 @@ export default function ManageTokens({ setModalView, setImportToken, ImportToken
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
-  const handleInput = useCallback((event) => {
+  const handleInput: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)

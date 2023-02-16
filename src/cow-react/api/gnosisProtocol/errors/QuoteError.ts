@@ -83,7 +83,7 @@ export default class GpQuoteError extends Error {
         console.error('Unknown reason for bad quote fetch', orderPostError)
         return orderPostError.description
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error handling 400/404 error. Likely a problem deserialising the JSON response')
       return GpQuoteError.quoteErrorDetails.UNHANDLED_ERROR
     }

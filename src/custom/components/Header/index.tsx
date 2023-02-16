@@ -1,15 +1,13 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from '@cow/constants/routes'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
-import { AMOUNT_PRECISION } from 'constants/index'
 
 import { supportedChainId } from 'utils/supportedChainId'
-import { formatSmart } from '@cow/utils/format'
 import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
 // Components
@@ -40,6 +38,7 @@ import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
 import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',
@@ -82,8 +81,8 @@ export default function Header() {
     !isOrdersPanelOpen && removeBodyClass('noScroll')
   }
 
-  const history = useHistory()
-  const handleBalanceButtonClick = () => history.push('/account')
+  const navigate = useNavigate()
+  const handleBalanceButtonClick = () => navigate('/account')
   const isUpToLarge = useMediaQuery(upToLarge)
   const isUpToMedium = useMediaQuery(upToMedium)
   const isUpToSmall = useMediaQuery(upToSmall)
@@ -157,7 +156,7 @@ export default function Header() {
             <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
               {account && userEthBalance && chainId && (
                 <BalanceText>
-                  {formatSmart(userEthBalance, AMOUNT_PRECISION) || '0'} {nativeToken}
+                  <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
                 </BalanceText>
               )}
               <Web3Status />

@@ -76,7 +76,7 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.CELO_ALFAJORES,
 ] as const
 
-export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number]
+export type SupportedL1ChainId = (typeof L1_CHAIN_IDS)[number]
 
 /**
  * Controls some L2 specific behavior, e.g. slippage tolerance, special UI behavior.
@@ -89,4 +89,4 @@ export const L2_CHAIN_IDS = [
   SupportedChainId.OPTIMISTIC_KOVAN,
 ] as const
 
-export type SupportedL2ChainId = typeof L2_CHAIN_IDS[number]
+export type SupportedL2ChainId = (typeof L2_CHAIN_IDS)[number]

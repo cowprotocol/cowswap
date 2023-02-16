@@ -69,7 +69,7 @@ export function useStablecoinValue(currencyAmount: CurrencyAmount<Currency> | un
     if (!price || !currencyAmount) return null
     try {
       return price.quote(currencyAmount)
-    } catch (error) {
+    } catch (error: any) {
       return null
     }
   }, [currencyAmount, price])
@@ -94,7 +94,7 @@ export function useStablecoinAmountFromFiatValue(fiatValue: string | null | unde
     try {
       // parse USD string into CurrencyAmount based on stablecoin decimals
       return tryParseCurrencyAmount(parsedForDecimals, stablecoin)
-    } catch (error) {
+    } catch (error: any) {
       return undefined
     }
   }, [chainId, fiatValue, stablecoin])

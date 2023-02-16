@@ -1,4 +1,4 @@
-import React, { ErrorInfo } from 'react'
+import React, { ErrorInfo, PropsWithChildren } from 'react'
 // import ReactGA from 'react-ga4'
 import styled from 'styled-components/macro'
 
@@ -101,8 +101,8 @@ async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
   return ready.update() as unknown as Promise<ServiceWorkerRegistration>
 }
 
-export default class ErrorBoundary extends React.Component<unknown, ErrorBoundaryState> {
-  constructor(props: unknown) {
+export default class ErrorBoundary extends React.Component<PropsWithChildren, ErrorBoundaryState> {
+  constructor(props: PropsWithChildren) {
     super(props)
     this.state = { error: null }
   }

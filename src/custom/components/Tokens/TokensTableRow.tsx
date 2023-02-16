@@ -12,7 +12,6 @@ import {
   TokenText,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import { formatMax, formatSmart } from '@cow/utils/format'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
@@ -20,7 +19,7 @@ import { CardsSpinner, ExtLink } from '@cow/pages/Account/styled'
 import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useWeb3React } from '@web3-react/core'
-import { AMOUNT_PRECISION, GP_VAULT_RELAYER } from 'constants/index'
+import { GP_VAULT_RELAYER } from 'constants/index'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
 import Loader from 'components/Loader'
@@ -33,6 +32,7 @@ import SVG from 'react-inlinesvg'
 import EtherscanImage from 'assets/cow-swap/etherscan-icon.svg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 type DataRowParams = {
   tokenData: Token
@@ -103,7 +103,7 @@ const DataRow = ({
       setApproving(true)
       const summary = `Approve ${tokenData?.symbol || 'token'}`
       await approve({ modalMessage: summary, transactionSummary: summary })
-    } catch (error) {
+    } catch (error: any) {
       console.error(`[TokensTableRow]: Issue approving.`, error)
       handleSetError(error?.message)
     } finally {
@@ -138,11 +138,11 @@ const DataRow = ({
           <TableButton onClick={handleApprove} color={theme.text1}>
             Approve all
           </TableButton>
-          <ApproveLabel
-            color={theme.green1}
-            title={`Approved: ${formatMax(currentAllowance, currentAllowance.currency.decimals)}`}
-          >
-            Approved: <strong>{formatSmart(currentAllowance, AMOUNT_PRECISION)}</strong>
+          <ApproveLabel color={theme.green1}>
+            Approved:{' '}
+            <strong>
+              <TokenAmount amount={currentAllowance} />
+            </strong>
           </ApproveLabel>
         </CustomLimit>
       )

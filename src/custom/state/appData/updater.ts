@@ -111,7 +111,7 @@ async function _actuallyUploadToIpfs(
     } else {
       console.debug(`[UploadToIpfsUpdater] Uploaded doc with hash ${actualHash}`, JSON.stringify(doc))
     }
-  } catch (e) {
+  } catch (e: any) {
     // TODO: add sentry error to track soft failure
     console.warn(
       `[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`,

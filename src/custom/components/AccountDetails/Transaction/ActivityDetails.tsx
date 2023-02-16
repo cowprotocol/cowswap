@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
 
-import { formatSmart } from '@cow/utils/format'
 import {
   Summary,
   SummaryInner,
@@ -28,7 +27,7 @@ import { RateInfoParams, RateInfo } from '@cow/common/pure/RateInfo'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import { StatusDetails } from './StatusDetails'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
-import { formatSymbol } from '@cow/utils/format'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -136,8 +135,8 @@ function GnosisSafeTxDetails(props: {
 }
 
 interface OrderSummaryType {
-  from: string | undefined
-  to: string | undefined
+  from: ReactNode | undefined
+  to: ReactNode | undefined
   limitPrice: string | undefined
   executionPrice?: string | undefined
   validTo: string | undefined
@@ -218,8 +217,8 @@ export function ActivityDetails(props: {
 
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
-      from: `${formatSmart(inputAmount.add(feeAmount))} ${formatSymbol(inputAmount.currency.symbol)}`,
-      to: `${formatSmart(outputAmount)} ${formatSymbol(outputAmount.currency.symbol)}`,
+      from: <TokenAmount amount={inputAmount.add(feeAmount)} tokenSymbol={inputAmount.currency} />,
+      to: <TokenAmount amount={outputAmount} tokenSymbol={outputAmount.currency} />,
       validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
       fulfillmentTime: fulfillmentTime
         ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)

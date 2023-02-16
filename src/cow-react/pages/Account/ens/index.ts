@@ -44,7 +44,7 @@ export async function ensNames(
     return data.domains
       .map((domain) => domain.name)
       .filter((domainName): domainName is string => domainName !== null && domainName !== undefined)
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof ClientError) {
       const { name, message, stack } = error
       return { error: { name, message, stack } }

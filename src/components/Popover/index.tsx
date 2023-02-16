@@ -1,5 +1,5 @@
 import { Options, Placement } from '@popperjs/core'
-import Portal from '@reach/portal'
+import { Portal } from '@reach/portal'
 import useInterval from 'lib/hooks/useInterval'
 import React, { useCallback, useMemo, useState } from 'react'
 import { usePopper } from 'react-popper'

@@ -21,6 +21,7 @@ import { UploadToIpfsUpdater } from 'state/appData/updater'
 import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
 import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from '@cow/modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from '@cow/modules/tokensList/updaters/TokensListUpdater'
+import { AppDataUpdater } from 'state/appData/AppDataInfoUpdater'
 
 export function Updaters() {
   return (
@@ -42,6 +43,7 @@ export function Updaters() {
       <LogsUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
+      <AppDataUpdater />
       <GnosisSafeUpdater />
       <GasPriceStrategyUpdater />
       <EthFlowSlippageUpdater />

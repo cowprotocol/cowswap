@@ -1,13 +1,11 @@
-import { Trans } from '@lingui/macro'
 import styled, { css } from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useCombinedBalance } from 'state/cowToken/hooks'
 import { ChainId } from 'state/lists/actions/actionsMod'
-import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
-import { COW } from 'constants/tokens'
 import { transparentize } from 'polished'
 import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;
@@ -80,14 +78,9 @@ interface CowBalanceButtonProps {
   isUpToSmall?: boolean
 }
 
-const COW_DECIMALS = COW[ChainId.MAINNET].decimals
-
 export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
   const { chainId } = useWeb3React()
   const { balance, isLoading } = useCombinedBalance()
-
-  const formattedBalance = formatSmartLocaleAware(balance, 0)
-  const formattedMaxBalance = formatMax(balance, COW_DECIMALS)
 
   if (!supportedChainId(chainId)) {
     return null
@@ -97,8 +90,14 @@ export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceBut
     <Wrapper isLoading={isLoading} onClick={onClick}>
       <CowProtocolLogo />
       {!isUpToSmall && (
-        <b title={formattedMaxBalance && `${formattedMaxBalance} (v)COW`}>
-          <Trans>{formattedBalance || 0}</Trans>
+        <b>
+          <TokenAmount
+            round={true}
+            hideTokenSymbol={true}
+            amount={balance}
+            defaultValue="0"
+            tokenSymbol={{ symbol: '(v)COW' }}
+          />
         </b>
       )}
     </Wrapper>

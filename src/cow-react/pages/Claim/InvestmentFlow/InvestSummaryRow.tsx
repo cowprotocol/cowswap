@@ -3,11 +3,10 @@ import { calculatePercentage } from 'state/claim/hooks/utils'
 import { TokenLogo, InvestAvailableBar, UserMessage } from '@cow/pages/Claim/styled'
 import { ClaimWithInvestmentData } from '@cow/pages/Claim/types'
 import CowProtocolLogo from 'components/CowProtocolLogo'
-import { formatMax, formatSmartLocaleAware } from '@cow/utils/format'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
-import { AMOUNT_PRECISION } from 'constants/index'
 import ImportantIcon from 'assets/cow-swap/important.svg'
 import SVG from 'react-inlinesvg'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export type Props = { claim: ClaimWithInvestmentData }
 
@@ -18,10 +17,7 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
 
   const symbol = isFree ? '' : (currencyAmount?.currency?.symbol as string)
 
-  const formattedCost = formatSmartLocaleAware(investmentCost, AMOUNT_PRECISION) || '0'
-  const formattedCostMaxPrecision = investmentCost
-    ? `${formatMax(investmentCost, currencyAmount?.currency?.decimals)} ${symbol}`
-    : ''
+  const formattedCost = <TokenAmount amount={investmentCost} defaultValue="0" tokenSymbol={investmentCost?.currency} />
 
   const percentage = investmentCost && cost && calculatePercentage(investmentCost, cost)
 
@@ -48,16 +44,13 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
       </td>
 
       <td data-title="Amount">
-        <i title={`${formatMax(vCowAmount, vCowAmount?.currency.decimals)} vCOW`}>
-          {formatSmartLocaleAware(vCowAmount, AMOUNT_PRECISION) || '0'} vCOW
+        <i>
+          <TokenAmount amount={vCowAmount} defaultValue="0" tokenSymbol={vCowAmount?.currency} />
         </i>
 
         {!isFree && (
           <span>
-            <b>Investment amount:</b>{' '}
-            <i title={formattedCostMaxPrecision}>
-              {formattedCost} {symbol}
-            </i>
+            <b>Investment amount:</b> <i>{formattedCost}</i>
             <InvestAvailableBar percentage={Number(percentage?.toFixed(2))} />
             {percentage?.lessThan(ONE_HUNDRED_PERCENT) && (
               <UserMessage variant="info">
@@ -75,13 +68,14 @@ export function InvestSummaryRow(props: Props): JSX.Element | null {
         {!isFree && (
           <span>
             <b>Price:</b>{' '}
-            <i title={formatMax(price)}>
-              {formatSmartLocaleAware(price) || '0'} vCOW per {symbol}
+            <i>
+              {/*TODO: check quoteCurrency*/}
+              <TokenAmount amount={price} defaultValue="0" tokenSymbol={price?.quoteCurrency} /> per {symbol}
             </i>
           </span>
         )}
         <span>
-          <b>Cost:</b> <i title={formattedCostMaxPrecision}>{isFree ? 'Free!' : `${formattedCost} ${symbol}`}</i>
+          <b>Cost:</b> <i>{isFree ? 'Free!' : formattedCost}</i>
         </span>
         <span>
           <b>Vesting:</b>

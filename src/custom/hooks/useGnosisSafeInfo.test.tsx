@@ -2,7 +2,7 @@ import { render, unmountComponentAtNode } from 'react-dom'
 import { act } from 'react-dom/test-utils'
 import { useGnosisSafeInfo } from './useGnosisSafeInfo'
 import { waitFor } from '@testing-library/react'
-import { SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import type { SafeInfo } from '@gnosis.pm/safe-apps-sdk'
 import { useWeb3React, Web3ContextType } from '@web3-react/core'
 import { GnosisSafe } from '@web3-react/gnosis-safe'
 

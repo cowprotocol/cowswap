@@ -33,10 +33,11 @@ export const SUPPORTED_LOCALES = [
   'zh-CN',
   'zh-TW', */
 ]
-export type SupportedLocale = typeof SUPPORTED_LOCALES[number] | 'pseudo'
+export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number] | 'pseudo'
 
 // eslint-disable-next-line import/first
 import * as enUS from 'locales/en-US'
+
 export const DEFAULT_LOCALE: SupportedLocale = 'en-US'
 export const DEFAULT_CATALOG = enUS
 

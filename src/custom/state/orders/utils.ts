@@ -2,11 +2,11 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { Price } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
-import { PENDING_ORDERS_BUFFER } from 'constants/index'
+import { PENDING_ORDERS_BUFFER, ZERO_BIG_NUMBER } from 'constants/index'
 import { OrderMetaData } from '@cow/api/gnosisProtocol'
 import { Order } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
-import { calculatePrice, invertPrice, ZERO_BIG_NUMBER } from '@cowprotocol/cow-js'
+import { calculatePrice, invertPrice } from './priceUtils'
 import { BigNumber } from 'bignumber.js'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
 
