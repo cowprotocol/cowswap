@@ -12,7 +12,11 @@ export default function Updater(): null {
 
   useEffect(() => {
     if (chainId && account && isGnosisSafeConnected && provider) {
-      getSafeInfo(chainId, account, provider).then(setGnosisSafeInfo)
+      getSafeInfo(chainId, account, provider)
+        .then(setGnosisSafeInfo)
+        .catch((error) => {
+          console.error(error)
+        })
     } else {
       setGnosisSafeInfo(undefined)
     }
