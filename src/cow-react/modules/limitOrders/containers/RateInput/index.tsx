@@ -17,6 +17,10 @@ import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import QuestionHelper from 'components/QuestionHelper'
 import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
+import { CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -25,7 +29,8 @@ export function RateInput() {
     isInversed,
     activeRate,
     isLoading,
-    executionRate,
+    marketRate,
+    feeAmount,
     isLoadingExecutionRate,
     typedValue,
     isTypedValue,
@@ -56,14 +61,47 @@ export function RateInput() {
     return formatInputAmount(rate)
   }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
 
+  // TODO: refactor the logic and move it to a hook
+  const executionPrice = useMemo(() => {
+    if (!inputCurrencyAmount || !outputCurrencyAmount || !feeAmount || !activeRate || !marketRate) return null
+
+    if (inputCurrencyAmount.currency !== feeAmount.currency) return null
+
+    const outputAmountMarket = inputCurrencyAmount.multiply(marketRate)
+
+    const marketPrice = new Price({
+      baseAmount: inputCurrencyAmount.add(feeAmount),
+      quoteAmount: CurrencyAmount.fromFractionalAmount(
+        outputCurrencyAmount.currency,
+        outputAmountMarket.numerator,
+        outputAmountMarket.denominator
+      ),
+    })
+
+    const currentPrice = new Price({
+      baseAmount: inputCurrencyAmount.add(feeAmount),
+      quoteAmount: outputCurrencyAmount,
+    })
+
+    const price = currentPrice.greaterThan(marketPrice) ? marketPrice : currentPrice
+
+    return isInversed ? price.invert() : price
+  }, [feeAmount, activeRate, marketRate, inputCurrencyAmount, outputCurrencyAmount, isInversed])
+
+  const executionPriceFiat = useHigherUSDValue(
+    executionPrice && primaryCurrency
+      ? executionPrice.quote(CurrencyAmount.fromRawAmount(primaryCurrency, 1 * 10 ** primaryCurrency.decimals))
+      : undefined
+  )
+
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
     updateRate({
-      activeRate: isFractionFalsy(executionRate) ? initialRate : executionRate,
+      activeRate: isFractionFalsy(marketRate) ? initialRate : marketRate,
       isTypedValue: false,
       isRateFromUrl: false,
     })
-  }, [executionRate, initialRate, updateRate])
+  }, [marketRate, initialRate, updateRate])
 
   // Handle rate input
   const handleUserInput = useCallback(
@@ -88,12 +126,12 @@ export function RateInput() {
 
     if (!outputCurrencyId || !inputCurrencyId) return true
 
-    if (executionRate && !executionRate.equalTo(0)) {
-      return activeRate?.equalTo(executionRate)
+    if (marketRate && !marketRate.equalTo(0)) {
+      return activeRate?.equalTo(marketRate)
     } else {
       return !!initialRate && activeRate?.equalTo(initialRate)
     }
-  }, [activeRate, executionRate, isLoadingExecutionRate, initialRate, inputCurrencyId, outputCurrencyId])
+  }, [activeRate, marketRate, isLoadingExecutionRate, initialRate, inputCurrencyId, outputCurrencyId])
 
   // Apply smart quote selection
   // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
@@ -163,13 +201,28 @@ export function RateInput() {
             />
           )}
         </styledEl.Body>
-
       </styledEl.Wrapper>
 
       <styledEl.EstimatedRate>
-        <b>Est. execution price <QuestionHelper text={TooltipFeeContent()} /></b>
-        {/* Todo: get estimated execution price */}
-        <span>≈ 1272.1259 USDC <i>($1271.33)</i></span>
+        <b>
+          Est. execution price{' '}
+          <QuestionHelper
+            text={
+              <TooltipFeeContent
+                feeAmount={feeAmount}
+                displayedRate={displayedRate}
+                executionPrice={executionPrice}
+                executionPriceFiat={executionPriceFiat}
+              />
+            }
+          />
+        </b>
+        <span>
+          ≈ <TokenAmount amount={executionPrice} tokenSymbol={secondaryCurrency} />
+          <i>
+            (<FiatAmount amount={executionPriceFiat} />)
+          </i>
+        </span>
       </styledEl.EstimatedRate>
     </>
   )

@@ -11,7 +11,7 @@ import { Writeable } from '@cow/types'
 // Fetch and update initial price for the selected token pair
 export function MarketPriceUpdater() {
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const { executionRate } = useAtomValue(limitRateAtom)
+  const { marketRate } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const updateRate = useUpdateActiveRate()
 
@@ -36,9 +36,9 @@ export function MarketPriceUpdater() {
   useLayoutEffect(() => {
     // Remove current execution rate on empty fields or zero value
     if (isFractionFalsy(inputCurrencyAmount) || isFractionFalsy(outputCurrencyAmount)) {
-      updateLimitRateState({ executionRate: null })
+      updateLimitRateState({ marketRate: null })
     }
-  }, [inputCurrencyAmount, outputCurrencyAmount, executionRate, updateLimitRateState])
+  }, [inputCurrencyAmount, outputCurrencyAmount, marketRate, updateLimitRateState])
 
   // Set initial price once
   useLayoutEffect(() => {

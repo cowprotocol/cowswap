@@ -43,7 +43,7 @@ export function useFetchMarketPrice() {
         .then(handleResponse)
         .catch((error: GpQuoteError) => {
           setLimitOrdersQuote({ error })
-          updateLimitRateState({ executionRate: null })
+          updateLimitRateState({ marketRate: null })
         })
         .finally(() => updateLimitRateState({ isLoadingExecutionRate: false }))
     }
@@ -58,7 +58,7 @@ export function useFetchMarketPrice() {
 
   // Turn on the loading if some of these dependencies have changed and remove execution rate
   useLayoutEffect(() => {
-    updateLimitRateState({ isLoadingExecutionRate: true, executionRate: null })
+    updateLimitRateState({ isLoadingExecutionRate: true, marketRate: null })
   }, [chainId, inputCurrency, outputCurrency, orderKind, account, updateLimitRateState])
 
   return null

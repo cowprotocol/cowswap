@@ -1,4 +1,4 @@
-import { Fraction } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { atom } from 'jotai'
 
 export interface LimitRateState {
@@ -7,7 +7,8 @@ export interface LimitRateState {
   readonly isInversed: boolean
   readonly initialRate: Fraction | null
   readonly activeRate: Fraction | null
-  readonly executionRate: Fraction | null
+  readonly marketRate: Fraction | null
+  readonly feeAmount: CurrencyAmount<Currency> | null
   readonly isTypedValue: boolean
   // To avoid price overriding when it's already set from useSetupLimitOrderAmountsFromUrl()
   readonly isRateFromUrl: boolean
@@ -20,7 +21,8 @@ const initLimitRateState = () => ({
   isLoadingExecutionRate: false,
   initialRate: null,
   activeRate: null,
-  executionRate: null,
+  marketRate: null,
+  feeAmount: null,
   isTypedValue: false,
   isRateFromUrl: false,
   typedValue: null,

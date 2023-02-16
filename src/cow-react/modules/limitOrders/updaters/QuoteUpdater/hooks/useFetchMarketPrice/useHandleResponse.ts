@@ -1,17 +1,14 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
-import { Fraction } from '@uniswap/sdk-core'
-import JSBI from 'jsbi'
+import { CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
-import { getDecimals } from '@cow/modules/limitOrders/utils/getDecimals'
 import { CancelableResult } from 'utils/async'
-import { MARKET_RATE_ADJUSTMENT } from '@cow/modules/limitOrders/const/trade'
-import { ONE_FRACTION } from '@src/constants/misc'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export function useHandleResponse() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
@@ -28,30 +25,25 @@ export function useHandleResponse() {
           return
         }
 
-        const { buyAmount, sellAmount } = data.quote
+        const { buyAmount: buyAmountRaw, sellAmount: sellAmountRaw, feeAmount: feeAmountRaw } = data.quote
 
         if (!outputCurrency || !inputCurrency) {
           return
         }
 
-        // Adjust for decimals
-        const adjustedBuy = JSBI.multiply(JSBI.BigInt(buyAmount), JSBI.BigInt(10 ** getDecimals(inputCurrency)))
-        const adjustedSell = JSBI.multiply(JSBI.BigInt(sellAmount), JSBI.BigInt(10 ** getDecimals(outputCurrency)))
+        const feeAmount = CurrencyAmount.fromRawAmount(inputCurrency, feeAmountRaw)
+        const sellAmount = CurrencyAmount.fromRawAmount(inputCurrency, sellAmountRaw)
+        const buyAmount = CurrencyAmount.fromRawAmount(outputCurrency, buyAmountRaw)
 
-        // Create execution rate fraction
-        const executionRate = new Fraction(adjustedBuy, adjustedSell)
+        const marketRate = FractionUtils.fractionLikeToFraction(
+          new Price({ baseAmount: sellAmount, quoteAmount: buyAmount })
+        )
 
-        // Apply -0.1% to execution rate
-        const adjustedExecutionRate = executionRate.multiply(ONE_FRACTION.subtract(MARKET_RATE_ADJUSTMENT))
-
-        // Update the rate state
-        updateLimitRateState({ executionRate: adjustedExecutionRate })
-
-        // Update limit order quote
+        updateLimitRateState({ marketRate, feeAmount })
         setLimitOrdersQuote({ response: data })
       } catch (error: any) {
         console.debug('[useFetchMarketPrice] Failed to fetch exection price', error)
-        updateLimitRateState({ executionRate: null })
+        updateLimitRateState({ marketRate: null })
       }
     },
     [inputCurrency, outputCurrency, setLimitOrdersQuote, updateLimitRateState]

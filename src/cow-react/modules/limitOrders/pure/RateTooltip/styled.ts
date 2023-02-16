@@ -61,6 +61,7 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
     flex-flow: row nowrap;
     align-items: center;
     justify-content: space-between;
+    text-align: right;
     width: 100%;
   }
 
