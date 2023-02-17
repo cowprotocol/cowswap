@@ -1,17 +1,15 @@
 import { useLayoutEffect, useState } from 'react'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { useUpdateAtom } from 'jotai/utils'
+import { LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
-import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 import usePrevious from '@src/hooks/usePrevious'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 import { Writeable } from '@cow/types'
 
 // Fetch and update initial price for the selected token pair
 export function MarketPriceUpdater() {
-  const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = useLimitOrdersTradeState()
-  const { marketRate } = useAtomValue(limitRateAtom)
+  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const updateRate = useUpdateActiveRate()
 
@@ -32,13 +30,6 @@ export function MarketPriceUpdater() {
 
     updateLimitRateState(update)
   }, [isInitialPriceSet, price, isLoading, updateLimitRateState])
-
-  useLayoutEffect(() => {
-    // Remove current execution rate on empty fields or zero value
-    if (isFractionFalsy(inputCurrencyAmount) || isFractionFalsy(outputCurrencyAmount)) {
-      updateLimitRateState({ marketRate: null })
-    }
-  }, [inputCurrencyAmount, outputCurrencyAmount, marketRate, updateLimitRateState])
 
   // Set initial price once
   useLayoutEffect(() => {

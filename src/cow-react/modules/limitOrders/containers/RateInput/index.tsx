@@ -34,7 +34,7 @@ export function RateInput() {
     isLoading,
     marketRate,
     feeAmount,
-    isLoadingExecutionRate,
+    isLoadingMarketRate,
     typedValue,
     isTypedValue,
     initialRate,
@@ -116,7 +116,7 @@ export function RateInput() {
   }, [isInversed, updateLimitRateState])
 
   const isDisabledMPrice = useMemo(() => {
-    if (isLoadingExecutionRate) return true
+    if (isLoadingMarketRate) return true
 
     if (!outputCurrencyId || !inputCurrencyId) return true
 
@@ -125,7 +125,7 @@ export function RateInput() {
     } else {
       return !!initialRate && activeRate?.equalTo(initialRate)
     }
-  }, [activeRate, marketRate, isLoadingExecutionRate, initialRate, inputCurrencyId, outputCurrencyId])
+  }, [activeRate, marketRate, isLoadingMarketRate, initialRate, inputCurrencyId, outputCurrencyId])
 
   // Apply smart quote selection
   // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
@@ -200,9 +200,9 @@ export function RateInput() {
       <styledEl.EstimatedRate>
         <b>
           Est. execution price{' '}
-          {isLoadingExecutionRate ? (
+          {isLoadingMarketRate ? (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-          ) : (
+          ) : executionPrice ? (
             <QuestionHelper
               text={
                 <TooltipFeeContent
@@ -213,9 +213,9 @@ export function RateInput() {
                 />
               }
             />
-          )}
+          ) : null}
         </b>
-        {!isLoadingExecutionRate && executionPrice && (
+        {!isLoadingMarketRate && executionPrice && (
           <span>
             ≈ <TokenAmount amount={executionPrice} tokenSymbol={secondaryCurrency} />
             {executionPriceFiat && (

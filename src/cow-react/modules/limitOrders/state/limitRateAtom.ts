@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 
 export interface LimitRateState {
   readonly isLoading: boolean
-  readonly isLoadingExecutionRate: boolean
+  readonly isLoadingMarketRate: boolean
   readonly isInversed: boolean
   readonly initialRate: Fraction | null
   readonly activeRate: Fraction | null
@@ -18,7 +18,7 @@ export interface LimitRateState {
 const initLimitRateState = () => ({
   isInversed: false,
   isLoading: false,
-  isLoadingExecutionRate: false,
+  isLoadingMarketRate: false,
   initialRate: null,
   activeRate: null,
   marketRate: null,
