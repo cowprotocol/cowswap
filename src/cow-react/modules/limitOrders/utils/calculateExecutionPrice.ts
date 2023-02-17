@@ -41,26 +41,22 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
 
   if (inputCurrencyAmount.currency !== feeAmount.currency) return null
 
-  const baseAmount = inputCurrencyAmount.add(feeAmount)
-
   /**
    * Since a user can specify an arbitrary price
    * And the specified price can be less than the market price
    * It doesn't make sense to display an execution price less than current market price
-   * Because an order will always be filled by at least current market price
+   * Because an order will always be filled by at least the current market price
    */
-  const outputQuoteAmount = convertAmountToCurrency(
-    inputCurrencyAmount.multiply(marketRate),
-    outputCurrencyAmount.currency
-  )
-
   const marketPrice = new Price({
-    baseAmount,
-    quoteAmount: outputQuoteAmount,
+    baseAmount: inputCurrencyAmount,
+    quoteAmount: convertAmountToCurrency(
+      inputCurrencyAmount.multiply(marketRate).subtract(feeAmount),
+      outputCurrencyAmount.currency
+    ),
   })
 
   const currentPrice = new Price({
-    baseAmount,
+    baseAmount: inputCurrencyAmount.subtract(feeAmount),
     quoteAmount: outputCurrencyAmount,
   })
 

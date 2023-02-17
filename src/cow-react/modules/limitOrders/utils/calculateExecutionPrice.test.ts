@@ -27,8 +27,8 @@ describe('calculateExecutionPrice', () => {
         marketRate: marketPrice,
       })
 
-      // 3 / (6000 + 250) = 0.00048
-      expect(amount.toSignificant(10)).toBe('0.00048')
+      // 3 / (6000 - 250) = 0.0005217391304
+      expect(amount.toSignificant(10)).toBe('0.0005217391304')
     })
   })
 
@@ -43,9 +43,9 @@ describe('calculateExecutionPrice', () => {
         marketRate: marketPrice,
       })
 
-      // OutputAmount by market price = (6000 * 2)
-      // (6000 * 2) / (6000 + 250) = 1.92
-      expect(amount.toSignificant(10)).toBe('1.92')
+      // OutputAmountByMarketRate = 6000 * 2
+      // (OutputAmountByMarketRate - 250) / 6000 = 1.95833
+      expect(amount.toSignificant(10)).toBe('1.958333333')
     })
   })
 })
