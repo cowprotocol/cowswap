@@ -141,7 +141,7 @@ const WarningParagraph = styled.div`
   }
 `
 
-const CellElement = styled.div<{ doubleRow?: boolean}>`
+const CellElement = styled.div<{ doubleRow?: boolean }>`
   padding: 12px 0;
   font-size: 13px;
   font-weight: 500;
@@ -151,7 +151,9 @@ const CellElement = styled.div<{ doubleRow?: boolean}>`
     font-weight: 500;
   }
 
-  ${({ doubleRow }) => doubleRow && `
+  ${({ doubleRow }) =>
+    doubleRow &&
+    `
     flex-flow: column wrap;
     gap: 2px;
 
@@ -207,7 +209,7 @@ const ProgressBar = styled.div<{ value: number }>`
   margin: 4px 0 0;
   height: 6px;
   width: 100%;
-  background: ${({ theme }) => theme.darkMode ? theme.bg1 : transparentize(0.92, theme.text1)};
+  background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(0.92, theme.text1))};
   border-radius: 6px;
 
   &::before {
@@ -229,9 +231,7 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
 }
 
 function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
-  return (
-    <CurrencyLogo currency={amount.currency} size="28px" />
-  )
+  return <CurrencyLogo currency={amount.currency} size="28px" />
 }
 
 const balanceWarning = (symbol: string) => (
@@ -298,7 +298,6 @@ export function OrderRow({
 
   return (
     <RowElement onClick={onClick}>
-
       {/* Order sell/buy tokens */}
       <CurrencyCell>
         <CurrencyLogoPair>
@@ -306,8 +305,8 @@ export function OrderRow({
           <CurrencySymbolItem amount={buyAmount} />
         </CurrencyLogoPair>
         <CurrencyAmountWrapper>
-        <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
-        <CurrencyAmountItem amount={buyAmount} />
+          <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
+          <CurrencyAmountItem amount={buyAmount} />
         </CurrencyAmountWrapper>
       </CurrencyCell>
 

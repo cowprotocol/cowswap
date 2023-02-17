@@ -177,7 +177,11 @@ export function RateInfo({
                 rateOutputCurrency.symbol || ''
             }
           >
-            {prependSymbol && <>1 <TokenSymbol token={rateInputCurrency} /> = </>}
+            {prependSymbol && (
+              <>
+                1 <TokenSymbol token={rateInputCurrency} /> ={' '}
+              </>
+            )}
             <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} />
           </span>{' '}
           {!!fiatAmount && (
