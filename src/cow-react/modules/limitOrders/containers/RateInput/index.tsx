@@ -17,10 +17,12 @@ import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import QuestionHelper from 'components/QuestionHelper'
 import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
-import { CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import Loader from 'components/Loader'
+import JSBI from 'jsbi'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -67,7 +69,13 @@ export function RateInput() {
 
     if (inputCurrencyAmount.currency !== feeAmount.currency) return null
 
-    const outputAmountMarket = inputCurrencyAmount.multiply(marketRate)
+    const inputDecimals = inputCurrencyAmount.currency.decimals
+    const outputDecimals = outputCurrencyAmount.currency.decimals
+
+    const outputAmountMarket = new Fraction(
+      inputCurrencyAmount.multiply(marketRate).quotient,
+      JSBI.BigInt(inputDecimals - outputDecimals)
+    )
 
     const marketPrice = new Price({
       baseAmount: inputCurrencyAmount.add(feeAmount),
@@ -206,23 +214,32 @@ export function RateInput() {
       <styledEl.EstimatedRate>
         <b>
           Est. execution price{' '}
-          <QuestionHelper
-            text={
-              <TooltipFeeContent
-                feeAmount={feeAmount}
-                displayedRate={displayedRate}
-                executionPrice={executionPrice}
-                executionPriceFiat={executionPriceFiat}
-              />
-            }
-          />
+          {isLoadingExecutionRate ? (
+            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+          ) : (
+            <QuestionHelper
+              text={
+                <TooltipFeeContent
+                  feeAmount={feeAmount}
+                  displayedRate={displayedRate}
+                  executionPrice={executionPrice}
+                  executionPriceFiat={executionPriceFiat}
+                />
+              }
+            />
+          )}
         </b>
-        <span>
-          ≈ <TokenAmount amount={executionPrice} tokenSymbol={secondaryCurrency} />
-          <i>
-            (<FiatAmount amount={executionPriceFiat} />)
-          </i>
-        </span>
+        {!isLoadingExecutionRate && (
+          <span>
+            ≈ <TokenAmount amount={executionPrice} tokenSymbol={secondaryCurrency} />
+            {executionPriceFiat && (
+              <i>
+                {' '}
+                (<FiatAmount amount={executionPriceFiat} />)
+              </i>
+            )}
+          </span>
+        )}
       </styledEl.EstimatedRate>
     </>
   )
