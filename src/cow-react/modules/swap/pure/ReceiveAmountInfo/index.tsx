@@ -30,7 +30,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const FeePercent = (
     <span>
       <Trans>Fee</Trans>
-      {hasFee && discount ? ` [-${discount}%]` : ''}
+      {hasFee && discount.toString() !== '0' ? ` [-${discount}%]` : ''}
     </span>
   )
 

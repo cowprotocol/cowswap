@@ -6,7 +6,7 @@ import { useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import TradeGp from 'state/swap/TradeGp'
 import { RowDeadline } from '@cow/modules/swap/containers/Row/RowDeadline'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 import { TradeBasicDetails } from '@cow/modules/swap/containers/TradeBasicDetails'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
@@ -41,6 +41,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
 
   const showPrice = !!trade
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
+  const showDiscountDetails = (!trade?.inputAmount.equalTo(new Fraction(0)) || !trade?.outputAmount.equalTo(new Fraction(0))) && !fee?.equalTo(new Fraction(0))
   const showRowDeadline = !!trade
 
   return (
@@ -59,15 +60,17 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       {/* TRANSACTION DEADLINE */}
       {showRowDeadline && <RowDeadline />}
       {/* DISCOUNTS */}
-      <styledEl.Row>
-        <div>
-          <span>Fees discount</span>
-          <InfoIcon content={SUBSIDY_INFO_MESSAGE_EXTENDED} />
-        </div>
-        <div>
-          <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
-        </div>
-      </styledEl.Row>
-    </styledEl.Box>
+      { showDiscountDetails &&
+        <styledEl.Row>
+          <div>
+            <span>Fees discount</span>
+            <InfoIcon content={SUBSIDY_INFO_MESSAGE_EXTENDED} />
+          </div>
+          <div>
+            <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
+          </div>
+        </styledEl.Row>
+      }
+      </styledEl.Box>
   )
 }, genericPropsChecker)
