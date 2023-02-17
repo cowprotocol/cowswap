@@ -2,6 +2,7 @@ import JSBI from 'jsbi'
 import { Fraction } from '@uniswap/sdk-core'
 
 /**
+ * TODO: move to FractionUtils
  * Consider a trade DAI (decimals 18) <-> USDC (decimals 6)
  * 1. When input is 9 DAI, the value equals 9000000000000000000
  * Then we should divide it to get value for USDC = 9000000 (6 decimals)

@@ -17,12 +17,13 @@ import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import QuestionHelper from 'components/QuestionHelper'
 import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
-import { CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
 import Loader from 'components/Loader'
-import JSBI from 'jsbi'
+import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
+import { calculateExecutionPrice } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -63,42 +64,27 @@ export function RateInput() {
     return formatInputAmount(rate)
   }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
 
-  // TODO: refactor the logic and move it to a hook
   const executionPrice = useMemo(() => {
-    if (!inputCurrencyAmount || !outputCurrencyAmount || !feeAmount || !activeRate || !marketRate) return null
-
-    if (inputCurrencyAmount.currency !== feeAmount.currency) return null
-
-    const inputDecimals = inputCurrencyAmount.currency.decimals
-    const outputDecimals = outputCurrencyAmount.currency.decimals
-
-    const outputAmountMarket = new Fraction(
-      inputCurrencyAmount.multiply(marketRate).quotient,
-      JSBI.BigInt(inputDecimals - outputDecimals)
-    )
-
-    const marketPrice = new Price({
-      baseAmount: inputCurrencyAmount.add(feeAmount),
-      quoteAmount: CurrencyAmount.fromFractionalAmount(
-        outputCurrencyAmount.currency,
-        outputAmountMarket.numerator,
-        outputAmountMarket.denominator
-      ),
+    const price = calculateExecutionPrice({
+      inputCurrencyAmount,
+      outputCurrencyAmount,
+      feeAmount,
+      marketRate,
     })
 
-    const currentPrice = new Price({
-      baseAmount: inputCurrencyAmount.add(feeAmount),
-      quoteAmount: outputCurrencyAmount,
-    })
-
-    const price = currentPrice.greaterThan(marketPrice) ? marketPrice : currentPrice
+    if (!price) return null
 
     return isInversed ? price.invert() : price
-  }, [feeAmount, activeRate, marketRate, inputCurrencyAmount, outputCurrencyAmount, isInversed])
+  }, [feeAmount, marketRate, inputCurrencyAmount, outputCurrencyAmount, isInversed])
 
   const executionPriceFiat = useHigherUSDValue(
-    executionPrice && primaryCurrency
-      ? executionPrice.quote(CurrencyAmount.fromRawAmount(primaryCurrency, 1 * 10 ** primaryCurrency.decimals))
+    executionPrice
+      ? executionPrice.quote(
+          CurrencyAmount.fromRawAmount(
+            executionPrice.baseCurrency,
+            rawToTokenAmount(1, executionPrice.baseCurrency.decimals)
+          )
+        )
       : undefined
   )
 
@@ -229,7 +215,7 @@ export function RateInput() {
             />
           )}
         </b>
-        {!isLoadingExecutionRate && (
+        {!isLoadingExecutionRate && executionPrice && (
           <span>
             ≈ <TokenAmount amount={executionPrice} tokenSymbol={secondaryCurrency} />
             {executionPriceFiat && (
