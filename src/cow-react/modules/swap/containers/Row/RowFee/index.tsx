@@ -44,10 +44,14 @@ export interface RowFeeProps extends RowWithShowHelpersProps {
   allowsOffchainSigning: boolean
 }
 
-function isValidNonZeroAmount(smartFeeTokenValue: string): boolean {
-  const fee = Number(smartFeeTokenValue)
+function isValidNonZeroAmount(value: string): boolean {
+  const fee = Number(value)
 
-  return !Number.isNaN(fee) && fee > 0
+  if (Number.isNaN(fee)) {
+    return value.length > 0
+  } else {
+    return fee > 0
+  }
 }
 
 export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
@@ -77,6 +81,7 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${
       isEthFLow ? ' + gas' : ''
     }`
+    console.log(smartFeeTokenValue, smartFeeFiatValue)
     const feeToken = isValidNonZeroAmount(smartFeeTokenValue) ? feeAmountWithCurrency : '🎉 Free!'
     const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? smartFeeFiatValue && `(≈$${smartFeeFiatValue})` : ''
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
