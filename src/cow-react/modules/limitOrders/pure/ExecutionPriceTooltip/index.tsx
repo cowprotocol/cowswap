@@ -4,31 +4,35 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
-export interface TooltipFeeContentProps {
-  feeAmount?: CurrencyAmount<Currency> | null
-  displayedRate?: string | null
-  executionPrice?: Price<Currency, Currency> | null
-  executionPriceFiat?: CurrencyAmount<Currency> | null
+export interface ExecutionPriceTooltipProps {
+  feeAmount: CurrencyAmount<Currency> | null
+  displayedRate: string | null
+  executionPrice: Price<Currency, Currency> | null
+  executionPriceFiat: CurrencyAmount<Currency> | null
 }
 
-export function TooltipFeeContent(props: TooltipFeeContentProps = {}) {
+export const RateTooltipHeader = (
+  <styledEl.Content>
+    <h3>CoW Swap limit orders are gasless.</h3>
+    <p>
+      CoW Swap covers all the fees (including gas) by monitoring network conditions and filling your order when the
+      market price is slightly better than your specified limit price. The extra tokens we get are used to cover your
+      fees. Then we give any leftovers back to you!{' '}
+      <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
+        Learn more about limit orders.
+      </a>
+    </p>
+  </styledEl.Content>
+)
+
+export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
   const { feeAmount, displayedRate, executionPrice, executionPriceFiat } = props
 
   const feeUsdValue = useHigherUSDValue(feeAmount || undefined)
 
   return (
     <styledEl.FeeTooltipWrapper>
-      <styledEl.Content>
-        <h3>CoW Swap limit orders are gasless.</h3>
-        <p>
-          CoW Swap covers all the fees (including gas) by monitoring network conditions and filling your order when the
-          market price is slightly better than your specified limit price. The extra tokens we get are used to cover
-          your fees. Then we give any leftovers back to you!{' '}
-          <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
-            Learn more about limit orders.
-          </a>
-        </p>
-      </styledEl.Content>
+      {RateTooltipHeader}
 
       <styledEl.FeeItem borderTop>
         <span>

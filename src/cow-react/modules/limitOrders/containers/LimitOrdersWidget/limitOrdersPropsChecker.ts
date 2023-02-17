@@ -9,6 +9,7 @@ import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { areFractionsEqual } from '@cow/utils/areFractionsEqual'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { getAddress } from '@cow/utils/getAddress'
+import { ExecutionPriceInfo } from '@cow/modules/limitOrders/hooks/useExecutionPriceInfo'
 
 export interface LimitOrdersProps extends AddRecipientProps {
   inputCurrencyInfo: CurrencyInfo
@@ -31,6 +32,7 @@ export interface LimitOrdersProps extends AddRecipientProps {
   rateInfoParams: RateInfoParams
   priceImpact: PriceImpact
   tradeContext: TradeFlowContext | null
+  executionPriceInfo: ExecutionPriceInfo
 }
 
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
@@ -50,7 +52,8 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.onImportDismiss === b.onImportDismiss &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
-    checkTradeFlowContext(a.tradeContext, b.tradeContext)
+    checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
+    checkExecutionPriceInfo(a.executionPriceInfo, b.executionPriceInfo)
   )
 }
 
@@ -79,6 +82,13 @@ function checkRateInfoParams(a: RateInfoParams, b: RateInfoParams): boolean {
 
 function checkPriceImpact(a: PriceImpact, b: PriceImpact): boolean {
   return a.error === b.error && a.loading === b.loading && areFractionsEqual(a.priceImpact, b.priceImpact)
+}
+function checkExecutionPriceInfo(a: ExecutionPriceInfo, b: ExecutionPriceInfo): boolean {
+  return (
+    areFractionsEqual(a.price, b.price) &&
+    areFractionsEqual(a.fiatPrice, b.fiatPrice) &&
+    areFractionsEqual(a.feeAmount, b.feeAmount)
+  )
 }
 
 function checkTradeFlowContext(a: TradeFlowContext | null, b: TradeFlowContext | null): boolean {

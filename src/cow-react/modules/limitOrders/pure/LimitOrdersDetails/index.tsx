@@ -10,7 +10,7 @@ import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/cal
 import SVG from 'react-inlinesvg'
 import ArrowDownImage from 'assets/cow-swap/arrowDownRight.svg'
 import QuestionHelper from 'components/QuestionHelper'
-import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
+import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 
 const Wrapper = styled.div`
   font-size: 13px;
@@ -55,7 +55,8 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
             <ArrowDownRight>
               <SVG src={ArrowDownImage} />
             </ArrowDownRight>
-            <p>est. execution price</p> <QuestionHelper text={TooltipFeeContent()} />
+            {/*TODO: replace by TooltipFeeContent*/}
+            <p>est. execution price</p> <QuestionHelper text={RateTooltipHeader} />
           </span>
         </div>
         <div>

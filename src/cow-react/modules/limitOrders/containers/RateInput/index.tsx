@@ -16,16 +16,17 @@ import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateAct
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import QuestionHelper from 'components/QuestionHelper'
-import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { ExecutionPriceTooltip } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
 import Loader from 'components/Loader'
-import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
-import { calculateExecutionPrice } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
+import { ExecutionPriceInfo } from '@cow/modules/limitOrders/hooks/useExecutionPriceInfo'
 
-export function RateInput() {
+export interface RateInputProps {
+  executionPriceInfo: ExecutionPriceInfo
+}
+
+export function RateInput({ executionPriceInfo }: RateInputProps) {
   const { chainId } = useWeb3React()
   // Rate state
   const {
@@ -53,6 +54,8 @@ export function RateInput() {
   const primaryCurrency = isInversed ? outputCurrency : inputCurrency
   const secondaryCurrency = isInversed ? inputCurrency : outputCurrency
 
+  const { price: executionPrice, fiatPrice: executionPriceFiat } = executionPriceInfo
+
   // Handle rate display
   const displayedRate = useMemo(() => {
     if (isTypedValue) return typedValue || ''
@@ -63,30 +66,6 @@ export function RateInput() {
 
     return formatInputAmount(rate)
   }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
-
-  const executionPrice = useMemo(() => {
-    const price = calculateExecutionPrice({
-      inputCurrencyAmount,
-      outputCurrencyAmount,
-      feeAmount,
-      marketRate,
-    })
-
-    if (!price) return null
-
-    return isInversed ? price.invert() : price
-  }, [feeAmount, marketRate, inputCurrencyAmount, outputCurrencyAmount, isInversed])
-
-  const executionPriceFiat = useHigherUSDValue(
-    executionPrice
-      ? executionPrice.quote(
-          CurrencyAmount.fromRawAmount(
-            executionPrice.baseCurrency,
-            rawToTokenAmount(1, executionPrice.baseCurrency.decimals)
-          )
-        )
-      : undefined
-  )
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
@@ -205,7 +184,7 @@ export function RateInput() {
           ) : executionPrice ? (
             <QuestionHelper
               text={
-                <TooltipFeeContent
+                <ExecutionPriceTooltip
                   feeAmount={feeAmount}
                   displayedRate={displayedRate}
                   executionPrice={executionPrice}
