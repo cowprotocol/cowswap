@@ -1,4 +1,3 @@
-// used to mark unsupported tokens, these are hosted lists of unsupported tokens
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { RAW_CODE_LINK } from '.'
 
@@ -23,7 +22,6 @@ const ROLL_LIST = 'https://app.tryroll.com/tokens.json'
 const CMC_ALL_LIST = 'defi.cmc.eth'
 const CMC_STABLECOIN = 'stablecoin.cmc.eth'
 const KLEROS_LIST = 't2crtokens.eth'
-const GEMINI_LIST = 'https://www.gemini.com/uniswap/manifest.json'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
 // Goerli Default
@@ -34,9 +32,6 @@ const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
 
 export const UNSUPPORTED_LIST_URLS: NetworkLists = {
   [ChainId.MAINNET]: [BA_LIST],
-  // [ChainId.KOVAN]: [BA_LIST],
-  // [ChainId.RINKEBY]: [BA_LIST],
-  // [ChainId.ROPSTEN]: [BA_LIST],
   [ChainId.GOERLI]: [BA_LIST],
   [ChainId.GNOSIS_CHAIN]: [BA_LIST],
 }
@@ -51,6 +46,8 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
   [ChainId.MAINNET]: buildNetworkDefaultLists({
     chainId: ChainId.MAINNET,
     networkLists: [
+      COW_DAO_LIST,
+      COW_COINGECKO_LIST,
       COMPOUND_LIST,
       AAVE_LIST,
       SYNTHETIX_LIST,
@@ -63,23 +60,8 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       CMC_ALL_LIST,
       CMC_STABLECOIN,
       KLEROS_LIST,
-      GEMINI_LIST,
-      COW_DAO_LIST,
-      COW_COINGECKO_LIST,
     ],
   }),
-  // [ChainId.KOVAN]: buildNetworkDefaultLists({
-  //   chainId: ChainId.KOVAN,
-  //   networkLists: [COMPOUND_LIST],
-  // }),
-  // [ChainId.RINKEBY]: buildNetworkDefaultLists({
-  //   chainId: ChainId.RINKEBY,
-  //   networkLists: [RINKEBY_LIST, COMPOUND_LIST],
-  // }),
-  // [ChainId.ROPSTEN]: buildNetworkDefaultLists({
-  //   chainId: ChainId.ROPSTEN,
-  //   networkLists: [COMPOUND_LIST],
-  // }),
   [ChainId.GOERLI]: buildNetworkDefaultLists({
     chainId: ChainId.GOERLI,
     networkLists: [GOERLI_LIST, COMPOUND_LIST],
@@ -92,15 +74,10 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
 
 // default lists to be 'active' aka searched across
 export const DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK: NetworkLists = {
-  [ChainId.MAINNET]: [COW_DAO_LIST, GEMINI_LIST],
-  // [ChainId.KOVAN]: [GEMINI_LIST],
-  // [ChainId.RINKEBY]: [COW_DAO_LIST, RINKEBY_LIST],
-  // [ChainId.ROPSTEN]: [GEMINI_LIST],
+  [ChainId.MAINNET]: [COW_DAO_LIST, COW_COINGECKO_LIST],
   [ChainId.GNOSIS_CHAIN]: [COW_DAO_LIST, HONEY_SWAP_XDAI],
   [ChainId.GOERLI]: [COW_DAO_LIST, GOERLI_LIST],
 }
 
 // Set what we want as the default list when no chain id available: default = MAINNET
 export const DEFAULT_NETWORK_FOR_LISTS = ChainId.MAINNET
-// for testing in reducer.test.ts
-export const DEFAULT_LIST_OF_LISTS = DEFAULT_LIST_OF_LISTS_BY_NETWORK[ChainId.MAINNET]
