@@ -44,6 +44,12 @@ export interface RowFeeProps extends RowWithShowHelpersProps {
   allowsOffchainSigning: boolean
 }
 
+function isValidNonZeroAmount(smartFeeTokenValue: string): boolean {
+  const fee = Number(smartFeeTokenValue)
+
+  return !Number.isNaN(fee) && fee > 0
+}
+
 export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
@@ -71,14 +77,15 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${
       isEthFLow ? ' + gas' : ''
     }`
-    const feeToken = smartFeeTokenValue ? feeAmountWithCurrency : '🎉 Free!'
+    const feeToken = isValidNonZeroAmount(smartFeeTokenValue) ? feeAmountWithCurrency : '🎉 Free!'
+    const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? smartFeeFiatValue && `(≈$${smartFeeFiatValue})` : ''
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
     const includeGasMessage = allowsOffchainSigning && !isEthFLow ? ' (incl. gas costs)' : ''
 
     return {
       showHelpers,
       feeToken,
-      feeUsd: smartFeeFiatValue && `(≈$${smartFeeFiatValue})`,
+      feeUsd,
       fullDisplayFee,
       feeCurrencySymbol,
       includeGasMessage,
