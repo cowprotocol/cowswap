@@ -13,6 +13,8 @@ import { CurrencySeparatorBox } from '@cow/modules/limitOrders/containers/LimitO
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { Currency, Price } from '@uniswap/sdk-core'
+import { LimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
 
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext
@@ -24,6 +26,8 @@ export interface LimitOrdersConfirmProps {
   priceImpact: PriceImpact
   warningsAccepted: boolean
   Warnings: ReactNode
+  executionPrice: Price<Currency, Currency> | null
+  limitRateState: LimitRateState
   onConfirm(): void
 }
 
@@ -39,6 +43,8 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
     warningsAccepted,
     priceImpact,
     settingsState,
+    executionPrice,
+    limitRateState,
   } = props
 
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
@@ -66,7 +72,13 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         topLabel={outputCurrencyInfo.label}
         priceImpactParams={priceImpact}
       />
-      <LimitOrdersDetails tradeContext={tradeContext} rateInfoParams={rateInfoParams} settingsState={settingsState} />
+      <LimitOrdersDetails
+        limitRateState={limitRateState}
+        tradeContext={tradeContext}
+        rateInfoParams={rateInfoParams}
+        settingsState={settingsState}
+        executionPrice={executionPrice}
+      />
       {Warnings}
       <ButtonPrimary onClick={onConfirm} disabled={isTradeDisabled} buttonSize={ButtonSize.BIG}>
         <Trans>Confirm</Trans>

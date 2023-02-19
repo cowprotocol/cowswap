@@ -17,16 +17,11 @@ import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import QuestionHelper from 'components/QuestionHelper'
 import { ExecutionPriceTooltip } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { FiatAmount } from '@cow/common/pure/FiatAmount'
 import Loader from 'components/Loader'
-import { ExecutionPriceInfo } from '@cow/modules/limitOrders/hooks/useExecutionPriceInfo'
+import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPriceAtom'
+import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
 
-export interface RateInputProps {
-  executionPriceInfo: ExecutionPriceInfo
-}
-
-export function RateInput({ executionPriceInfo }: RateInputProps) {
+export function RateInput() {
   const { chainId } = useWeb3React()
   // Rate state
   const {
@@ -42,6 +37,7 @@ export function RateInput({ executionPriceInfo }: RateInputProps) {
   } = useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const executionPrice = useAtomValue(executionPriceAtom)
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
 
   // Limit order state
@@ -53,8 +49,6 @@ export function RateInput({ executionPriceInfo }: RateInputProps) {
 
   const primaryCurrency = isInversed ? outputCurrency : inputCurrency
   const secondaryCurrency = isInversed ? inputCurrency : outputCurrency
-
-  const { price: executionPrice, fiatPrice: executionPriceFiat } = executionPriceInfo
 
   // Handle rate display
   const displayedRate = useMemo(() => {
@@ -185,25 +179,17 @@ export function RateInput({ executionPriceInfo }: RateInputProps) {
             <QuestionHelper
               text={
                 <ExecutionPriceTooltip
+                  isInversed={isInversed}
                   feeAmount={feeAmount}
                   displayedRate={displayedRate}
                   executionPrice={executionPrice}
-                  executionPriceFiat={executionPriceFiat}
                 />
               }
             />
           ) : null}
         </b>
         {!isLoadingMarketRate && executionPrice && (
-          <span>
-            ≈ <TokenAmount amount={executionPrice} tokenSymbol={secondaryCurrency} />
-            {executionPriceFiat && (
-              <i>
-                {' '}
-                (<FiatAmount amount={executionPriceFiat} />)
-              </i>
-            )}
-          </span>
+          <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />
         )}
       </styledEl.EstimatedRate>
     </>

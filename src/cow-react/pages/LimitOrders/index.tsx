@@ -8,6 +8,7 @@ import {
   limitOrdersAtom,
 } from '@cow/modules/limitOrders'
 import { useAtomValue } from 'jotai/utils'
+import { ExecutionPriceUpdater } from '@cow/modules/limitOrders/updaters/ExecutionPriceUpdater'
 
 export default function LimitOrderPage() {
   const { isUnlocked } = useAtomValue(limitOrdersAtom)
@@ -16,6 +17,8 @@ export default function LimitOrderPage() {
     <>
       <QuoteUpdater />
       <MarketPriceUpdater />
+      <ExecutionPriceUpdater />
+
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />

@@ -3,12 +3,13 @@ import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
 
 export interface ExecutionPriceTooltipProps {
+  isInversed: boolean
   feeAmount: CurrencyAmount<Currency> | null
   displayedRate: string | null
   executionPrice: Price<Currency, Currency> | null
-  executionPriceFiat: CurrencyAmount<Currency> | null
 }
 
 export const RateTooltipHeader = (
@@ -26,7 +27,7 @@ export const RateTooltipHeader = (
 )
 
 export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
-  const { feeAmount, displayedRate, executionPrice, executionPriceFiat } = props
+  const { isInversed, feeAmount, displayedRate, executionPrice } = props
 
   const feeUsdValue = useHigherUSDValue(feeAmount || undefined)
 
@@ -38,7 +39,7 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
         <span>
           <p>Limit price</p>
           <b>
-            {displayedRate} {executionPrice?.quoteCurrency.symbol}
+            {displayedRate} {isInversed ? executionPrice?.baseCurrency.symbol : executionPrice?.quoteCurrency.symbol}
           </b>
         </span>
       </styledEl.FeeItem>
@@ -63,11 +64,7 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
         {/* <i>Order will execute at</i> */}
         <span>
           <p>Est. execution price</p>
-          <b>
-            ≈ <TokenAmount amount={executionPrice} tokenSymbol={executionPrice?.quoteCurrency} />
-            <br />
-            (<FiatAmount accurate={true} amount={executionPriceFiat} />)
-          </b>
+          <b>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</b>
         </span>
       </styledEl.FeeItem>
     </styledEl.FeeTooltipWrapper>

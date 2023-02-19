@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { InfoIcon } from 'components/InfoIcon'
 import * as styledEl from './styled'
 import styled from 'styled-components/macro'
@@ -10,7 +10,11 @@ import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/cal
 import SVG from 'react-inlinesvg'
 import ArrowDownImage from 'assets/cow-swap/arrowDownRight.svg'
 import QuestionHelper from 'components/QuestionHelper'
-import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
+import { ExecutionPriceTooltip } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
+import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
+import { Currency, Price } from '@uniswap/sdk-core'
+import { LimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { formatInputAmount } from '@cow/utils/amountFormat'
 
 const Wrapper = styled.div`
   font-size: 13px;
@@ -28,6 +32,8 @@ export interface LimitOrdersDetailsProps {
   rateInfoParams: RateInfoParams
   tradeContext: TradeFlowContext
   settingsState: LimitOrdersSettingsState
+  executionPrice: Price<Currency, Currency> | null
+  limitRateState: LimitRateState
 }
 
 const dateTimeFormat: Intl.DateTimeFormatOptions = {
@@ -39,14 +45,26 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
 }
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { account, recipient, recipientAddressOrName } = props.tradeContext.postOrderParams
-  const validTo = calculateLimitOrdersDeadline(props.settingsState)
+  const { executionPrice, tradeContext, settingsState, rateInfoParams, limitRateState } = props
+  const { account, recipient, recipientAddressOrName } = tradeContext.postOrderParams
+  const { feeAmount, activeRate } = limitRateState
+
+  const validTo = calculateLimitOrdersDeadline(settingsState)
   const expiryDate = new Date(validTo * 1000)
+  const isInversedState = useState(false)
+  const [isInversed] = isInversedState
+
+  const displayedRate = useMemo(() => {
+    if (!activeRate) return ''
+    const rate = isInversed ? activeRate.invert() : activeRate
+
+    return formatInputAmount(rate)
+  }, [isInversed, activeRate])
 
   return (
     <Wrapper>
       <styledEl.DetailsRow>
-        <styledEl.StyledRateInfo rateInfoParams={props.rateInfoParams} />
+        <styledEl.StyledRateInfo isInversedState={isInversedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
 
       <styledEl.DetailsRow>
@@ -56,14 +74,20 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
               <SVG src={ArrowDownImage} />
             </ArrowDownRight>
             {/*TODO: replace by TooltipFeeContent*/}
-            <p>est. execution price</p> <QuestionHelper text={RateTooltipHeader} />
+            <p>est. execution price</p>{' '}
+            <QuestionHelper
+              text={
+                <ExecutionPriceTooltip
+                  isInversed={isInversed}
+                  feeAmount={feeAmount}
+                  displayedRate={displayedRate}
+                  executionPrice={executionPrice}
+                />
+              }
+            />
           </span>
         </div>
-        <div>
-          <span>
-            ≈ 1272.1259 USDC <i>($1271.33)</i>
-          </span>
-        </div>
+        <div>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</div>
       </styledEl.DetailsRow>
 
       <styledEl.DetailsRow>

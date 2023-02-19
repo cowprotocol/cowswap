@@ -7,6 +7,7 @@ import usePrevious from '@src/hooks/usePrevious'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 import { Writeable } from '@cow/types'
 
+// TODO: rename it to InitialPriceUpdater
 // Fetch and update initial price for the selected token pair
 export function MarketPriceUpdater() {
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()

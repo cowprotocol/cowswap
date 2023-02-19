@@ -44,7 +44,6 @@ import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
-import { useExecutionPriceInfo } from '@cow/modules/limitOrders/hooks/useExecutionPriceInfo'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -75,7 +74,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-  const { isLoading: isRateLoading, activeRate, marketRate, feeAmount, isInversed } = useAtomValue(limitRateAtom)
+  const { isLoading: isRateLoading, activeRate } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
@@ -85,16 +84,6 @@ export function LimitOrdersWidget() {
   )
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
   const inputViewAmount = formatInputAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
-
-  const executionPriceInfo = useExecutionPriceInfo(
-    {
-      inputCurrencyAmount,
-      outputCurrencyAmount,
-      marketRate,
-      feeAmount,
-    },
-    isInversed
-  )
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -184,7 +173,6 @@ export function LimitOrdersWidget() {
     rateInfoParams,
     priceImpact,
     tradeContext,
-    executionPriceInfo,
   }
 
   return <LimitOrders {...props} />
@@ -209,7 +197,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     rateInfoParams,
     priceImpact,
     tradeContext,
-    executionPriceInfo,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -266,7 +253,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               />
               {!isWrapOrUnwrap && (
                 <styledEl.RateWrapper>
-                  <RateInput executionPriceInfo={executionPriceInfo} />
+                  <RateInput />
                 </styledEl.RateWrapper>
               )}
               <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>

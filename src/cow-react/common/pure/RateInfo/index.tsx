@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { Repeat } from 'react-feather'
@@ -29,6 +29,7 @@ export interface RateInfoProps {
   noLabel?: boolean
   prependSymbol?: boolean
   isInversed?: boolean
+  isInversedState?: [boolean, Dispatch<SetStateAction<boolean>>]
   rateInfoParams: RateInfoParams
 }
 
@@ -116,6 +117,7 @@ export function RateInfo({
   isInversed = false,
   noLabel = false,
   prependSymbol = true,
+  isInversedState,
 }: RateInfoProps) {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, inversedActiveRateFiatAmount } =
     rateInfoParams
@@ -124,7 +126,8 @@ export function RateInfo({
   const inputCurrency = inputCurrencyAmount?.currency
   const outputCurrency = outputCurrencyAmount?.currency
 
-  const [currentIsInversed, setCurrentIsInversed] = useState(isInversed)
+  const customDispatcher = useState(isInversed)
+  const [currentIsInversed, setCurrentIsInversed] = isInversedState || customDispatcher
 
   const currentActiveRate = useMemo(() => {
     if (!activeRate) return null
