@@ -100,7 +100,7 @@ export function OrderRow({
   onClick,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, id } = order
+  const { parsedCreationTime, expirationTime, id, formattedPercentage } = order
 
   const showCancellationModal = getShowCancellationModal(order)
 
@@ -148,8 +148,8 @@ export function OrderRow({
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow>
-        <b>13.12%</b>
-        <styledEl.ProgressBar value={13.12}></styledEl.ProgressBar>
+        <b>{formattedPercentage}%</b>
+        <styledEl.ProgressBar value={formattedPercentage}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
       <styledEl.CellElement>

@@ -27,6 +27,7 @@ export interface ParsedOrder extends Order {
   surplusPercentage: BigNumber
   executedFeeAmount: string | undefined
   executedSurplusFee: string | null
+  formattedPercentage: number
   parsedCreationTime: Date
 }
 
@@ -46,6 +47,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
   const parsedCreationtime = new Date(order.creationTime)
   const fullyFilled = isOrderFilled(order)
+  const formattedPercentage = filledPercentage.times(100).decimalPlaces(2).toNumber()
 
   return {
     ...order,
@@ -54,6 +56,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     executedSellAmount,
     filledAmount,
     filledPercentage,
+    formattedPercentage,
     surplusAmount,
     surplusPercentage,
     executedFeeAmount,
