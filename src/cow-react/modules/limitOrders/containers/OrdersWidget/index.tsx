@@ -1,7 +1,6 @@
 import { Orders } from '../../pure/Orders'
-import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
+import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useEffect, useMemo } from 'react'
-import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
@@ -12,7 +11,7 @@ import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limi
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 
-function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
+function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 

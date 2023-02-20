@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
-import { Order, OrderStatus } from 'state/orders/actions'
+import { OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -13,6 +13,8 @@ import SVG from 'react-inlinesvg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import CurrencyLogo from 'components/CurrencyLogo'
+import useTimeAgo from 'hooks/useTimeAgo'
+import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -23,6 +25,8 @@ export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.CREATING]: 'Creating',
   [OrderStatus.FAILED]: 'Failed',
 }
+
+const TIME_AGO_UPDATE_INTERVAL = 3000
 
 const RateValue = styled.span``
 
@@ -273,12 +277,12 @@ const allowanceWarning = (symbol: string) => (
 )
 
 export interface OrderRowProps {
-  order: Order
+  order: ParsedOrder
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
   orderParams: OrderParams
   onClick: () => void
-  getShowCancellationModal(order: Order): (() => void) | null
+  getShowCancellationModal(order: ParsedOrder): (() => void) | null
 }
 
 export function OrderRow({
@@ -290,11 +294,15 @@ export function OrderRow({
   onClick,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance } = orderParams
+  const { parsedCreationTime, expirationTime } = order
 
   const showCancellationModal = getShowCancellationModal(order)
 
   const withWarning = !hasEnoughBalance || !hasEnoughAllowance
   const theme = useContext(ThemeContext)
+
+  const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
+  const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
 
   return (
     <RowElement onClick={onClick}>
@@ -327,8 +335,8 @@ export function OrderRow({
       {/* Expires */}
       {/* Created */}
       <CellElement doubleRow>
-        <b>6d 5h 23m</b>
-        <i>15 mins ago</i>
+        <b>{expirationTimeAgo}</b>
+        <i>{creationTimeAgo}</i>
       </CellElement>
 
       {/* Filled % */}
