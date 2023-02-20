@@ -20,6 +20,7 @@ import * as styledEl from './styled'
 import { transparentize } from 'polished'
 import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
+import Loader from '@src/components/Loader'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -145,7 +146,7 @@ export function OrderRow({
       {/* Market price */}
       {isOpenOrdersTab && (
         <styledEl.CellElement doubleRow>
-          {prices && (
+          {prices ? (
             <>
               <b>
                 <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
@@ -154,6 +155,8 @@ export function OrderRow({
                 <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} />
               </i>
             </>
+          ) : (
+            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
         </styledEl.CellElement>
       )}
