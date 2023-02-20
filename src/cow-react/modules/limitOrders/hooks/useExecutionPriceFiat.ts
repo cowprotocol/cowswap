@@ -11,7 +11,6 @@ function getPriceQuoteAmount(price: Price<Currency, Currency>, isInversed: boole
   )
 }
 
-// TODO: WETH -> COW on goerly displays wrong COW fiat amount
 export function useExecutionPriceFiat(
   executionPrice: Price<Currency, Currency> | null,
   isInversed: boolean
