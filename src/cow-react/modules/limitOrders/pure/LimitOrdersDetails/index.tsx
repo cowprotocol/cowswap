@@ -27,6 +27,7 @@ const ArrowDownRight = styled.div`
   display: flex;
   opacity: 0.3;
   margin: 0 3px 0 0;
+  color: ${({ theme }) => theme.text1};
 `
 export interface LimitOrdersDetailsProps {
   rateInfoParams: RateInfoParams
