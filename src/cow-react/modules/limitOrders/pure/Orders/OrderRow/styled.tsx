@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
+import { MenuButton, MenuList, MenuItem, MenuLink } from '@reach/menu-button'
 
 export const RateValue = styled.span``
 
@@ -92,22 +93,6 @@ export const CellElement = styled.div<{ doubleRow?: boolean }>`
   `}
 `
 
-export const CancelOrderBtn = styled.button`
-  background: none;
-  border: 0;
-  outline: none;
-  margin: 0 auto;
-  border-radius: 3px;
-  color: ${({ theme }) => theme.text2};
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-
-  :hover {
-    background: ${({ theme }) => transparentize(0.9, theme.black)};
-  }
-`
-
 export const CurrencyLogoPair = styled.div`
   display: flex;
 
@@ -148,5 +133,53 @@ export const ProgressBar = styled.div<{ value: number }>`
     width: ${({ value }) => value}%;
     background: ${({ theme }) => theme.text3};
     border-radius: 6px;
+  }
+`
+
+export const ContextMenuButton = styled(MenuButton)`
+  background: none;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 2px 6px;
+  margin: 0;
+  display: flex;
+
+  :hover {
+    outline: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
+  }
+`
+export const ContextMenuList = styled(MenuList)`
+  background: ${({ theme }) => theme.bg1};
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+`
+
+export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: ${({ theme, $red }) => ($red ? theme.danger : theme.white)};
+
+  :hover {
+    background: ${({ theme }) => transparentize(0.8, theme.text1)};
+  }
+`
+
+export const ContextMenuLink = styled(MenuLink)`
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: ${({ theme }) => theme.white};
+
+  :hover {
+    background: ${({ theme }) => transparentize(0.8, theme.text1)};
   }
 `
