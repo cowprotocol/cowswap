@@ -146,6 +146,7 @@ export function OrderRow({
       {/* Market price */}
       {isOpenOrdersTab && (
         <styledEl.CellElement doubleRow>
+          {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <>
               <b>
