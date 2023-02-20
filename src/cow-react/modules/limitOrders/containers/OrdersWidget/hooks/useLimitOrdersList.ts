@@ -17,19 +17,17 @@ export interface LimitOrdersList {
 }
 
 export interface ParsedOrder extends Order {
-  executedBuyAmount?: JSBI
-  executedSellAmount?: JSBI
-  surplusFee?: string
-  expirationTime?: Date
-  partiallyFilled?: boolean
-  fullyFilled?: boolean
-  filledAmount?: BigNumber
-  filledPercentage?: BigNumber
-  surplusAmount?: BigNumber
-  surplusPercentage?: BigNumber
-  executedFeeAmount?: string
+  executedBuyAmount: JSBI
+  executedSellAmount: JSBI
+  expirationTime: Date
+  fullyFilled: boolean
+  filledAmount: BigNumber
+  filledPercentage: BigNumber
+  surplusAmount: BigNumber
+  surplusPercentage: BigNumber
+  executedFeeAmount: string | undefined
   executedSurplusFee: string | null
-  parsedCreationTime?: Date
+  parsedCreationTime: Date
 }
 
 const ORDERS_LIMIT = 100
