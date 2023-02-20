@@ -8,6 +8,8 @@ export default function useTimeAgo(value?: string | Date): string {
     if (!value) {
       setTimeAgoValue('')
       return
+    } else {
+      setTimeAgoValue(timeago.format(value))
     }
 
     const id = setInterval(() => {
