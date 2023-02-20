@@ -73,7 +73,6 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
             <ArrowDownRight>
               <SVG src={ArrowDownImage} />
             </ArrowDownRight>
-            {/*TODO: replace by TooltipFeeContent*/}
             <p>est. execution price</p>{' '}
             <QuestionHelper
               text={
