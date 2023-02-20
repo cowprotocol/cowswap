@@ -17,4 +17,3 @@ fs.writeFileSync(
   path.resolve(__dirname, '../node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json'),
   '{}'
 )
-
