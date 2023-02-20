@@ -19,6 +19,7 @@ import { OrderStatusBox } from '@cow/modules/limitOrders/pure/OrderStatusBox'
 import * as styledEl from './styled'
 import { transparentize } from 'polished'
 import { getEtherscanLink } from 'utils'
+import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -84,8 +85,10 @@ const AllowanceWarning = (symbol: string) => (
 
 export interface OrderRowProps {
   order: ParsedOrder
+  prices: PendingOrderPrices | undefined
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
+  isOpenOrdersTab: boolean
   orderParams: OrderParams
   onClick: () => void
   getShowCancellationModal(order: ParsedOrder): (() => void) | null
@@ -95,12 +98,14 @@ export function OrderRow({
   order,
   RowElement,
   isRateInversed,
+  isOpenOrdersTab,
   getShowCancellationModal,
   orderParams,
   onClick,
+  prices,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, id, formattedPercentage } = order
+  const { parsedCreationTime, expirationTime, id, formattedPercentage, executedPrice } = order
 
   const showCancellationModal = getShowCancellationModal(order)
 
@@ -110,6 +115,10 @@ export function OrderRow({
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId ? getEtherscanLink(chainId, id, 'transaction') : undefined
+
+  const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
+  const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
+  const executedPriceInversed = isRateInversed ? executedPrice?.invert() : executedPrice
 
   return (
     <RowElement>
@@ -134,10 +143,29 @@ export function OrderRow({
 
       {/* Est. execution price */}
       {/* Market price */}
-      <styledEl.CellElement doubleRow>
-        <b>1534.62 USDC</b>
-        <i>1531.33 USDC</i>
-      </styledEl.CellElement>
+      {isOpenOrdersTab && (
+        <styledEl.CellElement doubleRow>
+          {prices && (
+            <>
+              <b>
+                <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
+              </b>
+              <i>
+                <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} />
+              </i>
+            </>
+          )}
+        </styledEl.CellElement>
+      )}
+      {!isOpenOrdersTab && (
+        <styledEl.CellElement>
+          {executedPriceInversed ? (
+            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} />
+          ) : (
+            '---'
+          )}
+        </styledEl.CellElement>
+      )}
 
       {/* Expires */}
       {/* Created */}

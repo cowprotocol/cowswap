@@ -50,13 +50,13 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
   const marketPrice = new Price({
     baseAmount: inputCurrencyAmount,
     quoteAmount: convertAmountToCurrency(
-      inputCurrencyAmount.multiply(marketRate).subtract(feeAmount),
+      inputCurrencyAmount.multiply(marketRate).add(feeAmount),
       outputCurrencyAmount.currency
     ),
   })
 
   const currentPrice = new Price({
-    baseAmount: inputCurrencyAmount.subtract(feeAmount),
+    baseAmount: inputCurrencyAmount.add(feeAmount),
     quoteAmount: outputCurrencyAmount,
   })
 

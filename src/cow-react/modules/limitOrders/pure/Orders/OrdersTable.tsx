@@ -16,6 +16,7 @@ import { RateWrapper } from '@cow/common/pure/RateInfo'
 import QuestionHelper from 'components/QuestionHelper'
 import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { PendingOrdersPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 
 const TableBox = styled.div`
   display: block;
@@ -116,16 +117,20 @@ const StyledInvertRateControl = styled(InvertRateControl)`
 `
 
 export interface OrdersTableProps {
+  isOpenOrdersTab: boolean
   currentPageNumber: number
   chainId: SupportedChainId | undefined
+  pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
   balancesAndAllowances: BalancesAndAllowances
   getShowCancellationModal(order: Order): (() => void) | null
 }
 
 export function OrdersTable({
+  isOpenOrdersTab,
   chainId,
   orders,
+  pendingOrdersPrices,
   balancesAndAllowances,
   getShowCancellationModal,
   currentPageNumber,
@@ -152,16 +157,28 @@ export function OrdersTable({
               <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
             </HeaderElement>
 
-            <HeaderElement doubleRow>
-              <span>
-                <Trans>
-                  Est. execution price <QuestionHelper text={RateTooltipHeader} />
-                </Trans>
-              </span>
-              <i>
-                <Trans>Market price</Trans>
-              </i>
-            </HeaderElement>
+            {isOpenOrdersTab && (
+              <HeaderElement doubleRow>
+                <span>
+                  <Trans>
+                    Est. execution price <QuestionHelper text={RateTooltipHeader} />
+                  </Trans>
+                </span>
+                <i>
+                  <Trans>Market price</Trans>
+                </i>
+              </HeaderElement>
+            )}
+
+            {!isOpenOrdersTab && (
+              <HeaderElement>
+                <span>
+                  <Trans>
+                    Execution price <QuestionHelper text={RateTooltipHeader} />
+                  </Trans>
+                </span>
+              </HeaderElement>
+            )}
 
             <HeaderElement doubleRow>
               <Trans>Expires</Trans>
@@ -183,7 +200,9 @@ export function OrdersTable({
             {ordersPage.map((order) => (
               <OrderRow
                 key={order.id}
+                isOpenOrdersTab={isOpenOrdersTab}
                 order={order}
+                prices={pendingOrdersPrices[order.id]}
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                 RowElement={RowElement}
                 isRateInversed={isRateInversed}
