@@ -166,7 +166,7 @@ export function OrderRow({
           {executedPriceInversed ? (
             <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} />
           ) : (
-            '---'
+            '-'
           )}
         </styledEl.CellElement>
       )}
