@@ -15,6 +15,16 @@ export const useCreateOnboard = () => {
     chains,
     appMetadata,
     accountCenter,
+    notify: {
+      desktop: {
+        transactionHandler: () => {},
+        enabled: false,
+      },
+      mobile: {
+        transactionHandler: () => {},
+        enabled: false,
+      },
+    },
   })
 
   return web3Onboard
