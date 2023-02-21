@@ -1,6 +1,6 @@
 import * as styledEl from './styled'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
 import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
@@ -10,6 +10,7 @@ export interface ExecutionPriceTooltipProps {
   feeAmount: CurrencyAmount<Currency> | null
   displayedRate: string | null
   executionPrice: Price<Currency, Currency> | null
+  marketRate: Fraction | null
 }
 
 export const RateTooltipHeader = (
@@ -26,10 +27,27 @@ export const RateTooltipHeader = (
   </styledEl.Content>
 )
 
-export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
-  const { isInversed, feeAmount, displayedRate, executionPrice } = props
+function formatFeeAmount({
+  marketRate,
+  feeAmount,
+  isInversed,
+  executionPrice,
+}: ExecutionPriceTooltipProps): CurrencyAmount<Currency> | null {
+  const currency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
+  const invertedFee = marketRate && feeAmount ? marketRate.multiply(feeAmount) : null
 
-  const feeUsdValue = useHigherUSDValue(feeAmount || undefined)
+  return !isInversed && invertedFee && currency
+    ? CurrencyAmount.fromFractionalAmount(currency, invertedFee.numerator, invertedFee.denominator)
+    : feeAmount
+}
+
+export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
+  const { isInversed, displayedRate, executionPrice } = props
+
+  const currentCurrency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
+  const formattedFeeAmount = formatFeeAmount(props)
+
+  const feeUsdValue = useHigherUSDValue(formattedFeeAmount || undefined)
 
   return (
     <styledEl.FeeTooltipWrapper>
@@ -39,19 +57,19 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
         <span>
           <p>Limit price</p>
           <b>
-            {displayedRate} {isInversed ? executionPrice?.baseCurrency.symbol : executionPrice?.quoteCurrency.symbol}
+            {displayedRate} {currentCurrency?.symbol}
           </b>
         </span>
       </styledEl.FeeItem>
 
       <styledEl.FeeItem>
         <i>Included in the estimated execution price</i>
-        {feeAmount && (
+        {formattedFeeAmount && (
           <span>
             <p>Current network fees</p>
             <span>
               <b>
-                ≈ <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} />
+                ≈ <TokenAmount amount={formattedFeeAmount} tokenSymbol={formattedFeeAmount?.currency} />
               </b>
               <br />
               (<FiatAmount accurate={true} amount={feeUsdValue} />)

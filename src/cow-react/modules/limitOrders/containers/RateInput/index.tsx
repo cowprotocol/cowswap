@@ -181,6 +181,7 @@ export function RateInput() {
                 <ExecutionPriceTooltip
                   isInversed={isInversed}
                   feeAmount={feeAmount}
+                  marketRate={marketRate}
                   displayedRate={displayedRate}
                   executionPrice={executionPrice}
                 />

@@ -48,7 +48,7 @@ const dateTimeFormat: Intl.DateTimeFormatOptions = {
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   const { executionPrice, tradeContext, settingsState, rateInfoParams, limitRateState } = props
   const { account, recipient, recipientAddressOrName } = tradeContext.postOrderParams
-  const { feeAmount, activeRate } = limitRateState
+  const { feeAmount, activeRate, marketRate } = limitRateState
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
   const expiryDate = new Date(validTo * 1000)
@@ -80,6 +80,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
                 <ExecutionPriceTooltip
                   isInversed={isInversed}
                   feeAmount={feeAmount}
+                  marketRate={marketRate}
                   displayedRate={displayedRate}
                   executionPrice={executionPrice}
                 />
