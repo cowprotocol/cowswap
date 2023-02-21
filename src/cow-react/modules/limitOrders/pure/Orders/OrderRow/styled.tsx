@@ -110,6 +110,10 @@ export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   align-items: center;
   gap: 6px;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
+
+  :hover {
+    text-decoration: ${({ clickable }) => (clickable ? 'underline' : '')};
+  }
 `
 
 export const CurrencyAmountWrapper = styled.div`

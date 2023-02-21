@@ -24,6 +24,7 @@ export const ContextMenuList = styled(MenuList)`
   overflow: hidden;
   position: relative;
   z-index: 2;
+  outline: none;
 `
 
 export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
@@ -71,10 +72,12 @@ export function OrderContextMenu({ openReceipt, activityUrl, showCancellationMod
           <FileText size={16} />
           <span>Order receipt</span>
         </ContextMenuItem>
-        <ContextMenuLink as="a" href={activityUrl} target="_blank">
-          <Link2 size={16} />
-          <span>View on explorer</span>
-        </ContextMenuLink>
+        {activityUrl && (
+          <ContextMenuLink as="a" href={activityUrl} target="_blank">
+            <Link2 size={16} />
+            <span>View on explorer</span>
+          </ContextMenuLink>
+        )}
         {showCancellationModal && (
           <ContextMenuItem $red onSelect={() => showCancellationModal()}>
             <Trash2 size={16} />
