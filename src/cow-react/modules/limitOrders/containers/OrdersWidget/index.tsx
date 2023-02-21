@@ -1,6 +1,6 @@
 import { Orders } from '../../pure/Orders'
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
@@ -17,14 +17,16 @@ function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOr
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
-const mockedFilledPercent = !!localStorage.getItem('mockedFilledPercent')
-
 export function OrdersWidget() {
   const location = useLocation()
   const navigate = useNavigate()
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWeb3React()
   const getShowCancellationModal = useCancelOrder()
+  const [mockedFilledPercent, setMockedFilledPercent] = useState(false)
+  const mockedFilledPercentClick = useCallback(() => {
+    setMockedFilledPercent(!mockedFilledPercent)
+  }, [mockedFilledPercent])
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
@@ -88,7 +90,9 @@ export function OrdersWidget() {
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
         getShowCancellationModal={getShowCancellationModal}
-      />
+      >
+        <button onClick={mockedFilledPercentClick}>Mock filled %</button>
+      </Orders>
       <OrdersReceiptModal />
     </>
   )

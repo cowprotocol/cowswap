@@ -9,6 +9,7 @@ import { Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import SVG from 'react-inlinesvg'
 import Web3Status, { Wrapper as Web3StatusWrapper } from 'components/Web3Status'
+import { ReactNode } from 'react'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;
@@ -115,6 +116,7 @@ const ExternalArrow = styled.span`
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
+  children?: ReactNode
 }
 
 export function Orders({
@@ -127,6 +129,7 @@ export function Orders({
   getShowCancellationModal,
   currentPageNumber,
   pendingOrdersPrices,
+  children,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -189,6 +192,7 @@ export function Orders({
   return (
     <>
       <OrdersBox>
+        {children}
         <Header>
           <h2>Your Orders</h2>
           <OrdersTabs tabs={tabs} />
