@@ -113,6 +113,8 @@ export function OrderRow({
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
+  // TODO: set the real value when API returns it
+  const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId ? getEtherscanLink(chainId, id, 'transaction') : undefined
 
   const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
@@ -177,10 +179,18 @@ export function OrderRow({
 
       {/* Expires */}
       {/* Created */}
-      <styledEl.CellElement doubleRow>
-        <b>{expirationTimeAgo}</b>
-        <i>{creationTimeAgo}</i>
-      </styledEl.CellElement>
+      {isOpenOrdersTab && (
+        <styledEl.CellElement doubleRow>
+          <b>{expirationTimeAgo}</b>
+          <i>{creationTimeAgo}</i>
+        </styledEl.CellElement>
+      )}
+
+      {!isOpenOrdersTab && (
+        <styledEl.CellElement>
+          <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
+        </styledEl.CellElement>
+      )}
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow>

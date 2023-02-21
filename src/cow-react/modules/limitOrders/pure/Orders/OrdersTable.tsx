@@ -179,12 +179,20 @@ export function OrdersTable({
               </HeaderElement>
             )}
 
-            <HeaderElement doubleRow>
-              <Trans>Expires</Trans>
-              <i>
-                <Trans>Created</Trans>
-              </i>
-            </HeaderElement>
+            {isOpenOrdersTab && (
+              <HeaderElement doubleRow>
+                <Trans>Expires</Trans>
+                <i>
+                  <Trans>Created</Trans>
+                </i>
+              </HeaderElement>
+            )}
+
+            {!isOpenOrdersTab && (
+              <HeaderElement>
+                <Trans>Execution time</Trans>
+              </HeaderElement>
+            )}
 
             <HeaderElement>
               <Trans>Filled</Trans>
