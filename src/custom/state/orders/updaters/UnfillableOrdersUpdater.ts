@@ -22,6 +22,7 @@ import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { CurrencyAmount, Price } from '@uniswap/sdk-core'
+import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -82,6 +83,7 @@ export function UnfillableOrdersUpdater(): null {
   const { chainId: _chainId, account } = useWeb3React()
   const chainId = supportedChainId(_chainId)
   const updatePendingOrderPrices = useUpdateAtom(updatePendingOrderPricesAtom)
+  const isWindowVisible = useIsWindowVisible()
 
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
@@ -149,7 +151,7 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updatePending = useCallback(() => {
-    if (!chainId || !account || isUpdating.current) {
+    if (!chainId || !account || isUpdating.current || !isWindowVisible) {
       return
     }
 
@@ -197,7 +199,7 @@ export function UnfillableOrdersUpdater(): null {
       isUpdating.current = false
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
-  }, [account, chainId, strategy, updateIsUnfillableFlag])
+  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible])
 
   useEffect(() => {
     updatePending()
