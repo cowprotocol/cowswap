@@ -81,7 +81,6 @@ const HeaderElement = styled.div<{ doubleRow?: boolean }>`
 const RowElement = styled(Header)`
   background: transparent;
   transition: background 0.15s ease-in-out;
-  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => transparentize(0.9, theme.text3)};

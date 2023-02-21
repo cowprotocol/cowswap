@@ -4,8 +4,6 @@ import { OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { FileText, Link2, MoreHorizontal, Trash2 } from 'react-feather'
-import { Menu } from '@reach/menu-button'
 import { OrderParams } from '../utils/getOrderParams'
 import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 import AlertTriangle from 'assets/cow-swap/alert.svg'
@@ -17,10 +15,10 @@ import useTimeAgo from 'hooks/useTimeAgo'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { OrderStatusBox } from '@cow/modules/limitOrders/pure/OrderStatusBox'
 import * as styledEl from './styled'
-import { transparentize } from 'polished'
 import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import Loader from '@src/components/Loader'
+import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -124,7 +122,7 @@ export function OrderRow({
   return (
     <RowElement>
       {/* Order sell/buy tokens */}
-      <styledEl.CurrencyCell onClick={onClick}>
+      <styledEl.CurrencyCell clickable onClick={onClick}>
         <styledEl.CurrencyLogoPair>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
           <CurrencySymbolItem amount={buyAmount} />
@@ -209,27 +207,11 @@ export function OrderRow({
         </styledEl.StatusBox>
       </styledEl.CellElement>
       <styledEl.CellElement>
-        <Menu>
-          <styledEl.ContextMenuButton>
-            <MoreHorizontal color={transparentize(0.5, theme.text1)} />
-          </styledEl.ContextMenuButton>
-          <styledEl.ContextMenuList>
-            <styledEl.ContextMenuItem onSelect={onClick}>
-              <FileText size={16} />
-              <span>Order receipt</span>
-            </styledEl.ContextMenuItem>
-            <styledEl.ContextMenuLink as="a" href={activityUrl} target="_blank">
-              <Link2 size={16} />
-              <span>View on explorer</span>
-            </styledEl.ContextMenuLink>
-            {showCancellationModal && (
-              <styledEl.ContextMenuItem $red onSelect={() => showCancellationModal()}>
-                <Trash2 size={16} />
-                <span>Cancel order</span>
-              </styledEl.ContextMenuItem>
-            )}
-          </styledEl.ContextMenuList>
-        </Menu>
+        <OrderContextMenu
+          activityUrl={activityUrl}
+          openReceipt={onClick}
+          showCancellationModal={showCancellationModal}
+        />
       </styledEl.CellElement>
     </RowElement>
   )
