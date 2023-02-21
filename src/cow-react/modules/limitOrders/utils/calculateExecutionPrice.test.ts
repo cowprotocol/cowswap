@@ -16,7 +16,7 @@ describe('calculateExecutionPrice', () => {
       })
 
       // 3 / 6000 = 0.0005
-      expect(amount.toSignificant(10)).toBe('0.0005')
+      expect(amount?.toSignificant(10)).toBe('0.0005')
     })
 
     it('The fee must be subtracted from the execution price', () => {
@@ -28,7 +28,7 @@ describe('calculateExecutionPrice', () => {
       })
 
       // 3 / (6000 - 250) = 0.0005217391304
-      expect(amount.toSignificant(10)).toBe('0.0005217391304')
+      expect(amount?.toSignificant(10)).toBe('0.0005217391304')
     })
   })
 
@@ -45,7 +45,7 @@ describe('calculateExecutionPrice', () => {
 
       // OutputAmountByMarketRate = 6000 * 2
       // (OutputAmountByMarketRate - 250) / 6000 = 1.95833
-      expect(amount.toSignificant(10)).toBe('1.958333333')
+      expect(amount?.toSignificant(10)).toBe('1.958333333')
     })
   })
 })
