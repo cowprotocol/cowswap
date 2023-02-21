@@ -1,11 +1,13 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export interface ExecutionPriceParams {
   inputCurrencyAmount: CurrencyAmount<Currency> | null
   outputCurrencyAmount: CurrencyAmount<Currency> | null
   feeAmount: CurrencyAmount<Currency> | null
   marketRate: Fraction | null
+  orderKind: OrderKind
 }
 
 /**
@@ -35,12 +37,13 @@ export function convertAmountToCurrency(
 }
 
 export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Currency, Currency> | null {
-  const { inputCurrencyAmount, outputCurrencyAmount, feeAmount, marketRate } = params
+  const { inputCurrencyAmount, outputCurrencyAmount, feeAmount, marketRate, orderKind } = params
 
   if (!inputCurrencyAmount || !outputCurrencyAmount || !feeAmount || !marketRate) return null
 
   if (inputCurrencyAmount.currency !== feeAmount.currency) return null
 
+  const isSellOrder = orderKind === OrderKind.SELL
   /**
    * Since a user can specify an arbitrary price
    * And the specified price can be less than the market price
@@ -50,13 +53,15 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
   const marketPrice = new Price({
     baseAmount: inputCurrencyAmount,
     quoteAmount: convertAmountToCurrency(
-      inputCurrencyAmount.multiply(marketRate).subtract(feeAmount),
+      isSellOrder
+        ? inputCurrencyAmount.multiply(marketRate).subtract(feeAmount)
+        : inputCurrencyAmount.multiply(marketRate).add(feeAmount),
       outputCurrencyAmount.currency
     ),
   })
 
   const currentPrice = new Price({
-    baseAmount: inputCurrencyAmount.subtract(feeAmount),
+    baseAmount: isSellOrder ? inputCurrencyAmount.subtract(feeAmount) : inputCurrencyAmount.add(feeAmount),
     quoteAmount: outputCurrencyAmount,
   })
 

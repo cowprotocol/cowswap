@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 
 export function ExecutionPriceUpdater() {
   const { marketRate, feeAmount } = useAtomValue(limitRateAtom)
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
+  const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersTradeState()
   const setExecutionPrice = useUpdateAtom(executionPriceAtom)
 
   const price = calculateExecutionPrice({
@@ -15,6 +15,7 @@ export function ExecutionPriceUpdater() {
     outputCurrencyAmount,
     feeAmount,
     marketRate,
+    orderKind,
   })
 
   useEffect(() => {
