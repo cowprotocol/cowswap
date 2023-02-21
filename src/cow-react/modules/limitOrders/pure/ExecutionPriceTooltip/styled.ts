@@ -38,7 +38,7 @@ export const Content = styled.div`
 
 export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }>`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: ${({ highlighted }) => (highlighted ? 'row' : 'column wrap')};
   align-items: flex-start;
   width: 100%;
   margin: ${({ highlighted }) => (highlighted ? '10px 0 0' : '0')};
@@ -53,6 +53,7 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
     font-style: normal;
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
     max-width: 60%;
+    min-width: 45%;
     font-weight: 300;
   }
 

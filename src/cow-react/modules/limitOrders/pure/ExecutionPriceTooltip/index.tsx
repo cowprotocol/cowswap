@@ -79,9 +79,8 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
       </styledEl.FeeItem>
 
       <styledEl.FeeItem highlighted>
-        {/* <i>Order will execute at</i> */}
+        <i>Est. execution price</i>
         <span>
-          <p>Est. execution price</p>
           <b>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</b>
         </span>
       </styledEl.FeeItem>
