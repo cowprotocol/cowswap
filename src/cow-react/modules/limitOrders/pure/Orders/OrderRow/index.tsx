@@ -93,6 +93,8 @@ export interface OrderRowProps {
   getShowCancellationModal(order: ParsedOrder): (() => void) | null
 }
 
+const statusesWhenNoActivityUrl = [OrderStatus.FAILED, OrderStatus.CREATING]
+
 export function OrderRow({
   order,
   RowElement,
@@ -115,7 +117,10 @@ export function OrderRow({
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
   const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
-  const activityUrl = chainId ? getEtherscanLink(chainId, id, 'transaction') : undefined
+  const activityUrl =
+    chainId && !statusesWhenNoActivityUrl.includes(order.status)
+      ? getEtherscanLink(chainId, id, 'transaction')
+      : undefined
 
   const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
   const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
