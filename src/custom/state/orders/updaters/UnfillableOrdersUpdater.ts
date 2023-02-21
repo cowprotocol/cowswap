@@ -109,7 +109,7 @@ export function UnfillableOrdersUpdater(): null {
         order.outputToken,
         isSellOrder ? price.amount.toString() : order.buyAmount.toString()
       )
-      const feeAmount = CurrencyAmount.fromRawAmount(baseAmount.currency, fee.amount.toString())
+      const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee.amount.toString())
 
       const marketPrice = new Price(
         isSellOrder
@@ -118,7 +118,7 @@ export function UnfillableOrdersUpdater(): null {
               quoteAmount: priceAmount,
             }
           : {
-              baseAmount,
+              baseAmount: baseAmount,
               quoteAmount: priceAmount,
             }
       )
@@ -126,11 +126,12 @@ export function UnfillableOrdersUpdater(): null {
       const executionPrice = new Price(
         isSellOrder
           ? {
-              baseAmount,
+              baseAmount: baseAmount.subtract(feeAmount).subtract(feeAmount),
               quoteAmount: priceAmount,
             }
-          : {
-              baseAmount: baseAmount.add(feeAmount),
+          : // TODO: fix for buy orders
+            {
+              baseAmount: baseAmount,
               quoteAmount: priceAmount,
             }
       )
