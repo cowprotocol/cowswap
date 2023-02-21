@@ -17,6 +17,8 @@ function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOr
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
+const mockedFilledPercent = !!localStorage.getItem('mockedFilledPercent')
+
 export function OrdersWidget() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -37,7 +39,20 @@ export function OrdersWidget() {
   }, [location.search])
 
   const orders = useMemo(() => {
-    return getOrdersListByIndex(ordersList, currentTabId)
+    const orders = getOrdersListByIndex(ordersList, currentTabId)
+
+    // TODO: remove it later. Only for Mindy's presentation
+    if (mockedFilledPercent) {
+      if (orders[0]) {
+        orders[0].formattedPercentage = 25
+      }
+
+      if (orders[1]) {
+        orders[1].formattedPercentage = 77
+      }
+    }
+
+    return orders
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
