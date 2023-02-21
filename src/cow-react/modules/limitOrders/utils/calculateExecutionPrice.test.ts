@@ -2,6 +2,7 @@ import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { USDC_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { rawToTokenAmount } from '../../../utils/rawToTokenAmount'
 import { calculateExecutionPrice, convertAmountToCurrency } from './calculateExecutionPrice'
+import { OrderKind } from '@cowprotocol/contracts'
 
 describe('calculateExecutionPrice', () => {
   describe('When market price is less than execution price', () => {
@@ -13,6 +14,7 @@ describe('calculateExecutionPrice', () => {
         outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(3, WETH_GOERLI.decimals)),
         feeAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(0, USDC_GOERLI.decimals)),
         marketRate: marketPrice,
+        orderKind: OrderKind.SELL,
       })
 
       // 3 / 6000 = 0.0005
@@ -25,6 +27,7 @@ describe('calculateExecutionPrice', () => {
         outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(3, WETH_GOERLI.decimals)),
         feeAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(250, USDC_GOERLI.decimals)),
         marketRate: marketPrice,
+        orderKind: OrderKind.SELL,
       })
 
       // 3 / (6000 - 250) = 0.0005217391304
@@ -41,6 +44,7 @@ describe('calculateExecutionPrice', () => {
         outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(3, WETH_GOERLI.decimals)),
         feeAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(250, USDC_GOERLI.decimals)),
         marketRate: marketPrice,
+        orderKind: OrderKind.SELL,
       })
 
       // OutputAmountByMarketRate = 6000 * 2
