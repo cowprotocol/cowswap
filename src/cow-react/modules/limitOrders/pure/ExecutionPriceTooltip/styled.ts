@@ -53,7 +53,7 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
     font-style: normal;
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
     max-width: 60%;
-    min-width: 45%;
+    min-width: 50%;
     font-weight: 300;
   }
 

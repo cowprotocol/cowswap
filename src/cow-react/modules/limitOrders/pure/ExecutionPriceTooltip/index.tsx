@@ -4,6 +4,7 @@ import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
 import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
+import { convertAmountToCurrency } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
 
 export interface ExecutionPriceTooltipProps {
   isInversed: boolean
@@ -36,8 +37,11 @@ function formatFeeAmount({
   const currency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const invertedFee = marketRate && feeAmount ? marketRate.multiply(feeAmount) : null
 
-  return !isInversed && invertedFee && currency
-    ? CurrencyAmount.fromFractionalAmount(currency, invertedFee.numerator, invertedFee.denominator)
+  return !isInversed && invertedFee && currency && feeAmount
+    ? convertAmountToCurrency(
+        CurrencyAmount.fromFractionalAmount(feeAmount.currency, invertedFee.numerator, invertedFee.denominator),
+        currency
+      )
     : feeAmount
 }
 
@@ -72,14 +76,18 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
                 ≈ <TokenAmount amount={formattedFeeAmount} tokenSymbol={formattedFeeAmount?.currency} />
               </b>
               <br />
-              (<FiatAmount accurate={true} amount={feeUsdValue} />)
+              {feeUsdValue && (
+                <>
+                  (<FiatAmount accurate={true} amount={feeUsdValue} />)
+                </>
+              )}
             </span>
           </span>
         )}
       </styledEl.FeeItem>
 
       <styledEl.FeeItem highlighted>
-        <i>Est. execution price</i>
+        <b>Est. execution price</b>
         <span>
           <b>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</b>
         </span>
