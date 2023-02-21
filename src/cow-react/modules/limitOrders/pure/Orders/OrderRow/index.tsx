@@ -136,7 +136,13 @@ export function OrderRow({
       {/* Limit price */}
       <styledEl.CellElement>
         <styledEl.RateValue>
-          <RateInfo prependSymbol={false} noLabel={true} isInversed={isRateInversed} rateInfoParams={rateInfoParams} />
+          <RateInfo
+            prependSymbol={false}
+            noLabel={true}
+            setSmartQuoteSelectionOnce={true}
+            isInversed={isRateInversed}
+            rateInfoParams={rateInfoParams}
+          />
         </styledEl.RateValue>
       </styledEl.CellElement>
 
