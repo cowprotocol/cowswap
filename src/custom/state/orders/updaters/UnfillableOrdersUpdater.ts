@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { timestamp } from '@cowprotocol/contracts'
+import { OrderKind, timestamp } from '@cowprotocol/contracts'
 
 import { useWeb3React } from '@web3-react/core'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
@@ -99,19 +99,41 @@ export function UnfillableOrdersUpdater(): null {
     (order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>, fee: FeeInformation | null) => {
       if (!price.amount || !fee?.amount) return
 
-      const baseAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
-      const priceAmount = CurrencyAmount.fromRawAmount(order.outputToken, price.amount.toString())
-      const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee.amount.toString())
+      const isSellOrder = order.kind === OrderKind.SELL
 
-      const marketPrice = new Price({
-        baseAmount: baseAmount.subtract(feeAmount),
-        quoteAmount: priceAmount,
-      })
+      const baseAmount = CurrencyAmount.fromRawAmount(
+        order.inputToken,
+        isSellOrder ? order.sellAmount.toString() : price.amount.toString()
+      )
+      const priceAmount = CurrencyAmount.fromRawAmount(
+        order.outputToken,
+        isSellOrder ? price.amount.toString() : order.buyAmount.toString()
+      )
+      const feeAmount = CurrencyAmount.fromRawAmount(baseAmount.currency, fee.amount.toString())
 
-      const executionPrice = new Price({
-        baseAmount,
-        quoteAmount: priceAmount,
-      })
+      const marketPrice = new Price(
+        isSellOrder
+          ? {
+              baseAmount: baseAmount.subtract(feeAmount),
+              quoteAmount: priceAmount,
+            }
+          : {
+              baseAmount,
+              quoteAmount: priceAmount,
+            }
+      )
+
+      const executionPrice = new Price(
+        isSellOrder
+          ? {
+              baseAmount,
+              quoteAmount: priceAmount,
+            }
+          : {
+              baseAmount: baseAmount.add(feeAmount),
+              quoteAmount: priceAmount,
+            }
+      )
 
       updatePendingOrderPrices({
         orderId: order.id,
