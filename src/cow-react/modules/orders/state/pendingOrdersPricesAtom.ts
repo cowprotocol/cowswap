@@ -7,13 +7,14 @@ export interface PendingOrderPrices {
   lastUpdateTimestamp: number
 }
 
-export type PendingOrdersPrices = { [orderId: string]: PendingOrderPrices }
+// When the price is null, it means that we got error from the quote API
+export type PendingOrdersPrices = { [orderId: string]: PendingOrderPrices | null }
 
 export const pendingOrdersPricesAtom = atom<PendingOrdersPrices>({})
 
 export const updatePendingOrderPricesAtom = atom(
   null,
-  (get, set, { orderId, data }: { orderId: string; data: PendingOrderPrices }) => {
+  (get, set, { orderId, data }: { orderId: string; data: PendingOrderPrices | null }) => {
     set(pendingOrdersPricesAtom, () => {
       const prevState = get(pendingOrdersPricesAtom)
 

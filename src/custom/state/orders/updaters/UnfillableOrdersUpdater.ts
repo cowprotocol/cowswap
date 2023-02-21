@@ -211,10 +211,15 @@ export function UnfillableOrdersUpdater(): null {
             }
           })
           .catch((e) => {
+            updatePendingOrderPrices({
+              orderId: order.id,
+              data: null,
+            })
+
             console.debug(
-              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`,
-              e
+              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`
             )
+            console.debug(e)
           })
       )
     } finally {

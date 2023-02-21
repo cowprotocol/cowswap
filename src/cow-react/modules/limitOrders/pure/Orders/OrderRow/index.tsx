@@ -84,7 +84,7 @@ const AllowanceWarning = (symbol: string) => (
 
 export interface OrderRowProps {
   order: ParsedOrder
-  prices: PendingOrderPrices | undefined
+  prices: PendingOrderPrices | undefined | null
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
   isOpenOrdersTab: boolean
@@ -162,6 +162,8 @@ export function OrderRow({
                 <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} />
               </i>
             </>
+          ) : prices === null ? (
+            '-'
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
