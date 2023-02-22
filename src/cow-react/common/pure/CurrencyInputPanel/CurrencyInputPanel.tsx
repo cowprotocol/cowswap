@@ -100,9 +100,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     if (!viewAmount && (!typedValue || parseFloat(typedValue) === 0)) return
 
     setTypedValue(viewAmount)
-    // We don't need triggering from typedValue changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewAmount])
+  }, [viewAmount, typedValue])
 
   const numericalInput = (
     <styledEl.NumericalInput

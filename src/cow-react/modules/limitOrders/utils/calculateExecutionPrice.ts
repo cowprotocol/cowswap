@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
 import { OrderKind } from '@cowprotocol/contracts'
+import JSBI from 'jsbi'
 
 export interface ExecutionPriceParams {
   inputCurrencyAmount: CurrencyAmount<Currency> | null
@@ -27,13 +28,12 @@ export function convertAmountToCurrency(
   const decimalsDiff = Math.abs(inputDecimals - outputDecimals) || 1
   const decimalsDiffAmount = rawToTokenAmount(1, decimalsDiff)
 
-  const targetAmount = CurrencyAmount.fromFractionalAmount(targetCurrency, numerator, denominator)
+  const fixedNumenator =
+    inputDecimals < outputDecimals
+      ? JSBI.multiply(numerator, decimalsDiffAmount)
+      : JSBI.divide(numerator, decimalsDiffAmount)
 
-  if (inputDecimals < outputDecimals) {
-    return targetAmount.multiply(decimalsDiffAmount)
-  }
-
-  return targetAmount.divide(decimalsDiffAmount)
+  return CurrencyAmount.fromFractionalAmount(targetCurrency, fixedNumenator, denominator)
 }
 
 export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Currency, Currency> | null {
