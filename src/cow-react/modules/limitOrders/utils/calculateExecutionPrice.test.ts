@@ -48,8 +48,8 @@ describe('calculateExecutionPrice', () => {
       })
 
       // OutputAmountByMarketRate = 6000 * 2
-      // (OutputAmountByMarketRate - 250) / 6000 = 1.95833
-      expect(amount?.toSignificant(10)).toBe('1.958333333')
+      // ((6000 - 250)) * 2 / 6000 = 1.916666667
+      expect(amount?.toSignificant(10)).toBe('1.916666667')
     })
   })
 })

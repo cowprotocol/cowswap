@@ -49,26 +49,29 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
   if (inputCurrencyAmount.currency !== feeAmount.currency) return null
 
   const isSellOrder = orderKind === OrderKind.SELL
+  const isInversed = marketRate.lessThan(1)
+  const marketRateFixed = isInversed ? marketRate.invert() : marketRate
   /**
    * Since a user can specify an arbitrary price
    * And the specified price can be less than the market price
    * It doesn't make sense to display an execution price less than current market price
    * Because an order will always be filled by at least the current market price
    */
-  const marketPrice = new Price({
+  const marketPriceRaw = new Price({
     baseAmount: inputCurrencyAmount,
     quoteAmount: convertAmountToCurrency(
       isSellOrder
-        ? inputCurrencyAmount.multiply(marketRate).subtract(feeAmount)
-        : inputCurrencyAmount.multiply(marketRate).add(feeAmount),
+        ? inputCurrencyAmount.subtract(feeAmount).multiply(marketRateFixed)
+        : inputCurrencyAmount.subtract(feeAmount).multiply(marketRateFixed),
       outputCurrencyAmount.currency
     ),
   })
+  const marketPrice = isInversed ? marketPriceRaw.invert() : marketPriceRaw
 
   const currentPrice = new Price({
-    baseAmount: isSellOrder ? inputCurrencyAmount.subtract(feeAmount) : inputCurrencyAmount.add(feeAmount),
+    baseAmount: inputCurrencyAmount.subtract(feeAmount),
     quoteAmount: outputCurrencyAmount,
   })
 
-  return currentPrice
+  return currentPrice.greaterThan(marketPrice) ? marketPrice : currentPrice
 }
