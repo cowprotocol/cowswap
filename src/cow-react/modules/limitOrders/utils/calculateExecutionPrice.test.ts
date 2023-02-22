@@ -6,7 +6,7 @@ import { OrderKind } from '@cowprotocol/contracts'
 
 describe('calculateExecutionPrice', () => {
   describe('When market price is less than execution price', () => {
-    const marketPrice = new Fraction(0, 1) // 0
+    const marketPrice = new Fraction(100, 1) // 0
 
     it('When fee is zero then the result must be just output / input', () => {
       const amount = calculateExecutionPrice({
@@ -35,13 +35,13 @@ describe('calculateExecutionPrice', () => {
     })
   })
 
-  describe('When market price is greater than execution price', () => {
+  describe('When market price is lower than execution price', () => {
     const marketPrice = new Fraction(2, 1) // 2
 
     it('Then execution price should be marketPrice minus feeAmount', () => {
       const amount = calculateExecutionPrice({
         inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(6000, USDC_GOERLI.decimals)),
-        outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(3, WETH_GOERLI.decimals)),
+        outputCurrencyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, rawToTokenAmount(30000, WETH_GOERLI.decimals)),
         feeAmount: CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(250, USDC_GOERLI.decimals)),
         marketRate: marketPrice,
         orderKind: OrderKind.SELL,

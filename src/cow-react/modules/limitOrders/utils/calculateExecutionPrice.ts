@@ -25,7 +25,12 @@ export function convertAmountToCurrency(
 
   const inputDecimals = amount.currency.decimals
   const outputDecimals = targetCurrency.decimals
-  const decimalsDiff = Math.abs(inputDecimals - outputDecimals) || 1
+
+  if (inputDecimals === outputDecimals) {
+    return CurrencyAmount.fromFractionalAmount(targetCurrency, numerator, denominator)
+  }
+
+  const decimalsDiff = Math.abs(inputDecimals - outputDecimals)
   const decimalsDiffAmount = rawToTokenAmount(1, decimalsDiff)
 
   const fixedNumenator =
@@ -65,5 +70,5 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
     quoteAmount: outputCurrencyAmount,
   })
 
-  return currentPrice.lessThan(marketPrice) ? marketPrice : currentPrice
+  return currentPrice.greaterThan(marketPrice) ? marketPrice : currentPrice
 }
