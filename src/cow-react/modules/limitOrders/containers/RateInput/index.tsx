@@ -20,6 +20,8 @@ import { ExecutionPriceTooltip } from '@cow/modules/limitOrders/pure/ExecutionPr
 import Loader from 'components/Loader'
 import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPriceAtom'
 import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
+import { calculateExecutionPrice } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -61,14 +63,35 @@ export function RateInput() {
     return formatInputAmount(rate)
   }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
 
+  const [feeAwareModeEnabled, setFeeAwareModeEnabled] = useState(false)
+
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
+    const executionPrice = calculateExecutionPrice({
+      inputCurrencyAmount,
+      outputCurrencyAmount,
+      marketRate,
+      feeAmount,
+    })
+
     updateRate({
-      activeRate: isFractionFalsy(marketRate) ? initialRate : marketRate,
+      activeRate: isFractionFalsy(marketRate)
+        ? initialRate
+        : feeAwareModeEnabled && executionPrice
+        ? FractionUtils.fractionLikeToFraction(executionPrice.invert())
+        : marketRate,
       isTypedValue: false,
       isRateFromUrl: false,
     })
-  }, [marketRate, initialRate, updateRate])
+  }, [marketRate, initialRate, updateRate, inputCurrencyAmount, outputCurrencyAmount, feeAmount, feeAwareModeEnabled])
+
+  const feeAwareModeChange = useCallback(() => {
+    setFeeAwareModeEnabled((state) => !state)
+  }, [])
+
+  useEffect(() => {
+    handleSetMarketPrice()
+  }, [feeAwareModeEnabled])
 
   // Handle rate input
   const handleUserInput = useCallback(
@@ -193,6 +216,12 @@ export function RateInput() {
           <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />
         )}
       </styledEl.EstimatedRate>
+      <br />
+      <label>
+        <input type="checkbox" checked={feeAwareModeEnabled} onChange={feeAwareModeChange} />
+        <span>Fee aware mode</span>
+      </label>
+      <br />
     </>
   )
 }
