@@ -42,13 +42,12 @@ export function convertAmountToCurrency(
 }
 
 export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Currency, Currency> | null {
-  const { inputCurrencyAmount, outputCurrencyAmount, feeAmount, marketRate, orderKind } = params
+  const { inputCurrencyAmount, outputCurrencyAmount, feeAmount, marketRate } = params
 
   if (!inputCurrencyAmount || !outputCurrencyAmount || !feeAmount || !marketRate) return null
 
   if (inputCurrencyAmount.currency !== feeAmount.currency) return null
 
-  const isSellOrder = orderKind === OrderKind.SELL
   const isInversed = marketRate.lessThan(1)
   const marketRateFixed = isInversed ? marketRate.invert() : marketRate
   /**
@@ -60,9 +59,7 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
   const marketPriceRaw = new Price({
     baseAmount: inputCurrencyAmount,
     quoteAmount: convertAmountToCurrency(
-      isSellOrder
-        ? inputCurrencyAmount.subtract(feeAmount).multiply(marketRateFixed)
-        : inputCurrencyAmount.subtract(feeAmount).multiply(marketRateFixed),
+      inputCurrencyAmount.subtract(feeAmount).multiply(marketRateFixed),
       outputCurrencyAmount.currency
     ),
   })

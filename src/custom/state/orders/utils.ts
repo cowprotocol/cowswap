@@ -1,5 +1,4 @@
-import { OrderKind } from '@cowprotocol/contracts'
-import { Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { PENDING_ORDERS_BUFFER, ZERO_BIG_NUMBER } from 'constants/index'
@@ -8,7 +7,8 @@ import { Order } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { calculatePrice, invertPrice } from './priceUtils'
 import { BigNumber } from 'bignumber.js'
-import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/contracts'
+import JSBI from 'jsbi'
 
 export type OrderTransitionStatus =
   | 'unknown'
@@ -206,6 +206,31 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
   }
 }
 
+export function getOrderExecutionPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
+  if (order.kind === OrderKind.SELL) {
+    return new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), price.toString())
+  }
+
+  return new Price(
+    order.inputToken,
+    order.outputToken,
+    JSBI.add(JSBI.BigInt(price.toString()), JSBI.BigInt(feeAmount)),
+    order.buyAmount.toString()
+  )
+}
+export function getOrderMarketPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
+  if (order.kind === OrderKind.SELL) {
+    return new Price(
+      order.inputToken,
+      order.outputToken,
+      JSBI.subtract(JSBI.BigInt(order.sellAmount.toString()), JSBI.BigInt(feeAmount)),
+      price.toString()
+    )
+  }
+
+  return new Price(order.inputToken, order.outputToken, price.toString(), order.buyAmount.toString())
+}
+
 /**
  * Based on the order and current price, returns `true` if order is out of the market.
  * Out of the market means the price difference between original and current to be positive
@@ -215,31 +240,21 @@ export function getOrderExecutedAmounts(order: OrderMetaData): {
  * small price changes
  *
  * @param order
- * @param price
+ * @param orderPrice
+ * @param executionPrice
  */
-export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>): boolean {
-  // Build price object from stored order
-  const orderPrice = new Price(
-    order.inputToken,
-    order.outputToken,
-    order.sellAmount.toString(),
-    order.buyAmount.toString()
-  )
-
-  // Build current price object from quoted price
-  // Note that depending on the order type, the amount will be used either as nominator or denominator
-  const currentPrice =
-    order.kind === OrderKind.SELL
-      ? new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), price.amount as string)
-      : new Price(order.inputToken, order.outputToken, price.amount as string, order.buyAmount.toString())
-
+export function isOrderUnfillable(
+  order: Order,
+  orderPrice: Price<Currency, Currency>,
+  executionPrice: Price<Currency, Currency>
+): boolean {
   // Calculate the percentage of the current price in regards to the order price
-  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(currentPrice.divide(orderPrice))
+  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(executionPrice.divide(orderPrice))
 
   console.debug(
     `[UnfillableOrdersUpdater::isOrderUnfillable] ${order.kind} [${order.id.slice(0, 8)}]:`,
     orderPrice.toSignificant(10),
-    currentPrice.toSignificant(10),
+    executionPrice.toSignificant(10),
     `${percentageDifference.toFixed(4)}%`,
     percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
   )

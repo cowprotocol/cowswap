@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { OrderKind, timestamp } from '@cowprotocol/contracts'
+import { timestamp } from '@cowprotocol/contracts'
 
 import { useWeb3React } from '@web3-react/core'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
 import { Order, OrderClass } from 'state/orders/actions'
-import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 import { getBestQuote } from 'utils/price'
-import { isOrderUnfillable } from 'state/orders/utils'
+import { getOrderExecutionPrice, getOrderMarketPrice, isOrderUnfillable } from 'state/orders/utils'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
@@ -21,7 +20,7 @@ import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
-import { CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, Price } from '@uniswap/sdk-core'
 import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
 
 /**
@@ -96,45 +95,13 @@ export function UnfillableOrdersUpdater(): null {
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   const updateOrderMarketPriceCallback = useCallback(
-    (order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>, fee: FeeInformation | null) => {
-      if (!price.amount || !fee?.amount) return
-
-      const isSellOrder = order.kind === OrderKind.SELL
-
-      const baseAmount = CurrencyAmount.fromRawAmount(
-        order.inputToken,
-        isSellOrder ? order.sellAmount.toString() : price.amount.toString()
-      )
-      const priceAmount = CurrencyAmount.fromRawAmount(
-        order.outputToken,
-        isSellOrder ? price.amount.toString() : order.buyAmount.toString()
-      )
-      const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee.amount.toString())
-
-      const marketPrice = new Price(
-        isSellOrder
-          ? {
-              baseAmount: baseAmount.subtract(feeAmount),
-              quoteAmount: priceAmount,
-            }
-          : {
-              baseAmount: baseAmount,
-              quoteAmount: priceAmount,
-            }
-      )
-
-      const executionPrice = new Price(
-        isSellOrder
-          ? {
-              baseAmount: baseAmount.subtract(feeAmount).subtract(feeAmount),
-              quoteAmount: priceAmount,
-            }
-          : // TODO: fix for buy orders
-            {
-              baseAmount: baseAmount,
-              quoteAmount: priceAmount,
-            }
-      )
+    (
+      order: Order,
+      fee: FeeInformation | null,
+      marketPrice: Price<Currency, Currency>,
+      executionPrice: Price<Currency, Currency>
+    ) => {
+      if (!fee?.amount) return
 
       updatePendingOrderPrices({
         orderId: order.id,
@@ -155,7 +122,18 @@ export function UnfillableOrdersUpdater(): null {
       price: Required<Omit<PriceInformation, 'quoteId'>>,
       fee: FeeInformation | null
     ) => {
-      const isUnfillable = isOrderUnfillable(order, price)
+      if (!fee?.amount || !price.amount) return
+
+      const orderPrice = new Price(
+        order.inputToken,
+        order.outputToken,
+        order.sellAmount.toString(),
+        order.buyAmount.toString()
+      )
+
+      const executionPrice = getOrderExecutionPrice(order, price.amount, fee.amount)
+      const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
+      const isUnfillable = isOrderUnfillable(order, orderPrice, executionPrice)
 
       // Only trigger state update if flag changed
       if (order.isUnfillable !== isUnfillable) {
@@ -168,7 +146,7 @@ export function UnfillableOrdersUpdater(): null {
         }
       }
 
-      updateOrderMarketPriceCallback(order, price, fee)
+      updateOrderMarketPriceCallback(order, fee, marketPrice, executionPrice)
     },
     [setIsOrderUnfillable, updateOrderMarketPriceCallback]
   )
@@ -227,12 +205,12 @@ export function UnfillableOrdersUpdater(): null {
       isUpdating.current = false
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
-  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible])
+  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   useEffect(() => {
     updatePending()
 
-    const interval = setInterval(updatePending, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
+    const interval = setInterval(updatePending, 3000)
 
     return () => clearInterval(interval)
   }, [updatePending])
