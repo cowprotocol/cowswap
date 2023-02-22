@@ -22,6 +22,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
 import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
+import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -210,7 +211,7 @@ export function UnfillableOrdersUpdater(): null {
   useEffect(() => {
     updatePending()
 
-    const interval = setInterval(updatePending, 3000)
+    const interval = setInterval(updatePending, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
 
     return () => clearInterval(interval)
   }, [updatePending])
