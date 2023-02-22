@@ -70,5 +70,5 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
     quoteAmount: outputCurrencyAmount,
   })
 
-  return currentPrice.greaterThan(marketPrice) ? marketPrice : currentPrice
+  return currentPrice.lessThan(marketPrice) ? marketPrice : currentPrice
 }
