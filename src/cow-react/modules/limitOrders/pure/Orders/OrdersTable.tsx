@@ -160,7 +160,7 @@ export function OrdersTable({
               <HeaderElement doubleRow>
                 <span>
                   <Trans>
-                    Est. execution price <QuestionHelper text={RateTooltipHeader} />
+                    Order executes at <QuestionHelper text={RateTooltipHeader} />
                   </Trans>
                 </span>
                 <i>

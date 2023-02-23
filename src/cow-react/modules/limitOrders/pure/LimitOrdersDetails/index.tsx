@@ -74,7 +74,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
             <ArrowDownRight>
               <SVG src={ArrowDownImage} />
             </ArrowDownRight>
-            <p>est. execution price</p>{' '}
+            <p>order executes at</p>{' '}
             <QuestionHelper
               text={
                 <ExecutionPriceTooltip

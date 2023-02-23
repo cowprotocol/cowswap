@@ -172,7 +172,7 @@ export function RateInput() {
 
       <styledEl.EstimatedRate>
         <b>
-          Est. execution price{' '}
+          Order executes at{' '}
           {isLoadingMarketRate ? (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           ) : executionPrice ? (
