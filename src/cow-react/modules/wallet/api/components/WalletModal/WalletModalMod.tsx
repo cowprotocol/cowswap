@@ -34,7 +34,6 @@ import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
 
-
 const CloseColor = styled(Close)`
   path {
     stroke: ${({ theme }) => theme.text4};
@@ -50,8 +49,6 @@ const Wrapper = styled.div`
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
 `
-
-
 
 const UpperSection = styled.div`
   position: relative;
@@ -78,7 +75,6 @@ const OptionGrid = styled.div`
     grid-gap: 10px;
   `};
 `
-
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',

@@ -44,7 +44,6 @@ export const ContentWrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0 1rem 1rem 1rem`};
 `
 
-
 export const GpModal = styled(Modal)<{
   maxWidth?: number | string
   backgroundColor?: string
