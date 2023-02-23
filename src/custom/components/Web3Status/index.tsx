@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import WalletModal from 'components/WalletModal'
 import { Web3StatusInner, Web3StatusConnected } from './Web3StatusMod'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 

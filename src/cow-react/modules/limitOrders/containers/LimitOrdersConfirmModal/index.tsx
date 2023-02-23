@@ -8,7 +8,7 @@ import { PriceImpactDeclineError, tradeFlow, TradeFlowContext } from '../../serv
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
 import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { GpModal } from 'components/Modal'
 import * as styledEl from './styled'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'

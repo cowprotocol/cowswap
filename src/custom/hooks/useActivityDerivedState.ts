@@ -7,7 +7,7 @@ import { Order, OrderStatus } from 'state/orders/actions'
 import { getEtherscanLink } from 'utils'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function useActivityDerivedState({
   chainId,

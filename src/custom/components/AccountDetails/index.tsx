@@ -35,7 +35,7 @@ import {
   WalletNameAddress,
   WalletWrapper,
 } from './styled'
-import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
+import { ConnectedWalletInfo, useWalletInfo } from '@cow/modules/wallet'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { supportedChainId } from 'utils/supportedChainId'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'

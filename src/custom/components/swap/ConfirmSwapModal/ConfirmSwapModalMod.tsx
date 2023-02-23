@@ -15,7 +15,7 @@ import SwapModalHeader from 'components/swap/SwapModalHeader'
 
 // MOD imports
 import TradeGp from 'state/swap/TradeGp'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { SwapConfirmState } from '@cow/modules/swap/state/swapConfirmAtom'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
