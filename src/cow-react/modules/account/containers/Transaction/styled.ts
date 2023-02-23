@@ -1,11 +1,13 @@
 import styled, { css, keyframes } from 'styled-components/macro'
 import { StyledSVG } from 'components/Loader'
-import { LinkStyledButton, StyledLink } from 'theme'
-import { TransactionState as OldTransactionState } from '../AccountDetails/TransactionMod'
+import { ExternalLink, LinkStyledButton, StyledLink } from 'theme'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
+
+
+
 
 export const TransactionWrapper = styled.div`
   width: 100%;
@@ -350,6 +352,19 @@ export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
     color: ${({ theme }) => theme.text1};
   }
 `
+
+export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; success?: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* text-decoration: none !important; */
+  border-radius: 0.5rem;
+  padding: 0.25rem 0rem;
+  font-weight: 500;
+  font-size: 0.825rem;
+  color: ${({ theme }) => theme.primary1};
+`
+
 
 // override the href, pending and success props
 // override mouse actions via CSS when we dont want a clickable row
