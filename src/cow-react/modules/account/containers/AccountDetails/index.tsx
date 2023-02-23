@@ -9,7 +9,7 @@ import { useAppDispatch } from 'state/hooks'
 import { Trans } from '@lingui/macro'
 
 import { getEtherscanLink } from 'utils'
-import { getConnection, getConnectionName, getIsMetaMask, getIsCoinbaseWallet } from 'connection/utils'
+import { getConnection, getConnectionName, getIsMetaMask, getIsCoinbaseWallet } from '@cow/modules/wallet/api/utils/index'
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'

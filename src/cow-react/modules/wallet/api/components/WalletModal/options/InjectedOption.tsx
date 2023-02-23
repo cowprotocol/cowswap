@@ -4,7 +4,7 @@ import INJECTED_ICON_URL from '../../../assets/arrow-right.svg'
 import INJECTED_ICON_WHITE_URL from '../../../assets/arrow-right-white.png'
 import METAMASK_ICON_URL from '../../../assets/metamask.png'
 import { ConnectionType, injectedConnection } from 'connection'
-import { getConnectionName } from 'connection/utils'
+import { getConnectionName } from '@cow/modules/wallet/api/utils'
 
 import Option from '../Option'
 import useTheme from 'hooks/useTheme'

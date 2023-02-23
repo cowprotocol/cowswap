@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { getConnection } from 'connection/utils'
+import { getConnection } from '@cow/modules/wallet/api/utils'
 import { darken } from 'polished'
 // import { useMemo } from 'react'
 import { Activity } from 'react-feather'

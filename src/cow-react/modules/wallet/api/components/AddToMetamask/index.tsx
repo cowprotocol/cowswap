@@ -3,7 +3,7 @@ import { Currency } from '@uniswap/sdk-core'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { useWeb3React } from '@web3-react/core'
-import { getIsMetaMask } from 'connection/utils'
+import { getIsMetaMask } from '@cow/modules/wallet/api/utils'
 import { CheckCircle } from 'react-feather'
 import { RowFixed } from 'components/Row'
 import MetaMaskLogo from '../../assets/metamask.png'

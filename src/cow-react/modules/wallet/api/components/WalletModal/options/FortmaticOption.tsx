@@ -1,7 +1,7 @@
 import { Connector } from '@web3-react/types'
 import FORTMATIC_ICON_URL from '../../../assets/formatic.png'
 import { ConnectionType, fortmaticConnection } from 'connection'
-import { getConnectionName } from 'connection/utils'
+import { getConnectionName } from '@cow/modules/wallet/api/utils'
 
 import Option from '../Option'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
