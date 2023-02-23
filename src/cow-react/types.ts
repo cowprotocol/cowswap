@@ -1,4 +1,5 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+import type { GetQuoteResponse } from '@cowprotocol/contracts'
 
 export type Timestamp = number // Example: 1667981900 === Nov 09 2022 14:18:20
 
@@ -20,3 +21,27 @@ declare global {
   }
 }
 export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
+
+// TODO: it's legacy from the old SDK version
+export interface PriceInformation {
+  token: string
+  amount: string | null
+  quoteId?: number
+}
+
+export interface FeeInformation {
+  expirationDate: string
+  amount: string
+}
+
+export type SimpleGetQuoteResponse = Pick<GetQuoteResponse, 'from'> & {
+  // We need to map BigNumberIsh and Timestamp to what we use: string
+  quote: Omit<GetQuoteResponse['quote'], 'sellAmount' | 'buyAmount' | 'feeAmount' | 'validTo'> & {
+    sellAmount: string
+    buyAmount: string
+    validTo: string
+    feeAmount: string
+  }
+  expiration: string
+  id: number | null
+}

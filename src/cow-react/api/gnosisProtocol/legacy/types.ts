@@ -1,5 +1,14 @@
-import { FeeInformation, FeeQuoteParams, PriceInformation, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
 import { GpPriceStrategy } from 'state/gas/atoms'
+import { OrderMetaData } from '@cow/api/gnosisProtocol'
+
+type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kind'> & {
+  amount: string
+  userAddress?: string | null
+  receiver?: string | null
+  validTo: number
+}
 
 export interface LegacyQuoteParams {
   quoteParams: LegacyFeeQuoteParams

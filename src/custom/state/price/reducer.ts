@@ -5,7 +5,7 @@ import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } fro
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 

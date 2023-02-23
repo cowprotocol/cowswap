@@ -1,6 +1,6 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderClass, OrderKind } from 'state/orders/actions'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersDetails } from './index'

@@ -4,7 +4,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { Fraction } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 
-import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { SimpleGetQuoteResponse } from '@cow/types'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'

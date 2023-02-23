@@ -28,7 +28,7 @@ import {
   LegacyPromiseRejectedResultWithSource,
   LegacyQuoteParams,
 } from '@cow/api/gnosisProtocol/legacy/types'
-import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
 import useSWR, { SWRConfiguration } from 'swr'
 import { getUsdQuoteValidTo } from 'hooks/useStablecoinPrice'
 import { GpPriceStrategy } from 'state/gas/atoms'

@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import ms from 'ms.macro'
-import { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
+import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 
-import { COW_SDK } from 'constants/index'
+import { COW_IPFS_OPTIONS } from 'constants/index'
 
 import {
   appDataUploadQueueAtom,
@@ -11,6 +11,7 @@ import {
   updateAppDataOnUploadQueueAtom,
 } from 'state/appData/atoms'
 import { AppDataKeyParams, AppDataRecord, UpdateAppDataOnUploadQueueParams } from 'state/appData/types'
+import { metadataApiSDK } from '@cow/cowSdk'
 
 const UPLOAD_CHECK_INTERVAL = ms`1 minute`
 const BASE_FOR_EXPONENTIAL_BACKOFF = 2 // in seconds, converted to milliseconds later
@@ -96,9 +97,7 @@ async function _actuallyUploadToIpfs(
   updatePending({ chainId, orderId, uploading: true })
 
   try {
-    const sdk = COW_SDK[chainId]
-
-    const actualHash = await sdk.metadataApi.uploadMetadataDocToIpfs(doc as LatestAppDataDocVersion)
+    const actualHash = await metadataApiSDK.uploadMetadataDocToIpfs(doc as LatestAppDataDocVersion, COW_IPFS_OPTIONS)
 
     removePending({ chainId, orderId })
 

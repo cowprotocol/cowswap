@@ -11,9 +11,9 @@ import { useSetAtom } from 'jotai'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { onlyResolvesLast } from 'utils/async'
-import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { SimpleGetQuoteResponse } from '@cow/types'
 
 // Every 10s
 const REFETCH_CHECK_INTERVAL = 10000

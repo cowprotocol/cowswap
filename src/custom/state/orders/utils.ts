@@ -8,7 +8,7 @@ import { Order } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { calculatePrice, invertPrice } from './priceUtils'
 import { BigNumber } from 'bignumber.js'
-import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { PriceInformation } from '@cow/types'
 
 export type OrderTransitionStatus =
   | 'unknown'

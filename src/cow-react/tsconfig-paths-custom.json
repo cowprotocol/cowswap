@@ -3,6 +3,8 @@
     "paths": {
       "@cow/*": ["cow-react/*"],
       "@src/*": ["*"],
+      "@cowprotocol/cow-sdk": ["../node_modules/@cowprotocol/cow-sdk/dist/index"],
+      "@cowprotocol/cow-sdk/*": ["../node_modules/@cowprotocol/cow-sdk/dist/*"],
       "*": ["custom/*", "*"]
     }
   }

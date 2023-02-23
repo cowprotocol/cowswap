@@ -61,6 +61,8 @@ module.exports = {
       '@cow': path.resolve(__dirname, 'src/cow-react'),
       '@src': path.resolve(__dirname, 'src'),
       'bn.js': path.resolve(__dirname, 'node_modules/bn.js/lib/bn.js'),
+      // TODO: remove after SDK update
+      '@cowprotocol/cow-sdk': path.resolve(__dirname, 'node_modules/@cowprotocol/cow-sdk/dist'),
     },
     // https://webpack.js.org/configuration
     configure: (webpackConfig) => ({
@@ -87,6 +89,10 @@ module.exports = {
           https: require.resolve('https-browserify'),
           crypto: require.resolve('crypto-browserify'),
         },
+        // TODO: remove after SDK update
+        plugins: webpackConfig.resolve.plugins.filter(
+          ({ constructor }) => constructor && constructor.name !== 'ModuleScopePlugin'
+        ),
       },
     }),
   },

@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { BUY_ETH_ADDRESS, OrderKind, QuoteQuery } from '@cowprotocol/contracts'
 import { stringify } from 'qs'
 import {
@@ -30,7 +30,7 @@ import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'util
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { Context } from '@sentry/types'
-import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
+import { PriceInformation, SimpleGetQuoteResponse } from '@cow/types'
 import { GpPriceStrategy } from 'state/gas/atoms'
 import { OrderClass } from 'state/orders/actions'
 

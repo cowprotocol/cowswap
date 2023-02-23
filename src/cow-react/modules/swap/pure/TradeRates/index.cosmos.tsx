@@ -1,7 +1,7 @@
 import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates/index'
 import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
