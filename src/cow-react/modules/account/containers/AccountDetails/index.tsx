@@ -4,8 +4,6 @@ import { useWeb3React } from '@web3-react/core'
 import { getExplorerLabel, shortenAddress } from 'utils'
 
 import Copy from 'components/Copy'
-import { updateSelectedWallet } from 'state/user/reducer'
-import { useAppDispatch } from 'state/hooks'
 import { Trans } from '@lingui/macro'
 
 import { getEtherscanLink } from 'utils'
@@ -58,6 +56,7 @@ import {
 import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
+import { useDisconnectWallet } from '@cow/modules/wallet/api/hooks/useDisconnectWallet'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',
@@ -147,6 +146,7 @@ export function AccountDetails({
   const connection = getConnection(connector)
   const chainId = supportedChainId(connectedChainId)
   const walletInfo = useWalletInfo()
+  const disconnectWallet = useDisconnectWallet()
 
   const explorerOrdersLink = account && chainId && getExplorerAddressLink(chainId, account)
   const explorerLabel = chainId && account ? getExplorerLabel(chainId, account, 'address') : undefined
@@ -155,8 +155,6 @@ export function AccountDetails({
     useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) }) || []
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
   const activityTotalCount = activities?.length || 0
-
-  const dispatch = useAppDispatch()
 
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
@@ -178,12 +176,7 @@ export function AccountDetails({
   }
 
   const handleDisconnectClick = () => {
-    if (connector.deactivate) {
-      connector.deactivate()
-    } else {
-      connector.resetState()
-    }
-    dispatch(updateSelectedWallet({ wallet: undefined }))
+    disconnectWallet()
     handleCloseOrdersPanel()
     toggleWalletModal()
   }
