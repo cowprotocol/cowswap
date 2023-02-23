@@ -1,4 +1,4 @@
-import { GpModal } from '@cow/common/pure/Modal' 
+import { GpModal } from '@cow/common/pure/Modal'
 
 import { Trans } from '@lingui/macro'
 import { Routes } from '@cow/constants/routes'
@@ -37,7 +37,6 @@ import usePrevious from 'hooks/usePrevious'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 
-
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   ACCOUNT: 'account',
@@ -75,7 +74,6 @@ export function WalletModal() {
     }
   }, [pendingConnector, walletView])
 
-  
   const activePrevious = usePrevious(isActive)
   const connectorPrevious = usePrevious(connector)
   useEffect(() => {
@@ -84,7 +82,7 @@ export function WalletModal() {
       ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !pendingError))
     ) {
       setWalletView(WALLET_VIEWS.ACCOUNT)
-      toggleWalletModal() 
+      toggleWalletModal()
     }
   }, [
     setWalletView,
@@ -161,8 +159,8 @@ export function WalletModal() {
         injectedOption = <InjectedOption tryActivation={tryActivation} />
       }
     }
-    
-    const coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} /> 
+
+    const coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
 
     const walletConnectionOption =
       (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
@@ -183,7 +181,7 @@ export function WalletModal() {
     let headerRow
     if (walletView === WALLET_VIEWS.PENDING) {
       headerRow = null
-    }  else {
+    } else {
       headerRow = (
         <HeaderRow>
           <HoverText>
@@ -223,17 +221,14 @@ export function WalletModal() {
         </ContentWrapper>
       </UpperSection>
     )
-
   }
 
-                  
-    return (
-      <GpModal isOpen={walletModalOpen} onDismiss={toggleWalletModal} minHeight={false} maxHeight={90}>
-        <Wrapper>{getModalContent()}</Wrapper>
-      </GpModal>
-    )
+  return (
+    <GpModal isOpen={walletModalOpen} onDismiss={toggleWalletModal} minHeight={false} maxHeight={90}>
+      <Wrapper>{getModalContent()}</Wrapper>
+    </GpModal>
+  )
 }
-
 
 function CustomTerms() {
   return (

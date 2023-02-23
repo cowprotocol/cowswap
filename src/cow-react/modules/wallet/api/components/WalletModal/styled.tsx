@@ -7,7 +7,6 @@ export const TermsWrapper = styled.div`
   color: ${({ theme }) => theme.text1};
 `
 
-
 export const Blurb = styled.div`
   width: 100%;
   margin: 16px 0 0;
@@ -22,7 +21,6 @@ export const NewToEthereum = () => (
     <ExternalLink href="https://ethereum.org/wallets/">Learn more about wallets</ExternalLink>
   </Blurb>
 )
-
 
 export const CloseColor = styled(Close)`
   path {
