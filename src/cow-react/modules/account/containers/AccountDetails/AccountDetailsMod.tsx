@@ -20,7 +20,7 @@ import { ButtonSecondary } from 'components/Button'
 // import { AutoRow } from '../Row'
 // import Transaction from '@src/components/AccountDetails/Transaction'
 
-import Activity from 'components/AccountDetails/Transaction' // MOD
+import Activity from '@cow/modules/account/containers/Transaction' // MOD
 import { ActivityDescriptors } from 'hooks/useRecentActivity' // MOD
 
 export const HeaderRow = styled.div`

@@ -2,10 +2,10 @@ import { Trans } from '@lingui/macro'
 import { Fraction, TradeType } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 
-import { nativeOnChain } from '../../constants/tokens'
-import { useCurrency, useToken } from '../../hooks/Tokens'
-import useENSName from '../../hooks/useENSName'
-import { VoteOption } from '../../state/governance/types'
+import { nativeOnChain } from 'constants/tokens'
+import { useCurrency, useToken } from 'hooks/Tokens'
+import useENSName from 'hooks/useENSName'
+import { VoteOption } from 'state/governance/types'
 import {
   AddLiquidityV2PoolTransactionInfo,
   AddLiquidityV3PoolTransactionInfo,
@@ -27,7 +27,7 @@ import {
   VoteTransactionInfo,
   WithdrawLiquidityStakingTransactionInfo,
   WrapTransactionInfo,
-} from '../../state/transactions/types'
+} from 'state/transactions/types'
 
 function formatAmount(amountRaw: string, decimals: number, sigFigs: number): string {
   return new Fraction(amountRaw, JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))).toSignificant(sigFigs)

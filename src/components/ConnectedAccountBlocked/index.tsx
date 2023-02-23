@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import CopyHelper from 'components/AccountDetails/Copy'
+import CopyHelper from '@cow/modules/account/containers/AccountDetails/Copy'
 import Column from 'components/Column'
 import useTheme from 'hooks/useTheme'
 import { AlertOctagon } from 'react-feather'

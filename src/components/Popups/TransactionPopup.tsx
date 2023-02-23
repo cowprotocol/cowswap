@@ -7,7 +7,7 @@ import { useTransaction } from '../../state/transactions/hooks'
 import { ThemedText } from '../../theme'
 import { ExternalLink } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { TransactionSummary } from '../AccountDetails/TransactionSummary'
+import { TransactionSummary } from '../../cow-react/modules/account/containers/AccountDetails/TransactionSummary'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
 
