@@ -1,25 +1,24 @@
 import { Connector } from '@web3-react/types'
-import WALLET_CONNECT_ICON_URL from 'assets/images/walletConnectIcon.svg'
+import ALPHA_WALLET_ICON_URL from 'assets/images/alphawallet.svg'
 import { ConnectionType, walletConnectConnection } from 'connection'
-import { getConnectionName, getIsAlphaWallet } from 'connection/utils'
+import { getConnectionName } from 'connection/utils'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import Option from 'components/WalletModal/Option'
 import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
-import { getIsAmbireWallet, getIsZengoWallet } from 'connection/utils'
+import { getIsAlphaWallet } from 'connection/utils'
 
 const BASE_PROPS = {
   color: '#4196FC',
-  icon: WALLET_CONNECT_ICON_URL,
-  id: 'wallet-connect',
+  icon: ALPHA_WALLET_ICON_URL,
+  id: 'alpha-wallet',
 }
 
-export function WalletConnectOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
+export function AlphaWalletOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   const { walletName } = useWalletInfo()
 
   const isWalletConnect = useIsActiveWallet(walletConnectConnection)
-  const isActive =
-    isWalletConnect && !getIsZengoWallet(walletName) && !getIsAmbireWallet(walletName) && !getIsAlphaWallet(walletName)
+  const isActive = isWalletConnect && getIsAlphaWallet(walletName)
 
   return (
     <Option
@@ -27,7 +26,7 @@ export function WalletConnectOption({ tryActivation }: { tryActivation: (connect
       isActive={isActive}
       clickable={!isWalletConnect}
       onClick={() => tryActivation(walletConnectConnection.connector)}
-      header={getConnectionName(ConnectionType.WALLET_CONNECT)}
+      header={getConnectionName(ConnectionType.ALPHA_WALLET)}
     />
   )
 }

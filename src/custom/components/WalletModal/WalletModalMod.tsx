@@ -20,7 +20,7 @@ import { ThemedText } from 'theme'
 import { /*Card,*/ LightCard } from 'components/Card'
 // import Modal from '../Modal'
 import { CoinbaseWalletOption /*, OpenCoinbaseWalletOption */ } from 'components/WalletModal/CoinbaseWalletOption'
-import { FortmaticOption } from 'components/WalletModal/FortmaticOption'
+// import { FortmaticOption } from 'components/WalletModal/FortmaticOption'
 import {
   InjectedOption,
   InstallMetaMaskOption,
@@ -31,6 +31,7 @@ import PendingView from 'components/WalletModal/PendingView'
 import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
 import { ZengoOption } from 'components/WalletModal/ZengoOption'
 import { AmbireOption } from 'components/WalletModal/AmbireOption'
+import { AlphaWalletOption } from './AlphaWalletOption'
 
 // MOD imports
 import ModalMod from '@src/components/Modal'
@@ -276,20 +277,23 @@ export default function WalletModal({
     const walletConnectionOption =
       (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
 
-    const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
+    // const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
 
     const zengoOption = <ZengoOption tryActivation={tryActivation} />
 
     const ambireOption = <AmbireOption tryActivation={tryActivation} />
+
+    const alphaWalletOption = <AlphaWalletOption tryActivation={tryActivation} />
 
     return (
       <>
         {injectedOption}
         {walletConnectionOption}
         {coinbaseWalletOption}
-        {fortmaticOption}
+        {/* {fortmaticOption} */}
         {zengoOption}
         {ambireOption}
+        {alphaWalletOption}
       </>
     )
   }

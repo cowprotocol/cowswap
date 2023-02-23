@@ -30,6 +30,10 @@ export function getIsZengoWallet(name: string | undefined): boolean {
   return name?.toLocaleLowerCase().includes('zengo') || false
 }
 
+export function getIsAlphaWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('alpha') || false
+}
+
 const CONNECTIONS: Connection[] = [
   gnosisSafeConnection,
   injectedConnection,
@@ -63,6 +67,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return walletConnectConnection
       case ConnectionType.AMBIRE:
         return walletConnectConnection
+      case ConnectionType.ALPHA_WALLET:
+        return walletConnectConnection
     }
   }
 }
@@ -85,5 +91,7 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Zengo'
     case ConnectionType.AMBIRE:
       return 'Ambire'
+    case ConnectionType.ALPHA_WALLET:
+      return 'Alpha Wallet'
   }
 }

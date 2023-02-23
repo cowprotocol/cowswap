@@ -16,6 +16,7 @@ export enum ConnectionType {
   GNOSIS_SAFE = 'GNOSIS_SAFE',
   ZENGO = 'ZENGO',
   AMBIRE = 'AMBIRE',
+  ALPHA_WALLET = 'ALPHA_WALLET',
 }
 
 export interface Connection {
