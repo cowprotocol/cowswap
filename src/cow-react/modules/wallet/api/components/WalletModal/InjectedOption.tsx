@@ -6,7 +6,7 @@ import METAMASK_ICON_URL from 'assets/images/metamask.png'
 import { ConnectionType, injectedConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
-import Option from 'components/WalletModal/Option'
+import Option from '@cow/modules/wallet/api/components/WalletModal/Option'
 import useTheme from 'hooks/useTheme'
 // import { useSelectedWallet } from 'state/user/hooks'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Dropdown } from '@cow/common/pure/Dropdown'
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
-import { GpModal as Modal } from '@src/custom/components/Modal'
+import { GpModal as Modal } from '@cow/common/pure/Modal'
 
 import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'

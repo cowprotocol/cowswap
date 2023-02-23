@@ -3,7 +3,7 @@ import FORTMATIC_ICON_URL from 'assets/images/fortmaticIcon.png'
 import { ConnectionType, fortmaticConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
-import Option from 'components/WalletModal/Option'
+import Option from '@cow/modules/wallet/api/components/WalletModal/Option'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
 
 const BASE_PROPS = {

@@ -3,7 +3,7 @@ import COINBASE_ICON_URL from 'assets/images/coinbaseWalletIcon.svg'
 import { coinbaseWalletConnection, ConnectionType } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
-import Option from 'components/WalletModal/Option'
+import Option from '@cow/modules/wallet/api/components/WalletModal/Option'
 import { useSelectedWallet } from 'state/user/hooks'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
 

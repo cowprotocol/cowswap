@@ -4,7 +4,7 @@ import { ConnectionType, walletConnectConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
-import Option from 'components/WalletModal/Option'
+import Option from '@cow/modules/wallet/api/components/WalletModal/Option'
 
 const BASE_PROPS = {
   color: '#4196FC',

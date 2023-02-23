@@ -19,31 +19,23 @@ import { ApplicationModal } from 'state/application/reducer'
 import { ThemedText } from 'theme'
 import { /*Card,*/ LightCard } from 'components/Card'
 // import Modal from '../Modal'
-import { CoinbaseWalletOption /*, OpenCoinbaseWalletOption */ } from 'components/WalletModal/CoinbaseWalletOption'
-import { FortmaticOption } from 'components/WalletModal/FortmaticOption'
+import { CoinbaseWalletOption /*, OpenCoinbaseWalletOption */ } from '@cow/modules/wallet/api/components/WalletModal/CoinbaseWalletOption'
+import { FortmaticOption } from '@cow/modules/wallet/api/components/WalletModal/FortmaticOption'
 import {
   InjectedOption,
   InstallMetaMaskOption,
   MetaMaskOption,
   OpenMetaMaskMobileOption,
-} from 'components/WalletModal/InjectedOption'
+} from '@cow/modules/wallet/api/components/WalletModal/InjectedOption'
 import PendingView from 'components/WalletModal/PendingView'
-import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
+import { WalletConnectOption } from '@cow/modules/wallet/api/components/WalletModal/WalletConnectOption'
 
 // MOD imports
 import ModalMod from '@src/components/Modal'
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
+import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
 
-export const CloseIcon = styled.div`
-  position: absolute;
-  right: 1rem;
-  top: 14px;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.6;
-  }
-`
 
 const CloseColor = styled(Close)`
   path {
@@ -61,24 +53,7 @@ const Wrapper = styled.div`
   overflow-y: overlay;
 `
 
-export const HeaderRow = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap};
-  padding: 1rem 1rem;
-  font-weight: 500;
-  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 1rem;
-  `};
-`
 
-export const ContentWrapper = styled.div`
-  /* background-color: ${({ theme }) => theme.bg0}; */
-  background-color: ${({ theme }) => theme.bg1};
-  padding: 0 1rem 1rem 1rem;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0 1rem 1rem 1rem`};
-`
 
 const UpperSection = styled.div`
   position: relative;
@@ -106,16 +81,6 @@ const OptionGrid = styled.div`
   `};
 `
 
-export const HoverText = styled.div`
-  text-decoration: none;
-  color: ${({ theme }) => theme.text1};
-  display: flex;
-  align-items: center;
-
-  :hover {
-    cursor: pointer;
-  }
-`
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
