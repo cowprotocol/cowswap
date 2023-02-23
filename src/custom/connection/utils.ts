@@ -8,7 +8,7 @@ import {
   injectedConnection,
   networkConnection,
   walletConnectConnection,
-} from '@src/connection'
+} from 'connection'
 
 export function getIsInjected(): boolean {
   return Boolean(window.ethereum)
@@ -51,6 +51,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return networkConnection
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection
+      case ConnectionType.ZENGO:
+        return walletConnectConnection
     }
   }
 }
@@ -69,5 +71,7 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Network'
     case ConnectionType.GNOSIS_SAFE:
       return 'Gnosis Safe'
+    case ConnectionType.ZENGO:
+      return 'Zengo'
   }
 }
