@@ -9,7 +9,7 @@ export const useIsActiveWallet = (connection: Connection) => {
   if (!isActive) {
     return false
   } else if (isActive && !selectedWallet) {
-    return true
+    return false
   } else {
     return selectedWallet === connection.type
   }

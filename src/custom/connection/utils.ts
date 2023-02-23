@@ -22,6 +22,14 @@ export function getIsCoinbaseWallet(): boolean {
   return window.ethereum?.isCoinbaseWallet ?? false
 }
 
+export function getIsAmbireWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('ambire') || false
+}
+
+export function getIsZengoWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('zengo') || false
+}
+
 const CONNECTIONS: Connection[] = [
   gnosisSafeConnection,
   injectedConnection,

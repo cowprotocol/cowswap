@@ -5,6 +5,8 @@ import { getConnectionName } from 'connection/utils'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import Option from 'components/WalletModal/Option'
+import { useWalletInfo } from '@src/custom/hooks/useWalletInfo'
+import { getIsZengoWallet } from 'connection/utils'
 
 const BASE_PROPS = {
   color: '#4196FC',
@@ -13,11 +15,16 @@ const BASE_PROPS = {
 }
 
 export function ZengoOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
-  const isActive = useIsActiveWallet(walletConnectConnection)
+  const { walletName } = useWalletInfo()
+
+  const isWalletConnect = useIsActiveWallet(walletConnectConnection)
+  const isActive = isWalletConnect && getIsZengoWallet(walletName)
+
   return (
     <Option
       {...BASE_PROPS}
       isActive={isActive}
+      clickable={!isWalletConnect}
       onClick={() => tryActivation(walletConnectConnection.connector)}
       header={getConnectionName(ConnectionType.ZENGO)}
     />
