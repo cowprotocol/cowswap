@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { ReactComponent as Close } from 'assets/images/x.svg'
-import {AccountDetails} from '../AccountDetails'
+import { AccountDetails } from '../AccountDetails'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { transparentize } from 'polished'
