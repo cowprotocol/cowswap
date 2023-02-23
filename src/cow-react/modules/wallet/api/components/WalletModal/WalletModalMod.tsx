@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
-// import { sendEvent } from 'components/analytics'
+
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 import { ConnectionType, walletConnectConnection } from 'connection'
@@ -17,21 +17,19 @@ import { ReactComponent as Close } from 'assets/images/x.svg'
 import { useModalIsOpen, useToggleWalletModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { ThemedText } from 'theme'
-import { /*Card,*/ LightCard } from 'components/Card'
-// import Modal from '../Modal'
-import { CoinbaseWalletOption /*, OpenCoinbaseWalletOption */ } from '@cow/modules/wallet/api/components/WalletModal/CoinbaseWalletOption'
-import { FortmaticOption } from '@cow/modules/wallet/api/components/WalletModal/FortmaticOption'
+import { LightCard } from 'components/Card'
+import { CoinbaseWalletOption } from './options/CoinbaseWalletOption'
+import { FortmaticOption } from './options/FortmaticOption'
 import {
   InjectedOption,
   InstallMetaMaskOption,
   MetaMaskOption,
   OpenMetaMaskMobileOption,
-} from '@cow/modules/wallet/api/components/WalletModal/InjectedOption'
-import PendingView from 'components/WalletModal/PendingView'
-import { WalletConnectOption } from '@cow/modules/wallet/api/components/WalletModal/WalletConnectOption'
+} from './options//InjectedOption'
+import PendingView from '@cow/modules/wallet/api/components/WalletModal/PendingView'
+import { WalletConnectOption } from './options//WalletConnectOption'
 
-// MOD imports
-import ModalMod from '@src/components/Modal'
+import ModalMod from '@cow/common/pure/Modal'
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'

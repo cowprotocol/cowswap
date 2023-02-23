@@ -9,7 +9,7 @@ import TransactionConfirmationModal, { OperationType } from 'components/Transact
 import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { GpModal } from 'components/Modal'
+import { GpModal } from '@cow/common/pure/Modal'
 import * as styledEl from './styled'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'

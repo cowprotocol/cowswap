@@ -3,39 +3,40 @@ import { t, Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { getConnection } from 'connection/utils'
 import { darken } from 'polished'
-import { useMemo } from 'react'
+// import { useMemo } from 'react'
 import { Activity } from 'react-feather'
 import { useAppSelector } from 'state/hooks'
 import styled, { css } from 'styled-components/macro'
-import { isChainAllowed } from 'utils/switchChain'
 
-import { useHasSocks } from '../../hooks/useSocksBalance'
-import { useToggleWalletModal } from '../../state/application/hooks'
-import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
-import { TransactionDetails } from '../../state/transactions/types'
-import { shortenAddress } from '../../utils'
-import { ButtonSecondary } from '../Button'
-import StatusIcon from '../Identicon/StatusIcon'
-import Loader from '../Loader'
-import { RowBetween } from '../Row'
-import WalletModal from '../WalletModal'
+import { useHasSocks } from 'hooks/useSocksBalance'
+import { useToggleWalletModal } from 'state/application/hooks'
+// import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+// import { TransactionDetails } from 'state/transactions/types'
+import { shortenAddress } from 'utils'
+// import { ButtonSecondary } from 'components/Button'
+import StatusIcon from '@cow/modules/wallet/api/components/StatusIcon'
+import Loader from 'components/Loader'
+import { RowBetween } from 'components/Row'
+// import WalletModal from '../WalletModal'
 
-export const Web3StatusGeneric = styled(ButtonSecondary)`
-  ${({ theme }) => theme.flexRowNoWrap}
-  width: 100%;
+// MOD imports
+import FollowPendingTxPopup, { useCloseFollowTxPopupIfNotPendingOrder } from 'components/Popups/FollowPendingTxPopup'
+import { ButtonSecondary } from 'components/Button'
+
+/* const IconWrapper = styled.div<{ size?: number }>`
+  ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
-  padding: 0.5rem;
-  border-radius: 12px;
-  cursor: pointer;
-  user-select: none;
-  height: 36px;
-  margin-right: 2px;
-  margin-left: 1px;
-  :focus {
-    outline: none;
+  justify-content: center;
+  & > * {
+    height: ${({ size }) => (size ? size + 'px' : '32px')};
+    width: ${({ size }) => (size ? size + 'px' : '32px')};
   }
-`
-export const Web3StatusError = styled(Web3StatusGeneric)`
+`*/
+
+// mod
+export const Web3StatusGeneric = styled(ButtonSecondary)``
+
+const Web3StatusError = styled(Web3StatusGeneric)`
   background-color: ${({ theme }) => theme.red1};
   border: 1px solid ${({ theme }) => theme.red1};
   color: ${({ theme }) => theme.white};
@@ -47,19 +48,17 @@ export const Web3StatusError = styled(Web3StatusGeneric)`
 `
 
 export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
-  background-color: ${({ theme }) => theme.primary4};
-  border: none;
+  /* border: none; */
+  /* color: ${({ theme }) => theme.primaryText1}; */
+  /* font-weight: 500; */
 
-  color: ${({ theme }) => theme.primaryText1};
-  font-weight: 500;
-
-  :hover,
+  /* :hover,
   :focus {
     border: 1px solid ${({ theme }) => darken(0.05, theme.primary4)};
     color: ${({ theme }) => theme.primaryText1};
-  }
+  } */
 
-  ${({ faded }) =>
+  /* ${({ faded }) =>
     faded &&
     css`
       background-color: ${({ theme }) => theme.primary5};
@@ -71,25 +70,29 @@ export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
         border: 1px solid ${({ theme }) => darken(0.05, theme.primary4)};
         color: ${({ theme }) => darken(0.05, theme.primaryText1)};
       }
+    `} */
+`
+
+export const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean; clickDisabled?: boolean }>`
+  background-color: ${({ theme }) => theme.grey1};
+  border: 1px solid transparent;
+  color: ${({ theme }) => theme.text1};
+  font-weight: 500;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.grey1};
+    color: ${({ theme }) => theme.text1};
+  }
+
+  ${({ clickDisabled }) =>
+    clickDisabled &&
+    css`
+      cursor: not-allowed;
+      pointer-events: none;
     `}
 `
 
-const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
-  background-color: ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg1)};
-  border: 1px solid ${({ pending, theme }) => (pending ? theme.primary1 : theme.bg1)};
-  color: ${({ pending, theme }) => (pending ? theme.white : theme.text1)};
-  font-weight: 500;
-  :hover,
-  :focus {
-    border: 1px solid ${({ theme }) => darken(0.05, theme.bg3)};
-
-    :focus {
-      border: 1px solid ${({ pending, theme }) => (pending ? darken(0.1, theme.primary1) : darken(0.1, theme.bg2))};
-    }
-  }
-`
-
-const Text = styled.p`
+export const Text = styled.p`
   flex: 1 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -108,9 +111,9 @@ const NetworkIcon = styled(Activity)`
 `
 
 // we want the latest one to come first, so return negative if a is after b
-function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
-  return b.addedTime - a.addedTime
-}
+// function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
+//   return b.addedTime - a.addedTime
+// }
 
 function Sock() {
   return (
@@ -120,41 +123,32 @@ function Sock() {
   )
 }
 
-function Web3StatusInner() {
+export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
   const { account, connector, chainId, ENSName } = useWeb3React()
   const connectionType = getConnection(connector).type
 
   const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
-  const chainAllowed = chainId && isChainAllowed(connector, chainId)
+  // const allTransactions = useAllTransactions()
 
-  const allTransactions = useAllTransactions()
+  // const sortedRecentTransactions = useMemo(() => {
+  //   const txs = Object.values(allTransactions)
+  //   return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
+  // }, [allTransactions])
 
-  const sortedRecentTransactions = useMemo(() => {
-    const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
-  }, [allTransactions])
+  // const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
 
-  const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
-
-  const hasPendingTransactions = !!pending.length
+  // const hasPendingTransactions = !!pending.length
+  const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useToggleWalletModal()
+  useCloseFollowTxPopupIfNotPendingOrder()
 
   if (!chainId) {
     return null
-  } else if (!chainAllowed) {
-    return (
-      <Web3StatusError onClick={toggleWalletModal}>
-        <NetworkIcon />
-        <Text>
-          <Trans>Wrong Network</Trans>
-        </Text>
-      </Web3StatusError>
-    )
   } else if (error) {
     return (
-      <Web3StatusError onClick={toggleWalletModal}>
+      <Web3StatusError /* onClick={toggleWalletModal} */>
         <NetworkIcon />
         <Text>
           <Trans>Error</Trans>
@@ -164,15 +158,17 @@ function Web3StatusInner() {
   } else if (account) {
     return (
       <Web3StatusConnected
-        data-testid="web3-status-connected"
-        onClick={toggleWalletModal}
+        id="web3-status-connected"
+        // onClick={toggleWalletModal}
         pending={hasPendingTransactions}
       >
         {hasPendingTransactions ? (
           <RowBetween>
-            <Text>
-              <Trans>{pending?.length} Pending</Trans>
-            </Text>{' '}
+            <FollowPendingTxPopup>
+              <Text>
+                <Trans>{pendingCount} Pending</Trans>
+              </Text>{' '}
+            </FollowPendingTxPopup>
             <Loader stroke="white" />
           </RowBetween>
         ) : (
@@ -186,16 +182,17 @@ function Web3StatusInner() {
     )
   } else {
     return (
-      <Web3StatusConnect onClick={toggleWalletModal} faded={!account}>
+      <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
         <Text>
-          <Trans>Connect Wallet</Trans>
+          {/* <Trans>Connect to a wallet</Trans> */}
+          <Trans>Connect wallet</Trans> {/* MOD */}
         </Text>
       </Web3StatusConnect>
     )
   }
 }
 
-export default function Web3Status() {
+/* export default function Web3Status() {
   const { ENSName } = useWeb3React()
 
   const allTransactions = useAllTransactions()
@@ -211,7 +208,7 @@ export default function Web3Status() {
   return (
     <>
       <Web3StatusInner />
-      <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
+        <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
     </>
   )
-}
+} */

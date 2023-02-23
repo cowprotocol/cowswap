@@ -1,9 +1,8 @@
 import styled from 'styled-components/macro'
-import Modal from '@src/components/Modal'
-// import { HeaderRow, ContentWrapper, CloseIcon, HoverText } from '@cow/modules/wallet/api/components/WalletModal/WalletModalMod'
+import Modal from './ModalMod'
 
-export * from '@src/components/Modal'
-export { default } from '@src/components/Modal'
+export * from './ModalMod'
+export { default } from './ModalMod'
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};

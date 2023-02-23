@@ -16,7 +16,7 @@ import { ExternalLink, LinkStyledButton, ThemedText } from '../../theme'
 import { shortenAddress } from 'utils'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { ButtonSecondary } from '../Button'
-import StatusIcon from '../Identicon/StatusIcon'
+import StatusIcon from '@cow/modules/wallet/api/components/StatusIcon'
 import { AutoRow } from '../Row'
 import Transaction from '@src/components/AccountDetails/Transaction'
 
