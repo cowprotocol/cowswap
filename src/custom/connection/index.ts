@@ -15,6 +15,7 @@ export enum ConnectionType {
   NETWORK = 'NETWORK',
   GNOSIS_SAFE = 'GNOSIS_SAFE',
   ZENGO = 'ZENGO',
+  AMBIRE = 'AMBIRE',
 }
 
 export interface Connection {

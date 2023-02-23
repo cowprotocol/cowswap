@@ -30,6 +30,7 @@ import {
 import PendingView from 'components/WalletModal/PendingView'
 import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
 import { ZengoOption } from 'components/WalletModal/ZengoOption'
+import { AmbireOption } from 'components/WalletModal/AmbireOption'
 
 // MOD imports
 import ModalMod from '@src/components/Modal'
@@ -279,6 +280,8 @@ export default function WalletModal({
 
     const zengoOption = <ZengoOption tryActivation={tryActivation} />
 
+    const ambireOption = <AmbireOption tryActivation={tryActivation} />
+
     return (
       <>
         {injectedOption}
@@ -286,6 +289,7 @@ export default function WalletModal({
         {coinbaseWalletOption}
         {fortmaticOption}
         {zengoOption}
+        {ambireOption}
       </>
     )
   }

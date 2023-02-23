@@ -53,6 +53,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return gnosisSafeConnection
       case ConnectionType.ZENGO:
         return walletConnectConnection
+      case ConnectionType.AMBIRE:
+        return walletConnectConnection
     }
   }
 }
@@ -73,5 +75,7 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Gnosis Safe'
     case ConnectionType.ZENGO:
       return 'Zengo'
+    case ConnectionType.AMBIRE:
+      return 'Ambire'
   }
 }
