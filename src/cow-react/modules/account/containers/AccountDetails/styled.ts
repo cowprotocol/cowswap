@@ -14,7 +14,6 @@ import {
 import { ButtonSecondary } from 'components/Button'
 import { ExternalLink } from 'theme'
 
-
 export const WalletName = styled.div`
   width: initial;
   font-size: 0.825rem;

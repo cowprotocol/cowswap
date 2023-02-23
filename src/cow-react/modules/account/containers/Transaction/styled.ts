@@ -6,9 +6,6 @@ import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
 
-
-
-
 export const TransactionWrapper = styled.div`
   width: 100%;
   margin: 0 auto 12px;
@@ -364,7 +361,6 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
   font-size: 0.825rem;
   color: ${({ theme }) => theme.primary1};
 `
-
 
 // override the href, pending and success props
 // override mouse actions via CSS when we dont want a clickable row
