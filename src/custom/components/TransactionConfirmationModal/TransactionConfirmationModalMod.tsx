@@ -23,7 +23,7 @@ import { RowBetween, RowFixed } from 'components/Row'
 import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
 
 // MOD imports
-import { GpModal } from 'components/Modal'
+import { GpModal } from '@cow/common/pure/Modal'
 import {
   ConfirmationPendingContent,
   ConfirmationModalContentProps,

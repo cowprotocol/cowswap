@@ -1,5 +1,5 @@
 import { useWeb3React } from '@web3-react/core'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'

@@ -1,9 +1,10 @@
 import { Connector } from '@web3-react/types'
-import FORTMATIC_ICON_URL from 'assets/images/fortmaticIcon.png'
+import FORTMATIC_ICON_URL from '../../../assets/formatic.png'
 import { ConnectionType, fortmaticConnection } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
-import Option from 'components/WalletModal/Option'
+import Option from '../Option'
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
 
 const BASE_PROPS = {
   color: '#6748FF',
@@ -12,7 +13,9 @@ const BASE_PROPS = {
 }
 
 export function FortmaticOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
-  const isActive = fortmaticConnection.hooks.useIsActive()
+  // const isActive = fortmaticConnection.hooks.useIsActive()
+  const isActive = useIsActiveWallet(fortmaticConnection) // MOD
+
   return (
     <Option
       {...BASE_PROPS}

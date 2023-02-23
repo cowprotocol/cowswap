@@ -1,4 +1,4 @@
-import { GpModal } from 'components/Modal' // mod
+import { GpModal } from '@cow/common/pure/Modal' // mod
 import styled from 'styled-components/macro'
 import WalletModalMod, { WalletModalProps } from './WalletModalMod'
 import { ExternalLink } from 'theme'
@@ -40,6 +40,6 @@ const NewToEthereum = () => (
   </Blurb>
 )
 
-export default function WalletModal(props: Omit<WalletModalProps, 'Modal' | 'NewToEthereum' | 'CustomTerms'>) {
+export function WalletModal(props: Omit<WalletModalProps, 'Modal' | 'NewToEthereum' | 'CustomTerms'>) {
   return <WalletModalMod {...props} Modal={GpModal} NewToEthereum={NewToEthereum} CustomTerms={CustomTerms} />
 }

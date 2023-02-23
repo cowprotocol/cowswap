@@ -1,9 +1,9 @@
 import { Connector } from '@web3-react/types'
-import COINBASE_ICON_URL from 'assets/images/coinbaseWalletIcon.svg'
+import COINBASE_ICON_URL from '../../../assets/coinbase.svg'
 import { coinbaseWalletConnection, ConnectionType } from 'connection'
 import { getConnectionName } from 'connection/utils'
 
-import Option from 'components/WalletModal/Option'
+import Option from '../Option'
 import { useSelectedWallet } from 'state/user/hooks'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
 

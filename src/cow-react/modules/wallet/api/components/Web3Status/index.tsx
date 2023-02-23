@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro'
-import WalletModal from 'components/WalletModal'
 import { Web3StatusInner, Web3StatusConnected } from './Web3StatusMod'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo, WalletModal } from '@cow/modules/wallet'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 
@@ -37,7 +36,7 @@ export const Wrapper = styled.div`
   }
 `
 
-export default function Web3Status() {
+export function Web3Status() {
   const walletInfo = useWalletInfo()
   const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
 

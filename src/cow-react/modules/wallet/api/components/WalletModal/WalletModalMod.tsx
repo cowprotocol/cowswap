@@ -1,41 +1,38 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
-import { sendEvent } from 'components/analytics'
+
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
-import { ConnectionType } from 'connection'
+import { ConnectionType, walletConnectConnection } from 'connection'
 import { getConnection, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'connection/utils'
 import { useCallback, useEffect, useState } from 'react'
-import { ArrowLeft } from 'react-feather'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { updateSelectedWallet } from 'state/user/reducer'
 import styled from 'styled-components/macro'
 import { isMobile } from 'utils/userAgent'
 
-import { ReactComponent as Close } from '../../assets/images/x.svg'
-import { useModalIsOpen, useToggleWalletModal } from '../../state/application/hooks'
-import { ApplicationModal } from '../../state/application/reducer'
-import { ExternalLink, ThemedText } from '../../theme'
-import AccountDetails from '@src/components/AccountDetails'
-import { LightCard } from '../Card'
-import Modal from '../Modal'
-import { CoinbaseWalletOption, OpenCoinbaseWalletOption } from './CoinbaseWalletOption'
-import { FortmaticOption } from './FortmaticOption'
-import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './InjectedOption'
-import PendingView from './PendingView'
-import { WalletConnectOption } from './WalletConnectOption'
+import { ReactComponent as Close } from 'assets/images/x.svg'
+import { useModalIsOpen, useToggleWalletModal } from 'state/application/hooks'
+import { ApplicationModal } from 'state/application/reducer'
+import { ThemedText } from 'theme'
+import { LightCard } from 'components/Card'
+import { CoinbaseWalletOption } from './options/CoinbaseWalletOption'
+import { FortmaticOption } from './options/FortmaticOption'
+import {
+  InjectedOption,
+  InstallMetaMaskOption,
+  MetaMaskOption,
+  OpenMetaMaskMobileOption,
+} from './options//InjectedOption'
+import PendingView from '@cow/modules/wallet/api/components/WalletModal/PendingView'
+import { WalletConnectOption } from './options//WalletConnectOption'
 
-const CloseIcon = styled.div`
-  position: absolute;
-  right: 1rem;
-  top: 14px;
-  &:hover {
-    cursor: pointer;
-    opacity: 0.6;
-  }
-`
+import ModalMod from '@cow/common/pure/Modal'
+import { changeWalletAnalytics } from 'components/analytics'
+import usePrevious from 'hooks/usePrevious'
+import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
 
 const CloseColor = styled(Close)`
   path {
@@ -48,24 +45,9 @@ const Wrapper = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
-`
-
-const HeaderRow = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap};
-  padding: 1rem 1rem;
-  font-weight: 500;
-  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 1rem;
-  `};
-`
-
-const ContentWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg0};
-  padding: 0 1rem 1rem 1rem;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0 1rem 1rem 1rem`};
+  /* MOD */
+  overflow-y: auto; // fallback for 'overlay'
+  overflow-y: overlay;
 `
 
 const UpperSection = styled.div`
@@ -94,34 +76,37 @@ const OptionGrid = styled.div`
   `};
 `
 
-const HoverText = styled.div`
-  text-decoration: none;
-  color: ${({ theme }) => theme.text1};
-  display: flex;
-  align-items: center;
-
-  :hover {
-    cursor: pointer;
-  }
-`
-
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   ACCOUNT: 'account',
   PENDING: 'pending',
 }
 
-export default function WalletModal({
-  pendingTransactions,
-  confirmedTransactions,
-  ENSName,
-}: {
+// MOD
+export interface WalletModalProps {
   pendingTransactions: string[] // hashes of pending
   confirmedTransactions: string[] // hashes of confirmed
   ENSName?: string
-}) {
+  Modal: typeof ModalMod
+  NewToEthereum: () => JSX.Element
+  CustomTerms: () => JSX.Element
+}
+
+export default function WalletModal({
+  // pendingTransactions,
+  // confirmedTransactions,
+  // ENSName,
+  Modal,
+  NewToEthereum,
+  CustomTerms,
+}: WalletModalProps) {
+  /* {
+    pendingTransactions: string[] // hashes of pending
+    confirmedTransactions: string[] // hashes of confirmed
+    ENSName?: string
+  } */
   const dispatch = useAppDispatch()
-  const { account } = useWeb3React()
+  const { account, isActive, connector } = useWeb3React()
 
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
 
@@ -150,16 +135,33 @@ export default function WalletModal({
     }
   }, [pendingConnector, walletView])
 
+  // MOD: close modal when a connection is successful
+  const activePrevious = usePrevious(isActive)
+  const connectorPrevious = usePrevious(connector)
+  useEffect(() => {
+    if (
+      walletModalOpen &&
+      ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !pendingError))
+    ) {
+      setWalletView(WALLET_VIEWS.ACCOUNT)
+      toggleWalletModal() // mod
+    }
+  }, [
+    setWalletView,
+    isActive,
+    pendingError,
+    connector,
+    walletModalOpen,
+    activePrevious,
+    connectorPrevious,
+    toggleWalletModal, // mod
+  ])
+
   const tryActivation = useCallback(
     async (connector: Connector) => {
       const connectionType = getConnection(connector).type
 
-      // log selected wallet
-      sendEvent({
-        category: 'Wallet',
-        action: 'Change Wallet',
-        label: connectionType,
-      })
+      changeWalletAnalytics('Todo: wallet name')
 
       try {
         // Fortmatic opens it's own modal on activation to log in. This modal has a tabIndex
@@ -173,6 +175,19 @@ export default function WalletModal({
         dispatch(updateConnectionError({ connectionType, error: undefined }))
 
         await connector.activate()
+
+        // MOD: Important for balances to load when connected to Gnosis-chain via WalletConnect
+        if (getConnection(connector) === walletConnectConnection) {
+          const provider: any = connector.provider
+
+          if (provider && provider.isWalletConnect) {
+            const { http, rpc, signer } = (connector as any).provider
+            const chainId = signer.connection.chainId
+            // don't default to SupportedChainId.Mainnet - throw instead
+            if (!chainId) throw new Error('[WalletModal::activation error: No chainId')
+            http.connection.url = rpc.custom[chainId]
+          }
+        }
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
       } catch (error: any) {
@@ -196,6 +211,8 @@ export default function WalletModal({
     if (!isInjected) {
       if (!isMobile) {
         injectedOption = <InstallMetaMaskOption />
+      } else {
+        injectedOption = <OpenMetaMaskMobileOption />
       }
     } else if (!isCoinbaseWallet) {
       if (isMetaMask) {
@@ -205,12 +222,13 @@ export default function WalletModal({
       }
     }
 
-    let coinbaseWalletOption
-    if (isMobile && !isInjectedMobileBrowser) {
-      coinbaseWalletOption = <OpenCoinbaseWalletOption />
-    } else if (!isMobile || isCoinbaseWalletBrowser) {
-      coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
-    }
+    // let coinbaseWalletOption
+    // if (isMobile && !isInjectedMobileBrowser) {
+    //   coinbaseWalletOption = <OpenCoinbaseWalletOption />
+    // } else if (!isMobile || isCoinbaseWalletBrowser) {
+    //   coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
+    // }
+    const coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} /> // Mod
 
     const walletConnectionOption =
       (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
@@ -220,30 +238,30 @@ export default function WalletModal({
     return (
       <>
         {injectedOption}
-        {coinbaseWalletOption}
         {walletConnectionOption}
+        {coinbaseWalletOption}
         {fortmaticOption}
       </>
     )
   }
 
   function getModalContent() {
-    if (walletView === WALLET_VIEWS.ACCOUNT) {
-      return (
-        <AccountDetails
-          toggleWalletModal={toggleWalletModal}
-          pendingTransactions={pendingTransactions}
-          confirmedTransactions={confirmedTransactions}
-          ENSName={ENSName}
-          openOptions={openOptions}
-        />
-      )
-    }
+    // if (walletView === WALLET_VIEWS.ACCOUNT) {
+    //   return (
+    //     <AccountDetails
+    //       toggleWalletModal={toggleWalletModal}
+    //       pendingTransactions={pendingTransactions}
+    //       confirmedTransactions={confirmedTransactions}
+    //       ENSName={ENSName}
+    //       openOptions={openOptions}
+    //     />
+    //   )
+    // }
 
     let headerRow
     if (walletView === WALLET_VIEWS.PENDING) {
       headerRow = null
-    } else if (walletView === WALLET_VIEWS.ACCOUNT || !!account) {
+    } /* else if (walletView === WALLET_VIEWS.ACCOUNT || !!account) {
       headerRow = (
         <HeaderRow color="blue">
           <HoverText onClick={() => setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)}>
@@ -251,7 +269,7 @@ export default function WalletModal({
           </HoverText>
         </HeaderRow>
       )
-    } else {
+    } */ else {
       headerRow = (
         <HeaderRow>
           <HoverText>
@@ -282,7 +300,7 @@ export default function WalletModal({
               <LightCard>
                 <AutoRow style={{ flexWrap: 'nowrap' }}>
                   <ThemedText.Body fontSize={12}>
-                    <Trans>
+                    {/* <Trans>
                       By connecting a wallet, you agree to Uniswap Labs’{' '}
                       <ExternalLink
                         style={{ textDecoration: 'underline' }}
@@ -295,7 +313,8 @@ export default function WalletModal({
                         Protocol Disclaimer
                       </ExternalLink>
                       .
-                    </Trans>
+                    </Trans> */}
+                    <CustomTerms />
                   </ThemedText.Body>
                 </AutoRow>
               </LightCard>
