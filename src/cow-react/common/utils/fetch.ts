@@ -5,7 +5,7 @@ import { RateLimiter, RateLimiterOpts } from "limiter";
 
 interface FetchWithRateLimit {
   rateLimit?: RateLimiterOpts, // no rate-limit by default
-  backoffOptions?: BackoffOptions, // basic exponential back-off by default
+  backoff?: BackoffOptions, // basic exponential back-off by default
 }
 
 
@@ -23,7 +23,7 @@ const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
  * @returns the fetch function that would do the rate-limitted requests
  */
 export function fetchWithRateLimit(params?: FetchWithRateLimit): (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> {  
-  const { backoffOptions, rateLimit } = params ?? {}
+  const { backoff, rateLimit } = params ?? {}
   
   // optionally rate limit
   let limiter = rateLimit ? new RateLimiter(rateLimit) : undefined 
@@ -33,7 +33,7 @@ export function fetchWithRateLimit(params?: FetchWithRateLimit): (input: Request
       await limiter.removeTokens(1);
     }
     return fetch(input, init)
-  }, {...DEFAULT_BACKOFF_OPTIONS, ...backoffOptions})
+  }, {...DEFAULT_BACKOFF_OPTIONS, ...backoff})
 }
 
 /**
