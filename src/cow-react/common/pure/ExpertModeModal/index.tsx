@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { ButtonError } from 'components/Button'
-import Modal from 'components/Modal'
+import Modal from '@cow/common/pure/Modal'
 import styled from 'styled-components/macro'
 import { X } from 'react-feather'
 
