@@ -40,9 +40,9 @@ export function Web3Status() {
   const walletInfo = useWalletInfo()
   const latestProvider = localStorage.getItem(STORAGE_KEY_LAST_PROVIDER)
 
-  const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
+  const { pendingActivity } = useCategorizeRecentActivity()
 
-  const { active, ensName } = walletInfo
+  const { active } = walletInfo
   if (!active && !latestProvider) {
     return null
   }
@@ -50,7 +50,7 @@ export function Web3Status() {
   return (
     <Wrapper>
       <Web3StatusInner pendingCount={pendingActivity.length} />
-      <WalletModal ENSName={ensName} pendingTransactions={pendingActivity} confirmedTransactions={confirmedActivity} />
+      <WalletModal />
     </Wrapper>
   )
 }
