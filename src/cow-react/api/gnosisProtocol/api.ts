@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/contracts'
-import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, UnsignedOrder } from 'utils/signatures'
+import { getSigningSchemeApiValue, OrderCancellation, UnsignedOrder } from 'utils/signatures'
 import { APP_DATA_HASH, RAW_CODE_LINK } from 'constants/index'
 import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
 import { environmentName, isBarn, isDev, isLocal, isPr } from 'utils/environments'
@@ -170,21 +170,6 @@ function _getProfile(chainId: ChainId, url: string): Promise<Response> {
 
 function _delete(chainId: ChainId, url: string, data: any): Promise<Response> {
   return _fetch(chainId, url, 'DELETE', data)
-}
-
-export async function sendOrder(params: { chainId: ChainId; order: OrderCreation; owner: string }): Promise<OrderID> {
-  const { chainId, order, owner } = params
-  console.log(`[api:${API_NAME}] Post signed order for network`, chainId, order)
-
-  const orderParams = {
-    ...order,
-    signingScheme: getSigningSchemeApiValue(order.signingScheme),
-    from: owner,
-  }
-  // Call API
-  const response = await _post(chainId, `/orders`, orderParams)
-
-  return _handleOrderResponse<string, typeof orderParams>(response, orderParams)
 }
 
 type OrderCancellationParams = {
@@ -389,7 +374,6 @@ registerOnWindow({
   operator: {
     getQuote,
     getOrder,
-    sendSignedOrder: sendOrder,
     apiGet: _get,
     apiPost: _post,
     getNativePrice,

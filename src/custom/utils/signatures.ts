@@ -3,18 +3,18 @@ import {
   signOrder as signOrderGp,
   signOrderCancellation as signOrderCancellationGp,
   EcdsaSignature,
-  Order,
   OrderCancellation as OrderCancellationGp,
   Signature,
   TypedDataVersionedSigner,
   IntChainIdTypedDataV4Signer,
-  SigningScheme,
 } from '@cowprotocol/contracts'
+import { SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk/order-book'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { TypedDataDomain, Signer } from '@ethersproject/abstract-signer'
 import { registerOnWindow } from 'utils/misc'
+import { Order } from '@cowprotocol/contracts/src/ts/order'
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal
@@ -29,7 +29,7 @@ const V3_ERROR_MSG_REGEX = /eth_signTypedData_v3 does not exist/i
 const RPC_REQUEST_FAILED_REGEX = /RPC request failed/i
 const METAMASK_STRING_CHAINID_REGEX = /provided chainid .* must match the active chainid/i
 
-export type UnsignedOrder = Omit<Order, 'receiver'> & { receiver: string }
+export type UnsignedOrder = Omit<OrderParameters, 'receiver'> & { receiver: string }
 
 export interface SignOrderParams {
   chainId: ChainId
@@ -115,7 +115,7 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
     signer,
   })
 
-  return signOrderGp(domain, order, signer, getSigningSchemeLibValue(signingScheme))
+  return signOrderGp(domain, order as Order, signer, getSigningSchemeLibValue(signingScheme))
 }
 
 async function _signOrderCancellation(params: SingOrderCancellationParams): Promise<Signature> {

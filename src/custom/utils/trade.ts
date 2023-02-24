@@ -5,12 +5,12 @@ import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { OrderID, sendOrder as sendOrderApi, sendSignedOrderCancellation } from '@cow/api/gnosisProtocol'
+import { OrderID, sendSignedOrderCancellation } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSymbol } from '@cow/utils/format'
-import { SigningScheme } from '@cowprotocol/contracts'
+import { SigningScheme } from '@cowprotocol/cow-sdk/order-book'
 import { getProfileData } from '@cow/api/gnosisProtocol/api'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { orderBookApi } from '@cow/cowSdk'
@@ -199,17 +199,13 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   }
 
   // Call API
-  const orderId = await sendOrderApi({
-    chainId,
-    order: {
-      ...unsignedOrder,
-      receiver,
-      signingScheme,
-      // Include the signature
-      signature,
-      quoteId,
-    },
-    owner: account,
+  const orderId = await orderBookApi.sendOrder(chainId, {
+    ...unsignedOrder,
+    receiver,
+    signingScheme,
+    // Include the signature
+    signature,
+    quoteId,
   })
 
   const pendingOrderParams: Order = mapUnsignedOrderToOrder({
