@@ -12,8 +12,6 @@ const useMock = process.env.REACT_APP_MOCK === 'true'
 export const {
   // functions that have a mock
   getProfileData,
-  // functions that do not have a mock
-  getOrderLink = realApi.getOrderLink,
   sendOrder = realApi.sendOrder,
   sendSignedOrderCancellation = realApi.sendSignedOrderCancellation,
   getQuote = realApi.getQuote,

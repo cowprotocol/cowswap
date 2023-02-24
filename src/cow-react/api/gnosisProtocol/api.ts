@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { BUY_ETH_ADDRESS, OrderKind, QuoteQuery } from '@cowprotocol/contracts'
+import { BUY_ETH_ADDRESS, OrderKind } from '@cowprotocol/contracts'
 import { stringify } from 'qs'
 import {
   getSigningSchemeApiValue,
@@ -30,9 +30,11 @@ import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'util
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { Context } from '@sentry/types'
-import { PriceInformation, SimpleGetQuoteResponse } from '@cow/types'
+import { PriceInformation } from '@cow/types'
 import { GpPriceStrategy } from 'state/gas/atoms'
 import { OrderClass } from 'state/orders/actions'
+import { orderBookApi } from '@cow/cowSdk'
+import { OrderQuoteRequest, PriceQuality, SigningScheme, OrderQuoteResponse } from '@cowprotocol/cow-sdk/order-book'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -386,14 +388,14 @@ async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuote
 // ETH-FLOW orders require different quote params
 // check the isEthFlow flag and set in quote req obj
 const ETH_FLOW_AUX_QUOTE_PARAMS = {
-  signingScheme: 'eip1271',
+  signingScheme: SigningScheme.EIP1271,
   onchainOrder: true,
   // Ethflow orders are subsidized in the backend.
   // This means we can assume the verification gas costs are zero for the quote/fee estimation
   verificationGasLimit: 0,
 }
 
-function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
+function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
   const { amount, kind, userAddress, receiver, validTo, sellToken, buyToken, chainId, priceQuality, isEthFlow } = params
   const fallbackAddress = userAddress || ZERO_ADDRESS
 
@@ -406,7 +408,12 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
     appData: getAppDataHash(),
     validTo,
     partiallyFillable: false,
-    priceQuality,
+    priceQuality:
+      priceQuality === PriceQuality.FAST
+        ? PriceQuality.FAST
+        : priceQuality === PriceQuality.OPTIMAL
+        ? PriceQuality.OPTIMAL
+        : undefined,
   }
 
   if (isEthFlow) {
@@ -418,26 +425,25 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): QuoteQuery {
       ...baseParams,
       ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),
       kind: OrderKind.SELL,
-      sellAmountBeforeFee: amount,
+      sellAmountBeforeFee: amount.toString(),
     }
   } else {
     return {
       kind: OrderKind.BUY,
-      buyAmountAfterFee: amount,
+      buyAmountAfterFee: amount.toString(),
       ...baseParams,
     }
   }
 }
 
-export async function getQuote(params: FeeQuoteParams) {
+export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteResponse> {
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
 
-  const response = await _post(chainId, '/quote', quoteParams)
-
-  return _handleQuoteResponse<SimpleGetQuoteResponse>(response, params)
+  return orderBookApi.getQuote(chainId, quoteParams)
 }
 
+// TODO: do we need this method?
 export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<PriceInformation | null> {
   const { baseToken, quoteToken, amount, kind, chainId } = params
   console.log(`[api:${API_NAME}] Get price from API`, params)
