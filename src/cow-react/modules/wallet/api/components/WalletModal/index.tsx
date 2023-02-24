@@ -10,80 +10,28 @@ import { Connector } from '@web3-react/types'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 import { ConnectionType, walletConnectConnection } from 'connection'
-import { getConnection, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils'
+import { getConnection } from '@cow/modules/wallet/api/utils'
 import { useCallback, useEffect, useState } from 'react'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { updateSelectedWallet } from 'state/user/reducer'
-import { isMobile } from 'utils/userAgent'
 
 import { useModalIsOpen, useToggleWalletModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { ThemedText } from 'theme'
 import { LightCard } from 'components/Card'
-import { CoinbaseWalletOption } from '../../../web3-react/containers/ConnectWalletOptions/CoinbaseWalletOption'
-import { FortmaticOption } from '../../../web3-react/containers/ConnectWalletOptions/FortmaticOption'
-import {
-  InjectedOption,
-  InstallMetaMaskOption,
-  MetaMaskOption,
-  OpenMetaMaskMobileOption,
-} from '../../../web3-react/containers/ConnectWalletOptions/InjectedOption'
-import { WalletConnectOption } from '../../../web3-react/containers/ConnectWalletOptions/WalletConnectOption'
 
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 import { PendingView } from '@cow/modules/wallet/api/pure/PendingView'
+import { ConnectWalletOptions } from '@cow/modules/wallet/web3-react/containers'
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   ACCOUNT: 'account',
   PENDING: 'pending',
-}
-
-export type TryActivation = (connector: Connector) => void 
-
-function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
-  const isInjected = getIsInjected()
-  const isMetaMask = getIsMetaMask()
-  const isCoinbaseWallet = getIsCoinbaseWallet()
-
-  const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
-  const isMetaMaskBrowser = isMobile && isMetaMask
-  const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
-
-  let injectedOption
-  if (!isInjected) {
-    if (!isMobile) {
-      injectedOption = <InstallMetaMaskOption />
-    } else {
-      injectedOption = <OpenMetaMaskMobileOption />
-    }
-  } else if (!isCoinbaseWallet) {
-    if (isMetaMask) {
-      injectedOption = <MetaMaskOption tryActivation={tryActivation} />
-    } else {
-      injectedOption = <InjectedOption tryActivation={tryActivation} />
-    }
-  }
-
-  const coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
-
-  const walletConnectionOption =
-    (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
-
-  const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
-
-  return (
-    <>
-      {injectedOption}
-      {walletConnectionOption}
-      {coinbaseWalletOption}
-      {fortmaticOption}
-    </>
-  )
 }
 
 export function WalletModal() {
