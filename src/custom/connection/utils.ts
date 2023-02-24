@@ -6,6 +6,7 @@ import {
   fortmaticConnection,
   gnosisSafeConnection,
   injectedConnection,
+  ledgerConnection,
   networkConnection,
   walletConnectConnection,
 } from 'connection'
@@ -41,6 +42,7 @@ const CONNECTIONS: Connection[] = [
   walletConnectConnection,
   fortmaticConnection,
   networkConnection,
+  ledgerConnection,
 ]
 export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
@@ -69,6 +71,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return walletConnectConnection
       case ConnectionType.ALPHA_WALLET:
         return walletConnectConnection
+      case ConnectionType.LEDGER:
+        return ledgerConnection
     }
   }
 }
@@ -93,5 +97,7 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Ambire'
     case ConnectionType.ALPHA_WALLET:
       return 'Alpha Wallet'
+    case ConnectionType.LEDGER:
+      return 'Ledger'
   }
 }

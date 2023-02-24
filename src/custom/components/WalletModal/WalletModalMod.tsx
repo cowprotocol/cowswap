@@ -32,6 +32,7 @@ import { WalletConnectOption } from 'components/WalletModal/WalletConnectOption'
 import { ZengoOption } from 'components/WalletModal/ZengoOption'
 import { AmbireOption } from 'components/WalletModal/AmbireOption'
 import { AlphaWalletOption } from './AlphaWalletOption'
+import { LedgerOption } from './LedgerOption'
 
 // MOD imports
 import { GpModal } from '../Modal'
@@ -288,11 +289,14 @@ export default function WalletModal({
 
     const alphaWalletOption = <AlphaWalletOption tryActivation={tryActivation} />
 
+    const ledgerOption = <LedgerOption tryActivation={tryActivation} />
+
     return (
       <>
         {injectedOption}
         {walletConnectionOption}
         {coinbaseWalletOption}
+        {ledgerOption}
         {zengoOption}
 
         {viewAll ? (

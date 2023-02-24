@@ -16,6 +16,7 @@ export const initialState: ConnectionState = {
     [ConnectionType.ZENGO]: undefined,
     [ConnectionType.AMBIRE]: undefined,
     [ConnectionType.ALPHA_WALLET]: undefined,
+    [ConnectionType.LEDGER]: undefined,
   },
 }
 

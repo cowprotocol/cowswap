@@ -6,6 +6,7 @@ import { SupportedChainId } from 'constants/chains'
 
 import COWSWAP_LOGO_URL from 'assets/cow-swap/cow.svg'
 import { RPC_URLS } from 'constants/networks'
+import { Ledger } from '../connectors/LedgerConnector'
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',
@@ -17,6 +18,7 @@ export enum ConnectionType {
   ZENGO = 'ZENGO',
   AMBIRE = 'AMBIRE',
   ALPHA_WALLET = 'ALPHA_WALLET',
+  LEDGER = 'LEDGER',
 }
 
 export interface Connection {
@@ -149,4 +151,14 @@ export const coinbaseWalletConnection: Connection = {
   connector: web3CoinbaseWallet,
   hooks: web3CoinbaseWalletHooks,
   type: ConnectionType.COINBASE_WALLET,
+}
+
+const [web3Ledger, web3LedgerHooks] = initializeConnector<Connector>((actions) => {
+  return new Ledger({ actions })
+})
+
+export const ledgerConnection: Connection = {
+  connector: web3Ledger,
+  hooks: web3LedgerHooks,
+  type: ConnectionType.LEDGER,
 }
