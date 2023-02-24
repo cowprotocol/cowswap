@@ -18,7 +18,7 @@ import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { TransactionSummary } from '../AccountDetails/TransactionSummary'
 import { ButtonLight, ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 import { RowBetween, RowFixed } from '../Row'
 import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
 

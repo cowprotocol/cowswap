@@ -1,7 +1,7 @@
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { useWeb3React } from '@web3-react/core'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useGP2SettlementContract } from 'hooks/useContract'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'

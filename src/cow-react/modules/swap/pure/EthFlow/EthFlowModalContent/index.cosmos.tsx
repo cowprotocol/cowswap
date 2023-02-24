@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { useState } from 'react'
 import { useSelect, useValue } from 'react-cosmos/fixture'
 import { EthFlowModalContent } from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent'
-import { GpModal } from 'components/Modal'
+import { GpModal } from '@cow/common/pure/Modal'
 import { getEthFlowModalContentProps } from '@cow/modules/swap/services/ethFlow/mocks'
 import { EthFlowState } from '@cow/modules/swap/services/ethFlow/types'
 import {

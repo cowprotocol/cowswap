@@ -18,7 +18,7 @@ const StyledAvatar = styled.img`
   border-radius: inherit;
 `
 
-export default function Identicon() {
+export function Identicon() {
   const { account } = useWeb3React()
   const { avatar } = useENSAvatar(account ?? undefined)
   const [fetchable, setFetchable] = useState(true)

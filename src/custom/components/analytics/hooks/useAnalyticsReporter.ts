@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 // Mod imports
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { getConnectionName, getIsMetaMask, getConnection } from 'connection/utils'
 import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '..'
 import { Dimensions } from '../GoogleAnalyticsProvider'

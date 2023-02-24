@@ -19,7 +19,7 @@ import { ApplicationModal } from '@src/state/application/reducer'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { CompatibilityIssuesWarning } from '@cow/modules/trade/pure/CompatibilityIssuesWarning'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import styled from 'styled-components/macro'
 import { isUnsupportedTokenInQuote } from '@cow/modules/limitOrders/utils/isUnsupportedTokenInQuote'
 
