@@ -11,6 +11,8 @@ import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/li
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
+import { useUpdateAtom } from 'jotai/utils'
+import { limitOrdersPaginationAtom } from '@cow/modules/limitOrders/state/limitOrdersPaginationAtom'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -22,6 +24,7 @@ export function OrdersWidget() {
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWeb3React()
   const getShowCancellationModal = useCancelOrder()
+  const updateLimitOrdersPagination = useUpdateAtom(limitOrdersPaginationAtom)
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -51,6 +54,10 @@ export function OrdersWidget() {
     spender,
     ordersList.pending
   )
+
+  useEffect(() => {
+    updateLimitOrdersPagination({ pageNumber: currentPageNumber })
+  }, [currentPageNumber, updateLimitOrdersPagination])
 
   // Set page params initially once
   useEffect(() => {

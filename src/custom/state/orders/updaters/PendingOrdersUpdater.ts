@@ -30,6 +30,9 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useAtomValue } from 'jotai/utils'
+import { limitOrdersPaginationAtom } from '@cow/modules/limitOrders/state/limitOrdersPaginationAtom'
+import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -262,6 +265,7 @@ export function PendingOrdersUpdater(): null {
   const presignOrders = usePresignOrders()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const getSafeInfo = useGetSafeInfo()
+  const { pageNumber } = useAtomValue(limitOrdersPaginationAtom)
 
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string, orderClass: OrderClass) => {
@@ -271,12 +275,21 @@ export function PendingOrdersUpdater(): null {
 
       if (!isUpdating.current) {
         isUpdating.current = true
+
+        const allOrders = pendingRef.current.filter((order) => order.class === orderClass)
+        const start = (pageNumber - 1) * LIMIT_ORDERS_PAGE_SIZE
+        const end = start + LIMIT_ORDERS_PAGE_SIZE
+        /**
+         * Update only displayed limit orders corresponding to pagination
+         */
+        const ordersBatch = orderClass === OrderClass.LIMIT ? allOrders.slice(start, end) : allOrders
+
         // const startTime = Date.now()
         // console.debug('[PendingOrdersUpdater] Updating orders....')
         return _updateOrders({
           account,
           chainId,
-          orders: pendingRef.current.filter((order) => order.class === orderClass),
+          orders: ordersBatch,
           addOrUpdateOrders,
           fulfillOrdersBatch,
           expireOrdersBatch,
@@ -298,6 +311,7 @@ export function PendingOrdersUpdater(): null {
       presignOrders,
       updatePresignGnosisSafeTx,
       getSafeInfo,
+      pageNumber,
     ]
   )
 
