@@ -1,11 +1,11 @@
-import { Order, OrderFulfillmentData, OrderKind, OrderStatus } from 'state/orders/actions'
+import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
 import { getOrder, OrderID } from '@cow/api/gnosisProtocol'
 import { stringToCurrency } from 'state/swap/extension'
 import { formatSymbol } from '@cow/utils/format'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
+import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk/order-book'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 

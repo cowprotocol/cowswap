@@ -1,13 +1,5 @@
-import {
-  domain as domainGp,
-  signOrder as signOrderGp,
-  signOrderCancellation as signOrderCancellationGp,
-  EcdsaSignature,
-  OrderCancellation as OrderCancellationGp,
-  Signature,
-  TypedDataVersionedSigner,
-  IntChainIdTypedDataV4Signer,
-} from '@cowprotocol/contracts'
+import { domain as domainGp } from '@cowprotocol/contracts'
+import type { EcdsaSignature, Signature } from '@cowprotocol/contracts'
 import { EcdsaSigningScheme, SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk/order-book'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -55,11 +47,6 @@ export interface SingOrderCancellationParams {
   chainId: ChainId
   signer: Signer
   orderId: string
-  signingScheme: SigningScheme
-}
-
-export interface OrderCancellation extends OrderCancellationGp {
-  signature: string
   signingScheme: SigningScheme
 }
 
@@ -115,7 +102,9 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
     signer,
   })
 
-  return signOrderGp(domain, order as Order, signer, getSigningSchemeLibValue(signingScheme))
+  return import('@cowprotocol/contracts').then((m) =>
+    m.signOrder(domain, order as Order, signer, getSigningSchemeLibValue(signingScheme))
+  )
 }
 
 async function _signOrderCancellation(params: SingOrderCancellationParams): Promise<Signature> {
@@ -129,7 +118,9 @@ async function _signOrderCancellation(params: SingOrderCancellationParams): Prom
     signer,
   })
 
-  return signOrderCancellationGp(domain, orderId, signer, getSigningSchemeLibValue(signingScheme))
+  return import('@cowprotocol/contracts').then((m) =>
+    m.signOrderCancellation(domain, orderId, signer, getSigningSchemeLibValue(signingScheme))
+  )
 }
 
 type SigningResult = { signature: string; signingScheme: EcdsaSigningScheme }
@@ -145,15 +136,17 @@ async function _signPayload(
 
   let _signer
   try {
+    const module = await import('@cowprotocol/contracts')
+
     switch (signingMethod) {
       case 'default':
-        _signer = new TypedDataVersionedSigner(signer)
+        _signer = new module.TypedDataVersionedSigner(signer)
         break
       case 'v3':
-        _signer = new TypedDataVersionedSigner(signer, 'v3')
+        _signer = new module.TypedDataVersionedSigner(signer, 'v3')
         break
       case 'int_v4':
-        _signer = new IntChainIdTypedDataV4Signer(signer)
+        _signer = new module.IntChainIdTypedDataV4Signer(signer)
         break
       default:
         _signer = signer
