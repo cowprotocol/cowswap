@@ -1,14 +1,8 @@
-import { GpModal } from '@cow/common/pure/Modal'
 
-import { Trans } from '@lingui/macro'
-import { Routes } from '@cow/constants/routes'
-import { StyledInternalLink } from 'theme/components'
 
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { AutoColumn } from 'components/Column'
-import { AutoRow } from 'components/Row'
 import { ConnectionType, walletConnectConnection } from 'connection'
 import { getConnection } from '@cow/modules/wallet/api/utils'
 import { useCallback, useEffect, useState } from 'react'
@@ -18,27 +12,17 @@ import { updateSelectedWallet } from 'state/user/reducer'
 
 import { useModalIsOpen, useToggleWalletModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { ThemedText } from 'theme'
-import { LightCard } from 'components/Card'
 
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
-import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
-import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
-import { PendingView } from '@cow/modules/wallet/api/pure/PendingView'
-import { ConnectWalletOptions } from '@cow/modules/wallet/web3-react/containers'
+import { WalletModal as WalletModalPure, WalletModalView } from '../../../api/pure/WalletModal'
 
-const WALLET_VIEWS = {
-  OPTIONS: 'options',
-  ACCOUNT: 'account',
-  PENDING: 'pending',
-}
 
 export function WalletModal() {
   const dispatch = useAppDispatch()
   const { account, isActive, connector } = useWeb3React()
 
-  const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
+  const [walletView, setWalletView] = useState<WalletModalView>('account')
 
   const [pendingConnector, setPendingConnector] = useState<Connector | undefined>()
   const pendingError = useAppSelector((state) =>
@@ -49,17 +33,17 @@ export function WalletModal() {
   const toggleWalletModal = useToggleWalletModal()
 
   const openOptions = useCallback(() => {
-    setWalletView(WALLET_VIEWS.OPTIONS)
+    setWalletView('options')
   }, [setWalletView])
 
   useEffect(() => {
     if (walletModalOpen) {
-      setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
+      setWalletView(account ? 'account' : 'options')
     }
   }, [walletModalOpen, setWalletView, account])
 
   useEffect(() => {
-    if (pendingConnector && walletView !== WALLET_VIEWS.PENDING) {
+    if (pendingConnector && walletView !== 'pending') {
       updateConnectionError({ connectionType: getConnection(pendingConnector).type, error: undefined })
       setPendingConnector(undefined)
     }
@@ -72,7 +56,7 @@ export function WalletModal() {
       walletModalOpen &&
       ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !pendingError))
     ) {
-      setWalletView(WALLET_VIEWS.ACCOUNT)
+      setWalletView('account')
       toggleWalletModal()
     }
   }, [
@@ -100,7 +84,7 @@ export function WalletModal() {
         }
 
         setPendingConnector(connector)
-        setWalletView(WALLET_VIEWS.PENDING)
+        setWalletView('pending')
         dispatch(updateConnectionError({ connectionType, error: undefined }))
 
         await connector.activate()
@@ -127,71 +111,16 @@ export function WalletModal() {
     [dispatch, toggleWalletModal]
   )
 
-  function getModalContent() {
-    let headerRow
-    if (walletView === WALLET_VIEWS.PENDING) {
-      headerRow = null
-    } else {
-      headerRow = (
-        <HeaderRow>
-          <HoverText>
-            <Trans>Connect a wallet</Trans>
-          </HoverText>
-        </HeaderRow>
-      )
-    }
-
-    return (
-      <UpperSection>
-        <CloseIcon onClick={toggleWalletModal}>
-          <CloseColor />
-        </CloseIcon>
-        {headerRow}
-        <ContentWrapper>
-          <AutoColumn gap="16px">
-            {walletView === WALLET_VIEWS.PENDING && pendingConnector && (
-              <PendingView
-                openOptions={openOptions}
-                error={!!pendingError}
-                tryConnection={() => tryActivation(connector)}
-              />
-            )}
-            {walletView !== WALLET_VIEWS.PENDING && (
-              <OptionGrid data-testid="option-grid">
-                <ConnectWalletOptions tryActivation={tryActivation} />
-              </OptionGrid>
-            )}
-            {!pendingError && (
-              <LightCard>
-                <AutoRow style={{ flexWrap: 'nowrap' }}>
-                  <ThemedText.Body fontSize={12}>
-                    <CustomTerms />
-                  </ThemedText.Body>
-                </AutoRow>
-              </LightCard>
-            )}
-          </AutoColumn>
-        </ContentWrapper>
-      </UpperSection>
-    )
-  }
-
   return (
-    <GpModal isOpen={walletModalOpen} onDismiss={toggleWalletModal} minHeight={false} maxHeight={90}>
-      <Wrapper>{getModalContent()}</Wrapper>
-    </GpModal>
-  )
-}
-
-function CustomTerms() {
-  return (
-    <TermsWrapper>
-      <Trans>
-        By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s{' '}
-        <StyledInternalLink style={{ marginRight: 5 }} to={Routes.TERMS_CONDITIONS} target="_blank">
-          Terms &amp; Conditions.
-        </StyledInternalLink>
-      </Trans>
-    </TermsWrapper>
+    <WalletModalPure 
+      isOpen={walletModalOpen} 
+      toggleModal={toggleWalletModal} 
+      openOptions={openOptions} 
+      pendingConnector={pendingConnector}
+      pendingError={pendingError}
+      tryActivation={tryActivation}
+      tryConnection={() => tryActivation(connector)}
+      view={walletView}
+    />
   )
 }
