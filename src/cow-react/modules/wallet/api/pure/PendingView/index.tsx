@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/macro'
-import { Connector } from '@web3-react/types'
 import { ButtonEmpty, ButtonPrimary } from 'components/Button'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
@@ -46,15 +45,13 @@ const LoadingWrapper = styled.div`
   justify-content: center;
 `
 
-export default function PendingView({
-  connector,
+export function PendingView({
   error = false,
-  tryActivation,
+  tryConnection,
   openOptions,
 }: {
-  connector: Connector
   error?: boolean
-  tryActivation: (connector: Connector) => void
+  tryConnection: () => void
   openOptions: () => void
 }) {
   return (
@@ -74,9 +71,7 @@ export default function PendingView({
               <ButtonPrimary
                 $borderRadius="12px"
                 padding="12px"
-                onClick={() => {
-                  tryActivation(connector)
-                }}
+                onClick={tryConnection}
               >
                 <Trans>Try Again</Trans>
               </ButtonPrimary>

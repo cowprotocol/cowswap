@@ -29,13 +29,13 @@ import {
   MetaMaskOption,
   OpenMetaMaskMobileOption,
 } from './options//InjectedOption'
-import PendingView from '@cow/modules/wallet/api/components/WalletModal/PendingView'
 import { WalletConnectOption } from './options//WalletConnectOption'
 
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
+import { PendingView } from '@cow/modules/wallet/api/pure/PendingView'
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -202,9 +202,8 @@ export function WalletModal() {
             {walletView === WALLET_VIEWS.PENDING && pendingConnector && (
               <PendingView
                 openOptions={openOptions}
-                connector={pendingConnector}
                 error={!!pendingError}
-                tryActivation={tryActivation}
+                tryConnection={() => tryActivation(connector)}
               />
             )}
             {walletView !== WALLET_VIEWS.PENDING && <OptionGrid data-testid="option-grid">{getOptions()}</OptionGrid>}
