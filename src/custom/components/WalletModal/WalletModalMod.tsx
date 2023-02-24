@@ -34,9 +34,10 @@ import { AmbireOption } from 'components/WalletModal/AmbireOption'
 import { AlphaWalletOption } from './AlphaWalletOption'
 
 // MOD imports
-import ModalMod from '@src/components/Modal'
+import { GpModal } from '../Modal'
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
+import { ButtonOutlined } from '../Button/ButtonMod'
 
 export const CloseIcon = styled.div`
   position: absolute;
@@ -131,7 +132,7 @@ export interface WalletModalProps {
   pendingTransactions: string[] // hashes of pending
   confirmedTransactions: string[] // hashes of confirmed
   ENSName?: string
-  Modal: typeof ModalMod
+  Modal: typeof GpModal
   NewToEthereum: () => JSX.Element
   CustomTerms: () => JSX.Element
 }
@@ -153,6 +154,8 @@ export default function WalletModal({
   const { account, isActive, connector } = useWeb3React()
 
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
+
+  const [viewAll, setViewAll] = useState(false)
 
   const [pendingConnector, setPendingConnector] = useState<Connector | undefined>()
   const pendingError = useAppSelector((state) =>
@@ -290,10 +293,16 @@ export default function WalletModal({
         {injectedOption}
         {walletConnectionOption}
         {coinbaseWalletOption}
-        {/* {fortmaticOption} */}
         {zengoOption}
-        {ambireOption}
-        {alphaWalletOption}
+
+        {viewAll ? (
+          <>
+            {ambireOption}
+            {alphaWalletOption}
+          </>
+        ) : (
+          <ButtonOutlined onClick={() => setViewAll(true)}>View all</ButtonOutlined>
+        )}
       </>
     )
   }
