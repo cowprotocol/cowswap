@@ -1,4 +1,4 @@
-import { Connection } from 'connection'
+import { Connection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
 import { useSelectedWallet } from 'state/user/hooks'
 
 export const useIsActiveWallet = (connection: Connection) => {

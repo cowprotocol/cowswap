@@ -1,8 +1,8 @@
 import jazzicon from '@metamask/jazzicon'
-import { useWeb3React } from '@web3-react/core'
 import useENSAvatar from 'hooks/useENSAvatar'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components/macro'
+import { useWalletInfo } from '../../hooks/useWalletInfo'
 
 const StyledIdenticon = styled.div`
   height: 1rem;
@@ -19,7 +19,7 @@ const StyledAvatar = styled.img`
 `
 
 export function Identicon() {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const { avatar } = useENSAvatar(account ?? undefined)
   const [fetchable, setFetchable] = useState(true)
 

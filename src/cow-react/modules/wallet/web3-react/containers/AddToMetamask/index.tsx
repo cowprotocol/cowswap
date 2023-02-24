@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { Currency } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
-import { getIsMetaMask } from '@cow/modules/wallet/api/utils'
+import { getIsMetaMask } from '@cow/modules/wallet/web3-react/utils/connection'
 import { addTokenToMetamaskAnalytics } from 'components/analytics'
 import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 import { AddToMetamask as AddToMetamaskPure } from '../../../api/pure/AddToMetamask'

@@ -8,7 +8,7 @@ import {
   injectedConnection,
   networkConnection,
   walletConnectConnection,
-} from 'connection'
+} from '@cow/modules/wallet/web3-react/utils/connection/connections'
 
 export function getIsInjected(): boolean {
   return Boolean(window.ethereum)

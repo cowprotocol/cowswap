@@ -5,7 +5,7 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 // Mod imports
 import { useWalletInfo } from '@cow/modules/wallet'
-import { getConnectionName, getIsMetaMask, getConnection } from '@cow/modules/wallet/api/utils'
+import { getConnectionName, getIsMetaMask, getConnection } from '@cow/modules/wallet/web3-react/utils/connection'
 import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '..'
 import { Dimensions } from '../GoogleAnalyticsProvider'
 import usePrevious from 'hooks/usePrevious'

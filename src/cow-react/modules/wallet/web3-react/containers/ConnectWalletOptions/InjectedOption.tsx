@@ -1,13 +1,13 @@
 import { Trans } from '@lingui/macro'
 
-import { ConnectionType, injectedConnection } from 'connection'
-import { getConnectionName } from '@cow/modules/wallet/api/utils'
+import { ConnectionType, injectedConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
+import { getConnectionName } from '@cow/modules/wallet/web3-react/utils/connection'
 
 import useTheme from 'hooks/useTheme'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet' 
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { metamaskInjectedOption, metamaskInstallOption, injectedOption, injectedOptionDark } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
-import { TryActivation } from '@cow/modules/wallet/api'
+import { TryActivation } from '..'
 
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'

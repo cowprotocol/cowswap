@@ -6,7 +6,7 @@ import {
   injectedConnection,
   networkConnection,
   walletConnectConnection,
-} from 'connection'
+} from '@cow/modules/wallet/web3-react/utils/connection/connections'
 import { getChainInfo } from 'constants/chainInfo'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 import { RPC_URLS } from 'constants/networks'
