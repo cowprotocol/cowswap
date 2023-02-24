@@ -1,19 +1,14 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/contracts'
-import { getSigningSchemeApiValue, OrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { APP_DATA_HASH, RAW_CODE_LINK } from 'constants/index'
-import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
-import { environmentName, isBarn, isDev, isLocal, isPr } from 'utils/environments'
-import OperatorError, { ApiErrorObject } from '@cow/api/gnosisProtocol/errors/OperatorError'
+import { APP_DATA_HASH } from 'constants/index'
+import { registerOnWindow } from 'utils/misc'
+import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
 
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
-import * as Sentry from '@sentry/browser'
-import { constructSentryError } from 'utils/logging'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
-import { Context } from '@sentry/types'
 import { orderBookApi } from '@cow/cowSdk'
 import {
   OrderQuoteRequest,
@@ -53,21 +48,9 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
     [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://api.cow.fi/affiliate/api',
   }
 }
-const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
-function getPriceStrategyUrl(): Record<ChainId, string> {
-  const environment = environmentName !== 'production' ? 'barn' : environmentName
-  const url = STRATEGY_URL_BASE + environment + '/strategies'
-
-  return {
-    [ChainId.MAINNET]: url + '/strategy-1.json',
-    [ChainId.GNOSIS_CHAIN]: url + '/strategy-100.json',
-    [ChainId.GOERLI]: url + '/strategy-5.json',
-  }
-}
 
 const API_BASE_URL = getGnosisProtocolUrl()
 const PROFILE_API_BASE_URL = getProfileUrl()
-const STRATEGY_API_URL = getPriceStrategyUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -119,20 +102,6 @@ function _getProfileApiBaseUrl(chainId: ChainId): string {
   }
 }
 
-function _getPriceStrategyApiBaseUrl(chainId: ChainId): string {
-  const baseUrl = STRATEGY_API_URL[chainId]
-
-  if (!baseUrl) {
-    new Error(
-      `Unsupported Network. The ${API_NAME} strategy API is not deployed in the Network ` +
-        chainId +
-        '. Defaulting to using Mainnet strategy.'
-    )
-  }
-
-  return baseUrl
-}
-
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
   return fetch(baseUrl + url, {
@@ -166,92 +135,6 @@ function _get(chainId: ChainId, url: string): Promise<Response> {
 
 function _getProfile(chainId: ChainId, url: string): Promise<Response> {
   return _fetchProfile(chainId, url, 'GET')
-}
-
-function _delete(chainId: ChainId, url: string, data: any): Promise<Response> {
-  return _fetch(chainId, url, 'DELETE', data)
-}
-
-type OrderCancellationParams = {
-  chainId: ChainId
-  cancellation: OrderCancellation
-  owner: string
-}
-
-export async function sendSignedOrderCancellation(params: OrderCancellationParams): Promise<void> {
-  const { chainId, cancellation, owner: from } = params
-
-  console.log(`[api:${API_NAME}] Delete signed order for network`, chainId, cancellation)
-
-  const response = await _delete(chainId, `/orders/${cancellation.orderUid}`, {
-    signature: cancellation.signature,
-    signingScheme: getSigningSchemeApiValue(cancellation.signingScheme),
-    from,
-  })
-
-  if (!response.ok) {
-    // Raise an exception
-    const errorObject: ApiErrorObject = await response.json()
-    const errorMessage = OperatorError.getErrorFromStatusCode(response.status, errorObject, 'delete')
-
-    throw new Error(errorMessage)
-  }
-
-  console.log(`[api:${API_NAME}] Cancelled order`, cancellation.orderUid, chainId)
-}
-
-function _handleError<P extends Context>(error: any, response: Response, params: P, operation: 'ORDER' | 'QUOTE') {
-  // Create a new sentry error OR
-  // use the previously created and rethrown error from the try block
-  const sentryError =
-    error?.sentryError ||
-    constructSentryError(error, response, {
-      message: getProviderErrorMessage(error),
-      name: `[${operation}-ERROR] - Unmapped ${operation} Error`,
-    })
-  // Create the error tags or use the previously constructed ones from the try block
-  const tags = error?.tags || { errorType: operation, backendErrorCode: response.status }
-
-  // report to sentry
-  Sentry.captureException(sentryError, {
-    tags,
-    // TODO: change/remove this in context update pr
-    contexts: { params },
-  })
-
-  return error?.baseError || error
-}
-
-async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedOrder>(
-  response: Response,
-  params: P
-): Promise<T> {
-  try {
-    // Handle response
-    if (!response.ok) {
-      // Raise an exception
-      const errorObject: ApiErrorObject = await response.json()
-      const description = OperatorError.getErrorFromStatusCode(response.status, errorObject, 'create')
-
-      // create the OperatorError from the constructed error message and the original error
-      const error = new OperatorError(Object.assign({}, errorObject, { description }))
-
-      // we need to create a sentry error and keep the original mapped quote error
-      throw constructSentryError(error, response, {
-        message: `${error.description}`,
-        name: `[${error.name}] - ${error.type}`,
-        optionalTags: {
-          orderErrorType: error.type,
-        },
-      })
-    } else {
-      const uid = await response.json()
-      console.log(`[api:${API_NAME}] Success posting the signed order`, JSON.stringify(uid))
-      return uid
-    }
-  } catch (error: any) {
-    throw _handleError(error, response, params, 'ORDER')
-  }
 }
 
 // ETH-FLOW orders require different quote params

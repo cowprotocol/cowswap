@@ -5,12 +5,12 @@ import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { OrderID, sendSignedOrderCancellation } from '@cow/api/gnosisProtocol'
+import { OrderID } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSymbol } from '@cow/utils/format'
-import { SigningScheme } from '@cowprotocol/cow-sdk/order-book'
+import { SigningScheme, EcdsaSigningScheme } from '@cowprotocol/cow-sdk/order-book'
 import { getProfileData } from '@cow/api/gnosisProtocol/api'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { orderBookApi } from '@cow/cowSdk'
@@ -191,7 +191,8 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   let signature: string | undefined
   if (allowsOffchainSigning) {
     const signedOrderInfo = await signOrder(unsignedOrder, chainId, signer)
-    signingScheme = signedOrderInfo.signingScheme
+    signingScheme =
+      signedOrderInfo.signingScheme === EcdsaSigningScheme.ETHSIGN ? SigningScheme.ETHSIGN : SigningScheme.EIP1271
     signature = signedOrderInfo.signature
   } else {
     signingScheme = SigningScheme.PRESIGN
@@ -229,14 +230,13 @@ type OrderCancellationParams = {
 }
 
 export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
-  const { orderId, account, chainId, signer, cancelPendingOrder } = params
+  const { orderId, chainId, signer, cancelPendingOrder } = params
 
   const { signature, signingScheme } = await signOrderCancellation(orderId, chainId, signer)
 
-  await sendSignedOrderCancellation({
-    chainId,
-    owner: account,
-    cancellation: { orderUid: orderId, signature, signingScheme },
+  await orderBookApi.sendSignedOrderCancellation(chainId, orderId, {
+    signature,
+    signingScheme,
   })
 
   cancelPendingOrder({ chainId, id: orderId })

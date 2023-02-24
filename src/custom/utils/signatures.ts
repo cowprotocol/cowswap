@@ -8,7 +8,7 @@ import {
   TypedDataVersionedSigner,
   IntChainIdTypedDataV4Signer,
 } from '@cowprotocol/contracts'
-import { SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk/order-book'
+import { EcdsaSigningScheme, SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk/order-book'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
@@ -132,7 +132,7 @@ async function _signOrderCancellation(params: SingOrderCancellationParams): Prom
   return signOrderCancellationGp(domain, orderId, signer, getSigningSchemeLibValue(signingScheme))
 }
 
-type SigningResult = { signature: string; signingScheme: SigningScheme }
+type SigningResult = { signature: string; signingScheme: EcdsaSigningScheme }
 
 async function _signPayload(
   payload: any,
@@ -140,7 +140,7 @@ async function _signPayload(
   signer: Signer,
   signingMethod: 'default' | 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4'
 ): Promise<SigningResult> {
-  const signingScheme = signingMethod === 'eth_sign' ? SigningScheme.ETHSIGN : SigningScheme.EIP712
+  const signingScheme = signingMethod === 'eth_sign' ? EcdsaSigningScheme.ETHSIGN : EcdsaSigningScheme.EIP712
   let signature: Signature | null = null
 
   let _signer
