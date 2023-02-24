@@ -1,10 +1,10 @@
 import { ConnectionType } from '@cow/modules/wallet/web3-react/utils/connection/connections'
 import styled from 'styled-components/macro'
 
-import CoinbaseWalletIcon from '../../assets/coinbase.svg'
-import FortmaticIcon from '../../assets/formatic.png'
-import WalletConnectIcon from '../../assets/walletConnectIcon.svg'
-import { Identicon } from '../../../web3-react/containers/Identicon'
+import CoinbaseWalletIcon from '../../../api/assets/coinbase.svg'
+import FortmaticIcon from '../../../api/assets/formatic.png'
+import WalletConnectIcon from '../../../api/assets/walletConnectIcon.svg'
+import { Identicon } from '../Identicon'
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
