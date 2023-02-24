@@ -37,17 +37,17 @@ import { OrderClass } from 'state/orders/actions'
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
-      [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
-      [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
-      [ChainId.GOERLI]: process.env.REACT_APP_API_URL_STAGING_GOERLI || 'https://barn.api.cow.fi/goerli/api',
+      [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://dev.cow.fi/mainnet/api',
+      [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://dev.cow.fi/xdai/api',
+      [ChainId.GOERLI]: process.env.REACT_APP_API_URL_STAGING_GOERLI || 'https://dev.cow.fi/goerli/api',
     }
   }
 
   // Production, staging, ens, ...
   return {
-    [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://api.cow.fi/mainnet/api',
-    [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
-    [ChainId.GOERLI]: process.env.REACT_APP_API_URL_PROD_GOERLI || 'https://api.cow.fi/goerli/api',
+    [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://dev.cow.fi/mainnet/api',
+    [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://dev.cow.fi/xdai/api',
+    [ChainId.GOERLI]: process.env.REACT_APP_API_URL_PROD_GOERLI || 'https://dev.cow.fi/goerli/api',
   }
 }
 
@@ -55,13 +55,13 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
       [ChainId.MAINNET]:
-        process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/affiliate/api',
+        process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://dev.cow.fi/affiliate/api',
     }
   }
 
   // Production, staging, ens, ...
   return {
-    [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://api.cow.fi/affiliate/api',
+    [ChainId.MAINNET]: process.env.REACT_APP_PROFILE_API_URL_STAGING_MAINNET || 'https://dev.cow.fi/affiliate/api',
   }
 }
 const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'
