@@ -3,37 +3,20 @@ import { t, Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { getConnection } from '@cow/modules/wallet/api/utils'
 import { darken } from 'polished'
-// import { useMemo } from 'react'
 import { Activity } from 'react-feather'
 import { useAppSelector } from 'state/hooks'
 import styled, { css } from 'styled-components/macro'
 
 import { useHasSocks } from 'hooks/useSocksBalance'
 import { useToggleWalletModal } from 'state/application/hooks'
-// import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
-// import { TransactionDetails } from 'state/transactions/types'
 import { shortenAddress } from 'utils'
-// import { ButtonSecondary } from 'components/Button'
 import StatusIcon from '@cow/modules/wallet/api/components/StatusIcon'
 import Loader from 'components/Loader'
 import { RowBetween } from 'components/Row'
-// import WalletModal from '../WalletModal'
 
-// MOD imports
 import FollowPendingTxPopup, { useCloseFollowTxPopupIfNotPendingOrder } from 'components/Popups/FollowPendingTxPopup'
 import { ButtonSecondary } from 'components/Button'
 
-/* const IconWrapper = styled.div<{ size?: number }>`
-  ${({ theme }) => theme.flexColumnNoWrap};
-  align-items: center;
-  justify-content: center;
-  & > * {
-    height: ${({ size }) => (size ? size + 'px' : '32px')};
-    width: ${({ size }) => (size ? size + 'px' : '32px')};
-  }
-`*/
-
-// mod
 export const Web3StatusGeneric = styled(ButtonSecondary)``
 
 const Web3StatusError = styled(Web3StatusGeneric)`
@@ -110,11 +93,6 @@ const NetworkIcon = styled(Activity)`
   height: 16px;
 `
 
-// we want the latest one to come first, so return negative if a is after b
-// function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
-//   return b.addedTime - a.addedTime
-// }
-
 function Sock() {
   return (
     <span role="img" aria-label={t`has socks emoji`} style={{ marginTop: -4, marginBottom: -4 }}>
@@ -129,16 +107,6 @@ export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
 
   const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
 
-  // const allTransactions = useAllTransactions()
-
-  // const sortedRecentTransactions = useMemo(() => {
-  //   const txs = Object.values(allTransactions)
-  //   return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
-  // }, [allTransactions])
-
-  // const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
-
-  // const hasPendingTransactions = !!pending.length
   const hasPendingTransactions = !!pendingCount
   const hasSocks = useHasSocks()
   const toggleWalletModal = useToggleWalletModal()
@@ -148,7 +116,7 @@ export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
     return null
   } else if (error) {
     return (
-      <Web3StatusError /* onClick={toggleWalletModal} */>
+      <Web3StatusError>
         <NetworkIcon />
         <Text>
           <Trans>Error</Trans>
@@ -159,7 +127,6 @@ export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
     return (
       <Web3StatusConnected
         id="web3-status-connected"
-        // onClick={toggleWalletModal}
         pending={hasPendingTransactions}
       >
         {hasPendingTransactions ? (
@@ -184,31 +151,9 @@ export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
     return (
       <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
         <Text>
-          {/* <Trans>Connect to a wallet</Trans> */}
-          <Trans>Connect wallet</Trans> {/* MOD */}
+          <Trans>Connect wallet</Trans>
         </Text>
       </Web3StatusConnect>
     )
   }
 }
-
-/* export default function Web3Status() {
-  const { ENSName } = useWeb3React()
-
-  const allTransactions = useAllTransactions()
-
-  const sortedRecentTransactions = useMemo(() => {
-    const txs = Object.values(allTransactions)
-    return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
-  }, [allTransactions])
-
-  const pending = sortedRecentTransactions.filter((tx) => !tx.receipt).map((tx) => tx.hash)
-  const confirmed = sortedRecentTransactions.filter((tx) => tx.receipt).map((tx) => tx.hash)
-
-  return (
-    <>
-      <Web3StatusInner />
-        <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
-    </>
-  )
-} */
