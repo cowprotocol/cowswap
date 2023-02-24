@@ -1,36 +1,23 @@
 import { Trans } from '@lingui/macro'
 import { Connector } from '@web3-react/types'
-import INJECTED_ICON_URL from '../../../assets/arrow-right.svg'
-import INJECTED_ICON_WHITE_URL from '../../../assets/arrow-right-white.png'
-import METAMASK_ICON_URL from '../../../assets/metamask.png'
+
 import { ConnectionType, injectedConnection } from 'connection'
 import { getConnectionName } from '@cow/modules/wallet/api/utils'
 
-import Option from '../Option'
 import useTheme from 'hooks/useTheme'
-// import { useSelectedWallet } from 'state/user/hooks'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet' 
+import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
+import { metamaskInjectedOption, metamaskInstallOption, injectedOption, injectedOptionDark } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
 
-const INJECTED_PROPS = {
-  color: '#010101',
-  icon: INJECTED_ICON_URL,
-  id: 'injected',
-}
-
-const METAMASK_PROPS = {
-  color: '#E8831D',
-  icon: METAMASK_ICON_URL,
-  id: 'metamask',
-}
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 
 export function InstallMetaMaskOption() {
-  return <Option {...METAMASK_PROPS} header={<Trans>Install MetaMask</Trans>} link={'https://metamask.io/'} />
+  return <ConnectWalletOption {...metamaskInstallOption} />
 }
 
 export function OpenMetaMaskMobileOption() {
-  return <Option {...METAMASK_PROPS} header={<Trans>MetaMask</Trans>} link={METAMASK_DEEP_LINK + window.location} />
+  return <ConnectWalletOption {...metamaskInjectedOption} header={<Trans>MetaMask</Trans>} link={METAMASK_DEEP_LINK + window.location} />
 }
 
 export function MetaMaskOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
@@ -38,8 +25,8 @@ export function MetaMaskOption({ tryActivation }: { tryActivation: (connector: C
   const isActive = useIsActiveWallet(injectedConnection) // MOD
 
   return (
-    <Option
-      {...METAMASK_PROPS}
+    <ConnectWalletOption
+      {...metamaskInjectedOption}
       isActive={isActive}
       header={getConnectionName(ConnectionType.INJECTED, true)}
       onClick={() => tryActivation(injectedConnection.connector)}
@@ -48,16 +35,14 @@ export function MetaMaskOption({ tryActivation }: { tryActivation: (connector: C
 }
 
 export function InjectedOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
-  // const isActive = injectedConnection.hooks.useIsActive()
   const { darkMode } = useTheme()
-  const icon = darkMode ? INJECTED_ICON_WHITE_URL : INJECTED_ICON_URL
+  const options = darkMode ? injectedOptionDark : injectedOption
 
   const isActive = useIsActiveWallet(injectedConnection) // MOD
 
   return (
-    <Option
-      {...INJECTED_PROPS}
-      icon={icon}
+    <ConnectWalletOption
+      {...options}
       isActive={isActive}
       header={getConnectionName(ConnectionType.INJECTED, false)}
       onClick={() => tryActivation(injectedConnection.connector)}

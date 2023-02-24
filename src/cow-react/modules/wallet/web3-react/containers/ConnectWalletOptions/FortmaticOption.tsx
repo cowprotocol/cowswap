@@ -1,24 +1,20 @@
 import { Connector } from '@web3-react/types'
-import FORTMATIC_ICON_URL from '../../../assets/formatic.png'
+
 import { ConnectionType, fortmaticConnection } from 'connection'
 import { getConnectionName } from '@cow/modules/wallet/api/utils'
 
-import Option from '../Option'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
+import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 
-const BASE_PROPS = {
-  color: '#6748FF',
-  icon: FORTMATIC_ICON_URL,
-  id: 'fortmatic',
-}
+import { formaticOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
+
 
 export function FortmaticOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
-  // const isActive = fortmaticConnection.hooks.useIsActive()
-  const isActive = useIsActiveWallet(fortmaticConnection) // MOD
+  const isActive = useIsActiveWallet(fortmaticConnection)
 
   return (
-    <Option
-      {...BASE_PROPS}
+    <ConnectWalletOption
+      {...formaticOption}
       isActive={isActive}
       onClick={() => tryActivation(fortmaticConnection.connector)}
       header={getConnectionName(ConnectionType.FORTMATIC)}

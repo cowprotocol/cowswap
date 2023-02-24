@@ -21,15 +21,15 @@ import { useModalIsOpen, useToggleWalletModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { ThemedText } from 'theme'
 import { LightCard } from 'components/Card'
-import { CoinbaseWalletOption } from './options/CoinbaseWalletOption'
-import { FortmaticOption } from './options/FortmaticOption'
+import { CoinbaseWalletOption } from '../../../web3-react/containers/ConnectWalletOptions/CoinbaseWalletOption'
+import { FortmaticOption } from '../../../web3-react/containers/ConnectWalletOptions/FortmaticOption'
 import {
   InjectedOption,
   InstallMetaMaskOption,
   MetaMaskOption,
   OpenMetaMaskMobileOption,
-} from './options//InjectedOption'
-import { WalletConnectOption } from './options//WalletConnectOption'
+} from '../../../web3-react/containers/ConnectWalletOptions/InjectedOption'
+import { WalletConnectOption } from '../../../web3-react/containers/ConnectWalletOptions/WalletConnectOption'
 
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
