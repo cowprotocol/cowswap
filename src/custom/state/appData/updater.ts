@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import ms from 'ms.macro'
-import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 
 import { COW_IPFS_OPTIONS } from 'constants/index'
 
@@ -93,11 +92,13 @@ async function _actuallyUploadToIpfs(
 ) {
   const { doc, chainId, orderId, failedAttempts, hash } = appDataRecord
 
+  if (!doc) return
+
   // Update state to prevent it to be uploaded by another process in the meantime
   updatePending({ chainId, orderId, uploading: true })
 
   try {
-    const actualHash = await metadataApiSDK.uploadMetadataDocToIpfs(doc as LatestAppDataDocVersion, COW_IPFS_OPTIONS)
+    const actualHash = await metadataApiSDK.uploadMetadataDocToIpfs(doc, COW_IPFS_OPTIONS)
 
     removePending({ chainId, orderId })
 
