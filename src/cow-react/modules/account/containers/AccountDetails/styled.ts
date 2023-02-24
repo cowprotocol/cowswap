@@ -1,17 +1,6 @@
 import styled from 'styled-components/macro'
 import { CopyIcon, TransactionStatusText } from 'components/Copy'
 import { StyledLink } from 'theme'
-import {
-  WalletName,
-  AccountSection as AccountSectionMod,
-  AccountGroupingRow as AccountGroupingRowMod,
-  UpperSection as UpperSectionMod,
-  AddressLink,
-  WalletAction,
-  TransactionListWrapper,
-  AccountControl,
-  IconWrapper,
-} from './AccountDetailsMod'
 import { YellowCard } from 'components/Card'
 import {
   StatusLabelWrapper,
@@ -21,12 +10,85 @@ import {
   SummaryInner,
   TransactionInnerDetail,
   TextAlert,
-} from '../Transaction/styled'
+} from '../../containers/Transaction/styled'
+import { ButtonSecondary } from 'components/Button'
+import { ExternalLink } from 'theme'
+
+export const WalletName = styled.div`
+  width: initial;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text3};
+`
+
+export const IconWrapper = styled.div<{ size?: number }>`
+  ${({ theme }) => theme.flexColumnNoWrap};
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  & > img,
+  span {
+    height: ${({ size }) => (size ? size + 'px' : '32px')};
+    width: ${({ size }) => (size ? size + 'px' : '32px')};
+  }
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    align-items: flex-end;
+  `};
+`
+
+export const TransactionListWrapper = styled.div`
+  ${({ theme }) => theme.flexColumnNoWrap};
+`
+
+export const WalletAction = styled(ButtonSecondary)`
+  width: fit-content;
+  font-weight: 400;
+  margin-left: 8px;
+  font-size: 0.825rem;
+  padding: 4px 6px;
+  :hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`
 
 export const WalletActions = styled.div`
   display: flex;
   flex-flow: row wrap;
   margin: 10px 0 0;
+`
+
+export const AddressLink = styled(ExternalLink)<{ hasENS: boolean; isENS: boolean }>`
+  font-size: 0.825rem;
+  color: ${({ theme }) => theme.text3};
+  margin-left: 1rem;
+  font-size: 0.825rem;
+  display: flex;
+  :hover {
+    color: ${({ theme }) => theme.text2};
+  }
+`
+
+export const AccountControl = styled.div`
+  display: flex;
+  justify-content: space-between;
+  min-width: 0;
+  width: 100%;
+
+  font-weight: 500;
+  font-size: 1.25rem;
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  p {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `
 
 export const WalletSecondaryActions = styled.div``
@@ -151,7 +213,25 @@ export const WalletWrapper = styled.div`
   }
 `
 
-export const UpperSection = styled(UpperSectionMod)`
+export const UpperSection = styled.div`
+  position: relative;
+
+  h5 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  h5:last-child {
+    margin-bottom: 0px;
+  }
+
+  h4 {
+    margin-top: 0;
+    font-weight: 500;
+  }
+
   flex: 1 1 auto;
   width: 100%;
 `
@@ -172,12 +252,22 @@ export const InfoCard = styled.div`
   `};
 `
 
-export const AccountSection = styled(AccountSectionMod)`
+export const AccountSection = styled.div`
+  background-color: ${({ theme }) => theme.bg1};
   padding: 0;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0;`};
 `
 
-export const AccountGroupingRow = styled(AccountGroupingRowMod)`
+export const AccountGroupingRow = styled.div`
+  justify-content: space-between;
+  align-items: center;
+  color: ${({ theme }) => theme.text1};
+
+  div {
+    ${({ theme }) => theme.flexRowNoWrap}
+    align-items: center;
+  }
+
   margin: 0;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`

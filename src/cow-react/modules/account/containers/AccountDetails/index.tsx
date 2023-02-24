@@ -9,20 +9,19 @@ import { useAppDispatch } from 'state/hooks'
 import { Trans } from '@lingui/macro'
 
 import { getEtherscanLink } from 'utils'
-import { getConnection, getConnectionName, getIsMetaMask, getIsCoinbaseWallet } from 'connection/utils'
+import {
+  getConnection,
+  getConnectionName,
+  getIsMetaMask,
+  getIsCoinbaseWallet,
+} from '@cow/modules/wallet/api/utils/index'
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
 import Identicon from 'components/Identicon'
+import { ActivityDescriptors } from 'hooks/useRecentActivity'
+import Activity from '@cow/modules/account/containers/Transaction'
 
-import {
-  WalletName,
-  WalletAction,
-  AccountControl,
-  AddressLink,
-  IconWrapper,
-  renderActivities,
-} from './AccountDetailsMod'
 import {
   NetworkCard,
   Wrapper,
@@ -34,6 +33,12 @@ import {
   WalletSecondaryActions,
   WalletNameAddress,
   WalletWrapper,
+  WalletName,
+  WalletAction,
+  AccountControl,
+  AddressLink,
+  IconWrapper,
+  TransactionListWrapper,
 } from './styled'
 import { ConnectedWalletInfo, useWalletInfo } from '@cow/modules/wallet'
 import { MouseoverTooltip } from 'components/Tooltip'
@@ -64,6 +69,16 @@ export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
+}
+
+export function renderActivities(activities: ActivityDescriptors[]) {
+  return (
+    <TransactionListWrapper>
+      {activities.map((activity) => {
+        return <Activity key={activity.id} activity={activity} />
+      })}
+    </TransactionListWrapper>
+  )
 }
 
 export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo?: ConnectedWalletInfo, size?: number) {

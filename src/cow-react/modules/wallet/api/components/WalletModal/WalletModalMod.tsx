@@ -5,7 +5,7 @@ import { Connector } from '@web3-react/types'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 import { ConnectionType, walletConnectConnection } from 'connection'
-import { getConnection, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'connection/utils'
+import { getConnection, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils'
 import { useCallback, useEffect, useState } from 'react'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
@@ -97,7 +97,6 @@ export default function WalletModal({
   // confirmedTransactions,
   // ENSName,
   Modal,
-  NewToEthereum,
   CustomTerms,
 }: WalletModalProps) {
   /* {

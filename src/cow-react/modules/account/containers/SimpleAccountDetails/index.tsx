@@ -2,9 +2,9 @@ import { Fragment } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'hooks/useRecentActivity'
 import { supportedChainId } from 'utils/supportedChainId'
-import { LowerSectionSimple, Wrapper } from './styled'
-import { renderActivities } from './AccountDetailsMod'
-import { AccountDetailsProps } from '.'
+import { LowerSectionSimple, Wrapper } from '../AccountDetails/styled'
+import { renderActivities } from '../AccountDetails'
+import { AccountDetailsProps } from '../AccountDetails'
 import styled from 'styled-components/macro'
 
 type StyledWrapperProps = { $margin?: string }
