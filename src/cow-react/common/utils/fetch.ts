@@ -23,7 +23,7 @@ const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
  * @returns the fetch function that would do the rate-limitted requests
  */
 export function fetchWithRateLimit(params?: FetchWithRateLimit): (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> {  
-  const { backoff, rateLimit } = params ?? {}
+  const { backoff, rateLimit } = params || {}
   
   // optionally rate limit
   let limiter = rateLimit ? new RateLimiter(rateLimit) : undefined 
