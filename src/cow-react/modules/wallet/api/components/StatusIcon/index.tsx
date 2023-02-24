@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import CoinbaseWalletIcon from '../../assets/coinbase.svg'
 import FortmaticIcon from '../../assets/formatic.png'
 import WalletConnectIcon from '../../assets/walletConnectIcon.svg'
-import { Identicon } from '../Identicon'
+import { Identicon } from '../../../web3-react/containers/Identicon'
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};

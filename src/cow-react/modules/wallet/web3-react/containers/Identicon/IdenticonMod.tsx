@@ -5,7 +5,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components/macro'
 
 // MOD imports
-import { IdenticonProps } from 'components/Identicon'
+import { IdenticonProps } from '.'
 
 export const StyledIdenticon = styled.div`
   height: 1rem;

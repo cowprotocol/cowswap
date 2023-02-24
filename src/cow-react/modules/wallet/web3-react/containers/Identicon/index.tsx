@@ -15,7 +15,7 @@ export interface IdenticonProps {
   account?: string
 }
 
-export default function Identicon({ account, size }: IdenticonProps) {
+export function Identicon({ account, size }: IdenticonProps) {
   return (
     <Wrapper size={size}>
       <IdenticonMod size={size} account={account} />
