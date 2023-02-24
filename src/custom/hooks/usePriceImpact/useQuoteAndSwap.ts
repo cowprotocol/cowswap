@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTradeExactInWithFee } from 'state/swap/extension'

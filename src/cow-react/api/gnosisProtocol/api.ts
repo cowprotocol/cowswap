@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 import { APP_DATA_HASH } from 'constants/index'
 import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
 

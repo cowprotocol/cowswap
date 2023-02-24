@@ -13,7 +13,7 @@ import { SwapConfirmManager, useSwapConfirmManager } from '@cow/modules/swap/hoo
 import { useWETHContract } from 'hooks/useContract'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'

@@ -1,6 +1,6 @@
 import { Order, OrderStatus } from 'state/orders/actions'
 import { COW, DAI, GNO, USDC } from 'constants/tokens'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 import { WETH_GOERLI } from 'utils/goerli/constants'
 import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 

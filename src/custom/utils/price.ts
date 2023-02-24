@@ -4,7 +4,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { getQuote } from '@cow/api/gnosisProtocol'
 import { SWR_OPTIONS } from 'constants/index'
 
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 import { toErc20Address } from 'utils/tokens'
 import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from '@cow/types'

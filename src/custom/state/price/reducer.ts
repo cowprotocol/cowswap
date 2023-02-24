@@ -1,6 +1,6 @@
 import { createReducer, PayloadAction, current } from '@reduxjs/toolkit'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'

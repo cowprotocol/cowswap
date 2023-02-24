@@ -4,7 +4,7 @@ import { SupportedChainId } from 'constants/chains'
 import store from 'state'
 import { addPendingOrder, OrderStatus } from 'state/orders/actions'
 import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 import { TransactionSubmittedContent } from 'components/TransactionConfirmationModal/index'
 import styled from 'styled-components/macro'
 
