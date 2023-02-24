@@ -15,14 +15,6 @@ const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
  * @returns A promise of the request
  */
 // By default, it will wait
-export function fetchWithBackoff(
-  input: RequestInfo | URL,
-  init?: RequestInit,
-  backoffOptions?: BackoffOptions
-): Promise<Response> {
-  if (backoffOptions) {
-    return backOff(() => fetch(input, init), { ...DEFAULT_BACKOFF_OPTIONS, ...backoffOptions })
-  }
-
-  return fetch(input, init)
+export function fetchWithBackoff(input: RequestInfo | URL, init?: RequestInit, backoffOptions?: BackoffOptions): Promise<Response> {
+  return backOff(() => fetch(input, init), {...DEFAULT_BACKOFF_OPTIONS, ...backoffOptions})
 }
