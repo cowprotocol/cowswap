@@ -1,6 +1,7 @@
 import { Token } from '@uniswap/sdk-core'
 
-import { Order, OrderStatus, OrderKind, SerializedOrder, addPendingOrder, OrderClass } from './actions'
+import { Order, OrderStatus, OrderKind, SerializedOrder, addPendingOrder } from './actions'
+import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 import { RADIX_DECIMAL } from 'constants/index'
 import { serializeToken } from 'state/user/hooks'
 import store from '..'

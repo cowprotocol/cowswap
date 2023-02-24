@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { isAddress, shortenAddress } from 'utils'
-import { ChangeOrderStatusParams, Order, OrderClass, OrderKind, OrderStatus } from 'state/orders/actions'
+import { ChangeOrderStatusParams, Order, OrderKind, OrderStatus } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
 import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'

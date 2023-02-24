@@ -27,7 +27,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { BaseFlowContext } from '@cow/modules/swap/services/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
-import { OrderClass } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>

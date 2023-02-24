@@ -3,7 +3,8 @@ import { timestamp } from '@cowprotocol/contracts'
 
 import { useWeb3React } from '@web3-react/core'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
-import { Order, OrderClass } from 'state/orders/actions'
+import { Order } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'

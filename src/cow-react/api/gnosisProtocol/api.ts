@@ -1,13 +1,7 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { BUY_ETH_ADDRESS, OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 import { stringify } from 'qs'
-import {
-  getSigningSchemeApiValue,
-  OrderCancellation,
-  OrderCreation,
-  SigningSchemeValue,
-  UnsignedOrder,
-} from 'utils/signatures'
+import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, UnsignedOrder } from 'utils/signatures'
 import { APP_DATA_HASH, RAW_CODE_LINK } from 'constants/index'
 import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
 import { environmentName, isBarn, isDev, isLocal, isPr } from 'utils/environments'
@@ -32,9 +26,14 @@ import { getAppDataHash } from 'constants/appDataHash'
 import { Context } from '@sentry/types'
 import { PriceInformation } from '@cow/types'
 import { GpPriceStrategy } from 'state/gas/atoms'
-import { OrderClass } from 'state/orders/actions'
 import { orderBookApi } from '@cow/cowSdk'
-import { OrderQuoteRequest, PriceQuality, SigningScheme, OrderQuoteResponse } from '@cowprotocol/cow-sdk/order-book'
+import {
+  OrderQuoteRequest,
+  PriceQuality,
+  SigningScheme,
+  OrderQuoteResponse,
+  EnrichedOrder,
+} from '@cowprotocol/cow-sdk/order-book'
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -93,51 +92,6 @@ const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
  * where orderDigest = keccak256(orderStruct). bytes32.
  */
 export type OrderID = string
-export type ApiOrderStatus = 'fulfilled' | 'expired' | 'cancelled' | 'invalid' | 'presignaturePending' | 'open'
-
-// TODO: replace it by import from SDK
-export interface OrderMetaData {
-  creationDate: string
-  owner: string
-  uid: OrderID
-  availableBalance: string
-  executedBuyAmount: string
-  executedSellAmount: string
-  executedSellAmountBeforeFees: string
-  executedFeeAmount: string
-  executedSurplusFee: string | null
-  invalidated: false
-  sellToken: string
-  buyToken: string
-  sellAmount: string
-  buyAmount: string
-  validTo: number
-  appData: number
-  feeAmount: string
-  kind: OrderKind
-  partiallyFillable: false
-  signature: string
-  signingScheme: SigningSchemeValue
-  status: ApiOrderStatus
-  receiver: string
-  class: OrderClass
-  // EthFlow related fields
-  ethflowData: EthFlowData
-  onchainOrderData?: OnChainOrderData
-}
-
-type EthFlowData = {
-  userValidTo: number
-  isRefunded: boolean // TODO: remove once `isRefundable` is implemented
-  isRefundable?: boolean | null // TODO: not yet available from the API
-  refundTxHash?: string | null
-}
-
-type OnChainOrderData = {
-  sender: string
-  placementError?: string | null
-}
-
 export interface TradeMetaData {
   blockNumber: number
   logIndex: number
@@ -468,45 +422,12 @@ export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<Pri
   })
 }
 
-export async function getOrder(chainId: ChainId, orderId: string): Promise<OrderMetaData | null> {
-  console.debug(`[api:${API_NAME}] Get order for `, chainId, orderId)
-  try {
-    const response = await _get(chainId, `/orders/${orderId}`)
-
-    if (!response.ok) {
-      const errorResponse: ApiErrorObject = await response.json()
-      throw new OperatorError(errorResponse)
-    } else {
-      const order = await response.json()
-
-      return transformEthFlowOrder(order)
-    }
-  } catch (error: any) {
-    console.error('Error getting order information:', error)
-    throw new OperatorError(UNHANDLED_ORDER_ERROR)
-  }
+export async function getOrder(chainId: ChainId, orderId: string): Promise<EnrichedOrder | null> {
+  return orderBookApi.getOrder(chainId, orderId)
 }
 
-export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<OrderMetaData[]> {
-  console.debug(`[api:${API_NAME}] Get orders for `, chainId, owner, limit, offset)
-
-  const queryString = stringify({ limit, offset }, { addQueryPrefix: true })
-
-  try {
-    const response = await _get(chainId, `/account/${owner}/orders/${queryString}`)
-
-    if (!response.ok) {
-      const errorResponse: ApiErrorObject = await response.json()
-      throw new OperatorError(errorResponse)
-    } else {
-      const orders = await response.json()
-
-      return orders.map(transformEthFlowOrder)
-    }
-  } catch (error: any) {
-    console.error('Error getting orders information:', error)
-    throw new OperatorError(UNHANDLED_ORDER_ERROR)
-  }
+export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<EnrichedOrder[]> {
+  return orderBookApi.getOrders(chainId, { owner, limit, offset })
 }
 
 type GetTradesParams = {
@@ -579,13 +500,6 @@ export async function getPriceStrategy(chainId: ChainId): Promise<PriceStrategy>
   }
 }
 
-// Reference https://www.xdaichain.com/for-developers/developer-resources/gas-price-oracle
-export interface GChainFeeEndpointResponse {
-  average: number
-  fast: number
-  slow: number
-}
-
 export interface NativePrice {
   price: number
 }
@@ -606,21 +520,6 @@ export async function getNativePrice(chainId: ChainId, address: string): Promise
     console.error('Error getting native price:', error)
     throw new Error('Error getting native price: ' + error)
   }
-}
-
-// TODO: won't be necessary once SDK is integrated
-function transformEthFlowOrder(order: OrderMetaData): OrderMetaData {
-  const { ethflowData } = order
-
-  if (!ethflowData) {
-    return order
-  }
-
-  const { userValidTo: validTo } = ethflowData
-  const owner = order.onchainOrderData?.sender || order.owner
-  const sellToken = BUY_ETH_ADDRESS
-
-  return { ...order, validTo, owner, sellToken }
 }
 
 // Register some globals for convenience

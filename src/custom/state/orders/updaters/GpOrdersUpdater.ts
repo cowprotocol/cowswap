@@ -5,7 +5,6 @@ import { Token } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
 import { useAddOrUpdateOrders } from 'state/orders/hooks'
-import { OrderMetaData } from '@cow/api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
@@ -15,6 +14,8 @@ import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
 import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
+import { OrderBalance } from '@cowprotocol/contracts/src/ts/order'
 
 function _getTokenFromMapping(
   address: string,
@@ -40,7 +41,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 }
 
 function _transformGpOrderToStoreOrder(
-  order: OrderMetaData,
+  order: EnrichedOrder,
   chainId: ChainId,
   allTokens: { [address: string]: Token | null }
 ): Order | undefined {
@@ -85,7 +86,7 @@ function _transformGpOrderToStoreOrder(
     creationTime,
     summary: '',
     status,
-    receiver,
+    receiver: receiver || '', // TODO: check it
     apiAdditionalInfo: order,
     isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
     // EthFlow related
@@ -93,6 +94,9 @@ function _transformGpOrderToStoreOrder(
     validTo: ethflowData?.userValidTo || order.validTo,
     isRefunded: ethflowData?.isRefunded, // TODO: this will be removed from the API
     refundHash: ethflowData?.refundTxHash || undefined,
+    // TODO: dirty cast, the Order interface should be refactored
+    buyTokenBalance: order.buyTokenBalance as any as OrderBalance,
+    sellTokenBalance: order.sellTokenBalance as any as OrderBalance,
   }
   // The function to compute the summary needs the Order instance to exist already
   // That's why it's not used before and an empty string is set instead
@@ -119,7 +123,7 @@ function _getInputToken(
 }
 
 function _getMissingTokensAddresses(
-  orders: OrderMetaData[],
+  orders: EnrichedOrder[],
   tokens: Record<string, Token>,
   chainId: ChainId
 ): string[] {
@@ -153,7 +157,7 @@ async function _fetchTokens(
   }, {})
 }
 
-function _filterOrders(orders: OrderMetaData[], tokens: Record<string, Token | null>, chainId: ChainId): Order[] {
+function _filterOrders(orders: EnrichedOrder[], tokens: Record<string, Token | null>, chainId: ChainId): Order[] {
   return orders.reduce<Order[]>((acc, order) => {
     const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens)
     if (storeOrder) {

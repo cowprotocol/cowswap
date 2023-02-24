@@ -1,9 +1,9 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { FeeInformation, PriceInformation } from '@cow/types'
 import { GpPriceStrategy } from 'state/gas/atoms'
-import { OrderMetaData } from '@cow/api/gnosisProtocol'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
 
-type FeeQuoteParams = Pick<OrderMetaData, 'sellToken' | 'buyToken' | 'kind'> & {
+type FeeQuoteParams = Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> & {
   amount: string
   userAddress?: string | null
   receiver?: string | null

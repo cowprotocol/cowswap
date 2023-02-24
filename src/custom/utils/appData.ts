@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { environmentName } from 'utils/environments'
-import { OrderClass } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 import { metadataApiSDK } from '@cow/cowSdk'
 
 export type BuildAppDataParams = {

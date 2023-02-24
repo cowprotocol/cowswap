@@ -17,7 +17,8 @@ import {
   useUpdatePresignGnosisSafeTx,
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
-import { Order, OrderClass, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
 import { SupportedChainId as ChainId } from 'constants/chains'

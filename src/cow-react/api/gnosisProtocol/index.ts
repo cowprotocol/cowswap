@@ -1,7 +1,7 @@
 import * as realApi from './api'
 import * as mockApi from './mock'
 
-export type { UnsupportedToken, OrderID, OrderMetaData } from './api'
+export type { UnsupportedToken, OrderID } from './api'
 
 const useMock = process.env.REACT_APP_MOCK === 'true'
 
@@ -17,6 +17,5 @@ export const {
   getQuote = realApi.getQuote,
   getPriceQuoteLegacy = realApi.getPriceQuoteLegacy,
   getOrder = realApi.getOrder,
-  getTrades = realApi.getTrades,
   // functions that only have a mock
 } = useMock ? { ...mockApi } : { ...realApi }
