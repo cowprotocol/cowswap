@@ -18,7 +18,6 @@ import { useGetCoingeckoUsdPrice } from '@cow/api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 // import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
@@ -48,8 +47,6 @@ export default function useCowUsdPrice(currency?: Currency) {
 
   const chainId = currency?.chainId
   const { account } = useWeb3React()
-  // use quote loading as a price update dependency
-  const strategy = useGetGpPriceStrategy()
 
   const sellTokenAddress = currency?.wrapped.address
   const sellTokenDecimals = currency?.wrapped.decimals
@@ -111,7 +108,6 @@ export default function useCowUsdPrice(currency?: Currency) {
 
   // get SWR cached usd price
   const { data: quote, error: errorResponse } = useGetGpUsdcPrice({
-    strategy,
     quoteParams,
   })
 
@@ -155,7 +151,7 @@ export default function useCowUsdPrice(currency?: Currency) {
         })
       }
     }
-  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency, isStablecoin, quote])
+  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, currency, isStablecoin, quote])
 
   /* const lastPrice = useRef(bestUsdPrice)
   if (!bestUsdPrice || !lastPrice.current || !bestUsdPrice.equalTo(lastPrice.current)) {

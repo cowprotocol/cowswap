@@ -5,27 +5,16 @@ import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, UnsignedOrd
 import { APP_DATA_HASH, RAW_CODE_LINK } from 'constants/index'
 import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
 import { environmentName, isBarn, isDev, isLocal, isPr } from 'utils/environments'
-import OperatorError, {
-  ApiErrorCodeDetails,
-  ApiErrorCodes,
-  ApiErrorObject,
-} from '@cow/api/gnosisProtocol/errors/OperatorError'
-import QuoteError, {
-  GpQuoteErrorCodes,
-  GpQuoteErrorDetails,
-  GpQuoteErrorObject,
-  mapOperatorErrorToQuoteError,
-} from '@cow/api/gnosisProtocol/errors/QuoteError'
+import OperatorError, { ApiErrorObject } from '@cow/api/gnosisProtocol/errors/OperatorError'
+
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
-import { LegacyFeeQuoteParams as FeeQuoteParams, LegacyPriceQuoteParams as PriceQuoteParams } from './legacy/types'
+import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
 import * as Sentry from '@sentry/browser'
-import { checkAndThrowIfJsonSerialisableError, constructSentryError } from 'utils/logging'
+import { constructSentryError } from 'utils/logging'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { Context } from '@sentry/types'
-import { PriceInformation } from '@cow/types'
-import { GpPriceStrategy } from 'state/gas/atoms'
 import { orderBookApi } from '@cow/cowSdk'
 import {
   OrderQuoteRequest,
@@ -86,7 +75,6 @@ const DEFAULT_HEADERS = {
   'X-AppId': APP_DATA_HASH.toString(),
 }
 const API_NAME = 'CoW Protocol'
-const ENABLED = process.env.REACT_APP_PRICE_FEED_GP_ENABLED !== 'false'
 /**
  * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
  * where orderDigest = keccak256(orderStruct). bytes32.
@@ -151,12 +139,6 @@ function _getPriceStrategyApiBaseUrl(chainId: ChainId): string {
   return baseUrl
 }
 
-export function getOrderLink(chainId: ChainId, orderId: OrderID): string {
-  const baseUrl = _getApiBaseUrl(chainId)
-
-  return baseUrl + `/orders/${orderId}`
-}
-
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
   return fetch(baseUrl + url, {
@@ -178,11 +160,6 @@ function _fetchProfile(
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
   })
-}
-
-function _fetchPriceStrategy(chainId: ChainId): Promise<Response> {
-  const baseUrl = _getPriceStrategyApiBaseUrl(chainId)
-  return fetch(baseUrl)
 }
 
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
@@ -244,16 +221,6 @@ export async function sendSignedOrderCancellation(params: OrderCancellationParam
   console.log(`[api:${API_NAME}] Cancelled order`, cancellation.orderUid, chainId)
 }
 
-const UNHANDLED_QUOTE_ERROR: GpQuoteErrorObject = {
-  errorType: GpQuoteErrorCodes.UNHANDLED_ERROR,
-  description: GpQuoteErrorDetails.UNHANDLED_ERROR,
-}
-
-const UNHANDLED_ORDER_ERROR: ApiErrorObject = {
-  errorType: ApiErrorCodes.UNHANDLED_CREATE_ERROR,
-  description: ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR,
-}
-
 function _handleError<P extends Context>(error: any, response: Response, params: P, operation: 'ORDER' | 'QUOTE') {
   // Create a new sentry error OR
   // use the previously created and rethrown error from the try block
@@ -305,37 +272,6 @@ async function _handleOrderResponse<T = any, P extends UnsignedOrder = UnsignedO
     }
   } catch (error: any) {
     throw _handleError(error, response, params, 'ORDER')
-  }
-}
-
-async function _handleQuoteResponse<T = any, P extends FeeQuoteParams = FeeQuoteParams>(
-  response: Response,
-  params: P
-): Promise<T> {
-  try {
-    if (!response.ok) {
-      // don't attempt json parse if not json response...
-      checkAndThrowIfJsonSerialisableError(response)
-
-      const errorObj: ApiErrorObject = await response.json()
-
-      // we need to map the backend error codes to match our own for quotes
-      const mappedError = mapOperatorErrorToQuoteError(errorObj)
-      const error = new QuoteError(mappedError)
-
-      // we need to create a sentry error and keep the original mapped quote error
-      throw constructSentryError(error, response, {
-        message: `${error.description}`,
-        name: `[${error.name}] - ${error.type}`,
-        optionalTags: {
-          quoteErrorType: error.type,
-        },
-      })
-    } else {
-      return response.json()
-    }
-  } catch (error: any) {
-    throw _handleError(error, response, params, 'QUOTE')
   }
 }
 
@@ -397,31 +333,6 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
   return orderBookApi.getQuote(chainId, quoteParams)
 }
 
-// TODO: do we need this method?
-export async function getPriceQuoteLegacy(params: PriceQuoteParams): Promise<PriceInformation | null> {
-  const { baseToken, quoteToken, amount, kind, chainId } = params
-  console.log(`[api:${API_NAME}] Get price from API`, params)
-
-  if (!ENABLED) {
-    return null
-  }
-
-  const response = await _get(
-    chainId,
-    `/markets/${toErc20Address(baseToken, chainId)}-${toErc20Address(quoteToken, chainId)}/${kind}/${amount}`
-  ).catch((error) => {
-    console.error('Error getting price quote:', error)
-    throw new QuoteError(UNHANDLED_QUOTE_ERROR)
-  })
-
-  return _handleQuoteResponse<PriceInformation | null>(response, {
-    ...params,
-    buyToken: baseToken,
-    sellToken: quoteToken,
-    isEthFlow: false,
-  })
-}
-
 export async function getOrder(chainId: ChainId, orderId: string): Promise<EnrichedOrder | null> {
   return orderBookApi.getOrder(chainId, orderId)
 }
@@ -472,25 +383,6 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
   const response = await _getProfile(chainId, `/profile/${address}`)
 
   // TODO: Update the error handler when the openAPI profile spec is defined
-  if (!response.ok) {
-    const errorResponse = await response.json()
-    console.log(errorResponse)
-    throw new Error(errorResponse?.description)
-  } else {
-    return response.json()
-  }
-}
-
-export type PriceStrategy = {
-  primary: GpPriceStrategy
-  secondary: GpPriceStrategy
-}
-
-export async function getPriceStrategy(chainId: ChainId): Promise<PriceStrategy> {
-  console.log(`[api:${API_NAME}] Get GP price strategy for`, chainId)
-
-  const response = await _fetchPriceStrategy(chainId)
-
   if (!response.ok) {
     const errorResponse = await response.json()
     console.log(errorResponse)
