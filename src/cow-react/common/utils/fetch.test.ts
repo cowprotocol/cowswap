@@ -31,10 +31,7 @@ function mockAndFailUntilAttempt(attempt: number) {
 
 const fetchUrlWithBackoff = (attepts: number) => fetchWithBackoff(URL, undefined, { numOfAttempts: attepts })
 
-
 describe('Fetch with backoff', () => {
-
-
   it('No re-attempt if SUCCESS', async () => {
     // GIVEN: A working API
     mockAndFailUntilAttempt(0)
@@ -61,10 +58,9 @@ describe('Fetch with backoff', () => {
 
     // THEN: The result is OK
     expect(result).toBe(OK_RESPONSE)
-
   })
 
-  it("SUCCEED in the last attempt", async () => {
+  it('SUCCEED in the last attempt', async () => {
     // GIVEN: A API which fails 50 times
     mockAndFailUntilAttempt(3)
 
