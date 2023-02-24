@@ -11,8 +11,9 @@ import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSymbol } from '@cow/utils/format'
 import { SigningScheme } from '@cowprotocol/contracts'
-import { getProfileData, getTrades } from '@cow/api/gnosisProtocol/api'
+import { getProfileData } from '@cow/api/gnosisProtocol/api'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
+import { orderBookApi } from '@cow/cowSdk'
 
 export type PostOrderParams = {
   account: string
@@ -247,7 +248,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 
 export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
   const [trades, profileData] = await Promise.all([
-    getTrades({ chainId, owner: address, limit: 1 }),
+    orderBookApi.getTrades(chainId, { owner: address }),
     getProfileData(chainId, address),
   ])
 

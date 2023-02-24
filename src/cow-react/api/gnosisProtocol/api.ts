@@ -1,6 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/contracts'
-import { stringify } from 'qs'
 import { getSigningSchemeApiValue, OrderCancellation, OrderCreation, UnsignedOrder } from 'utils/signatures'
 import { APP_DATA_HASH, RAW_CODE_LINK } from 'constants/index'
 import { getProviderErrorMessage, registerOnWindow } from 'utils/misc'
@@ -98,11 +97,6 @@ export interface UnsupportedToken {
     address: string
     dateAdded: number
   }
-}
-
-type PaginationParams = {
-  limit?: number
-  offset?: number
 }
 
 function _getApiBaseUrl(chainId: ChainId): string {
@@ -341,30 +335,6 @@ export async function getOrders(chainId: ChainId, owner: string, limit = 1000, o
   return orderBookApi.getOrders(chainId, { owner, limit, offset })
 }
 
-type GetTradesParams = {
-  chainId: ChainId
-  owner: string
-} & PaginationParams
-
-export async function getTrades(params: GetTradesParams): Promise<TradeMetaData[]> {
-  const { chainId, owner, limit, offset } = params
-  const qsParams = stringify({ owner, limit, offset })
-  console.log('[util:operator] Get trades for', chainId, owner, { limit, offset })
-  try {
-    const response = await _get(chainId, `/trades?${qsParams}`)
-
-    if (!response.ok) {
-      const errorResponse = await response.json()
-      throw new Error(errorResponse)
-    } else {
-      return response.json()
-    }
-  } catch (error: any) {
-    console.error('Error getting trades:', error)
-    throw new Error('Error getting trades: ' + error)
-  }
-}
-
 export type ProfileData = {
   totalTrades: number
   totalReferrals: number
@@ -418,7 +388,6 @@ export async function getNativePrice(chainId: ChainId, address: string): Promise
 registerOnWindow({
   operator: {
     getQuote,
-    getTrades,
     getOrder,
     sendSignedOrder: sendOrder,
     apiGet: _get,
