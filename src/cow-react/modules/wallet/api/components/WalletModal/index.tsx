@@ -43,6 +43,49 @@ const WALLET_VIEWS = {
   PENDING: 'pending',
 }
 
+export type TryActivation = (connector: Connector) => void 
+
+function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
+  const isInjected = getIsInjected()
+  const isMetaMask = getIsMetaMask()
+  const isCoinbaseWallet = getIsCoinbaseWallet()
+
+  const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
+  const isMetaMaskBrowser = isMobile && isMetaMask
+  const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
+
+  let injectedOption
+  if (!isInjected) {
+    if (!isMobile) {
+      injectedOption = <InstallMetaMaskOption />
+    } else {
+      injectedOption = <OpenMetaMaskMobileOption />
+    }
+  } else if (!isCoinbaseWallet) {
+    if (isMetaMask) {
+      injectedOption = <MetaMaskOption tryActivation={tryActivation} />
+    } else {
+      injectedOption = <InjectedOption tryActivation={tryActivation} />
+    }
+  }
+
+  const coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
+
+  const walletConnectionOption =
+    (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
+
+  const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
+
+  return (
+    <>
+      {injectedOption}
+      {walletConnectionOption}
+      {coinbaseWalletOption}
+      {fortmaticOption}
+    </>
+  )
+}
+
 export function WalletModal() {
   const dispatch = useAppDispatch()
   const { account, isActive, connector } = useWeb3React()
@@ -136,47 +179,6 @@ export function WalletModal() {
     [dispatch, toggleWalletModal]
   )
 
-  function getOptions() {
-    const isInjected = getIsInjected()
-    const isMetaMask = getIsMetaMask()
-    const isCoinbaseWallet = getIsCoinbaseWallet()
-
-    const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
-    const isMetaMaskBrowser = isMobile && isMetaMask
-    const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
-
-    let injectedOption
-    if (!isInjected) {
-      if (!isMobile) {
-        injectedOption = <InstallMetaMaskOption />
-      } else {
-        injectedOption = <OpenMetaMaskMobileOption />
-      }
-    } else if (!isCoinbaseWallet) {
-      if (isMetaMask) {
-        injectedOption = <MetaMaskOption tryActivation={tryActivation} />
-      } else {
-        injectedOption = <InjectedOption tryActivation={tryActivation} />
-      }
-    }
-
-    const coinbaseWalletOption = <CoinbaseWalletOption tryActivation={tryActivation} />
-
-    const walletConnectionOption =
-      (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
-
-    const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
-
-    return (
-      <>
-        {injectedOption}
-        {walletConnectionOption}
-        {coinbaseWalletOption}
-        {fortmaticOption}
-      </>
-    )
-  }
-
   function getModalContent() {
     let headerRow
     if (walletView === WALLET_VIEWS.PENDING) {
@@ -206,7 +208,11 @@ export function WalletModal() {
                 tryConnection={() => tryActivation(connector)}
               />
             )}
-            {walletView !== WALLET_VIEWS.PENDING && <OptionGrid data-testid="option-grid">{getOptions()}</OptionGrid>}
+            {walletView !== WALLET_VIEWS.PENDING && (
+              <OptionGrid data-testid="option-grid">
+                <ConnectWalletOptions tryActivation={tryActivation} />
+              </OptionGrid>
+            )}
             {!pendingError && (
               <LightCard>
                 <AutoRow style={{ flexWrap: 'nowrap' }}>
