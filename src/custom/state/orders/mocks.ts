@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 
-import { Order, OrderStatus, OrderKind, SerializedOrder, addPendingOrder } from './actions'
+import { Order, OrderStatus, OrderKind, SerializedOrder, addPendingOrder, AddPendingOrderParams } from './actions'
 import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
 import { RADIX_DECIMAL } from 'constants/index'
 import { serializeToken } from 'state/user/hooks'
@@ -56,7 +56,7 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
     buyAmount: buyAmount.toString(RADIX_DECIMAL), // in atoms
     // 20sec - 4min
     validTo: Date.now() / 1000 + randomIntInRangeExcept(20, 240), // uint32. unix timestamp, seconds, use new Date(validTo * 1000)
-    appData: 1, // arbitrary identifier sent along with the order
+    appData: '1', // arbitrary identifier sent along with the order
     feeAmount: (1e18).toString(), // in atoms
     kind,
     partiallyFillable: false,
@@ -81,7 +81,7 @@ export function generateSerializedOrder(props: GenerateOrderParams): SerializedO
 export const mockOrderDispatches = {
   ethFlowOrder: () => {
     const id = generateOrderId(orderN)
-    const actionParams = {
+    const actionParams: AddPendingOrderParams = {
       id,
       chainId: 5,
       order: {
@@ -110,7 +110,7 @@ export const mockOrderDispatches = {
         sellAmountBeforeFee: '4438298998862267400',
         buyAmount: '1040872.2954106238',
         validTo: 1666608443.098,
-        appData: 1,
+        appData: '1',
         feeAmount: '1000000000000000000',
         kind: OrderKind.SELL,
         partiallyFillable: false,

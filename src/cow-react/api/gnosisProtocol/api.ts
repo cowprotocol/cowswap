@@ -1,7 +1,6 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/contracts'
 import { APP_DATA_HASH } from 'constants/index'
-import { registerOnWindow } from 'utils/misc'
 import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
 
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
@@ -18,23 +17,6 @@ import {
   EnrichedOrder,
 } from '@cowprotocol/cow-sdk/order-book'
 
-function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
-  if (isLocal || isDev || isPr || isBarn) {
-    return {
-      [ChainId.MAINNET]: process.env.REACT_APP_API_URL_STAGING_MAINNET || 'https://barn.api.cow.fi/mainnet/api',
-      [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_STAGING_XDAI || 'https://barn.api.cow.fi/xdai/api',
-      [ChainId.GOERLI]: process.env.REACT_APP_API_URL_STAGING_GOERLI || 'https://barn.api.cow.fi/goerli/api',
-    }
-  }
-
-  // Production, staging, ens, ...
-  return {
-    [ChainId.MAINNET]: process.env.REACT_APP_API_URL_PROD_MAINNET || 'https://api.cow.fi/mainnet/api',
-    [ChainId.GNOSIS_CHAIN]: process.env.REACT_APP_API_URL_PROD_XDAI || 'https://api.cow.fi/xdai/api',
-    [ChainId.GOERLI]: process.env.REACT_APP_API_URL_PROD_GOERLI || 'https://api.cow.fi/goerli/api',
-  }
-}
-
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
@@ -49,7 +31,6 @@ function getProfileUrl(): Partial<Record<ChainId, string>> {
   }
 }
 
-const API_BASE_URL = getGnosisProtocolUrl()
 const PROFILE_API_BASE_URL = getProfileUrl()
 
 const DEFAULT_HEADERS = {
@@ -62,33 +43,11 @@ const API_NAME = 'CoW Protocol'
  * where orderDigest = keccak256(orderStruct). bytes32.
  */
 export type OrderID = string
-export interface TradeMetaData {
-  blockNumber: number
-  logIndex: number
-  orderUid: OrderID
-  owner: string
-  sellToken: string
-  buyToken: string
-  sellAmount: string
-  buyAmount: string
-  sellAmountBeforeFees: string
-  txHash: string
-}
 
 export interface UnsupportedToken {
   [token: string]: {
     address: string
     dateAdded: number
-  }
-}
-
-function _getApiBaseUrl(chainId: ChainId): string {
-  const baseUrl = API_BASE_URL[chainId]
-
-  if (!baseUrl) {
-    throw new Error(`Unsupported Network. The ${API_NAME} API is not deployed in the Network ` + chainId)
-  } else {
-    return baseUrl + '/v1'
   }
 }
 
@@ -100,15 +59,6 @@ function _getProfileApiBaseUrl(chainId: ChainId): string {
   } else {
     return baseUrl + '/v1'
   }
-}
-
-function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
-  const baseUrl = _getApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
-    headers: DEFAULT_HEADERS,
-    method,
-    body: data !== undefined ? JSON.stringify(data) : data,
-  })
 }
 
 function _fetchProfile(
@@ -123,14 +73,6 @@ function _fetchProfile(
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
   })
-}
-
-function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
-  return _fetch(chainId, url, 'POST', data)
-}
-
-function _get(chainId: ChainId, url: string): Promise<Response> {
-  return _fetch(chainId, url, 'GET')
 }
 
 function _getProfile(chainId: ChainId, url: string): Promise<Response> {
@@ -229,36 +171,3 @@ export async function getProfileData(chainId: ChainId, address: string): Promise
     return response.json()
   }
 }
-
-export interface NativePrice {
-  price: number
-}
-
-export async function getNativePrice(chainId: ChainId, address: string): Promise<NativePrice | null> {
-  console.log(`[api:${API_NAME}] Get native price for`, chainId, address)
-
-  try {
-    const response = await _get(chainId, `/token/${address}/native_price`)
-
-    if (!response.ok) {
-      const errorResponse = await response.json()
-      throw new Error(errorResponse)
-    } else {
-      return response.json()
-    }
-  } catch (error: any) {
-    console.error('Error getting native price:', error)
-    throw new Error('Error getting native price: ' + error)
-  }
-}
-
-// Register some globals for convenience
-registerOnWindow({
-  operator: {
-    getQuote,
-    getOrder,
-    apiGet: _get,
-    apiPost: _post,
-    getNativePrice,
-  },
-})

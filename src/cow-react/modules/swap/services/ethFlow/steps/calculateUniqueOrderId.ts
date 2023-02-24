@@ -7,6 +7,7 @@ import { getOrderParams, PostOrderParams } from 'utils/trade'
 import { getDomain } from 'utils/signatures'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { Order } from '@cowprotocol/contracts/src/ts/order'
 
 export interface UniqueOrderIdResult {
   orderId: string
@@ -44,7 +45,7 @@ export async function calculateUniqueOrderId(
     ...order,
     validTo: MAX_VALID_TO_EPOCH,
     sellToken: WRAPPED_NATIVE_CURRENCY[chainId].address,
-  })
+  } as Order)
   // Generate the orderId from owner, orderDigest, and max validTo
   const orderId = packOrderUidParams({
     orderDigest,
