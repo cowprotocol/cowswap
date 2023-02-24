@@ -14,7 +14,7 @@ import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
 import Identicon from 'components/Identicon'
-import { NETWORK_LABELS } from 'components/Header'
+
 import {
   WalletName,
   WalletAction,
@@ -39,7 +39,7 @@ import { ConnectedWalletInfo, useWalletInfo } from '@cow/modules/wallet'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { supportedChainId } from 'utils/supportedChainId'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
-import { CreationDateText } from 'components/AccountDetails/Transaction/styled'
+import { CreationDateText } from '../Transaction/styled'
 import { ExternalLink } from 'theme'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { Connector } from '@web3-react/types'
@@ -52,6 +52,15 @@ import {
 } from 'connection'
 import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
+import { SupportedChainId as ChainId } from 'constants/chains'
+
+export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
+  // [ChainId.RINKEBY]: 'Rinkeby',
+  // [ChainId.ROPSTEN]: 'Ropsten',
+  [ChainId.GOERLI]: 'Görli',
+  // [ChainId.KOVAN]: 'Kovan',
+  [ChainId.GNOSIS_CHAIN]: 'Gnosis Chain',
+}
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
@@ -112,7 +121,7 @@ export interface AccountDetailsProps {
   handleCloseOrdersPanel: () => void
 }
 
-export default function AccountDetails({
+export function AccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
   ENSName,

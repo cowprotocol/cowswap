@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { ReactComponent as Close } from 'assets/images/x.svg'
-import AccountDetails from 'components/AccountDetails'
+import { AccountDetails } from '../AccountDetails'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { transparentize } from 'polished'
@@ -118,7 +118,7 @@ export interface OrdersPanelProps {
   handleCloseOrdersPanel: () => void
 }
 
-export default function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
+export function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
   const walletInfo = useWalletInfo()
   const toggleWalletModal = useToggleWalletModal()
 

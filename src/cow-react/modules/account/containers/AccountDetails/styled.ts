@@ -21,7 +21,7 @@ import {
   SummaryInner,
   TransactionInnerDetail,
   TextAlert,
-} from './Transaction/styled'
+} from '../Transaction/styled'
 
 export const WalletActions = styled.div`
   display: flex;

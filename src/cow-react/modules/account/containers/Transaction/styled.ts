@@ -1,7 +1,7 @@
 import styled, { css, keyframes } from 'styled-components/macro'
 import { StyledSVG } from 'components/Loader'
 import { LinkStyledButton, StyledLink } from 'theme'
-import { TransactionState as OldTransactionState } from '../TransactionMod'
+import { TransactionState as OldTransactionState } from '../AccountDetails/TransactionMod'
 import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
