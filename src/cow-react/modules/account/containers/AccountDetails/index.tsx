@@ -52,7 +52,7 @@ import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useDisconnectWallet } from '@cow/modules/wallet/web3-react/hooks/useDisconnectWallet'
-import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from '@cow/modules/wallet/api/utils/connections'
+import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',
