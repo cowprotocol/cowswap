@@ -125,10 +125,7 @@ export function Web3StatusInner({ pendingCount }: { pendingCount: number }) {
     )
   } else if (account) {
     return (
-      <Web3StatusConnected
-        id="web3-status-connected"
-        pending={hasPendingTransactions}
-      >
+      <Web3StatusConnected id="web3-status-connected" pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
           <RowBetween>
             <FollowPendingTxPopup>

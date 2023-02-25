@@ -45,7 +45,5 @@ export default function AddToMetamask(props: AddToMetamaskProps) {
     return null
   }
 
-  return (
-    <AddToMetamaskPure success={success} addToken={addToken} currency={currency} shortLabel={shortLabel} />
-  )
+  return <AddToMetamaskPure success={success} addToken={addToken} currency={currency} shortLabel={shortLabel} />
 }

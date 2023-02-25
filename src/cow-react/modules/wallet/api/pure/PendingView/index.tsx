@@ -68,11 +68,7 @@ export function PendingView({
                   The connection attempt failed. Please click try again and follow the steps to connect in your wallet.
                 </Trans>
               </ThemedText.Body>
-              <ButtonPrimary
-                $borderRadius="12px"
-                padding="12px"
-                onClick={tryConnection}
-              >
+              <ButtonPrimary $borderRadius="12px" padding="12px" onClick={tryConnection}>
                 <Trans>Try Again</Trans>
               </ButtonPrimary>
               <ButtonEmpty width="fit-content" padding="0" marginTop={20}>

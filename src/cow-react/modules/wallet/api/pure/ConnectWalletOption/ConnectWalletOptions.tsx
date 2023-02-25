@@ -5,7 +5,6 @@ import { default as InjectedImageDark } from '../../assets/arrow-right.svg'
 import { default as CoinbaseImage } from '../../assets/coinbase.svg'
 import { default as FormaticImage } from '../../assets/formatic.png'
 
-
 export const walletConnectOption = {
   color: '#4196FC',
   icon: WalletConnectImage,
@@ -21,9 +20,8 @@ const metamaskCommonOption = {
 export const metamaskInstallOption = {
   ...metamaskCommonOption,
   header: 'Install MetaMask',
-  link:'https://metamask.io/'
+  link: 'https://metamask.io/',
 }
-
 
 export const metamaskInjectedOption = {
   ...metamaskCommonOption,
@@ -53,7 +51,7 @@ export const coinbaseInjectedOption = {
 export const coinbaseMobileOption = {
   ...coinbaseInjectedOption,
   header: 'Open in Coinbase Wallet',
-  link: "https://go.cb-w.com/mtUDhEZPy1"
+  link: 'https://go.cb-w.com/mtUDhEZPy1',
 }
 
 export const formaticOption = {

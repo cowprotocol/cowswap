@@ -1,5 +1,3 @@
-
-
 import { Connector } from '@web3-react/types'
 
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/web3-react/utils/connection'
@@ -15,7 +13,7 @@ import {
 } from '../../web3-react/containers/ConnectWalletOptions/InjectedOption'
 import { WalletConnectOption } from '../../web3-react/containers/ConnectWalletOptions/WalletConnectOption'
 
-export type TryActivation = (connector: Connector) => void 
+export type TryActivation = (connector: Connector) => void
 
 export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
   const isInjected = getIsInjected()
@@ -57,4 +55,3 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     </>
   )
 }
-

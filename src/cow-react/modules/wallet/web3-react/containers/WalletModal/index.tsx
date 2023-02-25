@@ -1,5 +1,3 @@
-
-
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
@@ -17,7 +15,6 @@ import { ApplicationModal } from 'state/application/reducer'
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../../api/pure/WalletModal'
-
 
 export function WalletModal() {
   const dispatch = useAppDispatch()
@@ -113,10 +110,10 @@ export function WalletModal() {
   )
 
   return (
-    <WalletModalPure 
-      isOpen={walletModalOpen} 
-      toggleModal={toggleWalletModal} 
-      openOptions={openOptions} 
+    <WalletModalPure
+      isOpen={walletModalOpen}
+      toggleModal={toggleWalletModal}
+      openOptions={openOptions}
       pendingConnector={pendingConnector}
       pendingError={pendingError}
       tryActivation={tryActivation}

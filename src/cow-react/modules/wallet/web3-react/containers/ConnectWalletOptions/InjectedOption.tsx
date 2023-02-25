@@ -5,11 +5,15 @@ import { injectedConnection } from '@cow/modules/wallet/web3-react/utils/connect
 import { getConnectionName } from '@cow/modules/wallet/web3-react/utils/connection'
 
 import useTheme from 'hooks/useTheme'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet' 
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
-import { metamaskInjectedOption, metamaskInstallOption, injectedOption, injectedOptionDark } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
+import {
+  metamaskInjectedOption,
+  metamaskInstallOption,
+  injectedOption,
+  injectedOptionDark,
+} from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
 import { TryActivation } from '..'
-
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 
@@ -18,7 +22,13 @@ export function InstallMetaMaskOption() {
 }
 
 export function OpenMetaMaskMobileOption() {
-  return <ConnectWalletOption {...metamaskInjectedOption} header={<Trans>MetaMask</Trans>} link={METAMASK_DEEP_LINK + window.location} />
+  return (
+    <ConnectWalletOption
+      {...metamaskInjectedOption}
+      header={<Trans>MetaMask</Trans>}
+      link={METAMASK_DEEP_LINK + window.location}
+    />
+  )
 }
 
 export function MetaMaskOption({ tryActivation }: { tryActivation: TryActivation }) {

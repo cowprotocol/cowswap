@@ -17,14 +17,13 @@ import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './s
 import { PendingView } from '@cow/modules/wallet/api/pure/PendingView'
 import { ConnectWalletOptions, TryActivation } from '@cow/modules/wallet/web3-react/containers'
 
-
 export type WalletModalView = 'options' | 'account' | 'pending'
 
 interface WalletModalProps {
   isOpen: boolean
   toggleModal: () => void
   view: WalletModalView
-  openOptions:  () => void
+  openOptions: () => void
   tryConnection: () => void // () => tryActivation(connector)
   pendingError: string | undefined
 
@@ -34,50 +33,46 @@ interface WalletModalProps {
 }
 
 export function WalletModal(props: WalletModalProps) {
-  const { isOpen, toggleModal, view, openOptions, pendingError, tryActivation, tryConnection, pendingConnector } = props  
+  const { isOpen, toggleModal, view, openOptions, pendingError, tryActivation, tryConnection, pendingConnector } = props
 
   const isPending = view === 'pending'
 
   return (
     <GpModal isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
       <Wrapper>
-      <UpperSection>
-        <CloseIcon onClick={toggleModal}>
-          <CloseColor />
-        </CloseIcon>
-        {isPending && (
-          <HeaderRow>
-            <HoverText>
-              <Trans>Connect a wallet</Trans>
-            </HoverText>
-          </HeaderRow>
-        )}
-        <ContentWrapper>
-          <AutoColumn gap="16px">
-            {isPending && pendingConnector && (
-              <PendingView
-                openOptions={openOptions}
-                error={!!pendingError}
-                tryConnection={tryConnection}
-              />
-            )}
-            {!isPending && (
-              <OptionGrid data-testid="option-grid">
-                <ConnectWalletOptions tryActivation={tryActivation} />
-              </OptionGrid>
-            )}
-            {!pendingError && (
-              <LightCard>
-                <AutoRow style={{ flexWrap: 'nowrap' }}>
-                  <ThemedText.Body fontSize={12}>
-                    <CustomTerms />
-                  </ThemedText.Body>
-                </AutoRow>
-              </LightCard>
-            )}
-          </AutoColumn>
-        </ContentWrapper>
-      </UpperSection>
+        <UpperSection>
+          <CloseIcon onClick={toggleModal}>
+            <CloseColor />
+          </CloseIcon>
+          {isPending && (
+            <HeaderRow>
+              <HoverText>
+                <Trans>Connect a wallet</Trans>
+              </HoverText>
+            </HeaderRow>
+          )}
+          <ContentWrapper>
+            <AutoColumn gap="16px">
+              {isPending && pendingConnector && (
+                <PendingView openOptions={openOptions} error={!!pendingError} tryConnection={tryConnection} />
+              )}
+              {!isPending && (
+                <OptionGrid data-testid="option-grid">
+                  <ConnectWalletOptions tryActivation={tryActivation} />
+                </OptionGrid>
+              )}
+              {!pendingError && (
+                <LightCard>
+                  <AutoRow style={{ flexWrap: 'nowrap' }}>
+                    <ThemedText.Body fontSize={12}>
+                      <CustomTerms />
+                    </ThemedText.Body>
+                  </AutoRow>
+                </LightCard>
+              )}
+            </AutoColumn>
+          </ContentWrapper>
+        </UpperSection>
       </Wrapper>
     </GpModal>
   )

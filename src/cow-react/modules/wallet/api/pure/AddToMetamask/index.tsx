@@ -7,7 +7,6 @@ import { RowFixed } from 'components/Row'
 import MetaMaskLogo from '../../assets/metamask.png'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
-
 export const ButtonCustom = styled.button`
   display: flex;
   flex: 1 1 auto;

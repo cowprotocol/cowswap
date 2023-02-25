@@ -5,19 +5,16 @@ import { getConnectionName } from '@cow/modules/wallet/web3-react/utils/connecti
 import { useSelectedWallet } from 'state/user/hooks'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
-import { coinbaseMobileOption, coinbaseInjectedOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
+import {
+  coinbaseMobileOption,
+  coinbaseInjectedOption,
+} from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
 import { TryActivation } from '..'
-
 
 export function OpenCoinbaseWalletOption() {
   const selectedWallet = useSelectedWallet()
   const isActive = selectedWallet === ConnectionType.COINBASE_WALLET
-  return (
-    <ConnectWalletOption
-      {...coinbaseMobileOption}
-      isActive={isActive}
-    />
-  )
+  return <ConnectWalletOption {...coinbaseMobileOption} isActive={isActive} />
 }
 
 export function CoinbaseWalletOption({ tryActivation }: { tryActivation: TryActivation }) {

@@ -3,7 +3,6 @@ import styled from 'styled-components/macro'
 
 import { ExternalLink } from 'theme'
 
-
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};
   padding: 1rem;
@@ -31,7 +30,6 @@ const OptionCardLeft = styled.div`
   justify-content: center;
   height: 100%;
 `
-
 
 export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean }>`
   margin-top: 0;
@@ -92,7 +90,6 @@ const IconWrapper = styled.div<{ size?: number | null }>`
     align-items: flex-end;
   `};
 `
-
 
 export interface ConnectWalletOptionProps {
   link?: string | null

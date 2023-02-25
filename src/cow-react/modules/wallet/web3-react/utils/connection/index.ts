@@ -2,7 +2,7 @@ import { Connector } from '@web3-react/types'
 import { ConnectionType } from '@cow/modules/wallet'
 import {
   coinbaseWalletConnection,
-  Connection,  
+  Connection,
   fortmaticConnection,
   gnosisSafeConnection,
   injectedConnection,
