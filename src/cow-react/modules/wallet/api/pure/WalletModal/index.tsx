@@ -44,7 +44,7 @@ export function WalletModal(props: WalletModalProps) {
           <CloseIcon onClick={toggleModal}>
             <CloseColor />
           </CloseIcon>
-          {isPending && (
+          {!isPending && (
             <HeaderRow>
               <HoverText>
                 <Trans>Connect a wallet</Trans>
