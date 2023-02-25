@@ -10,7 +10,7 @@ import styled, { css } from 'styled-components/macro'
 import { useHasSocks } from 'hooks/useSocksBalance'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { shortenAddress } from 'utils'
-import StatusIcon from '@cow/modules/wallet/web3-react/containers/StatusIcon'
+import StatusIcon from '@cow/modules/wallet/api/pure/StatusIcon'
 import Loader from 'components/Loader'
 import { RowBetween } from 'components/Row'
 

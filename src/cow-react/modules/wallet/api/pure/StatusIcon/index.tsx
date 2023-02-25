@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import CoinbaseWalletIcon from '../../../api/assets/coinbase.svg'
 import FortmaticIcon from '../../../api/assets/formatic.png'
 import WalletConnectIcon from '../../../api/assets/walletConnectIcon.svg'
-import { Identicon } from '../../../api/container/Identicon'
+import { Identicon } from '../../container/Identicon'
 
 const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
@@ -21,7 +21,11 @@ const IconWrapper = styled.div<{ size?: number }>`
   `};
 `
 
-export default function StatusIcon({ connectionType }: { connectionType: ConnectionType }) {
+export interface StatusIconProps { 
+  connectionType: ConnectionType
+}
+
+export default function StatusIcon({ connectionType }: StatusIconProps) {
   let image
   switch (connectionType) {
     case ConnectionType.INJECTED:
