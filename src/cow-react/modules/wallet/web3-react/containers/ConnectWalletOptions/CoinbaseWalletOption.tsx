@@ -1,5 +1,5 @@
 import { ConnectionType } from '@cow/modules/wallet'
-import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
+import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/utils/connection'
 import { getConnectionName } from '@cow/modules/wallet/api/utils/connections'
 
 import { useSelectedWallet } from 'state/user/hooks'

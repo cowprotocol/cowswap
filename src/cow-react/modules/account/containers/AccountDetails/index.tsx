@@ -7,7 +7,7 @@ import Copy from 'components/Copy'
 import { Trans } from '@lingui/macro'
 
 import { getEtherscanLink } from 'utils'
-import { getConnection, getIsMetaMask, getIsCoinbaseWallet } from '@cow/modules/wallet/web3-react/utils/connection'
+import {getConnection } from '@cow/modules/wallet/web3-react/utils/connection'
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
@@ -47,12 +47,12 @@ import {
   fortmaticConnection,
   injectedConnection,
   walletConnectConnection,
-} from '@cow/modules/wallet/web3-react/utils/connection/connections'
+} from '@cow/modules/wallet/web3-react/utils/connection'
 import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useDisconnectWallet } from '@cow/modules/wallet/web3-react/hooks/useDisconnectWallet'
-import { getConnectionName } from '@cow/modules/wallet/api/utils/connections'
+import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from '@cow/modules/wallet/api/utils/connections'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',

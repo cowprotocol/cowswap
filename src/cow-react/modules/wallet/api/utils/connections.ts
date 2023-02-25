@@ -16,3 +16,15 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Gnosis Safe'
   }
 }
+
+export function getIsInjected(): boolean {
+  return Boolean(window.ethereum)
+}
+
+export function getIsMetaMask(): boolean {
+  return window.ethereum?.isMetaMask ?? false
+}
+
+export function getIsCoinbaseWallet(): boolean {
+  return window.ethereum?.isCoinbaseWallet ?? false
+}

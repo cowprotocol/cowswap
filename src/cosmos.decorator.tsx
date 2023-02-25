@@ -8,7 +8,7 @@ import { LanguageProvider } from 'i18n'
 import { HashRouter } from 'react-router-dom'
 import { Web3ReactProvider } from '@web3-react/core'
 import { BlockNumberProvider } from '@src/lib/hooks/useBlockNumber'
-import { injectedConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
+import { injectedConnection } from '@cow/modules/wallet/web3-react/utils/connection'
 
 const Wrapper = styled(Flex)`
   font-family: 'Inter var', sans-serif;
