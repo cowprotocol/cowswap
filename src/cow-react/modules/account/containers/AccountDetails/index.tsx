@@ -46,9 +46,9 @@ import { CreationDateText } from '../Transaction/styled'
 import { ExternalLink } from 'theme'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { Connector } from '@web3-react/types'
+import { ConnectionType } from '@cow/modules/wallet'
 import {
   coinbaseWalletConnection,
-  ConnectionType,
   fortmaticConnection,
   injectedConnection,
   walletConnectConnection,

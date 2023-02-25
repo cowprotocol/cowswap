@@ -1,3 +1,4 @@
+export * from './api/types'
 
 export * from './web3-react/hooks/useWalletInfo'
 export * from './web3-react/hooks/useDisconnectWallet'

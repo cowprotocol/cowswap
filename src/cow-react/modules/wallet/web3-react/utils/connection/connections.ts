@@ -11,15 +11,7 @@ import Fortmatic from 'fortmatic'
 
 import UNISWAP_LOGO_URL from 'assets/svg/logo.svg'
 import { RPC_URLS } from 'constants/networks'
-
-export enum ConnectionType {
-  INJECTED = 'INJECTED',
-  COINBASE_WALLET = 'COINBASE_WALLET',
-  WALLET_CONNECT = 'WALLET_CONNECT',
-  FORTMATIC = 'FORTMATIC',
-  NETWORK = 'NETWORK',
-  GNOSIS_SAFE = 'GNOSIS_SAFE',
-}
+import { ConnectionType } from '@cow/modules/wallet'
 
 export interface Connection {
   connector: Connector

@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/macro'
 
-import { ConnectionType, injectedConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
+import { ConnectionType } from '@cow/modules/wallet'
+import { injectedConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
 import { getConnectionName } from '@cow/modules/wallet/web3-react/utils/connection'
 
 import useTheme from 'hooks/useTheme'

@@ -1,4 +1,4 @@
-import { ConnectionType } from '@cow/modules/wallet/web3-react/utils/connection/connections'
+import { ConnectionType } from '@cow/modules/wallet'
 import styled from 'styled-components/macro'
 
 import CoinbaseWalletIcon from '../../../api/assets/coinbase.svg'

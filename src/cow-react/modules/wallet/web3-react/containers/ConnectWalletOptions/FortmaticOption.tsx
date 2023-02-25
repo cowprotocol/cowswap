@@ -1,5 +1,7 @@
 
-import { ConnectionType, fortmaticConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
+import { ConnectionType } from '@cow/modules/wallet'
+
+import { fortmaticConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
 import { getConnectionName } from '@cow/modules/wallet/web3-react/utils/connection'
 
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'

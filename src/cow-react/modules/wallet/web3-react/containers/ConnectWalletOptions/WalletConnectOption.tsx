@@ -1,4 +1,5 @@
-import { ConnectionType, walletConnectConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
+import { ConnectionType } from '@cow/modules/wallet'
+import { walletConnectConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
 import { getConnectionName } from '@cow/modules/wallet/web3-react/utils/connection'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
