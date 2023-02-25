@@ -54,4 +54,3 @@ export function getConnection(c: Connector | ConnectionType): Connection {
     }
   }
 }
-

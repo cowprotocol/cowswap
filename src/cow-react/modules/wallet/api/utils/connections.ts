@@ -1,4 +1,4 @@
-import { ConnectionType } from "../types"
+import { ConnectionType } from '../types'
 
 export function getConnectionName(connectionType: ConnectionType, isMetaMask?: boolean) {
   switch (connectionType) {
