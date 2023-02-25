@@ -1,6 +1,5 @@
 import { Connector } from '@web3-react/types'
 
-
 import { isMobile } from 'utils/userAgent'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/utils/connections'
 

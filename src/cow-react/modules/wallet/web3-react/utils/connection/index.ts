@@ -91,7 +91,6 @@ export const coinbaseWalletConnection: Connection = {
   type: ConnectionType.COINBASE_WALLET,
 }
 
-
 const CONNECTIONS: Connection[] = [
   gnosisSafeConnection,
   injectedConnection,
