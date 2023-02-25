@@ -9,7 +9,6 @@ import { Trans } from '@lingui/macro'
 import { getEtherscanLink } from 'utils'
 import {
   getConnection,
-  getConnectionName,
   getIsMetaMask,
   getIsCoinbaseWallet,
 } from '@cow/modules/wallet/web3-react/utils/connection'
@@ -57,6 +56,7 @@ import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useDisconnectWallet } from '@cow/modules/wallet/web3-react/hooks/useDisconnectWallet'
+import { getConnectionName } from '@cow/modules/wallet/api/utils/connections'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',

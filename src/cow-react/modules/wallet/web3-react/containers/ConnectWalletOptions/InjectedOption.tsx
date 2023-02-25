@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 
 import { ConnectionType } from '@cow/modules/wallet'
 import { injectedConnection } from '@cow/modules/wallet/web3-react/utils/connection/connections'
-import { getConnectionName } from '@cow/modules/wallet/web3-react/utils/connection'
+import { getConnectionName } from '@cow/modules/wallet/api/utils/connections'
 
 import useTheme from 'hooks/useTheme'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
