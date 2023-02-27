@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 
 import { ExternalLink } from 'theme'
+import { MouseoverTooltip } from 'components/Tooltip'
 
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};
@@ -102,6 +103,7 @@ export default function Option({
   icon,
   isActive = false,
   id,
+  tooltipText,
 }: {
   link?: string | null
   clickable?: boolean
@@ -113,6 +115,7 @@ export default function Option({
   icon: string
   isActive?: boolean
   id: string
+  tooltipText?: string | null
 }) {
   const content = (
     <OptionCardClickable
@@ -144,6 +147,10 @@ export default function Option({
   )
   if (link) {
     return <ExternalLink href={link}>{content}</ExternalLink>
+  }
+
+  if (tooltipText) {
+    return <MouseoverTooltip text={tooltipText}>{content}</MouseoverTooltip>
   }
 
   return content

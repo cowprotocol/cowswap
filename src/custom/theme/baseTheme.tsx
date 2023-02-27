@@ -444,9 +444,9 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // START - Modal overrides
-  ${HeaderText} {
+  /* ${HeaderText} {
     color: ${({ theme }) => theme.text1};
-  }
+  } */
   
   a {
     text-decoration: none;

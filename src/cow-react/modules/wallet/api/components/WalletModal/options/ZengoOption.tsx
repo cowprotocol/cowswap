@@ -7,6 +7,7 @@ import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import Option from '../Option'
 import { useWalletInfo } from '../../../hooks/useWalletInfo'
 import { getIsZengoWallet } from 'connection/utils'
+import { WC_DISABLED_TEXT } from '../../../constants'
 
 const BASE_PROPS = {
   color: '#4196FC',
@@ -19,11 +20,13 @@ export function ZengoOption({ tryActivation }: { tryActivation: (connector: Conn
 
   const isWalletConnect = useIsActiveWallet(walletConnectConnection)
   const isActive = isWalletConnect && getIsZengoWallet(walletName)
+  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
 
   return (
     <Option
       {...BASE_PROPS}
       isActive={isActive}
+      tooltipText={tooltipText}
       clickable={!isWalletConnect}
       onClick={() => tryActivation(walletConnectConnection.connector)}
       header={getConnectionName(ConnectionType.ZENGO)}
