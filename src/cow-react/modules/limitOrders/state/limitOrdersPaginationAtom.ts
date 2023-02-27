@@ -1,3 +1,3 @@
 import { atom } from 'jotai'
 
-export const limitOrdersPaginationAtom = atom<{ pageNumber: number }>({ pageNumber: 1 })
+export const limitOrdersPaginationAtom = atom<number>(1)

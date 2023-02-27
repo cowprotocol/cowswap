@@ -265,7 +265,7 @@ export function PendingOrdersUpdater(): null {
   const presignOrders = usePresignOrders()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const getSafeInfo = useGetSafeInfo()
-  const { pageNumber } = useAtomValue(limitOrdersPaginationAtom)
+  const pageNumber = useAtomValue(limitOrdersPaginationAtom)
 
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string, orderClass: OrderClass) => {

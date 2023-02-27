@@ -56,7 +56,7 @@ export function OrdersWidget() {
   )
 
   useEffect(() => {
-    updateLimitOrdersPagination({ pageNumber: currentPageNumber })
+    updateLimitOrdersPagination(currentPageNumber)
   }, [currentPageNumber, updateLimitOrdersPagination])
 
   // Set page params initially once
