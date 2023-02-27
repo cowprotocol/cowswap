@@ -2,16 +2,16 @@
 import styled, { css } from 'styled-components/macro'
 import { darken } from 'polished'
 import { Activity } from 'react-feather'
+import { ButtonSecondary } from 'components/Button'
 
-export const Web3StatusGeneric = styled.div`
-  display: block;
-`
+// mod
+export const Web3StatusGeneric = styled(ButtonSecondary)``
+
 export const Web3StatusError = styled(Web3StatusGeneric)`
   background-color: ${({ theme }) => theme.red1};
   border: 1px solid ${({ theme }) => theme.red1};
   color: ${({ theme }) => theme.white};
   font-weight: 500;
-
   :hover,
   :focus {
     background-color: ${({ theme }) => darken(0.1, theme.red1)};
