@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/browser'
 
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useAppSelector } from 'state/hooks'
 import { SentryTag } from 'utils/logging'
 

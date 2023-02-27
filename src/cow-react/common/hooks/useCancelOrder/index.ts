@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { useCloseModal, useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
