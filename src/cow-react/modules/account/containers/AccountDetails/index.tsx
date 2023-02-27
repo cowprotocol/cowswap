@@ -16,6 +16,9 @@ import {
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
+import AmbireIcon from 'assets/images/ambire.svg'
+import ZengoIcon from 'assets/images/zengo.svg'
+import AlphaWalletIcon from 'assets/images/alphawallet.svg'
 import Identicon from 'components/Identicon'
 import { ActivityDescriptors } from 'hooks/useRecentActivity'
 import Activity from '@cow/modules/account/containers/Transaction'
@@ -57,6 +60,7 @@ import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useDisconnectWallet } from '@cow/modules/wallet/api/hooks/useDisconnectWallet'
+import { getIsAlphaWallet, getIsAmbireWallet, getIsZengoWallet } from '@src/custom/connection/utils'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',
@@ -78,6 +82,20 @@ export function renderActivities(activities: ActivityDescriptors[]) {
       })}
     </TransactionListWrapper>
   )
+}
+
+function getWalletConnectIcon(walletName: string | null | undefined) {
+  if (!walletName) {
+    return WalletConnectIcon
+  } else if (getIsAmbireWallet(walletName)) {
+    return AmbireIcon
+  } else if (getIsZengoWallet(walletName)) {
+    return ZengoIcon
+  } else if (getIsAlphaWallet(walletName)) {
+    return AlphaWalletIcon
+  } else {
+    return WalletConnectIcon
+  }
 }
 
 export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo?: ConnectedWalletInfo, size?: number) {
@@ -108,7 +126,7 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo
   } else if (connectionType === walletConnectConnection) {
     return (
       <IconWrapper size={16}>
-        <img src={WalletConnectIcon} alt={'wallet connect logo'} />
+        <img src={getWalletConnectIcon(walletInfo?.walletName)} alt={'wallet connect logo'} />
       </IconWrapper>
     )
   } else if (connectionType === coinbaseWalletConnection) {
@@ -187,8 +205,6 @@ export function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <WalletWrapper>
-              {getStatusIcon(connector, walletInfo, 24)}
-
               {(ENSName || account) && (
                 <Copy toCopy={ENSName ? ENSName : account ? account : ''}>
                   <WalletNameAddress>{ENSName ? ENSName : account && shortenAddress(account)}</WalletNameAddress>
