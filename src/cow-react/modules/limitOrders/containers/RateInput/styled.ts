@@ -5,7 +5,7 @@ import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.grey1};
-  border-radius: 16px 16px 0 0;
+  border-radius: 16px;
   padding: 10px 16px 2px;
   flex: 1 1 100%;
   min-height: 80px;

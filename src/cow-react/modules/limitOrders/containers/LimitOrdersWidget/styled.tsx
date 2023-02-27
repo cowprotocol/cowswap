@@ -91,4 +91,5 @@ export const StyledRateInfo = styled(RateInfo)`
   min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
+  margin-bottom: 5px;
 `

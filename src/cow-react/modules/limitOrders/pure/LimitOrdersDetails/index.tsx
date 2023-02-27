@@ -15,6 +15,7 @@ import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
 import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { formatInputAmount } from '@cow/utils/amountFormat'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 
 const Wrapper = styled.div`
   font-size: 13px;
@@ -68,28 +69,30 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <styledEl.StyledRateInfo isInversedState={isInversedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
 
-      <styledEl.DetailsRow>
-        <div>
-          <span>
-            <ArrowDownRight>
-              <SVG src={ArrowDownImage} />
-            </ArrowDownRight>
-            <p>order executes at</p>{' '}
-            <QuestionHelper
-              text={
-                <ExecutionPriceTooltip
-                  isInversed={isInversed}
-                  feeAmount={feeAmount}
-                  marketRate={marketRate}
-                  displayedRate={displayedRate}
-                  executionPrice={executionPrice}
-                />
-              }
-            />
-          </span>
-        </div>
-        <div>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</div>
-      </styledEl.DetailsRow>
+      {limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+        <styledEl.DetailsRow>
+          <div>
+            <span>
+              <ArrowDownRight>
+                <SVG src={ArrowDownImage} />
+              </ArrowDownRight>
+              <p>order executes at</p>{' '}
+              <QuestionHelper
+                text={
+                  <ExecutionPriceTooltip
+                    isInversed={isInversed}
+                    feeAmount={feeAmount}
+                    marketRate={marketRate}
+                    displayedRate={displayedRate}
+                    executionPrice={executionPrice}
+                  />
+                }
+              />
+            </span>
+          </div>
+          <div>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</div>
+        </styledEl.DetailsRow>
+      )}
 
       <styledEl.DetailsRow>
         <div>

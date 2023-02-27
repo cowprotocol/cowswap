@@ -15,7 +15,7 @@ import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 
 // Every 10s
-const REFETCH_CHECK_INTERVAL = 10000
+const PRICE_UPDATE_INTERVAL = 10_000
 
 const getQuoteOnlyResolveLast = onlyResolvesLast<SimpleGetQuoteResponse>(getQuote)
 
@@ -51,7 +51,7 @@ export function useFetchMarketPrice() {
     handleFetchQuote()
 
     // Run the interval
-    const intervalId = setInterval(handleFetchQuote, REFETCH_CHECK_INTERVAL)
+    const intervalId = setInterval(handleFetchQuote, PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(intervalId)
   }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote, isWrapOrUnwrap])

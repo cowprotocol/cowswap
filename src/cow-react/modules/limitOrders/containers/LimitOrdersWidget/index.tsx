@@ -286,9 +286,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               )}
 
               <styledEl.FooterBox>
+                {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />}
                 <DeadlineInput />
-                {/*TODO: do we remove it at all?*/}
-                {/* {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />} */}
               </styledEl.FooterBox>
 
               <LimitOrdersWarnings priceImpact={priceImpact} />

@@ -17,6 +17,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { PendingOrdersPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 
 const TableBox = styled.div`
   display: block;
@@ -47,7 +48,7 @@ const TableInner = styled.div`
 const Header = styled.div`
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(150px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(100px, 0.7fr) 48px 108px 36px;
+  grid-template-columns: minmax(200px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(70px, 0.7fr) 108px 36px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -156,7 +157,7 @@ export function OrdersTable({
               <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
             </HeaderElement>
 
-            {isOpenOrdersTab && (
+            {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
               <HeaderElement doubleRow>
                 <span>
                   <Trans>
@@ -188,7 +189,7 @@ export function OrdersTable({
               </HeaderElement>
             )}
 
-            {!isOpenOrdersTab && (
+            {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
               <HeaderElement>
                 <Trans>Execution time</Trans>
               </HeaderElement>

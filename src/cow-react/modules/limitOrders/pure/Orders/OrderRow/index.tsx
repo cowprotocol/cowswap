@@ -19,6 +19,7 @@ import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -155,7 +156,7 @@ export function OrderRow({
 
       {/* Est. execution price */}
       {/* Market price */}
-      {isOpenOrdersTab && (
+      {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
         <styledEl.CellElement doubleRow>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
@@ -193,7 +194,7 @@ export function OrderRow({
         </styledEl.CellElement>
       )}
 
-      {!isOpenOrdersTab && (
+      {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
         <styledEl.CellElement>
           <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
         </styledEl.CellElement>
