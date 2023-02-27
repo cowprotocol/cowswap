@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { getConnection } from '@src/connection/utils'
+import { getConnection } from '@cow/modules/wallet/api/utils'
 import { getChainInfo } from '@src/constants/chainInfo'
 import { CHAIN_IDS_TO_NAMES, SupportedChainId } from '@src/constants/chains'
 import useParsedQueryString from 'hooks/useParsedQueryString'

@@ -1,7 +1,7 @@
 import { SectionTitle } from '@cow/modules/application/pure/Page'
 import { Txt } from 'assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import Web3Status from 'components/Web3Status'
+import { Web3Status } from '@cow/modules/wallet'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { shortenAddress } from 'utils'
 import Copy from 'components/Copy/CopyMod'

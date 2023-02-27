@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import AddressClaimModal from 'components/claim/AddressClaimModal'
-import ConnectedAccountBlocked from 'components/ConnectedAccountBlocked'
+import ConnectedAccountBlocked from '@cow/modules/account/pure/ConnectedAccountBlocked'
 import useAccountRiskCheck from 'hooks/useAccountRiskCheck'
 import { useModalIsOpen, useToggleModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'

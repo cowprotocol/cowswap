@@ -15,7 +15,7 @@ import { useClientSideRouter, useExpertModeManager } from '../../state/user/hook
 import { ThemedText } from '../../theme'
 import { ButtonError } from '../Button'
 import { AutoColumn } from '../Column'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
 import Toggle from '../Toggle'

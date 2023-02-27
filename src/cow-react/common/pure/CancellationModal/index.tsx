@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { shortenOrderId } from 'utils'
-import { GpModal as Modal } from 'components/Modal'
+import { GpModal as Modal } from '@cow/common/pure/Modal'
 import {
   ConfirmationPendingContent,
   OperationType,
