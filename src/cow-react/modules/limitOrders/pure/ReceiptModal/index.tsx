@@ -1,4 +1,4 @@
-import { GpModal } from 'components/Modal'
+import { GpModal } from '@cow/common/pure/Modal'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 import { OrderKind, OrderStatus } from 'state/orders/actions'

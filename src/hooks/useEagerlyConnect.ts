@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 import { gnosisSafeConnection, networkConnection } from 'connection'
-import { getConnection } from 'connection/utils'
+import { getConnection } from '@cow/modules/wallet/api/utils'
 import { useEffect } from 'react'
 import { BACKFILLABLE_WALLETS } from 'state/connection/constants'
 import { useAppSelector } from 'state/hooks'
