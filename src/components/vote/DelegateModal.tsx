@@ -14,7 +14,7 @@ import { ThemedText } from '../../theme'
 import AddressInputPanel from 'components/AddressInputPanel'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn } from '../Column'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 import { LoadingView, SubmittedView } from '../ModalViews'
 import { RowBetween } from '../Row'
 
