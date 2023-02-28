@@ -25,7 +25,8 @@ export const ContextMenuList = styled(MenuList)`
   position: relative;
   z-index: 2;
   outline: none;
-  min-width: 210px;
+  min-width: 200px;
+  margin: 10px 0;
 `
 
 export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
@@ -34,6 +35,7 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   display: flex;
   gap: 10px;
   align-items: center;
+  font-size: 14px;
   color: ${({ theme, $red }) => ($red ? theme.danger : theme.text1)};
 
   :hover {
@@ -47,6 +49,7 @@ export const ContextMenuLink = styled(MenuLink)`
   display: flex;
   gap: 10px;
   align-items: center;
+  font-size: 14px;
   color: ${({ theme }) => theme.text1};
 
   :hover {
