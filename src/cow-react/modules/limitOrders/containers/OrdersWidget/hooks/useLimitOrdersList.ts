@@ -31,6 +31,8 @@ export interface ParsedOrder extends Order {
   formattedPercentage: number
   parsedCreationTime: Date
   executedPrice: Price<Currency, Currency> | null
+  activityId: string | undefined
+  activityTitle: string
 }
 
 const ORDERS_LIMIT = 100
@@ -56,6 +58,12 @@ export const parseOrder = (order: Order): ParsedOrder => {
         quoteAmount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
       })
     : null
+  const showCreationTxLink =
+    (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
+    order.orderCreationHash &&
+    !order.apiAdditionalInfo
+  const activityId = showCreationTxLink ? order.orderCreationHash : order.id
+  const activityTitle = showCreationTxLink ? 'Creation transaction' : 'Order ID'
 
   return {
     ...order,
@@ -72,6 +80,8 @@ export const parseOrder = (order: Order): ParsedOrder => {
     executedPrice,
     parsedCreationTime: parsedCreationtime,
     fullyFilled,
+    activityId,
+    activityTitle,
   }
 }
 

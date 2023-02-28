@@ -25,6 +25,7 @@ export const ContextMenuList = styled(MenuList)`
   position: relative;
   z-index: 2;
   outline: none;
+  min-width: 210px;
 `
 
 export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
