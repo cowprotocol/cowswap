@@ -67,6 +67,12 @@ export function WalletModal() {
   }, [setWalletView])
 
   useEffect(() => {
+    if (!walletModalOpen) {
+      setViewAll(false)
+    }
+  }, [walletModalOpen])
+
+  useEffect(() => {
     if (walletModalOpen) {
       setWalletView(account ? WALLET_VIEWS.ACCOUNT : WALLET_VIEWS.OPTIONS)
     }
@@ -193,7 +199,7 @@ export function WalletModal() {
         )}
 
         <ButtonPrimary $borderRadius="12px" padding="12px" onClick={() => setViewAll(!viewAll)}>
-          <Trans>{viewAll ? 'Hide more' : 'View more'}</Trans>
+          <Trans>{viewAll ? 'Show less' : 'Show more'}</Trans>
         </ButtonPrimary>
       </>
     )
