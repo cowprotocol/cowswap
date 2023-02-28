@@ -18,7 +18,7 @@ export interface TokenAmountProps {
 
 const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
 
-const Wrapper = styled.span<{ highlight: boolean }>`
+export const Wrapper = styled.span<{ highlight: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
 `
 
@@ -47,7 +47,7 @@ export function TokenAmount({
     <>
       <Wrapper title={title} className={className} highlight={highlight}>
         {formatTokenAmount(round ? FractionUtils.round(amount) : amount) || defaultValue}
-        {tokenSymbolElement}
+        <span>{tokenSymbolElement}</span>
       </Wrapper>
     </>
   )

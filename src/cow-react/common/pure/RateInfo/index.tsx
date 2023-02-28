@@ -58,9 +58,9 @@ const RateLabel = styled.div`
 `
 
 const InvertIcon = styled.div`
-  --size: 20px;
+  --size: 17px;
   cursor: pointer;
-  background: ${({ theme }) => theme.grey1};
+  background: ${({ theme }) => transparentize(0.9, theme.text1)};
   color: ${({ theme }) => theme.text1};
   width: var(--size);
   height: var(--size);
@@ -71,6 +71,10 @@ const InvertIcon = styled.div`
   align-items: center;
   justify-content: center;
   transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+
+  > svg {
+    padding: 1px;
+  }
 
   &:hover {
     background: ${({ theme }) => theme.bg2};

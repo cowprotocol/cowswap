@@ -1,7 +1,12 @@
 import styled from 'styled-components/macro'
+import {Wrapper as TokenWrapper} from '@cow/common/pure/TokenAmount'
 import { transparentize } from 'polished'
 
-export const RateValue = styled.span``
+export const RateValue = styled.span`
+  ${TokenWrapper} > span {
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
+`
 
 export const StatusBox = styled.div`
   display: flex;
@@ -27,6 +32,10 @@ export const AmountItem = styled.div`
   > span {
     white-space: normal;
     word-break: break-all;
+  }
+
+  > span > span {
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
 `
 
@@ -73,11 +82,11 @@ export const WarningParagraph = styled.div`
 export const CellElement = styled.div<{ doubleRow?: boolean }>`
   padding: 12px 0;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   display: flex;
 
   > b {
-    font-weight: 500;
+    font-weight: 400;
   }
 
   ${({ doubleRow }) =>
@@ -125,8 +134,8 @@ export const CurrencyAmountWrapper = styled.div`
 
 export const ProgressBar = styled.div<{ value: number }>`
   position: relative;
-  margin: 4px 0 0;
-  height: 6px;
+  margin: 2px 0 0;
+  height: 5px;
   width: 100%;
   background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(0.92, theme.text1))};
   border-radius: 6px;
@@ -137,6 +146,6 @@ export const ProgressBar = styled.div<{ value: number }>`
     height: 100%;
     width: ${({ value }) => value}%;
     background: ${({ theme }) => theme.text3};
-    border-radius: 6px;
+    border-radius: 5px;
   }
 `
