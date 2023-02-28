@@ -1,12 +1,11 @@
 import { Connector } from '@web3-react/types'
 import ZENGO_ICON_URL from 'assets/images/zengo.svg'
-import { ConnectionType, walletConnectConnection } from 'connection'
-import { getConnectionName } from 'connection/utils'
+import { ConnectionType, walletConnectConnection } from '@cow/modules/wallet/api/utils/connections'
+import { getConnectionName, getIsZengoWallet } from '@cow/modules/wallet/api/utils'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import Option from '../Option'
 import { useWalletInfo } from '../../../hooks/useWalletInfo'
-import { getIsZengoWallet } from 'connection/utils'
 import { WC_DISABLED_TEXT } from '../../../constants'
 
 const BASE_PROPS = {

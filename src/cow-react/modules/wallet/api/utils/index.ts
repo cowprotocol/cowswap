@@ -8,7 +8,7 @@ import {
   injectedConnection,
   networkConnection,
   walletConnectConnection,
-} from 'connection'
+} from './connections'
 
 export function getIsInjected(): boolean {
   return Boolean(window.ethereum)
@@ -20,6 +20,18 @@ export function getIsMetaMask(): boolean {
 
 export function getIsCoinbaseWallet(): boolean {
   return window.ethereum?.isCoinbaseWallet ?? false
+}
+
+export function getIsAmbireWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('ambire') || false
+}
+
+export function getIsZengoWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('zengo') || false
+}
+
+export function getIsAlphaWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('alpha') || false
 }
 
 const CONNECTIONS: Connection[] = [

@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 import COINBASE_ICON_URL from '../../../assets/coinbase.svg'
-import { coinbaseWalletConnection, ConnectionType } from 'connection'
+import { coinbaseWalletConnection, ConnectionType } from '@cow/modules/wallet/api/utils/connections'
 import { getConnectionName } from '@cow/modules/wallet/api/utils'
 
 import Option from '../Option'

@@ -1,5 +1,5 @@
 import { useWalletMetaData } from '@cow/modules/wallet'
-import { getIsAmbireWallet } from '@src/custom/connection/utils'
+import { getIsAmbireWallet } from '@cow/modules/wallet/api/utils'
 
 export default function useIsAmbireWallet(): boolean {
   const { walletName } = useWalletMetaData()
