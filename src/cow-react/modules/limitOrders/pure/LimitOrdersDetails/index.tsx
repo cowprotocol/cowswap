@@ -16,6 +16,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
+import { DEFAULT_DATE_FORMAT } from '@cow/constants/intl'
 
 const Wrapper = styled.div`
   font-size: 13px;
@@ -36,14 +37,6 @@ export interface LimitOrdersDetailsProps {
   settingsState: LimitOrdersSettingsState
   executionPrice: Price<Currency, Currency> | null
   limitRateState: LimitRateState
-}
-
-const dateTimeFormat: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
 }
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
@@ -106,7 +99,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           />
         </div>
         <div>
-          <span>{expiryDate.toLocaleString(undefined, dateTimeFormat)}</span>
+          <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
         </div>
       </styledEl.DetailsRow>
       {/* <styledEl.DetailsRow>

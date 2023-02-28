@@ -6,20 +6,12 @@ import { ChevronDown } from 'react-feather'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
 import ms from 'ms.macro'
+import { DEFAULT_DATE_FORMAT } from '@cow/constants/intl'
 
 function limitDateString(date: Date): string {
   const [first, second] = date.toISOString().split(':')
 
   return [first, second].join(':')
-}
-
-const customDateOptions: Intl.DateTimeFormatOptions = {
-  year: '2-digit',
-  month: 'short',
-  day: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
 }
 
 export interface DeadlineSelectorProps {
@@ -42,7 +34,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
 
   const customDeadlineTitle = useMemo(() => {
     if (!customDeadline) return ''
-    return new Date(customDeadline * 1000).toLocaleString(undefined, customDateOptions)
+    return new Date(customDeadline * 1000).toLocaleString(undefined, DEFAULT_DATE_FORMAT)
   }, [customDeadline])
 
   const setDeadline = useCallback(
