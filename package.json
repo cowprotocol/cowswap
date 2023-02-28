@@ -130,6 +130,7 @@
     "d3": "^7.8.1",
     "date-fns": "^2.29.3",
     "ethers": "^5.1.4",
+    "exponential-backoff": "^3.1.1",
     "fast-safe-stringify": "^2.0.8",
     "fortmatic": "^2.2.1",
     "fraction.js": "^4.2.0",

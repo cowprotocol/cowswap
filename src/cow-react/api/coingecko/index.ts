@@ -1,3 +1,4 @@
+import { fetchWithBackoff } from '@cow/common/utils/fetch'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { SWR_OPTIONS } from 'constants/index'
@@ -47,7 +48,7 @@ function _getCoinGeckoAssetPlatform(chainId: ChainId) {
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
+  return fetchWithBackoff(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
