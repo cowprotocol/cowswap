@@ -83,17 +83,16 @@ const MAX_TOKEN_SYMBOL_LENGTH = 6
 type FeeBreakdownProps = FeeInformationTooltipProps & {
   symbol: string | undefined
   // TODO: Re-enable modal once subsidy is back
-  // discount: number
+  discount?: number
 }
-const FeeBreakdownLine = ({ feeAmount, type, symbol }: FeeBreakdownProps) => {
+const FeeBreakdownLine = ({ feeAmount, type, symbol, discount }: FeeBreakdownProps) => {
   const typeString = type === 'From' ? '+' : '-'
 
   const smartFee = formatTokenAmount(feeAmount)
 
   return (
     <FeeTooltipLine>
-      {/* TODO: Re-enable modal once subsidy is back  */}
-      {/* <span className={discount ? 'green' : ''}>Fee{smartFee && discount ? ` [-${discount}%]` : ''}</span> */}
+      <span className={discount ? 'green' : ''}>Fee{smartFee && discount ? ` [-${discount}%]` : ''}</span>
       {smartFee ? (
         <span>
           {typeString}
