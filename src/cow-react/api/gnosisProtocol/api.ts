@@ -118,12 +118,12 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     return {
       ...baseParams,
       ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),
-      kind: OrderKind.SELL,
+      kind: OrderKind.SELL as string as OrderQuoteRequest['kind'],
       sellAmountBeforeFee: amount.toString(),
     }
   } else {
     return {
-      kind: OrderKind.BUY,
+      kind: OrderKind.BUY as string as OrderQuoteRequest['kind'],
       buyAmountAfterFee: amount.toString(),
       ...baseParams,
     }

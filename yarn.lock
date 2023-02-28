@@ -1176,9 +1176,9 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@cowprotocol/cow-sdk#2.1-dist":
+"@cowprotocol/cow-sdk@cowprotocol/cow-sdk#2.0-alpha-dist":
   version "1.0.2-RC.0"
-  resolved "https://codeload.github.com/cowprotocol/cow-sdk/tar.gz/9b3b3b3871cf7985994bcfe89a91ac1d4d46bdfe"
+  resolved "https://codeload.github.com/cowprotocol/cow-sdk/tar.gz/c8fba3f43162227ead86a7119764cdab4c9b0324"
   dependencies:
     "@cowprotocol/app-data" "^0.0.3-RC.0"
     "@cowprotocol/contracts" "^1.3.1"
