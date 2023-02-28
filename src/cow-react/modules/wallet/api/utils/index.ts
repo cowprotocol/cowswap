@@ -7,8 +7,9 @@ import {
   gnosisSafeConnection,
   injectedConnection,
   networkConnection,
+  trustWalletConnection,
   walletConnectConnection,
-} from 'connection'
+} from './connections'
 
 export function getIsInjected(): boolean {
   return Boolean(window.ethereum)
@@ -22,6 +23,18 @@ export function getIsCoinbaseWallet(): boolean {
   return window.ethereum?.isCoinbaseWallet ?? false
 }
 
+export function getIsAmbireWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('ambire') || false
+}
+
+export function getIsZengoWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('zengo') || false
+}
+
+export function getIsAlphaWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('alpha') || false
+}
+
 const CONNECTIONS: Connection[] = [
   gnosisSafeConnection,
   injectedConnection,
@@ -29,6 +42,7 @@ const CONNECTIONS: Connection[] = [
   walletConnectConnection,
   fortmaticConnection,
   networkConnection,
+  trustWalletConnection,
 ]
 export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
@@ -57,6 +71,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return walletConnectConnection
       case ConnectionType.ALPHA_WALLET:
         return walletConnectConnection
+      case ConnectionType.TRUST_WALLET:
+        return trustWalletConnection
     }
   }
 }
@@ -81,5 +97,7 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Ambire'
     case ConnectionType.ALPHA_WALLET:
       return 'Alpha wallet'
+    case ConnectionType.TRUST_WALLET:
+      return 'Trust wallet'
   }
 }

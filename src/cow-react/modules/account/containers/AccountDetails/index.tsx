@@ -55,12 +55,12 @@ import {
   fortmaticConnection,
   injectedConnection,
   walletConnectConnection,
-} from 'connection'
+} from '@cow/modules/wallet/api/utils/connections'
 import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useDisconnectWallet } from '@cow/modules/wallet/api/hooks/useDisconnectWallet'
-import { getIsAlphaWallet, getIsAmbireWallet, getIsZengoWallet } from '@src/custom/connection/utils'
+import { getIsAlphaWallet, getIsAmbireWallet, getIsZengoWallet } from '@cow/modules/wallet/api/utils'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',

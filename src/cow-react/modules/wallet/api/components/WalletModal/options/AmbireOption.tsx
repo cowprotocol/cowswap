@@ -1,12 +1,11 @@
 import { Connector } from '@web3-react/types'
 import AMBIRE_ICON_URL from 'assets/images/ambire.svg'
-import { ConnectionType, walletConnectConnection } from 'connection'
-import { getConnectionName } from 'connection/utils'
+import { ConnectionType, walletConnectConnection } from '@cow/modules/wallet/api/utils/connections'
+import { getConnectionName, getIsAmbireWallet } from '@cow/modules/wallet/api/utils'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import Option from '../Option'
 import { useWalletInfo } from '../../../hooks/useWalletInfo'
-import { getIsAmbireWallet } from 'connection/utils'
 import { WC_DISABLED_TEXT } from '../../../constants'
 
 const BASE_PROPS = {

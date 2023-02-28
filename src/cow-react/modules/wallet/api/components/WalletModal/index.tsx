@@ -9,7 +9,7 @@ import { Connector } from '@web3-react/types'
 
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
-import { ConnectionType, walletConnectConnection } from 'connection'
+import { ConnectionType, walletConnectConnection } from '@cow/modules/wallet/api/utils/connections'
 import { getConnection, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils'
 import { useCallback, useEffect, useState } from 'react'
 import { updateConnectionError } from 'state/connection/reducer'
@@ -33,6 +33,7 @@ import { WalletConnectOption } from './options/WalletConnectOption'
 import { ZengoOption } from './options/ZengoOption'
 import { AmbireOption } from './options/AmbireOption'
 import { AlphaWalletOption } from './options/AlphaWalletOption'
+import { TrustWalletOption } from './options/TrustWalletOption'
 
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
@@ -178,11 +179,14 @@ export function WalletModal() {
 
     const alphaWalletOption = (!isInjectedMobileBrowser && <AlphaWalletOption tryActivation={tryActivation} />) ?? null
 
+    const trustWalletOption = <TrustWalletOption tryActivation={tryActivation} />
+
     return (
       <>
         {injectedOption}
         {walletConnectionOption}
         {coinbaseWalletOption}
+        {trustWalletOption}
 
         {viewAll && (
           <>

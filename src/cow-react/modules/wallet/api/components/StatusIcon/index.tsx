@@ -1,4 +1,4 @@
-import { ConnectionType } from 'connection'
+import { ConnectionType } from '@cow/modules/wallet/api/utils/connections'
 import styled from 'styled-components/macro'
 
 import CoinbaseWalletIcon from '../../assets/coinbase.svg'

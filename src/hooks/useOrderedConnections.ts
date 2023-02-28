@@ -1,4 +1,4 @@
-import { ConnectionType } from 'connection'
+import { ConnectionType } from '@cow/modules/wallet/api/utils/connections'
 import { getConnection } from '@cow/modules/wallet/api/utils'
 import { useMemo } from 'react'
 import { BACKFILLABLE_WALLETS } from 'state/connection/constants'

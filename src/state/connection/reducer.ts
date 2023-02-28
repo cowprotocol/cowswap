@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { ConnectionType } from 'connection'
+import { ConnectionType } from '@cow/modules/wallet/api/utils/connections'
 
 export interface ConnectionState {
   errorByConnectionType: Record<ConnectionType, string | undefined>
@@ -16,11 +16,12 @@ export const initialState: ConnectionState = {
     [ConnectionType.ZENGO]: undefined,
     [ConnectionType.AMBIRE]: undefined,
     [ConnectionType.ALPHA_WALLET]: undefined,
+    [ConnectionType.TRUST_WALLET]: undefined,
   },
 }
 
 const connectionSlice = createSlice({
-  name: 'connection',
+  name: '@cow/modules/wallet/api/utils/connections',
   initialState,
   reducers: {
     updateConnectionError(
