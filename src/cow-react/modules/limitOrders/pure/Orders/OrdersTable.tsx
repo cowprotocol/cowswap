@@ -1,7 +1,7 @@
 import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
@@ -140,11 +140,15 @@ export function OrdersTable({
   const selectReceiptOrder = useSelectReceiptOrder()
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
   const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step).sort(ordersSorter)
+  const onScroll = useCallback(() => {
+    // Emit event to close OrderContextMenu
+    document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
+  }, [])
 
   return (
     <>
       <TableBox>
-        <TableInner>
+        <TableInner onScroll={onScroll}>
           <Header>
             <HeaderElement>
               <Trans>Order</Trans>
