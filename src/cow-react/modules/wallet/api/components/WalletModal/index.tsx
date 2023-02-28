@@ -38,7 +38,7 @@ import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
-import { ButtonOutlined } from '@src/components/Button'
+import { ButtonPrimary } from 'components/Button'
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -183,16 +183,18 @@ export function WalletModal() {
         {injectedOption}
         {walletConnectionOption}
         {coinbaseWalletOption}
-        {zengoOption}
 
-        {viewAll ? (
+        {viewAll && (
           <>
+            {zengoOption}
             {ambireOption}
             {alphaWalletOption}
           </>
-        ) : (
-          <ButtonOutlined onClick={() => setViewAll(true)}>View all</ButtonOutlined>
         )}
+
+        <ButtonPrimary $borderRadius="12px" padding="12px" onClick={() => setViewAll(!viewAll)}>
+          <Trans>{viewAll ? 'Hide more' : 'View more'}</Trans>
+        </ButtonPrimary>
       </>
     )
   }
