@@ -48,15 +48,12 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
   {}
 ) as any
 
-const white = '#FFFFFF'
-const black = '#000000'
-
 export function colors(darkMode: boolean): Colors {
   return {
     darkMode,
     // base
-    white,
-    black,
+    white: '#FFFFFF',
+    black: '#000000',
 
     // text
     text1: darkMode ? '#FFFFFF' : '#000000',
@@ -218,6 +215,6 @@ html {
 }
 
 a {
- color: ${({ theme }) => theme.blue1}; 
+ color: ${({ theme }) => theme.blue1};
 }
 `

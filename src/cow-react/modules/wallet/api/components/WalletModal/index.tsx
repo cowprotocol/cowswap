@@ -169,9 +169,9 @@ export function WalletModal() {
 
     // const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
 
-    const zengoOption = <ZengoOption tryActivation={tryActivation} />
+    const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
 
-    const ambireOption = <AmbireOption tryActivation={tryActivation} />
+    const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
 
     const alphaWalletOption = <AlphaWalletOption tryActivation={tryActivation} />
 
