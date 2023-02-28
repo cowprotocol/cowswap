@@ -60,6 +60,7 @@ export const ListWrapper = styled(MenuList)`
   margin: 15px 0 0 0;
   padding: 10px 15px;
   border-radius: 20px;
+  outline: none;
   list-style: none;
   position: relative;
   z-index: 2;
