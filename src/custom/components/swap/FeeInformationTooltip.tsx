@@ -4,6 +4,7 @@ import TradeGp from 'state/swap/TradeGp'
 import QuestionHelper from 'components/QuestionHelper'
 import styled from 'styled-components/macro'
 import useTheme from 'hooks/useTheme'
+import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
@@ -82,10 +83,9 @@ const MAX_TOKEN_SYMBOL_LENGTH = 6
 
 type FeeBreakdownProps = FeeInformationTooltipProps & {
   symbol: string | undefined
-  // TODO: Re-enable modal once subsidy is back
-  discount?: number
+  discount: number
 }
-const FeeBreakdownLine = ({ feeAmount, type, symbol, discount }: FeeBreakdownProps) => {
+const FeeBreakdownLine = ({ feeAmount, discount, type, symbol }: FeeBreakdownProps) => {
   const typeString = type === 'From' ? '+' : '-'
 
   const smartFee = formatTokenAmount(feeAmount)
@@ -123,7 +123,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
   const theme = useTheme()
   const isEthFlow = useIsEthFlow()
 
-  // const { subsidy } = useCowBalanceAndSubsidy()
+  const { subsidy } = useCowBalanceAndSubsidy()
 
   const symbol = useMemo(() => {
     const amount = trade?.[type === 'From' ? 'inputAmount' : 'outputAmount']
@@ -147,7 +147,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
                   {amountBeforeFees} <TokenSymbol token={{ symbol }} length={MAX_TOKEN_SYMBOL_LENGTH} />
                 </span>{' '}
               </FeeTooltipLine>
-              <FeeBreakdownLine {...props} /*discount={subsidy.discount}*/ symbol={symbol} />
+              <FeeBreakdownLine {...props} discount={subsidy.discount} symbol={symbol} />
               {allowsOffchainSigning && !isEthFlow && (
                 <FeeTooltipLine>
                   <span>Gas costs</span>
