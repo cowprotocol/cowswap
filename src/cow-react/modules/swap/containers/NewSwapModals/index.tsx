@@ -24,7 +24,7 @@ export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
 
   return (
     <>
-      {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}      
+      {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
       {/* TODO: Re-enable modal once subsidy is back  */}
       {/*<CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} /> */}
       {<ConfirmSwapModalSetup {...confirmSwapProps} />}

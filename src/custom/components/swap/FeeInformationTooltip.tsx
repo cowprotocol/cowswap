@@ -82,7 +82,7 @@ const MAX_TOKEN_SYMBOL_LENGTH = 6
 
 type FeeBreakdownProps = FeeInformationTooltipProps & {
   symbol: string | undefined
-  // TODO: Re-enable modal once subsidy is back 
+  // TODO: Re-enable modal once subsidy is back
   // discount: number
 }
 const FeeBreakdownLine = ({ feeAmount, type, symbol }: FeeBreakdownProps) => {
