@@ -285,10 +285,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
               )}
 
-              <styledEl.FooterBox>
-                {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />}
-                <DeadlineInput />
-              </styledEl.FooterBox>
+              {!isWrapOrUnwrap && (
+                <styledEl.FooterBox>
+                  <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                  <DeadlineInput />
+                </styledEl.FooterBox>
+              )}
 
               <LimitOrdersWarnings priceImpact={priceImpact} />
 
