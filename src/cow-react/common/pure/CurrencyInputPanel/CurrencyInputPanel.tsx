@@ -99,7 +99,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     // Don't override typedValue, when viewAmount from props and typedValue are zero (0 or 0. or 0.000)
     if (!viewAmount && (!typedValue || parseFloat(typedValue) === 0)) return
 
-    setTypedValue(viewAmount)
+    setTypedValue(viewAmount || typedValue)
   }, [viewAmount, typedValue])
 
   const numericalInput = (
