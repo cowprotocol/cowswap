@@ -1,4 +1,4 @@
-import { Dropdown } from '@cow/common/pure/Dropdown'
+import { Menu } from '@reach/menu-button'
 import { LimitOrderDeadline, limitOrdersDeadlines, maxCustomDeadline } from './deadlines'
 
 import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
@@ -54,33 +54,30 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     [selectCustomDeadline]
   )
 
-  const list = (
-    <styledEl.ListWrapper>
-      {limitOrdersDeadlines.map((item) => (
-        <li key={item.value}>
-          <styledEl.ListItem onClick={() => setDeadline(item)}>
-            <Trans>{item.title}</Trans>
-          </styledEl.ListItem>
-        </li>
-      ))}
-      <styledEl.ListItem>
-        <Trans>Custom</Trans>
-        <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} />
-      </styledEl.ListItem>
-    </styledEl.ListWrapper>
-  )
-
   return (
     <styledEl.Wrapper>
       <styledEl.Label>
         <Trans>Order expires</Trans>
       </styledEl.Label>
-      <Dropdown content={list}>
+      <Menu>
         <styledEl.Current ref={currentDeadlineNode as any}>
           <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
           <ChevronDown size="18" />
         </styledEl.Current>
-      </Dropdown>
+        <styledEl.ListWrapper>
+          {limitOrdersDeadlines.map((item) => (
+            <li key={item.value}>
+              <styledEl.ListItem onSelect={() => setDeadline(item)}>
+                <Trans>{item.title}</Trans>
+              </styledEl.ListItem>
+            </li>
+          ))}
+          <styledEl.ListItem onSelect={() => void 0}>
+            <Trans>Custom</Trans>
+            <styledEl.CustomInput type="datetime-local" onChange={onChange} min={min} max={max} />
+          </styledEl.ListItem>
+        </styledEl.ListWrapper>
+      </Menu>
     </styledEl.Wrapper>
   )
 }

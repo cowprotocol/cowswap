@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
 import { lighten, transparentize } from 'polished'
+import { MenuItem, MenuList, MenuButton } from '@reach/menu-button'
 
 export const Wrapper = styled.div`
   padding: 0;
@@ -19,7 +20,7 @@ export const Label = styled.span`
   color: ${({ theme }) => transparentize(0.3, theme.text1)};
 `
 
-export const Current = styled.button`
+export const Current = styled(MenuButton)`
   color: ${({ theme }) => theme.text1};
   display: flex;
   align-items: center;
@@ -29,7 +30,6 @@ export const Current = styled.button`
   margin: 0;
   white-space: nowrap;
   cursor: pointer;
-  width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
   cursor: pointer;
@@ -53,7 +53,7 @@ export const Current = styled.button`
   }
 `
 
-export const ListWrapper = styled.ul`
+export const ListWrapper = styled(MenuList)`
   display: block;
   background: ${({ theme }) => theme.bg1};
   box-shadow: ${({ theme }) => theme.boxShadow2};
@@ -61,9 +61,11 @@ export const ListWrapper = styled.ul`
   padding: 10px 15px;
   border-radius: 20px;
   list-style: none;
+  position: relative;
+  z-index: 2;
 `
 
-export const ListItem = styled.button`
+export const ListItem = styled(MenuItem)`
   color: ${({ theme }) => theme.text1};
   background: none;
   border: 0;
