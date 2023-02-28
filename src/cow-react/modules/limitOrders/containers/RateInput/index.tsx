@@ -141,7 +141,11 @@ export function RateInput() {
     <>
       <styledEl.Wrapper>
         <styledEl.Header>
-          <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
+          <HeadingText
+            inputCurrency={inputCurrency}
+            currency={areBothCurrencies ? primaryCurrency : null}
+            rateImpact={rateImpact}
+          />
 
           <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
             <span>Set to market</span>
@@ -149,14 +153,18 @@ export function RateInput() {
         </styledEl.Header>
 
         <styledEl.Body>
-          <styledEl.ActiveCurrency onClick={handleToggle}>
-            <styledEl.ActiveSymbol>
-              <TokenSymbol token={secondaryCurrency} />
-            </styledEl.ActiveSymbol>
-            <styledEl.ActiveIcon>
-              <RefreshCw size={12} />
-            </styledEl.ActiveIcon>
-          </styledEl.ActiveCurrency>
+          {areBothCurrencies ? (
+            <styledEl.ActiveCurrency onClick={handleToggle}>
+              <styledEl.ActiveSymbol>
+                <TokenSymbol token={secondaryCurrency} />
+              </styledEl.ActiveSymbol>
+              <styledEl.ActiveIcon>
+                <RefreshCw size={12} />
+              </styledEl.ActiveIcon>
+            </styledEl.ActiveCurrency>
+          ) : (
+            <div></div>
+          )}
 
           {isLoading && areBothCurrencies ? (
             <styledEl.RateLoader />
