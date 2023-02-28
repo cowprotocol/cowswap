@@ -20,12 +20,12 @@ const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 }
 
-const fetchRateLimitted = fetchWithRateLimit({ rateLimit: {
-  tokensPerInterval: 3,
-  interval: "second"
-}})
-
-
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 3,
+    interval: 'second',
+  },
+})
 
 function _getApiBaseUrl(chainId: ChainId): string {
   const baseUrl = API_BASE_URL

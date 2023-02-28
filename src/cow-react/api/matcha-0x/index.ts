@@ -83,11 +83,12 @@ const AFFILIATE_ADDRESS = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
 const EXCLUDED_SOURCES = ''
 const MATCHA_DEFAULT_OPTIONS = `affiliateAddress=${AFFILIATE_ADDRESS}&excludedSources=${EXCLUDED_SOURCES}`
 
-const fetchRateLimitted = fetchWithRateLimit({ rateLimit: {
-  tokensPerInterval: 3,
-  interval: "second"
-}})
-
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 3,
+    interval: 'second',
+  },
+})
 
 function _getApiBaseUrl(chainId: ChainId): string {
   const baseUrl = API_BASE_URL[chainId]

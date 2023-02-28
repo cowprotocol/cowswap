@@ -35,12 +35,12 @@ import { GpPriceStrategy } from 'state/gas/atoms'
 import { OrderClass } from 'state/orders/actions'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 
-const fetchRateLimitted = fetchWithRateLimit({ rateLimit: {
-  tokensPerInterval: 5,
-  interval: "second"
-}})
-
-
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 5,
+    interval: 'second',
+  },
+})
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {

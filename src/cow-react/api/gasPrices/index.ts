@@ -3,11 +3,12 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { GAS_FEE_ENDPOINTS, GAS_API_KEYS } from 'constants/index'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 
-
-const fetchRateLimitted = fetchWithRateLimit({ rateLimit: {
-  tokensPerInterval: 3,
-  interval: "second"
-}})
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 3,
+    interval: 'second',
+  },
+})
 
 // Values are returned as floats in gwei
 const ONE_GWEI = 1_000_000_000

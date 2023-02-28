@@ -1,13 +1,11 @@
 import { backOff, BackoffOptions } from 'exponential-backoff'
 
-import { RateLimiter, RateLimiterOpts } from "limiter";
-
+import { RateLimiter, RateLimiterOpts } from 'limiter'
 
 interface FetchWithRateLimit {
-  rateLimit?: RateLimiterOpts, // no rate-limit by default
-  backoff?: BackoffOptions, // basic exponential back-off by default
+  rateLimit?: RateLimiterOpts // no rate-limit by default
+  backoff?: BackoffOptions // basic exponential back-off by default
 }
-
 
 // See config in https://www.npmjs.com/package/@insertish/exponential-backoff
 const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
@@ -18,22 +16,28 @@ const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
 
 /**
  * Requests with rate limit and exponential backoff
- * 
+ *
  * @param params allows to define the optional rate limit, and the back-off strategy
  * @returns the fetch function that would do the rate-limitted requests
  */
-export function fetchWithRateLimit(params?: FetchWithRateLimit): (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> {  
+export function fetchWithRateLimit(
+  params?: FetchWithRateLimit
+): (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> {
   const { backoff, rateLimit } = params || {}
-  
-  // optionally rate limit
-  let limiter = rateLimit ? new RateLimiter(rateLimit) : undefined 
 
-  return (input, init) => backOff(async () => {
-    if (limiter) {
-      await limiter.removeTokens(1);
-    }
-    return fetch(input, init)
-  }, {...DEFAULT_BACKOFF_OPTIONS, ...backoff})
+  // optionally rate limit
+  let limiter = rateLimit ? new RateLimiter(rateLimit) : undefined
+
+  return (input, init) =>
+    backOff(
+      async () => {
+        if (limiter) {
+          await limiter.removeTokens(1)
+        }
+        return fetch(input, init)
+      },
+      { ...DEFAULT_BACKOFF_OPTIONS, ...backoff }
+    )
 }
 
 /**
