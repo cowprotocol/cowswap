@@ -15,7 +15,7 @@ export interface NewSwapModalsProps {
 }
 
 export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
-  const { chainId, showNativeWrapModal, /*showCowSubsidyModal*/, confirmSwapProps, ethFlowProps } = props
+  const { chainId, showNativeWrapModal, confirmSwapProps, ethFlowProps } = props
 
   // const closeModals = useCloseModals()
   const onImportDismiss = useOnImportDismiss()
