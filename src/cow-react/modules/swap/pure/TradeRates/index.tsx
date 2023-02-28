@@ -1,8 +1,5 @@
 import React from 'react'
 import * as styledEl from './styled'
-// import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
-import { useOpenModal } from 'state/application/hooks'
-import { ApplicationModal } from 'state/application/reducer'
 import TradeGp from 'state/swap/TradeGp'
 import { RowDeadline } from '@cow/modules/swap/containers/Row/RowDeadline'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
@@ -33,10 +30,10 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     isExpertMode,
     allowsOffchainSigning,
     userAllowedSlippage,
-    discount,
+    // discount,
     rateInfoParams,
   } = props
-  const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
+  // const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
   const showPrice = !!trade
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
