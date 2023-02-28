@@ -1,7 +1,6 @@
 import React from 'react'
 import * as styledEl from './styled'
-import { InfoIcon } from 'components/InfoIcon'
-import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
+// import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
 import { useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import TradeGp from 'state/swap/TradeGp'
@@ -11,8 +10,8 @@ import { TradeBasicDetails } from '@cow/modules/swap/containers/TradeBasicDetail
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
-const SUBSIDY_INFO_MESSAGE_EXTENDED =
-  SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
+// const SUBSIDY_INFO_MESSAGE_EXTENDED =
+//   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
 
 export interface TradeRatesProps {
   trade: TradeGp | undefined
@@ -58,7 +57,10 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       )}
       {/* TRANSACTION DEADLINE */}
       {showRowDeadline && <RowDeadline />}
+
       {/* DISCOUNTS */}
+      {/* TODO: Re-enable modal once subsidy is back */}
+      {/*
       <styledEl.Row>
         <div>
           <span>Fees discount</span>
@@ -68,6 +70,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
           <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
         </div>
       </styledEl.Row>
+      */}
     </styledEl.Box>
   )
 }, genericPropsChecker)
