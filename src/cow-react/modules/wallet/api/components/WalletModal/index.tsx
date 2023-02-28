@@ -173,7 +173,7 @@ export function WalletModal() {
 
     const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
 
-    const alphaWalletOption = <AlphaWalletOption tryActivation={tryActivation} />
+    const alphaWalletOption = (!isInjectedMobileBrowser && <AlphaWalletOption tryActivation={tryActivation} />) ?? null
 
     return (
       <>
