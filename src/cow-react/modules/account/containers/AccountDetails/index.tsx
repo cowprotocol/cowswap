@@ -47,10 +47,10 @@ import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useDisconnectWallet } from '@cow/modules/wallet/web3-react/hooks/useDisconnectWallet'
 import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
-import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/InjectedOption'
-import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/WalletConnectOption'
-import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connection/CoinbaseWalletOption'
-import { fortmaticConnection } from '@cow/modules/wallet/web3-react/connection/FortmaticOption'
+import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/injected'
+import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
+import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connection/coinbase'
+import { fortmaticConnection } from '@cow/modules/wallet/web3-react/connection/formatic'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',

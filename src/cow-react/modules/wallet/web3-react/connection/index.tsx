@@ -3,15 +3,15 @@ import { Connector } from '@web3-react/types'
 import { isMobile } from 'utils/userAgent'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/utils/connection'
 
-import { CoinbaseWalletOption } from './CoinbaseWalletOption'
-import { FortmaticOption } from './FortmaticOption'
+import { CoinbaseWalletOption } from './coinbase'
+import { FortmaticOption } from './formatic'
 import {
   InjectedOption,
   InstallMetaMaskOption,
   MetaMaskOption,
   OpenMetaMaskMobileOption,
-} from './InjectedOption'
-import { WalletConnectOption } from './WalletConnectOption'
+} from './injected'
+import { WalletConnectOption } from './walletConnect'
 
 export type TryActivation = (connector: Connector) => void
 
