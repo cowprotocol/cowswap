@@ -1,7 +1,6 @@
-import { ConnectionType } from '@cow/modules/wallet'
+import { BACKFILLABLE_WALLETS, ConnectionType } from '@cow/modules/wallet'
 import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { useMemo } from 'react'
-import { BACKFILLABLE_WALLETS } from 'state/connection/constants'
 import { useAppSelector } from 'state/hooks'
 
 const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS, ConnectionType.FORTMATIC]

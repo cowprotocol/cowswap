@@ -6,3 +6,9 @@ export enum ConnectionType {
   NETWORK = 'NETWORK',
   GNOSIS_SAFE = 'GNOSIS_SAFE',
 }
+
+export const BACKFILLABLE_WALLETS = [
+  ConnectionType.INJECTED,
+  ConnectionType.COINBASE_WALLET,
+  ConnectionType.WALLET_CONNECT,
+]
