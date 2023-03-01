@@ -31,6 +31,7 @@ import {
 } from './options//InjectedOption'
 import PendingView from '@cow/modules/wallet/api/components/WalletModal/PendingView'
 import { WalletConnectOption } from './options//WalletConnectOption'
+import { ZengoOption } from './options/ZengoOption'
 
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
@@ -167,12 +168,15 @@ export function WalletModal() {
 
     const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
 
+    const zengoOption = <ZengoOption tryActivation={tryActivation} />
+
     return (
       <>
         {injectedOption}
         {walletConnectionOption}
         {coinbaseWalletOption}
         {fortmaticOption}
+        {zengoOption}
       </>
     )
   }

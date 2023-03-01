@@ -13,6 +13,7 @@ export const initialState: ConnectionState = {
     [ConnectionType.COINBASE_WALLET]: undefined,
     [ConnectionType.NETWORK]: undefined,
     [ConnectionType.GNOSIS_SAFE]: undefined,
+    [ConnectionType.ZENGO]: undefined,
   },
 }
 
