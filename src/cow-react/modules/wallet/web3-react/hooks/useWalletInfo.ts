@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import useENSName from '@src/hooks/useENSName'
 import { UNSUPPORTED_WC_WALLETS } from 'constants/index'
-import { getConnection } from '@cow/modules/wallet/web3-react/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { ConnectionType } from '@cow/modules/wallet'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
@@ -63,7 +63,7 @@ function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
 
 export function useWalletMetaData(): WalletMetaData {
   const { connector, provider } = useWeb3React()
-  const connectionType = getConnection(connector).type
+  const connectionType = getWeb3ReactConnection(connector).type
 
   return useMemo<WalletMetaData>(() => {
     if (connectionType === ConnectionType.WALLET_CONNECT) {

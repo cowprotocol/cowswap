@@ -32,7 +32,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   networkConnection,
 ]
 
-export function getConnection(c: Connector | ConnectionType): Web3ReactConnection {
+export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3ReactConnection {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find((connection) => connection.connector === c)
     if (!connection) {

@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { ConnectionType } from '@cow/modules/wallet'
-import { getConnection } from '@cow/modules/wallet/web3-react/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { useCallback, useEffect, useState } from 'react'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
@@ -24,7 +24,7 @@ export function WalletModal() {
 
   const [pendingConnector, setPendingConnector] = useState<Connector | undefined>()
   const pendingError = useAppSelector((state) =>
-    pendingConnector ? state.connection.errorByConnectionType[getConnection(pendingConnector).type] : undefined
+    pendingConnector ? state.connection.errorByConnectionType[getWeb3ReactConnection(pendingConnector).type] : undefined
   )
 
   const walletModalOpen = useModalIsOpen(ApplicationModal.WALLET)
@@ -42,7 +42,7 @@ export function WalletModal() {
 
   useEffect(() => {
     if (pendingConnector && walletView !== 'pending') {
-      updateConnectionError({ connectionType: getConnection(pendingConnector).type, error: undefined })
+      updateConnectionError({ connectionType: getWeb3ReactConnection(pendingConnector).type, error: undefined })
       setPendingConnector(undefined)
     }
   }, [pendingConnector, walletView])
@@ -70,7 +70,7 @@ export function WalletModal() {
 
   const tryActivation = useCallback(
     async (connector: Connector) => {
-      const connectionType = getConnection(connector).type
+      const connectionType = getWeb3ReactConnection(connector).type
 
       changeWalletAnalytics('Todo: wallet name')
 
@@ -88,7 +88,7 @@ export function WalletModal() {
         await connector.activate()
 
         // Important for balances to load when connected to Gnosis-chain via WalletConnect
-        if (getConnection(connector) === walletConnectConnection) {
+        if (getWeb3ReactConnection(connector) === walletConnectConnection) {
           const provider: any = connector.provider
 
           if (provider && provider.isWalletConnect) {

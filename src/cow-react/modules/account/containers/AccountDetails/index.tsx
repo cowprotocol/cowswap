@@ -7,7 +7,7 @@ import Copy from 'components/Copy'
 import { Trans } from '@lingui/macro'
 
 import { getEtherscanLink } from 'utils'
-import { getConnection } from '@cow/modules/wallet/web3-react/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
@@ -79,7 +79,7 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo
     return null
   }
 
-  const connectionType = getConnection(connector)
+  const connectionType = getWeb3ReactConnection(connector)
 
   if (walletInfo && !walletInfo.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
@@ -137,7 +137,7 @@ export function AccountDetails({
   handleCloseOrdersPanel,
 }: AccountDetailsProps) {
   const { account, connector, chainId: connectedChainId } = useWeb3React()
-  const connection = getConnection(connector)
+  const connection = getWeb3ReactConnection(connector)
   const chainId = supportedChainId(connectedChainId)
   const walletInfo = useWalletInfo()
   const disconnectWallet = useDisconnectWallet()
@@ -160,7 +160,7 @@ export function AccountDetails({
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
     const walletConnectSuffix =
-      getConnection(connector) === walletConnectConnection && walletInfo?.walletName ? ' (via WalletConnect)' : ''
+      getWeb3ReactConnection(connector) === walletConnectConnection && walletInfo?.walletName ? ' (via WalletConnect)' : ''
 
     return (
       <WalletName>

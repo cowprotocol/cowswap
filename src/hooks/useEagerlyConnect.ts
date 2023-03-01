@@ -1,7 +1,7 @@
 import { Connector } from '@web3-react/types'
 import { networkConnection } from '@cow/modules/wallet/web3-react/connection/ network'
 import { gnosisSafeConnection } from '@cow/modules/wallet/web3-react/connection/safe'
-import { getConnection } from '@cow/modules/wallet/web3-react/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { useEffect } from 'react'
 import { BACKFILLABLE_WALLETS } from 'state/connection/constants'
 import { useAppSelector } from 'state/hooks'
@@ -27,9 +27,9 @@ export default function useEagerlyConnect() {
     connect(networkConnection.connector)
 
     if (selectedWallet) {
-      connect(getConnection(selectedWallet).connector)
+      connect(getWeb3ReactConnection(selectedWallet).connector)
     } else if (!selectedWalletBackfilled) {
-      BACKFILLABLE_WALLETS.map(getConnection)
+      BACKFILLABLE_WALLETS.map(getWeb3ReactConnection)
         .map((connection) => connection.connector)
         .forEach(connect)
     }

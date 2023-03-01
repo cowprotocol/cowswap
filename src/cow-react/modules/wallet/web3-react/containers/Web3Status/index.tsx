@@ -3,7 +3,7 @@ import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 
 import { useWeb3React } from '@web3-react/core'
-import { getConnection } from '@cow/modules/wallet/web3-react/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { useAppSelector } from 'state/hooks'
 
 import { useToggleWalletModal } from 'state/application/hooks'
@@ -14,9 +14,9 @@ import { Wrapper } from '@cow/modules/wallet/api/pure/Web3StatusInner/styled'
 export function Web3Status() {
   const { connector } = useWeb3React()
   const { account, active, chainId, ensName } = useWalletInfo()
-  const connectionType = getConnection(connector).type
+  const connectionType = getWeb3ReactConnection(connector).type
 
-  const error = useAppSelector((state) => state.connection.errorByConnectionType[getConnection(connector).type])
+  const error = useAppSelector((state) => state.connection.errorByConnectionType[getWeb3ReactConnection(connector).type])
 
   const toggleWalletModal = useToggleWalletModal()
   useCloseFollowTxPopupIfNotPendingOrder()

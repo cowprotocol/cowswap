@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { getConnection } from '@cow/modules/wallet/web3-react/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { getChainInfo } from 'constants/chainInfo'
 import { CHAIN_IDS_TO_NAMES, SupportedChainId } from 'constants/chains'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -396,7 +396,7 @@ export default function NetworkSelector() {
 
       isSwitching.current = true
 
-      const connectionType = getConnection(connector).type
+      const connectionType = getWeb3ReactConnection(connector).type
 
       try {
         dispatch(updateConnectionError({ connectionType, error: undefined }))

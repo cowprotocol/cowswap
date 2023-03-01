@@ -1,5 +1,5 @@
 import { ConnectionType } from '@cow/modules/wallet'
-import { getConnection } from '@cow/modules/wallet/web3-react/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { useMemo } from 'react'
 import { BACKFILLABLE_WALLETS } from 'state/connection/constants'
 import { useAppSelector } from 'state/hooks'
@@ -23,6 +23,6 @@ export default function useOrderedConnections() {
     // Add network connection last as it should be the fallback.
     orderedConnectionTypes.push(ConnectionType.NETWORK)
 
-    return orderedConnectionTypes.map(getConnection)
+    return orderedConnectionTypes.map(getWeb3ReactConnection)
   }, [selectedWallet])
 }
