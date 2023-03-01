@@ -20,7 +20,6 @@ import { RPC_URLS } from 'constants/networks'
 import { TryActivation, onError } from '.'
 import { Web3ReactConnection } from '../types'
 
-
 const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
   (actions) =>
     new CoinbaseWallet({
@@ -35,14 +34,11 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<Coinba
     })
 )
 
-
 export const coinbaseWalletConnection: Web3ReactConnection = {
   connector: web3CoinbaseWallet,
   hooks: web3CoinbaseWalletHooks,
   type: ConnectionType.COINBASE_WALLET,
 }
-
-
 
 export function OpenCoinbaseWalletOption() {
   const selectedWallet = useSelectedWallet()
@@ -62,4 +58,3 @@ export function CoinbaseWalletOption({ tryActivation }: { tryActivation: TryActi
     />
   )
 }
-

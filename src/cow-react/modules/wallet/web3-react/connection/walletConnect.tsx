@@ -5,14 +5,11 @@ import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletO
 import { walletConnectOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
 import { TryActivation, onError } from '.'
 
-
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
 
-
 import { RPC_URLS } from 'constants/networks'
 import { Web3ReactConnection } from '../types'
-
 
 const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletConnect>(
   (actions) =>
@@ -30,7 +27,6 @@ export const walletConnectConnection: Web3ReactConnection = {
   hooks: web3WalletConnectHooks,
   type: ConnectionType.WALLET_CONNECT,
 }
-
 
 export function WalletConnectOption({ tryActivation }: { tryActivation: TryActivation }) {
   const isActive = useIsActiveWallet(walletConnectConnection)

@@ -14,13 +14,11 @@ import {
 } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
 import { TryActivation, onError } from '.'
 
-
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Web3ReactConnection } from '../types'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
-
 
 const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions, onError }))
 export const injectedConnection: Web3ReactConnection = {
@@ -28,7 +26,6 @@ export const injectedConnection: Web3ReactConnection = {
   hooks: web3InjectedHooks,
   type: ConnectionType.INJECTED,
 }
-
 
 export function InstallMetaMaskOption() {
   return <ConnectWalletOption {...metamaskInstallOption} />

@@ -160,7 +160,9 @@ export function AccountDetails({
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
     const walletConnectSuffix =
-      getWeb3ReactConnection(connector) === walletConnectConnection && walletInfo?.walletName ? ' (via WalletConnect)' : ''
+      getWeb3ReactConnection(connector) === walletConnectConnection && walletInfo?.walletName
+        ? ' (via WalletConnect)'
+        : ''
 
     return (
       <WalletName>

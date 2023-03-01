@@ -7,4 +7,3 @@ export interface Web3ReactConnection {
   hooks: Web3ReactHooks
   type: ConnectionType
 }
-

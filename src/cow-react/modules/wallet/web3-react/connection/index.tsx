@@ -5,12 +5,7 @@ import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/uti
 
 import { CoinbaseWalletOption } from './coinbase'
 import { FortmaticOption } from './formatic'
-import {
-  InjectedOption,
-  InstallMetaMaskOption,
-  MetaMaskOption,
-  OpenMetaMaskMobileOption,
-} from './injected'
+import { InjectedOption, InstallMetaMaskOption, MetaMaskOption, OpenMetaMaskMobileOption } from './injected'
 import { WalletConnectOption } from './walletConnect'
 
 import { gnosisSafeConnection } from './safe'
@@ -22,7 +17,6 @@ import { networkConnection } from './ network'
 import { Web3ReactConnection } from '../types'
 import { ConnectionType } from '../../api/types'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
-
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -72,8 +66,6 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
     }
   }
 }
-
-
 
 export type TryActivation = (connector: Connector) => void
 

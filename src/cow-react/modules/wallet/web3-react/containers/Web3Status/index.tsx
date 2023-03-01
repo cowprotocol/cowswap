@@ -16,7 +16,9 @@ export function Web3Status() {
   const { account, active, chainId, ensName } = useWalletInfo()
   const connectionType = getWeb3ReactConnection(connector).type
 
-  const error = useAppSelector((state) => state.connection.errorByConnectionType[getWeb3ReactConnection(connector).type])
+  const error = useAppSelector(
+    (state) => state.connection.errorByConnectionType[getWeb3ReactConnection(connector).type]
+  )
 
   const toggleWalletModal = useToggleWalletModal()
   useCloseFollowTxPopupIfNotPendingOrder()

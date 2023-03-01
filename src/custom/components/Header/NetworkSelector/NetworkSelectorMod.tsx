@@ -30,7 +30,6 @@ import { useRemovePopup, useAddPopup } from 'state/application/hooks'
 import { useTradeTypeInfo } from '@cow/modules/trade'
 import { useMediaQuery, upToMedium } from 'hooks/useMediaQuery'
 
-
 export const ActiveRowLinkList = styled.div`
   display: flex;
   flex-direction: column;
