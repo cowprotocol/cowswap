@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
 
-
 export const StyledIdenticon = styled.div`
   height: 1rem;
   width: 1rem;
@@ -10,7 +9,6 @@ export const StyledIdenticon = styled.div`
   background-color: ${({ theme }) => theme.bg1}; // MOD
   font-size: initial;
 `
-
 
 const StyledAvatar = styled.img`
   height: inherit;
@@ -38,12 +36,12 @@ export function Identicon({ size = 16, iconRef, onErrorFetchAvatar, avatar, show
   return (
     <Wrapper size={size}>
       <StyledIdenticon>
-      {avatar && showAvatar ? (
-        <StyledAvatar alt="avatar" src={avatar} onError={onErrorFetchAvatar} />
-      ) : (
-        <span ref={iconRef} />
-      )}      
-    </StyledIdenticon>
+        {avatar && showAvatar ? (
+          <StyledAvatar alt="avatar" src={avatar} onError={onErrorFetchAvatar} />
+        ) : (
+          <span ref={iconRef} />
+        )}
+      </StyledIdenticon>
     </Wrapper>
   )
 }

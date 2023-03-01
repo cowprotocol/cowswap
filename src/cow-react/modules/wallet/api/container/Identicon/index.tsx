@@ -11,7 +11,7 @@ export interface IdenticonProps {
   account?: string
 }
 
-export function Identicon({ account: customAccount, size=16 }: IdenticonProps) {
+export function Identicon({ account: customAccount, size = 16 }: IdenticonProps) {
   const { account: chainAccount } = useWalletInfo()
   const account = customAccount || chainAccount
 
@@ -40,7 +40,7 @@ export function Identicon({ account: customAccount, size=16 }: IdenticonProps) {
       avatar={avatar}
       showAvatar={fetchable}
       size={size}
-      onErrorFetchAvatar={() => setFetchable(false)} 
+      onErrorFetchAvatar={() => setFetchable(false)}
       iconRef={iconRef}
     />
   )

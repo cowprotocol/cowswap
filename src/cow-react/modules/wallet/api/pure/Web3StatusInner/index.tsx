@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { Trans } from '@lingui/macro'
 
-
 import { shortenAddress } from 'utils'
 import StatusIcon from '@cow/modules/wallet/api/pure/StatusIcon'
 import Loader from 'components/Loader'
@@ -10,7 +9,6 @@ import { RowBetween } from 'components/Row'
 import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 import { ConnectionType } from '@cow/modules/wallet/api/types'
-
 
 export interface Web3StatusInnerProps {
   account?: string | null
@@ -24,13 +22,13 @@ export interface Web3StatusInnerProps {
 
 export function Web3StatusInner(props: Web3StatusInnerProps) {
   const { account, pendingCount, chainId, error, ensName, connectionType, connectWallet } = props
-  
+
   const hasPendingTransactions = !!pendingCount
 
   if (!chainId) {
     return null
   }
-  
+
   if (error) {
     return (
       <Web3StatusError>
@@ -41,7 +39,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
       </Web3StatusError>
     )
   }
-  
+
   if (account) {
     return (
       <Web3StatusConnected id="web3-status-connected" pending={hasPendingTransactions}>
@@ -55,7 +53,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
             <Loader stroke="white" />
           </RowBetween>
         ) : (
-          <>            
+          <>
             <Text>{ensName || shortenAddress(account)}</Text>
           </>
         )}

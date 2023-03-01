@@ -21,7 +21,7 @@ const IconWrapper = styled.div<{ size?: number }>`
   `};
 `
 
-export interface StatusIconProps { 
+export interface StatusIconProps {
   connectionType: ConnectionType
 }
 

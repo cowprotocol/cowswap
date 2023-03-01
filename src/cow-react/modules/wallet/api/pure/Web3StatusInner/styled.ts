@@ -4,7 +4,6 @@ import { darken } from 'polished'
 import { Activity } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
-
 import { ButtonSecondary } from 'components/Button'
 
 export const Web3StatusGeneric = styled(ButtonSecondary)``
@@ -82,7 +81,6 @@ export const NetworkIcon = styled(Activity)`
   width: 16px;
   height: 16px;
 `
-
 
 export const Wrapper = styled.div`
   color: ${({ theme }) => theme.text1};
