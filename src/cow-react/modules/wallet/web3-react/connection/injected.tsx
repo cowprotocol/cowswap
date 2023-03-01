@@ -17,7 +17,7 @@ import { TryActivation, onError } from '.'
 
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
-import { Connection } from '../utils/connection'
+import { Connection } from '../types'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 

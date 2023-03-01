@@ -5,7 +5,7 @@ import { Network } from '@web3-react/network'
 
 import { RPC_URLS } from 'constants/networks'
 import { ConnectionType } from '@cow/modules/wallet'
-import { Connection } from '../utils/connection'
+import { Connection } from '../types'
 
 
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(

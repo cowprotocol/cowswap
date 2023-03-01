@@ -1,5 +1,5 @@
 import { ConnectionType } from '@cow/modules/wallet'
-import { getConnection } from '@cow/modules/wallet/web3-react/utils/connection'
+import { getConnection } from '@cow/modules/wallet/web3-react/types'
 import { useMemo } from 'react'
 import { BACKFILLABLE_WALLETS } from 'state/connection/constants'
 import { useAppSelector } from 'state/hooks'

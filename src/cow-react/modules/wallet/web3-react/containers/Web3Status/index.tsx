@@ -3,7 +3,7 @@ import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 
 import { useWeb3React } from '@web3-react/core'
-import { getConnection } from '@cow/modules/wallet/web3-react/utils/connection'
+import { getConnection } from '@cow/modules/wallet/web3-react/types'
 import { useAppSelector } from 'state/hooks'
 
 import { useToggleWalletModal } from 'state/application/hooks'

@@ -3,12 +3,12 @@ import { Web3ReactHooks } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { ConnectionType } from '@cow/modules/wallet'
-import { gnosisSafeConnection } from '../../connection/safe'
-import { injectedConnection } from '../../connection/injected'
-import { coinbaseWalletConnection } from '../../connection/coinbase'
-import { walletConnectConnection } from '../../connection/walletConnect'
-import { fortmaticConnection } from '../../connection/formatic'
-import { networkConnection } from '../../connection/ network'
+import { gnosisSafeConnection } from './connection/safe'
+import { injectedConnection } from './connection/injected'
+import { coinbaseWalletConnection } from './connection/coinbase'
+import { walletConnectConnection } from './connection/walletConnect'
+import { fortmaticConnection } from './connection/formatic'
+import { networkConnection } from './connection/ network'
 
 export interface Connection {
   connector: Connector

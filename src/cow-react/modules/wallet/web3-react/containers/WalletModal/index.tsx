@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { ConnectionType } from '@cow/modules/wallet'
-import { getConnection } from '@cow/modules/wallet/web3-react/utils/connection'
+import { getConnection } from '@cow/modules/wallet/web3-react/types'
 import { useCallback, useEffect, useState } from 'react'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
