@@ -1,7 +1,14 @@
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { GAS_FEE_ENDPOINTS, GAS_API_KEYS } from 'constants/index'
-import { fetchWithBackoff } from '@cow/common/utils/fetch'
+import { fetchWithRateLimit } from '@cow/common/utils/fetch'
+
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 3,
+    interval: 'second',
+  },
+})
 
 // Values are returned as floats in gwei
 const ONE_GWEI = 1_000_000_000
@@ -107,7 +114,7 @@ class GasFeeApi {
   async fetchData(chainId: ChainId) {
     const url = this.getUrl(chainId)
     const headers = this.getHeaders(chainId)
-    const response = await fetchWithBackoff(url, headers)
+    const response = await fetchRateLimitted(url, headers)
 
     return response.json()
   }
