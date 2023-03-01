@@ -1,4 +1,4 @@
-import { fetchWithBackoff } from '@cow/common/utils/fetch'
+import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { SWR_OPTIONS } from 'constants/index'
@@ -19,6 +19,13 @@ const API_VERSION = 'v3'
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 }
+
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 3,
+    interval: 'second',
+  },
+})
 
 function _getApiBaseUrl(chainId: ChainId): string {
   const baseUrl = API_BASE_URL
@@ -48,7 +55,7 @@ function _getCoinGeckoAssetPlatform(chainId: ChainId) {
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
-  return fetchWithBackoff(baseUrl + url, {
+  return fetchRateLimitted(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
