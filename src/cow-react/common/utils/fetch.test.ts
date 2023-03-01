@@ -1,4 +1,4 @@
-import { fetchWithBackoff } from './fetch'
+import { fetchWithRateLimit } from './fetch'
 import fetchMock from 'jest-fetch-mock'
 
 fetchMock.enableMocks()
@@ -29,7 +29,9 @@ function mockAndFailUntilAttempt(attempt: number) {
   })
 }
 
-const fetchUrlWithBackoff = (attepts: number) => fetchWithBackoff(URL, undefined, { numOfAttempts: attepts })
+// We use fetchWithRateLimit instead of fetchWithBackoff, since that is just a default config version of fetchWithBackoff
+const fetchUrlWithBackoff = (attempts: number) =>
+  fetchWithRateLimit({ backoff: { numOfAttempts: attempts } })(URL, undefined)
 
 describe('Fetch with backoff', () => {
   it('No re-attempt if SUCCESS', async () => {
