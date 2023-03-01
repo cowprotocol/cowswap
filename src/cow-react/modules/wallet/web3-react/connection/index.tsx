@@ -13,6 +13,52 @@ import {
 } from './injected'
 import { WalletConnectOption } from './walletConnect'
 
+import { gnosisSafeConnection } from './safe'
+import { injectedConnection } from './injected'
+import { coinbaseWalletConnection } from './coinbase'
+import { walletConnectConnection } from './walletConnect'
+import { fortmaticConnection } from './formatic'
+import { networkConnection } from './ network'
+import { Connection } from '../types'
+import { ConnectionType } from '../../api/types'
+
+
+const CONNECTIONS: Connection[] = [
+  gnosisSafeConnection,
+  injectedConnection,
+  coinbaseWalletConnection,
+  walletConnectConnection,
+  fortmaticConnection,
+  networkConnection,
+]
+
+export function getConnection(c: Connector | ConnectionType): Connection {
+  if (c instanceof Connector) {
+    const connection = CONNECTIONS.find((connection) => connection.connector === c)
+    if (!connection) {
+      throw Error('unsupported connector')
+    }
+    return connection
+  } else {
+    switch (c) {
+      case ConnectionType.INJECTED:
+        return injectedConnection
+      case ConnectionType.COINBASE_WALLET:
+        return coinbaseWalletConnection
+      case ConnectionType.WALLET_CONNECT:
+        return walletConnectConnection
+      case ConnectionType.FORTMATIC:
+        return fortmaticConnection
+      case ConnectionType.NETWORK:
+        return networkConnection
+      case ConnectionType.GNOSIS_SAFE:
+        return gnosisSafeConnection
+    }
+  }
+}
+
+
+
 export type TryActivation = (connector: Connector) => void
 
 export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
