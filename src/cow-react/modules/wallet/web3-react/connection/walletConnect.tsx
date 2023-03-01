@@ -11,7 +11,7 @@ import { WalletConnect } from '@web3-react/walletconnect'
 
 
 import { RPC_URLS } from 'constants/networks'
-import { Connection } from '../types'
+import { Web3ReactConnection } from '../types'
 
 
 const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletConnect>(
@@ -25,7 +25,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
       onError,
     })
 )
-export const walletConnectConnection: Connection = {
+export const walletConnectConnection: Web3ReactConnection = {
   connector: web3WalletConnect,
   hooks: web3WalletConnectHooks,
   type: ConnectionType.WALLET_CONNECT,

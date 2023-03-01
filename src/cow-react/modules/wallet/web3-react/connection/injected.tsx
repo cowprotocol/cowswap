@@ -17,13 +17,13 @@ import { TryActivation, onError } from '.'
 
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
-import { Connection } from '../types'
+import { Web3ReactConnection } from '../types'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 
 
 const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions, onError }))
-export const injectedConnection: Connection = {
+export const injectedConnection: Web3ReactConnection = {
   connector: web3Injected,
   hooks: web3InjectedHooks,
   type: ConnectionType.INJECTED,

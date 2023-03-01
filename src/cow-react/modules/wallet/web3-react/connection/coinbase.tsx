@@ -18,7 +18,7 @@ import CowImage from 'assets/cow-swap/cow_v2.svg'
 import { RPC_URLS } from 'constants/networks'
 
 import { TryActivation, onError } from '.'
-import { Connection } from '../types'
+import { Web3ReactConnection } from '../types'
 
 
 const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
@@ -36,7 +36,7 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<Coinba
 )
 
 
-export const coinbaseWalletConnection: Connection = {
+export const coinbaseWalletConnection: Web3ReactConnection = {
   connector: web3CoinbaseWallet,
   hooks: web3CoinbaseWalletHooks,
   type: ConnectionType.COINBASE_WALLET,

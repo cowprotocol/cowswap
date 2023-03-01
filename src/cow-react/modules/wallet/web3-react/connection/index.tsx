@@ -19,11 +19,11 @@ import { coinbaseWalletConnection } from './coinbase'
 import { walletConnectConnection } from './walletConnect'
 import { fortmaticConnection } from './formatic'
 import { networkConnection } from './ network'
-import { Connection } from '../types'
+import { Web3ReactConnection } from '../types'
 import { ConnectionType } from '../../api/types'
 
 
-const CONNECTIONS: Connection[] = [
+const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
   injectedConnection,
   coinbaseWalletConnection,
@@ -32,7 +32,7 @@ const CONNECTIONS: Connection[] = [
   networkConnection,
 ]
 
-export function getConnection(c: Connector | ConnectionType): Connection {
+export function getConnection(c: Connector | ConnectionType): Web3ReactConnection {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find((connection) => connection.connector === c)
     if (!connection) {
