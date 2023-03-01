@@ -2,7 +2,7 @@ import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 import { Web3ReactConnection } from '@cow/modules/wallet/web3-react/types'
 import { getConnectionName } from '@cow/modules/wallet/api/utils/connection'
-import useEagerlyConnect from 'hooks/useEagerlyConnect'
+import useEagerlyConnect from '@cow/modules/wallet/web3-react/hooks/useEagerlyConnect'
 import useOrderedConnections from 'hooks/useOrderedConnections'
 import { ReactNode, useMemo } from 'react'
 
