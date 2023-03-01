@@ -12,7 +12,7 @@ import { initializeConnector } from '@web3-react/core'
 import { EIP1193 } from '@web3-react/eip1193'
 
 import { TryActivation } from '.'
-import { Connection } from '../../utils/connection'
+import { Connection } from '../utils/connection'
 
 
 const [web3Fortmatic, web3FortmaticHooks] = initializeConnector<EIP1193>(

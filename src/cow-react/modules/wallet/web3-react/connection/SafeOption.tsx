@@ -4,7 +4,7 @@ import { GnosisSafe } from '@web3-react/gnosis-safe'
 
 
 import { ConnectionType } from '@cow/modules/wallet'
-import { Connection } from '../../utils/connection'
+import { Connection } from '../utils/connection'
 
 
 const [web3GnosisSafe, web3GnosisSafeHooks] = initializeConnector<GnosisSafe>((actions) => new GnosisSafe({ actions }))

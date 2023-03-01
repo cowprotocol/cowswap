@@ -1,7 +1,7 @@
 import { Connector } from '@web3-react/types'
 
 import { isMobile } from 'utils/userAgent'
-import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../../api/utils/connection'
+import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/utils/connection'
 
 import { CoinbaseWalletOption } from './CoinbaseWalletOption'
 import { FortmaticOption } from './FortmaticOption'

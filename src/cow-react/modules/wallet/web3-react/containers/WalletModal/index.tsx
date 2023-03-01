@@ -14,7 +14,7 @@ import { ApplicationModal } from 'state/application/reducer'
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
 import { WalletModal as WalletModalPure, WalletModalView } from '../../../api/pure/WalletModal'
-import { walletConnectConnection } from '../ConnectWalletOptions/WalletConnectOption'
+import { walletConnectConnection } from '../../connection/WalletConnectOption'
 
 export function WalletModal() {
   const dispatch = useAppDispatch()

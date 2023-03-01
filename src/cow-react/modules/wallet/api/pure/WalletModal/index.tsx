@@ -15,7 +15,7 @@ import { LightCard } from 'components/Card'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pure/Modal'
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 import { PendingView } from '@cow/modules/wallet/api/pure/PendingView'
-import { ConnectWalletOptions, TryActivation } from '@cow/modules/wallet/web3-react/containers/ConnectWalletOptions'
+import { ConnectWalletOptions, TryActivation } from '@cow/modules/wallet/web3-react/connection'
 
 export type WalletModalView = 'options' | 'account' | 'pending'
 
