@@ -149,20 +149,13 @@ export function OrderRow({
         </styledEl.RateValue>
       </styledEl.CellElement>
 
-      {/* Est. execution price */}
       {/* Market price */}
-      {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
-        <styledEl.CellElement doubleRow>
+      {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
+      {isOpenOrdersTab && (
+        <styledEl.CellElement>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
-            <>
-              <b>
-                <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
-              </b>
-              <i>
-                <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} />
-              </i>
-            </>
+            <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} />
           ) : prices === null ? (
             '-'
           ) : (
@@ -170,6 +163,31 @@ export function OrderRow({
           )}
         </styledEl.CellElement>
       )}
+      {!isOpenOrdersTab && (
+        <styledEl.CellElement>
+          {executedPriceInversed ? (
+            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} />
+          ) : (
+            '-'
+          )}
+        </styledEl.CellElement>
+      )}
+
+      {/* Executes at */}
+      {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
+      {isOpenOrdersTab && (
+        <styledEl.CellElement>
+          {/*// TODO: gray out the price when it was updated too long ago*/}
+          {prices ? (
+            <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
+          ) : prices === null ? (
+            '-'
+          ) : (
+            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+          )}
+        </styledEl.CellElement>
+      )}
+
       {!isOpenOrdersTab && (
         <styledEl.CellElement>
           {executedPriceInversed ? (
