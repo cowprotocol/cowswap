@@ -86,7 +86,7 @@ const AllowanceWarning = (symbol: string) => (
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
-  RowElement: StyledComponent<'div', DefaultTheme>
+  RowElement: StyledComponent<'div', DefaultTheme, {isOpenOrdersTab: boolean}>
   isRateInversed: boolean
   isOpenOrdersTab: boolean
   orderParams: OrderParams
@@ -123,7 +123,7 @@ export function OrderRow({
   const executedPriceInversed = isRateInversed ? executedPrice?.invert() : executedPrice
 
   return (
-    <RowElement>
+    <RowElement isOpenOrdersTab={isOpenOrdersTab}>
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell clickable onClick={onClick}>
         <styledEl.CurrencyLogoPair>

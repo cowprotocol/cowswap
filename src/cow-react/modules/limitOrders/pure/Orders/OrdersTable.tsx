@@ -45,10 +45,10 @@ const TableInner = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-const Header = styled.div`
+const Header = styled.div<{isOpenOrdersTab: boolean}>`
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(200px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(70px, 0.7fr) 108px 36px;
+  grid-template-columns: ${({ isOpenOrdersTab }) => isOpenOrdersTab ? 'minmax(200px, 1fr) repeat(3, minmax(100px, 0.7fr)) minmax(140px, 0.85fr) minmax(70px, 0.7fr) 108px 36px' : 'minmax(200px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(70px, 0.7fr) 108px 36px'};
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -56,8 +56,9 @@ const Header = styled.div`
 `
 
 const HeaderElement = styled.div<{ doubleRow?: boolean }>`
-  padding: 12px 0;
+  padding: 11px 0;
   font-size: 12px;
+  line-height: 1.1;
   font-weight: 400;
   display: flex;
 
@@ -149,9 +150,9 @@ export function OrdersTable({
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <Header>
+          <Header isOpenOrdersTab={isOpenOrdersTab}>
             <HeaderElement>
-              <Trans>Order</Trans>
+              <Trans>Sell &#x2192; Buy</Trans>
             </HeaderElement>
 
             <HeaderElement>
@@ -171,6 +172,26 @@ export function OrdersTable({
                 <i>
                   <Trans>Market price</Trans>
                 </i>
+              </HeaderElement>
+            )}
+
+            {isOpenOrdersTab && (
+              <HeaderElement>
+                <span>
+                  <Trans>
+                    Market price
+                  </Trans>
+                </span>
+              </HeaderElement>
+            )}
+
+            {isOpenOrdersTab && (
+              <HeaderElement>
+                <span>
+                  <Trans>
+                    Executes at <QuestionHelper text={RateTooltipHeader} />
+                  </Trans>
+                </span>
               </HeaderElement>
             )}
 
