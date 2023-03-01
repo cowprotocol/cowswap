@@ -6,6 +6,7 @@ import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
 import { LegacyPriceQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { fetchWithBackoff } from '@cow/common/utils/fetch'
 
 // copy/pasting as the library types correspond to the internal types, not API response
 // e.g "price: BigNumber" when we want the API response type: "price: string"
@@ -94,7 +95,7 @@ function _getApiBaseUrl(chainId: ChainId): string {
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
+  return fetchWithBackoff(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
