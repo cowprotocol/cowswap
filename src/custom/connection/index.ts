@@ -14,7 +14,6 @@ export enum ConnectionType {
   FORTMATIC = 'FORTMATIC',
   NETWORK = 'NETWORK',
   GNOSIS_SAFE = 'GNOSIS_SAFE',
-  ZENGO = 'ZENGO',
 }
 
 export interface Connection {
