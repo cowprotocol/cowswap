@@ -5,7 +5,7 @@ import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDup
 import { useTradeNavigate } from '../useTradeNavigate'
 import { getDefaultTradeState, TradeCurrenciesIds, TradeState } from '../../types/TradeState'
 import { useTradeState } from '../useTradeState'
-import { switchChain } from 'utils/switchChain'
+import { switchChain } from '@cow/modules/wallet/web3-react/hooks/switchChain'
 import usePrevious from 'hooks/usePrevious'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'

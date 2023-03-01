@@ -6,12 +6,12 @@ import { useWeb3React } from '@web3-react/core'
 // import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
-import { isChainAllowed } from 'utils/switchChain'
 
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 // import { isAddress } from 'utils'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TokenMap, useTokenFromMapOrNetwork } from '@src/lib/hooks/useCurrency'
+import { isChainAllowed } from '@cow/modules/wallet/web3-react/connection'
 
 /*
 // parse a name or symbol from a token response

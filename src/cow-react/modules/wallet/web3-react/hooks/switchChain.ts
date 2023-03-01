@@ -1,13 +1,10 @@
-import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connection/coinbase'
-import { fortmaticConnection } from '@cow/modules/wallet/web3-react/connection/formatic'
-import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/injected'
 import { networkConnection } from '@cow/modules/wallet/web3-react/connection/ network'
-import { gnosisSafeConnection } from '@cow/modules/wallet/web3-react/connection/safe'
 import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 import { Connector } from '@web3-react/types'
 import { getChainInfo } from 'constants/chainInfo'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from 'constants/chains'
 import { RPC_URLS } from 'constants/networks'
+import { isChainAllowed } from '../connection'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {
   switch (chainId) {
@@ -20,21 +17,6 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
   }
   // Our API-keyed URLs will fail security checks when used with external wallets.
   throw new Error('RPC URLs must use public endpoints')
-}
-
-export function isChainAllowed(connector: Connector, chainId: number) {
-  switch (connector) {
-    case fortmaticConnection.connector:
-      return chainId === SupportedChainId.MAINNET
-    case injectedConnection.connector:
-    case coinbaseWalletConnection.connector:
-    case walletConnectConnection.connector:
-    case networkConnection.connector:
-    case gnosisSafeConnection.connector:
-      return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
-    default:
-      return false
-  }
 }
 
 export const switchChain = async (connector: Connector, chainId: SupportedChainId) => {

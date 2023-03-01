@@ -21,6 +21,7 @@ import { fortmaticConnection } from './formatic'
 import { networkConnection } from './ network'
 import { Web3ReactConnection } from '../types'
 import { ConnectionType } from '../../api/types'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 
 
 const CONNECTIONS: Web3ReactConnection[] = [
@@ -31,6 +32,21 @@ const CONNECTIONS: Web3ReactConnection[] = [
   fortmaticConnection,
   networkConnection,
 ]
+
+export function isChainAllowed(connector: Connector, chainId: number) {
+  switch (connector) {
+    case fortmaticConnection.connector:
+      return chainId === SupportedChainId.MAINNET
+    case injectedConnection.connector:
+    case coinbaseWalletConnection.connector:
+    case walletConnectConnection.connector:
+    case networkConnection.connector:
+    case gnosisSafeConnection.connector:
+      return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
+    default:
+      return false
+  }
+}
 
 export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3ReactConnection {
   if (c instanceof Connector) {
