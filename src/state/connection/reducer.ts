@@ -18,6 +18,7 @@ export const initialState: ConnectionState = {
     [ConnectionType.ALPHA_WALLET]: undefined,
     [ConnectionType.TALLY_WALLET]: undefined,
     [ConnectionType.TRUST_WALLET]: undefined,
+    [ConnectionType.BLOCK_WALLET]: undefined,
   },
 }
 

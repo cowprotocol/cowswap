@@ -102,7 +102,6 @@ export class InjectedWallet extends Connector {
         params: [{ chainId: desiredChainIdHex }],
       }).catch(async (error: ProviderRpcError) => {
         console.log('err!', error)
-        console.log('debug err', error)
 
         if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
           // if we're here, we can try to add a new network

@@ -20,6 +20,7 @@ export enum ConnectionType {
   ALPHA_WALLET = 'ALPHA_WALLET',
   TALLY_WALLET = 'TALLY_WALLET',
   TRUST_WALLET = 'TRUST_WALLET',
+  BLOCK_WALLET = 'BLOCK_WALLET',
 }
 
 export interface Connection {
@@ -179,4 +180,18 @@ export const trustWalletConnection: Connection = {
   connector: trustWallet,
   hooks: trustWalletHooks,
   type: ConnectionType.TRUST_WALLET,
+}
+
+const [blockWallet, blockWalletHooks] = initializeConnector<Connector>(
+  (actions) =>
+    new InjectedWallet({
+      actions,
+      walletUrl: 'https://chrome.google.com/webstore/detail/blockwallet/bopcbmipnjdcdfflfgjdgdjejmgpoaab',
+      searchKeywords: ['isBlock', 'isBlockWallet'],
+    })
+)
+export const blockWalletConnection: Connection = {
+  connector: blockWallet,
+  hooks: blockWalletHooks,
+  type: ConnectionType.BLOCK_WALLET,
 }

@@ -41,6 +41,7 @@ import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './s
 import { ButtonPrimary } from 'components/Button'
 import { TallyWalletOption } from './options/TallyWalletOption'
 import { TrustWalletOption } from './options/TrustWalletOption'
+import { BlockWalletOption } from './options/BlockWalletOption'
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -190,6 +191,8 @@ export function WalletModal() {
 
     const trustWalletOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
 
+    const blockWalletOption = (!isInjectedMobileBrowser && <BlockWalletOption tryActivation={tryActivation} />) ?? null
+
     return (
       <>
         {injectedOption}
@@ -197,6 +200,7 @@ export function WalletModal() {
         {coinbaseWalletOption}
         {tallyWalletOption}
         {trustWalletOption}
+        {blockWalletOption}
 
         {viewAll && (
           <>

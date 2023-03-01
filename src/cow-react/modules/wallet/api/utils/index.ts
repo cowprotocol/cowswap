@@ -10,6 +10,7 @@ import {
   walletConnectConnection,
   tallyWalletConnection,
   trustWalletConnection,
+  blockWalletConnection,
 } from './connections'
 
 export function getIsInjected(): boolean {
@@ -45,6 +46,7 @@ const CONNECTIONS: Connection[] = [
   networkConnection,
   tallyWalletConnection,
   trustWalletConnection,
+  blockWalletConnection,
 ]
 export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
@@ -77,6 +79,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return tallyWalletConnection
       case ConnectionType.TRUST_WALLET:
         return trustWalletConnection
+      case ConnectionType.BLOCK_WALLET:
+        return blockWalletConnection
     }
   }
 }
@@ -105,5 +109,7 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Tally wallet'
     case ConnectionType.TRUST_WALLET:
       return 'Trust wallet'
+    case ConnectionType.BLOCK_WALLET:
+      return 'Block wallet'
   }
 }
