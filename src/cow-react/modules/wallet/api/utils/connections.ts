@@ -19,6 +19,7 @@ export enum ConnectionType {
   AMBIRE = 'AMBIRE',
   ALPHA_WALLET = 'ALPHA_WALLET',
   TALLY_WALLET = 'TALLY_WALLET',
+  TRUST_WALLET = 'TRUST_WALLET',
 }
 
 export interface Connection {
@@ -164,4 +165,18 @@ export const tallyWalletConnection: Connection = {
   connector: tallyWallet,
   hooks: tallyWalletHooks,
   type: ConnectionType.TALLY_WALLET,
+}
+
+const [trustWallet, trustWalletHooks] = initializeConnector<Connector>(
+  (actions) =>
+    new InjectedWallet({
+      actions,
+      walletUrl: 'https://chrome.google.com/webstore/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph',
+      searchKeywords: ['isTrust', 'isTrustWallet'],
+    })
+)
+export const trustWalletConnection: Connection = {
+  connector: trustWallet,
+  hooks: trustWalletHooks,
+  type: ConnectionType.TRUST_WALLET,
 }

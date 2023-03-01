@@ -40,6 +40,7 @@ import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pur
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 import { ButtonPrimary } from 'components/Button'
 import { TallyWalletOption } from './options/TallyWalletOption'
+import { TrustWalletOption } from './options/TrustWalletOption'
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -187,12 +188,15 @@ export function WalletModal() {
 
     const tallyWalletOption = (!isInjectedMobileBrowser && <TallyWalletOption tryActivation={tryActivation} />) ?? null
 
+    const trustWalletOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
+
     return (
       <>
         {injectedOption}
         {walletConnectionOption}
         {coinbaseWalletOption}
         {tallyWalletOption}
+        {trustWalletOption}
 
         {viewAll && (
           <>

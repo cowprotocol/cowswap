@@ -17,6 +17,7 @@ export const initialState: ConnectionState = {
     [ConnectionType.AMBIRE]: undefined,
     [ConnectionType.ALPHA_WALLET]: undefined,
     [ConnectionType.TALLY_WALLET]: undefined,
+    [ConnectionType.TRUST_WALLET]: undefined,
   },
 }
 
