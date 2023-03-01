@@ -6,6 +6,7 @@ import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
 import { LegacyPriceQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 
 // copy/pasting as the library types correspond to the internal types, not API response
 // e.g "price: BigNumber" when we want the API response type: "price: string"
@@ -82,6 +83,13 @@ const AFFILIATE_ADDRESS = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
 const EXCLUDED_SOURCES = ''
 const MATCHA_DEFAULT_OPTIONS = `affiliateAddress=${AFFILIATE_ADDRESS}&excludedSources=${EXCLUDED_SOURCES}`
 
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 3,
+    interval: 'second',
+  },
+})
+
 function _getApiBaseUrl(chainId: ChainId): string {
   const baseUrl = API_BASE_URL[chainId]
 
@@ -94,7 +102,7 @@ function _getApiBaseUrl(chainId: ChainId): string {
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
+  return fetchRateLimitted(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
