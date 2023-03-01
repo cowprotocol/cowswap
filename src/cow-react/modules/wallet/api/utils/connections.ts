@@ -1,6 +1,7 @@
 import { initializeConnector, Web3ReactHooks } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
+import { InjectedWallet } from '@cow/modules/wallet/api/connectors/InjectedWallet'
 import { Actions, Connector } from '@web3-react/types'
 import { SupportedChainId } from 'constants/chains'
 
@@ -17,6 +18,7 @@ export enum ConnectionType {
   ZENGO = 'ZENGO',
   AMBIRE = 'AMBIRE',
   ALPHA_WALLET = 'ALPHA_WALLET',
+  TALLY_WALLET = 'TALLY_WALLET',
 }
 
 export interface Connection {
@@ -74,7 +76,6 @@ const [web3GnosisSafe, web3GnosisSafeHooks] = initializeConnector<Connector>((ac
     onError
   )
 })
-
 export const gnosisSafeConnection: Connection = {
   connector: web3GnosisSafe,
   hooks: web3GnosisSafeHooks,
@@ -149,4 +150,18 @@ export const coinbaseWalletConnection: Connection = {
   connector: web3CoinbaseWallet,
   hooks: web3CoinbaseWalletHooks,
   type: ConnectionType.COINBASE_WALLET,
+}
+
+const [tallyWallet, tallyWalletHooks] = initializeConnector<Connector>(
+  (actions) =>
+    new InjectedWallet({
+      actions,
+      walletUrl: 'https://chrome.google.com/webstore/detail/taho/eajafomhmkipbjmfmhebemolkcicgfmd',
+      searchKeywords: ['isTally', 'isTallyWallet', 'isTallyHo'],
+    })
+)
+export const tallyWalletConnection: Connection = {
+  connector: tallyWallet,
+  hooks: tallyWalletHooks,
+  type: ConnectionType.TALLY_WALLET,
 }

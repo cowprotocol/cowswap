@@ -6,6 +6,7 @@ import {
   injectedConnection,
   networkConnection,
   walletConnectConnection,
+  tallyWalletConnection,
 } from '@cow/modules/wallet/api/utils/connections'
 import { getChainInfo } from 'constants/chainInfo'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
@@ -33,6 +34,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case walletConnectConnection.connector:
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
+    case tallyWalletConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false

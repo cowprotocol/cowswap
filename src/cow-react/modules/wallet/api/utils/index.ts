@@ -8,6 +8,7 @@ import {
   injectedConnection,
   networkConnection,
   walletConnectConnection,
+  tallyWalletConnection,
 } from './connections'
 
 export function getIsInjected(): boolean {
@@ -41,6 +42,7 @@ const CONNECTIONS: Connection[] = [
   walletConnectConnection,
   fortmaticConnection,
   networkConnection,
+  tallyWalletConnection,
 ]
 export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
@@ -69,6 +71,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return walletConnectConnection
       case ConnectionType.ALPHA_WALLET:
         return walletConnectConnection
+      case ConnectionType.TALLY_WALLET:
+        return tallyWalletConnection
     }
   }
 }
@@ -93,5 +97,7 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Ambire'
     case ConnectionType.ALPHA_WALLET:
       return 'Alpha wallet'
+    case ConnectionType.TALLY_WALLET:
+      return 'Tally wallet'
   }
 }
