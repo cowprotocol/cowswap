@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 
 import { ConnectionType } from '@cow/modules/wallet'
-import { injectedConnection } from '@cow/modules/wallet/web3-react/utils/connection'
 import { getConnectionName } from '@cow/modules/wallet/api/utils/connection'
 
 import useTheme from 'hooks/useTheme'
@@ -13,9 +12,23 @@ import {
   injectedOption,
   injectedOptionDark,
 } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
-import { TryActivation } from '..'
+import { TryActivation, onError } from '.'
+
+
+import { initializeConnector } from '@web3-react/core'
+import { MetaMask } from '@web3-react/metamask'
+import { Connection } from '../../utils/connection'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
+
+
+const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions, onError }))
+export const injectedConnection: Connection = {
+  connector: web3Injected,
+  hooks: web3InjectedHooks,
+  type: ConnectionType.INJECTED,
+}
+
 
 export function InstallMetaMaskOption() {
   return <ConnectWalletOption {...metamaskInstallOption} />

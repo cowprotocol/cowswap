@@ -1,15 +1,48 @@
+import { SupportedChainId } from 'constants/chains'
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+import { initializeConnector } from '@web3-react/core'
+
 import { ConnectionType } from '@cow/modules/wallet'
-import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/utils/connection'
 import { getConnectionName } from '@cow/modules/wallet/api/utils/connection'
 
 import { useSelectedWallet } from 'state/user/hooks'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet' // MOD
+import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
+
 import {
   coinbaseMobileOption,
   coinbaseInjectedOption,
 } from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
-import { TryActivation } from '..'
+
+import CowImage from 'assets/cow-swap/cow_v2.svg'
+import { RPC_URLS } from 'constants/networks'
+
+import { TryActivation, onError } from '.'
+import { Connection } from '../../utils/connection'
+
+
+const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
+  (actions) =>
+    new CoinbaseWallet({
+      actions,
+      options: {
+        url: RPC_URLS[SupportedChainId.MAINNET],
+        appName: 'CoW Swap',
+        appLogoUrl: CowImage,
+        reloadOnDisconnect: false,
+      },
+      onError,
+    })
+)
+
+
+export const coinbaseWalletConnection: Connection = {
+  connector: web3CoinbaseWallet,
+  hooks: web3CoinbaseWalletHooks,
+  type: ConnectionType.COINBASE_WALLET,
+}
+
+
 
 export function OpenCoinbaseWalletOption() {
   const selectedWallet = useSelectedWallet()
@@ -29,3 +62,4 @@ export function CoinbaseWalletOption({ tryActivation }: { tryActivation: TryActi
     />
   )
 }
+

@@ -1,12 +1,10 @@
+import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/containers/ConnectWalletOptions/CoinbaseWalletOption'
+import { fortmaticConnection } from '@cow/modules/wallet/web3-react/containers/ConnectWalletOptions/FortmaticOption'
+import { injectedConnection } from '@cow/modules/wallet/web3-react/containers/ConnectWalletOptions/InjectedOption'
+import { networkConnection } from '@cow/modules/wallet/web3-react/containers/ConnectWalletOptions/NetworkOption'
+import { gnosisSafeConnection } from '@cow/modules/wallet/web3-react/containers/ConnectWalletOptions/SafeOption'
+import { walletConnectConnection } from '@cow/modules/wallet/web3-react/containers/ConnectWalletOptions/WalletConnectOption'
 import { Connector } from '@web3-react/types'
-import {
-  coinbaseWalletConnection,
-  fortmaticConnection,
-  gnosisSafeConnection,
-  injectedConnection,
-  networkConnection,
-  walletConnectConnection,
-} from '@cow/modules/wallet/web3-react/utils/connection'
 import { getChainInfo } from 'constants/chainInfo'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 import { RPC_URLS } from 'constants/networks'

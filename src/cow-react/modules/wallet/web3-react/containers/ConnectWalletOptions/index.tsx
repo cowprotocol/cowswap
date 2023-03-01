@@ -1,17 +1,17 @@
 import { Connector } from '@web3-react/types'
 
 import { isMobile } from 'utils/userAgent'
-import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/utils/connection'
+import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../../api/utils/connection'
 
-import { CoinbaseWalletOption } from '../../web3-react/containers/ConnectWalletOptions/CoinbaseWalletOption'
-import { FortmaticOption } from '../../web3-react/containers/ConnectWalletOptions/FortmaticOption'
+import { CoinbaseWalletOption } from './CoinbaseWalletOption'
+import { FortmaticOption } from './FortmaticOption'
 import {
   InjectedOption,
   InstallMetaMaskOption,
   MetaMaskOption,
   OpenMetaMaskMobileOption,
-} from '../../web3-react/containers/ConnectWalletOptions/InjectedOption'
-import { WalletConnectOption } from '../../web3-react/containers/ConnectWalletOptions/WalletConnectOption'
+} from './InjectedOption'
+import { WalletConnectOption } from './WalletConnectOption'
 
 export type TryActivation = (connector: Connector) => void
 
@@ -54,4 +54,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {fortmaticOption}
     </>
   )
+}
+
+export function onError(error: Error) {
+  console.debug(`[web3-react] Error: ${error}`)
 }
