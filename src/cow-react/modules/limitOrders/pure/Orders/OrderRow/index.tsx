@@ -176,7 +176,7 @@ export function OrderRow({
       {/* Executes at */}
       {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement hasBackground>
+        <styledEl.CellElement hasBackground doubleRow>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />

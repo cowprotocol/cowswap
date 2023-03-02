@@ -26,6 +26,8 @@ const TableBox = styled.div`
   padding: 0;
   position: relative;
   overflow: hidden;
+  background: ${({ theme }) => transparentize(0.99, theme.bg1)};
+  backdrop-filter: blur(20px);
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 100%;
@@ -38,7 +40,7 @@ const TableInner = styled.div`
   display: block;
   width: inherit;
   height: inherit;
-  padding: 0 0 24px;
+  padding: 0;
   overflow-y: hidden;
   overflow-x: auto; // fallback for 'overlay'
   overflow-x: overlay;
@@ -48,7 +50,7 @@ const TableInner = styled.div`
 const Header = styled.div<{isOpenOrdersTab: boolean}>`
   display: grid;
   gap: 16px;
-  grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,4fr) repeat(${isOpenOrdersTab ? 4 : 3},minmax(110px,2.2fr)) minmax(50px,1fr) 108px 36px`};
+  grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,4fr) repeat(2,minmax(110px,2.2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(90px,1fr) minmax(50px,1fr) 108px 36px`};
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -62,7 +64,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean 
   line-height: 1.1;
   font-weight: 400;
   display: flex;
-  align-items: center;
+  align-items: ${({ doubleRow}) => (doubleRow ? 'flex-start' : 'center')};
   height: var(--height);
   background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
 
@@ -93,14 +95,6 @@ const RowElement = styled(Header)`
 
   &:hover {
     background: ${({ theme }) => transparentize(0.9, theme.text3)};
-  }
-
-  > div {
-    font-size: 13px;
-    font-weight: 400;
-    height: 100%;
-    display: flex;
-    align-items: center;
   }
 
   &:last-child {

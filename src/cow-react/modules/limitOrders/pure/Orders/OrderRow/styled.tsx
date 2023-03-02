@@ -83,7 +83,10 @@ export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boo
   padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
   font-size: 13px;
   font-weight: 400;
+  height: 100%;
   display: flex;
+  align-items: ${({ doubleRow, hasBackground }) => (doubleRow || hasBackground ? 'flex-start' : 'center')};
+  text-align: left;
   background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
 
 
@@ -95,6 +98,7 @@ export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boo
     doubleRow &&
     `
     flex-flow: column wrap;
+    justify-content: center;
     gap: 2px;
 
     > i {
@@ -121,6 +125,8 @@ export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   flex-flow: row wrap;
   align-items: center;
   gap: 6px;
+  font-size: 13px;
+  font-weight: 400;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   :hover {
