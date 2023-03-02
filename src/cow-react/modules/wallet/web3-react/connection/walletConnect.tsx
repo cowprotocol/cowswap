@@ -1,5 +1,10 @@
 import { ConnectionType } from '@cow/modules/wallet'
-import { getConnectionName, getIsZengoWallet, getIsAmbireWallet } from '@cow/modules/wallet/api/utils/connection'
+import {
+  getConnectionName,
+  getIsZengoWallet,
+  getIsAmbireWallet,
+  getIsAlphaWallet,
+} from '@cow/modules/wallet/api/utils/connection'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { TryActivation, onError } from '.'
@@ -40,7 +45,8 @@ export function WalletConnectOption({ tryActivation }: { tryActivation: TryActiv
   const { walletName } = useWalletMetaData()
 
   const isWalletConnect = useIsActiveWallet(walletConnectConnection)
-  const isActive = isWalletConnect && !getIsZengoWallet(walletName) && !getIsAmbireWallet(walletName)
+  const isActive =
+    isWalletConnect && !getIsZengoWallet(walletName) && !getIsAmbireWallet(walletName) && !getIsAlphaWallet(walletName)
   const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
 
   return (
