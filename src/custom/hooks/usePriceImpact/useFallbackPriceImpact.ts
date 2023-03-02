@@ -8,6 +8,7 @@ import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 type SwapParams = { abTrade?: PriceImpactTrade; sellToken?: string | null; buyToken?: string | null }
 
@@ -48,8 +49,10 @@ export default function useFallbackPriceImpact({
 }: FallbackPriceImpactParams) {
   const [loading, setLoading] = useState(false)
 
+  const isWindowVisible = useIsWindowVisible()
+
   // Should we even calc this? Check if fiatPriceImpact exists OR user is wrapping token
-  const shouldCalculate = !!abTrade && !isWrapping
+  const shouldCalculate = !!abTrade && !isWrapping && isWindowVisible
 
   // to bail out early
   useEffect(() => {

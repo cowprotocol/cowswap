@@ -1,3 +1,4 @@
+import { isDevelopmentEnv } from '@src/utils/env'
 import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
 import { UaEventOptions } from 'react-ga4/types/ga4'
@@ -49,7 +50,8 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
       ? 'mobileWeb3'
       : 'mobileRegular',
   })
-} else {
+} else if (isDevelopmentEnv()) {
+  console.warn('No Google Analytics ID found. Initializing with debug mode.')
   googleAnalytics.initialize('test', { gtagOptions: { debug_mode: true } })
 }
 

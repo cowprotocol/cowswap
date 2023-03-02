@@ -19,7 +19,7 @@ import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Confetti from '../Confetti'
 import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection, DataCard } from '../earn/styled'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 import { RowBetween } from '../Row'
 
 const ContentWrapper = styled(AutoColumn)`

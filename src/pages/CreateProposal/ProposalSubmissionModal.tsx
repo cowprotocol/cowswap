@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
-import Modal from 'components/Modal'
+import Modal from '@cow/common/pure/Modal'
 import { LoadingView, SubmittedView } from 'components/ModalViews'
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'

@@ -24,8 +24,8 @@ import {
   HeaderElement,
 } from './styled'
 import MobileMenuIcon from './MobileMenuIcon'
-import Web3Status from 'components/Web3Status'
-import OrdersPanel from 'components/OrdersPanel'
+import { Web3Status } from '@cow/modules/wallet'
+import { OrdersPanel } from '@cow/modules/account/containers/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 import SVG from 'react-inlinesvg'

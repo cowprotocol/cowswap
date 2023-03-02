@@ -4,7 +4,7 @@ import { formatOrderId, shortenOrderId } from 'utils'
 import { OrderID } from '@cow/api/gnosisProtocol'
 import { addPopup } from 'state/application/reducer'
 import { OrderStatus } from './actions'
-import { CancellationSummary } from 'components/AccountDetails/Transaction/styled'
+import { CancellationSummary } from '@cow/modules/account/containers/Transaction/styled'
 
 type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 

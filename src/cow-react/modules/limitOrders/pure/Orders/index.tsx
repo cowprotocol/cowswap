@@ -8,7 +8,7 @@ import imageConnectWallet from 'assets/cow-swap/wallet-plus.svg'
 import { Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import SVG from 'react-inlinesvg'
-import Web3Status, { Wrapper as Web3StatusWrapper } from 'components/Web3Status'
+import { Web3Status, Wrapper as Web3StatusWrapper } from '@cow/modules/wallet/api/components/Web3Status'
 import { ReactNode } from 'react'
 
 const OrdersBox = styled(Widget)`

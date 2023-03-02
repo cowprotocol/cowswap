@@ -1,3 +1,4 @@
+import Modal from '@cow/common/pure/Modal'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { useContext, useState } from 'react'
@@ -13,7 +14,6 @@ import { ExternalLink } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
-import Modal from '../Modal'
 import { RowBetween } from '../Row'
 
 const ContentWrapper = styled(AutoColumn)`
