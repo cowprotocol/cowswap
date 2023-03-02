@@ -52,10 +52,9 @@ export function RateTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps) {
           {OrderExecutionStatusList()}
         </>
       )}
-    </styledEl.Content>
-  )
+  </styledEl.Content>
+)
 }
-
 function formatFeeAmount({
   marketRate,
   feeAmount,
