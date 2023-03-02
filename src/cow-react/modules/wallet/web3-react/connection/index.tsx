@@ -19,9 +19,6 @@ import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 
-
-
-
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
   injectedConnection,
