@@ -117,7 +117,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Created" tooltip={tooltips.CREATED} />
-              <DateField date={order.parsedCreationtime} />
+              <DateField date={order.parsedCreationTime} />
             </styledEl.Field>
 
             <styledEl.Field>

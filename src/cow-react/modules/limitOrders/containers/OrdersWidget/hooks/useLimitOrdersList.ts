@@ -17,19 +17,17 @@ export interface LimitOrdersList {
 }
 
 export interface ParsedOrder extends Order {
-  executedBuyAmount?: JSBI
-  executedSellAmount?: JSBI
-  surplusFee?: string
-  expirationTime?: Date
-  partiallyFilled?: boolean
-  fullyFilled?: boolean
-  filledAmount?: BigNumber
-  filledPercentage?: BigNumber
-  surplusAmount?: BigNumber
-  surplusPercentage?: BigNumber
-  executedFeeAmount?: string
+  executedBuyAmount: JSBI
+  executedSellAmount: JSBI
+  expirationTime: Date
+  fullyFilled: boolean
+  filledAmount: BigNumber
+  filledPercentage: BigNumber
+  surplusAmount: BigNumber
+  surplusPercentage: BigNumber
+  executedFeeAmount: string | undefined
   executedSurplusFee: string | null
-  parsedCreationtime?: Date
+  parsedCreationTime: Date
 }
 
 const ORDERS_LIMIT = 100
@@ -39,40 +37,41 @@ const pendingOrderStatuses: OrderStatus[] = [
   OrderStatus.CREATING,
 ]
 
+export const parseOrder = (order: Order): ParsedOrder => {
+  const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)
+  const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(order)
+  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
+  const expirationTime = new Date(Number(order.validTo) * 1000)
+  const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
+  const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
+  const parsedCreationtime = new Date(order.creationTime)
+  const fullyFilled = isOrderFilled(order)
+
+  return {
+    ...order,
+    expirationTime,
+    executedBuyAmount,
+    executedSellAmount,
+    filledAmount,
+    filledPercentage,
+    surplusAmount,
+    surplusPercentage,
+    executedFeeAmount,
+    executedSurplusFee,
+    parsedCreationTime: parsedCreationtime,
+    fullyFilled,
+  }
+}
+
 export function useLimitOrdersList(): LimitOrdersList {
   const { chainId, account } = useWeb3React()
   const allNonEmptyOrders = useOrders({ chainId })
   const accountLowerCase = account?.toLowerCase()
 
   const ordersFilter = useCallback((order: Order) => order.owner.toLowerCase() === accountLowerCase, [accountLowerCase])
-  const ordersParser = (order: Order): ParsedOrder => {
-    const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)
-    const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(order)
-    const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
-    const expirationTime = new Date(Number(order.validTo) * 1000)
-    const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
-    const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
-    const parsedCreationtime = new Date(order.creationTime)
-    const fullyFilled = isOrderFilled(order)
-
-    return {
-      ...order,
-      expirationTime,
-      executedBuyAmount,
-      executedSellAmount,
-      filledAmount,
-      filledPercentage,
-      surplusAmount,
-      surplusPercentage,
-      executedFeeAmount,
-      executedSurplusFee,
-      parsedCreationtime,
-      fullyFilled,
-    }
-  }
 
   const allSortedOrders = useMemo(() => {
-    return allNonEmptyOrders.filter(ordersFilter).map(ordersParser).sort(ordersSorter)
+    return allNonEmptyOrders.filter(ordersFilter).map(parseOrder).sort(ordersSorter)
   }, [allNonEmptyOrders, ordersFilter])
 
   return useMemo(() => {
