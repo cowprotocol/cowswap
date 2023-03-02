@@ -173,5 +173,5 @@ export const ExecuteIndicator = styled.div<{ status?: string }>`
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
-  background: ${({ status, theme }) => { switch (status) {  case 'veryClose': return theme.success; case 'close': return theme.text3; default: return theme.text1; } }};
+  background: ${({ status, theme }) => { switch (status) {  case 'veryClose': return theme.success; case 'close': return theme.text3; default: return transparentize(0.5, theme.text1); } }};
 `

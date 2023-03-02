@@ -196,7 +196,7 @@ const OrdersExplainerBanner = styled.div`
 
       > ol > li {
         display: flex;
-        gap: 6px;
+        gap: 5px;
         align-items: center;
       }
     }
