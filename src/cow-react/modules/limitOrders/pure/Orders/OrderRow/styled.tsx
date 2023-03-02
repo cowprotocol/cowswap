@@ -33,6 +33,8 @@ export const AmountItem = styled.div`
   > span {
     white-space: normal;
     word-break: break-all;
+    max-width: 150px;
+    display: inline;
   }
 
   > span > span {
@@ -109,13 +111,16 @@ export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boo
   ${RateWrapper} {
     font-weight: 500;
     font-size: 12px;
+    white-space: normal;
+    word-break: break-all;
   }
 `
 
 export const CurrencyLogoPair = styled.div`
   display: flex;
 
-  > img {
+  > img,
+  > svg {
     border: 2px solid ${({ theme }) => theme.grey1};
   }
 
