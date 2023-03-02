@@ -6,19 +6,50 @@ import { getConnectionName } from '@cow/modules/wallet/api/utils/connection'
 import useTheme from 'hooks/useTheme'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
-import {
-  metamaskInjectedOption,
-  metamaskInstallOption,
-  injectedOption,
-  injectedOptionDark,
-} from '@cow/modules/wallet/api/pure/ConnectWalletOption/ConnectWalletOptions'
 import { TryActivation, onError } from '.'
 
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Web3ReactConnection } from '../types'
 
+import { default as MetamaskImage } from '../../api/assets/metamask.png'
+import { default as InjectedImage } from '../../api/assets/arrow-right.svg'
+import { default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
+
+
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
+
+const metamaskCommonOption = {
+  color: '#E8831D',
+  icon: MetamaskImage,
+  id: 'metamask',
+}
+
+const injectedCommon = {
+  color: '#010101',
+  id: 'injected',
+}
+export const injectedOption = {
+  ...injectedCommon,
+  icon: InjectedImage,
+}
+
+export const injectedOptionDark = {
+  ...injectedCommon,
+  icon: InjectedImageDark,
+}
+
+export const metamaskInstallOption = {
+  ...metamaskCommonOption,
+  header: 'Install MetaMask',
+  link: 'https://metamask.io/',
+}
+
+export const metamaskInjectedOption = {
+  ...metamaskCommonOption,
+  header: 'MetaMask',
+}
+
 
 const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions, onError }))
 export const injectedConnection: Web3ReactConnection = {
