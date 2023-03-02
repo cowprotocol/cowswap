@@ -3,6 +3,7 @@ import { GetQuoteResponse } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
 
 const DAI = '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60'
+const USDC = '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
 const FOUR_HOURS = 3600 * 4 * 1000
 const DEFAULT_SELL_TOKEN = WETH[5]
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -86,7 +87,7 @@ describe('Fee endpoint', () => {
   it('Returns the expected info', () => {
     const params = {
       sellToken: DEFAULT_SELL_TOKEN.address,
-      buyToken: DAI,
+      buyToken: USDC,
       sellAmountBeforeFee: parseUnits('0.1', DEFAULT_SELL_TOKEN.decimals).toString(),
       kind: 'sell',
       fromDecimals: DEFAULT_SELL_TOKEN.decimals,
