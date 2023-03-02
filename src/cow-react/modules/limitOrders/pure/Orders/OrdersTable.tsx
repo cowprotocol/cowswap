@@ -21,8 +21,8 @@ import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 import { QuestionWrapper } from 'components/QuestionHelper'
 import SVG from 'react-inlinesvg'
 import iconOrderExecution from 'assets/cow-swap/orderExecution.svg'
-import { ExecuteIndicator } from '@cow/modules/limitOrders/pure/Orders/OrderRow/styled'
 import { X } from 'react-feather'
+import {OrderExecutionStatusList} from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 
 const TableBox = styled.div`
   display: block;
@@ -186,31 +186,7 @@ const OrdersExplainerBanner = styled.div`
     }
 `
 
-const StatusList = styled.ol`
-  display: flex;
-  flex-flow: column wrap;
-  list-style: none;
-  font-size: 12px;
-  font-weight: 400;
-  gap: 5px;
-  padding: 0;
-      
-    > li {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-    }
-`
 
-export function OrderExecutionStatusList() {
-  return (
-    <StatusList>
-      <li><ExecuteIndicator status={'veryClose'} /> <b>Very close</b> (&lt;0.5% from market price)</li>
-      <li><ExecuteIndicator status={'close'} /> <b>Close</b> (0.5% - 5% from market price)</li>
-      <li><ExecuteIndicator /> <b>Not yet close</b> (&gt;5% from market price)</li>
-    </StatusList>
-  )
-}
 
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean

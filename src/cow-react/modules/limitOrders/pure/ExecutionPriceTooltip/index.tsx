@@ -5,6 +5,7 @@ import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
 import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
 import { convertAmountToCurrency } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
+import { ExecuteIndicator } from '@cow/modules/limitOrders/pure/Orders/OrderRow/styled'
 
 export interface ExecutionPriceTooltipProps {
   isInversed: boolean
@@ -14,19 +15,30 @@ export interface ExecutionPriceTooltipProps {
   marketRate: Fraction | null
 }
 
+export function OrderExecutionStatusList() {
+  return (
+    <styledEl.StatusList>
+      <li><ExecuteIndicator status={'veryClose'} /> <b>Very close</b> (&lt;0.5% from market price)</li>
+      <li><ExecuteIndicator status={'close'} /> <b>Close</b> (0.5% - 5% from market price)</li>
+      <li><ExecuteIndicator /> <b>Not yet close</b> (&gt;5% from market price)</li>
+    </styledEl.StatusList>
+  )
+}
+
 export const RateTooltipHeader = (
   <styledEl.Content>
-    <h3>CoW Swap limit orders are gasless.</h3>
     <p>
-      CoW Swap covers all the fees (including gas) by monitoring network conditions and filling your order when the
-      market price is slightly better than your specified limit price. The extra tokens we get are used to cover your
-      fees. Then we give any leftovers back to you!{' '}
+      Fees (incl. gas) are covered by filling your order when the market price is better than your limit price. {' '}
       <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
-        Learn more about limit orders.
+        Learn more.
       </a>
     </p>
+
+    <h3>How close is my order to executing?</h3>
+    {OrderExecutionStatusList()}
   </styledEl.Content>
 )
+
 
 function formatFeeAmount({
   marketRate,
