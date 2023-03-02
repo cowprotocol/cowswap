@@ -13,6 +13,7 @@ export interface ExecutionPriceTooltipProps {
   displayedRate: string | null
   executionPrice: Price<Currency, Currency> | null
   marketRate: Fraction | null
+  isOpenOrdersTab?: boolean
 }
 
 export function OrderExecutionStatusList() {
@@ -25,19 +26,28 @@ export function OrderExecutionStatusList() {
   )
 }
 
-export const RateTooltipHeader = (
-  <styledEl.Content>
-    <p>
-      Fees (incl. gas) are covered by filling your order when the market price is better than your limit price. {' '}
-      <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
-        Learn more.
-      </a>
-    </p>
+interface RateTooltipHeaderProps {
+  isOpenOrdersTab?: boolean
+}
 
-    <h3>How close is my order to executing?</h3>
-    {OrderExecutionStatusList()}
-  </styledEl.Content>
-)
+export function RateTooltipHeader({isOpenOrdersTab}: RateTooltipHeaderProps) {
+  return (
+    <styledEl.Content>
+      <p>
+        Fees (incl. gas) are covered by filling your order when the market price is better than your limit price. {' '}
+        <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
+          Learn more.
+        </a>
+      </p>
+
+      {isOpenOrdersTab && <>
+        <h3>How close is my order to executing?</h3> 
+        {OrderExecutionStatusList()}
+      </>
+      }
+    </styledEl.Content>
+  )
+}
 
 
 function formatFeeAmount({
@@ -58,7 +68,7 @@ function formatFeeAmount({
 }
 
 export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
-  const { isInversed, displayedRate, executionPrice } = props
+  const { isInversed, displayedRate, executionPrice, isOpenOrdersTab } = props
 
   const currentCurrency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const formattedFeeAmount = formatFeeAmount(props)
@@ -67,7 +77,7 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
 
   return (
     <styledEl.FeeTooltipWrapper>
-      {RateTooltipHeader}
+      <RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />
 
       <styledEl.FeeItem borderTop>
         <span>

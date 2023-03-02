@@ -55,7 +55,7 @@ const TableInner = styled.div`
 const Header = styled.div<{ isOpenOrdersTab: boolean }>`
   display: grid;
   gap: 16px;
-  grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(90px,1fr) minmax(50px,1fr) 108px 24px`};
+  grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(100px,1fr) minmax(50px,1fr) 108px 24px`};
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -157,7 +157,7 @@ const OrdersExplainerBanner = styled.div`
   width: 100%;
   height: 90px;
   gap: 16px;
-  grid-template-columns: 4fr 3.6fr 24px;
+  grid-template-columns: 4fr 3.7fr 24px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
@@ -237,7 +237,7 @@ export function OrdersTable({
               <HeaderElement doubleRow>
                 <span>
                   <Trans>
-                    Order executes at <QuestionHelper text={RateTooltipHeader} />
+                    Order executes at <QuestionHelper text={<RateTooltipHeader/>} />
                   </Trans>
                 </span>
                 <i>
@@ -260,7 +260,7 @@ export function OrdersTable({
               <HeaderElement hasBackground>
                 <span>
                   <Trans>
-                    Executes at <QuestionHelper text={RateTooltipHeader} />
+                    Executes at <QuestionHelper text={<RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />} />
                   </Trans>
                 </span>
               </HeaderElement>
@@ -270,7 +270,7 @@ export function OrdersTable({
               <HeaderElement>
                 <span>
                   <Trans>
-                    Execution price <QuestionHelper text={RateTooltipHeader} />
+                    Execution price <QuestionHelper text={<RateTooltipHeader />} />
                   </Trans>
                 </span>
               </HeaderElement>

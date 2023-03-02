@@ -86,9 +86,11 @@ export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boo
   padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
   font-size: 12px;
   font-weight: 500;
+  gap: 5px;
   height: 100%;
   display: flex;
-  align-items: ${({ doubleRow, hasBackground }) => (doubleRow || hasBackground ? 'flex-start' : 'center')};
+  flex-flow: row wrap;
+  align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
   background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
 
