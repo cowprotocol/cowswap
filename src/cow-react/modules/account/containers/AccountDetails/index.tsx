@@ -7,16 +7,11 @@ import Copy from 'components/Copy'
 import { Trans } from '@lingui/macro'
 
 import { getEtherscanLink } from 'utils'
-import {
-  getConnection,
-  getConnectionName,
-  getIsMetaMask,
-  getIsCoinbaseWallet,
-} from '@cow/modules/wallet/api/utils/index'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
-import Identicon from 'components/Identicon'
+import { Identicon } from '@cow/modules/wallet/api/container/Identicon'
 import { ActivityDescriptors } from 'hooks/useRecentActivity'
 import Activity from '@cow/modules/account/containers/Transaction'
 
@@ -46,17 +41,16 @@ import { CreationDateText } from '../Transaction/styled'
 import { ExternalLink } from 'theme'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { Connector } from '@web3-react/types'
-import {
-  coinbaseWalletConnection,
-  ConnectionType,
-  fortmaticConnection,
-  injectedConnection,
-  walletConnectConnection,
-} from 'connection'
+import { ConnectionType } from '@cow/modules/wallet'
 import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { useDisconnectWallet } from '@cow/modules/wallet/api/hooks/useDisconnectWallet'
+import { useDisconnectWallet } from '@cow/modules/wallet/web3-react/hooks/useDisconnectWallet'
+import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
+import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/injected'
+import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
+import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connection/coinbase'
+import { fortmaticConnection } from '@cow/modules/wallet/web3-react/connection/formatic'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',
@@ -85,7 +79,7 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo
     return null
   }
 
-  const connectionType = getConnection(connector)
+  const connectionType = getWeb3ReactConnection(connector)
 
   if (walletInfo && !walletInfo.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
@@ -143,7 +137,7 @@ export function AccountDetails({
   handleCloseOrdersPanel,
 }: AccountDetailsProps) {
   const { account, connector, chainId: connectedChainId } = useWeb3React()
-  const connection = getConnection(connector)
+  const connection = getWeb3ReactConnection(connector)
   const chainId = supportedChainId(connectedChainId)
   const walletInfo = useWalletInfo()
   const disconnectWallet = useDisconnectWallet()
@@ -166,7 +160,9 @@ export function AccountDetails({
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
     const walletConnectSuffix =
-      getConnection(connector) === walletConnectConnection && walletInfo?.walletName ? ' (via WalletConnect)' : ''
+      getWeb3ReactConnection(connector) === walletConnectConnection && walletInfo?.walletName
+        ? ' (via WalletConnect)'
+        : ''
 
     return (
       <WalletName>

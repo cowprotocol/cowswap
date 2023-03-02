@@ -6,7 +6,7 @@ import { useBytes32TokenContract, useTokenContract } from 'hooks/useContract'
 import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
-import { isChainAllowed } from 'utils/switchChain'
+import { isChainAllowed } from '@cow/modules/wallet/web3-react/connection'
 
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { isAddress } from '../../utils'

@@ -8,7 +8,8 @@ import imageConnectWallet from 'assets/cow-swap/wallet-plus.svg'
 import { Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import SVG from 'react-inlinesvg'
-import { Web3Status, Wrapper as Web3StatusWrapper } from '@cow/modules/wallet/api/components/Web3Status'
+import { Web3Status } from '@cow/modules/wallet/web3-react/containers/Web3Status'
+import { Wrapper as Web3StatusWrapper } from '@cow/modules/wallet/api/pure/Web3StatusInner/styled'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;

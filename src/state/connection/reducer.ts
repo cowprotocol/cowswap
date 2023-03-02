@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { ConnectionType } from 'connection'
+import { ConnectionType } from '@cow/modules/wallet'
 
 export interface ConnectionState {
   errorByConnectionType: Record<ConnectionType, string | undefined>
@@ -17,7 +17,7 @@ export const initialState: ConnectionState = {
 }
 
 const connectionSlice = createSlice({
-  name: 'connection',
+  name: '@cow/modules/wallet/web3-react/utils/connection',
   initialState,
   reducers: {
     updateConnectionError(

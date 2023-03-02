@@ -5,7 +5,8 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 // Mod imports
 import { useWalletInfo } from '@cow/modules/wallet'
-import { getConnectionName, getIsMetaMask, getConnection } from '@cow/modules/wallet/api/utils'
+import { getConnectionName, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '..'
 import { Dimensions } from '../GoogleAnalyticsProvider'
 import usePrevious from 'hooks/usePrevious'
@@ -60,7 +61,7 @@ export function useAnalyticsReporter() {
 
   // Handle wallet name custom dimension
   const walletInfo = useWalletInfo()
-  const connection = getConnection(connector)
+  const connection = getWeb3ReactConnection(connector)
   const isMetaMask = getIsMetaMask()
 
   const walletName = walletInfo?.walletName || getConnectionName(connection.type, isMetaMask)

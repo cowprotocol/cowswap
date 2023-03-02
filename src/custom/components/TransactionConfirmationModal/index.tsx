@@ -23,7 +23,7 @@ import { Routes } from '@cow/constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from '@cow/modules/account/containers/Transaction'
-import AddToMetamask from '@cow/modules/wallet/api/components/AddToMetamask' // mod
+import AddToMetamask from '@cow/modules/wallet/web3-react/containers/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
 import { useOrder } from 'state/orders/hooks'
 import { OrderStatus } from 'state/orders/actions'
