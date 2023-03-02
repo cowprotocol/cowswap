@@ -302,7 +302,7 @@ export const StatusLabel = styled.div<{
     opacity: 0.15;
   }
 
-  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending, isCreating }) =>
+  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending }) =>
     (isCancelling || isPresignaturePending || (isPending && isTransaction)) &&
     css`
       &::after {
