@@ -1,4 +1,4 @@
-import { networkConnection } from '@cow/modules/wallet/web3-react/connection/ network'
+import { networkConnection } from '@cow/modules/wallet/web3-react/connection/network'
 import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 import { Connector } from '@web3-react/types'
 import { getChainInfo } from 'constants/chainInfo'

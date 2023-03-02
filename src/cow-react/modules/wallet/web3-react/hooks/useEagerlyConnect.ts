@@ -1,5 +1,5 @@
 import { Connector } from '@web3-react/types'
-import { networkConnection } from '@cow/modules/wallet/web3-react/connection/ network'
+import { networkConnection } from '@cow/modules/wallet/web3-react/connection/network'
 import { gnosisSafeConnection } from '@cow/modules/wallet/web3-react/connection/safe'
 import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { useEffect } from 'react'
