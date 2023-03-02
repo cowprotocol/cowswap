@@ -51,7 +51,7 @@ const TableInner = styled.div`
 const Header = styled.div<{isOpenOrdersTab: boolean}>`
   display: grid;
   gap: 16px;
-  grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,4fr) repeat(2,minmax(110px,2.2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(90px,1fr) minmax(50px,1fr) 108px 36px`};
+  grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,4fr) repeat(2,minmax(110px,2.2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(90px,1fr) minmax(50px,1fr) 108px 24px`};
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -63,7 +63,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean 
   padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
   font-size: 12px;
   line-height: 1.1;
-  font-weight: 400;
+  font-weight: 500;
   display: flex;
   align-items: ${({ doubleRow}) => (doubleRow ? 'flex-start' : 'center')};
   height: var(--height);

@@ -219,6 +219,7 @@ export function OrderRow({
         <styledEl.ProgressBar value={formattedPercentage}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
+      {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
           <OrderStatusBox cancelling={!!order.isCancelling} status={order.status} withWarning={withWarning}>
@@ -243,6 +244,8 @@ export function OrderRow({
           )}
         </styledEl.StatusBox>
       </styledEl.CellElement>
+
+      {/* Action contet menu */}
       <styledEl.CellElement>
         <OrderContextMenu
           activityUrl={activityUrl}
