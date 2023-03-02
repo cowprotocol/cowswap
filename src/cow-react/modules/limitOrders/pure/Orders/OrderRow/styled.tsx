@@ -82,17 +82,16 @@ export const WarningParagraph = styled.div`
 
 export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean }>`
   padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
-  font-size: 13px;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
   height: 100%;
   display: flex;
   align-items: ${({ doubleRow, hasBackground }) => (doubleRow || hasBackground ? 'flex-start' : 'center')};
   text-align: left;
   background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
 
-
   > b {
-    font-weight: 400;
+    font-weight: 500;
   }
 
   ${({ doubleRow }) =>
@@ -108,7 +107,8 @@ export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boo
   `}
 
   ${RateWrapper} {
-    font-weight: 400;
+    font-weight: 500;
+    font-size: 12px;
   }
 `
 
@@ -130,8 +130,8 @@ export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   flex-flow: row wrap;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   :hover {
