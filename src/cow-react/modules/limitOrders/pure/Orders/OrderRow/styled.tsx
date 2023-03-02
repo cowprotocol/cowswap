@@ -104,7 +104,7 @@ export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boo
     gap: 2px;
 
     > i {
-      opacity: 0.7;
+      opacity: 0.6;
     }
   `}
 

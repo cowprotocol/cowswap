@@ -285,11 +285,11 @@ export function OrdersTable({
               </HeaderElement>
             )}
 
-            {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+            {/* {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
               <HeaderElement>
                 <Trans>Execution time</Trans>
               </HeaderElement>
-            )}
+            )} */}
 
             <HeaderElement>
               <Trans>Filled</Trans>
