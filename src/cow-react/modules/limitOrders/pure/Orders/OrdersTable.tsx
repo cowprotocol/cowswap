@@ -1,7 +1,7 @@
 import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
@@ -16,6 +16,8 @@ import { RateWrapper } from '@cow/common/pure/RateInfo'
 import QuestionHelper from 'components/QuestionHelper'
 import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { PendingOrdersPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 
 const TableBox = styled.div`
   display: block;
@@ -46,7 +48,7 @@ const TableInner = styled.div`
 const Header = styled.div`
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(150px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(100px, 0.7fr) 48px 108px 36px;
+  grid-template-columns: minmax(200px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(70px, 0.7fr) 108px 36px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -80,7 +82,6 @@ const HeaderElement = styled.div<{ doubleRow?: boolean }>`
 const RowElement = styled(Header)`
   background: transparent;
   transition: background 0.15s ease-in-out;
-  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => transparentize(0.9, theme.text3)};
@@ -116,16 +117,20 @@ const StyledInvertRateControl = styled(InvertRateControl)`
 `
 
 export interface OrdersTableProps {
+  isOpenOrdersTab: boolean
   currentPageNumber: number
   chainId: SupportedChainId | undefined
+  pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
   balancesAndAllowances: BalancesAndAllowances
   getShowCancellationModal(order: Order): (() => void) | null
 }
 
 export function OrdersTable({
+  isOpenOrdersTab,
   chainId,
   orders,
+  pendingOrdersPrices,
   balancesAndAllowances,
   getShowCancellationModal,
   currentPageNumber,
@@ -135,11 +140,15 @@ export function OrdersTable({
   const selectReceiptOrder = useSelectReceiptOrder()
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
   const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step).sort(ordersSorter)
+  const onScroll = useCallback(() => {
+    // Emit event to close OrderContextMenu
+    document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
+  }, [])
 
   return (
     <>
       <TableBox>
-        <TableInner>
+        <TableInner onScroll={onScroll}>
           <Header>
             <HeaderElement>
               <Trans>Order</Trans>
@@ -152,23 +161,43 @@ export function OrdersTable({
               <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
             </HeaderElement>
 
-            <HeaderElement doubleRow>
-              <span>
-                <Trans>
-                  Est. execution price <QuestionHelper text={RateTooltipHeader} />
-                </Trans>
-              </span>
-              <i>
-                <Trans>Market price</Trans>
-              </i>
-            </HeaderElement>
+            {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
+              <HeaderElement doubleRow>
+                <span>
+                  <Trans>
+                    Order executes at <QuestionHelper text={RateTooltipHeader} />
+                  </Trans>
+                </span>
+                <i>
+                  <Trans>Market price</Trans>
+                </i>
+              </HeaderElement>
+            )}
 
-            <HeaderElement doubleRow>
-              <Trans>Expires</Trans>
-              <i>
-                <Trans>Created</Trans>
-              </i>
-            </HeaderElement>
+            {!isOpenOrdersTab && (
+              <HeaderElement>
+                <span>
+                  <Trans>
+                    Execution price <QuestionHelper text={RateTooltipHeader} />
+                  </Trans>
+                </span>
+              </HeaderElement>
+            )}
+
+            {isOpenOrdersTab && (
+              <HeaderElement doubleRow>
+                <Trans>Expires</Trans>
+                <i>
+                  <Trans>Created</Trans>
+                </i>
+              </HeaderElement>
+            )}
+
+            {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+              <HeaderElement>
+                <Trans>Execution time</Trans>
+              </HeaderElement>
+            )}
 
             <HeaderElement>
               <Trans>Filled</Trans>
@@ -183,7 +212,9 @@ export function OrdersTable({
             {ordersPage.map((order) => (
               <OrderRow
                 key={order.id}
+                isOpenOrdersTab={isOpenOrdersTab}
                 order={order}
+                prices={pendingOrdersPrices[order.id]}
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                 RowElement={RowElement}
                 isRateInversed={isRateInversed}

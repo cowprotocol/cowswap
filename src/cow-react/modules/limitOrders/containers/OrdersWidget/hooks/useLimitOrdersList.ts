@@ -10,6 +10,7 @@ import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 import { getOrderExecutedAmounts } from '@cow/modules/limitOrders/utils/getOrderExecutedAmounts'
 import { isOrderFilled } from '@cow/modules/limitOrders/utils/isOrderFilled'
 import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 export interface LimitOrdersList {
   pending: ParsedOrder[]
@@ -29,6 +30,9 @@ export interface ParsedOrder extends Order {
   executedSurplusFee: string | null
   formattedPercentage: number
   parsedCreationTime: Date
+  executedPrice: Price<Currency, Currency> | null
+  activityId: string | undefined
+  activityTitle: string
 }
 
 const ORDERS_LIMIT = 100
@@ -48,6 +52,18 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const parsedCreationtime = new Date(order.creationTime)
   const fullyFilled = isOrderFilled(order)
   const formattedPercentage = filledPercentage.times(100).decimalPlaces(2).toNumber()
+  const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
+    ? new Price({
+        baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
+        quoteAmount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
+      })
+    : null
+  const showCreationTxLink =
+    (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
+    order.orderCreationHash &&
+    !order.apiAdditionalInfo
+  const activityId = showCreationTxLink ? order.orderCreationHash : order.id
+  const activityTitle = showCreationTxLink ? 'Creation transaction' : 'Order ID'
 
   return {
     ...order,
@@ -61,8 +77,11 @@ export const parseOrder = (order: Order): ParsedOrder => {
     surplusPercentage,
     executedFeeAmount,
     executedSurplusFee,
+    executedPrice,
     parsedCreationTime: parsedCreationtime,
     fullyFilled,
+    activityId,
+    activityTitle,
   }
 }
 

@@ -34,7 +34,7 @@ import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOr
 import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
 import { OrderKind } from '@cowprotocol/contracts'
 import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -254,15 +254,16 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {!isWrapOrUnwrap && (
                 <styledEl.RateWrapper>
                   <RateInput />
+                  <DeadlineInput />
                 </styledEl.RateWrapper>
               )}
               <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
                 <CurrencyArrowSeparator
-                  isCollapsed={true}
+                  isCollapsed={false}
                   onSwitchTokens={throttledOnSwitchTokens}
                   withRecipient={showRecipient}
                   isLoading={isTradePriceUpdating}
-                  hasSeparatorLine={false}
+                  hasSeparatorLine={true}
                   border={true}
                 />
                 {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
@@ -285,11 +286,11 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
               )}
 
-              <styledEl.FooterBox>
-                <DeadlineInput />
-                {/*TODO: do we remove it at all?*/}
-                {/* {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />} */}
-              </styledEl.FooterBox>
+              {!isWrapOrUnwrap && (
+                <styledEl.FooterBox>
+                  <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                </styledEl.FooterBox>
+              )}
 
               <LimitOrdersWarnings priceImpact={priceImpact} />
 

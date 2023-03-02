@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
-import { CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
@@ -9,6 +9,8 @@ import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAto
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { CancelableResult } from 'utils/async'
 import { FractionUtils } from '@cow/utils/fractionUtils'
+
+const PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
 export function useHandleResponse() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
@@ -35,11 +37,12 @@ export function useHandleResponse() {
         const sellAmount = CurrencyAmount.fromRawAmount(inputCurrency, sellAmountRaw)
         const buyAmount = CurrencyAmount.fromRawAmount(outputCurrency, buyAmountRaw)
 
-        const marketRate = FractionUtils.fractionLikeToFraction(
+        const price = FractionUtils.fractionLikeToFraction(
           new Price({ baseAmount: sellAmount, quoteAmount: buyAmount })
         )
+        const marketRateWithSlippage = price.subtract(price.multiply(PRICE_SLIPPAGE.divide(100)))
 
-        updateLimitRateState({ marketRate, feeAmount })
+        updateLimitRateState({ marketRate: marketRateWithSlippage, feeAmount })
         setLimitOrdersQuote({ response: data })
       } catch (error: any) {
         console.debug('[useFetchMarketPrice] Failed to fetch exection price', error)

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useIsGnosisSafeWallet } from 'hooks/useWalletInfo'
+import { useIsGnosisSafeWallet } from '@cow/modules/wallet'
 import { getSafeInfo } from '@cow/api/gnosisSafe'
 import { useWeb3React } from '@web3-react/core'
 import { gnosisSafeAtom } from 'state/gnosisSafe/atoms'
@@ -12,7 +12,11 @@ export default function Updater(): null {
 
   useEffect(() => {
     if (chainId && account && isGnosisSafeConnected && provider) {
-      getSafeInfo(chainId, account, provider).then(setGnosisSafeInfo)
+      getSafeInfo(chainId, account, provider)
+        .then(setGnosisSafeInfo)
+        .catch((error) => {
+          console.error(error)
+        })
     } else {
       setGnosisSafeInfo(undefined)
     }

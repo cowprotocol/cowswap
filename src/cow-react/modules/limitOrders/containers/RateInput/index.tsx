@@ -20,6 +20,7 @@ import { ExecutionPriceTooltip } from '@cow/modules/limitOrders/pure/ExecutionPr
 import Loader from 'components/Loader'
 import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPriceAtom'
 import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -143,20 +144,11 @@ export function RateInput() {
           <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
 
           <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
-            <span>Set to market</span>
+            <span>Market price</span>
           </styledEl.MarketPriceButton>
         </styledEl.Header>
 
         <styledEl.Body>
-          <styledEl.ActiveCurrency onClick={handleToggle}>
-            <styledEl.ActiveSymbol>
-              <TokenSymbol token={secondaryCurrency} />
-            </styledEl.ActiveSymbol>
-            <styledEl.ActiveIcon>
-              <RefreshCw size={12} />
-            </styledEl.ActiveIcon>
-          </styledEl.ActiveCurrency>
-
           {isLoading && areBothCurrencies ? (
             <styledEl.RateLoader />
           ) : (
@@ -167,31 +159,43 @@ export function RateInput() {
               onUserInput={handleUserInput}
             />
           )}
+
+          <styledEl.ActiveCurrency onClick={handleToggle}>
+            <styledEl.ActiveSymbol>
+              <TokenSymbol token={secondaryCurrency} />
+            </styledEl.ActiveSymbol>
+            <styledEl.ActiveIcon>
+              <RefreshCw size={12} />
+            </styledEl.ActiveIcon>
+          </styledEl.ActiveCurrency>
         </styledEl.Body>
       </styledEl.Wrapper>
 
-      <styledEl.EstimatedRate>
-        <b>
-          Est. execution price{' '}
-          {isLoadingMarketRate ? (
-            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-          ) : executionPrice ? (
-            <QuestionHelper
-              text={
-                <ExecutionPriceTooltip
-                  isInversed={isInversed}
-                  feeAmount={feeAmount}
-                  displayedRate={displayedRate}
-                  executionPrice={executionPrice}
-                />
-              }
-            />
-          ) : null}
-        </b>
-        {!isLoadingMarketRate && executionPrice && (
-          <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />
-        )}
-      </styledEl.EstimatedRate>
+      {limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
+        <styledEl.EstimatedRate>
+          <b>
+            Order executes at{' '}
+            {isLoadingMarketRate ? (
+              <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+            ) : executionPrice ? (
+              <QuestionHelper
+                text={
+                  <ExecutionPriceTooltip
+                    isInversed={isInversed}
+                    feeAmount={feeAmount}
+                    marketRate={marketRate}
+                    displayedRate={displayedRate}
+                    executionPrice={executionPrice}
+                  />
+                }
+              />
+            ) : null}
+          </b>
+          {!isLoadingMarketRate && executionPrice && (
+            <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />
+          )}
+        </styledEl.EstimatedRate>
+      )}
     </>
   )
 }

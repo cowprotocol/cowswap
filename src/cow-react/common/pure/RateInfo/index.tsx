@@ -29,6 +29,7 @@ export interface RateInfoProps {
   noLabel?: boolean
   prependSymbol?: boolean
   isInversed?: boolean
+  setSmartQuoteSelectionOnce?: boolean
   isInversedState?: [boolean, Dispatch<SetStateAction<boolean>>]
   rateInfoParams: RateInfoParams
 }
@@ -113,6 +114,7 @@ export function RateInfo({
   rateInfoParams,
   className,
   label = 'Limit price',
+  setSmartQuoteSelectionOnce = false,
   stylized = false,
   isInversed = false,
   noLabel = false,
@@ -126,6 +128,7 @@ export function RateInfo({
   const inputCurrency = inputCurrencyAmount?.currency
   const outputCurrency = outputCurrencyAmount?.currency
 
+  const [isSmartQuoteSelectionSet, setIsSmartQuoteSelectionSet] = useState(false)
   const customDispatcher = useState(isInversed)
   const [currentIsInversed, setCurrentIsInversed] = isInversedState || customDispatcher
 
@@ -151,15 +154,29 @@ export function RateInfo({
   }, [chainId, inputCurrencyAmount, outputCurrencyAmount])
 
   useEffect(() => {
-    setCurrentIsInversed((state) => !state)
-  }, [isInversed])
+    setCurrentIsInversed(isInversed)
+  }, [isInversed, setCurrentIsInversed])
 
   // Set isInversed based on quoteCurrency
   useEffect(() => {
+    if (isSmartQuoteSelectionSet) return
+
     const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
     setCurrentIsInversed(quoteCurrencyAddress !== inputCurrencyAddress)
-  }, [quoteCurrency, inputCurrency, outputCurrency])
+
+    if (setSmartQuoteSelectionOnce) {
+      setIsSmartQuoteSelectionSet(true)
+    }
+  }, [
+    quoteCurrency,
+    inputCurrency,
+    outputCurrency,
+    setCurrentIsInversed,
+    isSmartQuoteSelectionSet,
+    setIsSmartQuoteSelectionSet,
+    setSmartQuoteSelectionOnce,
+  ])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 

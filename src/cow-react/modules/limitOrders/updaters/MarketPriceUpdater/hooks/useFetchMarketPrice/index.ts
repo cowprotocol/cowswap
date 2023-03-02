@@ -13,9 +13,10 @@ import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { onlyResolvesLast } from 'utils/async'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 // Every 10s
-const REFETCH_CHECK_INTERVAL = 10000
+const PRICE_UPDATE_INTERVAL = 10_000
 
 const getQuoteOnlyResolveLast = onlyResolvesLast<SimpleGetQuoteResponse>(getQuote)
 
@@ -31,14 +32,18 @@ export function useFetchMarketPrice() {
   const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersTradeState()
   const handleResponse = useHandleResponse()
 
+  const isWindowVisible = useIsWindowVisible()
+
   // Main hook updater
   useLayoutEffect(() => {
-    const handleFetchQuote = () => {
-      if (!feeQuoteParams || isWrapOrUnwrap) {
-        setLimitOrdersQuote({})
-        return
-      }
+    if (!feeQuoteParams || isWrapOrUnwrap || !isWindowVisible) {
+      console.debug('[useFetchMarketPrice] No need to fetch quotes')
+      return
+    }
 
+    console.debug('[useFetchMarketPrice] Periodically fetch quotes')
+    const handleFetchQuote = () => {
+      console.debug('[useFetchMarketPrice] Fetching price')
       getQuoteOnlyResolveLast(feeQuoteParams)
         .then(handleResponse)
         .catch((error: GpQuoteError) => {
@@ -51,10 +56,10 @@ export function useFetchMarketPrice() {
     handleFetchQuote()
 
     // Run the interval
-    const intervalId = setInterval(handleFetchQuote, REFETCH_CHECK_INTERVAL)
+    const intervalId = setInterval(handleFetchQuote, PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(intervalId)
-  }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote, isWrapOrUnwrap])
+  }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote, isWrapOrUnwrap, isWindowVisible])
 
   // Turn on the loading if some of these dependencies have changed and remove execution rate
   useLayoutEffect(() => {

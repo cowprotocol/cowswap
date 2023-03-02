@@ -15,7 +15,7 @@ import { isL2ChainId } from 'utils/chains'
 import Circle from 'assets/images/blue-loader.svg'
 import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
 // import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
-import { TransactionSummary } from 'components/AccountDetails/TransactionSummary'
+import { TransactionSummary } from '@cow/modules/account/containers/TransactionSummary'
 import { /* ButtonLight */ ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 // import Modal from 'components/Modal'
@@ -23,7 +23,7 @@ import { RowBetween, RowFixed } from 'components/Row'
 import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
 
 // MOD imports
-import { GpModal } from 'components/Modal'
+import { GpModal } from '@cow/common/pure/Modal'
 import {
   ConfirmationPendingContent,
   ConfirmationModalContentProps,
@@ -53,7 +53,7 @@ export const Wrapper = styled.div`
   `}/* -- mod -- */
 `
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`
-  padding: ${({ inline }) => (inline ? '0 0 16px' : '0')};
+  padding: ${({ inline }) => (inline ? '16px 0 0' : '0')};
 `
 
 export const BottomSection = styled(Section)`

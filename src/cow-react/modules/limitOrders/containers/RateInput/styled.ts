@@ -5,9 +5,9 @@ import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.grey1};
-  border-radius: 16px 16px 0 0;
-  padding: 10px 16px 2px;
-  flex: 1 1 100%;
+  border-radius: 16px;
+  padding: 10px 16px;
+  flex: 1 1 70%;
   min-height: 80px;
   justify-content: space-between;
   display: flex;
@@ -46,8 +46,7 @@ export const MarketPriceButton = styled.button`
 `
 
 export const Body = styled.div`
-  display: grid;
-  grid-template-columns: min-content 1fr;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
@@ -59,8 +58,8 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   align-items: center;
   background: none;
   border: none;
-  width: auto;
-  text-align: right;
+  width: 100%;
+  text-align: left;
 
   &::placeholder {
     color: ${({ theme }) => transparentize(0.3, theme.text1)};
@@ -74,7 +73,9 @@ export const ActiveCurrency = styled.button`
   border: none;
   background: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 auto;
+  gap: 8px;
+  max-width: 130px;
   width: auto;
   cursor: pointer;
 `
@@ -85,7 +86,6 @@ export const ActiveSymbol = styled.span`
   font-weight: 500;
   text-align: right;
   padding: 10px 0;
-  margin: 0 4px 0 0;
 `
 
 export const ActiveIcon = styled.div`

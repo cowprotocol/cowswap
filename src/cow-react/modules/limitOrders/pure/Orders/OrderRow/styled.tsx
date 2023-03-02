@@ -1,6 +1,5 @@
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
-import { MenuButton, MenuList, MenuItem, MenuLink } from '@reach/menu-button'
 
 export const RateValue = styled.span``
 
@@ -100,16 +99,22 @@ export const CurrencyLogoPair = styled.div`
     border: 2px solid ${({ theme }) => theme.grey1};
   }
 
-  > img:last-child {
+  > img:last-child,
+  > svg:last-child {
     margin: 0 0 0 -14px;
   }
 `
 
-export const CurrencyCell = styled.div`
+export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   gap: 6px;
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
+
+  :hover {
+    text-decoration: ${({ clickable }) => (clickable ? 'underline' : '')};
+  }
 `
 
 export const CurrencyAmountWrapper = styled.div`
@@ -133,53 +138,5 @@ export const ProgressBar = styled.div<{ value: number }>`
     width: ${({ value }) => value}%;
     background: ${({ theme }) => theme.text3};
     border-radius: 6px;
-  }
-`
-
-export const ContextMenuButton = styled(MenuButton)`
-  background: none;
-  border: 0;
-  outline: none;
-  cursor: pointer;
-  border-radius: 8px;
-  padding: 2px 6px;
-  margin: 0;
-  display: flex;
-
-  :hover {
-    outline: 1px solid ${({ theme }) => transparentize(0.8, theme.text1)};
-  }
-`
-export const ContextMenuList = styled(MenuList)`
-  background: ${({ theme }) => theme.bg1};
-  border-radius: 6px;
-  overflow: hidden;
-  position: relative;
-  z-index: 2;
-`
-
-export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
-  padding: 10px 12px;
-  cursor: pointer;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  color: ${({ theme, $red }) => ($red ? theme.danger : theme.white)};
-
-  :hover {
-    background: ${({ theme }) => transparentize(0.8, theme.text1)};
-  }
-`
-
-export const ContextMenuLink = styled(MenuLink)`
-  padding: 10px 12px;
-  cursor: pointer;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  color: ${({ theme }) => theme.white};
-
-  :hover {
-    background: ${({ theme }) => transparentize(0.8, theme.text1)};
   }
 `

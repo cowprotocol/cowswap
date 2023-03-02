@@ -1,11 +1,14 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
+import { OrderKind } from '@cowprotocol/contracts'
+import JSBI from 'jsbi'
 
 export interface ExecutionPriceParams {
   inputCurrencyAmount: CurrencyAmount<Currency> | null
   outputCurrencyAmount: CurrencyAmount<Currency> | null
   feeAmount: CurrencyAmount<Currency> | null
   marketRate: Fraction | null
+  orderKind: OrderKind
 }
 
 /**
@@ -22,16 +25,20 @@ export function convertAmountToCurrency(
 
   const inputDecimals = amount.currency.decimals
   const outputDecimals = targetCurrency.decimals
-  const decimalsDiff = Math.abs(inputDecimals - outputDecimals) || 1
-  const decimalsDiffAmount = rawToTokenAmount(1, decimalsDiff)
 
-  const targetAmount = CurrencyAmount.fromFractionalAmount(targetCurrency, numerator, denominator)
-
-  if (inputDecimals < outputDecimals) {
-    return targetAmount.multiply(decimalsDiffAmount)
+  if (inputDecimals === outputDecimals) {
+    return CurrencyAmount.fromFractionalAmount(targetCurrency, numerator, denominator)
   }
 
-  return targetAmount.divide(decimalsDiffAmount)
+  const decimalsDiff = Math.abs(inputDecimals - outputDecimals)
+  const decimalsDiffAmount = rawToTokenAmount(1, decimalsDiff)
+
+  const fixedNumenator =
+    inputDecimals < outputDecimals
+      ? JSBI.multiply(numerator, decimalsDiffAmount)
+      : JSBI.divide(numerator, decimalsDiffAmount)
+
+  return CurrencyAmount.fromFractionalAmount(targetCurrency, fixedNumenator, denominator)
 }
 
 export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Currency, Currency> | null {
@@ -41,19 +48,22 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
 
   if (inputCurrencyAmount.currency !== feeAmount.currency) return null
 
+  const isInversed = marketRate.lessThan(1)
+  const marketRateFixed = isInversed ? marketRate.invert() : marketRate
   /**
    * Since a user can specify an arbitrary price
    * And the specified price can be less than the market price
    * It doesn't make sense to display an execution price less than current market price
    * Because an order will always be filled by at least the current market price
    */
-  const marketPrice = new Price({
+  const marketPriceRaw = new Price({
     baseAmount: inputCurrencyAmount,
     quoteAmount: convertAmountToCurrency(
-      inputCurrencyAmount.multiply(marketRate).subtract(feeAmount),
+      inputCurrencyAmount.subtract(feeAmount).multiply(marketRateFixed),
       outputCurrencyAmount.currency
     ),
   })
+  const marketPrice = isInversed ? marketPriceRaw.invert() : marketPriceRaw
 
   const currentPrice = new Price({
     baseAmount: inputCurrencyAmount.subtract(feeAmount),

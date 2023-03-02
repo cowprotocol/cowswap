@@ -2,7 +2,6 @@ import * as styledEl from './styled'
 import {
   LimitOrdersWidget,
   MarketPriceUpdater,
-  InfoPopup,
   InitialPriceUpdater,
   OrdersWidget,
   limitOrdersAtom,
@@ -22,7 +21,6 @@ export default function LimitOrderPage() {
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />
-          {isUnlocked && <InfoPopup />}
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>

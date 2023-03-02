@@ -4,8 +4,6 @@ import { OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { FileText, Link2, MoreHorizontal, Trash2 } from 'react-feather'
-import { Menu } from '@reach/menu-button'
 import { OrderParams } from '../utils/getOrderParams'
 import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 import AlertTriangle from 'assets/cow-swap/alert.svg'
@@ -17,8 +15,11 @@ import useTimeAgo from 'hooks/useTimeAgo'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { OrderStatusBox } from '@cow/modules/limitOrders/pure/OrderStatusBox'
 import * as styledEl from './styled'
-import { transparentize } from 'polished'
 import { getEtherscanLink } from 'utils'
+import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
+import Loader from '@src/components/Loader'
+import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -84,8 +85,10 @@ const AllowanceWarning = (symbol: string) => (
 
 export interface OrderRowProps {
   order: ParsedOrder
+  prices: PendingOrderPrices | undefined | null
   RowElement: StyledComponent<'div', DefaultTheme>
   isRateInversed: boolean
+  isOpenOrdersTab: boolean
   orderParams: OrderParams
   onClick: () => void
   getShowCancellationModal(order: ParsedOrder): (() => void) | null
@@ -95,12 +98,14 @@ export function OrderRow({
   order,
   RowElement,
   isRateInversed,
+  isOpenOrdersTab,
   getShowCancellationModal,
   orderParams,
   onClick,
+  prices,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, id, formattedPercentage } = order
+  const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice } = order
 
   const showCancellationModal = getShowCancellationModal(order)
 
@@ -109,12 +114,18 @@ export function OrderRow({
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
-  const activityUrl = chainId ? getEtherscanLink(chainId, id, 'transaction') : undefined
+  // TODO: set the real value when API returns it
+  const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
+  const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
+
+  const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
+  const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
+  const executedPriceInversed = isRateInversed ? executedPrice?.invert() : executedPrice
 
   return (
     <RowElement>
       {/* Order sell/buy tokens */}
-      <styledEl.CurrencyCell onClick={onClick}>
+      <styledEl.CurrencyCell clickable onClick={onClick}>
         <styledEl.CurrencyLogoPair>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
           <CurrencySymbolItem amount={buyAmount} />
@@ -128,23 +139,61 @@ export function OrderRow({
       {/* Limit price */}
       <styledEl.CellElement>
         <styledEl.RateValue>
-          <RateInfo prependSymbol={false} noLabel={true} isInversed={isRateInversed} rateInfoParams={rateInfoParams} />
+          <RateInfo
+            prependSymbol={false}
+            noLabel={true}
+            setSmartQuoteSelectionOnce={true}
+            isInversed={isRateInversed}
+            rateInfoParams={rateInfoParams}
+          />
         </styledEl.RateValue>
       </styledEl.CellElement>
 
       {/* Est. execution price */}
       {/* Market price */}
-      <styledEl.CellElement doubleRow>
-        <b>1534.62 USDC</b>
-        <i>1531.33 USDC</i>
-      </styledEl.CellElement>
+      {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
+        <styledEl.CellElement doubleRow>
+          {/*// TODO: gray out the price when it was updated too long ago*/}
+          {prices ? (
+            <>
+              <b>
+                <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
+              </b>
+              <i>
+                <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} />
+              </i>
+            </>
+          ) : prices === null ? (
+            '-'
+          ) : (
+            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+          )}
+        </styledEl.CellElement>
+      )}
+      {!isOpenOrdersTab && (
+        <styledEl.CellElement>
+          {executedPriceInversed ? (
+            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} />
+          ) : (
+            '-'
+          )}
+        </styledEl.CellElement>
+      )}
 
       {/* Expires */}
       {/* Created */}
-      <styledEl.CellElement doubleRow>
-        <b>{expirationTimeAgo}</b>
-        <i>{creationTimeAgo}</i>
-      </styledEl.CellElement>
+      {isOpenOrdersTab && (
+        <styledEl.CellElement doubleRow>
+          <b>{expirationTimeAgo}</b>
+          <i>{creationTimeAgo}</i>
+        </styledEl.CellElement>
+      )}
+
+      {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+        <styledEl.CellElement>
+          <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
+        </styledEl.CellElement>
+      )}
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow>
@@ -177,27 +226,11 @@ export function OrderRow({
         </styledEl.StatusBox>
       </styledEl.CellElement>
       <styledEl.CellElement>
-        <Menu>
-          <styledEl.ContextMenuButton>
-            <MoreHorizontal color={transparentize(0.5, theme.text1)} />
-          </styledEl.ContextMenuButton>
-          <styledEl.ContextMenuList>
-            <styledEl.ContextMenuItem onSelect={onClick}>
-              <FileText size={16} />
-              <span>Order receipt</span>
-            </styledEl.ContextMenuItem>
-            <styledEl.ContextMenuLink as="a" href={activityUrl} target="_blank">
-              <Link2 size={16} />
-              <span>View on explorer</span>
-            </styledEl.ContextMenuLink>
-            {showCancellationModal && (
-              <styledEl.ContextMenuItem $red onSelect={() => showCancellationModal()}>
-                <Trash2 size={16} />
-                <span>Cancel order</span>
-              </styledEl.ContextMenuItem>
-            )}
-          </styledEl.ContextMenuList>
-        </Menu>
+        <OrderContextMenu
+          activityUrl={activityUrl}
+          openReceipt={onClick}
+          showCancellationModal={showCancellationModal}
+        />
       </styledEl.CellElement>
     </RowElement>
   )
