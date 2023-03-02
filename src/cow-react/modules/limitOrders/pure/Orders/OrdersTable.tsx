@@ -18,6 +18,7 @@ import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceT
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { PendingOrdersPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
+import { QuestionWrapper } from 'components/QuestionHelper'
 
 const TableBox = styled.div`
   display: block;
@@ -85,6 +86,15 @@ const HeaderElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean 
       opacity: 0.7;
     }
   `}
+
+  ${QuestionWrapper} {
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 `
 
 const RowElement = styled(Header)`

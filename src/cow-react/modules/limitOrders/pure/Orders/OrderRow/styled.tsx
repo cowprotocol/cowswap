@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 import {Wrapper as TokenWrapper} from '@cow/common/pure/TokenAmount'
 import { transparentize } from 'polished'
+import { RateWrapper } from '@cow/common/pure/RateInfo'
 
 export const RateValue = styled.span`
   ${TokenWrapper} > span {
@@ -105,6 +106,10 @@ export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boo
       opacity: 0.7;
     }
   `}
+
+  ${RateWrapper} {
+    font-weight: 400;
+  }
 `
 
 export const CurrencyLogoPair = styled.div`
