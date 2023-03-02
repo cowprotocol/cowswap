@@ -179,7 +179,7 @@ export function OrderRow({
         <styledEl.CellElement hasBackground doubleRow>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
-            <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
+            <><styledEl.ExecuteIndicator status={'veryClose'}/>  <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} /></>
           ) : prices === null ? (
             '-'
           ) : (

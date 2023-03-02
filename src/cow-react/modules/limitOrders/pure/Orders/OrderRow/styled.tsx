@@ -167,3 +167,11 @@ export const ProgressBar = styled.div<{ value: number }>`
     border-radius: 5px;
   }
 `
+
+export const ExecuteIndicator = styled.div<{ status: string }>`
+  --size: 6px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  background: ${({ status, theme }) => { switch (status) {  case 'veryClose': return theme.success; case 'close': return theme.text3; default: return theme.text1; } }};
+`
