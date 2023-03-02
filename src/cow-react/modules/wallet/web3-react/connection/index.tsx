@@ -18,6 +18,7 @@ import { walletConnectConnection } from './walletConnect'
 import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
+import { AmbireOption } from './ambire'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -66,6 +67,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return networkConnection
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection
+      case ConnectionType.AMBIRE:
+        return walletConnectConnection
     }
   }
 }
@@ -102,7 +105,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
 
   const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
-  const zengoOption = <ZengoOption tryActivation={tryActivation} />
+  const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
+  const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
@@ -111,6 +115,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {coinbaseWalletOption}
       {fortmaticOption}
       {zengoOption}
+      {ambireOption}
     </>
   )
 }
