@@ -1,7 +1,6 @@
 import { Orders } from '../../pure/Orders'
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useEffect, useMemo } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
@@ -12,6 +11,7 @@ import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { useAtomValue } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -21,7 +21,7 @@ export function OrdersWidget() {
   const location = useLocation()
   const navigate = useNavigate()
   const ordersList = useLimitOrdersList()
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const getShowCancellationModal = useCancelOrder()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
 

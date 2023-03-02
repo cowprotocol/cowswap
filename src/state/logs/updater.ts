@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Filter } from '@ethersproject/providers'
 import { useWeb3React } from '@web3-react/core'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
@@ -10,7 +11,8 @@ import { isHistoricalLog, keyToFilter } from './utils'
 export default function Updater(): null {
   const dispatch = useAppDispatch()
   const state = useAppSelector((state) => state.logs)
-  const { chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const blockNumber = useBlockNumber()
 

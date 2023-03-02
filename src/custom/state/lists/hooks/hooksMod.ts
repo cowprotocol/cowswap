@@ -4,7 +4,6 @@ import sortByListPriority from 'utils/listSort'
 import { AppState } from 'state'
 import { UNSUPPORTED_LIST_URLS, DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
-import { useWeb3React } from '@web3-react/core'
 import {
   addGpUnsupportedToken,
   AddGpUnsupportedTokenParams,
@@ -17,9 +16,10 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { shallowEqual } from 'react-redux'
 import { TokenInfo } from '@uniswap/token-lists'
 import { Currency } from '@uniswap/sdk-core'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
-  const { chainId: connectedChainId } = useWeb3React()
+  const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 
   return useAppSelector((state) => state.lists[chainId]?.byUrl, shallowEqual)
@@ -45,7 +45,7 @@ export function useTokensListFromUrls(urls: string[] | undefined): TokenInfo[] {
 }
 
 export function useTokensListWithDefaults(): TokenInfo[] {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const activeListUrls = useActiveListUrls()
   const allTokens = useTokensListFromUrls(activeListUrls)
   const allUserAddedTokens = useAppSelector(({ user: { tokens } }) => tokens)
@@ -63,7 +63,7 @@ export function useTokensListWithDefaults(): TokenInfo[] {
 }
 
 export function useActiveListUrls(): string[] | undefined {
-  const { chainId: connectedChainId } = useWeb3React()
+  const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   const activeListUrls = useAppSelector((state) => state.lists[chainId]?.activeListUrls, shallowEqual)
 
@@ -78,7 +78,7 @@ export function useIsListActive(url: string): boolean {
 }
 
 export function useGpUnsupportedTokens(): UnsupportedToken | null {
-  const { chainId: connectedChainId } = useWeb3React()
+  const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   return useAppSelector((state) => (chainId ? state.lists[chainId]?.gpUnsupportedTokens : null))
 }
@@ -96,7 +96,7 @@ export function useRemoveGpUnsupportedToken() {
 }
 
 export function useIsUnsupportedTokenGp() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const gpUnsupportedTokens = useGpUnsupportedTokens()
 
   return useCallback(
@@ -122,7 +122,7 @@ export function useIsTradeUnsupported(
 
 export function useInactiveListUrls(): string[] {
   // MOD: adds { chainId } support to the hooks
-  const { chainId: connectedChainId } = useWeb3React()
+  const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
   const lists = useAllLists()
   const allActiveListUrls = useActiveListUrls()

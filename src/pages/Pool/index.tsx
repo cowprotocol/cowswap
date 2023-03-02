@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { isChainAllowed } from '@cow/modules/wallet/web3-react/connection'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
@@ -186,7 +187,8 @@ function WrongNetworkCard() {
 }
 
 export default function Pool() {
-  const { account, chainId, connector } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
+  const { connector } = useWeb3React()
   const toggleWalletModal = useToggleWalletModal()
 
   const theme = useContext(ThemeContext)

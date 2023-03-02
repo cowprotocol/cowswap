@@ -314,7 +314,7 @@ export const StyledMenuButton = styled.button`
 `
 
 export default function Header({ children }: PropsWithChildren<void>) {
-  /* const { account, chainId } = useWeb3React()
+  /* const { account, chainId } = useWalletInfo()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const [darkMode] = useDarkModeManager()

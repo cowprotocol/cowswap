@@ -1,7 +1,7 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import { ButtonGray } from 'components/Button'
 import Card from 'components/Card'
@@ -59,7 +59,7 @@ export default function FeeSelector({
   currencyA?: Currency | undefined
   currencyB?: Currency | undefined
 }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const { isLoading, isError, largestUsageFeeTier, distributions } = useFeeTierDistribution(currencyA, currencyB)
 

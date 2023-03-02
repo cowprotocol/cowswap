@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, NativeCurrency, Percent, Token /* TradeType, */ } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 // import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 // import { useBestTrade } from 'hooks/useBestTrade'
+import { useWalletInfo } from '@cow/modules/wallet'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -75,7 +75,7 @@ interface DerivedSwapInfo {
 }
 
 export function useSwapActionHandlers(): SwapActions {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
   const onCurrencySelection = useOnCurrencySelection()
   const navigate = useTradeNavigate()
@@ -210,7 +210,7 @@ function _computeUnknownPriceImpactAcceptedState({
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): DerivedSwapInfo {
-  const { account, chainId } = useWeb3React() // MOD: chainId
+  const { account, chainId } = useWalletInfo() // MOD: chainId
 
   const {
     independentField,
@@ -424,7 +424,7 @@ export function queryParametersToSwapState(
 
 // updates the swap state to use the defaults for a given network
 export function useDefaultsFromURLSearch(): SwapState {
-  const { chainId: _chainId } = useWeb3React()
+  const { chainId: _chainId } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
   const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()

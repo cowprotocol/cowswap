@@ -1,7 +1,7 @@
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { useWeb3React } from '@web3-react/core'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useGP2SettlementContract } from 'hooks/useContract'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
@@ -15,9 +15,10 @@ import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atom
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
-  const { chainId, account, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
+  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletDetails()
   const state = useLimitOrdersTradeState()
-  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAtomValue(appDataInfoAtom)

@@ -1,9 +1,9 @@
-import { useWeb3React } from '@web3-react/core'
 import { atomWithImmer } from 'jotai/immer'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import useBlockNumber from './useBlockNumber'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // The oldest block (per chain) to be considered valid.
 const oldestBlockMapAtom = atomWithImmer<{ [chainId: number]: number }>({})
@@ -11,7 +11,7 @@ const oldestBlockMapAtom = atomWithImmer<{ [chainId: number]: number }>({})
 const DEFAULT_MAX_BLOCK_AGE = 10
 
 export function useSetOldestValidBlock(): (block: number) => void {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const updateValidBlock = useUpdateAtom(oldestBlockMapAtom)
   return useCallback(
     (block: number) => {
@@ -26,7 +26,7 @@ export function useSetOldestValidBlock(): (block: number) => void {
 }
 
 export function useGetIsValidBlock(maxBlockAge = DEFAULT_MAX_BLOCK_AGE): (block: number) => boolean {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const currentBlock = useBlockNumber()
   const oldestBlockMap = useAtomValue(oldestBlockMapAtom)
   // @ts-ignore // MOD!

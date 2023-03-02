@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { ReactComponent as Close } from 'assets/images/x.svg'
 import { AccountDetails } from '../AccountDetails'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { transparentize } from 'polished'
 import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
@@ -119,12 +119,12 @@ export interface OrdersPanelProps {
 }
 
 export function OrdersPanel({ handleCloseOrdersPanel }: OrdersPanelProps) {
-  const walletInfo = useWalletInfo()
+  const { active } = useWalletInfo()
+  const { ensName } = useWalletDetails()
   const toggleWalletModal = useToggleWalletModal()
 
   const { pendingActivity, confirmedActivity } = useCategorizeRecentActivity()
 
-  const { active, ensName } = walletInfo
   const ENSName = ensName
 
   if (!active) {

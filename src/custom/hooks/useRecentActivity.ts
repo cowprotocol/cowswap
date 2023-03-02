@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'state/enhancedTransactions/hooks'
 import { useOrder, useOrders, useOrdersById, usePendingOrders } from 'state/orders/hooks'
-import { useWeb3React } from '@web3-react/core'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getDateTimestamp } from '@cow/utils/time'
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface AddedOrder extends Order {
   addedTime: number
@@ -44,7 +44,7 @@ enum TxReceiptStatus {
  * @description returns all RECENT (last day) transaction and orders in 2 arrays: pending and confirmed
  */
 export default function useRecentActivity() {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const allTransactions = useAllTransactions()
   const allNonEmptyOrders = useOrders({ chainId })
 
@@ -283,7 +283,7 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
 }
 
 export function useRecentActivityLastPendingOrder() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const pending = usePendingOrders({ chainId })
 
   return useMemo(() => {

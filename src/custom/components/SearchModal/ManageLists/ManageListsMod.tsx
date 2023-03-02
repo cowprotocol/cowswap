@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { TokenList } from '@uniswap/token-lists'
-import { useWeb3React } from '@web3-react/core'
 // import { sendEvent } from 'components/analytics'
 // import Card from 'components/Card'
 // import { UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
@@ -36,6 +35,7 @@ import { ListRowProps, RowWrapper, Card } from '.' // mod
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
 import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'components/analytics'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -110,7 +110,7 @@ const ListRow = memo(function ListRow({
 }: // }: { listUrl: string }) {
 ListRowProps & { listUrl: string }) {
   // We default to a chainId if none is available
-  const { chainId: connectedChainId } = useWeb3React()
+  const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 
   const listsByUrl = useAppSelector((state) => state.lists[chainId].byUrl)
@@ -250,7 +250,7 @@ export function ManageLists({
   unsupportedListUrls: string[]
   listRowProps: ListRowProps
 }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const theme = useTheme()
 
   const [listUrlInput, setListUrlInput] = useState<string>('')

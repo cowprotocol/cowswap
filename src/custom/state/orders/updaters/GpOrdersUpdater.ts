@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
-import { useWeb3React } from '@web3-react/core'
 import { useAddOrUpdateOrders } from 'state/orders/hooks'
 import { OrderMetaData } from '@cow/api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
@@ -15,6 +14,7 @@ import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
 import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function _getTokenFromMapping(
   address: string,
@@ -177,7 +177,7 @@ function _filterOrders(orders: OrderMetaData[], tokens: Record<string, Token | n
  * - Persist the new tokens and orders on redux
  */
 export function GpOrdersUpdater(): null {
-  const { account, chainId: _chainId } = useWeb3React()
+  const { account, chainId: _chainId } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
   const allTokens = useAllTokens()
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
