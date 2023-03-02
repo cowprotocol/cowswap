@@ -57,7 +57,7 @@ const Header = styled.div<{ isOpenOrdersTab: boolean }>`
   gap: 16px;
   grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(100px,1fr) minmax(50px,1fr) 108px 24px`};
   align-items: center;
-  border-top: 1px solid transparent;
+  border: none;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 16px;
 `
