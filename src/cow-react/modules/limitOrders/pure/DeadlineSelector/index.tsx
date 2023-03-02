@@ -6,7 +6,6 @@ import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
-import ms from 'ms.macro'
 import { ButtonPrimary, ButtonSecondary } from '@src/components/Button'
 import {
   calculateMinMax,
@@ -139,19 +138,19 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
         </styledEl.ListWrapper>
       </Menu>
 
-    {/* Custom deadline modal */}
+      {/* Custom deadline modal */}
       <Modal isOpen={isOpen} onDismiss={onDismiss}>
-        <ModalWrapper>
-          <ModalHeader>
+        <styledEl.ModalWrapper>
+          <styledEl.ModalHeader>
             <h3>
               <Trans>Set custom deadline</Trans>
             </h3>
-            <CloseIcon onClick={onDismiss} />
-          </ModalHeader>
-          <ModalContent>
-            <CustomLabel htmlFor="custom-deadline">
+            <styledEl.CloseIcon onClick={onDismiss} />
+          </styledEl.ModalHeader>
+          <styledEl.ModalContent>
+            <styledEl.CustomLabel htmlFor="custom-deadline">
               <Trans>Choose a custom deadline for your limit order:</Trans>
-              <CustomInput
+              <styledEl.CustomInput
                 type="datetime-local"
                 id="custom-deadline"
                 onChange={onChange}
@@ -169,21 +168,21 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
                   event.target.defaultValue = ''
                 }}
               />
-            </CustomLabel>
+            </styledEl.CustomLabel>
             {/* TODO: style me!!! */}
             {error && (
               <div>
                 <Trans>{error}</Trans>
               </div>
             )}
-          </ModalContent>
-          <ModalFooter>
+          </styledEl.ModalContent>
+          <styledEl.ModalFooter>
             <ButtonSecondary onClick={onDismiss}>Cancel</ButtonSecondary>
             <ButtonPrimary onClick={setCustomDeadline} disabled={!!error}>
               <Trans>Set custom date</Trans>
             </ButtonPrimary>
-          </ModalFooter>
-        </ModalWrapper>
+          </styledEl.ModalFooter>
+        </styledEl.ModalWrapper>
       </Modal>
     </styledEl.Wrapper>
   )

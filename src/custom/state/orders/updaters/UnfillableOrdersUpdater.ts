@@ -21,9 +21,7 @@ import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
-import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
-
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 /**
@@ -210,8 +208,6 @@ export function UnfillableOrdersUpdater(): null {
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
   }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
-
-  const isWindowVisible = useIsWindowVisible()
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {
