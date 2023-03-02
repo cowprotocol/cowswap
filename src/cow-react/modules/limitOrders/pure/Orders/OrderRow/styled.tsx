@@ -79,11 +79,13 @@ export const WarningParagraph = styled.div`
   }
 `
 
-export const CellElement = styled.div<{ doubleRow?: boolean }>`
-  padding: 12px 0;
+export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean }>`
+  padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
   font-size: 13px;
   font-weight: 400;
   display: flex;
+  background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
+
 
   > b {
     font-weight: 400;

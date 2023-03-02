@@ -48,19 +48,23 @@ const TableInner = styled.div`
 const Header = styled.div<{isOpenOrdersTab: boolean}>`
   display: grid;
   gap: 16px;
-  grid-template-columns: ${({ isOpenOrdersTab }) => isOpenOrdersTab ? 'minmax(200px, 1fr) repeat(3, minmax(100px, 0.7fr)) minmax(140px, 0.85fr) minmax(70px, 0.7fr) 108px 36px' : 'minmax(200px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(70px, 0.7fr) 108px 36px'};
+  grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,4fr) repeat(${isOpenOrdersTab ? 4 : 3},minmax(110px,2.2fr)) minmax(50px,1fr) 108px 36px`};
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 16px;
 `
 
-const HeaderElement = styled.div<{ doubleRow?: boolean }>`
-  padding: 11px 0;
+const HeaderElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean }>`
+  --height: 50px;
+  padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
   font-size: 12px;
   line-height: 1.1;
   font-weight: 400;
   display: flex;
+  align-items: center;
+  height: var(--height);
+  background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
 
   > span {
     display: flex;
@@ -72,6 +76,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean }>`
     doubleRow &&
     `
     flex-flow: column wrap;
+    justify-content: center;
     gap: 2px;
 
     > i {
@@ -81,6 +86,8 @@ const HeaderElement = styled.div<{ doubleRow?: boolean }>`
 `
 
 const RowElement = styled(Header)`
+  --height: 50px;
+  min-height: var(--height);
   background: transparent;
   transition: background 0.15s ease-in-out;
 
@@ -91,6 +98,9 @@ const RowElement = styled(Header)`
   > div {
     font-size: 13px;
     font-weight: 400;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 
   &:last-child {
@@ -186,7 +196,7 @@ export function OrdersTable({
             )}
 
             {isOpenOrdersTab && (
-              <HeaderElement>
+              <HeaderElement hasBackground>
                 <span>
                   <Trans>
                     Executes at <QuestionHelper text={RateTooltipHeader} />
