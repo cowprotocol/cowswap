@@ -19,6 +19,7 @@ import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -93,8 +94,6 @@ export interface OrderRowProps {
   getShowCancellationModal(order: ParsedOrder): (() => void) | null
 }
 
-const statusesWhenNoActivityUrl = [OrderStatus.FAILED, OrderStatus.CREATING]
-
 export function OrderRow({
   order,
   RowElement,
@@ -106,7 +105,7 @@ export function OrderRow({
   prices,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, id, formattedPercentage, executedPrice } = order
+  const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice } = order
 
   const showCancellationModal = getShowCancellationModal(order)
 
@@ -117,10 +116,7 @@ export function OrderRow({
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
   const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
-  const activityUrl =
-    chainId && !statusesWhenNoActivityUrl.includes(order.status)
-      ? getEtherscanLink(chainId, id, 'transaction')
-      : undefined
+  const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
   const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
   const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
@@ -155,7 +151,7 @@ export function OrderRow({
 
       {/* Est. execution price */}
       {/* Market price */}
-      {isOpenOrdersTab && (
+      {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
         <styledEl.CellElement doubleRow>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
@@ -193,7 +189,7 @@ export function OrderRow({
         </styledEl.CellElement>
       )}
 
-      {!isOpenOrdersTab && (
+      {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
         <styledEl.CellElement>
           <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
         </styledEl.CellElement>

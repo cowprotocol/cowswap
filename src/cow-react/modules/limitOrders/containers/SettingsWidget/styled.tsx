@@ -1,8 +1,9 @@
 import styled from 'styled-components/macro'
 import { Settings as SettingsIconRaw } from 'react-feather'
 import { transparentize } from 'polished'
+import { MenuButton, MenuList } from '@reach/menu-button'
 
-export const SettingsButton = styled.div`
+export const SettingsButton = styled(MenuButton)`
   display: flex;
   background: none;
   border: none;
@@ -10,6 +11,11 @@ export const SettingsButton = styled.div`
   padding: 0;
   margin: 0;
   cursor: pointer;
+`
+
+export const MenuContent = styled(MenuList)`
+  position: relative;
+  z-index: 2;
 `
 
 export const ExpertModeIndicator = styled.div`

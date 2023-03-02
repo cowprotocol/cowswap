@@ -20,7 +20,7 @@ import {
 import { AMMsLogo } from 'components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from 'components/OrderProgressBar/utils'
 import { SupportedChainId } from 'constants/chains'
-import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import { ActivityDerivedState } from '@cow/modules/account/containers/Transaction'
 import loadingCowWebp from 'assets/cow-swap/cow-load.webp'
 import cowGraph from 'assets/images/cow-graph.svg'
 import ammsGraphEth from 'assets/images/amms-graph.svg'

@@ -99,7 +99,8 @@ export const CurrencyLogoPair = styled.div`
     border: 2px solid ${({ theme }) => theme.grey1};
   }
 
-  > img:last-child {
+  > img:last-child,
+  > svg:last-child {
     margin: 0 0 0 -14px;
   }
 `

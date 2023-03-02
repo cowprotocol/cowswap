@@ -21,8 +21,8 @@ import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
-import useIsWindowVisible from '@src/hooks/useIsWindowVisible'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -173,7 +173,8 @@ export function UnfillableOrdersUpdater(): null {
         )
       }
 
-      pending.forEach((order, index) =>
+      pending.forEach((order, index) => {
+        console.debug(`[UnfillableOrdersUpdater] Check order`, order)
         _getOrderPrice(chainId, order, strategy)
           .then((quote) => {
             if (quote) {
@@ -201,7 +202,7 @@ export function UnfillableOrdersUpdater(): null {
             )
             console.debug(e)
           })
-      )
+      })
     } finally {
       isUpdating.current = false
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
@@ -209,12 +210,16 @@ export function UnfillableOrdersUpdater(): null {
   }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   useEffect(() => {
+    if (!chainId || !account || !isWindowVisible) {
+      console.debug('[UnfillableOrdersUpdater] No need to fetch unfillable orders')
+      return
+    }
+
+    console.debug('[UnfillableOrdersUpdater] Periodically check for unfillable orders')
     updatePending()
-
     const interval = setInterval(updatePending, PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL)
-
     return () => clearInterval(interval)
-  }, [updatePending])
+  }, [updatePending, chainId, account, isWindowVisible])
 
   return null
 }

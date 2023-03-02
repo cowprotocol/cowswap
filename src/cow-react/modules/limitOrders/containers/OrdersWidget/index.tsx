@@ -1,6 +1,6 @@
 import { Orders } from '../../pure/Orders'
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
@@ -23,10 +23,6 @@ export function OrdersWidget() {
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWeb3React()
   const getShowCancellationModal = useCancelOrder()
-  const [mockedFilledPercent, setMockedFilledPercent] = useState(false)
-  const mockedFilledPercentClick = useCallback(() => {
-    setMockedFilledPercent(!mockedFilledPercent)
-  }, [mockedFilledPercent])
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
@@ -41,20 +37,7 @@ export function OrdersWidget() {
   }, [location.search])
 
   const orders = useMemo(() => {
-    const orders = getOrdersListByIndex(ordersList, currentTabId)
-
-    // TODO: remove it later. Only for Mindy's presentation
-    if (mockedFilledPercent) {
-      if (orders[0]) {
-        orders[0].formattedPercentage = 25
-      }
-
-      if (orders[1]) {
-        orders[1].formattedPercentage = 77
-      }
-    }
-
-    return orders
+    return getOrdersListByIndex(ordersList, currentTabId)
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
@@ -90,9 +73,7 @@ export function OrdersWidget() {
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
         getShowCancellationModal={getShowCancellationModal}
-      >
-        <button onClick={mockedFilledPercentClick}>Mock filled %</button>
-      </Orders>
+      ></Orders>
       <OrdersReceiptModal />
     </>
   )

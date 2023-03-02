@@ -79,9 +79,13 @@ export function getSafeTransaction(
 
 export function getSafeInfo(chainId: number, safeAddress: string, library: Web3Provider): Promise<SafeInfoResponse> {
   console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
-  const client = _getClientOrThrow(chainId, library)
+  try {
+    const client = _getClientOrThrow(chainId, library)
 
-  return client.getSafeInfo(safeAddress)
+    return client.getSafeInfo(safeAddress)
+  } catch (error) {
+    return Promise.reject(error)
+  }
 }
 
 registerOnWindow({ getSafeTransaction, getSafeInfo })
