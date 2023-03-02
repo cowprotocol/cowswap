@@ -64,6 +64,7 @@ export const ListWrapper = styled(MenuList)`
   list-style: none;
   position: relative;
   z-index: 2;
+  min-width: 120px;
 `
 
 export const ListItem = styled(MenuItem)`
