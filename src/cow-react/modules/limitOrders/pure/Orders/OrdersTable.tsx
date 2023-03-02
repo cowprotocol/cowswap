@@ -14,7 +14,8 @@ import { getOrderParams } from './utils/getOrderParams'
 import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
 import QuestionHelper from 'components/QuestionHelper'
-import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
+import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
+import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 
 const TableBox = styled.div`
   display: block;
@@ -117,7 +118,7 @@ const StyledInvertRateControl = styled(InvertRateControl)`
 export interface OrdersTableProps {
   currentPageNumber: number
   chainId: SupportedChainId | undefined
-  orders: Order[]
+  orders: ParsedOrder[]
   balancesAndAllowances: BalancesAndAllowances
   getShowCancellationModal(order: Order): (() => void) | null
 }
@@ -154,7 +155,7 @@ export function OrdersTable({
             <HeaderElement doubleRow>
               <span>
                 <Trans>
-                  Est. execution price <QuestionHelper text={TooltipFeeContent()} />
+                  Est. execution price <QuestionHelper text={RateTooltipHeader} />
                 </Trans>
               </span>
               <i>

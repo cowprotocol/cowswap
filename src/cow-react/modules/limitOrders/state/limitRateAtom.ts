@@ -15,7 +15,7 @@ export interface LimitRateState {
   readonly typedValue: string | null
 }
 
-const initLimitRateState = () => ({
+export const initLimitRateState = () => ({
   isInversed: false,
   isLoading: false,
   isLoadingMarketRate: false,

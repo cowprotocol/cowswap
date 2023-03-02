@@ -16,14 +16,10 @@ import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateAct
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import QuestionHelper from 'components/QuestionHelper'
-import { TooltipFeeContent } from '@cow/modules/limitOrders/pure/RateTooltip'
-import { CurrencyAmount } from '@uniswap/sdk-core'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
-import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import { ExecutionPriceTooltip } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 import Loader from 'components/Loader'
-import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
-import { calculateExecutionPrice } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
+import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPriceAtom'
+import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -41,6 +37,7 @@ export function RateInput() {
   } = useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const executionPrice = useAtomValue(executionPriceAtom)
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
 
   // Limit order state
@@ -63,30 +60,6 @@ export function RateInput() {
 
     return formatInputAmount(rate)
   }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
-
-  const executionPrice = useMemo(() => {
-    const price = calculateExecutionPrice({
-      inputCurrencyAmount,
-      outputCurrencyAmount,
-      feeAmount,
-      marketRate,
-    })
-
-    if (!price) return null
-
-    return isInversed ? price.invert() : price
-  }, [feeAmount, marketRate, inputCurrencyAmount, outputCurrencyAmount, isInversed])
-
-  const executionPriceFiat = useHigherUSDValue(
-    executionPrice
-      ? executionPrice.quote(
-          CurrencyAmount.fromRawAmount(
-            executionPrice.baseCurrency,
-            rawToTokenAmount(1, executionPrice.baseCurrency.decimals)
-          )
-        )
-      : undefined
-  )
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
@@ -205,26 +178,18 @@ export function RateInput() {
           ) : executionPrice ? (
             <QuestionHelper
               text={
-                <TooltipFeeContent
+                <ExecutionPriceTooltip
+                  isInversed={isInversed}
                   feeAmount={feeAmount}
                   displayedRate={displayedRate}
                   executionPrice={executionPrice}
-                  executionPriceFiat={executionPriceFiat}
                 />
               }
             />
           ) : null}
         </b>
         {!isLoadingMarketRate && executionPrice && (
-          <span>
-            ≈ <TokenAmount amount={executionPrice} tokenSymbol={secondaryCurrency} />
-            {executionPriceFiat && (
-              <i>
-                {' '}
-                (<FiatAmount amount={executionPriceFiat} />)
-              </i>
-            )}
-          </span>
+          <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />
         )}
       </styledEl.EstimatedRate>
     </>
