@@ -52,7 +52,7 @@ const TableInner = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-const Header = styled.div<{isOpenOrdersTab: boolean}>`
+const Header = styled.div<{ isOpenOrdersTab: boolean }>`
   display: grid;
   gap: 16px;
   grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(90px,1fr) minmax(50px,1fr) 108px 24px`};
@@ -69,7 +69,7 @@ const HeaderElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean 
   line-height: 1.1;
   font-weight: 500;
   display: flex;
-  align-items: ${({ doubleRow}) => (doubleRow ? 'flex-start' : 'center')};
+  align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   height: var(--height);
   background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
 
@@ -183,24 +183,34 @@ const OrdersExplainerBanner = styled.div`
     > span {
       display: flex;
       flex-flow: column wrap;
+    }
+`
 
-      > ol {
-        display: flex;
-        flex-flow: column wrap;
-        list-style: none;
-        font-size: 12px;
-        font-weight: 400;
-        gap: 5px;
-        padding: 0;
-      }
-
-      > ol > li {
+const StatusList = styled.ol`
+  display: flex;
+  flex-flow: column wrap;
+  list-style: none;
+  font-size: 12px;
+  font-weight: 400;
+  gap: 5px;
+  padding: 0;
+      
+    > li {
         display: flex;
         gap: 5px;
         align-items: center;
-      }
     }
 `
+
+export function OrderExecutionStatusList() {
+  return (
+    <StatusList>
+      <li><ExecuteIndicator status={'veryClose'} /> <b>Very close</b> (&lt;0.5% from market price)</li>
+      <li><ExecuteIndicator status={'close'} /> <b>Close</b> (0.5% - 5% from market price)</li>
+      <li><ExecuteIndicator /> <b>Not yet close</b> (&gt;5% from market price)</li>
+    </StatusList>
+  )
+}
 
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
@@ -334,14 +344,10 @@ export function OrdersTable({
               <OrdersExplainerBanner>
                 <div>
                   <SVG src={iconOrderExecution} width={36} height={36} />
-                  <b>How close is my <br/> order to executing?</b>
+                  <b>How close is my <br /> order to executing?</b>
                 </div>
                 <span>
-                  <ol>
-                    <li><ExecuteIndicator status={'veryClose'}/> <b>Very close</b> (&lt;0.5% from market price)</li>
-                    <li><ExecuteIndicator status={'close'}/> <b>Close</b> (0.5% - 5% from market price)</li>
-                    <li><ExecuteIndicator /> <b>Not yet close</b> (&gt;5% from market price)</li>
-                  </ol>
+                  {OrderExecutionStatusList()}
                 </span>
                 <StyledCloseIcon onClick={() => localStorage.setItem('showOrdersExplainerBanner', 'false')} />
               </OrdersExplainerBanner>
