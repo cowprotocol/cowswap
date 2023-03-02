@@ -19,9 +19,15 @@ export interface ExecutionPriceTooltipProps {
 export function OrderExecutionStatusList() {
   return (
     <styledEl.StatusList>
-      <li><ExecuteIndicator status={'veryClose'} /> <b>Very close</b> (&lt;0.5% from market price)</li>
-      <li><ExecuteIndicator status={'close'} /> <b>Close</b> (0.5% - 5% from market price)</li>
-      <li><ExecuteIndicator /> <b>Not yet close</b> (&gt;5% from market price)</li>
+      <li>
+        <ExecuteIndicator status={'veryClose'} /> <b>Very close</b> (&lt;0.5% from market price)
+      </li>
+      <li>
+        <ExecuteIndicator status={'close'} /> <b>Close</b> (0.5% - 5% from market price)
+      </li>
+      <li>
+        <ExecuteIndicator /> <b>Not yet close</b> (&gt;5% from market price)
+      </li>
     </styledEl.StatusList>
   )
 }
@@ -30,25 +36,25 @@ interface RateTooltipHeaderProps {
   isOpenOrdersTab?: boolean
 }
 
-export function RateTooltipHeader({isOpenOrdersTab}: RateTooltipHeaderProps) {
+export function RateTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps) {
   return (
     <styledEl.Content>
       <p>
-        Fees (incl. gas) are covered by filling your order when the market price is better than your limit price. {' '}
+        Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.{' '}
         <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
           Learn more.
         </a>
       </p>
 
-      {isOpenOrdersTab && <>
-        <h3>How close is my order to executing?</h3> 
-        {OrderExecutionStatusList()}
-      </>
-      }
+      {isOpenOrdersTab && (
+        <>
+          <h3>How close is my order to executing?</h3>
+          {OrderExecutionStatusList()}
+        </>
+      )}
     </styledEl.Content>
   )
 }
-
 
 function formatFeeAmount({
   marketRate,

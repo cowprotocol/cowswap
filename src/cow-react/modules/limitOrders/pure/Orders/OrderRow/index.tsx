@@ -86,7 +86,7 @@ const AllowanceWarning = (symbol: string) => (
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
-  RowElement: StyledComponent<'div', DefaultTheme, {isOpenOrdersTab?: boolean, hasBackground?: boolean}>
+  RowElement: StyledComponent<'div', DefaultTheme, { isOpenOrdersTab?: boolean; hasBackground?: boolean }>
   isRateInversed: boolean
   isOpenOrdersTab: boolean
   orderParams: OrderParams
@@ -179,7 +179,10 @@ export function OrderRow({
         <styledEl.CellElement hasBackground>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
-            <><styledEl.ExecuteIndicator status={'veryClose'}/>  <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} /></>
+            <>
+              <styledEl.ExecuteIndicator status={'veryClose'} />{' '}
+              <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
+            </>
           ) : prices === null ? (
             '-'
           ) : (

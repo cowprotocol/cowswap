@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import {Wrapper as TokenWrapper} from '@cow/common/pure/TokenAmount'
+import { Wrapper as TokenWrapper } from '@cow/common/pure/TokenAmount'
 import { transparentize } from 'polished'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
 
@@ -82,8 +82,8 @@ export const WarningParagraph = styled.div`
   }
 `
 
-export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean }>`
-  padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
+export const CellElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
+  padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
   font-size: 12px;
   font-weight: 500;
   gap: 5px;
@@ -92,7 +92,7 @@ export const CellElement = styled.div<{ doubleRow?: boolean, hasBackground?: boo
   flex-flow: row wrap;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
-  background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
+  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
 
   > b {
     font-weight: 500;
@@ -175,5 +175,14 @@ export const ExecuteIndicator = styled.div<{ status?: string }>`
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
-  background: ${({ status, theme }) => { switch (status) {  case 'veryClose': return theme.success; case 'close': return theme.text3; default: return transparentize(0.5, theme.text1); } }};
+  background: ${({ status, theme }) => {
+    switch (status) {
+      case 'veryClose':
+        return theme.success
+      case 'close':
+        return theme.text3
+      default:
+        return transparentize(0.5, theme.text1)
+    }
+  }};
 `
