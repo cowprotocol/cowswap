@@ -168,7 +168,7 @@ export const ProgressBar = styled.div<{ value: number }>`
   }
 `
 
-export const ExecuteIndicator = styled.div<{ status: string }>`
+export const ExecuteIndicator = styled.div<{ status?: string }>`
   --size: 6px;
   width: var(--size);
   height: var(--size);

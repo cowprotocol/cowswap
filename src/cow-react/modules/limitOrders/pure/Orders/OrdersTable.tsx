@@ -19,6 +19,10 @@ import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/ho
 import { PendingOrdersPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 import { QuestionWrapper } from 'components/QuestionHelper'
+import SVG from 'react-inlinesvg'
+import iconOrderExecution from 'assets/cow-swap/orderExecution.svg'
+import { ExecuteIndicator } from '@cow/modules/limitOrders/pure/Orders/OrderRow/styled'
+import { X } from 'react-feather'
 
 const TableBox = styled.div`
   display: block;
@@ -131,17 +135,71 @@ const StyledInvertRateControl = styled(InvertRateControl)`
   margin-left: 5px;
 `
 
+const StyledCloseIcon = styled(X)`
+  height: 24px;
+  width: 24px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 1;
+  }
+
+  > line {
+    stroke: ${({ theme }) => theme.text1};
+  }
+`
+
 const OrdersExplainerBanner = styled.div`
   display: grid;
-  background: ${({ theme }) => theme.bg1};
+  background: ${({ theme }) => theme.gradient1};
   width: 100%;
   height: 90px;
   gap: 16px;
   grid-template-columns: 4fr 3.6fr 24px;
   align-items: center;
   border-top: 1px solid transparent;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  border-bottom: 1px solid transparent;
   padding: 0 16px;
+
+    /* 1st section */
+    > div {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      > svg > path {
+        fill: ${({ theme }) => transparentize(0.5, theme.text1)};
+      }
+
+      > b {
+        font-size: 18px;
+        font-weight: 500;
+      }
+    }
+
+    /* 2nd section */
+    > span {
+      display: flex;
+      flex-flow: column wrap;
+
+      > ol {
+        display: flex;
+        flex-flow: column wrap;
+        list-style: none;
+        font-size: 12px;
+        font-weight: 400;
+        gap: 5px;
+        padding: 0;
+      }
+
+      > ol > li {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+    }
 `
 
 export interface OrdersTableProps {
@@ -274,9 +332,18 @@ export function OrdersTable({
             {/* Show explainer modal if user hasn't closed it */}
             {isOpenOrdersTab && !localStorage.getItem('showOrdersExplainerBanner') && (
               <OrdersExplainerBanner>
-                <b>BANNER</b>
-                <span>CONTENT</span>
-                <button onClick={() => localStorage.setItem('showOrdersExplainerBanner', 'false')}>X</button>
+                <div>
+                  <SVG src={iconOrderExecution} width={36} height={36} />
+                  <b>How close is my <br/> order to executing?</b>
+                </div>
+                <span>
+                  <ol>
+                    <li><ExecuteIndicator status={'veryClose'}/> <b>Very close</b> (&lt;0.5% from market price)</li>
+                    <li><ExecuteIndicator status={'close'}/> <b>Close</b> (0.5% - 5% from market price)</li>
+                    <li><ExecuteIndicator /> <b>Not yet close</b> (&gt;5% from market price)</li>
+                  </ol>
+                </span>
+                <StyledCloseIcon onClick={() => localStorage.setItem('showOrdersExplainerBanner', 'false')} />
               </OrdersExplainerBanner>
             )}
           </Rows>
