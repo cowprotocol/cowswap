@@ -9,7 +9,7 @@ import { WalletConnect } from '@web3-react/walletconnect'
 
 import { RPC_URLS } from 'constants/networks'
 import { Web3ReactConnection } from '../types'
-import { default as WalletConnectImage } from '../../api/assets/walletConnectIcon.svg'
+import { default as WalletConnectImage } from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 
 export const walletConnectOption = {
   color: '#4196FC',

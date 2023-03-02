@@ -12,9 +12,9 @@ import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import { Web3ReactConnection } from '../types'
 
-import { default as MetamaskImage } from '../../api/assets/metamask.png'
-import { default as InjectedImage } from '../../api/assets/arrow-right.svg'
-import { default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
+import { default as MetamaskImage } from '@cow/modules/wallet/api/assets/metamask.png'
+import { default as InjectedImage } from '@cow/modules/wallet/api/assets/arrow-right.svg'
+import { default as InjectedImageDark } from '@cow/modules/wallet/api/assets/arrow-right.svg'
 
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 

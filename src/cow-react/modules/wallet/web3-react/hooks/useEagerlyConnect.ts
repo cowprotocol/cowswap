@@ -4,7 +4,7 @@ import { gnosisSafeConnection } from '@cow/modules/wallet/web3-react/connection/
 import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { useEffect } from 'react'
 import { useAppSelector } from 'state/hooks'
-import { BACKFILLABLE_WALLETS } from '../../api/types'
+import { BACKFILLABLE_WALLETS } from '@cow/modules/wallet/api/types'
 
 async function connect(connector: Connector) {
   try {

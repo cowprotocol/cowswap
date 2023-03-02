@@ -13,8 +13,8 @@ import { ApplicationModal } from 'state/application/reducer'
 
 import { changeWalletAnalytics } from 'components/analytics'
 import usePrevious from 'hooks/usePrevious'
-import { WalletModal as WalletModalPure, WalletModalView } from '../../../api/pure/WalletModal'
-import { walletConnectConnection } from '../../connection/walletConnect'
+import { WalletModal as WalletModalPure, WalletModalView } from '@cow/modules/wallet/api/pure/WalletModal'
+import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 
 export function WalletModal() {
   const dispatch = useAppDispatch()

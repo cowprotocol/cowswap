@@ -4,7 +4,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Identicon as IdenticonPure } from '@cow/modules/wallet/api/pure/Identicon'
 
 import useENSAvatar from 'hooks/useENSAvatar'
-import { useWalletInfo } from '../../../web3-react/hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface IdenticonProps {
   size?: number

@@ -12,7 +12,7 @@ import { EIP1193 } from '@web3-react/eip1193'
 import { TryActivation } from '.'
 import { Web3ReactConnection } from '../types'
 
-import { default as FormaticImage } from '../../api/assets/formatic.png'
+import { default as FormaticImage } from '@cow/modules/wallet/api/assets/formatic.png'
 
 const [web3Fortmatic, web3FortmaticHooks] = initializeConnector<EIP1193>(
   (actions) => new EIP1193({ actions, provider: new Fortmatic(process.env.REACT_APP_FORTMATIC_KEY).getProvider() })

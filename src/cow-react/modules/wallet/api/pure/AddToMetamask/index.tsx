@@ -4,7 +4,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { CheckCircle } from 'react-feather'
 import { RowFixed } from 'components/Row'
-import MetaMaskLogo from '../../assets/metamask.png'
+import MetaMaskLogo from '@cow/modules/wallet/api/assets/metamask.png'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export const ButtonCustom = styled.button`

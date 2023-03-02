@@ -1,7 +1,7 @@
 import { Connector } from '@web3-react/types'
 
 import { isMobile } from 'utils/userAgent'
-import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '../../api/utils/connection'
+import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 
 import { CoinbaseWalletOption } from './coinbase'
 import { FortmaticOption } from './formatic'
@@ -15,7 +15,7 @@ import { walletConnectConnection } from './walletConnect'
 import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { Web3ReactConnection } from '../types'
-import { ConnectionType } from '../../api/types'
+import { ConnectionType } from '@cow/modules/wallet/api/types'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 
 const CONNECTIONS: Web3ReactConnection[] = [
