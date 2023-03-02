@@ -7,6 +7,6 @@ export function useWalletInfo(): WalletInfo {
   return {
     chainId,
     active,
-    account,  
+    account,
   }
 }

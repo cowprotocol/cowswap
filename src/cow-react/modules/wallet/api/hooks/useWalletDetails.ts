@@ -11,7 +11,6 @@ import { useMemo } from 'react'
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
 const SAFE_ICON_URL = 'https://app.safe.global/favicon.ico'
 
-
 export interface WalletMetaData {
   walletName?: string
   icon?: string
@@ -103,4 +102,3 @@ export function useIsGnosisSafeWallet(): boolean {
 
   return !!walletName?.startsWith('Gnosis Safe')
 }
-

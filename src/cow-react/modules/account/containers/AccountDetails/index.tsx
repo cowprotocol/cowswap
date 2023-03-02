@@ -137,7 +137,7 @@ export function AccountDetails({
   handleCloseOrdersPanel,
 }: AccountDetailsProps) {
   const { account, chainId: connectedChainId } = useWalletInfo()
-  const { connector } = useWeb3React()  
+  const { connector } = useWeb3React()
   const connection = getWeb3ReactConnection(connector)
   const chainId = supportedChainId(connectedChainId)
   const walletDetails = useWalletDetails()

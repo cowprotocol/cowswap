@@ -1,4 +1,4 @@
-import { SafeInfoResponse } from "@gnosis.pm/safe-service-client"
+import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',
@@ -26,7 +26,7 @@ export interface WalletDetails {
   // Account details
   isSmartContractWallet: boolean
   ensName?: string
-  
+
   // Provider details
   walletName?: string
   icon?: string

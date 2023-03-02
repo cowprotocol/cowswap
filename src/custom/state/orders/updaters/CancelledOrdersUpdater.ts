@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-
 import { useCancelledOrders, useFulfillOrdersBatch } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
 import { OrderFulfillmentData } from 'state/orders/actions'

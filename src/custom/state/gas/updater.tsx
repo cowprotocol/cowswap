@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react'
 import { useGasPrices, useUpdateGasPrices } from './hooks'
 import { GAS_PRICE_UPDATE_THRESHOLD } from 'constants/index'

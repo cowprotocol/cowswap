@@ -13,7 +13,6 @@ import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from '@src/hooks/useERC20Permit'
 
-
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export function useERC20Permit(
   currencyAmount: CurrencyAmount<Currency> | null | undefined,

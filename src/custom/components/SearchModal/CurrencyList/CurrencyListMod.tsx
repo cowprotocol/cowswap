@@ -364,7 +364,7 @@ export default function CurrencyList({
       BalanceComponent,
       TokenTagsComponent,
       allTokens,
-      chainId
+      chainId,
     ]
   )
 

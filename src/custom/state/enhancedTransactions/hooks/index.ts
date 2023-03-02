@@ -15,7 +15,7 @@ export type TransactionAdder = (params: AddTransactionHookParams) => void
  * Return helpers to add a new pending transaction
  */
 export function useTransactionAdder(): TransactionAdder {
-  const { chainId, account} = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const { gnosisSafeInfo } = useWalletDetails()
   const dispatch = useAppDispatch()
 

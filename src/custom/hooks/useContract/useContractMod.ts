@@ -1,10 +1,8 @@
-
 import ENS_ABI from 'abis/ens-registrar.json'
 
 import { useContract } from '@src/hooks/useContract'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useWalletInfo } from '@cow/modules/wallet'
-
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean) {
   const { chainId } = useWalletInfo()
@@ -22,4 +20,3 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean) {
   }
   return useContract(address, ENS_ABI, withSignerIfPossible)
 }
-

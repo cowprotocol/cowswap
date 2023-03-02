@@ -19,8 +19,8 @@ import { updateVersion } from 'state/global/actions'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 export default function Updater(): null {
-  const { provider } = useWeb3React() 
-  const { chainId: connectedChainId } = useWalletInfo() 
+  const { provider } = useWeb3React()
+  const { chainId: connectedChainId } = useWalletInfo()
   // chainId returns number or undefined we need to map against supported chains
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 

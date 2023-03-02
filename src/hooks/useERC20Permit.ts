@@ -129,7 +129,7 @@ export function useERC20Permit(
 } {
   const { account, chainId } = useWalletInfo()
   const { provider } = useWeb3React()
-  
+
   const tokenAddress = currencyAmount?.currency?.isToken ? currencyAmount.currency.address : undefined
   const eip2612Contract = useEIP2612Contract(tokenAddress)
   const isArgentWallet = useIsArgentWallet()

@@ -29,7 +29,6 @@ import { ClaimStatus } from 'state/claim/actions'
 import { InvestClaim } from 'state/claim/reducer'
 import { calculateInvestmentAmounts } from 'state/claim/hooks/utils'
 
-
 import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 import { ExternalLink } from 'theme'

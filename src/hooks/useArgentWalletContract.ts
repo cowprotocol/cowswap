@@ -1,4 +1,3 @@
-
 import { useWalletInfo } from '@cow/modules/wallet'
 import ArgentWalletContractABI from '../abis/argent-wallet-contract.json'
 import { ArgentWalletContract } from '../abis/types'
