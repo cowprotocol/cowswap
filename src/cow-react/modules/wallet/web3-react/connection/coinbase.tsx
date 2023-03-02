@@ -9,7 +9,6 @@ import { useSelectedWallet } from 'state/user/hooks'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 
-
 import CowImage from 'assets/cow-swap/cow_v2.svg'
 import { RPC_URLS } from 'constants/networks'
 
@@ -17,7 +16,6 @@ import { TryActivation, onError } from '.'
 import { Web3ReactConnection } from '../types'
 
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'
-
 
 const coinbaseInjectedOption = {
   color: '#315CF5',

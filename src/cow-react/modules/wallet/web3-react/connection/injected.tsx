@@ -16,7 +16,6 @@ import { default as MetamaskImage } from '../../api/assets/metamask.png'
 import { default as InjectedImage } from '../../api/assets/arrow-right.svg'
 import { default as InjectedImageDark } from '../../api/assets/arrow-right.svg'
 
-
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 
 const metamaskCommonOption = {
@@ -49,7 +48,6 @@ export const metamaskInjectedOption = {
   ...metamaskCommonOption,
   header: 'MetaMask',
 }
-
 
 const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions, onError }))
 export const injectedConnection: Web3ReactConnection = {
