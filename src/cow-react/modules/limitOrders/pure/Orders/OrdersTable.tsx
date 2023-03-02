@@ -131,6 +131,19 @@ const StyledInvertRateControl = styled(InvertRateControl)`
   margin-left: 5px;
 `
 
+const OrdersExplainerBanner = styled.div`
+  display: grid;
+  background: ${({ theme }) => theme.bg1};
+  width: 100%;
+  height: 90px;
+  gap: 16px;
+  grid-template-columns: 4fr 3.6fr 24px;
+  align-items: center;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
+  padding: 0 16px;
+`
+
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
   currentPageNumber: number
@@ -257,6 +270,15 @@ export function OrdersTable({
                 onClick={() => selectReceiptOrder(order.id)}
               />
             ))}
+
+            {/* Show explainer modal if user hasn't closed it */}
+            {isOpenOrdersTab && !localStorage.getItem('showOrdersExplainerBanner') && (
+              <OrdersExplainerBanner>
+                <b>BANNER</b>
+                <span>CONTENT</span>
+                <button onClick={() => localStorage.setItem('showOrdersExplainerBanner', 'false')}>X</button>
+              </OrdersExplainerBanner>
+            )}
           </Rows>
         </TableInner>
       </TableBox>
