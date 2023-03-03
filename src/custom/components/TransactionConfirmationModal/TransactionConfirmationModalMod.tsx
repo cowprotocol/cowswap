@@ -53,7 +53,7 @@ export const Wrapper = styled.div`
   `}/* -- mod -- */
 `
 export const Section = styled(AutoColumn)<{ inline?: boolean }>`
-  padding: ${({ inline }) => (inline ? '0 0 16px' : '0')};
+  padding: ${({ inline }) => (inline ? '16px 0 0' : '0')};
 `
 
 export const BottomSection = styled(Section)`

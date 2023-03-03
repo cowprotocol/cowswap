@@ -1,6 +1,6 @@
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import type { PriceImpactParams } from '@src/custom/hooks/usePriceImpact'
+import type { PriceImpactParams } from 'hooks/usePriceImpact'
 import { useMemo } from 'react'
 
 export function useLimitOrdersPriceImpactParams(): PriceImpactParams {

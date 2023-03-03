@@ -90,7 +90,7 @@ export async function getUSDPriceQuote(
     return null
   }
 
-  console.log(`[api:${API_NAME}] Get USD price from ${API_NAME}`, params)
+  console.debug(`[api:${API_NAME}] Get USD price from ${API_NAME}`, params)
 
   const response = await _get(
     chainId,

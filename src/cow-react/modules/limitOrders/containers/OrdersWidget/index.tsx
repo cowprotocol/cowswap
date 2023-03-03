@@ -1,7 +1,6 @@
 import { Orders } from '../../pure/Orders'
-import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
+import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useEffect, useMemo } from 'react'
-import { Order } from 'state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
@@ -11,8 +10,10 @@ import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/li
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
+import { useAtomValue } from 'jotai/utils'
+import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 
-function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): Order[] {
+function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
@@ -22,6 +23,7 @@ export function OrdersWidget() {
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWeb3React()
   const getShowCancellationModal = useCancelOrder()
+  const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -67,10 +69,11 @@ export function OrdersWidget() {
         orders={orders}
         isOpenOrdersTab={isOpenOrdersTab}
         currentPageNumber={currentPageNumber}
+        pendingOrdersPrices={pendingOrdersPrices}
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
         getShowCancellationModal={getShowCancellationModal}
-      />
+      ></Orders>
       <OrdersReceiptModal />
     </>
   )

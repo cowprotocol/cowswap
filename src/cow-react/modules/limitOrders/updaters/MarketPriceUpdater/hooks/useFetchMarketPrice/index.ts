@@ -16,7 +16,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 // Every 10s
-const REFETCH_CHECK_INTERVAL = 10000
+const PRICE_UPDATE_INTERVAL = 10_000
 
 const getQuoteOnlyResolveLast = onlyResolvesLast<SimpleGetQuoteResponse>(getQuote)
 
@@ -48,22 +48,22 @@ export function useFetchMarketPrice() {
         .then(handleResponse)
         .catch((error: GpQuoteError) => {
           setLimitOrdersQuote({ error })
-          updateLimitRateState({ executionRate: null })
+          updateLimitRateState({ marketRate: null })
         })
-        .finally(() => updateLimitRateState({ isLoadingExecutionRate: false }))
+        .finally(() => updateLimitRateState({ isLoadingMarketRate: false }))
     }
 
     handleFetchQuote()
 
     // Run the interval
-    const intervalId = setInterval(handleFetchQuote, REFETCH_CHECK_INTERVAL)
+    const intervalId = setInterval(handleFetchQuote, PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(intervalId)
   }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote, isWrapOrUnwrap, isWindowVisible])
 
   // Turn on the loading if some of these dependencies have changed and remove execution rate
   useLayoutEffect(() => {
-    updateLimitRateState({ isLoadingExecutionRate: true, executionRate: null })
+    updateLimitRateState({ isLoadingMarketRate: true, marketRate: null })
   }, [chainId, inputCurrency, outputCurrency, orderKind, account, updateLimitRateState])
 
   return null

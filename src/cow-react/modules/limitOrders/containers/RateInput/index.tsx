@@ -15,6 +15,12 @@ import { getAddress } from '@cow/utils/getAddress'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { formatInputAmount } from '@cow/utils/amountFormat'
+import QuestionHelper from 'components/QuestionHelper'
+import { ExecutionPriceTooltip } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
+import Loader from 'components/Loader'
+import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPriceAtom'
+import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 
 export function RateInput() {
   const { chainId } = useWeb3React()
@@ -23,14 +29,16 @@ export function RateInput() {
     isInversed,
     activeRate,
     isLoading,
-    executionRate,
-    isLoadingExecutionRate,
+    marketRate,
+    feeAmount,
+    isLoadingMarketRate,
     typedValue,
     isTypedValue,
     initialRate,
   } = useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const executionPrice = useAtomValue(executionPriceAtom)
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
 
   // Limit order state
@@ -57,11 +65,11 @@ export function RateInput() {
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
     updateRate({
-      activeRate: isFractionFalsy(executionRate) ? initialRate : executionRate,
+      activeRate: isFractionFalsy(marketRate) ? initialRate : marketRate,
       isTypedValue: false,
       isRateFromUrl: false,
     })
-  }, [executionRate, initialRate, updateRate])
+  }, [marketRate, initialRate, updateRate])
 
   // Handle rate input
   const handleUserInput = useCallback(
@@ -82,16 +90,16 @@ export function RateInput() {
   }, [isInversed, updateLimitRateState])
 
   const isDisabledMPrice = useMemo(() => {
-    if (isLoadingExecutionRate) return true
+    if (isLoadingMarketRate) return true
 
     if (!outputCurrencyId || !inputCurrencyId) return true
 
-    if (executionRate && !executionRate.equalTo(0)) {
-      return activeRate?.equalTo(executionRate)
+    if (marketRate && !marketRate.equalTo(0)) {
+      return activeRate?.equalTo(marketRate)
     } else {
       return !!initialRate && activeRate?.equalTo(initialRate)
     }
-  }, [activeRate, executionRate, isLoadingExecutionRate, initialRate, inputCurrencyId, outputCurrencyId])
+  }, [activeRate, marketRate, isLoadingMarketRate, initialRate, inputCurrencyId, outputCurrencyId])
 
   // Apply smart quote selection
   // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
@@ -130,36 +138,64 @@ export function RateInput() {
   }, [inputCurrency, outputCurrency])
 
   return (
-    <styledEl.Wrapper>
-      <styledEl.Header>
-        <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
+    <>
+      <styledEl.Wrapper>
+        <styledEl.Header>
+          <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
 
-        <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
-          <span>Market price</span>
-        </styledEl.MarketPriceButton>
-      </styledEl.Header>
+          <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
+            <span>Market price</span>
+          </styledEl.MarketPriceButton>
+        </styledEl.Header>
 
-      <styledEl.Body>
-        {isLoading && areBothCurrencies ? (
-          <styledEl.RateLoader />
-        ) : (
-          <styledEl.NumericalInput
-            $loading={false}
-            id="rate-limit-amount-input"
-            value={displayedRate}
-            onUserInput={handleUserInput}
-          />
-        )}
+        <styledEl.Body>
+          {isLoading && areBothCurrencies ? (
+            <styledEl.RateLoader />
+          ) : (
+            <styledEl.NumericalInput
+              $loading={false}
+              id="rate-limit-amount-input"
+              value={displayedRate}
+              onUserInput={handleUserInput}
+            />
+          )}
 
-        <styledEl.ActiveCurrency onClick={handleToggle}>
-          <styledEl.ActiveSymbol>
-            <TokenSymbol token={secondaryCurrency} />
-          </styledEl.ActiveSymbol>
-          <styledEl.ActiveIcon>
-            <RefreshCw size={12} />
-          </styledEl.ActiveIcon>
-        </styledEl.ActiveCurrency>
-      </styledEl.Body>
-    </styledEl.Wrapper>
+          <styledEl.ActiveCurrency onClick={handleToggle}>
+            <styledEl.ActiveSymbol>
+              <TokenSymbol token={secondaryCurrency} />
+            </styledEl.ActiveSymbol>
+            <styledEl.ActiveIcon>
+              <RefreshCw size={12} />
+            </styledEl.ActiveIcon>
+          </styledEl.ActiveCurrency>
+        </styledEl.Body>
+      </styledEl.Wrapper>
+
+      {limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
+        <styledEl.EstimatedRate>
+          <b>
+            Order executes at{' '}
+            {isLoadingMarketRate ? (
+              <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
+            ) : executionPrice ? (
+              <QuestionHelper
+                text={
+                  <ExecutionPriceTooltip
+                    isInversed={isInversed}
+                    feeAmount={feeAmount}
+                    marketRate={marketRate}
+                    displayedRate={displayedRate}
+                    executionPrice={executionPrice}
+                  />
+                }
+              />
+            ) : null}
+          </b>
+          {!isLoadingMarketRate && executionPrice && (
+            <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />
+          )}
+        </styledEl.EstimatedRate>
+      )}
+    </>
   )
 }

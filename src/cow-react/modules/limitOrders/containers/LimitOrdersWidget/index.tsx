@@ -39,7 +39,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
-import { maxAmountSpend } from '@src/utils/maxAmountSpend'
+import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -286,7 +286,11 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
               )}
 
-              {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />}
+              {!isWrapOrUnwrap && (
+                <styledEl.FooterBox>
+                  <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                </styledEl.FooterBox>
+              )}
 
               <LimitOrdersWarnings priceImpact={priceImpact} />
 

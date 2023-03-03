@@ -7,7 +7,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useAddOrUpdateOrders } from 'state/orders/hooks'
 import { OrderMetaData } from '@cow/api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
-import { Order, OrderStatus } from 'state/orders/actions'
+import { Order, OrderClass, OrderStatus } from 'state/orders/actions'
 import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { ChainId } from 'state/lists/actions'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
@@ -78,7 +78,8 @@ function _transformGpOrderToStoreOrder(
 
   const storeOrder: Order = {
     ...order,
-    sellAmountBeforeFee: order.executedSellAmountBeforeFees,
+    // TODO: for some reason executedSellAmountBeforeFees is zero for limit-orders
+    sellAmountBeforeFee: order.class === OrderClass.LIMIT ? order.sellAmount : order.executedSellAmountBeforeFees,
     inputToken,
     outputToken,
     id,
@@ -94,6 +95,7 @@ function _transformGpOrderToStoreOrder(
     isRefunded: ethflowData?.isRefunded, // TODO: this will be removed from the API
     refundHash: ethflowData?.refundTxHash || undefined,
   }
+
   // The function to compute the summary needs the Order instance to exist already
   // That's why it's not used before and an empty string is set instead
   storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order }) || ''

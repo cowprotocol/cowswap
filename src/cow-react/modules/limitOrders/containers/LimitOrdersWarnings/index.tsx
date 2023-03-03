@@ -24,10 +24,10 @@ export interface LimitOrdersWarningsProps {
 }
 
 const StyledNoImpactWarning = styled(NoImpactWarning)`
-  margin: 10px auto;
+  margin: 10px auto 0;
 `
 const StyledRateImpactWarning = styled(RateImpactWarning)`
-  margin: 10px auto;
+  margin: 10px auto 0;
 `
 
 export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
