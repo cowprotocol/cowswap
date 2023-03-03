@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { Wrapper as TokenWrapper } from '@cow/common/pure/TokenAmount'
 import { transparentize } from 'polished'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
-import { OrderExecutionStatus } from '@cow/modules/limitOrders/pure/Orders/utils/calculateOrderExecutionStatus'
+import { OrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 
 export const RateValue = styled.span`
   ${TokenWrapper} > span {

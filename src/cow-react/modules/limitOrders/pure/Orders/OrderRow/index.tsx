@@ -20,7 +20,12 @@ import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPrice
 import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
-import { calculateOrderExecutionStatus } from '@cow/modules/limitOrders/pure/Orders/utils/calculateOrderExecutionStatus'
+import {
+  calculateOrderExecutionStatus,
+  OrderExecutionStatus,
+} from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
+import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
+import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -122,7 +127,8 @@ export function OrderRow({
   const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
   const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
   const executedPriceInversed = isRateInversed ? executedPrice?.invert() : executedPrice
-  const executionOrderStatus = calculateOrderExecutionStatus(prices)
+
+  const executionOrderStatus = useOrderExecutionStatus(rateInfoParams, prices)
 
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab}>
@@ -260,4 +266,16 @@ export function OrderRow({
       </styledEl.CellElement>
     </RowElement>
   )
+}
+
+function useOrderExecutionStatus(
+  rateInfo: OrderRowProps['orderParams']['rateInfoParams'],
+  prices: OrderRowProps['prices']
+): OrderExecutionStatus | undefined {
+  return useSafeMemo(() => {
+    const limitPrice = buildPriceFromCurrencyAmounts(rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount)
+    const { marketPrice, executionPrice } = prices || {}
+
+    return calculateOrderExecutionStatus({ limitPrice, marketPrice, executionPrice })
+  }, [rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount, prices?.marketPrice, prices?.executionPrice])
 }
