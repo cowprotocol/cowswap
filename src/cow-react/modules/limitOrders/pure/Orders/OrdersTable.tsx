@@ -22,7 +22,7 @@ import { QuestionWrapper } from 'components/QuestionHelper'
 import SVG from 'react-inlinesvg'
 import iconOrderExecution from 'assets/cow-swap/orderExecution.svg'
 import { X } from 'react-feather'
-import {OrderExecutionStatusList} from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
+import { OrderExecutionStatusList } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 
 const TableBox = styled.div`
   display: block;
@@ -160,7 +160,7 @@ const OrdersExplainerBanner = styled.div`
   grid-template-columns: minmax(460px,4fr) minmax(426px,3.7fr) 24px;
   align-items: center;
   border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.88, theme.text3)};
   padding: 0 16px;
 
     /* 1st section */
@@ -237,7 +237,7 @@ export function OrdersTable({
               <HeaderElement doubleRow>
                 <span>
                   <Trans>
-                    Order executes at <QuestionHelper text={<RateTooltipHeader/>} />
+                    Order executes at <QuestionHelper text={<RateTooltipHeader />} />
                   </Trans>
                 </span>
                 <i>
@@ -300,6 +300,21 @@ export function OrdersTable({
             </HeaderElement>
             <HeaderElement>{/*Cancel order column*/}</HeaderElement>
           </Header>
+
+          {/* Show explainer modal if user hasn't closed it */}
+          {isOpenOrdersTab && !localStorage.getItem('showOrdersExplainerBanner') && (
+            <OrdersExplainerBanner>
+              <div>
+                <SVG src={iconOrderExecution} width={36} height={36} />
+                <b>How close is my <br /> order to executing?</b>
+              </div>
+              <span>
+                {OrderExecutionStatusList()}
+              </span>
+              <StyledCloseIcon onClick={() => localStorage.setItem('showOrdersExplainerBanner', 'false')} />
+            </OrdersExplainerBanner>
+          )}
+
           <Rows>
             {ordersPage.map((order) => (
               <OrderRow
@@ -314,20 +329,6 @@ export function OrdersTable({
                 onClick={() => selectReceiptOrder(order.id)}
               />
             ))}
-
-            {/* Show explainer modal if user hasn't closed it */}
-            {isOpenOrdersTab && !localStorage.getItem('showOrdersExplainerBanner') && (
-              <OrdersExplainerBanner>
-                <div>
-                  <SVG src={iconOrderExecution} width={36} height={36} />
-                  <b>How close is my <br /> order to executing?</b>
-                </div>
-                <span>
-                  {OrderExecutionStatusList()}
-                </span>
-                <StyledCloseIcon onClick={() => localStorage.setItem('showOrdersExplainerBanner', 'false')} />
-              </OrdersExplainerBanner>
-            )}
           </Rows>
         </TableInner>
       </TableBox>
