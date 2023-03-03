@@ -45,7 +45,7 @@ describe('Swap (custom)', () => {
     cy.visit(`/${CHAIN_ID}/swap/ETH/${USDC}`)
 
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
-    cy.get('#swap-currency-input .token-amount-input').type('0.05', { force: true, delay: 400 })
+    cy.get('#swap-currency-input .token-amount-input').type('0.5', { force: true, delay: 400 })
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
     cy.get('#classic-eth-flow-banner').should('contain', 'Switch to the classic WETH').click()
