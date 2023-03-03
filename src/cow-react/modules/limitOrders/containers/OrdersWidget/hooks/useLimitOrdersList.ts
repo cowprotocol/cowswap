@@ -49,7 +49,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const expirationTime = new Date(Number(order.validTo) * 1000)
   const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
   const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
-  const parsedCreationtime = new Date(order.creationTime)
+  const parsedCreationTime = new Date(order.creationTime)
   const fullyFilled = isOrderFilled(order)
   const formattedPercentage = filledPercentage.times(100).decimalPlaces(2).toNumber()
   const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
