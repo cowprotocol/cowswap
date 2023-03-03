@@ -10,7 +10,6 @@ import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
 import Cursor3 from 'assets/cow-swap/cursor3.gif'
 import Cursor4 from 'assets/cow-swap/cursor4.gif'
-import { HeaderText } from '@cow/modules/wallet/api/components/WalletModal/Option'
 
 // TODO: This shouldn't be in the base theme
 // Modal override items
@@ -441,11 +440,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
     z-index: 2147483004!important;
     display: block!important;
-  }
-
-  // START - Modal overrides
-  ${HeaderText} {
-    color: ${({ theme }) => theme.text1};
   }
   
   a {

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { ConnectionType } from 'connection'
+import { ConnectionType } from '@cow/modules/wallet'
 import { SupportedLocale } from 'constants/locales'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
