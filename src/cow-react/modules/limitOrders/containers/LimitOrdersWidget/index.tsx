@@ -13,7 +13,6 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { RateInput } from '../RateInput'
-import { DeadlineInput } from '../DeadlineInput'
 import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
@@ -34,7 +33,7 @@ import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOr
 import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
 import { OrderKind } from '@cowprotocol/contracts'
 import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -288,7 +287,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {!isWrapOrUnwrap && (
                 <styledEl.FooterBox>
                   <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
-                  <DeadlineInput />
                 </styledEl.FooterBox>
               )}
 

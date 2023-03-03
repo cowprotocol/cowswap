@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { ButtonDropdown } from 'components/Button'
 import Column from 'components/Column'
-import Modal from 'components/Modal'
+import Modal from '@cow/common/pure/Modal'
 import { RowBetween } from 'components/Row'
 import { MenuItem, PaddedColumn, Separator } from 'components/SearchModal/styleds'
 import React, { useCallback } from 'react'

@@ -55,7 +55,7 @@ export const TradeButtonBox = styled.div`
 export const FooterBox = styled.div`
   display: flex;
   flex-flow: column wrap;
-  margin: 4px 8px 0;
+  margin: 0 4px;
   padding: 0;
 `
 
@@ -80,7 +80,7 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 `
 
 export const StyledRateInfo = styled(RateInfo)`
-  padding: 0;
+  padding-top: 8px;
   gap: 4px;
   font-size: 13px;
   min-height: 24px;

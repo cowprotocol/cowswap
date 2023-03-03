@@ -1,3 +1,4 @@
+import { fetchWithBackoff } from '@cow/common/utils/fetch'
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'
@@ -88,7 +89,7 @@ function useAvatarFromNFT(nftUri = '', enforceOwnership: boolean): { avatar?: st
     setAvatar(undefined)
     if (http) {
       setLoading(true)
-      fetch(http)
+      fetchWithBackoff(http)
         .then((res) => res.json())
         .then(({ image }) => {
           setAvatar(image)

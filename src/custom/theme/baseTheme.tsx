@@ -11,8 +11,9 @@ import Cursor2 from 'assets/cow-swap/cursor2.gif'
 import Cursor3 from 'assets/cow-swap/cursor3.gif'
 import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
+// TODO: This shouldn't be in the base theme
 // Modal override items
-import { HeaderText } from '@src/components/WalletModal/Option'
+// import { HeaderText } from '@src/components/WalletModal/Option'
 
 export { ThemedText } from '@src/theme'
 export * from '@src/theme/components'
@@ -439,11 +440,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   body[class*='appzi-f-w-open-'] div[id^='appzi-wfo-'] {
     z-index: 2147483004!important;
     display: block!important;
-  }
-
-  // START - Modal overrides
-  ${HeaderText} {
-    color: ${({ theme }) => theme.text1};
   }
   
   a {

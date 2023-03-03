@@ -8,6 +8,7 @@ import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimi
 import { getAddress } from '@cow/utils/getAddress'
 import ms from 'ms.macro'
 import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
+import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 type PriceResult = number | Error | undefined
 
@@ -72,11 +73,13 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const [isLoading, setIsLoading] = useState(false)
   const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())
+  const isWindowVisible = useIsWindowVisible()
 
   const price = useAsyncMemo(
     () => {
       setIsLoading(true)
 
+      console.debug('[useGetInitialPrice] Fetching price')
       return requestPrice(chainId, inputCurrency, outputCurrency).finally(() => {
         setIsLoading(false)
       })
@@ -87,12 +90,18 @@ export function useGetInitialPrice(): { price: Fraction | null; isLoading: boole
 
   // Update initial price every 10 seconds
   useEffect(() => {
+    if (!isWindowVisible) {
+      console.debug('[useGetInitialPrice] No need to fetch quotes')
+      return
+    }
+
+    console.debug('[useGetInitialPrice] Periodically fetch price')
     const interval = setInterval(() => {
       setUpdateTimestamp(Date.now())
     }, PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [isWindowVisible])
 
   return { price, isLoading }
 }

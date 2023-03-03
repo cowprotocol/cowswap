@@ -198,7 +198,6 @@ export function OrderRow({
           )}
         </styledEl.CellElement>
       )}
-
       {!isOpenOrdersTab && (
         <styledEl.CellElement>
           {executedPriceInversed ? (

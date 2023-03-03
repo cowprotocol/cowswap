@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path')
+const webpack = require('webpack')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CracoWorkboxPlugin = require('craco-workbox')
@@ -7,7 +8,11 @@ const { version } = require('./package.json')
 
 // see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview
 
-const plugins = []
+const plugins = [
+  new webpack.ProvidePlugin({
+    Buffer: ['buffer', 'Buffer'],
+  }),
+]
 const SENTRY_AUTH_TOKEN = process.env.REACT_APP_SENTRY_AUTH_TOKEN
 const SENTRY_RELEASE_VERSION = 'CowSwap@v' + version
 const ANALYZE_BUNDLE = process.env.REACT_APP_ANALYZE_BUNDLE

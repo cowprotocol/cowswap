@@ -17,7 +17,9 @@ describe('calculateExecutionPrice', () => {
         orderKind: OrderKind.SELL,
       })
 
-      // 3 / 6000 = 0.0005
+      // GIVEN: Sell 6000 USDC for 3 WETH (limit price = 0.0005)
+      // GIVEN: Fee 0 USDC
+      // THEN: Execution Price = 3 / (6000 - 0) = 0.0005
       expect(amount?.toSignificant(10)).toBe('0.0005')
     })
 
@@ -30,13 +32,15 @@ describe('calculateExecutionPrice', () => {
         orderKind: OrderKind.SELL,
       })
 
-      // 3 / (6000 - 250) = 0.0005217391304
+      // GIVEN: Sell 6000 USDC for 3 WETH (limit price = 0.0005)
+      // GIVEN: Fee 250 USDC
+      // THEN: Execution Price = 3 / (6000 - 250) = 0.0005217391304
       expect(amount?.toSignificant(10)).toBe('0.0005217391304')
     })
   })
 
   describe('When market price is greater than execution price', () => {
-    const marketPrice = new Fraction(10, 1) // 2
+    const marketPrice = new Fraction(10, 1) // 10
 
     it('Then execution price should be marketPrice', () => {
       const amount = calculateExecutionPrice({
@@ -47,8 +51,13 @@ describe('calculateExecutionPrice', () => {
         orderKind: OrderKind.SELL,
       })
 
-      // OutputAmountByMarketRate = 6000 * 2
-      // ((6000 - 250)) * 10 / 6000 = 1.916666667
+      // GIVEN: Sell 6000 USDC for 30000 WETH (limit price = 5)
+      // GIVEN: Fee 250 USDC
+      // GIVEN: Market price = 10
+      // THEN: Est. execution price = 30000 / (6000 - 250) = 5.217
+      // WHEN: Market price is greater than Est. execution price
+      // THEN: Execution Price should be Market price minus fee
+      // THEN: Execution Price = ((6000 - 250)) * 10 / 6000 = 9.583
       expect(amount?.toSignificant(10)).toBe('9.583333333')
     })
   })

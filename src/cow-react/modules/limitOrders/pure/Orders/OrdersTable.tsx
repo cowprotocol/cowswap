@@ -103,6 +103,17 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
       opacity: 1;
     }
   }
+
+  ${({ doubleRow }) =>
+    doubleRow &&
+    `
+    flex-flow: column wrap;
+    gap: 2px;
+
+    > i {
+      opacity: 0.7;
+    }
+  `}
 `
 
 const RowElement = styled(Header)`

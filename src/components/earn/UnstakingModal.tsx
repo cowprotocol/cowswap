@@ -13,7 +13,7 @@ import { CloseIcon, ThemedText } from '../../theme'
 import { ButtonError } from '../Button'
 import { AutoColumn } from '../Column'
 import FormattedCurrencyAmount from '../FormattedCurrencyAmount'
-import Modal from '../Modal'
+import Modal from '../../cow-react/common/pure/Modal/ModalMod'
 import { LoadingView, SubmittedView } from '../ModalViews'
 import { RowBetween } from '../Row'
 

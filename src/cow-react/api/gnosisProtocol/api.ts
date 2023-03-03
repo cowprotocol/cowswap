@@ -33,6 +33,14 @@ import { Context } from '@sentry/types'
 import { PriceInformation, SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'state/gas/atoms'
 import { OrderClass } from 'state/orders/actions'
+import { fetchWithRateLimit } from '@cow/common/utils/fetch'
+
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 5,
+    interval: 'second',
+  },
+})
 
 function getGnosisProtocolUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -203,7 +211,7 @@ export function getOrderLink(chainId: ChainId, orderId: OrderID): string {
 
 function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
   const baseUrl = _getApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
+  return fetchRateLimitted(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
@@ -217,7 +225,7 @@ function _fetchProfile(
   data?: any
 ): Promise<Response> {
   const baseUrl = _getProfileApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
+  return fetchRateLimitted(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
@@ -226,7 +234,7 @@ function _fetchProfile(
 
 function _fetchPriceStrategy(chainId: ChainId): Promise<Response> {
   const baseUrl = _getPriceStrategyApiBaseUrl(chainId)
-  return fetch(baseUrl)
+  return fetchRateLimitted(baseUrl)
 }
 
 function _post(chainId: ChainId, url: string, data: any): Promise<Response> {
