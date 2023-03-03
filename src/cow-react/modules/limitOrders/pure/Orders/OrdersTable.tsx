@@ -53,9 +53,11 @@ const TableInner = styled.div`
 `
 
 const Header = styled.div<{ isOpenOrdersTab: boolean }>`
+  --height: 50px;
   display: grid;
   gap: 16px;
   grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(100px,1fr) minmax(50px,1fr) 108px 24px`};
+  grid-template-rows: minmax(var(--height),1fr);
   align-items: center;
   border: none;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
@@ -63,14 +65,13 @@ const Header = styled.div<{ isOpenOrdersTab: boolean }>`
 `
 
 const HeaderElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean }>`
-  --height: 50px;
+  height: 100%;
   padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
   font-size: 12px;
   line-height: 1.1;
   font-weight: 500;
   display: flex;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
-  height: var(--height);
   background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
 
   > span {
@@ -102,8 +103,6 @@ const HeaderElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean 
 `
 
 const RowElement = styled(Header)`
-  --height: 50px;
-  min-height: var(--height);
   background: transparent;
   transition: background 0.15s ease-in-out;
 
