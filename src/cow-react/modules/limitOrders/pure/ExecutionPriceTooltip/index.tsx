@@ -26,7 +26,7 @@ export function OrderExecutionStatusList() {
         <ExecuteIndicator status={'close'} /> <b>Close</b> (0.5% - 5% from market price)
       </li>
       <li>
-        <ExecuteIndicator /> <b>Not yet close</b> (&gt;5% from market price)
+        <ExecuteIndicator status={'notClose'} /> <b>Not yet close</b> (&gt;5% from market price)
       </li>
     </styledEl.StatusList>
   )

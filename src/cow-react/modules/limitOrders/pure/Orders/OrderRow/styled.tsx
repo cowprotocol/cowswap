@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { Wrapper as TokenWrapper } from '@cow/common/pure/TokenAmount'
 import { transparentize } from 'polished'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
+import { OrderExecutionStatus } from '@cow/modules/limitOrders/pure/Orders/utils/calculateOrderExecutionStatus'
 
 export const RateValue = styled.span`
   ${TokenWrapper} > span {
@@ -170,7 +171,7 @@ export const ProgressBar = styled.div<{ value: number }>`
   }
 `
 
-export const ExecuteIndicator = styled.div<{ status?: string }>`
+export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
   --size: 6px;
   width: var(--size);
   height: var(--size);
@@ -181,6 +182,7 @@ export const ExecuteIndicator = styled.div<{ status?: string }>`
         return theme.success
       case 'close':
         return theme.text3
+      case 'notClose':
       default:
         return transparentize(0.5, theme.text1)
     }

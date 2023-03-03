@@ -20,6 +20,7 @@ import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPrice
 import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
+import { calculateOrderExecutionStatus } from '@cow/modules/limitOrders/pure/Orders/utils/calculateOrderExecutionStatus'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -121,6 +122,7 @@ export function OrderRow({
   const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
   const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
   const executedPriceInversed = isRateInversed ? executedPrice?.invert() : executedPrice
+  const executionOrderStatus = calculateOrderExecutionStatus(prices)
 
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab}>
@@ -180,7 +182,7 @@ export function OrderRow({
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <>
-              <styledEl.ExecuteIndicator status={'veryClose'} />{' '}
+              <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
               <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
             </>
           ) : prices === null ? (
