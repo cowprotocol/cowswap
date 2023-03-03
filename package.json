@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "1.30.0",
+  "version": "1.30.1",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
@@ -130,6 +130,7 @@
     "d3": "^7.8.1",
     "date-fns": "^2.29.3",
     "ethers": "^5.1.4",
+    "exponential-backoff": "^3.1.1",
     "fast-safe-stringify": "^2.0.8",
     "fortmatic": "^2.2.1",
     "fraction.js": "^4.2.0",
@@ -140,6 +141,7 @@
     "jotai": "1.7.0",
     "jsbi": "^3.1.4",
     "lightweight-charts": "^3.3.0",
+    "limiter": "^2.1.0",
     "make-plural": "^7.0.0",
     "ms.macro": "^2.0.0",
     "multicodec": "^3.0.1",
