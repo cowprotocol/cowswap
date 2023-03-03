@@ -1,6 +1,6 @@
 import { domain as domainGp } from '@cowprotocol/contracts'
 import type { EcdsaSignature, Signature } from '@cowprotocol/contracts'
-import { EcdsaSigningScheme, SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk/order-book'
+import { EcdsaSigningScheme, SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'

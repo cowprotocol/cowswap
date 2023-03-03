@@ -7,7 +7,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
 import { UnsignedOrder } from 'utils/signatures'
 import { Order } from 'state/orders/actions'
-import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from '@cow/modules/swap/services/ethFlow/const'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {

@@ -73,7 +73,7 @@
     "@coinbase/wallet-sdk": "^3.3.0",
     "@cowprotocol/contracts": "^1.3.1",
     "@cowprotocol/cow-runner-game": "^0.2.9",
-    "@cowprotocol/cow-sdk": "cowprotocol/cow-sdk#2.0-alpha-dist",
+    "@cowprotocol/cow-sdk": "^2.0.0-alpha.3",
     "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts",
     "@davatar/react": "1.8.1",
     "@fontsource/ibm-plex-mono": "^4.5.1",

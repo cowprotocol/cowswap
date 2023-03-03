@@ -4,7 +4,7 @@ import { addPopup } from 'state/application/reducer'
 import { AppState } from 'state'
 import * as OrderActions from './actions'
 import { SerializedOrder } from './actions'
-import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 

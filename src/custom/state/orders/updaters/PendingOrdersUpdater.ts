@@ -18,7 +18,7 @@ import {
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
 import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
-import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk/order-book'
+import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { getOrder, OrderID } from '@cow/api/gnosisProtocol'

@@ -26,7 +26,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
       return parsePrice(1, currency)
     }
 
-    const result = await orderBookApi.getNativePrice(chainId, currencyAddress)
+    const result = await orderBookApi.getNativePrice(currencyAddress, { chainId })
 
     if (!result) {
       throw new Error('Cannot parse initial price')

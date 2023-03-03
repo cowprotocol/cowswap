@@ -1,7 +1,7 @@
 import { GpModal } from '@cow/common/pure/Modal'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
-import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderStatus } from 'state/orders/actions'
 import { CloseIcon } from 'theme'
 import { CurrencyField } from './CurrencyField'

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 
 export function useTypedValue() {

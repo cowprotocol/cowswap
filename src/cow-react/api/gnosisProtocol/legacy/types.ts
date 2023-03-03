@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { FeeInformation, PriceInformation } from '@cow/types'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 type FeeQuoteParams = Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> & {
   amount: string

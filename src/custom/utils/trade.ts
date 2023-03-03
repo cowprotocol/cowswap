@@ -9,7 +9,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatSymbol } from '@cow/utils/format'
-import { OrderClass, OrderKind, SigningScheme, EcdsaSigningScheme } from '@cowprotocol/cow-sdk/order-book'
+import { OrderClass, OrderKind, SigningScheme, EcdsaSigningScheme } from '@cowprotocol/cow-sdk'
 import { getProfileData } from '@cow/api/gnosisProtocol/api'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { orderBookApi } from '@cow/cowSdk'
@@ -199,15 +199,18 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
   }
 
   // Call API
-  const orderId = await orderBookApi.sendOrder(chainId, {
-    ...unsignedOrder,
-    from: account,
-    receiver,
-    signingScheme,
-    // Include the signature
-    signature,
-    quoteId,
-  })
+  const orderId = await orderBookApi.sendOrder(
+    {
+      ...unsignedOrder,
+      from: account,
+      receiver,
+      signingScheme,
+      // Include the signature
+      signature,
+      quoteId,
+    },
+    { chainId }
+  )
 
   const pendingOrderParams: Order = mapUnsignedOrderToOrder({
     unsignedOrder,
@@ -234,17 +237,21 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 
   const { signature, signingScheme } = await signOrderCancellation(orderId, chainId, signer)
 
-  await orderBookApi.sendSignedOrderCancellation(chainId, orderId, {
-    signature,
-    signingScheme,
-  })
+  await orderBookApi.sendSignedOrderCancellation(
+    orderId,
+    {
+      signature,
+      signingScheme,
+    },
+    { chainId }
+  )
 
   cancelPendingOrder({ chainId, id: orderId })
 }
 
 export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
   const [trades, profileData] = await Promise.all([
-    orderBookApi.getTrades(chainId, { owner: address }),
+    orderBookApi.getTrades({ owner: address }, { chainId }),
     getProfileData(chainId, address),
   ])
 

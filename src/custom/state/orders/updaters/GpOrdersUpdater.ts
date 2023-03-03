@@ -14,7 +14,7 @@ import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
 import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
-import { EnrichedOrder, EthflowData } from '@cowprotocol/cow-sdk/order-book'
+import { EnrichedOrder, EthflowData } from '@cowprotocol/cow-sdk'
 
 function _getTokenFromMapping(
   address: string,
