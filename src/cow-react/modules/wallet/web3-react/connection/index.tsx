@@ -1,22 +1,23 @@
 import { Connector } from '@web3-react/types'
 
 import { isMobile } from 'utils/userAgent'
+import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
+
+import { Web3ReactConnection } from '../types'
+import { ConnectionType } from '../../api/types'
 
 import { CoinbaseWalletOption } from './coinbase'
 import { FortmaticOption } from './formatic'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption, OpenMetaMaskMobileOption } from './injected'
 import { WalletConnectOption } from './walletConnect'
-
 import { gnosisSafeConnection } from './safe'
 import { injectedConnection } from './injected'
 import { coinbaseWalletConnection } from './coinbase'
 import { walletConnectConnection } from './walletConnect'
 import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
-import { Web3ReactConnection } from '../types'
-import { ConnectionType } from '@cow/modules/wallet/api/types'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
+import { ZengoOption } from './zengo'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -56,6 +57,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
       case ConnectionType.COINBASE_WALLET:
         return coinbaseWalletConnection
       case ConnectionType.WALLET_CONNECT:
+        return walletConnectConnection
+      case ConnectionType.ZENGO:
         return walletConnectConnection
       case ConnectionType.FORTMATIC:
         return fortmaticConnection
@@ -99,6 +102,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
 
   const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
+  const zengoOption = <ZengoOption tryActivation={tryActivation} />
 
   return (
     <>
@@ -106,6 +110,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {walletConnectionOption}
       {coinbaseWalletOption}
       {fortmaticOption}
+      {zengoOption}
     </>
   )
 }
