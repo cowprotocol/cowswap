@@ -20,6 +20,12 @@ import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPrice
 import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
+import {
+  calculateOrderExecutionStatus,
+  OrderExecutionStatus,
+} from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
+import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
+import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -86,7 +92,7 @@ const AllowanceWarning = (symbol: string) => (
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
-  RowElement: StyledComponent<'div', DefaultTheme, {isOpenOrdersTab?: boolean, hasBackground?: boolean}>
+  RowElement: StyledComponent<'div', DefaultTheme, { isOpenOrdersTab?: boolean; hasBackground?: boolean }>
   isRateInversed: boolean
   isOpenOrdersTab: boolean
   orderParams: OrderParams
@@ -121,6 +127,8 @@ export function OrderRow({
   const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
   const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
   const executedPriceInversed = isRateInversed ? executedPrice?.invert() : executedPrice
+
+  const executionOrderStatus = useOrderExecutionStatus(rateInfoParams, prices)
 
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab}>
@@ -179,7 +187,10 @@ export function OrderRow({
         <styledEl.CellElement hasBackground>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
-            <><styledEl.ExecuteIndicator status={'veryClose'}/>  <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} /></>
+            <>
+              <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
+              <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
+            </>
           ) : prices === null ? (
             '-'
           ) : (
@@ -255,4 +266,16 @@ export function OrderRow({
       </styledEl.CellElement>
     </RowElement>
   )
+}
+
+function useOrderExecutionStatus(
+  rateInfo: OrderRowProps['orderParams']['rateInfoParams'],
+  prices: OrderRowProps['prices']
+): OrderExecutionStatus | undefined {
+  return useSafeMemo(() => {
+    const limitPrice = buildPriceFromCurrencyAmounts(rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount)
+    const { marketPrice, executionPrice } = prices || {}
+
+    return calculateOrderExecutionStatus({ limitPrice, marketPrice, executionPrice })
+  }, [rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount, prices?.marketPrice, prices?.executionPrice])
 }

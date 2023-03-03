@@ -138,7 +138,7 @@ export default function WalletModal({
   // confirmedTransactions,
   // ENSName,
   Modal,
-  NewToEthereum,
+  // NewToEthereum,
   CustomTerms,
 }: WalletModalProps) {
   /* {
