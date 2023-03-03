@@ -189,7 +189,11 @@ export function OrderRow({
           {prices ? (
             <>
               <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
-              <TokenAmount lowVolumeWarning={true} amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
+              <TokenAmount
+                lowVolumeWarning={true}
+                amount={executionPriceInversed}
+                tokenSymbol={executionPriceInversed?.quoteCurrency}
+              />
             </>
           ) : prices === null ? (
             '-'

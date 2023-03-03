@@ -26,9 +26,10 @@ export interface TokenAmountProps {
 
 const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
 
-export const Wrapper = styled.span<{ highlight: boolean, lowVolumeWarning?: boolean }>`
+export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
-  color: ${({ lowVolumeWarning, theme }) => (lowVolumeWarning ? darken((theme.darkMode ? 0 : 0.15),theme.alert) : 'inherit')};
+  color: ${({ lowVolumeWarning, theme }) =>
+    lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
 `
 
 export function TokenAmount({
@@ -53,8 +54,6 @@ export function TokenAmount({
         <TokenSymbol token={tokenSymbol} />
       </>
     )
-
-    
 
   return (
     <>
