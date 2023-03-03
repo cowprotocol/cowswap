@@ -14,6 +14,7 @@ import { gnosisSafeConnection } from './safe'
 import { injectedConnection } from './injected'
 import { coinbaseWalletConnection } from './coinbase'
 import { walletConnectConnection } from './walletConnect'
+import { ledgerConnection, LedgerOption } from './ledger'
 import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
@@ -30,6 +31,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   walletConnectConnection,
   fortmaticConnection,
   networkConnection,
+  ledgerConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -41,6 +43,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case walletConnectConnection.connector:
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
+    case ledgerConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -74,6 +77,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return walletConnectConnection
       case ConnectionType.ALPHA:
         return walletConnectConnection
+      case ConnectionType.LEDGER:
+        return ledgerConnection
     }
   }
 }
@@ -120,12 +125,14 @@ export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation:
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
+  const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
       {injectedOption}
       {walletConnectionOption}
       {coinbaseWalletOption}
+      {ledgerOption}
       {viewAll && (
         <>
           {zengoOption}

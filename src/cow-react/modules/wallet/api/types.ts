@@ -8,6 +8,7 @@ export enum ConnectionType {
   ZENGO = 'ZENGO',
   AMBIRE = 'AMBIRE',
   ALPHA = 'ALPHA',
+  LEDGER = 'LEDGER',
 }
 
 export const BACKFILLABLE_WALLETS = [
