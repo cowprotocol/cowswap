@@ -153,10 +153,10 @@ const StyledCloseIcon = styled(X)`
 const OrdersExplainerBanner = styled.div`
   display: grid;
   background: ${({ theme }) => theme.gradient1};
-  width: 100%;
-  height: 90px;
+  width: fit-content;
   gap: 16px;
   grid-template-columns: minmax(460px,4fr) minmax(426px,3.7fr) 24px;
+  grid-template-rows: minmax(90px,1fr);
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.88, theme.text3)};
