@@ -1,3 +1,4 @@
+import type { SafeInfo } from '@gnosis.pm/safe-apps-sdk'
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
 export enum ConnectionType {
@@ -32,7 +33,7 @@ export interface WalletDetails {
 
   // Feature Support
   allowsOffchainSigning: boolean
-
-  // Additioal information
-  gnosisSafeInfo?: SafeInfoResponse
 }
+
+export type GnosisSafeInfo = SafeInfoResponse
+export type GnosisSafeSdkInfo = SafeInfo

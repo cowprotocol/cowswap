@@ -6,6 +6,7 @@ export * from './web3-react/hooks/useDisconnectWallet'
 export * from './web3-react/hooks/useWalletMetadata'
 export * from './web3-react/hooks/useEagerlyConnect'
 export * from './web3-react/hooks/useOrderedConnections'
+export * from './web3-react/hooks/useGnosisSafeSdkInfo'
 
 // Updater
 export * from './web3-react/updater'
