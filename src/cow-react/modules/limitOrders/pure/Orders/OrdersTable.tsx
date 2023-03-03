@@ -56,23 +56,26 @@ const Header = styled.div<{ isOpenOrdersTab: boolean }>`
   --height: 50px;
   display: grid;
   gap: 16px;
-  grid-template-columns: ${({ isOpenOrdersTab }) => `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''} minmax(100px,1fr) minmax(50px,1fr) 108px 24px`};
-  grid-template-rows: minmax(var(--height),1fr);
+  grid-template-columns: ${({ isOpenOrdersTab }) =>
+    `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
+      isOpenOrdersTab ? 'minmax(130px,2.2fr)' : ''
+    } minmax(100px,1fr) minmax(50px,1fr) 108px 24px`};
+  grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 16px;
 `
 
-const HeaderElement = styled.div<{ doubleRow?: boolean, hasBackground?: boolean }>`
+const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
   height: 100%;
-  padding: 0 ${({ hasBackground }) => hasBackground ? '10px' : '0'};
+  padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
   font-size: 12px;
   line-height: 1.1;
   font-weight: 500;
   display: flex;
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
-  background: ${({ theme, hasBackground }) => hasBackground ? transparentize(0.92, theme.text3) : 'transparent'};
+  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
 
   > span {
     display: flex;
@@ -155,37 +158,35 @@ const OrdersExplainerBanner = styled.div`
   background: ${({ theme }) => theme.gradient1};
   width: fit-content;
   gap: 16px;
-  grid-template-columns: minmax(460px,4fr) minmax(426px,3.7fr) 24px;
-  grid-template-rows: minmax(90px,1fr);
+  grid-template-columns: minmax(460px, 4fr) minmax(426px, 3.7fr) 24px;
+  grid-template-rows: minmax(90px, 1fr);
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.88, theme.text3)};
   padding: 0 16px;
 
-    /* 1st section */
-    > div {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+  /* 1st section */
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 
-      > svg > path {
-        fill: ${({ theme }) => transparentize(0.5, theme.text1)};
-      }
-
-      > b {
-        font-size: 18px;
-        font-weight: 500;
-      }
+    > svg > path {
+      fill: ${({ theme }) => transparentize(0.5, theme.text1)};
     }
 
-    /* 2nd section */
-    > span {
-      display: flex;
-      flex-flow: column wrap;
+    > b {
+      font-size: 18px;
+      font-weight: 500;
     }
+  }
+
+  /* 2nd section */
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+  }
 `
-
-
 
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
@@ -248,9 +249,7 @@ export function OrdersTable({
             {isOpenOrdersTab && (
               <HeaderElement>
                 <span>
-                  <Trans>
-                    Market price
-                  </Trans>
+                  <Trans>Market price</Trans>
                 </span>
               </HeaderElement>
             )}
@@ -305,11 +304,11 @@ export function OrdersTable({
             <OrdersExplainerBanner>
               <div>
                 <SVG src={iconOrderExecution} width={36} height={36} />
-                <b>How close is my <br /> order to executing?</b>
+                <b>
+                  How close is my <br /> order to executing?
+                </b>
               </div>
-              <span>
-                {OrderExecutionStatusList()}
-              </span>
+              <span>{OrderExecutionStatusList()}</span>
               <StyledCloseIcon onClick={() => localStorage.setItem('showOrdersExplainerBanner', 'false')} />
             </OrdersExplainerBanner>
           )}
