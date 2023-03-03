@@ -157,7 +157,7 @@ const OrdersExplainerBanner = styled.div`
   width: 100%;
   height: 90px;
   gap: 16px;
-  grid-template-columns: 4fr 3.7fr 24px;
+  grid-template-columns: minmax(460px,4fr) minmax(426px,3.7fr) 24px;
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
