@@ -10,9 +10,6 @@ export interface ExecutionPriceProps {
 
 export function ExecutionPrice({ executionPrice, isInversed }: ExecutionPriceProps) {
   const executionPriceFiat = useExecutionPriceFiat(executionPrice, isInversed)
-
-  if (!executionPrice) return null
-
   const quoteCurrency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
 
   return (
