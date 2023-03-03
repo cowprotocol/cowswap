@@ -14,6 +14,7 @@ export interface ExecutionPriceTooltipProps {
   marketRate: Fraction | null
 }
 
+// TODO: change the tooltip (Mindy will give a text)
 export const RateTooltipHeader = (
   <styledEl.Content>
     <h3>CoW Swap limit orders are gasless.</h3>
