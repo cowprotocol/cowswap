@@ -53,9 +53,7 @@ export const ContextMenuItem = styled(MenuItem)<{ $red?: boolean }>`
   }
 `
 
-export const ContextMenuLink = styled(ContextMenuItem)`
-
-`
+export const ContextMenuLink = styled(ContextMenuItem)``
 
 export interface OrderContextMenuProps {
   openReceipt: () => void

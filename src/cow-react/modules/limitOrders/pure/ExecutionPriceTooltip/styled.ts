@@ -79,10 +79,10 @@ export const StatusList = styled.ol`
   font-weight: 400;
   gap: 5px;
   padding: 0;
-      
-    > li {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-    }
+
+  > li {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
 `
