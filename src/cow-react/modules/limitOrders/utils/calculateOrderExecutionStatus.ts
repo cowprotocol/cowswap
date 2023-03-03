@@ -31,13 +31,6 @@ export function calculateOrderExecutionStatus({
     ? percentageDifference.multiply(MINUS_ONE)
     : percentageDifference
 
-  console.log(`bug-calculate`, {
-    limitPrice: limitPrice.toFixed(7),
-    referencePrice: referencePrice.toFixed(7),
-    marketPrice: marketPrice.toFixed(7),
-    executionPrice: executionPrice.toFixed(7),
-    absolutePercentageDifference: absolutePercentageDifference.toFixed(7),
-  })
   if (absolutePercentageDifference.lessThan(HALF_PERCENT)) {
     return 'veryClose'
   } else if (absolutePercentageDifference.greaterThan(FIVE_PERCENT)) {
