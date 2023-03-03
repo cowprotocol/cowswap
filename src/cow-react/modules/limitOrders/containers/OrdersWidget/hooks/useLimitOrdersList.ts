@@ -78,7 +78,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     executedFeeAmount,
     executedSurplusFee,
     executedPrice,
-    parsedCreationTime: parsedCreationtime,
+    parsedCreationTime,
     fullyFilled,
     activityId,
     activityTitle,
