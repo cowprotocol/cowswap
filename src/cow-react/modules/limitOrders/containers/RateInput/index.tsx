@@ -144,7 +144,7 @@ export function RateInput() {
           <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
 
           <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
-            <span>Market price</span>
+            <span>Set to market</span>
           </styledEl.MarketPriceButton>
         </styledEl.Header>
 

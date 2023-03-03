@@ -60,9 +60,9 @@ export const FooterBox = styled.div`
 `
 
 export const RateWrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  gap: 0;
+  display: grid;
+  grid-template-columns: auto 150px;
+  gap: 6px;
   text-align: right;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -86,5 +86,4 @@ export const StyledRateInfo = styled(RateInfo)`
   min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
-  margin-bottom: 5px;
 `

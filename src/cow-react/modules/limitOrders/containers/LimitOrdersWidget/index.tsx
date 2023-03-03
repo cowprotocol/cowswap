@@ -13,6 +13,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { RateInput } from '../RateInput'
+import { DeadlineInput } from '../DeadlineInput'
 import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
@@ -253,15 +254,16 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {!isWrapOrUnwrap && (
                 <styledEl.RateWrapper>
                   <RateInput />
+                  <DeadlineInput />
                 </styledEl.RateWrapper>
               )}
               <styledEl.CurrencySeparatorBox withRecipient={showRecipient}>
                 <CurrencyArrowSeparator
-                  isCollapsed={true}
+                  isCollapsed={false}
                   onSwitchTokens={throttledOnSwitchTokens}
                   withRecipient={showRecipient}
                   isLoading={isTradePriceUpdating}
-                  hasSeparatorLine={false}
+                  hasSeparatorLine={true}
                   border={true}
                 />
                 {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}

@@ -1,23 +1,25 @@
 import styled from 'styled-components/macro'
-import { lighten, transparentize } from 'polished'
+import { transparentize } from 'polished'
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { X } from 'react-feather'
 
 export const Wrapper = styled.div`
-  padding: 0;
-  margin: 0;
-  min-height: 24px;
+  background: ${({ theme }) => theme.grey1};
+  border-radius: 16px;
+  padding: 10px 16px;
+  min-height: 80px;
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
-  font-size: 13px;
 `
 
 export const Label = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: 13px;
   font-weight: 500;
+  width: 100%;
   color: ${({ theme }) => transparentize(0.3, theme.text1)};
 `
 
@@ -29,23 +31,23 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 2px solid transparent;
+  background: none;
+  border: 0;
   outline: none;
   margin: 0;
+  padding: 0;
   white-space: nowrap;
   cursor: pointer;
+  width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
-  cursor: pointer;
-  padding: 1px 3px 1px 6px;
-  background: ${({ theme }) => theme.grey1};
-  border-radius: 10px;
-  font-weight: 400;
-  transition: background 0.2s ease-in-out;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 21px;
+  `}
 
   &:hover {
-    background: ${({ theme }) => lighten(0.02, theme.grey1)};
-    text-decoration: none;
+    text-decoration: underline;
   }
 
   > span {
