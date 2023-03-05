@@ -7,6 +7,9 @@ import {
   // ProviderRpcError,
   RequestArguments,
 } from '@web3-react/types'
+import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
+
+import { loadConnectKit, LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
 
 type LedgerProvider = Provider & {
   connected: () => boolean
@@ -26,105 +29,120 @@ interface LedgerOptions {
   rpc?: { [chainId: number]: string }
 }
 
-function parseChainId(chainId: string) {
-  return Number.parseInt(chainId, 16)
+function parseChainId(chainId: number | string) {
+  return Number.parseInt(String(chainId), 16)
 }
 
 export class Ledger extends Connector {
   public provider?: LedgerProvider
-  private readonly options?: LedgerOptions
+  private readonly options: LedgerOptions
   private eagerConnection?: Promise<void>
+  private connectKitPromise: Promise<LedgerConnectKit>
 
-  constructor({ actions, onError, options }: LedgerConstructorArgs) {
+  constructor({ actions, onError, options = {} }: LedgerConstructorArgs) {
     super(actions, onError)
+
     this.options = options
+    this.connectKitPromise = loadConnectKit()
+  }
+
+  async getAccounts() {
+    console.log('getAccount')
+
+    const provider = await this.getProvider()
+    const accounts = (await provider.request({
+      method: 'eth_requestAccounts',
+    })) as string[]
+
+    return accounts
+  }
+
+  async getChainId() {
+    console.log('getChainId')
+
+    const provider = await this.getProvider()
+    const chainId = (await provider.request({
+      method: 'eth_chainId',
+    })) as string
+
+    return parseChainId(chainId)
+  }
+
+  async getProvider(
+    { forceCreate }: { chainId?: number; forceCreate?: boolean } = {
+      forceCreate: false,
+    }
+  ) {
+    console.log('getProvider')
+
+    if (!this.provider || forceCreate) {
+      console.log('getting provider from Connect Kit')
+      const connectKit = await this.connectKitPromise
+      this.provider = (await connectKit.getProvider()) as LedgerProvider
+    }
+
+    return this.provider
+  }
+
+  async getSigner() {
+    console.log('getSigner')
+
+    const [provider, account] = await Promise.all([this.getProvider(), this.getAccounts()])
+    return new Web3Provider(provider as ExternalProvider).getSigner(account[0])
   }
 
   public async activate() {
-    const cancelActivation = this.actions.startActivation()
+    console.log('debug activate')
 
-    return this.isomorphicInitialize()
-      .then(async () => {
-        if (!this.provider) return
+    const connectKit = await this.connectKitPromise
 
-        const accounts = (await this.provider.request({ method: 'eth_requestAccounts' })) as string[]
-        const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
+    connectKit.enableDebugLogs()
 
-        return this.actions.update({ chainId: parseChainId(chainId), accounts })
-      })
-      .catch((error) => {
-        cancelActivation()
-        throw error
-      })
+    connectKit.checkSupport({
+      providerType: SupportedProviders.Ethereum,
+      chainId: this.options.chainId,
+      infuraId: this.options.infuraId,
+      rpc: this.options.rpc,
+    })
+
+    const provider = await this.getProvider({ forceCreate: true })
+
+    console.log('debug provider', this.provider)
+
+    if (provider.on) {
+      console.log('debug assigning event handlers')
+      provider.on('accountsChanged', this.onAccountsChanged)
+      provider.on('chainChanged', this.onChainChanged)
+      provider.on('disconnect', this.onDisconnect)
+      provider.on('close', this.onDisconnect)
+    }
+
+    const accounts = await this.getAccounts()
+    const chainId = await this.getChainId()
+
+    return this.actions.update({ chainId, accounts })
   }
 
-  public async connectEagerly(): Promise<void> {
-    const cancelActivation = this.actions.startActivation()
+  public async connectEagerly(): Promise<void> {}
 
-    try {
-      await this.isomorphicInitialize()
+  protected onAccountsChanged = (accounts: string[]): void => {
+    console.log('debug accounts changed', accounts)
 
-      if (!this.provider) return cancelActivation()
-
-      const accounts = (await this.provider.request({ method: 'eth_accounts' })) as string[]
-
-      if (!accounts.length) throw new Error('No accounts returned')
-
-      const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
-
-      this.actions.update({ chainId: parseChainId(chainId), accounts })
-    } catch (error) {
-      console.debug('Could not connect eagerly', error)
+    if (accounts.length === 0) {
       this.actions.resetState()
+    } else {
+      this.actions.update({ accounts })
     }
   }
 
-  private async isomorphicInitialize(): Promise<void> {
-    if (this.eagerConnection) return
+  protected onChainChanged = (chainId: number | string): void => {
+    console.log('debug chain changed')
 
-    return (this.eagerConnection = import('@ledgerhq/connect-kit-loader').then(async (m) => {
-      const { loadConnectKit, SupportedProviders } = m
+    this.actions.update({ chainId: parseChainId(chainId) })
+  }
 
-      const connectKit = await loadConnectKit()
-
-      connectKit.enableDebugLogs()
-
-      connectKit.checkSupport({
-        providerType: SupportedProviders.Ethereum,
-        chainId: this.options?.chainId || 0x1,
-        infuraId: this.options?.infuraId,
-        rpc: this.options?.rpc,
-      })
-
-      this.provider = (await connectKit.getProvider()) as LedgerProvider
-
-      if (this.provider) {
-        this.provider.on('connect', ({ chainId }): void => {
-          this.actions.update({ chainId: parseChainId(chainId) })
-        })
-
-        this.provider.on('disconnect', (error): void => {
-          if (error.code === 1013) {
-            console.debug('Ledger logged connection error 1013: "Try again later"')
-            return
-          }
-
-          this.actions.resetState()
-          this.onError?.(error)
-        })
-
-        this.provider.on('chainChanged', (chainId: string): void => {
-          this.actions.update({ chainId: parseChainId(chainId) })
-        })
-
-        this.provider.on('accountsChanged', (accounts: string[]): void => {
-          if (accounts.length === 0) {
-            this.actions.resetState()
-          } else {
-            this.actions.update({ accounts })
-          }
-        })
-      }
-    }))
+  protected onDisconnect = (error: any): void => {
+    this.actions.resetState()
+    this.onError?.(error)
   }
 }
