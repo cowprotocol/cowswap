@@ -61,7 +61,8 @@ export function LowVolumeWarningContent() {
         bgColor={theme.alert}
         content={
           <styledEl.WarningContent>
-            For this order, network fees would be 52.11% (12.34 USDC) of your sell amount! Therefore, your order is unlikely to execute. Learn more
+            For this order, network fees would be 52.11% (12.34 USDC) of your sell amount! Therefore, your order is
+            unlikely to execute. Learn more
           </styledEl.WarningContent>
         }
         placement="bottom"
