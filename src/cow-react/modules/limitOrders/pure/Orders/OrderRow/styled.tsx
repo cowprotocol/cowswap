@@ -176,6 +176,7 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
+  display: inline-block;
   background: ${({ status, theme }) => {
     switch (status) {
       case 'veryClose':
@@ -189,6 +190,13 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
   }};
 `
 
+export const ExecuteCellWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
+
 export const ExecuteInformationTooltip = styled.div`
   display: flex;
+  flex-flow: row wrap;
 `
