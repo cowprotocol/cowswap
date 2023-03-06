@@ -191,7 +191,7 @@ export function OrderRow({
               wrap={true}
               content={
                 <styledEl.ExecuteInformationTooltip>
-                  Market price needs to go down 🔻 by 
+                  Market price needs to go down/up 📉📈 by 
                   <b>17.70 USDC</b>&nbsp;<b><i>(~1.15%)</i></b>&nbsp;to execute your order.
                 </styledEl.ExecuteInformationTooltip>
               }
