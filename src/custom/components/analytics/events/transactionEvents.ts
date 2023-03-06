@@ -1,4 +1,4 @@
-import { OrderClass } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { Category, sendEvent } from '../index'
 
 import { PIXEL_EVENTS } from '../pixel/constants'
@@ -10,8 +10,9 @@ import { sendPavedEvent } from '../pixel/paved'
 import { sendMicrosoftEvent } from '../pixel/microsoft'
 
 const LABEL_FROM_CLASS: Record<OrderClass, string> = {
-  limit: 'Limit Order',
-  market: 'Market Order',
+  [OrderClass.LIMIT]: 'Limit Order',
+  [OrderClass.MARKET]: 'Market Order',
+  [OrderClass.LIQUIDITY]: 'Liquidity Order',
 }
 
 function getClassLabel(orderClass: OrderClass, label?: string) {

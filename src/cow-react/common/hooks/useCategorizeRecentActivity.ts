@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
-import { OrderStatus, OrderClass } from 'state/orders/actions'
+import { OrderStatus } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 const PENDING_STATES = [OrderStatus.PENDING, OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
 

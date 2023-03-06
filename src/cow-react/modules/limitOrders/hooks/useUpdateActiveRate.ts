@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { updateLimitOrdersAtom } from '@cow/modules/limitOrders'
 

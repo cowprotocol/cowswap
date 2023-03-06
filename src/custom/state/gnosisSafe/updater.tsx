@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useIsGnosisSafeWallet } from 'hooks/useWalletInfo'
+import { useIsGnosisSafeWallet } from '@cow/modules/wallet'
 import { getSafeInfo } from '@cow/api/gnosisSafe'
 import { useWeb3React } from '@web3-react/core'
 import { gnosisSafeAtom } from 'state/gnosisSafe/atoms'

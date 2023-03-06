@@ -3,8 +3,7 @@ import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 import { Fraction } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
-
-import { SimpleGetQuoteResponse } from '@cow/types'
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
@@ -20,7 +19,7 @@ export function useHandleResponse() {
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
 
   return useCallback(
-    (response: CancelableResult<SimpleGetQuoteResponse>) => {
+    (response: CancelableResult<OrderQuoteResponse>) => {
       const { cancelled, data } = response
 
       try {
