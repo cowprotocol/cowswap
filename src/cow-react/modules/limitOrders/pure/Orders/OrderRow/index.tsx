@@ -175,6 +175,7 @@ export function OrderRow({
             setSmartQuoteSelectionOnce={true}
             isInversed={isRateInversed}
             rateInfoParams={rateInfoParams}
+            opacitySymbol={true}
           />
         </styledEl.RateValue>
       </styledEl.CellElement>
@@ -185,7 +186,7 @@ export function OrderRow({
         <styledEl.CellElement>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
-            <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} />
+            <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} opacitySymbol />
           ) : prices === null ? (
             '-'
           ) : (
@@ -229,6 +230,7 @@ export function OrderRow({
                   lowVolumeWarning={true}
                   amount={executionPriceInversed}
                   tokenSymbol={executionPriceInversed?.quoteCurrency}
+                  opacitySymbol
                 />
               </styledEl.ExecuteCellWrapper>
             </MouseoverTooltipContent>
@@ -242,7 +244,7 @@ export function OrderRow({
       {!isOpenOrdersTab && (
         <styledEl.CellElement>
           {executedPriceInversed ? (
-            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} />
+            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} opacitySymbol />
           ) : (
             '-'
           )}

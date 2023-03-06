@@ -6,13 +6,17 @@ import { LONG_PRECISION } from 'constants/index'
 import { FeatureFlag } from '@cow/utils/featureFlags'
 import styled from 'styled-components/macro'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '@cow/constants/featureFlags'
-import { darken } from 'polished'
+import { darken, transparentize } from 'polished'
 // import { LowVolumeWarningContent } from '@cow/modules/limitOrders/pure/Orders/OrderRow'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
   color: ${({ lowVolumeWarning, theme }) =>
     lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
+`
+
+const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
+  color: ${({ opacitySymbol, theme }) => transparentize(opacitySymbol ? 0.3 : 0, theme.text1)};
 `
 
 export interface TokenAmountProps {
@@ -23,6 +27,7 @@ export interface TokenAmountProps {
   hideTokenSymbol?: boolean
   round?: boolean
   lowVolumeWarning?: boolean
+  opacitySymbol?: boolean
 }
 
 const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
@@ -35,6 +40,7 @@ export function TokenAmount({
   round,
   hideTokenSymbol,
   lowVolumeWarning,
+  opacitySymbol,
 }: TokenAmountProps) {
   const title =
     FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
@@ -52,7 +58,7 @@ export function TokenAmount({
   return (
     <Wrapper title={title} className={className} highlight={highlight} lowVolumeWarning={lowVolumeWarning}>
       {formatTokenAmount(round ? FractionUtils.round(amount) : amount) || defaultValue}
-      <span>{tokenSymbolElement}</span>
+      <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
 
       {/* {lowVolumeWarning && LowVolumeWarningContent()} */}
     </Wrapper>
