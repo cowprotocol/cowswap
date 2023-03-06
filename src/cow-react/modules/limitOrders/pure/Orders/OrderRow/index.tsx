@@ -51,6 +51,27 @@ function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return <CurrencyLogo currency={amount.currency} size="28px" />
 }
 
+export function LowVolumeWarningContent() {
+  const theme = useContext(ThemeContext)
+
+  return (
+    <styledEl.WarningIndicator>
+      <MouseoverTooltipContent
+        wrap={true}
+        bgColor={theme.alert}
+        content={
+          <styledEl.WarningContent>
+            For this order, network fees would be 52.11% (12.34 USDC) of your sell amount! Therefore, your order is unlikely to execute. Learn more
+          </styledEl.WarningContent>
+        }
+        placement="bottom"
+      >
+        <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
+      </MouseoverTooltipContent>
+    </styledEl.WarningIndicator>
+  )
+}
+
 const BalanceWarning = (symbol: string) => (
   <styledEl.WarningParagraph>
     <h3>Insufficient balance for this limit order</h3>

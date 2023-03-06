@@ -4,45 +4,6 @@ import { transparentize } from 'polished'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
 import { OrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 
-export const RateValue = styled.span`
-  ${TokenWrapper} > span {
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
-  }
-`
-
-export const StatusBox = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-`
-
-export const AmountItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    white-space: normal;
-  `};
-
-  > div {
-    display: flex;
-    align-items: center;
-  }
-
-  > span {
-    white-space: normal;
-    word-break: break-all;
-    max-width: 150px;
-    display: inline;
-  }
-
-  > span > span {
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
-  }
-`
-
 export const WarningIndicator = styled.button`
   --height: 28px;
   margin: 0;
@@ -80,6 +41,45 @@ export const WarningParagraph = styled.div`
 
   :last-child {
     margin-bottom: 0;
+  }
+`
+
+export const RateValue = styled.span`
+  ${TokenWrapper} > span {
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
+`
+
+export const StatusBox = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`
+
+export const AmountItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    white-space: normal;
+  `};
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  > span {
+    white-space: normal;
+    word-break: break-all;
+    max-width: 150px;
+    display: inline;
+  }
+
+  > span > span {
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
 `
 
