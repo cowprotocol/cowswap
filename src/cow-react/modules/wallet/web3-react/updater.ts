@@ -9,6 +9,7 @@ import { UNSUPPORTED_WC_WALLETS } from 'constants/index'
 import { useSetAtom } from 'jotai'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { getSafeInfo } from '@cow/api/gnosisSafe'
+import { useGnosisSafeSdkInfo } from './hooks/useGnosisSafeSdkInfo'
 
 function _checkIsSupportedWallet(walletName?: string): boolean {
   if (walletName && UNSUPPORTED_WC_WALLETS.has(walletName)) {
@@ -53,22 +54,28 @@ function _useWalletDetails(account?: string): WalletDetails {
 }
 
 function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
-  const { provider } = useWeb3React()
-  const { account, chainId } = walletInfo
+  const { provider, connector } = useWeb3React()
+  const { account, chainId, active } = walletInfo
   const isGnosisSafeConnected = useIsGnosisSafeWallet()
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
+  const { isReadOnly } = useGnosisSafeSdkInfo(connector, active) || {}
 
   useEffect(() => {
     if (chainId && account && isGnosisSafeConnected && provider) {
       getSafeInfo(chainId, account, provider)
-        .then(setSafeInfo)
+        .then((_safeInfo) =>
+          setSafeInfo({
+            isReadOnly,
+            ..._safeInfo,
+          })
+        )
         .catch((error) => {
           console.error('[WalletUpdater] Error getting Safe Info', error)
         })
     } else {
       setSafeInfo(undefined)
     }
-  }, [setSafeInfo, chainId, account, isGnosisSafeConnected, provider])
+  }, [setSafeInfo, chainId, account, isGnosisSafeConnected, provider, isReadOnly])
 
   return safeInfo
 }
