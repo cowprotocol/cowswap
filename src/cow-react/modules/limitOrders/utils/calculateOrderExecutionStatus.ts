@@ -3,7 +3,6 @@ import { Nullish } from '@cow/types'
 
 const HALF_PERCENT = new Percent(5, 1000)
 const FIVE_PERCENT = new Percent(5, 100)
-const ZERO = new Fraction(0)
 const ONE = new Fraction(1)
 const MINUS_ONE = new Fraction(-1)
 
@@ -24,16 +23,26 @@ export function calculateOrderExecutionStatus({
     return undefined
   }
 
-  const referencePrice = limitPrice.greaterThan(marketPrice) ? limitPrice : marketPrice
+  const [referencePrice, multiplier] = limitPrice.greaterThan(marketPrice)
+    ? // When limit price is > market price:
+      // Use it for comparing with execution price
+      // It'll be likely bigger than execution price, so we invert it
+      // by multiplying by -1
+      // Thus, everything < 0 is very close
+      [limitPrice, MINUS_ONE]
+    : // When market price is >= limit price
+      // Use it for comparing with execution price
+      // It'll likely be smaller than execution price, so we keep it as is
+      // by multiplying by 1
+      // Thus, everything < 0 is very close
+      [marketPrice, ONE]
 
-  const percentageDifference = executionPrice.divide(referencePrice).subtract(ONE)
-  const absolutePercentageDifference = percentageDifference.lessThan(ZERO)
-    ? percentageDifference.multiply(MINUS_ONE)
-    : percentageDifference
+  const percentageDifference = executionPrice.divide(referencePrice).subtract(ONE).multiply(multiplier)
 
   if (absolutePercentageDifference.lessThan(HALF_PERCENT)) {
+  if (percentageDifference.lessThan(HALF_PERCENT)) {
     return 'veryClose'
-  } else if (absolutePercentageDifference.greaterThan(FIVE_PERCENT)) {
+  } else if (percentageDifference.greaterThan(FIVE_PERCENT)) {
     return 'notClose'
   } else {
     return 'close'
