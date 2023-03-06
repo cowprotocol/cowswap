@@ -228,20 +228,20 @@ export function OrdersTable({
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
   }, [])
 
-  // Explainer banner for orders 
+  // Explainer banner for orders
   const [showOrdersExplainerBanner, setShowOrdersExplainerBanner] = useState(() => {
-    const item = localStorage.getItem('showOrdersExplainerBanner');
-    return item !== null ? item === 'true' : true;
-  });
+    const item = localStorage.getItem('showOrdersExplainerBanner')
+    return item !== null ? item === 'true' : true
+  })
 
   const closeOrdersExplainerBanner = (): void => {
-    setShowOrdersExplainerBanner(false);
-    localStorage.setItem('showOrdersExplainerBanner', 'false');
-  };
+    setShowOrdersExplainerBanner(false)
+    localStorage.setItem('showOrdersExplainerBanner', 'false')
+  }
 
   useEffect(() => {
-    localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString());
-  }, [showOrdersExplainerBanner]);
+    localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
+  }, [showOrdersExplainerBanner])
 
   return (
     <>
