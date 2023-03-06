@@ -1,4 +1,4 @@
-import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { Category, sendEvent } from '../index'
 
 import { PIXEL_EVENTS } from '../pixel/constants'

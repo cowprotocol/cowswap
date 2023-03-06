@@ -5,7 +5,7 @@ import { formatSymbol } from '@cow/utils/format'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
-import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 

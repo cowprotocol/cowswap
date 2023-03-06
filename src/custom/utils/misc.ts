@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Market } from 'types/index'
-import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 
 const PROVIDER_REJECT_REQUEST_CODE = 4001 // See https://eips.ethereum.org/EIPS/eip-1193

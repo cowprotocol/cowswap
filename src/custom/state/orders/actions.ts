@@ -5,7 +5,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { SerializedToken } from '@src/state/user/types'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { BigNumberish } from '@ethersproject/bignumber'
-import { UID, EnrichedOrder, OrderClass } from '@cowprotocol/cow-sdk/order-book'
+import { UID, EnrichedOrder, OrderClass } from '@cowprotocol/cow-sdk'
 
 export enum OrderStatus {
   PENDING = 'pending',

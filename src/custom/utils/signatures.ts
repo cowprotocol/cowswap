@@ -1,12 +1,11 @@
 import { domain as domainGp } from '@cowprotocol/contracts'
-import type { EcdsaSignature, Signature } from '@cowprotocol/contracts'
-import { EcdsaSigningScheme, SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk/order-book'
+import type { Order, EcdsaSignature, Signature } from '@cowprotocol/contracts'
+import { EcdsaSigningScheme, SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { TypedDataDomain, Signer } from '@ethersproject/abstract-signer'
 import { registerOnWindow } from 'utils/misc'
-import { Order } from '@cowprotocol/contracts/src/ts/order'
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal
