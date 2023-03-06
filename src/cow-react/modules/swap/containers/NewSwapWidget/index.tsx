@@ -10,7 +10,7 @@ import {
 } from 'state/swap/hooks'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { useSwapCurrenciesAmounts } from '@cow/modules/swap/hooks/useSwapCurrenciesAmounts'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useExpertModeManager, useUserSlippageTolerance } from 'state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useShowRecipientControls } from '@cow/modules/swap/hooks/useShowRecipientControls'

@@ -6,7 +6,7 @@ import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
 
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 
 const ContentWrapper = styled(Column)`
   align-items: center;

@@ -21,7 +21,7 @@ import { CardNoise } from '../earn/styled'
 import Menu from '../Menu'
 import Row from '../Row'
 import { Dots } from '../swap/styleds'
-import Web3Status from '../Web3Status'
+import { Web3Status } from '@cow/modules/wallet'
 import HolidayOrnament from './HolidayOrnament'
 import NetworkSelector from './NetworkSelector'
 

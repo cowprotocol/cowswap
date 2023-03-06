@@ -1,8 +1,8 @@
 import { Order, OrderStatus } from 'state/orders/actions'
 import { COW, DAI, GNO, USDC } from 'constants/tokens'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { WETH_GOERLI } from 'utils/goerli/constants'
-import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 const chainId = 5
 const owner = '0x4cc6e4f6014cc998fc5ef14c3f5d1184f76ae25b'

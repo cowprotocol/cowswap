@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTradeExactInWithFee } from 'state/swap/extension'
 import { QuoteInformationObject } from 'state/price/reducer'
 
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useWeb3React } from '@web3-react/core'
 
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
@@ -17,7 +17,6 @@ import { SupportedChainId } from 'constants/chains'
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { onlyResolvesLast } from 'utils/async'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
@@ -56,7 +55,6 @@ export function useCalculateQuote(params: GetQuoteParams) {
   } = params
   const { chainId: preChain } = useWeb3React()
   const { account } = useWalletInfo()
-  const strategy = useGetGpPriceStrategy()
   const isEthFlow = useIsEthFlow()
 
   const [quote, setLocalQuote] = useState<QuoteInformationObject | FeeQuoteParamsWithError | undefined>()
@@ -84,7 +82,6 @@ export function useCalculateQuote(params: GetQuoteParams) {
     }
     let quoteData: QuoteInformationObject | LegacyFeeQuoteParams = quoteParams
     getBestQuoteResolveOnlyLastCall({
-      strategy,
       quoteParams,
       fetchFee: true,
       isPriceRefresh: false,
@@ -119,19 +116,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
         setLocalQuote(quoteError)
       })
       .finally(() => setLoading(false))
-  }, [
-    amount,
-    account,
-    preChain,
-    buyToken,
-    sellToken,
-    toDecimals,
-    fromDecimals,
-    strategy,
-    validTo,
-    isEthFlow,
-    setLoading,
-  ])
+  }, [amount, account, preChain, buyToken, sellToken, toDecimals, fromDecimals, validTo, isEthFlow, setLoading])
 
   return { quote, loading, setLoading }
 }

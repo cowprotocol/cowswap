@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { environmentName } from 'utils/environments'
-import { OrderClass } from '@cowprotocol/cow-sdk/order-book'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { metadataApiSDK } from '@cow/cowSdk'
 
 export type BuildAppDataParams = {
@@ -24,7 +24,7 @@ export async function buildAppData({
   const quoteParams = { slippageBips }
   const orderClassParams = { orderClass }
 
-  const doc = metadataApiSDK.generateAppDataDoc({
+  const doc = await metadataApiSDK.generateAppDataDoc({
     appDataParams: { appCode, environment: environmentName },
     metadataParams: { referrerParams, quoteParams, orderClassParams },
   })

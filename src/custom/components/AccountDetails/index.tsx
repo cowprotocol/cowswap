@@ -10,9 +10,9 @@ import { Trans } from '@lingui/macro'
 
 import { getEtherscanLink } from 'utils'
 import { getConnection, getConnectionName, getIsMetaMask, getIsCoinbaseWallet } from 'connection/utils'
-import CoinbaseWalletIcon from 'assets/images/coinbaseWalletIcon.svg'
-import WalletConnectIcon from 'assets/images/walletConnectIcon.svg'
-import FortmaticIcon from 'assets/images/fortmaticIcon.png'
+import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
+import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
+import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
 import Identicon from 'components/Identicon'
 import { NETWORK_LABELS } from 'components/Header'
 import {
@@ -35,7 +35,7 @@ import {
   WalletNameAddress,
   WalletWrapper,
 } from './styled'
-import { ConnectedWalletInfo, useWalletInfo } from 'hooks/useWalletInfo'
+import { ConnectedWalletInfo, useWalletInfo } from '@cow/modules/wallet'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { supportedChainId } from 'utils/supportedChainId'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'

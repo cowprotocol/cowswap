@@ -1,6 +1,6 @@
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -23,7 +23,7 @@ import { Routes } from '@cow/constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
-import AddToMetamask from 'components/AddToMetamask' // mod
+import AddToMetamask from '@cow/modules/wallet/api/components/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
 import { useOrder } from 'state/orders/hooks'
 import { OrderStatus } from 'state/orders/actions'
