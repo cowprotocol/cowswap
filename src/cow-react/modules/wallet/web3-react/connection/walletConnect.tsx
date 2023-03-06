@@ -1,8 +1,9 @@
 import { ConnectionType } from '@cow/modules/wallet'
-import { getConnectionName } from '@cow/modules/wallet/api/utils/connection'
+import { getConnectionName, getIsZengoWallet, getIsAmbireWallet } from '@cow/modules/wallet/api/utils/connection'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { TryActivation, onError } from '.'
+import { useWalletMetaData } from '@cow/modules/wallet'
 
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
@@ -10,6 +11,7 @@ import { WalletConnect } from '@web3-react/walletconnect'
 import { RPC_URLS } from 'constants/networks'
 import { Web3ReactConnection } from '../types'
 import { default as WalletConnectImage } from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
+import { WC_DISABLED_TEXT } from '@cow/modules/wallet/constants'
 
 export const walletConnectOption = {
   color: '#4196FC',
@@ -35,11 +37,18 @@ export const walletConnectConnection: Web3ReactConnection = {
 }
 
 export function WalletConnectOption({ tryActivation }: { tryActivation: TryActivation }) {
-  const isActive = useIsActiveWallet(walletConnectConnection)
+  const { walletName } = useWalletMetaData()
+
+  const isWalletConnect = useIsActiveWallet(walletConnectConnection)
+  const isActive = isWalletConnect && !getIsZengoWallet(walletName) && !getIsAmbireWallet(walletName)
+  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
+
   return (
     <ConnectWalletOption
       {...walletConnectOption}
       isActive={isActive}
+      tooltipText={tooltipText}
+      clickable={!isWalletConnect}
       onClick={() => tryActivation(walletConnectConnection.connector)}
       header={getConnectionName(ConnectionType.WALLET_CONNECT)}
     />

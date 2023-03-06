@@ -16,6 +16,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Gnosis Safe'
     case ConnectionType.ZENGO:
       return 'Zengo'
+    case ConnectionType.AMBIRE:
+      return 'Ambire'
   }
 }
 
@@ -29,4 +31,12 @@ export function getIsMetaMask(): boolean {
 
 export function getIsCoinbaseWallet(): boolean {
   return window.ethereum?.isCoinbaseWallet ?? false
+}
+
+export function getIsAmbireWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('ambire') || false
+}
+
+export function getIsZengoWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('zengo') || false
 }

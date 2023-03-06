@@ -8,6 +8,7 @@ export enum ConnectionType {
   NETWORK = 'NETWORK',
   GNOSIS_SAFE = 'GNOSIS_SAFE',
   ZENGO = 'ZENGO',
+  AMBIRE = 'AMBIRE',
 }
 
 export const BACKFILLABLE_WALLETS = [

@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components/macro'
 
 import { ExternalLink } from 'theme'
+import { MouseoverTooltip } from 'components/Tooltip'
 
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};
@@ -66,10 +67,8 @@ const CircleWrapper = styled.div`
 
 export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  /* color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary1 : ({ theme }) => theme.text1)}; */
   font-size: 1rem;
   font-weight: 500;
-  color: ${({ theme }) => theme.text1};
 `
 
 const SubHeader = styled.div`
@@ -103,6 +102,7 @@ export interface ConnectWalletOptionProps {
   icon: string
   isActive?: boolean
   id: string
+  tooltipText?: string | null
 }
 
 export function ConnectWalletOption({
@@ -116,6 +116,7 @@ export function ConnectWalletOption({
   icon,
   isActive = false,
   id,
+  tooltipText,
 }: ConnectWalletOptionProps) {
   const content = (
     <OptionCardClickable
@@ -145,8 +146,13 @@ export function ConnectWalletOption({
       </IconWrapper>
     </OptionCardClickable>
   )
+
   if (link) {
     return <ExternalLink href={link}>{content}</ExternalLink>
+  }
+
+  if (tooltipText) {
+    return <MouseoverTooltip text={tooltipText}>{content}</MouseoverTooltip>
   }
 
   return content
