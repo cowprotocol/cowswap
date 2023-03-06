@@ -2,9 +2,11 @@ import useSWR from 'swr'
 import { useState, useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import useIsArgentWallet from 'hooks/useIsArgentWallet'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function useCheckIsSmartContract(): boolean | undefined {
-  const { account, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { account } = useWalletInfo()
 
   const { data } = useSWR(['isSmartContract', account, provider], async () => {
     if (!account || !provider) {
@@ -26,7 +28,7 @@ function useCheckIsSmartContract(): boolean | undefined {
 export function useIsSmartContractWallet(): boolean {
   const [isSmartContractWallet, setIsSmartContractWallet] = useState<boolean>(false)
 
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
 
   const isArgentWallet = useIsArgentWallet()
   const isSmartContract = useCheckIsSmartContract()

@@ -1,4 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
+import { useWalletInfo } from '@cow/modules/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
@@ -42,7 +43,8 @@ export function useSwapCallback({
   deadline,
   feeOptions,
 }: UseSwapCallbackArgs): UseSwapCallbackReturns {
-  const { account, chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   const swapCalls = useSwapCallArguments(
     trade,

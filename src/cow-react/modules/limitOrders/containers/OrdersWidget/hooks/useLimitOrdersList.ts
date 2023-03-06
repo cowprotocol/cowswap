@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
@@ -11,6 +10,7 @@ import { getOrderExecutedAmounts } from '@cow/modules/limitOrders/utils/getOrder
 import { isOrderFilled } from '@cow/modules/limitOrders/utils/isOrderFilled'
 import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface LimitOrdersList {
   pending: ParsedOrder[]
@@ -86,7 +86,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
 }
 
 export function useLimitOrdersList(): LimitOrdersList {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const allNonEmptyOrders = useOrders({ chainId })
   const accountLowerCase = account?.toLowerCase()
 

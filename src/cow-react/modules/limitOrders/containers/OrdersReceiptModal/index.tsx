@@ -1,17 +1,17 @@
 import JSBI from 'jsbi'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 
 import { ReceiptModal } from '@cow/modules/limitOrders/pure/ReceiptModal'
 import { calculatePrice } from '@cow/modules/limitOrders/utils/calculatePrice'
 
 import { supportedChainId } from 'utils/supportedChainId'
 import { useCloseReceiptModal, useSelectedOrder } from './hooks'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function OrdersReceiptModal() {
   // TODO: can we get selected order from URL by id?
   const order = useSelectedOrder()
-  const { chainId: _chainId } = useWeb3React()
+  const { chainId: _chainId } = useWalletInfo()
   const closeReceiptModal = useCloseReceiptModal()
   const chainId = supportedChainId(_chainId)
 

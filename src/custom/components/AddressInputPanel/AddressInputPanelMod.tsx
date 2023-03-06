@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
@@ -13,6 +12,7 @@ import { RowBetween } from 'components/Row'
 
 // MOD imports
 import { getBlockExplorerUrl as getExplorerLink } from 'utils'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -104,7 +104,7 @@ export default function AddressInputPanel({
   // triggers whenever the typed value changes
   onChange: (value: string) => void
 }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext as Context<DefaultTheme>)
 
   const { address, loading, name } = useENS(value)

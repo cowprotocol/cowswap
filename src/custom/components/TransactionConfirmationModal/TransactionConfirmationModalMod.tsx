@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import Badge from 'components/Badge'
 import { getChainInfo } from 'constants/chainInfo'
 // import { SupportedL2ChainId } from 'constants/chains'
@@ -35,6 +34,7 @@ import {
 import { SupportedChainId } from 'constants/chains'
 import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
 import { getEtherscanLink as getExplorerLink } from 'utils'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -400,7 +400,7 @@ export default function TransactionConfirmationModal({
   currencyToAdd,
   operationType, // mod
 }: ConfirmationModalProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
 
   if (!chainId) return null

@@ -10,7 +10,6 @@ import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from '@cow/common/services/getQuoteCurrency'
-import { useWeb3React } from '@web3-react/core'
 import { getAddress } from '@cow/utils/getAddress'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
@@ -21,9 +20,10 @@ import Loader from 'components/Loader'
 import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPriceAtom'
 import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function RateInput() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   // Rate state
   const {
     isInversed,

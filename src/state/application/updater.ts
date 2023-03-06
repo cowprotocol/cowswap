@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useWeb3React } from '@web3-react/core'
 import useDebounce from 'hooks/useDebounce'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
@@ -22,7 +23,8 @@ import { updateChainId } from './reducer'
 } */
 
 export default function Updater(): null {
-  const { chainId, provider } = useWeb3React()
+  const { chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
   const dispatch = useAppDispatch()
   const windowVisible = useIsWindowVisible()
 

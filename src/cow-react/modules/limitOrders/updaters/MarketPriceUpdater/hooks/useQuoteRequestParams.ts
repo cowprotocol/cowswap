@@ -1,5 +1,4 @@
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
-import { useWeb3React } from '@web3-react/core'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/contracts'
 import { parseUnits } from 'ethers/lib/utils'
@@ -8,12 +7,13 @@ import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }
 
 export function useQuoteRequestParams(): LimitOrdersQuoteParams | null {
   const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const { exactTypedValue } = useTypedValue()
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 

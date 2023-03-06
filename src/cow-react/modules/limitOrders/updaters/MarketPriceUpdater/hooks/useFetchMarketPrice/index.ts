@@ -1,5 +1,4 @@
 import { useLayoutEffect } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { getQuote } from '@cow/api/gnosisProtocol'
@@ -14,6 +13,7 @@ import { onlyResolvesLast } from 'utils/async'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // Every 10s
 const PRICE_UPDATE_INTERVAL = 10_000
@@ -21,7 +21,7 @@ const PRICE_UPDATE_INTERVAL = 10_000
 const getQuoteOnlyResolveLast = onlyResolvesLast<SimpleGetQuoteResponse>(getQuote)
 
 export function useFetchMarketPrice() {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
 
   // TODO: should be throttled to avoid too frequent requests
   const feeQuoteParams = useQuoteRequestParams()

@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
 import { Percent, TradeType } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { SwapCallbackState, useSwapCallback as useLibSwapCallBack } from 'lib/hooks/swap/useSwapCallback'
 import { ReactNode, useMemo } from 'react'
 
@@ -11,6 +10,7 @@ import useENS from './useENS'
 import { SignatureData } from './useERC20Permit'
 import { AnyTrade } from './useSwapCallArguments'
 import useTransactionDeadline from './useTransactionDeadline'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
@@ -20,7 +20,7 @@ export function useSwapCallback(
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
   signatureData: SignatureData | undefined | null
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: ReactNode | null } {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
 
   const deadline = useTransactionDeadline()
 

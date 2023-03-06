@@ -1,6 +1,6 @@
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -461,8 +461,9 @@ export function ConfirmationPendingContent({
   chainId: number
 }) {
   const { connector } = useWeb3React()
-  const walletInfo = useWalletInfo()
-  const { ensName, account, isSmartContractWallet, gnosisSafeInfo } = walletInfo
+  const { account } = useWalletInfo()
+  const walletDetails = useWalletDetails()
+  const { ensName, isSmartContractWallet, gnosisSafeInfo } = walletDetails
 
   const walletType = useMemo((): WalletType => {
     if (gnosisSafeInfo) {
@@ -484,7 +485,7 @@ export function ConfirmationPendingContent({
       <UpperSection>
         <CloseIconWrapper onClick={onDismiss} />
 
-        <WalletIcon>{getStatusIcon(connector, walletInfo, 46)}</WalletIcon>
+        <WalletIcon>{getStatusIcon(connector, walletDetails, 46)}</WalletIcon>
 
         <Text fontWeight={500} fontSize={16} textAlign="center">
           {pendingText}

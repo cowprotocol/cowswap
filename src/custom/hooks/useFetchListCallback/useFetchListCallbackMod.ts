@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { nanoid } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 import { MAINNET_PROVIDER } from 'constants/networks'
@@ -7,13 +8,12 @@ import { useCallback } from 'react'
 import { useAppDispatch } from 'state/hooks'
 
 import { fetchTokenList } from 'state/lists/actions'
-import { useWeb3React } from '@web3-react/core'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const dispatch = useAppDispatch()
 
   // Mod
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   // note: prevent dispatch if using for list search or unsupported list
   return useCallback(

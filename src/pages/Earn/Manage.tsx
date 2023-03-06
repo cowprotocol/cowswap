@@ -1,6 +1,6 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import { useCallback, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -87,7 +87,7 @@ const DataRow = styled(RowBetween)`
 
 export default function Manage() {
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
 
   // get currencies and pair
   const [currencyA, currencyB] = [useCurrency(currencyIdA), useCurrency(currencyIdB)]

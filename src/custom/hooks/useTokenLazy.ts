@@ -11,6 +11,7 @@ import { Erc20 } from 'abis/types'
 import { retry } from 'utils/retry'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}
@@ -143,7 +144,8 @@ async function _getTokenInfo(params: GetTokenInfoParams): Promise<TokenInfo | nu
  * at hook phase nor uses multicall
  */
 export function useTokenLazy() {
-  const { provider, account, chainId: _chainId } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { account, chainId: _chainId } = useWalletInfo()
   const addUserToken = useAddUserToken()
   const chainId = supportedChainId(_chainId)
 

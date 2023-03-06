@@ -57,7 +57,7 @@ export function AdvancedSwapDetails({
   showFee = true,
 }: AdvancedSwapDetailsProps) {
   /* const theme = useContext(ThemeContext)
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const { expectedOutputAmount, priceImpact } = useMemo(() => {
     if (!trade) return { expectedOutputAmount: undefined, priceImpact: undefined }

@@ -8,7 +8,6 @@ import {
   updateLimitOrdersWarningsAtom,
 } from '@cow/modules/limitOrders/state/limitOrdersWarningsAtom'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
-import { useWeb3React } from '@web3-react/core'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useSetAtom } from 'jotai'
@@ -16,6 +15,7 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import styled from 'styled-components/macro'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFormState'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface LimitOrdersWarningsProps {
   priceImpact: PriceImpact
@@ -39,7 +39,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const formState = useLimitOrdersFormState()
   const rateImpact = useRateImpact()
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const { inputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
 
   const showPriceImpactWarning =

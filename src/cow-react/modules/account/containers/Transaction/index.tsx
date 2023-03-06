@@ -1,6 +1,5 @@
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 
-import { useWeb3React } from '@web3-react/core'
 import { RowFixed } from 'components/Row'
 
 import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
@@ -11,6 +10,7 @@ import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRece
 import { Order } from 'state/orders/actions'
 import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
 import { ActivityDetails } from './ActivityDetails'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: 'success',
@@ -81,7 +81,7 @@ export interface ActivityDerivedState {
 }
 
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
   const activityDerivedState = useActivityDerivedState({ chainId, activity })

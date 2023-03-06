@@ -1,7 +1,6 @@
 import { isAddress } from '@ethersproject/address'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import { useEffect, useState } from 'react'
 import { Text } from 'rebass'
@@ -21,6 +20,7 @@ import Confetti from '../Confetti'
 import { Break, CardBGImage, CardBGImageSmaller, CardNoise, CardSection, DataCard } from '../earn/styled'
 import Modal from '@cow/common/pure/Modal'
 import { RowBetween } from '../Row'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -51,7 +51,7 @@ export default function ClaimModal() {
   const isOpen = useModalIsOpen(ApplicationModal.SELF_CLAIM)
   const toggleClaimModal = useToggleSelfClaimModal()
 
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   // used for UI loading states
   const [attempting, setAttempting] = useState<boolean>(false)
