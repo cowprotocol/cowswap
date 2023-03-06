@@ -24,7 +24,7 @@ export async function buildAppData({
   const quoteParams = { slippageBips }
   const orderClassParams = { orderClass }
 
-  const doc = metadataApiSDK.generateAppDataDoc({
+  const doc = await metadataApiSDK.generateAppDataDoc({
     appDataParams: { appCode, environment: environmentName },
     metadataParams: { referrerParams, quoteParams, orderClassParams },
   })

@@ -1,4 +1,4 @@
-import { MetadataApi } from '@cowprotocol/cow-sdk'
+import { MetadataApi } from '@cowprotocol/app-data'
 import { OrderBookApi } from '@cowprotocol/cow-sdk'
 import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
 

@@ -1,4 +1,5 @@
-import { SupportedChainId, LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 
 export type AppDataInfo = {
   doc?: LatestAppDataDocVersion // in case of default hash, there's no doc
