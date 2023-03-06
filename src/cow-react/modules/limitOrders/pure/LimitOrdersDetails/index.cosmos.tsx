@@ -6,6 +6,7 @@ import { OrderClass } from '@cowprotocol/cow-sdk'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersDetails } from './index'
 import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { initLimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -52,6 +53,8 @@ const Fixtures = {
       settingsState={defaultLimitOrdersSettings}
       rateInfoParams={rateInfoParams}
       tradeContext={tradeContext}
+      executionPrice={null}
+      limitRateState={initLimitRateState()}
     />
   ),
 }

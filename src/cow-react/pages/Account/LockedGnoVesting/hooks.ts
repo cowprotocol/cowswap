@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import MERKLE_DROP_ABI from '@cow/abis/MerkleDrop.json'
 import TOKEN_DISTRO_ABI from '@cow/abis/TokenDistro.json'
 import { MerkleDrop, TokenDistro } from '@cow/abis/types'
@@ -14,6 +13,7 @@ import { OperationType } from 'components/TransactionConfirmationModal'
 import { fetchClaim } from './claimData'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
 import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'constants/index'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[SupportedChainId.MAINNET]
@@ -22,7 +22,7 @@ const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TOKEN_DISTRO_ABI, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const initialAllocation = useRef(CurrencyAmount.fromRawAmount(COW, 0))
   const [allocation, setAllocation] = useState(initialAllocation.current)
 
@@ -46,7 +46,7 @@ export const useAllocation = (): CurrencyAmount<Token> => {
 }
 
 export const useCowFromLockedGnoBalances = () => {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const allocated = useAllocation()
   const vested = allocated
     .multiply(Math.min(Date.now() - LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION))
@@ -76,7 +76,7 @@ export function useClaimCowFromLockedGnoCallback({
   closeModal,
   isFirstClaim,
 }: ClaimCallbackParams): () => Promise<ContractTransaction> {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const merkleDrop = useMerkleDropContract()
   const tokenDistro = useTokenDistroContract()
 

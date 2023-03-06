@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
-import { useIsGnosisSafeWallet } from '@cow/modules/wallet'
+import { useIsGnosisSafeWallet, useWalletInfo } from '@cow/modules/wallet'
 import { getSafeInfo } from '@cow/api/gnosisSafe'
 import { useWeb3React } from '@web3-react/core'
 import { gnosisSafeAtom } from 'state/gnosisSafe/atoms'
 import { useUpdateAtom } from 'jotai/utils'
 
 export default function Updater(): null {
-  const { account, chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const isGnosisSafeConnected = useIsGnosisSafeWallet()
   const setGnosisSafeInfo = useUpdateAtom(gnosisSafeAtom)
 

@@ -1,6 +1,6 @@
 import { Field } from 'state/swap/actions'
 import { Currency, Fraction } from '@uniswap/sdk-core'
-import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
+import JSBI from 'jsbi'
 
 export type RateCalculationParams = {
   amount: Fraction | null
@@ -8,6 +8,26 @@ export type RateCalculationParams = {
   field: Field
   inputCurrency: Currency | null
   outputCurrency: Currency | null
+}
+
+/**
+ * Consider a trade DAI (decimals 18) <-> USDC (decimals 6)
+ * 1. When input is 9 DAI, the value equals 9000000000000000000
+ * Then we should divide it to get value for USDC = 9000000 (6 decimals)
+ *
+ * 2. When input is 9 USDC, the value equals 9000000
+ * Then we should multiply to get value for DAI = 9000000000000000000 (18 decimals)
+ */
+function adjustDecimals(value: Fraction, prevDecimals: number, nextDecimals: number): Fraction {
+  if (prevDecimals === nextDecimals) {
+    return value
+  }
+
+  const decimalsShift = JSBI.BigInt(
+    JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(Math.abs(prevDecimals - nextDecimals)))
+  )
+
+  return prevDecimals < nextDecimals ? value.multiply(decimalsShift) : value.divide(decimalsShift)
 }
 
 export function calculateAmountForRate({

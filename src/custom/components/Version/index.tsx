@@ -7,7 +7,7 @@ import { SupportedChainId as ChainId } from 'constants/chains'
 import { getEtherscanLink } from 'utils'
 import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
   const contractAddress = contractAddressMap[chainId]
@@ -108,7 +108,7 @@ const VersionsLinkWrapper = styled.span`
 `
 
 export const Version = ({ className }: { className?: string }) => {
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWeb3React()
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWalletInfo()
   return (
     <StyledPolling className={className}>
       {/* it's hardcoded anyways */}

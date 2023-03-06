@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from 'constants/chains'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
@@ -11,6 +10,7 @@ import PopupItem from 'components/Popups/PopupItem'
 
 // MOD imports
 import { MobilePopupWrapper } from '.'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 /* const MobilePopupWrapper = styled.div<{ height: string | number }>`
   position: relative;
@@ -66,7 +66,7 @@ export default function Popups() {
   const urlWarningActive = useURLWarningVisible()
 
   // need extra padding if network is not L1 Ethereum
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const isNotOnMainnet = Boolean(chainId && chainId !== SupportedChainId.MAINNET)
 
   return (

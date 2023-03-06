@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SwapRouter, Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
@@ -39,7 +40,8 @@ export function useSwapCallArguments(
   deadline: BigNumber | undefined,
   feeOptions: FeeOptions | undefined
 ): SwapCall[] {
-  const { account, chainId, provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress

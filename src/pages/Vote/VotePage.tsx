@@ -1,7 +1,7 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import ExecuteModal from 'components/vote/ExecuteModal'
@@ -156,7 +156,7 @@ export default function VotePage() {
   const { governorIndex, id } = useParams<{ governorIndex: string; id: string }>()
   const parsedGovernorIndex = Number.parseInt(governorIndex || '')
 
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
 
   const quorumAmount = useQuorum(parsedGovernorIndex)
 

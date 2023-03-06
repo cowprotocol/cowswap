@@ -14,9 +14,9 @@ const PaginationBox = styled.div`
   margin-top: 20px;
 `
 
-const PageButton = styled(Link)<{ active?: boolean }>`
-  background: ${({ theme, active }) => (active ? transparentize(0.9, theme.text3) : 'transparent')};
-  color: ${({ theme, active }) => (active ? theme.text1 : transparentize(0.2, theme.text1))};
+const PageButton = styled(Link)<{ $active?: boolean }>`
+  background: ${({ theme, $active }) => ($active ? transparentize(0.9, theme.text3) : 'transparent')};
+  color: ${({ theme, $active }) => ($active ? theme.text1 : transparentize(0.2, theme.text1))};
   border: 0;
   outline: 0;
   padding: 5px 10px;
@@ -44,7 +44,7 @@ export function OrdersTablePagination({ pageSize, totalCount, currentPage }: Ord
         return (
           <PageButton
             key={index}
-            active={index === currentPage}
+            $active={index === currentPage}
             to={buildLimitOrdersUrl(location, { pageNumber: index })}
           >
             {index}

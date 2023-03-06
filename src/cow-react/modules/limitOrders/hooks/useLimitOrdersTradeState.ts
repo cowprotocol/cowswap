@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -8,6 +7,7 @@ import useCurrencyBalance from 'lib/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
 import { FractionUtils } from '@cow/utils/fractionUtils'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface LimitOrdersTradeState {
   readonly inputCurrency: Currency | null
@@ -38,7 +38,7 @@ function tryParseFractionalAmount(currency: Currency | null, amount: string | nu
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const state = useAtomValue(limitOrdersAtom)
 
   const recipient = state.recipient

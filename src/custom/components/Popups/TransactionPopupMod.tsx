@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core'
 import { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -13,6 +12,7 @@ import { AutoRow } from 'components/Row'
 
 // MOD imports
 import { ExplorerLink } from 'components/ExplorerLink'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
@@ -27,7 +27,7 @@ export default function TransactionPopup({
   success?: boolean
   summary?: string | JSX.Element
 }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   // const tx = useTransaction(hash)
   const theme = useContext(ThemeContext)

@@ -6,7 +6,6 @@ import { useTradeExactInWithFee } from 'state/swap/extension'
 import { QuoteInformationObject } from 'state/price/reducer'
 
 import { useWalletInfo } from '@cow/modules/wallet'
-import { useWeb3React } from '@web3-react/core'
 
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -53,7 +52,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
     setLoading,
     validTo,
   } = params
-  const { chainId: preChain } = useWeb3React()
+  const { chainId: preChain } = useWalletInfo()
   const { account } = useWalletInfo()
   const isEthFlow = useIsEthFlow()
 
@@ -123,7 +122,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
 
 // calculates a new Quote and inverse swap values
 export default function useExactInSwap({ quote, outputCurrency, parsedAmount }: ExactInSwapParams) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const isWrapping = isWrappingTrade(parsedAmount?.currency, outputCurrency, chainId)
 

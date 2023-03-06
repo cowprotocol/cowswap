@@ -8,14 +8,12 @@ import { ClaimCommonTypes } from './types'
 import useENS from 'hooks/useENS'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
-// import { UnsupportedChainIdError, useWeb3React } from 'web3-react-core'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: () => void
 }
 
 export default function ClaimAddress({ account, toggleWalletModal }: ClaimAddressProps) {
-  // const { error } = useWeb3React()
   const { activeClaimAccount, claimStatus, inputAddress } = useClaimState()
   const { setInputAddress } = useClaimDispatchers()
 

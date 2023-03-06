@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { useWeb3React } from '@web3-react/core'
 import useENS from 'hooks/useENS'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
@@ -29,9 +28,10 @@ import { ClaimSummary } from './ClaimSummary'
 
 import usePrevious from 'hooks/usePrevious'
 import { getProviderErrorMessage } from 'utils/misc'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export default function Claim() {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   // get previous account
   const previousAccount = usePrevious(account)

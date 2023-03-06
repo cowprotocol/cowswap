@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useWeb3React } from '@web3-react/core'
 import NotificationBanner from 'components/NotificationBanner'
 import { useReferralAddress, useResetReferralAddress, useSetReferralAddressActive } from 'state/affiliate/hooks'
 import { hasTrades } from 'utils/trade'
@@ -9,6 +8,7 @@ import { SupportedChainId } from 'constants/chains'
 import useParseReferralQueryParam from 'hooks/useParseReferralQueryParam'
 import useRecentActivity from 'hooks/useRecentActivity'
 import { OrderStatus } from 'state/orders/actions'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 type AffiliateStatus = 'NOT_CONNECTED' | 'OWN_LINK' | 'ACTIVE' | 'UNSUPPORTED_NETWORK'
 
@@ -27,7 +27,7 @@ export default function AffiliateStatusCheck() {
   const setReferralAddressActive = useSetReferralAddressActive()
   const navigate = useNavigate()
   const location = useLocation()
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const referralAddress = useReferralAddress()
   const referralAddressQueryParam = useParseReferralQueryParam()
   const allRecentActivity = useRecentActivity()

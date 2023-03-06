@@ -42,6 +42,7 @@ import { currencyId } from '../../utils/currencyId'
 import AppBody from '../AppBody'
 import { ClickableText, MaxButton, Wrapper } from '../Pool/styleds'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const DEFAULT_REMOVE_LIQUIDITY_SLIPPAGE_TOLERANCE = new Percent(5, 100)
 
@@ -49,7 +50,8 @@ export default function RemoveLiquidity() {
   const { currencyIdA, currencyIdB } = useParams<{ currencyIdA: string; currencyIdB: string }>()
   const navigate = useNavigate()
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
-  const { account, chainId, provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
   const [tokenA, tokenB] = useMemo(() => [currencyA?.wrapped, currencyB?.wrapped], [currencyA, currencyB])
 
   const theme = useContext(ThemeContext)

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { Repeat } from 'react-feather'
@@ -27,7 +27,10 @@ export interface RateInfoProps {
   label?: string
   stylized?: boolean
   noLabel?: boolean
+  prependSymbol?: boolean
   isInversed?: boolean
+  setSmartQuoteSelectionOnce?: boolean
+  isInversedState?: [boolean, Dispatch<SetStateAction<boolean>>]
   rateInfoParams: RateInfoParams
 }
 
@@ -111,9 +114,12 @@ export function RateInfo({
   rateInfoParams,
   className,
   label = 'Limit price',
+  setSmartQuoteSelectionOnce = false,
   stylized = false,
   isInversed = false,
   noLabel = false,
+  prependSymbol = true,
+  isInversedState,
 }: RateInfoProps) {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, inversedActiveRateFiatAmount } =
     rateInfoParams
@@ -122,7 +128,9 @@ export function RateInfo({
   const inputCurrency = inputCurrencyAmount?.currency
   const outputCurrency = outputCurrencyAmount?.currency
 
-  const [currentIsInversed, setCurrentIsInversed] = useState(isInversed)
+  const [isSmartQuoteSelectionSet, setIsSmartQuoteSelectionSet] = useState(false)
+  const customDispatcher = useState(isInversed)
+  const [currentIsInversed, setCurrentIsInversed] = isInversedState || customDispatcher
 
   const currentActiveRate = useMemo(() => {
     if (!activeRate) return null
@@ -146,15 +154,29 @@ export function RateInfo({
   }, [chainId, inputCurrencyAmount, outputCurrencyAmount])
 
   useEffect(() => {
-    setCurrentIsInversed((state) => !state)
-  }, [isInversed])
+    setCurrentIsInversed(isInversed)
+  }, [isInversed, setCurrentIsInversed])
 
   // Set isInversed based on quoteCurrency
   useEffect(() => {
+    if (isSmartQuoteSelectionSet) return
+
     const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
     setCurrentIsInversed(quoteCurrencyAddress !== inputCurrencyAddress)
-  }, [quoteCurrency, inputCurrency, outputCurrency])
+
+    if (setSmartQuoteSelectionOnce) {
+      setIsSmartQuoteSelectionSet(true)
+    }
+  }, [
+    quoteCurrency,
+    inputCurrency,
+    outputCurrency,
+    setCurrentIsInversed,
+    isSmartQuoteSelectionSet,
+    setIsSmartQuoteSelectionSet,
+    setSmartQuoteSelectionOnce,
+  ])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 
@@ -175,7 +197,11 @@ export function RateInfo({
                 rateOutputCurrency.symbol || ''
             }
           >
-            1 <TokenSymbol token={rateInputCurrency} /> ={' '}
+            {prependSymbol && (
+              <>
+                1 <TokenSymbol token={rateInputCurrency} /> ={' '}
+              </>
+            )}
             <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} />
           </span>{' '}
           {!!fiatAmount && (

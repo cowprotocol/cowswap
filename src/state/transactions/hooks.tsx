@@ -1,6 +1,6 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { useCallback, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@src/state/hooks'
 
@@ -9,7 +9,7 @@ import { TransactionDetails, TransactionInfo, TransactionType } from './types'
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (response: TransactionResponse, info: TransactionInfo) => void {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
 
   return useCallback(
@@ -29,7 +29,7 @@ export function useTransactionAdder(): (response: TransactionResponse, info: Tra
 
 // returns all the transactions for the current chain
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const state = useAppSelector((state) => state.transactions)
 

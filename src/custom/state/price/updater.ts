@@ -14,7 +14,6 @@ import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
-import { useWeb3React } from '@web3-react/core'
 import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
@@ -23,6 +22,7 @@ import { useOrderValidTo } from 'state/user/hooks'
 import { isAddress } from 'utils'
 import useENSAddress from 'hooks/useENSAddress'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
@@ -131,7 +131,7 @@ function unsupportedTokenNeedsRecheck(
 
 export default function FeesUpdater(): null {
   const [lastUnsupportedCheck, setLastUnsupportedCheck] = useState<null | number>(null)
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
 
   const { independentField, typedValue: rawTypedValue, recipient } = useSwapState()
   const {

@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { EventName, ModalName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 // import { sendEvent } from 'components/analytics'
@@ -34,6 +33,7 @@ import { PaddedColumn, SearchInput, Separator, PaddedRow } from 'components/Sear
 import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.'
 import { searchByAddressAnalytics } from 'components/analytics'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 /* const ContentWrapper = styled(Column)`
   width: 100%;
@@ -80,7 +80,7 @@ export function CurrencySearch({
   setImportToken,
   FooterButtonTextComponent, // MOD
 }: CurrencySearchProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const theme = useTheme()
 
   const [tokenLoaderTimerElapsed, setTokenLoaderTimerElapsed] = useState(false)

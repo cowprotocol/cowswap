@@ -10,6 +10,7 @@ import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { orderBookApi } from '@cow/cowSdk'
 import { OrderQuoteRequest, PriceQuality, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -62,7 +63,7 @@ function _fetchProfile(
   data?: any
 ): Promise<Response> {
   const baseUrl = _getProfileApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
+  return fetchRateLimitted(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,

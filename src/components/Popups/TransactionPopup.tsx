@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core'
 import { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -7,16 +6,17 @@ import { useTransaction } from '../../state/transactions/hooks'
 import { ThemedText } from '../../theme'
 import { ExternalLink } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { TransactionSummary } from '../AccountDetails/TransactionSummary'
+import { TransactionSummary } from '../../cow-react/modules/account/containers/TransactionSummary'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;
 `
 
 export default function TransactionPopup({ hash }: { hash: string }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const tx = useTransaction(hash)
   const theme = useContext(ThemeContext)

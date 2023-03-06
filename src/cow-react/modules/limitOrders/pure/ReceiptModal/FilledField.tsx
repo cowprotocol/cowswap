@@ -1,5 +1,4 @@
 // Code based on https://github.com/cowprotocol/explorer/blob/develop/src/components/orders/FilledProgress/index.tsx
-import { useMemo } from 'react'
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -25,6 +24,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
     inputToken,
     outputToken,
     filledPercentage,
+    formattedPercentage,
     fullyFilled,
     kind,
     feeAmount,
@@ -77,14 +77,6 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
 
   const swappedAmountDecimal = swappedAmountWithFee.div(new BigNumber(10 ** swappedToken.decimals))
   const formattedSwappedAmount = legacyBigNumberToCurrencyAmount(outputToken, swappedAmountDecimal)
-
-  const formattedPercentage = useMemo(() => {
-    if (!filledPercentage) {
-      return null
-    }
-
-    return filledPercentage.times('100').decimalPlaces(2).toString()
-  }, [filledPercentage])
 
   return (
     <styledEl.Value>

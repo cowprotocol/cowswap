@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { useWeb3React } from '@web3-react/core'
 
 import { useEthFlowContract } from 'hooks/useContract'
 import { Order } from 'state/orders/actions'
@@ -8,11 +7,12 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { logTradeFlowError } from '@cow/modules/trade/utils/logger'
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from '@cow/modules/swap/services/ethFlow/const'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
 
 export function useEthFlowCancelOrder() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const cancelEthFlowCallback = getCancelEthFlowOrderCallback(useEthFlowContract())
   const setOrderCancellationHash = useSetOrderCancellationHash()
   const cancelPendingOrder = useRequestOrderCancellation()

@@ -1,7 +1,6 @@
 import { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
 import StakingRewardsJson from '@uniswap/liquidity-staker/build/StakingRewards.json'
-import { useWeb3React } from '@web3-react/core'
 import { ReactNode, useState } from 'react'
 import styled from 'styled-components/macro'
 
@@ -16,6 +15,7 @@ import FormattedCurrencyAmount from '../FormattedCurrencyAmount'
 import Modal from '../../cow-react/common/pure/Modal/ModalMod'
 import { LoadingView, SubmittedView } from '../ModalViews'
 import { RowBetween } from '../Row'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const { abi: STAKING_REWARDS_ABI } = StakingRewardsJson
 
@@ -35,7 +35,7 @@ interface StakingModalProps {
 }
 
 export default function UnstakingModal({ isOpen, onDismiss, stakingInfo }: StakingModalProps) {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
 
   // monitor call to help UI loading state
   const addTransaction = useTransactionAdder()

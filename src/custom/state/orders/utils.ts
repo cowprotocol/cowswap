@@ -121,31 +121,21 @@ export function classifyOrder(
  * small price changes
  *
  * @param order
- * @param price
+ * @param orderPrice
+ * @param executionPrice
  */
-export function isOrderUnfillable(order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>): boolean {
-  // Build price object from stored order
-  const orderPrice = new Price(
-    order.inputToken,
-    order.outputToken,
-    order.sellAmount.toString(),
-    order.buyAmount.toString()
-  )
-
-  // Build current price object from quoted price
-  // Note that depending on the order type, the amount will be used either as nominator or denominator
-  const currentPrice =
-    order.kind === OrderKind.SELL
-      ? new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), price.amount as string)
-      : new Price(order.inputToken, order.outputToken, price.amount as string, order.buyAmount.toString())
-
+export function isOrderUnfillable(
+  order: Order,
+  orderPrice: Price<Currency, Currency>,
+  executionPrice: Price<Currency, Currency>
+): boolean {
   // Calculate the percentage of the current price in regards to the order price
-  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(currentPrice.divide(orderPrice))
+  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(executionPrice.divide(orderPrice))
 
   console.debug(
     `[UnfillableOrdersUpdater::isOrderUnfillable] ${order.kind} [${order.id.slice(0, 8)}]:`,
     orderPrice.toSignificant(10),
-    currentPrice.toSignificant(10),
+    executionPrice.toSignificant(10),
     `${percentageDifference.toFixed(4)}%`,
     percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
   )
