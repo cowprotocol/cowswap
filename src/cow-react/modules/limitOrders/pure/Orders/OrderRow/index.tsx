@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
+import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
@@ -9,7 +9,7 @@ import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmou
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { TokenAmount, TokenAmountProps } from '@cow/common/pure/TokenAmount'
 import CurrencyLogo from 'components/CurrencyLogo'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
@@ -26,6 +26,7 @@ import {
 } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
+import { darken } from 'polished'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -61,7 +62,8 @@ export function LowVolumeWarningContent() {
         bgColor={theme.alert}
         content={
           <styledEl.WarningContent>
-            For this order, network fees would be 52.11% (12.34 USDC) of your sell amount! Therefore, your order is unlikely to execute. Learn more
+            For this order, network fees would be 52.11% (12.34 USDC) of your sell amount! Therefore, your order is
+            unlikely to execute. Learn more
           </styledEl.WarningContent>
         }
         placement="bottom"
@@ -69,6 +71,24 @@ export function LowVolumeWarningContent() {
         <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
       </MouseoverTooltipContent>
     </styledEl.WarningIndicator>
+  )
+}
+
+// TODO: temporary component, name and location. If keeping it, move it to its own module, rename, etc, etc
+export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: boolean }>`
+  color: ${({ lowVolumeWarning, theme }) =>
+    lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
+`
+
+export function LowVolumeWarningToken(props: TokenAmountProps & { lowVolumeWarning: boolean }) {
+  const { lowVolumeWarning, ...rest } = props
+
+  return (
+    <LowVolumeWarningTokenWrapper lowVolumeWarning={lowVolumeWarning}>
+      <TokenAmount {...rest} />
+
+      {lowVolumeWarning && <LowVolumeWarningContent />}
+    </LowVolumeWarningTokenWrapper>
   )
 }
 
@@ -224,7 +244,7 @@ export function OrderRow({
             >
               <styledEl.ExecuteCellWrapper>
                 <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
-                <TokenAmount
+                <LowVolumeWarningToken
                   lowVolumeWarning={true}
                   amount={executionPriceInversed}
                   tokenSymbol={executionPriceInversed?.quoteCurrency}

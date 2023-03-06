@@ -7,7 +7,6 @@ import { FeatureFlag } from '@cow/utils/featureFlags'
 import styled from 'styled-components/macro'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '@cow/constants/featureFlags'
 import { darken } from 'polished'
-// import { LowVolumeWarningContent } from '@cow/modules/limitOrders/pure/Orders/OrderRow'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
@@ -22,7 +21,6 @@ export interface TokenAmountProps {
   className?: string
   hideTokenSymbol?: boolean
   round?: boolean
-  lowVolumeWarning?: boolean
 }
 
 const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
@@ -34,7 +32,6 @@ export function TokenAmount({
   tokenSymbol,
   round,
   hideTokenSymbol,
-  lowVolumeWarning,
 }: TokenAmountProps) {
   const title =
     FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
@@ -50,11 +47,9 @@ export function TokenAmount({
     )
 
   return (
-    <Wrapper title={title} className={className} highlight={highlight} lowVolumeWarning={lowVolumeWarning}>
+    <Wrapper title={title} className={className} highlight={highlight}>
       {formatTokenAmount(round ? FractionUtils.round(amount) : amount) || defaultValue}
       <span>{tokenSymbolElement}</span>
-
-      {/* {lowVolumeWarning && LowVolumeWarningContent()} */}
     </Wrapper>
   )
 }
