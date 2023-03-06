@@ -244,7 +244,11 @@ export function OrderRow({
       {!isOpenOrdersTab && (
         <styledEl.CellElement>
           {executedPriceInversed ? (
-            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} opacitySymbol />
+            <TokenAmount
+              amount={executedPriceInversed}
+              tokenSymbol={executedPriceInversed?.quoteCurrency}
+              opacitySymbol
+            />
           ) : (
             '-'
           )}
