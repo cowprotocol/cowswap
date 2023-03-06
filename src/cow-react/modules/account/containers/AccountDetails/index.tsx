@@ -43,13 +43,13 @@ import { ConnectionType, useWalletInfo, WalletDetails } from '@cow/modules/walle
 import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { useDisconnectWallet } from '@cow/modules/wallet/web3-react/hooks/useDisconnectWallet'
+import { useDisconnectWallet } from '@cow/modules/wallet'
 import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/injected'
 import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connection/coinbase'
 import { fortmaticConnection } from '@cow/modules/wallet/web3-react/connection/formatic'
-import { useWalletDetails } from '@cow/modules/wallet/api/hooks/useWalletDetails'
+import { useWalletDetails } from '@cow/modules/wallet/api/hooks'
 import { useWeb3React } from '@web3-react/core'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
