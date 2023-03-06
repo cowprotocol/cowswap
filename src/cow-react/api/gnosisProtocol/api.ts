@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { APP_DATA_HASH } from 'constants/index'
 import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
 
@@ -9,13 +9,7 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { orderBookApi } from '@cow/cowSdk'
-import {
-  OrderQuoteRequest,
-  PriceQuality,
-  SigningScheme,
-  OrderQuoteResponse,
-  EnrichedOrder,
-} from '@cowprotocol/cow-sdk/order-book'
+import { OrderQuoteRequest, PriceQuality, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -118,12 +112,12 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     return {
       ...baseParams,
       ...(isEthFlow ? ETH_FLOW_AUX_QUOTE_PARAMS : {}),
-      kind: OrderKind.SELL,
+      kind: OrderKind.SELL as string as OrderQuoteRequest['kind'],
       sellAmountBeforeFee: amount.toString(),
     }
   } else {
     return {
-      kind: OrderKind.BUY,
+      kind: OrderKind.BUY as string as OrderQuoteRequest['kind'],
       buyAmountAfterFee: amount.toString(),
       ...baseParams,
     }
@@ -134,15 +128,15 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
 
-  return orderBookApi.getQuote(chainId, quoteParams)
+  return orderBookApi.getQuote(quoteParams, { chainId })
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<EnrichedOrder | null> {
-  return orderBookApi.getOrder(chainId, orderId)
+  return orderBookApi.getOrder(orderId, { chainId })
 }
 
 export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<EnrichedOrder[]> {
-  return orderBookApi.getOrders(chainId, { owner, limit, offset })
+  return orderBookApi.getOrders({ owner, limit, offset }, { chainId })
 }
 
 export type ProfileData = {

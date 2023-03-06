@@ -12,7 +12,7 @@ import { /*DAI_OPTIMISM,*/ USDC /*, USDC_ARBITRUM, USDC_MAINNET, USDC_POLYGON*/ 
 import { supportedChainId } from 'utils/supportedChainId'
 import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useStablecoinPrice'
 import { stringToCurrency } from 'state/swap/extension'
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { useGetCoingeckoUsdPrice } from '@cow/api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'

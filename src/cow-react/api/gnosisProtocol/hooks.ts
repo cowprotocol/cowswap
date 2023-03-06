@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import { getOrders } from '@cow/api/gnosisProtocol/api'
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'constants/index'
 import { supportedChainId } from 'utils/supportedChainId'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 export function useGpOrders(account?: string | null, refreshInterval?: number): EnrichedOrder[] | undefined {
   const { chainId: _chainId } = useWeb3React()

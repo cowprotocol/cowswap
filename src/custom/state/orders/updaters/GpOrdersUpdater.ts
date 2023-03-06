@@ -14,7 +14,7 @@ import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
 import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
+import { EnrichedOrder, EthflowData } from '@cowprotocol/cow-sdk'
 
 function _getTokenFromMapping(
   address: string,
@@ -50,10 +50,12 @@ function _transformGpOrderToStoreOrder(
     buyToken,
     creationDate: creationTime,
     receiver,
-    ethflowData,
+    ethflowData: ethflowDataRaw,
     owner,
     onchainOrderData,
   } = order
+  // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
+  const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = ethflowDataRaw
 
   const isEthFlow = Boolean(ethflowData)
 
