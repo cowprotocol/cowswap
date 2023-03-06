@@ -1,10 +1,10 @@
-import { useWeb3React } from '@web3-react/core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
 import { getDefaultTradeState, TradeState } from '../../types/TradeState'
 import { useTradeNavigate } from '../useTradeNavigate'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const alertMessage = (
   doubledSymbol: string
@@ -22,7 +22,7 @@ Please select the token you need from the UI or use the address of the token ins
  * @see useOnCurrencySelection.ts
  */
 export function useResetStateWithSymbolDuplication(state: TradeState | null): void {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
   const navigate = useTradeNavigate()
   const { inputCurrencyId, outputCurrencyId } = state || {}

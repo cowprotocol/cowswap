@@ -1,5 +1,4 @@
 import { Currency, CurrencyAmount, Price, Token /*, TradeType*/ } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
@@ -21,6 +20,7 @@ import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from '@src/hooks/useStablecoinPrice'
 
@@ -47,7 +47,7 @@ export default function useCowUsdPrice(currency?: Currency) {
   const [error, setError] = useState<Error | null>(null)
 
   const chainId = currency?.chainId
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   // use quote loading as a price update dependency
   const strategy = useGetGpPriceStrategy()
 
@@ -199,7 +199,7 @@ export function useUSDCValue(currencyAmount?: CurrencyAmount<Currency>) {
 
 export function useCoingeckoUsdPrice(currency?: Currency) {
   // default to MAINNET (if disconnected e.g)
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWeb3React()
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWalletInfo()
   const blockNumber = useBlockNumber()
   const [price, setPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -329,7 +329,7 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
  */
 /*
 export function useStablecoinAmountFromFiatValue(fiatValue: string | null | undefined) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const stablecoin = chainId ? STABLECOIN_AMOUNT_OUT[chainId]?.currency : undefined
 
   return useMemo(() => {

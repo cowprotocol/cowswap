@@ -46,13 +46,32 @@ export interface QuestionHelperProps extends Omit<TooltipProps, 'children' | 'sh
 // export default function QuestionHelper({ text }: { text: ReactNode; size?: number }) {
 export default function QuestionHelper({ text, className, QuestionMark, ...tooltipProps }: QuestionHelperProps) {
   const [show, setShow] = useState<boolean>(false)
+  const [mouseLeaveTimeout, setMouseLeaveTimeout] = useState<NodeJS.Timeout | null>(null)
 
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+  const open = useCallback(() => {
+    setShow(true)
+    if (mouseLeaveTimeout) {
+      clearTimeout(mouseLeaveTimeout)
+    }
+  }, [setShow, mouseLeaveTimeout])
+
+  const close = useCallback(() => {
+    const timeout = setTimeout(() => {
+      setShow(false)
+    }, 400)
+
+    setMouseLeaveTimeout(timeout)
+  }, [setShow])
+
+  const content = (
+    <div onMouseEnter={open} onMouseLeave={close}>
+      {text}
+    </div>
+  )
 
   return (
     <QuestionHelperContainer className={className}>
-      <Tooltip {...tooltipProps} show={show} text={text}>
+      <Tooltip {...tooltipProps} show={show} text={content}>
         <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
           {/* <QuestionMark>?</QuestionMark> */}
           <QuestionMark />

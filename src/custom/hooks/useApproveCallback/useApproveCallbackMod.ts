@@ -19,11 +19,11 @@ import { useHasPendingApproval, useTransactionAdder } from 'state/enhancedTransa
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { useWeb3React } from '@web3-react/core'
 import { ApproveCallbackState, OptionalApproveCallbackParams } from '.'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import usePrevious from 'hooks/usePrevious'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
@@ -66,7 +66,7 @@ export function useApproveCallback({
   spender,
   amountToCheckAgainstAllowance,
 }: ApproveCallbackParams): ApproveCallbackState {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)

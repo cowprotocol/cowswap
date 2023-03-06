@@ -1,6 +1,5 @@
 import { Fragment } from 'react'
 
-import { useWeb3React } from '@web3-react/core'
 import { getExplorerLabel, shortenAddress } from 'utils'
 
 import Copy from 'components/Copy'
@@ -33,7 +32,6 @@ import {
   IconWrapper,
   TransactionListWrapper,
 } from './styled'
-import { ConnectedWalletInfo, useWalletInfo } from '@cow/modules/wallet'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { supportedChainId } from 'utils/supportedChainId'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
@@ -41,7 +39,7 @@ import { CreationDateText } from '../Transaction/styled'
 import { ExternalLink } from 'theme'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { Connector } from '@web3-react/types'
-import { ConnectionType } from '@cow/modules/wallet'
+import { ConnectionType, useWalletInfo, WalletDetails } from '@cow/modules/wallet'
 import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from 'constants/chains'
@@ -51,6 +49,8 @@ import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/in
 import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connection/coinbase'
 import { fortmaticConnection } from '@cow/modules/wallet/web3-react/connection/formatic'
+import { useWalletDetails } from '@cow/modules/wallet/api/hooks/useWalletDetails'
+import { useWeb3React } from '@web3-react/core'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',
@@ -74,14 +74,14 @@ export function renderActivities(activities: ActivityDescriptors[]) {
   )
 }
 
-export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo?: ConnectedWalletInfo, size?: number) {
+export function getStatusIcon(connector?: Connector | ConnectionType, walletDetails?: WalletDetails, size?: number) {
   if (!connector) {
     return null
   }
 
   const connectionType = getWeb3ReactConnection(connector)
 
-  if (walletInfo && !walletInfo.isSupportedWallet) {
+  if (walletDetails && !walletDetails.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
     return (
       <MouseoverTooltip text="This wallet is not yet supported">
@@ -91,10 +91,10 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletInfo
       </MouseoverTooltip>
     )
     /* eslint-enable jsx-a11y/accessible-emoji */
-  } else if (walletInfo?.icon) {
+  } else if (walletDetails?.icon) {
     return (
       <IconWrapper size={16}>
-        <img src={walletInfo.icon} alt={`${walletInfo?.walletName || 'wallet'} logo`} />
+        <img src={walletDetails.icon} alt={`${walletDetails?.walletName || 'wallet'} logo`} />
       </IconWrapper>
     )
   } else if (connectionType === injectedConnection) {
@@ -136,10 +136,11 @@ export function AccountDetails({
   toggleWalletModal,
   handleCloseOrdersPanel,
 }: AccountDetailsProps) {
-  const { account, connector, chainId: connectedChainId } = useWeb3React()
+  const { account, chainId: connectedChainId } = useWalletInfo()
+  const { connector } = useWeb3React()
   const connection = getWeb3ReactConnection(connector)
   const chainId = supportedChainId(connectedChainId)
-  const walletInfo = useWalletInfo()
+  const walletDetails = useWalletDetails()
   const disconnectWallet = useDisconnectWallet()
 
   const explorerOrdersLink = account && chainId && getExplorerAddressLink(chainId, account)
@@ -155,12 +156,12 @@ export function AccountDetails({
   const isInjectedMobileBrowser = (isMetaMask || isCoinbaseWallet) && isMobile
 
   function formatConnectorName() {
-    const name = walletInfo?.walletName || getConnectionName(connection.type, getIsMetaMask())
+    const name = walletDetails?.walletName || getConnectionName(connection.type, getIsMetaMask())
     // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
     // This to avoid confusion for instance when using Metamask mobile
     // When name is not set, it defaults to WalletConnect already
     const walletConnectSuffix =
-      getWeb3ReactConnection(connector) === walletConnectConnection && walletInfo?.walletName
+      getWeb3ReactConnection(connector) === walletConnectConnection && walletDetails?.walletName
         ? ' (via WalletConnect)'
         : ''
 
@@ -183,7 +184,7 @@ export function AccountDetails({
         <AccountGroupingRow id="web3-account-identifier-row">
           <AccountControl>
             <WalletWrapper>
-              {getStatusIcon(connector, walletInfo, 24)}
+              {getStatusIcon(connector, walletDetails, 24)}
 
               {(ENSName || account) && (
                 <Copy toCopy={ENSName ? ENSName : account ? account : ''}>

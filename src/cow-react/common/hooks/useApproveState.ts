@@ -1,11 +1,11 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { ApprovalState } from 'hooks/useApproveCallback'
-import { useWeb3React } from '@web3-react/core'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useHasPendingApproval } from 'state/enhancedTransactions/hooks'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import usePrevious from 'hooks/usePrevious'
 import { useMemo } from 'react'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function getCurrencyToApprove(amountToApprove: CurrencyAmount<Currency> | null): Token | undefined {
   if (!amountToApprove) return undefined
@@ -16,7 +16,7 @@ function getCurrencyToApprove(amountToApprove: CurrencyAmount<Currency> | null):
 }
 
 export function useApproveState(amountToApprove: CurrencyAmount<Currency> | null, spender?: string): ApprovalState {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const token = getCurrencyToApprove(amountToApprove)
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)

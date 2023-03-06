@@ -1,5 +1,5 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { isDevelopmentEnv } from '@src/utils/env'
-import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
 import { UaEventOptions } from 'react-ga4/types/ga4'
 import { Path } from 'react-router-dom'
@@ -73,7 +73,7 @@ export function useAnalyticsReporter({ pathname, search }: Path) {
     getCLS(reportWebVitals)
   }, [])
 
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   useEffect(() => {
     // cd1 - custom dimension 1 - chainId
     googleAnalytics.set({ cd1: chainId ?? 0 })

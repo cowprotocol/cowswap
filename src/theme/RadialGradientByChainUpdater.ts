@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useEffect } from 'react'
 import { useDarkModeManager } from 'state/user/hooks'
 import { SupportedChainId } from '../constants/chains'
@@ -26,7 +26,7 @@ const setBackground = (newValues: TargetBackgroundStyles) =>
     }
   })
 export default function RadialGradientByChainUpdater(): null {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const [darkMode] = useDarkModeManager()
   // manage background color
   useEffect(() => {

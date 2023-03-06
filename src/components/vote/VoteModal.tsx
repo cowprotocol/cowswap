@@ -1,6 +1,6 @@
 import Modal from '@cow/common/pure/Modal'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { useContext, useState } from 'react'
 import { ArrowUpCircle, X } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -44,7 +44,7 @@ interface VoteModalProps {
 }
 
 export default function VoteModal({ isOpen, onDismiss, proposalId, voteOption }: VoteModalProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const voteCallback = useVoteCallback()
   const { votes: availableVotes } = useUserVotes()
 

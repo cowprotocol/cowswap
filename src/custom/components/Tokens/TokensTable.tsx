@@ -64,7 +64,7 @@ export default function TokenTable({
   prevQuery,
   debouncedQuery,
 }: TokenTableParams) {
-  // const { account } = useWeb3React()
+  // const { account } = useWalletInfo()
 
   const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)

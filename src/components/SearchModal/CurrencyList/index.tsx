@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'components/Card'
@@ -25,6 +24,7 @@ import { RowBetween, RowFixed } from '../../Row'
 import { MouseoverTooltip } from '../../Tooltip'
 import ImportRow from 'components/SearchModal/ImportRow'
 import { LoadingRows, MenuItem } from '../styleds'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -118,7 +118,7 @@ function CurrencyRow({
   showCurrencyAmount?: boolean
   eventProperties: Record<string, unknown>
 }) {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const key = currencyKey(currency)
   const selectedTokenList = useCombinedActiveList()
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency.isToken ? currency : undefined)

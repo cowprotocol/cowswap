@@ -1,5 +1,5 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from '@src/constants/chains'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
@@ -37,7 +37,7 @@ const EmptyState = ({ HeaderContent, SubHeaderContent }: EmptyStateProps) => (
 )
 
 export default function ProposalEmptyState() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   if (chainId && chainId !== SupportedChainId.MAINNET) {
     return (
       <EmptyState

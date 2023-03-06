@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { RowFixed } from 'components/Row'
 import { CHAIN_INFO } from 'constants/chainInfo'
-import { useWeb3React } from '@web3-react/core'
 import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'hooks/useGasPrice'
 import useMachineTimeMs from 'hooks/useMachineTime'
@@ -26,6 +25,7 @@ import {
   StyledPollingDot,
   StyledPollingNumber,
 } from '@src/components/Header/Polling'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from '@src/components/Header/Polling'
 
@@ -112,7 +112,7 @@ const DEFAULT_MS_BEFORE_WARNING = ms`10m`
 const NETWORK_HEALTH_CHECK_MS = ms`10s`
 
 export default function Polling() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const blockNumber = useBlockNumber()
   const [isMounting, setIsMounting] = useState(false)
   const [isHover, setIsHover] = useState(false)

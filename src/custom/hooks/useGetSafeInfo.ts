@@ -5,13 +5,15 @@ import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { retry, RetryOptions } from 'utils/retry'
 import { RetryResult } from '../types'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 
 export type GetSafeInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
 
 export function useGetSafeInfo(): GetSafeInfo {
-  const { chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const getSafeInfo = useCallback<GetSafeInfo>(
     (hash) => {

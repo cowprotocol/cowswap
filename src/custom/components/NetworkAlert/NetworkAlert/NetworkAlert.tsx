@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { getChainInfo } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 import { ArrowUpRight } from 'react-feather'
@@ -12,6 +11,7 @@ import { AutoRow } from 'components/Row'
 
 // mod imports
 import useTheme from 'hooks/useTheme'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const L2Icon = styled.img`
   width: 24px;
@@ -186,7 +186,7 @@ function shouldShowAlert(chainId: number | undefined): chainId is NetworkAlertCh
 }
 
 export function NetworkAlert() {
-  const { isActive, chainId } = useWeb3React() // mod
+  const { active: isActive, chainId } = useWalletInfo() // mod
   const [darkMode] = useDarkModeManager()
 
   const theme = useTheme() // mod

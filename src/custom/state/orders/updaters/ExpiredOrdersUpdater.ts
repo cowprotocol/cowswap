@@ -3,13 +3,13 @@ import { useExpiredOrders, useSetIsOrderRefundedBatch } from 'state/orders/hooks
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { EXPIRED_ORDERS_PENDING_TIME } from 'constants/index'
 import { EXPIRED_ORDERS_CHECK_POLL_INTERVAL } from 'state/orders/consts'
-import { useWeb3React } from '@web3-react/core'
 import { useEffect, useCallback, useRef } from 'react'
 import { getOrder } from '@cow/api/gnosisProtocol'
 import { SetIsOrderRefundedBatch } from 'state/orders/actions'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function ExpiredOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
 
   const expired = useExpiredOrders({ chainId })

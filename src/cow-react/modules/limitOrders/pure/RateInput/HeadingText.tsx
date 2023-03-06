@@ -25,7 +25,7 @@ export function HeadingText({ inputCurrency, currency, rateImpact }: Props) {
 
   return (
     <Wrapper>
-      Price per <TokenSymbol token={currency} />
+      Price of <TokenSymbol token={currency} />
       {<RateImpactIndicator inputCurrency={inputCurrency} rateImpact={rateImpact} />}
     </Wrapper>
   )

@@ -1,24 +1,10 @@
-import { useEffect, useState } from 'react'
-import { Dropdown } from '@cow/common/pure/Dropdown'
+import { Menu } from '@reach/menu-button'
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
+import { useEffect, useState } from 'react'
 import { GpModal as Modal } from '@cow/common/pure/Modal'
-
 import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
-import {
-  ListWrapper,
-  ListItem,
-  Wrapper,
-  Header,
-  Current,
-  ModalWrapper,
-  ModalHeader,
-  ModalFooter,
-  ModalContent,
-  CloseIcon,
-  CustomInput,
-  CustomLabel,
-} from './styled'
+import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary, ButtonSecondary } from '@src/components/Button'
 import {
@@ -128,46 +114,43 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     onDismiss()
   }, [onDismiss, selectCustomDeadline, value])
 
-  const list = (
-    <ListWrapper>
-      {limitOrdersDeadlines.map((item) => (
-        <li key={item.value}>
-          <ListItem onClick={() => setDeadline(item)}>
-            <Trans>{item.title}</Trans>
-          </ListItem>
-        </li>
-      ))}
-      <ListItem onClick={openModal}>
-        <Trans>Custom</Trans>
-      </ListItem>
-    </ListWrapper>
-  )
-
   return (
-    <Wrapper>
-      <Header>
+    <styledEl.Wrapper>
+      <styledEl.Label>
         <Trans>Expiry</Trans>
-      </Header>
-      <Dropdown content={list}>
-        <Current ref={currentDeadlineNode} isCustom={!!customDeadline}>
+      </styledEl.Label>
+      <Menu>
+        <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>
           <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
           <ChevronDown size="18" />
-        </Current>
-      </Dropdown>
+        </styledEl.Current>
+        <styledEl.ListWrapper>
+          {limitOrdersDeadlines.map((item) => (
+            <li key={item.value}>
+              <styledEl.ListItem onSelect={() => setDeadline(item)}>
+                <Trans>{item.title}</Trans>
+              </styledEl.ListItem>
+            </li>
+          ))}
+          <styledEl.ListItem onSelect={openModal}>
+            <Trans>Custom</Trans>
+          </styledEl.ListItem>
+        </styledEl.ListWrapper>
+      </Menu>
 
       {/* Custom deadline modal */}
       <Modal isOpen={isOpen} onDismiss={onDismiss}>
-        <ModalWrapper>
-          <ModalHeader>
+        <styledEl.ModalWrapper>
+          <styledEl.ModalHeader>
             <h3>
               <Trans>Set custom deadline</Trans>
             </h3>
-            <CloseIcon onClick={onDismiss} />
-          </ModalHeader>
-          <ModalContent>
-            <CustomLabel htmlFor="custom-deadline">
+            <styledEl.CloseIcon onClick={onDismiss} />
+          </styledEl.ModalHeader>
+          <styledEl.ModalContent>
+            <styledEl.CustomLabel htmlFor="custom-deadline">
               <Trans>Choose a custom deadline for your limit order:</Trans>
-              <CustomInput
+              <styledEl.CustomInput
                 type="datetime-local"
                 id="custom-deadline"
                 onChange={onChange}
@@ -185,22 +168,22 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
                   event.target.defaultValue = ''
                 }}
               />
-            </CustomLabel>
+            </styledEl.CustomLabel>
             {/* TODO: style me!!! */}
             {error && (
               <div>
                 <Trans>{error}</Trans>
               </div>
             )}
-          </ModalContent>
-          <ModalFooter>
+          </styledEl.ModalContent>
+          <styledEl.ModalFooter>
             <ButtonSecondary onClick={onDismiss}>Cancel</ButtonSecondary>
             <ButtonPrimary onClick={setCustomDeadline} disabled={!!error}>
               <Trans>Set custom date</Trans>
             </ButtonPrimary>
-          </ModalFooter>
-        </ModalWrapper>
+          </styledEl.ModalFooter>
+        </styledEl.ModalWrapper>
       </Modal>
-    </Wrapper>
+    </styledEl.Wrapper>
   )
 }
