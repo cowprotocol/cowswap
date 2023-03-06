@@ -1,5 +1,5 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { DAI_GOERLI, USDC_GOERLI } from '../../../../custom/utils/goerli/constants'
+import { DAI_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'
 import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
 import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 import { calculateOrderExecutionStatus, CalculateOrderExecutionStatusParams } from './calculateOrderExecutionStatus'
