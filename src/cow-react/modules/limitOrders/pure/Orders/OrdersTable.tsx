@@ -1,7 +1,7 @@
 import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
@@ -228,6 +228,21 @@ export function OrdersTable({
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
   }, [])
 
+  // Explainer banner for orders 
+  const [showOrdersExplainerBanner, setShowOrdersExplainerBanner] = useState(() => {
+    const item = localStorage.getItem('showOrdersExplainerBanner');
+    return item !== null ? item === 'true' : true;
+  });
+
+  const closeOrdersExplainerBanner = (): void => {
+    setShowOrdersExplainerBanner(false);
+    localStorage.setItem('showOrdersExplainerBanner', 'false');
+  };
+
+  useEffect(() => {
+    localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString());
+  }, [showOrdersExplainerBanner]);
+
   return (
     <>
       <TableBox>
@@ -311,7 +326,7 @@ export function OrdersTable({
           </Header>
 
           {/* Show explainer modal if user hasn't closed it */}
-          {isOpenOrdersTab && !localStorage.getItem('showOrdersExplainerBanner') && (
+          {isOpenOrdersTab && showOrdersExplainerBanner && (
             <OrdersExplainerBanner>
               <div>
                 <SVG src={iconOrderExecution} width={36} height={36} />
@@ -320,7 +335,7 @@ export function OrdersTable({
                 </b>
               </div>
               <span>{OrderExecutionStatusList()}</span>
-              <StyledCloseIcon onClick={() => localStorage.setItem('showOrdersExplainerBanner', 'false')} />
+              <StyledCloseIcon onClick={closeOrdersExplainerBanner} />
             </OrdersExplainerBanner>
           )}
 
