@@ -39,7 +39,16 @@ export function calculateOrderExecutionStatus({
 
   const percentageDifference = executionPrice.divide(referencePrice).subtract(ONE).multiply(multiplier)
 
-  if (absolutePercentageDifference.lessThan(HALF_PERCENT)) {
+  // TODO: remove debug logs
+  console.debug(`calculateOrderExecutionStatus`, {
+    pair: `${marketPrice.baseCurrency.symbol}/${marketPrice.quoteCurrency.symbol}`,
+    limitPrice: limitPrice.toFixed(7),
+    marketPrice: marketPrice.toFixed(7),
+    referencePrice: referencePrice.toFixed(7),
+    executionPrice: executionPrice.toFixed(7),
+    percentageDifference: percentageDifference.multiply(new Fraction(100)).toFixed(2) + '%',
+  })
+
   if (percentageDifference.lessThan(HALF_PERCENT)) {
     return 'veryClose'
   } else if (percentageDifference.greaterThan(FIVE_PERCENT)) {
