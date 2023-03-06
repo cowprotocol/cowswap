@@ -3,7 +3,7 @@ import { OrderCreation } from 'utils/signatures'
 import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { SerializedToken } from '@src/state/user/types'
-import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { UID, EnrichedOrder, OrderClass } from '@cowprotocol/cow-sdk'
 

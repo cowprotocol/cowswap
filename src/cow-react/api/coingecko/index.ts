@@ -1,5 +1,4 @@
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
-import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SWR_OPTIONS } from 'constants/index'
 import useSWR from 'swr'

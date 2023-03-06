@@ -5,7 +5,7 @@ import { Token } from '@uniswap/sdk-core'
 
 import { useAddOrUpdateOrders } from 'state/orders/hooks'
 import { useAllTokens } from 'hooks/Tokens'
-import { Order, OrderClass, OrderStatus } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { ChainId } from 'state/lists/actions'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
@@ -13,7 +13,7 @@ import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
 import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
-import { EnrichedOrder, EthflowData } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, EthflowData, OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 function _getTokenFromMapping(

@@ -1,12 +1,10 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Price } from '@uniswap/sdk-core'
-
+import { Currency, Price } from '@uniswap/sdk-core'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { PENDING_ORDERS_BUFFER } from 'constants/index'
 import { Order } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
-import { PriceInformation } from '@cow/types'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
+import JSBI from 'jsbi'
 
 export type OrderTransitionStatus =
   | 'unknown'
@@ -149,4 +147,29 @@ export function isOrderUnfillable(
   // Higher prices are worse, thus, the order will be unfillable whenever percentage difference is positive
   // Check whether given price difference is > Price delta %, to allow for small market variations
   return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
+}
+
+export function getOrderExecutionPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
+  if (order.kind === OrderKind.SELL) {
+    return new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), price.toString())
+  }
+
+  return new Price(
+    order.inputToken,
+    order.outputToken,
+    JSBI.add(JSBI.BigInt(price.toString()), JSBI.BigInt(feeAmount)),
+    order.buyAmount.toString()
+  )
+}
+export function getOrderMarketPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
+  if (order.kind === OrderKind.SELL) {
+    return new Price(
+      order.inputToken,
+      order.outputToken,
+      JSBI.subtract(JSBI.BigInt(order.sellAmount.toString()), JSBI.BigInt(feeAmount)),
+      price.toString()
+    )
+  }
+
+  return new Price(order.inputToken, order.outputToken, price.toString(), order.buyAmount.toString())
 }

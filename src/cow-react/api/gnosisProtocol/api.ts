@@ -12,6 +12,13 @@ import { orderBookApi } from '@cow/cowSdk'
 import { OrderQuoteRequest, PriceQuality, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 
+const fetchRateLimitted = fetchWithRateLimit({
+  rateLimit: {
+    tokensPerInterval: 5,
+    interval: 'second',
+  },
+})
+
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
     return {
