@@ -188,3 +188,7 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
     }
   }};
 `
+
+export const ExecuteInformationTooltip = styled.div`
+  display: flex;
+`

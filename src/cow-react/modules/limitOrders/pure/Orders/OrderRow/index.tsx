@@ -187,14 +187,23 @@ export function OrderRow({
         <styledEl.CellElement hasBackground>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
-            <>
+            <MouseoverTooltipContent
+              wrap={true}
+              content={
+                <styledEl.ExecuteInformationTooltip>
+                  Market price needs to go down 🔻 by <b>17.70 USDC</b> <i>(~1.15%)</i> to execute your order.
+                </styledEl.ExecuteInformationTooltip>
+              }
+              placement="bottom"
+            >
               <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
               <TokenAmount
                 lowVolumeWarning={true}
                 amount={executionPriceInversed}
                 tokenSymbol={executionPriceInversed?.quoteCurrency}
               />
-            </>
+              
+            </MouseoverTooltipContent>
           ) : prices === null ? (
             '-'
           ) : (
