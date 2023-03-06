@@ -1,5 +1,5 @@
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import * as styledEl from './styled'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'

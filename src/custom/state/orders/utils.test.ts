@@ -3,7 +3,7 @@
  */
 
 import { PriceInformation } from '@cow/types'
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
 

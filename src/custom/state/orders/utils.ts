@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Price } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
@@ -6,7 +6,7 @@ import { PENDING_ORDERS_BUFFER } from 'constants/index'
 import { Order } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { PriceInformation } from '@cow/types'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 export type OrderTransitionStatus =
   | 'unknown'

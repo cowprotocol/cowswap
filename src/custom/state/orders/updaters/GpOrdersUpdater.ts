@@ -14,8 +14,7 @@ import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
 import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
-import { OrderBalance } from '@cowprotocol/contracts/src/ts/order'
+import { EnrichedOrder, EthflowData } from '@cowprotocol/cow-sdk'
 
 function _getTokenFromMapping(
   address: string,
@@ -51,10 +50,12 @@ function _transformGpOrderToStoreOrder(
     buyToken,
     creationDate: creationTime,
     receiver,
-    ethflowData,
+    ethflowData: ethflowDataRaw,
     owner,
     onchainOrderData,
   } = order
+  // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
+  const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = ethflowDataRaw
 
   const isEthFlow = Boolean(ethflowData)
 
@@ -94,9 +95,8 @@ function _transformGpOrderToStoreOrder(
     validTo: ethflowData?.userValidTo || order.validTo,
     isRefunded: ethflowData?.isRefunded, // TODO: this will be removed from the API
     refundHash: ethflowData?.refundTxHash || undefined,
-    // TODO: dirty cast, the Order interface should be refactored
-    buyTokenBalance: order.buyTokenBalance as any as OrderBalance,
-    sellTokenBalance: order.sellTokenBalance as any as OrderBalance,
+    buyTokenBalance: order.buyTokenBalance,
+    sellTokenBalance: order.sellTokenBalance,
   }
   // The function to compute the summary needs the Order instance to exist already
   // That's why it's not used before and an empty string is set instead
