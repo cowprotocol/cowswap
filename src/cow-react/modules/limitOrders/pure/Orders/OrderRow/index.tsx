@@ -56,14 +56,15 @@ export function LowVolumeWarningContent() {
   const theme = useContext(ThemeContext)
 
   return (
-    <styledEl.WarningIndicator>
+    <styledEl.WarningIndicator hasBackground={false}>
       <MouseoverTooltipContent
         wrap={true}
         bgColor={theme.alert}
         content={
           <styledEl.WarningContent>
-            For this order, network fees would be 52.11% (12.34 USDC) of your sell amount! Therefore, your order is
-            unlikely to execute. Learn more
+            <h3>Order unlikely to execute</h3>
+            For this order, network fees would be <b>52.11%</b> <b><i>(12.34 USDC)</i></b> of your sell amount! Therefore, your order is
+            unlikely to execute.
           </styledEl.WarningContent>
         }
         placement="bottom"
@@ -76,6 +77,8 @@ export function LowVolumeWarningContent() {
 
 // TODO: temporary component, name and location. If keeping it, move it to its own module, rename, etc, etc
 export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: boolean }>`
+  display: flex;
+  align-items: center;
   color: ${({ lowVolumeWarning, theme }) =>
     lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
 `
@@ -85,7 +88,23 @@ export function LowVolumeWarningToken(props: TokenAmountProps & { lowVolumeWarni
 
   return (
     <LowVolumeWarningTokenWrapper lowVolumeWarning={lowVolumeWarning}>
+      
+      <MouseoverTooltipContent
+              wrap={true}
+              content={
+                <styledEl.ExecuteInformationTooltip>
+                  Market price needs to go down/up 📉📈 by
+                  <b>17.70 USDC</b>&nbsp;
+                  <b>
+                    <i>(~1.15%)</i>
+                  </b>
+                  &nbsp;to execute your order.
+                </styledEl.ExecuteInformationTooltip>
+              }
+              placement="bottom"
+            >
       <TokenAmount {...rest} />
+      </MouseoverTooltipContent>
 
       {lowVolumeWarning && <LowVolumeWarningContent />}
     </LowVolumeWarningTokenWrapper>
@@ -94,14 +113,14 @@ export function LowVolumeWarningToken(props: TokenAmountProps & { lowVolumeWarni
 
 const BalanceWarning = (symbol: string) => (
   <styledEl.WarningParagraph>
-    <h3>Insufficient balance for this limit order</h3>
+    <h3>Insufficient balance</h3>
     <p>
       Your wallet currently has insufficient{' '}
       <strong>
         <TokenSymbol token={{ symbol }} />
       </strong>{' '}
-      balance to execute this order.
-      <br />
+      balance to execute this limit order.
+      <br /><br />
       The order is still open and will become executable when you top up your{' '}
       <strong>
         <TokenSymbol token={{ symbol }} />
@@ -229,20 +248,7 @@ export function OrderRow({
         <styledEl.CellElement hasBackground>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
-            <MouseoverTooltipContent
-              wrap={true}
-              content={
-                <styledEl.ExecuteInformationTooltip>
-                  Market price needs to go down/up 📉📈 by
-                  <b>17.70 USDC</b>&nbsp;
-                  <b>
-                    <i>(~1.15%)</i>
-                  </b>
-                  &nbsp;to execute your order.
-                </styledEl.ExecuteInformationTooltip>
-              }
-              placement="bottom"
-            >
+           
               <styledEl.ExecuteCellWrapper>
                 <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
                 <LowVolumeWarningToken
@@ -252,7 +258,7 @@ export function OrderRow({
                   opacitySymbol
                 />
               </styledEl.ExecuteCellWrapper>
-            </MouseoverTooltipContent>
+
           ) : prices === null ? (
             '-'
           ) : (
