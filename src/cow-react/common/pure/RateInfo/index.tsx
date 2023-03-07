@@ -32,6 +32,7 @@ export interface RateInfoProps {
   setSmartQuoteSelectionOnce?: boolean
   isInversedState?: [boolean, Dispatch<SetStateAction<boolean>>]
   rateInfoParams: RateInfoParams
+  opacitySymbol?: boolean
 }
 
 const Wrapper = styled.div<{ stylized: boolean }>`
@@ -124,6 +125,7 @@ export function RateInfo({
   noLabel = false,
   prependSymbol = true,
   isInversedState,
+  opacitySymbol = false,
 }: RateInfoProps) {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, inversedActiveRateFiatAmount } =
     rateInfoParams
@@ -206,7 +208,7 @@ export function RateInfo({
                 1 <TokenSymbol token={rateInputCurrency} /> ={' '}
               </>
             )}
-            <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} />
+            <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} opacitySymbol={opacitySymbol} />
           </span>{' '}
           {!!fiatAmount && (
             <FiatRate>

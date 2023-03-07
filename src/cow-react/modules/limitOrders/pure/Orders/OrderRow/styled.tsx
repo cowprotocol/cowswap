@@ -1,5 +1,4 @@
 import styled from 'styled-components/macro'
-import { Wrapper as TokenWrapper } from '@cow/common/pure/TokenAmount'
 import { transparentize } from 'polished'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
 import { OrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
@@ -44,11 +43,7 @@ export const WarningParagraph = styled.div`
   }
 `
 
-export const RateValue = styled.span`
-  ${TokenWrapper} > span {
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
-  }
-`
+export const RateValue = styled.span``
 
 export const StatusBox = styled.div`
   display: flex;

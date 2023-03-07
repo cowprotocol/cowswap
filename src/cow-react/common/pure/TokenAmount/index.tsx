@@ -14,6 +14,10 @@ export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: bool
     lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
 `
 
+const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
+  color: ${({ opacitySymbol, theme }) => transparentize(opacitySymbol ? 0.3 : 0, theme.text1)};
+`
+
 export interface TokenAmountProps {
   amount: Nullish<FractionLike>
   defaultValue?: string
@@ -21,6 +25,7 @@ export interface TokenAmountProps {
   className?: string
   hideTokenSymbol?: boolean
   round?: boolean
+  opacitySymbol?: boolean
 }
 
 const highlight = !!FeatureFlag.get(AMOUNTS_FORMATTING_FEATURE_FLAG)
@@ -32,6 +37,7 @@ export function TokenAmount({
   tokenSymbol,
   round,
   hideTokenSymbol,
+  opacitySymbol,
 }: TokenAmountProps) {
   const title =
     FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION) + (tokenSymbol ? ` ${tokenSymbol.symbol}` : '')
@@ -49,7 +55,7 @@ export function TokenAmount({
   return (
     <Wrapper title={title} className={className} highlight={highlight}>
       {formatTokenAmount(round ? FractionUtils.round(amount) : amount) || defaultValue}
-      <span>{tokenSymbolElement}</span>
+      <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>
   )
 }
