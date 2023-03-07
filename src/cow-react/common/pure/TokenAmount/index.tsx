@@ -6,7 +6,7 @@ import { LONG_PRECISION } from 'constants/index'
 import { FeatureFlag } from '@cow/utils/featureFlags'
 import styled from 'styled-components/macro'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '@cow/constants/featureFlags'
-import { darken } from 'polished'
+import { darken, transparentize } from 'polished'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
