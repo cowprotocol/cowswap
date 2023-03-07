@@ -44,6 +44,8 @@ import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
+import AlertTriangle from 'assets/cow-swap/alert.svg'
+import SVG from 'react-inlinesvg'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -289,6 +291,10 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {!isWrapOrUnwrap && (
                 <styledEl.FooterBox>
                   <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                  <styledEl.SmallVolumeWarningBanner>
+                  <SVG src={AlertTriangle} description="Alert" />
+                  <span>Small orders are unlikely to be executed. Try to increase your sell amount for better results.</span>
+                  </styledEl.SmallVolumeWarningBanner>
                 </styledEl.FooterBox>
               )}
 
