@@ -46,6 +46,7 @@ import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
+import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -330,6 +331,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         />
       )}
       {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
+
+      <InfoBanner/>
     </>
   )
 }, limitOrdersPropsChecker)
