@@ -88,22 +88,22 @@ export function LowVolumeWarningToken(props: TokenAmountProps & { lowVolumeWarni
 
   return (
     <LowVolumeWarningTokenWrapper lowVolumeWarning={lowVolumeWarning}>
-      
       <MouseoverTooltipContent
-              wrap={true}
-              content={
-                <styledEl.ExecuteInformationTooltip>
-                  Market price needs to go down/up 📉📈 by
-                  <b>17.70 USDC</b>&nbsp;
-                  <b>
-                    <i>(~1.15%)</i>
-                  </b>
-                  &nbsp;to execute your order.
-                </styledEl.ExecuteInformationTooltip>
-              }
-              placement="bottom"
-            >
-      <TokenAmount {...rest} />
+        wrap={true}
+        content={
+          <styledEl.ExecuteInformationTooltip>
+            {/* TODO: Add logic to get the down/up + icon and the values below */}
+            Market price needs to go down/up 📉📈 by
+            <b>17.70 USDC</b>&nbsp;
+            <b>
+              <i>(~1.15%)</i>
+            </b>
+            &nbsp;to execute your order.
+          </styledEl.ExecuteInformationTooltip>
+        }
+        placement="bottom"
+      >
+        <TokenAmount {...rest} />
       </MouseoverTooltipContent>
 
       {lowVolumeWarning && <LowVolumeWarningContent />}
@@ -243,22 +243,20 @@ export function OrderRow({
       )}
 
       {/* Executes at */}
-      {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
       {isOpenOrdersTab && (
         <styledEl.CellElement hasBackground>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
-           
-              <styledEl.ExecuteCellWrapper>
-                <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
-                <LowVolumeWarningToken
-                  lowVolumeWarning={true}
-                  amount={executionPriceInversed}
-                  tokenSymbol={executionPriceInversed?.quoteCurrency}
-                  opacitySymbol
-                />
-              </styledEl.ExecuteCellWrapper>
-
+            <styledEl.ExecuteCellWrapper>
+              <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
+              <LowVolumeWarningToken
+                // TODO: Add condition to show the lowVolumeWarning.
+                lowVolumeWarning={true}
+                amount={executionPriceInversed}
+                tokenSymbol={executionPriceInversed?.quoteCurrency}
+                opacitySymbol
+              />
+            </styledEl.ExecuteCellWrapper>
           ) : prices === null ? (
             '-'
           ) : (
