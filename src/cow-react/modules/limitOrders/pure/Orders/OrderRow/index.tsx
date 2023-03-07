@@ -63,8 +63,11 @@ export function LowVolumeWarningContent() {
         content={
           <styledEl.WarningContent>
             <h3>Order unlikely to execute</h3>
-            For this order, network fees would be <b>52.11%</b> <b><i>(12.34 USDC)</i></b> of your sell amount! Therefore, your order is
-            unlikely to execute.
+            For this order, network fees would be <b>52.11%</b>{' '}
+            <b>
+              <i>(12.34 USDC)</i>
+            </b>{' '}
+            of your sell amount! Therefore, your order is unlikely to execute.
           </styledEl.WarningContent>
         }
         placement="bottom"
@@ -120,7 +123,8 @@ const BalanceWarning = (symbol: string) => (
         <TokenSymbol token={{ symbol }} />
       </strong>{' '}
       balance to execute this limit order.
-      <br /><br />
+      <br />
+      <br />
       The order is still open and will become executable when you top up your{' '}
       <strong>
         <TokenSymbol token={{ symbol }} />

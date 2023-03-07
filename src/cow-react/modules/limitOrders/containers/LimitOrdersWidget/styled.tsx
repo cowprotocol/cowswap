@@ -92,7 +92,7 @@ export const StyledRateInfo = styled(RateInfo)`
 export const SmallVolumeWarningBanner = styled.div`
   display: flex;
   align-items: center;
-  background: ${({ theme }) => theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert)};
+  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
   color: ${({ theme }) => theme.alert};
   gap: 10px;
   border-radius: 10px;

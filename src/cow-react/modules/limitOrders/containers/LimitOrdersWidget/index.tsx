@@ -297,7 +297,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {/* TODO: Move this component inside LimitOrdersWarnings */}
               <styledEl.SmallVolumeWarningBanner>
                 <SVG src={AlertTriangle} description="Alert" />
-                <span>Small orders are unlikely to be executed. Try to increase your sell amount for better results.</span>
+                <span>
+                  Small orders are unlikely to be executed. Try to increase your sell amount for better results.
+                </span>
               </styledEl.SmallVolumeWarningBanner>
 
               <LimitOrdersWarnings priceImpact={priceImpact} />

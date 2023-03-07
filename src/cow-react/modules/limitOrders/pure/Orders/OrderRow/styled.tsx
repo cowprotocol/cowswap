@@ -3,10 +3,15 @@ import { transparentize } from 'polished'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
 import { OrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 
-export const WarningIndicator = styled.button<{hasBackground?: boolean}>`
+export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   --height: 28px;
   margin: 0;
-  background: ${({ theme, hasBackground = true }) => hasBackground ? (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert)) : 'transparent'};
+  background: ${({ theme, hasBackground = true }) =>
+    hasBackground
+      ? theme.darkMode
+        ? transparentize(0.9, theme.alert)
+        : transparentize(0.85, theme.alert)
+      : 'transparent'};
   color: ${({ theme }) => theme.alert};
   line-height: 0;
   border: 0;
