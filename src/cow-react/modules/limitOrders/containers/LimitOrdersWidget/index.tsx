@@ -291,12 +291,14 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {!isWrapOrUnwrap && (
                 <styledEl.FooterBox>
                   <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
-                  <styledEl.SmallVolumeWarningBanner>
-                  <SVG src={AlertTriangle} description="Alert" />
-                  <span>Small orders are unlikely to be executed. Try to increase your sell amount for better results.</span>
-                  </styledEl.SmallVolumeWarningBanner>
                 </styledEl.FooterBox>
               )}
+
+              {/* TODO: Move this component inside LimitOrdersWarnings */}
+              <styledEl.SmallVolumeWarningBanner>
+                <SVG src={AlertTriangle} description="Alert" />
+                <span>Small orders are unlikely to be executed. Try to increase your sell amount for better results.</span>
+              </styledEl.SmallVolumeWarningBanner>
 
               <LimitOrdersWarnings priceImpact={priceImpact} />
 

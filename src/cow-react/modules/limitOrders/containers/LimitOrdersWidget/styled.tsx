@@ -96,7 +96,7 @@ export const SmallVolumeWarningBanner = styled.div`
   color: ${({ theme }) => theme.alert};
   gap: 10px;
   border-radius: 10px;
-  margin: 12px auto 0;
+  margin: 8px auto 0;
   padding: 16px 12px;
   font-size: 14px;
   line-height: 1.2;
