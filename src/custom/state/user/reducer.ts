@@ -102,7 +102,6 @@ function _initialStatePerChain(chainId: number) {
   )
 }
 
-// TODO: fix SDK enum build
 const ALL_SUPPORTED_CHAIN_IDS = [SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN, SupportedChainId.GOERLI]
 
 function _initialSavedTokensState() {

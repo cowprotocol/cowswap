@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { APP_DATA_HASH } from 'constants/index'
 import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
@@ -9,7 +9,7 @@ import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { orderBookApi } from '@cow/cowSdk'
-import { OrderQuoteRequest, PriceQuality, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 
 const fetchRateLimitted = fetchWithRateLimit({
@@ -104,12 +104,7 @@ function _mapNewToLegacyParams(params: FeeQuoteParams): OrderQuoteRequest {
     appData: getAppDataHash(),
     validTo,
     partiallyFillable: false,
-    priceQuality:
-      priceQuality === PriceQuality.FAST
-        ? PriceQuality.FAST
-        : priceQuality === PriceQuality.OPTIMAL
-        ? PriceQuality.OPTIMAL
-        : undefined,
+    priceQuality: priceQuality ? (priceQuality as PriceQuality) : undefined,
   }
 
   if (isEthFlow) {
