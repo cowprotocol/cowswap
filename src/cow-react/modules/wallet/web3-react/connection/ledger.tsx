@@ -34,8 +34,6 @@ export const ledgerConnection: Web3ReactConnection = {
 export function LedgerOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   const isActive = useIsActiveWallet(ledgerConnection)
 
-  console.log('debug', isActive, ledgerConnection)
-
   return (
     <ConnectWalletOption
       {...BASE_PROPS}

@@ -14,8 +14,6 @@ export interface LedgerOptions {
   rpc?: { [chainId: number]: string }
 }
 
-const currentChainId = 1
-
 export class LedgerConnector extends Connector {
   public provider?: Provider
   private readonly options: LedgerOptions
@@ -56,14 +54,12 @@ export class LedgerConnector extends Connector {
   }
 
   async getChainId(): Promise<number> {
-    return currentChainId
-    // TODO: fix me
-    // const provider = await this.getProvider()
-    // const chainId = (await provider.request({
-    //   method: 'eth_networkId',
-    // })) as string
-    //
-    // return +chainId
+    const provider = await this.getProvider()
+    const chainId = (await provider.request({
+      method: 'net_version',
+    })) as string
+
+    return +chainId
   }
 
   async activate() {
