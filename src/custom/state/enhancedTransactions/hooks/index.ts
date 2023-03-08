@@ -4,7 +4,7 @@ import { useAppDispatch } from 'state/hooks'
 import { addTransaction, AddTransactionParams } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { useAllTransactions } from 'state/enhancedTransactions/hooks'
-import { useIsGnosisSafeApp, useWalletInfo } from '@cow/modules/wallet'
+import { useIsGnosisApp, useWalletInfo } from '@cow/modules/wallet'
 
 export * from './TransactionHooksMod'
 
@@ -17,13 +17,13 @@ export type TransactionAdder = (params: AddTransactionHookParams) => void
 export function useTransactionAdder(): TransactionAdder {
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
-  const isGnosisSafeApp = useIsGnosisSafeApp()
+  const isGnosisApp = useIsGnosisApp()
 
   return useCallback(
     (addTransactionParams: AddTransactionHookParams) => {
       if (!account || !chainId) return
 
-      const hashType = isGnosisSafeApp ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
+      const hashType = isGnosisApp ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX
       if (!addTransactionParams.hash) {
         throw Error('No transaction hash found')
       }
@@ -36,7 +36,7 @@ export function useTransactionAdder(): TransactionAdder {
         })
       )
     },
-    [dispatch, chainId, account, isGnosisSafeApp]
+    [dispatch, chainId, account, isGnosisApp]
   )
 }
 
