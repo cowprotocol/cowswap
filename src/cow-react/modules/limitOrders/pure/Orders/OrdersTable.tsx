@@ -169,7 +169,7 @@ const OrdersExplainerBanner = styled.div`
   background: ${({ theme }) => theme.gradient1};
   width: fit-content;
   gap: 16px;
-  grid-template-columns: minmax(460px, 4fr) minmax(426px, 3.7fr) 24px;
+  grid-template-columns: minmax(462px, 4fr) minmax(426px, 3.7fr) 24px;
   grid-template-rows: minmax(90px, 1fr);
   align-items: center;
   border-top: 1px solid transparent;
