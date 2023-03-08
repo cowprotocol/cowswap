@@ -178,6 +178,7 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
   height: var(--size);
   border-radius: var(--size);
   display: inline-block;
+  margin: 0 3px 0 0;
   background: ${({ status, theme }) => {
     switch (status) {
       case 'veryClose':

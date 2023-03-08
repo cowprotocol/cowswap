@@ -84,9 +84,15 @@ export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: bool
   align-items: center;
   color: ${({ lowVolumeWarning, theme }) =>
     lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
+
+    // Popover container override
+    > div > div {
+      display: flex;
+      align-items: center;
+    }
 `
 
-export function LowVolumeWarningToken(props: TokenAmountProps & { lowVolumeWarning: boolean }) {
+export function LowVolumeWarningToken(props: TokenAmountProps & { executeIndicator: React.ReactNode, lowVolumeWarning: boolean }) {
   const { lowVolumeWarning, ...rest } = props
 
   return (
@@ -106,6 +112,7 @@ export function LowVolumeWarningToken(props: TokenAmountProps & { lowVolumeWarni
         }
         placement="bottom"
       >
+        {props.executeIndicator}
         <TokenAmount {...rest} />
       </MouseoverTooltipContent>
 
@@ -252,9 +259,9 @@ export function OrderRow({
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <styledEl.ExecuteCellWrapper>
-              <styledEl.ExecuteIndicator status={executionOrderStatus} />{' '}
               <LowVolumeWarningToken
                 // TODO: Add condition to show the lowVolumeWarning.
+                executeIndicator={<styledEl.ExecuteIndicator status={executionOrderStatus} />}
                 lowVolumeWarning={true}
                 amount={executionPriceInversed}
                 tokenSymbol={executionPriceInversed?.quoteCurrency}
