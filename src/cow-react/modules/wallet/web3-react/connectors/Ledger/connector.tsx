@@ -65,22 +65,30 @@ export class LedgerConnector extends Connector {
   async activate() {
     if (this.isActivated) return
 
-    const provider = new LedgerProvider(this.options)
+    try {
+      const provider = new LedgerProvider(this.options)
 
-    const engine = await provider.activate()
+      const engine = await provider.activate()
 
-    this.provider = engine as any
-    this.providerRequests.forEach((callback) => {
-      callback(engine as any)
-    })
-    this.providerRequests = []
+      this.provider = engine as any
+      this.providerRequests.forEach((callback) => {
+        callback(engine as any)
+      })
+      this.providerRequests = []
 
-    const accounts = await this.getAccounts()
-    const chainId = await this.getChainId()
+      const accounts = await this.getAccounts()
+      const chainId = await this.getChainId()
 
-    this.isActivated = true
+      this.isActivated = true
 
-    return this.actions.update({ chainId, accounts })
+      return this.actions.update({ chainId, accounts })
+    } catch (error) {
+      if (error.statusCode === 21781) {
+        throw Error('Please unlock your ledger device first and try again!')
+      }
+
+      throw error
+    }
   }
 
   async connectEagerly(): Promise<void> {
