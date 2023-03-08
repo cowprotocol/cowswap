@@ -43,17 +43,20 @@ export function useOnCurrencySelection(): CurrencySelectionCallback {
       const { inputCurrencyId, outputCurrencyId } = tradeState.state
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
-      if (field === Field.INPUT) {
-        navigate(chainId, {
-          inputCurrencyId: tokenSymbolOrAddress,
-          outputCurrencyId,
-        })
-      } else {
-        navigate(chainId, {
-          inputCurrencyId,
-          outputCurrencyId: tokenSymbolOrAddress,
-        })
-      }
+      const targetInputCurrencyId = field === Field.INPUT ? tokenSymbolOrAddress : inputCurrencyId
+      const targetOutputCurrencyId = field === Field.INPUT ? outputCurrencyId : tokenSymbolOrAddress
+      const areCurrenciesTheSame = targetInputCurrencyId === targetOutputCurrencyId
+
+      navigate(
+        chainId,
+        // Just invert tokens when user selected the same token
+        areCurrenciesTheSame
+          ? { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId }
+          : {
+              inputCurrencyId: targetInputCurrencyId,
+              outputCurrencyId: targetOutputCurrencyId,
+            }
+      )
 
       stateUpdateCallback?.()
     },

@@ -123,7 +123,7 @@ export default function Modal({
               style={props}
               onDismiss={onDismiss}
               initialFocusRef={initialFocusRef}
-              unstable_lockFocusAcrossFrames={false}
+              dangerouslyBypassFocusLock={true}
             >
               <StyledDialogContent
                 {...(isMobile
