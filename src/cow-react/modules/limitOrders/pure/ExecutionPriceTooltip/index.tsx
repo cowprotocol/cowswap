@@ -41,9 +41,10 @@ export function RateTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps) {
     <styledEl.Content>
       <p>
         Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.{' '}
-        <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
+        {/* TODO: add proper link to FAQ */}
+        {/* <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
           Learn more.
-        </a>
+        </a> */}
       </p>
 
       {isOpenOrdersTab && (
