@@ -66,7 +66,7 @@ export function RateInput() {
   const handleSetMarketPrice = useCallback(() => {
     updateRate({
       activeRate: isFractionFalsy(marketRate) ? initialRate : marketRate,
-      isTypedValue: false,
+      isTypedValue: true,
       isRateFromUrl: false,
     })
   }, [marketRate, initialRate, updateRate])

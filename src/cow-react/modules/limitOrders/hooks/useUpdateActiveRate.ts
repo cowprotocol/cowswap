@@ -19,7 +19,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateRateState = useUpdateAtom(updateLimitRateAtom)
 
-  const { isRateFromUrl: currentIsRateFromUrl } = rateState
+  const { isRateFromUrl: currentIsRateFromUrl, isTypedValue } = rateState
 
   return useCallback(
     (update: RateUpdateParams) => {
@@ -30,6 +30,10 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       if (activeRate) {
         // Don't update amounts when rate is set from URL. See useSetupLimitOrderAmountsFromUrl()
         if (currentIsRateFromUrl || isRateFromUrl) {
+          return
+        }
+        // Don't update amounts when the limit price was entered by user
+        if (isTypedValue && !update.isTypedValue) {
           return
         }
 
@@ -57,6 +61,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       updateRateState,
       updateLimitOrdersState,
       currentIsRateFromUrl,
+      isTypedValue,
     ]
   )
 }

@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState } from 'react'
-import { useUpdateAtom } from 'jotai/utils'
-import { LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import usePrevious from 'hooks/usePrevious'
@@ -11,6 +11,7 @@ import { Writeable } from '@cow/types'
 export function InitialPriceUpdater() {
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
+  const { isTypedValue } = useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
 
   const [isInitialPriceSet, setIsInitialPriceSet] = useState(false)
@@ -24,12 +25,12 @@ export function InitialPriceUpdater() {
       isLoading: isInitialPriceSet ? false : isLoading,
     }
 
-    if (!isInitialPriceSet) {
+    if (!isTypedValue && !isInitialPriceSet) {
       update.isTypedValue = false
     }
 
     updateLimitRateState(update)
-  }, [isInitialPriceSet, price, isLoading, updateLimitRateState])
+  }, [isTypedValue, isInitialPriceSet, price, isLoading, updateLimitRateState])
 
   // Set initial price once
   useLayoutEffect(() => {
