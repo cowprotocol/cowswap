@@ -85,14 +85,16 @@ export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: bool
   color: ${({ lowVolumeWarning, theme }) =>
     lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
 
-    // Popover container override
-    > div > div {
-      display: flex;
-      align-items: center;
-    }
+  // Popover container override
+  > div > div {
+    display: flex;
+    align-items: center;
+  }
 `
 
-export function LowVolumeWarningToken(props: TokenAmountProps & { executeIndicator: React.ReactNode, lowVolumeWarning: boolean }) {
+export function LowVolumeWarningToken(
+  props: TokenAmountProps & { executeIndicator: React.ReactNode; lowVolumeWarning: boolean }
+) {
   const { lowVolumeWarning, ...rest } = props
 
   return (
