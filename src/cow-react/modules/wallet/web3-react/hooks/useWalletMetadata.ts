@@ -3,6 +3,7 @@ import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connectio
 import { ConnectionType } from '@cow/modules/wallet'
 import { useMemo } from 'react'
 
+const WC_GNOSIS_SAFE_APP_NAME = 'WalletConnect Safe App'
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
 const SAFE_ICON_URL = 'https://app.safe.global/favicon.ico'
 
@@ -70,7 +71,9 @@ export function useWalletMetaData(): WalletMetaData {
 export function useIsGnosisSafeApp(): boolean {
   const { walletName } = useWalletMetaData()
 
-  return walletName === GNOSIS_SAFE_APP_NAME
+  if (!walletName) return false
+
+  return [GNOSIS_SAFE_APP_NAME, WC_GNOSIS_SAFE_APP_NAME].includes(walletName)
 }
 
 export function useIsGnosisSafeWallet(): boolean {
