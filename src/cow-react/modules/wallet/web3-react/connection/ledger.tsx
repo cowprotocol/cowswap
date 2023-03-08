@@ -5,7 +5,7 @@ import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { default as LedgerImage } from '@cow/modules/wallet/api/assets/ledger.svg'
-import { Ledger } from '../connectors/LedgerConnector'
+import { LedgerConnector } from '../connectors/Ledger/connector'
 import { initializeConnector } from '@web3-react/core'
 import { Web3ReactConnection } from '../types'
 import { RPC_URLS } from 'constants/networks'
@@ -16,9 +16,9 @@ const BASE_PROPS = {
   id: 'ledger',
 }
 
-const [ledger, ledgerHooks] = initializeConnector<Ledger>(
+const [ledger, ledgerHooks] = initializeConnector<LedgerConnector>(
   (actions) =>
-    new Ledger({
+    new LedgerConnector({
       actions,
       options: {
         rpc: RPC_URLS,
@@ -33,6 +33,8 @@ export const ledgerConnection: Web3ReactConnection = {
 
 export function LedgerOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   const isActive = useIsActiveWallet(ledgerConnection)
+
+  console.log('debug', isActive, ledgerConnection)
 
   return (
     <ConnectWalletOption
