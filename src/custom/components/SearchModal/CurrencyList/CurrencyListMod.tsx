@@ -30,7 +30,6 @@ import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { useTokenSearch } from '../CurrencySearch/useTokenSearch'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -275,6 +274,7 @@ export default function CurrencyList({
   isLoading,
   searchQuery,
   isAddressSearch,
+  additionalTokens,
   BalanceComponent = Balance, // gp-swap added
   TokenTagsComponent = TokenTags, // gp-swap added
 }: {
@@ -291,22 +291,13 @@ export default function CurrencyList({
   isLoading: boolean
   searchQuery: string
   isAddressSearch: string | false
+  additionalTokens?: Currency[]
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
   const { chainId } = useWalletInfo()
   const allTokens = useAllTokens()
   const isUnsupportedToken = useIsUnsupportedTokenGp()
-  const existingTokens = useMemo(
-    () =>
-      new Map(
-        [...currencies, ...(otherListTokens ?? [])]
-          .filter((currency: Currency): currency is Token => currency.isToken)
-          .map(({ address }) => [address, true])
-      ),
-    [currencies, otherListTokens]
-  )
-  const additionalTokens = useTokenSearch(searchQuery, existingTokens)
 
   const itemData: (Currency | BreakLine)[] = useMemo(() => {
     const result: (Currency | BreakLine)[] = [...currencies]
