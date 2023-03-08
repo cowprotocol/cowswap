@@ -11,7 +11,7 @@ import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { CancelButton } from '@cow/common/pure/CancelButton'
 

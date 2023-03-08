@@ -1,4 +1,4 @@
-import { SafeInfoResponse } from '@safe-global/safe-service-client'
+import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { useMemo } from 'react'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { ActivityDerivedState } from '@cow/modules/account/containers/Transaction'

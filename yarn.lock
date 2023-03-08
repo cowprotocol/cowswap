@@ -1903,17 +1903,21 @@
     "@gnosis.pm/safe-apps-sdk" "7.8.0"
     "@web3-react/abstract-connector" "6.0.7"
 
+"@gnosis.pm/safe-core-sdk-types@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk-types/-/safe-core-sdk-types-1.7.0.tgz#40b9e922780310bc40783b7cd5ac82b2ffe5a7bc"
+  integrity sha512-4afyjdYxlwT61UtbrJwgFM8cxcu+TIrEcP3xrxtqyXotlvMGOkEwynHoOOSRNwL/npe3dHwDCNzxgrXVIS9Vjw==
+  dependencies:
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@gnosis.pm/safe-deployments" "1.17.0"
+    web3-core "^1.8.1"
+    web3-utils "^1.8.1"
+
 "@gnosis.pm/safe-deployments@1.17.0":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.17.0.tgz#52a7b0e75c08b4a829f491b594e2babbdd6606c5"
   integrity sha512-vfl13IuSMqJZxTPraRcKZqJcaSCDWTt/JXH6VURa8LHMYATOqd96IGbqqOKRPAgSzAyXpA2thOD4YUQ0X8XKyQ==
-  dependencies:
-    semver "^7.3.7"
-
-"@gnosis.pm/safe-deployments@1.19.0":
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-deployments/-/safe-deployments-1.19.0.tgz#f4ba8cf92cd6fdff4241ac50e410b4a6ff89babe"
-  integrity sha512-EvHR/LjMwJm0QKXyTscRXqR9vnJwCUDiMnRNKRyXe1akW+udiYXjJTAiGuleFS4DOUSqs6DpAjYlLnXMzUsVMw==
   dependencies:
     semver "^7.3.7"
 
@@ -1923,6 +1927,15 @@
   integrity sha512-6P2uJMnhHcJeErd/t13ChH6sda+vUIOqcrcUDKyWCNXpcmMniPcZzkQxZ8cYz186gQFbslsHSjQ6twnh4yhXUw==
   dependencies:
     cross-fetch "^3.1.5"
+
+"@gnosis.pm/safe-service-client@^1.2.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-service-client/-/safe-service-client-1.4.0.tgz#252989fd79248cf8ef2145baa4b499fb9aa76601"
+  integrity sha512-IwIDWhSakbKo3pVepxq19pfHbCUnGVhzQWPR20pnV1RK2iTCyFUGZDMyu2TLTZY8bplQoE89v4YIyC5nlAziTw==
+  dependencies:
+    "@ethersproject/abstract-signer" "^5.7.0"
+    "@gnosis.pm/safe-core-sdk-types" "^1.7.0"
+    node-fetch "^2.6.6"
 
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
@@ -2909,17 +2922,6 @@
     web3-core "^1.8.1"
     web3-utils "^1.8.1"
 
-"@safe-global/safe-core-sdk-types@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-1.9.0.tgz#dba18f34ab905da6c1c03a3262aeb47cc0bead14"
-  integrity sha512-3VFhnggdLT9kWhnb35eqxEC9cVpW5Sl4E51TZo0RmH1cSzMwlNDbeGINb38PpUbw/wwXFJbCVFmeXELz2ZlCfw==
-  dependencies:
-    "@ethersproject/bignumber" "^5.7.0"
-    "@ethersproject/contracts" "^5.7.0"
-    "@gnosis.pm/safe-deployments" "1.19.0"
-    web3-core "^1.8.1"
-    web3-utils "^1.8.1"
-
 "@safe-global/safe-core-sdk-utils@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-utils/-/safe-core-sdk-utils-1.6.0.tgz#363424f38026c0456bd712566e0b5f29d67c4c4d"
@@ -2937,15 +2939,6 @@
     "@safe-global/safe-core-sdk-types" "^1.8.0"
     "@safe-global/safe-core-sdk-utils" "^1.6.0"
     ethers "5.7.2"
-
-"@safe-global/safe-service-client@^1.2.0":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-service-client/-/safe-service-client-1.5.2.tgz#78a3453c3ebbc07ded8f2163e8d5d4644d379e5a"
-  integrity sha512-W5F4KfTO8iVIy/2GmbFFXyZ6d4Q00JKdWDbf/jSRJajvx/EL6Ix/lkCl/VuBgssNh4yTLZBHIuQDlIZgmnyVgA==
-  dependencies:
-    "@ethersproject/abstract-signer" "^5.7.0"
-    "@safe-global/safe-core-sdk-types" "^1.9.0"
-    node-fetch "^2.6.6"
 
 "@sentry/browser@7.30.0":
   version "7.30.0"

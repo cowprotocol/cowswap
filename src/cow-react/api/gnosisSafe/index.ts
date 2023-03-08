@@ -1,9 +1,8 @@
-import SafeServiceClient, { SafeInfoResponse } from '@safe-global/safe-service-client'
+import SafeServiceClient, { SafeInfoResponse, SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { registerOnWindow } from 'utils/misc'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
 import EthersAdapter from '@safe-global/safe-ethers-lib'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 

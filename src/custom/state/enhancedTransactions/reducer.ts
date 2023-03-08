@@ -8,7 +8,7 @@ import {
   updateSafeTransaction,
   ReplacementType,
 } from 'state/enhancedTransactions/actions'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { SerializableTransactionReceipt } from '@src/state/transactions/types'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
