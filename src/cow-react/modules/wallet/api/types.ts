@@ -32,7 +32,6 @@ export interface WalletDetails {
 
   // Feature Support
   allowsOffchainSigning: boolean
-
-  // Additioal information
-  gnosisSafeInfo?: SafeInfoResponse
 }
+
+export type GnosisSafeInfo = SafeInfoResponse & { isReadOnly?: boolean }

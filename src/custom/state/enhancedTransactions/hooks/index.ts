@@ -4,7 +4,7 @@ import { useAppDispatch } from 'state/hooks'
 import { addTransaction, AddTransactionParams } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 import { useAllTransactions } from 'state/enhancedTransactions/hooks'
-import { useIsGnosisApp, useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo, useIsGnosisApp } from '@cow/modules/wallet'
 
 export * from './TransactionHooksMod'
 

@@ -1,5 +1,5 @@
 // import { act } from 'react-dom/test-utils'
-import { useGnosisSafeInfo } from './useGnosisSafeInfo'
+import { useGnosisSafeSdkInfo } from './useGnosisSafeSdkInfo'
 // import { waitFor } from '@testing-library/react'
 // import type { SafeInfo } from '@gnosis.pm/safe-apps-sdk'
 // import { useWeb3React, Web3ContextType } from '@web3-react/core'
@@ -89,5 +89,5 @@ import { useGnosisSafeInfo } from './useGnosisSafeInfo'
 // })
 
 test.only('Just disabled it for now', () => {
-  expect(typeof useGnosisSafeInfo).toEqual('function')
+  expect(typeof useGnosisSafeSdkInfo).toEqual('function')
 })
