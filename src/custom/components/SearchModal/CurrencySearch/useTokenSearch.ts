@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { loadable } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
 
@@ -49,11 +49,21 @@ const tokensData = loadable(
   })
 )
 
+export const externalTokenLogoURIs = atom(async (get) => {
+  const tokens = get(tokensData)
+
+  if (tokens.state === 'hasData' && tokens.data) {
+    return new Map(tokens.data.data.map(({ address, logoURI }) => [address, logoURI]))
+  }
+
+  return undefined
+})
+
 export function useTokenSearch(_query: string, existingTokens: Map<string, boolean>): Token[] {
   const [query, setQuery] = useAtom(searchQuery)
   // query is being used through jotai
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const [result] = useAtom(useMemo(() => tokensData, [query]))
+  const result = useAtomValue(useMemo(() => tokensData, [query]))
   const tokens = useMemo(() => {
     if (result.state !== 'hasData' || result.data === undefined) {
       return []
