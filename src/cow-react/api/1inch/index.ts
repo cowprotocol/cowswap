@@ -11,6 +11,10 @@ export const API_NAME = '1inch'
 const ENABLED = process.env.REACT_APP_PRICE_FEED_1INCH_ENABLED !== 'false'
 
 const SUPPORTED_CHAINS = [ChainId.MAINNET, ChainId.GNOSIS_CHAIN]
+
+// 1inch API
+// Docs: https://docs.1inch.io/docs/aggregation-protocol/api/swagger
+//  i.e. https://api.1inch.io/v5.0/1/quote?fromTokenAddress=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&toTokenAddress=0x111111111117dc0aa78b770fa6a738034120c302&amount=10000000000000000'
 const BASE_URLS = new Map<ChainId, string>(
   SUPPORTED_CHAINS.map((chainId) => [chainId, `https://api.1inch.io/v5.0/${chainId}`])
 )
@@ -101,12 +105,13 @@ export async function getPriceQuote(params: LegacyPriceQuoteParams): Promise<Pri
   // Buy/sell token and side (sell/buy)
   const { sellToken, buyToken } = getTokensFromMarket({ baseToken, quoteToken, kind })
 
-  if (OrderKind.BUY) {
+  if (params.kind === OrderKind.BUY) {
     // API doesn't support buy orders
+    console.debug(`[pricesApi:${API_NAME}] ${API_NAME} API don't support BUY Orders`, params)
     return null
   }
 
-  const priceProise = _get(chainId, `/price?fromTokenAddress=${sellToken}&toTokenAddress=${buyToken}&amount=${amount}`)
+  const priceProise = _get(chainId, `/quote?fromTokenAddress=${sellToken}&toTokenAddress=${buyToken}&amount=${amount}`)
 
   if (!priceProise) {
     return null

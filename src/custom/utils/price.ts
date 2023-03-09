@@ -159,7 +159,7 @@ function _extractPriceAndErrorPromiseValues(
   if (isPromiseFulfilled(oneInchPriceResult)) {
     const oneInchPrice = toPriceInformation1inch(oneInchPriceResult.value)
     if (oneInchPrice) {
-      priceQuotes.push({ ...oneInchPrice, source: '1inch', data: oneInchPrice.amount })
+      priceQuotes.push({ ...oneInchPrice, source: '1inch', data: oneInchPriceResult.value })
     }
   } else {
     errorsGetPrice.push({ ...oneInchPriceResult, source: '1inch' })
