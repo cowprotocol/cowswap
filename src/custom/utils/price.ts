@@ -17,6 +17,12 @@ import {
   toPriceInformation as toPriceInformationMatcha,
 } from '@cow/api/matcha-0x'
 
+import {
+  getPriceQuote as getPriceQuote1inch,
+  PriceQuote1inch,
+  toPriceInformation as toPriceInformation1inch,
+} from '@cow/api/1inch'
+
 import { OptimalRate } from 'paraswap-core'
 import { OrderKind } from '@cowprotocol/contracts'
 import { toErc20Address } from 'utils/tokens'
@@ -72,6 +78,7 @@ export type AllPricesResult = {
   gpPriceResult: PromiseSettledResult<PriceInformation | null>
   paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>
   matcha0xPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
+  oneInchPriceResult: PromiseSettledResult<PriceQuote1inch | null>
 }
 
 /**
@@ -88,17 +95,21 @@ export async function getAllPrices(params: LegacyPriceQuoteParams): Promise<AllP
   )
   const matchaPricePromise = withTimeout(getPriceQuoteMatcha(params), PRICE_API_TIMEOUT_MS, 'Matcha(0x): Get Price API')
 
+  const oneInchPricePromise = withTimeout(getPriceQuote1inch(params), PRICE_API_TIMEOUT_MS, '1inch: Get Price API')
+
   // Get results from API queries
-  const [gpPrice, paraSwapPrice, matchaPrice] = await Promise.allSettled([
+  const [gpPrice, paraSwapPrice, matchaPrice, oneInchPrice] = await Promise.allSettled([
     gpPricePromise,
     paraSwapPricePromise,
     matchaPricePromise,
+    oneInchPricePromise,
   ])
 
   return {
     gpPriceResult: gpPrice,
     paraSwapPriceResult: paraSwapPrice,
     matcha0xPriceResult: matchaPrice,
+    oneInchPriceResult: oneInchPrice,
   }
 }
 
@@ -111,7 +122,8 @@ function _extractPriceAndErrorPromiseValues(
   kind: OrderKind,
   gpPriceResult: PromiseSettledResult<PriceInformation | null>,
   paraSwapPriceResult: PromiseSettledResult<OptimalRate | null>,
-  matchaPriceResult: PromiseSettledResult<MatchaPriceQuote | null>
+  matchaPriceResult: PromiseSettledResult<MatchaPriceQuote | null>,
+  oneInchPriceResult: PromiseSettledResult<PriceQuote1inch | null>
 ): [Array<LegacyPriceInformationWithSource>, Array<LegacyPromiseRejectedResultWithSource>] {
   // Prepare an array with all successful estimations
   const priceQuotes: Array<LegacyPriceInformationWithSource> = []
@@ -144,6 +156,15 @@ function _extractPriceAndErrorPromiseValues(
     errorsGetPrice.push({ ...matchaPriceResult, source: 'matcha-0x' })
   }
 
+  if (isPromiseFulfilled(oneInchPriceResult)) {
+    const oneInchPrice = toPriceInformation1inch(oneInchPriceResult.value)
+    if (oneInchPrice) {
+      priceQuotes.push({ ...oneInchPrice, source: '1inch', data: oneInchPriceResult.value })
+    }
+  } else {
+    errorsGetPrice.push({ ...oneInchPriceResult, source: '1inch' })
+  }
+
   return [priceQuotes, errorsGetPrice]
 }
 
@@ -155,7 +176,7 @@ export async function getBestPrice(
   options?: GetBestPriceOptions
 ): Promise<PriceInformation> {
   // Get all prices
-  const { gpPriceResult, paraSwapPriceResult, matcha0xPriceResult } = await getAllPrices(params)
+  const { gpPriceResult, paraSwapPriceResult, matcha0xPriceResult, oneInchPriceResult } = await getAllPrices(params)
 
   // Aggregate successful and error prices
   const [priceQuotes, errorsGetPrice] = _extractPriceAndErrorPromiseValues(
@@ -163,7 +184,8 @@ export async function getBestPrice(
     params.kind,
     gpPriceResult,
     paraSwapPriceResult,
-    matcha0xPriceResult
+    matcha0xPriceResult,
+    oneInchPriceResult
   )
 
   // Print prices who failed to be fetched
