@@ -29,17 +29,28 @@ import type {
 export interface GPv2SettlementInterface extends utils.Interface {
   functions: {
     "setPreSignature(bytes,bool)": FunctionFragment;
+    "domainSeparator()": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "setPreSignature"): FunctionFragment;
+  getFunction(
+    nameOrSignatureOrTopic: "setPreSignature" | "domainSeparator"
+  ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "setPreSignature",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<boolean>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "domainSeparator",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "setPreSignature",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "domainSeparator",
     data: BytesLike
   ): Result;
 
@@ -98,6 +109,8 @@ export interface GPv2Settlement extends BaseContract {
       signed: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    domainSeparator(overrides?: CallOverrides): Promise<[string]>;
   };
 
   setPreSignature(
@@ -106,12 +119,16 @@ export interface GPv2Settlement extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  domainSeparator(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     setPreSignature(
       orderUid: PromiseOrValue<BytesLike>,
       signed: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    domainSeparator(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -141,6 +158,8 @@ export interface GPv2Settlement extends BaseContract {
       signed: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    domainSeparator(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -149,5 +168,7 @@ export interface GPv2Settlement extends BaseContract {
       signed: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    domainSeparator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
