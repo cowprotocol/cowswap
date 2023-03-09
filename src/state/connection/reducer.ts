@@ -15,6 +15,7 @@ export const initialState: ConnectionState = {
     [ConnectionType.GNOSIS_SAFE]: undefined,
     [ConnectionType.ZENGO]: undefined,
     [ConnectionType.AMBIRE]: undefined,
+    [ConnectionType.ALPHA]: undefined,
   },
 }
 
