@@ -49,7 +49,7 @@ const tokensData = loadable(
   })
 )
 
-export function useTokenSearch(_query: string, existingTokens: Map<string, boolean>) {
+export function useTokenSearch(_query: string, existingTokens: Map<string, boolean>): Token[] {
   const [query, setQuery] = useAtom(searchQuery)
   // query is being used through jotai
   // eslint-disable-next-line react-hooks/exhaustive-deps
