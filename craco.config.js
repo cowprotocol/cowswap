@@ -11,6 +11,7 @@ const { version } = require('./package.json')
 const plugins = [
   new webpack.ProvidePlugin({
     Buffer: ['buffer', 'Buffer'],
+    process: 'process/browser'
   }),
 ]
 const SENTRY_AUTH_TOKEN = process.env.REACT_APP_SENTRY_AUTH_TOKEN

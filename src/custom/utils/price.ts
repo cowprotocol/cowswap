@@ -244,9 +244,7 @@ function _checkFeeErrorForData(error: GpQuoteError) {
 
 // TODO: move to state/orders/priceUtils
 function formatAtoms(amount: string, decimals: number): string {
-  return BigNumberJs(amount)
-    .div(10 ** decimals)
-    .toString()
+  return new BigNumberJs(amount).div(10 ** decimals).toString()
 }
 
 /**
