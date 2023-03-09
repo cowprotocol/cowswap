@@ -18,6 +18,7 @@ const PaginationBox = styled.div`
   justify-content: center;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   position: relative;
 
   &::after {
