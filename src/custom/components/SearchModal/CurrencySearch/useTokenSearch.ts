@@ -30,9 +30,8 @@ interface FetchTokensApiResult {
 
 async function fetchTokens(query: string): Promise<FetchTokensApiResult> {
   const response = await fetch(`${BASE_URL}${query}`)
-  const data = await response.json()
 
-  return data
+  return await response.json()
 }
 
 const searchQuery = atom('')
