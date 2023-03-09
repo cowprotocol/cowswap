@@ -47,8 +47,7 @@ const TableInner = styled.div`
   height: inherit;
   padding: 0;
   overflow-y: hidden;
-  overflow-x: auto; // fallback for 'overlay'
-  overflow-x: overlay;
+  overflow-x: auto;
   ${({ theme }) => theme.colorScrollbar};
 `
 
@@ -58,8 +57,8 @@ const Header = styled.div<{ isOpenOrdersTab: boolean }>`
   gap: 16px;
   grid-template-columns: ${({ isOpenOrdersTab }) =>
     `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
-      isOpenOrdersTab ? 'minmax(140px,2.2fr)' : ''
-    } minmax(100px,1fr) minmax(50px,1fr) 108px 24px`};
+      isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
+    } minmax(50px,1fr) 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;

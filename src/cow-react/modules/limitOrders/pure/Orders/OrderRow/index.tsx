@@ -19,7 +19,6 @@ import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
-import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 import {
   calculateOrderExecutionStatus,
   OrderExecutionStatus,
@@ -194,7 +193,7 @@ export function OrderRow({
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
-  const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
+  // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
   const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
@@ -245,10 +244,16 @@ export function OrderRow({
           )}
         </styledEl.CellElement>
       )}
+
+      {/* Execution price */}
       {!isOpenOrdersTab && (
         <styledEl.CellElement>
           {executedPriceInversed ? (
-            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} />
+            <TokenAmount
+              amount={executedPriceInversed}
+              tokenSymbol={executedPriceInversed?.quoteCurrency}
+              opacitySymbol
+            />
           ) : (
             '-'
           )}
@@ -277,19 +282,6 @@ export function OrderRow({
           )}
         </styledEl.CellElement>
       )}
-      {!isOpenOrdersTab && (
-        <styledEl.CellElement>
-          {executedPriceInversed ? (
-            <TokenAmount
-              amount={executedPriceInversed}
-              tokenSymbol={executedPriceInversed?.quoteCurrency}
-              opacitySymbol
-            />
-          ) : (
-            '-'
-          )}
-        </styledEl.CellElement>
-      )}
 
       {/* Expires */}
       {/* Created */}
@@ -300,11 +292,12 @@ export function OrderRow({
         </styledEl.CellElement>
       )}
 
-      {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+      {/* TODO: Enable once there is back-end support */}
+      {/* {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
         <styledEl.CellElement>
           <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
         </styledEl.CellElement>
-      )}
+      )} */}
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow>
