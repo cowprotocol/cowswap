@@ -22,6 +22,7 @@ import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
 import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from '@cow/modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from '@cow/modules/tokensList/updaters/TokensListUpdater'
 import { AppDataUpdater } from 'state/appData/AppDataInfoUpdater'
+import { SpotPricesUpdater } from 'state/orders/updaters/SpotPricesUpdater'
 
 export function Updaters() {
   return (
@@ -48,6 +49,7 @@ export function Updaters() {
       <GasPriceStrategyUpdater />
       <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
+      <SpotPricesUpdater />
     </>
   )
 }
