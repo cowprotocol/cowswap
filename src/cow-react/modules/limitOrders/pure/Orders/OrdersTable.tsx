@@ -230,7 +230,7 @@ export function OrdersTable({
   getShowCancellationModal,
   currentPageNumber,
 }: OrdersTableProps) {
-  const [isRateInversed, setIsRateInversed] = useState(false)
+  const [isRateInverted, setIsRateInverted] = useState(false)
 
   const selectReceiptOrder = useSelectReceiptOrder()
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
@@ -268,7 +268,7 @@ export function OrdersTable({
               <span>
                 <Trans>Limit price</Trans>
               </span>
-              <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
+              <StyledInvertRateControl onClick={() => setIsRateInverted(!isRateInverted)} />
             </HeaderElement>
 
             {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
@@ -368,7 +368,7 @@ export function OrdersTable({
                 prices={pendingOrdersPrices[order.id]}
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                 RowElement={RowElement}
-                isRateInversed={isRateInversed}
+                isRateInverted={isRateInverted}
                 getShowCancellationModal={getShowCancellationModal}
                 onClick={() => selectReceiptOrder(order.id)}
               />

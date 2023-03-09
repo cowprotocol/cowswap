@@ -168,7 +168,7 @@ export interface OrderRowProps {
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
   RowElement: StyledComponent<'div', DefaultTheme, { isOpenOrdersTab?: boolean; hasBackground?: boolean }>
-  isRateInversed: boolean
+  isRateInverted: boolean
   isOpenOrdersTab: boolean
   orderParams: OrderParams
   onClick: () => void
@@ -178,7 +178,7 @@ export interface OrderRowProps {
 export function OrderRow({
   order,
   RowElement,
-  isRateInversed,
+  isRateInverted,
   isOpenOrdersTab,
   getShowCancellationModal,
   orderParams,
@@ -202,12 +202,12 @@ export function OrderRow({
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
-  const [isInverted, setIsinverted] = useState(isRateInversed)
+  const [isInverted, setIsinverted] = useState(isRateInverted)
 
   // Update internal isInverted flag whenever prop change
   useEffect(() => {
-    setIsinverted(isRateInversed)
-  }, [isRateInversed])
+    setIsinverted(isRateInverted)
+  }, [isRateInverted])
 
   // On mount, apply smart quote selection
   useEffect(() => {
@@ -216,8 +216,8 @@ export function OrderRow({
     // Intentionally empty, should run only once
   }, [])
 
-  const executionPriceInversed = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
-  const executedPriceInversed = isInverted ? executedPrice?.invert() : executedPrice
+  const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
+  const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
 
   const executionOrderStatus = useOrderExecutionStatus(rateInfoParams, prices, spotPrice)
@@ -243,7 +243,7 @@ export function OrderRow({
             prependSymbol={false}
             noLabel={true}
             setSmartQuoteSelectionOnce={false}
-            isInversed={isInverted}
+            isInverted={isInverted}
             rateInfoParams={rateInfoParams}
             opacitySymbol={true}
           />
@@ -268,10 +268,10 @@ export function OrderRow({
       {/* Execution price */}
       {!isOpenOrdersTab && (
         <styledEl.CellElement>
-          {executedPriceInversed ? (
+          {executedPriceInverted ? (
             <TokenAmount
-              amount={executedPriceInversed}
-              tokenSymbol={executedPriceInversed?.quoteCurrency}
+              amount={executedPriceInverted}
+              tokenSymbol={executedPriceInverted?.quoteCurrency}
               opacitySymbol
             />
           ) : (
@@ -290,8 +290,8 @@ export function OrderRow({
                 // TODO: Add condition to show the lowVolumeWarning.
                 executeIndicator={<styledEl.ExecuteIndicator status={executionOrderStatus} />}
                 lowVolumeWarning={true}
-                amount={executionPriceInversed}
-                tokenSymbol={executionPriceInversed?.quoteCurrency}
+                amount={executionPriceInverted}
+                tokenSymbol={executionPriceInverted?.quoteCurrency}
                 opacitySymbol
               />
             </styledEl.ExecuteCellWrapper>
