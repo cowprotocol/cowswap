@@ -10,8 +10,31 @@ export interface OrdersTablePaginationProps {
 }
 
 const PaginationBox = styled.div`
+  width: 100%;
+  display: flex;
+  overflow-x: auto;
   text-align: center;
-  margin-top: 20px;
+  margin: 20px auto 0;
+  justify-content: center;
+  position: relative;
+
+  &::after {
+    content: "";
+    display: block;
+    background: linear-gradient(to left, ${({ theme }) => theme.grey1} 0%, ${({ theme }) => transparentize(1, theme.grey1)} 100%);
+    pointer-events: none;
+    height: 100%;
+    width: 50px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    justify-content: flex-start;
+  `};
 `
 
 const PageButton = styled(Link)<{ $active?: boolean }>`

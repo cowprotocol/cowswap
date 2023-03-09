@@ -111,7 +111,7 @@ export function LowVolumeWarningToken(
             &nbsp;to execute your order.
           </styledEl.ExecuteInformationTooltip>
         }
-        placement="bottom"
+        placement="top"
       >
         {props.executeIndicator}
         <TokenAmount {...rest} />
