@@ -19,9 +19,13 @@ const PaginationBox = styled.div`
   position: relative;
 
   &::after {
-    content: "";
+    content: '';
     display: block;
-    background: linear-gradient(to left, ${({ theme }) => theme.grey1} 0%, ${({ theme }) => transparentize(1, theme.grey1)} 100%);
+    background: linear-gradient(
+      to left,
+      ${({ theme }) => theme.grey1} 0%,
+      ${({ theme }) => transparentize(1, theme.grey1)} 100%
+    );
     pointer-events: none;
     height: 100%;
     width: 50px;
