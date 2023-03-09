@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { ConnectionType } from '@cow/modules/wallet'
+import { ConnectionType, useWalletInfo } from '@cow/modules/wallet'
 import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { useCallback, useEffect, useState } from 'react'
 import { updateConnectionError } from 'state/connection/reducer'
@@ -18,7 +18,8 @@ import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connecti
 
 export function WalletModal() {
   const dispatch = useAppDispatch()
-  const { account, isActive, connector } = useWeb3React()
+  const { connector } = useWeb3React()
+  const { account, active: isActive } = useWalletInfo()
 
   const [walletView, setWalletView] = useState<WalletModalView>('account')
 

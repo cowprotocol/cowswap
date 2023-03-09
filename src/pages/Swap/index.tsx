@@ -1,9 +1,9 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 import { Trade as V3Trade } from '@uniswap/v3-sdk'
-import { useWeb3React } from '@web3-react/core'
 import { PageName, SectionName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { sendEvent } from 'components/analytics'
@@ -66,7 +66,7 @@ const AlertWrapper = styled.div`
 `
 
 export default function Swap() {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const navigate = useNavigate()
 

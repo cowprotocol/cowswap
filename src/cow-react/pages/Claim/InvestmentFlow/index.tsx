@@ -29,8 +29,6 @@ import { ClaimStatus } from 'state/claim/actions'
 import { InvestClaim } from 'state/claim/reducer'
 import { calculateInvestmentAmounts } from 'state/claim/hooks/utils'
 
-import { useWeb3React } from '@web3-react/core'
-
 import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 import { ExternalLink } from 'theme'
@@ -43,6 +41,7 @@ import ImportantIcon from 'assets/cow-swap/important.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import SVG from 'react-inlinesvg'
 import { SupportedChainId } from 'constants/chains'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const STEPS_DATA = [
   {
@@ -146,7 +145,7 @@ function AccountDetails({ isClaimer, label, account, connectedAccount }: Account
 }
 
 export default function InvestmentFlow({ claims, hasClaims, isAirdropOnly, modalCbs }: InvestmentFlowProps) {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const { selected, activeClaimAccount, claimStatus, isInvestFlowActive, investFlowStep, investFlowData } =
     useClaimState()
   const { initInvestFlowData } = useClaimDispatchers()

@@ -72,11 +72,13 @@ import {
   Wrapper,
 } from './styled'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const DEFAULT_ADD_IN_RANGE_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
 export default function AddLiquidity() {
-  const { account, chainId, provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
   const theme = useContext(ThemeContext)
   const toggleWalletModal = useToggleWalletModal() // toggle wallet when disconnected
   const expertMode = useIsExpertMode()

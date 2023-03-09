@@ -33,6 +33,7 @@ import { useMemo } from 'react'
 import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall, V3Migrator } from 'types/v3'
 
 import { getContract } from 'utils'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // Mod const { abi: IUniswapV2PairABI } = IUniswapV2PairJson
 const IUniswapV2PairABI: any = []
@@ -56,7 +57,8 @@ export function useContract<T extends Contract = Contract>(
   ABI: any,
   withSignerIfPossible = true
 ): T | null {
-  const { provider, account, chainId } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   return useMemo(() => {
     if (!addressOrAddressMap || !ABI || !provider || !chainId) return null
@@ -82,7 +84,7 @@ export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: b
 }
 
 export function useWETHContract(withSignerIfPossible?: boolean) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   return useContract<Weth>(
     chainId ? WRAPPED_NATIVE_CURRENCY[chainId]?.address : undefined,
     WETH_ABI,
@@ -143,7 +145,7 @@ export function useQuoter(useQuoterV2: boolean) {
 }
 
 export function useTickLens(): TickLens | null {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const address = chainId ? TICK_LENS_ADDRESSES[chainId] : undefined
   return useContract(address, TickLensABI) as TickLens | null
 }

@@ -2,7 +2,6 @@ import { defaultAbiCoder } from '@ethersproject/abi'
 import { getAddress, isAddress } from '@ethersproject/address'
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { ButtonError } from 'components/Button'
@@ -32,6 +31,7 @@ import { ProposalActionDetail } from './ProposalActionDetail'
 import { ProposalAction, ProposalActionSelector, ProposalActionSelectorModal } from './ProposalActionSelector'
 import { ProposalEditor } from './ProposalEditor'
 import { ProposalSubmissionModal } from './ProposalSubmissionModal'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const CreateProposalButton = ({
   proposalThreshold,
@@ -88,7 +88,7 @@ const AutonomousProposalCTA = styled.div`
 `
 
 export default function CreateProposal() {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   const latestProposalId = useLatestProposalId(account ?? undefined) ?? '0'
   const latestProposalData = useProposalData(LATEST_GOVERNOR_INDEX, latestProposalId)

@@ -1,7 +1,7 @@
 import { useSwapState } from '@src/state/swap/hooks'
-import { useWeb3React } from '@web3-react/core'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 import { AppDispatch, AppState } from 'state'
 import {
@@ -75,7 +75,7 @@ export const useGetQuoteAndStatus = (params: QuoteParams): UseGetQuoteAndStatus 
 
 // syntactic sugar for not needing to pass swapstate
 export function useIsQuoteRefreshing() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const {
     INPUT: { currencyId },
   } = useSwapState()

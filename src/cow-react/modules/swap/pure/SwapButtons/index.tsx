@@ -95,6 +95,11 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       <Trans>Error loading price. Try again later.</Trans>
     </GreyCard>
   ),
+  [SwapButtonState.UnsupportedToken]: () => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <Trans>Unsupported token</Trans>
+    </GreyCard>
+  ),
   [SwapButtonState.OfflineBrowser]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
       <Trans>Error loading price. You are currently offline.</Trans>

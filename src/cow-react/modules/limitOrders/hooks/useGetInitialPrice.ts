@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 import { useAsyncMemo } from 'use-async-memo'
 
@@ -9,6 +8,7 @@ import { getAddress } from '@cow/utils/getAddress'
 import ms from 'ms.macro'
 import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 type PriceResult = number | Error | undefined
 
@@ -69,7 +69,7 @@ async function requestPrice(
 // When return null it means we failed on price loading
 // TODO: rename it to useNativeBasedPrice
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const [isLoading, setIsLoading] = useState(false)
   const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())

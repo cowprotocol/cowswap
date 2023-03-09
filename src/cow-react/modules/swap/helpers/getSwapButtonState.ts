@@ -15,6 +15,7 @@ export enum SwapButtonState {
   InsufficientLiquidity = 'InsufficientLiquidity',
   ZeroPrice = 'ZeroPrice',
   TransferToSmartContract = 'TransferToSmartContract',
+  UnsupportedToken = 'UnsupportedToken',
   FetchQuoteError = 'FetchQuoteError',
   OfflineBrowser = 'OfflineBrowser',
   Loading = 'Loading',
@@ -58,7 +59,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
   'transfer-eth-to-smart-contract': SwapButtonState.TransferToSmartContract,
   'fetch-quote-error': SwapButtonState.FetchQuoteError,
   'offline-browser': SwapButtonState.OfflineBrowser,
-  'unsupported-token': null,
+  'unsupported-token': SwapButtonState.UnsupportedToken,
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {

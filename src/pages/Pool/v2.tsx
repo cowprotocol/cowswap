@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Pair } from '@uniswap/v2-sdk'
-import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { UNSUPPORTED_V2POOL_CHAIN_IDS } from '@src/constants/chains'
@@ -26,6 +25,7 @@ import { useTokenBalancesWithLoadingIndicator } from '../../state/connection/hoo
 import { useStakingInfo } from '../../state/stake/hooks'
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../../state/user/hooks'
 import { ExternalLink, HideSmall, ThemedText } from '../../theme'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -86,7 +86,7 @@ const Layer2Prompt = styled(EmptyProposals)`
 
 export default function Pool() {
   const theme = useContext(ThemeContext)
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const unsupportedV2Network = chainId && UNSUPPORTED_V2POOL_CHAIN_IDS.includes(chainId)
 
   // fetch the user's balances of all tracked V2 LP tokens

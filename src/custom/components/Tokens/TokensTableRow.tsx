@@ -18,7 +18,6 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { CardsSpinner, ExtLink } from '@cow/pages/Account/styled'
 import usePrevious from 'hooks/usePrevious'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { useWeb3React } from '@web3-react/core'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
@@ -33,6 +32,7 @@ import EtherscanImage from 'assets/cow-swap/etherscan-icon.svg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 type DataRowParams = {
   tokenData: Token
@@ -51,7 +51,7 @@ const DataRow = ({
   openTransactionConfirmationModal,
   toggleWalletModal,
 }: DataRowParams) => {
-  const { account, chainId = ChainId.MAINNET } = useWeb3React()
+  const { account, chainId = ChainId.MAINNET } = useWalletInfo()
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
 
   const theme = useTheme()

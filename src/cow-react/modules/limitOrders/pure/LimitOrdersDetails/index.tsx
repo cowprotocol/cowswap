@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { InfoIcon } from 'components/InfoIcon'
 import * as styledEl from './styled'
 import styled from 'styled-components/macro'
@@ -7,6 +7,16 @@ import { isAddress, shortenAddress } from 'utils'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
+import SVG from 'react-inlinesvg'
+import ArrowDownImage from 'assets/cow-swap/arrowDownRight.svg'
+import QuestionHelper from 'components/QuestionHelper'
+import { ExecutionPriceTooltip } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
+import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
+import { Currency, Price } from '@uniswap/sdk-core'
+import { LimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { formatInputAmount } from '@cow/utils/amountFormat'
+import { limitOrdersFeatures } from '@cow/constants/featureFlags'
+import { DEFAULT_DATE_FORMAT } from '@cow/constants/intl'
 
 const Wrapper = styled.div`
   font-size: 13px;
@@ -14,33 +24,74 @@ const Wrapper = styled.div`
   color: ${({ theme }) => theme.text1};
   padding: 8px;
 `
+
+const ArrowDownRight = styled.div`
+  display: flex;
+  opacity: 0.3;
+  margin: 0 3px 0 0;
+  color: ${({ theme }) => theme.text1};
+`
 export interface LimitOrdersDetailsProps {
   rateInfoParams: RateInfoParams
   tradeContext: TradeFlowContext
   settingsState: LimitOrdersSettingsState
-}
-
-const dateTimeFormat: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
+  executionPrice: Price<Currency, Currency> | null
+  limitRateState: LimitRateState
 }
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { account, recipient, recipientAddressOrName } = props.tradeContext.postOrderParams
-  const validTo = calculateLimitOrdersDeadline(props.settingsState)
+  const { executionPrice, tradeContext, settingsState, rateInfoParams, limitRateState } = props
+  const { account, recipient, recipientAddressOrName } = tradeContext.postOrderParams
+  const { feeAmount, activeRate, marketRate } = limitRateState
+
+  const validTo = calculateLimitOrdersDeadline(settingsState)
   const expiryDate = new Date(validTo * 1000)
+  const isInversedState = useState(false)
+  const [isInversed] = isInversedState
+
+  const displayedRate = useMemo(() => {
+    if (!activeRate) return ''
+    const rate = isInversed ? activeRate.invert() : activeRate
+
+    return formatInputAmount(rate)
+  }, [isInversed, activeRate])
 
   return (
     <Wrapper>
       <styledEl.DetailsRow>
-        <styledEl.StyledRateInfo rateInfoParams={props.rateInfoParams} />
+        <styledEl.StyledRateInfo isInversedState={isInversedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
+
+      {limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+        <styledEl.DetailsRow>
+          <div>
+            <span>
+              <ArrowDownRight>
+                <SVG src={ArrowDownImage} />
+              </ArrowDownRight>
+              <p>order executes at</p>{' '}
+              <QuestionHelper
+                text={
+                  <ExecutionPriceTooltip
+                    isInversed={isInversed}
+                    feeAmount={feeAmount}
+                    marketRate={marketRate}
+                    displayedRate={displayedRate}
+                    executionPrice={executionPrice}
+                  />
+                }
+              />
+            </span>
+          </div>
+          <div>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</div>
+        </styledEl.DetailsRow>
+      )}
+
       <styledEl.DetailsRow>
         <div>
-          <span>Expiry</span>
+          <span>
+            <p>Order expires</p>
+          </span>
           <InfoIcon
             content={
               "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
@@ -48,10 +99,10 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           />
         </div>
         <div>
-          <span>{expiryDate.toLocaleString(undefined, dateTimeFormat)}</span>
+          <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
         </div>
       </styledEl.DetailsRow>
-      <styledEl.DetailsRow>
+      {/* <styledEl.DetailsRow>
         <div>
           <span>Protection from MEV</span>
           <InfoIcon
@@ -63,8 +114,8 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <div>
           <span>Active</span>
         </div>
-      </styledEl.DetailsRow>
-      <styledEl.DetailsRow>
+      </styledEl.DetailsRow> */}
+      {/* <styledEl.DetailsRow>
         <div>
           <span>Order type</span>{' '}
           <InfoIcon
@@ -76,7 +127,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <div>
           <span>Fill or kill</span>
         </div>
-      </styledEl.DetailsRow>
+      </styledEl.DetailsRow> */}
       {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>

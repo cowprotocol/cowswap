@@ -1,5 +1,5 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import styled from 'styled-components/macro'
 
@@ -40,7 +40,7 @@ flex-direction: column;
 `
 
 export default function Earn() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   // staking info for connected account
   const stakingInfos = useStakingInfo()

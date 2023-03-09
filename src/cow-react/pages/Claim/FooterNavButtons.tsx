@@ -10,9 +10,9 @@ import {
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { ClaimStatus } from 'state/claim/actions'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
-import { useWeb3React } from '@web3-react/core'
 import { ClaimAddressProps } from './ClaimAddress'
 import { ClaimCommonTypes } from '@cow/pages/Claim/types'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed' | 'isAirdropOnly'> &
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {
@@ -32,7 +32,7 @@ export default function FooterNavButtons({
   handleSubmitClaim,
   handleCheckClaim,
 }: FooterNavButtonsProps) {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const {
     // account
     activeClaimAccount,

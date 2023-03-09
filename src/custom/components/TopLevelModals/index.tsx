@@ -19,7 +19,7 @@ export default function TopLevelModals() {
   const { onDismiss: onDismissCancellationModal } = useAtomValue(cancellationModalContextAtom)
 
   //   const blockedAccountModalOpen = useModalIsOpen(ApplicationModal.BLOCKED_ACCOUNT)
-  //   const { account } = useWeb3React()
+  //   const { account } = useWalletInfo()
 
   //   useAccountRiskCheck(account)
   //   const open = Boolean(blockedAccountModalOpen && account)

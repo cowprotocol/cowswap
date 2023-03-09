@@ -1,5 +1,4 @@
 import { SupportedChainId } from 'constants/chains'
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { initializeConnector } from '@web3-react/core'
 
 import { ConnectionType } from '@cow/modules/wallet'
@@ -16,6 +15,7 @@ import { TryActivation, onError } from '.'
 import { Web3ReactConnection } from '../types'
 
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'
+import { AsyncConnector } from './asyncConnector'
 
 const coinbaseInjectedOption = {
   color: '#315CF5',
@@ -29,18 +29,26 @@ const coinbaseMobileOption = {
   link: 'https://go.cb-w.com/mtUDhEZPy1',
 }
 
-const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<CoinbaseWallet>(
+const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<AsyncConnector>(
   (actions) =>
-    new CoinbaseWallet({
+    new AsyncConnector(
+      () =>
+        import('@web3-react/coinbase-wallet').then(
+          (m) =>
+            new m.CoinbaseWallet({
+              actions,
+              options: {
+                url: RPC_URLS[SupportedChainId.MAINNET],
+                appName: 'CoW Swap',
+                appLogoUrl: CowImage,
+                reloadOnDisconnect: false,
+              },
+              onError,
+            })
+        ),
       actions,
-      options: {
-        url: RPC_URLS[SupportedChainId.MAINNET],
-        appName: 'CoW Swap',
-        appLogoUrl: CowImage,
-        reloadOnDisconnect: false,
-      },
-      onError,
-    })
+      onError
+    )
 )
 
 export const coinbaseWalletConnection: Web3ReactConnection = {

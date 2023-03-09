@@ -6,10 +6,10 @@ import { ethFlowContextAtom, updateEthFlowContextAtom } from '../../../state/Eth
 import { useSetAtom } from 'jotai'
 import { useDerivedSwapInfo, useSwapActionHandlers } from 'state/swap/hooks'
 import { useSwapConfirmManager } from 'cow-react/modules/swap/hooks/useSwapConfirmManager'
-import { useWeb3React } from '@web3-react/core'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import { TradeApproveCallback } from '@cow/common/containers/TradeApprove/useTradeApproveCallback'
 import { HandleSwapCallback } from '@cow/modules/swap/pure/SwapButtons'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface EthFlowActionCallbacks {
   approve: TradeApproveCallback
@@ -27,7 +27,7 @@ export interface EthFlowActions {
 }
 
 export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { v2Trade: trade } = useDerivedSwapInfo()
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)

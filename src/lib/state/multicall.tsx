@@ -1,10 +1,10 @@
 import { createMulticall, ListenerOptions } from '@uniswap/redux-multicall'
-import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from '@src/constants/chains'
 import { useInterfaceMulticall } from 'hooks/useContract'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useMemo } from 'react'
 import { combineReducers, createStore } from 'redux'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const multicall = createMulticall()
 const reducer = combineReducers({ [multicall.reducerPath]: multicall.reducer })
@@ -23,7 +23,7 @@ function getBlocksPerFetchForChainId(chainId: number | undefined): number {
 }
 
 export function MulticallUpdater() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const latestBlockNumber = useBlockNumber()
   const contract = useInterfaceMulticall()
   const listenerOptions: ListenerOptions = useMemo(

@@ -4,10 +4,10 @@ import { Interface } from '@ethersproject/abi'
 import ERC20_ABI from 'abis/erc20.json'
 import { Erc20Interface } from 'abis/types/Erc20'
 import { SupportedChainId as ChainId } from 'constants/chains'
-import { useWeb3React } from '@web3-react/core'
 import { useMemo } from 'react'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { BigNumber } from '@ethersproject/bignumber'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const WETH_ADDRESS = WETH[ChainId.MAINNET].address
 const PERI_ADDRESS = '0x5d30aD9C6374Bf925D0A75454fa327AACf778492'
@@ -25,7 +25,7 @@ const ANYSWAP_V4_CONTRACT = '0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 const BLOCKS_PER_FETCH = 120 // 30min. It would actually suffice to check once, but we check every 120 blocks
 
 export default function useIsAnySwapAffectedUser() {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const result = useMultipleContractSingleData(
     AFFECTED_TOKENS,
     ERC20_INTERFACE,

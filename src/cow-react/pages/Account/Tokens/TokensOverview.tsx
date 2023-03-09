@@ -34,6 +34,7 @@ import { CloseIcon } from 'theme'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',
@@ -51,7 +52,8 @@ const PageView = {
 
 export default function TokensOverview() {
   useInitFavouriteTokens()
-  const { chainId, provider, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
+  const { provider } = useWeb3React()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)

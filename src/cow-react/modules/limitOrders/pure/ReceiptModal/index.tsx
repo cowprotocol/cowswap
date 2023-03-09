@@ -1,7 +1,7 @@
 import { GpModal } from '@cow/common/pure/Modal'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
-import { OrderKind, OrderStatus } from 'state/orders/actions'
+import { OrderKind } from 'state/orders/actions'
 import { CloseIcon } from 'theme'
 import { CurrencyField } from './CurrencyField'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -67,11 +67,6 @@ export function ReceiptModal({
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
 
-  const showCreationTxLink =
-    (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
-    order.orderCreationHash &&
-    !order.apiAdditionalInfo
-
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
       <styledEl.Wrapper>
@@ -117,7 +112,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Created" tooltip={tooltips.CREATED} />
-              <DateField date={order.parsedCreationtime} />
+              <DateField date={order.parsedCreationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -131,15 +126,10 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field>
-              {showCreationTxLink ? (
+              {order.activityId && (
                 <>
-                  <FieldLabel label="Creation transaction" />
-                  <IdField id={order.orderCreationHash as string} chainId={chainId} />
-                </>
-              ) : (
-                <>
-                  <FieldLabel label="Order ID" />
-                  <IdField id={order.id} chainId={chainId} />
+                  <FieldLabel label={order.activityTitle} />
+                  <IdField id={order.activityId} chainId={chainId} />
                 </>
               )}
             </styledEl.Field>

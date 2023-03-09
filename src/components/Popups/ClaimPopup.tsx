@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import { useCallback, useEffect } from 'react'
 import { Heart, X } from 'react-feather'
@@ -19,6 +18,7 @@ import { ThemedText } from 'theme'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn } from '../Column'
 import { CardBGImage, CardNoise } from '../earn/styled'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const StyledClaimPopup = styled(AutoColumn)`
   background: radial-gradient(76.02% 75.41% at 1.84% 0%, #ff007a 0%, #021d43 100%);
@@ -55,7 +55,7 @@ const UniToken = styled.img`
 `
 
 export default function ClaimPopup() {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
 
   // dont store these in persisted state yet
   const showClaimPopup: boolean = useShowClaimPopup()

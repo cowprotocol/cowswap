@@ -5,7 +5,6 @@ import {
   ConfirmationModalContentProps,
   ConfirmationModalProps,
 } from 'components/TransactionConfirmationModal'
-import { useWeb3React } from '@web3-react/core'
 import { GpModal } from '@cow/common/pure/Modal'
 import { AutoColumn } from 'components/Column'
 import { Text } from 'rebass'
@@ -18,6 +17,7 @@ import SubsidyTable from './SubsidyTable'
 import { SUBSIDY_INFO_MESSAGE } from './constants'
 
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export type CowSubsidy = { tier: number; discount: number }
 export interface CowSubsidyInfoProps {
@@ -42,7 +42,7 @@ export default function CowSubsidyModal({
   onDismiss,
   ...restProps
 }: Pick<ConfirmationModalProps, 'isOpen'> & Omit<ConfirmationModalContentProps, 'title' | 'topContent'>) {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   const { subsidy, balance } = useCowBalanceAndSubsidy()
 

@@ -3,13 +3,13 @@ import { useMemo } from 'react'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useFavouriteTokens } from 'state/user/hooks'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
 import { tokensByAddressAtom, tokensBySymbolAtom } from '@cow/modules/tokensList/state/tokensListAtom'
 import { checkBySymbolAndAddress } from '@cow/utils/checkBySymbolAndAddress'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | NativeCurrency | null {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const tokensByAddress = useAtomValue(tokensByAddressAtom)
   const tokensBySymbol = useAtomValue(tokensBySymbolAtom)
   const nativeCurrency = useNativeCurrency()

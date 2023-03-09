@@ -1,7 +1,6 @@
 // import { skipToken } from '@reduxjs/toolkit/query/react'
 import { Currency } from '@uniswap/sdk-core'
 import { FeeAmount, nearestUsableTick, Pool, TICK_SPACINGS, tickToPrice } from '@uniswap/v3-sdk'
-import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from '@src/constants/chains'
 import { ZERO_ADDRESS } from 'constants/misc'
 import JSBI from 'jsbi'
@@ -14,6 +13,7 @@ import computeSurroundingTicks from 'utils/computeSurroundingTicks'
 import { V3_CORE_FACTORY_ADDRESSES } from '../constants/addresses'
 import { useTickLens } from './useContract'
 import { PoolState, usePool } from './usePools'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const PRICE_FIXED_DIGITS = 8
 const CHAIN_IDS_MISSING_SUBGRAPH_DATA = [SupportedChainId.ARBITRUM_ONE, SupportedChainId.ARBITRUM_RINKEBY]
@@ -56,7 +56,7 @@ function useTicksFromTickLens(
   // Find nearest valid tick for pool in case tick is not initialized.
   const activeTick = pool?.tickCurrent && tickSpacing ? nearestUsableTick(pool?.tickCurrent, tickSpacing) : undefined
 
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const poolAddress =
     currencyA && currencyB && feeAmount && poolState === PoolState.EXISTS
@@ -158,7 +158,7 @@ function useTicksFromSubgraph(
     error: '',
     data: { ticks: undefined },
   }
-  /* const { chainId } = useWeb3React()
+  /* const { chainId } = useWalletInfo()
   const poolAddress =
     currencyA && currencyB && feeAmount
       ? Pool.getAddress(

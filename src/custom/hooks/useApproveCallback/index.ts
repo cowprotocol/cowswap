@@ -1,5 +1,4 @@
 import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { Field } from '@src/state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { useMemo } from 'react'
@@ -12,6 +11,7 @@ import { ClaimType } from 'state/claim/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { EnhancedUserClaimData } from '@cow/pages/Claim/types'
 import { TransactionResponse } from '@ethersproject/providers'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
@@ -50,7 +50,7 @@ export function useApproveCallbackFromTrade({
   amountToCheckAgainstAllowance,
   isNativeFlow,
 }: ApproveCallbackFromTradeParams): ApproveCallbackState {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const amountToApprove = useMemo(() => {
     if (trade) {
@@ -85,7 +85,7 @@ export function useApproveCallbackFromClaim({
   claim,
   investmentAmount,
 }: ApproveCallbackFromClaimParams) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const supportedChain = supportedChainId(chainId)
 
   const vCowContract = chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined
@@ -127,7 +127,7 @@ export function useApproveCallbackFromBalance({
   token,
   balance,
 }: ApproveCallbackFromBalanceParams) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const supportedChain = supportedChainId(chainId)
 
   const vaultRelayer = chainId ? GP_VAULT_RELAYER[chainId] : undefined
