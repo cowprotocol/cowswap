@@ -1,6 +1,5 @@
 import { isAddress } from '@ethersproject/address'
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { ReactNode, useState } from 'react'
 import { X } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -17,6 +16,7 @@ import { AutoColumn } from '../Column'
 import Modal from '@cow/common/pure/Modal'
 import { LoadingView, SubmittedView } from '../ModalViews'
 import { RowBetween } from '../Row'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -42,7 +42,7 @@ interface VoteModalProps {
 }
 
 export default function DelegateModal({ isOpen, onDismiss, title }: VoteModalProps) {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   // state for delegate input
   const [usingDelegate, setUsingDelegate] = useState(false)

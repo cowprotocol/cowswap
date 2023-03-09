@@ -48,6 +48,7 @@ import { TransactionType } from '../../state/transactions/types'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { LoadingRows } from './styleds'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const PageWrapper = styled.div`
   min-width: 800px;
@@ -317,7 +318,8 @@ const useInverter = ({
 
 export function PositionPage() {
   const { tokenId: tokenIdFromUrl } = useParams<{ tokenId?: string }>()
-  const { chainId, account, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const theme = useTheme()
 
   const parsedTokenId = tokenIdFromUrl ? BigNumber.from(tokenIdFromUrl) : undefined

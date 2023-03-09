@@ -2,7 +2,6 @@ import styled from 'styled-components/macro'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { NumericalInput } from '@cow/modules/limitOrders/containers/RateInput/styled'
-import { DropdownBox } from '@cow/common/pure/Dropdown/styled'
 
 export const Container = styled.div`
   width: 100%;
@@ -53,6 +52,13 @@ export const TradeButtonBox = styled.div`
   flex-direction: column;
 `
 
+export const FooterBox = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  margin: 0 4px;
+  padding: 0;
+`
+
 export const RateWrapper = styled.div`
   display: grid;
   grid-template-columns: auto 150px;
@@ -67,10 +73,6 @@ export const RateWrapper = styled.div`
   ${NumericalInput} {
     font-size: 21px;
   }
-
-  ${DropdownBox} {
-    width: 100%;
-  }
 `
 
 export const StyledRemoveRecipient = styled(RemoveRecipient)`
@@ -78,9 +80,10 @@ export const StyledRemoveRecipient = styled(RemoveRecipient)`
 `
 
 export const StyledRateInfo = styled(RateInfo)`
-  padding: 8px 8px 0;
+  padding-top: 8px;
   gap: 4px;
   font-size: 13px;
+  min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
 `

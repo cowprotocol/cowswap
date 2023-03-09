@@ -1,6 +1,5 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
 import { useTokenContract } from 'hooks/useContract'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useCallback } from 'react'
@@ -9,6 +8,7 @@ import { Erc20 } from 'abis/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 async function estimateApprove(
   tokenContract: Erc20,
@@ -51,7 +51,7 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount<Currency>,
   spender?: string
 ): (summary?: string) => Promise<TransactionResponse | undefined> {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()

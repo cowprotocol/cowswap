@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'components/Card'
@@ -30,6 +29,7 @@ import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -142,7 +142,7 @@ function CurrencyRow({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const key = currencyKey(currency)
   const isOnSelectedList = currency?.isToken && !!allTokens[currency.address.toLowerCase()]
   const customAdded = useIsUserAddedToken(currency)
@@ -280,7 +280,7 @@ export default function CurrencyList({
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const allTokens = useAllTokens()
   const isUnsupportedToken = useIsUnsupportedTokenGp()
 
@@ -364,6 +364,7 @@ export default function CurrencyList({
       BalanceComponent,
       TokenTagsComponent,
       allTokens,
+      chainId,
     ]
   )
 

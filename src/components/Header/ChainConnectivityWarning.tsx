@@ -1,10 +1,10 @@
 import { Trans } from '@lingui/macro'
 import { getChainInfoOrDefault, L2ChainInfo } from 'constants/chainInfo'
 import { SupportedChainId } from '@src/constants/chains'
-import { useWeb3React } from '@web3-react/core'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const BodyRow = styled.div`
   color: ${({ theme }) => theme.black};
@@ -45,7 +45,7 @@ const Wrapper = styled.div`
 `
 
 export function ChainConnectivityWarning() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const info = getChainInfoOrDefault(chainId)
   const label = info?.label
 

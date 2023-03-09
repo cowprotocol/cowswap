@@ -4,9 +4,9 @@ import { ImportList as ImportListMod } from './ImportListMod'
 import { enableList as enableListMod, removeList as removeListMod } from 'state/lists/actions'
 import { TokenList } from '@uniswap/token-lists'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
-import { useWeb3React } from '@web3-react/core'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { useDispatch } from 'react-redux'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface ImportProps {
   listURL: string
@@ -18,7 +18,7 @@ export interface ImportProps {
 }
 
 export function ImportList(props: ImportProps) {
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWeb3React()
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWalletInfo()
   const dispatch = useDispatch()
 
   // wrap actions in dispatch and pass new 'chainId' prop here to avoid changing in children

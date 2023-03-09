@@ -1,8 +1,8 @@
-import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 import { getProfileData } from '@cow/api/gnosisProtocol'
 import { ProfileData } from '@cow/api/gnosisProtocol/api'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 type FetchProfileState = {
   profileData: ProfileData | null
@@ -19,7 +19,7 @@ const emptyState: FetchProfileState = {
 const FETCH_INTERVAL_IN_MINUTES = 5
 
 export default function useFetchProfile(): FetchProfileState {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const [profile, setProfile] = useState<FetchProfileState>(emptyState)
   const isWindowVisible = useIsWindowVisible()
 

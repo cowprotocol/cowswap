@@ -1,5 +1,4 @@
 import { useLayoutEffect } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { getQuote } from '@cow/api/gnosisProtocol'
@@ -14,14 +13,15 @@ import { onlyResolvesLast } from 'utils/async'
 import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // Every 10s
-const REFETCH_CHECK_INTERVAL = 10000
+const PRICE_UPDATE_INTERVAL = 10_000
 
 const getQuoteOnlyResolveLast = onlyResolvesLast<SimpleGetQuoteResponse>(getQuote)
 
 export function useFetchMarketPrice() {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
 
   // TODO: should be throttled to avoid too frequent requests
   const feeQuoteParams = useQuoteRequestParams()
@@ -48,22 +48,22 @@ export function useFetchMarketPrice() {
         .then(handleResponse)
         .catch((error: GpQuoteError) => {
           setLimitOrdersQuote({ error })
-          updateLimitRateState({ executionRate: null })
+          updateLimitRateState({ marketRate: null })
         })
-        .finally(() => updateLimitRateState({ isLoadingExecutionRate: false }))
+        .finally(() => updateLimitRateState({ isLoadingMarketRate: false }))
     }
 
     handleFetchQuote()
 
     // Run the interval
-    const intervalId = setInterval(handleFetchQuote, REFETCH_CHECK_INTERVAL)
+    const intervalId = setInterval(handleFetchQuote, PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(intervalId)
   }, [feeQuoteParams, handleResponse, updateLimitRateState, setLimitOrdersQuote, isWrapOrUnwrap, isWindowVisible])
 
   // Turn on the loading if some of these dependencies have changed and remove execution rate
   useLayoutEffect(() => {
-    updateLimitRateState({ isLoadingExecutionRate: true, executionRate: null })
+    updateLimitRateState({ isLoadingMarketRate: true, marketRate: null })
   }, [chainId, inputCurrency, outputCurrency, orderKind, account, updateLimitRateState])
 
   return null

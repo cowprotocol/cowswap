@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
-import { useWeb3React } from '@web3-react/core'
 import { useToken } from 'hooks/Tokens'
 import { usePool } from 'hooks/usePools'
 import { useV3PositionFees } from 'hooks/useV3PositionFees'
@@ -12,6 +11,7 @@ import { unwrappedToken } from 'utils/unwrappedToken'
 
 import { AppState } from '../../index'
 import { selectPercent } from './actions'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function useBurnV3State(): AppState['burnV3'] {
   return useAppSelector((state) => state.burnV3)
@@ -30,7 +30,7 @@ export function useDerivedV3BurnInfo(
   outOfRange: boolean
   error?: ReactNode
 } {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const { percent } = useBurnV3State()
 
   const token0 = useToken(position?.token0)

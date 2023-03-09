@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 // Mod imports
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { getConnectionName, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '..'
@@ -51,7 +51,9 @@ export function useAnalyticsReporter() {
   const { pathname, search } = useLocation()
 
   // Handle chain id custom dimension
-  const { chainId, connector, account } = useWeb3React()
+  const { connector } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
+  const { walletName: _walletName } = useWalletDetails()
   const prevAccount = usePrevious(account)
 
   useEffect(() => {
@@ -60,11 +62,10 @@ export function useAnalyticsReporter() {
   }, [chainId])
 
   // Handle wallet name custom dimension
-  const walletInfo = useWalletInfo()
   const connection = getWeb3ReactConnection(connector)
   const isMetaMask = getIsMetaMask()
 
-  const walletName = walletInfo?.walletName || getConnectionName(connection.type, isMetaMask)
+  const walletName = _walletName || getConnectionName(connection.type, isMetaMask)
 
   useEffect(() => {
     // custom dimension 2 - walletname

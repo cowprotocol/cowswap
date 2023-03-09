@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Trans } from '@lingui/macro'
@@ -63,7 +64,8 @@ export default function RemoveLiquidityV3() {
 function Remove({ tokenId }: { tokenId: BigNumber }) {
   const { position } = useV3PositionFromTokenId(tokenId)
   const theme = useTheme()
-  const { account, chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   // flag for receiving WETH
   const [receiveWETH, setReceiveWETH] = useState(false)

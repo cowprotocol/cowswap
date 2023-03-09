@@ -1,9 +1,5 @@
 import React from 'react'
 import * as styledEl from './styled'
-import { InfoIcon } from 'components/InfoIcon'
-import { SUBSIDY_INFO_MESSAGE } from 'components/CowSubsidyModal/constants'
-import { useOpenModal } from 'state/application/hooks'
-import { ApplicationModal } from 'state/application/reducer'
 import TradeGp from 'state/swap/TradeGp'
 import { RowDeadline } from '@cow/modules/swap/containers/Row/RowDeadline'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
@@ -11,8 +7,8 @@ import { TradeBasicDetails } from '@cow/modules/swap/containers/TradeBasicDetail
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
-const SUBSIDY_INFO_MESSAGE_EXTENDED =
-  SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
+// const SUBSIDY_INFO_MESSAGE_EXTENDED =
+//   SUBSIDY_INFO_MESSAGE + '. Click on the discount button on the right for more info.'
 
 export interface TradeRatesProps {
   trade: TradeGp | undefined
@@ -34,10 +30,10 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
     isExpertMode,
     allowsOffchainSigning,
     userAllowedSlippage,
-    discount,
+    // discount,
     rateInfoParams,
   } = props
-  const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
+  // const openCowSubsidyModal = useOpenModal(ApplicationModal.COW_SUBSIDY)
 
   const showPrice = !!trade
   const showTradeBasicDetails = (isFeeGreater || trade) && fee
@@ -58,7 +54,10 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
       )}
       {/* TRANSACTION DEADLINE */}
       {showRowDeadline && <RowDeadline />}
+
       {/* DISCOUNTS */}
+      {/* TODO: Re-enable modal once subsidy is back */}
+      {/*
       <styledEl.Row>
         <div>
           <span>Fees discount</span>
@@ -68,6 +67,7 @@ export const TradeRates = React.memo(function (props: TradeRatesProps) {
           <styledEl.Discount onClick={openCowSubsidyModal}>{discount}% discount</styledEl.Discount>
         </div>
       </styledEl.Row>
+      */}
     </styledEl.Box>
   )
 }, genericPropsChecker)

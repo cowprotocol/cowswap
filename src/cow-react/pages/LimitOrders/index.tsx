@@ -1,9 +1,9 @@
 import * as styledEl from './styled'
 import {
   LimitOrdersWidget,
-  QuoteUpdater,
-  InfoPopup,
   MarketPriceUpdater,
+  InitialPriceUpdater,
+  ExecutionPriceUpdater,
   OrdersWidget,
   limitOrdersAtom,
 } from '@cow/modules/limitOrders'
@@ -14,12 +14,13 @@ export default function LimitOrderPage() {
 
   return (
     <>
-      <QuoteUpdater />
       <MarketPriceUpdater />
+      <InitialPriceUpdater />
+      <ExecutionPriceUpdater />
+
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
           <LimitOrdersWidget />
-          {isUnlocked && <InfoPopup />}
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>

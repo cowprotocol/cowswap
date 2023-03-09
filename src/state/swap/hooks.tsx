@@ -1,6 +1,6 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 //Mod import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 // Mod import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
 // Mod import { useBestTrade } from 'hooks/useBestTrade'
 // Mod import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -89,7 +89,7 @@ export function useDerivedSwapInfo(): {
 } {
   return undefined as any
   /* Mod: this hooks is not used
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
 
   const {
     independentField,
@@ -250,7 +250,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
 
 // updates the swap state to use the defaults for a given network
 export function useDefaultsFromURLSearch(): SwapState {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
 

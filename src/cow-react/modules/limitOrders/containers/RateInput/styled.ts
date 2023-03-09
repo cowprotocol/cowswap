@@ -105,3 +105,40 @@ export const ActiveIcon = styled.div`
 export const RateLoader = styled(Loader)`
   margin: 5px;
 `
+
+export const EstimatedRate = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  min-height: 42px;
+  margin: 0;
+  padding: 12px 10px 14px;
+  font-size: 13px;
+  border-radius: 0 0 16px 16px;
+  font-weight: 400;
+  background: ${({ theme }) => theme.bg1};
+  border: 2px solid ${({ theme }) => theme.grey1};
+
+  > b {
+    display: flex;
+    flex-flow: row nowrap;
+    font-weight: normal;
+    text-align: left;
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
+
+  // TODO: Make the question helper icon transparent through a prop instead
+  > b svg {
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  > span > i {
+    font-style: normal;
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  }
+`

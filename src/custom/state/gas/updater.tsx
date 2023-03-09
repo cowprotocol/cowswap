@@ -1,16 +1,16 @@
 import { useEffect } from 'react'
 import { useGasPrices, useUpdateGasPrices } from './hooks'
-import { useWeb3React } from '@web3-react/core'
 import { GAS_PRICE_UPDATE_THRESHOLD } from 'constants/index'
 import { gasFeeApi } from '@cow/api/gasPrices'
 import useBlockNumber from '@src/lib/hooks/useBlockNumber'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
   return now - lastUpdated > threshold
 }
 
 export default function GasUpdater(): null {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const gas = useGasPrices(chainId)
   const updateGasPrices = useUpdateGasPrices()
   const blockNumber = useBlockNumber()

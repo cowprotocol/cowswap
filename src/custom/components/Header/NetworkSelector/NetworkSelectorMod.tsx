@@ -29,6 +29,7 @@ import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
 import { useTradeTypeInfo } from '@cow/modules/trade'
 import { useMediaQuery, upToMedium } from 'hooks/useMediaQuery'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export const ActiveRowLinkList = styled.div`
   display: flex;
@@ -274,7 +275,8 @@ function Row({
   targetChain: SupportedChainId
   onSelectChain: (targetChain: number) => void
 }) {
-  const { provider, chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
   if (!provider || !chainId) {
     return null
   }
@@ -351,7 +353,8 @@ export const NETWORK_SELECTOR_CHAINS: SupportedChainId[] = SUPPORTED_CHAIN_IDS
 
 export default function NetworkSelector() {
   const dispatch = useAppDispatch()
-  const { chainId, provider, connector, account } = useWeb3React()
+  const { provider, connector } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   // const previousChainId = usePrevious(chainId)
   const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)

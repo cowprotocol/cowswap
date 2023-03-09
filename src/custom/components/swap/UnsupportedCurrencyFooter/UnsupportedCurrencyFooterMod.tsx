@@ -6,7 +6,6 @@ import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Modal from '@cow/common/pure/Modal'
 import { AutoRow, RowBetween } from 'components/Row'
-import { useWeb3React } from '@web3-react/core'
 import { useState } from 'react'
 import styled from 'styled-components/macro'
 import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'theme'
@@ -16,6 +15,7 @@ import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'theme'
 // MOD imports
 import { getEtherscanLink } from 'utils'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
@@ -69,7 +69,7 @@ export default function UnsupportedCurrencyFooter({
   currencies: (Currency | undefined | null)[]
 } */
 UnsupportedCurrencyFooterParams) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const [showDetails, setShowDetails] = useState(false)
 
   const tokens =

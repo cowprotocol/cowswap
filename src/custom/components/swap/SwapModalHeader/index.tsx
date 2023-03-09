@@ -3,7 +3,7 @@ import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 import styled from 'styled-components/macro'
 import { LightCard as LightCardUni } from 'components/Card'
 import { HighFeeWarning as HighFeeWarningBase } from 'components/SwapWarnings'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletDetails } from '@cow/modules/wallet'
 import { NoImpactWarning } from '@cow/modules/trade/pure/NoImpactWarning'
 import { SwapShowAcceptChanges } from 'components/swap/styleds'
 import { transparentize } from 'polished'
@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 export default function SwapModalHeader(
   props: Omit<SwapModalHeaderProps, 'HighFeeWarning' | 'NoImpactWarning' | 'LightCard'>
 ) {
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const NoImpactWarningComponent = <NoImpactWarning isAccepted={true} withoutAccepting={true} />
 
   return (

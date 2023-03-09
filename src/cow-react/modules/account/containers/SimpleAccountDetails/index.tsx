@@ -1,5 +1,4 @@
 import { Fragment } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'hooks/useRecentActivity'
 import { supportedChainId } from 'utils/supportedChainId'
 import { LowerSectionSimple, Wrapper } from '../AccountDetails/styled'
@@ -7,6 +6,7 @@ import { renderActivities } from '../AccountDetails'
 import { AccountDetailsProps } from '../AccountDetails'
 import styled from 'styled-components/macro'
 
+import { useWalletInfo } from '@cow/modules/wallet'
 type StyledWrapperProps = { $margin?: string }
 type SimpleAccountDetailsProps = Pick<AccountDetailsProps, 'pendingTransactions' | 'confirmedTransactions'> &
   StyledWrapperProps
@@ -23,7 +23,7 @@ export default function SimpleAccountDetails({
   confirmedTransactions = [],
   ...styleProps
 }: SimpleAccountDetailsProps) {
-  const { chainId: connectedChainId } = useWeb3React()
+  const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
 
   const activities =

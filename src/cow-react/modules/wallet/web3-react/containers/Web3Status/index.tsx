@@ -1,4 +1,4 @@
-import { useWalletInfo, WalletModal } from '@cow/modules/wallet'
+import { useWalletDetails, useWalletInfo, WalletModal } from '@cow/modules/wallet'
 import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 
@@ -13,7 +13,8 @@ import { Wrapper } from '@cow/modules/wallet/api/pure/Web3StatusInner/styled'
 
 export function Web3Status() {
   const { connector } = useWeb3React()
-  const { account, active, chainId, ensName } = useWalletInfo()
+  const { account, active, chainId } = useWalletInfo()
+  const { ensName } = useWalletDetails()
   const connectionType = getWeb3ReactConnection(connector).type
 
   const error = useAppSelector(

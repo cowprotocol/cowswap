@@ -10,6 +10,7 @@ import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOr
 import React from 'react'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { initLimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -100,8 +101,10 @@ const Fixtures = {
       tradeContext={tradeContext}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
+      limitRateState={initLimitRateState()}
       Warnings={Warnings}
       warningsAccepted={true}
+      executionPrice={null}
       onConfirm={() => void 0}
     />
   ),

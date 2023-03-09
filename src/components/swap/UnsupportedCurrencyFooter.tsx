@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { ButtonEmpty } from 'components/Button'
 import Card, { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -13,6 +12,7 @@ import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from '@src/theme'
 
 import { useUnsupportedTokens } from '../../hooks/Tokens'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
@@ -52,7 +52,7 @@ export default function UnsupportedCurrencyFooter({
   show: boolean
   currencies: (Currency | undefined | null)[]
 }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const [showDetails, setShowDetails] = useState(false)
 
   const tokens =
