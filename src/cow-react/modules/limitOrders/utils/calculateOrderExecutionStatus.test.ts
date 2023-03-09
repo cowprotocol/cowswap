@@ -27,6 +27,7 @@ describe('calculateOrderExecutionStatus', () => {
   })
 
   describe('limit price below market price', () => {
+    // Limit price will never be above estimated execution price
     const baseParams = {
       limitPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_999),
     }
@@ -89,67 +90,6 @@ describe('calculateOrderExecutionStatus', () => {
         ...baseParams,
         spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
         estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1051)),
-      }
-
-      expect(calculateOrderExecutionStatus(params)).toBe('notClose')
-    })
-  })
-  describe('limit price above market price', () => {
-    const baseParams = {
-      limitPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
-      marketPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(900)),
-    }
-
-    describe('market price <0.5% from execution price', () => {
-      test('positive difference', () => {
-        const params: CalculateOrderExecutionStatusParams = {
-          ...baseParams,
-          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_999),
-        }
-
-        expect(calculateOrderExecutionStatus(params)).toBe('veryClose')
-      })
-      test('negative difference', () => {
-        const params: CalculateOrderExecutionStatusParams = {
-          ...baseParams,
-          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1001)),
-        }
-
-        expect(calculateOrderExecutionStatus(params)).toBe('veryClose')
-      })
-    })
-    describe('market price 0.5-5% from execution price', () => {
-      test('0.5% - lower bond', () => {
-        const params: CalculateOrderExecutionStatusParams = {
-          ...baseParams,
-          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(995)),
-        }
-
-        expect(calculateOrderExecutionStatus(params)).toBe('close')
-      })
-
-      test('1% - middle range', () => {
-        const params: CalculateOrderExecutionStatusParams = {
-          ...baseParams,
-          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(990)),
-        }
-
-        expect(calculateOrderExecutionStatus(params)).toBe('close')
-      })
-
-      test('5% - upper bond', () => {
-        const params: CalculateOrderExecutionStatusParams = {
-          ...baseParams,
-          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(950)),
-        }
-
-        expect(calculateOrderExecutionStatus(params)).toBe('close')
-      })
-    })
-    test('market price >5% from execution price', () => {
-      const params: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(949)),
       }
 
       expect(calculateOrderExecutionStatus(params)).toBe('notClose')
