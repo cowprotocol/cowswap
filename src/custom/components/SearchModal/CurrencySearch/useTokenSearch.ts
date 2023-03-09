@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Token } from '@uniswap/sdk-core'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import { loadable } from 'jotai/utils'
@@ -50,20 +51,21 @@ const tokensData = loadable(
 
 export function useTokenSearch(_query: string, existingTokens: Map<string, boolean>): Token[] {
   const [query, setQuery] = useAtom(searchQuery)
+  const { chainId: currentChainId } = useWalletInfo()
   // query is being used through jotai
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const result = useAtomValue(useMemo(() => tokensData, [query]))
   const tokens = useMemo(() => {
-    if (result.state !== 'hasData' || result.data === undefined) {
+    if (result.state !== 'hasData' || result.data === undefined || !Array.isArray(result.data.data)) {
       return []
     }
 
     const { data } = result.data
 
     return data
-      .filter(({ address }) => !existingTokens.get(address))
+      .filter(({ address, chainId }) => !existingTokens.get(address) && chainId === currentChainId)
       .map(({ chainId, address, decimals, symbol, name }) => new Token(chainId, address, decimals, symbol, name))
-  }, [result, existingTokens])
+  }, [result, existingTokens, currentChainId])
 
   useEffect(() => {
     setQuery(_query)
