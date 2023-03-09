@@ -34,7 +34,7 @@ const TableBox = styled.div`
   background: ${({ theme }) => transparentize(0.99, theme.bg1)};
   backdrop-filter: blur(20px);
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
     width: 100%;
     display: flex;
     flex-flow: column wrap;
@@ -55,15 +55,23 @@ const Header = styled.div<{ isOpenOrdersTab: boolean }>`
   --height: 50px;
   display: grid;
   gap: 16px;
+
   grid-template-columns: ${({ isOpenOrdersTab }) =>
-    `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
-      isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
-    } minmax(50px,1fr) 108px 24px`};
+    `3.2fr repeat(2,2fr) ${
+      isOpenOrdersTab ? '2.5fr 1.4fr' : ''
+    } 0.7fr 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 16px;
+
+  ${({ theme, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
+  grid-template-columns: ${
+    `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
+      isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
+    } minmax(50px,1fr) 108px 24px`};
+  `}
 `
 
 const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
@@ -136,7 +144,7 @@ const Rows = styled.div`
   display: block;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
    display: flex;
    flex-flow: column wrap;
   `};
@@ -166,14 +174,19 @@ const StyledCloseIcon = styled(X)`
 const OrdersExplainerBanner = styled.div`
   display: grid;
   background: ${({ theme }) => theme.gradient1};
-  width: fit-content;
+  width: 100%;
   gap: 16px;
-  grid-template-columns: minmax(462px, 4fr) minmax(426px, 3.8fr) 24px;
+  grid-template-columns: 6.2fr 5.5fr 24px;
   grid-template-rows: minmax(90px, 1fr);
   align-items: center;
   border-top: 1px solid transparent;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.88, theme.text3)};
   padding: 0 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
+    width: fit-content;
+    grid-template-columns: minmax(462px, 4fr) minmax(426px, 3.8fr) 24px;
+  `}
 
   /* 1st section */
   > div {

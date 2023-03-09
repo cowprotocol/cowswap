@@ -18,6 +18,7 @@ export const MEDIA_WIDTHS = {
   upToSmall: 720,
   upToMedium: 960,
   upToLarge: 1280,
+  upToLargeAlt: 1390,
   upToExtraLarge: 2560,
 }
 

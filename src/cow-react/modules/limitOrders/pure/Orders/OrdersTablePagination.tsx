@@ -16,28 +16,6 @@ const PaginationBox = styled.div`
   text-align: center;
   margin: 20px auto 0;
   justify-content: center;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  position: relative;
-
-  &::after {
-    content: '';
-    display: block;
-    background: linear-gradient(
-      to left,
-      ${({ theme }) => theme.grey1} 0%,
-      ${({ theme }) => transparentize(1, theme.grey1)} 100%
-    );
-    pointer-events: none;
-    height: 100%;
-    width: 50px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-  }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     justify-content: flex-start;
