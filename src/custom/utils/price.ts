@@ -3,10 +3,10 @@ import BigNumberJs from 'bignumber.js'
 import * as Sentry from '@sentry/browser'
 import { Percent } from '@uniswap/sdk-core'
 
-import { getQuote, getPriceQuoteLegacy as getPriceQuoteGp } from '@cow/api/gnosisProtocol'
+import { getQuote } from '@cow/api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
-import { PRICE_API_TIMEOUT_MS, SWR_OPTIONS } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_ADDRESS, PRICE_API_TIMEOUT_MS, SWR_OPTIONS } from 'constants/index'
 import {
   getPriceQuote as getPriceQuoteParaswap,
   toPriceInformation as toPriceInformationParaswap,
@@ -86,7 +86,23 @@ export type AllPricesResult = {
  */
 export async function getAllPrices(params: LegacyPriceQuoteParams): Promise<AllPricesResult> {
   // Get price from all API: Gpv2, Paraswap, Matcha (0x)
-  const gpPricePromise = withTimeout(getPriceQuoteGp(params), PRICE_API_TIMEOUT_MS, 'GPv2: Get Price API')
+
+  const cowSwapQuote = getFullQuote({
+    quoteParams: {
+      ...params,
+      isEthFlow: params.baseToken.toLowerCase() === NATIVE_CURRENCY_BUY_ADDRESS.toLowerCase(),
+      sellToken: params.baseToken,
+      buyToken: params.quoteToken,
+    },
+  }).then(([result]) => {
+    if (result.status === 'fulfilled') {
+      return result.value
+    }
+
+    return Promise.reject(result.reason)
+  })
+
+  const cowSwapPricePromise = withTimeout(cowSwapQuote, PRICE_API_TIMEOUT_MS, 'CowSwap: Get Price API')
 
   const paraSwapPricePromise = withTimeout(
     getPriceQuoteParaswap(params),
@@ -99,7 +115,7 @@ export async function getAllPrices(params: LegacyPriceQuoteParams): Promise<AllP
 
   // Get results from API queries
   const [gpPrice, paraSwapPrice, matchaPrice, oneInchPrice] = await Promise.allSettled([
-    gpPricePromise,
+    cowSwapPricePromise,
     paraSwapPricePromise,
     matchaPricePromise,
     oneInchPricePromise,
