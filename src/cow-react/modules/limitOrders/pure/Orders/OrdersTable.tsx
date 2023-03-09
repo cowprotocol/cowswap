@@ -47,8 +47,7 @@ const TableInner = styled.div`
   height: inherit;
   padding: 0;
   overflow-y: hidden;
-  overflow-x: auto; // fallback for 'overlay'
-  overflow-x: overlay;
+  overflow-x: auto;
   ${({ theme }) => theme.colorScrollbar};
 `
 
