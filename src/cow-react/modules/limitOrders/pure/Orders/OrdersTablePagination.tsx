@@ -16,6 +16,7 @@ const PaginationBox = styled.div`
   text-align: center;
   margin: 20px auto 0;
   justify-content: center;
+<<<<<<< Updated upstream
   position: relative;
 
   &::after {
@@ -35,6 +36,8 @@ const PaginationBox = styled.div`
     bottom: 0;
     margin: auto;
   }
+=======
+>>>>>>> Stashed changes
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     justify-content: flex-start;
