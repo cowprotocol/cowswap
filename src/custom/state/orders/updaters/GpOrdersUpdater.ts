@@ -88,7 +88,7 @@ function _transformGpOrderToStoreOrder(
     creationTime,
     summary: '',
     status,
-    receiver: receiver || '', // TODO: check it
+    receiver: receiver || '',
     apiAdditionalInfo: order,
     isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
     // EthFlow related
