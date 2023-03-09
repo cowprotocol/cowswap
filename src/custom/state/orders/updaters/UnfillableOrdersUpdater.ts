@@ -8,7 +8,12 @@ import { Order, OrderClass } from 'state/orders/actions'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 import { getBestQuote } from 'utils/price'
-import { getOrderExecutionPrice, getOrderMarketPrice, isOrderUnfillable } from 'state/orders/utils'
+import {
+  getEstimatedExecutionPrice,
+  getOrderExecutionPrice,
+  getOrderMarketPrice,
+  isOrderUnfillable,
+} from 'state/orders/utils'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
@@ -100,7 +105,7 @@ export function UnfillableOrdersUpdater(): null {
       order: Order,
       fee: FeeInformation | null,
       marketPrice: Price<Currency, Currency>,
-      executionPrice: Price<Currency, Currency>
+      estimatedExecutionPrice: Price<Currency, Currency>
     ) => {
       if (!fee?.amount) return
 
@@ -109,7 +114,7 @@ export function UnfillableOrdersUpdater(): null {
         data: {
           lastUpdateTimestamp: Date.now(),
           marketPrice,
-          executionPrice,
+          estimatedExecutionPrice,
         },
       })
     },
@@ -134,6 +139,7 @@ export function UnfillableOrdersUpdater(): null {
 
       const executionPrice = getOrderExecutionPrice(order, price.amount, fee.amount)
       const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
+      const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
       const isUnfillable = isOrderUnfillable(order, orderPrice, executionPrice)
 
       // Only trigger state update if flag changed
@@ -147,7 +153,7 @@ export function UnfillableOrdersUpdater(): null {
         }
       }
 
-      updateOrderMarketPriceCallback(order, fee, marketPrice, executionPrice)
+      updateOrderMarketPriceCallback(order, fee, marketPrice, estimatedExecutionPrice)
     },
     [setIsOrderUnfillable, updateOrderMarketPriceCallback]
   )
