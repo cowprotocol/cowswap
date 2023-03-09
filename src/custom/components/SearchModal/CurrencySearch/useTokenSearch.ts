@@ -48,16 +48,6 @@ const tokensData = loadable(
   })
 )
 
-export const externalTokenLogoURIs = atom(async (get) => {
-  const tokens = get(tokensData)
-
-  if (tokens.state === 'hasData' && tokens.data) {
-    return new Map(tokens.data.data.map(({ address, logoURI }) => [address, logoURI]))
-  }
-
-  return undefined
-})
-
 export function useTokenSearch(_query: string, existingTokens: Map<string, boolean>): Token[] {
   const [query, setQuery] = useAtom(searchQuery)
   // query is being used through jotai
