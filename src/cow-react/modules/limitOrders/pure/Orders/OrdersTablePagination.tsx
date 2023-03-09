@@ -16,6 +16,8 @@ const PaginationBox = styled.div`
   text-align: center;
   margin: 20px auto 0;
   justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     justify-content: flex-start;
