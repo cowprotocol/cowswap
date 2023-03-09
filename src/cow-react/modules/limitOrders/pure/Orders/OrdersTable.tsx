@@ -57,9 +57,7 @@ const Header = styled.div<{ isOpenOrdersTab: boolean }>`
   gap: 16px;
 
   grid-template-columns: ${({ isOpenOrdersTab }) =>
-    `3.2fr repeat(2,2fr) ${
-      isOpenOrdersTab ? '2.5fr 1.4fr' : ''
-    } 0.7fr 108px 24px`};
+    `3.2fr repeat(2,2fr) ${isOpenOrdersTab ? '2.5fr 1.4fr' : ''} 0.7fr 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
@@ -67,10 +65,9 @@ const Header = styled.div<{ isOpenOrdersTab: boolean }>`
   padding: 0 16px;
 
   ${({ theme, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
-  grid-template-columns: ${
-    `minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
-      isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
-    } minmax(50px,1fr) 108px 24px`};
+  grid-template-columns: ${`minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
+    isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
+  } minmax(50px,1fr) 108px 24px`};
   `}
 `
 
