@@ -11,11 +11,7 @@ export enum ConnectionType {
   AMBIRE = 'AMBIRE',
 }
 
-export const BACKFILLABLE_WALLETS = [
-  ConnectionType.INJECTED,
-  ConnectionType.COINBASE_WALLET,
-  ConnectionType.WALLET_CONNECT,
-]
+export const BACKFILLABLE_WALLETS = [ConnectionType.INJECTED, ConnectionType.WALLET_CONNECT]
 
 export interface WalletInfo {
   chainId?: number
