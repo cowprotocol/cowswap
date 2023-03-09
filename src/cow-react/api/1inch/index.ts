@@ -111,13 +111,13 @@ export async function getPriceQuote(params: LegacyPriceQuoteParams): Promise<Pri
     return null
   }
 
-  const priceProise = _get(chainId, `/quote?fromTokenAddress=${sellToken}&toTokenAddress=${buyToken}&amount=${amount}`)
+  const pricePromise = _get(chainId, `/quote?fromTokenAddress=${sellToken}&toTokenAddress=${buyToken}&amount=${amount}`)
 
-  if (!priceProise) {
+  if (!pricePromise) {
     return null
   }
 
-  const response = await priceProise.catch((error) => {
+  const response = await pricePromise.catch((error) => {
     console.error(`Error getting ${API_NAME} price quote:`, error)
     throw new Error(error)
   })
