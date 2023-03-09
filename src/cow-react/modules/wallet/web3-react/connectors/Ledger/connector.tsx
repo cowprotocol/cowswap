@@ -67,11 +67,11 @@ export class LedgerConnector extends Connector {
 
     const provider = new LedgerProvider(this.options)
 
-    const engine = await provider.activate()
+    const engine = (await provider.activate()) as unknown as Provider
 
-    this.provider = engine as any
+    this.provider = engine
     this.providerRequests.forEach((callback) => {
-      callback(engine as any)
+      callback(engine)
     })
     this.providerRequests = []
 

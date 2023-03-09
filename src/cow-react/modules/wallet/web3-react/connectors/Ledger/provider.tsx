@@ -25,7 +25,7 @@ export interface EcdsaSignature {
 const currentChainId = 1
 const derivationPaths = ["44'/60'/x'/0/0", "44'/60'/0'/x"]
 
-export function generateDerivationPaths(context: { accountsOffset: number; accountsLength: number }): string[] {
+function _generateDerivationPaths(context: { accountsOffset: number; accountsLength: number }): string[] {
   const { accountsOffset, accountsLength } = context
   const pathList: string[] = []
 
@@ -40,34 +40,34 @@ export function generateDerivationPaths(context: { accountsOffset: number; accou
   return pathList
 }
 
+function _getModule(): Promise<LedgerModules> {
+  return (
+    Promise.all([
+      // @ts-ignore
+      import('@ledgerhq/hw-transport-u2f'),
+      // @ts-ignore
+      import('@ledgerhq/hw-transport-webhid'),
+      // @ts-ignore
+      import('@ledgerhq/web3-subprovider'),
+      // @ts-ignore
+      import('@ledgerhq/hw-app-eth'),
+    ])
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      .then(([TransportU2F, TransportWebHID, createLedgerSubprovider, LedgerEth]) => {
+        return {
+          transportFactory: 'hid' in navigator ? TransportWebHID.default : TransportU2F.default,
+          createLedgerSubprovider: createLedgerSubprovider.default,
+          LedgerEth: LedgerEth.default,
+        }
+      })
+  )
+}
+
 export class LedgerProvider {
   private readonly options: LedgerOptions
 
   constructor(options: LedgerOptions) {
     this.options = options
-  }
-
-  getModule = (): Promise<LedgerModules> => {
-    return (
-      Promise.all([
-        // @ts-ignore
-        import('@ledgerhq/hw-transport-u2f'),
-        // @ts-ignore
-        import('@ledgerhq/hw-transport-webhid'),
-        // @ts-ignore
-        import('@ledgerhq/web3-subprovider'),
-        // @ts-ignore
-        import('@ledgerhq/hw-app-eth'),
-      ])
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        .then(([TransportU2F, TransportWebHID, createLedgerSubprovider, LedgerEth]) => {
-          return {
-            transportFactory: 'hid' in navigator ? TransportWebHID.default : TransportU2F.default,
-            createLedgerSubprovider: createLedgerSubprovider.default,
-            LedgerEth: LedgerEth.default,
-          }
-        })
-    )
   }
 
   signTypedData = async (
@@ -76,7 +76,7 @@ export class LedgerProvider {
     value: Record<string, any>,
     primaryType: string
   ): Promise<string> => {
-    const module = await this.getModule()
+    const module = await _getModule()
     const transport = await module.transportFactory.create()
 
     // TODO: https://etherscan.io/address/0x9008d19f58aabd9ed0d60971565aa8510560ab41#readContract
@@ -86,7 +86,7 @@ export class LedgerProvider {
     try {
       const ledgerEth = new module.LedgerEth(transport)
 
-      const pathList = generateDerivationPaths({ accountsLength: 1, accountsOffset: 0 })
+      const pathList = _generateDerivationPaths({ accountsLength: 1, accountsOffset: 0 })
 
       const signature: EcdsaSignature = await ledgerEth.signEIP712HashedMessage(pathList[0], domainSeparator, dataHash)
 
@@ -114,7 +114,7 @@ export class LedgerProvider {
   }
 
   activate = async () => {
-    const { transportFactory, createLedgerSubprovider } = await this.getModule()
+    const { transportFactory, createLedgerSubprovider } = await _getModule()
 
     const engine = new ProviderEngine()
 
