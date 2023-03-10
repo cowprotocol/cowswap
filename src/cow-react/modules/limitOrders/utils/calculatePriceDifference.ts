@@ -1,6 +1,5 @@
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 import { Nullish } from '@cow/types'
-import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
 import tryParseCurrencyAmount from '@src/custom/lib/utils/tryParseCurrencyAmount'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 
