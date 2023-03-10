@@ -100,6 +100,8 @@ export function ReceiptModal({
               ) : (
                 <>
                   <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
+                  {/* TODO: Replace below to add 'Executes at' price field */}
+                  <p>-</p>
                 </>
               )}
             </styledEl.Field>
