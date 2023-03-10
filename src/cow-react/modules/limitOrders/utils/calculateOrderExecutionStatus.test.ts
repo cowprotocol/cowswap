@@ -2,7 +2,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { DAI_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'
 import { rawToTokenAmount } from '@cow/utils/rawToTokenAmount'
 import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
-import { calculateOrderExecutionStatus, CalculateOrderExecutionStatusParams } from './calculateOrderExecutionStatus'
+import { calculateOrderExecutionStatus, CalculatePriceDifferenceParams } from './calculateOrderExecutionStatus'
 
 const USDC_1000 = CurrencyAmount.fromRawAmount(USDC_GOERLI, rawToTokenAmount(1000, USDC_GOERLI.decimals))
 const DAI_999 = _daiCurrencyAmount(999)
@@ -34,7 +34,7 @@ describe('calculateOrderExecutionStatus', () => {
 
     describe('market price <0.5% from execution price', () => {
       test('positive difference', () => {
-        const params: CalculateOrderExecutionStatusParams = {
+        const params: CalculatePriceDifferenceParams = {
           ...baseParams,
           spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
           estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1001)),
@@ -44,7 +44,7 @@ describe('calculateOrderExecutionStatus', () => {
       })
 
       test('negative difference', () => {
-        const params: CalculateOrderExecutionStatusParams = {
+        const params: CalculatePriceDifferenceParams = {
           ...baseParams,
           limitPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(990)),
           spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
@@ -56,7 +56,7 @@ describe('calculateOrderExecutionStatus', () => {
     })
     describe('market price 0.5-5% from execution price', () => {
       test('0.5% - lower bond', () => {
-        const params: CalculateOrderExecutionStatusParams = {
+        const params: CalculatePriceDifferenceParams = {
           ...baseParams,
           spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
           estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1005)),
@@ -66,7 +66,7 @@ describe('calculateOrderExecutionStatus', () => {
       })
 
       test('2.5% - middle range', () => {
-        const params: CalculateOrderExecutionStatusParams = {
+        const params: CalculatePriceDifferenceParams = {
           ...baseParams,
           spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
           estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1025)),
@@ -76,7 +76,7 @@ describe('calculateOrderExecutionStatus', () => {
       })
 
       test('5% - upper bond', () => {
-        const params: CalculateOrderExecutionStatusParams = {
+        const params: CalculatePriceDifferenceParams = {
           ...baseParams,
           spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
           estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1050)),
@@ -86,7 +86,7 @@ describe('calculateOrderExecutionStatus', () => {
       })
     })
     test('market price >5% from execution price', () => {
-      const params: CalculateOrderExecutionStatusParams = {
+      const params: CalculatePriceDifferenceParams = {
         ...baseParams,
         spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
         estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1051)),
