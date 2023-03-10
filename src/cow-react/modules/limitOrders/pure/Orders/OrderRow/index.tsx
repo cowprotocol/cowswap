@@ -243,7 +243,7 @@ export function OrderRow({
           <RateInfo
             prependSymbol={false}
             noLabel={true}
-            setSmartQuoteSelectionOnce={false}
+            doNotUseSmartQuote
             isInverted={isInverted}
             rateInfoParams={rateInfoParams}
             opacitySymbol={true}

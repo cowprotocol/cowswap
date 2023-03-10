@@ -30,6 +30,7 @@ export interface RateInfoProps {
   prependSymbol?: boolean
   isInverted?: boolean
   setSmartQuoteSelectionOnce?: boolean
+  doNotUseSmartQuote?: boolean
   isInvertedState?: [boolean, Dispatch<SetStateAction<boolean>>]
   rateInfoParams: RateInfoParams
   opacitySymbol?: boolean
@@ -120,6 +121,7 @@ export function RateInfo({
   className,
   label = 'Limit price',
   setSmartQuoteSelectionOnce = false,
+  doNotUseSmartQuote = false,
   stylized = false,
   isInverted = false,
   noLabel = false,
@@ -165,7 +167,7 @@ export function RateInfo({
 
   // Set isInverted based on quoteCurrency
   useEffect(() => {
-    if (isSmartQuoteSelectionSet) return
+    if (isSmartQuoteSelectionSet || doNotUseSmartQuote) return
 
     const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
@@ -182,6 +184,7 @@ export function RateInfo({
     isSmartQuoteSelectionSet,
     setIsSmartQuoteSelectionSet,
     setSmartQuoteSelectionOnce,
+    doNotUseSmartQuote,
   ])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
