@@ -44,7 +44,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
   }
 }
 
-async function requestPrice(
+export async function requestPrice(
   chainId: number | undefined,
   inputCurrency: Currency | null,
   outputCurrency: Currency | null

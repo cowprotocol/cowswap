@@ -27,7 +27,7 @@ const rateInfoParams: RateInfoParams = {
   inputCurrencyAmount: null,
   outputCurrencyAmount: null,
   activeRateFiatAmount: null,
-  inversedActiveRateFiatAmount: null,
+  invertedActiveRateFiatAmount: null,
 }
 const defaultProps: TradeRatesProps = {
   trade,

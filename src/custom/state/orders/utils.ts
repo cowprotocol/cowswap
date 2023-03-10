@@ -1,4 +1,4 @@
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { PENDING_ORDERS_BUFFER, ZERO_BIG_NUMBER } from 'constants/index'
@@ -9,6 +9,7 @@ import { calculatePrice, invertPrice } from './priceUtils'
 import { BigNumber } from 'bignumber.js'
 import { OrderKind } from '@cowprotocol/contracts'
 import JSBI from 'jsbi'
+import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 
 export type OrderTransitionStatus =
   | 'unknown'
@@ -229,6 +230,91 @@ export function getOrderMarketPrice(order: Order, price: string, feeAmount: stri
   }
 
   return new Price(order.inputToken, order.outputToken, price.toString(), order.buyAmount.toString())
+}
+
+/**
+ * Get estimated execution price
+ *
+ * Implementation of logic defined on https://www.notion.so/cownation/Execution-Price-Market-Price-90524299d1874a59bb34c658293a0316?pvs=4
+ *
+ * In summary, given an Order with:
+ * * `LP` Limit Price (this and all other prices, is expressed in buy tokens)
+ * * `A` Amount of the order (in sell tokens)
+ * * `Kind` Fill Type (FoC, Partial)
+ *
+ * And the Market conditions:
+ * * `FP` Fill Price (Volume sensitive) (aka Market Price)
+ * * `BOP` Best Offer Price (Non-volume sensitive) (aka Spot Price)
+ * * `F` Fee to execute the order (in sell tokens)
+ *
+ * If we define something called `Feasible Execution Price` as
+ * FEP = (A - F) * LP / A
+ *
+ * Similarly as above, we define something called `Feasible Best Order Price` as
+ * FBOP = (A - F) * BOP / A
+ *
+ * Then, depending on the Kind, the `Estimated Execution Price` (EEP) would be:
+ * IF (Kind = FoC)
+ *       EEP = MAX(FEP, FP)
+ *
+ * IF (Kind = Partial)
+ *        EEP = MAX(FEP, FBOP)
+ *
+ *
+ * @param order Tokens and amounts information, plus whether partially fillable
+ * @param fillPrice AKA MarketPrice
+ * @param fee Estimated fee in inputToken atoms, as string
+ */
+export function getEstimatedExecutionPrice(
+  order: Pick<Order, 'inputToken' | 'outputToken' | 'partiallyFillable' | 'sellAmount' | 'buyAmount'>,
+  fillPrice: Price<Currency, Currency>,
+  fee: string
+): Price<Currency, Currency> {
+  // TODO: implement estimation for partially fillable orders
+  if (order.partiallyFillable) {
+    throw Error('Not implemented!')
+  }
+
+  // Build CurrencyAmount and Price instances
+  const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
+  const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
+  const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
+  const limitPrice = buildPriceFromCurrencyAmounts(inputAmount, outputAmount)
+
+  const numerator = inputAmount
+    .subtract(feeAmount)
+    // Limit price is given in BASE (input) per QUOTE (output).
+    // Since we are operating with input tokens, we need the QUOTE to be in input as well
+    // Thus, we invert the price
+    .multiply(limitPrice.invert())
+  // The divider in the formula is used as denominator, and the division is done inside the Price instance
+  const denominator = inputAmount
+
+  const feasibleExecutionPrice = new Price(
+    order.inputToken,
+    order.outputToken,
+    numerator.quotient,
+    denominator.quotient
+  )
+
+  // Picking the MAX between FEP and FP
+  const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
+
+  // TODO: remove debug statement
+  console.debug(`getEstimatedExecutionPrice`, {
+    A: inputAmount.toFixed(8) + ' ' + inputAmount.currency.symbol,
+    F: feeAmount.toFixed(8) + ' ' + feeAmount.currency.symbol,
+    LP: `${limitPrice.toFixed(8)} ${limitPrice.quoteCurrency.symbol} per ${limitPrice.baseCurrency.symbol}`,
+    FEP: `${feasibleExecutionPrice.toFixed(18)} ${feasibleExecutionPrice.quoteCurrency.symbol} per ${
+      feasibleExecutionPrice.baseCurrency.symbol
+    }`,
+    FP: `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${fillPrice.baseCurrency.symbol}`,
+    EEP: `${estimatedExecutionPrice.toFixed(8)} ${estimatedExecutionPrice.quoteCurrency.symbol} per ${
+      estimatedExecutionPrice.baseCurrency.symbol
+    }`,
+  })
+
+  return estimatedExecutionPrice
 }
 
 /**

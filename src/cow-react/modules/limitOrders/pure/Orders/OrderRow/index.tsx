@@ -1,7 +1,7 @@
-import { useContext } from 'react'
-import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
+import { useContext, useEffect, useState } from 'react'
+import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { OrderStatus } from 'state/orders/actions'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { OrderParams } from '../utils/getOrderParams'
@@ -9,7 +9,7 @@ import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmou
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { TokenAmount, TokenAmountProps } from '@cow/common/pure/TokenAmount'
 import CurrencyLogo from 'components/CurrencyLogo'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
@@ -17,9 +17,17 @@ import { OrderStatusBox } from '@cow/modules/limitOrders/pure/OrderStatusBox'
 import * as styledEl from './styled'
 import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
-import Loader from 'components/Loader'
+import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
-import { limitOrdersFeatures } from '@cow/constants/featureFlags'
+import {
+  calculateOrderExecutionStatus,
+  OrderExecutionStatus,
+} from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
+import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
+import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
+import { darken } from 'polished'
+import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
+import { getAddress } from '@cow/utils/getAddress'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -45,15 +53,87 @@ function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return <CurrencyLogo currency={amount.currency} size="28px" />
 }
 
+export function LowVolumeWarningContent() {
+  const theme = useContext(ThemeContext)
+
+  return (
+    <styledEl.WarningIndicator hasBackground={false}>
+      <MouseoverTooltipContent
+        wrap={true}
+        bgColor={theme.alert}
+        content={
+          <styledEl.WarningContent>
+            <h3>Order unlikely to execute</h3>
+            For this order, network fees would be <b>52.11%</b>{' '}
+            <b>
+              <i>(12.34 USDC)</i>
+            </b>{' '}
+            of your sell amount! Therefore, your order is unlikely to execute.
+          </styledEl.WarningContent>
+        }
+        placement="bottom"
+      >
+        <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
+      </MouseoverTooltipContent>
+    </styledEl.WarningIndicator>
+  )
+}
+
+// TODO: temporary component, name and location. If keeping it, move it to its own module, rename, etc, etc
+export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: boolean }>`
+  display: flex;
+  align-items: center;
+  color: ${({ lowVolumeWarning, theme }) =>
+    lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
+
+  // Popover container override
+  > div > div {
+    display: flex;
+    align-items: center;
+  }
+`
+
+export function LowVolumeWarningToken(
+  props: TokenAmountProps & { executeIndicator: React.ReactNode; lowVolumeWarning: boolean }
+) {
+  const { lowVolumeWarning, ...rest } = props
+
+  return (
+    <LowVolumeWarningTokenWrapper lowVolumeWarning={lowVolumeWarning}>
+      <MouseoverTooltipContent
+        wrap={true}
+        content={
+          <styledEl.ExecuteInformationTooltip>
+            {/* TODO: Add logic to get the down/up + icon and the values below */}
+            Market price needs to go down/up 📉📈 by
+            <b>17.70 USDC</b>&nbsp;
+            <b>
+              <i>(~1.15%)</i>
+            </b>
+            &nbsp;to execute your order.
+          </styledEl.ExecuteInformationTooltip>
+        }
+        placement="top"
+      >
+        {props.executeIndicator}
+        <TokenAmount {...rest} />
+      </MouseoverTooltipContent>
+
+      {lowVolumeWarning && <LowVolumeWarningContent />}
+    </LowVolumeWarningTokenWrapper>
+  )
+}
+
 const BalanceWarning = (symbol: string) => (
   <styledEl.WarningParagraph>
-    <h3>Insufficient balance for this limit order</h3>
+    <h3>Insufficient balance</h3>
     <p>
       Your wallet currently has insufficient{' '}
       <strong>
         <TokenSymbol token={{ symbol }} />
       </strong>{' '}
-      balance to execute this order.
+      balance to execute this limit order.
+      <br />
       <br />
       The order is still open and will become executable when you top up your{' '}
       <strong>
@@ -86,8 +166,9 @@ const AllowanceWarning = (symbol: string) => (
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
-  RowElement: StyledComponent<'div', DefaultTheme>
-  isRateInversed: boolean
+  spotPrice: Price<Currency, Currency> | undefined | null
+  RowElement: StyledComponent<'div', DefaultTheme, { isOpenOrdersTab?: boolean; hasBackground?: boolean }>
+  isRateInverted: boolean
   isOpenOrdersTab: boolean
   orderParams: OrderParams
   onClick: () => void
@@ -97,15 +178,18 @@ export interface OrderRowProps {
 export function OrderRow({
   order,
   RowElement,
-  isRateInversed,
+  isRateInverted,
   isOpenOrdersTab,
   getShowCancellationModal,
   orderParams,
   onClick,
   prices,
+  spotPrice,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice } = order
+  const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
+  const { estimatedExecutionPrice } = prices || {}
 
   const showCancellationModal = getShowCancellationModal(order)
 
@@ -115,15 +199,32 @@ export function OrderRow({
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
-  const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
+  // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
-  const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
-  const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
-  const executedPriceInversed = isRateInversed ? executedPrice?.invert() : executedPrice
+  const [isInverted, setIsinverted] = useState(isRateInverted)
+
+  // Update internal isInverted flag whenever prop change
+  useEffect(() => {
+    setIsinverted(isRateInverted)
+  }, [isRateInverted])
+
+  // On mount, apply smart quote selection
+  useEffect(() => {
+    const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
+    setIsinverted(getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency))
+    // Intentionally empty, should run only once
+    // eslint-disable-next-line
+  }, [])
+
+  const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
+  const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
+  const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
+
+  const executionOrderStatus = useOrderExecutionStatus(rateInfoParams, prices, spotPrice)
 
   return (
-    <RowElement>
+    <RowElement isOpenOrdersTab={isOpenOrdersTab}>
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell clickable onClick={onClick}>
         <styledEl.CurrencyLogoPair>
@@ -142,40 +243,63 @@ export function OrderRow({
           <RateInfo
             prependSymbol={false}
             noLabel={true}
-            setSmartQuoteSelectionOnce={true}
-            isInversed={isRateInversed}
+            doNotUseSmartQuote
+            isInverted={isInverted}
             rateInfoParams={rateInfoParams}
+            opacitySymbol={true}
           />
         </styledEl.RateValue>
       </styledEl.CellElement>
 
-      {/* Est. execution price */}
       {/* Market price */}
-      {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
-        <styledEl.CellElement doubleRow>
+      {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
+      {isOpenOrdersTab && (
+        <styledEl.CellElement>
           {/*// TODO: gray out the price when it was updated too long ago*/}
-          {prices ? (
-            <>
-              <b>
-                <TokenAmount amount={executionPriceInversed} tokenSymbol={executionPriceInversed?.quoteCurrency} />
-              </b>
-              <i>
-                <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} />
-              </i>
-            </>
-          ) : prices === null ? (
+          {spotPrice ? (
+            <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
+          ) : spotPrice === null ? (
             '-'
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
         </styledEl.CellElement>
       )}
+
+      {/* Execution price */}
       {!isOpenOrdersTab && (
         <styledEl.CellElement>
-          {executedPriceInversed ? (
-            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} />
+          {executedPriceInverted ? (
+            <TokenAmount
+              amount={executedPriceInverted}
+              tokenSymbol={executedPriceInverted?.quoteCurrency}
+              opacitySymbol
+            />
           ) : (
             '-'
+          )}
+        </styledEl.CellElement>
+      )}
+
+      {/* Executes at */}
+      {isOpenOrdersTab && (
+        <styledEl.CellElement hasBackground>
+          {/*// TODO: gray out the price when it was updated too long ago*/}
+          {prices ? (
+            <styledEl.ExecuteCellWrapper>
+              <LowVolumeWarningToken
+                // TODO: Add condition to show the lowVolumeWarning.
+                executeIndicator={<styledEl.ExecuteIndicator status={executionOrderStatus} />}
+                lowVolumeWarning={true}
+                amount={executionPriceInverted}
+                tokenSymbol={executionPriceInverted?.quoteCurrency}
+                opacitySymbol
+              />
+            </styledEl.ExecuteCellWrapper>
+          ) : prices === null ? (
+            '-'
+          ) : (
+            <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
         </styledEl.CellElement>
       )}
@@ -189,11 +313,12 @@ export function OrderRow({
         </styledEl.CellElement>
       )}
 
-      {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+      {/* TODO: Enable once there is back-end support */}
+      {/* {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
         <styledEl.CellElement>
           <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
         </styledEl.CellElement>
-      )}
+      )} */}
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow>
@@ -201,6 +326,7 @@ export function OrderRow({
         <styledEl.ProgressBar value={formattedPercentage}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
+      {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
           <OrderStatusBox cancelling={!!order.isCancelling} status={order.status} withWarning={withWarning}>
@@ -225,6 +351,8 @@ export function OrderRow({
           )}
         </styledEl.StatusBox>
       </styledEl.CellElement>
+
+      {/* Action contet menu */}
       <styledEl.CellElement>
         <OrderContextMenu
           activityUrl={activityUrl}
@@ -234,4 +362,17 @@ export function OrderRow({
       </styledEl.CellElement>
     </RowElement>
   )
+}
+
+function useOrderExecutionStatus(
+  rateInfo: OrderRowProps['orderParams']['rateInfoParams'],
+  prices: OrderRowProps['prices'],
+  spotPrice: OrderRowProps['spotPrice']
+): OrderExecutionStatus | undefined {
+  return useSafeMemo(() => {
+    const limitPrice = buildPriceFromCurrencyAmounts(rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount)
+    const { estimatedExecutionPrice } = prices || {}
+
+    return calculateOrderExecutionStatus({ limitPrice, spotPrice, estimatedExecutionPrice })
+  }, [rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount, prices?.estimatedExecutionPrice, spotPrice])
 }
