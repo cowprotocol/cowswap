@@ -49,10 +49,12 @@ export function PendingView({
   error = false,
   tryConnection,
   openOptions,
+  pendingError,
 }: {
   error?: boolean
   tryConnection: () => void
   openOptions: () => void
+  pendingError?: string
 }) {
   return (
     <PendingSection>
@@ -64,9 +66,12 @@ export function PendingView({
                 <Trans>Error connecting</Trans>
               </ThemedText.MediumHeader>
               <ThemedText.Body fontSize={14} marginBottom={36} textAlign="center">
-                <Trans>
-                  The connection attempt failed. Please click try again and follow the steps to connect in your wallet.
-                </Trans>
+                {pendingError || (
+                  <Trans>
+                    The connection attempt failed. Please click try again and follow the steps to connect in your
+                    wallet.
+                  </Trans>
+                )}
               </ThemedText.Body>
               <ButtonPrimary $borderRadius="12px" padding="12px" onClick={tryConnection}>
                 <Trans>Try Again</Trans>
