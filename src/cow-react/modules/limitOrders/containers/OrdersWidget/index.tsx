@@ -12,7 +12,7 @@ import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { useAtomValue } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { spotPricesAtom } from '@cow/modules/orders/state/spotPricesAtom'
+import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -25,7 +25,7 @@ export function OrdersWidget() {
   const { chainId, account } = useWalletInfo()
   const getShowCancellationModal = useCancelOrder()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
-  const spotPrices = useAtomValue(spotPricesAtom)
+  const getSpotPrice = useGetSpotPrice()
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -75,7 +75,7 @@ export function OrdersWidget() {
         balancesAndAllowances={pendingBalancesAndAllowances}
         isWalletConnected={!!account}
         getShowCancellationModal={getShowCancellationModal}
-        spotPrices={spotPrices}
+        getSpotPrice={getSpotPrice}
       ></Orders>
       <OrdersReceiptModal />
     </>
