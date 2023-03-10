@@ -1,8 +1,9 @@
-import { atom } from 'jotai'
+import { atom, useAtomValue } from 'jotai'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from 'constants/chains'
 import { getCanonicalMarketChainKey } from '@cow/common/utils/markets'
+import { useCallback } from 'react'
 
 export type SpotPrices = Record<string, Price<Currency, Currency>>
 
@@ -44,7 +45,7 @@ export const updateSpotPricesAtom = atom(null, (get, set, params: UpdateSpotPric
  * @param params {chainId, sellTokenAddress, buyTokenAddress}
  * @param spotPrices Spot prices map
  */
-export function getSpotPrice(params: SpotPricesKeyParams, spotPrices: SpotPrices): Price<Currency, Currency> | null {
+function getSpotPrice(params: SpotPricesKeyParams, spotPrices: SpotPrices): Price<Currency, Currency> | null {
   const { chainId, sellTokenAddress, buyTokenAddress } = params
   const { marketKey, marketInverted } = getCanonicalMarketChainKey(chainId, sellTokenAddress, buyTokenAddress)
   const spotPrice = spotPrices[marketKey]
@@ -54,4 +55,9 @@ export function getSpotPrice(params: SpotPricesKeyParams, spotPrices: SpotPrices
   }
 
   return marketInverted ? spotPrice.invert() : spotPrice
+}
+
+export function useGetSpotPrice() {
+  const spotPrices = useAtomValue(spotPricesAtom)
+  return useCallback((params: SpotPricesKeyParams) => getSpotPrice(params, spotPrices), [spotPrices])
 }

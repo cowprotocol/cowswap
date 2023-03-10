@@ -23,7 +23,8 @@ import SVG from 'react-inlinesvg'
 import iconOrderExecution from 'assets/cow-swap/orderExecution.svg'
 import { X } from 'react-feather'
 import { OrderExecutionStatusList } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
-import { getSpotPrice, SpotPrices } from '@cow/modules/orders/state/spotPricesAtom'
+import { SpotPricesKeyParams } from '@cow/modules/orders/state/spotPricesAtom'
+import { Currency, Price } from '@uniswap/sdk-core'
 
 const TableBox = styled.div`
   display: block;
@@ -216,7 +217,7 @@ export interface OrdersTableProps {
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
   balancesAndAllowances: BalancesAndAllowances
-  spotPrices: SpotPrices
+  getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   getShowCancellationModal(order: Order): (() => void) | null
 }
 
@@ -226,7 +227,7 @@ export function OrdersTable({
   orders,
   pendingOrdersPrices,
   balancesAndAllowances,
-  spotPrices,
+  getSpotPrice,
   getShowCancellationModal,
   currentPageNumber,
 }: OrdersTableProps) {
@@ -357,14 +358,11 @@ export function OrdersTable({
                 key={order.id}
                 isOpenOrdersTab={isOpenOrdersTab}
                 order={order}
-                spotPrice={getSpotPrice(
-                  {
-                    chainId: chainId as SupportedChainId,
-                    sellTokenAddress: order.sellToken,
-                    buyTokenAddress: order.buyToken,
-                  },
-                  spotPrices
-                )}
+                spotPrice={getSpotPrice({
+                  chainId: chainId as SupportedChainId,
+                  sellTokenAddress: order.sellToken,
+                  buyTokenAddress: order.buyToken,
+                })}
                 prices={pendingOrdersPrices[order.id]}
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                 RowElement={RowElement}
