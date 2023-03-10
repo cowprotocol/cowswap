@@ -20,101 +20,76 @@ describe('calculateOrderExecutionStatus', () => {
     expect(
       calculateOrderExecutionStatus({
         limitPrice: null,
-        marketPrice: null,
-        executionPrice: null,
+        spotPrice: null,
+        estimatedExecutionPrice: null,
       })
     ).toBe(undefined)
   })
 
   describe('limit price below market price', () => {
+    // Limit price will never be above estimated execution price
     const baseParams = {
       limitPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_999),
     }
 
-    test('market price <0.5% from execution price', () => {
-      const params: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        marketPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1001)),
-      }
+    describe('market price <0.5% from execution price', () => {
+      test('positive difference', () => {
+        const params: CalculateOrderExecutionStatusParams = {
+          ...baseParams,
+          spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
+          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1001)),
+        }
 
-      expect(calculateOrderExecutionStatus(params)).toBe('veryClose')
+        expect(calculateOrderExecutionStatus(params)).toBe('veryClose')
+      })
+
+      test('negative difference', () => {
+        const params: CalculateOrderExecutionStatusParams = {
+          ...baseParams,
+          limitPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(990)),
+          spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
+          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_999),
+        }
+
+        expect(calculateOrderExecutionStatus(params)).toBe('veryClose')
+      })
     })
-    test('market price 0.5-5% from execution price', () => {
-      const lowerBound: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        marketPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1005)),
-      }
+    describe('market price 0.5-5% from execution price', () => {
+      test('0.5% - lower bond', () => {
+        const params: CalculateOrderExecutionStatusParams = {
+          ...baseParams,
+          spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
+          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1005)),
+        }
 
-      expect(calculateOrderExecutionStatus(lowerBound)).toBe('close')
+        expect(calculateOrderExecutionStatus(params)).toBe('close')
+      })
 
-      const middleRange: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        marketPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1025)),
-      }
+      test('2.5% - middle range', () => {
+        const params: CalculateOrderExecutionStatusParams = {
+          ...baseParams,
+          spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
+          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1025)),
+        }
 
-      expect(calculateOrderExecutionStatus(middleRange)).toBe('close')
+        expect(calculateOrderExecutionStatus(params)).toBe('close')
+      })
 
-      const upperBound: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        marketPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1050)),
-      }
+      test('5% - upper bond', () => {
+        const params: CalculateOrderExecutionStatusParams = {
+          ...baseParams,
+          spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
+          estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1050)),
+        }
 
-      expect(calculateOrderExecutionStatus(upperBound)).toBe('close')
-    })
-    test('market price >5% from execution price', () => {
-      const params: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        marketPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1051)),
-      }
-
-      expect(calculateOrderExecutionStatus(params)).toBe('notClose')
-    })
-  })
-  describe('limit price above market price', () => {
-    const baseParams = {
-      limitPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
-      marketPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(900)),
-    }
-
-    test('market price <0.5% from execution price', () => {
-      const params: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_999),
-      }
-
-      expect(calculateOrderExecutionStatus(params)).toBe('veryClose')
-    })
-    test('market price 0.5-5% from execution price', () => {
-      const lowerBound: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(995)),
-      }
-
-      expect(calculateOrderExecutionStatus(lowerBound)).toBe('close')
-
-      const middleRange: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(990)),
-      }
-
-      expect(calculateOrderExecutionStatus(middleRange)).toBe('close')
-
-      const upperBound: CalculateOrderExecutionStatusParams = {
-        ...baseParams,
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(950)),
-      }
-
-      expect(calculateOrderExecutionStatus(upperBound)).toBe('close')
+        expect(calculateOrderExecutionStatus(params)).toBe('close')
+      })
     })
     test('market price >5% from execution price', () => {
       const params: CalculateOrderExecutionStatusParams = {
         ...baseParams,
-        executionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(949)),
+        spotPrice: buildPriceFromCurrencyAmounts(USDC_1000, DAI_1000),
+        estimatedExecutionPrice: buildPriceFromCurrencyAmounts(USDC_1000, _daiCurrencyAmount(1051)),
       }
 
       expect(calculateOrderExecutionStatus(params)).toBe('notClose')

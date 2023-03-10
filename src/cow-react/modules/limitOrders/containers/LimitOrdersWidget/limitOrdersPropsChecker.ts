@@ -73,7 +73,7 @@ function checkRateInfoParams(a: RateInfoParams, b: RateInfoParams): boolean {
     areFractionsEqual(a.inputCurrencyAmount, b.inputCurrencyAmount) &&
     areFractionsEqual(a.outputCurrencyAmount, b.outputCurrencyAmount) &&
     areFractionsEqual(a.activeRateFiatAmount, b.activeRateFiatAmount) &&
-    areFractionsEqual(a.inversedActiveRateFiatAmount, b.inversedActiveRateFiatAmount)
+    areFractionsEqual(a.invertedActiveRateFiatAmount, b.invertedActiveRateFiatAmount)
   )
 }
 

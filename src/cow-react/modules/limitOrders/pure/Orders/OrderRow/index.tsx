@@ -1,7 +1,7 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { OrderStatus } from 'state/orders/actions'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { OrderParams } from '../utils/getOrderParams'
@@ -19,7 +19,6 @@ import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
-import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 import {
   calculateOrderExecutionStatus,
   OrderExecutionStatus,
@@ -27,6 +26,8 @@ import {
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 import { darken } from 'polished'
+import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
+import { getAddress } from '@cow/utils/getAddress'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -112,7 +113,7 @@ export function LowVolumeWarningToken(
             &nbsp;to execute your order.
           </styledEl.ExecuteInformationTooltip>
         }
-        placement="bottom"
+        placement="top"
       >
         {props.executeIndicator}
         <TokenAmount {...rest} />
@@ -165,8 +166,9 @@ const AllowanceWarning = (symbol: string) => (
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
+  spotPrice: Price<Currency, Currency> | undefined | null
   RowElement: StyledComponent<'div', DefaultTheme, { isOpenOrdersTab?: boolean; hasBackground?: boolean }>
-  isRateInversed: boolean
+  isRateInverted: boolean
   isOpenOrdersTab: boolean
   orderParams: OrderParams
   onClick: () => void
@@ -176,15 +178,18 @@ export interface OrderRowProps {
 export function OrderRow({
   order,
   RowElement,
-  isRateInversed,
+  isRateInverted,
   isOpenOrdersTab,
   getShowCancellationModal,
   orderParams,
   onClick,
   prices,
+  spotPrice,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice } = order
+  const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
+  const { estimatedExecutionPrice } = prices || {}
 
   const showCancellationModal = getShowCancellationModal(order)
 
@@ -194,14 +199,29 @@ export function OrderRow({
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
-  const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
+  // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
-  const executionPriceInversed = isRateInversed ? prices?.executionPrice.invert() : prices?.executionPrice
-  const marketPriceInversed = isRateInversed ? prices?.marketPrice.invert() : prices?.marketPrice
-  const executedPriceInversed = isRateInversed ? executedPrice?.invert() : executedPrice
+  const [isInverted, setIsinverted] = useState(isRateInverted)
 
-  const executionOrderStatus = useOrderExecutionStatus(rateInfoParams, prices)
+  // Update internal isInverted flag whenever prop change
+  useEffect(() => {
+    setIsinverted(isRateInverted)
+  }, [isRateInverted])
+
+  // On mount, apply smart quote selection
+  useEffect(() => {
+    const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
+    setIsinverted(getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency))
+    // Intentionally empty, should run only once
+    // eslint-disable-next-line
+  }, [])
+
+  const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
+  const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
+  const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
+
+  const executionOrderStatus = useOrderExecutionStatus(rateInfoParams, prices, spotPrice)
 
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab}>
@@ -223,8 +243,8 @@ export function OrderRow({
           <RateInfo
             prependSymbol={false}
             noLabel={true}
-            setSmartQuoteSelectionOnce={true}
-            isInversed={isRateInversed}
+            doNotUseSmartQuote
+            isInverted={isInverted}
             rateInfoParams={rateInfoParams}
             opacitySymbol={true}
           />
@@ -236,19 +256,25 @@ export function OrderRow({
       {isOpenOrdersTab && (
         <styledEl.CellElement>
           {/*// TODO: gray out the price when it was updated too long ago*/}
-          {prices ? (
-            <TokenAmount amount={marketPriceInversed} tokenSymbol={marketPriceInversed?.quoteCurrency} opacitySymbol />
-          ) : prices === null ? (
+          {spotPrice ? (
+            <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
+          ) : spotPrice === null ? (
             '-'
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
         </styledEl.CellElement>
       )}
+
+      {/* Execution price */}
       {!isOpenOrdersTab && (
         <styledEl.CellElement>
-          {executedPriceInversed ? (
-            <TokenAmount amount={executedPriceInversed} tokenSymbol={executedPriceInversed?.quoteCurrency} />
+          {executedPriceInverted ? (
+            <TokenAmount
+              amount={executedPriceInverted}
+              tokenSymbol={executedPriceInverted?.quoteCurrency}
+              opacitySymbol
+            />
           ) : (
             '-'
           )}
@@ -265,8 +291,8 @@ export function OrderRow({
                 // TODO: Add condition to show the lowVolumeWarning.
                 executeIndicator={<styledEl.ExecuteIndicator status={executionOrderStatus} />}
                 lowVolumeWarning={true}
-                amount={executionPriceInversed}
-                tokenSymbol={executionPriceInversed?.quoteCurrency}
+                amount={executionPriceInverted}
+                tokenSymbol={executionPriceInverted?.quoteCurrency}
                 opacitySymbol
               />
             </styledEl.ExecuteCellWrapper>
@@ -274,19 +300,6 @@ export function OrderRow({
             '-'
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
-          )}
-        </styledEl.CellElement>
-      )}
-      {!isOpenOrdersTab && (
-        <styledEl.CellElement>
-          {executedPriceInversed ? (
-            <TokenAmount
-              amount={executedPriceInversed}
-              tokenSymbol={executedPriceInversed?.quoteCurrency}
-              opacitySymbol
-            />
-          ) : (
-            '-'
           )}
         </styledEl.CellElement>
       )}
@@ -300,11 +313,12 @@ export function OrderRow({
         </styledEl.CellElement>
       )}
 
-      {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+      {/* TODO: Enable once there is back-end support */}
+      {/* {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
         <styledEl.CellElement>
           <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
         </styledEl.CellElement>
-      )}
+      )} */}
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow>
@@ -352,12 +366,13 @@ export function OrderRow({
 
 function useOrderExecutionStatus(
   rateInfo: OrderRowProps['orderParams']['rateInfoParams'],
-  prices: OrderRowProps['prices']
+  prices: OrderRowProps['prices'],
+  spotPrice: OrderRowProps['spotPrice']
 ): OrderExecutionStatus | undefined {
   return useSafeMemo(() => {
     const limitPrice = buildPriceFromCurrencyAmounts(rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount)
-    const { marketPrice, executionPrice } = prices || {}
+    const { estimatedExecutionPrice } = prices || {}
 
-    return calculateOrderExecutionStatus({ limitPrice, marketPrice, executionPrice })
-  }, [rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount, prices?.marketPrice, prices?.executionPrice])
+    return calculateOrderExecutionStatus({ limitPrice, spotPrice, estimatedExecutionPrice })
+  }, [rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount, prices?.estimatedExecutionPrice, spotPrice])
 }

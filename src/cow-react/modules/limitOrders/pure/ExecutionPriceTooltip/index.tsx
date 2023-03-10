@@ -8,7 +8,7 @@ import { convertAmountToCurrency } from '@cow/modules/limitOrders/utils/calculat
 import { ExecuteIndicator } from '@cow/modules/limitOrders/pure/Orders/OrderRow/styled'
 
 export interface ExecutionPriceTooltipProps {
-  isInversed: boolean
+  isInverted: boolean
   feeAmount: CurrencyAmount<Currency> | null
   displayedRate: string | null
   executionPrice: Price<Currency, Currency> | null
@@ -39,13 +39,7 @@ interface RateTooltipHeaderProps {
 export function RateTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps) {
   return (
     <styledEl.Content>
-      <p>
-        Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.{' '}
-        {/* TODO: add proper link to FAQ */}
-        {/* <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
-          Learn more.
-        </a> */}
-      </p>
+      <p>Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.</p>
 
       {isOpenOrdersTab && (
         <>
@@ -59,13 +53,13 @@ export function RateTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps) {
 function formatFeeAmount({
   marketRate,
   feeAmount,
-  isInversed,
+  isInverted,
   executionPrice,
 }: ExecutionPriceTooltipProps): CurrencyAmount<Currency> | null {
-  const currency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
+  const currency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const invertedFee = marketRate && feeAmount ? marketRate.multiply(feeAmount) : null
 
-  return !isInversed && invertedFee && currency && feeAmount
+  return !isInverted && invertedFee && currency && feeAmount
     ? convertAmountToCurrency(
         CurrencyAmount.fromFractionalAmount(feeAmount.currency, invertedFee.numerator, invertedFee.denominator),
         currency
@@ -74,9 +68,9 @@ function formatFeeAmount({
 }
 
 export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
-  const { isInversed, displayedRate, executionPrice, isOpenOrdersTab } = props
+  const { isInverted, displayedRate, executionPrice, isOpenOrdersTab } = props
 
-  const currentCurrency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
+  const currentCurrency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const formattedFeeAmount = formatFeeAmount(props)
 
   const feeUsdValue = useHigherUSDValue(formattedFeeAmount || undefined)
@@ -117,7 +111,7 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
       <styledEl.FeeItem highlighted>
         <b>Order executes at</b>
         <span>
-          <b>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</b>
+          <b>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />}</b>
         </span>
       </styledEl.FeeItem>
     </styledEl.FeeTooltipWrapper>

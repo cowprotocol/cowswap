@@ -84,5 +84,6 @@ export const StatusList = styled.ol`
     display: flex;
     gap: 5px;
     align-items: center;
+    width: 100%;
   }
 `

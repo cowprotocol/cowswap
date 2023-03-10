@@ -130,6 +130,7 @@ export function Orders({
   getShowCancellationModal,
   currentPageNumber,
   pendingOrdersPrices,
+  spotPrices,
   children,
 }: OrdersProps) {
   const content = () => {
@@ -185,6 +186,7 @@ export function Orders({
         chainId={chainId}
         orders={orders}
         balancesAndAllowances={balancesAndAllowances}
+        spotPrices={spotPrices}
         getShowCancellationModal={getShowCancellationModal}
       />
     )

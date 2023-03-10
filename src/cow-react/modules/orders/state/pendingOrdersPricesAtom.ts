@@ -3,7 +3,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 
 export interface PendingOrderPrices {
   marketPrice: Price<Currency, Currency>
-  executionPrice: Price<Currency, Currency>
+  estimatedExecutionPrice: Price<Currency, Currency>
   lastUpdateTimestamp: number
 }
 
