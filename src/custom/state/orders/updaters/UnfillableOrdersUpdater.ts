@@ -24,7 +24,7 @@ import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
@@ -114,6 +114,7 @@ export function UnfillableOrdersUpdater(): null {
           lastUpdateTimestamp: Date.now(),
           marketPrice,
           estimatedExecutionPrice,
+          feeAmount: CurrencyAmount.fromRawAmount(marketPrice.baseCurrency, fee.amount),
         },
       })
     },
