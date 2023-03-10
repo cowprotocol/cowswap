@@ -51,7 +51,7 @@ export function calculatePriceDifference({
     executionPrice: `${reference.toFixed(7)} ${reference.baseCurrency.symbol} per ${reference.quoteCurrency.symbol}`,
     difference: percentageDifference.toFixed(6),
     percentage: percentage.toFixed(6) + '%',
-    amount: amount?.toFixed(18),
+    amount: amount?.toFixed(amount.currency.decimals),
   })
 
   return { percentage, amount }
