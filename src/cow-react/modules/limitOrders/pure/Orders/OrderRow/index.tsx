@@ -28,6 +28,7 @@ import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/bu
 import { darken } from 'polished'
 import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
 import { getAddress } from '@cow/utils/getAddress'
+import { SymbolElement } from '@cow/common/pure/TokenAmount'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -82,9 +83,15 @@ export function LowVolumeWarningContent() {
 // TODO: temporary component, name and location. If keeping it, move it to its own module, rename, etc, etc
 export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: boolean }>`
   display: flex;
+  width: 100%;
   align-items: center;
+  justify-content: space-between;
   color: ${({ lowVolumeWarning, theme }) =>
     lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
+
+    ${SymbolElement} {
+      color: inherit;
+    }
 
   // Popover container override
   > div > div {

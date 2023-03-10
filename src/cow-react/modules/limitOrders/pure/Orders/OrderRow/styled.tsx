@@ -15,7 +15,7 @@ export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   color: ${({ theme }) => theme.alert};
   line-height: 0;
   border: 0;
-  padding: 0 5px;
+  padding: 0 0 0 5px;
   width: auto;
   height: var(--height);
   border-radius: 0 9px 9px 0;
@@ -195,6 +195,7 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
 `
 
 export const ExecuteCellWrapper = styled.div`
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 4px;

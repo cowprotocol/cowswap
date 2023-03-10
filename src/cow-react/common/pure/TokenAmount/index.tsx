@@ -12,9 +12,10 @@ export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: bool
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
   color: ${({ lowVolumeWarning, theme }) =>
     lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
+  word-break: word-break;
 `
 
-const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
+export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
   color: ${({ opacitySymbol, theme }) => transparentize(opacitySymbol ? 0.3 : 0, theme.text1)};
 `
 
