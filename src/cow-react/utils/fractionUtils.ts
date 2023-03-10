@@ -1,8 +1,9 @@
-import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding, Token } from '@uniswap/sdk-core'
 import { FractionLike, Nullish } from '@cow/types'
 import { FULL_PRICE_PRECISION } from 'constants/index'
 import { trimTrailingZeros } from '@cow/utils/trimTrailingZeros'
 import JSBI from 'jsbi'
+import { adjustDecimalsAtoms } from '@cow/modules/limitOrders/utils/calculateAmountForRate'
 
 export class FractionUtils {
   static serializeFractionToJSON(fraction: Nullish<Fraction>): string {
@@ -62,4 +63,14 @@ export class FractionUtils {
   static lte(fraction: Fraction, value: BigintIsh): boolean {
     return fraction.equalTo(value) || fraction.lessThan(value)
   }
+}
+
+export function fractionToPrice(fraction: Fraction, inputCurrency: Token, outputCurrency: Token): Price<Token, Token> {
+  // Note that here the fraction shows the price in units (for both tokens). The Price class is decimals aware, so we need to adapt it
+  const adjustedFraction = adjustDecimalsAtoms(fraction, inputCurrency.decimals, outputCurrency.decimals)
+
+  return new Price({
+    quoteAmount: CurrencyAmount.fromRawAmount(outputCurrency, adjustedFraction.numerator),
+    baseAmount: CurrencyAmount.fromRawAmount(inputCurrency, adjustedFraction.denominator),
+  })
 }
