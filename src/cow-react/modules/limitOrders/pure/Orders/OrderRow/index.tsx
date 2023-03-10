@@ -86,12 +86,24 @@ export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: bool
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  color: ${({ lowVolumeWarning, theme }) =>
-    lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
+  color: ${({ lowVolumeWarning, theme }) => lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
 
-    ${SymbolElement} {
-      color: inherit;
+  ${SymbolElement} {
+    color: inherit;
+  }
+
+  // Triangle warning icon override
+  ${styledEl.WarningIndicator} {
+    padding: 0 0 0 3px;
+
+    svg {
+      --size: 18px;
+      width: var(--size);
+      height: var(--size);
+      min-width: var(--size);
+      min-height: var(--size);
     }
+  }
 
   // Popover container override
   > div > div {

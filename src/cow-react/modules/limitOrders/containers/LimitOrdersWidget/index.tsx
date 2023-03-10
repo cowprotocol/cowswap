@@ -331,8 +331,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         />
       )}
       {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
-
-      <InfoBanner />
+      {isUnlocked && <InfoBanner />}
     </>
   )
 }, limitOrdersPropsChecker)
