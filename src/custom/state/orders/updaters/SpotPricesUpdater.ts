@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
+import { Token } from '@uniswap/sdk-core'
 
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -13,6 +13,7 @@ import { requestPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from '@cow/common/utils/markets'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { fractionToPrice } from '../priceUtils'
 
 type MarketRecord = Record<
   string,
@@ -77,12 +78,10 @@ function useUpdatePending(props: UseUpdatePendingProps) {
             return
           }
 
-          const price = new Price({
-            quoteAmount: CurrencyAmount.fromRawAmount(outputCurrency, fraction.numerator),
-            baseAmount: CurrencyAmount.fromRawAmount(inputCurrency, fraction.denominator),
-          })
+          const price = fractionToPrice(fraction, inputCurrency, outputCurrency)
 
           console.debug(`[SpotPricesUpdater] Got new price for ${key}`, price.toFixed(6))
+          console.debug(`[SpotPricesUpdater] currencies`, { inputCurrency, outputCurrency })
 
           updateSpotPrices({
             chainId,

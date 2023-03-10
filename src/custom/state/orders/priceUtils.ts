@@ -2,6 +2,8 @@
 
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { BigNumber } from 'bignumber.js'
+import { CurrencyAmount, Fraction, Price, Token } from '@uniswap/sdk-core'
+import { adjustDecimalsAtoms } from '@cow/modules/limitOrders/utils/calculateAmountForRate'
 
 interface PriceTokenInfo {
   amount: BigNumber | string
@@ -52,4 +54,14 @@ export function calculatePrice(params: CalculatePriceParams): BigNumber {
  */
 export function invertPrice(price: BigNumber): BigNumber {
   return ONE_BIG_NUMBER.div(price)
+}
+
+export function fractionToPrice(fraction: Fraction, inputCurrency: Token, outputCurrency: Token): Price<Token, Token> {
+  // Note that here the fraction shows the price in units (for both tokens). The Price class is decimals aware, so we need to adapt it
+  const adjustedFraction = adjustDecimalsAtoms(fraction, inputCurrency.decimals, outputCurrency.decimals)
+
+  return new Price({
+    quoteAmount: CurrencyAmount.fromRawAmount(outputCurrency, adjustedFraction.numerator),
+    baseAmount: CurrencyAmount.fromRawAmount(inputCurrency, adjustedFraction.denominator),
+  })
 }
