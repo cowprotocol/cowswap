@@ -6,48 +6,59 @@ import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { supportedChainId } from 'utils/supportedChainId'
 import { usePendingOrders } from 'state/orders/hooks'
 import { OrderClass } from 'state/orders/actions'
-import { buildSpotPricesKey, updateSpotPricesAtom } from '@cow/modules/orders/state/spotPricesAtom'
+import { UpdateSpotPriceAtom, updateSpotPricesAtom } from '@cow/modules/orders/state/spotPricesAtom'
 import { useUpdateAtom } from 'state/application/atoms'
 import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import { requestPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
+import { getCanonicalMarketChainKey } from '@cow/common/utils/markets'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-/**
- * Spot Prices Updater
- *
- * Goes over all pending LIMIT orders and aggregates all markets
- * Queries the spot price for given markets at every SPOT_PRICE_CHECK_POLL_INTERVAL
- */
-export function SpotPricesUpdater(): null {
-  const { chainId: _chainId } = useWeb3React()
-  const chainId = supportedChainId(_chainId)
+type MarketRecord = Record<
+  string,
+  {
+    chainId: number
+    inputCurrency: Token
+    outputCurrency: Token
+  }
+>
 
-  const isWindowVisible = useIsWindowVisible()
-  const updateSpotPrices = useUpdateAtom(updateSpotPricesAtom)
-
+function useMarkets(chainId?: SupportedChainId): MarketRecord {
   const pending = usePendingOrders({ chainId })
 
-  const markets = useSafeMemo(() => {
+  return useSafeMemo(() => {
     return pending.reduce<Record<string, { chainId: number; inputCurrency: Token; outputCurrency: Token }>>(
       (acc, order) => {
         if (chainId && order.class === OrderClass.LIMIT) {
           // Aggregating pending orders per market. No need to query multiple times same market
-          const key = buildSpotPricesKey({
+          const { marketInverted, marketKey } = getCanonicalMarketChainKey(chainId, order.sellToken, order.buyToken)
+
+          const [inputCurrency, outputCurrency] = marketInverted
+            ? [order.outputToken, order.inputToken]
+            : [order.inputToken, order.outputToken]
+
+          acc[marketKey] = {
             chainId,
-            sellTokenAddress: order.sellToken,
-            buyTokenAddress: order.buyToken,
-          })
-          acc[key] = { chainId, inputCurrency: order.inputToken, outputCurrency: order.outputToken }
+            inputCurrency,
+            outputCurrency,
+          }
         }
         return acc
       },
       {}
     )
   }, [pending])
+}
 
-  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
+interface UseUpdatePendingProps {
+  isUpdating: React.MutableRefObject<boolean>
+  markets: MarketRecord
+  updateSpotPrices: (update: UpdateSpotPriceAtom) => void
+}
 
-  const updatePending = useCallback(async () => {
+function useUpdatePending(props: UseUpdatePendingProps) {
+  const { isUpdating, markets, updateSpotPrices } = props
+  return useCallback(async () => {
     if (isUpdating.current) {
       console.debug('[SpotPricesUpdater] Update in progress, skipping')
       return
@@ -93,6 +104,23 @@ export function SpotPricesUpdater(): null {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Object.keys(markets).sort().join(','), updateSpotPrices])
+}
+
+/**
+ * Spot Prices Updater
+ *
+ * Goes over all pending LIMIT orders and aggregates all markets
+ * Queries the spot price for given markets at every SPOT_PRICE_CHECK_POLL_INTERVAL
+ */
+export function SpotPricesUpdater(): null {
+  const { chainId: _chainId } = useWeb3React()
+  const chainId = supportedChainId(_chainId)
+
+  const isWindowVisible = useIsWindowVisible()
+  const updateSpotPrices = useUpdateAtom(updateSpotPricesAtom)
+  const markets = useMarkets(chainId)
+  const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
+  const updatePending = useUpdatePending({ isUpdating, markets, updateSpotPrices })
 
   useEffect(() => {
     if (!chainId || !isWindowVisible) {
