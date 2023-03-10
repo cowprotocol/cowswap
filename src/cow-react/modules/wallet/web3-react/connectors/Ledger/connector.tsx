@@ -14,6 +14,11 @@ export interface LedgerOptions {
   rpc?: { [chainId: number]: string }
 }
 
+enum Errors {
+  NOT_CONNECTED = 'Please make sure you are connected to Ethereun network on your Ledger device and try again!',
+  NOT_UNLOCKED = 'Please unlock your ledger device first and try again!',
+}
+
 export class LedgerConnector extends Connector {
   public provider?: Provider
   private readonly options: LedgerOptions
@@ -83,8 +88,12 @@ export class LedgerConnector extends Connector {
 
       return this.actions.update({ chainId, accounts })
     } catch (error) {
+      if (error.statusCode === 25873) {
+        throw Error(Errors.NOT_CONNECTED)
+      }
+
       if (error.statusCode === 21781) {
-        throw Error('Please unlock your ledger device first and try again!')
+        throw Error(Errors.NOT_UNLOCKED)
       }
 
       throw error
