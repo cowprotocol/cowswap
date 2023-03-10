@@ -214,6 +214,7 @@ export function OrderRow({
     const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
     setIsinverted(getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency))
     // Intentionally empty, should run only once
+    // eslint-disable-next-line
   }, [])
 
   const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
