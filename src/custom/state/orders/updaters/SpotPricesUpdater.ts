@@ -13,7 +13,7 @@ import { requestPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from '@cow/common/utils/markets'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { fractionToPrice } from '@cow/utils/fractionUtils'
+import { FractionUtils } from '@cow/utils/fractionUtils'
 
 type MarketRecord = Record<
   string,
@@ -78,7 +78,7 @@ function useUpdatePending(props: UseUpdatePendingProps) {
             return
           }
 
-          const price = fractionToPrice(fraction, inputCurrency, outputCurrency)
+          const price = FractionUtils.toPrice(fraction, inputCurrency, outputCurrency)
 
           console.debug(`[SpotPricesUpdater] Got new price for ${key}`, price.toFixed(6))
 

@@ -63,14 +63,14 @@ export class FractionUtils {
   static lte(fraction: Fraction, value: BigintIsh): boolean {
     return fraction.equalTo(value) || fraction.lessThan(value)
   }
-}
 
-export function fractionToPrice(fraction: Fraction, inputCurrency: Token, outputCurrency: Token): Price<Token, Token> {
-  // Note that here the fraction shows the price in units (for both tokens). The Price class is decimals aware, so we need to adapt it
-  const adjustedFraction = adjustDecimalsAtoms(fraction, inputCurrency.decimals, outputCurrency.decimals)
+  static toPrice(fraction: Fraction, inputCurrency: Token, outputCurrency: Token): Price<Token, Token> {
+    // Note that here the fraction shows the price in units (for both tokens). The Price class is decimals aware, so we need to adapt it
+    const adjustedFraction = adjustDecimalsAtoms(fraction, inputCurrency.decimals, outputCurrency.decimals)
 
-  return new Price({
-    quoteAmount: CurrencyAmount.fromRawAmount(outputCurrency, adjustedFraction.numerator),
-    baseAmount: CurrencyAmount.fromRawAmount(inputCurrency, adjustedFraction.denominator),
-  })
+    return new Price({
+      quoteAmount: CurrencyAmount.fromRawAmount(outputCurrency, adjustedFraction.numerator),
+      baseAmount: CurrencyAmount.fromRawAmount(inputCurrency, adjustedFraction.denominator),
+    })
+  }
 }
