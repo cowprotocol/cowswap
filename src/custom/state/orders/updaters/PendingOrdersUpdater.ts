@@ -306,7 +306,7 @@ export function PendingOrdersUpdater(): null {
       return
     }
 
-    const marketIinterval = setInterval(
+    const marketInterval = setInterval(
       () => updateOrders(chainId, account, OrderClass.MARKET),
       MARKET_OPERATOR_API_POLL_INTERVAL
     )
@@ -316,7 +316,7 @@ export function PendingOrdersUpdater(): null {
     )
 
     return () => {
-      clearInterval(marketIinterval)
+      clearInterval(marketInterval)
       clearInterval(limitInterval)
     }
   }, [account, chainId, updateOrders])

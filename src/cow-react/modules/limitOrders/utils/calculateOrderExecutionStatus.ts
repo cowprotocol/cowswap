@@ -3,37 +3,41 @@ import { Nullish } from '@cow/types'
 
 const HALF_PERCENT = new Percent(5, 1000)
 const FIVE_PERCENT = new Percent(5, 100)
-const ZERO = new Fraction(0)
 const ONE = new Fraction(1)
-const MINUS_ONE = new Fraction(-1)
 
 export type OrderExecutionStatus = 'notClose' | 'close' | 'veryClose'
 
 export type CalculateOrderExecutionStatusParams = {
   limitPrice: Nullish<Price<Currency, Currency>>
-  marketPrice: Nullish<Price<Currency, Currency>>
-  executionPrice: Nullish<Price<Currency, Currency>>
+  spotPrice: Nullish<Price<Currency, Currency>>
+  estimatedExecutionPrice: Nullish<Price<Currency, Currency>>
 }
 
 export function calculateOrderExecutionStatus({
   limitPrice,
-  marketPrice,
-  executionPrice,
+  spotPrice,
+  estimatedExecutionPrice,
 }: CalculateOrderExecutionStatusParams): OrderExecutionStatus | undefined {
-  if (!limitPrice || !marketPrice || !executionPrice) {
+  if (!limitPrice || !spotPrice || !estimatedExecutionPrice) {
     return undefined
   }
 
-  const referencePrice = limitPrice.greaterThan(marketPrice) ? limitPrice : marketPrice
+  const percentageDifference = estimatedExecutionPrice.divide(spotPrice).subtract(ONE)
 
-  const percentageDifference = executionPrice.divide(referencePrice).subtract(ONE)
-  const absolutePercentageDifference = percentageDifference.lessThan(ZERO)
-    ? percentageDifference.multiply(MINUS_ONE)
-    : percentageDifference
+  // TODO: remove debug logs
+  console.debug(`calculateOrderExecutionStatus`, {
+    pair: `${spotPrice.quoteCurrency.symbol}/${spotPrice.baseCurrency.symbol}`,
+    limitPrice: `${limitPrice.toFixed(7)} ${limitPrice.baseCurrency.symbol} per ${limitPrice.quoteCurrency.symbol}`,
+    marketPrice: `${spotPrice.toFixed(7)} ${spotPrice.baseCurrency.symbol} per ${spotPrice.quoteCurrency.symbol}`,
+    executionPrice: `${estimatedExecutionPrice.toFixed(7)} ${estimatedExecutionPrice.baseCurrency.symbol} per ${
+      estimatedExecutionPrice.quoteCurrency.symbol
+    }`,
+    percentageDifference: percentageDifference.multiply(new Fraction(100)).toFixed(2) + '%',
+  })
 
-  if (absolutePercentageDifference.lessThan(HALF_PERCENT)) {
+  if (percentageDifference.lessThan(HALF_PERCENT)) {
     return 'veryClose'
-  } else if (absolutePercentageDifference.greaterThan(FIVE_PERCENT)) {
+  } else if (percentageDifference.greaterThan(FIVE_PERCENT)) {
     return 'notClose'
   } else {
     return 'close'

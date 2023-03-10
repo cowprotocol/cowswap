@@ -23,6 +23,7 @@ import SVG from 'react-inlinesvg'
 import iconOrderExecution from 'assets/cow-swap/orderExecution.svg'
 import { X } from 'react-feather'
 import { OrderExecutionStatusList } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
+import { getSpotPrice, SpotPrices } from '@cow/modules/orders/state/spotPricesAtom'
 
 const TableBox = styled.div`
   display: block;
@@ -215,6 +216,7 @@ export interface OrdersTableProps {
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
   balancesAndAllowances: BalancesAndAllowances
+  spotPrices: SpotPrices
   getShowCancellationModal(order: Order): (() => void) | null
 }
 
@@ -224,6 +226,7 @@ export function OrdersTable({
   orders,
   pendingOrdersPrices,
   balancesAndAllowances,
+  spotPrices,
   getShowCancellationModal,
   currentPageNumber,
 }: OrdersTableProps) {
@@ -354,6 +357,14 @@ export function OrdersTable({
                 key={order.id}
                 isOpenOrdersTab={isOpenOrdersTab}
                 order={order}
+                spotPrice={getSpotPrice(
+                  {
+                    chainId: chainId as SupportedChainId,
+                    sellTokenAddress: order.sellToken,
+                    buyTokenAddress: order.buyToken,
+                  },
+                  spotPrices
+                )}
                 prices={pendingOrdersPrices[order.id]}
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                 RowElement={RowElement}
