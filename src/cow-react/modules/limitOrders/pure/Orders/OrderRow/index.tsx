@@ -304,7 +304,7 @@ function usePricesDifference(
   const { estimatedExecutionPrice } = prices || {}
 
   return useSafeMemo(() => {
-    return calculatePriceDifference({ reference: estimatedExecutionPrice, delta: spotPrice, isInverted })
+    return calculatePriceDifference({ referencePrice: spotPrice, targetPrice: estimatedExecutionPrice, isInverted })
   }, [estimatedExecutionPrice, spotPrice, isInverted])
 }
 

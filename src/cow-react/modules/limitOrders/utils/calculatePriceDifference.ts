@@ -1,13 +1,15 @@
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 import { Nullish } from '@cow/types'
-import tryParseCurrencyAmount from '@src/custom/lib/utils/tryParseCurrencyAmount'
+import { assertSameMarket } from '@cow/common/utils/markets'
 import { FractionUtils } from '@cow/utils/fractionUtils'
+import { adjustDecimalsAtoms } from './calculateAmountForRate'
+import { ZERO_FRACTION } from '@src/custom/constants'
 
 const ONE = new Fraction(1)
 
 export type CalculatePriceDifferenceParams = {
-  reference: Nullish<Price<Currency, Currency>>
-  delta: Nullish<Price<Currency, Currency>>
+  referencePrice: Nullish<Price<Currency, Currency>>
+  targetPrice: Nullish<Price<Currency, Currency>>
   isInverted: boolean
 }
 
@@ -27,55 +29,69 @@ export type PriceDifference = {
  * @param isInverted
  */
 export function calculatePriceDifference({
-  reference,
-  delta,
+  referencePrice,
+  targetPrice,
   isInverted,
 }: CalculatePriceDifferenceParams): PriceDifference {
-  if (!delta || !reference) {
+  if (!targetPrice || !referencePrice) {
+    console.log('RETURN HERE 2')
     return null
   }
 
-  const percentageDifference = reference.divide(delta).subtract(ONE) // as Fraction
-  const percentage = new Percent(percentageDifference.numerator, percentageDifference.denominator) // as Percent
+  // Make sure we are comparing apples with apples (prices should refer to market)
+  assertSameMarket(referencePrice, targetPrice)
 
-  let amount
-  // TODO: fix this mess
-  // Why is this a mess? Long story...
-  // Prices are just fancy fractions with reference to base and quote tokens
-  // doing subtraction or addition on them won't work as you expect when decimals are different
-  // Only way (that I could figure out so far) to get the raw price value without decimals
-  // is to get their string representation
-  // With that, I then convert them to numbers to get the actual price difference
-  // Then convert them to a fancy CurrencyAmount instance again
-  // But, if the amount is 0, tryParseCurrencyAmount returns undefined...
-  // So in that case I create a instance using 0
-  if (isInverted) {
-    const r = +FractionUtils.fractionLikeToExactString(reference.invert())
-    const d = +FractionUtils.fractionLikeToExactString(delta.invert())
-    const a = String(r - d)
-    amount =
-      tryParseCurrencyAmount(a, reference.baseCurrency) || CurrencyAmount.fromRawAmount(reference.baseCurrency, '0')
-  } else {
-    const r = +FractionUtils.fractionLikeToExactString(reference)
-    const d = +FractionUtils.fractionLikeToExactString(delta)
-    const a = String(r - d)
-    amount =
-      tryParseCurrencyAmount(a, reference.quoteCurrency) || CurrencyAmount.fromRawAmount(reference.quoteCurrency, '0')
+  if (
+    referencePrice.equalTo(ZERO_FRACTION) || // The reference cannot be zero (infinite relative difference)
+    referencePrice.lessThan(ZERO_FRACTION) || // The prices can't be negatiev
+    targetPrice.lessThan(ZERO_FRACTION) // The prices can't be negatiev
+  ) {
+    console.log('RETURN HERE')
+    return null
   }
 
-  // TODO: remove debug logs
+  if (isInverted) {
+    return calculatePriceDifferenceAux({
+      referencePrice: referencePrice.invert(),
+      targetPrice: targetPrice.invert(),
+    })
+  } else {
+    return calculatePriceDifferenceAux({
+      referencePrice,
+      targetPrice,
+    })
+  }
+}
+
+function calculatePriceDifferenceAux({
+  referencePrice,
+  targetPrice,
+}: {
+  referencePrice: Price<Currency, Currency>
+  targetPrice: Price<Currency, Currency>
+}): PriceDifference {
+  // TODO: Do i need to use "isInverted" in the calculation?? (i would think this is only for representation)
+  const percentageDifference = targetPrice.divide(referencePrice).subtract(ONE) // as Fraction
+  const percentage = new Percent(percentageDifference.numerator, percentageDifference.denominator) // as Percent
+
+  // Calculate difference in units (no atoms)
+
+  // Convert difference in token amount
+  const differenceInUnits = FractionUtils.fromPrice(targetPrice).subtract(FractionUtils.fromPrice(referencePrice))
+  const difference = adjustDecimalsAtoms(differenceInUnits, 0, referencePrice.quoteCurrency.decimals)
+  const differenceInQuoteToken = CurrencyAmount.fromFractionalAmount(
+    referencePrice.quoteCurrency,
+    difference.numerator,
+    difference.denominator
+  )
+
+  const priceUnits = `${referencePrice.quoteCurrency.symbol} per ${referencePrice.baseCurrency.symbol}`
   console.debug(`calculatePriceDifference`, {
-    pair: `${delta.quoteCurrency.symbol}/${delta.baseCurrency.symbol}`,
-    marketPrice: `${delta.toFixed(7)} ${delta.baseCurrency.symbol} per ${delta.quoteCurrency.symbol}`,
-    executionPrice: `${reference.toFixed(7)} ${reference.baseCurrency.symbol} per ${reference.quoteCurrency.symbol}`,
-    difference: percentageDifference.toFixed(6),
-    percentage: percentage.toFixed(6) + '%',
-    regularDiff: reference.scalar.subtract(delta.scalar).toSignificant(5),
-    invertedDiff: reference.invert().scalar.subtract(delta.invert().scalar).toSignificant(5),
-    referenceScalar: reference.scalar.toSignificant(5),
-    deltaScalar: delta.scalar.toSignificant(5),
-    amount: amount?.toFixed(amount.currency.decimals),
+    market: `${targetPrice.baseCurrency.symbol}-${targetPrice.quoteCurrency.symbol}`,
+    targetPrice: `${targetPrice.toFixed(18)} ${priceUnits}`,
+    referencePrice: `${referencePrice.toFixed(18)} ${priceUnits}`,
+    differenceCurrency: `${differenceInQuoteToken.toSignificant(18)} ${differenceInQuoteToken.currency.symbol}`,
   })
 
-  return { percentage, amount }
+  return { percentage, amount: differenceInQuoteToken }
 }
