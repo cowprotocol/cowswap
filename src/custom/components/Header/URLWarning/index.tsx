@@ -2,13 +2,13 @@ import styled from 'styled-components/macro'
 import { RAW_CODE_LINK } from 'constants/index'
 import { AlertTriangle } from 'react-feather'
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
-import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'
+import { useCloseAnnouncement } from 'state/profile/hooks'
 import { hashCode } from 'utils/misc'
-import useFetchFile from 'hooks/useFetchFile'
+// import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
-import { useWalletInfo } from '@cow/modules/wallet'
+// import { SupportedChainId as ChainId } from 'constants/chains'
+// import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from './URLWarningMod'
 
