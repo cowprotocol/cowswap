@@ -6,6 +6,7 @@ import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hook
 import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cow/modules/wallet'
@@ -89,7 +90,8 @@ export default function URLWarning() {
   const { chainId = ChainId.MAINNET } = useWalletInfo()
 
   // Ger announcement if there's one
-  const announcementText = useGetAnnouncement(chainId)
+  const { bannerText } = useFlags()
+  const announcementText = useGetAnnouncement(chainId) || bannerText
   const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
 
   const announcementVisible = useAnnouncementVisible(contentHash)

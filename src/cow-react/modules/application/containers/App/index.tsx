@@ -14,8 +14,9 @@ import Footer from 'components/Footer'
 import RedirectAnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
+import { withLDProvider } from "launchdarkly-react-client-sdk";
 
-export function App() {
+function Inner() {
   initializeAnalytics()
   useAnalyticsReporter()
 
@@ -42,3 +43,10 @@ export function App() {
     </ErrorBoundary>
   )
 }
+
+export const App = withLDProvider({
+  clientSideID: process.env.REACT_APP_LC_CLIENT_KEY!,
+  options: {
+    bootstrap: 'localStorage'
+  }
+})(Inner);
