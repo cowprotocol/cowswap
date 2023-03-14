@@ -11,6 +11,7 @@ export enum MenuItemKind {
 export enum MainMenuItemId {
   SWAP = 'SWAP',
   LIMIT_ORDERS = 'LIMIT_ORDERS',
+  TWAP = 'TWAP',
   FAQ_OVERVIEW = 'FAQ_OVERVIEW',
   FAQ_PROTOCOL = 'FAQ_PROTOCOL',
   FAQ_TOKEN = 'FAQ_TOKEN',

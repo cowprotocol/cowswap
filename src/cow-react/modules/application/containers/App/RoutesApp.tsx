@@ -12,6 +12,7 @@ import { Loading } from 'components/FlashingLoading'
 import Account, { AccountOverview } from '@cow/pages/Account'
 import { NewSwapPage } from '@cow/pages/NewSwap'
 import { ReactNode } from 'react'
+import Twap from 'pages/Twap'
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '@cow/pages/PrivacyPolicy'))
@@ -82,6 +83,7 @@ export function RoutesApp() {
         {/*Swap*/}
         <Route path={RoutesEnum.SWAP} element={<NewSwapPage />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
+        <Route path={RoutesEnum.TWAP} element={<Twap />} />
 
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
 

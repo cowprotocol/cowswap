@@ -48,6 +48,12 @@ export const MAIN_MENU: MenuTreeItem[] = [
             title: 'Limit orders',
             url: Routes.LIMIT_ORDER,
           },
+          {
+            id: MainMenuItemId.TWAP,
+            kind: MenuItemKind.DYNAMIC_LINK,
+            title: 'TWAP orders',
+            url: Routes.TWAP,
+          },
         ],
       },
     ],
