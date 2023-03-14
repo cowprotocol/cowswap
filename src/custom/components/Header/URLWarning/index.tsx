@@ -60,7 +60,7 @@ export default function URLWarning() {
 
   // Ger announcement if there's one
   const { file, error } = useFetchFile(getAnnouncementUrl(chainId))
-  const announcementText = error ? undefined : file?.trim()
+  let announcementText = error ? undefined : file?.trim()
   const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
 
   if (error) {
@@ -71,6 +71,7 @@ export default function URLWarning() {
 
   const announcementVisible = useAnnouncementVisible(contentHash)
   const closeAnnouncement = useCloseAnnouncement()
+  announcementText = "There is an error";
 
   const announcement = announcementVisible && announcementText && (
     <>
