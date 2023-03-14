@@ -56,23 +56,23 @@ function getAnnouncementUrl(chainId: number) {
 }
 
 export default function URLWarning() {
-  const { chainId = ChainId.MAINNET } = useWalletInfo()
+  // const { chainId = ChainId.MAINNET } = useWalletInfo()
 
-  // Ger announcement if there's one
-  const { file, error } = useFetchFile(getAnnouncementUrl(chainId))
-  let announcementText = error ? undefined : file?.trim()
-  const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
+  // // Ger announcement if there's one
+  // const { file, error } = useFetchFile(getAnnouncementUrl(chainId))
+  // let announcementText = error ? undefined : file?.trim()
+  // const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
 
-  if (error) {
-    console.error('[URLWarning] Error getting the announcement text: ', error)
-  } else {
-    console.debug('[URLWarning] Announcement text', announcementText, contentHash)
-  }
+  // if (error) {
+  //   console.error('[URLWarning] Error getting the announcement text: ', error)
+  // } else {
+  //   console.debug('[URLWarning] Announcement text', announcementText, contentHash)
+  // }
 
-  let announcementVisible = useAnnouncementVisible(contentHash)
-  const closeAnnouncement = useCloseAnnouncement()
-  announcementText = 'There is an error'
-  announcementVisible = true
+  // let announcementVisible = useAnnouncementVisible(contentHash)
+  // const closeAnnouncement = useCloseAnnouncement()
+  let announcementText = 'There is an error'
+  let announcementVisible = true
 
   const announcement = announcementVisible && announcementText && (
     <>
