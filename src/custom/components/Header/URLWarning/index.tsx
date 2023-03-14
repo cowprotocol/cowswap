@@ -71,7 +71,7 @@ export default function URLWarning() {
 
   const announcementVisible = useAnnouncementVisible(contentHash)
   const closeAnnouncement = useCloseAnnouncement()
-  announcementText = "There is an error";
+  announcementText = 'There is an error'
 
   const announcement = announcementVisible && announcementText && (
     <>
