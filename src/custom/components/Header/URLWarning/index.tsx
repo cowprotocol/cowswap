@@ -60,8 +60,9 @@ export default function URLWarning() {
 
   // // Ger announcement if there's one
   // const { file, error } = useFetchFile(getAnnouncementUrl(chainId))
-  // let announcementText = error ? undefined : file?.trim()
-  // const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
+  let announcementText = 'There is an error'
+  const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
+  let announcementVisible = true
 
   // if (error) {
   //   console.error('[URLWarning] Error getting the announcement text: ', error)
@@ -70,9 +71,7 @@ export default function URLWarning() {
   // }
 
   // let announcementVisible = useAnnouncementVisible(contentHash)
-  // const closeAnnouncement = useCloseAnnouncement()
-  let announcementText = 'There is an error'
-  let announcementVisible = true
+  const closeAnnouncement = useCloseAnnouncement()
 
   const announcement = announcementVisible && announcementText && (
     <>
