@@ -47,7 +47,7 @@ function createSafeServiceClient(txServiceUrl: string, library: Web3Provider): S
   return new SafeServiceClient({ txServiceUrl, ethAdapter })
 }
 
-function _getClientOrThrow(chainId: number, library: Web3Provider): SafeServiceClient {
+export function _getClientOrThrow(chainId: number, library: Web3Provider): SafeServiceClient {
   const client = _getClient(chainId, library)
   if (!client) {
     throw new Error('Unsupported network for Gnosis Safe Transaction Service: ' + chainId)
