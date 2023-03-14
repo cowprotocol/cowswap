@@ -6,6 +6,7 @@ import { useCloseAnnouncement } from 'state/profile/hooks'
 import { hashCode } from 'utils/misc'
 // import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 
 // import { SupportedChainId as ChainId } from 'constants/chains'
 // import { useWalletInfo } from '@cow/modules/wallet'
@@ -56,21 +57,11 @@ function getAnnouncementUrl(chainId: number) {
 }
 
 export default function URLWarning() {
-  // const { chainId = ChainId.MAINNET } = useWalletInfo()
-
-  // // Ger announcement if there's one
-  // const { file, error } = useFetchFile(getAnnouncementUrl(chainId))
-  let announcementText = 'There is an error'
+  const { bannerText } = useFlags()
+  let announcementText = bannerText
   const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
-  let announcementVisible = true
+  let announcementVisible = bannerText ? true : false
 
-  // if (error) {
-  //   console.error('[URLWarning] Error getting the announcement text: ', error)
-  // } else {
-  //   console.debug('[URLWarning] Announcement text', announcementText, contentHash)
-  // }
-
-  // let announcementVisible = useAnnouncementVisible(contentHash)
   const closeAnnouncement = useCloseAnnouncement()
 
   const announcement = announcementVisible && announcementText && (
