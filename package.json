@@ -68,6 +68,7 @@
     }
   },
   "dependencies": {
+    "@0x/subproviders": "^5.0.4",
     "@amplitude/analytics-browser": "^1.1.4",
     "@babel/runtime": "^7.17.0",
     "@coinbase/wallet-sdk": "^3.3.0",
@@ -96,6 +97,9 @@
     "@sentry/react": "^7.3.0",
     "@sentry/tracing": "^7.3.0",
     "@sentry/webpack-plugin": "^1.17.1",
+    "@trezor/connect": "^9.0.7",
+    "@trezor/connect-web": "^9.0.7",
+    "@types/trezor-connect": "^8.1.18",
     "@uniswap/governance": "^1.0.2",
     "@uniswap/liquidity-staker": "^1.0.2",
     "@uniswap/merkle-distributor": "1.0.1",
@@ -179,6 +183,7 @@
     "text-encoding-polyfill": "^0.6.7",
     "timeago.js": "^4.0.2",
     "tiny-invariant": "^1.2.0",
+    "trezor-connect": "^7.0.5",
     "typescript": "^4.9.4",
     "ua-parser-js": "^1.0.32",
     "use-async-memo": "^1.2.4",

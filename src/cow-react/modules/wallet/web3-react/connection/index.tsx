@@ -19,6 +19,7 @@ import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 // import { AlphaOption } from './alpha'
+import { trezorConnection, TrezorOption } from './trezor'
 import { ButtonPrimary } from 'components/Button'
 import { useEffect, useState } from 'react'
 import { Trans } from '@lingui/macro'
@@ -30,6 +31,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   walletConnectConnection,
   fortmaticConnection,
   networkConnection,
+  trezorConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -41,6 +43,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case walletConnectConnection.connector:
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
+    case trezorConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -74,6 +77,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return walletConnectConnection
       case ConnectionType.ALPHA:
         return walletConnectConnection
+      case ConnectionType.TREZOR:
+        return trezorConnection
     }
   }
 }
@@ -121,12 +126,14 @@ export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation:
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   // TODO: should be enabled once the Android issue is fixed https://github.com/AlphaWallet/alpha-wallet-android/issues/3139
   // const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
+  const trezorOption = <TrezorOption tryActivation={tryActivation} />
 
   return (
     <>
       {injectedOption}
       {walletConnectionOption}
       {coinbaseWalletOption}
+      {trezorOption}
       {viewAll && (
         <>
           {zengoOption}
