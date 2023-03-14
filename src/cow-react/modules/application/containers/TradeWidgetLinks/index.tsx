@@ -40,6 +40,15 @@ export function TradeWidgetLinks() {
           </styledEl.Badge>
         </styledEl.Link>
       </styledEl.MenuItem>
+
+      <styledEl.MenuItem>
+        <styledEl.Link
+          className={({ isActive }) => (isActive ? 'active' : undefined)}
+          to={parameterizeTradeRoute(tradeContext, Routes.TWAP)}
+        >
+          <Trans>TWAP</Trans>
+        </styledEl.Link>
+      </styledEl.MenuItem>
     </styledEl.Wrapper>
   )
 }

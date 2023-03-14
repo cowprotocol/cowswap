@@ -12,7 +12,7 @@ import { Loading } from 'components/FlashingLoading'
 import Account, { AccountOverview } from '@cow/pages/Account'
 import { NewSwapPage } from '@cow/pages/NewSwap'
 import { ReactNode } from 'react'
-import Twap from 'pages/Twap'
+import Twap from '@cow/pages/Twap'
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '@cow/pages/PrivacyPolicy'))
