@@ -69,9 +69,10 @@ export default function URLWarning() {
     console.debug('[URLWarning] Announcement text', announcementText, contentHash)
   }
 
-  const announcementVisible = useAnnouncementVisible(contentHash)
+  let announcementVisible = useAnnouncementVisible(contentHash)
   const closeAnnouncement = useCloseAnnouncement()
   announcementText = 'There is an error'
+  announcementVisible = true
 
   const announcement = announcementVisible && announcementText && (
     <>
