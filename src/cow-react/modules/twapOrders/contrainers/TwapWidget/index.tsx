@@ -13,6 +13,7 @@ import { formatInputAmount } from '@cow/utils/amountFormat'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import AddressInputPanel from '@src/components/AddressInputPanel'
 import { useBindFallbackHandler } from '@cow/modules/twapOrders/hooks/useBindFallbackHandler'
+import { useCreateTwapOrder } from '@cow/modules/twapOrders/hooks/useCreateTwapOrder'
 
 export function TwapWidget() {
   const chainId = 100
@@ -28,7 +29,7 @@ export function TwapWidget() {
   }
 
   const [frequency, setFrequency] = useState<string>('')
-  const [deadline, setDeadline] = useState<string>('')
+  const [timeInterval, setTimeInterval] = useState<string>('')
 
   const [inputCurrency, setInputCurrency] = useState<Currency | null>(WETH[chainId])
   const [outputCurrency, setOutputCurrency] = useState<Currency | null>(null)
@@ -83,11 +84,15 @@ export function TwapWidget() {
     setInputCurrency(outputCurrency)
     setOutputCurrency(inputCurrency)
   }, [inputCurrency, outputCurrency])
-  const createOrder = function () {
-    console.log('createOrder')
-  }
 
+  const createTwapOrder = useCreateTwapOrder()
   const bindTwapHandler = useBindFallbackHandler()
+
+  const createOrder = useCallback(() => {
+    if (!inputCurrencyAmount || !outputCurrencyAmount) return
+
+    createTwapOrder(inputCurrencyAmount, outputCurrencyAmount, +frequency, +timeInterval)
+  }, [createTwapOrder, inputCurrencyAmount, outputCurrencyAmount, frequency, timeInterval])
 
   return (
     <>
@@ -134,7 +139,12 @@ export function TwapWidget() {
           />
           <div>
             <AddressInputPanel label="Frequency" placeholder="" value={frequency} onChange={setFrequency} />
-            <AddressInputPanel label="Deadline" placeholder="" value={deadline} onChange={setDeadline} />
+            <AddressInputPanel
+              label="Interval"
+              placeholder="In seconds"
+              value={timeInterval}
+              onChange={setTimeInterval}
+            />
           </div>
           <div>
             <br />
