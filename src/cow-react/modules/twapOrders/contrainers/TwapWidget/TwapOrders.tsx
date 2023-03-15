@@ -16,7 +16,7 @@ export function TwapOrders() {
 
     try {
       console.log('[Twap] getOrders for safe', safeAddress)
-      getTwapOrders(safeAddress) // '0xD0306D218D45f5eCC9114dc45Df48d8C18aB3291'
+      getTwapOrders('0xD0306D218D45f5eCC9114dc45Df48d8C18aB3291') // '0xD0306D218D45f5eCC9114dc45Df48d8C18aB3291'
         .then((twapOrders) => {
           console.log('[Twap] Set orders', twapOrders)
           setOrders(twapOrders || [])
