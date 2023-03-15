@@ -1,3 +1,4 @@
+import styled from 'styled-components/macro'
 import * as styledEl from '@cow/modules/limitOrders/containers/LimitOrdersWidget/styled'
 import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
@@ -14,6 +15,11 @@ import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import AddressInputPanel from '@src/components/AddressInputPanel'
 import { useBindFallbackHandler } from '@cow/modules/twapOrders/hooks/useBindFallbackHandler'
 import { useCreateTwapOrder } from '@cow/modules/twapOrders/hooks/useCreateTwapOrder'
+import { useGnosisSafeInfo } from '@cow/modules/wallet'
+
+const ErrorMessage = styled.span`
+  color: red;
+`
 
 export function TwapWidget() {
   const chainId = 100
@@ -28,6 +34,7 @@ export function TwapWidget() {
     },
   }
 
+  const gnosisSafeInfo = useGnosisSafeInfo()
   const [frequency, setFrequency] = useState<string>('')
   const [timeInterval, setTimeInterval] = useState<string>('')
 
@@ -102,60 +109,68 @@ export function TwapWidget() {
             <TradeWidgetLinks />
           </styledEl.Header>
 
-          <CurrencyInputPanel
-            id="limit-orders-currency-input"
-            disableNonToken={false}
-            chainId={chainId}
-            loading={currenciesLoadingInProgress}
-            onCurrencySelection={onCurrencySelection}
-            onUserInput={onUserInput}
-            subsidyAndBalance={subsidyAndBalance}
-            allowsOffchainSigning={allowsOffchainSigning}
-            currencyInfo={inputCurrencyInfo}
-            showSetMax={showSetMax}
-          />
-          <styledEl.CurrencySeparatorBox withRecipient={false}>
-            <CurrencyArrowSeparator
-              isCollapsed={false}
-              onSwitchTokens={onSwitchTokens}
-              withRecipient={false}
-              isLoading={false}
-              hasSeparatorLine={true}
-              border={true}
-            />
-          </styledEl.CurrencySeparatorBox>
-          <CurrencyInputPanel
-            id="limit-orders-currency-output"
-            disableNonToken={false}
-            chainId={chainId}
-            loading={currenciesLoadingInProgress}
-            isRateLoading={isRateLoading}
-            onCurrencySelection={onCurrencySelection}
-            onUserInput={onUserInput}
-            subsidyAndBalance={subsidyAndBalance}
-            allowsOffchainSigning={allowsOffchainSigning}
-            currencyInfo={outputCurrencyInfo}
-            topLabel={outputCurrencyInfo.label}
-          />
-          <div>
-            <AddressInputPanel label="Frequency" placeholder="" value={frequency} onChange={setFrequency} />
-            <AddressInputPanel
-              label="Interval"
-              placeholder="In seconds"
-              value={timeInterval}
-              onChange={setTimeInterval}
-            />
-          </div>
-          <div>
-            <br />
-            <SwapButton id="bind-twap-handler" onClick={bindTwapHandler} disabled={false}>
-              <Trans>Bind handler</Trans>
-            </SwapButton>
-            <br />
-            <SwapButton id="twap-trade" onClick={createOrder} disabled={false}>
-              <Trans>Create order</Trans>
-            </SwapButton>
-          </div>
+          {gnosisSafeInfo !== undefined ? (
+            <>
+              <CurrencyInputPanel
+                id="limit-orders-currency-input"
+                disableNonToken={false}
+                chainId={chainId}
+                loading={currenciesLoadingInProgress}
+                onCurrencySelection={onCurrencySelection}
+                onUserInput={onUserInput}
+                subsidyAndBalance={subsidyAndBalance}
+                allowsOffchainSigning={allowsOffchainSigning}
+                currencyInfo={inputCurrencyInfo}
+                showSetMax={showSetMax}
+              />
+              <styledEl.CurrencySeparatorBox withRecipient={false}>
+                <CurrencyArrowSeparator
+                  isCollapsed={false}
+                  onSwitchTokens={onSwitchTokens}
+                  withRecipient={false}
+                  isLoading={false}
+                  hasSeparatorLine={true}
+                  border={true}
+                />
+              </styledEl.CurrencySeparatorBox>
+              <CurrencyInputPanel
+                id="limit-orders-currency-output"
+                disableNonToken={false}
+                chainId={chainId}
+                loading={currenciesLoadingInProgress}
+                isRateLoading={isRateLoading}
+                onCurrencySelection={onCurrencySelection}
+                onUserInput={onUserInput}
+                subsidyAndBalance={subsidyAndBalance}
+                allowsOffchainSigning={allowsOffchainSigning}
+                currencyInfo={outputCurrencyInfo}
+                topLabel={outputCurrencyInfo.label}
+              />
+              <div>
+                <AddressInputPanel label="Frequency" placeholder="" value={frequency} onChange={setFrequency} />
+                <AddressInputPanel
+                  label="Interval"
+                  placeholder="In seconds"
+                  value={timeInterval}
+                  onChange={setTimeInterval}
+                />
+              </div>
+              <div>
+                <br />
+                <SwapButton id="bind-twap-handler" onClick={bindTwapHandler} disabled={false}>
+                  <Trans>Bind handler</Trans>
+                </SwapButton>
+                <br />
+                <SwapButton id="twap-trade" onClick={createOrder} disabled={false}>
+                  <Trans>Create order</Trans>
+                </SwapButton>
+              </div>
+            </>
+          ) : (
+            <div>
+              <ErrorMessage>Please connect a Gnosis Safe to create a TWAP Order</ErrorMessage>
+            </div>
+          )}
         </styledEl.ContainerBox>
       </styledEl.Container>
     </>
