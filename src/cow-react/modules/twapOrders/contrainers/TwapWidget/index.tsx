@@ -155,9 +155,9 @@ export function TwapWidget() {
                 topLabel={outputCurrencyInfo.label}
               />
               <div>
-                <AddressInputPanel label="Frequency" placeholder="" value={frequency} onChange={setFrequency} />
+                <AddressInputPanel label="Nº of Intervals" placeholder="" value={frequency} onChange={setFrequency} />
                 <AddressInputPanel
-                  label="Interval"
+                  label="Time interval"
                   placeholder="In seconds"
                   value={timeInterval}
                   onChange={setTimeInterval}
