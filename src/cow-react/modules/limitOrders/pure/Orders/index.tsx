@@ -11,12 +11,12 @@ import SVG from 'react-inlinesvg'
 import { Web3Status } from '@cow/modules/wallet/web3-react/containers/Web3Status'
 import { Wrapper as Web3StatusWrapper } from '@cow/modules/wallet/api/pure/Web3StatusInner/styled'
 
-const OrdersBox = styled(Widget)`
+export const OrdersBox = styled(Widget)`
   min-height: 200px;
   width: 100%;
 `
 
-const Content = styled.div`
+export const Content = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -83,7 +83,7 @@ const Content = styled.div`
   }
 `
 
-const Header = styled.span`
+export const Header = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
