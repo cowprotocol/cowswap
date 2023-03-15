@@ -77,6 +77,13 @@ export function getSafeTransaction(
   return client.getTransaction(safeTxHash)
 }
 
+export function getSafeTransactions(chainId: number, safeAddress: string, library: Web3Provider) {
+  console.log('[api/gnosisSafe] getSafeTransactions', chainId, safeAddress)
+  const client = _getClientOrThrow(chainId, library)
+
+  return client.getAllTransactions(safeAddress)
+}
+
 export function getSafeInfo(chainId: number, safeAddress: string, library: Web3Provider): Promise<SafeInfoResponse> {
   console.log('[api/gnosisSafe] getSafeInfo', chainId, safeAddress)
   try {
