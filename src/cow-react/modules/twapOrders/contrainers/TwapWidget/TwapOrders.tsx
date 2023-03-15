@@ -1,17 +1,12 @@
 import { useGnosisSafeInfo } from '@cow/modules/wallet'
-import styled from 'styled-components/macro'
 import { useEffect, useState } from 'react'
 import { TwapOrder, useGetTwapOrders } from './hooks'
 import { TwapOrderRow } from './TwapOrderRow'
 
-const ErrorMessage = styled.span`
-  color: red;
-`
-
 export function TwapOrders() {
   const getTwapOrders = useGetTwapOrders()
   const gnosisSafeInfo = useGnosisSafeInfo()
-  const [orders, setOrders] = useState<TwapOrder[]>([])
+  const [orders, setOrders] = useState<TwapOrder[] | null>(null)
   const safeAddress = gnosisSafeInfo?.address
 
   useEffect(() => {
@@ -21,7 +16,7 @@ export function TwapOrders() {
 
     try {
       console.log('[Twap] getOrders for safe', safeAddress)
-      getTwapOrders('0xD0306D218D45f5eCC9114dc45Df48d8C18aB3291') // safeAddress
+      getTwapOrders(safeAddress) // '0xD0306D218D45f5eCC9114dc45Df48d8C18aB3291'
         .then((twapOrders) => {
           console.log('[Twap] Set orders', twapOrders)
           setOrders(twapOrders || [])
@@ -32,26 +27,26 @@ export function TwapOrders() {
   }, [safeAddress, getTwapOrders])
 
   if (!gnosisSafeInfo) {
-    return (
-      <div>
-        <ErrorMessage>Please connect a Gnosis Safe to create a TWAP Order</ErrorMessage>
-      </div>
-    )
+    return null
   }
 
   const { fallbackHandler, nonce, owners, threshold } = gnosisSafeInfo
   console.log('[Twap] Loaded safe', { safeAddress, nonce, owners, threshold })
   console.log('[Twap] Current fallbackHandler', fallbackHandler)
 
+  if (orders === null) {
+    return <>Loading...</>
+  }
+
+  if (orders.length === 0) {
+    return <>No TWAP orders yet!</>
+  }
+
   return (
     <div>
-      {/* 
-      <div>
-        <strong>Connected Safe:</strong> {safeAddress}
-      </div> 
-      */}
-
-      {orders.length > 0 && orders.map((order, index) => <TwapOrderRow key={index} order={order} />)}
+      {orders.map((order, index) => (
+        <TwapOrderRow key={index} order={order} />
+      ))}
     </div>
   )
 }

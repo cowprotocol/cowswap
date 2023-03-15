@@ -17,8 +17,16 @@ import { useBindFallbackHandler } from '@cow/modules/twapOrders/hooks/useBindFal
 import { useCreateTwapOrder } from '@cow/modules/twapOrders/hooks/useCreateTwapOrder'
 import { useGnosisSafeInfo } from '@cow/modules/wallet'
 
-const ErrorMessage = styled.span`
-  color: red;
+const ErrorMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 490px;
+  width: 100%;
+  width: 470px;
+  span {
+    color: red;
+  }
 `
 
 export function TwapWidget() {
@@ -168,7 +176,9 @@ export function TwapWidget() {
             </>
           ) : (
             <div>
-              <ErrorMessage>Please connect a Gnosis Safe to create a TWAP Order</ErrorMessage>
+              <ErrorMessage>
+                <span>Please connect a Gnosis Safe</span>
+              </ErrorMessage>
             </div>
           )}
         </styledEl.ContainerBox>

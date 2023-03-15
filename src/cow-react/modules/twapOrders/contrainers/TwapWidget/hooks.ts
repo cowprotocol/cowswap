@@ -143,7 +143,7 @@ export function useGetTwapOrders() {
     if (!provider) return null
 
     // console.log('[Twap] Get Orders for safe ', safeAddress)
-    const { promise: txsPromise } = getSafeTransactions('0xD0306D218D45f5eCC9114dc45Df48d8C18aB3291') // safeAddress!
+    const { promise: txsPromise } = getSafeTransactions(safeAddress)
     const txs = await txsPromise
     // console.log('[Twap] ', txs.results)
 

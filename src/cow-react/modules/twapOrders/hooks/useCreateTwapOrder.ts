@@ -40,6 +40,7 @@ export function useCreateTwapOrder() {
         t: timeInterval,
         span: 0,
       }
+      console.log('[useCreateTwapOrder] Create Twap', twap)
 
       const { digest, payload } = await encodeTwap(twap, signer.provider!)
 
