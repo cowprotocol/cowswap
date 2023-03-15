@@ -13,6 +13,7 @@ import { defaultAbiCoder } from 'ethers/lib/utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useToken } from '@src/hooks/Tokens'
 import type { Web3Provider } from '@ethersproject/providers'
+import { useCallback } from 'react'
 
 const TWAP_DATA_ABI_PARAMS = [
   'address',
@@ -138,30 +139,33 @@ export function useGetTwapOrders() {
 
   const getSafeTransactions = useGetSafeTransactions()
 
-  return async (safeAddress: string): Promise<TwapOrder[] | null> => {
-    // console.log('[Twap] getOrders')
-    if (!provider) return null
+  return useCallback(
+    async (safeAddress: string): Promise<TwapOrder[] | null> => {
+      // console.log('[Twap] getOrders')
+      if (!provider) return null
 
-    // console.log('[Twap] Get Orders for safe ', safeAddress)
-    const { promise: txsPromise } = getSafeTransactions(safeAddress)
-    const txs = await txsPromise
-    // console.log('[Twap] ', txs.results)
+      // console.log('[Twap] Get Orders for safe ', safeAddress)
+      const { promise: txsPromise } = getSafeTransactions(safeAddress)
+      const txs = await txsPromise
+      // console.log('[Twap] ', txs.results)
 
-    let allOrders: TwapOrder[] = []
-    for (const _tx of txs.results) {
-      if (_tx.txType === 'ETHEREUM_TRANSACTION') {
-        const tx = _tx as EthereumTxWithTransfersResponse
-        // console.log('[Twap] Ethereum Transaction', tx.txHash, tx)
-      } else if (_tx.txType === 'MULTISIG_TRANSACTION') {
-        const orders = await getOrdersFromMultisigTransaction(_tx, getToken, provider)
+      let allOrders: TwapOrder[] = []
+      for (const _tx of txs.results) {
+        if (_tx.txType === 'ETHEREUM_TRANSACTION') {
+          const tx = _tx as EthereumTxWithTransfersResponse
+          // console.log('[Twap] Ethereum Transaction', tx.txHash, tx)
+        } else if (_tx.txType === 'MULTISIG_TRANSACTION') {
+          const orders = await getOrdersFromMultisigTransaction(_tx, getToken, provider)
 
-        if (orders.length > 0) {
-          allOrders = allOrders.concat(orders)
+          if (orders.length > 0) {
+            allOrders = allOrders.concat(orders)
+          }
+          // console.log('[Twap] TWAP Orders', allOrders, orders)
         }
-        // console.log('[Twap] TWAP Orders', allOrders, orders)
       }
-    }
 
-    return allOrders
-  }
+      return allOrders
+    },
+    [provider, getToken, getSafeTransactions]
+  )
 }
