@@ -2,35 +2,32 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type { CoWSettlement, CoWSettlementInterface } from "../CoWSettlement";
+import { Contract, Signer, utils } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
+import type { CoWSettlement, CoWSettlementInterface } from '../CoWSettlement'
 
 const _abi = [
   {
     inputs: [],
-    name: "domainSeparator",
+    name: 'domainSeparator',
     outputs: [
       {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
-] as const;
+] as const
 
 export class CoWSettlement__factory {
-  static readonly abi = _abi;
+  static readonly abi = _abi
   static createInterface(): CoWSettlementInterface {
-    return new utils.Interface(_abi) as CoWSettlementInterface;
+    return new utils.Interface(_abi) as CoWSettlementInterface
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): CoWSettlement {
-    return new Contract(address, _abi, signerOrProvider) as CoWSettlement;
+  static connect(address: string, signerOrProvider: Signer | Provider): CoWSettlement {
+    return new Contract(address, _abi, signerOrProvider) as CoWSettlement
   }
 }
