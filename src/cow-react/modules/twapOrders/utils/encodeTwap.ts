@@ -7,8 +7,8 @@ export interface TWAPData {
   sellToken: string
   buyToken: string
   receiver: string
-  partSellAmount: string
-  minPartLimit: string
+  partSellAmount: any
+  minPartLimit: any
   t0: number
   n: number
   t: number

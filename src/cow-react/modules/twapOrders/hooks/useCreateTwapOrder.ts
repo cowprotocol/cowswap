@@ -8,6 +8,8 @@ import { MetaTransactionData, OperationType } from '@safe-global/safe-core-sdk-t
 import { RELAYER, SIGN_MESSAGE_LIB } from '@cow/modules/twapOrders/consts'
 import { getAddress } from '@cow/utils/getAddress'
 import { ConditionalOrder__factory, ERC20__factory, SignMessageLib__factory } from '@cow/modules/twapOrders/types'
+// eslint-disable-next-line no-restricted-imports
+import { utils } from 'ethers'
 
 export function useCreateTwapOrder() {
   const { account, provider, chainId } = useWeb3React()
@@ -26,8 +28,13 @@ export function useCreateTwapOrder() {
       const sellToken = sellTokenAmount.currency
       const buyToken = buyTokenAmount.currency
 
-      const partSellAmount = (+sellTokenAmount.divide(numParts).toFixed(0) * 10 ** sellToken.decimals).toString()
-      const minPartLimit = (+buyTokenAmount.divide(numParts).toFixed(0) * 10 ** buyToken.decimals).toString()
+      // calculate the part sell amount
+      const totalSellAmount = utils.parseUnits(sellTokenAmount.toFixed(0), await sellToken.decimals)
+      const partSellAmount = totalSellAmount.div(numParts)
+
+      // calculate the min part limit
+      const minBuyAmount = utils.parseUnits(buyTokenAmount.toFixed(0), await buyToken.decimals)
+      const minPartLimit = minBuyAmount.div(numParts)
 
       const twap = {
         sellToken: getAddress(sellToken) || '',
@@ -53,7 +60,7 @@ export function useCreateTwapOrder() {
         },
         {
           to: twap.sellToken,
-          data: ERC20__factory.createInterface().encodeFunctionData('approve', [RELAYER, sellTokenAmount.toExact()]),
+          data: ERC20__factory.createInterface().encodeFunctionData('approve', [RELAYER, totalSellAmount]),
           value: '0',
         },
         {
