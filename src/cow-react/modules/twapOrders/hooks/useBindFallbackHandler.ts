@@ -10,7 +10,7 @@ const handlerAddresses: Record<number, string> = {
   100: '0x87b52ed635df746ca29651581b4d87517aaa9a9f',
 }
 
-export function useBindFallbackHandler() {
+export function useBindFallbackHandler(setIsLoading: (value: boolean) => void) {
   const { account, provider, chainId } = useWeb3React()
 
   return useCallback(async () => {
@@ -18,6 +18,7 @@ export function useBindFallbackHandler() {
 
     if (!provider || !account || !chainId || !handlerAddress) return
 
+    setIsLoading(true)
     try {
       const { client, safe, signer } = await getSafeUtils(chainId, account, provider)
 
@@ -27,5 +28,6 @@ export function useBindFallbackHandler() {
       alert(e.message)
       console.error(e)
     }
-  }, [chainId, provider, account])
+    setIsLoading(false)
+  }, [chainId, provider, account, setIsLoading])
 }

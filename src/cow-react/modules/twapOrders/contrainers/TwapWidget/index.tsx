@@ -16,6 +16,7 @@ import AddressInputPanel from '@src/components/AddressInputPanel'
 import { useBindFallbackHandler } from '@cow/modules/twapOrders/hooks/useBindFallbackHandler'
 import { useCreateTwapOrder } from '@cow/modules/twapOrders/hooks/useCreateTwapOrder'
 import { useGnosisSafeInfo } from '@cow/modules/wallet'
+import Loader from 'components/Loader'
 
 const ErrorMessage = styled.div`
   display: flex;
@@ -43,6 +44,9 @@ export function TwapWidget() {
   }
 
   const gnosisSafeInfo = useGnosisSafeInfo()
+  const [isBindingInProgress, setIsBindingInProgress] = useState(false)
+  const [isOrderInProgress, setIsOrderInProgress] = useState(false)
+
   const [frequency, setFrequency] = useState<string>('')
   const [timeInterval, setTimeInterval] = useState<string>('')
 
@@ -101,12 +105,14 @@ export function TwapWidget() {
   }, [inputCurrency, outputCurrency])
 
   const createTwapOrder = useCreateTwapOrder()
-  const bindTwapHandler = useBindFallbackHandler()
+  const bindTwapHandler = useBindFallbackHandler(setIsBindingInProgress)
 
-  const createOrder = useCallback(() => {
+  const createOrder = useCallback(async () => {
     if (!inputCurrencyAmount || !outputCurrencyAmount) return
 
-    createTwapOrder(inputCurrencyAmount, outputCurrencyAmount, +frequency, +timeInterval)
+    setIsOrderInProgress(true)
+    await createTwapOrder(inputCurrencyAmount, outputCurrencyAmount, +frequency, +timeInterval)
+    setIsOrderInProgress(false)
   }, [createTwapOrder, inputCurrencyAmount, outputCurrencyAmount, frequency, timeInterval])
 
   return (
@@ -165,12 +171,12 @@ export function TwapWidget() {
               </div>
               <div>
                 <br />
-                <SwapButton id="bind-twap-handler" onClick={bindTwapHandler} disabled={false}>
-                  <Trans>Bind handler</Trans>
+                <SwapButton id="bind-twap-handler" onClick={bindTwapHandler} disabled={isBindingInProgress}>
+                  {isBindingInProgress ? <Loader /> : <Trans>Bind handler</Trans>}
                 </SwapButton>
                 <br />
-                <SwapButton id="twap-trade" onClick={createOrder} disabled={false}>
-                  <Trans>Create order</Trans>
+                <SwapButton id="twap-trade" onClick={createOrder} disabled={isOrderInProgress}>
+                  {isOrderInProgress ? <Loader /> : <Trans>Create order</Trans>}
                 </SwapButton>
               </div>
             </>
