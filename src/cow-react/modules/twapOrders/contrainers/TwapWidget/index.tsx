@@ -11,7 +11,7 @@ import { SwapButton } from '@cow/modules/limitOrders/containers/TradeButtons/lim
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { formatInputAmount } from '@cow/utils/amountFormat'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
+import { USDC, WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import AddressInputPanel from '@src/components/AddressInputPanel'
 import { useBindFallbackHandler } from '@cow/modules/twapOrders/hooks/useBindFallbackHandler'
 import { useCreateTwapOrder } from '@cow/modules/twapOrders/hooks/useCreateTwapOrder'
@@ -31,7 +31,7 @@ const ErrorMessage = styled.div`
 `
 
 export function TwapWidget() {
-  const chainId = 100
+  const chainId = 5
   const currenciesLoadingInProgress = false
   const allowsOffchainSigning = false
   const showSetMax = false
@@ -51,7 +51,7 @@ export function TwapWidget() {
   const [timeInterval, setTimeInterval] = useState<string>('')
 
   const [inputCurrency, setInputCurrency] = useState<Currency | null>(WETH[chainId])
-  const [outputCurrency, setOutputCurrency] = useState<Currency | null>(null)
+  const [outputCurrency, setOutputCurrency] = useState<Currency | null>(USDC[chainId])
 
   const [inputCurrencyAmount, setInputCurrencyAmount] = useState<CurrencyAmount<Currency> | null>(null)
   const [outputCurrencyAmount, setOutputCurrencyAmount] = useState<CurrencyAmount<Currency> | null>(null)
