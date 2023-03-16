@@ -73,6 +73,7 @@ export default function AddressInputPanel({
   className = 'recipient-address-input',
   label,
   placeholder,
+  isPlainInput = false,
   value,
   onChange,
 }: {
@@ -80,6 +81,7 @@ export default function AddressInputPanel({
   className?: string
   label?: ReactNode
   placeholder?: string
+  isPlainInput?: boolean
   // the typed string value
   value: string
   // triggers whenever the typed value changes
@@ -88,7 +90,7 @@ export default function AddressInputPanel({
   const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext as Context<DefaultTheme>)
 
-  const { address, loading, name } = useENS(value)
+  const { address, loading, name } = useENS(isPlainInput ? null : value)
 
   const handleInput = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -99,7 +101,7 @@ export default function AddressInputPanel({
     [onChange]
   )
 
-  const error = Boolean(value.length > 0 && !loading && !address)
+  const error = isPlainInput ? false : Boolean(value.length > 0 && !loading && !address)
 
   return (
     <InputPanel id={id}>
