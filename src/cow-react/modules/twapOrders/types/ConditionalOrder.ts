@@ -12,36 +12,26 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type {
-  FunctionFragment,
-  Result,
-  EventFragment,
-} from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "./common";
+} from 'ethers'
+import type { FunctionFragment, Result, EventFragment } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common'
 
 export declare namespace GPv2Order {
   export type DataStruct = {
-    sellToken: PromiseOrValue<string>;
-    buyToken: PromiseOrValue<string>;
-    receiver: PromiseOrValue<string>;
-    sellAmount: PromiseOrValue<BigNumberish>;
-    buyAmount: PromiseOrValue<BigNumberish>;
-    validTo: PromiseOrValue<BigNumberish>;
-    appData: PromiseOrValue<BytesLike>;
-    feeAmount: PromiseOrValue<BigNumberish>;
-    kind: PromiseOrValue<BytesLike>;
-    partiallyFillable: PromiseOrValue<boolean>;
-    sellTokenBalance: PromiseOrValue<BytesLike>;
-    buyTokenBalance: PromiseOrValue<BytesLike>;
-  };
+    sellToken: PromiseOrValue<string>
+    buyToken: PromiseOrValue<string>
+    receiver: PromiseOrValue<string>
+    sellAmount: PromiseOrValue<BigNumberish>
+    buyAmount: PromiseOrValue<BigNumberish>
+    validTo: PromiseOrValue<BigNumberish>
+    appData: PromiseOrValue<BytesLike>
+    feeAmount: PromiseOrValue<BigNumberish>
+    kind: PromiseOrValue<BytesLike>
+    partiallyFillable: PromiseOrValue<boolean>
+    sellTokenBalance: PromiseOrValue<BytesLike>
+    buyTokenBalance: PromiseOrValue<BytesLike>
+  }
 
   export type DataStructOutput = [
     string,
@@ -57,157 +47,123 @@ export declare namespace GPv2Order {
     string,
     string
   ] & {
-    sellToken: string;
-    buyToken: string;
-    receiver: string;
-    sellAmount: BigNumber;
-    buyAmount: BigNumber;
-    validTo: number;
-    appData: string;
-    feeAmount: BigNumber;
-    kind: string;
-    partiallyFillable: boolean;
-    sellTokenBalance: string;
-    buyTokenBalance: string;
-  };
+    sellToken: string
+    buyToken: string
+    receiver: string
+    sellAmount: BigNumber
+    buyAmount: BigNumber
+    validTo: number
+    appData: string
+    feeAmount: BigNumber
+    kind: string
+    partiallyFillable: boolean
+    sellTokenBalance: string
+    buyTokenBalance: string
+  }
 }
 
 export interface ConditionalOrderInterface extends utils.Interface {
   functions: {
-    "dispatch(bytes)": FunctionFragment;
-    "getTradeableOrder(bytes)": FunctionFragment;
-  };
+    'dispatch(bytes)': FunctionFragment
+    'getTradeableOrder(bytes)': FunctionFragment
+  }
 
-  getFunction(
-    nameOrSignatureOrTopic: "dispatch" | "getTradeableOrder"
-  ): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'dispatch' | 'getTradeableOrder'): FunctionFragment
 
-  encodeFunctionData(
-    functionFragment: "dispatch",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTradeableOrder",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
+  encodeFunctionData(functionFragment: 'dispatch', values: [PromiseOrValue<BytesLike>]): string
+  encodeFunctionData(functionFragment: 'getTradeableOrder', values: [PromiseOrValue<BytesLike>]): string
 
-  decodeFunctionResult(functionFragment: "dispatch", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getTradeableOrder",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'dispatch', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'getTradeableOrder', data: BytesLike): Result
 
   events: {
-    "ConditionalOrderCreated(address,bytes)": EventFragment;
-  };
+    'ConditionalOrderCreated(address,bytes)': EventFragment
+  }
 
-  getEvent(nameOrSignatureOrTopic: "ConditionalOrderCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ConditionalOrderCreated'): EventFragment
 }
 
 export interface ConditionalOrderCreatedEventObject {
-  arg0: string;
-  arg1: string;
+  arg0: string
+  arg1: string
 }
-export type ConditionalOrderCreatedEvent = TypedEvent<
-  [string, string],
-  ConditionalOrderCreatedEventObject
->;
+export type ConditionalOrderCreatedEvent = TypedEvent<[string, string], ConditionalOrderCreatedEventObject>
 
-export type ConditionalOrderCreatedEventFilter =
-  TypedEventFilter<ConditionalOrderCreatedEvent>;
+export type ConditionalOrderCreatedEventFilter = TypedEventFilter<ConditionalOrderCreatedEvent>
 
 export interface ConditionalOrder extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: ConditionalOrderInterface;
+  interface: ConditionalOrderInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
     dispatch(
       payload: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     getTradeableOrder(
       payload: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[GPv2Order.DataStructOutput]>;
-  };
+    ): Promise<[GPv2Order.DataStructOutput]>
+  }
 
   dispatch(
     payload: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
-  getTradeableOrder(
-    payload: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<GPv2Order.DataStructOutput>;
+  getTradeableOrder(payload: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<GPv2Order.DataStructOutput>
 
   callStatic: {
-    dispatch(
-      payload: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    dispatch(payload: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<void>
 
     getTradeableOrder(
       payload: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<GPv2Order.DataStructOutput>;
-  };
+    ): Promise<GPv2Order.DataStructOutput>
+  }
 
   filters: {
-    "ConditionalOrderCreated(address,bytes)"(
+    'ConditionalOrderCreated(address,bytes)'(
       arg0?: PromiseOrValue<string> | null,
       arg1?: null
-    ): ConditionalOrderCreatedEventFilter;
-    ConditionalOrderCreated(
-      arg0?: PromiseOrValue<string> | null,
-      arg1?: null
-    ): ConditionalOrderCreatedEventFilter;
-  };
+    ): ConditionalOrderCreatedEventFilter
+    ConditionalOrderCreated(arg0?: PromiseOrValue<string> | null, arg1?: null): ConditionalOrderCreatedEventFilter
+  }
 
   estimateGas: {
     dispatch(
       payload: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    getTradeableOrder(
-      payload: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
+    getTradeableOrder(payload: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>
+  }
 
   populateTransaction: {
     dispatch(
       payload: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    getTradeableOrder(
-      payload: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
+    getTradeableOrder(payload: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<PopulatedTransaction>
+  }
 }

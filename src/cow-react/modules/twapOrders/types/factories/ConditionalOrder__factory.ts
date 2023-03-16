@@ -2,158 +2,152 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
-import type {
-  ConditionalOrder,
-  ConditionalOrderInterface,
-} from "../ConditionalOrder";
+import { Contract, Signer, utils } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
+import type { ConditionalOrder, ConditionalOrderInterface } from '../ConditionalOrder'
 
 const _abi = [
   {
     inputs: [],
-    name: "OrderCancelled",
-    type: "error",
+    name: 'OrderCancelled',
+    type: 'error',
   },
   {
     inputs: [],
-    name: "OrderExpired",
-    type: "error",
+    name: 'OrderExpired',
+    type: 'error',
   },
   {
     inputs: [],
-    name: "OrderNotSigned",
-    type: "error",
+    name: 'OrderNotSigned',
+    type: 'error',
   },
   {
     inputs: [],
-    name: "OrderNotValid",
-    type: "error",
+    name: 'OrderNotValid',
+    type: 'error',
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: "address",
-        name: "",
-        type: "address",
+        internalType: 'address',
+        name: '',
+        type: 'address',
       },
       {
         indexed: false,
-        internalType: "bytes",
-        name: "",
-        type: "bytes",
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
       },
     ],
-    name: "ConditionalOrderCreated",
-    type: "event",
+    name: 'ConditionalOrderCreated',
+    type: 'event',
   },
   {
     inputs: [
       {
-        internalType: "bytes",
-        name: "payload",
-        type: "bytes",
+        internalType: 'bytes',
+        name: 'payload',
+        type: 'bytes',
       },
     ],
-    name: "dispatch",
+    name: 'dispatch',
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "bytes",
-        name: "payload",
-        type: "bytes",
+        internalType: 'bytes',
+        name: 'payload',
+        type: 'bytes',
       },
     ],
-    name: "getTradeableOrder",
+    name: 'getTradeableOrder',
     outputs: [
       {
         components: [
           {
-            internalType: "contract IERC20",
-            name: "sellToken",
-            type: "address",
+            internalType: 'contract IERC20',
+            name: 'sellToken',
+            type: 'address',
           },
           {
-            internalType: "contract IERC20",
-            name: "buyToken",
-            type: "address",
+            internalType: 'contract IERC20',
+            name: 'buyToken',
+            type: 'address',
           },
           {
-            internalType: "address",
-            name: "receiver",
-            type: "address",
+            internalType: 'address',
+            name: 'receiver',
+            type: 'address',
           },
           {
-            internalType: "uint256",
-            name: "sellAmount",
-            type: "uint256",
+            internalType: 'uint256',
+            name: 'sellAmount',
+            type: 'uint256',
           },
           {
-            internalType: "uint256",
-            name: "buyAmount",
-            type: "uint256",
+            internalType: 'uint256',
+            name: 'buyAmount',
+            type: 'uint256',
           },
           {
-            internalType: "uint32",
-            name: "validTo",
-            type: "uint32",
+            internalType: 'uint32',
+            name: 'validTo',
+            type: 'uint32',
           },
           {
-            internalType: "bytes32",
-            name: "appData",
-            type: "bytes32",
+            internalType: 'bytes32',
+            name: 'appData',
+            type: 'bytes32',
           },
           {
-            internalType: "uint256",
-            name: "feeAmount",
-            type: "uint256",
+            internalType: 'uint256',
+            name: 'feeAmount',
+            type: 'uint256',
           },
           {
-            internalType: "bytes32",
-            name: "kind",
-            type: "bytes32",
+            internalType: 'bytes32',
+            name: 'kind',
+            type: 'bytes32',
           },
           {
-            internalType: "bool",
-            name: "partiallyFillable",
-            type: "bool",
+            internalType: 'bool',
+            name: 'partiallyFillable',
+            type: 'bool',
           },
           {
-            internalType: "bytes32",
-            name: "sellTokenBalance",
-            type: "bytes32",
+            internalType: 'bytes32',
+            name: 'sellTokenBalance',
+            type: 'bytes32',
           },
           {
-            internalType: "bytes32",
-            name: "buyTokenBalance",
-            type: "bytes32",
+            internalType: 'bytes32',
+            name: 'buyTokenBalance',
+            type: 'bytes32',
           },
         ],
-        internalType: "struct GPv2Order.Data",
-        name: "",
-        type: "tuple",
+        internalType: 'struct GPv2Order.Data',
+        name: '',
+        type: 'tuple',
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
-] as const;
+] as const
 
 export class ConditionalOrder__factory {
-  static readonly abi = _abi;
+  static readonly abi = _abi
   static createInterface(): ConditionalOrderInterface {
-    return new utils.Interface(_abi) as ConditionalOrderInterface;
+    return new utils.Interface(_abi) as ConditionalOrderInterface
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ConditionalOrder {
-    return new Contract(address, _abi, signerOrProvider) as ConditionalOrder;
+  static connect(address: string, signerOrProvider: Signer | Provider): ConditionalOrder {
+    return new Contract(address, _abi, signerOrProvider) as ConditionalOrder
   }
 }
