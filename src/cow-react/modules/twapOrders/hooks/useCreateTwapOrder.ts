@@ -26,8 +26,8 @@ export function useCreateTwapOrder() {
       const sellToken = sellTokenAmount.currency
       const buyToken = buyTokenAmount.currency
 
-      const partSellAmount = sellTokenAmount.divide(numParts).toExact()
-      const minPartLimit = buyTokenAmount.divide(numParts).toFixed(0)
+      const partSellAmount = (+sellTokenAmount.divide(numParts).toFixed(0) * 10 ** sellToken.decimals).toString()
+      const minPartLimit = (+buyTokenAmount.divide(numParts).toFixed(0) * 10 ** buyToken.decimals).toString()
 
       const twap = {
         sellToken: getAddress(sellToken) || '',
