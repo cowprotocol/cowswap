@@ -17,7 +17,7 @@ export async function getSafeUtils(
   signer: JsonRpcSigner
 }> {
   const client = _getClientOrThrow(chainId, library)
-  const signer = library.getSigner(account)
+  const signer = library.getSigner()
 
   const ethAdapter = new EthersAdapter({
     ethers,

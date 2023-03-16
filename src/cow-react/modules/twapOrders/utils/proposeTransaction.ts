@@ -11,13 +11,22 @@ export async function proposeTransaction(
   signer: ethers.Signer
 ) {
   const safeTxHash = await safe.getTransactionHash(tx)
-  const senderSignature = await safe.signTransactionHash(safeTxHash)
+  // const senderSignature = await safe.signTransactionHash(safeTxHash)
+
+  const owner = (await safe.getOwners())[0]
+  const senderSignature = await (window.ethereum as any).request({
+    method: 'personal_sign',
+    params: [owner, safeTxHash],
+  })
+  const v = senderSignature.slice(senderSignature.length - 2, senderSignature.length)
+  const fixedSign = senderSignature.slice(0, -2) + (+('0x' + v) + 4).toString(16)
+
   await safeService.proposeTransaction({
     safeAddress: safe.getAddress(),
     safeTransactionData: tx.data,
     safeTxHash,
-    senderAddress: await signer.getAddress(),
-    senderSignature: senderSignature.data,
+    senderAddress: owner,
+    senderSignature: fixedSign,
   })
 
   console.log(`Submitted Transaction hash: ${safeTxHash}`)
