@@ -34,7 +34,6 @@ export function calculatePriceDifference({
   isInverted,
 }: CalculatePriceDifferenceParams): PriceDifference {
   if (!targetPrice || !referencePrice) {
-    console.log('RETURN HERE 2')
     return null
   }
 
@@ -46,7 +45,6 @@ export function calculatePriceDifference({
     referencePrice.lessThan(ZERO_FRACTION) || // The prices can't be negative
     targetPrice.lessThan(ZERO_FRACTION) // The prices can't be negative
   ) {
-    console.log('RETURN HERE')
     return null
   }
 
