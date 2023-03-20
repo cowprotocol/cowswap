@@ -40,7 +40,7 @@ export default function About() {
         <Content>
           <p>CoW Swap is the first trading interface built on top of CoW Protocol.</p>
           <p>
-            It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
+            It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or
             into any on-chain liquidity source while providing MEV protection.
           </p>
           <h2>
