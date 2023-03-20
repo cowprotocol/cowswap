@@ -26,10 +26,6 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean 
   }
 `
 
-const PercentageDifference = styled.i`
-  color: ${({ theme }) => theme.green1};
-`
-
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
   isInverted: boolean
   percentageDifference?: Percent
@@ -68,11 +64,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                 </b>
                 &nbsp;
                 <span>
-                  (
-                  <PercentageDifference style={{ color: 'green' }}>
-                    +{percentageDifferenceInverted?.toFixed(2)}%
-                  </PercentageDifference>
-                  )
+                  (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
                 </span>
                 &nbsp;to execute your order.
               </>
