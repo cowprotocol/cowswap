@@ -126,7 +126,7 @@ describe('Not Inverted Price', () => {
     })
   })
 
-  describe('Target Price is BELLOW Reference Prices', () => {
+  describe('Target Price is BELOW Reference Prices', () => {
     test('-10% price difference', () => {
       const params: CalculatePriceDifferenceParams = {
         ...baseParams,
@@ -204,7 +204,7 @@ describe('Inverted Price', () => {
     })
   })
 
-  describe('Target Price is BELLOW Reference Prices', () => {
+  describe('Target Price is BELOW Reference Prices', () => {
     test('-10% price difference', () => {
       const params: CalculatePriceDifferenceParams = {
         ...baseParams,

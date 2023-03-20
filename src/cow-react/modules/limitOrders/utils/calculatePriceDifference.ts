@@ -43,8 +43,8 @@ export function calculatePriceDifference({
 
   if (
     referencePrice.equalTo(ZERO_FRACTION) || // The reference cannot be zero (infinite relative difference)
-    referencePrice.lessThan(ZERO_FRACTION) || // The prices can't be negatiev
-    targetPrice.lessThan(ZERO_FRACTION) // The prices can't be negatiev
+    referencePrice.lessThan(ZERO_FRACTION) || // The prices can't be negative
+    targetPrice.lessThan(ZERO_FRACTION) // The prices can't be negative
   ) {
     console.log('RETURN HERE')
     return null
