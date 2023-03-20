@@ -1,12 +1,15 @@
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 import { Nullish } from '@cow/types'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { assertSameMarket } from '@cow/common/utils/markets'
+import { FractionUtils } from '@cow/utils/fractionUtils'
+import { adjustDecimalsAtoms } from './calculateAmountForRate'
+import { ZERO_FRACTION } from '@src/custom/constants'
 
 const ONE = new Fraction(1)
 
 export type CalculatePriceDifferenceParams = {
-  reference: Nullish<Price<Currency, Currency>>
-  delta: Nullish<Price<Currency, Currency>>
+  referencePrice: Nullish<Price<Currency, Currency>>
+  targetPrice: Nullish<Price<Currency, Currency>>
   isInverted: boolean
 }
 
@@ -21,38 +24,72 @@ export type PriceDifference = {
  * Amount is the difference between prices in a CurrencyAmount instance.
  * The quote currency is used in regular cases and base currency when `isInverted` is set
  *
- * @param reference
- * @param delta
+ * @param referencePrice
+ * @param targetPrice
  * @param isInverted
  */
 export function calculatePriceDifference({
-  reference,
-  delta,
+  referencePrice,
+  targetPrice,
   isInverted,
 }: CalculatePriceDifferenceParams): PriceDifference {
-  if (!delta || !reference) {
+  if (!targetPrice || !referencePrice) {
     return null
   }
 
-  const percentageDifference = reference.divide(delta).subtract(ONE) // as Fraction
+  // Make sure we are comparing apples with apples (prices should refer to market)
+  assertSameMarket(referencePrice, targetPrice)
+
+  if (
+    referencePrice.equalTo(ZERO_FRACTION) || // The reference cannot be zero (infinite relative difference)
+    referencePrice.lessThan(ZERO_FRACTION) || // The prices can't be negative
+    targetPrice.lessThan(ZERO_FRACTION) // The prices can't be negative
+  ) {
+    return null
+  }
+
+  if (isInverted) {
+    return calculatePriceDifferenceAux({
+      referencePrice: referencePrice.invert(),
+      targetPrice: targetPrice.invert(),
+    })
+  } else {
+    return calculatePriceDifferenceAux({
+      referencePrice,
+      targetPrice,
+    })
+  }
+}
+
+function calculatePriceDifferenceAux({
+  referencePrice,
+  targetPrice,
+}: {
+  referencePrice: Price<Currency, Currency>
+  targetPrice: Price<Currency, Currency>
+}): PriceDifference {
+  // TODO: Do i need to use "isInverted" in the calculation?? (i would think this is only for representation)
+  const percentageDifference = targetPrice.divide(referencePrice).subtract(ONE) // as Fraction
   const percentage = new Percent(percentageDifference.numerator, percentageDifference.denominator) // as Percent
 
-  // as Fraction
-  const amountDifference = isInverted
-    ? // If it's inverted in the UI, invert here as well to get the amounts in the new quote token
-      reference.invert().subtract(delta.invert())
-    : reference.subtract(delta)
-  const amount = tryParseCurrencyAmount(amountDifference.toFixed(18), delta.quoteCurrency) // as CurrencyAmount
+  // Calculate difference in units (no atoms)
 
-  // TODO: remove debug logs
+  // Convert difference in token amount
+  const differenceInUnits = FractionUtils.fromPrice(targetPrice).subtract(FractionUtils.fromPrice(referencePrice))
+  const difference = adjustDecimalsAtoms(differenceInUnits, 0, referencePrice.quoteCurrency.decimals)
+  const differenceInQuoteToken = CurrencyAmount.fromFractionalAmount(
+    referencePrice.quoteCurrency,
+    difference.numerator,
+    difference.denominator
+  )
+
+  const priceUnits = `${referencePrice.quoteCurrency.symbol} per ${referencePrice.baseCurrency.symbol}`
   console.debug(`calculatePriceDifference`, {
-    pair: `${delta.quoteCurrency.symbol}/${delta.baseCurrency.symbol}`,
-    marketPrice: `${delta.toFixed(7)} ${delta.baseCurrency.symbol} per ${delta.quoteCurrency.symbol}`,
-    executionPrice: `${reference.toFixed(7)} ${reference.baseCurrency.symbol} per ${reference.quoteCurrency.symbol}`,
-    difference: percentageDifference.toFixed(6),
-    percentage: percentage.toFixed(6) + '%',
-    amount: amount?.toFixed(amount.currency.decimals),
+    market: `${targetPrice.baseCurrency.symbol}-${targetPrice.quoteCurrency.symbol}`,
+    targetPrice: `${targetPrice.toFixed(18)} ${priceUnits}`,
+    referencePrice: `${referencePrice.toFixed(18)} ${priceUnits}`,
+    differenceCurrency: `${differenceInQuoteToken.toSignificant(18)} ${differenceInQuoteToken.currency.symbol}`,
   })
 
-  return { percentage, amount }
+  return { percentage, amount: differenceInQuoteToken }
 }

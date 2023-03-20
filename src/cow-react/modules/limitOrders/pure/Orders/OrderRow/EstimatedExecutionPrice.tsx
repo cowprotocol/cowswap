@@ -9,8 +9,8 @@ import { TokenAmount, TokenAmountProps } from '@cow/common/pure/TokenAmount'
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import { calculateOrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 import * as styledEl from './styled'
+import { ZERO_FRACTION } from '@src/custom/constants'
 
-const ZERO_FRACTION = new Fraction(0)
 const MINUS_ONE_FRACTION = new Fraction(-1)
 const TEN_PERCENT = new Percent(1, 10)
 
@@ -35,15 +35,20 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
 }
 
 export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
-  const { isInverted, percentageDifference, amountDifference, percentageFee, amountFee, ...rest } = props
+  const { isInverted, percentageDifference, amountDifference, percentageFee, amountFee, amount, ...rest } = props
+
+  const percentageDifferenceInverted = isInverted
+    ? percentageDifference?.multiply(MINUS_ONE_FRACTION)
+    : percentageDifference
 
   // This amount can be negative (when price is inverted) and we don't want to show it negative
   const absoluteDifferenceAmount = amountDifference?.lessThan(ZERO_FRACTION)
     ? amountDifference.multiply(MINUS_ONE_FRACTION)
     : amountDifference
-  const orderExecutionStatus = calculateOrderExecutionStatus(percentageDifference)
+  const orderExecutionStatus = calculateOrderExecutionStatus(percentageDifferenceInverted)
   const feeWarning = percentageFee?.greaterThan(TEN_PERCENT)
-  const isNegativeDifference = percentageDifference?.lessThan(ZERO_FRACTION)
+  const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
+  const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
 
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning}>
@@ -53,14 +58,14 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           <styledEl.ExecuteInformationTooltip>
             {!isNegativeDifference ? (
               <>
-                Market price needs to go {isInverted ? 'down 📉' : 'up 📈'} by&nbsp;
+                Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
                 <b>
                   <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
                 </b>
                 &nbsp;
-                <b>
-                  <i>(~{percentageDifference?.toFixed(2)}%)</i>
-                </b>
+                <span>
+                  (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
+                </span>
                 &nbsp;to execute your order.
               </>
             ) : feeWarning ? (
@@ -73,7 +78,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
         placement="top"
       >
         <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-        <TokenAmount {...rest} />
+        <TokenAmount amount={amount} {...rest} />
       </MouseoverTooltipContent>
 
       {feeWarning && <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />}
