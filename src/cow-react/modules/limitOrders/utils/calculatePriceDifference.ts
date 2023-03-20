@@ -24,8 +24,8 @@ export type PriceDifference = {
  * Amount is the difference between prices in a CurrencyAmount instance.
  * The quote currency is used in regular cases and base currency when `isInverted` is set
  *
- * @param reference
- * @param delta
+ * @param referencePrice
+ * @param targetPrice
  * @param isInverted
  */
 export function calculatePriceDifference({
