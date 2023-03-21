@@ -94,15 +94,15 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field>
-              {order.fullyFilled ? (
-                <>
-                  <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />{' '}
-                  <PriceField order={order} price={executionPrice} />
-                </>
-              ) : (
+              {estimatedExecutionPrice ? (
                 <>
                   <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
                   <PriceField order={order} price={estimatedExecutionPrice} />
+                </>
+              ) : (
+                <>
+                  <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />{' '}
+                  <PriceField order={order} price={executionPrice} />
                 </>
               )}
             </styledEl.Field>
