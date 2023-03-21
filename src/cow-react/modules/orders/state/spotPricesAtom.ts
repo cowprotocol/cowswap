@@ -1,7 +1,9 @@
-import { atom } from 'jotai'
+import { atom, useAtomValue } from 'jotai'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from 'constants/chains'
+import { getCanonicalMarketChainKey } from '@cow/common/utils/markets'
+import { useCallback } from 'react'
 
 export type SpotPrices = Record<string, Price<Currency, Currency>>
 
@@ -20,31 +22,19 @@ export const updateSpotPricesAtom = atom(null, (get, set, params: UpdateSpotPric
   set(spotPricesAtom, () => {
     const { price, ...rest } = params
 
-    const key = buildSpotPricesKey(rest)
     const prevState = get(spotPricesAtom)
+    const previousPrice = getSpotPrice(rest, prevState)
 
-    if (prevState[key]?.equalTo(price)) {
+    if (previousPrice?.equalTo(price)) {
       // Avoid unnecessary updates if price hasn't changed
       return prevState
     }
 
-    return { ...prevState, [key]: price }
+    const { chainId, sellTokenAddress, buyTokenAddress } = rest
+    const { marketKey, marketInverted } = getCanonicalMarketChainKey(chainId, sellTokenAddress, buyTokenAddress)
+    return { ...prevState, [marketKey]: marketInverted ? price.invert() : price }
   })
 })
-
-/**
- * Build Spot Prices Key
- *
- * Helper function to build the key used to store spot prices
- * With this we can make the search faster and keep the structure flat
- *
- * @param params {chainId, sellTokenAddress, buyTokenAddress}
- */
-export function buildSpotPricesKey(params: SpotPricesKeyParams): string {
-  return Object.values(params)
-    .map((v) => String(v).toLowerCase())
-    .join('|')
-}
 
 /**
  * Get Spot Price
@@ -55,8 +45,19 @@ export function buildSpotPricesKey(params: SpotPricesKeyParams): string {
  * @param params {chainId, sellTokenAddress, buyTokenAddress}
  * @param spotPrices Spot prices map
  */
-export function getSpotPrice(params: SpotPricesKeyParams, spotPrices: SpotPrices): Price<Currency, Currency> | null {
-  const key = buildSpotPricesKey(params)
+function getSpotPrice(params: SpotPricesKeyParams, spotPrices: SpotPrices): Price<Currency, Currency> | null {
+  const { chainId, sellTokenAddress, buyTokenAddress } = params
+  const { marketKey, marketInverted } = getCanonicalMarketChainKey(chainId, sellTokenAddress, buyTokenAddress)
+  const spotPrice = spotPrices[marketKey]
 
-  return spotPrices[key] || null
+  if (!spotPrice) {
+    return null
+  }
+
+  return marketInverted ? spotPrice.invert() : spotPrice
+}
+
+export function useGetSpotPrice() {
+  const spotPrices = useAtomValue(spotPricesAtom)
+  return useCallback((params: SpotPricesKeyParams) => getSpotPrice(params, spotPrices), [spotPrices])
 }

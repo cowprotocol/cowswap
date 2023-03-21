@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
-import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
+import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { OrderStatus } from 'state/orders/actions'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { OrderParams } from '../utils/getOrderParams'
@@ -9,7 +9,7 @@ import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmou
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { TokenAmount, TokenAmountProps } from '@cow/common/pure/TokenAmount'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import CurrencyLogo from 'components/CurrencyLogo'
 import useTimeAgo from 'hooks/useTimeAgo'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
@@ -19,16 +19,12 @@ import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import Loader from '@src/components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
-import {
-  calculateOrderExecutionStatus,
-  OrderExecutionStatus,
-} from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
-import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
-import { darken } from 'polished'
 import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
 import { getAddress } from '@cow/utils/getAddress'
-import { SymbolElement } from '@cow/common/pure/TokenAmount'
+import { calculatePriceDifference, PriceDifference } from '@cow/modules/limitOrders/utils/calculatePriceDifference'
+import { calculateFractionLikePercentDifference } from '@cow/modules/limitOrders/utils/calculateFractionLikePercentDifference'
+import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -52,96 +48,6 @@ function CurrencyAmountItem({ amount }: { amount: CurrencyAmount<Currency> }) {
 
 function CurrencySymbolItem({ amount }: { amount: CurrencyAmount<Currency> }) {
   return <CurrencyLogo currency={amount.currency} size="28px" />
-}
-
-export function LowVolumeWarningContent() {
-  const theme = useContext(ThemeContext)
-
-  return (
-    <styledEl.WarningIndicator hasBackground={false}>
-      <MouseoverTooltipContent
-        wrap={true}
-        bgColor={theme.alert}
-        content={
-          <styledEl.WarningContent>
-            <h3>Order unlikely to execute</h3>
-            For this order, network fees would be <b>52.11%</b>{' '}
-            <b>
-              <i>(12.34 USDC)</i>
-            </b>{' '}
-            of your sell amount! Therefore, your order is unlikely to execute.
-          </styledEl.WarningContent>
-        }
-        placement="bottom"
-      >
-        <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
-      </MouseoverTooltipContent>
-    </styledEl.WarningIndicator>
-  )
-}
-
-// TODO: temporary component, name and location. If keeping it, move it to its own module, rename, etc, etc
-export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: boolean }>`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  color: ${({ lowVolumeWarning, theme }) =>
-    lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
-
-  ${SymbolElement} {
-    color: inherit;
-  }
-
-  // Triangle warning icon override
-  ${styledEl.WarningIndicator} {
-    padding: 0 0 0 3px;
-
-    svg {
-      --size: 18px;
-      width: var(--size);
-      height: var(--size);
-      min-width: var(--size);
-      min-height: var(--size);
-    }
-  }
-
-  // Popover container override
-  > div > div {
-    display: flex;
-    align-items: center;
-  }
-`
-
-export function LowVolumeWarningToken(
-  props: TokenAmountProps & { executeIndicator: React.ReactNode; lowVolumeWarning: boolean }
-) {
-  const { lowVolumeWarning, ...rest } = props
-
-  return (
-    <LowVolumeWarningTokenWrapper lowVolumeWarning={lowVolumeWarning}>
-      <MouseoverTooltipContent
-        wrap={true}
-        content={
-          <styledEl.ExecuteInformationTooltip>
-            {/* TODO: Add logic to get the down/up + icon and the values below */}
-            Market price needs to go down/up 📉📈 by
-            <b>17.70 USDC</b>&nbsp;
-            <b>
-              <i>(~1.15%)</i>
-            </b>
-            &nbsp;to execute your order.
-          </styledEl.ExecuteInformationTooltip>
-        }
-        placement="top"
-      >
-        {props.executeIndicator}
-        <TokenAmount {...rest} />
-      </MouseoverTooltipContent>
-
-      {lowVolumeWarning && <LowVolumeWarningContent />}
-    </LowVolumeWarningTokenWrapper>
-  )
 }
 
 const BalanceWarning = (symbol: string) => (
@@ -209,7 +115,7 @@ export function OrderRow({
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice } = order
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
-  const { estimatedExecutionPrice } = prices || {}
+  const { estimatedExecutionPrice, feeAmount } = prices || {}
 
   const showCancellationModal = getShowCancellationModal(order)
 
@@ -222,17 +128,17 @@ export function OrderRow({
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
-  const [isInverted, setIsinverted] = useState(isRateInverted)
+  const [isInverted, setIsInverted] = useState(isRateInverted)
 
   // Update internal isInverted flag whenever prop change
   useEffect(() => {
-    setIsinverted(isRateInverted)
+    setIsInverted(isRateInverted)
   }, [isRateInverted])
 
   // On mount, apply smart quote selection
   useEffect(() => {
     const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
-    setIsinverted(getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency))
+    setIsInverted(getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency))
     // Intentionally empty, should run only once
     // eslint-disable-next-line
   }, [])
@@ -241,7 +147,8 @@ export function OrderRow({
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
 
-  const executionOrderStatus = useOrderExecutionStatus(rateInfoParams, prices, spotPrice)
+  const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
+  const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab}>
@@ -307,13 +214,15 @@ export function OrderRow({
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <styledEl.ExecuteCellWrapper>
-              <LowVolumeWarningToken
-                // TODO: Add condition to show the lowVolumeWarning.
-                executeIndicator={<styledEl.ExecuteIndicator status={executionOrderStatus} />}
-                lowVolumeWarning={true}
+              <EstimatedExecutionPrice
                 amount={executionPriceInverted}
                 tokenSymbol={executionPriceInverted?.quoteCurrency}
                 opacitySymbol
+                isInverted={isInverted}
+                percentageDifference={priceDiffs?.percentage}
+                amountDifference={priceDiffs?.amount}
+                percentageFee={feeDifference}
+                amountFee={feeAmount}
               />
             </styledEl.ExecuteCellWrapper>
           ) : prices === null ? (
@@ -384,15 +293,32 @@ export function OrderRow({
   )
 }
 
-function useOrderExecutionStatus(
-  rateInfo: OrderRowProps['orderParams']['rateInfoParams'],
+/**
+ * Helper hook to prepare the parameters to calculate price difference
+ */
+function usePricesDifference(
   prices: OrderRowProps['prices'],
-  spotPrice: OrderRowProps['spotPrice']
-): OrderExecutionStatus | undefined {
-  return useSafeMemo(() => {
-    const limitPrice = buildPriceFromCurrencyAmounts(rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount)
-    const { estimatedExecutionPrice } = prices || {}
+  spotPrice: OrderRowProps['spotPrice'],
+  isInverted: boolean
+): PriceDifference {
+  const { estimatedExecutionPrice } = prices || {}
 
-    return calculateOrderExecutionStatus({ limitPrice, spotPrice, estimatedExecutionPrice })
-  }, [rateInfo.inputCurrencyAmount, rateInfo.outputCurrencyAmount, prices?.estimatedExecutionPrice, spotPrice])
+  return useSafeMemo(() => {
+    return calculatePriceDifference({ referencePrice: spotPrice, targetPrice: estimatedExecutionPrice, isInverted })
+  }, [estimatedExecutionPrice, spotPrice, isInverted])
+}
+
+/**
+ * Helper hook to calculate fee amount percentage
+ */
+function useFeeAmountDifference(
+  { inputCurrencyAmount }: OrderRowProps['orderParams']['rateInfoParams'],
+  prices: OrderRowProps['prices']
+): Percent | undefined {
+  const { feeAmount } = prices || {}
+
+  return useSafeMemo(
+    () => calculateFractionLikePercentDifference({ reference: feeAmount, delta: inputCurrencyAmount }),
+    [feeAmount, inputCurrencyAmount]
+  )
 }

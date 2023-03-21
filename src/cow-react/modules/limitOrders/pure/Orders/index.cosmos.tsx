@@ -33,7 +33,7 @@ export default (
     isOpenOrdersTab={true}
     isWalletConnected={true}
     balancesAndAllowances={balancesAndAllowances}
-    spotPrices={{}}
+    getSpotPrice={() => null}
     getShowCancellationModal={(order) => {
       if (order.status === 'pending') {
         return () => alert('cancelling!')

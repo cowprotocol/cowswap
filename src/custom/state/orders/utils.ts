@@ -3,7 +3,7 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { PENDING_ORDERS_BUFFER, ZERO_BIG_NUMBER } from 'constants/index'
 import { OrderMetaData } from '@cow/api/gnosisProtocol'
-import { Order } from 'state/orders/actions'
+import { Order, OrderClass } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { calculatePrice, invertPrice } from './priceUtils'
 import { BigNumber } from 'bignumber.js'
@@ -266,7 +266,7 @@ export function getOrderMarketPrice(order: Order, price: string, feeAmount: stri
  * @param fee Estimated fee in inputToken atoms, as string
  */
 export function getEstimatedExecutionPrice(
-  order: Pick<Order, 'inputToken' | 'outputToken' | 'partiallyFillable' | 'sellAmount' | 'buyAmount'>,
+  order: Order,
   fillPrice: Price<Currency, Currency>,
   fee: string
 ): Price<Currency, Currency> {
@@ -280,6 +280,10 @@ export function getEstimatedExecutionPrice(
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const limitPrice = buildPriceFromCurrencyAmounts(inputAmount, outputAmount)
+
+  if (order.class === OrderClass.MARKET) {
+    return limitPrice
+  }
 
   const numerator = inputAmount
     .subtract(feeAmount)
@@ -302,8 +306,8 @@ export function getEstimatedExecutionPrice(
 
   // TODO: remove debug statement
   console.debug(`getEstimatedExecutionPrice`, {
-    A: inputAmount.toFixed(8) + ' ' + inputAmount.currency.symbol,
-    F: feeAmount.toFixed(8) + ' ' + feeAmount.currency.symbol,
+    A: inputAmount.toFixed(inputAmount.currency.decimals) + ' ' + inputAmount.currency.symbol,
+    F: feeAmount.toFixed(feeAmount.currency.decimals) + ' ' + feeAmount.currency.symbol,
     LP: `${limitPrice.toFixed(8)} ${limitPrice.quoteCurrency.symbol} per ${limitPrice.baseCurrency.symbol}`,
     FEP: `${feasibleExecutionPrice.toFixed(18)} ${feasibleExecutionPrice.quoteCurrency.symbol} per ${
       feasibleExecutionPrice.baseCurrency.symbol
@@ -312,6 +316,8 @@ export function getEstimatedExecutionPrice(
     EEP: `${estimatedExecutionPrice.toFixed(8)} ${estimatedExecutionPrice.quoteCurrency.symbol} per ${
       estimatedExecutionPrice.baseCurrency.symbol
     }`,
+    id: order.id.slice(0, 8),
+    class: order.class,
   })
 
   return estimatedExecutionPrice
