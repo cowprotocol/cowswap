@@ -13,7 +13,7 @@ import * as styledEl from './styled'
 import { ZERO_FRACTION } from '@src/custom/constants'
 
 const MINUS_ONE_FRACTION = new Fraction(-1)
-const TEN_PERCENT = new Percent(1, 10)
+export const HIGH_FEE_WARNING_PERCENTAGE = new Percent(1, 10)
 
 export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean }>`
   display: flex;
@@ -76,7 +76,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     ? amountDifference.multiply(MINUS_ONE_FRACTION)
     : amountDifference
   const orderExecutionStatus = calculateOrderExecutionStatus(percentageDifferenceInverted)
-  const feeWarning = canShowWarning && percentageFee?.greaterThan(TEN_PERCENT)
+  const feeWarning = canShowWarning && percentageFee?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
 
