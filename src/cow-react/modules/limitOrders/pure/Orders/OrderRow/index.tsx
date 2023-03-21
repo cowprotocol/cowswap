@@ -86,7 +86,8 @@ export const LowVolumeWarningTokenWrapper = styled.span<{ lowVolumeWarning: bool
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  color: ${({ lowVolumeWarning, theme }) => lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
+  color: ${({ lowVolumeWarning, theme }) =>
+    lowVolumeWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit'};
 
   ${SymbolElement} {
     color: inherit;
