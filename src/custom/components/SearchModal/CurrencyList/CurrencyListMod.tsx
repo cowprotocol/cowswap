@@ -190,13 +190,22 @@ function CurrencyRow({
   )
 }
 
-const BREAK_LINE = 'BREAK'
-type BreakLine = typeof BREAK_LINE
+const BREAK_LINE_INACTIVE_LISTS = 'BREAK_INACTIVE_LISTS'
+const BREAK_LINE_ADDITIONAL_RESULTS = 'BREAK_ADDITIONAL_RESULTS'
+type BreakLine = typeof BREAK_LINE_INACTIVE_LISTS | typeof BREAK_LINE_ADDITIONAL_RESULTS
 function isBreakLine(x: unknown): x is BreakLine {
-  return x === BREAK_LINE
+  return x === BREAK_LINE_INACTIVE_LISTS || x === BREAK_LINE_ADDITIONAL_RESULTS
 }
 
-function BreakLineComponent({ style }: { style: CSSProperties }) {
+function BreakLineBaseComponent({
+  style,
+  title,
+  description,
+}: {
+  style: CSSProperties
+  title: string
+  description: string
+}) {
   const theme = useTheme()
   return (
     <FixedContentRow style={style}>
@@ -205,21 +214,25 @@ function BreakLineComponent({ style }: { style: CSSProperties }) {
           <RowFixed>
             <TokenListLogoWrapper src={TokenListLogo} />
             <ThemedText.Main ml="6px" fontSize="12px" color={theme.text1}>
-              <Trans>Expanded results from inactive Token Lists</Trans>
+              <Trans>{title}</Trans>
             </ThemedText.Main>
           </RowFixed>
-          <QuestionHelper
-            text={
-              <Trans>
-                Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.
-              </Trans>
-            }
-          />
+          <QuestionHelper text={<Trans>{description}</Trans>} />
         </RowBetween>
       </LightGreyCard>
     </FixedContentRow>
   )
 }
+
+const InactiveListsBreakLineComponent = styled(BreakLineBaseComponent).attrs({
+  title: 'Expanded results from inactive Token Lists',
+  description: 'Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.',
+})``
+
+const AdditionalResultsBreakLineComponent = styled(BreakLineBaseComponent).attrs({
+  title: 'Additional Results from External Sources',
+  description: 'Tokens from external sources.',
+})``
 
 interface TokenRowProps {
   data: Array<Currency | BreakLine>
@@ -261,6 +274,7 @@ export default function CurrencyList({
   isLoading,
   searchQuery,
   isAddressSearch,
+  additionalTokens,
   BalanceComponent = Balance, // gp-swap added
   TokenTagsComponent = TokenTags, // gp-swap added
 }: {
@@ -277,6 +291,7 @@ export default function CurrencyList({
   isLoading: boolean
   searchQuery: string
   isAddressSearch: string | false
+  additionalTokens?: Currency[]
   BalanceComponent?: (params: { balance: CurrencyAmount<Currency> }) => JSX.Element // gp-swap added
   TokenTagsComponent?: (params: { currency: Currency; isUnsupported: boolean }) => JSX.Element // gp-swap added
 }) {
@@ -285,6 +300,8 @@ export default function CurrencyList({
   const isUnsupportedToken = useIsUnsupportedTokenGp()
 
   const itemData: (Currency | BreakLine)[] = useMemo(() => {
+    const result: (Currency | BreakLine)[] = [...currencies]
+
     if (otherListTokens && otherListTokens?.length > 0) {
       // otherListTokens - it's a list of tokens from inactive lists
       // here we remove tokens that already exist in the active lists
@@ -292,17 +309,30 @@ export default function CurrencyList({
         token.isToken ? !allTokens[token.address.toLowerCase()] : true
       )
 
-      return [...currencies, BREAK_LINE, ...filteredOtherListTokens]
+      result.push(BREAK_LINE_INACTIVE_LISTS)
+      result.push(...filteredOtherListTokens)
     }
-    return currencies
-  }, [currencies, otherListTokens, allTokens])
+
+    if (additionalTokens && additionalTokens.length > 0) {
+      result.push(BREAK_LINE_ADDITIONAL_RESULTS)
+      result.push(...additionalTokens)
+    }
+
+    return result
+  }, [currencies, otherListTokens, allTokens, additionalTokens])
 
   const Row = useCallback(
     function TokenRow({ data, index, style }: TokenRowProps) {
       const row: Currency | BreakLine = data[index]
 
       if (isBreakLine(row)) {
-        return <BreakLineComponent style={style} />
+        if (row === BREAK_LINE_ADDITIONAL_RESULTS) {
+          return <AdditionalResultsBreakLineComponent style={style} />
+        }
+
+        if (row === BREAK_LINE_INACTIVE_LISTS) {
+          return <InactiveListsBreakLineComponent style={style} />
+        }
       }
 
       const currency = row
@@ -370,7 +400,7 @@ export default function CurrencyList({
 
   const itemKey = useCallback((index: number, data: typeof itemData) => {
     const currency = data[index]
-    if (isBreakLine(currency)) return BREAK_LINE
+    if (isBreakLine(currency)) return currency
     return currencyKey(currency)
   }, [])
 
