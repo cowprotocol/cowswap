@@ -204,9 +204,9 @@ export function UnfillableOrdersUpdater(): null {
             })
 
             console.debug(
-              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`
+              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`,
+              e
             )
-            console.debug(e)
           })
       })
     } finally {
