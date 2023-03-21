@@ -5,7 +5,6 @@ import { Token } from '@uniswap/sdk-core'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { supportedChainId } from 'utils/supportedChainId'
 import { usePendingOrders } from 'state/orders/hooks'
-import { OrderClass } from 'state/orders/actions'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from '@cow/modules/orders/state/spotPricesAtom'
 import { useUpdateAtom } from 'state/application/atoms'
 import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
@@ -30,7 +29,7 @@ function useMarkets(chainId?: SupportedChainId): MarketRecord {
   return useSafeMemo(() => {
     return pending.reduce<Record<string, { chainId: number; inputCurrency: Token; outputCurrency: Token }>>(
       (acc, order) => {
-        if (chainId && order.class === OrderClass.LIMIT) {
+        if (chainId) {
           // Aggregating pending orders per market. No need to query multiple times same market
           const { marketInverted, marketKey } = getCanonicalMarketChainKey(chainId, order.sellToken, order.buyToken)
 
