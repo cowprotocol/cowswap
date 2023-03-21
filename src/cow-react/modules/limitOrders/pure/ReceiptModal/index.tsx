@@ -25,6 +25,7 @@ interface ReceiptProps {
   buyAmount: CurrencyAmount<Token>
   limitPrice: Fraction | null
   executionPrice: Fraction | null
+  estimatedExecutionPrice: Fraction | null
 }
 
 const tooltips: { [key: string]: string | JSX.Element } = {
@@ -60,6 +61,7 @@ export function ReceiptModal({
   buyAmount,
   limitPrice,
   executionPrice,
+  estimatedExecutionPrice,
 }: ReceiptProps) {
   if (!order || !chainId) {
     return null
@@ -100,8 +102,7 @@ export function ReceiptModal({
               ) : (
                 <>
                   <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
-                  {/* TODO: Replace below to add 'Executes at' price field */}
-                  <p>-</p>
+                  <PriceField order={order} price={estimatedExecutionPrice} />
                 </>
               )}
             </styledEl.Field>
