@@ -176,6 +176,8 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
   --size: 6px;
   width: var(--size);
   height: var(--size);
+  min-width: var(--size);
+  min-height: var(--size);
   border-radius: var(--size);
   display: block;
   margin: 0 3px 0 0;
@@ -193,6 +195,7 @@ export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
 `
 
 export const ExecuteCellWrapper = styled.div`
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 4px;

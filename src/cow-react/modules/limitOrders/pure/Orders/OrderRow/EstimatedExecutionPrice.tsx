@@ -6,6 +6,7 @@ import SVG from 'react-inlinesvg'
 
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { TokenAmount, TokenAmountProps } from '@cow/common/pure/TokenAmount'
+import { SymbolElement } from '@cow/common/pure/TokenAmount'
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import { calculateOrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 import * as styledEl from './styled'
@@ -16,8 +17,27 @@ const TEN_PERCENT = new Percent(1, 10)
 
 export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean }>`
   display: flex;
+  width: 100%;
   align-items: center;
+  justify-content: space-between;
   color: ${({ hasWarning, theme }) => (hasWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit')};
+
+  ${SymbolElement} {
+    color: inherit;
+  }
+
+  // Triangle warning icon override
+  ${styledEl.WarningIndicator} {
+    padding: 0 0 0 3px;
+
+    svg {
+      --size: 18px;
+      width: var(--size);
+      height: var(--size);
+      min-width: var(--size);
+      min-height: var(--size);
+    }
+  }
 
   // Popover container override
   > div > div {
