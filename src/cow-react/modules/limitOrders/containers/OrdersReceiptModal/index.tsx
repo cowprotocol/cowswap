@@ -7,8 +7,13 @@ import { calculatePrice } from '@cow/modules/limitOrders/utils/calculatePrice'
 import { supportedChainId } from 'utils/supportedChainId'
 import { useCloseReceiptModal, useSelectedOrder } from './hooks'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { PendingOrdersPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 
-export function OrdersReceiptModal() {
+export type OrdersReceiptModalProps = {
+  pendingOrdersPrices: PendingOrdersPrices
+}
+
+export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   // TODO: can we get selected order from URL by id?
   const order = useSelectedOrder()
   const { chainId: _chainId } = useWalletInfo()
@@ -41,12 +46,18 @@ export function OrdersReceiptModal() {
     outputToken,
   })
 
+  // Executes at price
+  const { pendingOrdersPrices } = props
+
+  const { estimatedExecutionPrice = null } = pendingOrdersPrices[order.id] || {}
+
   return (
     <ReceiptModal
       sellAmount={sellAmountCurrency}
       buyAmount={buyAmountCurrency}
       limitPrice={limitPrice}
       executionPrice={executionPrice}
+      estimatedExecutionPrice={estimatedExecutionPrice}
       chainId={chainId}
       order={order}
       isOpen={!!order}

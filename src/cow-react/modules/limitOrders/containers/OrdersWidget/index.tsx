@@ -77,7 +77,7 @@ export function OrdersWidget() {
         getShowCancellationModal={getShowCancellationModal}
         getSpotPrice={getSpotPrice}
       ></Orders>
-      <OrdersReceiptModal />
+      <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
     </>
   )
 }
