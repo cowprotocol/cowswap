@@ -58,7 +58,7 @@ export function WalletModal(props: WalletModalProps) {
               )}
               {!isPending && (
                 <OptionGrid data-testid="option-grid">
-                  <ConnectWalletOptions isOpen={isOpen} tryActivation={tryActivation} />
+                  <ConnectWalletOptions tryActivation={tryActivation} />
                 </OptionGrid>
               )}
               {!pendingError && (

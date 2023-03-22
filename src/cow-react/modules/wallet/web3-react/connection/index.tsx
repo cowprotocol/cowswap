@@ -77,7 +77,7 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
 
 export type TryActivation = (connector: Connector) => void
 
-export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation: TryActivation; isOpen: boolean }) {
+export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
   const isInjected = getIsInjected()
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
