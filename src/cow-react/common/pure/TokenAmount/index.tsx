@@ -16,7 +16,7 @@ export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: bool
 `
 
 export const SymbolElement = styled.span<{ opacitySymbol?: boolean }>`
-  color: ${({ opacitySymbol, theme }) => transparentize(opacitySymbol ? 0.3 : 0, theme.text1)};
+  ${({ opacitySymbol, theme }) => (opacitySymbol ? `color: ${transparentize(0.3, theme.text1)}` : '')};
 `
 
 export interface TokenAmountProps {
