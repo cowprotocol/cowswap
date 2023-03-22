@@ -19,9 +19,6 @@ import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
-import { ButtonPrimary } from 'components/Button'
-import { useEffect, useState } from 'react'
-import { Trans } from '@lingui/macro'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -80,22 +77,14 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
 
 export type TryActivation = (connector: Connector) => void
 
-export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation: TryActivation; isOpen: boolean }) {
+export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
   const isInjected = getIsInjected()
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
 
-  const [viewAll, setViewAll] = useState(false)
-
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
-
-  useEffect(() => {
-    if (!isOpen) {
-      setViewAll(false)
-    }
-  }, [isOpen])
 
   let injectedOption
   if (!isInjected) {
@@ -126,17 +115,9 @@ export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation:
       {injectedOption}
       {walletConnectionOption}
       {coinbaseWalletOption}
-      {viewAll && (
-        <>
-          {zengoOption}
-          {ambireOption}
-          {alphaOption}
-        </>
-      )}
-
-      <ButtonPrimary $borderRadius="12px" padding="12px" onClick={() => setViewAll(!viewAll)}>
-        <Trans>{viewAll ? 'Show less' : 'Show more'}</Trans>
-      </ButtonPrimary>
+      {zengoOption}
+      {ambireOption}
+      {alphaOption}
     </>
   )
 }
