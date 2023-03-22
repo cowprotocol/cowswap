@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
-import { OrderStatus } from 'state/orders/actions'
+import { OrderClass, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -223,6 +223,7 @@ export function OrderRow({
                 amountDifference={priceDiffs?.amount}
                 percentageFee={feeDifference}
                 amountFee={feeAmount}
+                canShowWarning={order.class !== OrderClass.MARKET}
               />
             </styledEl.ExecuteCellWrapper>
           ) : prices === null ? (
@@ -281,7 +282,7 @@ export function OrderRow({
         </styledEl.StatusBox>
       </styledEl.CellElement>
 
-      {/* Action contet menu */}
+      {/* Action content menu */}
       <styledEl.CellElement>
         <OrderContextMenu
           activityUrl={activityUrl}
