@@ -18,7 +18,7 @@ import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
-// import { AlphaOption } from './alpha'
+import { AlphaOption } from './alpha'
 import { ButtonPrimary } from 'components/Button'
 import { useEffect, useState } from 'react'
 import { Trans } from '@lingui/macro'
@@ -119,8 +119,7 @@ export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation:
 
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
-  // TODO: should be enabled once the Android issue is fixed https://github.com/AlphaWallet/alpha-wallet-android/issues/3139
-  // const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
+  const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
@@ -131,7 +130,7 @@ export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation:
         <>
           {zengoOption}
           {ambireOption}
-          {/* {alphaOption} */}
+          {alphaOption}
         </>
       )}
 
