@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { OrderClass, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
@@ -129,6 +129,7 @@ export function OrderRow({
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
   const [isInverted, setIsInverted] = useState(isRateInverted)
+  const onPriceClick = useCallback(() => setIsInverted((curr) => !curr), [])
 
   // Update internal isInverted flag whenever prop change
   useEffect(() => {
@@ -169,6 +170,7 @@ export function OrderRow({
         <styledEl.RateValue>
           <RateInfo
             prependSymbol={false}
+            isInvertedState={[isInverted, setIsInverted]}
             noLabel={true}
             doNotUseSmartQuote
             isInverted={isInverted}
@@ -181,7 +183,7 @@ export function OrderRow({
       {/* Market price */}
       {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement>
+        <styledEl.CellElement onClick={onPriceClick}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {spotPrice ? (
             <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
@@ -195,7 +197,7 @@ export function OrderRow({
 
       {/* Execution price */}
       {!isOpenOrdersTab && (
-        <styledEl.CellElement>
+        <styledEl.CellElement onClick={onPriceClick}>
           {executedPriceInverted ? (
             <TokenAmount
               amount={executedPriceInverted}
@@ -210,7 +212,7 @@ export function OrderRow({
 
       {/* Executes at */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement hasBackground>
+        <styledEl.CellElement hasBackground onClick={onPriceClick}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <styledEl.ExecuteCellWrapper>
