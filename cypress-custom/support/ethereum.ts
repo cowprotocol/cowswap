@@ -6,7 +6,8 @@ import { Eip1193Bridge } from '@ethersproject/experimental/lib/eip1193-bridge'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
-const TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
+const TEST_PRIVATE_KEY =
+  Cypress.env('INTEGRATION_TEST_PRIVATE_KEY') || '0x34cf49001445bf8faa64a0ff3780709c2af8378e75e29c077643a387be79f089'
 const INTEG_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY') || '1221fd11e90849509afafd330ec7acc6'
 // address of the above key
 export const TEST_ADDRESS_NEVER_USE = new Wallet(TEST_PRIVATE_KEY).address
