@@ -302,15 +302,7 @@ export function getEstimatedExecutionPrice(
   )
 
   // Picking the MAX between FEP and FP
-  // NOTE: For some obscure reason, the sign is not considered in the comparison
-  // For example when feasibleExecutionPrice is negative but the absolute value is greater than fillPrice,
-  // it will be picked...🤦
-  // To circumvent that issue, the additional conditional is added, which is the root cause of negative
-  // feasibleExecutionPrice: feeAmount being greater than inputAmount
-  const estimatedExecutionPrice =
-    fillPrice.greaterThan(feasibleExecutionPrice) || feeAmount.greaterThan(inputAmount)
-      ? fillPrice
-      : feasibleExecutionPrice
+  const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
 
   // TODO: remove debug statement
   console.debug(`getEstimatedExecutionPrice`, {
