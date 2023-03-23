@@ -119,6 +119,10 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     disabled: true,
     text: 'Invalid price. Try increasing input/output amount.',
   },
+  [LimitOrdersFormState.FeeExceedsFrom]: {
+    disabled: true,
+    text: 'Sell amount is too small',
+  },
   [LimitOrdersFormState.QuoteError]: ({ quote }: TradeButtonsParams) => {
     return (
       <SwapButton disabled={true}>
