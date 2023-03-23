@@ -120,6 +120,10 @@ export const CellElement = styled.div<{ doubleRow?: boolean; hasBackground?: boo
   }
 `
 
+export const PriceElement = styled(CellElement)`
+  cursor: pointer;
+`
+
 export const CurrencyLogoPair = styled.div`
   display: flex;
 
@@ -199,6 +203,7 @@ export const ExecuteCellWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+  cursor: pointer;
 `
 
 export const ExecuteInformationTooltip = styled.div`

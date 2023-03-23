@@ -179,7 +179,7 @@ export function OrderRow({
       {/* Market price */}
       {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement onClick={toggleIsInverted}>
+        <styledEl.PriceElement onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {spotPrice ? (
             <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
@@ -188,12 +188,12 @@ export function OrderRow({
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
-        </styledEl.CellElement>
+        </styledEl.PriceElement>
       )}
 
       {/* Execution price */}
       {!isOpenOrdersTab && (
-        <styledEl.CellElement onClick={toggleIsInverted}>
+        <styledEl.PriceElement onClick={toggleIsInverted}>
           {executedPriceInverted ? (
             <TokenAmount
               amount={executedPriceInverted}
@@ -203,12 +203,12 @@ export function OrderRow({
           ) : (
             '-'
           )}
-        </styledEl.CellElement>
+        </styledEl.PriceElement>
       )}
 
       {/* Executes at */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement hasBackground onClick={toggleIsInverted}>
+        <styledEl.PriceElement hasBackground onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <styledEl.ExecuteCellWrapper>
@@ -229,7 +229,7 @@ export function OrderRow({
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
-        </styledEl.CellElement>
+        </styledEl.PriceElement>
       )}
 
       {/* Expires */}
