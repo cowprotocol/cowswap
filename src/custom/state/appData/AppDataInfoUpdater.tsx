@@ -1,14 +1,14 @@
 import React from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useAppData, UseAppDataParams } from 'hooks/useAppData'
 import { OrderClass } from 'state/orders/actions'
 import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import { TradeType, useTradeTypeInfo } from '@cow/modules/trade'
 import { percentToBips } from 'utils/misc'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function AppDataUpdater() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { allowedSlippage: allowedSlippageSwap } = useDerivedSwapInfo()
   const tradeTypeInfo = useTradeTypeInfo()
 

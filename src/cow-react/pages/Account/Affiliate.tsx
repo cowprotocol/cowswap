@@ -1,7 +1,7 @@
 import { SectionTitle } from '@cow/modules/application/pure/Page'
 import { Txt } from 'assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import Web3Status from 'components/Web3Status'
+import { useWalletInfo, Web3Status } from '@cow/modules/wallet'
 import { getExplorerAddressLink } from 'utils/explorer'
 import { shortenAddress } from 'utils'
 import Copy from 'components/Copy/CopyMod'
@@ -23,7 +23,6 @@ import {
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatInt, formatDecimal } from './utils'
 import useReferralLink from 'hooks/useReferralLink'
-import { useWeb3React } from '@web3-react/core'
 import useFetchProfile from 'hooks/useFetchProfile'
 import useTimeAgo from 'hooks/useTimeAgo'
 import NotificationBanner from 'components/NotificationBanner'
@@ -48,7 +47,7 @@ const NotificationMessages = ({ error, chainId }: { error?: unknown; chainId: Ch
 
 export default function Affiliate() {
   const referralLink = useReferralLink()
-  const { account, chainId = ChainId.MAINNET /* , error */ } = useWeb3React()
+  const { account, chainId = ChainId.MAINNET /* , error */ } = useWalletInfo()
   const { profileData, isLoading } = useFetchProfile()
   const lastUpdated = useTimeAgo(profileData?.lastUpdated)
   const hasOrders = useHasOrders(account)

@@ -15,11 +15,11 @@ import { isRejectRequestProviderError } from '../utils/misc'
 import { wrapAnalytics } from 'components/analytics'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useCloseModals } from 'state/application/hooks'
-import { useWeb3React } from '@web3-react/core'
 import { useCurrencyBalance } from 'state/connection/hooks'
 import { useTransactionConfirmModal } from '@cow/modules/swap/hooks/useTransactionConfirmModal'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
@@ -54,7 +54,7 @@ export interface WrapUnwrapContext {
 
 export function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency>): boolean {
   const { currencies } = useDerivedSwapInfo()
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT?.wrapped)
 
   // is an native currency trade but wrapped token has enough balance
@@ -76,7 +76,7 @@ export function useWrapType(): WrapType {
 }
 
 export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmount<Currency>): string | undefined {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const { currencies } = useDerivedSwapInfo()
   const { native, wrapped } = getChainCurrencySymbols(chainId)
   const balance = useCurrencyBalance(account ?? undefined, currencies.INPUT)
@@ -96,7 +96,7 @@ export function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmo
 export function useWrapUnwrapContext(
   inputAmount: CurrencyAmount<Currency> | null | undefined
 ): WrapUnwrapContext | null {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const closeModals = useCloseModals()
   const wethContract = useWETHContract()
   const { native, wrapped } = getChainCurrencySymbols(chainId)

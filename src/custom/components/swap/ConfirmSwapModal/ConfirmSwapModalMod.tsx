@@ -15,7 +15,7 @@ import SwapModalHeader from 'components/swap/SwapModalHeader'
 
 // MOD imports
 import TradeGp from 'state/swap/TradeGp'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletDetails } from '@cow/modules/wallet'
 import { SwapConfirmState } from '@cow/modules/swap/state/swapConfirmAtom'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
@@ -66,7 +66,7 @@ export default function ConfirmSwapModal({
   rateInfoParams: RateInfoParams // mod
 }) {
   const { swapErrorMessage, showConfirm, attemptingTxn, txHash, tradeToConfirm: originalTrade } = swapConfirmState
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]

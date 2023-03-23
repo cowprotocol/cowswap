@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from 'constants/misc'
 import LibUpdater from 'lib/hooks/transactions/updater'
 import { useCallback, useMemo } from 'react'
@@ -10,7 +10,7 @@ import { checkedTransaction, finalizeTransaction } from './reducer'
 import { SerializableTransactionReceipt } from './types'
 
 export default function Updater() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const addPopup = useAddPopup()
   // speed up popup dismisall time if on L2
   const isL2 = Boolean(chainId && L2_CHAIN_IDS.includes(chainId))

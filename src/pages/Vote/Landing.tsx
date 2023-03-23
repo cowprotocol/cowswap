@@ -1,6 +1,6 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { ButtonPrimary } from 'components/Button'
@@ -109,7 +109,7 @@ const StyledExternalLink = styled(ExternalLink)`
 `
 
 export default function Landing() {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   const [hideCancelled, setHideCancelled] = useState(true)
 

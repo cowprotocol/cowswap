@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { PrivacyPolicyModal } from 'components/PrivacyPolicy'
 import { L2_CHAIN_IDS } from '@src/constants/chains'
 import { LOCALE_LABEL, SUPPORTED_LOCALES, SupportedLocale } from 'constants/locales'
@@ -30,6 +29,7 @@ import { useModalIsOpen, useToggleModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
 import { ExternalLink } from '../../theme'
 import { ButtonPrimary } from '../Button'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export enum FlyoutAlignment {
   LEFT = 'LEFT',
@@ -207,7 +207,7 @@ function LanguageMenu({ close }: { close: () => void }) {
 }
 
 export default function Menu() {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   const node = useRef<HTMLDivElement>()
   const open = useModalIsOpen(ApplicationModal.MENU)

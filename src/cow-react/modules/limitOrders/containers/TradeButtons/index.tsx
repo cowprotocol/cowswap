@@ -15,11 +15,11 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { useWrapCallback } from 'hooks/useWrapCallback'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { transactionConfirmAtom } from '@cow/modules/swap/state/transactionConfirmAtom'
-import { ApplicationModal } from '@src/state/application/reducer'
+import { ApplicationModal } from 'state/application/reducer'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { CompatibilityIssuesWarning } from '@cow/modules/trade/pure/CompatibilityIssuesWarning'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletDetails } from '@cow/modules/wallet'
 import styled from 'styled-components/macro'
 import { isUnsupportedTokenInQuote } from '@cow/modules/limitOrders/utils/isUnsupportedTokenInQuote'
 
@@ -48,7 +48,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const closeModals = useCloseModals()
   const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
   const { handleSetError, ErrorModal } = useErrorModal()
-  const { isSupportedWallet } = useWalletInfo()
+  const { isSupportedWallet } = useWalletDetails()
   const { inputCurrency, outputCurrency } = tradeState
   const isSwapUnsupported = isUnsupportedTokenInQuote(quote)
 

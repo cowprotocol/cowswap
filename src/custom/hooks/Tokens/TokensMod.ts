@@ -15,11 +15,11 @@ import { useAtomValue } from 'jotai/utils'
 import { tokensByAddressAtom } from '@cow/modules/tokensList/state/tokensListAtom'
 import { Token } from '@uniswap/sdk-core'
 import { useAllLists, useInactiveListUrls } from 'state/lists/hooks'
-import { useWeb3React } from '@web3-react/core'
 import { useMemo } from 'react'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { deserializeToken } from 'state/user/hooks'
 import { checkBySymbolAndAddress } from '@cow/utils/checkBySymbolAndAddress'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from '@src/hooks/Tokens'
 
@@ -34,7 +34,7 @@ export function useSearchInactiveTokenLists(
 ): Token[] {
   const lists = useAllLists()
   const inactiveUrls = useInactiveListUrls()
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const activeTokens = useAllTokens()
 
   return useMemo(() => {

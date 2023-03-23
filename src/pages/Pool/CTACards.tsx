@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { AutoColumn } from 'components/Column'
 import { getChainInfoOrDefault } from '@src/constants/chainInfo'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
 import { ExternalLink } from '../../theme'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const CTASection = styled.section`
   display: grid;
@@ -92,7 +92,7 @@ const ResponsiveColumn = styled(AutoColumn)`
 `
 
 export default function CTACards() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { infoLink } = getChainInfoOrDefault(chainId)
 
   return (

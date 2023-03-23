@@ -124,7 +124,7 @@ export const MenuFlyout = styled.span`
 // `
 
 export default function SettingsTab({ className, placeholderSlippage, SettingsButton }: SettingsTabProp) {
-  // const { chainId } = useWeb3React()
+  // const { chainId } = useWalletInfo()
 
   const node = useRef<HTMLDivElement>()
   const open = useModalIsOpen(ApplicationModal.SETTINGS)

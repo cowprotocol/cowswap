@@ -1,6 +1,6 @@
 import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
-import SimpleAccountDetails from 'components/AccountDetails/SimpleAccountDetails'
+import SimpleAccountDetails from '@cow/modules/account/containers/SimpleAccountDetails'
 
 import { ActionButton } from './ActionButton'
 import { EthFlowState } from '../../../services/ethFlow/types'

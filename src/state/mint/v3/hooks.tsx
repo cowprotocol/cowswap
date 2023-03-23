@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Price, Rounding, Token } from '@uniswap/sdk-core'
 import {
@@ -11,7 +12,6 @@ import {
   TickMath,
   tickToPrice,
 } from '@uniswap/v3-sdk'
-import { useWeb3React } from '@web3-react/core'
 import { usePool } from 'hooks/usePools'
 import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -127,7 +127,7 @@ export function useV3DerivedMintInfo(
   invertPrice: boolean
   ticksAtLimit: { [bound in Bound]?: boolean | undefined }
 } {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
 
   const { independentField, typedValue, leftRangeTypedValue, rightRangeTypedValue, startPriceTypedValue } =
     useV3MintState()

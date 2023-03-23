@@ -16,11 +16,11 @@ import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
 import { CoWSwapEthFlow, GPv2Settlement, VCow, Erc20 } from '@cow/abis/types'
 
-import { useWeb3React } from '@web3-react/core'
 import { getContract } from 'utils'
 
 import { useContract } from '@src/hooks/useContract'
 import { isEns, isProd, isStaging } from 'utils/environments'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from '@src/hooks/useContract'
 export * from './useContractMod'
@@ -30,7 +30,7 @@ export * from './useContractMod'
 const COWSWAP_ETHFLOW_ABI = CoWSwapEthFlowJson.abi
 
 export function useEthFlowContract(): CoWSwapEthFlow | null {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
 
@@ -40,7 +40,7 @@ export function useEthFlowContract(): CoWSwapEthFlow | null {
 }
 
 export function useGP2SettlementContract(): GPv2Settlement | null {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   return useContract<GPv2Settlement>(
     chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
     GPv2_SETTLEMENT_ABI,
@@ -49,12 +49,12 @@ export function useGP2SettlementContract(): GPv2Settlement | null {
 }
 
 export function useVCowContract() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   return useContract<VCow>(chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined, V_COW_ABI, true)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   let address: string | undefined
   if (chainId) {
     switch (chainId) {

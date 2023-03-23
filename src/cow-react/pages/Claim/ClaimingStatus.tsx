@@ -10,7 +10,6 @@ import {
 } from '@cow/pages/Claim/styled'
 import { ClaimStatus } from 'state/claim/actions'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
-import { useWeb3React } from '@web3-react/core'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useAllClaimingTransactions } from 'state/enhancedTransactions/hooks'
 import { useMemo } from 'react'
@@ -18,7 +17,7 @@ import { Link } from 'react-router-dom'
 import { ExplorerLink } from 'components/ExplorerLink'
 import { EnhancedTransactionLink } from 'components/EnhancedTransactionLink'
 import { V_COW } from 'constants/tokens'
-import AddToMetamask from 'components/AddToMetamask'
+import AddToMetamask from '@cow/modules/wallet/web3-react/containers/AddToMetamask'
 import SVG from 'react-inlinesvg'
 import twitterImage from 'assets/cow-swap/twitter.svg'
 import discordImage from 'assets/cow-swap/discord.svg'
@@ -30,6 +29,7 @@ import { ButtonSecondary } from 'components/Button'
 import { ClaimCommonTypes } from './types'
 import { Routes } from '@cow/constants/routes'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://swap.cow.fi/'
@@ -37,7 +37,7 @@ const COW_TWEET_TEMPLATE =
 type ClaimNavProps = Pick<ClaimCommonTypes, 'handleChangeAccount'>
 
 export default function ClaimingStatus({ handleChangeAccount }: ClaimNavProps) {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const { activeClaimAccount, claimStatus, claimedAmount } = useClaimState()
 
   const { setClaimStatus } = useClaimDispatchers()

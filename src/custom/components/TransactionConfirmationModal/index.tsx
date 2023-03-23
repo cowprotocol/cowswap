@@ -1,6 +1,6 @@
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import React, { ReactNode, useContext, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -15,15 +15,15 @@ import { CheckCircle, UserCheck } from 'react-feather'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { Link } from 'react-router-dom'
 import { ConfirmationModalContent as ConfirmationModalContentMod, Wrapper } from './TransactionConfirmationModalMod'
-import { getStatusIcon } from 'components/AccountDetails'
+import { getStatusIcon } from '@cow/modules/account/containers/AccountDetails'
 import { OrderProgressBar } from 'components/OrderProgressBar'
 import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { Routes } from '@cow/constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
 import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
-import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
-import AddToMetamask from 'components/AddToMetamask' // mod
+import { ActivityDerivedState } from '@cow/modules/account/containers/Transaction'
+import AddToMetamask from '@cow/modules/wallet/web3-react/containers/AddToMetamask' // mod
 import { supportedChainId } from 'utils/supportedChainId'
 import { useOrder } from 'state/orders/hooks'
 import { OrderStatus } from 'state/orders/actions'
@@ -461,8 +461,10 @@ export function ConfirmationPendingContent({
   chainId: number
 }) {
   const { connector } = useWeb3React()
-  const walletInfo = useWalletInfo()
-  const { ensName, account, isSmartContractWallet, gnosisSafeInfo } = walletInfo
+  const { account } = useWalletInfo()
+  const walletDetails = useWalletDetails()
+  const { ensName, isSmartContractWallet } = walletDetails
+  const gnosisSafeInfo = useGnosisSafeInfo()
 
   const walletType = useMemo((): WalletType => {
     if (gnosisSafeInfo) {
@@ -484,7 +486,7 @@ export function ConfirmationPendingContent({
       <UpperSection>
         <CloseIconWrapper onClick={onDismiss} />
 
-        <WalletIcon>{getStatusIcon(connector, walletInfo, 46)}</WalletIcon>
+        <WalletIcon>{getStatusIcon(connector, walletDetails, 46)}</WalletIcon>
 
         <Text fontWeight={500} fontSize={16} textAlign="center">
           {pendingText}

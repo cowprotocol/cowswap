@@ -5,7 +5,6 @@ import Column from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Row, { RowBetween, RowFixed } from 'components/Row'
 import { useToken } from 'hooks/Tokens'
-import { useWeb3React } from '@web3-react/core'
 import { ChangeEventHandler, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { useRemoveUserAddedToken, useUserAddedTokens } from 'state/user/hooks'
 import styled from 'styled-components/macro'
@@ -23,6 +22,7 @@ import { ImportTokensRowProps } from '.' // mod
 import useNetworkName from 'hooks/useNetworkName'
 import { getEtherscanLink as getExplorerLink } from 'utils'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -50,7 +50,7 @@ export interface ManageTokensProps {
 }
 
 export default function ManageTokens({ setModalView, setImportToken, ImportTokensRow }: ManageTokensProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const theme = useTheme()

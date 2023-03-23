@@ -1,5 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
@@ -16,7 +15,6 @@ import {
 import { useCallback } from 'react'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
-import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { getSwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import { SwapButtonsContext } from '@cow/modules/swap/pure/SwapButtons'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
@@ -40,8 +38,8 @@ export interface SwapButtonInput {
 export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext {
   const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal, priceImpactParams } = input
 
-  const { account, chainId } = useWeb3React()
-  const { isSupportedWallet } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
+  const { isSupportedWallet } = useWalletDetails()
   const {
     v2Trade: trade,
     allowedSlippage,
@@ -96,7 +94,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const contextExists = ethFlowContext || swapFlowContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
-  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
+  const gnosisSafeInfo = useGnosisSafeInfo()
+  const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
 

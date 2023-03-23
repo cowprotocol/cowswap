@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { useWeb3React } from '@web3-react/core'
-
 import { useCancelledOrders, useFulfillOrdersBatch } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
 import { OrderFulfillmentData } from 'state/orders/actions'
@@ -12,6 +10,7 @@ import { CANCELLED_ORDERS_PENDING_TIME } from 'constants/index'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 /**
  * Updater for cancelled orders.
@@ -28,7 +27,7 @@ import { supportedChainId } from 'utils/supportedChainId'
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
 export function CancelledOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
 
   const cancelled = useCancelledOrders({ chainId })

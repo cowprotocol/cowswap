@@ -26,7 +26,7 @@ import { COW, V_COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import AddToMetamask from 'components/AddToMetamask'
+import AddToMetamask from '@cow/modules/wallet/web3-react/containers/AddToMetamask'
 import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
 import { SwapVCowStatus } from 'state/cowToken/actions'
@@ -38,12 +38,14 @@ import { getProviderErrorMessage } from 'utils/misc'
 import { MetaMask } from '@web3-react/metamask'
 import { HelpCircle } from '@cow/common/pure/HelpCircle'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
-  const { account, chainId = ChainId.MAINNET, provider, connector } = useWeb3React()
+  const { provider, connector } = useWeb3React()
+  const { account, chainId = ChainId.MAINNET } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
   const blockNumber = useBlockNumber()

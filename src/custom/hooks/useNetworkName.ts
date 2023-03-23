@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export default function useNetworkName(): string | undefined {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const network = useMemo(() => {
     const currentChainId = supportedChainId(chainId)

@@ -15,12 +15,13 @@ import { isL2ChainId } from 'utils/chains'
 import Circle from '../../assets/images/blue-loader.svg'
 import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { TransactionSummary } from '../AccountDetails/TransactionSummary'
+import { TransactionSummary } from '../../cow-react/modules/account/containers/TransactionSummary'
 import { ButtonLight, ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 import { RowBetween, RowFixed } from '../Row'
 import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -342,7 +343,7 @@ export default function TransactionConfirmationModal({
   content,
   currencyToAdd,
 }: ConfirmationModalProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   if (!chainId) return null
 

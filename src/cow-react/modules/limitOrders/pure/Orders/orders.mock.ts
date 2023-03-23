@@ -1,13 +1,14 @@
-import { Order, OrderStatus } from 'state/orders/actions'
+import { OrderStatus } from 'state/orders/actions'
 import { COW, DAI, GNO, USDC } from 'constants/tokens'
 import { OrderKind } from '@cowprotocol/contracts'
 import { WETH_GOERLI } from 'utils/goerli/constants'
 import { OrderClass } from 'state/orders/actions'
+import { ParsedOrder, parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 
 const chainId = 5
 const owner = '0x4cc6e4f6014cc998fc5ef14c3f5d1184f76ae25b'
 
-export const ordersMock: Order[] = [
+export const ordersMock: ParsedOrder[] = [
   {
     id: '1',
     owner,
@@ -118,4 +119,4 @@ export const ordersMock: Order[] = [
     class: OrderClass.MARKET,
     kind: OrderKind.SELL,
   },
-]
+].map(parseOrder)

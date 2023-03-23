@@ -1,3 +1,5 @@
+import { useWalletInfo } from '@cow/modules/wallet'
+import { isChainAllowed } from '@cow/modules/wallet/web3-react/connection'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
@@ -18,7 +20,6 @@ import { useUserHideClosedPositions } from 'state/user/hooks'
 import styled, { css, ThemeContext } from 'styled-components/macro'
 import { ExternalLink, HideSmall, ThemedText } from 'theme'
 import { PositionDetails } from 'types/position'
-import { isChainAllowed } from 'utils/switchChain'
 
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import CTACards from './CTACards'
@@ -186,7 +187,8 @@ function WrongNetworkCard() {
 }
 
 export default function Pool() {
-  const { account, chainId, connector } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
+  const { connector } = useWeb3React()
   const toggleWalletModal = useToggleWalletModal()
 
   const theme = useContext(ThemeContext)

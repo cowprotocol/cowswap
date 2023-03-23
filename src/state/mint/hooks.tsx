@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
-import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ReactNode, useCallback, useMemo } from 'react'
@@ -12,6 +11,7 @@ import { PairState, useV2Pair } from '../../hooks/useV2Pairs'
 import { useCurrencyBalances } from '../connection/hooks'
 import { AppState } from '../index'
 import { Field, typeInput } from './actions'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -61,7 +61,7 @@ export function useDerivedMintInfo(
   poolTokenPercentage?: Percent
   error?: ReactNode
 } {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 

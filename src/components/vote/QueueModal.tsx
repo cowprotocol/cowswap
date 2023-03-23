@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { useContext, useState } from 'react'
 import { ArrowUpCircle, X } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -11,8 +10,9 @@ import { ExternalLink } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 import { RowBetween } from '../Row'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -41,7 +41,7 @@ interface QueueModalProps {
 }
 
 export default function QueueModal({ isOpen, onDismiss, proposalId }: QueueModalProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const queueCallback = useQueueCallback()
 
   // monitor call to help UI loading state

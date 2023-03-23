@@ -3,10 +3,10 @@ import styled from 'styled-components/macro'
 import { SupportedChainId } from 'constants/chains'
 import { useClaimState } from 'state/claim/hooks'
 // import useChangeNetworks from 'hooks/useChangeNetworks'
-import { useWeb3React } from '@web3-react/core'
 import NotificationBanner from 'components/NotificationBanner'
 import { AlertTriangle } from 'react-feather'
 import { ClaimInfo } from 'state/claim/reducer'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // const ChainSpan = styled.span``
 const Wrapper = styled.div`
@@ -67,7 +67,7 @@ function _shouldNotDisplayBannerForChain(
 }
 
 function ClaimsOnOtherChainsBanner({ className }: { className?: string }) {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   const { claimInfoPerAccount, activeClaimAccount } = useClaimState()
 

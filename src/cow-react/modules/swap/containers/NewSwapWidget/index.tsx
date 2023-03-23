@@ -1,5 +1,4 @@
 import * as styledEl from './styled'
-import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import {
   useDerivedSwapInfo,
@@ -10,7 +9,7 @@ import {
 } from 'state/swap/hooks'
 import { useWrapType, WrapType } from 'hooks/useWrapCallback'
 import { useSwapCurrenciesAmounts } from '@cow/modules/swap/hooks/useSwapCurrenciesAmounts'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useExpertModeManager, useUserSlippageTolerance } from 'state/user/hooks'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useShowRecipientControls } from '@cow/modules/swap/hooks/useShowRecipientControls'
@@ -50,11 +49,11 @@ export function NewSwapWidget() {
   useSetupTradeState()
   useSetupSwapAmountsFromUrl()
 
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const { allowedSlippage, currencies, currenciesIds, v2Trade: trade } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
-  const { isSupportedWallet, allowsOffchainSigning } = useWalletInfo()
+  const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
   const isSwapUnsupported = useIsTradeUnsupported(currencies.INPUT, currencies.OUTPUT)
   const [isExpertMode] = useExpertModeManager()
   const swapActions = useSwapActionHandlers()

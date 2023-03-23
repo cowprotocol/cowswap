@@ -1,16 +1,16 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { useTokenBalancesWithLoadingIndicator } from 'lib/hooks/useCurrencyBalance'
 import { useMemo } from 'react'
 
 import { useAllTokens } from '../../hooks/Tokens'
 import { useFavouriteTokens } from 'state/user/hooks'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from '@src/state/connection/hooks'
 
 // mimics useAllBalances
 export function useAllTokenBalances(): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const allTokens = useAllTokens()
   // Mod, add favourite tokens to balances
   const favTokens = useFavouriteTokens()

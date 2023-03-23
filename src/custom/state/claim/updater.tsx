@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import { SupportedChainId } from 'constants/chains'
 import { ClassifiedUserClaims, useClaimDispatchers, useClaimState, useClassifiedUserClaims } from './hooks'
-import { useWeb3React } from '@web3-react/core'
 import { ClaimInfo } from 'state/claim/reducer'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export default function Updater() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { activeClaimAccount } = useClaimState()
   const { setClaimsCount } = useClaimDispatchers()
 

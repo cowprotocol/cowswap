@@ -3,9 +3,9 @@ import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useCombinedBalance } from 'state/cowToken/hooks'
 import { ChainId } from 'state/lists/actions/actionsMod'
 import { transparentize } from 'polished'
-import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;
@@ -79,7 +79,7 @@ interface CowBalanceButtonProps {
 }
 
 export default function CowBalanceButton({ onClick, isUpToSmall }: CowBalanceButtonProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { balance, isLoading } = useCombinedBalance()
 
   if (!supportedChainId(chainId)) {

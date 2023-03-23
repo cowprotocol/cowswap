@@ -1,7 +1,7 @@
-import { useWeb3React } from '@web3-react/core'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export default function useAutoRouterSupported(): boolean {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   return isSupportedChainId(chainId)
 }

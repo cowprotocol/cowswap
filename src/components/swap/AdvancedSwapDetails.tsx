@@ -1,6 +1,6 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import Card from 'components/Card'
 import { LoadingRows } from 'components/Loader/styled'
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from 'constants/chains'
@@ -52,7 +52,7 @@ export function AdvancedSwapDetails({
   hideInfoTooltips = false,
 }: AdvancedSwapDetailsProps) {
   const theme = useContext(ThemeContext)
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const nativeCurrency = useNativeCurrency()
 
   const { expectedOutputAmount, priceImpact } = useMemo(() => {

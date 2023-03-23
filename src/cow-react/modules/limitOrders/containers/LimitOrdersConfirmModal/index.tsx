@@ -8,8 +8,8 @@ import { PriceImpactDeclineError, tradeFlow, TradeFlowContext } from '../../serv
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
 import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
-import { useWalletInfo } from 'hooks/useWalletInfo'
-import { GpModal } from 'components/Modal'
+import { useWalletInfo } from '@cow/modules/wallet'
+import { GpModal } from '@cow/common/pure/Modal'
 import * as styledEl from './styled'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
@@ -21,6 +21,8 @@ import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPriceAtom'
+import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -53,6 +55,8 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const executionPrice = useAtomValue(executionPriceAtom)
+  const limitRateState = useAtomValue(limitRateAtom)
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
@@ -102,6 +106,8 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               <CloseIcon onClick={() => onDismiss()} />
             </styledEl.ConfirmHeader>
             <LimitOrdersConfirm
+              executionPrice={executionPrice}
+              limitRateState={limitRateState}
               settingsState={settingsState}
               tradeContext={tradeContext}
               rateInfoParams={rateInfoParams}

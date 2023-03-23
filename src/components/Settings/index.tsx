@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useContext, useRef, useState } from 'react'
@@ -15,11 +14,12 @@ import { useClientSideRouter, useExpertModeManager } from '../../state/user/hook
 import { ThemedText } from '../../theme'
 import { ButtonError } from '../Button'
 import { AutoColumn } from '../Column'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
 import Toggle from '../Toggle'
 import TransactionSettings from '../TransactionSettings'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const StyledMenuIcon = styled(Settings)`
   height: 20px;
@@ -118,7 +118,7 @@ const ModalContentWrapper = styled.div`
 `
 
 export default function SettingsTab({ placeholderSlippage }: { placeholderSlippage: Percent }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const node = useRef<HTMLDivElement>()
   const open = useModalIsOpen(ApplicationModal.SETTINGS)

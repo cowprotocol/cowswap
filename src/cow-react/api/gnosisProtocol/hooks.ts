@@ -1,12 +1,12 @@
 import useSWR from 'swr'
 
-import { useWeb3React } from '@web3-react/core'
 import { getOrders, OrderMetaData } from '@cow/api/gnosisProtocol/api'
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'constants/index'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export function useGpOrders(account?: string | null, refreshInterval?: number): OrderMetaData[] | undefined {
-  const { chainId: _chainId } = useWeb3React()
+  const { chainId: _chainId } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
 
   const { data } = useSWR<OrderMetaData[]>(

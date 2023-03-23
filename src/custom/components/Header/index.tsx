@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { Routes } from '@cow/constants/routes'
 import { useNavigate } from 'react-router-dom'
-import { useWeb3React } from '@web3-react/core'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
@@ -24,8 +23,8 @@ import {
   HeaderElement,
 } from './styled'
 import MobileMenuIcon from './MobileMenuIcon'
-import Web3Status from 'components/Web3Status'
-import OrdersPanel from 'components/OrdersPanel'
+import { useWalletInfo, Web3Status } from '@cow/modules/wallet'
+import { OrdersPanel } from '@cow/modules/account/containers/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
@@ -59,7 +58,7 @@ export interface LinkType {
 }
 
 export default function Header() {
-  const { account, chainId: connectedChainId } = useWeb3React()
+  const { account, chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']

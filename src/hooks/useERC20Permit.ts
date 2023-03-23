@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { splitSignature } from '@ethersproject/bytes'
 import { Trade } from '@uniswap/router-sdk'
@@ -126,7 +127,9 @@ export function useERC20Permit(
   state: UseERC20PermitState
   gatherPermitSignature: null | (() => Promise<void>)
 } {
-  const { account, chainId, provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
+
   const tokenAddress = currencyAmount?.currency?.isToken ? currencyAmount.currency.address : undefined
   const eip2612Contract = useEIP2612Contract(tokenAddress)
   const isArgentWallet = useIsArgentWallet()
@@ -268,7 +271,7 @@ export function useERC20PermitFromTrade(
   allowedSlippage: Percent,
   transactionDeadline: BigNumber | undefined
 ) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const swapRouterAddress = chainId
     ? // v2 router does not support
       trade instanceof V2Trade

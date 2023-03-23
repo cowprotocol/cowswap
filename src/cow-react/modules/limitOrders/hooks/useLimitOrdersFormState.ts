@@ -1,12 +1,10 @@
-import { useWeb3React } from '@web3-react/core'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { LimitOrdersTradeState, useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
-import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import useENSAddress from 'hooks/useENSAddress'
 import { isAddress } from 'utils'
@@ -149,10 +147,11 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 }
 
 export function useLimitOrdersFormState(): LimitOrdersFormState {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const tradeState = useLimitOrdersTradeState()
-  const { isSupportedWallet } = useWalletInfo()
-  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
+  const { isSupportedWallet } = useWalletDetails()
+  const gnosisSafeInfo = useGnosisSafeInfo()
+  const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const { isWrapOrUnwrap } = useDetectNativeToken()

@@ -1,6 +1,8 @@
+import { ArrowDownCircle } from 'react-feather'
+import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
-import { getConnection } from 'connection/utils'
+import { getWeb3ReactConnection, isChainAllowed } from '@cow/modules/wallet/web3-react/connection'
 import { getChainInfo } from 'constants/chainInfo'
 import { CHAIN_IDS_TO_NAMES, SupportedChainId } from 'constants/chains'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -13,19 +15,12 @@ import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'sta
 import { /*addPopup,*/ ApplicationModal } from 'state/application/reducer'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch } from 'state/hooks'
-import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 import { replaceURLParam } from 'utils/routes'
-import { isChainAllowed, switchChain } from 'utils/switchChain'
+import { switchChain } from '@cow/modules/wallet/web3-react/hooks/switchChain'
 // import { isMobile } from 'utils/userAgent'
 
 // Mod imports
-import {
-  ActiveRowLinkList,
-  ActiveRowWrapper,
-  FlyoutHeader,
-  LinkOutCircle,
-} from '@src/components/Header/NetworkSelector'
 import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
 import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
@@ -34,8 +29,9 @@ import { css } from 'styled-components/macro'
 import { useRemovePopup, useAddPopup } from 'state/application/hooks'
 import { useTradeTypeInfo } from '@cow/modules/trade'
 import { useMediaQuery, upToMedium } from 'hooks/useMediaQuery'
+import { useWalletInfo } from '@cow/modules/wallet'
 
-/* const ActiveRowLinkList = styled.div`
+export const ActiveRowLinkList = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 8px;
@@ -66,7 +62,13 @@ export const ActiveRowWrapper = styled.div`
 export const FlyoutHeader = styled.div`
   color: ${({ theme }) => theme.text1};
   font-weight: 400;
-` */
+`
+
+export const LinkOutCircle = styled(ArrowDownCircle)`
+  transform: rotate(230deg);
+  width: 16px;
+  height: 16px;
+`
 export const FlyoutMenu = styled.div`
   position: absolute;
   top: 54px;
@@ -273,7 +275,8 @@ function Row({
   targetChain: SupportedChainId
   onSelectChain: (targetChain: number) => void
 }) {
-  const { provider, chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
   if (!provider || !chainId) {
     return null
   }
@@ -350,7 +353,8 @@ export const NETWORK_SELECTOR_CHAINS: SupportedChainId[] = SUPPORTED_CHAIN_IDS
 
 export default function NetworkSelector() {
   const dispatch = useAppDispatch()
-  const { chainId, provider, connector, account } = useWeb3React()
+  const { provider, connector } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   // const previousChainId = usePrevious(chainId)
   const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
@@ -396,7 +400,7 @@ export default function NetworkSelector() {
 
       isSwitching.current = true
 
-      const connectionType = getConnection(connector).type
+      const connectionType = getWeb3ReactConnection(connector).type
 
       try {
         dispatch(updateConnectionError({ connectionType, error: undefined }))

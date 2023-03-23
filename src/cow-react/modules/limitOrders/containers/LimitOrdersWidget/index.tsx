@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core'
 import * as styledEl from './styled'
 import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
@@ -34,12 +33,12 @@ import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOr
 import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
 import { OrderKind } from '@cowprotocol/contracts'
 import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
-import { maxAmountSpend } from '@src/utils/maxAmountSpend'
+import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -50,8 +49,8 @@ export function LimitOrdersWidget() {
   useSetupLimitOrderAmountsFromUrl()
   useDisableNativeTokenSelling()
 
-  const { chainId } = useWeb3React()
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { chainId } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const {
     inputCurrency,
     outputCurrency,
@@ -286,7 +285,11 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
               )}
 
-              {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />}
+              {!isWrapOrUnwrap && (
+                <styledEl.FooterBox>
+                  <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                </styledEl.FooterBox>
+              )}
 
               <LimitOrdersWarnings priceImpact={priceImpact} />
 

@@ -593,8 +593,6 @@ export interface NativePrice {
 }
 
 export async function getNativePrice(chainId: ChainId, address: string): Promise<NativePrice | null> {
-  console.log(`[api:${API_NAME}] Get native price for`, chainId, address)
-
   try {
     const response = await _get(chainId, `/token/${address}/native_price`)
 
