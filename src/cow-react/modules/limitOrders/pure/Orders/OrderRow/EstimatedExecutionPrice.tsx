@@ -79,6 +79,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const feeWarning = canShowWarning && percentageFee?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
+  const isZeroPrice = amount?.equalTo(ZERO_FRACTION)
 
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning}>
@@ -86,7 +87,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
         wrap={true}
         content={
           <styledEl.ExecuteInformationTooltip>
-            {!isNegativeDifference ? (
+            {isZeroPrice ? (
+              <>Fee is over 100% of sell amount</>
+            ) : !isNegativeDifference ? (
               <>
                 Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
                 <b>
@@ -108,7 +111,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
         placement="top"
       >
         <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-        <TokenAmount amount={amount} {...rest} />
+        {isZeroPrice ? <>&infin;</> : <TokenAmount amount={amount} {...rest} />}
       </MouseoverTooltipContent>
 
       {feeWarning && <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />}
