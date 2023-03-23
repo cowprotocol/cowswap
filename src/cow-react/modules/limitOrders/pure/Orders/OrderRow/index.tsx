@@ -131,7 +131,7 @@ export function OrderRow({
   const [isInverted, setIsInverted] = useState(() => {
     // On mount, apply smart quote selection
     const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
-    return getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency)
+    return getAddress(quoteCurrency) === getAddress(inputCurrencyAmount?.currency)
   })
   const onPriceClick = useCallback(() => setIsInverted((curr) => !curr), [])
 
