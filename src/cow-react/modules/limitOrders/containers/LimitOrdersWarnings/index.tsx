@@ -114,7 +114,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
             of your sell amount! Therefore, your order is unlikely to execute.
             <br />
             {/* TODO: add link to somewhere */}
-            <a href="/">Learn more</a>
+            {/*<a href="/">Learn more ↗</a>*/}
           </span>
         </styledEl.SmallVolumeWarningBanner>
       )}
