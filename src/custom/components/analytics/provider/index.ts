@@ -2,12 +2,7 @@ import ReactGA from 'react-ga4'
 import { ErrorInfo } from 'react'
 import { GaOptions, InitOptions, UaEventOptions } from 'react-ga4/types/ga4'
 import { debounce } from 'utils/misc'
-
-export enum Dimensions {
-  chainId = 'chainId',
-  walletName = 'walletName',
-  customBrowserType = 'customBrowserType',
-}
+import { Dimensions } from '../types'
 
 const DIMENSION_MAP = {
   [Dimensions.chainId]: 'dimension1',
@@ -20,7 +15,7 @@ type DimensionKey = keyof typeof DIMENSION_MAP
 /**
  * Google Analytics Provider containing all methods used throughout app to log events to Google Analytics.
  */
-export default class GoogleAnalyticsProvider {
+export class GAProvider {
   dimensions: { [key in DimensionKey]: any }
 
   constructor() {
