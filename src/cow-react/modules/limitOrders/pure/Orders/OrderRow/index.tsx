@@ -133,12 +133,12 @@ export function OrderRow({
     const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
     return getAddress(quoteCurrency) === getAddress(inputCurrencyAmount?.currency)
   })
-  const onPriceClick = useCallback(() => setIsInverted((curr) => !curr), [])
+  const toggleIsInverted = useCallback(() => setIsInverted((curr) => !curr), [])
 
   // Toggle isInverted whenever isGloballyInverted changes
   useEffect(() => {
-    setIsInverted((curr) => !curr)
-  }, [isGloballyInverted])
+    toggleIsInverted()
+  }, [isGloballyInverted, toggleIsInverted])
 
   const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
@@ -179,7 +179,7 @@ export function OrderRow({
       {/* Market price */}
       {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement onClick={onPriceClick}>
+        <styledEl.CellElement onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {spotPrice ? (
             <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
@@ -193,7 +193,7 @@ export function OrderRow({
 
       {/* Execution price */}
       {!isOpenOrdersTab && (
-        <styledEl.CellElement onClick={onPriceClick}>
+        <styledEl.CellElement onClick={toggleIsInverted}>
           {executedPriceInverted ? (
             <TokenAmount
               amount={executedPriceInverted}
@@ -208,7 +208,7 @@ export function OrderRow({
 
       {/* Executes at */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement hasBackground onClick={onPriceClick}>
+        <styledEl.CellElement hasBackground onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <styledEl.ExecuteCellWrapper>
