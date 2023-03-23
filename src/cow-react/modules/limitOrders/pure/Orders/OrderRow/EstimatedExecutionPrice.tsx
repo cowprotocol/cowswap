@@ -46,6 +46,21 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean 
   }
 `
 
+const UnfillableLabel = styled.span`
+  height: 28px;
+  width: 90px;
+  border: 1px solid;
+  color: ${({ theme }) => theme.attention};
+  position: relative;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+`
+
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
   isInverted: boolean
   canShowWarning: boolean
@@ -110,8 +125,14 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
         }
         placement="top"
       >
-        <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-        {isZeroPrice ? <>&infin;</> : <TokenAmount amount={amount} {...rest} />}
+        {isZeroPrice ? (
+          <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+        ) : (
+          <>
+            <styledEl.ExecuteIndicator status={orderExecutionStatus} />
+            <TokenAmount amount={amount} {...rest} />
+          </>
+        )}
       </MouseoverTooltipContent>
 
       {feeWarning && <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />}
