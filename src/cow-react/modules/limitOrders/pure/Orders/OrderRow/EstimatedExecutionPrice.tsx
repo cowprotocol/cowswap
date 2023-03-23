@@ -48,6 +48,7 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean 
 
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
   isInverted: boolean
+  canShowWarning: boolean
   percentageDifference?: Percent
   amountDifference?: CurrencyAmount<Currency>
   percentageFee?: Percent
@@ -55,7 +56,16 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
 }
 
 export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
-  const { isInverted, percentageDifference, amountDifference, percentageFee, amountFee, amount, ...rest } = props
+  const {
+    isInverted,
+    canShowWarning,
+    percentageDifference,
+    amountDifference,
+    percentageFee,
+    amountFee,
+    amount,
+    ...rest
+  } = props
 
   const percentageDifferenceInverted = isInverted
     ? percentageDifference?.multiply(MINUS_ONE_FRACTION)
@@ -66,7 +76,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     ? amountDifference.multiply(MINUS_ONE_FRACTION)
     : amountDifference
   const orderExecutionStatus = calculateOrderExecutionStatus(percentageDifferenceInverted)
-  const feeWarning = percentageFee?.greaterThan(TEN_PERCENT)
+  const feeWarning = canShowWarning && percentageFee?.greaterThan(TEN_PERCENT)
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
 
