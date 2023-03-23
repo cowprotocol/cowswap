@@ -104,7 +104,7 @@ export interface OrderRowProps {
 export function OrderRow({
   order,
   RowElement,
-  isRateInverted,
+  isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
   getShowCancellationModal,
   orderParams,
@@ -128,21 +128,17 @@ export function OrderRow({
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
-  const [isInverted, setIsInverted] = useState(isRateInverted)
+  const [isInverted, setIsInverted] = useState(() => {
+    // On mount, apply smart quote selection
+    const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
+    return getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency)
+  })
   const onPriceClick = useCallback(() => setIsInverted((curr) => !curr), [])
 
-  // Update internal isInverted flag whenever prop change
+  // Toggle isInverted whenever isGloballyInverted changes
   useEffect(() => {
-    setIsInverted(isRateInverted)
-  }, [isRateInverted])
-
-  // On mount, apply smart quote selection
-  useEffect(() => {
-    const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
-    setIsInverted(getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency))
-    // Intentionally empty, should run only once
-    // eslint-disable-next-line
-  }, [])
+    setIsInverted((curr) => !curr)
+  }, [isGloballyInverted])
 
   const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
