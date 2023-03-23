@@ -103,7 +103,10 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
         content={
           <styledEl.ExecuteInformationTooltip>
             {isZeroPrice ? (
-              <>Fee is over 100% of sell amount</>
+              <>
+                For this order, network fees are higher than the sell amount. Therefore, your order will not execute
+                given the current market conditions.
+              </>
             ) : !isNegativeDifference ? (
               <>
                 Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
