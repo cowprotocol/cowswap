@@ -160,7 +160,7 @@ export function CurrencySearch({
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value
     // Do a case-insensitive search
-    const checksummedInput = isAddress(input.toLowerCase())
+    const checksummedInput = isAddress(input.toLowerCase().trim())
     setSearchQuery(checksummedInput || input)
     fixedList.current?.scrollTo(0)
   }, [])
