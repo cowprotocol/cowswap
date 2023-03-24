@@ -90,8 +90,6 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
     if (externalLogoURI) {
       logoURIs.push(externalLogoURI)
     }
-
-    console.log(logoURIs)
   }
 
   currencyLogoCache.set(`${currencyAddress}|${currency?.chainId}`, logoURIs)
