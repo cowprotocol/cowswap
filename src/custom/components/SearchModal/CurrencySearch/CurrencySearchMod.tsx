@@ -159,8 +159,7 @@ export function CurrencySearch({
   const inputRef = useRef<HTMLInputElement>()
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value
-    // We lowercase the input, so that address check can be case insensitive.
-    // https://github.com/cowprotocol/cowswap/issues/23
+    // Do a case-insensitive search
     const checksummedInput = isAddress(input.toLowerCase())
     setSearchQuery(checksummedInput || input)
     fixedList.current?.scrollTo(0)
