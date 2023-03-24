@@ -50,11 +50,11 @@ const tokensData = loadable(
 )
 
 export function useTokenLogo(currency?: Currency | null): string | void {
-  const tokens = useAtomValue(tokensData)
+  const tokens = useAtomValue(useMemo(() => tokensData, [currency]))
 
   if (!!currency && currency.isToken && tokens.state === 'hasData' && tokens.data) {
     const token = tokens.data.data.find(
-      (token) => token.chainId === currency.chainId && token.address === currency.address
+      (token) => token.chainId === currency.chainId && token.address.toLowerCase() === currency.address.toLowerCase()
     )
 
     return token?.logoURI
