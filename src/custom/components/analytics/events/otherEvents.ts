@@ -37,6 +37,6 @@ export function serviceWorkerAnalytics() {
 export function initAnalytics() {
   sendEvent({
     category: Category.INIT,
-    action: 'Initial landing on swap.cow.fi',
+    action: 'initial_landing_on_swap_cow_fi',
   })
 }
