@@ -1,5 +1,5 @@
 import { useWalletInfo } from '@cow/modules/wallet'
-import { Token } from '@uniswap/sdk-core'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import { loadable } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
@@ -48,6 +48,18 @@ const tokensData = loadable(
     return undefined
   })
 )
+
+export function useTokenLogo(currency?: Currency | null): string | void {
+  const tokens = useAtomValue(tokensData)
+
+  if (!!currency && currency.isToken && tokens.state === 'hasData' && tokens.data) {
+    const token = tokens.data.data.find(
+      (token) => token.chainId === currency.chainId && token.address === currency.address
+    )
+
+    return token?.logoURI
+  }
+}
 
 export function useTokenSearch(_query: string, existingTokens: Map<string, boolean>): Token[] {
   const [query, setQuery] = useAtom(searchQuery)
