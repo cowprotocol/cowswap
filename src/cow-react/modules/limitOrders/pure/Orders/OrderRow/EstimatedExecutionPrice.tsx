@@ -137,7 +137,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           )}
         </MouseoverTooltipContent>
       )}
-      {feeWarning && <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />}
+      {feeWarning && !isNegativeDifference && (
+        <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />
+      )}
     </EstimatedExecutionPriceWrapper>
   )
 }
