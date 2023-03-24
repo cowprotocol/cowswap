@@ -19,7 +19,7 @@ import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connecti
 export function WalletModal() {
   const dispatch = useAppDispatch()
   const { connector } = useWeb3React()
-  const { account, active: isActive } = useWalletInfo()
+  const { account, active: isActive, chainId } = useWalletInfo()
 
   const [walletView, setWalletView] = useState<WalletModalView>('account')
 
@@ -86,7 +86,7 @@ export function WalletModal() {
         setWalletView('pending')
         dispatch(updateConnectionError({ connectionType, error: undefined }))
 
-        await connector.activate()
+        await connector.activate({ networkId: chainId })
 
         // Important for balances to load when connected to Gnosis-chain via WalletConnect
         if (getWeb3ReactConnection(connector) === walletConnectConnection) {

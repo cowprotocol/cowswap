@@ -1,12 +1,10 @@
-import { Actions, Connector, Provider } from '@web3-react/types'
+import { Actions, Connector } from '@web3-react/types'
 import Web3ProviderEngine from 'web3-provider-engine'
 import TrezorConnect from '@trezor/connect-web'
 
 global.process = { browser: true } as any
 const TrezorSubprovider = require('@0x/subproviders/lib/src/subproviders/trezor').TrezorSubprovider
 const RPCSubprovider = require('@0x/subproviders/lib/src/subproviders/rpc_subprovider').RPCSubprovider
-
-console.log('debug', TrezorSubprovider, RPCSubprovider)
 
 interface LedgerConstructorArgs {
   actions: Actions
@@ -36,9 +34,24 @@ const accountFetchingConfigs = {
   shouldAskForOnDeviceConfirmation: false,
 }
 
+const _signTypedData = ({ types, domain, message, primaryType }: any) => {
+  return TrezorConnect.ethereumSignTypedData({
+    path: "m/44'/60'/0'/0/0",
+    metamask_v4_compat: true,
+    data: {
+      types,
+      domain,
+      message,
+      primaryType,
+    },
+    domain_separator_hash: '0x6192106f129ce05c9075d319c1fa6ea9b3ae37cbd0c1ef92e2be7137bb07baa1',
+  })
+}
+
 export class Trezor extends Connector {
-  public provider?: Provider
+  public provider?: any
   private readonly options: TrezorOptions
+  private trezorConnect?: typeof TrezorConnect
 
   constructor({ actions, onError, options = {} }: LedgerConstructorArgs) {
     super(actions, onError)
@@ -46,47 +59,46 @@ export class Trezor extends Connector {
     this.options = options
   }
 
-  // async getAccounts() {
-  //   console.log('getAccount')
+  async getAccounts() {
+    const provider = await this.getProvider()
+    const accounts = (await provider._providers[0].getAccountsAsync(1)) as string[]
 
-  //   const provider = await this.getProvider()
-  //   const accounts = (await provider.request({
-  //     method: 'eth_requestAccounts',
-  //   })) as string[]
+    return accounts
+  }
 
-  //   return accounts
-  // }
+  async getChainId() {
+    const provider = await this.getProvider()
+    const chainId = (await provider?.request({
+      method: 'eth_chainId',
+    })) as string
 
-  // async getChainId() {
-  //   console.log('getChainId')
-
-  //   const provider = await this.getProvider()
-  //   const chainId = (await provider.request({
-  //     method: 'eth_chainId',
-  //   })) as string
-
-  //   return parseChainId(chainId)
-  // }
+    return parseChainId(chainId)
+  }
 
   async getProvider(
-    { forceCreate }: { chainId?: number; forceCreate?: boolean } = {
+    { forceCreate, networkId }: { networkId?: number; forceCreate?: boolean } = {
       forceCreate: false,
+      networkId: 1,
     }
   ) {
-    if (!this.provider) {
+    if (!this.provider || forceCreate) {
       TrezorConnect.manifest({
         email: manifestEmail,
         appUrl: manifestAppUrl,
       })
 
       const engine = new Web3ProviderEngine({ pollingInterval })
-      const props = { trezorConnectClientApi: TrezorConnect, networkId: 1, accountFetchingConfigs }
+      const props = { trezorConnectClientApi: TrezorConnect, networkId, accountFetchingConfigs }
 
       engine.addProvider(new TrezorSubprovider(props))
       engine.addProvider(new RPCSubprovider(url, requestTimeoutMs))
+      ;(window as any)['provider'] = engine
 
-      engine.start()
-      ;(window as any)['engine'] = engine
+      this.assignRequest(engine)
+
+      await engine.start()
+
+      this.provider = engine
     }
 
     return this.provider
@@ -94,49 +106,64 @@ export class Trezor extends Connector {
 
   async getSigner() {}
 
-  public async activate() {
-    console.log('debug activate')
+  public async activate({ networkId }: { networkId: number }) {
+    const provider = await this.getProvider({ forceCreate: true, networkId })
 
-    try {
-      const provider = await this.getProvider({ forceCreate: true })
-    } catch (err) {
-      console.log('debug err', err)
+    if (provider?.on) {
+      console.log('debug assigning event handlers')
+      provider.on('accountsChanged', this.onAccountsChanged)
+      provider.on('chainChanged', this.onChainChanged)
+      provider.on('disconnect', this.onDisconnect)
+      provider.on('close', this.onDisconnect)
     }
 
-    // if (provider?.on) {
-    //   console.log('debug assigning event handlers')
-    //   provider.on('accountsChanged', this.onAccountsChanged)
-    //   provider.on('chainChanged', this.onChainChanged)
-    //   provider.on('disconnect', this.onDisconnect)
-    //   provider.on('close', this.onDisconnect)
-    // }
+    const accounts = await this.getAccounts()
+    const chainId = await this.getChainId()
 
-    // const accounts = await this.getAccounts()
-    // const chainId = await this.getChainId()
-
-    // return this.actions.update({ chainId, accounts })
+    return this.actions.update({ chainId, accounts })
   }
 
-  // public async connectEagerly(): Promise<void> {}
+  public async connectEagerly(): Promise<void> {}
 
-  // protected onAccountsChanged = (accounts: string[]): void => {
-  //   console.log('debug accounts changed', accounts)
+  protected onAccountsChanged = (accounts: string[]): void => {
+    console.log('debug accounts changed', accounts)
 
-  //   if (accounts.length === 0) {
-  //     this.actions.resetState()
-  //   } else {
-  //     this.actions.update({ accounts })
-  //   }
-  // }
+    if (accounts.length === 0) {
+      this.actions.resetState()
+    } else {
+      this.actions.update({ accounts })
+    }
+  }
 
-  // protected onChainChanged = (chainId: number | string): void => {
-  //   console.log('debug chain changed')
+  protected onChainChanged = (chainId: number | string): void => {
+    console.log('debug chain changed')
 
-  //   this.actions.update({ chainId: parseChainId(chainId) })
-  // }
+    this.actions.update({ chainId: parseChainId(chainId) })
+  }
 
-  // protected onDisconnect = (error: any): void => {
-  //   this.actions.resetState()
-  //   this.onError?.(error)
-  // }
+  protected onDisconnect = (error: any): void => {
+    this.actions.resetState()
+    this.onError?.(error)
+  }
+
+  protected assignRequest(engine: any) {
+    ;(engine as any)['request'] = function (request: any) {
+      if (request.method === 'eth_signTypedData_v4') {
+        const { domain, message, primaryType, types } = JSON.parse(request.params[1])
+        return _signTypedData({ domain, types, message, primaryType })
+      }
+
+      return new Promise((resolve, reject) => {
+        engine.sendAsync({ id: 1, jsonrpc: '2.0', ...request }, (error: any, result: any) => {
+          const resultError = error
+
+          if (resultError) {
+            reject(resultError)
+          } else {
+            resolve(result.result)
+          }
+        })
+      })
+    }
+  }
 }
