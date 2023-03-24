@@ -15,12 +15,13 @@ import { ZERO_FRACTION } from '@src/custom/constants'
 const MINUS_ONE_FRACTION = new Fraction(-1)
 export const HIGH_FEE_WARNING_PERCENTAGE = new Percent(1, 10)
 
-export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean }>`
+export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean; showPointerCursor: boolean }>`
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: space-between;
   color: ${({ hasWarning, theme }) => (hasWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit')};
+  cursor: ${({ showPointerCursor }) => (showPointerCursor ? 'pointer' : 'default')};
 
   ${SymbolElement} {
     color: inherit;
@@ -97,7 +98,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const isZeroPrice = amount?.equalTo(ZERO_FRACTION)
 
   return (
-    <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning}>
+    <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isZeroPrice}>
       {isZeroPrice ? (
         <UnfillableLabel>UNFILLABLE</UnfillableLabel>
       ) : (
