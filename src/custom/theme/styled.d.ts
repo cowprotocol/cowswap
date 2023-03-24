@@ -1,5 +1,5 @@
 import { Colors as ColorsUniswap } from '@src/theme/styled'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 
 // Override colors
 export interface Colors extends ColorsUniswap {

@@ -1,4 +1,5 @@
-import { Category, sendEvent } from '../index'
+import { sendEvent } from '../index'
+import { Category } from '../types'
 
 export function changeWalletAnalytics(walletName: string) {
   sendEvent({

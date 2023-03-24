@@ -3,7 +3,7 @@
 
 CoW Swap is the first trading interface built on top of CoW Protocol.
 
-It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
+It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
 - 🐮**Official Website**🐮: <https://swap.cow.fi/>
 
@@ -11,7 +11,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
 
 - Protocol: <https://cow.fi>
 - Docs: <https://docs.cow.fi>
-- Stats: <https://dune.com/cowprotocol/Gnosis-Protocol-V2>
+- Stats: <https://dune.com/cowprotocol/cowswap>
 - Twitter: [@CoWSwap](https://twitter.com/CoWSwap)
 - Discord: <https://discord.com/invite/cowprotocol>
 

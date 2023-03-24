@@ -1,4 +1,4 @@
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import { ButtonError } from 'components/Button'
 
 export interface SwapButtonProps {

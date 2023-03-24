@@ -1,6 +1,6 @@
 import { SwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import React, { ReactNode } from 'react'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import { Trans } from '@lingui/macro'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import { Text } from 'rebass'

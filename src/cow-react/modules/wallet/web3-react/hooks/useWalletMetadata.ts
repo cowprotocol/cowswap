@@ -2,6 +2,8 @@ import { useWeb3React } from '@web3-react/core'
 import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
 import { ConnectionType } from '@cow/modules/wallet'
 import { useMemo } from 'react'
+import { getIsAlphaWallet } from '@cow/modules/wallet/api/utils/connection'
+import { default as AlphaImage } from '@cow/modules/wallet/api/assets/alpha.svg'
 
 const WC_DESKTOP_GNOSIS_SAFE_APP_NAME = 'WalletConnect Safe App'
 const WC_MOBILE_GNOSIS_SAFE_APP_NAME = 'Safe'
@@ -25,6 +27,14 @@ export interface WalletMetaData {
   icon?: string
 }
 
+function getWcWalletIcon(meta: any) {
+  if (getIsAlphaWallet(meta.name)) {
+    return AlphaImage
+  }
+
+  return meta.icons?.length > 0 ? meta.icons[0] : undefined
+}
+
 function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
   // fix for this https://github.com/gnosis/cowswap/issues/1929
   const defaultOutput = { walletName: undefined, icon: undefined }
@@ -38,7 +48,7 @@ function getWcPeerMetadata(provider: any | undefined): WalletMetaData {
   if (meta) {
     return {
       walletName: meta.name,
-      icon: meta.icons?.length > 0 ? meta.icons[0] : undefined,
+      icon: getWcWalletIcon(meta),
     }
   }
 
