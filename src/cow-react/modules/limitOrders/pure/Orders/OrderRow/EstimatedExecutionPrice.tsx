@@ -98,46 +98,44 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
 
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning}>
-      <MouseoverTooltipContent
-        wrap={true}
-        content={
-          <styledEl.ExecuteInformationTooltip>
-            {isZeroPrice ? (
-              <>
-                For this order, network fees are higher than the sell amount. Therefore, your order will not execute
-                given the current market conditions.
-              </>
-            ) : !isNegativeDifference ? (
-              <>
-                Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
-                <b>
-                  <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
-                </b>
-                &nbsp;
-                <span>
-                  (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
-                </span>
-                &nbsp;to execute your order.
-              </>
-            ) : feeWarning ? (
-              <>Unlikely to execute due to high fee</>
-            ) : (
-              <>Will execute soon!</>
-            )}
-          </styledEl.ExecuteInformationTooltip>
-        }
-        placement="top"
-      >
-        {isZeroPrice ? (
-          <UnfillableLabel>UNFILLABLE</UnfillableLabel>
-        ) : (
-          <>
-            <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-            <TokenAmount amount={amount} {...rest} />
-          </>
-        )}
-      </MouseoverTooltipContent>
-
+      {isZeroPrice ? (
+        <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+      ) : (
+        <MouseoverTooltipContent
+          wrap={true}
+          content={
+            <styledEl.ExecuteInformationTooltip>
+              {!isNegativeDifference ? (
+                <>
+                  Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
+                  <b>
+                    <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
+                  </b>
+                  &nbsp;
+                  <span>
+                    (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
+                  </span>
+                  &nbsp;to execute your order.
+                </>
+              ) : feeWarning ? (
+                <>Unlikely to execute due to high fee</>
+              ) : (
+                <>Will execute soon!</>
+              )}
+            </styledEl.ExecuteInformationTooltip>
+          }
+          placement="top"
+        >
+          {isZeroPrice ? (
+            <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+          ) : (
+            <>
+              <styledEl.ExecuteIndicator status={orderExecutionStatus} />
+              <TokenAmount amount={amount} {...rest} />
+            </>
+          )}
+        </MouseoverTooltipContent>
+      )}
       {feeWarning && <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />}
     </EstimatedExecutionPriceWrapper>
   )
