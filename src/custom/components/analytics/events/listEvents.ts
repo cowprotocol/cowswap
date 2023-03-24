@@ -1,4 +1,5 @@
-import { Category, sendEvent } from '../index'
+import { sendEvent } from '../index'
+import { Category } from '../types'
 
 type UpdateListLocation = 'Popup' | 'List Select'
 export function updateListAnalytics(location: UpdateListLocation, listUrl: string) {
