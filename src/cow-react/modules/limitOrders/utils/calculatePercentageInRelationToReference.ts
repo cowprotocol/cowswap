@@ -3,24 +3,33 @@ import { Percent } from '@uniswap/sdk-core'
 
 export type CalculateAmountPercentDifferenceProps = {
   reference: Nullish<FractionLike>
-  delta: Nullish<FractionLike>
+  value: Nullish<FractionLike>
 }
 
 /**
  * Helper function to calculate and return a Percent instance between 2 FractionLike instances
  *
+ * It follows the formula: percentage = value*100/reference
+ *
+ * Example:
+ * Sell amount is 100 - this is the `reference`
+ * Fee amount is 5 - this is the `value`
+ * The `percentage` is how much the `value` is compared to `reference`
+ * percentage = 5*100/100 => 5%
+ *
+ *
  * @param reference
- * @param delta
+ * @param value
  */
-export function calculateFractionLikePercentDifference({
+export function calculatePercentageInRelationToReference({
   reference,
-  delta,
+  value,
 }: CalculateAmountPercentDifferenceProps): Percent | undefined {
-  if (!reference || !delta) {
+  if (!value || !reference) {
     return undefined
   }
 
-  const percentage = reference.divide(delta)
+  const percentage = value.divide(reference)
 
   return new Percent(percentage.numerator, percentage.denominator)
 }

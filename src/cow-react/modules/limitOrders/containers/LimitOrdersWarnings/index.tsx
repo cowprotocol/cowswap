@@ -20,7 +20,7 @@ import * as styledEl from '@cow/modules/limitOrders/containers/LimitOrdersWidget
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import SVG from 'react-inlinesvg'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { calculateFractionLikePercentDifference } from '@cow/modules/limitOrders/utils/calculateFractionLikePercentDifference'
+import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { Nullish } from '@cow/types'
 import { HIGH_FEE_WARNING_PERCENTAGE } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
@@ -54,7 +54,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const showPriceImpactWarning =
     !!chainId && !expertMode && !!account && !!priceImpact.error && formState === LimitOrdersFormState.CanTrade
 
-  const feePercentage = calculateFractionLikePercentDifference({ reference: feeAmount, delta: inputCurrencyAmount })
+  const feePercentage = calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount })
 
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 

@@ -23,7 +23,7 @@ import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
 import { getAddress } from '@cow/utils/getAddress'
 import { calculatePriceDifference, PriceDifference } from '@cow/modules/limitOrders/utils/calculatePriceDifference'
-import { calculateFractionLikePercentDifference } from '@cow/modules/limitOrders/utils/calculateFractionLikePercentDifference'
+import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
@@ -317,7 +317,7 @@ function useFeeAmountDifference(
   const { feeAmount } = prices || {}
 
   return useSafeMemo(
-    () => calculateFractionLikePercentDifference({ reference: feeAmount, delta: inputCurrencyAmount }),
+    () => calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount }),
     [feeAmount, inputCurrencyAmount]
   )
 }
