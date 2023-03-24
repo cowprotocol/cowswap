@@ -43,8 +43,6 @@ import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
-import AlertTriangle from 'assets/cow-swap/alert.svg'
-import SVG from 'react-inlinesvg'
 import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
 
 export function LimitOrdersWidget() {
@@ -76,7 +74,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-  const { isLoading: isRateLoading, activeRate } = useAtomValue(limitRateAtom)
+  const { isLoading: isRateLoading, activeRate, feeAmount } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
@@ -175,6 +173,7 @@ export function LimitOrdersWidget() {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    feeAmount,
   }
 
   return <LimitOrders {...props} />
@@ -199,6 +198,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    feeAmount,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -294,15 +294,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 </styledEl.FooterBox>
               )}
 
-              {/* TODO: Move this component inside LimitOrdersWarnings */}
-              <styledEl.SmallVolumeWarningBanner>
-                <SVG src={AlertTriangle} description="Alert" />
-                <span>
-                  Small orders are unlikely to be executed. Try to increase your sell amount for better results.
-                </span>
-              </styledEl.SmallVolumeWarningBanner>
-
-              <LimitOrdersWarnings priceImpact={priceImpact} />
+              <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />
 
               <styledEl.TradeButtonBox>
                 <TradeButtons
