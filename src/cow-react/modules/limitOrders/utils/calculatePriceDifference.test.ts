@@ -137,8 +137,7 @@ describe('Not Inverted Price', () => {
 
       const result = calculatePriceDifference(params)
 
-      expect(result?.amount.toFixed(2)).toBe('-1.00')
-      expect(result?.percentage.toFixed(2)).toBe('-100.00')
+      expect(result).toBe(null)
     })
   })
 })

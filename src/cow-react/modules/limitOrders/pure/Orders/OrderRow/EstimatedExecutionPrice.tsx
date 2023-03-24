@@ -15,12 +15,13 @@ import { ZERO_FRACTION } from '@src/custom/constants'
 const MINUS_ONE_FRACTION = new Fraction(-1)
 export const HIGH_FEE_WARNING_PERCENTAGE = new Percent(1, 10)
 
-export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean }>`
+export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean; showPointerCursor: boolean }>`
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: space-between;
   color: ${({ hasWarning, theme }) => (hasWarning ? darken(theme.darkMode ? 0 : 0.15, theme.alert) : 'inherit')};
+  cursor: ${({ showPointerCursor }) => (showPointerCursor ? 'pointer' : 'default')};
 
   ${SymbolElement} {
     color: inherit;
@@ -44,6 +45,21 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean 
     display: flex;
     align-items: center;
   }
+`
+
+const UnfillableLabel = styled.span`
+  height: 28px;
+  width: 90px;
+  border: 1px solid;
+  color: ${({ theme }) => theme.attention};
+  position: relative;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
 `
 
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
@@ -79,38 +95,48 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const feeWarning = canShowWarning && percentageFee?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
+  const isZeroPrice = amount?.equalTo(ZERO_FRACTION)
 
   return (
-    <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning}>
-      <MouseoverTooltipContent
-        wrap={true}
-        content={
-          <styledEl.ExecuteInformationTooltip>
-            {!isNegativeDifference ? (
-              <>
-                Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
-                <b>
-                  <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
-                </b>
-                &nbsp;
-                <span>
-                  (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
-                </span>
-                &nbsp;to execute your order.
-              </>
-            ) : feeWarning ? (
-              <>Unlikely to execute due to high fee</>
-            ) : (
-              <>Will execute soon!</>
-            )}
-          </styledEl.ExecuteInformationTooltip>
-        }
-        placement="top"
-      >
-        <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-        <TokenAmount amount={amount} {...rest} />
-      </MouseoverTooltipContent>
-
+    <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isZeroPrice}>
+      {isZeroPrice ? (
+        <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+      ) : (
+        <MouseoverTooltipContent
+          wrap={true}
+          content={
+            <styledEl.ExecuteInformationTooltip>
+              {!isNegativeDifference ? (
+                <>
+                  Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
+                  <b>
+                    <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
+                  </b>
+                  &nbsp;
+                  <span>
+                    (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
+                  </span>
+                  &nbsp;to execute your order.
+                </>
+              ) : feeWarning ? (
+                <>Unlikely to execute due to high fee</>
+              ) : (
+                <>Will execute soon!</>
+              )}
+            </styledEl.ExecuteInformationTooltip>
+          }
+          placement="top"
+        >
+          {isZeroPrice ? (
+            <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+          ) : (
+            <>
+              <styledEl.ExecuteIndicator status={orderExecutionStatus} />
+              <TokenAmount amount={amount} {...rest} />
+            </>
+          )}
+        </MouseoverTooltipContent>
+      )}
       {feeWarning && <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />}
     </EstimatedExecutionPriceWrapper>
   )

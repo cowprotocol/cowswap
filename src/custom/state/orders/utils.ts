@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
-import { PENDING_ORDERS_BUFFER, ZERO_BIG_NUMBER } from 'constants/index'
+import { PENDING_ORDERS_BUFFER, ZERO_BIG_NUMBER, ZERO_FRACTION } from 'constants/index'
 import { OrderMetaData } from '@cow/api/gnosisProtocol'
 import { Order, OrderClass } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
@@ -285,20 +285,22 @@ export function getEstimatedExecutionPrice(
     return limitPrice
   }
 
-  const numerator = inputAmount
-    .subtract(feeAmount)
-    // Limit price is given in BASE (input) per QUOTE (output).
-    // Since we are operating with input tokens, we need the QUOTE to be in input as well
-    // Thus, we invert the price
-    .multiply(limitPrice.invert())
+  const amountMinusFees = inputAmount.subtract(feeAmount)
+
+  if (!amountMinusFees.greaterThan(ZERO_FRACTION)) {
+    // When fee > amount, return 0 price
+    return new Price(order.inputToken, order.outputToken, '0', '0')
+  }
+
+  const numerator = amountMinusFees.multiply(limitPrice)
   // The divider in the formula is used as denominator, and the division is done inside the Price instance
   const denominator = inputAmount
 
   const feasibleExecutionPrice = new Price(
     order.inputToken,
     order.outputToken,
-    numerator.quotient,
-    denominator.quotient
+    denominator.quotient,
+    numerator.quotient
   )
 
   // Picking the MAX between FEP and FP

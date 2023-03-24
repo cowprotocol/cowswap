@@ -203,7 +203,6 @@ export const ExecuteCellWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  cursor: pointer;
 `
 
 export const ExecuteInformationTooltip = styled.div`
