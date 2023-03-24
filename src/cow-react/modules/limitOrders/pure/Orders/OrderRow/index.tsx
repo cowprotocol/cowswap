@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { OrderClass, OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
@@ -104,7 +104,7 @@ export interface OrderRowProps {
 export function OrderRow({
   order,
   RowElement,
-  isRateInverted,
+  isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
   getShowCancellationModal,
   orderParams,
@@ -128,20 +128,17 @@ export function OrderRow({
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
 
-  const [isInverted, setIsInverted] = useState(isRateInverted)
-
-  // Update internal isInverted flag whenever prop change
-  useEffect(() => {
-    setIsInverted(isRateInverted)
-  }, [isRateInverted])
-
-  // On mount, apply smart quote selection
-  useEffect(() => {
+  const [isInverted, setIsInverted] = useState(() => {
+    // On mount, apply smart quote selection
     const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
-    setIsInverted(getAddress(quoteCurrency) !== getAddress(inputCurrencyAmount?.currency))
-    // Intentionally empty, should run only once
-    // eslint-disable-next-line
-  }, [])
+    return getAddress(quoteCurrency) === getAddress(inputCurrencyAmount?.currency)
+  })
+  const toggleIsInverted = useCallback(() => setIsInverted((curr) => !curr), [])
+
+  // Toggle isInverted whenever isGloballyInverted changes
+  useEffect(() => {
+    toggleIsInverted()
+  }, [isGloballyInverted, toggleIsInverted])
 
   const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
   const executedPriceInverted = isInverted ? executedPrice?.invert() : executedPrice
@@ -169,6 +166,7 @@ export function OrderRow({
         <styledEl.RateValue>
           <RateInfo
             prependSymbol={false}
+            isInvertedState={[isInverted, setIsInverted]}
             noLabel={true}
             doNotUseSmartQuote
             isInverted={isInverted}
@@ -181,7 +179,7 @@ export function OrderRow({
       {/* Market price */}
       {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement>
+        <styledEl.PriceElement onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {spotPrice ? (
             <TokenAmount amount={spotPriceInverted} tokenSymbol={spotPriceInverted?.quoteCurrency} opacitySymbol />
@@ -190,12 +188,12 @@ export function OrderRow({
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
-        </styledEl.CellElement>
+        </styledEl.PriceElement>
       )}
 
       {/* Execution price */}
       {!isOpenOrdersTab && (
-        <styledEl.CellElement>
+        <styledEl.PriceElement onClick={toggleIsInverted}>
           {executedPriceInverted ? (
             <TokenAmount
               amount={executedPriceInverted}
@@ -205,12 +203,12 @@ export function OrderRow({
           ) : (
             '-'
           )}
-        </styledEl.CellElement>
+        </styledEl.PriceElement>
       )}
 
       {/* Executes at */}
       {isOpenOrdersTab && (
-        <styledEl.CellElement hasBackground>
+        <styledEl.PriceElement hasBackground onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
           {prices ? (
             <styledEl.ExecuteCellWrapper>
@@ -231,7 +229,7 @@ export function OrderRow({
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
           )}
-        </styledEl.CellElement>
+        </styledEl.PriceElement>
       )}
 
       {/* Expires */}
