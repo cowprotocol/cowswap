@@ -86,6 +86,7 @@ export const StyledScrollarea = styled.div`
     overflow-y: auto; // fallback for 'overlay'
     overflow-y: overlay;
     ${({ theme }) => theme.colorScrollbar};
+  }
 `
 
 function TokenTags({ currency }: { currency: Currency }) {
