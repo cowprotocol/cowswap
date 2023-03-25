@@ -21,6 +21,7 @@ import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from '@cow/modules/swa
 import { TokensListUpdater } from '@cow/modules/tokensList/updaters/TokensListUpdater'
 import { AppDataUpdater } from 'state/appData/AppDataInfoUpdater'
 import { WalletUpdater } from '@cow/modules/wallet'
+import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
 
 export function Updaters() {
   return (
@@ -40,6 +41,7 @@ export function Updaters() {
       <UnfillableOrdersUpdater />
       <GpOrdersUpdater />
       <GasUpdater />
+      <GasPriceStrategyUpdater />
       <LogsUpdater />
       <SentryUpdater />
       <UploadToIpfsUpdater />
