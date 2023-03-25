@@ -8,12 +8,12 @@ import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
 import {
   getPriceQuote as getPriceQuoteParaswap,
-  toPriceInformation as toPriceInformationParaswap
+  toPriceInformation as toPriceInformationParaswap,
 } from '@cow/api/paraswap'
 import {
   getPriceQuote as getPriceQuoteMatcha,
   MatchaPriceQuote,
-  toPriceInformation as toPriceInformationMatcha
+  toPriceInformation as toPriceInformationMatcha,
 } from '@cow/api/matcha-0x'
 
 import { OptimalRate } from 'paraswap-core'
@@ -23,7 +23,7 @@ import {
   LegacyPriceQuoteError,
   LegacyPriceQuoteParams,
   LegacyPromiseRejectedResultWithSource,
-  LegacyQuoteParams
+  LegacyQuoteParams,
 } from '@cow/api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from '@cow/types'
 import {
@@ -43,7 +43,7 @@ import {
 
 const FEE_EXCEEDS_FROM_ERROR = new GpQuoteError({
   errorType: GpQuoteErrorCodes.FeeExceedsFrom,
-  description: GpQuoteError.quoteErrorDetails.FeeExceedsFrom
+  description: GpQuoteError.quoteErrorDetails.FeeExceedsFrom,
 })
 
 interface GetBestPriceOptions {
@@ -100,7 +100,7 @@ async function getAllPrices(params: LegacyPriceQuoteParams): Promise<AllPricesRe
   const [paraSwapPrice, matchaPrice, oneInchPrice] = await Promise.allSettled([
     paraSwapPricePromise,
     matchaPricePromise,
-    oneInchPricePromise
+    oneInchPricePromise,
   ])
 
   return {
@@ -109,7 +109,7 @@ async function getAllPrices(params: LegacyPriceQuoteParams): Promise<AllPricesRe
     gpPriceResult: { status: 'fulfilled', value: null },
     paraSwapPriceResult: paraSwapPrice,
     matcha0xPriceResult: matchaPrice,
-    oneInchPriceResult: oneInchPrice
+    oneInchPriceResult: oneInchPrice,
   }
 }
 
@@ -168,7 +168,6 @@ function _extractPriceAndErrorPromiseValues(
   return [priceQuotes, errorsGetPrice]
 }
 
-
 function _checkFeeErrorForData(error: GpQuoteError) {
   console.warn('[getBestQuote:Legacy]::Fee error', error)
 
@@ -178,7 +177,7 @@ function _checkFeeErrorForData(error: GpQuoteError) {
   if (feeAmount) {
     return {
       amount: feeAmount,
-      expirationDate: feeExpiration
+      expirationDate: feeExpiration,
     }
   } else {
     // no data object, just rethrow
@@ -230,19 +229,19 @@ export async function getBestPrice(
     const priceQuoteError = new LegacyPriceQuoteError('Error querying price from APIs', params, [
       gpPriceResult,
       paraSwapPriceResult,
-      matcha0xPriceResult
+      matcha0xPriceResult,
     ])
 
     const sentryError = new Error()
     Object.assign(sentryError, priceQuoteError, {
       message: `Error querying best price from APIs`,
-      name: 'PriceErrorObject'
+      name: 'PriceErrorObject',
     })
 
     // report this to sentry
     Sentry.captureException(sentryError, {
       tags: { errorType: 'getBestPrice' },
-      contexts: { params }
+      contexts: { params },
     })
 
     throw priceQuoteError
@@ -254,18 +253,18 @@ export async function getBestPrice(
  *  Return the best quote considering all price feeds. The quote contains information about the price and fee
  */
 export async function getBestQuoteLegacy({
-                                           quoteParams,
-                                           fetchFee,
-                                           previousFee
-                                         }: Omit<LegacyQuoteParams, 'strategy'>): Promise<QuoteResult> {
+  quoteParams,
+  fetchFee,
+  previousFee,
+}: Omit<LegacyQuoteParams, 'strategy'>): Promise<QuoteResult> {
   const { sellToken, buyToken, fromDecimals, toDecimals, amount, kind, chainId, userAddress, validTo } = quoteParams
   const { baseToken, quoteToken } = getCanonicalMarket({ sellToken, buyToken, kind })
   // Get a new fee quote (if required)
   const feePromise =
     fetchFee || !previousFee
       ? getQuote(quoteParams)
-        .then((resp) => ({ amount: resp.quote.feeAmount, expirationDate: resp.expiration }))
-        .catch(_checkFeeErrorForData)
+          .then((resp) => ({ amount: resp.quote.feeAmount, expirationDate: resp.expiration }))
+          .catch(_checkFeeErrorForData)
       : Promise.resolve(previousFee)
 
   // Get a new price quote
@@ -291,18 +290,18 @@ export async function getBestQuoteLegacy({
   const pricePromise =
     !feeExceedsPrice && exchangeAmount
       ? getBestPrice({
-        chainId,
-        baseToken,
-        quoteToken,
-        fromDecimals,
-        toDecimals,
-        amount: exchangeAmount,
-        kind,
-        userAddress,
-        validTo
-      })
+          chainId,
+          baseToken,
+          quoteToken,
+          fromDecimals,
+          toDecimals,
+          amount: exchangeAmount,
+          kind,
+          userAddress,
+          validTo,
+        })
       : // fee exceeds our price, is invalid
-      Promise.reject(FEE_EXCEEDS_FROM_ERROR)
+        Promise.reject(FEE_EXCEEDS_FROM_ERROR)
 
   return Promise.allSettled([pricePromise, feePromise])
 }
