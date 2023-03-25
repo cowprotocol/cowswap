@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { Trans } from '@lingui/macro'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import { ButtonPrimary } from 'components/Button'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'

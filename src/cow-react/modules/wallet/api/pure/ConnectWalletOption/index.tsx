@@ -121,7 +121,7 @@ export function ConnectWalletOption({
   const content = (
     <OptionCardClickable
       id={id}
-      onClick={onClick}
+      onClick={clickable ? onClick : null}
       clickable={clickable && !isActive}
       active={isActive}
       data-testid="wallet-modal-option"

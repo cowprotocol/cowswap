@@ -1,6 +1,6 @@
 import { SwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import React, { ReactNode } from 'react'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import { Trans } from '@lingui/macro'
 import { ButtonError, ButtonPrimary } from 'components/Button'
 import { Text } from 'rebass'
@@ -93,6 +93,11 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
   [SwapButtonState.FetchQuoteError]: () => (
     <GreyCard style={{ textAlign: 'center' }}>
       <Trans>Error loading price. Try again later.</Trans>
+    </GreyCard>
+  ),
+  [SwapButtonState.UnsupportedToken]: () => (
+    <GreyCard style={{ textAlign: 'center' }}>
+      <Trans>Unsupported token</Trans>
     </GreyCard>
   ),
   [SwapButtonState.OfflineBrowser]: () => (

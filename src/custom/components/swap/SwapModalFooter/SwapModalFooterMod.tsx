@@ -9,7 +9,7 @@ import { AutoRow } from 'components/Row'
 import { SwapCallbackError } from 'components/swap/styleds'
 
 // MOD imports
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 
 export interface SwapModalFooterProps {
   onConfirm: () => void

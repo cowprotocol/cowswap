@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { GpEther as ETHER } from 'constants/tokens'
-import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useCloseModals } from 'state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'state/orders/hooks'
 import { useDispatch } from 'react-redux'
@@ -75,7 +75,8 @@ interface BaseFlowContextSetup {
 export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { provider } = useWeb3React()
   const { account, chainId } = useWalletInfo()
-  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletDetails()
+  const { allowsOffchainSigning } = useWalletDetails()
+  const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
   const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
 

@@ -1,16 +1,9 @@
-// import { useWeb3React } from '@web3-react/core'
-// import { useEffect } from 'react'
 import { UaEventOptions } from 'react-ga4/types/ga4'
-// import { RouteComponentProps } from 'react-router-dom'
 import { isMobile } from 'utils/userAgent'
-// import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
-
-import GoogleAnalyticsProvider from './GoogleAnalyticsProvider'
-
-// Mod imports
 import { ErrorInfo } from 'react'
-import { Dimensions } from './GoogleAnalyticsProvider'
-
+import { GAProvider } from './provider'
+import { Dimensions } from './types'
+import { serviceWorkerAnalytics, initAnalytics } from './events/otherEvents'
 export { useAnalyticsReporter } from './hooks/useAnalyticsReporter'
 
 const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
@@ -18,7 +11,7 @@ export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 
 const storedClientId = window.localStorage.getItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY)
 
-export const googleAnalytics = new GoogleAnalyticsProvider()
+export const googleAnalytics = new GAProvider()
 
 export function sendEvent(event: string | UaEventOptions, params?: any) {
   return googleAnalytics.sendEvent(event, params)
@@ -55,10 +48,8 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   googleAnalytics.initialize('test', { gtagOptions: { debug_mode: true } })
 }
 
-const installed = Boolean(window.navigator.serviceWorker?.controller)
-const hit = Boolean((window as any).__isDocumentCached)
-const action = installed ? (hit ? 'Cache hit' : 'Cache miss') : 'Not installed'
-sendEvent({ category: 'Service Worker', action, nonInteraction: true })
+serviceWorkerAnalytics()
+initAnalytics()
 
 // MOD
 export * from './events/listEvents'
@@ -68,26 +59,3 @@ export * from './events/transactionEvents'
 export * from './events/walletEvents'
 export * from './events/swapEvents'
 export * from './events/otherEvents'
-
-export enum Category {
-  SWAP = 'Swap',
-  LIST = 'Lists',
-  CURRENCY_SELECT = 'Currency Select',
-  EXPERT_MODE = 'Expert mode',
-  RECIPIENT_ADDRESS = 'Recipient address',
-  ORDER_SLIPAGE_TOLERANCE = 'Order Slippage Tolerance',
-  ORDER_EXPIRATION_TIME = 'Order Expiration Time',
-  WALLET = 'Wallet',
-  WRAP_NATIVE_TOKEN = 'Wrapped Native Token',
-  CLAIM_COW_FOR_LOCKED_GNO = 'Claim COW for Locked GNO',
-  THEME = 'Theme',
-  GAMES = 'Games',
-  EXTERNAL_LINK = 'External Link',
-}
-
-export interface EventParams {
-  category: Category
-  action: string
-  label?: string
-  value?: number
-}

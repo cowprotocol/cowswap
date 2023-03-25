@@ -1,7 +1,6 @@
 /**
  * Updates cy.visit() to include an injected window.ethereum provider.
  */
-
 import { Eip1193Bridge } from '@ethersproject/experimental/lib/eip1193-bridge'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'

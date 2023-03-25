@@ -9,6 +9,7 @@ export enum ConnectionType {
   GNOSIS_SAFE = 'GNOSIS_SAFE',
   ZENGO = 'ZENGO',
   AMBIRE = 'AMBIRE',
+  ALPHA = 'ALPHA',
 }
 
 export const BACKFILLABLE_WALLETS = [ConnectionType.INJECTED, ConnectionType.WALLET_CONNECT]
@@ -31,7 +32,6 @@ export interface WalletDetails {
 
   // Feature Support
   allowsOffchainSigning: boolean
-
-  // Additioal information
-  gnosisSafeInfo?: SafeInfoResponse
 }
+
+export type GnosisSafeInfo = SafeInfoResponse & { isReadOnly?: boolean }
