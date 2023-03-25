@@ -7,7 +7,7 @@ import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signature
 import { OrderID } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatSymbol } from '@cow/utils/format'
 import { OrderClass, OrderKind, SigningScheme, EcdsaSigningScheme } from '@cowprotocol/cow-sdk'
 import { getProfileData } from '@cow/api/gnosisProtocol/api'

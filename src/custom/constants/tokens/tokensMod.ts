@@ -2,7 +2,7 @@ import { Currency, Ether, NativeCurrency, Token /*, WETH9*/ } from '@uniswap/sdk
 // import invariant from 'tiny-invariant'
 
 // import { UNI_ADDRESS } from './addresses'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 // MOD imports
 import { USDC_GNOSIS_CHAIN, WXDAI, XDAI_NAME, XDAI_SYMBOL } from 'utils/gnosis_chain/constants'

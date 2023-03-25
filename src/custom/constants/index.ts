@@ -4,7 +4,7 @@ import ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
 import ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
 import networksJson from '@cowprotocol/contracts/networks.json'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getAppDataHash } from './appDataHash'
 import ms from 'ms.macro'
 

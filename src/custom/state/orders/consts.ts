@@ -1,5 +1,5 @@
 import { Percent } from '@uniswap/sdk-core'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import ms from 'ms.macro'
 
 export const ContractDeploymentBlocks: Partial<Record<ChainId, number>> = {

@@ -22,7 +22,7 @@ import {
   addGpUnsupportedToken,
   removeGpUnsupportedToken,
 } from 'state/lists/actions'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getChainIdValues } from 'utils/misc'
 import { UnsupportedToken } from '@cow/api/gnosisProtocol'
 

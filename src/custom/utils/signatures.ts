@@ -2,7 +2,7 @@ import { domain as domainGp } from '@cowprotocol/contracts'
 import type { Order, EcdsaSignature, Signature } from '@cowprotocol/contracts'
 import { EcdsaSigningScheme, SigningScheme, OrderParameters } from '@cowprotocol/cow-sdk'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
 import { TypedDataDomain, Signer } from '@ethersproject/abstract-signer'
 import { registerOnWindow } from 'utils/misc'
