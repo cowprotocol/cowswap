@@ -24,6 +24,7 @@ import { useUserTransactionTTL } from 'state/user/hooks'
 import { LegacyFeeQuoteParams, LegacyQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { calculateValidTo } from '@cow/utils/time'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
@@ -134,6 +135,7 @@ export function useRefetchQuoteCallback() {
   const { getNewQuote, refreshQuote, updateQuote, setQuoteError } = useQuoteDispatchers()
   const addUnsupportedToken = useAddGpUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
+  const strategy = useGetGpPriceStrategy()
   const [deadline] = useUserTransactionTTL()
   const isEthFlow = useIsEthFlow()
 
@@ -232,7 +234,7 @@ export function useRefetchQuoteCallback() {
       }
 
       // Init get quote methods params
-      const bestQuoteParams = { ...params }
+      const bestQuoteParams = { ...params, strategy }
       const fastQuoteParams = { quoteParams: { ...quoteParams, priceQuality: 'fast' } }
 
       // Register get best and fast quote methods on window
@@ -256,6 +258,7 @@ export function useRefetchQuoteCallback() {
     [
       isEthFlow,
       deadline,
+      strategy,
       isUnsupportedTokenGp,
       updateQuote,
       refreshQuote,

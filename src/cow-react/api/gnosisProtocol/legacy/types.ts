@@ -1,6 +1,7 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { FeeInformation, PriceInformation } from '@cow/types'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { GpPriceStrategy } from 'state/gas/atoms'
 
 type FeeQuoteParams = Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> & {
   amount: string
@@ -11,6 +12,7 @@ type FeeQuoteParams = Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> & {
 
 export interface LegacyQuoteParams {
   quoteParams: LegacyFeeQuoteParams
+  strategy: GpPriceStrategy
   fetchFee: boolean
   previousFee?: FeeInformation
   isPriceRefresh: boolean

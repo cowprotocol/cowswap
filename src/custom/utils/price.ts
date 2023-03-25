@@ -10,6 +10,7 @@ import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from 
 import { FeeInformation, PriceInformation } from '@cow/types'
 import useSWR, { SWRConfiguration } from 'swr'
 import { getUsdQuoteValidTo } from 'hooks/useStablecoinPrice'
+import { GpPriceStrategy } from 'state/gas/atoms'
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
@@ -35,18 +36,26 @@ export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuot
   return Promise.allSettled([price, fee])
 }
 
-export async function getBestQuote({ quoteParams, fetchFee, previousFee }: LegacyQuoteParams): Promise<QuoteResult> {
-  console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using COWSWAP strategy, hang tight.')
+export async function getBestQuote({ strategy, quoteParams, fetchFee, previousFee }: LegacyQuoteParams): Promise<QuoteResult> {
+  if (strategy === 'COWSWAP') {
+    console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using COWSWAP strategy, hang tight.')
 
-  return getFullQuote({ quoteParams }).catch((err) => {
-    console.warn(
-      '[GP PRICE::API] getBestQuote - error using COWSWAP price strategy, reason: [',
-      err,
-      '] - trying back up price sources...'
-    )
-    // ATTEMPT LEGACY CALL
-    return getBestQuote({ quoteParams, fetchFee, previousFee, isPriceRefresh: false })
-  })
+    return getFullQuote({ quoteParams }).catch((err) => {
+      console.warn(
+        '[GP PRICE::API] getBestQuote - error using COWSWAP price strategy, reason: [',
+        err,
+        '] - trying back up price sources...'
+      )
+      // ATTEMPT LEGACY CALL
+      return getBestQuote({ strategy: 'LEGACY', quoteParams, fetchFee, previousFee, isPriceRefresh: false })
+    })
+  } else {
+    console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using LEGACY strategy, hang tight.')
+
+    const { getBestQuoteLegacy } = await import('utils/priceLegacy')
+
+    return getBestQuoteLegacy({ quoteParams, fetchFee, previousFee, isPriceRefresh: false })
+  }
 }
 
 export async function getFastQuote({ quoteParams }: LegacyQuoteParams): Promise<QuoteResult> {
@@ -82,30 +91,49 @@ export function calculateFallbackPriceImpact(initialValue: string, finalValue: s
   return impact
 }
 
-export async function getGpUsdcPrice({ quoteParams }: Pick<LegacyQuoteParams, 'quoteParams'>) {
-  console.debug(
-    '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using COWSWAP strategy, hang tight.'
-  )
-  // we need to explicitly set the validTo time to 10m in future on every call
-  quoteParams.validTo = getUsdQuoteValidTo()
-  const { quote } = await getQuote(quoteParams)
+export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuoteParams, 'strategy' | 'quoteParams'>) {
+  if (strategy === 'COWSWAP') {
+    console.debug(
+      '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using COWSWAP strategy, hang tight.'
+    )
+    // we need to explicitly set the validTo time to 10m in future on every call
+    quoteParams.validTo = getUsdQuoteValidTo()
+    const { quote } = await getQuote(quoteParams)
 
-  return quote.sellAmount
+    return quote.sellAmount
+  } else {
+    console.debug(
+      '[GP PRICE::API] getGpUsdcPrice - Attempting best USDC quote retrieval using LEGACY strategy, hang tight.'
+    )
+    // legacy
+    const legacyParams = {
+      ...quoteParams,
+      baseToken: quoteParams.buyToken,
+      quoteToken: quoteParams.sellToken,
+    }
+
+    const { getBestPrice } = await import('utils/priceLegacy')
+
+    const quote = await getBestPrice(legacyParams)
+
+    return quote.amount
+  }
 }
 
 export function useGetGpUsdcPrice(
   props: {
+    strategy: GpPriceStrategy
     quoteParams: LegacyFeeQuoteParams | null
   },
   options: SWRConfiguration = SWR_OPTIONS
 ) {
-  const { quoteParams } = props
+  const { strategy, quoteParams } = props
 
   return useSWR<string | null>(
-    ['getGpUsdcPrice', quoteParams],
+    ['getGpUsdcPrice', strategy, quoteParams],
     () => {
-      if (quoteParams) {
-        return getGpUsdcPrice({ quoteParams })
+      if (strategy && quoteParams) {
+        return getGpUsdcPrice({ strategy, quoteParams })
       } else {
         return null
       }

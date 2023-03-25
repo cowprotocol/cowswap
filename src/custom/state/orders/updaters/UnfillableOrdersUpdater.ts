@@ -19,11 +19,13 @@ import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingO
 import { Currency, Price } from '@uniswap/sdk-core'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { GpPriceStrategy } from 'state/gas/atoms'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
-async function _getOrderPrice(chainId: ChainId, order: Order) {
+async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
   let amount, baseToken, quoteToken
 
   if (order.kind === 'sell') {
@@ -66,7 +68,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order) {
     isEthFlow,
   }
   try {
-    return getBestQuote({ quoteParams, fetchFee: false, isPriceRefresh: false })
+    return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
   } catch (e: any) {
     return null
   }
@@ -83,6 +85,7 @@ export function UnfillableOrdersUpdater(): null {
 
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
+  const strategy = useGetGpPriceStrategy()
 
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
@@ -169,7 +172,7 @@ export function UnfillableOrdersUpdater(): null {
 
       pending.forEach((order, index) => {
         console.debug(`[UnfillableOrdersUpdater] Check order`, order)
-        _getOrderPrice(chainId, order)
+        _getOrderPrice(chainId, order, strategy)
           .then((quote) => {
             if (quote) {
               const [promisedPrice, promisedFee] = quote
@@ -201,7 +204,7 @@ export function UnfillableOrdersUpdater(): null {
       isUpdating.current = false
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
-  }, [account, chainId, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
+  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {

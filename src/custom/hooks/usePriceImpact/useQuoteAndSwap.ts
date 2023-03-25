@@ -19,6 +19,7 @@ import { isWrappingTrade } from 'state/swap/utils'
 import { onlyResolvesLast } from 'utils/async'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 
@@ -55,6 +56,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
   const { chainId: preChain } = useWalletInfo()
   const { account } = useWalletInfo()
   const isEthFlow = useIsEthFlow()
+  const strategy = useGetGpPriceStrategy()
 
   const [quote, setLocalQuote] = useState<QuoteInformationObject | FeeQuoteParamsWithError | undefined>()
 
@@ -81,6 +83,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
     }
     let quoteData: QuoteInformationObject | LegacyFeeQuoteParams = quoteParams
     getBestQuoteResolveOnlyLastCall({
+      strategy,
       quoteParams,
       fetchFee: true,
       isPriceRefresh: false,
@@ -115,7 +118,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
         setLocalQuote(quoteError)
       })
       .finally(() => setLoading(false))
-  }, [amount, account, preChain, buyToken, sellToken, toDecimals, fromDecimals, validTo, isEthFlow, setLoading])
+  }, [amount, account, preChain, buyToken, sellToken, toDecimals, fromDecimals, validTo, isEthFlow, setLoading, strategy])
 
   return { quote, loading, setLoading }
 }

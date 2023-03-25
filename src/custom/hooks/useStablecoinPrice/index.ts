@@ -20,6 +20,7 @@ import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useGetGpUsdcPrice } from 'utils/price'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 export * from '@src/hooks/useStablecoinPrice'
 
@@ -47,6 +48,7 @@ export default function useCowUsdPrice(currency?: Currency) {
 
   const chainId = currency?.chainId
   const { account } = useWalletInfo()
+  const strategy = useGetGpPriceStrategy()
 
   const sellTokenAddress = currency?.wrapped.address
   const sellTokenDecimals = currency?.wrapped.decimals
@@ -108,6 +110,7 @@ export default function useCowUsdPrice(currency?: Currency) {
 
   // get SWR cached usd price
   const { data: quote, error: errorResponse } = useGetGpUsdcPrice({
+    strategy,
     quoteParams,
   })
 
@@ -151,7 +154,7 @@ export default function useCowUsdPrice(currency?: Currency) {
         })
       }
     }
-  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, currency, isStablecoin, quote])
+  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, currency, isStablecoin, quote, strategy])
 
   /* const lastPrice = useRef(bestUsdPrice)
   if (!bestUsdPrice || !lastPrice.current || !bestUsdPrice.equalTo(lastPrice.current)) {
