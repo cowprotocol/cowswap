@@ -118,7 +118,19 @@ export function useCalculateQuote(params: GetQuoteParams) {
         setLocalQuote(quoteError)
       })
       .finally(() => setLoading(false))
-  }, [amount, account, preChain, buyToken, sellToken, toDecimals, fromDecimals, validTo, isEthFlow, setLoading, strategy])
+  }, [
+    amount,
+    account,
+    preChain,
+    buyToken,
+    sellToken,
+    toDecimals,
+    fromDecimals,
+    validTo,
+    isEthFlow,
+    setLoading,
+    strategy,
+  ])
 
   return { quote, loading, setLoading }
 }

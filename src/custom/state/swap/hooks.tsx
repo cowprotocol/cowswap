@@ -485,7 +485,13 @@ export interface NativeCurrenciesInfo {
   native: NativeCurrency
 }
 
-export function useIsFeeGreaterThanInput({ address, chainId }: { address?: string | null; chainId?: SupportedChainId }): {
+export function useIsFeeGreaterThanInput({
+  address,
+  chainId,
+}: {
+  address?: string | null
+  chainId?: SupportedChainId
+}): {
   isFeeGreater: boolean
   fee: CurrencyAmount<Currency> | null
 } {
