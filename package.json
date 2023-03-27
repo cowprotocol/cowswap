@@ -65,7 +65,10 @@
     "moduleNameMapper": {
       "@cow/(.*)": "<rootDir>/src/cow-react/$1",
       "@src/(.*)": "<rootDir>/src/$1"
-    }
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ledgerhq/connect-kit-loader)"
+    ]
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^1.1.4",
