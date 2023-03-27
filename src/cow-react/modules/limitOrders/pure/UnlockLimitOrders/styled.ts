@@ -66,8 +66,17 @@ export const List = styled.ul`
     fill: ${({ theme }) => theme.success};
   }
 
-  > li[data-icon='progress'] > span > svg > path {
-    fill: ${({ theme }) => theme.warning};
+  > li[data-is-new='true'] > span {
+    display: flex;
+    width: max-content;
+  }
+
+  > li[data-is-new='true'] > span > b {
+    color: ${({ theme }) => theme.yellow3};
+  }
+
+  > li[data-is-new='true'] > span > svg > path {
+    fill: ${({ theme }) => theme.yellow3};
   }
 `
 
