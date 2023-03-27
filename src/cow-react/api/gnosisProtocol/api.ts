@@ -132,7 +132,7 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
 
-  return orderBookApi.getQuote(quoteParams, { chainId }).catch(error => {
+  return orderBookApi.getQuote(quoteParams, { chainId }).catch((error) => {
     const errorObject = mapOperatorErrorToQuoteError(error?.body)
 
     return Promise.reject(errorObject ? new GpQuoteError(errorObject) : error)
