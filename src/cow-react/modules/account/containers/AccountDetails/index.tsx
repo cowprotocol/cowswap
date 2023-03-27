@@ -10,6 +10,7 @@ import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connectio
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
+import LedgerIcon from '@cow/modules/wallet/api/assets/ledger.svg'
 import { Identicon } from '@cow/modules/wallet/api/container/Identicon'
 import { ActivityDescriptors } from 'hooks/useRecentActivity'
 import Activity from '@cow/modules/account/containers/Transaction'
@@ -51,6 +52,7 @@ import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connect
 import { fortmaticConnection } from '@cow/modules/wallet/web3-react/connection/formatic'
 import { useWalletDetails } from '@cow/modules/wallet/api/hooks'
 import { useWeb3React } from '@web3-react/core'
+import { ledgerConnection } from '@cow/modules/wallet/web3-react/connection/ledger'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',
@@ -80,6 +82,8 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
   }
 
   const connectionType = getWeb3ReactConnection(connector)
+
+  console.log('debug connectionType', connectionType)
 
   if (walletDetails && !walletDetails.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
@@ -115,6 +119,12 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
     return (
       <IconWrapper size={16}>
         <img src={FortmaticIcon} alt={'fortmatic logo'} />
+      </IconWrapper>
+    )
+  } else if (connectionType === ledgerConnection) {
+    return (
+      <IconWrapper size={16}>
+        <img src={LedgerIcon} alt={'ledger logo'} />
       </IconWrapper>
     )
   }
