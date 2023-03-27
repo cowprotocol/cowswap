@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { EventName, ModalName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 // import { sendEvent } from 'components/analytics'
@@ -34,6 +33,8 @@ import { PaddedColumn, SearchInput, Separator, PaddedRow } from 'components/Sear
 import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.'
 import { searchByAddressAnalytics } from 'components/analytics'
+import { useWalletInfo } from '@cow/modules/wallet'
+import { useTokenSearch } from './useTokenSearch'
 
 /* const ContentWrapper = styled(Column)`
   width: 100%;
@@ -80,7 +81,7 @@ export function CurrencySearch({
   setImportToken,
   FooterButtonTextComponent, // MOD
 }: CurrencySearchProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const theme = useTheme()
 
   const [tokenLoaderTimerElapsed, setTokenLoaderTimerElapsed] = useState(false)
@@ -158,7 +159,8 @@ export function CurrencySearch({
   const inputRef = useRef<HTMLInputElement>()
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value
-    const checksummedInput = isAddress(input)
+    // Do a case-insensitive search
+    const checksummedInput = isAddress(input.toLowerCase().trim())
     setSearchQuery(checksummedInput || input)
     fixedList.current?.scrollTo(0)
   }, [])
@@ -200,6 +202,17 @@ export function CurrencySearch({
     return () => clearTimeout(tokenLoaderTimer)
   }, [])
 
+  const existingTokens = useMemo(
+    () =>
+      new Map(
+        [...filteredSortedTokens, ...(filteredInactiveTokens ?? [])]
+          .filter((currency: Currency): currency is Token => currency.isToken)
+          .map(({ address }) => [address, true])
+      ),
+    [filteredSortedTokens, filteredInactiveTokens]
+  )
+  const additionalTokens = useTokenSearch(searchQuery, existingTokens)
+
   return (
     <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
       <ContentWrapper>
@@ -237,7 +250,7 @@ export function CurrencySearch({
           <Column style={{ padding: '20px 0', height: '100%' }}>
             <ImportRow token={searchToken} showImportView={showImportView} setImportToken={setImportToken} />
           </Column>
-        ) : filteredSortedTokens?.length > 0 || filteredInactiveTokens?.length > 0 ? (
+        ) : filteredSortedTokens?.length > 0 || filteredInactiveTokens?.length > 0 || additionalTokens.length > 0 ? (
           <div style={{ flex: '1' }}>
             <AutoSizer disableWidth>
               {({ height }) => (
@@ -255,6 +268,7 @@ export function CurrencySearch({
                   isLoading={balancesIsLoading && !tokenLoaderTimerElapsed}
                   searchQuery={searchQuery}
                   isAddressSearch={isAddressSearch}
+                  additionalTokens={additionalTokens}
                 />
               )}
             </AutoSizer>
@@ -268,7 +282,7 @@ export function CurrencySearch({
         ) : (
           <Column style={{ padding: '20px', height: '100%' }}>
             <ThemedText.Main color={theme.text3} textAlign="center" mb="20px">
-              <Trans>Enter valid token name or address</Trans>
+              <Trans>No tokens found for this name in {network} network</Trans>
             </ThemedText.Main>
           </Column>
         )}

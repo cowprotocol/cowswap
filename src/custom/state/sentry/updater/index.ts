@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/browser'
 
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useAppSelector } from 'state/hooks'
 import { SentryTag } from 'utils/logging'
 
@@ -31,7 +31,8 @@ function _getSentryChainIdAndConnectionStatus(appChainId: number | null, connect
 }
 
 export default function Updater(): null {
-  const { account, chainId: connectedChainId, walletName } = useWalletInfo()
+  const { account, chainId: connectedChainId } = useWalletInfo()
+  const { walletName } = useWalletDetails()
   // app chain id maintains state for users disconnected but browsing app
   const disconnectedChainId = useAppSelector((state) => state.application.chainId)
   const windowVisible = useIsWindowVisible()

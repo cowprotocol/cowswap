@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { useGasPrices } from 'state/gas/hooks'
-import { useWeb3React } from '@web3-react/core'
 import { BalanceChecks } from '../../../pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { AVG_APPROVE_COST_GWEI } from 'constants/index'
 import { parseUnits } from 'ethers/lib/utils'
+import { useWalletInfo } from '@cow/modules/wallet'
 // eslint-disable-next-line no-restricted-imports
 
 export const MINIMUM_TXS = '10'
@@ -74,7 +74,7 @@ export default function useRemainingNativeTxsAndCosts({
   nativeBalance,
   nativeInput,
 }: RemainingTxAndCostsParams) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const gasPrice = useGasPrices(chainId)
   // returns the cost of 1 tx and multi txs
   const txCosts = useMemo(() => _estimateTxCost(gasPrice, native), [gasPrice, native])

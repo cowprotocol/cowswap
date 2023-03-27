@@ -8,6 +8,7 @@ import { useAffiliateAddress } from 'state/affiliate/hooks'
 import { updateAddress } from 'state/affiliate/actions'
 import { useAppDispatch } from 'state/hooks'
 import { isAddress, shortenAddress } from 'utils'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 type AddressSelectorProps = {
   address: string
@@ -17,7 +18,8 @@ export default function AddressSelector(props: AddressSelectorProps) {
   const { address } = props
   const dispatch = useAppDispatch()
   const selectedAddress = useAffiliateAddress()
-  const { chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<string[]>([address])
   const toggle = useCallback(() => setOpen((open) => !open), [])

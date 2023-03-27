@@ -8,18 +8,6 @@ export function limitDateString(date: Date | number): string {
   return [first, second].join(':')
 }
 
-const LOCAL_DATE_FORMATTER = new Intl.DateTimeFormat(
-  'en-CA', // using CA because the format is yyyy-mm-dd, which is what we need
-  {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }
-)
-
 /**
  * Formats a date object into a Timezone aware string in the format: `yyyy-mm-ddTHH:MM`
  *
@@ -31,8 +19,13 @@ const LOCAL_DATE_FORMATTER = new Intl.DateTimeFormat(
 export function formatDateToLocalTime(date: Date | number): string {
   const _date = typeof date === 'number' ? new Date(date * 1000) : date
 
-  return LOCAL_DATE_FORMATTER.format(_date) // this returns `2017-06-01, 08:30`
-    .replace(/, /, 'T') // we want `2017-06-01T08:30`
+  // Because toISOString returns a UTC date, we need to adjust it to the user's timezone.
+  const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000
+  const adjustedDateForTimezone = new Date(_date.getTime() - timezoneOffset)
+
+  return adjustedDateForTimezone
+    .toISOString() // this returns `2017-06-01T08:30Z`
+    .replace('Z', '') // we want `2017-06-01T08:30`
 }
 
 export function calculateMinMax(): [Date, Date] {

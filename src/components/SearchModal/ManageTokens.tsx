@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import Card from 'components/Card'
 import Column from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -17,6 +16,7 @@ import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { CurrencyModalView } from './CurrencySearchModal'
 import ImportRow from 'components/SearchModal/ImportRow'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -44,7 +44,7 @@ export default function ManageTokens({
   setModalView: (view: CurrencyModalView) => void
   setImportToken: (token: Token) => void
 }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const theme = useTheme()

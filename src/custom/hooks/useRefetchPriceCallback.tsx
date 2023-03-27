@@ -34,18 +34,25 @@ interface HandleQuoteErrorParams {
 
 type QuoteParamsForFetching = Omit<LegacyQuoteParams, 'strategy'>
 
+function isMessageIncludeToken(message: string, tokenAddress: string): string | null {
+  if (message.toLowerCase().includes(tokenAddress.toLowerCase())) return tokenAddress
+
+  return null
+}
+
 export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
     switch (error.type) {
       case ApiErrorCodes.UnsupportedToken: {
-        // TODO: will change with introduction of data prop in error responses
-        const unsupportedTokenAddress = error.description.split(' ')[2]
+        const unsupportedTokenAddress =
+          isMessageIncludeToken(error.description, quoteData.sellToken) ||
+          isMessageIncludeToken(error.description, quoteData.buyToken)
         console.error(`${error.message}: ${error.description} - disabling.`)
 
         // Add token to unsupported token list
         addUnsupportedToken({
           chainId: quoteData.chainId,
-          address: unsupportedTokenAddress,
+          address: unsupportedTokenAddress || '',
           dateAdded: Date.now(),
         })
 
@@ -78,13 +85,15 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
 
       case GpQuoteErrorCodes.UnsupportedToken: {
         // TODO: will change with introduction of data prop in error responses
-        const unsupportedTokenAddress = error.description.split(' ')[2]
+        const unsupportedTokenAddress =
+          isMessageIncludeToken(error.description, quoteData.sellToken) ||
+          isMessageIncludeToken(error.description, quoteData.buyToken)
         console.error(`${error.message}: ${error.description} - disabling.`)
 
         // Add token to unsupported token list
         addUnsupportedToken({
           chainId: quoteData.chainId,
-          address: unsupportedTokenAddress,
+          address: unsupportedTokenAddress || '',
           dateAdded: Date.now(),
         })
 

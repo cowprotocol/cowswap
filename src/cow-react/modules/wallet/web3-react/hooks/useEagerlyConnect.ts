@@ -18,7 +18,7 @@ async function connect(connector: Connector) {
   }
 }
 
-export default function useEagerlyConnect() {
+export function useEagerlyConnect() {
   const selectedWalletBackfilled = useAppSelector((state) => state.user.selectedWalletBackfilled)
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
 

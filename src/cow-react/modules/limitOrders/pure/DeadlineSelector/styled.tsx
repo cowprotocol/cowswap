@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
+import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { X } from 'react-feather'
 
 export const Wrapper = styled.div`
@@ -12,7 +13,7 @@ export const Wrapper = styled.div`
   flex-flow: row wrap;
 `
 
-export const Header = styled.span`
+export const Label = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,6 +21,107 @@ export const Header = styled.span`
   font-weight: 500;
   width: 100%;
   color: ${({ theme }) => transparentize(0.3, theme.text1)};
+`
+
+export const Current = styled(MenuButton)<{ $custom?: boolean }>`
+  color: ${({ theme }) => theme.text1};
+  font-size: ${({ $custom }) => ($custom ? '12px' : '100%')};
+  letter-spacing: ${({ $custom }) => ($custom ? '-0.3px' : '0')};
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: 0;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 21px;
+  `}
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  > span {
+    display: inline-block;
+  }
+
+  > svg {
+    margin: 0 0 0 auto;
+  }
+`
+
+export const ListWrapper = styled(MenuList)`
+  display: block;
+  background: ${({ theme }) => theme.bg1};
+  box-shadow: ${({ theme }) => theme.boxShadow2};
+  margin: 15px 0 0 0;
+  padding: 10px 15px;
+  border-radius: 20px;
+  outline: none;
+  list-style: none;
+  position: relative;
+  z-index: 2;
+  min-width: 120px;
+`
+
+export const ListItem = styled(MenuItem)`
+  color: ${({ theme }) => theme.text1};
+  background: none;
+  border: 0;
+  outline: none;
+  margin: 0 0 10px 0;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+
+  :hover {
+    text-decoration: underline;
+  }
+`
+
+export const CustomInput = styled.input`
+  display: flex;
+  cursor: pointer;
+  font-size: 21px;
+  border-radius: 8px;
+  width: 100%;
+  border: 1px solid ${({ theme }) => transparentize(0.7, theme.text1)};
+  color: ${({ theme }) => theme.text1};
+  padding: 4px 8px;
+  outline: 0;
+  background: ${({ theme }) => theme.bg1};
+
+  &::-webkit-calendar-picker-indicator {
+    filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};
+  }
+
+  &::-webkit-datetime-edit {
+    color: ${({ theme }) => theme.text1};
+  }
+
+  &::-webkit-datetime-edit[disabled] {
+    color: ${({ theme }) => transparentize(0.7, theme.text1)};
+  }
+`
+
+export const CustomLabel = styled.label`
+  display: flex;
+  flex-flow: column wrap;
+  font-size: 15px;
+  font-weight: 600;
+  gap: 10px;
+  width: 100%;
 `
 
 export const ModalWrapper = styled.div`
@@ -79,101 +181,4 @@ export const CloseIcon = styled(X)`
   > line {
     stroke: ${({ theme }) => theme.text1};
   }
-`
-
-export const Current = styled.button<{ isCustom: boolean }>`
-  color: ${({ theme }) => theme.text1};
-  font-size: ${({ isCustom }) => (isCustom ? '12px' : '100%')};
-  letter-spacing: ${({ isCustom }) => (isCustom ? '-0.3px' : '0')};
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: none;
-  border: 0;
-  outline: none;
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
-  cursor: pointer;
-  width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 21px;
-  `}
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  > span {
-    display: inline-block;
-  }
-
-  > svg {
-    margin: 0 0 0 auto;
-  }
-`
-
-export const ListWrapper = styled.ul`
-  display: block;
-  background: ${({ theme }) => theme.bg1};
-  box-shadow: ${({ theme }) => theme.boxShadow2};
-  margin: 15px 0 0 0;
-  padding: 10px 15px;
-  border-radius: 20px;
-  list-style: none;
-`
-
-export const ListItem = styled.button`
-  color: ${({ theme }) => theme.text1};
-  background: none;
-  border: 0;
-  outline: none;
-  margin: 0 0 10px 0;
-  padding: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 400;
-  position: relative;
-
-  :hover {
-    text-decoration: underline;
-  }
-`
-
-export const CustomInput = styled.input`
-  display: flex;
-  cursor: pointer;
-  font-size: 21px;
-  border-radius: 8px;
-  width: 100%;
-  border: 1px solid ${({ theme }) => transparentize(0.7, theme.text1)};
-  color: ${({ theme }) => theme.text1};
-  padding: 4px 8px;
-  outline: 0;
-  background: ${({ theme }) => theme.bg1};
-
-  &::-webkit-calendar-picker-indicator {
-    filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};
-  }
-
-  &::-webkit-datetime-edit {
-    color: ${({ theme }) => theme.text1};
-  }
-
-  &::-webkit-datetime-edit[disabled] {
-    color: ${({ theme }) => transparentize(0.7, theme.text1)};
-  }
-`
-
-export const CustomLabel = styled.label`
-  display: flex;
-  flex-flow: column wrap;
-  font-size: 15px;
-  font-weight: 600;
-  gap: 10px;
-  width: 100%;
 `

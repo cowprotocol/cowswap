@@ -25,6 +25,7 @@ const balancesAndAllowances: BalancesAndAllowances = {
 
 export default (
   <Orders
+    pendingOrdersPrices={{}}
     chainId={1}
     currentPageNumber={1}
     orders={ordersMock}

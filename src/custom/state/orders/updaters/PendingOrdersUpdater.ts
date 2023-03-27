@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { useWeb3React } from '@web3-react/core'
 import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
@@ -30,6 +29,7 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -245,7 +245,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 }
 
 export function PendingOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
 
   const pending = usePendingOrders({ chainId })

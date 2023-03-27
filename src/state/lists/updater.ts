@@ -12,9 +12,11 @@ import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { acceptListUpdate, enableList } from './actions'
 import { useActiveListUrls } from './hooks'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export default function Updater(): null {
-  const { chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
   const isWindowVisible = useIsWindowVisible()
 

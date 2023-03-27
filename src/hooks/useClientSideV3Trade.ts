@@ -1,6 +1,5 @@
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 import { Route, SwapQuoter } from '@uniswap/v3-sdk'
-import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from '@src/constants/chains'
 import JSBI from 'jsbi'
 import { useSingleContractWithCallData } from 'lib/hooks/multicall'
@@ -10,6 +9,7 @@ import { InterfaceTrade, TradeState } from 'state/routing/types'
 import { isCelo } from '../constants/tokens'
 import { useAllV3Routes } from './useAllV3Routes'
 import { useQuoter } from './useContract'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const QUOTE_GAS_OVERRIDES: { [chainId: number]: number } = {
   [SupportedChainId.ARBITRUM_ONE]: 25_000_000,
@@ -35,7 +35,7 @@ export function useClientSideV3Trade<TTradeType extends TradeType>(
       : [otherCurrency, amountSpecified?.currency]
   const { routes, loading: routesLoading } = useAllV3Routes(currencyIn, currencyOut)
 
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   // Chains deployed using the deploy-v3 script only deploy QuoterV2.
   const useQuoterV2 = useMemo(() => Boolean(chainId && isCelo(chainId)), [chainId])
   const quoter = useQuoter(useQuoterV2)

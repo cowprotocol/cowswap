@@ -16,7 +16,7 @@ describe('Limit orders', () => {
     cy.get('#unlock-limit-orders-btn').click()
 
     pickToken('WETH', 'input')
-    pickToken('DAI', 'output')
+    pickToken('USDC', 'output')
 
     cy.get('#limit-orders-currency-input .token-amount-input').type(inputAmount.toString())
     cy.get('#rate-limit-amount-input').clear().type(rate.toString(), { force: true })

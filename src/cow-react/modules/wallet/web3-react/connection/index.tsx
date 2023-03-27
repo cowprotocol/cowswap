@@ -133,17 +133,9 @@ export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation:
       {walletConnectionOption}
       {coinbaseWalletOption}
       {ledgerOption}
-      {viewAll && (
-        <>
-          {zengoOption}
-          {ambireOption}
-          {alphaOption}
-        </>
-      )}
-
-      <ButtonPrimary $borderRadius="12px" padding="12px" onClick={() => setViewAll(!viewAll)}>
-        <Trans>{viewAll ? 'Show less' : 'Show more'}</Trans>
-      </ButtonPrimary>
+      {zengoOption}
+      {ambireOption}
+      {alphaOption}
     </>
   )
 }

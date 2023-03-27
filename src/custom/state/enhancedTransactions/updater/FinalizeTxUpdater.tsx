@@ -21,6 +21,7 @@ import { cancelOrdersBatch, invalidateOrdersBatch, updateOrder } from 'state/ord
 import { useSetAtom } from 'jotai'
 import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import ms from 'ms.macro'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
@@ -229,7 +230,8 @@ function checkEthereumTransactions(params: CheckEthereumTransactions): Cancel[] 
 }
 
 export default function Updater(): null {
-  const { chainId: _chainId, provider, account } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
   const lastBlockNumber = useBlockNumber()
   const accountLowerCase = account?.toLowerCase() || ''

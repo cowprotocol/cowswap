@@ -34,6 +34,6 @@ export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'isEthFlow' | 's
   quoteToken: string
 }
 
-export type LegacyPriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
+export type LegacyPriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x' | '1inch'
 export type LegacyPriceInformationWithSource = PriceInformation & { source: LegacyPriceSource; data?: any }
 export type LegacyPromiseRejectedResultWithSource = PromiseRejectedResult & { source: LegacyPriceSource }
