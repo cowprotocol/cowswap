@@ -11,6 +11,7 @@ import { getAppDataHash } from 'constants/appDataHash'
 import { orderBookApi } from '@cow/cowSdk'
 import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
+import GpQuoteError, { mapOperatorErrorToQuoteError } from '@cow/api/gnosisProtocol/errors/QuoteError'
 
 const fetchRateLimitted = fetchWithRateLimit({
   rateLimit: {
@@ -131,7 +132,11 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
 
-  return orderBookApi.getQuote(quoteParams, { chainId })
+  return orderBookApi.getQuote(quoteParams, { chainId }).catch(error => {
+    const errorObject = mapOperatorErrorToQuoteError(error?.body)
+
+    return Promise.reject(errorObject ? new GpQuoteError(errorObject) : error)
+  })
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<EnrichedOrder | null> {
