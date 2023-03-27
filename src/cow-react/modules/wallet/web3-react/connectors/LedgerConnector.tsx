@@ -67,8 +67,6 @@ export class Ledger extends Connector {
       this.provider = ledgerProvider as unknown as LedgerProvider
     }
 
-    ;(window as any)['provider'] = this.provider
-
     return this.provider
   }
 
