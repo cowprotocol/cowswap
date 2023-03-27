@@ -83,8 +83,6 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
 
   const connectionType = getWeb3ReactConnection(connector)
 
-  console.log('debug connectionType', connectionType)
-
   if (walletDetails && !walletDetails.isSupportedWallet) {
     /* eslint-disable jsx-a11y/accessible-emoji */
     return (
