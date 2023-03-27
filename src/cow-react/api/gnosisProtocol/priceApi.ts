@@ -18,7 +18,6 @@ function getPriceStrategyUrl(): Record<SupportedChainId, string> {
 
 const STRATEGY_API_URL = getPriceStrategyUrl()
 
-
 export type PriceStrategy = {
   primary: GpPriceStrategy
   secondary: GpPriceStrategy
@@ -29,8 +28,8 @@ function _getPriceStrategyApiBaseUrl(chainId: SupportedChainId): string {
   if (!baseUrl) {
     new Error(
       `Unsupported Network. The ${API_NAME} strategy API is not deployed in the Network ` +
-      chainId +
-      '. Defaulting to using Mainnet strategy.'
+        chainId +
+        '. Defaulting to using Mainnet strategy.'
     )
   }
   return baseUrl
