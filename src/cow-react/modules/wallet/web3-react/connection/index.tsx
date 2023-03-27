@@ -19,6 +19,7 @@ import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
+import { tallyWalletConnection, TallyWalletOption } from './tally'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -27,6 +28,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   walletConnectConnection,
   fortmaticConnection,
   networkConnection,
+  tallyWalletConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -38,6 +40,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case walletConnectConnection.connector:
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
+    case tallyWalletConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -71,6 +74,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return walletConnectConnection
       case ConnectionType.ALPHA:
         return walletConnectConnection
+      case ConnectionType.TALLY:
+        return tallyWalletConnection
     }
   }
 }
@@ -106,9 +111,13 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const walletConnectionOption =
     (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
 
+  // Wallet-connect based
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
+
+  // Injected
+  const tallyOption = (!isInjectedMobileBrowser && <TallyWalletOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
@@ -118,6 +127,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {zengoOption}
       {ambireOption}
       {alphaOption}
+      {tallyOption}
     </>
   )
 }

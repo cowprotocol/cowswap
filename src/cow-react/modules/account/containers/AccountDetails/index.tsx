@@ -10,6 +10,7 @@ import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connectio
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
+import TallyIcon from '@cow/modules/wallet/api/assets/tally.svg'
 import { Identicon } from '@cow/modules/wallet/api/container/Identicon'
 import { ActivityDescriptors } from 'hooks/useRecentActivity'
 import Activity from '@cow/modules/account/containers/Transaction'
@@ -49,14 +50,12 @@ import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/in
 import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connection/coinbase'
 import { fortmaticConnection } from '@cow/modules/wallet/web3-react/connection/formatic'
+import { tallyWalletConnection } from '@cow/modules/wallet/web3-react/connection/tally'
 import { useWalletDetails } from '@cow/modules/wallet/api/hooks'
 import { useWeb3React } from '@web3-react/core'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
-  // [ChainId.RINKEBY]: 'Rinkeby',
-  // [ChainId.ROPSTEN]: 'Ropsten',
   [ChainId.GOERLI]: 'Görli',
-  // [ChainId.KOVAN]: 'Kovan',
   [ChainId.GNOSIS_CHAIN]: 'Gnosis Chain',
 }
 
@@ -115,6 +114,12 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
     return (
       <IconWrapper size={16}>
         <img src={FortmaticIcon} alt={'fortmatic logo'} />
+      </IconWrapper>
+    )
+  } else if (connectionType === tallyWalletConnection) {
+    return (
+      <IconWrapper size={16}>
+        <img src={TallyIcon} alt={'tally logo'} />
       </IconWrapper>
     )
   }
