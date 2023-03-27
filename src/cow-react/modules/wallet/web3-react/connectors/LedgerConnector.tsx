@@ -1,19 +1,11 @@
-import {
-  Actions,
-  // AddEthereumChainParameter,
-  Connector,
-  Provider,
-  // ProviderConnectInfo,
-  // ProviderRpcError,
-  RequestArguments,
-} from '@web3-react/types'
+import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
-
 import { loadConnectKit, LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
 
 type LedgerProvider = Provider & {
   connected: () => boolean
   request<T>(args: RequestArguments): Promise<T>
+  disconnect: () => void
 }
 
 interface LedgerConstructorArgs {
@@ -47,8 +39,6 @@ export class Ledger extends Connector {
   }
 
   async getAccounts() {
-    console.log('getAccount')
-
     const provider = await this.getProvider()
     const accounts = (await provider.request({
       method: 'eth_requestAccounts',
@@ -58,8 +48,6 @@ export class Ledger extends Connector {
   }
 
   async getChainId() {
-    console.log('getChainId')
-
     const provider = await this.getProvider()
     const chainId = (await provider.request({
       method: 'eth_chainId',
@@ -73,48 +61,41 @@ export class Ledger extends Connector {
       forceCreate: false,
     }
   ) {
-    console.log('getProvider')
-
     if (!this.provider || forceCreate) {
-      console.log('getting provider from Connect Kit')
       const connectKit = await this.connectKitPromise
-      this.provider = (await connectKit.getProvider()) as LedgerProvider
+      const ledgerProvider = await connectKit.getProvider()
+      this.provider = ledgerProvider as unknown as LedgerProvider
     }
 
     return this.provider
   }
 
   async getSigner() {
-    console.log('getSigner')
-
     const [provider, account] = await Promise.all([this.getProvider(), this.getAccounts()])
     return new Web3Provider(provider as ExternalProvider).getSigner(account[0])
   }
 
-  public async activate() {
-    console.log('debug activate')
-
+  async activateLedgerKit() {
     const connectKit = await this.connectKitPromise
 
-    connectKit.enableDebugLogs()
+    await connectKit.enableDebugLogs()
 
-    connectKit.checkSupport({
+    await connectKit.checkSupport({
       providerType: SupportedProviders.Ethereum,
       chainId: this.options.chainId,
       infuraId: this.options.infuraId,
       rpc: this.options.rpc,
     })
+  }
 
-    const provider = await this.getProvider({ forceCreate: true })
+  async activateProvider() {
+    if (!this.provider) return
 
-    console.log('debug provider', this.provider)
-
-    if (provider.on) {
-      console.log('debug assigning event handlers')
-      provider.on('accountsChanged', this.onAccountsChanged)
-      provider.on('chainChanged', this.onChainChanged)
-      provider.on('disconnect', this.onDisconnect)
-      provider.on('close', this.onDisconnect)
+    if (this.provider.on) {
+      this.provider.on('accountsChanged', this.onAccountsChanged)
+      this.provider.on('chainChanged', this.onChainChanged)
+      this.provider.on('disconnect', this.onDisconnect)
+      this.provider.on('close', this.onDisconnect)
     }
 
     const accounts = await this.getAccounts()
@@ -123,11 +104,29 @@ export class Ledger extends Connector {
     return this.actions.update({ chainId, accounts })
   }
 
-  public async connectEagerly(): Promise<void> {}
+  public async activate() {
+    await this.activateLedgerKit()
+    await this.getProvider({ forceCreate: true })
+    await this.activateProvider()
+  }
+
+  public async connectEagerly(): Promise<void> {
+    const cancelActivation = this.actions.startActivation()
+
+    try {
+      await this.activateLedgerKit()
+      await this.getProvider({ forceCreate: true })
+
+      if (!this.provider?.connected) return cancelActivation()
+
+      this.activateProvider()
+    } catch (error) {
+      cancelActivation()
+      throw error
+    }
+  }
 
   protected onAccountsChanged = (accounts: string[]): void => {
-    console.log('debug accounts changed', accounts)
-
     if (accounts.length === 0) {
       this.actions.resetState()
     } else {
@@ -136,13 +135,18 @@ export class Ledger extends Connector {
   }
 
   protected onChainChanged = (chainId: number | string): void => {
-    console.log('debug chain changed')
-
     this.actions.update({ chainId: parseChainId(chainId) })
   }
 
   protected onDisconnect = (error: any): void => {
     this.actions.resetState()
     this.onError?.(error)
+  }
+
+  public async deactivate(): Promise<void> {
+    await this.provider?.disconnect()
+    this.provider = undefined
+    this.eagerConnection = undefined
+    this.actions.resetState()
   }
 }

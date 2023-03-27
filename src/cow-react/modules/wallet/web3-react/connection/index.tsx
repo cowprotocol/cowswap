@@ -20,9 +20,7 @@ import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
-import { ButtonPrimary } from 'components/Button'
 import { useEffect, useState } from 'react'
-import { Trans } from '@lingui/macro'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
