@@ -77,7 +77,7 @@ const formatAnalyticsEventProperties = (
 
 const MAX_LENGTH_OVERFLOW = 12
 export default function CommonBases({
-  chainId,
+  // chainId,
   onSelect,
   selectedCurrency,
   searchQuery,

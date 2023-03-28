@@ -189,6 +189,7 @@ declare module 'styled-components' {
       upToSmall: ThemedCssFunction<DefaultTheme>
       upToMedium: ThemedCssFunction<DefaultTheme>
       upToLarge: ThemedCssFunction<DefaultTheme>
+      upToLargeAlt: ThemedCssFunction<DefaultTheme>
       upToExtraLarge: ThemedCssFunction<DefaultTheme>
     }
   }

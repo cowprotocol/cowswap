@@ -16,6 +16,7 @@ const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow
 const EthFlowProd = ethFlowProdJson.CoWSwapEthFlow
 
 export const ZERO_BIG_NUMBER = new BigNumber(0)
+export const ZERO_FRACTION = new Fraction(0)
 
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
 export const MAX_SLIPPAGE_BPS = 5000 // 50%

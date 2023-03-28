@@ -1,5 +1,53 @@
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
+import { RateWrapper } from '@cow/common/pure/RateInfo'
+import { OrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
+
+export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
+  --height: 28px;
+  margin: 0;
+  background: ${({ theme, hasBackground = true }) =>
+    hasBackground
+      ? theme.darkMode
+        ? transparentize(0.9, theme.alert)
+        : transparentize(0.85, theme.alert)
+      : 'transparent'};
+  color: ${({ theme }) => theme.alert};
+  line-height: 0;
+  border: 0;
+  padding: 0 5px;
+  width: auto;
+  height: var(--height);
+  border-radius: 0 9px 9px 0;
+
+  svg > path {
+    fill: ${({ theme }) => theme.alert};
+  }
+`
+
+export const WarningContent = styled.div`
+  max-width: 270px;
+  padding: 10px;
+  color: ${({ theme }) => theme.black};
+
+  h3,
+  p {
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  h3 {
+    margin-bottom: 8px;
+  }
+`
+
+export const WarningParagraph = styled.div`
+  margin-bottom: 20px;
+
+  :last-child {
+    margin-bottom: 0;
+  }
+`
 
 export const RateValue = styled.span``
 
@@ -27,54 +75,26 @@ export const AmountItem = styled.div`
   > span {
     white-space: normal;
     word-break: break-all;
+    max-width: 150px;
+    display: inline;
+  }
+
+  > span > span {
+    color: ${({ theme }) => transparentize(0.3, theme.text1)};
   }
 `
 
-export const WarningIndicator = styled.button`
-  --height: 28px;
-  margin: 0;
-  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
-  color: ${({ theme }) => theme.alert};
-  line-height: 0;
-  border: 0;
-  padding: 0 5px;
-  width: auto;
-  height: var(--height);
-  border-radius: 0 9px 9px 0;
-
-  svg > path {
-    fill: ${({ theme }) => theme.alert};
-  }
-`
-
-export const WarningContent = styled.div`
-  max-width: 450px;
-  padding: 15px 20px;
-  color: ${({ theme }) => theme.black};
-
-  h3,
-  p {
-    margin: 0;
-  }
-
-  h3 {
-    margin-bottom: 8px;
-  }
-`
-
-export const WarningParagraph = styled.div`
-  margin-bottom: 20px;
-
-  :last-child {
-    margin-bottom: 0;
-  }
-`
-
-export const CellElement = styled.div<{ doubleRow?: boolean }>`
-  padding: 12px 0;
-  font-size: 13px;
+export const CellElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
+  padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
+  font-size: 12px;
   font-weight: 500;
+  gap: 5px;
+  height: 100%;
   display: flex;
+  flex-direction: row;
+  align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
+  text-align: left;
+  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
 
   > b {
     font-weight: 500;
@@ -84,18 +104,31 @@ export const CellElement = styled.div<{ doubleRow?: boolean }>`
     doubleRow &&
     `
     flex-flow: column wrap;
+    justify-content: center;
     gap: 2px;
 
     > i {
-      opacity: 0.7;
+      opacity: 0.6;
     }
   `}
+
+  ${RateWrapper} {
+    font-weight: 500;
+    font-size: 12px;
+    white-space: normal;
+    word-break: break-all;
+  }
+`
+
+export const PriceElement = styled(CellElement)`
+  cursor: pointer;
 `
 
 export const CurrencyLogoPair = styled.div`
   display: flex;
 
-  > img {
+  > img,
+  > svg {
     border: 2px solid ${({ theme }) => theme.grey1};
   }
 
@@ -110,6 +143,8 @@ export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   flex-flow: row wrap;
   align-items: center;
   gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   :hover {
@@ -125,8 +160,8 @@ export const CurrencyAmountWrapper = styled.div`
 
 export const ProgressBar = styled.div<{ value: number }>`
   position: relative;
-  margin: 4px 0 0;
-  height: 6px;
+  margin: 2px 0 0;
+  height: 5px;
   width: 100%;
   background: ${({ theme }) => (theme.darkMode ? theme.bg1 : transparentize(0.92, theme.text1))};
   border-radius: 6px;
@@ -137,6 +172,42 @@ export const ProgressBar = styled.div<{ value: number }>`
     height: 100%;
     width: ${({ value }) => value}%;
     background: ${({ theme }) => theme.text3};
-    border-radius: 6px;
+    border-radius: 5px;
   }
+`
+
+export const ExecuteIndicator = styled.div<{ status?: OrderExecutionStatus }>`
+  --size: 6px;
+  width: var(--size);
+  height: var(--size);
+  min-width: var(--size);
+  min-height: var(--size);
+  border-radius: var(--size);
+  display: block;
+  margin: 0 3px 0 0;
+  background: ${({ status, theme }) => {
+    switch (status) {
+      case 'veryClose':
+        return theme.success
+      case 'close':
+        return theme.text3
+      case 'notClose':
+      default:
+        return transparentize(0.5, theme.text1)
+    }
+  }};
+`
+
+export const ExecuteCellWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
+
+export const ExecuteInformationTooltip = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  padding: 0;
+  margin: 0;
 `

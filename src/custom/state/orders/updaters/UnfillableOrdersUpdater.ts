@@ -7,7 +7,12 @@ import { Order, OrderClass } from 'state/orders/actions'
 import { SupportedChainId as ChainId } from 'constants/chains'
 
 import { getBestQuote } from 'utils/price'
-import { getOrderExecutionPrice, getOrderMarketPrice, isOrderUnfillable } from 'state/orders/utils'
+import {
+  getEstimatedExecutionPrice,
+  getOrderExecutionPrice,
+  getOrderMarketPrice,
+  isOrderUnfillable,
+} from 'state/orders/utils'
 import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
 import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
@@ -19,7 +24,7 @@ import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
@@ -99,7 +104,7 @@ export function UnfillableOrdersUpdater(): null {
       order: Order,
       fee: FeeInformation | null,
       marketPrice: Price<Currency, Currency>,
-      executionPrice: Price<Currency, Currency>
+      estimatedExecutionPrice: Price<Currency, Currency>
     ) => {
       if (!fee?.amount) return
 
@@ -108,7 +113,8 @@ export function UnfillableOrdersUpdater(): null {
         data: {
           lastUpdateTimestamp: Date.now(),
           marketPrice,
-          executionPrice,
+          estimatedExecutionPrice,
+          feeAmount: CurrencyAmount.fromRawAmount(marketPrice.baseCurrency, fee.amount),
         },
       })
     },
@@ -133,6 +139,7 @@ export function UnfillableOrdersUpdater(): null {
 
       const executionPrice = getOrderExecutionPrice(order, price.amount, fee.amount)
       const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
+      const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
       const isUnfillable = isOrderUnfillable(order, orderPrice, executionPrice)
 
       // Only trigger state update if flag changed
@@ -146,7 +153,7 @@ export function UnfillableOrdersUpdater(): null {
         }
       }
 
-      updateOrderMarketPriceCallback(order, fee, marketPrice, executionPrice)
+      updateOrderMarketPriceCallback(order, fee, marketPrice, estimatedExecutionPrice)
     },
     [setIsOrderUnfillable, updateOrderMarketPriceCallback]
   )
@@ -197,9 +204,9 @@ export function UnfillableOrdersUpdater(): null {
             })
 
             console.debug(
-              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`
+              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`,
+              e
             )
-            console.debug(e)
           })
       })
     } finally {
