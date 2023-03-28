@@ -126,7 +126,7 @@ export class InjectedWallet extends Connector {
 
     return Promise.all([
       this.provider.request({ method: 'eth_chainId' }) as Promise<string>,
-      this.provider.request({ method: 'eth_accounts' }) as Promise<string[]>,
+      this.provider.request({ method: 'eth_requestAccounts' }) as Promise<string[]>,
     ])
       .then(([chainId, accounts]) => {
         if (accounts.length) {
