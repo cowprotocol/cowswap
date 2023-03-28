@@ -16,7 +16,7 @@ const rateInfoParams = {
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
+  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
 function buildRateInfoParams(
@@ -33,7 +33,7 @@ function buildRateInfoParams(
     inputCurrencyAmount,
     outputCurrencyAmount,
     activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
+    invertedActiveRateFiatAmount: null,
   }
 }
 

@@ -26,7 +26,7 @@ export function RateInput() {
   const { chainId } = useWalletInfo()
   // Rate state
   const {
-    isInversed,
+    isInverted,
     activeRate,
     isLoading,
     marketRate,
@@ -48,8 +48,8 @@ export function RateInput() {
   const inputCurrencyId = inputCurrency?.symbol
   const outputCurrencyId = outputCurrency?.symbol
 
-  const primaryCurrency = isInversed ? outputCurrency : inputCurrency
-  const secondaryCurrency = isInversed ? inputCurrency : outputCurrency
+  const primaryCurrency = isInverted ? outputCurrency : inputCurrency
+  const secondaryCurrency = isInverted ? inputCurrency : outputCurrency
 
   // Handle rate display
   const displayedRate = useMemo(() => {
@@ -57,10 +57,10 @@ export function RateInput() {
 
     if (!activeRate || !areBothCurrencies || activeRate.equalTo(0)) return ''
 
-    const rate = isInversed ? activeRate.invert() : activeRate
+    const rate = isInverted ? activeRate.invert() : activeRate
 
     return formatInputAmount(rate)
-  }, [activeRate, areBothCurrencies, isInversed, isTypedValue, typedValue])
+  }, [activeRate, areBothCurrencies, isInverted, isTypedValue, typedValue])
 
   // Handle set market price
   const handleSetMarketPrice = useCallback(() => {
@@ -76,18 +76,18 @@ export function RateInput() {
     (typedValue: string) => {
       updateLimitRateState({ typedValue })
       updateRate({
-        activeRate: toFraction(typedValue, isInversed),
+        activeRate: toFraction(typedValue, isInverted),
         isTypedValue: true,
         isRateFromUrl: false,
       })
     },
-    [isInversed, updateRate, updateLimitRateState]
+    [isInverted, updateRate, updateLimitRateState]
   )
 
   // Handle toggle primary field
   const handleToggle = useCallback(() => {
-    updateLimitRateState({ isInversed: !isInversed, isTypedValue: false })
-  }, [isInversed, updateLimitRateState])
+    updateLimitRateState({ isInverted: !isInverted, isTypedValue: false })
+  }, [isInverted, updateLimitRateState])
 
   const isDisabledMPrice = useMemo(() => {
     if (isLoadingMarketRate) return true
@@ -120,7 +120,7 @@ export function RateInput() {
       getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
     const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
-    updateLimitRateState({ isInversed: quoteCurrencyAddress !== inputCurrencyAddress })
+    updateLimitRateState({ isInverted: quoteCurrencyAddress !== inputCurrencyAddress })
     setIsQuoteCurrencySet(true)
   }, [
     isQuoteCurrencySet,
@@ -144,7 +144,7 @@ export function RateInput() {
           <HeadingText inputCurrency={inputCurrency} currency={primaryCurrency} rateImpact={rateImpact} />
 
           <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
-            <span>Market price</span>
+            <span>Set to market</span>
           </styledEl.MarketPriceButton>
         </styledEl.Header>
 
@@ -181,7 +181,7 @@ export function RateInput() {
               <QuestionHelper
                 text={
                   <ExecutionPriceTooltip
-                    isInversed={isInversed}
+                    isInverted={isInverted}
                     feeAmount={feeAmount}
                     marketRate={marketRate}
                     displayedRate={displayedRate}
@@ -192,7 +192,7 @@ export function RateInput() {
             ) : null}
           </b>
           {!isLoadingMarketRate && executionPrice && (
-            <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />
+            <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />
           )}
         </styledEl.EstimatedRate>
       )}

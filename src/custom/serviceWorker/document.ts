@@ -41,7 +41,7 @@ type HandlerContext = {
  *
  * In addition, this handler may serve an offline document if there is no internet connection.
  */
-export async function handleDocument(this: HandlerContext, { event, request }: RouteHandlerCallbackOptions) {
+export async function handleDocument(this: HandlerContext, { event: _event, request }: RouteHandlerCallbackOptions) {
   // If we are offline, serve the offline document.
   if ('onLine' in navigator && !navigator.onLine) return this?.offlineDocument?.clone() || fetch(request)
 

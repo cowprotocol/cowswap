@@ -19,7 +19,7 @@ export interface RateInfoParams {
   inputCurrencyAmount: CurrencyAmount<Currency> | null
   outputCurrencyAmount: CurrencyAmount<Currency> | null
   activeRateFiatAmount: CurrencyAmount<Currency> | null
-  inversedActiveRateFiatAmount: CurrencyAmount<Currency> | null
+  invertedActiveRateFiatAmount: CurrencyAmount<Currency> | null
 }
 
 export interface RateInfoProps {
@@ -28,10 +28,12 @@ export interface RateInfoProps {
   stylized?: boolean
   noLabel?: boolean
   prependSymbol?: boolean
-  isInversed?: boolean
+  isInverted?: boolean
   setSmartQuoteSelectionOnce?: boolean
-  isInversedState?: [boolean, Dispatch<SetStateAction<boolean>>]
+  doNotUseSmartQuote?: boolean
+  isInvertedState?: [boolean, Dispatch<SetStateAction<boolean>>]
   rateInfoParams: RateInfoParams
+  opacitySymbol?: boolean
 }
 
 const Wrapper = styled.div<{ stylized: boolean }>`
@@ -58,9 +60,9 @@ const RateLabel = styled.div`
 `
 
 const InvertIcon = styled.div`
-  --size: 20px;
+  --size: 17px;
   cursor: pointer;
-  background: ${({ theme }) => theme.grey1};
+  background: ${({ theme }) => transparentize(0.9, theme.text1)};
   color: ${({ theme }) => theme.text1};
   width: var(--size);
   height: var(--size);
@@ -71,6 +73,10 @@ const InvertIcon = styled.div`
   align-items: center;
   justify-content: center;
   transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+
+  > svg {
+    padding: 1px;
+  }
 
   &:hover {
     background: ${({ theme }) => theme.bg2};
@@ -115,13 +121,15 @@ export function RateInfo({
   className,
   label = 'Limit price',
   setSmartQuoteSelectionOnce = false,
+  doNotUseSmartQuote = false,
   stylized = false,
-  isInversed = false,
+  isInverted = false,
   noLabel = false,
   prependSymbol = true,
-  isInversedState,
+  isInvertedState,
+  opacitySymbol = false,
 }: RateInfoProps) {
-  const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, inversedActiveRateFiatAmount } =
+  const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
 
   const activeRate = usePrice(inputCurrencyAmount, outputCurrencyAmount)
@@ -129,41 +137,41 @@ export function RateInfo({
   const outputCurrency = outputCurrencyAmount?.currency
 
   const [isSmartQuoteSelectionSet, setIsSmartQuoteSelectionSet] = useState(false)
-  const customDispatcher = useState(isInversed)
-  const [currentIsInversed, setCurrentIsInversed] = isInversedState || customDispatcher
+  const customDispatcher = useState(isInverted)
+  const [currentIsInverted, setCurrentIsInverted] = isInvertedState || customDispatcher
 
   const currentActiveRate = useMemo(() => {
     if (!activeRate) return null
-    return currentIsInversed ? activeRate.invert() : activeRate
-  }, [currentIsInversed, activeRate])
+    return currentIsInverted ? activeRate.invert() : activeRate
+  }, [currentIsInverted, activeRate])
 
   const fiatAmount = useMemo(() => {
-    return currentIsInversed ? inversedActiveRateFiatAmount : activeRateFiatAmount
-  }, [currentIsInversed, activeRateFiatAmount, inversedActiveRateFiatAmount])
+    return currentIsInverted ? invertedActiveRateFiatAmount : activeRateFiatAmount
+  }, [currentIsInverted, activeRateFiatAmount, invertedActiveRateFiatAmount])
 
   const rateInputCurrency = useMemo(() => {
-    return currentIsInversed ? outputCurrency : inputCurrency
-  }, [currentIsInversed, inputCurrency, outputCurrency])
+    return currentIsInverted ? outputCurrency : inputCurrency
+  }, [currentIsInverted, inputCurrency, outputCurrency])
 
   const rateOutputCurrency = useMemo(() => {
-    return currentIsInversed ? inputCurrency : outputCurrency
-  }, [currentIsInversed, inputCurrency, outputCurrency])
+    return currentIsInverted ? inputCurrency : outputCurrency
+  }, [currentIsInverted, inputCurrency, outputCurrency])
 
   const quoteCurrency = useMemo(() => {
     return getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
   }, [chainId, inputCurrencyAmount, outputCurrencyAmount])
 
   useEffect(() => {
-    setCurrentIsInversed(isInversed)
-  }, [isInversed, setCurrentIsInversed])
+    setCurrentIsInverted(isInverted)
+  }, [isInverted, setCurrentIsInverted])
 
-  // Set isInversed based on quoteCurrency
+  // Set isInverted based on quoteCurrency
   useEffect(() => {
-    if (isSmartQuoteSelectionSet) return
+    if (isSmartQuoteSelectionSet || doNotUseSmartQuote) return
 
     const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
-    setCurrentIsInversed(quoteCurrencyAddress !== inputCurrencyAddress)
+    setCurrentIsInverted(quoteCurrencyAddress !== inputCurrencyAddress)
 
     if (setSmartQuoteSelectionOnce) {
       setIsSmartQuoteSelectionSet(true)
@@ -172,10 +180,11 @@ export function RateInfo({
     quoteCurrency,
     inputCurrency,
     outputCurrency,
-    setCurrentIsInversed,
+    setCurrentIsInverted,
     isSmartQuoteSelectionSet,
     setIsSmartQuoteSelectionSet,
     setSmartQuoteSelectionOnce,
+    doNotUseSmartQuote,
   ])
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
@@ -185,11 +194,11 @@ export function RateInfo({
       {!noLabel && (
         <RateLabel>
           <Trans>{label}</Trans>
-          <InvertRateControl onClick={() => setCurrentIsInversed((state) => !state)} />
+          <InvertRateControl onClick={() => setCurrentIsInverted((state) => !state)} />
         </RateLabel>
       )}
       <div>
-        <RateWrapper onClick={() => setCurrentIsInversed((state) => !state)}>
+        <RateWrapper onClick={() => setCurrentIsInverted((state) => !state)}>
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
@@ -202,7 +211,7 @@ export function RateInfo({
                 1 <TokenSymbol token={rateInputCurrency} /> ={' '}
               </>
             )}
-            <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} />
+            <TokenAmount amount={currentActiveRate} tokenSymbol={rateOutputCurrency} opacitySymbol={opacitySymbol} />
           </span>{' '}
           {!!fiatAmount && (
             <FiatRate>
