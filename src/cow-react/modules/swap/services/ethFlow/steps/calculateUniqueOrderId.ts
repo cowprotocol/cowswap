@@ -6,7 +6,7 @@ import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { getOrderParams, PostOrderParams } from 'utils/trade'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { orderSignApi } from '@cow/cowSdk'
+import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 
 export interface UniqueOrderIdResult {
   orderId: string
@@ -39,7 +39,7 @@ export async function calculateUniqueOrderId(
   const { order } = getOrderParams(orderParams)
 
   const { hashOrder, packOrderUidParams } = await import('@cowprotocol/contracts')
-  const domain = await orderSignApi.getDomain(chainId)
+  const domain = await OrderSigningUtils.getDomain(chainId)
   // Different validTo when signing because EthFlow contract expects it to be max for all orders
   const orderDigest = hashOrder(domain, {
     ...order,
