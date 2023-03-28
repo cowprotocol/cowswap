@@ -10,7 +10,6 @@ export function calculateOrderExecutionStatus(difference: Percent | undefined): 
     return undefined
   }
 
-
   if (difference.lessThan(LOWER_PERCENTAGE_DIFFERENCE)) {
     return 'veryClose'
   } else if (difference.greaterThan(UPPER_PERCENTAGE_DIFFERENCE)) {
