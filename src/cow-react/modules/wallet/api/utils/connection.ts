@@ -20,8 +20,10 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Ambire'
     case ConnectionType.ALPHA:
       return 'Alpha'
-      case ConnectionType.TALLY:
+    case ConnectionType.TALLY:
       return 'Tally'
+    case ConnectionType.TRUST:
+      return 'Trust'
   }
 }
 
@@ -47,4 +49,8 @@ export function getIsZengoWallet(name: string | undefined): boolean {
 
 export function getIsAlphaWallet(name: string | undefined): boolean {
   return name?.toLocaleLowerCase().includes('alpha') || false
+}
+
+export function getIsTrustWallet(provider: any): boolean {
+  return provider?.isTrust
 }

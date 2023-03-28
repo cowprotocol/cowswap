@@ -20,6 +20,7 @@ import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
 import { tallyWalletConnection, TallyWalletOption } from './tally'
+import { trustWalletConnection, TrustWalletOption } from './trust'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -29,6 +30,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   fortmaticConnection,
   networkConnection,
   tallyWalletConnection,
+  trustWalletConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -41,6 +43,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
     case tallyWalletConnection.connector:
+    case trustWalletConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -76,6 +79,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return walletConnectConnection
       case ConnectionType.TALLY:
         return tallyWalletConnection
+      case ConnectionType.TRUST:
+        return trustWalletConnection
     }
   }
 }
@@ -118,6 +123,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   // Injected
   const tallyOption = (!isInjectedMobileBrowser && <TallyWalletOption tryActivation={tryActivation} />) ?? null
+  const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
@@ -128,6 +134,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {ambireOption}
       {alphaOption}
       {tallyOption}
+      {trustOption}
     </>
   )
 }
