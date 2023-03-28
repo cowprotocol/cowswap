@@ -10,12 +10,6 @@ export function calculateOrderExecutionStatus(difference: Percent | undefined): 
     return undefined
   }
 
-  console.log(
-    'diff',
-    difference.toFixed(2),
-    LOWER_PERCENTAGE_DIFFERENCE.toFixed(2),
-    UPPER_PERCENTAGE_DIFFERENCE.toFixed(2)
-  )
 
   if (difference.lessThan(LOWER_PERCENTAGE_DIFFERENCE)) {
     return 'veryClose'
