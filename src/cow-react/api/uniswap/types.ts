@@ -20,3 +20,8 @@ export interface FetchTokensApiResult {
   hasNext: boolean
   data: FetchTokensResult[]
 }
+
+export type NDimensionalMap<Key extends unknown[], Value> = Key extends [infer First, ...infer Rest]
+  ? Map<First, NDimensionalMap<Rest, Value>>
+  : Value
+export type TokenLogoCache = NDimensionalMap<[number, string], string>

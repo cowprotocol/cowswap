@@ -1,17 +1,14 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import useSWR from 'swr'
 import { getTokens } from './api'
-import { FetchTokensApiResult, FetchTokensResult } from './types'
+import type { FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
 
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0
 }
 
-const tokenLogoCacheAtom = atom<Map<number, Map<string, string>>>(new Map<number, Map<string, string>>())
-const tokenLogoCache = atom<
-  Map<number, Map<string, string>>,
-  Pick<FetchTokensResult, 'chainId' | 'address' | 'logoURI'>
->(
+const tokenLogoCacheAtom = atom<TokenLogoCache>(new Map())
+const tokenLogoCache = atom<TokenLogoCache, Pick<FetchTokensResult, 'chainId' | 'address' | 'logoURI'>>(
   (get) => get(tokenLogoCacheAtom),
   (get, _, { chainId, address, logoURI }) => {
     const cache = get(tokenLogoCacheAtom)
