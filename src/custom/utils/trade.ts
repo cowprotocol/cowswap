@@ -14,7 +14,7 @@ import {
   OrderKind,
   UnsignedOrder,
   SigningScheme,
-  OrderSigningUtils
+  OrderSigningUtils,
 } from '@cowprotocol/cow-sdk'
 import { getProfileData } from '@cow/api/gnosisProtocol/api'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
