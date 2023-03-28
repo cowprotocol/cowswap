@@ -10,7 +10,7 @@ import {
   getEstimatedExecutionPrice,
   getOrderExecutionPrice,
   getOrderMarketPrice,
-  isOrderUnfillable
+  isOrderUnfillable,
 } from 'state/orders/utils'
 import { getPromiseFulfilledValue } from 'utils/misc'
 import { FeeInformation, PriceInformation } from '@cow/types'
@@ -70,7 +70,7 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
       order.class === 'limit' ? Math.round((Date.now() + PRICE_QUOTE_VALID_TO_TIME) / 1000) : timestamp(order.validTo),
     userAddress: order.owner,
     receiver: order.receiver,
-    isEthFlow
+    isEthFlow,
   }
   try {
     return getBestQuote({ strategy, quoteParams, fetchFee: false, isPriceRefresh: false })
@@ -112,8 +112,8 @@ export function UnfillableOrdersUpdater(): null {
           lastUpdateTimestamp: Date.now(),
           marketPrice,
           estimatedExecutionPrice,
-          feeAmount: CurrencyAmount.fromRawAmount(marketPrice.baseCurrency, fee.amount)
-        }
+          feeAmount: CurrencyAmount.fromRawAmount(marketPrice.baseCurrency, fee.amount),
+        },
       })
     },
     [updatePendingOrderPrices]
@@ -198,7 +198,7 @@ export function UnfillableOrdersUpdater(): null {
           .catch((e) => {
             updatePendingOrderPrices({
               orderId: order.id,
-              data: null
+              data: null,
             })
 
             console.debug(
