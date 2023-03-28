@@ -292,9 +292,9 @@ export function getEstimatedExecutionPrice(
     return new Price(order.inputToken, order.outputToken, '0', '0')
   }
 
-  const numerator = amountMinusFees.multiply(limitPrice)
+  const numerator = inputAmount.multiply(limitPrice)
   // The divider in the formula is used as denominator, and the division is done inside the Price instance
-  const denominator = inputAmount
+  const denominator = amountMinusFees
 
   const feasibleExecutionPrice = new Price(
     order.inputToken,
@@ -308,16 +308,18 @@ export function getEstimatedExecutionPrice(
 
   // TODO: remove debug statement
   console.debug(`getEstimatedExecutionPrice`, {
-    A: inputAmount.toFixed(inputAmount.currency.decimals) + ' ' + inputAmount.currency.symbol,
-    F: feeAmount.toFixed(feeAmount.currency.decimals) + ' ' + feeAmount.currency.symbol,
-    LP: `${limitPrice.toFixed(8)} ${limitPrice.quoteCurrency.symbol} per ${limitPrice.baseCurrency.symbol}`,
-    FEP: `${feasibleExecutionPrice.toFixed(18)} ${feasibleExecutionPrice.quoteCurrency.symbol} per ${
-      feasibleExecutionPrice.baseCurrency.symbol
-    }`,
-    FP: `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${fillPrice.baseCurrency.symbol}`,
-    EEP: `${estimatedExecutionPrice.toFixed(8)} ${estimatedExecutionPrice.quoteCurrency.symbol} per ${
-      estimatedExecutionPrice.baseCurrency.symbol
-    }`,
+    'Amount (A)': inputAmount.toFixed(inputAmount.currency.decimals) + ' ' + inputAmount.currency.symbol,
+    'Fee (F)': feeAmount.toFixed(feeAmount.currency.decimals) + ' ' + feeAmount.currency.symbol,
+    'Limit Price (LP)': `${limitPrice.toFixed(8)} ${limitPrice.quoteCurrency.symbol} per ${
+      limitPrice.baseCurrency.symbol
+    } (${limitPrice.numerator.toString()}/${limitPrice.denominator.toString()})`,
+    'Feasable Execution Price (FEP)': `${feasibleExecutionPrice.toFixed(18)} ${
+      feasibleExecutionPrice.quoteCurrency.symbol
+    } per ${feasibleExecutionPrice.baseCurrency.symbol}`,
+    'Fill Price (FP)': `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${fillPrice.baseCurrency.symbol}`,
+    'Est.Execution Price (EEP)': `${estimatedExecutionPrice.toFixed(8)} ${
+      estimatedExecutionPrice.quoteCurrency.symbol
+    } per ${estimatedExecutionPrice.baseCurrency.symbol}`,
     id: order.id.slice(0, 8),
     class: order.class,
   })

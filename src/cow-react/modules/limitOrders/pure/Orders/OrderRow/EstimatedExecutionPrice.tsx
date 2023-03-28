@@ -118,8 +118,6 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                   </span>
                   &nbsp;to execute your order.
                 </>
-              ) : feeWarning ? (
-                <>Unlikely to execute due to high fee</>
               ) : (
                 <>Will execute soon!</>
               )}
@@ -137,7 +135,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           )}
         </MouseoverTooltipContent>
       )}
-      {feeWarning && <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />}
+      {feeWarning && !isNegativeDifference && (
+        <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />
+      )}
     </EstimatedExecutionPriceWrapper>
   )
 }
