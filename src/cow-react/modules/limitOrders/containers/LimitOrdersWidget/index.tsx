@@ -43,6 +43,7 @@ import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
+import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -73,7 +74,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-  const { isLoading: isRateLoading, activeRate } = useAtomValue(limitRateAtom)
+  const { isLoading: isRateLoading, activeRate, feeAmount } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
@@ -172,6 +173,7 @@ export function LimitOrdersWidget() {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    feeAmount,
   }
 
   return <LimitOrders {...props} />
@@ -196,6 +198,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    feeAmount,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -291,7 +294,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 </styledEl.FooterBox>
               )}
 
-              <LimitOrdersWarnings priceImpact={priceImpact} />
+              <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />
 
               <styledEl.TradeButtonBox>
                 <TradeButtons
@@ -319,6 +322,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         />
       )}
       {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
+      {isUnlocked && <InfoBanner />}
     </>
   )
 }, limitOrdersPropsChecker)

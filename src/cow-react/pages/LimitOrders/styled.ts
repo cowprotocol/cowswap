@@ -3,12 +3,12 @@ import styled from 'styled-components/macro'
 export const PageWrapper = styled.div<{ isUnlocked: boolean }>`
   width: 100%;
   display: grid;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.limit};
+  max-width: 1500px;
   margin: 0 auto;
   grid-template-columns: ${({ theme, isUnlocked }) => (isUnlocked ? theme.appBody.maxWidth.swap : '')} 1fr;
   grid-column-gap: 20px;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
     display: flex;
     flex-flow: column wrap;
   `};
@@ -31,7 +31,7 @@ export const SecondaryWrapper = styled.div`
   display: flex;
   width: 100%;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
     flex-flow: column wrap;
     margin: 56px 0;
   `};
