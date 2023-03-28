@@ -67,8 +67,7 @@ export const List = styled.ul`
   }
 
   > li[data-is-new='true'] > span {
-    display: flex;
-    width: max-content;
+    width: auto;
   }
 
   > li[data-is-new='true'] > span > b {
