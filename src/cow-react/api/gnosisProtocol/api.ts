@@ -121,7 +121,7 @@ export interface OrderMetaData {
   appData: number
   feeAmount: string
   kind: OrderKind
-  partiallyFillable: false
+  partiallyFillable: boolean
   signature: string
   signingScheme: SigningSchemeValue
   status: ApiOrderStatus
