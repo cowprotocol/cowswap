@@ -112,7 +112,7 @@ export interface OrderMetaData {
   executedSellAmountBeforeFees: string
   executedFeeAmount: string
   executedSurplusFee: string | null
-  invalidated: false
+  invalidated: boolean
   sellToken: string
   buyToken: string
   sellAmount: string
