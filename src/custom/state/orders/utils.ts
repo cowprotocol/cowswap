@@ -1,13 +1,9 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
-
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
-import { PENDING_ORDERS_BUFFER, ZERO_BIG_NUMBER, ZERO_FRACTION } from 'constants/index'
-import { OrderMetaData } from '@cow/api/gnosisProtocol'
-import { Order, OrderClass } from 'state/orders/actions'
+import { PENDING_ORDERS_BUFFER, ZERO_FRACTION } from 'constants/index'
+import { Order } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
-import { calculatePrice, invertPrice } from './priceUtils'
-import { BigNumber } from 'bignumber.js'
-import { OrderKind } from '@cowprotocol/contracts'
+import { EnrichedOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import JSBI from 'jsbi'
 import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 
@@ -32,7 +28,7 @@ export type OrderTransitionStatus =
  *
  * We assume the order is `fillOrKill`
  */
-function isOrderFulfilled(order: Pick<OrderMetaData, 'executedBuyAmount' | 'executedSellAmount'>): boolean {
+function isOrderFulfilled(order: Pick<EnrichedOrder, 'executedBuyAmount' | 'executedSellAmount'>): boolean {
   return Number(order.executedBuyAmount) > 0 && Number(order.executedSellAmount) > 0
 }
 
@@ -44,7 +40,7 @@ function isOrderFulfilled(order: Pick<OrderMetaData, 'executedBuyAmount' | 'exec
  *
  * We assume the order is not fulfilled.
  */
-function isOrderCancelled(order: Pick<OrderMetaData, 'creationDate' | 'invalidated'>): boolean {
+function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
   return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
 }
@@ -54,26 +50,26 @@ function isOrderCancelled(order: Pick<OrderMetaData, 'creationDate' | 'invalidat
  * The buffer is used to take into account race conditions where a solver might
  * execute a transaction after the backend changed the order status.
  */
-export function isOrderExpired(order: Pick<OrderMetaData, 'validTo'>): boolean {
+export function isOrderExpired(order: Pick<EnrichedOrder, 'validTo'>): boolean {
   const validToTime = order.validTo * 1000 // validTo is in seconds
   return Date.now() - validToTime > PENDING_ORDERS_BUFFER
 }
 
-function isPresignPending(order: Pick<OrderMetaData, 'status'>): boolean {
+function isPresignPending(order: Pick<EnrichedOrder, 'status'>): boolean {
   return order.status === 'presignaturePending'
 }
 
 /**
  * An order is considered presigned, when it transitions from "presignaturePending" to just "pending"
  */
-function isOrderPresigned(order: Pick<OrderMetaData, 'signingScheme' | 'status'>): boolean {
+function isOrderPresigned(order: Pick<EnrichedOrder, 'signingScheme' | 'status'>): boolean {
   return order.signingScheme === 'presign' && order.status === 'open'
 }
 
 // TODO: classify EthFlow states!
 export function classifyOrder(
   order: Pick<
-    OrderMetaData,
+    EnrichedOrder,
     | 'uid'
     | 'validTo'
     | 'creationDate'
@@ -115,96 +111,43 @@ export function classifyOrder(
   return 'pending'
 }
 
-export type GetLimitPriceParams = {
-  buyAmount: string
-  sellAmount: string
-  buyTokenDecimals: number
-  sellTokenDecimals: number
-  inverted?: boolean
-}
-
-// TODO: Use the SDK when ready
 /**
- * Calculates order limit price base on order and buy/sell token decimals
+ * Based on the order and current price, returns `true` if order is out of the market.
+ * Out of the market means the price difference between original and current to be positive
+ * and greater than OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE.
+ * Negative difference is good for the user.
+ * We allow for it to be up to OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE worse to account for
+ * small price changes
  *
- * @param buyAmount The buy amount
- * @param sellAmount The sell amount
- * @param buyTokenDecimals The buy token decimals
- * @param sellTokenDecimals The sell token decimals
- * @param inverted Optional. Whether to invert the price (1/price).
+ * @param order
+ * @param orderPrice
+ * @param executionPrice
  */
-export function getLimitPrice({
-  buyAmount,
-  sellAmount,
-  buyTokenDecimals,
-  sellTokenDecimals,
-  inverted,
-}: GetLimitPriceParams): BigNumber {
-  const price = calculatePrice({
-    numerator: { amount: buyAmount, decimals: buyTokenDecimals },
-    denominator: { amount: sellAmount, decimals: sellTokenDecimals },
-  })
+export function isOrderUnfillable(
+  order: Order,
+  orderPrice: Price<Currency, Currency>,
+  executionPrice: Price<Currency, Currency>
+): boolean {
+  // Calculate the percentage of the current price in regards to the order price
+  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(executionPrice.divide(orderPrice))
 
-  return inverted ? invertPrice(price) : price
-}
+  console.debug(
+    `[UnfillableOrdersUpdater::isOrderUnfillable] ${order.kind} [${order.id.slice(0, 8)}]:`,
+    orderPrice.toSignificant(10),
+    executionPrice.toSignificant(10),
+    `${percentageDifference.toFixed(4)}%`,
+    percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
+  )
 
-type GetExecutionPriceParams = Omit<GetLimitPriceParams, 'buyAmount' | 'sellAmount'> & {
-  executedSellAmountBeforeFees?: string
-  executedBuyAmount?: string
-}
+  // Example. Consider the pair X-Y:
+  // Order price of 1X = 20459.60331Y
+  // Current market price is 1X = 20562.41538Y
+  // The different between order price and current price is -0.5025%
+  // That means the market price is better than the order price, thus, NOT unfillable
 
-// TODO: Use the SDK when ready
-/**
- * Calculates order executed price base on order and buy/sell token decimals
- * Result is given in sell token units
- *
- * @param executedSellAmount The sell amount
- * @param executedBuyAmount The buy amount
- * @param buyTokenDecimals The buy token decimals
- * @param sellTokenDecimals The sell token decimals
- * @param inverted Optional. Whether to invert the price (1/price).
- */
-export function getExecutionPrice({
-  executedBuyAmount,
-  executedSellAmountBeforeFees,
-  buyTokenDecimals,
-  sellTokenDecimals,
-  inverted,
-}: GetExecutionPriceParams): BigNumber {
-  // Only calculate the price when both values are set
-  // Having only one value > 0 is anyway an invalid state
-  if (
-    !executedBuyAmount ||
-    !executedSellAmountBeforeFees ||
-    executedBuyAmount === '0' ||
-    executedSellAmountBeforeFees === '0'
-  ) {
-    return ZERO_BIG_NUMBER
-  }
-
-  const price = calculatePrice({
-    numerator: { amount: executedBuyAmount, decimals: buyTokenDecimals },
-    denominator: { amount: executedSellAmountBeforeFees, decimals: sellTokenDecimals },
-  })
-
-  return inverted ? invertPrice(price) : price
-}
-
-/**
- * Syntactic sugar to get the order's executed amounts as a BigNumber (in atoms)
- * Mostly because `executedSellAmount` is derived from 2 fields (at time or writing)
- *
- * @param order The order
- */
-export function getOrderExecutedAmounts(order: OrderMetaData): {
-  executedBuyAmount: BigNumber
-  executedSellAmount: BigNumber
-} {
-  const { executedBuyAmount, executedSellAmount, executedFeeAmount } = order
-  return {
-    executedBuyAmount: new BigNumber(executedBuyAmount),
-    executedSellAmount: new BigNumber(executedSellAmount).minus(executedFeeAmount),
-  }
+  // Higher prices are worse, thus, the order will be unfillable whenever percentage difference is positive
+  // Check whether given price difference is > Price delta %, to allow for small market variations
+  return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
 }
 
 export function getOrderExecutionPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
@@ -325,43 +268,4 @@ export function getEstimatedExecutionPrice(
   })
 
   return estimatedExecutionPrice
-}
-
-/**
- * Based on the order and current price, returns `true` if order is out of the market.
- * Out of the market means the price difference between original and current to be positive
- * and greater than OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE.
- * Negative difference is good for the user.
- * We allow for it to be up to OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE worse to account for
- * small price changes
- *
- * @param order
- * @param orderPrice
- * @param executionPrice
- */
-export function isOrderUnfillable(
-  order: Order,
-  orderPrice: Price<Currency, Currency>,
-  executionPrice: Price<Currency, Currency>
-): boolean {
-  // Calculate the percentage of the current price in regards to the order price
-  const percentageDifference = ONE_HUNDRED_PERCENT.subtract(executionPrice.divide(orderPrice))
-
-  console.debug(
-    `[UnfillableOrdersUpdater::isOrderUnfillable] ${order.kind} [${order.id.slice(0, 8)}]:`,
-    orderPrice.toSignificant(10),
-    executionPrice.toSignificant(10),
-    `${percentageDifference.toFixed(4)}%`,
-    percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
-  )
-
-  // Example. Consider the pair X-Y:
-  // Order price of 1X = 20459.60331Y
-  // Current market price is 1X = 20562.41538Y
-  // The different between order price and current price is -0.5025%
-  // That means the market price is better than the order price, thus, NOT unfillable
-
-  // Higher prices are worse, thus, the order will be unfillable whenever percentage difference is positive
-  // Check whether given price difference is > Price delta %, to allow for small market variations
-  return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
 }

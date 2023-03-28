@@ -2,10 +2,9 @@ import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
-import { Order, OrderClass } from 'state/orders/actions'
-
+import { Order } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from 'constants/chains'
-
 import { getBestQuote } from 'utils/price'
 import {
   getEstimatedExecutionPrice,
@@ -13,11 +12,9 @@ import {
   getOrderMarketPrice,
   isOrderUnfillable,
 } from 'state/orders/utils'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { getPromiseFulfilledValue } from 'utils/misc'
-import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
 import { priceOutOfRangeAnalytics } from 'components/analytics'
-import { GpPriceStrategy } from 'state/gas/atoms'
 import { supportedChainId } from 'utils/supportedChainId'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -27,6 +24,8 @@ import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingO
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { GpPriceStrategy } from 'state/gas/atoms'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -91,7 +90,6 @@ export function UnfillableOrdersUpdater(): null {
 
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
-  // check which GP Quote API to use (NEW/LEGACY)
   const strategy = useGetGpPriceStrategy()
 
   // Ref, so we don't rerun useEffect

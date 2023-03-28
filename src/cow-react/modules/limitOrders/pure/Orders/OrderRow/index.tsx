@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
-import { OrderClass, OrderStatus } from 'state/orders/actions'
+import { OrderStatus } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -25,6 +25,7 @@ import { getAddress } from '@cow/utils/getAddress'
 import { calculatePriceDifference, PriceDifference } from '@cow/modules/limitOrders/utils/calculatePriceDifference'
 import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',

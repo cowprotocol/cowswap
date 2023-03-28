@@ -1,11 +1,11 @@
 import { OrderKind } from '@cowprotocol/contracts'
 
 import { NetworkID } from 'paraswap'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
 import { LegacyPriceQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { PriceInformation } from '@cow/types'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 
 // copy/pasting as the library types correspond to the internal types, not API response

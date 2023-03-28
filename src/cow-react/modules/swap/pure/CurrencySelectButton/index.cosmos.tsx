@@ -1,7 +1,7 @@
 import { CurrencySelectButton, CurrencySelectButtonProps } from '@cow/modules/swap/pure/CurrencySelectButton/index'
 import { useSelect } from 'react-cosmos/fixture'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const COW_TOKEN = COW[SupportedChainId.MAINNET]
 const GNO_TOKEN = GNO[SupportedChainId.MAINNET]

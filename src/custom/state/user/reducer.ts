@@ -9,7 +9,7 @@ import { SerializedPair, SerializedToken } from 'state/user/types'
 // MOD imports
 // import { serializeToken } from './hooks'
 import { COMMON_BASES } from 'constants/routing'
-import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 const currentTimestamp = () => new Date().getTime()
@@ -101,6 +101,8 @@ function _initialStatePerChain(chainId: number) {
     }
   )
 }
+
+const ALL_SUPPORTED_CHAIN_IDS = [SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN, SupportedChainId.GOERLI]
 
 function _initialSavedTokensState() {
   return ALL_SUPPORTED_CHAIN_IDS.reduce((acc, chain) => {
