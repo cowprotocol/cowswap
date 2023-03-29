@@ -248,9 +248,9 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 
   if (!signature) throw new Error('Signature is undefined!')
 
-  await orderBookApi.sendSignedOrderCancellation(
-    orderId,
+  await orderBookApi.sendSignedOrderCancellations(
     {
+      orderUids: [orderId],
       signature,
       signingScheme,
     },
