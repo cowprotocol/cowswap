@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useAppData, UseAppDataParams } from 'hooks/useAppData'
-import { OrderClass } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
 import { TradeType, useTradeTypeInfo } from '@cow/modules/trade'
 import { percentToBips } from 'utils/misc'

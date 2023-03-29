@@ -40,7 +40,7 @@ export default function About() {
         <Content>
           <p>CoW Swap is the first trading interface built on top of CoW Protocol.</p>
           <p>
-            It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or
+            It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or
             into any on-chain liquidity source while providing MEV protection.
           </p>
           <h2>
@@ -59,9 +59,9 @@ export default function About() {
             This economic phenomenon is known as <b>Coincidence Of Wants (CoW)</b>.
           </p>
 
-          <h3 id="gas-free">Gas Free Transactions</h3>
+          <h3 id="gasless">Gasless Transactions</h3>
           <p>
-            <img src={gaslessIMG} alt="CoW Swap - Gas Free Transactions" />
+            <img src={gaslessIMG} alt="CoW Swap - Gasless Transactions" />
           </p>
           <p>
             Gas costs are accounted for in your sell token already - no gas costs need to be paid! CoW Swap uses an

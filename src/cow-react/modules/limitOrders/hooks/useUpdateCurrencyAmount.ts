@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { LimitOrdersState, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { calculateAmountForRate } from '@cow/modules/limitOrders/utils/calculateAmountForRate'
 import { Field } from 'state/swap/actions'

@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { RAW_CODE_LINK } from '.'
 
 export * from '@src/constants/lists'

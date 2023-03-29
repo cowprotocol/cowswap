@@ -31,6 +31,7 @@ export enum LimitOrdersFormState {
   CantLoadBalances = 'CantLoadBalances',
   QuoteError = 'QuoteError',
   ZeroPrice = 'ZeroPrice',
+  FeeExceedsFrom = 'FeeExceedsFrom',
 }
 
 interface LimitOrdersFormParams {
@@ -73,6 +74,10 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
   const inputAmountIsNotSet = !inputCurrencyAmount || inputCurrencyAmount.equalTo(0)
   const outputAmountIsNotSet = !outputCurrencyAmount || outputCurrencyAmount.equalTo(0)
+  const feeAmount =
+    quote?.response?.quote?.feeAmount && sellAmount
+      ? CurrencyAmount.fromRawAmount(sellAmount.currency, quote?.response?.quote?.feeAmount)
+      : null
 
   if (quote?.error) {
     return LimitOrdersFormState.QuoteError
@@ -141,6 +146,10 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     (!buyAmount?.equalTo(0) && buyAmount?.toExact() === '0')
   ) {
     return LimitOrdersFormState.ZeroPrice
+  }
+
+  if (sellAmount && feeAmount?.greaterThan(sellAmount)) {
+    return LimitOrdersFormState.FeeExceedsFrom
   }
 
   return LimitOrdersFormState.CanTrade

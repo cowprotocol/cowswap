@@ -96,7 +96,7 @@ export const ethFlowConfigs: {
           `To continue, click below to wrap your ${nativeSymbol} to ${wrappedSymbol} via an on-chain ERC20 transaction.`,
         ],
   }),
-  [EthFlowState.ApproveNeeded]: ({ isExpertMode, nativeSymbol, wrappedSymbol }) => ({
+  [EthFlowState.ApproveNeeded]: ({ isExpertMode, wrappedSymbol }) => ({
     title: `Approve ${wrappedSymbol}`,
     buttonText: `Approve ${wrappedSymbol}`,
     descriptions: [
@@ -105,7 +105,7 @@ export const ethFlowConfigs: {
         : `It is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
     ],
   }),
-  [EthFlowState.SwapReady]: ({ nativeSymbol, wrappedSymbol }) => ({
+  [EthFlowState.SwapReady]: ({ wrappedSymbol }) => ({
     title: `Continue swap with ${wrappedSymbol}`,
     buttonText: 'Swap',
     descriptions: [`To continue, click SWAP below to use your existing ${wrappedSymbol} balance and trade.`],

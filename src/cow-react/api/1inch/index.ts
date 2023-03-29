@@ -1,11 +1,11 @@
 import { OrderKind } from '@cowprotocol/contracts'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
-import { PriceInformation } from '@cowprotocol/cow-sdk'
 import { LegacyPriceQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
+import { PriceInformation } from '@cow/types'
 
 export const API_NAME = '1inch'
 const ENABLED = process.env.REACT_APP_PRICE_FEED_1INCH_ENABLED !== 'false'

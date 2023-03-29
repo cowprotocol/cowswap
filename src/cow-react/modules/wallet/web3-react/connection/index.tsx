@@ -1,7 +1,8 @@
 import { Connector } from '@web3-react/types'
 
 import { isMobile } from 'utils/userAgent'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 
 import { Web3ReactConnection } from '../types'
@@ -18,11 +19,8 @@ import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
-// import { AlphaOption } from './alpha'
 import { trezorConnection, TrezorOption } from './trezor'
-import { ButtonPrimary } from 'components/Button'
-import { useEffect, useState } from 'react'
-import { Trans } from '@lingui/macro'
+import { AlphaOption } from './alpha'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -85,22 +83,14 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
 
 export type TryActivation = (connector: Connector) => void
 
-export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation: TryActivation; isOpen: boolean }) {
+export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActivation }) {
   const isInjected = getIsInjected()
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
 
-  const [viewAll, setViewAll] = useState(false)
-
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
-
-  useEffect(() => {
-    if (!isOpen) {
-      setViewAll(false)
-    }
-  }, [isOpen])
 
   let injectedOption
   if (!isInjected) {
@@ -124,8 +114,7 @@ export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation:
 
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
-  // TODO: should be enabled once the Android issue is fixed https://github.com/AlphaWallet/alpha-wallet-android/issues/3139
-  // const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
+  const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
   const trezorOption = <TrezorOption tryActivation={tryActivation} />
 
   return (
@@ -133,18 +122,10 @@ export function ConnectWalletOptions({ tryActivation, isOpen }: { tryActivation:
       {injectedOption}
       {walletConnectionOption}
       {coinbaseWalletOption}
+      {zengoOption}
+      {ambireOption}
+      {alphaOption}
       {trezorOption}
-      {viewAll && (
-        <>
-          {zengoOption}
-          {ambireOption}
-          {/* {alphaOption} */}
-        </>
-      )}
-
-      <ButtonPrimary $borderRadius="12px" padding="12px" onClick={() => setViewAll(!viewAll)}>
-        <Trans>{viewAll ? 'Show less' : 'Show more'}</Trans>
-      </ButtonPrimary>
     </>
   )
 }

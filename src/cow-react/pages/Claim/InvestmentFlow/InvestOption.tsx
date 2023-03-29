@@ -25,7 +25,7 @@ import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { StyledNumericalInput } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 
 import { ButtonConfirmed } from 'components/Button'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'

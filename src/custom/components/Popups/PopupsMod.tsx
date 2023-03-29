@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 

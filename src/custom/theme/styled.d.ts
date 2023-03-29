@@ -1,5 +1,5 @@
 import { Colors as ColorsUniswap } from '@src/theme/styled'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 
 // Override colors
 export interface Colors extends ColorsUniswap {
@@ -189,6 +189,7 @@ declare module 'styled-components' {
       upToSmall: ThemedCssFunction<DefaultTheme>
       upToMedium: ThemedCssFunction<DefaultTheme>
       upToLarge: ThemedCssFunction<DefaultTheme>
+      upToLargeAlt: ThemedCssFunction<DefaultTheme>
       upToExtraLarge: ThemedCssFunction<DefaultTheme>
     }
   }

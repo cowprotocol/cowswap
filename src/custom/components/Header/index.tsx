@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Routes } from '@cow/constants/routes'
 import { useNavigate } from 'react-router-dom'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'

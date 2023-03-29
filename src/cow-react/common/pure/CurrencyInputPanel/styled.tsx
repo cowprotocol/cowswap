@@ -17,7 +17,7 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: bo
   pointer-events: ${({ disabled }) => (disabled ? 'none' : '')};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 16px 12px 24px;
+    padding: 16px 12px;
   `}
 `
 

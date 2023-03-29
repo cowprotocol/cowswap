@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { useCombinedBalance } from 'state/cowToken/hooks'
-import { ChainId } from 'state/lists/actions/actionsMod'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 import { supportedChainId } from 'utils/supportedChainId'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
