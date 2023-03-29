@@ -24,6 +24,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Tally'
     case ConnectionType.TRUST:
       return 'Trust'
+    case ConnectionType.BLOCK:
+      return 'Block'
   }
 }
 

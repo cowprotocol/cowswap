@@ -22,6 +22,7 @@ import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
 import { tallyWalletConnection, TallyWalletOption } from './tally'
 import { trustWalletConnection, TrustWalletOption } from './trust'
+import { blockWalletConnection, BlockWalletOption } from './block'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -32,6 +33,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   networkConnection,
   tallyWalletConnection,
   trustWalletConnection,
+  blockWalletConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -45,6 +47,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case gnosisSafeConnection.connector:
     case tallyWalletConnection.connector:
     case trustWalletConnection.connector:
+    case blockWalletConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -82,6 +85,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return tallyWalletConnection
       case ConnectionType.TRUST:
         return trustWalletConnection
+      case ConnectionType.BLOCK:
+        return blockWalletConnection
     }
   }
 }
@@ -128,6 +133,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const tallyOption =
     (!isInjectedMobileBrowser && isChrome && !isChromeMobile && <TallyWalletOption tryActivation={tryActivation} />) ??
     null
+  const blockOption = (!isInjectedMobileBrowser && <BlockWalletOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
@@ -139,6 +145,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {alphaOption}
       {tallyOption}
       {trustOption}
+      {blockOption}
     </>
   )
 }
