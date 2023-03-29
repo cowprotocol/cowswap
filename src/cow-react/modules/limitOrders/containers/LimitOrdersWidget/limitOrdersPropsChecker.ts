@@ -9,6 +9,7 @@ import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { areFractionsEqual } from '@cow/utils/areFractionsEqual'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { getAddress } from '@cow/utils/getAddress'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export interface LimitOrdersProps extends AddRecipientProps {
   inputCurrencyInfo: CurrencyInfo
@@ -31,6 +32,7 @@ export interface LimitOrdersProps extends AddRecipientProps {
   rateInfoParams: RateInfoParams
   priceImpact: PriceImpact
   tradeContext: TradeFlowContext | null
+  feeAmount: CurrencyAmount<Currency> | null
 }
 
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
@@ -50,8 +52,15 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.onImportDismiss === b.onImportDismiss &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
-    checkTradeFlowContext(a.tradeContext, b.tradeContext)
+    checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
+    checkCurrencyAmount(a.feeAmount, b.feeAmount)
   )
+}
+
+function checkCurrencyAmount(a: CurrencyAmount<Currency> | null, b: CurrencyAmount<Currency> | null): boolean {
+  if (!a || !b) return a === b
+
+  return a.currency.equals(b.currency) && a.equalTo(b)
 }
 
 function checkCurrencyInfo(a: CurrencyInfo, b: CurrencyInfo): boolean {
@@ -73,7 +82,7 @@ function checkRateInfoParams(a: RateInfoParams, b: RateInfoParams): boolean {
     areFractionsEqual(a.inputCurrencyAmount, b.inputCurrencyAmount) &&
     areFractionsEqual(a.outputCurrencyAmount, b.outputCurrencyAmount) &&
     areFractionsEqual(a.activeRateFiatAmount, b.activeRateFiatAmount) &&
-    areFractionsEqual(a.inversedActiveRateFiatAmount, b.inversedActiveRateFiatAmount)
+    areFractionsEqual(a.invertedActiveRateFiatAmount, b.invertedActiveRateFiatAmount)
   )
 }
 

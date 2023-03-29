@@ -44,7 +44,7 @@ export function useIsSmartContractWallet(): boolean {
     if (isAmbireWallet || isArgentWallet || isSmartContract) {
       setIsSmartContractWallet(true)
     }
-  }, [account, isArgentWallet, isSmartContract])
+  }, [account, isAmbireWallet, isArgentWallet, isSmartContract])
 
   return isSmartContractWallet
 }

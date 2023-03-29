@@ -1,7 +1,7 @@
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import React, { ReactNode, useContext, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { CloseIcon } from 'theme'

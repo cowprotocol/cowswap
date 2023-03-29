@@ -2,21 +2,20 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
-
-import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { CancelableResult } from 'utils/async'
 import { FractionUtils } from '@cow/utils/fractionUtils'
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
 export function handleLimitOrderQuoteResponse(
   inputCurrency: Currency | null,
   outputCurrency: Currency | null,
-  response: CancelableResult<SimpleGetQuoteResponse>
-): { rateState: Partial<LimitRateState>; quote: SimpleGetQuoteResponse } | undefined {
+  response: CancelableResult<OrderQuoteResponse>
+): { rateState: Partial<LimitRateState>; quote: OrderQuoteResponse } | undefined {
   const { cancelled, data } = response
 
   if (cancelled) {
@@ -49,7 +48,7 @@ export function useHandleResponse() {
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
 
   return useCallback(
-    (response: CancelableResult<SimpleGetQuoteResponse>) => {
+    (response: CancelableResult<OrderQuoteResponse>) => {
       try {
         const result = handleLimitOrderQuoteResponse(inputCurrency, outputCurrency, response)
 

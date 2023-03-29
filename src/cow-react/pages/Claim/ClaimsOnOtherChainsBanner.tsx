@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useClaimState } from 'state/claim/hooks'
 // import useChangeNetworks from 'hooks/useChangeNetworks'
 import NotificationBanner from 'components/NotificationBanner'

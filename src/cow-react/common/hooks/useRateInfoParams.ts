@@ -28,7 +28,7 @@ export function useRateInfoParams(
     tryParseCurrencyAmount(parseRate(false), outputCurrencyAmount?.currency || undefined)
   )
 
-  const inversedActiveRateFiatAmount = useHigherUSDValue(
+  const invertedActiveRateFiatAmount = useHigherUSDValue(
     tryParseCurrencyAmount(parseRate(true), inputCurrencyAmount?.currency || undefined)
   )
 
@@ -37,6 +37,6 @@ export function useRateInfoParams(
     inputCurrencyAmount,
     outputCurrencyAmount,
     activeRateFiatAmount,
-    inversedActiveRateFiatAmount,
+    invertedActiveRateFiatAmount,
   })
 }

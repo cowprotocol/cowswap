@@ -2,7 +2,7 @@
  * @jest-environment ./custom-test-env.js
  */
 
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
 

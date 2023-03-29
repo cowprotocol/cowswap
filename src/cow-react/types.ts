@@ -20,3 +20,15 @@ declare global {
   }
 }
 export type FractionLike = Fraction | Price<Currency, Currency> | CurrencyAmount<Currency>
+
+// TODO: it's legacy from the old SDK version
+export interface PriceInformation {
+  token: string
+  amount: string | null
+  quoteId?: number
+}
+
+export interface FeeInformation {
+  expirationDate: string
+  amount: string
+}

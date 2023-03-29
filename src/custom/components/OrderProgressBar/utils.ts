@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const EXPECTED_EXECUTION_TIME_PERCENTAGE = 75
 

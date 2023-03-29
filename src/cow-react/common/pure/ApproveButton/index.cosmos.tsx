@@ -1,7 +1,7 @@
 import { ApproveButton } from '.'
 
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSelect } from 'react-cosmos/fixture'
 import { ApprovalState } from 'hooks/useApproveCallback'
 

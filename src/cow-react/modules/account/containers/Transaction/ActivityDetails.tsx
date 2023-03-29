@@ -172,7 +172,7 @@ export function ActivityDetails(props: {
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
     activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
+    invertedActiveRateFiatAmount: null,
   }
   let isOrderFulfilled = false
 
@@ -207,7 +207,7 @@ export function ActivityDetails(props: {
       inputCurrencyAmount: rateInputCurrencyAmount,
       outputCurrencyAmount: rateOutputCurrencyAmount,
       activeRateFiatAmount: null,
-      inversedActiveRateFiatAmount: null,
+      invertedActiveRateFiatAmount: null,
     }
 
     const DateFormatOptions: Intl.DateTimeFormatOptions = {

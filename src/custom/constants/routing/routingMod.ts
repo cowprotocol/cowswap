@@ -1,7 +1,7 @@
 // a list of tokens by chain
 import { Currency /* , Token */ } from '@uniswap/sdk-core'
 
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   // AMPL,
   DAI,

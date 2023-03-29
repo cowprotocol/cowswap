@@ -2,8 +2,9 @@ import { Field } from 'state/swap/actions'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
-import { OrderClass, OrderKind } from 'state/orders/actions'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersConfirm } from './index'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
@@ -80,7 +81,7 @@ const rateInfoParams = {
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
+  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
 const priceImpact: PriceImpact = {

@@ -1,8 +1,8 @@
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
-import { PriceInformation } from '@cowprotocol/cow-sdk'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SWR_OPTIONS } from 'constants/index'
 import useSWR from 'swr'
+import { PriceInformation } from '@cow/types'
 
 function getApiUrl(): string {
   // it's all the same base url
