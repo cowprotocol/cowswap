@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 
-import { isMobile } from 'utils/userAgent'
+import { isChrome, isMobile } from 'utils/userAgent'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 
@@ -117,7 +117,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
 
   // Injected
-  const tallyOption = (!isInjectedMobileBrowser && <TallyWalletOption tryActivation={tryActivation} />) ?? null
+  const tallyOption =
+    (!isInjectedMobileBrowser && isChrome && <TallyWalletOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
