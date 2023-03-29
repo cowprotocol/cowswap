@@ -61,39 +61,56 @@ export class InjectedWallet extends Connector {
         ? desiredChainIdOrChainParameters
         : desiredChainIdOrChainParameters?.chainId
 
-    return Promise.all([
-      this.provider.request({ method: 'eth_chainId' }) as Promise<string>,
-      this.provider.request({ method: 'eth_requestAccounts' }) as Promise<string[]>,
-    ]).then(([chainId, accounts]) => {
-      const receivedChainId = this.parseChainId(chainId)
+    return Promise.all([this.provider.request({ method: 'eth_chainId' }) as Promise<string>, this.getAccounts()]).then(
+      ([chainId, accounts]) => {
+        const receivedChainId = this.parseChainId(chainId)
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (!desiredChainId || desiredChainId === receivedChainId) {
-        return this.actions.update({ chainId: receivedChainId, accounts })
-      }
-
-      const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return this.provider!.request<void>({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: desiredChainIdHex }],
-      }).catch(async (error: ProviderRpcError) => {
-        console.log('err!', error)
-        console.log('debug err', error)
-
-        if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
-          // if we're here, we can try to add a new network
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          return this.provider!.request<void>({
-            method: 'wallet_addEthereumChain',
-            params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
-          })
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (!desiredChainId || desiredChainId === receivedChainId) {
+          return this.actions.update({ chainId: receivedChainId, accounts })
         }
 
-        throw error
-      })
-    })
+        const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.provider!.request<void>({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: desiredChainIdHex }],
+        }).catch(async (error: ProviderRpcError) => {
+          console.log('err!', error)
+          console.log('debug err', error)
+
+          if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
+            // if we're here, we can try to add a new network
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return this.provider!.request<void>({
+              method: 'wallet_addEthereumChain',
+              params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
+            })
+          }
+
+          throw error
+        })
+      }
+    )
+  }
+
+  public async getAccounts() {
+    const { provider } = this
+
+    if (!provider) {
+      return []
+    }
+
+    try {
+      const accounts = await provider.request({ method: 'eth_requestAccounts' })
+
+      return accounts as string[]
+    } catch (e) {
+      console.log('Failed to get account with eth_requestAccounts method')
+
+      return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
+    }
   }
 
   /** {@inheritdoc Connector.connectEagerly} */
@@ -106,10 +123,7 @@ export class InjectedWallet extends Connector {
       await this.provider.enable?.()
     }
 
-    return Promise.all([
-      this.provider.request({ method: 'eth_chainId' }) as Promise<string>,
-      this.provider.request({ method: 'eth_requestAccounts' }) as Promise<string[]>,
-    ])
+    return Promise.all([this.provider.request({ method: 'eth_chainId' }) as Promise<string>, this.getAccounts()])
       .then(([chainId, accounts]) => {
         if (accounts.length) {
           this.actions.update({ chainId: this.parseChainId(chainId), accounts })
