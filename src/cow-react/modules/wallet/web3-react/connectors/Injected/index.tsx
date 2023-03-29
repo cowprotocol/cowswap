@@ -15,6 +15,9 @@ type InjectedWalletProvider = Provider & {
   chainId: string
   selectedAddress: string
   on: (event: string, args: any) => any
+
+  enable?: () => void
+  isTrust?: boolean
 }
 
 interface injectedWalletConstructorArgs {
@@ -58,31 +61,6 @@ export class InjectedWallet extends Connector {
         ? desiredChainIdOrChainParameters
         : desiredChainIdOrChainParameters?.chainId
 
-    if (this.connected && desiredChainId && desiredChainId === this.parseChainId(this.provider.chainId)) {
-      const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return this.provider
-        .request<void>({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: desiredChainIdHex }],
-        })
-        .catch(async (error: ProviderRpcError) => {
-          console.log('err!', error)
-
-          if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
-            // if we're here, we can try to add a new network
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            return this.provider!.request<void>({
-              method: 'wallet_addEthereumChain',
-              params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
-            })
-          }
-
-          throw error
-        })
-    }
-
     return Promise.all([
       this.provider.request({ method: 'eth_chainId' }) as Promise<string>,
       this.provider.request({ method: 'eth_requestAccounts' }) as Promise<string[]>,
@@ -123,6 +101,10 @@ export class InjectedWallet extends Connector {
     this.isomorphicInitialize()
 
     if (!this.provider) return
+
+    if (this.provider.isTrust) {
+      await this.provider.enable?.()
+    }
 
     return Promise.all([
       this.provider.request({ method: 'eth_chainId' }) as Promise<string>,
@@ -179,7 +161,7 @@ export class InjectedWallet extends Connector {
       })
 
       provider.on('chainChanged', (chainId: string): void => {
-        this.actions.update({ chainId: Number(chainId) })
+        this.actions.update({ chainId: this.parseChainId(chainId) })
       })
 
       provider.on('accountsChanged', (accounts: string[]): void => {
@@ -193,6 +175,10 @@ export class InjectedWallet extends Connector {
   }
 
   private parseChainId(chainId: string) {
+    if (!chainId.startsWith('0x')) {
+      return Number(chainId)
+    }
+
     return Number.parseInt(chainId, 16)
   }
 

@@ -1,12 +1,15 @@
 import { Connector } from '@web3-react/types'
 import { ConnectionType } from '@cow/modules/wallet'
-import { getConnectionName } from '@cow/modules/wallet/api/utils/connection'
+import { getConnectionName, getIsTrustWallet } from '@cow/modules/wallet/api/utils/connection'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
+import { walletConnectConnection } from './walletConnect'
 
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { initializeConnector } from '@web3-react/core'
 import { InjectedWallet } from '@cow/modules/wallet/web3-react/connectors/Injected'
 import { Web3ReactConnection } from '../types'
+import { useWalletMetaData } from '@cow/modules/wallet'
+import { WC_DISABLED_TEXT } from '@cow/modules/wallet/constants'
 
 import { default as TrustImage } from '@cow/modules/wallet/api/assets/trust.png'
 
@@ -31,7 +34,7 @@ export const trustWalletConnection: Web3ReactConnection = {
   type: ConnectionType.TRUST,
 }
 
-export function TrustWalletOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
+export function TrustWalletInjectedOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
   const isActive = useIsActiveWallet(trustWalletConnection)
 
   return (
@@ -43,3 +46,28 @@ export function TrustWalletOption({ tryActivation }: { tryActivation: (connector
     />
   )
 }
+
+export function TrustWalletWCOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
+  const { walletName } = useWalletMetaData()
+
+  const isWalletConnect = useIsActiveWallet(walletConnectConnection)
+  const isActive = isWalletConnect && getIsTrustWallet(null, walletName)
+  const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
+
+  return (
+    <ConnectWalletOption
+      {...BASE_PROPS}
+      isActive={isActive}
+      tooltipText={tooltipText}
+      clickable={!isWalletConnect}
+      onClick={() => tryActivation(walletConnectConnection.connector)}
+      header={getConnectionName(ConnectionType.TRUST)}
+    />
+  )
+}
+
+const e = window.ethereum as any
+export const TrustWalletOption =
+  e.isTrust || e.isTrustWallet || e.providers?.find((p: any) => p.isTrust || p.isTrustWallet)
+    ? TrustWalletInjectedOption
+    : TrustWalletWCOption

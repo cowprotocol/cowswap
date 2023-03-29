@@ -62,7 +62,7 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
           if (!stale) onBlock(block)
         })
         .catch((error) => {
-          console.error(`Failed to get block number for chainId ${activeChainId}`, error)
+          console.error(`debug Failed to get block number for chainId ${activeChainId}`, error)
         })
 
       provider.on('block', onBlock)
