@@ -258,9 +258,7 @@ export function OrderRow({
       {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
-          <OrderStatusBox cancelling={!!order.isCancelling} status={order.status} withWarning={withWarning}>
-            {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
-          </OrderStatusBox>
+          <OrderStatusBox order={order} />
           {withWarning && (
             <styledEl.WarningIndicator>
               <MouseoverTooltipContent
