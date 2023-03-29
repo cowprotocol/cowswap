@@ -1,6 +1,6 @@
 /* import { useWeb3React } from '@web3-react/core'
 import { getChainInfo } from '@src/constants/chainInfo'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'

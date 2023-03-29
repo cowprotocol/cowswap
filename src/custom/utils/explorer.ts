@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderID } from '@cow/api/gnosisProtocol'
 import { isLocal, isDev, isPr, isStaging, isBarn } from './environments'
 

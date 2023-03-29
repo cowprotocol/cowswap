@@ -1,8 +1,7 @@
 import { OrderStatus } from 'state/orders/actions'
 import { COW, DAI, GNO, USDC } from 'constants/tokens'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind, OrderClass } from '@cowprotocol/cow-sdk'
 import { WETH_GOERLI } from 'utils/goerli/constants'
-import { OrderClass } from 'state/orders/actions'
 import { ParsedOrder, parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 
 const chainId = 5

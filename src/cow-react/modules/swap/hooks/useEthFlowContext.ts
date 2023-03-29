@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useEthFlowContract } from 'hooks/useContract'
 import { useBaseFlowContextSetup, getFlowContext } from '@cow/modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from '@cow/modules/swap/services/types'

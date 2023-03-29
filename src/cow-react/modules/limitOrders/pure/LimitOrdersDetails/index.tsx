@@ -46,20 +46,20 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
   const expiryDate = new Date(validTo * 1000)
-  const isInversedState = useState(false)
-  const [isInversed] = isInversedState
+  const isInvertedState = useState(false)
+  const [isInverted] = isInvertedState
 
   const displayedRate = useMemo(() => {
     if (!activeRate) return ''
-    const rate = isInversed ? activeRate.invert() : activeRate
+    const rate = isInverted ? activeRate.invert() : activeRate
 
     return formatInputAmount(rate)
-  }, [isInversed, activeRate])
+  }, [isInverted, activeRate])
 
   return (
     <Wrapper>
       <styledEl.DetailsRow>
-        <styledEl.StyledRateInfo isInversedState={isInversedState} rateInfoParams={rateInfoParams} />
+        <styledEl.StyledRateInfo isInvertedState={isInvertedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
 
       {limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
@@ -73,7 +73,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
               <QuestionHelper
                 text={
                   <ExecutionPriceTooltip
-                    isInversed={isInversed}
+                    isInverted={isInverted}
                     feeAmount={feeAmount}
                     marketRate={marketRate}
                     displayedRate={displayedRate}
@@ -83,7 +83,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
               />
             </span>
           </div>
-          <div>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</div>
+          <div>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />}</div>
         </styledEl.DetailsRow>
       )}
 

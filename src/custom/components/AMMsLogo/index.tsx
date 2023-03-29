@@ -12,7 +12,7 @@ import Levinswap from 'assets/cow-swap/ammslogo/levinswap.png'
 import Elk from 'assets/cow-swap/ammslogo/elk.png'
 import Symmetric from 'assets/cow-swap/ammslogo/symmetric.png'
 import ZeroX from 'assets/cow-swap/ammslogo/0x.png'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { imagesAnimationDelay, animationDelay, crossFade, fadeInOut, presentationTime } from './utils'
 
 export const Wrapper = styled.div<{ logosLength: number }>`

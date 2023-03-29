@@ -3,7 +3,7 @@ import { DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK, DEFAULT_LIST_OF_LISTS_BY_NETWORK }
 import { updateVersion } from 'state/global/actions'
 import { fetchTokenList, acceptListUpdate, addList, removeList, enableList } from 'state/lists/actions'
 import reducer, { ListsStateByNetwork } from '.'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 const DEFAULT_LIST_OF_LISTS = DEFAULT_LIST_OF_LISTS_BY_NETWORK[ChainId.MAINNET]
 

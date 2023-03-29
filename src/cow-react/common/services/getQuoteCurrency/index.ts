@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { DAI, USDC_MAINNET, USDT } from 'constants/tokens'
 import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'

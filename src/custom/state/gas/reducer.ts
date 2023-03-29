@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { createReducer } from '@reduxjs/toolkit'
 import { updateGasPrices, UpdateGasPrices } from './actions'
 

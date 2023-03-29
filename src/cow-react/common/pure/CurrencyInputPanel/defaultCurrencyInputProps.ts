@@ -2,7 +2,7 @@ import { CurrencyInputPanelProps } from '@cow/common/pure/CurrencyInputPanel/ind
 import { Field } from 'state/swap/actions'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { COW } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PriceImpact } from 'hooks/usePriceImpact'
 
 const currency = COW[SupportedChainId.MAINNET]

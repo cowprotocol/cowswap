@@ -15,16 +15,7 @@ export const Content = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 5px 10px 16px;
-
-  > h3 {
-    font-size: 14px;
-    font-weight: bold;
-    margin: 0 0 12px;
-    padding: 0;
-    text-align: left;
-    width: 100%;
-  }
+  padding: 5px 10px;
 
   > p {
     font-size: 13px;
@@ -32,7 +23,16 @@ export const Content = styled.div`
     line-height: 1.5;
     padding: 0;
     margin: 0;
-    color: ${({ theme }) => transparentize(0.3, theme.text1)};
+    color: ${({ theme }) => theme.text1};
+  }
+
+  > h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 21px 0 0;
+    padding: 0;
+    text-align: left;
+    width: 100%;
   }
 `
 
@@ -68,5 +68,22 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
 
   > span > p {
     margin: 0;
+  }
+`
+
+export const StatusList = styled.ol`
+  display: flex;
+  flex-flow: row wrap;
+  list-style: none;
+  font-size: 12px;
+  font-weight: 400;
+  gap: 5px;
+  padding: 0;
+
+  > li {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    width: 100%;
   }
 `

@@ -1,6 +1,6 @@
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'

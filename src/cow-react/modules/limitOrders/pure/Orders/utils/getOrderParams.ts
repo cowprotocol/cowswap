@@ -26,7 +26,7 @@ export function getOrderParams(
     inputCurrencyAmount: sellAmount,
     outputCurrencyAmount: buyAmount,
     activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
+    invertedActiveRateFiatAmount: null,
   }
 
   const { balances, allowances } = balancesAndAllowances
