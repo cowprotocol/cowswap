@@ -36,7 +36,12 @@ export async function getFullQuote({ quoteParams }: { quoteParams: LegacyFeeQuot
   return Promise.allSettled([price, fee])
 }
 
-export async function getBestQuote({ strategy, quoteParams, fetchFee, previousFee }: LegacyQuoteParams): Promise<QuoteResult> {
+export async function getBestQuote({
+  strategy,
+  quoteParams,
+  fetchFee,
+  previousFee,
+}: LegacyQuoteParams): Promise<QuoteResult> {
   if (strategy === 'COWSWAP') {
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using COWSWAP strategy, hang tight.')
 

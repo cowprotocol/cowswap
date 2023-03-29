@@ -5,16 +5,16 @@ import { Currency, Price } from '@uniswap/sdk-core'
 
 export interface ExecutionPriceProps {
   executionPrice: Price<Currency, Currency>
-  isInversed: boolean
+  isInverted: boolean
 }
 
-export function ExecutionPrice({ executionPrice, isInversed }: ExecutionPriceProps) {
-  const executionPriceFiat = useExecutionPriceFiat(executionPrice, isInversed)
-  const quoteCurrency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
+export function ExecutionPrice({ executionPrice, isInverted }: ExecutionPriceProps) {
+  const executionPriceFiat = useExecutionPriceFiat(executionPrice, isInverted)
+  const quoteCurrency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
 
   return (
     <span>
-      ≈ <TokenAmount amount={isInversed ? executionPrice.invert() : executionPrice} tokenSymbol={quoteCurrency} />
+      ≈ <TokenAmount amount={isInverted ? executionPrice.invert() : executionPrice} tokenSymbol={quoteCurrency} />
       {executionPriceFiat && (
         <i>
           &nbsp;(

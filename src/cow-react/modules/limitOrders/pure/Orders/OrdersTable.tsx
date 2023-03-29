@@ -1,7 +1,7 @@
 import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
@@ -18,6 +18,13 @@ import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceT
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { PendingOrdersPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
+import { QuestionWrapper } from 'components/QuestionHelper'
+import SVG from 'react-inlinesvg'
+import iconOrderExecution from 'assets/cow-swap/orderExecution.svg'
+import { X } from 'react-feather'
+import { OrderExecutionStatusList } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
+import { SpotPricesKeyParams } from '@cow/modules/orders/state/spotPricesAtom'
+import { Currency, Price } from '@uniswap/sdk-core'
 
 const TableBox = styled.div`
   display: block;
@@ -26,8 +33,10 @@ const TableBox = styled.div`
   padding: 0;
   position: relative;
   overflow: hidden;
+  background: ${({ theme }) => transparentize(0.99, theme.bg1)};
+  backdrop-filter: blur(20px);
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
     width: 100%;
     display: flex;
     flex-flow: column wrap;
@@ -38,33 +47,67 @@ const TableInner = styled.div`
   display: block;
   width: inherit;
   height: inherit;
-  padding: 0 0 24px;
+  padding: 0;
   overflow-y: hidden;
-  overflow-x: auto; // fallback for 'overlay'
-  overflow-x: overlay;
+  overflow-x: auto;
   ${({ theme }) => theme.colorScrollbar};
 `
 
-const Header = styled.div`
+const Header = styled.div<{ isOpenOrdersTab: boolean }>`
+  --height: 50px;
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(200px, 1fr) minmax(100px, 0.7fr) minmax(140px, 0.85fr) minmax(70px, 0.7fr) 108px 36px;
+
+  grid-template-columns: ${({ isOpenOrdersTab }) =>
+    `3.2fr repeat(2,2fr) ${isOpenOrdersTab ? '2.5fr 1.4fr' : ''} 0.7fr 108px 24px`};
+  grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
-  border-top: 1px solid transparent;
+  border: none;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 16px;
+
+  ${({ theme, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
+  grid-template-columns: ${`minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
+    isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
+  } minmax(50px,1fr) 108px 24px`};
+  `}
 `
 
-const HeaderElement = styled.div<{ doubleRow?: boolean }>`
-  padding: 12px 0;
+const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
+  height: 100%;
+  padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
   font-size: 12px;
-  font-weight: 400;
+  line-height: 1.1;
+  font-weight: 500;
   display: flex;
+  align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
+  background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
 
   > span {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
+  }
+
+  ${({ doubleRow }) =>
+    doubleRow &&
+    `
+    flex-flow: column wrap;
+    justify-content: center;
+    gap: 2px;
+
+    > i {
+      opacity: 0.7;
+    }
+  `}
+
+  ${QuestionWrapper} {
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   ${({ doubleRow }) =>
@@ -87,11 +130,6 @@ const RowElement = styled(Header)`
     background: ${({ theme }) => transparentize(0.9, theme.text3)};
   }
 
-  > div {
-    font-size: 13px;
-    font-weight: 400;
-  }
-
   &:last-child {
     border-bottom: 0;
   }
@@ -105,7 +143,7 @@ const Rows = styled.div`
   display: block;
   ${({ theme }) => theme.colorScrollbar};
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
    display: flex;
    flex-flow: column wrap;
   `};
@@ -116,6 +154,62 @@ const StyledInvertRateControl = styled(InvertRateControl)`
   margin-left: 5px;
 `
 
+const StyledCloseIcon = styled(X)`
+  height: 24px;
+  width: 24px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 1;
+  }
+
+  > line {
+    stroke: ${({ theme }) => theme.text1};
+  }
+`
+
+const OrdersExplainerBanner = styled.div`
+  display: grid;
+  background: ${({ theme }) => theme.gradient1};
+  width: 100%;
+  gap: 16px;
+  grid-template-columns: 6.2fr 5.5fr 24px;
+  grid-template-rows: minmax(90px, 1fr);
+  align-items: center;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid ${({ theme }) => transparentize(0.88, theme.text3)};
+  padding: 0 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToLargeAlt`
+    width: fit-content;
+    grid-template-columns: minmax(462px, 4fr) minmax(426px, 3.8fr) 24px;
+  `}
+
+  /* 1st section */
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    > svg > path {
+      fill: ${({ theme }) => transparentize(0.5, theme.text1)};
+    }
+
+    > b {
+      font-size: 18px;
+      font-weight: 500;
+    }
+  }
+
+  /* 2nd section */
+  > span {
+    display: flex;
+    flex-flow: column wrap;
+  }
+`
+
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
   currentPageNumber: number
@@ -123,6 +217,7 @@ export interface OrdersTableProps {
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
   balancesAndAllowances: BalancesAndAllowances
+  getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   getShowCancellationModal(order: Order): (() => void) | null
 }
 
@@ -132,10 +227,11 @@ export function OrdersTable({
   orders,
   pendingOrdersPrices,
   balancesAndAllowances,
+  getSpotPrice,
   getShowCancellationModal,
   currentPageNumber,
 }: OrdersTableProps) {
-  const [isRateInversed, setIsRateInversed] = useState(false)
+  const [isRateInverted, setIsRateInverted] = useState(false)
 
   const selectReceiptOrder = useSelectReceiptOrder()
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
@@ -145,27 +241,42 @@ export function OrdersTable({
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
   }, [])
 
+  // Explainer banner for orders
+  const [showOrdersExplainerBanner, setShowOrdersExplainerBanner] = useState(() => {
+    const item = localStorage.getItem('showOrdersExplainerBanner')
+    return item !== null ? item === 'true' : true
+  })
+
+  const closeOrdersExplainerBanner = (): void => {
+    setShowOrdersExplainerBanner(false)
+    localStorage.setItem('showOrdersExplainerBanner', 'false')
+  }
+
+  useEffect(() => {
+    localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
+  }, [showOrdersExplainerBanner])
+
   return (
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <Header>
+          <Header isOpenOrdersTab={isOpenOrdersTab}>
             <HeaderElement>
-              <Trans>Order</Trans>
+              <Trans>Sell &#x2192; Buy</Trans>
             </HeaderElement>
 
             <HeaderElement>
               <span>
                 <Trans>Limit price</Trans>
               </span>
-              <StyledInvertRateControl onClick={() => setIsRateInversed(!isRateInversed)} />
+              <StyledInvertRateControl onClick={() => setIsRateInverted(!isRateInverted)} />
             </HeaderElement>
 
             {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
               <HeaderElement doubleRow>
                 <span>
                   <Trans>
-                    Order executes at <QuestionHelper text={RateTooltipHeader} />
+                    Order executes at <QuestionHelper text={<RateTooltipHeader />} />
                   </Trans>
                 </span>
                 <i>
@@ -174,11 +285,29 @@ export function OrdersTable({
               </HeaderElement>
             )}
 
+            {isOpenOrdersTab && (
+              <HeaderElement>
+                <span>
+                  <Trans>Market price</Trans>
+                </span>
+              </HeaderElement>
+            )}
+
+            {isOpenOrdersTab && (
+              <HeaderElement hasBackground>
+                <span>
+                  <Trans>
+                    Executes at <QuestionHelper text={<RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />} />
+                  </Trans>
+                </span>
+              </HeaderElement>
+            )}
+
             {!isOpenOrdersTab && (
               <HeaderElement>
                 <span>
                   <Trans>
-                    Execution price <QuestionHelper text={RateTooltipHeader} />
+                    Execution price <QuestionHelper text={<RateTooltipHeader />} />
                   </Trans>
                 </span>
               </HeaderElement>
@@ -193,11 +322,11 @@ export function OrdersTable({
               </HeaderElement>
             )}
 
-            {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+            {/* {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
               <HeaderElement>
                 <Trans>Execution time</Trans>
               </HeaderElement>
-            )}
+            )} */}
 
             <HeaderElement>
               <Trans>Filled</Trans>
@@ -208,16 +337,36 @@ export function OrdersTable({
             </HeaderElement>
             <HeaderElement>{/*Cancel order column*/}</HeaderElement>
           </Header>
+
+          {/* Show explainer modal if user hasn't closed it */}
+          {isOpenOrdersTab && showOrdersExplainerBanner && (
+            <OrdersExplainerBanner>
+              <div>
+                <SVG src={iconOrderExecution} width={36} height={36} />
+                <b>
+                  How close is my <br /> order to executing?
+                </b>
+              </div>
+              <span>{OrderExecutionStatusList()}</span>
+              <StyledCloseIcon onClick={closeOrdersExplainerBanner} />
+            </OrdersExplainerBanner>
+          )}
+
           <Rows>
             {ordersPage.map((order) => (
               <OrderRow
                 key={order.id}
                 isOpenOrdersTab={isOpenOrdersTab}
                 order={order}
+                spotPrice={getSpotPrice({
+                  chainId: chainId as SupportedChainId,
+                  sellTokenAddress: order.sellToken,
+                  buyTokenAddress: order.buyToken,
+                })}
                 prices={pendingOrdersPrices[order.id]}
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                 RowElement={RowElement}
-                isRateInversed={isRateInversed}
+                isRateInverted={isRateInverted}
                 getShowCancellationModal={getShowCancellationModal}
                 onClick={() => selectReceiptOrder(order.id)}
               />

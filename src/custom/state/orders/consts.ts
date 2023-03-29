@@ -11,6 +11,7 @@ export const MARKET_OPERATOR_API_POLL_INTERVAL = ms`2s`
 // We can have lots of limit orders and it creates a high load, so we poll them no so ofter as market orders
 export const LIMIT_OPERATOR_API_POLL_INTERVAL = ms`15s`
 export const PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL = ms`15s`
+export const SPOT_PRICE_CHECK_POLL_INTERVAL = ms`15s`
 export const EXPIRED_ORDERS_CHECK_POLL_INTERVAL = ms`15s`
 
 export const OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE = new Percent(1, 100) // 1/100 => 0.01 => 1%

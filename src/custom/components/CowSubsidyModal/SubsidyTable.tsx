@@ -70,7 +70,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     text-align: center;
   }
 
-  ${({ selected, theme, darkMode }) =>
+  ${({ selected, theme }) =>
     selected &&
     `
     background: ${theme.bg2};
