@@ -1,6 +1,6 @@
 import TradeGp from 'state/swap/TradeGp'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
 import { TradeSummaryContent, TradeSummaryContentProps } from '.'
 import { TradeSummaryProps } from '@cow/modules/swap/containers/TradeSummary'

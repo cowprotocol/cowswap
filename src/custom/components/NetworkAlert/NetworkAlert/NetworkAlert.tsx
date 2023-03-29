@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { getChainInfo } from 'constants/chainInfo'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ArrowUpRight } from 'react-feather'
 import { useDarkModeManager } from 'state/user/hooks'
 import styled from 'styled-components/macro'

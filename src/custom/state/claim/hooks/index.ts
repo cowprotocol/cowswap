@@ -24,7 +24,7 @@ import {
   claimTypeToTokenAmount,
   transformRepoClaimsToUserClaims,
 } from 'state/claim/hooks/utils'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
 import { AppDispatch } from 'state'
@@ -54,7 +54,7 @@ import {
 import { EnhancedUserClaimData } from '@cow/pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import useIsMounted from 'hooks/useIsMounted'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ClaimInfo } from 'state/claim/reducer'
 import { CallState } from '@uniswap/redux-multicall'
 import { formatTokenAmount } from '@cow/utils/amountFormat'

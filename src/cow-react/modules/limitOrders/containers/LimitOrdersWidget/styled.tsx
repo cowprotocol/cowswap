@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { NumericalInput } from '@cow/modules/limitOrders/containers/RateInput/styled'
+import { transparentize, darken } from 'polished'
 
 export const Container = styled.div`
   width: 100%;
@@ -86,4 +87,28 @@ export const StyledRateInfo = styled(RateInfo)`
   min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
+`
+
+export const SmallVolumeWarningBanner = styled.div`
+  display: flex;
+  align-items: center;
+  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+  color: ${({ theme }) => darken(theme.darkMode ? 0 : 0.15, theme.alert)};
+  gap: 10px;
+  border-radius: 10px;
+  margin: 8px auto 0;
+  padding: 16px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+
+  > svg {
+    display: block;
+    width: 34px;
+    height: 21px;
+  }
+
+  > svg > path {
+    fill: ${({ theme }) => theme.alert};
+  }
 `

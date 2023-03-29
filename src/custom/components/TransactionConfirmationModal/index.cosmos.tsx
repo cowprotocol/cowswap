@@ -1,9 +1,10 @@
 import { ConfirmationPendingContent, L2Content, OperationType } from 'components/TransactionConfirmationModal'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import store from 'state'
-import { addPendingOrder, OrderClass, OrderStatus } from 'state/orders/actions'
-import { OrderKind } from '@cowprotocol/contracts'
+import { addPendingOrder, OrderStatus } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TransactionSubmittedContent } from 'components/TransactionConfirmationModal/index'
 import styled from 'styled-components/macro'
 

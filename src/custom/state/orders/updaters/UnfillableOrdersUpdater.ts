@@ -2,26 +2,30 @@ import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
-import { Order, OrderClass } from 'state/orders/actions'
-
-import { SupportedChainId as ChainId } from 'constants/chains'
-
+import { Order } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getBestQuote } from 'utils/price'
-import { getOrderExecutionPrice, getOrderMarketPrice, isOrderUnfillable } from 'state/orders/utils'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
+import {
+  getEstimatedExecutionPrice,
+  getOrderExecutionPrice,
+  getOrderMarketPrice,
+  isOrderUnfillable,
+} from 'state/orders/utils'
 import { getPromiseFulfilledValue } from 'utils/misc'
-import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
 import { priceOutOfRangeAnalytics } from 'components/analytics'
-import { GpPriceStrategy } from 'state/gas/atoms'
 import { supportedChainId } from 'utils/supportedChainId'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
 import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { GpPriceStrategy } from 'state/gas/atoms'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -86,7 +90,6 @@ export function UnfillableOrdersUpdater(): null {
 
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
-  // check which GP Quote API to use (NEW/LEGACY)
   const strategy = useGetGpPriceStrategy()
 
   // Ref, so we don't rerun useEffect
@@ -99,7 +102,7 @@ export function UnfillableOrdersUpdater(): null {
       order: Order,
       fee: FeeInformation | null,
       marketPrice: Price<Currency, Currency>,
-      executionPrice: Price<Currency, Currency>
+      estimatedExecutionPrice: Price<Currency, Currency>
     ) => {
       if (!fee?.amount) return
 
@@ -108,7 +111,8 @@ export function UnfillableOrdersUpdater(): null {
         data: {
           lastUpdateTimestamp: Date.now(),
           marketPrice,
-          executionPrice,
+          estimatedExecutionPrice,
+          feeAmount: CurrencyAmount.fromRawAmount(marketPrice.baseCurrency, fee.amount),
         },
       })
     },
@@ -133,6 +137,7 @@ export function UnfillableOrdersUpdater(): null {
 
       const executionPrice = getOrderExecutionPrice(order, price.amount, fee.amount)
       const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
+      const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
       const isUnfillable = isOrderUnfillable(order, orderPrice, executionPrice)
 
       // Only trigger state update if flag changed
@@ -146,7 +151,7 @@ export function UnfillableOrdersUpdater(): null {
         }
       }
 
-      updateOrderMarketPriceCallback(order, fee, marketPrice, executionPrice)
+      updateOrderMarketPriceCallback(order, fee, marketPrice, estimatedExecutionPrice)
     },
     [setIsOrderUnfillable, updateOrderMarketPriceCallback]
   )
@@ -197,9 +202,9 @@ export function UnfillableOrdersUpdater(): null {
             })
 
             console.debug(
-              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`
+              `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`,
+              e
             )
-            console.debug(e)
           })
       })
     } finally {

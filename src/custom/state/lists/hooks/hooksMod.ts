@@ -11,7 +11,7 @@ import {
   removeGpUnsupportedToken,
 } from '../actions'
 import { UnsupportedToken } from '@cow/api/gnosisProtocol'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { supportedChainId } from 'utils/supportedChainId'
 import { shallowEqual } from 'react-redux'
 import { TokenInfo } from '@uniswap/token-lists'

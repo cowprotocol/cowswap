@@ -4,7 +4,7 @@ import { DEFAULT_DECIMALS } from 'custom/constants'
 
 import { UnsupportedToken } from '@cow/api/gnosisProtocol'
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from '@cow/api/gnosisProtocol/legacy/types'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'

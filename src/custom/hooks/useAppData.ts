@@ -6,7 +6,7 @@ import { buildAppData, BuildAppDataParams } from 'utils/appData'
 import { appDataInfoAtom } from 'state/appData/atoms'
 import { useReferralAddress } from 'state/affiliate/hooks'
 import { useAppCode } from 'hooks/useAppCode'
-import { OrderClass } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useUpdateAtom } from 'jotai/utils'
 
 export type UseAppDataParams = {

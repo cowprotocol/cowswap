@@ -10,6 +10,7 @@ import { ExternalLink } from 'theme'
 import SVG from 'react-inlinesvg'
 import { Web3Status } from '@cow/modules/wallet/web3-react/containers/Web3Status'
 import { Wrapper as Web3StatusWrapper } from '@cow/modules/wallet/api/pure/Web3StatusInner/styled'
+import { ReactNode } from 'react'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;
@@ -116,6 +117,7 @@ const ExternalArrow = styled.span`
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
+  children?: ReactNode
 }
 
 export function Orders({
@@ -128,6 +130,8 @@ export function Orders({
   getShowCancellationModal,
   currentPageNumber,
   pendingOrdersPrices,
+  getSpotPrice,
+  children,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -182,6 +186,7 @@ export function Orders({
         chainId={chainId}
         orders={orders}
         balancesAndAllowances={balancesAndAllowances}
+        getSpotPrice={getSpotPrice}
         getShowCancellationModal={getShowCancellationModal}
       />
     )
@@ -190,6 +195,7 @@ export function Orders({
   return (
     <>
       <OrdersBox>
+        {children}
         <Header>
           <h2>Your Orders</h2>
           <OrdersTabs tabs={tabs} />

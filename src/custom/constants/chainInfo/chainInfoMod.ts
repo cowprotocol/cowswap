@@ -5,7 +5,8 @@
 // import polygonMaticLogo from 'assets/svg/polygon-matic-logo.svg'
 // import ms from 'ms.macro'
 
-import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedL1ChainId, SupportedL2ChainId } from 'constants/chains'
 // import { ARBITRUM_LIST, CELO_LIST, OPTIMISM_LIST } from 'constants/lists'
 
 // MOD imports
