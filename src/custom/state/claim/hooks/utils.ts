@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { GNO, GpEther, USDC } from 'constants/tokens'
 import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'constants/misc'
 

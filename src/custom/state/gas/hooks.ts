@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { GasState } from './reducer'
