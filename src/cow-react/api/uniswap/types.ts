@@ -1,27 +1,37 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 export type Address = `0x${string}`
+export type Chain =
+  | 'ARBITRUM'
+  | 'ETHEREUM'
+  | 'ETHEREUM_GOERLI'
+  | 'OPTIMISM'
+  | 'POLYGON'
+  | 'CELO'
+  | 'BNB'
+  | 'UNKNOWN_CHAIN'
 
 export interface FetchTokensResult {
-  chainId: number
-  name: string
-  address: Address
+  chainId: SupportedChainId
+  id: string
   decimals: number
+  name: string
+  chain: Chain
+  standard: string
+  address: Address
   symbol: string
-  logoURI: string
-  coinGeckoId: string
-  priceUsd: number
-  price24hChange: number
-  volume24h: number
-  marketCap: number
+  project: {
+    id: string
+    logoUrl: string
+    safetyLevel: string
+  }
 }
 
 export interface FetchTokensApiResult {
-  code: number
-  status: 'success' | 'failed'
-  hasNext: boolean
-  data: FetchTokensResult[]
+  searchTokens: Omit<FetchTokensResult, 'chainId'>[]
 }
 
 export type NDimensionalMap<Key extends unknown[], Value> = Key extends [infer First, ...infer Rest]
   ? Map<First, NDimensionalMap<Rest, Value>>
   : Value
-export type TokenLogoCache = NDimensionalMap<[number, string], string>
+export type TokenLogoCache = NDimensionalMap<[SupportedChainId, string], string>

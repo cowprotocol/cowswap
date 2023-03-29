@@ -1,16 +1,34 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import useSWR from 'swr'
 import { getTokens } from './api'
-import type { FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
+import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0
 }
 
+const SUPPORTED_CHAINS: Partial<Record<Chain, SupportedChainId>> = {
+  ETHEREUM: SupportedChainId.MAINNET,
+  ETHEREUM_GOERLI: SupportedChainId.GOERLI,
+} as const
+
+const UNSUPPORTED_CHAIN_ID = null
+
+function hasSupportedChainId(token: any): token is FetchTokensResult {
+  return token?.chainId !== UNSUPPORTED_CHAIN_ID
+}
+
+function chainToChainId(chain: Chain) {
+  const chainId = SUPPORTED_CHAINS[chain]
+
+  return chainId ?? UNSUPPORTED_CHAIN_ID
+}
+
 const tokenLogoCacheAtom = atom<TokenLogoCache>(new Map())
-const tokenLogoCache = atom<TokenLogoCache, Pick<FetchTokensResult, 'chainId' | 'address' | 'logoURI'>>(
+const tokenLogoCache = atom<TokenLogoCache, Pick<FetchTokensResult, 'chainId' | 'address' | 'project'>>(
   (get) => get(tokenLogoCacheAtom),
-  (get, _, { chainId, address, logoURI }) => {
+  (get, _, { chainId, address, project: { logoUrl } }) => {
     const cache = get(tokenLogoCacheAtom)
     let cacheByChainId = cache.get(chainId)
 
@@ -19,7 +37,7 @@ const tokenLogoCache = atom<TokenLogoCache, Pick<FetchTokensResult, 'chainId' | 
       cache.set(chainId, cacheByChainId)
     }
 
-    cacheByChainId.set(address.toLowerCase(), logoURI)
+    cacheByChainId.set(address.toLowerCase(), logoUrl)
   }
 )
 
@@ -29,11 +47,15 @@ export function useUniswapTokens(query: string): FetchTokensResult[] {
     isValidQuery(query) ? getTokens(query) : null
   )
 
-  // Build a logo cache.
-  if (apiResult && apiResult.code === 200 && Array.isArray(apiResult.data)) {
-    apiResult.data.forEach(({ chainId, address, logoURI }) => updateTokenLogoCache({ chainId, address, logoURI }))
+  if (apiResult && Array.isArray(apiResult.searchTokens)) {
+    const result = apiResult.searchTokens
+      .map((token) => ({ ...token, chainId: chainToChainId(token.chain) }))
+      .filter(hasSupportedChainId)
 
-    return apiResult.data
+    // Build a logo cache.
+    result.forEach(({ chainId, address, project }) => updateTokenLogoCache({ chainId, address, project }))
+
+    return result
   }
 
   return []
