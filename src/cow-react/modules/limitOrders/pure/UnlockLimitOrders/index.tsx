@@ -11,7 +11,15 @@ const BULLET_LIST_CONTENT = [
   { id: 3, content: 'Place multiple orders using the same balance' },
   { id: 4, content: 'Always receive 100% of your order surplus' },
   { id: 5, content: 'Protection from MEV by default' },
-  { id: 6, content: <span>NOW with&nbsp;<b>partial fills</b>&nbsp;support!</span>, isNew: true },
+  {
+    id: 6,
+    content: (
+      <span>
+        NOW with&nbsp;<b>partial fills</b>&nbsp;support!
+      </span>
+    ),
+    isNew: true,
+  },
 ]
 
 export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }) {

@@ -62,7 +62,7 @@ export const List = styled.ul`
         display: block;
         padding: 3px 5px;
         background: ${({ theme }) => theme.success};
-        color: ${({ theme }) => theme.darkMode ? darken(0.5, theme.success) : theme.white};
+        color: ${({ theme }) => (theme.darkMode ? darken(0.5, theme.success) : theme.white)};
         border-radius: 10px;
         font-size: 9px;
         font-weight: bold;
