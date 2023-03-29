@@ -5,8 +5,7 @@ import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies
 import { queryParametersToSwapState } from 'state/swap/hooks'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { ChainId } from 'state/lists/actions/actionsMod'
-
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 export interface SwapState {
   // Mod: added chainId
   chainId: number | null

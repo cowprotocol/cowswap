@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount, Price, Token /*, TradeType*/ } from '@uniswap
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { /*DAI_OPTIMISM,*/ USDC /*, USDC_ARBITRUM, USDC_MAINNET, USDC_POLYGON*/ } from 'constants/tokens'
 // import { useBestV2Trade } from './useBestV2Trade'
 // import { useClientSideV3Trade } from './useClientSideV3Trade'

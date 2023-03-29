@@ -5,7 +5,7 @@ import { OrderTransitionStatus } from 'state/orders/utils'
 import { OrderFulfillmentData } from 'state/orders/actions'
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { CANCELLED_ORDERS_PENDING_TIME } from 'constants/index'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'

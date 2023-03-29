@@ -1,6 +1,6 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit'
 import { OrderID } from '@cow/api/gnosisProtocol'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import {
   addOrUpdateOrders,
   addPendingOrder,

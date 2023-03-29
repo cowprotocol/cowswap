@@ -1,6 +1,6 @@
 // this file essentially provides all the overrides employed in uniswap-xdai-sdk fork
 // + logic for chainId switch to/from xDAI
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { GpEther as ETHER } from 'constants/tokens'
 import { XDAI_SYMBOL } from './constants'
 

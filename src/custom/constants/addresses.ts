@@ -1,5 +1,5 @@
 import { AddressMap, MULTICALL_ADDRESS as MULTICALL2_ADDRESSES_UNI } from '@src/constants/addresses'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export * from '@src/constants/addresses'
 

@@ -4,7 +4,7 @@ import { useWalletInfo } from '@cow/modules/wallet'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
 import { Order } from 'state/orders/actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getBestQuote } from 'utils/price'
 import {
   getEstimatedExecutionPrice,

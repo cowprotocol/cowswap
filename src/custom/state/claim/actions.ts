@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ClaimInfo } from 'state/claim/reducer'
 
 export enum ClaimStatus {

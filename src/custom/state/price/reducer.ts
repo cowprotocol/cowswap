@@ -1,5 +1,5 @@
 import { createReducer, PayloadAction, current } from '@reduxjs/toolkit'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'

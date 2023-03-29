@@ -1,6 +1,6 @@
 import { OrderKind } from '@cowprotocol/contracts'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
 import { LegacyPriceQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'

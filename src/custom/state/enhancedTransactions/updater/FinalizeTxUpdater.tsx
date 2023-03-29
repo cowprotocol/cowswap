@@ -4,7 +4,7 @@
 
 import { useEffect, useMemo } from 'react'
 import { useAppDispatch } from 'state/hooks'
-// import { SupportedChainId } from 'constants/chains'
+// import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddPopup } from 'state/application/hooks'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
