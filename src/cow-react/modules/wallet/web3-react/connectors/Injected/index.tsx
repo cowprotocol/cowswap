@@ -157,6 +157,8 @@ export class InjectedWallet extends Connector {
   }
 
   private detectOnEthereum(ethereum?: any) {
+    if (!ethereum) return null
+
     const provider = this.searchKeywords.some((keyword) => ethereum[keyword])
 
     return provider ? ethereum : null
