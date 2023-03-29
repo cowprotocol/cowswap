@@ -3,7 +3,8 @@ import { AnyAction, Dispatch, isAnyOf, Middleware, MiddlewareAPI } from '@reduxj
 import { addPopup } from 'state/application/reducer'
 import { AppState } from 'state'
 import * as OrderActions from './actions'
-import { OrderClass, SerializedOrder } from './actions'
+import { SerializedOrder } from './actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 

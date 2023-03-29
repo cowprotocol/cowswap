@@ -1,10 +1,11 @@
-import { Order, OrderFulfillmentData, OrderKind, OrderStatus } from 'state/orders/actions'
-import { getOrder, OrderID, OrderMetaData } from '@cow/api/gnosisProtocol'
+import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { getOrder, OrderID } from '@cow/api/gnosisProtocol'
 import { stringToCurrency } from 'state/swap/extension'
 import { formatSymbol } from '@cow/utils/format'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
+import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
@@ -13,7 +14,7 @@ export function computeOrderSummary({
   orderFromApi,
 }: {
   orderFromStore?: Order
-  orderFromApi: OrderMetaData | null
+  orderFromApi: EnrichedOrder | null
 }) {
   // Default to store's current order summary
   let summary: string | undefined = orderFromStore?.summary
@@ -63,7 +64,7 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
     return null
   }
   // Get order from API
-  let orderFromApi: OrderMetaData | null = null
+  let orderFromApi: EnrichedOrder | null = null
   try {
     orderFromApi = await getOrder(chainId, orderFromStore.id)
   } catch (e: any) {

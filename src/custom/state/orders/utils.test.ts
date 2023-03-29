@@ -2,12 +2,13 @@
  * @jest-environment ./custom-test-env.js
  */
 
+import { OrderKind } from '@cowprotocol/cow-sdk'
+
 import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
 
 import { classifyOrder, getOrderExecutionPrice, isOrderUnfillable } from './utils'
 import { Price } from '@uniswap/sdk-core'
 import { generateOrder } from './mocks'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import ms from 'ms.macro'
 
 // Picked stable coins with same amount of decimals (6) for making easier to visually reason the amounts

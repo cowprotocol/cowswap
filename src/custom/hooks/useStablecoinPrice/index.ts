@@ -11,16 +11,16 @@ import { /*DAI_OPTIMISM,*/ USDC /*, USDC_ARBITRUM, USDC_MAINNET, USDC_POLYGON*/ 
 import { supportedChainId } from 'utils/supportedChainId'
 import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useStablecoinPrice'
 import { stringToCurrency } from 'state/swap/extension'
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { useGetCoingeckoUsdPrice } from '@cow/api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 // import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 export * from '@src/hooks/useStablecoinPrice'
 
@@ -48,7 +48,6 @@ export default function useCowUsdPrice(currency?: Currency) {
 
   const chainId = currency?.chainId
   const { account } = useWalletInfo()
-  // use quote loading as a price update dependency
   const strategy = useGetGpPriceStrategy()
 
   const sellTokenAddress = currency?.wrapped.address
@@ -155,7 +154,7 @@ export default function useCowUsdPrice(currency?: Currency) {
         })
       }
     }
-  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency, isStablecoin, quote])
+  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, currency, isStablecoin, quote, strategy])
 
   /* const lastPrice = useRef(bestUsdPrice)
   if (!bestUsdPrice || !lastPrice.current || !bestUsdPrice.equalTo(lastPrice.current)) {
