@@ -90,6 +90,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
+  const isChromeMobile = isMobile && isChrome
 
   let injectedOption
   if (!isInjected) {
@@ -118,7 +119,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   // Injected
   const tallyOption =
-    (!isInjectedMobileBrowser && isChrome && <TallyWalletOption tryActivation={tryActivation} />) ?? null
+    (!isInjectedMobileBrowser && isChrome && !isChromeMobile && <TallyWalletOption tryActivation={tryActivation} />) ??
+    null
 
   return (
     <>
