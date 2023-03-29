@@ -3,7 +3,7 @@ import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { LimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary } from 'components/Button'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import { TradeApproveButton } from '@cow/common/containers/TradeApprove/TradeApproveButton'
 import { LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
@@ -118,6 +118,10 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.ZeroPrice]: {
     disabled: true,
     text: 'Invalid price. Try increasing input/output amount.',
+  },
+  [LimitOrdersFormState.FeeExceedsFrom]: {
+    disabled: true,
+    text: 'Sell amount is too small',
   },
   [LimitOrdersFormState.QuoteError]: ({ quote }: TradeButtonsParams) => {
     return (

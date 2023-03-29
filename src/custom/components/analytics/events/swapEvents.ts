@@ -1,4 +1,6 @@
-import { Category, sendEvent } from '../index'
+import { sendEvent } from '../index'
+import { Category } from '../types'
+
 import { Field } from 'state/swap/actions'
 import { debounce } from 'utils/misc'
 

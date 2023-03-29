@@ -4,7 +4,7 @@ import { loadingAnimationMixin } from './style-mixins'
 
 export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; hasSeparatorLine?: boolean }>`
   display: ${({ withRecipient }) => (withRecipient ? 'inline-flex' : 'block')};
-  margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-12px auto' : '2px auto')};
+  margin: ${({ withRecipient, isCollapsed }) => (withRecipient ? '0' : isCollapsed ? '-13px auto' : '2px auto')};
   cursor: pointer;
   position: relative;
   z-index: 2;
@@ -41,7 +41,7 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
   transition: transform 0.25s;
   border: ${({ border, theme }) => (border ? `1px solid ${theme.grey1}` : '0')};
   box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.bg1};
-  background: ${({ theme }) => (theme.darkMode ? theme.grey1 : theme.white)};
+  background: ${({ theme }) => theme.grey1};
   border-radius: 8px;
   width: var(--size);
   margin: auto;
@@ -54,11 +54,13 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean; border?: boolean 
 `
 
 export const ArrowDownIcon = styled(ArrowDown)`
+  display: block;
+  margin: auto;
   stroke: ${({ theme }) => theme.text1};
-  stroke-width: 2px;
-  padding: 3px;
+  stroke-width: 3px;
+  padding: 0;
   height: 100%;
-  width: 100%;
+  width: 20px;
   cursor: pointer;
 `
 

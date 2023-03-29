@@ -1,6 +1,6 @@
 import { Colors } from 'theme/styled'
 import { colors as colorsUniswap } from '@src/theme'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 
 import { createGlobalStyle, css } from 'styled-components/macro'
 

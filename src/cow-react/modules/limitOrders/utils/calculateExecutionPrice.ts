@@ -48,8 +48,8 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
 
   if (inputCurrencyAmount.currency !== feeAmount.currency) return null
 
-  const isInversed = marketRate.lessThan(1)
-  const marketRateFixed = isInversed ? marketRate.invert() : marketRate
+  const isInverted = marketRate.lessThan(1)
+  const marketRateFixed = isInverted ? marketRate.invert() : marketRate
   /**
    * Since a user can specify an arbitrary price
    * And the specified price can be less than the market price
@@ -63,7 +63,7 @@ export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Cur
       outputCurrencyAmount.currency
     ),
   })
-  const marketPrice = isInversed ? marketPriceRaw.invert() : marketPriceRaw
+  const marketPrice = isInverted ? marketPriceRaw.invert() : marketPriceRaw
 
   const currentPrice = new Price({
     baseAmount: inputCurrencyAmount.subtract(feeAmount),

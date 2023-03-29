@@ -1,5 +1,6 @@
 import { OrderClass } from 'state/orders/actions'
-import { Category, sendEvent } from '../index'
+import { sendEvent } from '../index'
+import { Category } from '../types'
 
 import { PIXEL_EVENTS } from '../pixel/constants'
 import { sendFacebookEvent } from '../pixel/facebook'

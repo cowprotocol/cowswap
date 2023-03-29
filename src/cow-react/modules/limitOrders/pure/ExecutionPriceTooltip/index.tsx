@@ -5,40 +5,61 @@ import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { FiatAmount } from '@cow/common/pure/FiatAmount'
 import { ExecutionPrice } from '@cow/modules/limitOrders/pure/ExecutionPrice'
 import { convertAmountToCurrency } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
+import { ExecuteIndicator } from '@cow/modules/limitOrders/pure/Orders/OrderRow/styled'
 
 export interface ExecutionPriceTooltipProps {
-  isInversed: boolean
+  isInverted: boolean
   feeAmount: CurrencyAmount<Currency> | null
   displayedRate: string | null
   executionPrice: Price<Currency, Currency> | null
   marketRate: Fraction | null
+  isOpenOrdersTab?: boolean
 }
 
-// TODO: change the tooltip (Mindy will give a text)
-export const RateTooltipHeader = (
-  <styledEl.Content>
-    <h3>CoW Swap limit orders are gasless.</h3>
-    <p>
-      CoW Swap covers all the fees (including gas) by monitoring network conditions and filling your order when the
-      market price is slightly better than your specified limit price. The extra tokens we get are used to cover your
-      fees. Then we give any leftovers back to you!{' '}
-      <a href="https://swap.cow.fi/" target="_blank" rel="noopener nofollow noreferrer">
-        Learn more about limit orders.
-      </a>
-    </p>
-  </styledEl.Content>
-)
+export function OrderExecutionStatusList() {
+  return (
+    <styledEl.StatusList>
+      <li>
+        <ExecuteIndicator status={'veryClose'} /> <b>Very close</b> (&lt;0.5% from market price)
+      </li>
+      <li>
+        <ExecuteIndicator status={'close'} /> <b>Close</b> (0.5% - 5% from market price)
+      </li>
+      <li>
+        <ExecuteIndicator status={'notClose'} /> <b>Not yet close</b> (&gt;5% from market price)
+      </li>
+    </styledEl.StatusList>
+  )
+}
 
+interface RateTooltipHeaderProps {
+  isOpenOrdersTab?: boolean
+}
+
+export function RateTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps) {
+  return (
+    <styledEl.Content>
+      <p>Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.</p>
+
+      {isOpenOrdersTab && (
+        <>
+          <h3>How close is my order to executing?</h3>
+          {OrderExecutionStatusList()}
+        </>
+      )}
+    </styledEl.Content>
+  )
+}
 function formatFeeAmount({
   marketRate,
   feeAmount,
-  isInversed,
+  isInverted,
   executionPrice,
 }: ExecutionPriceTooltipProps): CurrencyAmount<Currency> | null {
-  const currency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
+  const currency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const invertedFee = marketRate && feeAmount ? marketRate.multiply(feeAmount) : null
 
-  return !isInversed && invertedFee && currency && feeAmount
+  return !isInverted && invertedFee && currency && feeAmount
     ? convertAmountToCurrency(
         CurrencyAmount.fromFractionalAmount(feeAmount.currency, invertedFee.numerator, invertedFee.denominator),
         currency
@@ -47,16 +68,16 @@ function formatFeeAmount({
 }
 
 export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
-  const { isInversed, displayedRate, executionPrice } = props
+  const { isInverted, displayedRate, executionPrice, isOpenOrdersTab } = props
 
-  const currentCurrency = isInversed ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
+  const currentCurrency = isInverted ? executionPrice?.baseCurrency : executionPrice?.quoteCurrency
   const formattedFeeAmount = formatFeeAmount(props)
 
   const feeUsdValue = useHigherUSDValue(formattedFeeAmount || undefined)
 
   return (
     <styledEl.FeeTooltipWrapper>
-      {RateTooltipHeader}
+      <RateTooltipHeader isOpenOrdersTab={isOpenOrdersTab} />
 
       <styledEl.FeeItem borderTop>
         <span>
@@ -90,7 +111,7 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
       <styledEl.FeeItem highlighted>
         <b>Order executes at</b>
         <span>
-          <b>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInversed={isInversed} />}</b>
+          <b>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />}</b>
         </span>
       </styledEl.FeeItem>
     </styledEl.FeeTooltipWrapper>
