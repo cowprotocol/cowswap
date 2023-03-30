@@ -77,6 +77,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       partiallyFillable: true, // Limit orders ALWAYS partially fillable - for now
       appDataHash: appData.hash,
       quoteId,
+      isQuoteFinal: quoteState.isQuoteFinal,
     },
   }
 }

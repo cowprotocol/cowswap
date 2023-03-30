@@ -252,7 +252,7 @@ export function useRefetchQuoteCallback() {
 
       // Get the best quote
       getBestQuoteResolveOnlyLastCall(bestQuoteParams)
-        .then((res) => handleResponse(res, true))
+        //.then((res) => handleResponse(res, true)) // TODO: Uncomment later (this is to force always temporal prices)
         .catch(handleError)
     },
     [

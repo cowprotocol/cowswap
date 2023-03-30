@@ -78,6 +78,7 @@ export function useTradeExactInWithFee({
     executionPrice,
     tradeType: TradeType.EXACT_INPUT,
     quoteId: quote.price.quoteId,
+    isQuoteFinal: quote.isBestQuote === true,
   })
 }
 
@@ -131,5 +132,6 @@ export function useTradeExactOutWithFee({
     executionPrice,
     tradeType: TradeType.EXACT_OUTPUT,
     quoteId: quote.price.quoteId,
+    isQuoteFinal: quote.isBestQuote === true,
   })
 }

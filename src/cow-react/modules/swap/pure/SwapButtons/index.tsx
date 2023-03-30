@@ -34,6 +34,7 @@ export interface SwapButtonsContext {
   hasEnoughWrappedBalanceForSwap: boolean
   swapInputError?: ReactNode
   onCurrencySelection: (field: Field, currency: Currency) => void
+  isQuoteFinal: boolean
 }
 
 const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext) => JSX.Element } = {
@@ -187,5 +188,9 @@ function EthFlowSwapButton(props: SwapButtonsContext & { isExpertMode: boolean }
 export const SwapButtons = React.memo(function (props: SwapButtonsContext) {
   console.debug('RENDER SWAP BUTTON: ', props)
 
-  return <div id="swap-button">{swapButtonStateMap[props.swapButtonState](props)}</div>
+  return (
+    <div id="swap-button">
+      {swapButtonStateMap[props.swapButtonState](props)} (Is Quote Final? {Boolean(props.isQuoteFinal).toString()})
+    </div>
+  )
 }, genericPropsChecker)

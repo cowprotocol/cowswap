@@ -28,6 +28,7 @@ const tradeContext: TradeFlowContext = {
     allowsOffchainSigning: true,
     partiallyFillable: true,
     appDataHash: '0xabc',
+    isQuoteFinal: true,
   },
   rateImpact: 0,
   appData: {} as any,

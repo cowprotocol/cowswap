@@ -8,6 +8,7 @@ import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrders
 import { CancelableResult } from 'utils/async'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
+import { LimitOrdersQuoteParams } from '../useQuoteRequestParams'
 
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
@@ -48,7 +49,7 @@ export function useHandleResponse() {
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
 
   return useCallback(
-    (response: CancelableResult<OrderQuoteResponse>) => {
+    (response: CancelableResult<OrderQuoteResponse>, feeQuoteParams: LimitOrdersQuoteParams) => {
       try {
         const result = handleLimitOrderQuoteResponse(inputCurrency, outputCurrency, response)
 
@@ -57,7 +58,10 @@ export function useHandleResponse() {
         const { rateState, quote } = result
 
         updateLimitRateState(rateState)
-        setLimitOrdersQuote({ response: quote })
+        setLimitOrdersQuote({
+          response: quote,
+          isQuoteFinal: feeQuoteParams.priceQuality === undefined || feeQuoteParams.priceQuality === 'optimal',
+        })
       } catch (error: any) {
         console.debug('[useFetchMarketPrice] Failed to fetch exection price', error)
         updateLimitRateState({ marketRate: null })

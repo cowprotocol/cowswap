@@ -14,6 +14,7 @@ import { useSetAtom, useAtomValue } from 'jotai'
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
   const baseProps = useBaseFlowContextSetup()
+
   const addTransaction = useTransactionAdder()
 
   const ethFlowInFlightOrderIds = useAtomValue(ethFlowInFlightOrderIdsAtom)

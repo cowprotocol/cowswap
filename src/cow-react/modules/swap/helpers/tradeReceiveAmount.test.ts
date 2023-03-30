@@ -29,6 +29,7 @@ describe('Helpers to build ReceiveAmountInfo', () => {
             executionPrice: new Price(currency, currencyOut, 1, 4),
             tradeType: TradeType.EXACT_INPUT,
             quoteId: 10000,
+            isQuoteFinal: true,
           })
         )
 
@@ -54,6 +55,7 @@ describe('Helpers to build ReceiveAmountInfo', () => {
           executionPrice: new Price(currency, currencyOut, 1, 4),
           tradeType: TradeType.EXACT_INPUT,
           quoteId: 10000,
+          isQuoteFinal: true,
         })
       )
 

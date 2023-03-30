@@ -9,11 +9,11 @@ import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatSymbol } from '@cow/utils/format'
 import {
-  EcdsaSigningScheme,
+  // EcdsaSigningScheme,
   OrderClass,
   OrderKind,
   UnsignedOrder,
-  SigningScheme,
+  // SigningScheme,
   OrderSigningUtils,
 } from '@cowprotocol/cow-sdk'
 import { getProfileData } from '@cow/api/gnosisProtocol/api'
@@ -39,6 +39,7 @@ export type PostOrderParams = {
   class: OrderClass
   partiallyFillable: boolean
   quoteId?: number
+  isQuoteFinal: boolean
 }
 
 export type UnsignedOrderAdditionalParams = PostOrderParams & {
@@ -198,51 +199,55 @@ function _getOrderStatus(allowsOffchainSigning: boolean, isOnChain: boolean | un
 }
 
 export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnserialisedPendingOrderParams> {
-  const { chainId, account, signer, allowsOffchainSigning } = params
+  const { /*chainId, account, signer, allowsOffchainSigning,*/ isQuoteFinal, quoteId } = params
 
-  // Prepare order
-  const { summary, quoteId, order: unsignedOrder } = getOrderParams(params)
-  const receiver = unsignedOrder.receiver
-
-  let signingScheme: SigningScheme
-  let signature: string | undefined
-
-  if (allowsOffchainSigning) {
-    const signedOrderInfo = await OrderSigningUtils.signOrder(unsignedOrder, chainId, signer)
-    signingScheme =
-      signedOrderInfo.signingScheme === EcdsaSigningScheme.ETHSIGN ? SigningScheme.ETHSIGN : SigningScheme.EIP712
-    signature = signedOrderInfo.signature
+  if (!isQuoteFinal) {
+    throw new Error(
+      `[signAndPostOrder] The order can't be signed and posted, since the quote is not final. Quote ${quoteId}`
+    )
   } else {
-    signingScheme = SigningScheme.PRESIGN
-    signature = account
+    throw new Error(`[signAndPostOrder] Boom!. Quote ${quoteId}, why is this final?`)
   }
 
-  if (!signature) throw new Error('Signature is undefined!')
+  // // Prepare order
+  // const { summary, order: unsignedOrder } = getOrderParams(params)
+  // const receiver = unsignedOrder.receiver
 
-  // Call API
-  const orderId = await orderBookApi.sendOrder(
-    {
-      ...unsignedOrder,
-      from: account,
-      receiver,
-      signingScheme,
-      // Include the signature
-      signature,
-      quoteId,
-    },
-    { chainId }
-  )
+  // let signingScheme: SigningScheme
+  // let signature: string | undefined
+  // if (allowsOffchainSigning) {
+  //   const signedOrderInfo = await signOrder(unsignedOrder, chainId, signer)
+  //   signingScheme = signedOrderInfo.signingScheme
+  //   signature = signedOrderInfo.signature
+  // } else {
+  //   signingScheme = SigningScheme.PRESIGN
+  //   signature = account
+  // }
 
-  const pendingOrderParams: Order = mapUnsignedOrderToOrder({
-    unsignedOrder,
-    additionalParams: { ...params, orderId, summary, signature },
-  })
+  // // Call API
+  // const orderId = await sendOrderApi({
+  //   chainId,
+  //   order: {
+  //     ...unsignedOrder,
+  //     receiver,
+  //     signingScheme,
+  //     // Include the signature
+  //     signature,
+  //     quoteId,
+  //   },
+  //   owner: account,
+  // })
 
-  return {
-    chainId,
-    id: orderId,
-    order: pendingOrderParams,
-  }
+  // const pendingOrderParams: Order = mapUnsignedOrderToOrder({
+  //   unsignedOrder,
+  //   additionalParams: { ...params, orderId, summary, signature },
+  // })
+
+  // return {
+  //   chainId,
+  //   id: orderId,
+  //   order: pendingOrderParams,
+  // }
 }
 
 type OrderCancellationParams = {

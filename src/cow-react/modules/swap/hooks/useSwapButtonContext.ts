@@ -126,5 +126,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     toggleWalletModal,
     swapInputError,
     onCurrencySelection,
+    isQuoteFinal: trade?.isQuoteFinal || false,
   }
 }

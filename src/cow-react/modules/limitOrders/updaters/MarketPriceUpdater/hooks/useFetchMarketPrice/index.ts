@@ -40,14 +40,13 @@ export function useFetchMarketPrice() {
       console.debug('[useFetchMarketPrice] No need to fetch quotes')
       return
     }
-
     console.debug('[useFetchMarketPrice] Periodically fetch quotes')
     const handleFetchQuote = () => {
       console.debug('[useFetchMarketPrice] Fetching price')
       getQuoteOnlyResolveLast(feeQuoteParams)
-        .then(handleResponse)
+        .then((result) => handleResponse(result, feeQuoteParams))
         .catch((error: GpQuoteError) => {
-          setLimitOrdersQuote({ error })
+          setLimitOrdersQuote({ error, isQuoteFinal: false })
           updateLimitRateState({ marketRate: null })
         })
         .finally(() => updateLimitRateState({ isLoadingMarketRate: false }))

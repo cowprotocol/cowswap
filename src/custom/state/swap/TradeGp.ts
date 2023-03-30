@@ -70,6 +70,7 @@ interface TradeGpConstructor {
   executionPrice: Price<Currency, Currency>
   tradeType: TradeType
   quoteId?: number
+  isQuoteFinal: boolean
 }
 
 /**
@@ -108,6 +109,17 @@ export default class TradeGp {
    */
   readonly quoteId?: number
 
+  /**
+   * Shows if the trade has a valid quote that can be used for posting the order to the protocol.
+   *
+   * Sometimes, it might be useful to query some services to get a rough estimation on the price of two assests.
+   * This helps to give a fast response to the user and show some illustrative prices while the official quote is being
+   * queried.
+   *
+   * This flag, if its not set, indicates that the trade shouldn't be posted to the protocol.
+   */
+  readonly isQuoteFinal: boolean
+
   public constructor({
     inputAmount,
     inputAmountWithFee,
@@ -118,6 +130,7 @@ export default class TradeGp {
     executionPrice,
     tradeType,
     quoteId,
+    isQuoteFinal,
   }: TradeGpConstructor) {
     this.tradeType = tradeType
     this.inputAmount = inputAmount
@@ -128,6 +141,7 @@ export default class TradeGp {
     this.fee = fee
     this.executionPrice = executionPrice
     this.quoteId = quoteId
+    this.isQuoteFinal = isQuoteFinal
   }
   /**
    * Get the minimum amount that must be received from this trade for the given slippage tolerance
