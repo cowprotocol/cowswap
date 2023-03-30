@@ -197,7 +197,7 @@ export function NewSwapWidget() {
    */
   useEffect(() => {
     swapActions.onChangeRecipient(null)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
