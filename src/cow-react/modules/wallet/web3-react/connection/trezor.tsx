@@ -8,6 +8,10 @@ import { default as TrezorImage } from '@cow/modules/wallet/api/assets/trezor.sv
 import { Trezor } from '../connectors/Trezor'
 import { initializeConnector } from '@web3-react/core'
 import { Web3ReactConnection } from '../types'
+import { RPC_URLS } from '@src/custom/constants/networks'
+
+const MANIFEST_APP_URL = 'https://cow.fi/'
+const MANIFEST_APP_EMAIL = 'help@cow.fi'
 
 const BASE_PROPS = {
   color: '#4196FC',
@@ -19,7 +23,11 @@ const [trezor, trezorHooks] = initializeConnector<Trezor>(
   (actions) =>
     new Trezor({
       actions,
-      options: {},
+      options: {
+        manifestAppUrl: MANIFEST_APP_URL,
+        manifestEmail: MANIFEST_APP_EMAIL,
+        url: RPC_URLS[1],
+      },
     })
 )
 export const trezorConnection: Web3ReactConnection = {

@@ -16,17 +16,16 @@ interface LedgerConstructorArgs {
 interface TrezorOptions {
   chainId?: number
   url?: string
-  manifestEmail?: string
-  manifestAppUrl?: string
+  manifestEmail: string
+  manifestAppUrl: string
 }
 
 function parseChainId(chainId: number | string) {
   return Number.parseInt(String(chainId), 16)
 }
 
-const url = 'https://mainnet.infura.io/v3/1ef55d552de6419386f927559b13e052'
-const manifestEmail = 'dummy@abc.xyz'
-const manifestAppUrl = 'http://localhost:3000'
+const DEFAULT_MANIFEST_EMAIL = ''
+const DEFAULT_MANIFEST_URL = ''
 const pollingInterval = 12000
 const requestTimeoutMs = undefined
 const accountFetchingConfigs = {
@@ -36,17 +35,22 @@ const accountFetchingConfigs = {
 }
 
 const _signTypedData = (eip712Data: any) => {
+  const path = "m/44'/60'/0'/0/"
   const activeIndex = 0
 
   const { domain_separator_hash, message_hash } = transformTypedData(eip712Data, true)
 
   return TrezorConnect.ethereumSignTypedData({
-    path: "m/44'/60'/0'/0/" + activeIndex,
+    path: path + activeIndex,
     metamask_v4_compat: true,
     domain_separator_hash,
     message_hash: message_hash || '',
     data: eip712Data,
   }).then((res) => {
+    if (res.success === false) {
+      throw new Error(res.payload.error)
+    }
+
     return (res.payload as any).signature
   })
 }
@@ -55,7 +59,14 @@ export class Trezor extends Connector {
   public provider?: any
   private readonly options: TrezorOptions
 
-  constructor({ actions, onError, options = {} }: LedgerConstructorArgs) {
+  constructor({
+    actions,
+    onError,
+    options = {
+      manifestAppUrl: DEFAULT_MANIFEST_URL,
+      manifestEmail: DEFAULT_MANIFEST_EMAIL,
+    },
+  }: LedgerConstructorArgs) {
     super(actions, onError)
 
     this.options = options
@@ -85,15 +96,15 @@ export class Trezor extends Connector {
   ) {
     if (!this.provider || forceCreate) {
       TrezorConnect.manifest({
-        email: manifestEmail,
-        appUrl: manifestAppUrl,
+        email: this.options.manifestEmail,
+        appUrl: this.options.manifestAppUrl,
       })
 
       const engine = new Web3ProviderEngine({ pollingInterval })
       const props = { trezorConnectClientApi: TrezorConnect, networkId, accountFetchingConfigs }
 
       engine.addProvider(new TrezorSubprovider(props))
-      engine.addProvider(new RPCSubprovider(url, requestTimeoutMs))
+      engine.addProvider(new RPCSubprovider(this.options.url, requestTimeoutMs))
 
       this.addRequest(engine)
 
@@ -164,16 +175,6 @@ export class Trezor extends Connector {
     }
   }
 
-  public async connectEagerly(): Promise<void> {
-    console.log('TODO: maybe this is possible maybe not because of the popup')
-    // const cancelActivation = this.actions.startActivation()
-
-    // try {
-    //   await this.getProvider({ forceCreate: true })
-    //   await this.activateProvider()
-    // } catch (error) {
-    //   cancelActivation()
-    //   throw error
-    // }
-  }
+  // TODO: I think this is not possible because of the popup
+  public async connectEagerly(): Promise<void> {}
 }
