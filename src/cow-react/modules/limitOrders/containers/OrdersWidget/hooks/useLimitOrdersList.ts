@@ -11,6 +11,7 @@ import { isOrderFilled } from '@cow/modules/limitOrders/utils/isOrderFilled'
 import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { isPartiallyFilled } from '@cow/modules/limitOrders/utils/isPartiallyFilled'
 
 export interface LimitOrdersList {
   pending: ParsedOrder[]
@@ -22,6 +23,7 @@ export interface ParsedOrder extends Order {
   executedSellAmount: JSBI
   expirationTime: Date
   fullyFilled: boolean
+  partiallyFilled: boolean
   filledAmount: BigNumber
   filledPercentage: BigNumber
   surplusAmount: BigNumber
@@ -51,6 +53,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
   const parsedCreationTime = new Date(order.creationTime)
   const fullyFilled = isOrderFilled(order)
+  const partiallyFilled = isPartiallyFilled(order)
   const formattedPercentage = filledPercentage.times(100).decimalPlaces(2).toNumber()
   const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
     ? new Price({
@@ -80,6 +83,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     executedPrice,
     parsedCreationTime,
     fullyFilled,
+    partiallyFilled,
     activityId,
     activityTitle,
   }
