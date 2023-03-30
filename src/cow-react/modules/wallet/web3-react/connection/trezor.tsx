@@ -5,10 +5,10 @@ import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { default as TrezorImage } from '@cow/modules/wallet/api/assets/trezor.svg'
-import { Trezor } from '../connectors/Trezor'
 import { initializeConnector } from '@web3-react/core'
 import { Web3ReactConnection } from '../types'
 import { RPC_URLS } from '@src/custom/constants/networks'
+import { AsyncConnector } from './asyncConnector'
 
 const MANIFEST_APP_URL = 'https://swap.cow.fi/'
 const MANIFEST_APP_EMAIL = 'help@cow.fi'
@@ -19,17 +19,25 @@ const BASE_PROPS = {
   id: 'trezor',
 }
 
-const [trezor, trezorHooks] = initializeConnector<Trezor>(
+const [trezor, trezorHooks] = initializeConnector<AsyncConnector>(
   (actions) =>
-    new Trezor({
-      actions,
-      options: {
-        manifestAppUrl: MANIFEST_APP_URL,
-        manifestEmail: MANIFEST_APP_EMAIL,
-        url: RPC_URLS[1],
-      },
-    })
+    new AsyncConnector(
+      () =>
+        import('../connectors/Trezor').then(
+          (m) =>
+            new m.Trezor({
+              actions,
+              options: {
+                manifestAppUrl: MANIFEST_APP_URL,
+                manifestEmail: MANIFEST_APP_EMAIL,
+                url: RPC_URLS[1],
+              },
+            })
+        ),
+      actions
+    )
 )
+
 export const trezorConnection: Web3ReactConnection = {
   connector: trezor,
   hooks: trezorHooks,

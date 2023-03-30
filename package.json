@@ -99,7 +99,6 @@
     "@sentry/react": "^7.3.0",
     "@sentry/tracing": "^7.3.0",
     "@sentry/webpack-plugin": "^1.17.1",
-    "@trezor/connect": "^9.0.7",
     "@trezor/connect-plugin-ethereum": "^9.0.1",
     "@trezor/connect-web": "^9.0.7",
     "@types/trezor-connect": "^8.1.18",
