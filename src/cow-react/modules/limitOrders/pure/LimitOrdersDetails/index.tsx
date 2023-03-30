@@ -17,6 +17,7 @@ import { LimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 import { DEFAULT_DATE_FORMAT } from '@cow/constants/intl'
+import { OrderType } from '@cow/modules/limitOrders/pure/OrderType'
 
 const Wrapper = styled.div`
   font-size: 13px;
@@ -115,19 +116,8 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Active</span>
         </div>
       </styledEl.DetailsRow> */}
-      {/* <styledEl.DetailsRow>
-        <div>
-          <span>Order type</span>{' '}
-          <InfoIcon
-            content={
-              'This order will either be filled completely or not filled. (Support for partially fillable orders is coming soon!)'
-            }
-          />
-        </div>
-        <div>
-          <span>Fill or kill</span>
-        </div>
-      </styledEl.DetailsRow> */}
+      {/* TODO: adjust flag when settings are available */}
+      <OrderType isPartiallyFillable />
       {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>

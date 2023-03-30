@@ -3,6 +3,7 @@ import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { NumericalInput } from '@cow/modules/limitOrders/containers/RateInput/styled'
 import { transparentize, darken } from 'polished'
+import { OrderType } from '@cow/modules/limitOrders/pure/OrderType'
 
 export const Container = styled.div`
   width: 100%;
@@ -87,6 +88,10 @@ export const StyledRateInfo = styled(RateInfo)`
   min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
+`
+
+export const StyledOrderType = styled(OrderType)`
+  font-size: 13px;
 `
 
 export const SmallVolumeWarningBanner = styled.div`
