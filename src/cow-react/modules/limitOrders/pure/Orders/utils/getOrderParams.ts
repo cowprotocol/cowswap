@@ -33,7 +33,8 @@ export function getOrderParams(
   const balance = balances[order.inputToken.address]
   const allowance = allowances[order.inputToken.address]
 
-  const hasEnoughBalance = isEnoughAmount(sellAmount, balance)
+  // Warning irrelevant for partially fillable orders
+  const hasEnoughBalance = isEnoughAmount(sellAmount, balance) || order.partiallyFillable
   const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
 
   return {
