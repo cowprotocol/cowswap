@@ -34,7 +34,7 @@ import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.'
 import { searchByAddressAnalytics } from 'components/analytics'
 import { useWalletInfo } from '@cow/modules/wallet'
-// import { useTokenSearch } from './useTokenSearch'
+import { useExternalTokenSearch } from '@cow/common/hooks/useExternalTokenSearch'
 
 /* const ContentWrapper = styled(Column)`
   width: 100%;
@@ -202,17 +202,16 @@ export function CurrencySearch({
     return () => clearTimeout(tokenLoaderTimer)
   }, [])
 
-  // TODO: uncomment when we get a new source of tokens to query from
-  // const existingTokens = useMemo(
-  //   () =>
-  //     new Map(
-  //       [...filteredSortedTokens, ...(filteredInactiveTokens ?? [])]
-  //         .filter((currency: Currency): currency is Token => currency.isToken)
-  //         .map(({ address }) => [address, true])
-  //     ),
-  //   [filteredSortedTokens, filteredInactiveTokens]
-  // )
-  const additionalTokens: Token[] = [] // useTokenSearch(searchQuery, existingTokens)
+  const existingTokens = useMemo(
+    () =>
+      new Map(
+        [...filteredSortedTokens, ...(filteredInactiveTokens ?? [])]
+          .filter((currency: Currency): currency is Token => currency.isToken)
+          .map(({ address }) => [address, true])
+      ),
+    [filteredSortedTokens, filteredInactiveTokens]
+  )
+  const additionalTokens = useExternalTokenSearch(searchQuery, existingTokens)
 
   return (
     <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
