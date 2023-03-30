@@ -15,7 +15,7 @@ interface LedgerConstructorArgs {
 
 interface TrezorOptions {
   chainId?: number
-
+  url?: string
   manifestEmail?: string
   manifestAppUrl?: string
 }
@@ -36,21 +36,24 @@ const accountFetchingConfigs = {
 }
 
 const _signTypedData = (eip712Data: any) => {
+  const activeIndex = 0
+
   const { domain_separator_hash, message_hash } = transformTypedData(eip712Data, true)
 
   return TrezorConnect.ethereumSignTypedData({
-    path: "m/44'/60'/0'",
-    data: eip712Data,
+    path: "m/44'/60'/0'/0/" + activeIndex,
     metamask_v4_compat: true,
     domain_separator_hash,
     message_hash: message_hash || '',
+    data: eip712Data,
+  }).then((res) => {
+    return (res.payload as any).signature
   })
 }
 
 export class Trezor extends Connector {
   public provider?: any
   private readonly options: TrezorOptions
-  private trezorConnect?: typeof TrezorConnect
 
   constructor({ actions, onError, options = {} }: LedgerConstructorArgs) {
     super(actions, onError)
@@ -91,7 +94,6 @@ export class Trezor extends Connector {
 
       engine.addProvider(new TrezorSubprovider(props))
       engine.addProvider(new RPCSubprovider(url, requestTimeoutMs))
-      ;(window as any)['provider'] = engine
 
       this.addRequest(engine)
 
