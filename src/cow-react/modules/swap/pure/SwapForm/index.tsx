@@ -70,8 +70,8 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
         currencyInfo={outputCurrencyInfo}
         priceImpactParams={priceImpactParams}
       />
-      {showRecipientControls && recipient !== null && (
-        <styledEl.RemoveRecipientStyled recipient={recipient} onChangeRecipient={onChangeRecipient} />
+      {showRecipientControls && (
+        <styledEl.SetRecipientStyled recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
       )}
     </styledEl.SwapFormWrapper>
   )

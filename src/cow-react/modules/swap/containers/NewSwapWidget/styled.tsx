@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import SwapHeader from 'components/swap/SwapHeader'
-import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
+import { SetRecipient } from '@cow/modules/swap/containers/SetRecipient'
 import { LoadingWrapper } from '@cow/common/pure/CurrencyArrowSeparator/styled'
 
 export const Container = styled.div`
@@ -50,6 +50,6 @@ export const SwapHeaderStyled = styled(SwapHeader)`
   padding: 4px 4px 16px 8px;
 `
 
-export const RemoveRecipientStyled = styled(RemoveRecipient)`
+export const SetRecipientStyled = styled(SetRecipient)`
   margin: 10px 0;
 `

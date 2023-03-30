@@ -292,8 +292,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 priceImpactParams={priceImpact}
                 topLabel={outputCurrencyInfo.label}
               />
-              {recipient !== null && (
-                <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
+              {showRecipient && (
+                <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
               )}
 
               {!isWrapOrUnwrap && (
