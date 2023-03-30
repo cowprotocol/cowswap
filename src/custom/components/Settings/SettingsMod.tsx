@@ -284,12 +284,10 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
                   expertMode
                     ? () => {
                         toggleExpertMode()
-                        toggleRecipientVisibility(false)
                         setShowConfirmation(false)
                       }
                     : () => {
                         toggle()
-                        toggleRecipientVisibility(true)
                         setShowConfirmation(true)
                       }
                 }
@@ -312,10 +310,8 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
               </RowFixed>
               <Toggle
                 id="toggle-recipient-mode-button"
-                isActive={recipientToggleVisible || expertMode}
-                isDisabled={expertMode}
-                toggle={() => (expertMode ? null : toggleRecipientVisibility())}
-                className={expertMode ? 'disabled' : ''}
+                isActive={recipientToggleVisible}
+                toggle={toggleRecipientVisibility}
               />
             </RowBetween>
           </AutoColumn>
