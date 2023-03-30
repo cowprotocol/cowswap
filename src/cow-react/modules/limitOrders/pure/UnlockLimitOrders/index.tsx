@@ -13,12 +13,12 @@ const BULLET_LIST_CONTENT = [
   { id: 5, content: 'Protection from MEV by default' },
   {
     id: 6,
-    isNew: true,
     content: (
       <span>
         NOW with&nbsp;<b>partial fills</b>&nbsp;support!
       </span>
     ),
+    isNew: true,
   },
 ]
 
