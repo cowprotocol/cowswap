@@ -10,7 +10,7 @@ import { initializeConnector } from '@web3-react/core'
 import { Web3ReactConnection } from '../types'
 import { RPC_URLS } from '@src/custom/constants/networks'
 
-const MANIFEST_APP_URL = 'https://cow.fi/'
+const MANIFEST_APP_URL = 'https://swap.cow.fi/'
 const MANIFEST_APP_EMAIL = 'help@cow.fi'
 
 const BASE_PROPS = {
