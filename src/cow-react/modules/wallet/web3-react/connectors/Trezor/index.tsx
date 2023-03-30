@@ -1,6 +1,7 @@
 import { Actions, Connector } from '@web3-react/types'
 import Web3ProviderEngine from 'web3-provider-engine'
 import TrezorConnect from '@trezor/connect-web'
+import transformTypedData from '@trezor/connect-plugin-ethereum'
 
 global.process = { browser: true } as any
 const TrezorSubprovider = require('@0x/subproviders/lib/src/subproviders/trezor').TrezorSubprovider
@@ -34,17 +35,15 @@ const accountFetchingConfigs = {
   shouldAskForOnDeviceConfirmation: false,
 }
 
-const _signTypedData = ({ types, domain, message, primaryType }: any) => {
+const _signTypedData = (eip712Data: any) => {
+  const { domain_separator_hash, message_hash } = transformTypedData(eip712Data, true)
+
   return TrezorConnect.ethereumSignTypedData({
-    path: "m/44'/60'/0'/0/0",
+    path: "m/44'/60'/0'",
+    data: eip712Data,
     metamask_v4_compat: true,
-    data: {
-      types,
-      domain,
-      message,
-      primaryType,
-    },
-    domain_separator_hash: '0x6192106f129ce05c9075d319c1fa6ea9b3ae37cbd0c1ef92e2be7137bb07baa1',
+    domain_separator_hash,
+    message_hash: message_hash || '',
   })
 }
 
@@ -94,7 +93,7 @@ export class Trezor extends Connector {
       engine.addProvider(new RPCSubprovider(url, requestTimeoutMs))
       ;(window as any)['provider'] = engine
 
-      this.assignRequest(engine)
+      this.addRequest(engine)
 
       await engine.start()
 
@@ -104,17 +103,19 @@ export class Trezor extends Connector {
     return this.provider
   }
 
-  async getSigner() {}
-
   public async activate({ networkId }: { networkId: number }) {
-    const provider = await this.getProvider({ forceCreate: true, networkId })
+    await this.getProvider({ forceCreate: true, networkId })
+    await this.activateProvider()
+  }
 
-    if (provider?.on) {
-      console.log('debug assigning event handlers')
-      provider.on('accountsChanged', this.onAccountsChanged)
-      provider.on('chainChanged', this.onChainChanged)
-      provider.on('disconnect', this.onDisconnect)
-      provider.on('close', this.onDisconnect)
+  async activateProvider() {
+    if (!this.provider) return
+
+    if (this.provider?.on) {
+      this.provider.on('accountsChanged', this.onAccountsChanged)
+      this.provider.on('chainChanged', this.onChainChanged)
+      this.provider.on('disconnect', this.onDisconnect)
+      this.provider.on('close', this.onDisconnect)
     }
 
     const accounts = await this.getAccounts()
@@ -123,11 +124,7 @@ export class Trezor extends Connector {
     return this.actions.update({ chainId, accounts })
   }
 
-  public async connectEagerly(): Promise<void> {}
-
   protected onAccountsChanged = (accounts: string[]): void => {
-    console.log('debug accounts changed', accounts)
-
     if (accounts.length === 0) {
       this.actions.resetState()
     } else {
@@ -136,8 +133,6 @@ export class Trezor extends Connector {
   }
 
   protected onChainChanged = (chainId: number | string): void => {
-    console.log('debug chain changed')
-
     this.actions.update({ chainId: parseChainId(chainId) })
   }
 
@@ -146,7 +141,7 @@ export class Trezor extends Connector {
     this.onError?.(error)
   }
 
-  protected assignRequest(engine: any) {
+  protected addRequest(engine: any) {
     ;(engine as any)['request'] = function (request: any) {
       if (request.method === 'eth_signTypedData_v4') {
         const { domain, message, primaryType, types } = JSON.parse(request.params[1])
@@ -165,5 +160,18 @@ export class Trezor extends Connector {
         })
       })
     }
+  }
+
+  public async connectEagerly(): Promise<void> {
+    console.log('TODO: maybe this is possible maybe not because of the popup')
+    // const cancelActivation = this.actions.startActivation()
+
+    // try {
+    //   await this.getProvider({ forceCreate: true })
+    //   await this.activateProvider()
+    // } catch (error) {
+    //   cancelActivation()
+    //   throw error
+    // }
   }
 }
