@@ -297,7 +297,7 @@ export default function SettingsTab({ className, placeholderSlippage, SettingsBu
             <RowBetween>
               <RowFixed>
                 <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
-                  <Trans>Toggle Recipient</Trans>
+                  <Trans>Custom Recipient</Trans>
                 </ThemedText.Black>
                 <QuestionHelper
                   // bgColor={theme.bg3}

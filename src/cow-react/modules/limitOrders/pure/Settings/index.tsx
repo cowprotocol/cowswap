@@ -47,7 +47,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
       />
 
       <SettingsBox
-        title="Toggle Recipient"
+        title="Custom Recipient"
         tooltip="Allows you to choose a destination address for the swap other than the connected one."
         value={showRecipient}
         toggle={() => onStateChanged({ showRecipient: !showRecipient })}
