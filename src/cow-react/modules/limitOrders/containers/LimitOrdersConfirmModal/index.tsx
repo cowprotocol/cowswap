@@ -76,7 +76,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
     },
     onTradeSuccess: (orderHash: string | null) => setConfirmationState({ isPending: false, orderHash }),
     onDismissConfirmation,
-    onError: handleSetError
+    onError: handleSetError,
   }
   const doTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeCallbacks)
 

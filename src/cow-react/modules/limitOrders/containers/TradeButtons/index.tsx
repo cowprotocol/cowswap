@@ -63,7 +63,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const tradeCallbacks = {
     beforeTrade: () => setConfirmationState({ isPending: true, orderHash: null }),
     onError: handleSetError,
-    finally: () => setConfirmationState({ isPending: false, orderHash: null })
+    finally: () => setConfirmationState({ isPending: false, orderHash: null }),
   }
   const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeCallbacks)
   const doTrade = useCallback(() => {

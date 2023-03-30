@@ -14,7 +14,7 @@ const tradeContextMock = 1 as any as TradeFlowContext
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,
   error: undefined,
-  loading: false
+  loading: false,
 }
 const recipient = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
 
@@ -36,7 +36,9 @@ describe('useHandleOrderPlacement', () => {
     expect(limitOrdersStateResultBefore.current.recipient).toBe(recipient)
 
     // Act
-    const { result } = renderHook(() => useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, {}))
+    const { result } = renderHook(() =>
+      useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, {})
+    )
     await result.current()
 
     // Assert

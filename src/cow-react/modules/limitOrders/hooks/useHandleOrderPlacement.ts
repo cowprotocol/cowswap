@@ -17,7 +17,6 @@ interface HandleTradeCallback {
   finally(): void
 }
 
-
 export function useHandleOrderPlacement(
   tradeContext: TradeFlowContext | null,
   priceImpact: PriceImpact,
