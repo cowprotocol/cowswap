@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks'
-import { useHandleSwapCallback } from './useHandleSwapCallback'
+import { useHandleSwap } from './useHandleSwap'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useSwapActionHandlers } from 'state/swap/hooks'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
@@ -39,7 +39,7 @@ describe('useHandleSwapCallback', () => {
   })
 
   it('When a swap happened, then the recipient value should be deleted', async () => {
-    const { result } = renderHook(() => useHandleSwapCallback(priceImpactMock))
+    const { result } = renderHook(() => useHandleSwap(priceImpactMock))
 
     await result.current()
 

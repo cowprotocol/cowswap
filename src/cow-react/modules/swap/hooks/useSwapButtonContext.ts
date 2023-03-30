@@ -23,7 +23,7 @@ import { useEthFlowContext } from '@cow/modules/swap/hooks/useEthFlowContext'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
-import { useHandleSwapCallback } from '@cow/modules/swap/hooks/useHandleSwapCallback'
+import { useHandleSwap } from '@cow/modules/swap/hooks/useHandleSwap'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -76,7 +76,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const inputAmount = tryParseCurrencyAmount(typedValue, currencyIn ?? undefined)
   const approvalState = useTradeApproveState(inputAmount || null)
 
-  const handleSwap = useHandleSwapCallback(priceImpactParams)
+  const handleSwap = useHandleSwap(priceImpactParams)
 
   const contextExists = ethFlowContext || swapFlowContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'

@@ -7,7 +7,7 @@ import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { ethFlow } from '@cow/modules/swap/services/ethFlow'
 
-export function useHandleSwapCallback(priceImpactParams: PriceImpact): () => Promise<void> {
+export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<void> {
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
   const { onChangeRecipient } = useSwapActionHandlers()
