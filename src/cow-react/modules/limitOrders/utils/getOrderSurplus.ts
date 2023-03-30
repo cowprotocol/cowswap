@@ -1,7 +1,7 @@
 // Util functions that only pertain to/deal with operator API related stuff
 import BigNumber from 'bignumber.js'
 import { ZERO_BIG_NUMBER } from 'constants/index'
-import { Order } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { getOrderExecutedAmounts } from './getOrderExecutedAmounts'
 
@@ -53,14 +53,15 @@ export function getBuySurplus(sellAmount: BigNumberish, executedSellAmountMinusF
   return { amount, percentage }
 }
 
+const SURPLUS_AVAILABLE_STATUSES = [OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FULFILLED]
+
 export function getOrderSurplus(order: Order): Surplus {
-  const { kind, buyAmount, sellAmount, partiallyFillable } = order
+  const { kind, buyAmount, sellAmount, status } = order
 
   // `executedSellAmount` already has `executedFeeAmount` discounted
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
 
-  if (partiallyFillable || !executedBuyAmount || !executedSellAmount) {
-    // TODO: calculate how much was matched based on the type and check whether there was any surplus
+  if (!executedBuyAmount || !executedSellAmount || !SURPLUS_AVAILABLE_STATUSES.includes(status)) {
     return { amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER }
   }
 
