@@ -1,8 +1,8 @@
-import { useUniswapTokenLogo } from '@cow/api/uniswap/hooks'
+import { useProxyTokenLogo } from '@cow/api/proxy'
 import { Currency } from '@uniswap/sdk-core'
 
 export function useExternalTokenLogo(currency?: Currency | null): string | void {
-  const logo = useUniswapTokenLogo(currency?.chainId, currency?.isToken ? currency?.address : undefined)
+  const logo = useProxyTokenLogo(currency?.chainId, currency?.isToken ? currency?.address : undefined)
 
   return logo
 }

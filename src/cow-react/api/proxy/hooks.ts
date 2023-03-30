@@ -41,7 +41,7 @@ const tokenLogoCache = atom<TokenLogoCache, Pick<FetchTokensResult, 'chainId' | 
   }
 )
 
-export function useUniswapTokens(query: string): FetchTokensResult[] {
+export function useProxyTokens(query: string): FetchTokensResult[] {
   const updateTokenLogoCache = useSetAtom(tokenLogoCache)
   const { data: apiResult } = useSWR<FetchTokensApiResult | null>(['uniswapTokens', query], () =>
     isValidQuery(query) ? getTokens(query) : null
@@ -61,7 +61,7 @@ export function useUniswapTokens(query: string): FetchTokensResult[] {
   return []
 }
 
-export function useUniswapTokenLogo(chainId?: number, address?: string): string | undefined {
+export function useProxyTokenLogo(chainId?: number, address?: string): string | undefined {
   const tokenLogos = useAtomValue(tokenLogoCache)
 
   if (!chainId || !address) {

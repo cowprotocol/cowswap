@@ -1,1 +1,0 @@
-export { useUniswapTokens } from './hooks'
