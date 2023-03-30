@@ -258,7 +258,7 @@ export function OrderRow({
       {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
-          <OrderStatusBox order={order} />
+          <OrderStatusBox order={order} withWarning={withWarning} />
           {withWarning && (
             <styledEl.WarningIndicator>
               <MouseoverTooltipContent
