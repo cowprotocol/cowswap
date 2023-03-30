@@ -5,9 +5,10 @@ import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/ho
 
 const Wrapper = styled.div<{
   status: OrderStatus
-  cancelling: boolean
   partiallyFilled: boolean
+  cancelling?: boolean
   withWarning?: boolean
+  widthAuto?: boolean
 }>`
   --height: 28px;
   --statusColor: ${({ theme, status, cancelling, partiallyFilled }) =>
@@ -39,7 +40,7 @@ const Wrapper = styled.div<{
   font-size: 12px;
   font-weight: 600;
   height: var(--height);
-  width: 100%;
+  width: ${({ widthAuto }) => (widthAuto ? 'auto' : '100%')};
 
   &::before {
     content: '';
@@ -56,15 +57,16 @@ const Wrapper = styled.div<{
   }
 `
 
-export type OrderStatusBoxProps = { order: ParsedOrder; widthAuto?: boolean }
+export type OrderStatusBoxProps = { order: ParsedOrder; widthAuto?: boolean; withWarning?: boolean }
 
-export function OrderStatusBox({ order, widthAuto }: OrderStatusBoxProps) {
+export function OrderStatusBox({ order, widthAuto, withWarning }: OrderStatusBoxProps) {
   return (
     <Wrapper
-      style={widthAuto ? { width: 'auto' } : {}}
-      cancelling={!!order.isCancelling}
+      cancelling={order.isCancelling}
       partiallyFilled={order.partiallyFilled}
       status={order.status}
+      widthAuto={widthAuto}
+      withWarning={withWarning}
     >
       {/* Status overrides for special cases */}
       {
