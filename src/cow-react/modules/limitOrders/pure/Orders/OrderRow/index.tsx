@@ -26,6 +26,7 @@ import { calculatePriceDifference, PriceDifference } from '@cow/modules/limitOrd
 import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { ZERO_FRACTION } from 'constants/index'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -148,6 +149,8 @@ export function OrderRow({
   const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
+  const isUnfillable = executedPriceInverted?.equalTo(ZERO_FRACTION) || withWarning
+
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab}>
       {/* Order sell/buy tokens */}
@@ -223,6 +226,7 @@ export function OrderRow({
                 percentageFee={feeDifference}
                 amountFee={feeAmount}
                 canShowWarning={order.class !== OrderClass.MARKET}
+                isUnfillable={isUnfillable}
               />
             </styledEl.ExecuteCellWrapper>
           ) : prices === null ? (
