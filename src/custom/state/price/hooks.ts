@@ -16,7 +16,7 @@ import {
   RefreshQuoteParams,
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 type GetNewQuoteCallback = (params: GetQuoteParams) => void
 type RefreshQuoteCallback = (params: RefreshQuoteParams) => void

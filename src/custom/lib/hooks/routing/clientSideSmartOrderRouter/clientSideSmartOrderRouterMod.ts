@@ -1,5 +1,5 @@
 import type { ChainId } from '@uniswap/smart-order-router'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export function toSupportedChainId(chainId: ChainId): SupportedChainId | undefined {
   const numericChainId: number = chainId

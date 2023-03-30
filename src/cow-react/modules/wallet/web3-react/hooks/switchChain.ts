@@ -2,7 +2,7 @@ import { networkConnection } from '@cow/modules/wallet/web3-react/connection/net
 import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 import { Connector } from '@web3-react/types'
 import { getChainInfo } from 'constants/chainInfo'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { RPC_URLS } from 'constants/networks'
 import { isChainAllowed } from '../connection'
 
