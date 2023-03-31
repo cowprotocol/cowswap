@@ -18,17 +18,15 @@ const Wrapper = styled.div<{
       ? theme.success
       : status === OrderStatus.PENDING // OPEN order
       ? theme.text3
-      : status === OrderStatus.PRESIGNATURE_PENDING
-      ? theme.text1
       : status === OrderStatus.EXPIRED
       ? theme.warning
       : status === OrderStatus.CANCELLED
       ? theme.danger
       : status === OrderStatus.FAILED
       ? theme.danger
-      : status === (OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING || OrderStatus)
-      ? theme.text1
-      : theme.text1};
+      : // Remaining statuses should use the same
+        // OrderStatus.CREATING || OrderStatus.PRESIGNATURE_PENDING
+        theme.text1};
 
   display: flex;
   align-items: center;

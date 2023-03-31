@@ -206,7 +206,7 @@ export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap 
   }, [allOrders, ids])
 }
 
-export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
+export const useCombinedPendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
   const state = useSelector<
     AppState,
     | {
@@ -235,6 +235,27 @@ export const usePendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
     const allPending = Object.values(pending).concat(Object.values(presignaturePending)).concat(Object.values(creating))
 
     return allPending.map(_deserializeOrder).filter(isTruthy)
+  }, [state])
+}
+
+/**
+ * Use ONLY OrderStatus.PENDING orders
+ *
+ * Similar to usePendingOrders
+ *
+ * The difference is that this hook returns only orders that have the status PENDING
+ * while usePendingOrders aggregates all pending states
+ * @param chainId
+ */
+export const useOnlyPendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
+  const state = useSelector<AppState, PartialOrdersMap | undefined>(
+    (state) => chainId && state.orders?.[chainId]?.pending
+  )
+
+  return useMemo(() => {
+    if (!state) return []
+
+    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
