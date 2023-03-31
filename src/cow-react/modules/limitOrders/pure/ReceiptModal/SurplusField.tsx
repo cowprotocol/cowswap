@@ -17,7 +17,7 @@ export function SurplusField({ order }: Props) {
     return <styledEl.Value>-</styledEl.Value>
   }
 
-  const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, surplusAmount?.toNumber())
+  const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, surplusAmount?.decimalPlaces(0).toFixed())
   const formattedPercent = surplusPercentage?.multipliedBy(100)?.toFixed(2)
 
   return (
