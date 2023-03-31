@@ -3,7 +3,7 @@ import JSBI from 'jsbi'
 
 import { useOrders } from 'state/orders/hooks'
 import { useCallback, useMemo } from 'react'
-import { Order, OrderStatus } from 'state/orders/actions'
+import { Order, OrderStatus, PENDING_STATES } from 'state/orders/actions'
 import { getOrderFilledAmount } from '@cow/modules/limitOrders/utils/getOrderFilledAmount'
 import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 import { getOrderExecutedAmounts } from '@cow/modules/limitOrders/utils/getOrderExecutedAmounts'
@@ -38,11 +38,6 @@ export interface ParsedOrder extends Order {
 }
 
 const ORDERS_LIMIT = 100
-const pendingOrderStatuses: OrderStatus[] = [
-  OrderStatus.PRESIGNATURE_PENDING,
-  OrderStatus.PENDING,
-  OrderStatus.CREATING,
-]
 
 export const parseOrder = (order: Order): ParsedOrder => {
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)
@@ -103,7 +98,7 @@ export function useLimitOrdersList(): LimitOrdersList {
   return useMemo(() => {
     const { pending, history } = allSortedOrders.reduce(
       (acc, order) => {
-        if (pendingOrderStatuses.includes(order.status)) {
+        if (PENDING_STATES.includes(order.status)) {
           acc.pending.push(order)
         } else {
           acc.history.push(order)
