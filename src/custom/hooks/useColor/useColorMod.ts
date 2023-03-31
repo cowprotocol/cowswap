@@ -1,5 +1,5 @@
 /* import { Token } from '@uniswap/sdk-core'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import uriToHttp from 'lib/utils/uriToHttp'
 import Vibrant from 'node-vibrant/lib/bundle.js'
 import { shade } from 'polished' */

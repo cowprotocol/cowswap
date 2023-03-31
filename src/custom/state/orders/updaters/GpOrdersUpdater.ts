@@ -4,16 +4,15 @@ import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
 import { useAddOrUpdateOrders } from 'state/orders/hooks'
-import { OrderMetaData } from '@cow/api/gnosisProtocol/api'
 import { useAllTokens } from 'hooks/Tokens'
-import { Order, OrderClass, OrderStatus } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
-import { ChainId } from 'state/lists/actions'
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
 import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
+import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 function _getTokenFromMapping(
@@ -40,7 +39,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 }
 
 function _transformGpOrderToStoreOrder(
-  order: OrderMetaData,
+  order: EnrichedOrder,
   chainId: ChainId,
   allTokens: { [address: string]: Token | null }
 ): Order | undefined {
@@ -50,10 +49,12 @@ function _transformGpOrderToStoreOrder(
     buyToken,
     creationDate: creationTime,
     receiver,
-    ethflowData,
+    ethflowData: ethflowDataRaw,
     owner,
     onchainOrderData,
   } = order
+  // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
+  const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = ethflowDataRaw
 
   const isEthFlow = Boolean(ethflowData)
 
@@ -86,7 +87,7 @@ function _transformGpOrderToStoreOrder(
     creationTime,
     summary: '',
     status,
-    receiver,
+    receiver: receiver || '',
     apiAdditionalInfo: order,
     isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
     // EthFlow related
@@ -94,6 +95,8 @@ function _transformGpOrderToStoreOrder(
     validTo: ethflowData?.userValidTo || order.validTo,
     isRefunded: ethflowData?.isRefunded, // TODO: this will be removed from the API
     refundHash: ethflowData?.refundTxHash || undefined,
+    buyTokenBalance: order.buyTokenBalance,
+    sellTokenBalance: order.sellTokenBalance,
   }
 
   // The function to compute the summary needs the Order instance to exist already
@@ -121,7 +124,7 @@ function _getInputToken(
 }
 
 function _getMissingTokensAddresses(
-  orders: OrderMetaData[],
+  orders: EnrichedOrder[],
   tokens: Record<string, Token>,
   chainId: ChainId
 ): string[] {
@@ -155,7 +158,7 @@ async function _fetchTokens(
   }, {})
 }
 
-function _filterOrders(orders: OrderMetaData[], tokens: Record<string, Token | null>, chainId: ChainId): Order[] {
+function _filterOrders(orders: EnrichedOrder[], tokens: Record<string, Token | null>, chainId: ChainId): Order[] {
   return orders.reduce<Order[]>((acc, order) => {
     const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens)
     if (storeOrder) {

@@ -4,7 +4,7 @@ import { CowSubsidy } from '.'
 import { transparentize, lighten } from 'polished'
 
 import { V_COW } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsDarkMode } from 'state/user/hooks'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -70,7 +70,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
     text-align: center;
   }
 
-  ${({ selected, theme, darkMode }) =>
+  ${({ selected, theme }) =>
     selected &&
     `
     background: ${theme.bg2};

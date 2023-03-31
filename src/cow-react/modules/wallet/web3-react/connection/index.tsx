@@ -1,7 +1,8 @@
 import { Connector } from '@web3-react/types'
 
 import { isMobile } from 'utils/userAgent'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 
 import { Web3ReactConnection } from '../types'

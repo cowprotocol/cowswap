@@ -13,7 +13,7 @@ import {
 import { useWeb3React } from '@web3-react/core'
 import { getBlockExplorerUrl } from 'utils'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from 'custom/components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
 import SVG from 'react-inlinesvg'

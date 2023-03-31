@@ -11,23 +11,18 @@ export type RateCalculationParams = {
 }
 
 /**
- * Consider a trade DAI (decimals 18) <-> USDC (decimals 6)
- * 1. When input is 9 DAI, the value equals 9000000000000000000
- * Then we should divide it to get value for USDC = 9000000 (6 decimals)
- *
- * 2. When input is 9 USDC, the value equals 9000000
- * Then we should multiply to get value for DAI = 9000000000000000000 (18 decimals)
+ * Adjust a fraction defined in units for both token to consider the decimals.
+ * For example, a fraction like 1.1/1 representing the price of USDC, DAI in units, will be turned into
+ * 1.1/1000000000000 in atoms
  */
-function adjustDecimals(value: Fraction, prevDecimals: number, nextDecimals: number): Fraction {
-  if (prevDecimals === nextDecimals) {
+export function adjustDecimalsAtoms(value: Fraction, decimalsA: number, decimalsB: number): Fraction {
+  if (decimalsA === decimalsB) {
     return value
   }
 
-  const decimalsShift = JSBI.BigInt(
-    JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(Math.abs(prevDecimals - nextDecimals)))
-  )
+  const decimalsShift = JSBI.BigInt(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(Math.abs(decimalsA - decimalsB))))
 
-  return prevDecimals < nextDecimals ? value.multiply(decimalsShift) : value.divide(decimalsShift)
+  return decimalsA < decimalsB ? value.multiply(decimalsShift) : value.divide(decimalsShift)
 }
 
 export function calculateAmountForRate({
@@ -44,7 +39,7 @@ export function calculateAmountForRate({
   const { decimals: inputDecimals } = inputCurrency
   const { decimals: outputDecimals } = outputCurrency
 
-  const parsedValue = adjustDecimals(
+  const parsedValue = adjustDecimalsAtoms(
     amount,
     field === Field.INPUT ? inputDecimals : outputDecimals,
     field === Field.INPUT ? outputDecimals : inputDecimals

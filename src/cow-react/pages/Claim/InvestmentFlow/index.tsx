@@ -40,7 +40,7 @@ import RoundArrow from 'assets/cow-swap/round-arrow.svg'
 import ImportantIcon from 'assets/cow-swap/important.svg'
 import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
 import SVG from 'react-inlinesvg'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 const STEPS_DATA = [

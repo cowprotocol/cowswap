@@ -1,10 +1,11 @@
 import { atom } from 'jotai'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 export interface PendingOrderPrices {
   marketPrice: Price<Currency, Currency>
-  executionPrice: Price<Currency, Currency>
+  estimatedExecutionPrice: Price<Currency, Currency>
   lastUpdateTimestamp: number
+  feeAmount: CurrencyAmount<Currency>
 }
 
 // When the price is null, it means that we got error from the quote API

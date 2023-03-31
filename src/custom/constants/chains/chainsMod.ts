@@ -6,7 +6,6 @@ import { CHAIN_IDS_TO_NAMES as UNI_CHAIN_IDS_TO_NAMES } from '@src/constants/cha
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export * from '@src/constants/chains'
-export { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /* export enum SupportedChainId {
   MAINNET = 1,

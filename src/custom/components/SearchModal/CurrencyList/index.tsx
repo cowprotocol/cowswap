@@ -95,7 +95,7 @@ export const MenuItem = styled(MenuItemMod)`
   }
 `
 
-function TagDescriptor({ tags, bg, children }: { children?: React.ReactNode; tags: TagInfo[]; bg?: string }) {
+function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: TagInfo[]; bg?: string }) {
   const tag = tags[0]
   return (
     <TagContainer>

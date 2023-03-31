@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import TradeGp from './TradeGp'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'

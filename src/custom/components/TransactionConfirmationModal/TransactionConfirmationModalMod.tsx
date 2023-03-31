@@ -31,7 +31,7 @@ import {
   CloseIconWrapper,
   OperationType,
 } from '.'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
 import { getEtherscanLink as getExplorerLink } from 'utils'
 import { useWalletInfo } from '@cow/modules/wallet'

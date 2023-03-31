@@ -1,5 +1,5 @@
 import { createReducer, current } from '@reduxjs/toolkit'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   setActiveClaimAccount,
   setActiveClaimAccountENS,

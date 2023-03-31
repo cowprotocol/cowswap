@@ -2,7 +2,7 @@ import { Percent } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import { ORDER_ID_SHORT_LENGTH } from '../constants'
 import { getExplorerOrderLink } from './explorer'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 const GP_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
 
