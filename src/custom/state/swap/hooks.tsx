@@ -223,7 +223,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
-  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
+  const to: string | null = (recipient ? recipientLookup.address : account) ?? null
 
   const relevantTokenBalances = useCurrencyBalances(
     account ?? undefined,
@@ -317,7 +317,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
     const formattedTo = isAddress(to)
     if (!to || !formattedTo) {
-      inputError = inputError ?? t`Enter a recipient`
+      inputError = inputError ?? t`Enter a valid recipient`
     } else {
       if (BAD_RECIPIENT_ADDRESSES[formattedTo]) {
         inputError = inputError ?? t`Invalid recipient`
