@@ -14,14 +14,14 @@ const Wrapper = styled.div<{
   --statusColor: ${({ theme, status, cancelling, partiallyFilled }) =>
     cancelling
       ? theme.text1
+      : status === OrderStatus.CANCELLED
+      ? theme.danger
       : status === OrderStatus.FULFILLED || partiallyFilled
       ? theme.success
       : status === OrderStatus.PENDING // OPEN order
       ? theme.text3
       : status === OrderStatus.EXPIRED
       ? theme.warning
-      : status === OrderStatus.CANCELLED
-      ? theme.danger
       : status === OrderStatus.FAILED
       ? theme.danger
       : // Remaining statuses should use the same
@@ -71,6 +71,9 @@ export function OrderStatusBox({ order, widthAuto, withWarning }: OrderStatusBox
         // Cancelling is not a real order status
         order.isCancelling
           ? 'Cancelling...'
+          : // Cancelled status takes precedence
+          order.status === OrderStatus.CANCELLED
+          ? orderStatusTitleMap[order.status]
           : // We consider the order fully filled for display purposes even if not 100% filled
           // For this reason we use the flag to override the order status
           order.fullyFilled
