@@ -1,4 +1,3 @@
-import { AddRecipientProps } from '@cow/common/pure/AddRecipient'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from 'state/swap/actions'
 import { CurrencySelectionCallback } from '@cow/modules/trade/hooks/useOnCurrencySelection'
@@ -11,7 +10,8 @@ import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { getAddress } from '@cow/utils/getAddress'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-export interface LimitOrdersProps extends AddRecipientProps {
+export interface LimitOrdersProps {
+  onChangeRecipient(value: string | null): void
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
 

@@ -6,7 +6,6 @@ import * as styledEl from '@cow/modules/swap/containers/NewSwapWidget/styled'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import { swapPagePropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
-import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
@@ -53,7 +52,6 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
           withRecipient={showRecipientControls}
           isLoading={isTradePriceUpdating}
         />
-        {showRecipientControls && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
       </styledEl.CurrencySeparatorBox>
       <CurrencyInputPanel
         id="swap-currency-output"
@@ -70,8 +68,8 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
         currencyInfo={outputCurrencyInfo}
         priceImpactParams={priceImpactParams}
       />
-      {showRecipientControls && recipient !== null && (
-        <styledEl.RemoveRecipientStyled recipient={recipient} onChangeRecipient={onChangeRecipient} />
+      {showRecipientControls && (
+        <styledEl.SetRecipientStyled recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
       )}
     </styledEl.SwapFormWrapper>
   )
