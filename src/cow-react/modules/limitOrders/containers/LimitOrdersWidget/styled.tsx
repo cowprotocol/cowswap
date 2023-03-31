@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
+import { SetRecipient } from '@cow/modules/swap/containers/SetRecipient'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { NumericalInput } from '@cow/modules/limitOrders/containers/RateInput/styled'
 import { transparentize, darken } from 'polished'
@@ -76,7 +76,7 @@ export const RateWrapper = styled.div`
   }
 `
 
-export const StyledRemoveRecipient = styled(RemoveRecipient)`
+export const StyledRemoveRecipient = styled(SetRecipient)`
   margin: 15px 0;
 `
 

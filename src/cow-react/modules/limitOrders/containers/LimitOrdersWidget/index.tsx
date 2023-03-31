@@ -2,7 +2,6 @@ import * as styledEl from './styled'
 import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
-import { AddRecipient } from '@cow/common/pure/AddRecipient'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
@@ -276,7 +275,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                   hasSeparatorLine={true}
                   border={true}
                 />
-                {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
               </styledEl.CurrencySeparatorBox>
               <CurrencyInputPanel
                 id="limit-orders-currency-output"
@@ -292,8 +290,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 priceImpactParams={priceImpact}
                 topLabel={outputCurrencyInfo.label}
               />
-              {recipient !== null && (
-                <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
+              {showRecipient && (
+                <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
               )}
 
               {!isWrapOrUnwrap && (

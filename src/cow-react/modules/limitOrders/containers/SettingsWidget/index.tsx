@@ -18,13 +18,17 @@ export function SettingsWidget() {
 
   const onStateChanged = useCallback(
     (state: Partial<LimitOrdersSettingsState>) => {
-      const isExpertModeOn = !settingsState.expertMode && state.expertMode
-      const isExpertModeOff = settingsState.expertMode && !state.expertMode
+      const { expertMode } = state
 
-      if (isExpertModeOn) {
-        setShowExpertConfirm(true)
-      } else if (isExpertModeOff) {
-        updateSettingsState({ expertMode: false, showRecipient: false })
+      if (expertMode !== undefined) {
+        const isExpertModeOn = !settingsState.expertMode && expertMode
+        const isExpertModeOff = settingsState.expertMode && !expertMode
+
+        if (isExpertModeOn) {
+          setShowExpertConfirm(true)
+        } else if (isExpertModeOff) {
+          updateSettingsState({ expertMode: false })
+        }
       } else {
         updateSettingsState(state)
       }
@@ -32,7 +36,7 @@ export function SettingsWidget() {
     [settingsState, updateSettingsState]
   )
   const onEnableExpertMode = useCallback(() => {
-    updateSettingsState({ expertMode: true, showRecipient: true })
+    updateSettingsState({ expertMode: true })
     setShowExpertConfirm(false)
   }, [updateSettingsState, setShowExpertConfirm])
 
