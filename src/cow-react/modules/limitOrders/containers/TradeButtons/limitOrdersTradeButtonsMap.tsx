@@ -109,7 +109,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   },
   [LimitOrdersFormState.InvalidRecipient]: {
     disabled: true,
-    text: 'Enter a recipient',
+    text: 'Enter a valid recipient',
   },
   [LimitOrdersFormState.CantLoadBalances]: {
     disabled: true,
