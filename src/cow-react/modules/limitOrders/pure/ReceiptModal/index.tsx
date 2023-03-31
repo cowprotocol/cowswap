@@ -102,7 +102,10 @@ export function ReceiptModal({
                 </>
               ) : (
                 <>
-                  <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />{' '}
+                  <FieldLabel
+                    label={order.partiallyFilled ? 'Avg. execution price' : 'Execution price'}
+                    tooltip={tooltips.EXECUTION_PRICE}
+                  />{' '}
                   <PriceField order={order} price={executionPrice} />
                 </>
               )}
