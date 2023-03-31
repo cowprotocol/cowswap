@@ -20,10 +20,10 @@ export function getOrderExecutedAmounts(order: Order): {
     }
   }
 
-  const { executedBuyAmount, executedSellAmount, executedFeeAmount } = apiAdditionalInfo
+  const { executedBuyAmount, executedSellAmountBeforeFees } = apiAdditionalInfo
 
   return {
     executedBuyAmount: JSBI.BigInt(executedBuyAmount),
-    executedSellAmount: JSBI.subtract(JSBI.BigInt(executedSellAmount), JSBI.BigInt(executedFeeAmount)),
+    executedSellAmount: JSBI.BigInt(executedSellAmountBeforeFees),
   }
 }
