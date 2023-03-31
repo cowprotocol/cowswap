@@ -216,9 +216,6 @@ export function getEstimatedExecutionPrice(
   fee: string
 ): Price<Currency, Currency> {
   // TODO: implement estimation for partially fillable orders
-  if (order.partiallyFillable) {
-    throw Error('Not implemented!')
-  }
 
   // Build CurrencyAmount and Price instances
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
