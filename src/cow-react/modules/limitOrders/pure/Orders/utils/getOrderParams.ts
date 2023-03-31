@@ -3,6 +3,7 @@ import { BalancesAndAllowances } from '@cow/modules/limitOrders/containers/Order
 import { Order } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
+import { ZERO_FRACTION } from 'constants/index'
 
 export interface OrderParams {
   chainId: SupportedChainId | undefined
@@ -33,9 +34,15 @@ export function getOrderParams(
   const balance = balances[order.inputToken.address]
   const allowance = allowances[order.inputToken.address]
 
-  // Warning irrelevant for partially fillable orders
-  const hasEnoughBalance = isEnoughAmount(sellAmount, balance) || order.partiallyFillable
-  const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
+  let hasEnoughBalance, hasEnoughAllowance
+
+  if (order.partiallyFillable) {
+    hasEnoughBalance = !!balance?.greaterThan(ZERO_FRACTION)
+    hasEnoughAllowance = !!allowance?.greaterThan(ZERO_FRACTION)
+  } else {
+    hasEnoughBalance = isEnoughAmount(sellAmount, balance)
+    hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
+  }
 
   return {
     chainId,
