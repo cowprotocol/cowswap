@@ -153,6 +153,7 @@ export function OrderRow({
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
   const isUnfillable = executedPriceInverted?.equalTo(ZERO_FRACTION) || withWarning
+  const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab}>
@@ -232,7 +233,7 @@ export function OrderRow({
                 isUnfillable={isUnfillable}
               />
             </styledEl.ExecuteCellWrapper>
-          ) : prices === null ? (
+          ) : prices === null || isOrderCreating ? (
             '-'
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
