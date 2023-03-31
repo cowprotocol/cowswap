@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
-import { OrderStatus } from 'state/orders/actions'
+import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -115,13 +115,16 @@ export function OrderRow({
   spotPrice,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice } = order
+  const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice, status } = order
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
   const showCancellationModal = getShowCancellationModal(order)
 
-  const withWarning = !hasEnoughBalance || !hasEnoughAllowance
+  const withWarning =
+    (!hasEnoughBalance || !hasEnoughAllowance) &&
+    // don't show the warning for closed orders
+    PENDING_STATES.includes(status)
   const theme = useContext(ThemeContext)
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
