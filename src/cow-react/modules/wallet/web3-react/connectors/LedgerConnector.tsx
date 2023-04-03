@@ -1,6 +1,6 @@
 import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
-import { loadConnectKit, LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
+import type { LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
 
 type LedgerProvider = Provider & {
   connected: () => boolean
@@ -12,6 +12,7 @@ interface LedgerConstructorArgs {
   actions: Actions
   onError?: () => void
   options?: LedgerOptions
+  kit: LedgerConnectKit
 }
 
 interface LedgerOptions {
@@ -29,13 +30,13 @@ export class Ledger extends Connector {
   public provider?: LedgerProvider
   private readonly options: LedgerOptions
   private eagerConnection?: Promise<void>
-  private connectKitPromise: Promise<LedgerConnectKit>
+  private kit: LedgerConnectKit
 
-  constructor({ actions, onError, options = {} }: LedgerConstructorArgs) {
+  constructor({ actions, onError, kit, options = {} }: LedgerConstructorArgs) {
     super(actions, onError)
 
     this.options = options
-    this.connectKitPromise = loadConnectKit()
+    this.kit = kit
   }
 
   async getAccounts() {
@@ -62,8 +63,7 @@ export class Ledger extends Connector {
     }
   ) {
     if (!this.provider || forceCreate) {
-      const connectKit = await this.connectKitPromise
-      const ledgerProvider = await connectKit.getProvider()
+      const ledgerProvider = await this.kit.getProvider()
       this.provider = ledgerProvider as unknown as LedgerProvider
     }
 
@@ -76,12 +76,12 @@ export class Ledger extends Connector {
   }
 
   async activateLedgerKit() {
-    const connectKit = await this.connectKitPromise
+    const connectKit = this.kit
 
     await connectKit.enableDebugLogs()
 
     await connectKit.checkSupport({
-      providerType: SupportedProviders.Ethereum,
+      providerType: 'Ethereum' as SupportedProviders,
       chainId: this.options.chainId,
       infuraId: this.options.infuraId,
       rpc: this.options.rpc,

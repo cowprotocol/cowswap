@@ -5,10 +5,10 @@ import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { default as LedgerImage } from '@cow/modules/wallet/api/assets/ledger.svg'
-import { Ledger } from '../connectors/LedgerConnector'
 import { initializeConnector } from '@web3-react/core'
 import { Web3ReactConnection } from '../types'
 import { RPC_URLS } from 'constants/networks'
+import { AsyncConnector } from './asyncConnector'
 
 const BASE_PROPS = {
   color: '#4196FC',
@@ -16,15 +16,26 @@ const BASE_PROPS = {
   id: 'ledger',
 }
 
-const [ledger, ledgerHooks] = initializeConnector<Ledger>(
+const [ledger, ledgerHooks] = initializeConnector<AsyncConnector>(
   (actions) =>
-    new Ledger({
-      actions,
-      options: {
-        rpc: RPC_URLS,
-      },
-    })
+    new AsyncConnector(
+      () =>
+        Promise.all([import('../connectors/LedgerConnector'), import('@ledgerhq/connect-kit-loader')]).then(
+          ([m, { loadConnectKit }]) =>
+            loadConnectKit().then((kit) => {
+              return new m.Ledger({
+                actions,
+                options: {
+                  rpc: RPC_URLS,
+                },
+                kit,
+              })
+            })
+        ),
+      actions
+    )
 )
+
 export const ledgerConnection: Web3ReactConnection = {
   connector: ledger,
   hooks: ledgerHooks,
