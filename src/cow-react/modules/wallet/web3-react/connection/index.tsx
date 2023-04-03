@@ -1,14 +1,14 @@
 import { Connector } from '@web3-react/types'
 
 import { isMobile } from 'utils/userAgent'
-import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from 'constants/chains'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 
 import { Web3ReactConnection } from '../types'
 import { ConnectionType } from '../../api/types'
 
 import { CoinbaseWalletOption } from './coinbase'
-import { FortmaticOption } from './formatic'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption, OpenMetaMaskMobileOption } from './injected'
 import { WalletConnectOption } from './walletConnect'
 import { gnosisSafeConnection } from './safe'
@@ -19,6 +19,7 @@ import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
+import { AlphaOption } from './alpha'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -69,6 +70,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return gnosisSafeConnection
       case ConnectionType.AMBIRE:
         return walletConnectConnection
+      case ConnectionType.ALPHA:
+        return walletConnectConnection
     }
   }
 }
@@ -104,18 +107,18 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const walletConnectionOption =
     (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
 
-  const fortmaticOption = (!isInjectedMobileBrowser && <FortmaticOption tryActivation={tryActivation} />) ?? null
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
+  const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
       {injectedOption}
       {walletConnectionOption}
       {coinbaseWalletOption}
-      {fortmaticOption}
       {zengoOption}
       {ambireOption}
+      {alphaOption}
     </>
   )
 }

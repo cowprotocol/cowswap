@@ -15,7 +15,7 @@ import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 
 export * from './ButtonMod'
 

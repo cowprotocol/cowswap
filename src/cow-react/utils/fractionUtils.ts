@@ -1,8 +1,9 @@
-import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding } from '@uniswap/sdk-core'
+import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding, Token, Currency } from '@uniswap/sdk-core'
 import { FractionLike, Nullish } from '@cow/types'
 import { FULL_PRICE_PRECISION } from 'constants/index'
 import { trimTrailingZeros } from '@cow/utils/trimTrailingZeros'
 import JSBI from 'jsbi'
+import { adjustDecimalsAtoms } from '@cow/modules/limitOrders/utils/calculateAmountForRate'
 
 export class FractionUtils {
   static serializeFractionToJSON(fraction: Nullish<Fraction>): string {
@@ -61,5 +62,44 @@ export class FractionUtils {
 
   static lte(fraction: Fraction, value: BigintIsh): boolean {
     return fraction.equalTo(value) || fraction.lessThan(value)
+  }
+
+  /**
+   * Converts a Fraction (which has no units, therefore is not decimal aware) into a price of tokens (which it is)
+   *
+   * Sice the price stores internally the amount in atoms, this method will take care of making sure the price is
+   * decimal aware.
+   *
+   *
+   * @param fraction
+   * @param inputCurrency
+   * @param outputCurrency
+   * @returns
+   */
+  static toPrice(fraction: Fraction, inputCurrency: Token, outputCurrency: Token): Price<Token, Token> {
+    // Note that here the fraction shows the price in units (for both tokens). The Price class is decimals aware, so we need to adapt it
+    const adjustedFraction = adjustDecimalsAtoms(fraction, inputCurrency.decimals, outputCurrency.decimals)
+
+    return new Price({
+      quoteAmount: CurrencyAmount.fromRawAmount(outputCurrency, adjustedFraction.numerator),
+      baseAmount: CurrencyAmount.fromRawAmount(inputCurrency, adjustedFraction.denominator),
+    })
+  }
+
+  /**
+   * Converts a Price into a Fraction
+   *
+   * Since Prices are currency aware (therefore decimal aware), this method will make sure they are taken into account
+   * to transform to the Fraction (which has no information about the currencies, so is not decimals aware),
+   *
+   * @param price
+   * @returns
+   */
+  static fromPrice(price: Price<Currency, Currency>): Fraction {
+    return adjustDecimalsAtoms(
+      new Fraction(price.numerator, price.denominator),
+      price.quoteCurrency.decimals,
+      price.baseCurrency.decimals
+    )
   }
 }

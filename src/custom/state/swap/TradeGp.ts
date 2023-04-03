@@ -1,7 +1,7 @@
 import { CanonicalMarketParams, getCanonicalMarket } from 'utils/misc'
 import { CurrencyAmount, Currency, TradeType, Price, Percent } from '@uniswap/sdk-core'
 import { Trade } from '@uniswap/v2-sdk'
-import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
 import { ONE_FRACTION } from 'constants/misc'
 
 export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>

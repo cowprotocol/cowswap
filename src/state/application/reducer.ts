@@ -1,7 +1,7 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
 
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro'
 import { initialState } from 'state/application/initialState' // mod
 

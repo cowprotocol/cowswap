@@ -18,6 +18,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Zengo'
     case ConnectionType.AMBIRE:
       return 'Ambire'
+    case ConnectionType.ALPHA:
+      return 'Alpha'
   }
 }
 
@@ -39,4 +41,8 @@ export function getIsAmbireWallet(name: string | undefined): boolean {
 
 export function getIsZengoWallet(name: string | undefined): boolean {
   return name?.toLocaleLowerCase().includes('zengo') || false
+}
+
+export function getIsAlphaWallet(name: string | undefined): boolean {
+  return name?.toLocaleLowerCase().includes('alpha') || false
 }

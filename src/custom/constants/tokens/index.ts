@@ -1,9 +1,9 @@
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { WETH9, Token } from '@uniswap/sdk-core'
 import { DAI_GOERLI, USDC_GOERLI, USDT_GOERLI, WBTC_GOERLI } from 'utils/goerli/constants'
 import { DAI, USDC_MAINNET, USDT, WBTC } from '@src/constants/tokens'
 import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN, WXDAI } from 'utils/gnosis_chain/constants'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
 
 import wxDaiLogo from 'assets/cow-swap/wxdai.png'

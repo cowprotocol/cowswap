@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 // native constants
 export const XDAI_SYMBOL = 'XDAI'

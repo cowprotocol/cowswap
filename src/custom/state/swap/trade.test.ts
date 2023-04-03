@@ -1,9 +1,9 @@
 import { parseUnits } from '@ethersproject/units'
 import { DEFAULT_PRECISION, LONG_PRECISION } from 'constants/index'
 import { CurrencyAmount, Fraction, Price, Currency, Percent, Token, TradeType } from '@uniswap/sdk-core'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { stringToCurrency } from './extension'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 
 import Trade, { _constructTradePrice } from './TradeGp'

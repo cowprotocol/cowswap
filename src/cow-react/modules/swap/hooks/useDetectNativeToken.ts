@@ -7,7 +7,7 @@ import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tok
 import { supportedChainId } from 'utils/supportedChainId'
 import WXDAI_LOGO_URI from 'assets/cow-swap/wxdai.png'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { useWalletInfo } from '@cow/modules/wallet'
 

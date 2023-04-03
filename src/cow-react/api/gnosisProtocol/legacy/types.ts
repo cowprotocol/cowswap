@@ -1,5 +1,14 @@
-import { FeeInformation, FeeQuoteParams, PriceInformation, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { GpPriceStrategy } from 'state/gas/atoms'
+
+type FeeQuoteParams = Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> & {
+  amount: string
+  userAddress?: string | null
+  receiver?: string | null
+  validTo: number
+}
 
 export interface LegacyQuoteParams {
   quoteParams: LegacyFeeQuoteParams
@@ -34,6 +43,6 @@ export type LegacyPriceQuoteParams = Omit<LegacyFeeQuoteParams, 'isEthFlow' | 's
   quoteToken: string
 }
 
-export type LegacyPriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x'
+export type LegacyPriceSource = 'gnosis-protocol' | 'paraswap' | 'matcha-0x' | '1inch'
 export type LegacyPriceInformationWithSource = PriceInformation & { source: LegacyPriceSource; data?: any }
 export type LegacyPromiseRejectedResultWithSource = PromiseRejectedResult & { source: LegacyPriceSource }

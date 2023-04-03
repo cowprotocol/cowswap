@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 import { RowBetween } from 'components/Row'
 
 // MOD imports
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>
 

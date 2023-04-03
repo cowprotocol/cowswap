@@ -1,7 +1,7 @@
 import { FractionLike, Nullish } from '@cow/types'
 import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { AMOUNT_PRECISION, FIAT_PRECISION, PERCENTAGE_PRECISION } from 'constants/index'
+import { AMOUNT_PRECISION, FIAT_PRECISION, PERCENTAGE_PRECISION, ZERO_FRACTION } from 'constants/index'
 import { trimTrailingZeros } from '@cow/utils/trimTrailingZeros'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
@@ -25,6 +25,10 @@ export function formatAmountWithPrecision(
   numberFormat = INTL_NUMBER_FORMAT
 ): string {
   if (!amount) return ''
+
+  if (amount.equalTo(ZERO_FRACTION)) {
+    return '0'
+  }
 
   // Align fraction-like types to Fraction
   const amountAsFraction = FractionUtils.fractionLikeToFraction(amount)

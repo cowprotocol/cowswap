@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
-import { WalletDetails, WalletInfo } from './types'
-
+import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 export const walletInfoAtom = atom<WalletInfo>({})
+
 export const walletDetailsAtom = atom<WalletDetails>({
   // Account details
   isSmartContractWallet: false,
@@ -14,7 +14,6 @@ export const walletDetailsAtom = atom<WalletDetails>({
 
   // Feature Support
   allowsOffchainSigning: false,
-
-  // Additioal information
-  gnosisSafeInfo: undefined,
 })
+
+export const gnosisSafeInfoAtom = atom<GnosisSafeInfo | undefined>(undefined)
