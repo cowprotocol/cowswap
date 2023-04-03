@@ -17,19 +17,28 @@ const SUPPORTED_CHAINS: Partial<Record<Chain, SupportedChainId>> = {
 
 const UNSUPPORTED_CHAIN_ID = null
 
+// This function will verify if the API response matches our expectations.
+// As we are using an external party, and their responses may change arbitrarily,
+// we should ensure that there is a check so that the application can rely on this abstraction.
 function isValidFetchTokensResult(token: any): token is FetchTokensResult {
-  if (typeof token !== 'object') {
+  // Verify if token is of correct type
+  if (typeof token !== 'object' || token === null) {
     return false
   }
 
-  const hasValidChainId =
-    (token.chainId !== UNSUPPORTED_CHAIN_ID &&
-      typeof token.chainId === 'number' &&
-      token.chainId === SupportedChainId.MAINNET) ||
-    token.chainId === SupportedChainId.GOERLI
+  // Verify if token has the expected fields.
+  if (!token.chainId || !token.address) {
+    return false
+  }
+
+  const hasValidChainId = token.chainId !== UNSUPPORTED_CHAIN_ID && typeof token.chainId === 'number'
+
+  // API we are using supports other chains such as Arbitrum as well. Verify that the chainId is something we have on our systems.
+  const hasSupportedChainId = token.chainId === SupportedChainId.MAINNET || token.chainId === SupportedChainId.GOERLI
+
   const hasValidAddress = typeof token.address === 'string' && !!isAddress(token.address)
 
-  return hasValidChainId && hasValidAddress
+  return hasValidChainId && hasSupportedChainId && hasValidAddress
 }
 
 function chainToChainId(chain: Chain) {
