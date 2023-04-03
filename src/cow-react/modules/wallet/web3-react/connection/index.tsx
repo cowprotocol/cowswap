@@ -125,6 +125,10 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
 
   // Injected
   const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
+
+  // !isInjectedMobileBrowser - hide for injected mobile browsers
+  // isChrome - since its only supported for Chrome and Brave, we can detect it with this
+  // !isChromeMobile - we don't want to show it on Chrome mobile also
   const tallyOption =
     (!isInjectedMobileBrowser && isChrome && !isChromeMobile && <TallyWalletOption tryActivation={tryActivation} />) ??
     null
