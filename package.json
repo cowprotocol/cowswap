@@ -58,9 +58,6 @@
       "last 1 safari version"
     ]
   },
-  "resolutions": {
-    "@walletconnect/ethereum-provider": "1.7.1"
-  },
   "jest": {
     "moduleNameMapper": {
       "@cow/(.*)": "<rootDir>/src/cow-react/$1",
@@ -112,17 +109,17 @@
     "@uniswap/v3-periphery": "^1.1.1",
     "@uniswap/v3-sdk": "^3.9.0",
     "@use-gesture/react": "^10.2.23",
-    "@walletconnect/ethereum-provider": "1.7.1",
-    "@web3-react/coinbase-wallet": "^8.0.34-beta.0",
-    "@web3-react/core": "^8.0.35-beta.0",
-    "@web3-react/eip1193": "^8.0.26-beta.0",
-    "@web3-react/empty": "^8.0.20-beta.0",
-    "@web3-react/gnosis-safe": "^8.0.7-beta.0",
-    "@web3-react/metamask": "^8.0.29-beta.0",
-    "@web3-react/network": "^8.0.27-beta.0",
-    "@web3-react/types": "^8.0.20-beta.0",
-    "@web3-react/url": "^8.0.25-beta.0",
-    "@web3-react/walletconnect": "^8.0.36-beta.0",
+    "@web3-react/coinbase-wallet": "^8.1.2-beta.0",
+    "@web3-react/core": "^8.1.2-beta.0",
+    "@web3-react/eip1193": "^8.1.2-beta.0",
+    "@web3-react/empty": "^8.1.2-beta.0",
+    "@web3-react/gnosis-safe": "^8.1.2-beta.0",
+    "@web3-react/metamask": "^8.1.2-beta.0",
+    "@web3-react/network": "^8.1.2-beta.0",
+    "@web3-react/types": "^8.1.2-beta.0",
+    "@web3-react/url": "^8.1.2-beta.0",
+    "@web3-react/walletconnect-v2": "^8.1.2-beta.0",
+    "@web3-react/walletconnect": "^8.1.2-beta.0",
     "ajv": "^6.12.3",
     "bnc-sdk": "^4.6.0",
     "buffer": "^6.0.3",
