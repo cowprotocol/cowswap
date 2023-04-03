@@ -3,6 +3,8 @@ import useSWR from 'swr'
 import { getTokens } from './api'
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isAddress } from '@src/utils'
+import * as Sentry from '@sentry/react'
 
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0
@@ -15,8 +17,19 @@ const SUPPORTED_CHAINS: Partial<Record<Chain, SupportedChainId>> = {
 
 const UNSUPPORTED_CHAIN_ID = null
 
-function hasSupportedChainId(token: any): token is FetchTokensResult {
-  return token?.chainId !== UNSUPPORTED_CHAIN_ID
+function isValidFetchTokensResult(token: any): token is FetchTokensResult {
+  if (typeof token !== 'object') {
+    return false
+  }
+
+  const hasValidChainId =
+    (token.chainId !== UNSUPPORTED_CHAIN_ID &&
+      typeof token.chainId === 'number' &&
+      token.chainId === SupportedChainId.MAINNET) ||
+    token.chainId === SupportedChainId.GOERLI
+  const hasValidAddress = typeof token.address === 'string' && !!isAddress(token.address)
+
+  return hasValidChainId && hasValidAddress
 }
 
 function chainToChainId(chain: Chain) {
@@ -47,26 +60,36 @@ export function useProxyTokens(query: string): FetchTokensResult[] {
     isValidQuery(query) ? getTokens(query) : null
   )
 
-  if (apiResult && Array.isArray(apiResult.searchTokens)) {
-    const result = apiResult.searchTokens
-      .map((token) => ({ ...token, chainId: chainToChainId(token.chain) }))
-      .filter(hasSupportedChainId)
+  try {
+    if (apiResult && Array.isArray(apiResult.searchTokens)) {
+      const result = apiResult.searchTokens
+        .map((token) => ({ ...token, chainId: chainToChainId(token.chain) }))
+        .filter(isValidFetchTokensResult)
 
-    // Build a logo cache.
-    result.forEach(({ chainId, address, project }) => updateTokenLogoCache({ chainId, address, project }))
+      // Build a logo cache.
+      result.forEach(({ chainId, address, project }) => updateTokenLogoCache({ chainId, address, project }))
 
-    return result
+      return result
+    }
+
+    return []
+  } catch (error: unknown) {
+    Sentry.captureException(error)
+    return []
   }
-
-  return []
 }
 
 export function useProxyTokenLogo(chainId?: number, address?: string): string | undefined {
   const tokenLogos = useAtomValue(tokenLogoCache)
 
-  if (!chainId || !address) {
+  try {
+    if (!chainId || !address) {
+      return undefined
+    }
+
+    return tokenLogos.get(chainId)?.get(address.toLowerCase())
+  } catch (error: unknown) {
+    Sentry.captureException(error)
     return undefined
   }
-
-  return tokenLogos.get(chainId)?.get(address.toLowerCase())
 }
