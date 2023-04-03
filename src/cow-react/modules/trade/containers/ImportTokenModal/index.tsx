@@ -17,14 +17,14 @@ export interface ImportTokenModalProps {
 export function ImportTokenModal(props: ImportTokenModalProps) {
   const { chainId, onDismiss } = props
 
-  const tradeState = useTradeState()
+  const { state } = useTradeState()
   const loadedInputCurrency = useSearchInactiveTokenLists(
-    tradeState?.state?.inputCurrencyId || undefined,
+    state?.inputCurrencyId || undefined,
     1,
     true //
   )?.[0]
   const loadedOutputCurrency = useSearchInactiveTokenLists(
-    tradeState?.state?.outputCurrencyId || undefined,
+    state?.outputCurrencyId || undefined,
     1,
     true
   )?.[0]

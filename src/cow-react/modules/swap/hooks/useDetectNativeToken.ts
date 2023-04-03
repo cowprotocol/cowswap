@@ -14,8 +14,8 @@ import { useWalletInfo } from '@cow/modules/wallet'
 // TODO: move it to `modules/trade`
 export function useDetectNativeToken() {
   const { chainId } = useWalletInfo()
-  const tradeState = useTradeState()
-  const { inputCurrencyId, outputCurrencyId } = tradeState?.state || {}
+  const { state } = useTradeState()
+  const { inputCurrencyId, outputCurrencyId } = state || {}
 
   const input = useTokenBySymbolOrAddress(inputCurrencyId)
   const output = useTokenBySymbolOrAddress(outputCurrencyId)
