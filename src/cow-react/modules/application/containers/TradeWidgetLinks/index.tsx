@@ -13,7 +13,7 @@ export function TradeWidgetLinks() {
     () => ({
       inputCurrencyId: state?.inputCurrencyId || undefined,
       outputCurrencyId: state?.outputCurrencyId || undefined,
-      chainId: state?.chainId?.toString()
+      chainId: state?.chainId?.toString(),
     }),
     [state]
   )

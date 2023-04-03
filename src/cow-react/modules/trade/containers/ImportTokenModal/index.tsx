@@ -23,11 +23,7 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
     1,
     true //
   )?.[0]
-  const loadedOutputCurrency = useSearchInactiveTokenLists(
-    state?.outputCurrencyId || undefined,
-    1,
-    true
-  )?.[0]
+  const loadedOutputCurrency = useSearchInactiveTokenLists(state?.outputCurrencyId || undefined, 1, true)?.[0]
 
   const urlLoadedTokens: Token[] = useMemo(
     () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
