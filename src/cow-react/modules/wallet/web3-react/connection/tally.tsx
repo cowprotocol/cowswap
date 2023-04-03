@@ -5,8 +5,8 @@ import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { initializeConnector } from '@web3-react/core'
-import { InjectedWallet } from '@cow/modules/wallet/web3-react/connectors/Injected'
 import { Web3ReactConnection } from '../types'
+import { AsyncConnector } from './asyncConnector'
 
 import { default as TallyImage } from '@cow/modules/wallet/api/assets/tally.svg'
 
@@ -19,11 +19,18 @@ const BASE_PROPS = {
 
 const [tallyWallet, tallyWalletHooks] = initializeConnector<Connector>(
   (actions) =>
-    new InjectedWallet({
-      actions,
-      walletUrl: WALLET_LINK,
-      searchKeywords: ['isTally', 'isTallyWallet', 'isTallyHo'],
-    })
+    new AsyncConnector(
+      () =>
+        import('@cow/modules/wallet/web3-react/connectors/Injected').then(
+          (m) =>
+            new m.InjectedWallet({
+              actions,
+              walletUrl: WALLET_LINK,
+              searchKeywords: ['isTally', 'isTallyWallet', 'isTallyHo'],
+            })
+        ),
+      actions
+    )
 )
 export const tallyWalletConnection: Web3ReactConnection = {
   connector: tallyWallet,
