@@ -1,11 +1,10 @@
 import { createAction } from '@reduxjs/toolkit'
-import { OrderCreation } from 'utils/signatures'
 import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SerializedToken } from '@src/state/user/types'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { BigNumberish } from '@ethersproject/bignumber'
-import { UID, EnrichedOrder, OrderClass } from '@cowprotocol/cow-sdk'
+import { UID, EnrichedOrder, OrderClass, OrderCreation } from '@cowprotocol/cow-sdk'
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -16,6 +15,11 @@ export enum OrderStatus {
   CREATING = 'creating',
   FAILED = 'failed',
 }
+
+// Common states groups
+export const PENDING_STATES = [OrderStatus.PENDING, OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+export const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
+export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
 
 // Abstract type for the order used in the Dapp. It's composed out of 3 types of props:
 //  - Information present in the order creation type used in the API to post new orders

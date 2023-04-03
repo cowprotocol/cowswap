@@ -63,6 +63,7 @@ const tradeContext: TradeFlowContext = {
     recipient: '0xaaa',
     recipientAddressOrName: null,
     allowsOffchainSigning: true,
+    partiallyFillable: true,
     appDataHash: '0xabc',
   },
   rateImpact: 0,

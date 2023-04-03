@@ -12,9 +12,6 @@ import {
   useWrapType,
   useWrapUnwrapError,
 } from 'hooks/useWrapCallback'
-import { useCallback } from 'react'
-import { logTradeFlow } from '@cow/modules/trade/utils/logger'
-import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { getSwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import { SwapButtonsContext } from '@cow/modules/swap/pure/SwapButtons'
 import { useGetQuoteAndStatus } from 'state/price/hooks'
@@ -23,10 +20,10 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useEthFlowContext } from '@cow/modules/swap/hooks/useEthFlowContext'
-import { ethFlow } from '@cow/modules/swap/services/ethFlow'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
+import { useHandleSwap } from '@cow/modules/swap/hooks/useHandleSwap'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -79,17 +76,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const inputAmount = tryParseCurrencyAmount(typedValue, currencyIn ?? undefined)
   const approvalState = useTradeApproveState(inputAmount || null)
 
-  const handleSwap = useCallback(() => {
-    if (!swapFlowContext && !ethFlowContext) return
-
-    if (swapFlowContext) {
-      logTradeFlow('SWAP FLOW', 'Start swap flow')
-      swapFlow(swapFlowContext, priceImpactParams)
-    } else if (ethFlowContext) {
-      logTradeFlow('ETH FLOW', 'Start eth flow')
-      ethFlow(ethFlowContext, priceImpactParams)
-    }
-  }, [swapFlowContext, ethFlowContext, priceImpactParams])
+  const handleSwap = useHandleSwap(priceImpactParams)
 
   const contextExists = ethFlowContext || swapFlowContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'

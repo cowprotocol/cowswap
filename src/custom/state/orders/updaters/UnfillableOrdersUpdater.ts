@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
+import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
 import { Order } from 'state/orders/actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -88,7 +88,7 @@ export function UnfillableOrdersUpdater(): null {
   const updatePendingOrderPrices = useUpdateAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
-  const pending = usePendingOrders({ chainId })
+  const pending = useOnlyPendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
 

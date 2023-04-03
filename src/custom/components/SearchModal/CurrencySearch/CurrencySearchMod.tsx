@@ -34,7 +34,7 @@ import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from '.'
 import { searchByAddressAnalytics } from 'components/analytics'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { useTokenSearch } from './useTokenSearch'
+import { useExternalTokenSearch } from '@cow/common/hooks/useExternalTokenSearch'
 
 /* const ContentWrapper = styled(Column)`
   width: 100%;
@@ -211,7 +211,7 @@ export function CurrencySearch({
       ),
     [filteredSortedTokens, filteredInactiveTokens]
   )
-  const additionalTokens = useTokenSearch(searchQuery, existingTokens)
+  const additionalTokens = useExternalTokenSearch(searchQuery, existingTokens)
 
   return (
     <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>

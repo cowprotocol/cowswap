@@ -1,10 +1,14 @@
-import { Order } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { BigNumber } from 'bignumber.js'
 
 const ONE_BIG_NUMBER = new BigNumber(1)
 const FILLED_ORDER_EPSILON = new BigNumber('0.0001')
 
 export function isOrderFilled(order: Order): boolean {
+  if (order.status === OrderStatus.PENDING) {
+    return false
+  }
+
   let amount, executedAmount
   const { apiAdditionalInfo } = order
 

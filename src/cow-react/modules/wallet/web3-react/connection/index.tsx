@@ -15,6 +15,7 @@ import { gnosisSafeConnection } from './safe'
 import { injectedConnection } from './injected'
 import { coinbaseWalletConnection } from './coinbase'
 import { walletConnectConnection } from './walletConnect'
+import { ledgerConnection, LedgerOption } from './ledger'
 import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
@@ -32,6 +33,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   networkConnection,
   tallyWalletConnection,
   trustWalletConnection,
+  ledgerConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -45,6 +47,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case gnosisSafeConnection.connector:
     case tallyWalletConnection.connector:
     case trustWalletConnection.connector:
+    case ledgerConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -82,6 +85,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return tallyWalletConnection
       case ConnectionType.TRUST:
         return trustWalletConnection
+      case ConnectionType.LEDGER:
+        return ledgerConnection
     }
   }
 }
@@ -122,6 +127,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
+  const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
 
   // Injected
   const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
@@ -138,6 +144,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {injectedOption}
       {walletConnectionOption}
       {coinbaseWalletOption}
+      {ledgerOption}
       {zengoOption}
       {ambireOption}
       {alphaOption}

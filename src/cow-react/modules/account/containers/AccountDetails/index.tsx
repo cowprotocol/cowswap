@@ -10,6 +10,7 @@ import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connectio
 import CoinbaseWalletIcon from '@cow/modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
+import LedgerIcon from '@cow/modules/wallet/api/assets/ledger.svg'
 import TallyIcon from '@cow/modules/wallet/api/assets/tally.svg'
 import TrustIcon from '@cow/modules/wallet/api/assets/trust.png'
 import { Identicon } from '@cow/modules/wallet/api/container/Identicon'
@@ -55,6 +56,7 @@ import { tallyWalletConnection } from '@cow/modules/wallet/web3-react/connection
 import { useWalletDetails } from '@cow/modules/wallet/api/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { trustWalletConnection } from '@cow/modules/wallet/web3-react/connection/trust'
+import { ledgerConnection } from '@cow/modules/wallet/web3-react/connection/ledger'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GOERLI]: 'Görli',
@@ -103,31 +105,37 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
   } else if (connectionType === walletConnectConnection) {
     return (
       <IconWrapper size={16}>
-        <img src={WalletConnectIcon} alt={'wallet connect logo'} />
+        <img src={WalletConnectIcon} alt={'Wallet connect logo'} />
       </IconWrapper>
     )
   } else if (connectionType === coinbaseWalletConnection) {
     return (
       <IconWrapper size={16}>
-        <img src={CoinbaseWalletIcon} alt={'coinbase wallet logo'} />
+        <img src={CoinbaseWalletIcon} alt={'Coinbase wallet logo'} />
       </IconWrapper>
     )
   } else if (connectionType === fortmaticConnection) {
     return (
       <IconWrapper size={16}>
-        <img src={FortmaticIcon} alt={'fortmatic logo'} />
+        <img src={FortmaticIcon} alt={'Fortmatic logo'} />
       </IconWrapper>
     )
   } else if (connectionType === tallyWalletConnection) {
     return (
       <IconWrapper size={16}>
-        <img src={TallyIcon} alt={'tally logo'} />
+        <img src={TallyIcon} alt={'Tally logo'} />
       </IconWrapper>
     )
   } else if (connectionType === trustWalletConnection) {
     return (
       <IconWrapper size={16}>
         <img src={TrustIcon} alt={'Trust logo'} />
+      </IconWrapper>
+    )
+  } else if (connectionType === ledgerConnection) {
+    return (
+      <IconWrapper size={16}>
+        <img src={LedgerIcon} alt={'Ledger logo'} />
       </IconWrapper>
     )
   }

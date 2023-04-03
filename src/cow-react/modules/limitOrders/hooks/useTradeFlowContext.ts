@@ -74,6 +74,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       inputAmount: state.inputCurrencyAmount,
       outputAmount: state.outputCurrencyAmount,
       sellAmountBeforeFee: state.inputCurrencyAmount,
+      partiallyFillable: true, // Limit orders ALWAYS partially fillable - for now
       appDataHash: appData.hash,
       quoteId,
     },
