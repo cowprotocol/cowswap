@@ -111,7 +111,19 @@ export class Ledger extends Connector {
   }
 
   public async connectEagerly(): Promise<void> {
-    await this.activate()
+    const cancelActivation = this.actions.startActivation()
+
+    try {
+      await this.activateLedgerKit()
+      await this.getProvider({ forceCreate: true })
+
+      if (!this.provider?.connected) return cancelActivation()
+
+      this.activateProvider()
+    } catch (error) {
+      cancelActivation()
+      throw error
+    }
   }
 
   protected onAccountsChanged = (accounts: string[]): void => {
