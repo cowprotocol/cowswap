@@ -1,6 +1,6 @@
 import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
-import { loadConnectKit, LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
+import type { LedgerConnectKit } from '@ledgerhq/connect-kit-loader'
 
 type LedgerProvider = Provider & {
   connected: () => boolean
@@ -28,19 +28,17 @@ function parseChainId(chainId: number | string) {
 export class Ledger extends Connector {
   public provider?: LedgerProvider
   private readonly options: LedgerOptions
-  private eagerConnection?: Promise<void>
-  private connectKitPromise: Promise<LedgerConnectKit>
+  private connectKit?: LedgerConnectKit
 
   constructor({ actions, onError, options = {} }: LedgerConstructorArgs) {
     super(actions, onError)
 
     this.options = options
-    this.connectKitPromise = loadConnectKit()
   }
 
   async getAccounts() {
     const provider = await this.getProvider()
-    const accounts = (await provider.request({
+    const accounts = (await provider?.request({
       method: 'eth_requestAccounts',
     })) as string[]
 
@@ -49,7 +47,7 @@ export class Ledger extends Connector {
 
   async getChainId() {
     const provider = await this.getProvider()
-    const chainId = (await provider.request({
+    const chainId = (await provider?.request({
       method: 'eth_chainId',
     })) as string
 
@@ -61,9 +59,10 @@ export class Ledger extends Connector {
       forceCreate: false,
     }
   ) {
+    if (!this.connectKit) return null
+
     if (!this.provider || forceCreate) {
-      const connectKit = await this.connectKitPromise
-      const ledgerProvider = await connectKit.getProvider()
+      const ledgerProvider = await this.connectKit.getProvider()
       this.provider = ledgerProvider as unknown as LedgerProvider
     }
 
@@ -76,11 +75,13 @@ export class Ledger extends Connector {
   }
 
   async activateLedgerKit() {
-    const connectKit = await this.connectKitPromise
+    const { loadConnectKit, SupportedProviders } = await import('@ledgerhq/connect-kit-loader')
 
-    await connectKit.enableDebugLogs()
+    this.connectKit = await loadConnectKit()
 
-    await connectKit.checkSupport({
+    await this.connectKit.enableDebugLogs()
+
+    await this.connectKit.checkSupport({
       providerType: SupportedProviders.Ethereum,
       chainId: this.options.chainId,
       infuraId: this.options.infuraId,
@@ -146,7 +147,6 @@ export class Ledger extends Connector {
   public async deactivate(): Promise<void> {
     await this.provider?.disconnect()
     this.provider = undefined
-    this.eagerConnection = undefined
     this.actions.resetState()
   }
 }
