@@ -33,7 +33,7 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
 
           return onCurrencySelectionCommon(field, currency, () => {
             updateLimitOrdersState({
-              [amountField]: FractionUtils.serializeFractionToJSON(converted)
+              [amountField]: FractionUtils.serializeFractionToJSON(converted),
             })
           })
         }
