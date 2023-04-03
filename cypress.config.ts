@@ -1,4 +1,17 @@
+import * as dotenv from 'dotenv'
+import fs from 'fs'
 import { defineConfig } from 'cypress'
+
+let env = {}
+
+if (!process.env.GITHUB_ENV) {
+  try {
+    const localEnvFile = fs.readFileSync('./.env.local')
+    env = dotenv.parse(localEnvFile)
+  } catch (err) {
+    throw new Error('Could not read .env.local file: are you sure you have your local env vars set?')
+  }
+}
 
 export default defineConfig({
   projectId: 'yp82ef',
@@ -19,5 +32,6 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress-custom/integration/**/*.{js,jsx,ts,tsx}',
     supportFile: 'cypress-custom/support/index.js',
+    env,
   },
 })

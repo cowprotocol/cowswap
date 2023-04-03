@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { Menu, MenuItem } from '@reach/menu-button'
 import {
   limitOrdersSettingsAtom,
   LimitOrdersSettingsState,
@@ -7,7 +8,6 @@ import {
 import { Settings } from '../../pure/Settings'
 import { ExpertModeModal } from '@cow/common/pure/ExpertModeModal'
 import React, { useCallback, useState } from 'react'
-import { Dropdown } from '@cow/common/pure/Dropdown'
 import * as styledEl from './styled'
 import { useAtomValue } from 'jotai/utils'
 
@@ -18,13 +18,17 @@ export function SettingsWidget() {
 
   const onStateChanged = useCallback(
     (state: Partial<LimitOrdersSettingsState>) => {
-      const isExpertModeOn = !settingsState.expertMode && state.expertMode
-      const isExpertModeOff = settingsState.expertMode && !state.expertMode
+      const { expertMode } = state
 
-      if (isExpertModeOn) {
-        setShowExpertConfirm(true)
-      } else if (isExpertModeOff) {
-        updateSettingsState({ expertMode: false, showRecipient: false })
+      if (expertMode !== undefined) {
+        const isExpertModeOn = !settingsState.expertMode && expertMode
+        const isExpertModeOff = settingsState.expertMode && !expertMode
+
+        if (isExpertModeOn) {
+          setShowExpertConfirm(true)
+        } else if (isExpertModeOff) {
+          updateSettingsState({ expertMode: false })
+        }
       } else {
         updateSettingsState(state)
       }
@@ -32,16 +36,13 @@ export function SettingsWidget() {
     [settingsState, updateSettingsState]
   )
   const onEnableExpertMode = useCallback(() => {
-    updateSettingsState({ expertMode: true, showRecipient: true })
+    updateSettingsState({ expertMode: true })
     setShowExpertConfirm(false)
   }, [updateSettingsState, setShowExpertConfirm])
 
   return (
     <>
-      <Dropdown
-        content={<Settings state={settingsState} onStateChanged={onStateChanged} />}
-        ignoreOutsideClicks={showExpertConfirm}
-      >
+      <Menu>
         <styledEl.SettingsButton>
           <styledEl.SettingsIcon />
           {settingsState.expertMode && (
@@ -51,7 +52,12 @@ export function SettingsWidget() {
             </styledEl.ExpertModeIndicator>
           )}
         </styledEl.SettingsButton>
-      </Dropdown>
+        <styledEl.MenuContent>
+          <MenuItem disabled={true} onSelect={() => void 0}>
+            <Settings state={settingsState} onStateChanged={onStateChanged} />
+          </MenuItem>
+        </styledEl.MenuContent>
+      </Menu>
       <ExpertModeModal
         isOpen={showExpertConfirm}
         onDismiss={() => setShowExpertConfirm(false)}

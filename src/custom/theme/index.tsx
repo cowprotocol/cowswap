@@ -3,12 +3,6 @@ import { Text } from 'rebass'
 import { ThemedText as ThemedTextUni, TextProps as TextPropsUni } from '@src/theme'
 import { Colors } from './styled'
 
-export enum ButtonSize {
-  SMALL,
-  DEFAULT,
-  BIG,
-}
-
 export enum Z_INDEX {
   deprecated_zero = 0,
   deprecated_content = 1,

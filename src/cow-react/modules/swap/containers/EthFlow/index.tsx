@@ -2,11 +2,10 @@ import { useMemo } from 'react'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useCurrencyBalances } from 'state/connection/hooks'
 import { useIsExpertMode } from 'state/user/hooks'
-import { useWeb3React } from '@web3-react/core'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import { GpModal } from 'components/Modal'
+import { GpModal } from '@cow/common/pure/Modal'
 import { EthFlowModalContent } from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent'
 import { getDerivedEthFlowState } from '@cow/modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
 import { ethFlowContextAtom } from '@cow/modules/swap/state/EthFlow/ethFlowContextAtom'
@@ -17,6 +16,7 @@ import { useEthFlowActions } from './hooks/useEthFlowActions'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
 import { useTradeApproveCallback, useTradeApproveState } from '@cow/common/containers/TradeApprove'
 import { HandleSwapCallback } from '@cow/modules/swap/pure/SwapButtons'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>
@@ -33,7 +33,7 @@ function EthFlow({
   directSwapCallback,
   hasEnoughWrappedBalanceForSwap,
 }: EthFlowProps) {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const isExpertMode = useIsExpertMode()
   const { native, wrappedToken: wrapped } = useDetectNativeToken()
   const approvalState = useTradeApproveState(nativeInput || null)

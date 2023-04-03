@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { TokenList } from '@uniswap/token-lists'
-import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import Card from 'components/Card'
 import { UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
@@ -29,6 +28,7 @@ import Row, { RowBetween, RowFixed } from '../Row'
 import Toggle from '../Toggle'
 import { CurrencyModalView } from './CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from './styleds'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const Wrapper = styled(Column)`
   flex: 1;
@@ -95,7 +95,7 @@ function listUrlRowHTMLId(listUrl: string) {
 }
 
 const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const listsByUrl = useAppSelector((state) => state.lists.byUrl)
   const dispatch = useAppDispatch()
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl]
@@ -242,7 +242,7 @@ export function ManageLists({
   setImportList: (list: TokenList) => void
   setListUrl: (url: string) => void
 }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const theme = useTheme()
 
   const [listUrlInput, setListUrlInput] = useState<string>('')

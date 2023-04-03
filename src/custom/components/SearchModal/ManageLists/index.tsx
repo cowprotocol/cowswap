@@ -1,6 +1,5 @@
 import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
-import { useWeb3React } from '@web3-react/core'
 import { CurrencyModalView } from '@src/components/SearchModal/CurrencySearchModal'
 import { TokenList } from '@uniswap/token-lists'
 import { acceptListUpdate, removeList, disableList, enableList } from 'state/lists/actions'
@@ -11,6 +10,7 @@ import styled from 'styled-components/macro'
 import { TextDot } from '@src/components/SearchModal/styleds'
 import { transparentize } from 'polished'
 import { ButtonPrimary } from 'components/Button'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface ListRowProps {
   acceptListUpdate: (url: string) => ReturnType<typeof acceptListUpdate>
@@ -87,7 +87,7 @@ export const ManageLists = (props: {
   setImportList: (list: TokenList) => void
   setListUrl: (url: string) => void
 }) => {
-  const { chainId: connectedChainId } = useWeb3React()
+  const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
 
   const listRowProps = {

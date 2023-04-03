@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { useWeb3React } from '@web3-react/core'
 import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
@@ -17,19 +16,18 @@ import {
   useUpdatePresignGnosisSafeTx,
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
-import { Order, OrderClass, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
-
-import { SupportedChainId as ChainId } from 'constants/chains'
-
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getOrder, OrderID } from '@cow/api/gnosisProtocol'
-
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -101,11 +99,14 @@ async function _updateCreatingOrders(
           if (!orderData) {
             return
           }
+          // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
+          const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = orderData.ethflowData
+
           const updatedOrder = {
             ...order,
             validTo: orderData.ethflowData?.userValidTo || order.validTo,
-            isRefunded: orderData.ethflowData?.isRefunded,
-            refundHash: orderData.ethflowData?.refundTxHash || undefined,
+            isRefunded: ethflowData?.isRefunded,
+            refundHash: ethflowData?.refundTxHash || undefined,
             openSince: Date.now(),
             status: OrderStatus.PENDING, // seen once, can be moved to pending bucket
             apiAdditionalInfo: orderData,
@@ -245,7 +246,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 }
 
 export function PendingOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
 
   const pending = usePendingOrders({ chainId })
@@ -306,7 +307,7 @@ export function PendingOrdersUpdater(): null {
       return
     }
 
-    const marketIinterval = setInterval(
+    const marketInterval = setInterval(
       () => updateOrders(chainId, account, OrderClass.MARKET),
       MARKET_OPERATOR_API_POLL_INTERVAL
     )
@@ -316,7 +317,7 @@ export function PendingOrdersUpdater(): null {
     )
 
     return () => {
-      clearInterval(marketIinterval)
+      clearInterval(marketInterval)
       clearInterval(limitInterval)
     }
   }, [account, chainId, updateOrders])

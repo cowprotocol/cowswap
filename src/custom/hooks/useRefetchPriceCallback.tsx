@@ -20,11 +20,11 @@ import { useQuoteDispatchers } from 'state/price/hooks'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
 import { QuoteError } from 'state/price/actions'
 import { CancelableResult, onlyResolvesLast } from 'utils/async'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { LegacyFeeQuoteParams, LegacyQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { calculateValidTo } from '@cow/utils/time'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 interface HandleQuoteErrorParams {
   quoteData: QuoteInformationObject | LegacyFeeQuoteParams
@@ -34,18 +34,25 @@ interface HandleQuoteErrorParams {
 
 type QuoteParamsForFetching = Omit<LegacyQuoteParams, 'strategy'>
 
+function isMessageIncludeToken(message: string, tokenAddress: string): string | null {
+  if (message.toLowerCase().includes(tokenAddress.toLowerCase())) return tokenAddress
+
+  return null
+}
+
 export function handleQuoteError({ quoteData, error, addUnsupportedToken }: HandleQuoteErrorParams): QuoteError {
   if (isValidOperatorError(error)) {
     switch (error.type) {
       case ApiErrorCodes.UnsupportedToken: {
-        // TODO: will change with introduction of data prop in error responses
-        const unsupportedTokenAddress = error.description.split(' ')[2]
+        const unsupportedTokenAddress =
+          isMessageIncludeToken(error.description, quoteData.sellToken) ||
+          isMessageIncludeToken(error.description, quoteData.buyToken)
         console.error(`${error.message}: ${error.description} - disabling.`)
 
         // Add token to unsupported token list
         addUnsupportedToken({
           chainId: quoteData.chainId,
-          address: unsupportedTokenAddress,
+          address: unsupportedTokenAddress || '',
           dateAdded: Date.now(),
         })
 
@@ -78,13 +85,15 @@ export function handleQuoteError({ quoteData, error, addUnsupportedToken }: Hand
 
       case GpQuoteErrorCodes.UnsupportedToken: {
         // TODO: will change with introduction of data prop in error responses
-        const unsupportedTokenAddress = error.description.split(' ')[2]
+        const unsupportedTokenAddress =
+          isMessageIncludeToken(error.description, quoteData.sellToken) ||
+          isMessageIncludeToken(error.description, quoteData.buyToken)
         console.error(`${error.message}: ${error.description} - disabling.`)
 
         // Add token to unsupported token list
         addUnsupportedToken({
           chainId: quoteData.chainId,
-          address: unsupportedTokenAddress,
+          address: unsupportedTokenAddress || '',
           dateAdded: Date.now(),
         })
 
@@ -126,8 +135,7 @@ export function useRefetchQuoteCallback() {
   const { getNewQuote, refreshQuote, updateQuote, setQuoteError } = useQuoteDispatchers()
   const addUnsupportedToken = useAddGpUnsupportedToken()
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
-  // check which price strategy to use (COWSWAP/LEGACY)
-  const priceStrategy = useGetGpPriceStrategy()
+  const strategy = useGetGpPriceStrategy()
   const [deadline] = useUserTransactionTTL()
   const isEthFlow = useIsEthFlow()
 
@@ -226,7 +234,7 @@ export function useRefetchQuoteCallback() {
       }
 
       // Init get quote methods params
-      const bestQuoteParams = { ...params, strategy: priceStrategy }
+      const bestQuoteParams = { ...params, strategy }
       const fastQuoteParams = { quoteParams: { ...quoteParams, priceQuality: 'fast' } }
 
       // Register get best and fast quote methods on window
@@ -250,7 +258,7 @@ export function useRefetchQuoteCallback() {
     [
       isEthFlow,
       deadline,
-      priceStrategy,
+      strategy,
       isUnsupportedTokenGp,
       updateQuote,
       refreshQuote,

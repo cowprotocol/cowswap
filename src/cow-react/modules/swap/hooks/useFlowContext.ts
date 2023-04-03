@@ -2,10 +2,9 @@ import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { GpEther as ETHER } from 'constants/tokens'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useCloseModals } from 'state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'state/orders/hooks'
-import { useAppData } from 'hooks/useAppData'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
 import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
@@ -14,11 +13,11 @@ import { SwapConfirmManager, useSwapConfirmManager } from '@cow/modules/swap/hoo
 import { useWETHContract } from 'hooks/useContract'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useUserTransactionTTL } from 'state/user/hooks'
-import { useUpdateAtom } from 'jotai/utils'
-import { addAppDataToUploadQueueAtom } from 'state/appData/atoms'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atoms'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { Weth } from '@cow/abis/types'
 import TradeGp from 'state/swap/TradeGp'
@@ -28,7 +27,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { BaseFlowContext } from '@cow/modules/swap/services/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
-import { OrderClass } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -74,12 +73,14 @@ interface BaseFlowContextSetup {
 }
 
 export function useBaseFlowContextSetup(): BaseFlowContextSetup {
-  const { account, chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
+  const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
   const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
-  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
 
-  const appData = useAppData({ chainId, allowedSlippage, orderClass: OrderClass.MARKET })
+  const appData = useAtomValue(appDataInfoAtom)
   const closeModals = useCloseModals()
   const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
   const addOrderCallback = useAddPendingOrder()

@@ -1,7 +1,7 @@
-import { GpModal } from 'components/Modal'
+import { GpModal } from '@cow/common/pure/Modal'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
-import { OrderKind, OrderStatus } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CloseIcon } from 'theme'
 import { CurrencyField } from './CurrencyField'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -16,7 +16,6 @@ import { SurplusField } from './SurplusField'
 import { IdField } from './IdField'
 import { StatusField } from './StatusField'
 import { OrderTypeField } from './OrderTypeField'
-
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -26,11 +25,14 @@ interface ReceiptProps {
   buyAmount: CurrencyAmount<Token>
   limitPrice: Fraction | null
   executionPrice: Fraction | null
+  estimatedExecutionPrice: Fraction | null
 }
 
 const tooltips: { [key: string]: string | JSX.Element } = {
   LIMIT_PRICE: 'You will receive this price or better for your tokens.',
   EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
+  EXECUTES_AT:
+    'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
   FILLED:
     'CoW Swap doesn’t currently support partial fills. Your order will either be filled completely or not at all.',
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
@@ -59,6 +61,7 @@ export function ReceiptModal({
   buyAmount,
   limitPrice,
   executionPrice,
+  estimatedExecutionPrice,
 }: ReceiptProps) {
   if (!order || !chainId) {
     return null
@@ -66,11 +69,6 @@ export function ReceiptModal({
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
-
-  const showCreationTxLink =
-    (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
-    order.orderCreationHash &&
-    !order.apiAdditionalInfo
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -96,8 +94,17 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />
-              <PriceField order={order} price={executionPrice} />
+              {estimatedExecutionPrice ? (
+                <>
+                  <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
+                  <PriceField order={order} price={estimatedExecutionPrice} />
+                </>
+              ) : (
+                <>
+                  <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />{' '}
+                  <PriceField order={order} price={executionPrice} />
+                </>
+              )}
             </styledEl.Field>
 
             <styledEl.Field>
@@ -117,7 +124,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Created" tooltip={tooltips.CREATED} />
-              <DateField date={order.parsedCreationtime} />
+              <DateField date={order.parsedCreationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -131,15 +138,10 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field>
-              {showCreationTxLink ? (
+              {order.activityId && (
                 <>
-                  <FieldLabel label="Creation transaction" />
-                  <IdField id={order.orderCreationHash as string} chainId={chainId} />
-                </>
-              ) : (
-                <>
-                  <FieldLabel label="Order ID" />
-                  <IdField id={order.id} chainId={chainId} />
+                  <FieldLabel label={order.activityTitle} />
+                  <IdField id={order.activityId} chainId={chainId} />
                 </>
               )}
             </styledEl.Field>

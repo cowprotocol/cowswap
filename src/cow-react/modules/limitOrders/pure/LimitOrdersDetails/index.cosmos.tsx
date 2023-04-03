@@ -1,10 +1,12 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
-import { OrderClass, OrderKind } from 'state/orders/actions'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersDetails } from './index'
 import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { initLimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -42,7 +44,7 @@ const rateInfoParams = {
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
+  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
 const Fixtures = {
@@ -51,6 +53,8 @@ const Fixtures = {
       settingsState={defaultLimitOrdersSettings}
       rateInfoParams={rateInfoParams}
       tradeContext={tradeContext}
+      executionPrice={null}
+      limitRateState={initLimitRateState()}
     />
   ),
 }

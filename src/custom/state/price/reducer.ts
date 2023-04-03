@@ -1,11 +1,11 @@
 import { createReducer, PayloadAction, current } from '@reduxjs/toolkit'
-import { SupportedChainId as ChainId } from 'constants/chains'
-import { OrderKind } from '@cowprotocol/contracts'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } from './actions'
 import { Writable } from 'custom/types'
 import { PrefillStateRequired } from '../orders/reducer'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { FeeInformation, PriceInformation } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
 
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 

@@ -4,7 +4,7 @@ import { TopNav, ClaimAccount, ClaimAccountButtons } from './styled'
 import { ClaimCommonTypes } from './types'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { ClaimStatus } from 'state/claim/actions'
-import Identicon from 'components/Identicon'
+import { Identicon } from '@cow/modules/wallet/api/container/Identicon'
 import CopyHelper from 'components/Copy'
 
 type ClaimNavProps = Pick<ClaimCommonTypes, 'account' | 'handleChangeAccount'>

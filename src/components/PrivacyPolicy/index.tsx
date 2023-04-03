@@ -11,7 +11,7 @@ import { isMobile } from 'utils/userAgent'
 import { useModalIsOpen, useTogglePrivacyPolicy } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
 import { AutoColumn } from '../Column'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 
 const Wrapper = styled.div`
   max-height: 70vh;

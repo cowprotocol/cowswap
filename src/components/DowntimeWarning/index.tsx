@@ -1,5 +1,5 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from '@src/constants/chains'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -42,7 +42,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
  * Shows a downtime warning for the network if it's relevant
  */
 export default function DowntimeWarning() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   if (!isL2ChainId(chainId)) {
     return null
   }

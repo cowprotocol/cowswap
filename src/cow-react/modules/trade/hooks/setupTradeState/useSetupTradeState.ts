@@ -5,11 +5,12 @@ import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDup
 import { useTradeNavigate } from '../useTradeNavigate'
 import { getDefaultTradeState, TradeCurrenciesIds, TradeState } from '../../types/TradeState'
 import { useTradeState } from '../useTradeState'
-import { switchChain } from 'utils/switchChain'
+import { switchChain } from '@cow/modules/wallet/web3-react/hooks/switchChain'
 import usePrevious from 'hooks/usePrevious'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { Nullish } from '@cow/types'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 function areCurrenciesTheSame({ inputCurrencyId, outputCurrencyId }: TradeState): boolean {
   if (!inputCurrencyId && !outputCurrencyId) return false
@@ -53,7 +54,8 @@ function areChainIdsTheSame(aChainId: Nullish<number>, bChainId: Nullish<number>
 }
 
 export function useSetupTradeState(): void {
-  const { chainId: providerChainId, connector, account } = useWeb3React()
+  const { chainId: providerChainId, account } = useWalletInfo()
+  const { connector } = useWeb3React()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()

@@ -1,8 +1,8 @@
 import styled from 'styled-components/macro'
-import { RemoveRecipient } from '@cow/modules/swap/containers/RemoveRecipient'
+import { SetRecipient } from '@cow/modules/swap/containers/SetRecipient'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { NumericalInput } from '@cow/modules/limitOrders/containers/RateInput/styled'
-import { DropdownBox } from '@cow/common/pure/Dropdown/styled'
+import { transparentize, darken } from 'polished'
 
 export const Container = styled.div`
   width: 100%;
@@ -53,6 +53,13 @@ export const TradeButtonBox = styled.div`
   flex-direction: column;
 `
 
+export const FooterBox = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  margin: 0 4px;
+  padding: 0;
+`
+
 export const RateWrapper = styled.div`
   display: grid;
   grid-template-columns: auto 150px;
@@ -67,20 +74,41 @@ export const RateWrapper = styled.div`
   ${NumericalInput} {
     font-size: 21px;
   }
-
-  ${DropdownBox} {
-    width: 100%;
-  }
 `
 
-export const StyledRemoveRecipient = styled(RemoveRecipient)`
+export const StyledRemoveRecipient = styled(SetRecipient)`
   margin: 15px 0;
 `
 
 export const StyledRateInfo = styled(RateInfo)`
-  padding: 8px 8px 0;
+  padding-top: 8px;
   gap: 4px;
   font-size: 13px;
+  min-height: 24px;
   display: grid;
   grid-template-columns: max-content auto;
+`
+
+export const SmallVolumeWarningBanner = styled.div`
+  display: flex;
+  align-items: center;
+  background: ${({ theme }) => (theme.darkMode ? transparentize(0.9, theme.alert) : transparentize(0.85, theme.alert))};
+  color: ${({ theme }) => darken(theme.darkMode ? 0 : 0.15, theme.alert)};
+  gap: 10px;
+  border-radius: 10px;
+  margin: 8px auto 0;
+  padding: 16px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+
+  > svg {
+    display: block;
+    width: 34px;
+    height: 21px;
+  }
+
+  > svg > path {
+    fill: ${({ theme }) => theme.alert};
+  }
 `

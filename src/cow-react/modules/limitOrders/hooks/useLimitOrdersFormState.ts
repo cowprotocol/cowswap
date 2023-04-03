@@ -1,12 +1,10 @@
-import { useWeb3React } from '@web3-react/core'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { LimitOrdersTradeState, useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
-import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import useENSAddress from 'hooks/useENSAddress'
 import { isAddress } from 'utils'
@@ -33,6 +31,7 @@ export enum LimitOrdersFormState {
   CantLoadBalances = 'CantLoadBalances',
   QuoteError = 'QuoteError',
   ZeroPrice = 'ZeroPrice',
+  FeeExceedsFrom = 'FeeExceedsFrom',
 }
 
 interface LimitOrdersFormParams {
@@ -75,6 +74,10 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
   const inputAmountIsNotSet = !inputCurrencyAmount || inputCurrencyAmount.equalTo(0)
   const outputAmountIsNotSet = !outputCurrencyAmount || outputCurrencyAmount.equalTo(0)
+  const feeAmount =
+    quote?.response?.quote?.feeAmount && sellAmount
+      ? CurrencyAmount.fromRawAmount(sellAmount.currency, quote?.response?.quote?.feeAmount)
+      : null
 
   if (quote?.error) {
     return LimitOrdersFormState.QuoteError
@@ -145,14 +148,19 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.ZeroPrice
   }
 
+  if (sellAmount && feeAmount?.greaterThan(sellAmount)) {
+    return LimitOrdersFormState.FeeExceedsFrom
+  }
+
   return LimitOrdersFormState.CanTrade
 }
 
 export function useLimitOrdersFormState(): LimitOrdersFormState {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const tradeState = useLimitOrdersTradeState()
-  const { isSupportedWallet } = useWalletInfo()
-  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
+  const { isSupportedWallet } = useWalletDetails()
+  const gnosisSafeInfo = useGnosisSafeInfo()
+  const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const { isWrapOrUnwrap } = useDetectNativeToken()

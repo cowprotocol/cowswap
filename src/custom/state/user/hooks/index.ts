@@ -8,10 +8,10 @@ import {
   initFavouriteTokens,
 } from 'state/user/reducer'
 import { useUserTransactionTTL, deserializeToken } from '@src/state/user/hooks'
-import { useWeb3React } from '@web3-react/core'
 import { SerializedToken } from 'state/user/types'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { calculateValidTo } from '@cow/utils/time'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from '@src/state/user/hooks'
 
@@ -26,7 +26,7 @@ export function useOrderValidTo() {
 }
 
 export function useFavouriteTokens(): Token[] {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const serializedTokensMap = useAppSelector(({ user: { favouriteTokens } }) => favouriteTokens)
 
   return useMemo(() => {
@@ -49,7 +49,7 @@ export function useToggleFavouriteToken(): (token: Token) => void {
 }
 
 export function useRemoveAllFavouriteTokens(): () => void {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
 
   return useCallback(() => {
@@ -64,7 +64,7 @@ export function useSelectedWallet(): string | undefined {
 }
 
 export function useInitFavouriteTokens(): void {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
 
   return useMemo(() => {

@@ -1,4 +1,4 @@
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 export const REFERRAL_QUERY_PARAM = 'referral'
 

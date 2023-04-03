@@ -6,11 +6,12 @@ import { useBytes32TokenContract, useTokenContract } from 'hooks/useContract'
 import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
-import { isChainAllowed } from 'utils/switchChain'
+import { isChainAllowed } from '@cow/modules/wallet/web3-react/connection'
 
 import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { isAddress } from '../../utils'
 import { supportedChainId } from '../../utils/supportedChainId'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
@@ -34,7 +35,8 @@ export function parseStringOrBytes32(
  * Returns undefined if tokenAddress is invalid or token does not exist.
  */
 export function useTokenFromNetwork(tokenAddress: string | null | undefined): Token | null | undefined {
-  const { chainId, connector } = useWeb3React()
+  const { connector } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const chainAllowed = chainId && isChainAllowed(connector, chainId)
 
   const formattedAddress = isAddress(tokenAddress)
@@ -100,7 +102,8 @@ export function useTokenFromMapOrNetwork(tokens: TokenMap, tokenAddress?: string
  */
 export function useCurrencyFromMap(tokens: TokenMap, currencyId?: string | null): Currency | null | undefined {
   const nativeCurrency = useNativeCurrency()
-  const { chainId, connector } = useWeb3React()
+  const { connector } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const isNative = Boolean(nativeCurrency && currencyId?.toUpperCase() === 'ETH')
   const shorthandMatchAddress = useMemo(() => {
     const chain = supportedChainId(chainId)

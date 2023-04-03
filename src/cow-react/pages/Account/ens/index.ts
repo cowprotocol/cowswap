@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ClientError, gql, GraphQLClient } from 'graphql-request'
 import { EnsNamesQuery } from '@cow/pages/Account/ens/types'
 

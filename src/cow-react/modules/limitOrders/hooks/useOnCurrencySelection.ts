@@ -1,15 +1,15 @@
 import { useCallback } from 'react'
 import { Field } from 'state/swap/actions'
 import { Currency } from '@uniswap/sdk-core'
-import { adjustDecimals } from '@cow/modules/limitOrders/utils/adjustDecimals'
 import { useOnCurrencySelection as useOnCurrencySelectionCommon } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useUpdateAtom } from 'jotai/utils'
 import { updateLimitOrdersAtom } from '@cow/modules/limitOrders'
 import { FractionUtils } from '@cow/utils/fractionUtils'
+import { convertAmountToCurrency } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
 
 export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
   const onCurrencySelectionCommon = useOnCurrencySelectionCommon()
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
@@ -25,28 +25,23 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
        */
       if (currency) {
         const amountField = field === Field.INPUT ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
+        const currencyIdField = field === Field.INPUT ? 'inputCurrencyId' : 'outputCurrencyId'
         const amount = field === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
-        const targetCurrency = field === Field.INPUT ? inputCurrency : outputCurrency
 
-        if (targetCurrency && amount) {
-          const prevDecimals = targetCurrency.decimals
-          const newDecimals = currency.decimals
+        if (amount) {
+          const converted = convertAmountToCurrency(amount, currency)
 
-          updateLimitOrdersState({
-            [amountField]: FractionUtils.serializeFractionToJSON(adjustDecimals(amount, prevDecimals, newDecimals)),
+          return onCurrencySelectionCommon(field, currency, () => {
+            updateLimitOrdersState({
+              [amountField]: FractionUtils.serializeFractionToJSON(converted),
+              [currencyIdField]: currency.symbol,
+            })
           })
         }
       }
 
       return onCurrencySelectionCommon(field, currency)
     },
-    [
-      onCurrencySelectionCommon,
-      updateLimitOrdersState,
-      inputCurrency,
-      inputCurrencyAmount,
-      outputCurrency,
-      outputCurrencyAmount,
-    ]
+    [onCurrencySelectionCommon, updateLimitOrdersState, inputCurrencyAmount, outputCurrencyAmount]
   )
 }

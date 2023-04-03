@@ -1,5 +1,5 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { ExternalLink } from 'theme'
-import { useWeb3React } from '@web3-react/core'
 import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'utils'
 import { supportedChainId } from 'utils/supportedChainId'
 
@@ -16,7 +16,7 @@ interface Props {
  */
 export function ExplorerLink(props: Props) {
   const { id, label, type = 'transaction', className } = props
-  const { chainId: _chainId } = useWeb3React()
+  const { chainId: _chainId } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
 
   if (!chainId) {

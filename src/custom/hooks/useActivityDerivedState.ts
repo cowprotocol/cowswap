@@ -1,13 +1,13 @@
 import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { useMemo } from 'react'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
-import { ActivityDerivedState } from 'components/AccountDetails/Transaction'
+import { ActivityDerivedState } from '@cow/modules/account/containers/Transaction'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { getEtherscanLink } from 'utils'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useGnosisSafeInfo } from '@cow/modules/wallet'
 
 export function useActivityDerivedState({
   chainId,
@@ -16,7 +16,7 @@ export function useActivityDerivedState({
   chainId: number | undefined
   activity: ActivityDescriptors
 }): ActivityDerivedState | null {
-  const { gnosisSafeInfo } = useWalletInfo()
+  const gnosisSafeInfo = useGnosisSafeInfo()
 
   // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
   return useMemo(

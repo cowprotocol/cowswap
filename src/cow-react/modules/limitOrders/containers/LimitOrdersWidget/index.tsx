@@ -1,10 +1,8 @@
-import { useWeb3React } from '@web3-react/core'
 import * as styledEl from './styled'
 import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
-import { AddRecipient } from '@cow/common/pure/AddRecipient'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
@@ -32,26 +30,27 @@ import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
-import { maxAmountSpend } from '@src/utils/maxAmountSpend'
+import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
+import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
   useSetupLimitOrderAmountsFromUrl()
   useDisableNativeTokenSelling()
 
-  const { chainId } = useWeb3React()
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { chainId } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const {
     inputCurrency,
     outputCurrency,
@@ -74,7 +73,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext()
   const state = useAtomValue(limitOrdersAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-  const { isLoading: isRateLoading, activeRate } = useAtomValue(limitRateAtom)
+  const { isLoading: isRateLoading, activeRate, feeAmount } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
@@ -173,7 +172,16 @@ export function LimitOrdersWidget() {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    feeAmount,
   }
+
+  /**
+   * Reset recipient value only once at App start
+   */
+  useEffect(() => {
+    onChangeRecipient(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return <LimitOrders {...props} />
 }
@@ -197,6 +205,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    feeAmount,
   } = props
 
   const inputCurrency = inputCurrencyInfo.currency
@@ -266,7 +275,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                   hasSeparatorLine={true}
                   border={true}
                 />
-                {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
               </styledEl.CurrencySeparatorBox>
               <CurrencyInputPanel
                 id="limit-orders-currency-output"
@@ -282,13 +290,17 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 priceImpactParams={priceImpact}
                 topLabel={outputCurrencyInfo.label}
               />
-              {recipient !== null && (
-                <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
+              {showRecipient && (
+                <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
               )}
 
-              {!isWrapOrUnwrap && <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />}
+              {!isWrapOrUnwrap && (
+                <styledEl.FooterBox>
+                  <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                </styledEl.FooterBox>
+              )}
 
-              <LimitOrdersWarnings priceImpact={priceImpact} />
+              <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />
 
               <styledEl.TradeButtonBox>
                 <TradeButtons
@@ -316,6 +328,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         />
       )}
       {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
+      {isUnlocked && <InfoBanner />}
     </>
   )
 }, limitOrdersPropsChecker)

@@ -1,5 +1,5 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import { useTokenBalance, useTokenBalancesWithLoadingIndicator } from 'lib/hooks/useCurrencyBalance'
 import { useMemo } from 'react'
@@ -20,7 +20,7 @@ export {
 
 // mimics useAllBalances
 export function useAllTokenBalances(): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
-  const { account } = useWeb3React()
+  const { account } = useWalletInfo()
   const allTokens = useAllTokens()
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
   const [balances, balancesIsLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, allTokensArray)
@@ -29,7 +29,7 @@ export function useAllTokenBalances(): [{ [tokenAddress: string]: CurrencyAmount
 
 // get the total owned, unclaimed, and unharvested UNI for account
 export function useAggregateUniBalance(): CurrencyAmount<Token> | undefined {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   const uni = chainId ? UNI[chainId] : undefined
 

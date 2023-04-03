@@ -1,6 +1,6 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import JSBI from 'jsbi'
@@ -41,7 +41,7 @@ function useQuery() {
 export default function PoolFinder() {
   const query = useQuery()
 
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
 
   const [showSearch, setShowSearch] = useState<boolean>(false)
   const [activeField, setActiveField] = useState<number>(Fields.TOKEN1)

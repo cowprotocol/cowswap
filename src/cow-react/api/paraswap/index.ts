@@ -3,11 +3,11 @@ import { OrderKind } from '@cowprotocol/contracts'
 import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
 import { OptimalRate } from 'paraswap-core'
 import { APIError, RateOptions } from 'paraswap/build/types'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
 import { SOLVER_ADDRESS as defaultUserAddress } from 'constants/index'
-import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { PriceInformation } from '@cow/types'
 import { LegacyPriceQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 
 type ParaSwapPriceQuote = OptimalRate

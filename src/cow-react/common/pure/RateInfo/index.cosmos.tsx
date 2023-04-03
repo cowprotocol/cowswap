@@ -2,7 +2,7 @@ import { RateInfoParams, RateInfo } from './index'
 import { DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import styled from 'styled-components/macro'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
@@ -16,7 +16,7 @@ const rateInfoParams = {
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
+  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
 function buildRateInfoParams(
@@ -33,7 +33,7 @@ function buildRateInfoParams(
     inputCurrencyAmount,
     outputCurrencyAmount,
     activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
+    invertedActiveRateFiatAmount: null,
   }
 }
 

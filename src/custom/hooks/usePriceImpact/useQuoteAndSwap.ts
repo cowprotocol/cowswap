@@ -1,26 +1,25 @@
 import { useEffect, useState } from 'react'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTradeExactInWithFee } from 'state/swap/extension'
 import { QuoteInformationObject } from 'state/price/reducer'
 
-import { useWalletInfo } from 'hooks/useWalletInfo'
-import { useWeb3React } from '@web3-react/core'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 import { supportedChainId } from 'utils/supportedChainId'
 import { getBestQuote, QuoteResult } from 'utils/price'
 
 import { ZERO_ADDRESS } from 'constants/misc'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_DECIMALS } from 'constants/index'
 import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { onlyResolvesLast } from 'utils/async'
 import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 
@@ -54,10 +53,10 @@ export function useCalculateQuote(params: GetQuoteParams) {
     setLoading,
     validTo,
   } = params
-  const { chainId: preChain } = useWeb3React()
+  const { chainId: preChain } = useWalletInfo()
   const { account } = useWalletInfo()
-  const strategy = useGetGpPriceStrategy()
   const isEthFlow = useIsEthFlow()
+  const strategy = useGetGpPriceStrategy()
 
   const [quote, setLocalQuote] = useState<QuoteInformationObject | FeeQuoteParamsWithError | undefined>()
 
@@ -127,10 +126,10 @@ export function useCalculateQuote(params: GetQuoteParams) {
     sellToken,
     toDecimals,
     fromDecimals,
-    strategy,
     validTo,
     isEthFlow,
     setLoading,
+    strategy,
   ])
 
   return { quote, loading, setLoading }
@@ -138,7 +137,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
 
 // calculates a new Quote and inverse swap values
 export default function useExactInSwap({ quote, outputCurrency, parsedAmount }: ExactInSwapParams) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   const isWrapping = isWrappingTrade(parsedAmount?.currency, outputCurrency, chainId)
 

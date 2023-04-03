@@ -1,3 +1,4 @@
+import { useWalletInfo } from '@cow/modules/wallet'
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
@@ -6,7 +7,6 @@ import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import ListLogo from 'components/ListLogo'
 import { RowFixed } from 'components/Row'
-import { useWeb3React } from '@web3-react/core'
 import { transparentize } from 'polished'
 import { AlertCircle } from 'react-feather'
 import styled, { useTheme } from 'styled-components/macro'
@@ -36,7 +36,7 @@ interface TokenImportCardProps {
 }
 const TokenImportCard = ({ list, token }: TokenImportCardProps) => {
   const theme = useTheme()
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   return (
     <Card backgroundColor={theme.bg4} padding="2rem">
       <AutoColumn gap="10px" justify="center">

@@ -1,8 +1,8 @@
 import { ExplorerLink } from 'components/ExplorerLink'
-import { GnosisSafeLink } from 'components/AccountDetails/Transaction/StatusDetails'
+import { GnosisSafeLink } from '@cow/modules/account/containers/Transaction/StatusDetails'
 
 import { EnhancedTransactionDetails, HashType } from 'state/enhancedTransactions/reducer'
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useGnosisSafeInfo, useWalletInfo } from '@cow/modules/wallet'
 
 interface Props {
   tx: EnhancedTransactionDetails
@@ -14,7 +14,8 @@ interface Props {
  */
 export function EnhancedTransactionLink(props: Props) {
   const { tx } = props
-  const { chainId, gnosisSafeInfo } = useWalletInfo()
+  const { chainId } = useWalletInfo()
+  const gnosisSafeInfo = useGnosisSafeInfo()
 
   if (tx.hashType === HashType.GNOSIS_SAFE_TX) {
     const safeTx = tx.safeTransaction

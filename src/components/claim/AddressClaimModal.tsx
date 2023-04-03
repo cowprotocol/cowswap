@@ -1,7 +1,6 @@
 import { isAddress } from '@ethersproject/address'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { useState } from 'react'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
@@ -20,8 +19,9 @@ import { AutoColumn, ColumnCenter } from '../Column'
 import Confetti from '../Confetti'
 import { Break, CardSection, DataCard } from '../earn/styled'
 import { CardBGImage, CardBGImageSmaller, CardNoise } from '../earn/styled'
-import Modal from '../Modal'
+import Modal from '@cow/common/pure/Modal'
 import { RowBetween } from '../Row'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -46,7 +46,7 @@ const ConfirmedIcon = styled(ColumnCenter)`
 `
 
 export default function AddressClaimModal({ isOpen, onDismiss }: { isOpen: boolean; onDismiss: () => void }) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
 
   // state for smart contract input
   const [typed, setTyped] = useState('')

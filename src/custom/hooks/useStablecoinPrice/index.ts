@@ -1,9 +1,8 @@
 import { Currency, CurrencyAmount, Price, Token /*, TradeType*/ } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { /*DAI_OPTIMISM,*/ USDC /*, USDC_ARBITRUM, USDC_MAINNET, USDC_POLYGON*/ } from 'constants/tokens'
 // import { useBestV2Trade } from './useBestV2Trade'
 // import { useClientSideV3Trade } from './useClientSideV3Trade'
@@ -12,15 +11,16 @@ import { /*DAI_OPTIMISM,*/ USDC /*, USDC_ARBITRUM, USDC_MAINNET, USDC_POLYGON*/ 
 import { supportedChainId } from 'utils/supportedChainId'
 import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useStablecoinPrice'
 import { stringToCurrency } from 'state/swap/extension'
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { useGetCoingeckoUsdPrice } from '@cow/api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 // import { currencyId } from 'utils/currencyId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
 import { useGetGpUsdcPrice } from 'utils/price'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { useWalletInfo } from '@cow/modules/wallet'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 export * from '@src/hooks/useStablecoinPrice'
 
@@ -47,8 +47,7 @@ export default function useCowUsdPrice(currency?: Currency) {
   const [error, setError] = useState<Error | null>(null)
 
   const chainId = currency?.chainId
-  const { account } = useWeb3React()
-  // use quote loading as a price update dependency
+  const { account } = useWalletInfo()
   const strategy = useGetGpPriceStrategy()
 
   const sellTokenAddress = currency?.wrapped.address
@@ -155,7 +154,7 @@ export default function useCowUsdPrice(currency?: Currency) {
         })
       }
     }
-  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, strategy, currency, isStablecoin, quote])
+  }, [baseAmount, errorResponse, quoteParams, sellTokenAddress, stablecoin, currency, isStablecoin, quote, strategy])
 
   /* const lastPrice = useRef(bestUsdPrice)
   if (!bestUsdPrice || !lastPrice.current || !bestUsdPrice.equalTo(lastPrice.current)) {
@@ -199,7 +198,7 @@ export function useUSDCValue(currencyAmount?: CurrencyAmount<Currency>) {
 
 export function useCoingeckoUsdPrice(currency?: Currency) {
   // default to MAINNET (if disconnected e.g)
-  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWeb3React()
+  const { chainId = DEFAULT_NETWORK_FOR_LISTS } = useWalletInfo()
   const blockNumber = useBlockNumber()
   const [price, setPrice] = useState<Price<Token, Currency> | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -329,7 +328,7 @@ export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | und
  */
 /*
 export function useStablecoinAmountFromFiatValue(fiatValue: string | null | undefined) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const stablecoin = chainId ? STABLECOIN_AMOUNT_OUT[chainId]?.currency : undefined
 
   return useMemo(() => {

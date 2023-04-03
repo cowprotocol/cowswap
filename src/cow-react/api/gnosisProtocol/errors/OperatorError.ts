@@ -66,7 +66,7 @@ export enum ApiErrorCodeDetails {
   UnsupportedBuyTokenDestination = 'Buy token destination is unsupported. Please try again with a different destination.',
   UnsupportedSellTokenSource = 'Sell token source is unsupported. Please try again with a different source.',
   UnsupportedOrderType = 'Order type unsupported. Please try again with a different order type.',
-  TooManyLimitOrders = 'The limit of open limit orders has been reached. You can currently have up to 10 open limit orders.',
+  TooManyLimitOrders = 'The limit of open limit orders has been reached. You can currently have up to 50 open limit orders.',
   UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
   UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network.',
   UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network.',

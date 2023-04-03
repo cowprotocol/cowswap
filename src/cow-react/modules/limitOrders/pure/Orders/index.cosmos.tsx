@@ -25,6 +25,7 @@ const balancesAndAllowances: BalancesAndAllowances = {
 
 export default (
   <Orders
+    pendingOrdersPrices={{}}
     chainId={1}
     currentPageNumber={1}
     orders={ordersMock}
@@ -32,6 +33,7 @@ export default (
     isOpenOrdersTab={true}
     isWalletConnected={true}
     balancesAndAllowances={balancesAndAllowances}
+    getSpotPrice={() => null}
     getShowCancellationModal={(order) => {
       if (order.status === 'pending') {
         return () => alert('cancelling!')

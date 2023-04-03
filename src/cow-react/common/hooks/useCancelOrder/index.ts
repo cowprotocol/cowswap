@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 
-import { useWalletInfo } from 'hooks/useWalletInfo'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { useCloseModal, useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
@@ -27,8 +26,8 @@ export type UseCancelOrderReturn = (() => void) | null
  * In case the order is not eligible, it returns null. This should be used to control whether a cancel button should be displayed
  */
 export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
-  const { chainId } = useWeb3React()
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { chainId } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const openModal = useOpenModal(ApplicationModal.CANCELLATION)
   const closeModal = useCloseModal(ApplicationModal.CANCELLATION)
   const setContext = useSetAtom(updateCancellationModalContextAtom)

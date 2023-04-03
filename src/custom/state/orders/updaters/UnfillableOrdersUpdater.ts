@@ -1,26 +1,31 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
-
-import { useWeb3React } from '@web3-react/core'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
-import { Order, OrderClass } from 'state/orders/actions'
-import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
-
-import { SupportedChainId as ChainId } from 'constants/chains'
-
+import { Order } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getBestQuote } from 'utils/price'
-import { isOrderUnfillable } from 'state/orders/utils'
-import useGetGpPriceStrategy from 'hooks/useGetGpPriceStrategy'
+import {
+  getEstimatedExecutionPrice,
+  getOrderExecutionPrice,
+  getOrderMarketPrice,
+  isOrderUnfillable,
+} from 'state/orders/utils'
 import { getPromiseFulfilledValue } from 'utils/misc'
-import { PriceInformation } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from '@cow/types'
 import { priceOutOfRangeAnalytics } from 'components/analytics'
-import { GpPriceStrategy } from 'state/gas/atoms'
 import { supportedChainId } from 'utils/supportedChainId'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
-
+import { useUpdateAtom } from 'jotai/utils'
+import { updatePendingOrderPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { GpPriceStrategy } from 'state/gas/atoms'
+import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
@@ -78,12 +83,13 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater(): null {
-  const { chainId: _chainId, account } = useWeb3React()
+  const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
+  const updatePendingOrderPrices = useUpdateAtom(updatePendingOrderPricesAtom)
+  const isWindowVisible = useIsWindowVisible()
 
   const pending = usePendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
-  // check which GP Quote API to use (NEW/LEGACY)
   const strategy = useGetGpPriceStrategy()
 
   // Ref, so we don't rerun useEffect
@@ -91,26 +97,67 @@ export function UnfillableOrdersUpdater(): null {
   pendingRef.current = pending
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
+  const updateOrderMarketPriceCallback = useCallback(
+    (
+      order: Order,
+      fee: FeeInformation | null,
+      marketPrice: Price<Currency, Currency>,
+      estimatedExecutionPrice: Price<Currency, Currency>
+    ) => {
+      if (!fee?.amount) return
+
+      updatePendingOrderPrices({
+        orderId: order.id,
+        data: {
+          lastUpdateTimestamp: Date.now(),
+          marketPrice,
+          estimatedExecutionPrice,
+          feeAmount: CurrencyAmount.fromRawAmount(marketPrice.baseCurrency, fee.amount),
+        },
+      })
+    },
+    [updatePendingOrderPrices]
+  )
+
   const updateIsUnfillableFlag = useCallback(
-    (chainId: ChainId, order: Order, price: Required<Omit<PriceInformation, 'quoteId'>>) => {
-      const isUnfillable = isOrderUnfillable(order, price)
+    (
+      chainId: ChainId,
+      order: Order,
+      price: Required<Omit<PriceInformation, 'quoteId'>>,
+      fee: FeeInformation | null
+    ) => {
+      if (!fee?.amount || !price.amount) return
+
+      const orderPrice = new Price(
+        order.inputToken,
+        order.outputToken,
+        order.sellAmount.toString(),
+        order.buyAmount.toString()
+      )
+
+      const executionPrice = getOrderExecutionPrice(order, price.amount, fee.amount)
+      const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
+      const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
+      const isUnfillable = isOrderUnfillable(order, orderPrice, executionPrice)
 
       // Only trigger state update if flag changed
       if (order.isUnfillable !== isUnfillable) {
         setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
 
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
-        if (typeof order.isUnfillable !== 'undefined') {
+        if (typeof order.isUnfillable !== 'undefined' && order.class !== OrderClass.LIMIT) {
           const label = `${order.inputToken.symbol}, ${order.outputToken.symbol}`
           priceOutOfRangeAnalytics(isUnfillable, label)
         }
       }
+
+      updateOrderMarketPriceCallback(order, fee, marketPrice, estimatedExecutionPrice)
     },
-    [setIsOrderUnfillable]
+    [setIsOrderUnfillable, updateOrderMarketPriceCallback]
   )
 
   const updatePending = useCallback(() => {
-    if (!chainId || !account || isUpdating.current) {
+    if (!chainId || !account || isUpdating.current || !isWindowVisible) {
       return
     }
 
@@ -120,10 +167,7 @@ export function UnfillableOrdersUpdater(): null {
 
       const lowerCaseAccount = account.toLowerCase()
       // Only check pending orders of the connected account
-      // Exclude limit orders because we don't need "unfillable" flag for them
-      const pending = pendingRef.current.filter(
-        (order) => order.owner.toLowerCase() === lowerCaseAccount && order.class !== OrderClass.LIMIT
-      )
+      const pending = pendingRef.current.filter((order) => order.owner.toLowerCase() === lowerCaseAccount)
 
       if (pending.length === 0) {
         return
@@ -138,18 +182,25 @@ export function UnfillableOrdersUpdater(): null {
         _getOrderPrice(chainId, order, strategy)
           .then((quote) => {
             if (quote) {
-              const [promisedPrice] = quote
+              const [promisedPrice, promisedFee] = quote
               const price = getPromiseFulfilledValue(promisedPrice, null)
+              const fee = getPromiseFulfilledValue(promisedFee, null)
+
               console.debug(
                 `[UnfillableOrdersUpdater::updateUnfillable] did we get any price? ${order.id.slice(0, 8)}|${index}`,
                 price ? price.amount : 'no :('
               )
-              price?.amount && updateIsUnfillableFlag(chainId, order, price)
+              price?.amount && updateIsUnfillableFlag(chainId, order, price, fee)
             } else {
               console.debug('[UnfillableOrdersUpdater::updateUnfillable] No price quote for', order.id.slice(0, 8))
             }
           })
           .catch((e) => {
+            updatePendingOrderPrices({
+              orderId: order.id,
+              data: null,
+            })
+
             console.debug(
               `[UnfillableOrdersUpdater::updateUnfillable] Failed to get quote on chain ${chainId} for order ${order?.id}`,
               e
@@ -160,9 +211,7 @@ export function UnfillableOrdersUpdater(): null {
       isUpdating.current = false
       console.debug(`[UnfillableOrdersUpdater] Checked pending orders in ${Date.now() - startTime}ms`)
     }
-  }, [account, chainId, strategy, updateIsUnfillableFlag])
-
-  const isWindowVisible = useIsWindowVisible()
+  }, [account, chainId, strategy, updateIsUnfillableFlag, isWindowVisible, updatePendingOrderPrices])
 
   useEffect(() => {
     if (!chainId || !account || !isWindowVisible) {

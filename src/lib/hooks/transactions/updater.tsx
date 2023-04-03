@@ -5,6 +5,7 @@ import useBlockNumber, { useFastForwardBlockNumber } from 'lib/hooks/useBlockNum
 import ms from 'ms.macro'
 import { useCallback, useEffect } from 'react'
 import { retry, RetryableError, RetryOptions } from 'utils/retry'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 interface Transaction {
   addedTime: number
@@ -45,7 +46,8 @@ interface UpdaterProps {
 }
 
 export default function Updater({ pendingTransactions, onCheck, onReceipt }: UpdaterProps): null {
-  const { chainId, provider } = useWeb3React()
+  const { chainId } = useWalletInfo()
+  const { provider } = useWeb3React()
 
   const lastBlockNumber = useBlockNumber()
   const fastForwardBlockNumber = useFastForwardBlockNumber()

@@ -1,4 +1,4 @@
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import { Text } from 'rebass'
 import { ButtonError } from 'components/Button'
 import { RowBetween } from 'components/Row'

@@ -11,8 +11,7 @@ import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import CopyHelper from 'components/Copy'
 import { getBlockExplorerUrl } from 'utils'
 import { formatDateWithTimezone } from '@cow/utils/time'
-import { SupportedChainId as ChainId } from 'constants/chains'
-import { useWeb3React } from '@web3-react/core'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
 import { LOCKED_GNO_VESTING_START_DATE } from 'constants/index'
 import { useClaimCowFromLockedGnoCallback } from './hooks'
@@ -21,9 +20,10 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 // import ReactGA from 'react-ga4'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'utils/misc'
 import { claimAnalytics } from 'components/analytics'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import { HelpCircle } from '@cow/common/pure/HelpCircle'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 enum ClaimStatus {
   INITIAL,
@@ -42,7 +42,7 @@ interface Props {
 }
 
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
-  const { chainId = ChainId.MAINNET, account } = useWeb3React()
+  const { chainId = ChainId.MAINNET, account } = useWalletInfo()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)
   const unvested = allocated.subtract(vested)
   const previousAccount = usePrevious(account)

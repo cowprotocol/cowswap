@@ -5,6 +5,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export interface OrderParams {
+  chainId: SupportedChainId | undefined
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
   rateInfoParams: RateInfoParams
@@ -25,7 +26,7 @@ export function getOrderParams(
     inputCurrencyAmount: sellAmount,
     outputCurrencyAmount: buyAmount,
     activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
+    invertedActiveRateFiatAmount: null,
   }
 
   const { balances, allowances } = balancesAndAllowances
@@ -36,6 +37,7 @@ export function getOrderParams(
   const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
 
   return {
+    chainId,
     sellAmount,
     buyAmount,
     rateInfoParams,

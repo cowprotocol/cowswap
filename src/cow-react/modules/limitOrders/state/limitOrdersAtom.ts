@@ -1,7 +1,7 @@
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 export interface LimitOrdersState {
