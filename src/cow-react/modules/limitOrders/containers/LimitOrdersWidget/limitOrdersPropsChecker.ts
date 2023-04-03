@@ -20,6 +20,7 @@ export interface LimitOrdersProps {
   allowsOffchainSigning: boolean
   isWrapOrUnwrap: boolean
   showRecipient: boolean
+  isExpertMode: boolean
 
   recipient: string | null
   chainId: number | undefined

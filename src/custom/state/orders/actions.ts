@@ -16,6 +16,11 @@ export enum OrderStatus {
   FAILED = 'failed',
 }
 
+// Common states groups
+export const PENDING_STATES = [OrderStatus.PENDING, OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+export const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
+export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+
 // Abstract type for the order used in the Dapp. It's composed out of 3 types of props:
 //  - Information present in the order creation type used in the API to post new orders
 //  - Additional information available in the API

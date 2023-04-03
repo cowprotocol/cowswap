@@ -4,7 +4,7 @@ import { Token } from '@uniswap/sdk-core'
 
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { supportedChainId } from 'utils/supportedChainId'
-import { usePendingOrders } from 'state/orders/hooks'
+import { useCombinedPendingOrders } from 'state/orders/hooks'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from '@cow/modules/orders/state/spotPricesAtom'
 import { useUpdateAtom } from 'state/application/atoms'
 import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
@@ -24,7 +24,7 @@ type MarketRecord = Record<
 >
 
 function useMarkets(chainId?: SupportedChainId): MarketRecord {
-  const pending = usePendingOrders({ chainId })
+  const pending = useCombinedPendingOrders({ chainId })
 
   return useSafeMemo(() => {
     return pending.reduce<Record<string, { chainId: number; inputCurrency: Token; outputCurrency: Token }>>(

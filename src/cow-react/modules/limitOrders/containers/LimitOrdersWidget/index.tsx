@@ -81,6 +81,12 @@ export function LimitOrdersWidget() {
     () => !isWrapOrUnwrap && settingState.showRecipient,
     [settingState.showRecipient, isWrapOrUnwrap]
   )
+
+  const isExpertMode = useMemo(
+    () => !isWrapOrUnwrap && settingState.expertMode,
+    [isWrapOrUnwrap, settingState.expertMode]
+  )
+
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
   const inputViewAmount = formatInputAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
 
@@ -162,6 +168,7 @@ export function LimitOrdersWidget() {
     allowsOffchainSigning,
     isWrapOrUnwrap,
     showRecipient,
+    isExpertMode,
     recipient,
     chainId,
     onChangeRecipient,
@@ -200,6 +207,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     allowsOffchainSigning,
     isWrapOrUnwrap,
     showRecipient,
+    isExpertMode,
     recipient,
     onChangeRecipient,
     rateInfoParams,
@@ -297,6 +305,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {!isWrapOrUnwrap && (
                 <styledEl.FooterBox>
                   <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                </styledEl.FooterBox>
+              )}
+
+              {isExpertMode && (
+                <styledEl.FooterBox>
+                  <styledEl.StyledOrderType isPartiallyFillable />
                 </styledEl.FooterBox>
               )}
 

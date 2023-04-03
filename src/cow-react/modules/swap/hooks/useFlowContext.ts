@@ -206,6 +206,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     recipientAddressOrName,
     signer: provider.getSigner(),
     allowsOffchainSigning,
+    partiallyFillable: false, // SWAP orders are always fill or kill - for now
     appDataHash: appData.hash,
     quoteId: trade.quoteId,
   }

@@ -37,6 +37,7 @@ export type PostOrderParams = {
   allowsOffchainSigning: boolean
   appDataHash: string
   class: OrderClass
+  partiallyFillable: boolean
   quoteId?: number
 }
 
@@ -89,8 +90,19 @@ export function getOrderParams(params: PostOrderParams): {
   quoteId: number | undefined
   order: UnsignedOrder
 } {
-  const { kind, inputAmount, outputAmount, sellToken, buyToken, feeAmount, validTo, recipient, appDataHash, quoteId } =
-    params
+  const {
+    kind,
+    inputAmount,
+    outputAmount,
+    sellToken,
+    buyToken,
+    feeAmount,
+    validTo,
+    recipient,
+    partiallyFillable,
+    appDataHash,
+    quoteId,
+  } = params
   const sellTokenAddress = sellToken.address
 
   if (!sellTokenAddress) {
@@ -119,7 +131,7 @@ export function getOrderParams(params: PostOrderParams): {
       feeAmount: feeAmount?.quotient.toString() || '0',
       kind,
       receiver,
-      partiallyFillable: false, // Always fill or kill
+      partiallyFillable,
     },
   }
 }

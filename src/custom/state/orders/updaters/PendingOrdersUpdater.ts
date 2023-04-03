@@ -11,7 +11,7 @@ import {
   useCancelOrdersBatch,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
-  usePendingOrders,
+  useCombinedPendingOrders,
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
 } from 'state/orders/hooks'
@@ -249,7 +249,7 @@ export function PendingOrdersUpdater(): null {
   const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
 
-  const pending = usePendingOrders({ chainId })
+  const pending = useCombinedPendingOrders({ chainId })
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   // Ref, so we don't rerun useEffect

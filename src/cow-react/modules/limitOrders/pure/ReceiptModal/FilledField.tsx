@@ -76,7 +76,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
   const formattedFilledAmount = legacyBigNumberToCurrencyAmount(mainToken, filledAmountDecimal)
 
   const swappedAmountDecimal = swappedAmountWithFee.div(new BigNumber(10 ** swappedToken.decimals))
-  const formattedSwappedAmount = legacyBigNumberToCurrencyAmount(outputToken, swappedAmountDecimal)
+  const formattedSwappedAmount = legacyBigNumberToCurrencyAmount(swappedToken, swappedAmountDecimal)
 
   return (
     <styledEl.Value>

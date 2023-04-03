@@ -83,6 +83,11 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     text: 'Review limit order',
     id: 'review-limit-order-btn',
   },
+  [LimitOrdersFormState.ExpertCanTrade]: {
+    disabled: false,
+    text: 'Place limit order',
+    id: 'review-limit-order-btn',
+  },
   [LimitOrdersFormState.SwapIsUnsupported]: {
     disabled: true,
     text: 'Unsupported token',
