@@ -65,6 +65,8 @@ export class InjectedWallet extends Connector {
       ([chainId, accounts]) => {
         const receivedChainId = this.parseChainId(chainId)
 
+        // we want to update chainId and accounts if there isn't chain id for some reason in the app
+        // or if chainId from from the app (desiredChainId) matches the one form wallet (receivedChainId)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (!desiredChainId || desiredChainId === receivedChainId) {
           return this.actions.update({ chainId: receivedChainId, accounts })
@@ -72,15 +74,14 @@ export class InjectedWallet extends Connector {
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
 
+        // otherwise, ask the wallet to change the chainId to match the one in the app
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.provider!.request<void>({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: desiredChainIdHex }],
         }).catch(async (error: ProviderRpcError) => {
-          console.log('err!', error)
-          console.log('debug err', error)
-
           if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
+            if (!this.provider) throw new Error('No provider')
             // if we're here, we can try to add a new network
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return this.provider!.request<void>({

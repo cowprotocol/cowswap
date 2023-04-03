@@ -66,8 +66,8 @@ export function TrustWalletWCOption({ tryActivation }: { tryActivation: (connect
   )
 }
 
-const e = window.ethereum || ({} as any)
+const e = window.ethereum
 export const TrustWalletOption =
-  e.isTrust || e.isTrustWallet || e.providers?.find((p: any) => p.isTrust || p.isTrustWallet)
+  e && (e.isTrust || e.isTrustWallet || e.providers?.find((p: any) => p.isTrust || p.isTrustWallet))
     ? TrustWalletInjectedOption
     : TrustWalletWCOption

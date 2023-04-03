@@ -127,7 +127,7 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
   } else if (connectionType === trustWalletConnection) {
     return (
       <IconWrapper size={16}>
-        <img src={TrustIcon} alt={'trust logo'} />
+        <img src={TrustIcon} alt={'Trust logo'} />
       </IconWrapper>
     )
   }
