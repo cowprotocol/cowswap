@@ -3,6 +3,8 @@ import useSWR from 'swr'
 import { getTokens } from './api'
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isAddress } from '@src/utils'
+import * as Sentry from '@sentry/react'
 
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0
@@ -15,8 +17,28 @@ const SUPPORTED_CHAINS: Partial<Record<Chain, SupportedChainId>> = {
 
 const UNSUPPORTED_CHAIN_ID = null
 
-function hasSupportedChainId(token: any): token is FetchTokensResult {
-  return token?.chainId !== UNSUPPORTED_CHAIN_ID
+// This function will verify if the API response matches our expectations.
+// As we are using an external party, and their responses may change arbitrarily,
+// we should ensure that there is a check so that the application can rely on this abstraction.
+function isValidFetchTokensResult(token: any): token is FetchTokensResult {
+  // Verify if token is of correct type
+  if (typeof token !== 'object' || token === null) {
+    return false
+  }
+
+  // Verify if token has the expected fields.
+  if (!token.chainId || !token.address) {
+    return false
+  }
+
+  const hasValidChainId = token.chainId !== UNSUPPORTED_CHAIN_ID && typeof token.chainId === 'number'
+
+  // API we are using supports other chains such as Arbitrum as well. Verify that the chainId is something we have on our systems.
+  const hasSupportedChainId = token.chainId === SupportedChainId.MAINNET || token.chainId === SupportedChainId.GOERLI
+
+  const hasValidAddress = typeof token.address === 'string' && !!isAddress(token.address)
+
+  return hasValidChainId && hasSupportedChainId && hasValidAddress
 }
 
 function chainToChainId(chain: Chain) {
@@ -47,26 +69,36 @@ export function useProxyTokens(query: string): FetchTokensResult[] {
     isValidQuery(query) ? getTokens(query) : null
   )
 
-  if (apiResult && Array.isArray(apiResult.searchTokens)) {
-    const result = apiResult.searchTokens
-      .map((token) => ({ ...token, chainId: chainToChainId(token.chain) }))
-      .filter(hasSupportedChainId)
+  try {
+    if (apiResult && Array.isArray(apiResult.searchTokens)) {
+      const result = apiResult.searchTokens
+        .map((token) => ({ ...token, chainId: chainToChainId(token.chain) }))
+        .filter(isValidFetchTokensResult)
 
-    // Build a logo cache.
-    result.forEach(({ chainId, address, project }) => updateTokenLogoCache({ chainId, address, project }))
+      // Build a logo cache.
+      result.forEach(({ chainId, address, project }) => updateTokenLogoCache({ chainId, address, project }))
 
-    return result
+      return result
+    }
+
+    return []
+  } catch (error: unknown) {
+    Sentry.captureException(error)
+    return []
   }
-
-  return []
 }
 
 export function useProxyTokenLogo(chainId?: number, address?: string): string | undefined {
   const tokenLogos = useAtomValue(tokenLogoCache)
 
-  if (!chainId || !address) {
+  try {
+    if (!chainId || !address) {
+      return undefined
+    }
+
+    return tokenLogos.get(chainId)?.get(address.toLowerCase())
+  } catch (error: unknown) {
+    Sentry.captureException(error)
     return undefined
   }
-
-  return tokenLogos.get(chainId)?.get(address.toLowerCase())
 }
