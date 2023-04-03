@@ -35,30 +35,23 @@ export interface SettingsProps {
 
 export function Settings({ state, onStateChanged }: SettingsProps) {
   const { expertMode, showRecipient } = state
-  const expertModeControl: SettingsBoxProps = {
-    title: 'Expert Mode',
-    tooltip: 'Allow high price impact trades and skip the confirm screen. Use at your own risk.',
-    value: expertMode,
-    toggle() {
-      onStateChanged({ expertMode: !expertMode })
-    },
-  }
-
-  const showRecipientControl: SettingsBoxProps = {
-    title: 'Toggle Recipient',
-    tooltip: 'Allows you to choose a destination address for the swap other than the connected one.',
-    value: showRecipient,
-    disabled: expertMode,
-    toggle() {
-      onStateChanged({ showRecipient: !showRecipient })
-    },
-  }
 
   return (
     <styledEl.SettingsContainer>
       <styledEl.SettingsTitle>Interface Settings</styledEl.SettingsTitle>
-      <SettingsBox {...expertModeControl} />
-      <SettingsBox {...showRecipientControl} />
+      <SettingsBox
+        title="Expert Mode"
+        tooltip="Allow high price impact trades and skip the confirm screen. Use at your own risk."
+        value={expertMode}
+        toggle={() => onStateChanged({ expertMode: !expertMode })}
+      />
+
+      <SettingsBox
+        title="Custom Recipient"
+        tooltip="Allows you to choose a destination address for the swap other than the connected one."
+        value={showRecipient}
+        toggle={() => onStateChanged({ showRecipient: !showRecipient })}
+      />
     </styledEl.SettingsContainer>
   )
 }

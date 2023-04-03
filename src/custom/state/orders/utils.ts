@@ -15,21 +15,21 @@ export type OrderTransitionStatus =
   | 'presignaturePending'
   | 'presigned'
   | 'pending'
-// EthFlow statuses
-// | 'creating' // this status will never be seen as orders in this status are not in the API yet
-// | 'refused'
-// | 'refunding'
-// | 'refunded'
-
-// TODO: handle new states for refused/refunding/refunded orders
 
 /**
- * An order is considered fulfilled if `executedByAmount` and `executedSellAmount` are > 0.
- *
- * We assume the order is `fillOrKill`
+ * An order is considered fulfilled if all sellAmount has been sold, for sell orders
+ * or all buyAmount has been bought, for buy orders
  */
-function isOrderFulfilled(order: Pick<EnrichedOrder, 'executedBuyAmount' | 'executedSellAmount'>): boolean {
-  return Number(order.executedBuyAmount) > 0 && Number(order.executedSellAmount) > 0
+function isOrderFulfilled(
+  order: Pick<EnrichedOrder, 'buyAmount' | 'sellAmount' | 'executedBuyAmount' | 'executedSellAmountBeforeFees' | 'kind'>
+): boolean {
+  const { buyAmount, sellAmount, executedBuyAmount, executedSellAmountBeforeFees, kind } = order
+
+  if (kind === OrderKind.SELL) {
+    return sellAmount === executedSellAmountBeforeFees
+  } else {
+    return buyAmount === executedBuyAmount
+  }
 }
 
 /**
@@ -66,7 +66,6 @@ function isOrderPresigned(order: Pick<EnrichedOrder, 'signingScheme' | 'status'>
   return order.signingScheme === 'presign' && order.status === 'open'
 }
 
-// TODO: classify EthFlow states!
 export function classifyOrder(
   order: Pick<
     EnrichedOrder,
@@ -74,8 +73,11 @@ export function classifyOrder(
     | 'validTo'
     | 'creationDate'
     | 'invalidated'
+    | 'buyAmount'
+    | 'sellAmount'
     | 'executedBuyAmount'
-    | 'executedSellAmount'
+    | 'executedSellAmountBeforeFees'
+    | 'kind'
     | 'signingScheme'
     | 'status'
   > | null
@@ -86,7 +88,7 @@ export function classifyOrder(
   } else if (isOrderFulfilled(order)) {
     console.debug(
       `[state::orders::classifyOrder] fulfilled order ${order.uid.slice(0, 10)} ${order.executedBuyAmount} | ${
-        order.executedSellAmount
+        order.executedSellAmountBeforeFees
       }`
     )
     return 'fulfilled'
@@ -214,9 +216,6 @@ export function getEstimatedExecutionPrice(
   fee: string
 ): Price<Currency, Currency> {
   // TODO: implement estimation for partially fillable orders
-  if (order.partiallyFillable) {
-    throw Error('Not implemented!')
-  }
 
   // Build CurrencyAmount and Price instances
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)

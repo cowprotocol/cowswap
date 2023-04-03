@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
-import { OrderStatus } from 'state/orders/actions'
+import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -26,6 +26,7 @@ import { calculatePriceDifference, PriceDifference } from '@cow/modules/limitOrd
 import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { ZERO_FRACTION } from 'constants/index'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -114,13 +115,16 @@ export function OrderRow({
   spotPrice,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice } = order
+  const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice, status } = order
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
   const showCancellationModal = getShowCancellationModal(order)
 
-  const withWarning = !hasEnoughBalance || !hasEnoughAllowance
+  const withWarning =
+    (!hasEnoughBalance || !hasEnoughAllowance) &&
+    // don't show the warning for closed orders
+    PENDING_STATES.includes(status)
   const theme = useContext(ThemeContext)
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
@@ -147,6 +151,9 @@ export function OrderRow({
 
   const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
+
+  const isUnfillable = executedPriceInverted?.equalTo(ZERO_FRACTION) || withWarning
+  const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab}>
@@ -223,9 +230,10 @@ export function OrderRow({
                 percentageFee={feeDifference}
                 amountFee={feeAmount}
                 canShowWarning={order.class !== OrderClass.MARKET}
+                isUnfillable={isUnfillable}
               />
             </styledEl.ExecuteCellWrapper>
-          ) : prices === null ? (
+          ) : prices === null || isOrderCreating ? (
             '-'
           ) : (
             <Loader size="14px" style={{ margin: '0 0 -2px 7px' }} />
@@ -258,9 +266,7 @@ export function OrderRow({
       {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
-          <OrderStatusBox cancelling={!!order.isCancelling} status={order.status} withWarning={withWarning}>
-            {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
-          </OrderStatusBox>
+          <OrderStatusBox order={order} withWarning={withWarning} />
           {withWarning && (
             <styledEl.WarningIndicator>
               <MouseoverTooltipContent

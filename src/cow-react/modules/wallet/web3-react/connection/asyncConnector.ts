@@ -16,4 +16,12 @@ export class AsyncConnector extends Connector {
       return connector.activate(...args)
     })
   }
+
+  async connectEagerly(...args: unknown[]) {
+    return this.loader().then((connector) => {
+      // There is a magic - we change async-connector prototype to the loaded connector
+      ;(this as any).__proto__ = connector
+      return connector.connectEagerly?.(...args)
+    })
+  }
 }

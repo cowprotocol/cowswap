@@ -15,6 +15,7 @@ import { gnosisSafeConnection } from './safe'
 import { injectedConnection } from './injected'
 import { coinbaseWalletConnection } from './coinbase'
 import { walletConnectConnection } from './walletConnect'
+import { ledgerConnection, LedgerOption } from './ledger'
 import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
@@ -30,6 +31,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   fortmaticConnection,
   networkConnection,
   tallyWalletConnection,
+  ledgerConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -42,6 +44,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
     case tallyWalletConnection.connector:
+    case ledgerConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -77,6 +80,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return walletConnectConnection
       case ConnectionType.TALLY:
         return tallyWalletConnection
+      case ConnectionType.LEDGER:
+        return ledgerConnection
     }
   }
 }
@@ -117,6 +122,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
+  const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
 
   // Injected
   const tallyOption =
@@ -128,6 +134,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {injectedOption}
       {walletConnectionOption}
       {coinbaseWalletOption}
+      {ledgerOption}
       {zengoOption}
       {ambireOption}
       {alphaOption}

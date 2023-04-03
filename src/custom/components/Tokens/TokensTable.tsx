@@ -189,7 +189,7 @@ export default function TokenTable({
   }, [page, prevPageIndex])
 
   return (
-    <Wrapper>
+    <Wrapper id="tokens-table">
       <ErrorModal />
       <TransactionConfirmationModal />
 

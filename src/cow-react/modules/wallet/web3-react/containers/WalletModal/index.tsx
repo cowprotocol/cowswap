@@ -118,7 +118,7 @@ export function WalletModal() {
       pendingConnector={pendingConnector}
       pendingError={pendingError}
       tryActivation={tryActivation}
-      tryConnection={() => tryActivation(connector)}
+      tryConnection={() => pendingConnector && tryActivation(pendingConnector)}
       view={walletView}
     />
   )
