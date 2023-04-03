@@ -13,7 +13,7 @@ import { AsyncConnector } from './asyncConnector'
 const BASE_PROPS = {
   color: '#4196FC',
   icon: LedgerImage,
-  id: 'ledger'
+  id: 'ledger',
 }
 
 const [ledger, ledgerHooks] = initializeConnector<AsyncConnector>(
@@ -21,15 +21,16 @@ const [ledger, ledgerHooks] = initializeConnector<AsyncConnector>(
     new AsyncConnector(
       () =>
         Promise.all([import('../connectors/LedgerConnector'), import('@ledgerhq/connect-kit-loader')]).then(
-          ([m, { loadConnectKit }]) => loadConnectKit().then((kit) => {
-            return new m.Ledger({
-              actions,
-              options: {
-                rpc: RPC_URLS
-              },
-              kit
+          ([m, { loadConnectKit }]) =>
+            loadConnectKit().then((kit) => {
+              return new m.Ledger({
+                actions,
+                options: {
+                  rpc: RPC_URLS,
+                },
+                kit,
+              })
             })
-          })
         ),
       actions
     )
@@ -38,7 +39,7 @@ const [ledger, ledgerHooks] = initializeConnector<AsyncConnector>(
 export const ledgerConnection: Web3ReactConnection = {
   connector: ledger,
   hooks: ledgerHooks,
-  type: ConnectionType.LEDGER
+  type: ConnectionType.LEDGER,
 }
 
 export function LedgerOption({ tryActivation }: { tryActivation: (connector: Connector) => void }) {
