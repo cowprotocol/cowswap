@@ -6,10 +6,10 @@ import { walletConnectConnection } from './walletConnect'
 
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { initializeConnector } from '@web3-react/core'
-import { InjectedWallet } from '@cow/modules/wallet/web3-react/connectors/Injected'
 import { Web3ReactConnection } from '../types'
 import { useWalletMetaData } from '@cow/modules/wallet'
 import { WC_DISABLED_TEXT } from '@cow/modules/wallet/constants'
+import { AsyncConnector } from './asyncConnector'
 
 import { default as TrustImage } from '@cow/modules/wallet/api/assets/trust.png'
 
@@ -22,11 +22,18 @@ const BASE_PROPS = {
 
 const [trustWallet, trustWalletHooks] = initializeConnector<Connector>(
   (actions) =>
-    new InjectedWallet({
-      actions,
-      walletUrl: WALLET_LINK,
-      searchKeywords: ['isTrust', 'isTrustWallet'],
-    })
+    new AsyncConnector(
+      () =>
+        import('@cow/modules/wallet/web3-react/connectors/Injected').then(
+          (m) =>
+            new m.InjectedWallet({
+              actions,
+              walletUrl: WALLET_LINK,
+              searchKeywords: ['isTrust', 'isTrustWallet'],
+            })
+        ),
+      actions
+    )
 )
 export const trustWalletConnection: Web3ReactConnection = {
   connector: trustWallet,
