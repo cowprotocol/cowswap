@@ -62,7 +62,10 @@
     "moduleNameMapper": {
       "@cow/(.*)": "<rootDir>/src/cow-react/$1",
       "@src/(.*)": "<rootDir>/src/$1"
-    }
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ledgerhq/connect-kit-loader)"
+    ]
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^1.1.4",
@@ -78,6 +81,7 @@
     "@fontsource/inter": "^4.5.1",
     "@gnosis.pm/safe-apps-web3-react": "^1.5.0",
     "@gnosis.pm/safe-service-client": "^1.2.0",
+    "@ledgerhq/connect-kit-loader": "^1.0.2",
     "@lingui/cli": "^3.9.0",
     "@lingui/core": "^3.15.0",
     "@lingui/macro": "^3.15.0",
