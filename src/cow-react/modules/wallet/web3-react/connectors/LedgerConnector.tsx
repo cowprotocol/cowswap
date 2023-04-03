@@ -1,6 +1,6 @@
 import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
-import type { LedgerConnectKit } from '@ledgerhq/connect-kit-loader'
+import type { LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
 
 type LedgerProvider = Provider & {
   connected: () => boolean
@@ -75,14 +75,15 @@ export class Ledger extends Connector {
   }
 
   async activateLedgerKit() {
-    const { loadConnectKit, SupportedProviders } = await import('@ledgerhq/connect-kit-loader')
-
-    this.connectKit = await loadConnectKit()
+    if (!this.connectKit) {
+      const { loadConnectKit } = await import('@ledgerhq/connect-kit-loader')
+      this.connectKit = await loadConnectKit()
+    }
 
     await this.connectKit.enableDebugLogs()
 
     await this.connectKit.checkSupport({
-      providerType: SupportedProviders.Ethereum,
+      providerType: 'Ethereum' as SupportedProviders,
       chainId: this.options.chainId,
       infuraId: this.options.infuraId,
       rpc: this.options.rpc,
