@@ -1,10 +1,4 @@
-import {
-  Actions,
-  AddEthereumChainParameter,
-  Connector,
-  ProviderConnectInfo,
-  ProviderRpcError,
-} from '@web3-react/types'
+import { Actions, AddEthereumChainParameter, Connector, ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
 import { EthereumProvider } from '@src/lib/ethereum'
 
 interface injectedWalletConstructorArgs {
@@ -168,9 +162,11 @@ export class InjectedWallet extends Connector {
   private detectOnProviders(providers?: EthereumProvider[]): EthereumProvider | null {
     if (!providers) return null
 
-    return providers.find((provider) => {
-      return this.searchKeywords.some((keyword) => provider[keyword])
-    }) || null
+    return (
+      providers.find((provider) => {
+        return this.searchKeywords.some((keyword) => provider[keyword])
+      }) || null
+    )
   }
 
   // Mod: Added custom method
