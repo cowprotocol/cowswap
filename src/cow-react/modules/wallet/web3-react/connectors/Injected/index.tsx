@@ -24,11 +24,6 @@ interface injectedWalletConstructorArgs {
   searchKeywords: string[]
 }
 
-type Window = typeof Window & {
-  ethereum?: InjectedWalletProvider
-  injectedwallet?: InjectedWalletProvider
-}
-
 function parseChainId(chainId: string) {
   return Number.parseInt(chainId, 16)
 }
@@ -47,7 +42,7 @@ export class InjectedWallet extends Connector {
   }
 
   // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L130 with some changes
-  public async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
+  async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
     let cancelActivation: () => void
     if (!this.provider?.isConnected?.()) cancelActivation = this.actions.startActivation()
 
@@ -103,7 +98,7 @@ export class InjectedWallet extends Connector {
 
   // Copied from https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L98
   /** {@inheritdoc Connector.connectEagerly} */
-  public async connectEagerly(): Promise<void> {
+  async connectEagerly(): Promise<void> {
     const cancelActivation = this.actions.startActivation()
 
     try {
@@ -159,15 +154,14 @@ export class InjectedWallet extends Connector {
 
   // Mod: Added custom method
   // Just reset state on deactivate
-  public async deactivate(): Promise<void> {
+  async deactivate(): Promise<void> {
     this.actions.resetState()
   }
 
   // Mod: Added custom method
   // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
   private detectProvider(): InjectedWalletProvider | void {
-    const w = window as unknown as Window
-    this.provider = this.detectOnEthereum(w.ethereum) || this.detectOnProvider(w.ethereum?.providers) || null
+    this.provider = this.detectOnEthereum(window.ethereum) || this.detectOnProvider(window.ethereum?.providers) || null
     return this.provider
   }
 
