@@ -14,7 +14,7 @@ type InjectedWalletProvider = Provider & {
   request<T>(args: RequestArguments): Promise<T>
   chainId: string
   selectedAddress: string
-  on: (event: string, args: any) => any
+  on: (event: string, args: unknown) => unknown
 }
 
 interface injectedWalletConstructorArgs {
@@ -41,6 +41,7 @@ export class InjectedWallet extends Connector {
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
     super(actions, onError)
 
+    // Mod: we are passing these 2 custom props
     this.walletUrl = walletUrl
     this.searchKeywords = searchKeywords
   }

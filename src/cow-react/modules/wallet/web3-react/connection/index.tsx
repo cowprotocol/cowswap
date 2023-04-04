@@ -125,6 +125,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
 
   // Injected
+  // Show Tally option only in Chrome (includes Brave too), but not on mobile or as an injected browser
+  // This is because currently Tally is only supported for Chrome and Brave
   const tallyOption =
     (!isInjectedMobileBrowser && isChrome && !isChromeMobile && <TallyWalletOption tryActivation={tryActivation} />) ??
     null
