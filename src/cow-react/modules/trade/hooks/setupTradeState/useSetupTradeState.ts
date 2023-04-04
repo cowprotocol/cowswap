@@ -123,10 +123,10 @@ export function useSetupTradeState(): void {
     const newState: TradeState = chainIdFromProviderWasChanged
       ? getDefaultTradeState(newChainId)
       : {
-        chainId: newChainId,
-        recipient: tradeStateFromUrl.recipient || state.recipient,
-        ...getUpdatedCurrenciesIds(tradeStateFromUrl, state)
-      }
+          chainId: newChainId,
+          recipient: tradeStateFromUrl.recipient || state.recipient,
+          ...getUpdatedCurrenciesIds(tradeStateFromUrl, state),
+        }
 
     console.debug('UPDATE TRADE STATE:', newState)
 
@@ -134,7 +134,7 @@ export function useSetupTradeState(): void {
 
     tradeNavigate(newState.chainId, {
       inputCurrencyId: newState.inputCurrencyId || null,
-      outputCurrencyId: newState.outputCurrencyId || null
+      outputCurrencyId: newState.outputCurrencyId || null,
     })
   }, [tradeNavigate, newChainId, chainIdFromProviderWasChanged, state, updateState, tradeStateFromUrl])
 
