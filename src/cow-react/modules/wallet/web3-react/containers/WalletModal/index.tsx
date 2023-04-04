@@ -120,6 +120,7 @@ export function WalletModal() {
       tryActivation={tryActivation}
       tryConnection={() => pendingConnector && tryActivation(pendingConnector)}
       view={walletView}
+      account={account}
     />
   )
 }

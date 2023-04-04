@@ -16,6 +16,7 @@ import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from '@cow/common/pur
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 import { PendingView } from '@cow/modules/wallet/api/pure/PendingView'
 import { ConnectWalletOptions, TryActivation } from '@cow/modules/wallet/web3-react/connection'
+import { ZengoBanner } from '@cow/modules/wallet/api/pure/ZengoBanner'
 
 export type WalletModalView = 'options' | 'account' | 'pending'
 
@@ -30,12 +31,25 @@ interface WalletModalProps {
   // TODO: Remove dependency web3-react
   pendingConnector: Connector | undefined
   tryActivation: TryActivation
+  account: string | undefined
 }
 
 export function WalletModal(props: WalletModalProps) {
-  const { isOpen, toggleModal, view, openOptions, pendingError, tryActivation, tryConnection, pendingConnector } = props
+  const {
+    isOpen,
+    toggleModal,
+    view,
+    openOptions,
+    pendingError,
+    tryActivation,
+    tryConnection,
+    pendingConnector,
+    account,
+  } = props
 
   const isPending = view === 'pending'
+  const isOptions = view === 'options'
+  const showZengoBanner = !account && !window.ethereum && isOptions
 
   return (
     <GpModal maxWidth={600} isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
@@ -61,6 +75,7 @@ export function WalletModal(props: WalletModalProps) {
                   <ConnectWalletOptions tryActivation={tryActivation} />
                 </OptionGrid>
               )}
+              {showZengoBanner && <ZengoBanner />}
               {!pendingError && (
                 <LightCard>
                   <AutoRow style={{ flexWrap: 'nowrap' }}>
