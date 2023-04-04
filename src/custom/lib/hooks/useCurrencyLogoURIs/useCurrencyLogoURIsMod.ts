@@ -9,6 +9,7 @@ import XDaiLogo from 'assets/cow-swap/xdai.png'
 import { ADDRESS_IMAGE_OVERRIDE } from 'constants/tokens'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import uriToHttp from 'lib/utils/uriToHttp'
+import { useExternalTokenLogo } from '@cow/common/hooks/useExternalTokenLogo'
 
 type Network = 'ethereum' | /*'arbitrum' | 'optimism'*/ 'xdai' | 'rinkeby'
 
@@ -53,6 +54,7 @@ function getTokenLogoURI(address: string, chainId: SupportedChainId = SupportedC
 const currencyLogoCache = new Map<string, Array<string>>()
 // TODO: must be refactored
 export default function useCurrencyLogoURIs(currency?: Currency | null): string[] {
+  const externalLogo = useExternalTokenLogo(currency)
   // There is a modification of Token in useDetectNativeToken()
   const currencyAddress = currency ? (currency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : currency.address) : null
   const cacheKey = `${currencyAddress}|${currency?.chainId}`
@@ -83,6 +85,10 @@ export default function useCurrencyLogoURIs(currency?: Currency | null): string[
     const logoURI = getTokenLogoURI(currency.address, currency.chainId)
     if (logoURI) {
       logoURIs.push(logoURI)
+    }
+
+    if (externalLogo) {
+      logoURIs.push(externalLogo)
     }
   }
 
