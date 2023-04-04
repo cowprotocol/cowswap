@@ -268,3 +268,27 @@ export function getEstimatedExecutionPrice(
 
   return estimatedExecutionPrice
 }
+/**
+ * Get the remainder `kind` amount, based on executed amounts from the `apiAdditionalInfo`, if any
+ *
+ * For the sell amount, uses the variants that do not consider the fee:
+ * `sellAmountBeforeFee` and `executedSellAmountBeforeFees`
+ *
+ * @param kind The kind of remainder
+ * @param order The order object
+ */
+export function getRemainderAmount(kind: OrderKind, order: Order): string {
+  const { sellAmountBeforeFee, buyAmount, apiAdditionalInfo } = order
+
+  const fullAmount = kind === 'sell' ? sellAmountBeforeFee.toString() : buyAmount.toString()
+
+  if (!apiAdditionalInfo) {
+    return fullAmount
+  }
+
+  const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
+
+  const executedAmount = JSBI.BigInt((kind === 'sell' ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
+
+  return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
+}
