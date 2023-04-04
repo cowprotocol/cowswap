@@ -14,7 +14,7 @@ import {
 } from 'hooks/useWrapCallback'
 import { getSwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import { SwapButtonsContext } from '@cow/modules/swap/pure/SwapButtons'
-import { useGetQuoteAndStatus } from 'state/price/hooks'
+import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'state/price/hooks'
 import { useSwapFlowContext } from '@cow/modules/swap/hooks/useSwapFlowContext'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
@@ -52,6 +52,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
+  const isBestQuoteLoading = useIsBestQuoteLoading()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -105,6 +106,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isGettingNewQuote,
     swapCallbackError,
     trade,
+    isBestQuoteLoading,
   })
 
   return {

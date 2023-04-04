@@ -252,7 +252,20 @@ export function useRefetchQuoteCallback() {
 
       // Get the best quote
       getBestQuoteResolveOnlyLastCall(bestQuoteParams)
-        .then((res) => handleResponse(res, true))
+        .then((res) => {
+          const bestQuoteDelay = localStorage.getItem('delayBestQuote')
+
+          // TODO: remove after testing
+          // The flag serves to make an artificial delay before getting "best" quote
+          if (bestQuoteDelay) {
+            setTimeout(() => {
+              handleResponse(res, true)
+            }, +bestQuoteDelay)
+            return
+          }
+
+          handleResponse(res, true)
+        })
         .catch(handleError)
     },
     [

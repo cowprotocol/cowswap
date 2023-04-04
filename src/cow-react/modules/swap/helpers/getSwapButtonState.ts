@@ -49,6 +49,7 @@ export interface SwapButtonStateParams {
   trade: TradeGp | undefined | null
   isNativeIn: boolean
   isSmartContractWallet: boolean
+  isBestQuoteLoading: boolean
   wrappedToken: Token
 }
 
@@ -103,7 +104,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.ShouldUnwrapNativeToken
   }
 
-  if (swapBlankState || input.isGettingNewQuote) {
+  if (swapBlankState || input.isGettingNewQuote || input.isBestQuoteLoading) {
     return SwapButtonState.Loading
   }
 
