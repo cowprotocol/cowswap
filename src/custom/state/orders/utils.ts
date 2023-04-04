@@ -247,10 +247,9 @@ export function getEstimatedExecutionPrice(
   fillPrice: Price<Currency, Currency>,
   fee: string
 ): Price<Currency, Currency> {
-  // TODO: implement estimation for partially fillable orders
-
   // Build CurrencyAmount and Price instances
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
+  //  Always use original amounts for building the limit price, as this will never change
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const limitPrice = buildPriceFromCurrencyAmounts(inputAmount, outputAmount)
@@ -259,14 +258,19 @@ export function getEstimatedExecutionPrice(
     return limitPrice
   }
 
-  const amountMinusFees = inputAmount.subtract(feeAmount)
+  // Check what's left to sell, discounting the surplus, if any
+  const { sellAmount } = getRemainderAmountsWithoutSurplus(order)
+  const remainingSellAmount = CurrencyAmount.fromRawAmount(order.inputToken, sellAmount)
+
+  // Use the remaining sell amount for the calculations, as the fee will be based on that
+  const amountMinusFees = remainingSellAmount.subtract(feeAmount)
 
   if (!amountMinusFees.greaterThan(ZERO_FRACTION)) {
     // When fee > amount, return 0 price
     return new Price(order.inputToken, order.outputToken, '0', '0')
   }
 
-  const numerator = inputAmount.multiply(limitPrice)
+  const numerator = remainingSellAmount.multiply(limitPrice)
   // The divider in the formula is used as denominator, and the division is done inside the Price instance
   const denominator = amountMinusFees
 
@@ -282,7 +286,8 @@ export function getEstimatedExecutionPrice(
 
   // TODO: remove debug statement
   console.debug(`getEstimatedExecutionPrice`, {
-    'Amount (A)': inputAmount.toFixed(inputAmount.currency.decimals) + ' ' + inputAmount.currency.symbol,
+    'Amount (A)':
+      remainingSellAmount.toFixed(remainingSellAmount.currency.decimals) + ' ' + remainingSellAmount.currency.symbol,
     'Fee (F)': feeAmount.toFixed(feeAmount.currency.decimals) + ' ' + feeAmount.currency.symbol,
     'Limit Price (LP)': `${limitPrice.toFixed(8)} ${limitPrice.quoteCurrency.symbol} per ${
       limitPrice.baseCurrency.symbol
@@ -290,7 +295,9 @@ export function getEstimatedExecutionPrice(
     'Feasable Execution Price (FEP)': `${feasibleExecutionPrice.toFixed(18)} ${
       feasibleExecutionPrice.quoteCurrency.symbol
     } per ${feasibleExecutionPrice.baseCurrency.symbol}`,
-    'Fill Price (FP)': `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${fillPrice.baseCurrency.symbol}`,
+    'Fill Price (FP)': `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${
+      fillPrice.baseCurrency.symbol
+    } (${fillPrice.numerator.toString()}/${fillPrice.denominator.toString()})`,
     'Est.Execution Price (EEP)': `${estimatedExecutionPrice.toFixed(8)} ${
       estimatedExecutionPrice.quoteCurrency.symbol
     } per ${estimatedExecutionPrice.baseCurrency.symbol}`,
