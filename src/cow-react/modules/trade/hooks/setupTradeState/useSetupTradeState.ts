@@ -53,6 +53,21 @@ function areChainIdsTheSame(aChainId: Nullish<number>, bChainId: Nullish<number>
   return !!aChainId && !!bChainId && aChainId !== bChainId
 }
 
+// When there is no account from provider (wallet is not connected)
+// And there is no chainId in provider (edge case in E2E tests)
+// Then we use chainId from URL as current
+function getCurrentChainId(
+  account: string | undefined,
+  providerChainId: number | undefined,
+  chainIdFromUrl: number | null
+): number | null {
+  if (account) {
+    return providerChainId || null
+  }
+
+  return providerChainId || chainIdFromUrl
+}
+
 export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
   const { connector } = useWeb3React()
@@ -62,8 +77,7 @@ export function useSetupTradeState(): void {
   const { state, updateState } = useTradeState()
 
   const chainIdFromUrl = tradeStateFromUrl.chainId
-  // When there is no account from provider, then we consider provider as not connected and use chainId from URL as current
-  const currentChainId = (account ? providerChainId : chainIdFromUrl) || providerChainId
+  const currentChainId = getCurrentChainId(account, providerChainId, chainIdFromUrl)
 
   const prevChainIdFromUrl = usePrevious(chainIdFromUrl)
   const prevCurrentChainId = usePrevious(currentChainId)
