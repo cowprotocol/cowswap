@@ -69,7 +69,7 @@ export default function Header() {
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
   const swapState = useSwapTradeState()
-  const tradeState = useTradeState()
+  const { state: tradeState } = useTradeState()
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
   const handleOpenOrdersPanel = () => {
@@ -93,7 +93,7 @@ export default function Header() {
   }, [isUpToLarge, isMobileMenuOpen])
 
   const tradeMenuContext = useMemo(() => {
-    const state = tradeState?.state || swapState
+    const state = tradeState || swapState
     const defaultTradeState = getDefaultTradeState(chainId || state.chainId || SupportedChainId.MAINNET)
     const networkWasChanged = chainId && state.chainId && chainId !== state.chainId
 
@@ -112,7 +112,7 @@ export default function Header() {
       outputCurrencyId,
       chainId: defaultTradeState.chainId?.toString(),
     }
-  }, [chainId, tradeState?.state, swapState])
+  }, [chainId, tradeState, swapState])
 
   const menuContext: MainMenuContext = {
     darkMode,

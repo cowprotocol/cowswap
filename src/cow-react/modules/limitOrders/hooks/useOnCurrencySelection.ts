@@ -25,7 +25,7 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
        */
       if (currency) {
         const amountField = field === Field.INPUT ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
-        const currencyIdField = field === Field.INPUT ? 'inputCurrencyId' : 'outputCurrencyId'
+
         const amount = field === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
 
         if (amount) {
@@ -34,7 +34,6 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
           return onCurrencySelectionCommon(field, currency, () => {
             updateLimitOrdersState({
               [amountField]: FractionUtils.serializeFractionToJSON(converted),
-              [currencyIdField]: currency.symbol,
             })
           })
         }
