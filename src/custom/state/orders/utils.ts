@@ -6,6 +6,7 @@ import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { EnrichedOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import JSBI from 'jsbi'
 import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
+import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 
 export type OrderTransitionStatus =
   | 'unknown'
@@ -268,6 +269,45 @@ export function getEstimatedExecutionPrice(
 
   return estimatedExecutionPrice
 }
+
+/**
+ * Gets the remainder amounts for both sell and buy, already discounting for surplus, if any surplus or matches
+ *
+ * Sell orders will have the surplus in the buy token.
+ * Which means sell amount does not need to be adjusted, while the buy amount does.
+ * Since the surplus is in the for of additional buy amount, we remove the surplus from the executed buy amount
+ *
+ * Buy orders will have the surplus in the sell token.
+ * Which means buy amount does not need to be adjusted, while the sell amount does.
+ * Since the surplus is in the for of less sell tokens being consumed, we add the surplus to the executed sell amount
+ *
+ * When there's no surplus it either means: there were no matches or it matched without any surplus
+ * In both cases, the sell and buy remainders can be returned in full
+ * @param order
+ */
+export function getRemainderAmountsWithoutSurplus(order: Order): { buyAmount: string; sellAmount: string } {
+  const sellRemainder = getRemainderAmount(OrderKind.SELL, order)
+  const buyRemainder = getRemainderAmount(OrderKind.BUY, order)
+
+  const { amount: surplusAmountBigNumber } = getOrderSurplus(order)
+
+  if (surplusAmountBigNumber.isZero()) {
+    return { sellAmount: sellRemainder, buyAmount: buyRemainder }
+  }
+
+  const surplusAmount = JSBI.BigInt(surplusAmountBigNumber.decimalPlaces(0).toString())
+
+  if (order.kind === OrderKind.SELL) {
+    const buyAmount = JSBI.subtract(JSBI.BigInt(buyRemainder), surplusAmount).toString()
+
+    return { sellAmount: sellRemainder, buyAmount }
+  } else {
+    const sellAmount = JSBI.add(JSBI.BigInt(sellRemainder), surplusAmount).toString()
+
+    return { sellAmount, buyAmount: buyRemainder }
+  }
+}
+
 /**
  * Get the remainder `kind` amount, based on executed amounts from the `apiAdditionalInfo`, if any
  *
