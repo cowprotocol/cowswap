@@ -153,29 +153,60 @@ export function isOrderUnfillable(
   return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
 }
 
-export function getOrderExecutionPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
+/**
+ * Builds order execution price, based on quoted amount and fee
+ *
+ * `quotedAmount` will be based on the amount we want to sell (or buy), so it can be less than original amounts
+ *
+ * @param order
+ * @param quoteAmount
+ * @param feeAmount
+ */
+export function getOrderExecutionPrice(
+  order: Order,
+  quoteAmount: string,
+  feeAmount: string
+): Price<Currency, Currency> {
+  // We get the remainder as the order might have already been partially filled
+  const remainderAmount = getRemainderAmount(order.kind, order)
+
   if (order.kind === OrderKind.SELL) {
-    return new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), price.toString())
+    // For sell orders, the quoted amount is the buy amount
+    return new Price(order.inputToken, order.outputToken, remainderAmount, quoteAmount.toString())
   }
 
+  // For buy orders, the quoted amount is the sell amount
   return new Price(
     order.inputToken,
     order.outputToken,
-    JSBI.add(JSBI.BigInt(price.toString()), JSBI.BigInt(feeAmount)),
-    order.buyAmount.toString()
+    // We need to add the quoted fee to have the price, as the quoted amount comes without it
+    JSBI.add(JSBI.BigInt(quoteAmount.toString()), JSBI.BigInt(feeAmount)),
+    remainderAmount
   )
 }
-export function getOrderMarketPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
+
+/**
+ * Builds order market price, based on quoted amount and fee
+ * @param order
+ * @param quotedAmount
+ * @param feeAmount
+ */
+export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmount: string): Price<Currency, Currency> {
+  // We get the remainder as the order might have already been partially filled
+  const remainingAmount = getRemainderAmount(order.kind, order)
+
   if (order.kind === OrderKind.SELL) {
     return new Price(
       order.inputToken,
       order.outputToken,
-      JSBI.subtract(JSBI.BigInt(order.sellAmount.toString()), JSBI.BigInt(feeAmount)),
-      price.toString()
+      // For sell orders, the market price has the fee subtracted from the sell amount
+      JSBI.subtract(JSBI.BigInt(remainingAmount), JSBI.BigInt(feeAmount)),
+      quotedAmount.toString()
     )
   }
 
-  return new Price(order.inputToken, order.outputToken, price.toString(), order.buyAmount.toString())
+  // For buy orders, the market price uses the quotedAmount which comes without the fee amount
+  return new Price(order.inputToken, order.outputToken, quotedAmount.toString(), remainingAmount)
 }
 
 /**
