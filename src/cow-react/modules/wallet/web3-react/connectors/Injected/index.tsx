@@ -2,20 +2,10 @@ import {
   Actions,
   AddEthereumChainParameter,
   Connector,
-  Provider,
   ProviderConnectInfo,
   ProviderRpcError,
-  RequestArguments,
 } from '@web3-react/types'
-
-type InjectedWalletProvider = Provider & {
-  providers?: Omit<InjectedWalletProvider, 'providers'>[]
-  isConnected: () => boolean
-  request<T>(args: RequestArguments): Promise<T>
-  chainId: string
-  selectedAddress: string
-  on: (event: string, args: unknown) => unknown
-}
+import { EthereumProvider } from '@src/lib/ethereum'
 
 interface injectedWalletConstructorArgs {
   actions: Actions
@@ -29,7 +19,7 @@ function parseChainId(chainId: string) {
 }
 
 export class InjectedWallet extends Connector {
-  provider?: InjectedWalletProvider
+  provider?: EthereumProvider
   walletUrl: string
   searchKeywords: string[]
 
@@ -160,8 +150,14 @@ export class InjectedWallet extends Connector {
 
   // Mod: Added custom method
   // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
-  private detectProvider(): InjectedWalletProvider | void {
-    this.provider = this.detectOnEthereum(window.ethereum) || this.detectOnProvider(window.ethereum?.providers) || null
+  private detectProvider(): EthereumProvider {
+    const ethereum = window.ethereum as EthereumProvider | undefined
+    const provider = this.detectOnEthereum(ethereum) || this.detectOnProviders(ethereum?.providers) || null
+
+    if (!provider) throw new Error('Ethereum provider is not detected!')
+
+    this.provider = provider
+
     return this.provider
   }
 
@@ -169,16 +165,21 @@ export class InjectedWallet extends Connector {
   // Some wallets such as Tally will inject custom providers array on window.ethereum
   // This array will contain all injected providers and we can select the one we want based on keywords passed to constructor
   // For example to select tally we would search for isTally or isTallyWallet property keys
-  private detectOnProvider(providers: any) {
+  private detectOnProviders(providers?: EthereumProvider[]): EthereumProvider | null {
     if (!providers) return null
-    return providers.find((provider: any) => this.searchKeywords.some((keyword) => provider[keyword]))
+
+    return providers.find((provider) => {
+      return this.searchKeywords.some((keyword) => provider[keyword])
+    }) || null
   }
 
   // Mod: Added custom method
   // Here we check for specific provider directly on window.ethereum
-  private detectOnEthereum(ethereum?: any) {
+  private detectOnEthereum(ethereum?: EthereumProvider): EthereumProvider | null {
     if (!ethereum) return null
+
     const provider = this.searchKeywords.some((keyword) => ethereum[keyword])
+
     return provider ? ethereum : null
   }
 }
