@@ -3,8 +3,9 @@ import useSWR from 'swr'
 import { getTokens } from './api'
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { isAddress } from '@src/utils'
+import { isAddress } from 'utils'
 import * as Sentry from '@sentry/react'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'custom/constants/chains'
 
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0
@@ -17,9 +18,15 @@ const SUPPORTED_CHAINS: Partial<Record<Chain, SupportedChainId>> = {
 
 const UNSUPPORTED_CHAIN_ID = null
 
-// This function will verify if the API response matches our expectations.
-// As we are using an external party, and their responses may change arbitrarily,
-// we should ensure that there is a check so that the application can rely on this abstraction.
+/**
+ * Validate any value to be of type FetchTokensResult, and tell TypeScript that it is.
+ *
+ * Intention is to use this function with API responses, so that we can rely on the type system.
+ * As we are using an external party, and their responses may change arbitrarily, such a guard is necessary.
+ *
+ * @param token value to be validated
+ * @returns result of validation - true for matching the type, false otherwise
+ */
 function isValidFetchTokensResult(token: any): token is FetchTokensResult {
   // Verify if token is of correct type
   if (typeof token !== 'object' || token === null) {
@@ -34,7 +41,7 @@ function isValidFetchTokensResult(token: any): token is FetchTokensResult {
   const hasValidChainId = token.chainId !== UNSUPPORTED_CHAIN_ID && typeof token.chainId === 'number'
 
   // API we are using supports other chains such as Arbitrum as well. Verify that the chainId is something we have on our systems.
-  const hasSupportedChainId = token.chainId === SupportedChainId.MAINNET || token.chainId === SupportedChainId.GOERLI
+  const hasSupportedChainId = ALL_SUPPORTED_CHAIN_IDS.includes(token.chainId)
 
   const hasValidAddress = typeof token.address === 'string' && !!isAddress(token.address)
 
@@ -91,14 +98,9 @@ export function useProxyTokens(query: string): FetchTokensResult[] {
 export function useProxyTokenLogo(chainId?: number, address?: string): string | undefined {
   const tokenLogos = useAtomValue(tokenLogoCache)
 
-  try {
-    if (!chainId || !address) {
-      return undefined
-    }
-
-    return tokenLogos.get(chainId)?.get(address.toLowerCase())
-  } catch (error: unknown) {
-    Sentry.captureException(error)
+  if (!chainId || !address) {
     return undefined
   }
+
+  return tokenLogos.get(chainId)?.get(address.toLowerCase())
 }
