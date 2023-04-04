@@ -53,5 +53,15 @@ export function useQuoteRequestParams(): LimitOrdersQuoteParams | null {
       toDecimals,
       isEthFlow: false, // EthFlow is not compatible with limit orders
     }
-  }, [prevChainId, account, chainId, exactTypedValue, inputCurrency, orderKind, outputCurrency, recipient, recipientEnsAddress])
+  }, [
+    prevChainId,
+    account,
+    chainId,
+    exactTypedValue,
+    inputCurrency,
+    orderKind,
+    outputCurrency,
+    recipient,
+    recipientEnsAddress,
+  ])
 }
