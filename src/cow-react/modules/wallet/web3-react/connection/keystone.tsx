@@ -1,5 +1,3 @@
-import { Trans } from '@lingui/macro'
-
 import { ConnectionType } from '@cow/modules/wallet'
 import { getConnectionName } from '@cow/modules/wallet/api/utils/connection'
 
@@ -13,8 +11,6 @@ import { Web3ReactConnection } from '../types'
 
 import { default as KeystoneImage } from '@cow/modules/wallet/api/assets/keystone.svg'
 
-const KEYSTONE_DEEP_LINK = 'https://metamask.app.link/dapp/'
-
 const keystoneCommonOption = {
   color: '#E8831D',
   icon: KeystoneImage,
@@ -23,7 +19,7 @@ const keystoneCommonOption = {
 
 export const keystoneInstallOption = {
   ...keystoneCommonOption,
-  header: 'Install MetaMask',
+  header: 'Keystone',
   link: 'https://metamask.io/',
 }
 
@@ -41,16 +37,6 @@ export const keystoneConnection: Web3ReactConnection = {
 
 export function InstallKeystoneOption() {
   return <ConnectWalletOption {...keystoneInstallOption} />
-}
-
-export function OpenKeystoneMobileOption() {
-  return (
-    <ConnectWalletOption
-      {...keystoneOption}
-      header={<Trans>MetaMask</Trans>}
-      link={KEYSTONE_DEEP_LINK + window.location}
-    />
-  )
 }
 
 export function KeystoneOption({ tryActivation }: { tryActivation: TryActivation }) {

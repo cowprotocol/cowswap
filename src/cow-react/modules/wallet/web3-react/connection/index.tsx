@@ -21,7 +21,7 @@ import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
-import { InstallKeystoneOption, keystoneConnection, KeystoneOption, OpenKeystoneMobileOption } from './keystone'
+import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -96,16 +96,14 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
+  const showKeystone = !isInjectedMobileBrowser && window.ethereum?.isMetaMask
 
-  let keystoneOption = <KeystoneOption tryActivation={tryActivation} />
   let injectedOption
   if (!isInjected) {
     if (!isMobile) {
       injectedOption = <InstallMetaMaskOption />
-      keystoneOption = <InstallKeystoneOption />
     } else {
       injectedOption = <OpenMetaMaskMobileOption />
-      keystoneOption = <OpenKeystoneMobileOption />
     }
   } else if (!isCoinbaseWallet) {
     if (isMetaMask) {
@@ -124,6 +122,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
   const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
+  const keystoneOption = (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || <InstallKeystoneOption />
 
   return (
     <>
