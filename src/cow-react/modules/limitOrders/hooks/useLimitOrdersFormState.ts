@@ -86,6 +86,10 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
       ? CurrencyAmount.fromRawAmount(sellAmount.currency, quote?.response?.quote?.feeAmount)
       : null
 
+  if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
+    return LimitOrdersFormState.InvalidRecipient
+  }
+
   if (quote?.error) {
     return LimitOrdersFormState.QuoteError
   }
@@ -114,10 +118,6 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
       return LimitOrdersFormState.AmountIsNotSet
     }
-  }
-
-  if (recipient !== null && !recipientEnsAddress && !isAddress(recipient)) {
-    return LimitOrdersFormState.InvalidRecipient
   }
 
   if (!isSupportedWallet) {
