@@ -252,7 +252,12 @@ export function useRefetchQuoteCallback() {
 
       // Get the best quote
       getBestQuoteResolveOnlyLastCall(bestQuoteParams)
-        //.then((res) => handleResponse(res, true)) // TODO: Uncomment later (this is to force always temporal prices)
+        // .then((res) => handleResponse(res, true)) // TODO: Uncomment later and delete the other test below
+        .then((res) => setTimeout(() => handleResponse(res, true), 60000)) // Prentend to be slower!
+        // Prentend to throw
+        // .then(() => {
+        //   throw new Error('BOOM! Failed to get the quote!')
+        // })
         .catch(handleError)
     },
     [
