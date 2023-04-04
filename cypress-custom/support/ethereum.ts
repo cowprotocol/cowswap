@@ -6,7 +6,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
 const TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
-const INTEG_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY') || '1221fd11e90849509afafd330ec7acc6'
+const INTEG_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY') || '586e7e6b7c7e437aa41f5da496a749f5'
 // address of the above key
 export const TEST_ADDRESS_NEVER_USE = new Wallet(TEST_PRIVATE_KEY).address
 
