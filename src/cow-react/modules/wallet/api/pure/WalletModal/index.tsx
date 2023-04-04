@@ -38,7 +38,7 @@ export function WalletModal(props: WalletModalProps) {
   const isPending = view === 'pending'
 
   return (
-    <GpModal isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
+    <GpModal maxWidth={600} isOpen={isOpen} onDismiss={toggleModal} minHeight={false} maxHeight={90}>
       <Wrapper>
         <UpperSection>
           <CloseIcon onClick={toggleModal}>
