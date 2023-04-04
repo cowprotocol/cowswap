@@ -172,7 +172,7 @@ export function getOrderExecutionPrice(
 
   if (order.kind === OrderKind.SELL) {
     // For sell orders, the quoted amount is the buy amount
-    return new Price(order.inputToken, order.outputToken, remainderAmount, quoteAmount.toString())
+    return new Price(order.inputToken, order.outputToken, remainderAmount, quoteAmount)
   }
 
   // For buy orders, the quoted amount is the sell amount
@@ -180,7 +180,7 @@ export function getOrderExecutionPrice(
     order.inputToken,
     order.outputToken,
     // We need to add the quoted fee to have the price, as the quoted amount comes without it
-    JSBI.add(JSBI.BigInt(quoteAmount.toString()), JSBI.BigInt(feeAmount)),
+    JSBI.add(JSBI.BigInt(quoteAmount), JSBI.BigInt(feeAmount)),
     remainderAmount
   )
 }
@@ -201,12 +201,12 @@ export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmoun
       order.outputToken,
       // For sell orders, the market price has the fee subtracted from the sell amount
       JSBI.subtract(JSBI.BigInt(remainingAmount), JSBI.BigInt(feeAmount)),
-      quotedAmount.toString()
+      quotedAmount
     )
   }
 
   // For buy orders, the market price uses the quotedAmount which comes without the fee amount
-  return new Price(order.inputToken, order.outputToken, quotedAmount.toString(), remainingAmount)
+  return new Price(order.inputToken, order.outputToken, quotedAmount, remainingAmount)
 }
 
 /**
