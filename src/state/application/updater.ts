@@ -50,6 +50,7 @@ export default function Updater(): null {
 
   // This will remove selected wallet on disconnect
   // Needed for some wallets so that on refresh there isn't popup to connect
+  // TODO: add unit test for this
   useEffect(() => {
     if (prevAccount && !account) {
       dispatch(updateSelectedWallet({ wallet: undefined }))
