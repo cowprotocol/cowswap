@@ -32,7 +32,7 @@ import { EthereumProvider } from '@src/lib/ethereum'
 nodeRemoveChildFix()
 
 if (!!window.ethereum) {
-  (window.ethereum as EthereumProvider).autoRefreshOnNetworkChange = false
+  ;(window.ethereum as EthereumProvider).autoRefreshOnNetworkChange = false
 }
 
 const root = createRoot(document.getElementById('root')!)
