@@ -32,15 +32,15 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
  */
 export function useOnCurrencySelection(): CurrencySelectionCallback {
   const { chainId } = useWalletInfo()
-  const tradeState = useTradeState()
+  const { state } = useTradeState()
   const navigate = useTradeNavigate()
   const resolveCurrencyAddressOrSymbol = useResolveCurrencyAddressOrSymbol()
 
   return useCallback(
     (field: Field, currency: Currency | null, stateUpdateCallback?: () => void) => {
-      if (!tradeState) return
+      if (!state) return
 
-      const { inputCurrencyId, outputCurrencyId } = tradeState.state
+      const { inputCurrencyId, outputCurrencyId } = state
       const tokenSymbolOrAddress = resolveCurrencyAddressOrSymbol(currency)
 
       const targetInputCurrencyId = field === Field.INPUT ? tokenSymbolOrAddress : inputCurrencyId
@@ -60,6 +60,6 @@ export function useOnCurrencySelection(): CurrencySelectionCallback {
 
       stateUpdateCallback?.()
     },
-    [navigate, chainId, tradeState, resolveCurrencyAddressOrSymbol]
+    [navigate, chainId, state, resolveCurrencyAddressOrSymbol]
   )
 }
