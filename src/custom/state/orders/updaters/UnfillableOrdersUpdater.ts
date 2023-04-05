@@ -10,6 +10,7 @@ import {
   getEstimatedExecutionPrice,
   getOrderExecutionPrice,
   getOrderMarketPrice,
+  getRemainderAmount,
   isOrderUnfillable,
 } from 'state/orders/utils'
 import { getPromiseFulfilledValue } from 'utils/misc'
@@ -31,7 +32,9 @@ import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
 async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
-  let amount, baseToken, quoteToken
+  let baseToken, quoteToken
+
+  const amount = getRemainderAmount(order.kind, order)
 
   if (order.kind === 'sell') {
     // this order sell amount is sellAmountAfterFees
@@ -39,11 +42,9 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
     // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
     // e.g so here we need to pass the sellAmountBeforeFees
-    amount = order.sellAmountBeforeFee.toString()
     baseToken = order.sellToken
     quoteToken = order.buyToken
   } else {
-    amount = order.buyAmount.toString()
     baseToken = order.buyToken
     quoteToken = order.sellToken
   }

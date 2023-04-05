@@ -6,6 +6,7 @@ import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { EnrichedOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import JSBI from 'jsbi'
 import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
+import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 
 export type OrderTransitionStatus =
   | 'unknown'
@@ -152,30 +153,66 @@ export function isOrderUnfillable(
   return percentageDifference.greaterThan(OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE)
 }
 
-export function getOrderExecutionPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
+/**
+ * Builds order execution price, based on quoted amount and fee
+ *
+ * `quotedAmount` will be based on the amount we want to sell (or buy), so it can be less than original amounts
+ *
+ * @param order
+ * @param quoteAmount
+ * @param feeAmount
+ */
+export function getOrderExecutionPrice(
+  order: Order,
+  quoteAmount: string,
+  feeAmount: string
+): Price<Currency, Currency> {
+  // We get the remainder as the order might have already been partially filled
+  const remainderAmount = getRemainderAmount(order.kind, order)
+
   if (order.kind === OrderKind.SELL) {
-    return new Price(order.inputToken, order.outputToken, order.sellAmount.toString(), price.toString())
+    // For sell orders, the quoted amount is the buy amount
+    return new Price(order.inputToken, order.outputToken, remainderAmount, quoteAmount)
   }
 
+  // For buy orders, the quoted amount is the sell amount
   return new Price(
     order.inputToken,
     order.outputToken,
-    JSBI.add(JSBI.BigInt(price.toString()), JSBI.BigInt(feeAmount)),
-    order.buyAmount.toString()
+    // We need to add the quoted fee to have the price, as the quoted amount comes without it
+    JSBI.add(JSBI.BigInt(quoteAmount), JSBI.BigInt(feeAmount)),
+    remainderAmount
   )
 }
-export function getOrderMarketPrice(order: Order, price: string, feeAmount: string): Price<Currency, Currency> {
+
+/**
+ * Builds order market price, based on quoted amount and fee
+ * @param order
+ * @param quotedAmount
+ * @param feeAmount
+ */
+export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmount: string): Price<Currency, Currency> {
+  // We get the remainder as the order might have already been partially filled
+  const remainingAmount = getRemainderAmount(order.kind, order)
+
   if (order.kind === OrderKind.SELL) {
     return new Price(
       order.inputToken,
       order.outputToken,
-      JSBI.subtract(JSBI.BigInt(order.sellAmount.toString()), JSBI.BigInt(feeAmount)),
-      price.toString()
+      // For sell orders, the market price has the fee subtracted from the sell amount
+      JSBI.subtract(JSBI.BigInt(remainingAmount), JSBI.BigInt(feeAmount)),
+      quotedAmount
     )
   }
 
-  return new Price(order.inputToken, order.outputToken, price.toString(), order.buyAmount.toString())
+  // For buy orders, the market price uses the quotedAmount which comes without the fee amount
+  return new Price(order.inputToken, order.outputToken, quotedAmount, remainingAmount)
 }
+
+// This is how much the price denominator will be multiplied by
+// Anything < 1 means the denominator will decrease, thus the resulting price will increase
+// The difference between it an 1 is the % by which the price will increase
+const ESTIMATED_PRICE_SLIPPAGE = { numerator: 995, denominator: 1000 } // 995/1000 => 0.995 => 99.5%
 
 /**
  * Get estimated execution price
@@ -215,10 +252,9 @@ export function getEstimatedExecutionPrice(
   fillPrice: Price<Currency, Currency>,
   fee: string
 ): Price<Currency, Currency> {
-  // TODO: implement estimation for partially fillable orders
-
   // Build CurrencyAmount and Price instances
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
+  // Always use original amounts for building the limit price, as this will never change
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const limitPrice = buildPriceFromCurrencyAmounts(inputAmount, outputAmount)
@@ -227,14 +263,19 @@ export function getEstimatedExecutionPrice(
     return limitPrice
   }
 
-  const amountMinusFees = inputAmount.subtract(feeAmount)
+  // Check what's left to sell, discounting the surplus, if any
+  const { sellAmount } = getRemainderAmountsWithoutSurplus(order)
+  const remainingSellAmount = CurrencyAmount.fromRawAmount(order.inputToken, sellAmount)
+
+  // Use the remaining sell amount for the calculations, as the fee will be based on that
+  const amountMinusFees = remainingSellAmount.subtract(feeAmount)
 
   if (!amountMinusFees.greaterThan(ZERO_FRACTION)) {
     // When fee > amount, return 0 price
     return new Price(order.inputToken, order.outputToken, '0', '0')
   }
 
-  const numerator = inputAmount.multiply(limitPrice)
+  const numerator = remainingSellAmount.multiply(limitPrice)
   // The divider in the formula is used as denominator, and the division is done inside the Price instance
   const denominator = amountMinusFees
 
@@ -245,26 +286,107 @@ export function getEstimatedExecutionPrice(
     numerator.quotient
   )
 
-  // Picking the MAX between FEP and FP
+  // Pick the MAX between FEP and FP
   const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
 
+  // Apply slippage to the estimated price to give us an extra wiggle room
+  const slippageAppliedDenominator = JSBI.divide(
+    JSBI.multiply(estimatedExecutionPrice.denominator, JSBI.BigInt(ESTIMATED_PRICE_SLIPPAGE.numerator)),
+    JSBI.BigInt(ESTIMATED_PRICE_SLIPPAGE.denominator)
+  )
+  const priceWithSlippage = new Price(
+    order.inputToken,
+    order.outputToken,
+    // Here we reduced a % of the denominator to increase the price a little bit
+    slippageAppliedDenominator,
+    estimatedExecutionPrice.numerator
+  )
   // TODO: remove debug statement
   console.debug(`getEstimatedExecutionPrice`, {
-    'Amount (A)': inputAmount.toFixed(inputAmount.currency.decimals) + ' ' + inputAmount.currency.symbol,
+    'Amount (A)':
+      remainingSellAmount.toFixed(remainingSellAmount.currency.decimals) + ' ' + remainingSellAmount.currency.symbol,
     'Fee (F)': feeAmount.toFixed(feeAmount.currency.decimals) + ' ' + feeAmount.currency.symbol,
     'Limit Price (LP)': `${limitPrice.toFixed(8)} ${limitPrice.quoteCurrency.symbol} per ${
       limitPrice.baseCurrency.symbol
     } (${limitPrice.numerator.toString()}/${limitPrice.denominator.toString()})`,
-    'Feasable Execution Price (FEP)': `${feasibleExecutionPrice.toFixed(18)} ${
+    'Feasible Execution Price (FEP)': `${feasibleExecutionPrice.toFixed(18)} ${
       feasibleExecutionPrice.quoteCurrency.symbol
     } per ${feasibleExecutionPrice.baseCurrency.symbol}`,
-    'Fill Price (FP)': `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${fillPrice.baseCurrency.symbol}`,
+    'Fill Price (FP)': `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${
+      fillPrice.baseCurrency.symbol
+    } (${fillPrice.numerator.toString()}/${fillPrice.denominator.toString()})`,
     'Est.Execution Price (EEP)': `${estimatedExecutionPrice.toFixed(8)} ${
       estimatedExecutionPrice.quoteCurrency.symbol
     } per ${estimatedExecutionPrice.baseCurrency.symbol}`,
+    'EEP with slippage': `${priceWithSlippage.toFixed(8)} ${priceWithSlippage.quoteCurrency.symbol} per ${
+      priceWithSlippage.baseCurrency.symbol
+    } (${priceWithSlippage.numerator.toString()}/${priceWithSlippage.denominator.toString()})`,
     id: order.id.slice(0, 8),
     class: order.class,
   })
 
-  return estimatedExecutionPrice
+  return priceWithSlippage
+}
+
+/**
+ * Gets the remainder amounts for both sell and buy, already discounting for surplus, if any surplus or matches
+ *
+ * Sell orders will have the surplus in the buy token.
+ * Which means sell amount does not need to be adjusted, while the buy amount does.
+ * Since the surplus is in the for of additional buy amount, we remove the surplus from the executed buy amount
+ *
+ * Buy orders will have the surplus in the sell token.
+ * Which means buy amount does not need to be adjusted, while the sell amount does.
+ * Since the surplus is in the for of less sell tokens being consumed, we add the surplus to the executed sell amount
+ *
+ * When there's no surplus it either means: there were no matches or it matched without any surplus
+ * In both cases, the sell and buy remainders can be returned in full
+ * @param order
+ */
+export function getRemainderAmountsWithoutSurplus(order: Order): { buyAmount: string; sellAmount: string } {
+  const sellRemainder = getRemainderAmount(OrderKind.SELL, order)
+  const buyRemainder = getRemainderAmount(OrderKind.BUY, order)
+
+  const { amount: surplusAmountBigNumber } = getOrderSurplus(order)
+
+  if (surplusAmountBigNumber.isZero()) {
+    return { sellAmount: sellRemainder, buyAmount: buyRemainder }
+  }
+
+  const surplusAmount = JSBI.BigInt(surplusAmountBigNumber.decimalPlaces(0).toString())
+
+  if (order.kind === OrderKind.SELL) {
+    const buyAmount = JSBI.subtract(JSBI.BigInt(buyRemainder), surplusAmount).toString()
+
+    return { sellAmount: sellRemainder, buyAmount }
+  } else {
+    const sellAmount = JSBI.add(JSBI.BigInt(sellRemainder), surplusAmount).toString()
+
+    return { sellAmount, buyAmount: buyRemainder }
+  }
+}
+
+/**
+ * Get the remainder `kind` amount, based on executed amounts from the `apiAdditionalInfo`, if any
+ *
+ * For the sell amount, uses the variants that do not consider the fee:
+ * `sellAmountBeforeFee` and `executedSellAmountBeforeFees`
+ *
+ * @param kind The kind of remainder
+ * @param order The order object
+ */
+export function getRemainderAmount(kind: OrderKind, order: Order): string {
+  const { sellAmountBeforeFee, buyAmount, apiAdditionalInfo } = order
+
+  const fullAmount = kind === OrderKind.SELL ? sellAmountBeforeFee.toString() : buyAmount.toString()
+
+  if (!apiAdditionalInfo) {
+    return fullAmount
+  }
+
+  const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
+
+  const executedAmount = JSBI.BigInt((kind === OrderKind.SELL ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
+
+  return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
 }
