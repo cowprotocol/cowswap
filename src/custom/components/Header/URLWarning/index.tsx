@@ -9,6 +9,7 @@ import { Markdown } from 'components/Markdown'
 
 import { SupportedChainId as ChainId } from 'constants/chains'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { environmentName } from 'utils/environments'
 
 export * from './URLWarningMod'
 
@@ -49,25 +50,47 @@ const Wrapper = styled.div`
 
 // Announcement content: Modify this file to edit the announcement
 //  https://github.com/gnosis/cowswap/blob/configuration/config/announcements/announcements.md
-const ANNOUNCEMENTS_MARKDOWN_BASE_URL = RAW_CODE_LINK + '/configuration/config/announcements'
+const ANNOUNCEMENTS_MARKDOWN_BASE_URL = RAW_CODE_LINK + '/configuration/config'
 
-function getAnnouncementUrl(chainId: number) {
-  return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}/announcements-${chainId}.md`
+function getAnnouncementUrl(chainId: number, env?: 'production' | 'barn') {
+  return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}${env ? `/${env}` : ''}/announcements/announcements-${chainId}.md`
+}
+
+const PRODUCTION_ENVS: (typeof environmentName)[] = ['production', 'staging', 'ens']
+
+function useGetAnnouncement(chainId: number): string | undefined {
+  const env = PRODUCTION_ENVS.includes(environmentName) ? 'production' : 'barn'
+
+  // Fetches global announcement
+  const { file, error } = useFetchFile(getAnnouncementUrl(chainId))
+  // Fetches env announcement
+  const { file: envFile, error: envError } = useFetchFile(getAnnouncementUrl(chainId, env))
+
+  const announcementText = error ? undefined : file?.trim()
+
+  if (error) {
+    console.error('[URLWarning] Error getting the announcement text: ', error)
+  } else {
+    console.debug('[URLWarning] Announcement text', announcementText)
+  }
+
+  const envAnnouncementText = envError ? undefined : envFile?.trim()
+
+  if (envError) {
+    console.error(`[URLWarning] Error getting the env ${env} announcement text: `, envError)
+  } else {
+    console.debug(`[URLWarning] Env ${env} announcement text`, envAnnouncementText)
+  }
+
+  return announcementText || envAnnouncementText
 }
 
 export default function URLWarning() {
   const { chainId = ChainId.MAINNET } = useWalletInfo()
 
   // Ger announcement if there's one
-  const { file, error } = useFetchFile(getAnnouncementUrl(chainId))
-  const announcementText = error ? undefined : file?.trim()
+  const announcementText = useGetAnnouncement(chainId)
   const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
-
-  if (error) {
-    console.error('[URLWarning] Error getting the announcement text: ', error)
-  } else {
-    console.debug('[URLWarning] Announcement text', announcementText, contentHash)
-  }
 
   const announcementVisible = useAnnouncementVisible(contentHash)
   const closeAnnouncement = useCloseAnnouncement()
