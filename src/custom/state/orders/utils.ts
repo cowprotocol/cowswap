@@ -209,6 +209,11 @@ export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmoun
   return new Price(order.inputToken, order.outputToken, quotedAmount, remainingAmount)
 }
 
+// This is how much the price denominator will be multiplied by
+// Anything < 1 means the denominator will decrease, thus the resulting price will increase
+// The difference between it an 1 is the % by which the price will increase
+const ESTIMATED_PRICE_SLIPPAGE = { numerator: 995, denominator: 1000 } // 995/1000 => 0.995 => 99.5%
+
 /**
  * Get estimated execution price
  *
@@ -284,6 +289,18 @@ export function getEstimatedExecutionPrice(
   // Picking the MAX between FEP and FP
   const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
 
+  // Apply slippage to the estimated price to give us an extra wiggle room
+  const slippageAppliedDenominator = JSBI.divide(
+    JSBI.multiply(estimatedExecutionPrice.denominator, JSBI.BigInt(ESTIMATED_PRICE_SLIPPAGE.numerator)),
+    JSBI.BigInt(ESTIMATED_PRICE_SLIPPAGE.denominator)
+  )
+  const priceWithSlippage = new Price(
+    order.inputToken,
+    order.outputToken,
+    // Here we reduced a % of the denominator to increase the price a little bit
+    slippageAppliedDenominator,
+    estimatedExecutionPrice.numerator
+  )
   // TODO: remove debug statement
   console.debug(`getEstimatedExecutionPrice`, {
     'Amount (A)':
@@ -301,11 +318,14 @@ export function getEstimatedExecutionPrice(
     'Est.Execution Price (EEP)': `${estimatedExecutionPrice.toFixed(8)} ${
       estimatedExecutionPrice.quoteCurrency.symbol
     } per ${estimatedExecutionPrice.baseCurrency.symbol}`,
+    'EEP with slippage': `${priceWithSlippage.toFixed(8)} ${priceWithSlippage.quoteCurrency.symbol} per ${
+      priceWithSlippage.baseCurrency.symbol
+    } (${priceWithSlippage.numerator.toString()}/${priceWithSlippage.denominator.toString()})`,
     id: order.id.slice(0, 8),
     class: order.class,
   })
 
-  return estimatedExecutionPrice
+  return priceWithSlippage
 }
 
 /**
