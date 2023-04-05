@@ -378,7 +378,7 @@ export function getRemainderAmountsWithoutSurplus(order: Order): { buyAmount: st
 export function getRemainderAmount(kind: OrderKind, order: Order): string {
   const { sellAmountBeforeFee, buyAmount, apiAdditionalInfo } = order
 
-  const fullAmount = kind === 'sell' ? sellAmountBeforeFee.toString() : buyAmount.toString()
+  const fullAmount = kind === OrderKind.SELL ? sellAmountBeforeFee.toString() : buyAmount.toString()
 
   if (!apiAdditionalInfo) {
     return fullAmount
@@ -386,7 +386,7 @@ export function getRemainderAmount(kind: OrderKind, order: Order): string {
 
   const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
 
-  const executedAmount = JSBI.BigInt((kind === 'sell' ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
+  const executedAmount = JSBI.BigInt((kind === OrderKind.SELL ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
 
   return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
 }
