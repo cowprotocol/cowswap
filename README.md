@@ -72,13 +72,24 @@ This will start a server on the `http://localhost:5000/`
 yarn run cosmos
 ```
 
-## Configuring the environment (optional)
+## Configuring the environment
 
 The app has some default configuration, but it's highly encouraged to define your own.
 
 ### Local configuration
 
 Make a copy of `.env` named `.env.local`, this will allow you to set your own configuration only in your local environment.
+
+#### What is the mandatory minimum to be able to run the application?
+
+Your environment MUST have the following variables defined:
+`REACT_APP_INFURA_KEY`=YOUR_INFURA_KEY
+`REACT_APP_NETWORK_URL_1`=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
+`REACT_APP_NETWORK_URL_5`=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
+
+Additionally, to successfully run E2E / Integration tests locally you must have;
+`INTEGRATION_TESTS_INFURA_KEY`=YOUR_INFURA_KEY
+`INTEGRATION_TESTS_PRIVATE_KEY`=YOUR_TEST_WALLET_PRIVATE_KEY
 
 ### Production configuration
 
