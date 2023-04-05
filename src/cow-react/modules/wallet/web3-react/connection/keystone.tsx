@@ -11,6 +11,8 @@ import { Web3ReactConnection } from '../types'
 
 import { default as KeystoneImage } from '@cow/modules/wallet/api/assets/keystone.svg'
 
+const TOOLTIP_TEXT = 'Connect your Keystone wallet using Metamask'
+
 const keystoneCommonOption = {
   color: '#E8831D',
   icon: KeystoneImage,
@@ -25,7 +27,7 @@ export const keystoneInstallOption = {
 
 export const keystoneOption = {
   ...keystoneCommonOption,
-  header: 'MetaMask',
+  header: 'Keystone',
 }
 
 const [keystone, keystoneHooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions, onError }))
@@ -46,6 +48,8 @@ export function KeystoneOption({ tryActivation }: { tryActivation: TryActivation
     <ConnectWalletOption
       {...keystoneOption}
       isActive={isActive}
+      clickable={!isActive}
+      tooltipText={TOOLTIP_TEXT}
       header={getConnectionName(ConnectionType.KEYSTONE, true)}
       onClick={() => tryActivation(keystoneConnection.connector)}
     />

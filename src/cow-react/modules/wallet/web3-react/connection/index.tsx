@@ -96,7 +96,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
-  const showKeystone = !isInjectedMobileBrowser && window.ethereum?.isMetaMask
+  const showKeystone = !isInjectedMobileBrowser && !isMobile && window.ethereum?.isMetaMask
 
   let injectedOption
   if (!isInjected) {
@@ -122,7 +122,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
   const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
-  const keystoneOption = (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || <InstallKeystoneOption />
+  const keystoneOption = (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || !isMobile && <InstallKeystoneOption />
 
   return (
     <>
