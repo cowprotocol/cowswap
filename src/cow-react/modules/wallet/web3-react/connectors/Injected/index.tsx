@@ -38,6 +38,7 @@ export class InjectedWallet extends Connector {
   provider?: InjectedWalletProvider
   walletUrl: string
   searchKeywords: string[]
+  eagerConnection?: boolean
 
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
     super(actions, onError)
@@ -65,13 +66,14 @@ export class InjectedWallet extends Connector {
         const accounts = await this.getAccounts()
         const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
         const receivedChainId = parseChainId(chainId)
+        const isTrust = this.provider.isTrust
         const desiredChainId =
           typeof desiredChainIdOrChainParameters === 'number'
             ? desiredChainIdOrChainParameters
             : desiredChainIdOrChainParameters?.chainId
 
         // if there's no desired chain, or it's equal to the received, update
-        if (!desiredChainId || receivedChainId === desiredChainId)
+        if (!desiredChainId || receivedChainId === desiredChainId || isTrust)
           return this.actions.update({ chainId: receivedChainId, accounts })
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
@@ -109,7 +111,10 @@ export class InjectedWallet extends Connector {
 
     try {
       await this.isomorphicInitialize()
-      if (!this.provider) return cancelActivation()
+
+      if (!this.provider || this.eagerConnection) return cancelActivation()
+
+      this.eagerConnection = true
 
       if (this.provider.isTrust) {
         await this.provider.enable?.()
