@@ -156,7 +156,13 @@ export function ConnectWalletOption({
   )
 
   if (link) {
-    return <ExternalLink href={link}>{content}</ExternalLink>
+    return tooltipText ? (
+      <MouseoverTooltip text={tooltipText}>
+        <ExternalLink href={link}>{content}</ExternalLink>
+      </MouseoverTooltip>
+    ) : (
+      <ExternalLink href={link}>{content}</ExternalLink>
+    )
   }
 
   if (tooltipText) {
