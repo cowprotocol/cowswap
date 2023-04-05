@@ -12,7 +12,7 @@ import { Web3ReactConnection } from '../types'
 import { default as KeystoneImage } from '@cow/modules/wallet/api/assets/keystone.svg'
 
 const TOOLTIP_TEXT = 'Connect your Keystone wallet using Metamask'
-const TOOLTIP_INSTALL_TEXT = 'Install Metamask to user Keystone wallet'
+const TOOLTIP_INSTALL_TEXT = 'Install Metamask to use Keystone wallet'
 
 const keystoneCommonOption = {
   color: '#E8831D',
