@@ -103,6 +103,9 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
   const isChromeMobile = isMobile && isChrome
 
+  // Show Tally option only in Chrome (includes Brave too), but not on mobile or as an injected browser
+  const showTally = !isInjectedMobileBrowser && isChrome && !isChromeMobile
+
   let injectedOption
   if (!isInjected) {
     if (!isMobile) {
@@ -130,14 +133,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
 
   // Injected
+  const tallyOption = (showTally && <TallyWalletOption tryActivation={tryActivation} />) ?? null
   const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
-
-  // !isInjectedMobileBrowser - hide for injected mobile browsers
-  // isChrome - since its only supported for Chrome and Brave, we can detect it with this
-  // !isChromeMobile - we don't want to show it on Chrome mobile also
-  const tallyOption =
-    (!isInjectedMobileBrowser && isChrome && !isChromeMobile && <TallyWalletOption tryActivation={tryActivation} />) ??
-    null
 
   return (
     <>

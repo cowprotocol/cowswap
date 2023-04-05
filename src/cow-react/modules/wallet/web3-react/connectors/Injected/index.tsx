@@ -14,10 +14,9 @@ type InjectedWalletProvider = Provider & {
   request<T>(args: RequestArguments): Promise<T>
   chainId: string
   selectedAddress: string
-  on: (event: string, args: any) => any
-
   enable?: () => void
   isTrust?: boolean
+  on: (event: string, args: unknown) => unknown
 }
 
 interface injectedWalletConstructorArgs {
@@ -27,9 +26,12 @@ interface injectedWalletConstructorArgs {
   searchKeywords: string[]
 }
 
-type Window = typeof Window & {
-  ethereum?: InjectedWalletProvider
-  injectedwallet?: InjectedWalletProvider
+function parseChainId(chainId: string) {
+  if (!chainId.startsWith('0x')) {
+    return Number(chainId)
+  }
+
+  return Number.parseInt(chainId, 16)
 }
 
 export class InjectedWallet extends Connector {
@@ -37,136 +39,105 @@ export class InjectedWallet extends Connector {
   walletUrl: string
   searchKeywords: string[]
 
-  private get connected() {
-    return !!this.provider?.isConnected()
-  }
-
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
     super(actions, onError)
 
+    // Mod: we are passing these 2 custom props
     this.walletUrl = walletUrl
     this.searchKeywords = searchKeywords
-
-    this.detectProvider()
   }
 
-  public activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> | undefined {
-    if (!this.provider) {
-      window.open(this.walletUrl, '_blank')
-      return
-    }
+  // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L130 with some changes
+  async activate(desiredChainIdOrChainParameters?: number | AddEthereumChainParameter): Promise<void> {
+    let cancelActivation: () => void
+    if (!this.provider?.isConnected?.()) cancelActivation = this.actions.startActivation()
 
-    const desiredChainId =
-      typeof desiredChainIdOrChainParameters === 'number'
-        ? desiredChainIdOrChainParameters
-        : desiredChainIdOrChainParameters?.chainId
-
-    return Promise.all([this.provider.request({ method: 'eth_chainId' }) as Promise<string>, this.getAccounts()]).then(
-      ([chainId, accounts]) => {
-        const receivedChainId = this.parseChainId(chainId)
-
-        // we want to update chainId and accounts if there isn't chain id for some reason in the app
-        // or if chainId from from the app (desiredChainId) matches the one form wallet (receivedChainId)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        if (!desiredChainId || desiredChainId === receivedChainId) {
-          return this.actions.update({ chainId: receivedChainId, accounts })
+    return this.isomorphicInitialize()
+      .then(async () => {
+        // Mod: If we can't find the specific provider we want, open the passed URL in new tab
+        if (!this.provider) {
+          window.open(this.walletUrl, '_blank')
+          return
         }
+
+        // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
+        // chains; they should be requested serially, with accounts first, so that the chainId can settle.
+        const accounts = await this.getAccounts()
+        const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
+        const receivedChainId = parseChainId(chainId)
+        const desiredChainId =
+          typeof desiredChainIdOrChainParameters === 'number'
+            ? desiredChainIdOrChainParameters
+            : desiredChainIdOrChainParameters?.chainId
+
+        // if there's no desired chain, or it's equal to the received, update
+        if (!desiredChainId || receivedChainId === desiredChainId)
+          return this.actions.update({ chainId: receivedChainId, accounts })
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
 
-        // otherwise, ask the wallet to change the chainId to match the one in the app
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this.provider!.request<void>({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: desiredChainIdHex }],
-        }).catch(async (error: ProviderRpcError) => {
-          if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
-            if (!this.provider) throw new Error('No provider')
-            // if we're here, we can try to add a new network
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            return this.provider!.request<void>({
-              method: 'wallet_addEthereumChain',
-              params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
-            })
-          }
+        // if we're here, we can try to switch networks
+        return this.provider
+          .request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: desiredChainIdHex }],
+          })
+          .catch((error: ProviderRpcError) => {
+            if (error.code === 4902 && typeof desiredChainIdOrChainParameters !== 'number') {
+              if (!this.provider) throw new Error('No provider')
+              // if we're here, we can try to add a new network
+              return this.provider.request({
+                method: 'wallet_addEthereumChain',
+                params: [{ ...desiredChainIdOrChainParameters, chainId: desiredChainIdHex }],
+              })
+            }
 
-          throw error
-        })
-      }
-    )
+            throw error
+          })
+          .then(() => this.activate(desiredChainId))
+      })
+      .catch((error: Error) => {
+        cancelActivation?.()
+        throw error
+      })
   }
 
-  public async getAccounts() {
-    const { provider } = this
-
-    if (!provider) {
-      return []
-    }
+  // Copied from https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L98
+  /** {@inheritdoc Connector.connectEagerly} */
+  async connectEagerly(): Promise<void> {
+    const cancelActivation = this.actions.startActivation()
 
     try {
-      const accounts = await provider.request({ method: 'eth_requestAccounts' })
+      await this.isomorphicInitialize()
+      if (!this.provider) return cancelActivation()
 
-      return accounts as string[]
-    } catch (e) {
-      console.log('Failed to get account with eth_requestAccounts method')
+      if (this.provider.isTrust) {
+        await this.provider.enable?.()
+      }
 
-      return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
+      // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
+      // chains; they should be requested serially, with accounts first, so that the chainId can settle.
+      const accounts = await this.getAccounts()
+      if (!accounts.length) throw new Error('No accounts returned')
+      const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
+      this.actions.update({ chainId: parseChainId(chainId), accounts })
+    } catch (error) {
+      console.debug('Could not connect eagerly', error)
+      // we should be able to use `cancelActivation` here, but on mobile, metamask emits a 'connect'
+      // event, meaning that chainId is updated, and cancelActivation doesn't work because an intermediary
+      // update has occurred, so we reset state instead
+      this.actions.resetState()
     }
   }
 
-  /** {@inheritdoc Connector.connectEagerly} */
-  public async connectEagerly(): Promise<void> {
-    this.isomorphicInitialize()
-
-    if (!this.provider) return
-
-    if (this.provider.isTrust) {
-      await this.provider.enable?.()
-    }
-
-    return Promise.all([this.provider.request({ method: 'eth_chainId' }) as Promise<string>, this.getAccounts()])
-      .then(([chainId, accounts]) => {
-        if (accounts.length) {
-          this.actions.update({ chainId: this.parseChainId(chainId), accounts })
-        } else {
-          throw new Error('No accounts returned')
-        }
-      })
-      .catch((error) => {
-        console.debug('Could not connect eagerly', error)
-        this.actions.resetState()
-      })
-  }
-
-  private detectProvider(): InjectedWalletProvider | void {
-    const w = window as unknown as Window
-
-    this.provider = this.detectOnEthereum(w.ethereum) || this.detectOnProvider(w.ethereum?.providers) || null
-    ;(window as any)['provider'] = this.provider
-
-    return this.provider
-  }
-
-  private detectOnProvider(providers: any) {
-    if (!providers) return null
-
-    return providers.find((provider: any) => this.searchKeywords.some((keyword) => provider[keyword]))
-  }
-
-  private detectOnEthereum(ethereum?: any) {
-    if (!ethereum) return null
-
-    const provider = this.searchKeywords.some((keyword) => ethereum[keyword])
-
-    return provider ? ethereum : null
-  }
-
-  private isomorphicInitialize(): void {
+  // Based on https://github.com/Uniswap/web3-react/blob/de97c00c378b7909dfbd8a06558ed12e1f796caa/packages/metamask/src/index.ts#L54 with some changes
+  private async isomorphicInitialize(): Promise<void> {
+    // Mod: we have a custom method to detect a Injected provider based on passed keywords array
     const provider = this.detectProvider()
 
     if (provider) {
       provider.on('connect', ({ chainId }: ProviderConnectInfo): void => {
-        this.actions.update({ chainId: this.parseChainId(chainId) })
+        this.actions.update({ chainId: parseChainId(chainId) })
       })
 
       provider.on('disconnect', (error: ProviderRpcError): void => {
@@ -178,7 +149,7 @@ export class InjectedWallet extends Connector {
       })
 
       provider.on('chainChanged', (chainId: string): void => {
-        this.actions.update({ chainId: this.parseChainId(chainId) })
+        this.actions.update({ chainId: parseChainId(chainId) })
       })
 
       provider.on('accountsChanged', (accounts: string[]): void => {
@@ -191,15 +162,49 @@ export class InjectedWallet extends Connector {
     }
   }
 
-  private parseChainId(chainId: string) {
-    if (!chainId.startsWith('0x')) {
-      return Number(chainId)
-    }
-
-    return Number.parseInt(chainId, 16)
+  // Mod: Added custom method
+  // Just reset state on deactivate
+  async deactivate(): Promise<void> {
+    this.actions.resetState()
   }
 
-  public async deactivate(): Promise<void> {
-    this.actions.resetState()
+  // Mod: Added custom method
+  // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
+  private detectProvider(): InjectedWalletProvider | void {
+    this.provider = this.detectOnEthereum(window.ethereum) || this.detectOnProvider(window.ethereum?.providers) || null
+    return this.provider
+  }
+
+  // Mod: Added custom method
+  // Some wallets such as Tally will inject custom providers array on window.ethereum
+  // This array will contain all injected providers and we can select the one we want based on keywords passed to constructor
+  // For example to select tally we would search for isTally or isTallyWallet property keys
+  private detectOnProvider(providers: any) {
+    if (!providers) return null
+    return providers.find((provider: any) => this.searchKeywords.some((keyword) => provider[keyword]))
+  }
+
+  // Mod: Added custom method
+  // Here we check for specific provider directly on window.ethereum
+  private detectOnEthereum(ethereum?: any) {
+    if (!ethereum) return null
+    const provider = this.searchKeywords.some((keyword) => ethereum[keyword])
+    return provider ? ethereum : null
+  }
+
+  // Mod: Added custom method
+  // Try 2 different RPC methods to get accounts first with eth_requestAccounts and if it fails, try eth_accounts
+  public async getAccounts() {
+    const { provider } = this
+
+    if (!provider) return []
+
+    try {
+      const accounts = await provider.request({ method: 'eth_requestAccounts' })
+      return accounts as string[]
+    } catch (e) {
+      console.log('Failed to get account with eth_requestAccounts method')
+      return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
+    }
   }
 }
