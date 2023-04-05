@@ -1,1 +1,1 @@
-Please be aware that barn.cow.fi will be unavailable at 2 PM CET to 2:30 PM CET on 5th April, 2023 as the team will be performing scheduled maintenance at this time.
+Please be aware that barn.cow.fi will be unavailable at 12 PM CET to 12:30 PM CET on 5th April, 2023 as the team will be performing scheduled maintenance at this time.
