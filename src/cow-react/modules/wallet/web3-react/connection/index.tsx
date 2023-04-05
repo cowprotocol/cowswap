@@ -122,7 +122,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
   const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
-  const keystoneOption = (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || !isMobile && <InstallKeystoneOption />
+  const keystoneOption =
+    (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || (!isMobile && <InstallKeystoneOption />)
 
   return (
     <>
