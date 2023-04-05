@@ -254,7 +254,7 @@ export function getEstimatedExecutionPrice(
 ): Price<Currency, Currency> {
   // Build CurrencyAmount and Price instances
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, fee)
-  //  Always use original amounts for building the limit price, as this will never change
+  // Always use original amounts for building the limit price, as this will never change
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const outputAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())
   const limitPrice = buildPriceFromCurrencyAmounts(inputAmount, outputAmount)
@@ -286,7 +286,7 @@ export function getEstimatedExecutionPrice(
     numerator.quotient
   )
 
-  // Picking the MAX between FEP and FP
+  // Pick the MAX between FEP and FP
   const estimatedExecutionPrice = fillPrice.greaterThan(feasibleExecutionPrice) ? fillPrice : feasibleExecutionPrice
 
   // Apply slippage to the estimated price to give us an extra wiggle room
@@ -309,7 +309,7 @@ export function getEstimatedExecutionPrice(
     'Limit Price (LP)': `${limitPrice.toFixed(8)} ${limitPrice.quoteCurrency.symbol} per ${
       limitPrice.baseCurrency.symbol
     } (${limitPrice.numerator.toString()}/${limitPrice.denominator.toString()})`,
-    'Feasable Execution Price (FEP)': `${feasibleExecutionPrice.toFixed(18)} ${
+    'Feasible Execution Price (FEP)': `${feasibleExecutionPrice.toFixed(18)} ${
       feasibleExecutionPrice.quoteCurrency.symbol
     } per ${feasibleExecutionPrice.baseCurrency.symbol}`,
     'Fill Price (FP)': `${fillPrice.toFixed(8)} ${fillPrice.quoteCurrency.symbol} per ${
