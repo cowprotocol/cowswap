@@ -25,13 +25,14 @@ import { Provider as AtomProvider } from 'jotai'
 import Popups from 'components/Popups'
 import { Updaters } from '@cow/modules/application/containers/App/Updaters'
 import { createRoot } from 'react-dom/client'
+import { EthereumProvider } from '@src/lib/ethereum'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
 
 if (!!window.ethereum) {
-  window.ethereum.autoRefreshOnNetworkChange = false
+  (window.ethereum as EthereumProvider).autoRefreshOnNetworkChange = false
 }
 
 const root = createRoot(document.getElementById('root')!)
