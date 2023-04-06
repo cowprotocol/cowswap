@@ -61,26 +61,26 @@ export class InjectedWallet extends Connector {
           return
         }
 
-        // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
-        // chains; they should be requested serially, with accounts first, so that the chainId can settle.
+        // Try to get accounts, if no accounts is returned (user rejected) throw error
         const accounts = await this.getAccounts()
+        if (!accounts.length) throw new Error('No accounts returned')
+
+        // Get chain ID from the wallet
         const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
         const receivedChainId = parseChainId(chainId)
-        const isTrust = this.provider.isTrust
         const desiredChainId =
           typeof desiredChainIdOrChainParameters === 'number'
             ? desiredChainIdOrChainParameters
             : desiredChainIdOrChainParameters?.chainId
 
         // if there's no desired chain, or it's equal to the received, update
-        if (!desiredChainId || receivedChainId === desiredChainId || isTrust)
+        if (!desiredChainId || receivedChainId === desiredChainId)
           return this.actions.update({ chainId: receivedChainId, accounts })
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
 
-        // if we're here, we can try to switch networks
         return this.provider
-          .request({
+          .request<any>({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: desiredChainIdHex }],
           })
@@ -96,7 +96,6 @@ export class InjectedWallet extends Connector {
 
             throw error
           })
-          .then(() => this.activate(desiredChainId))
       })
       .catch((error: Error) => {
         cancelActivation?.()
@@ -114,6 +113,7 @@ export class InjectedWallet extends Connector {
 
       if (!this.provider || this.eagerConnection) return cancelActivation()
 
+      // Fix to call this only once
       this.eagerConnection = true
 
       if (this.provider.isTrust) {

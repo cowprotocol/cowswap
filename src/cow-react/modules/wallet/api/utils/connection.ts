@@ -56,3 +56,7 @@ export function getIsAlphaWallet(name: string | undefined): boolean {
 export function getIsTrustWallet(provider: any, name?: string): boolean {
   return provider?.isTrust || name?.toLocaleLowerCase().includes('trust') || false
 }
+
+export function getIsTallyWallet(provider: any, name?: string): boolean {
+  return provider?.isTally || name?.toLocaleLowerCase().includes('tally') || false
+}
