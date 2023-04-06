@@ -1,8 +1,10 @@
 import { DetailsRow } from '@cow/modules/limitOrders/pure/LimitOrdersDetails/styled'
 import { InfoIcon } from 'components/InfoIcon'
+import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 
 export type OrderTypeProps = {
   isPartiallyFillable: boolean
+  partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
   className?: string
 }
 
