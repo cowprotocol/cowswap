@@ -7,6 +7,7 @@ import {
   ProviderRpcError,
   RequestArguments,
 } from '@web3-react/types'
+import { isRejectRequestProviderError } from '@src/custom/utils/misc'
 
 type InjectedWalletProvider = Provider & {
   providers?: Omit<InjectedWalletProvider, 'providers'>[]
@@ -202,13 +203,22 @@ export class InjectedWallet extends Connector {
   public async getAccounts() {
     const { provider } = this
 
-    if (!provider) return []
+    if (!provider) {
+      throw new Error('No provider')
+    }
 
     try {
       const accounts = await provider.request({ method: 'eth_requestAccounts' })
       return accounts as string[]
-    } catch (e) {
-      console.log('Failed to get account with eth_requestAccounts method')
+    } catch (error) {
+      if (isRejectRequestProviderError(error)) {
+        throw error
+      }
+
+      console.debug(`
+        Failed to get account with eth_requestAccounts method
+        Trying with eth_accounts method
+      `)
       return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
     }
   }
