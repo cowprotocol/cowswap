@@ -228,7 +228,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const currenciesLoadingInProgress = false
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
-  const isPartiallyFillable = !!tradeContext?.postOrderParams.partiallyFillable
+  const isPartiallyFillable = tradeContext?.postOrderParams.partiallyFillable ?? true
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
