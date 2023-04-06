@@ -5,8 +5,8 @@ import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 import { initializeConnector } from '@web3-react/core'
-import { InjectedWallet } from '@cow/modules/wallet/web3-react/connectors/Injected'
 import { Web3ReactConnection } from '../types'
+import { InjectedWallet } from '@cow/modules/wallet/web3-react/connectors/Injected'
 
 import { default as TallyImage } from '@cow/modules/wallet/api/assets/tally.svg'
 

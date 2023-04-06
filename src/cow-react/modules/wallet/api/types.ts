@@ -11,6 +11,7 @@ export enum ConnectionType {
   AMBIRE = 'AMBIRE',
   ALPHA = 'ALPHA',
   TALLY = 'TALLY',
+  TRUST = 'TRUST',
   LEDGER = 'LEDGER',
   KEYSTONE = 'KEYSTONE',
 }

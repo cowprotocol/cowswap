@@ -22,6 +22,7 @@ import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
 import { tallyWalletConnection, TallyWalletOption } from './tally'
+import { trustWalletConnection, TrustWalletOption } from './trust'
 import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
 
 const CONNECTIONS: Web3ReactConnection[] = [
@@ -32,6 +33,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   fortmaticConnection,
   networkConnection,
   tallyWalletConnection,
+  trustWalletConnection,
   ledgerConnection,
   keystoneConnection,
 ]
@@ -46,6 +48,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
     case tallyWalletConnection.connector:
+    case trustWalletConnection.connector:
     case ledgerConnection.connector:
     case keystoneConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
@@ -83,6 +86,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return walletConnectConnection
       case ConnectionType.TALLY:
         return tallyWalletConnection
+      case ConnectionType.TRUST:
+        return trustWalletConnection
       case ConnectionType.LEDGER:
         return ledgerConnection
       case ConnectionType.KEYSTONE:
@@ -103,6 +108,9 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
   const isChromeMobile = isMobile && isChrome
   const showKeystone = !isInjectedMobileBrowser && !isMobile && window.ethereum?.isMetaMask
+
+  // Show Tally option only in Chrome (includes Brave too), but not on mobile or as an injected browser
+  const showTally = !isInjectedMobileBrowser && isChrome && !isChromeMobile
 
   let injectedOption
   if (!isInjected) {
@@ -133,11 +141,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || (!isMobile && <InstallKeystoneOption />)
 
   // Injected
-  // Show Tally option only in Chrome (includes Brave too), but not on mobile or as an injected browser
-  // This is because currently Tally is only supported for Chrome and Brave
-  const tallyOption =
-    (!isInjectedMobileBrowser && isChrome && !isChromeMobile && <TallyWalletOption tryActivation={tryActivation} />) ??
-    null
+  const tallyOption = (showTally && <TallyWalletOption tryActivation={tryActivation} />) ?? null
+  const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
@@ -149,6 +154,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {ambireOption}
       {alphaOption}
       {tallyOption}
+      {trustOption}
       {keystoneOption}
     </>
   )

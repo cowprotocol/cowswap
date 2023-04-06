@@ -4,6 +4,7 @@ import {
   getIsZengoWallet,
   getIsAmbireWallet,
   getIsAlphaWallet,
+  getIsTrustWallet,
 } from '@cow/modules/wallet/api/utils/connection'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
@@ -46,7 +47,11 @@ export function WalletConnectOption({ tryActivation }: { tryActivation: TryActiv
 
   const isWalletConnect = useIsActiveWallet(walletConnectConnection)
   const isActive =
-    isWalletConnect && !getIsZengoWallet(walletName) && !getIsAmbireWallet(walletName) && !getIsAlphaWallet(walletName)
+    isWalletConnect &&
+    !getIsZengoWallet(walletName) &&
+    !getIsAmbireWallet(walletName) &&
+    !getIsAlphaWallet(walletName) &&
+    !getIsTrustWallet(null, walletName)
   const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
 
   return (

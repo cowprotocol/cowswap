@@ -7,6 +7,7 @@ import {
   ProviderRpcError,
   RequestArguments,
 } from '@web3-react/types'
+import { isRejectRequestProviderError } from '@src/custom/utils/misc'
 
 type InjectedWalletProvider = Provider & {
   providers?: Omit<InjectedWalletProvider, 'providers'>[]
@@ -14,6 +15,8 @@ type InjectedWalletProvider = Provider & {
   request<T>(args: RequestArguments): Promise<T>
   chainId: string
   selectedAddress: string
+  enable?: () => void
+  isTrust?: boolean
   on: (event: string, args: unknown) => unknown
 }
 
@@ -25,6 +28,10 @@ interface injectedWalletConstructorArgs {
 }
 
 function parseChainId(chainId: string) {
+  if (!chainId.startsWith('0x')) {
+    return Number(chainId)
+  }
+
   return Number.parseInt(chainId, 16)
 }
 
@@ -32,6 +39,7 @@ export class InjectedWallet extends Connector {
   provider?: InjectedWalletProvider
   walletUrl: string
   searchKeywords: string[]
+  eagerConnection?: boolean
 
   constructor({ actions, onError, walletUrl, searchKeywords }: injectedWalletConstructorArgs) {
     super(actions, onError)
@@ -54,9 +62,11 @@ export class InjectedWallet extends Connector {
           return
         }
 
-        // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
-        // chains; they should be requested serially, with accounts first, so that the chainId can settle.
-        const accounts = (await this.provider.request({ method: 'eth_requestAccounts' })) as string[]
+        // Try to get accounts, if no accounts is returned (user rejected) throw error
+        const accounts = await this.getAccounts()
+        if (!accounts.length) throw new Error('No accounts returned')
+
+        // Get chain ID from the wallet
         const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
         const receivedChainId = parseChainId(chainId)
         const desiredChainId =
@@ -70,9 +80,8 @@ export class InjectedWallet extends Connector {
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
 
-        // if we're here, we can try to switch networks
         return this.provider
-          .request({
+          .request<any>({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: desiredChainIdHex }],
           })
@@ -88,7 +97,6 @@ export class InjectedWallet extends Connector {
 
             throw error
           })
-          .then(() => this.activate(desiredChainId))
       })
       .catch((error: Error) => {
         cancelActivation?.()
@@ -103,11 +111,19 @@ export class InjectedWallet extends Connector {
 
     try {
       await this.isomorphicInitialize()
-      if (!this.provider) return cancelActivation()
+
+      if (!this.provider || this.eagerConnection) return cancelActivation()
+
+      // Fix to call this only once
+      this.eagerConnection = true
+
+      if (this.provider.isTrust) {
+        await this.provider.enable?.()
+      }
 
       // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
-      const accounts = (await this.provider.request({ method: 'eth_accounts' })) as string[]
+      const accounts = await this.getAccounts()
       if (!accounts.length) throw new Error('No accounts returned')
       const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
       this.actions.update({ chainId: parseChainId(chainId), accounts })
@@ -139,7 +155,7 @@ export class InjectedWallet extends Connector {
       })
 
       provider.on('chainChanged', (chainId: string): void => {
-        this.actions.update({ chainId: Number(chainId) })
+        this.actions.update({ chainId: parseChainId(chainId) })
       })
 
       provider.on('accountsChanged', (accounts: string[]): void => {
@@ -180,5 +196,30 @@ export class InjectedWallet extends Connector {
     if (!ethereum) return null
     const provider = this.searchKeywords.some((keyword) => ethereum[keyword])
     return provider ? ethereum : null
+  }
+
+  // Mod: Added custom method
+  // Try 2 different RPC methods to get accounts first with eth_requestAccounts and if it fails, try eth_accounts
+  public async getAccounts() {
+    const { provider } = this
+
+    if (!provider) {
+      throw new Error('No provider')
+    }
+
+    try {
+      const accounts = await provider.request({ method: 'eth_requestAccounts' })
+      return accounts as string[]
+    } catch (error) {
+      if (isRejectRequestProviderError(error)) {
+        throw error
+      }
+
+      console.debug(`
+        Failed to get account with eth_requestAccounts method
+        Trying with eth_accounts method
+      `)
+      return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
+    }
   }
 }
