@@ -1,3 +1,5 @@
+import styled from 'styled-components/macro'
+
 import SVG from 'react-inlinesvg'
 import { DetailsRow } from '@cow/modules/limitOrders/pure/LimitOrdersDetails/styled'
 import { InfoIcon } from 'components/InfoIcon'
@@ -45,15 +47,59 @@ function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: Ord
     <Menu>
       {({ isExpanded }) => (
         <>
-          <MenuButton>
+          <StyledMenuButton>
             <span>{labelText}</span>
             <SVG src={IMAGE_CARET_DOWN} description="dropdown icon" className={isExpanded ? 'expanded' : ''} />
-          </MenuButton>
-          <MenuList portal={false}>
-            <MenuItem onSelect={onSelect}>{dropDownText}</MenuItem>
-          </MenuList>
+          </StyledMenuButton>
+          <StyledMenuList portal={true}>
+            <StyledMenuItem onSelect={onSelect}>{dropDownText}</StyledMenuItem>
+          </StyledMenuList>
         </>
       )}
     </Menu>
   )
 }
+
+const StyledMenuButton = styled(MenuButton)`
+  display: flex;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+
+  align-items: center;
+  gap: 5px;
+
+  color: ${({ theme }) => theme.text1};
+  cursor: pointer;
+
+  > span {
+    opacity: 0.8;
+    padding: 0;
+    margin: 0;
+  }
+
+  > svg.expanded {
+    transition: transform 0.3s ease-in-out;
+    transform: rotate(180deg);
+  }
+`
+
+const StyledMenuList = styled(MenuList)`
+  position: relative;
+  z-index: 2;
+
+  padding-top: 5px;
+
+  background: ${({ theme }) => theme.cardBackground};
+`
+
+const StyledMenuItem = styled(MenuItem)`
+  font-size: 13px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.text1};
+  min-height: 24px;
+
+  cursor: pointer;
+`
