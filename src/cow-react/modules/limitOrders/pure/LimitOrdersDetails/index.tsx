@@ -42,7 +42,7 @@ export interface LimitOrdersDetailsProps {
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   const { executionPrice, tradeContext, settingsState, rateInfoParams, limitRateState } = props
-  const { account, recipient, recipientAddressOrName } = tradeContext.postOrderParams
+  const { account, recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
   const { feeAmount, activeRate, marketRate } = limitRateState
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
@@ -116,8 +116,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Active</span>
         </div>
       </styledEl.DetailsRow> */}
-      {/* TODO: adjust flag when settings are available */}
-      <OrderType isPartiallyFillable />
+      <OrderType isPartiallyFillable={partiallyFillable} />
       {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>
