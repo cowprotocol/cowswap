@@ -134,6 +134,12 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
         <img src={TrustIcon} alt={'Trust logo'} />
       </IconWrapper>
     )
+  } else if (connectionType === tallyWalletConnection) {
+    return (
+      <IconWrapper size={16}>
+        <img src={TallyIcon} alt={'tally logo'} />
+      </IconWrapper>
+    )
   } else if (connectionType === ledgerConnection) {
     return (
       <IconWrapper size={16}>
