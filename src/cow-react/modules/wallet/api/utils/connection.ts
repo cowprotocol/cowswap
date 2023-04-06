@@ -24,6 +24,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Tally'
     case ConnectionType.LEDGER:
       return 'Ledger'
+    case ConnectionType.KEYSTONE:
+      return 'Keystone'
   }
 }
 

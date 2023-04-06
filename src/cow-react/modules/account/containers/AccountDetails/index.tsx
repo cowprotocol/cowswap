@@ -12,6 +12,7 @@ import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
 import LedgerIcon from '@cow/modules/wallet/api/assets/ledger.svg'
 import TallyIcon from '@cow/modules/wallet/api/assets/tally.svg'
+import KeystoneImage from '@cow/modules/wallet/api/assets/keystone.svg'
 import { Identicon } from '@cow/modules/wallet/api/container/Identicon'
 import { ActivityDescriptors } from 'hooks/useRecentActivity'
 import Activity from '@cow/modules/account/containers/Transaction'
@@ -55,6 +56,7 @@ import { tallyWalletConnection } from '@cow/modules/wallet/web3-react/connection
 import { useWalletDetails } from '@cow/modules/wallet/api/hooks'
 import { useWeb3React } from '@web3-react/core'
 import { ledgerConnection } from '@cow/modules/wallet/web3-react/connection/ledger'
+import { keystoneConnection } from '@cow/modules/wallet/web3-react/connection/keystone'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GOERLI]: 'Görli',
@@ -128,6 +130,12 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
     return (
       <IconWrapper size={16}>
         <img src={LedgerIcon} alt={'ledger logo'} />
+      </IconWrapper>
+    )
+  } else if (connectionType === keystoneConnection) {
+    return (
+      <IconWrapper size={16}>
+        <img src={KeystoneImage} alt={'Keystone logo'} />
       </IconWrapper>
     )
   }

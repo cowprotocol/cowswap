@@ -13,6 +13,7 @@ import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrders
 import { useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atoms'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
+import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
@@ -27,6 +28,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
   const quoteState = useAtomValue(limitOrdersQuoteAtom)
   const rateImpact = useRateImpact()
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
 
   if (
     !chainId ||
@@ -74,7 +76,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       inputAmount: state.inputCurrencyAmount,
       outputAmount: state.outputCurrencyAmount,
       sellAmountBeforeFee: state.inputCurrencyAmount,
-      partiallyFillable: true, // Limit orders ALWAYS partially fillable - for now
+      partiallyFillable: settingsState.partialFillsEnabled,
       appDataHash: appData.hash,
       quoteId,
     },
