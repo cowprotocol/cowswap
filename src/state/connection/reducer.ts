@@ -19,6 +19,7 @@ export const initialState: ConnectionState = {
     [ConnectionType.TALLY]: undefined,
     [ConnectionType.TRUST]: undefined,
     [ConnectionType.LEDGER]: undefined,
+    [ConnectionType.KEYSTONE]: undefined,
   },
 }
 

@@ -156,7 +156,8 @@ export function ConnectWalletOption({
   )
 
   if (link) {
-    return <ExternalLink href={link}>{content}</ExternalLink>
+    const externalLink = <ExternalLink href={link}>{content}</ExternalLink>
+    return tooltipText ? <MouseoverTooltip text={tooltipText}>{externalLink}</MouseoverTooltip> : externalLink
   }
 
   if (tooltipText) {

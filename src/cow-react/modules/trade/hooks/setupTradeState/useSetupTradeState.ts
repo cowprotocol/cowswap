@@ -160,8 +160,12 @@ export function useSetupTradeState(): void {
     setIsChainIdSet(true)
 
     switchChain(connector, chainIdFromUrl)
-      .catch((e) => {
-        console.error(e)
+      .catch((error: Error) => {
+        // We are ignoring Gnosis safe context error
+        // Because it's a normal situation when we are not in Gnosis safe App
+        if (error.name === 'NoSafeContext') return
+
+        console.error('Network switching error: ', error)
       })
       .finally(() => {
         if (!isSubscribed) return

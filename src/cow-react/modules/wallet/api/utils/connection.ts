@@ -26,6 +26,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Trust'
     case ConnectionType.LEDGER:
       return 'Ledger'
+    case ConnectionType.KEYSTONE:
+      return 'Keystone'
   }
 }
 
