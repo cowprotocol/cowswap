@@ -32,7 +32,7 @@ export function OrderType(props: OrderTypeProps) {
 
 const LABELS = ['Partially fillable', 'Fill or kill']
 
-export function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps) {
+function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps) {
   const [override, setOverride] = partiallyFillableOverride
   const [labelText, dropDownText] = override ?? isPartiallyFillable ? LABELS : [...LABELS].reverse()
 
