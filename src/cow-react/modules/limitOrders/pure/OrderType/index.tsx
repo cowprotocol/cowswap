@@ -1,5 +1,8 @@
+import SVG from 'react-inlinesvg'
 import { DetailsRow } from '@cow/modules/limitOrders/pure/LimitOrdersDetails/styled'
 import { InfoIcon } from 'components/InfoIcon'
+import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
+import IMAGE_CARET_DOWN from 'assets/cow-swap/carret-down.svg'
 import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 
 export type OrderTypeProps = {
@@ -8,11 +11,11 @@ export type OrderTypeProps = {
   className?: string
 }
 
-export function OrderType({ isPartiallyFillable, className }: OrderTypeProps) {
+export function OrderType(props: OrderTypeProps) {
+  const { isPartiallyFillable, className } = props
   const textContent = isPartiallyFillable
     ? 'This order can be partially filled'
     : 'This order will either be filled completely or not filled.'
-  const labelText = isPartiallyFillable ? 'Partially fillable' : 'Fill or kill'
 
   return (
     <DetailsRow className={className}>
@@ -22,9 +25,32 @@ export function OrderType({ isPartiallyFillable, className }: OrderTypeProps) {
         </span>{' '}
         <InfoIcon content={textContent} />
       </div>
-      <div>
-        <span>{labelText}</span>
-      </div>
+      <OrderTypePicker {...props} />
     </DetailsRow>
+  )
+}
+
+const LABELS = ['Partially fillable', 'Fill or kill']
+
+export function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps) {
+  const [override, setOverride] = partiallyFillableOverride
+  const [labelText, dropDownText] = override ?? isPartiallyFillable ? LABELS : [...LABELS].reverse()
+
+  const onSelect = () => setOverride(() => !(override ?? isPartiallyFillable))
+
+  return (
+    <Menu>
+      {({ isExpanded }) => (
+        <>
+          <MenuButton>
+            <span>{labelText}</span>
+            <SVG src={IMAGE_CARET_DOWN} description="dropdown icon" className={isExpanded ? 'expanded' : ''} />
+          </MenuButton>
+          <MenuList portal={false}>
+            <MenuItem onSelect={onSelect}>{dropDownText}</MenuItem>
+          </MenuList>
+        </>
+      )}
+    </Menu>
   )
 }
