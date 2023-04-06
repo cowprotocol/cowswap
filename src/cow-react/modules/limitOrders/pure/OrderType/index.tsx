@@ -34,9 +34,12 @@ const LABELS = ['Partially fillable', 'Fill or kill']
 
 function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps) {
   const [override, setOverride] = partiallyFillableOverride
-  const [labelText, dropDownText] = override ?? isPartiallyFillable ? LABELS : [...LABELS].reverse()
 
-  const onSelect = () => setOverride(() => !(override ?? isPartiallyFillable))
+  const showPartiallyFillable = override ?? isPartiallyFillable
+
+  const [labelText, dropDownText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
+
+  const onSelect = () => setOverride(!showPartiallyFillable)
 
   return (
     <Menu>
