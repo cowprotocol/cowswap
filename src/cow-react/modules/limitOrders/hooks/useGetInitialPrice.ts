@@ -27,19 +27,18 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
     }
 
     const result = await orderBookApi.getNativePrice(currencyAddress, { chainId })
-
     if (!result) {
-      throw new Error('Cannot parse initial price')
+      throw new Error('No result from native_price endpoint')
     }
 
     const price = parsePrice(result.price || 0, currency)
-
     if (!price) {
-      throw new Error('Cannot parse initial price')
+      throw new Error("Couldn't parse native_price result")
     }
 
     return price
   } catch (error: any) {
+    console.error('[requestPriceForCurrency] Error fetching native_price', error)
     return error
   }
 }
