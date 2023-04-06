@@ -229,7 +229,7 @@ export function OrderRow({
                 amountDifference={priceDiffs?.amount}
                 percentageFee={feeDifference}
                 amountFee={feeAmount}
-                canShowWarning={order.class !== OrderClass.MARKET}
+                canShowWarning={order.class !== OrderClass.MARKET && !isUnfillable}
                 isUnfillable={isUnfillable}
               />
             </styledEl.ExecuteCellWrapper>

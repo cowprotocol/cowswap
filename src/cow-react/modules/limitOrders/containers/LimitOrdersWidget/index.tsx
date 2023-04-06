@@ -228,6 +228,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const currenciesLoadingInProgress = false
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
+  const isPartiallyFillable = !!tradeContext?.postOrderParams.partiallyFillable
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -310,7 +311,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
               {isExpertMode && (
                 <styledEl.FooterBox>
-                  <styledEl.StyledOrderType isPartiallyFillable />
+                  <styledEl.StyledOrderType isPartiallyFillable={isPartiallyFillable} />
                 </styledEl.FooterBox>
               )}
 

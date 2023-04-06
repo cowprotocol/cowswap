@@ -20,6 +20,7 @@ const ORDER = generateOrder({ owner: '0x...', sellToken, buyToken })
 // Update to amounts reasonable for testing.
 // Price is 1 USDC per USDT == 1 USDT/USDC
 ORDER.sellAmount = '1000'
+ORDER.sellAmountBeforeFee = '1000'
 ORDER.buyAmount = '1000'
 
 describe('isOrderUnfillable', () => {
