@@ -21,6 +21,7 @@ import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
+import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -30,6 +31,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   fortmaticConnection,
   networkConnection,
   ledgerConnection,
+  keystoneConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -42,6 +44,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
     case ledgerConnection.connector:
+    case keystoneConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -77,6 +80,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return walletConnectConnection
       case ConnectionType.LEDGER:
         return ledgerConnection
+      case ConnectionType.KEYSTONE:
+        return keystoneConnection
     }
   }
 }
@@ -91,6 +96,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
+  const showKeystone = !isInjectedMobileBrowser && !isMobile && window.ethereum?.isMetaMask
 
   let injectedOption
   if (!isInjected) {
@@ -116,6 +122,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
   const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
+  const keystoneOption =
+    (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || (!isMobile && <InstallKeystoneOption />)
 
   return (
     <>
@@ -126,6 +134,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {zengoOption}
       {ambireOption}
       {alphaOption}
+      {keystoneOption}
     </>
   )
 }
