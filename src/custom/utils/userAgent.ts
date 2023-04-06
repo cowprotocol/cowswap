@@ -16,3 +16,6 @@ function getBrowserMajorVersion() {
 }
 
 export const majorBrowserVersion = getBrowserMajorVersion()
+
+const { name } = parser.getBrowser()
+export const isChrome = name?.toLowerCase().startsWith('chrome')

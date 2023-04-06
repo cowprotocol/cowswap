@@ -20,6 +20,8 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
       return 'Ambire'
     case ConnectionType.ALPHA:
       return 'Alpha'
+    case ConnectionType.TALLY:
+      return 'Tally'
     case ConnectionType.LEDGER:
       return 'Ledger'
     case ConnectionType.KEYSTONE:

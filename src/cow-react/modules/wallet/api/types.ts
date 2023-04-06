@@ -10,6 +10,7 @@ export enum ConnectionType {
   ZENGO = 'ZENGO',
   AMBIRE = 'AMBIRE',
   ALPHA = 'ALPHA',
+  TALLY = 'TALLY',
   LEDGER = 'LEDGER',
   KEYSTONE = 'KEYSTONE',
 }
