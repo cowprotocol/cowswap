@@ -64,6 +64,7 @@ const UnfillableLabel = styled.span`
 
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
   isInverted: boolean
+  isUnfillable: boolean
   canShowWarning: boolean
   percentageDifference?: Percent
   amountDifference?: CurrencyAmount<Currency>
@@ -74,6 +75,7 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
 export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const {
     isInverted,
+    isUnfillable,
     canShowWarning,
     percentageDifference,
     amountDifference,
@@ -95,11 +97,10 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const feeWarning = canShowWarning && percentageFee?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
-  const isZeroPrice = amount?.equalTo(ZERO_FRACTION)
 
   return (
-    <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isZeroPrice}>
-      {isZeroPrice ? (
+    <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isUnfillable}>
+      {isUnfillable ? (
         <UnfillableLabel>UNFILLABLE</UnfillableLabel>
       ) : (
         <MouseoverTooltipContent
@@ -125,7 +126,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           }
           placement="top"
         >
-          {isZeroPrice ? (
+          {isUnfillable ? (
             <UnfillableLabel>UNFILLABLE</UnfillableLabel>
           ) : (
             <>

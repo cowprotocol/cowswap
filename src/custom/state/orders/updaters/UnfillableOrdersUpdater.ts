@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { usePendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
+import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
 import { Order } from 'state/orders/actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -10,6 +10,7 @@ import {
   getEstimatedExecutionPrice,
   getOrderExecutionPrice,
   getOrderMarketPrice,
+  getRemainderAmount,
   isOrderUnfillable,
 } from 'state/orders/utils'
 import { getPromiseFulfilledValue } from 'utils/misc'
@@ -31,7 +32,9 @@ import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */
 async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceStrategy) {
-  let amount, baseToken, quoteToken
+  let baseToken, quoteToken
+
+  const amount = getRemainderAmount(order.kind, order)
 
   if (order.kind === 'sell') {
     // this order sell amount is sellAmountAfterFees
@@ -39,11 +42,9 @@ async function _getOrderPrice(chainId: ChainId, order: Order, strategy: GpPriceS
     // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
     // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
     // e.g so here we need to pass the sellAmountBeforeFees
-    amount = order.sellAmountBeforeFee.toString()
     baseToken = order.sellToken
     quoteToken = order.buyToken
   } else {
-    amount = order.buyAmount.toString()
     baseToken = order.buyToken
     quoteToken = order.sellToken
   }
@@ -88,7 +89,7 @@ export function UnfillableOrdersUpdater(): null {
   const updatePendingOrderPrices = useUpdateAtom(updatePendingOrderPricesAtom)
   const isWindowVisible = useIsWindowVisible()
 
-  const pending = usePendingOrders({ chainId })
+  const pending = useOnlyPendingOrders({ chainId })
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
   const strategy = useGetGpPriceStrategy()
 

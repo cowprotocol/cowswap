@@ -58,8 +58,11 @@ export const UpperSection = styled.div`
 export const OptionGrid = styled.div`
   display: grid;
   grid-gap: 10px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: 1fr;
-    grid-gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: repeat(3, 1fr);
   `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+        grid-template-columns: repeat(2, 1fr);
+  `}
 `

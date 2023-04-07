@@ -3,7 +3,7 @@ import { Market } from 'types/index'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 
-const PROVIDER_REJECT_REQUEST_CODE = 4001 // See https://eips.ethereum.org/EIPS/eip-1193
+const PROVIDER_REJECT_REQUEST_CODES = [4001, -32000] // See https://eips.ethereum.org/EIPS/eip-1193
 const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'User denied message signature',
   'User rejected the transaction',
@@ -151,7 +151,7 @@ export function getProviderErrorMessage(error: any) {
 export function isRejectRequestProviderError(error: any) {
   if (error) {
     // Check the error code is the user rejection as described in eip-1193
-    if (error.code === PROVIDER_REJECT_REQUEST_CODE) {
+    if (PROVIDER_REJECT_REQUEST_CODES.includes(error.code)) {
       return true
     }
 

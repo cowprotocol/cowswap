@@ -143,7 +143,7 @@ export default function TokensOverview() {
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
-      const input = event.target.value.trim()
+      const input = event.target.value.trim().toLowerCase()
       const checksummedInput = isAddress(input)
       setQuery(checksummedInput || input)
       if (page !== 1) setPage(1)

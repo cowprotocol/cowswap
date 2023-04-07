@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/macro'
+import { darken, lighten } from 'polished'
 
 import { ExternalLink } from 'theme'
 import { MouseoverTooltip } from 'components/Tooltip'
@@ -11,9 +12,6 @@ const InfoCard = styled.button<{ isActive?: boolean }>`
   border: 1px solid;
   border-radius: 12px;
   width: 100% !important;
-  // &:focus {
-  //   box-shadow: 0 0 0 1px ${({ theme }) => theme.primary1};
-  // }
   border-color: ${({ theme, isActive }) => (isActive ? 'transparent' : theme.bg3)};
 `
 
@@ -38,9 +36,21 @@ export const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boole
   background-color: ${({ theme, active }) => (active ? theme.bg2 : theme.grey1)};
   color: ${({ theme, active }) => (active ? theme.white : theme.text1)};
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease-in;
+  height: 120px;
+  border: 1px solid transparent;
+
   &:hover {
     cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
-    border: ${({ clickable, theme }) => (clickable ? `1px solid ${theme.grey1}` : ``)};
+    background-color: ${({ theme, clickable }) => {
+      if (!clickable) return
+      else if (!theme.darkMode) return darken(0.05, theme.bg3)
+      else return lighten(0.2, theme.bg3)
+    }};
   }
 `
 
@@ -67,8 +77,8 @@ const CircleWrapper = styled.div`
 
 export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 400;
 `
 
 const SubHeader = styled.div`
@@ -81,14 +91,12 @@ const IconWrapper = styled.div<{ size?: number | null }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;
   justify-content: center;
+  margin-bottom: 10px;
   & > img,
   span {
     height: ${({ size }) => (size ? size + 'px' : '24px')};
     width: ${({ size }) => (size ? size + 'px' : '24px')};
   }
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    align-items: flex-end;
-  `};
 `
 
 export interface ConnectWalletOptionProps {
@@ -127,6 +135,9 @@ export function ConnectWalletOption({
       data-testid="wallet-modal-option"
     >
       <OptionCardLeft>
+        <IconWrapper size={size}>
+          <img src={icon} alt={'Icon'} />
+        </IconWrapper>
         <HeaderText color={color}>
           {isActive ? (
             <CircleWrapper>
@@ -141,14 +152,12 @@ export function ConnectWalletOption({
         </HeaderText>
         {subheader && <SubHeader>{subheader}</SubHeader>}
       </OptionCardLeft>
-      <IconWrapper size={size}>
-        <img src={icon} alt={'Icon'} />
-      </IconWrapper>
     </OptionCardClickable>
   )
 
   if (link) {
-    return <ExternalLink href={link}>{content}</ExternalLink>
+    const externalLink = <ExternalLink href={link}>{content}</ExternalLink>
+    return tooltipText ? <MouseoverTooltip text={tooltipText}>{externalLink}</MouseoverTooltip> : externalLink
   }
 
   if (tooltipText) {

@@ -83,6 +83,11 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     text: 'Review limit order',
     id: 'review-limit-order-btn',
   },
+  [LimitOrdersFormState.ExpertCanTrade]: {
+    disabled: false,
+    text: 'Place limit order',
+    id: 'review-limit-order-btn',
+  },
   [LimitOrdersFormState.SwapIsUnsupported]: {
     disabled: true,
     text: 'Unsupported token',
@@ -109,7 +114,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   },
   [LimitOrdersFormState.InvalidRecipient]: {
     disabled: true,
-    text: 'Enter a recipient',
+    text: 'Enter a valid recipient',
   },
   [LimitOrdersFormState.CantLoadBalances]: {
     disabled: true,

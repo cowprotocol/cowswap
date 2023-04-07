@@ -2,8 +2,7 @@ import * as styledEl from './styled'
 import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
-import { AddRecipient } from '@cow/common/pure/AddRecipient'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
@@ -82,6 +81,12 @@ export function LimitOrdersWidget() {
     () => !isWrapOrUnwrap && settingState.showRecipient,
     [settingState.showRecipient, isWrapOrUnwrap]
   )
+
+  const isExpertMode = useMemo(
+    () => !isWrapOrUnwrap && settingState.expertMode,
+    [isWrapOrUnwrap, settingState.expertMode]
+  )
+
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
   const inputViewAmount = formatInputAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
 
@@ -163,6 +168,7 @@ export function LimitOrdersWidget() {
     allowsOffchainSigning,
     isWrapOrUnwrap,
     showRecipient,
+    isExpertMode,
     recipient,
     chainId,
     onChangeRecipient,
@@ -175,6 +181,14 @@ export function LimitOrdersWidget() {
     tradeContext,
     feeAmount,
   }
+
+  /**
+   * Reset recipient value only once at App start
+   */
+  useEffect(() => {
+    onChangeRecipient(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return <LimitOrders {...props} />
 }
@@ -193,6 +207,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     allowsOffchainSigning,
     isWrapOrUnwrap,
     showRecipient,
+    isExpertMode,
     recipient,
     onChangeRecipient,
     rateInfoParams,
@@ -213,6 +228,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const currenciesLoadingInProgress = false
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
+  const isPartiallyFillable = !!tradeContext?.postOrderParams.partiallyFillable
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -268,7 +284,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                   hasSeparatorLine={true}
                   border={true}
                 />
-                {showRecipient && recipient === null && <AddRecipient onChangeRecipient={onChangeRecipient} />}
               </styledEl.CurrencySeparatorBox>
               <CurrencyInputPanel
                 id="limit-orders-currency-output"
@@ -284,13 +299,19 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 priceImpactParams={priceImpact}
                 topLabel={outputCurrencyInfo.label}
               />
-              {recipient !== null && (
-                <styledEl.StyledRemoveRecipient recipient={recipient} onChangeRecipient={onChangeRecipient} />
+              {showRecipient && (
+                <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
               )}
 
               {!isWrapOrUnwrap && (
                 <styledEl.FooterBox>
                   <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                </styledEl.FooterBox>
+              )}
+
+              {isExpertMode && (
+                <styledEl.FooterBox>
+                  <styledEl.StyledOrderType isPartiallyFillable={isPartiallyFillable} />
                 </styledEl.FooterBox>
               )}
 

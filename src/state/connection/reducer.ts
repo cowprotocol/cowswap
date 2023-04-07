@@ -17,6 +17,10 @@ export const initialState: ConnectionState = {
     [ConnectionType.AMBIRE]: undefined,
     [ConnectionType.ALPHA]: undefined,
     [ConnectionType.TREZOR]: undefined,
+    [ConnectionType.TALLY]: undefined,
+    [ConnectionType.TRUST]: undefined,
+    [ConnectionType.LEDGER]: undefined,
+    [ConnectionType.KEYSTONE]: undefined,
   },
 }
 
