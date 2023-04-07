@@ -9,9 +9,12 @@ import { ApplicationModal } from 'state/application/reducer'
 import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 
-import { useEthFlowCancelOrder } from './useEthFlowCancelOrder'
+import { useSendOnChainCancellation, useGetOnChainCancellation } from './useSendOnChainCancellation'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
-import { cancellationModalContextAtom, updateCancellationModalContextAtom } from './state'
+import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
+import { useGasPrices } from 'state/gas/hooks'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export type UseCancelOrderReturn = (() => void) | null
 
@@ -33,7 +36,10 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   const setContext = useSetAtom(updateCancellationModalContextAtom)
   const resetContext = useResetAtom(cancellationModalContextAtom)
   const offChainOrderCancel = useOffChainCancelOrder()
-  const ethFlowOrderCancel = useEthFlowCancelOrder()
+  const sendOnChainCancellation = useSendOnChainCancellation()
+  const getOnChainTxInfo = useGetOnChainCancellation()
+  const gasPrices = useGasPrices(chainId)
+  const nativeCurrency = useNativeCurrency()
 
   return useCallback(
     (order: Order) => {
@@ -61,9 +67,6 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
         return null
       }
 
-      const defaultType = isOffChainCancellable ? 'offChain' : 'onChain'
-      const cancelFn = defaultType === 'offChain' ? offChainOrderCancel : ethFlowOrderCancel
-
       // When dismissing the modal, close it and also reset context
       const onDismiss = () => {
         closeModal()
@@ -71,7 +74,9 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       }
 
       // The callback to trigger the cancellation
-      const triggerCancellation = async (): Promise<void> => {
+      const triggerCancellation = async (type: CancellationType): Promise<void> => {
+        const cancelFn = type === 'offChain' ? offChainOrderCancel : sendOnChainCancellation
+
         try {
           setContext({ isPendingSignature: true, error: null })
           // Actual cancellation is triggered here
@@ -92,23 +97,34 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           orderId: order.id,
           chainId,
           summary: order?.summary,
-          defaultType,
+          defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
           onDismiss,
           triggerCancellation,
+          nativeCurrency,
         })
         // Display the actual modal
         openModal()
+        // Estimate tx cost in case when OnChain cancellation is used
+        getOnChainTxInfo(order).then(({ estimatedGas }) => {
+          const gasPrice = +(gasPrices?.average || '0')
+          const txCost = calculateGasMargin(estimatedGas).mul(gasPrice)
+
+          setContext({ txCost })
+        })
       }
     },
     [
       allowsOffchainSigning,
       chainId,
       closeModal,
-      ethFlowOrderCancel,
+      sendOnChainCancellation,
       offChainOrderCancel,
       openModal,
       resetContext,
       setContext,
+      getOnChainTxInfo,
+      gasPrices,
+      nativeCurrency,
     ]
   )
 }

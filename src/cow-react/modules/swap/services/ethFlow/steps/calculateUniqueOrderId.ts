@@ -1,7 +1,7 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import type { Order } from '@cowprotocol/contracts'
-import { CoWSwapEthFlow } from '@cow/abis/types'
+import { CoWSwapEthFlow } from '@cow/abis/types/ethflow'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { getOrderParams, PostOrderParams } from 'utils/trade'
 import { MAX_VALID_TO_EPOCH } from '@cow/utils/time'

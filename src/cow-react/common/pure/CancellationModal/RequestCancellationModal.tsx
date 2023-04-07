@@ -9,13 +9,19 @@ import { ConfirmationModalContent } from 'components/TransactionConfirmationModa
 
 import { Routes } from '@cow/constants/routes'
 import { ArrowRight } from 'react-feather'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { CancellationType } from '@cow/common/hooks/useCancelOrder/state'
+import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
+import type { BigNumber } from '@ethersproject/bignumber'
 
 export type RequestCancellationModalProps = {
   summary?: string
   shortId: string
-  defaultType: 'offChain' | 'onChain'
+  defaultType: CancellationType
   onDismiss: () => void
-  triggerCancellation: () => void
+  triggerCancellation: (type: CancellationType) => void
+  txCost: BigNumber | null
+  nativeCurrency: NativeCurrency
 }
 
 const Wrapper = styled.div`
@@ -46,7 +52,7 @@ const TypeButton = styled.button`
 `
 
 export function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {
-  const { onDismiss, triggerCancellation, summary, shortId, defaultType } = props
+  const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props
   const isOffChainCancellable = defaultType === 'offChain'
 
   const [showMore, setShowMore] = useState(false)
@@ -55,7 +61,12 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
   const toggleShowMore = () => setShowMore((showMore) => !showMore)
   const toggleType = () => setType((value) => (value === 'onChain' ? 'offChain' : 'onChain'))
 
-  const typeLabel = type === 'onChain' ? 'on-chain' : 'off-chain'
+  const isOnChainType = type === 'onChain'
+  const typeLabel = isOnChainType ? 'on-chain' : 'off-chain'
+
+  const txCostAmount = txCost && !txCost.isZero()
+    ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString())
+    : ''
 
   return (
     <ConfirmationModalContent
@@ -97,9 +108,11 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
               </p>
             </>
           )}
+          {/*TODO: add styles*/}
+          {isOnChainType && txCostAmount && <div>Tx cost: <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /></div>}
         </Wrapper>
       )}
-      bottomContent={() => <ButtonPrimary onClick={triggerCancellation}>Request cancellation</ButtonPrimary>}
+      bottomContent={() => <ButtonPrimary onClick={() => triggerCancellation(type)}>Request cancellation</ButtonPrimary>}
     />
   )
 }
