@@ -13,7 +13,7 @@ export default function useNativeCurrency(): NativeCurrency {
       chainId
         ? nativeOnChain(chainId)
         : // display mainnet when not connected
-        MAINNET_NATIVE_CURRENCY,
+          MAINNET_NATIVE_CURRENCY,
     [chainId]
   )
 }
