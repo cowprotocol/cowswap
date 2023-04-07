@@ -8,7 +8,7 @@ import { ButtonPrimary } from 'components/Button'
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 
 import { Routes } from '@cow/constants/routes'
-import { ArrowRight } from 'react-feather'
+import { ArrowRight, ArrowLeft } from 'react-feather'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { CancellationType } from '@cow/common/hooks/useCancelOrder/state'
 import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
@@ -32,19 +32,19 @@ const Wrapper = styled.div`
   width: 100%;
 `
 
-const TypeButton = styled.button`
+const TypeButton = styled.button<{ isOnChain$: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   gap: 5px;
-  background: ${({ theme }) => theme.grey1};
-  padding: 4px 10px;
+  background: ${({ theme, isOnChain$ }) => isOnChain$ ? theme.info : theme.grey1};
+  color: ${({ theme, isOnChain$ }) => isOnChain$ ? theme.infoText : 'inherit'};
+  padding: 4px 8px;
   border-radius: 4px;
   outline: none;
   border: 0;
-  margin: 0 5px;
+  margin: 0 3px;
   font-size: inherit;
-  color: inherit;
   cursor: pointer;
 
   :hover {
@@ -55,6 +55,27 @@ const TypeButton = styled.button`
 const StyledNotificationBanner = styled(NotificationBanner)`
   margin-top: 15px;
   margin-bottom: 0;
+`
+
+const CancellationSummary = styled.span`
+  padding: 12px;
+  margin: 0;
+  border-radius: 6px;
+  background: ${({ theme }) => theme.grey1};
+`
+
+const OrderTypeDetails = styled.div`
+  margin: 0 0 15px 5px;
+  padding-left: 10px;
+  border-left: 3px solid ${({ theme }) => theme.grey1};
+
+  > p {
+    margin: 0 0 10px 0;
+  }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
 `
 
 export function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {
@@ -94,12 +115,11 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
             Are you sure you want to cancel order <strong>{shortId}</strong>?
           </p>
           <CancellationSummary>{summary}</CancellationSummary>
-          {/*TODO: display fee amount*/}
           <p>
             {'This is an '}
             {isOffChainCancellable ? (
-              <TypeButton onClick={toggleType}>
-                <span>{typeLabel}</span> <ArrowRight size="15" />
+              <TypeButton isOnChain$={isOnChainType} onClick={toggleType}>
+                <span>{typeLabel}</span> {isOnChainType ? <ArrowLeft size="15" /> : <ArrowRight size="15" />}
               </TypeButton>
             ) : (
               typeLabel
@@ -108,7 +128,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
             <LinkStyledButton onClick={toggleShowMore}>[{showMore ? '- less' : '+ more'}]</LinkStyledButton>
           </p>
           {showMore && (
-            <>
+            <OrderTypeDetails>
               <p>
                 {type === 'onChain'
                   ? 'On-chain cancellations require a regular on-chain transaction and cost gas.'
@@ -127,7 +147,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
                   </StyledNotificationBanner>
                 )}
               </p>
-            </>
+            </OrderTypeDetails>
           )}
         </Wrapper>
       )}
@@ -135,10 +155,3 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
     />
   )
 }
-
-const CancellationSummary = styled.span`
-  padding: 12px;
-  margin: 0;
-  border-radius: 6px;
-  background: ${({ theme }) => theme.grey1};
-`
