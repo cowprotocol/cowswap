@@ -1,13 +1,13 @@
 import { NativeCurrency } from '@uniswap/sdk-core'
 import { ContractTransaction } from '@ethersproject/contracts'
 
+import { CoWSwapEthFlow } from '@cow/abis/types'
 import { logTradeFlow, logTradeFlowError } from '@cow/modules/trade/utils/logger'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'
 import { Order } from 'state/orders/actions'
 import { OrderClass, UnsignedOrder } from '@cowprotocol/cow-sdk'
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from '@cow/modules/swap/services/ethFlow/const'
-import { CoWSwapEthFlow } from '@cow/abis/types/ethflow'
 
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
@@ -53,7 +53,7 @@ export async function signEthFlowOrderStep(
   const ethTxOptions = { value: etherValue.quotient.toString() }
   const estimatedGas = await ethFlowContract.estimateGas
     .createOrder(ethOrderParams, { value: etherValue.quotient.toString() })
-    .catch((error: Error) => {
+    .catch((error) => {
       logTradeFlowError(
         'ETH FLOW',
         '[EthFlow::SignEthFlowOrderStep] Error estimating createOrder gas. Using default ' + ETHFLOW_GAS_LIMIT_DEFAULT,

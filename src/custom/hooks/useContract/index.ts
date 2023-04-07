@@ -14,15 +14,13 @@ import V_COW_ABI from '@cow/abis/vCow.json'
 import ENS_ABI from 'abis/ens-registrar.json'
 import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
-import { GPv2Settlement, VCow } from '@cow/abis/types'
+import { CoWSwapEthFlow, GPv2Settlement, VCow, Erc20 } from '@cow/abis/types'
 
 import { getContract } from 'utils'
 
 import { useContract } from '@src/hooks/useContract'
 import { isEns, isProd, isStaging } from 'utils/environments'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { CoWSwapEthFlow } from '@cow/abis/types/ethflow'
-import { Erc20 } from 'abis/types'
 
 export * from '@src/hooks/useContract'
 export * from './useContractMod'
