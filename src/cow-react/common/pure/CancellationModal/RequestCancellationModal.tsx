@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components/macro'
 import { NavHashLink } from 'react-router-hash-link'
 
@@ -13,6 +13,7 @@ import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { CancellationType } from '@cow/common/hooks/useCancelOrder/state'
 import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
 import type { BigNumber } from '@ethersproject/bignumber'
+import NotificationBanner from 'components/NotificationBanner'
 
 export type RequestCancellationModalProps = {
   summary?: string
@@ -51,6 +52,11 @@ const TypeButton = styled.button`
   }
 `
 
+const StyledNotificationBanner = styled(NotificationBanner)`
+  margin-top: 15px;
+  margin-bottom: 0;
+`
+
 export function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {
   const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props
   const isOffChainCancellable = defaultType === 'offChain'
@@ -59,7 +65,17 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
   const [type, setType] = useState(defaultType)
 
   const toggleShowMore = () => setShowMore((showMore) => !showMore)
-  const toggleType = () => setType((value) => (value === 'onChain' ? 'offChain' : 'onChain'))
+
+  const toggleType = useCallback(() => {
+    const changedToOnChain = type !== 'onChain'
+
+    setType(changedToOnChain ? 'onChain' : 'offChain')
+
+    // If OnChain type is set, then open "show more" to explain tx cost details
+    if (changedToOnChain) {
+      setShowMore(true)
+    }
+  }, [type])
 
   const isOnChainType = type === 'onChain'
   const typeLabel = isOnChainType ? 'on-chain' : 'off-chain'
@@ -105,11 +121,14 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
                   FAQ
                 </NavHashLink>
                 .
+                {isOnChainType && (
+                  <StyledNotificationBanner isVisible={true} canClose={false} level="info">
+                    <div>Tx cost: {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} />: 'Unknown'}</div>
+                  </StyledNotificationBanner>
+                )}
               </p>
             </>
           )}
-          {/*TODO: add styles*/}
-          {isOnChainType && txCostAmount && <div>Tx cost: <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /></div>}
         </Wrapper>
       )}
       bottomContent={() => <ButtonPrimary onClick={() => triggerCancellation(type)}>Request cancellation</ButtonPrimary>}
