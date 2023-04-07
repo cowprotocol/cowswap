@@ -12,7 +12,7 @@ const context: CancellationModalContext = {
   triggerCancellation: async () => {
     alert('cancelling!!')
   },
-  type: null,
+  defaultType: 'offChain',
 }
 
 const defaultProps: CancellationModalProps = {
@@ -45,10 +45,10 @@ function buildComponent(props?: Partial<CancellationModalProps['context']>) {
 const Fixtures = {
   default: buildComponent(),
   error: buildComponent({ error: 'Failed to do stuff!!' }),
-  offChainPending: buildComponent({ type: 'offChain', isPendingSignature: true }),
-  offChain: buildComponent({ type: 'offChain' }),
-  ethFlowPending: buildComponent({ type: 'ethFlow', isPendingSignature: true }),
-  ethFlow: buildComponent({ type: 'ethFlow' }),
+  offChainPending: buildComponent({ defaultType: 'offChain', isPendingSignature: true }),
+  offChain: buildComponent({ defaultType: 'offChain' }),
+  ethFlowPending: buildComponent({ defaultType: 'onChain', isPendingSignature: true }),
+  ethFlow: buildComponent({ defaultType: 'onChain' }),
 }
 
 export default Fixtures

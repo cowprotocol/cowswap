@@ -8,11 +8,12 @@ import { ButtonPrimary } from 'components/Button'
 import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 
 import { Routes } from '@cow/constants/routes'
+import { ArrowRight } from 'react-feather'
 
 export type RequestCancellationModalProps = {
   summary?: string
   shortId: string
-  type: 'offChain' | 'onChain'
+  defaultType: 'offChain' | 'onChain'
   onDismiss: () => void
   triggerCancellation: () => void
 }
@@ -21,14 +22,40 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   margin: 0 auto;
+  width: 100%;
+`
+
+const TypeButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  background: ${({ theme }) => theme.grey1};
+  padding: 4px 10px;
+  border-radius: 4px;
+  outline: none;
+  border: 0;
+  margin: 0 5px;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  :hover {
+    outline: 1px solid ${({ theme }) => theme.border2};
+  }
 `
 
 export function RequestCancellationModal(props: RequestCancellationModalProps): JSX.Element {
-  const { onDismiss, triggerCancellation, summary, shortId, type } = props
+  const { onDismiss, triggerCancellation, summary, shortId, defaultType } = props
+  const isOffChainCancellable = defaultType === 'offChain'
 
   const [showMore, setShowMore] = useState(false)
+  const [type, setType] = useState(defaultType)
 
   const toggleShowMore = () => setShowMore((showMore) => !showMore)
+  const toggleType = () => setType((value) => (value === 'onChain' ? 'offChain' : 'onChain'))
+
+  const typeLabel = type === 'onChain' ? 'on-chain' : 'off-chain'
 
   return (
     <ConfirmationModalContent
@@ -40,8 +67,17 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
             Are you sure you want to cancel order <strong>{shortId}</strong>?
           </p>
           <CancellationSummary>{summary}</CancellationSummary>
+          {/*TODO: display fee amount*/}
           <p>
-            {`This is an ${type === 'onChain' ? 'on-chain' : 'off-chain'} cancellation `}
+            {'This is an '}
+            {isOffChainCancellable ? (
+              <TypeButton onClick={toggleType}>
+                <span>{typeLabel}</span> <ArrowRight size="15" />
+              </TypeButton>
+            ) : (
+              typeLabel
+            )}
+            {' cancellation '}
             <LinkStyledButton onClick={toggleShowMore}>[{showMore ? '- less' : '+ more'}]</LinkStyledButton>
           </p>
           {showMore && (

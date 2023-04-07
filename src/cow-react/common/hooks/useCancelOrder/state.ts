@@ -9,7 +9,7 @@ export type CancellationModalContext = {
   isPendingSignature: boolean
   onDismiss: (() => void) | null
   triggerCancellation: (() => Promise<void>) | null
-  type: 'offChain' | 'ethFlow' | null
+  defaultType: 'offChain' | 'onChain'
 }
 
 const defaultCancellationModalContext: CancellationModalContext = {
@@ -20,7 +20,7 @@ const defaultCancellationModalContext: CancellationModalContext = {
   isPendingSignature: false,
   onDismiss: null,
   triggerCancellation: null,
-  type: null,
+  defaultType: 'offChain',
 }
 
 export const cancellationModalContextAtom = atomWithReset<CancellationModalContext>(defaultCancellationModalContext)

@@ -54,16 +54,15 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
         (order?.status === OrderStatus.CREATING || order?.status === OrderStatus.PENDING) &&
         !order.cancellationHash
 
-      // TODO: For now only ethflow orders are cancellable. Adjust when implementing general hard cancellations
-      const isCancellable = !order.isCancelling && (isOffChainCancellable || isEthFlowCancellable)
+      const isCancellable = !order.isCancelling || isEthFlowCancellable
 
       // When the order is not cancellable, there won't be a callback
       if (!isCancellable) {
         return null
       }
 
-      const type = isOffChainCancellable ? 'offChain' : 'ethFlow'
-      const cancelFn = type === 'offChain' ? offChainOrderCancel : ethFlowOrderCancel
+      const defaultType = isOffChainCancellable ? 'offChain' : 'onChain'
+      const cancelFn = defaultType === 'offChain' ? offChainOrderCancel : ethFlowOrderCancel
 
       // When dismissing the modal, close it and also reset context
       const onDismiss = () => {
@@ -93,7 +92,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           orderId: order.id,
           chainId,
           summary: order?.summary,
-          type,
+          defaultType,
           onDismiss,
           triggerCancellation,
         })
