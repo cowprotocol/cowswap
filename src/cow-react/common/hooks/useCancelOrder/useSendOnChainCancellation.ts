@@ -6,11 +6,7 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'state/
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
-import {
-  getEthFlowCancellation,
-  getOnChainCancellation,
-  OnChainCancellation,
-} from './onChainCancellation'
+import { getEthFlowCancellation, getOnChainCancellation, OnChainCancellation } from './onChainCancellation'
 
 export function useSendOnChainCancellation() {
   const { chainId } = useWalletInfo()

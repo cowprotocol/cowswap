@@ -37,8 +37,8 @@ const TypeButton = styled.button<{ isOnChain$: boolean }>`
   align-items: center;
   justify-content: space-between;
   gap: 5px;
-  background: ${({ theme, isOnChain$ }) => isOnChain$ ? theme.info : theme.grey1};
-  color: ${({ theme, isOnChain$ }) => isOnChain$ ? theme.infoText : 'inherit'};
+  background: ${({ theme, isOnChain$ }) => (isOnChain$ ? theme.info : theme.grey1)};
+  color: ${({ theme, isOnChain$ }) => (isOnChain$ ? theme.infoText : 'inherit')};
   padding: 4px 8px;
   border-radius: 4px;
   outline: none;
@@ -102,9 +102,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
   const isOnChainType = type === 'onChain'
   const typeLabel = isOnChainType ? 'on-chain' : 'off-chain'
 
-  const txCostAmount = txCost && !txCost.isZero()
-    ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString())
-    : ''
+  const txCostAmount = txCost && !txCost.isZero() ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
   return (
     <ConfirmationModalContent
@@ -144,7 +142,10 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
                 .
                 {isOnChainType && (
                   <StyledNotificationBanner isVisible={true} canClose={false} level="info">
-                    <div>Tx cost: {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} />: 'Unknown'}</div>
+                    <div>
+                      Tx cost:{' '}
+                      {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : 'Unknown'}
+                    </div>
                   </StyledNotificationBanner>
                 )}
               </p>
@@ -152,7 +153,9 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
           )}
         </Wrapper>
       )}
-      bottomContent={() => <ButtonPrimary onClick={() => triggerCancellation(type)}>Request cancellation</ButtonPrimary>}
+      bottomContent={() => (
+        <ButtonPrimary onClick={() => triggerCancellation(type)}>Request cancellation</ButtonPrimary>
+      )}
     />
   )
 }
