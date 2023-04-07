@@ -35,7 +35,7 @@ export const LabelText = styled('span')`
 `
 
 export const StyledMenuList = styled(MenuList)`
-  background: ${({ theme }) => theme.cardBackground};
+  background: ${({ theme }) => theme.bg1};
   z-index: 2;
   padding: 0.6rem;
   border-radius: 4px;
@@ -44,6 +44,7 @@ export const StyledMenuList = styled(MenuList)`
   position: absolute;
   white-space: nowrap;
   text-align: left;
+  opacity: 0.9;
 `
 
 export const StyledMenuItem = styled(MenuItem)`
