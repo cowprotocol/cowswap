@@ -55,6 +55,7 @@ const TypeButton = styled.button<{ isOnChain$: boolean }>`
 const StyledNotificationBanner = styled(NotificationBanner)`
   margin-top: 15px;
   margin-bottom: 0;
+  box-sizing: border-box;
 `
 
 const CancellationSummary = styled.span`
