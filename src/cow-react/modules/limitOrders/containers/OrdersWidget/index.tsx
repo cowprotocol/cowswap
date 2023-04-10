@@ -1,6 +1,6 @@
 import { Orders } from '../../pure/Orders'
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
@@ -9,7 +9,7 @@ import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/li
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
@@ -17,7 +17,8 @@ import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/Order
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { shortenOrderId } from 'utils'
 import { Order } from 'state/orders/actions'
-import { useMultipleOrdersCancellation } from '@cow/common/hooks/useCancelOrder/useMultipleOrdersCancellation'
+import { useMultipleOrdersCancellation } from '@cow/common/hooks/useMultipleOrdersCancellation'
+import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -30,6 +31,7 @@ export function OrdersWidget() {
   const { chainId, account } = useWalletInfo()
   const getShowCancellationModal = useCancelOrder()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
+  const setOrdersToCancel = useUpdateAtom(ordersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
   const multipleCancellation = useMultipleOrdersCancellation()
@@ -52,6 +54,12 @@ export function OrdersWidget() {
       })
     },
   }
+
+  const toggleMultipleCancellation = useCallback(() => {
+    setIsRowSelectable((state) => !state)
+    setOrdersToCancel([])
+    setSelectedOrders([])
+  }, [setOrdersToCancel])
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -94,7 +102,9 @@ export function OrdersWidget() {
       <div>
         <div>
           <div>Selected orders: {selectedOrders.map((order) => shortenOrderId(order.id)).join(',')}</div>
-          <button onClick={() => setIsRowSelectable((state) => !state)}>Multiple cancellation</button>
+
+          <button onClick={toggleMultipleCancellation}>Multiple cancellation</button>
+
           {selectedOrders.length > 0 && (
             <button onClick={() => multipleCancellation(selectedOrders)}>Cancel ({selectedOrders.length})</button>
           )}
