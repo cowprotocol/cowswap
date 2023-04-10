@@ -1,6 +1,6 @@
 import { Orders } from '../../pure/Orders'
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
@@ -15,12 +15,11 @@ import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
 import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
-import { shortenOrderId } from 'utils'
 import { Order } from 'state/orders/actions'
-import { useMultipleOrdersCancellation } from '@cow/common/hooks/useMultipleOrdersCancellation'
 import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 import styled from 'styled-components/macro'
 import { useAtom } from 'jotai'
+import { MultipleCancellationMenu } from '@cow/modules/limitOrders/containers/OrdersWidget/MultipleCancellationMenu'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -50,9 +49,8 @@ export function OrdersWidget() {
   const [ordersToCancel, setOrdersToCancel] = useAtom(ordersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
-  const multipleCancellation = useMultipleOrdersCancellation()
 
-  const [isRowSelectable, setIsRowSelectable] = useState(false)
+  const isRowSelectable = ordersToCancel !== null
 
   const orderActions: LimitOrderActions = {
     getShowCancellationModal,
@@ -63,15 +61,6 @@ export function OrdersWidget() {
       setOrdersToCancel(toggleOrderForCancellation(ordersToCancel, order))
     },
   }
-
-  const toggleMultipleCancellation = useCallback(() => {
-    setIsRowSelectable(!isRowSelectable)
-    setOrdersToCancel(isRowSelectable ? null : [])
-  }, [setOrdersToCancel, isRowSelectable])
-
-  const cancelAllPendingOrders = useCallback(() => {
-    multipleCancellation(ordersList.pending)
-  }, [multipleCancellation, ordersList.pending])
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -102,21 +91,6 @@ export function OrdersWidget() {
     ordersList.pending
   )
 
-  // TODO: move all multiple cancellation code to another component
-  // Reset multiple orders cancellation UI on UI changes
-  useEffect(() => {
-    setIsRowSelectable(false)
-    setOrdersToCancel(null)
-  }, [orders.length, isOpenOrdersTab, chainId, setOrdersToCancel])
-
-  // After successful cancellations ordersToCancel becomes null
-  // And checkboxes hide
-  useEffect(() => {
-    if (ordersToCancel === null) {
-      setIsRowSelectable(false)
-    }
-  }, [ordersToCancel])
-
   // Set page params initially once
   useEffect(() => {
     navigate(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
@@ -127,18 +101,7 @@ export function OrdersWidget() {
   return (
     <>
       <ContentWrapper>
-        <div>
-          {ordersToCancel && (
-            <div>Selected orders: {ordersToCancel.map((order) => shortenOrderId(order.id)).join(',')}</div>
-          )}
-
-          <button onClick={toggleMultipleCancellation}>Multiple cancellation</button>
-          <button onClick={cancelAllPendingOrders}>Cancel all pending orders</button>
-
-          {ordersToCancel && (
-            <button onClick={() => multipleCancellation(ordersToCancel)}>Cancel ({ordersToCancel.length})</button>
-          )}
-        </div>
+        <MultipleCancellationMenu pendingOrders={ordersList.pending} />
         <Orders
           chainId={chainId}
           tabs={tabs}
