@@ -1,9 +1,9 @@
-import SVG from 'react-inlinesvg'
 import { DetailsRow } from '@cow/modules/limitOrders/pure/LimitOrdersDetails/styled'
 import { InfoIcon } from 'components/InfoIcon'
-import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import IMAGE_CARET_DOWN from 'assets/cow-swap/carret-down.svg'
 import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
+import * as styledEl from './styled'
+import { Menu } from '@reach/menu-button'
 
 export type OrderTypeProps = {
   isPartiallyFillable: boolean
@@ -37,21 +37,32 @@ function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: Ord
 
   const showPartiallyFillable = override ?? isPartiallyFillable
 
-  const [labelText, dropDownText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
+  const [labelText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
 
-  const onSelect = () => setOverride(!showPartiallyFillable)
+  const onSelect = (label: string) => setOverride(label === LABELS[0])
 
   return (
     <Menu>
-      {({ isExpanded }) => (
+      {({ isExpanded }: { isExpanded: boolean }) => (
         <>
-          <MenuButton>
-            <span>{labelText}</span>
-            <SVG src={IMAGE_CARET_DOWN} description="dropdown icon" className={isExpanded ? 'expanded' : ''} />
-          </MenuButton>
-          <MenuList portal={false}>
-            <MenuItem onSelect={onSelect}>{dropDownText}</MenuItem>
-          </MenuList>
+          <styledEl.Wrapper>
+            <styledEl.StyledMenuButton>
+              <styledEl.LabelText>{labelText}</styledEl.LabelText>
+              <styledEl.StyledSVG
+                src={IMAGE_CARET_DOWN}
+                description="dropdown icon"
+                className={isExpanded ? 'expanded' : ''}
+              />
+            </styledEl.StyledMenuButton>
+
+            <styledEl.StyledMenuList portal={false}>
+              {LABELS.map((label) => (
+                <styledEl.StyledMenuItem key={label} onSelect={() => onSelect(label)}>
+                  {label}
+                </styledEl.StyledMenuItem>
+              ))}
+            </styledEl.StyledMenuList>
+          </styledEl.Wrapper>
         </>
       )}
     </Menu>
