@@ -25,6 +25,16 @@ function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOr
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
+function toggleOrderForCancellation(state: Order[], order: Order): Order[] {
+  const isOrderIncluded = state.find((item) => item.id === order.id)
+
+  if (isOrderIncluded) {
+    return state.filter((item) => item.id !== order.id)
+  }
+
+  return [...state, order]
+}
+
 const ContentWrapper = styled.div`
   width: 100%;
 `
@@ -48,15 +58,7 @@ export function OrdersWidget() {
     getShowCancellationModal,
     selectReceiptOrder,
     toggleOrderForCancellation(order: Order) {
-      setSelectedOrders((state) => {
-        const isOrderIncluded = state.find((item) => item.id === order.id)
-
-        if (isOrderIncluded) {
-          return state.filter((item) => item.id !== order.id)
-        }
-
-        return [...state, order]
-      })
+      setSelectedOrders((state) => toggleOrderForCancellation(state, order))
     },
   }
 
@@ -65,6 +67,10 @@ export function OrdersWidget() {
     setOrdersToCancel([])
     setSelectedOrders([])
   }, [setOrdersToCancel])
+
+  const cancelAllPendingOrders = useCallback(() => {
+    multipleCancellation(ordersList.pending)
+  }, [multipleCancellation, ordersList.pending])
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -95,6 +101,13 @@ export function OrdersWidget() {
     ordersList.pending
   )
 
+  // Reset multiple orders cancellation UI on UI changes
+  useEffect(() => {
+    setIsRowSelectable(false)
+    setOrdersToCancel([])
+    setSelectedOrders([])
+  }, [orders.length, isOpenOrdersTab, chainId, setOrdersToCancel])
+
   // Set page params initially once
   useEffect(() => {
     navigate(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
@@ -109,6 +122,7 @@ export function OrdersWidget() {
           <div>Selected orders: {selectedOrders.map((order) => shortenOrderId(order.id)).join(',')}</div>
 
           <button onClick={toggleMultipleCancellation}>Multiple cancellation</button>
+          <button onClick={cancelAllPendingOrders}>Cancel all pending orders</button>
 
           {selectedOrders.length > 0 && (
             <button onClick={() => multipleCancellation(selectedOrders)}>Cancel ({selectedOrders.length})</button>
