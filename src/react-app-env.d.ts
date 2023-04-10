@@ -17,6 +17,8 @@ interface Window {
     autoRefreshOnNetworkChange?: boolean
     setSelectedProvider: (any) => void
     providers: [any]
+    isTrust?: boolean
+    isTrustWallet?: boolean
   }
   web3?: Record<string, unknown>
 }
