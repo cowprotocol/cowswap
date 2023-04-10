@@ -1,4 +1,3 @@
-import { Order } from 'state/orders/actions'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 import { useCallback, useState, useEffect } from 'react'
@@ -6,7 +5,6 @@ import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
 import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
-import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
@@ -25,6 +23,7 @@ import { X } from 'react-feather'
 import { OrderExecutionStatusList } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 import { SpotPricesKeyParams } from '@cow/modules/orders/state/spotPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
+import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 
 const TableBox = styled.div`
   display: block;
@@ -53,18 +52,20 @@ const TableInner = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-const Header = styled.div<{ isOpenOrdersTab: boolean }>`
+const Header = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }>`
   --height: 50px;
   display: grid;
   gap: 16px;
 
-  grid-template-columns: ${({ isOpenOrdersTab }) =>
-    `3.2fr repeat(2,2fr) ${isOpenOrdersTab ? '2.5fr 1.4fr' : ''} 0.7fr 108px 24px`};
+  grid-template-columns: ${({ isOpenOrdersTab, isRowSelectable }) =>
+    `${isRowSelectable ? '0.2fr 3fr' : '3.2fr'} repeat(2,2fr) ${
+      isOpenOrdersTab ? '2.5fr 1.4fr' : ''
+    } 0.7fr 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
   border: none;
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
-  padding: 0 16px;
+  padding: 0 12px;
 
   ${({ theme, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
   grid-template-columns: ${`minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
@@ -212,28 +213,28 @@ const OrdersExplainerBanner = styled.div`
 
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
+  isRowSelectable: boolean
   currentPageNumber: number
   chainId: SupportedChainId | undefined
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
-  getShowCancellationModal(order: Order): (() => void) | null
+  orderActions: LimitOrderActions
 }
 
 export function OrdersTable({
   isOpenOrdersTab,
+  isRowSelectable,
   chainId,
   orders,
   pendingOrdersPrices,
   balancesAndAllowances,
   getSpotPrice,
-  getShowCancellationModal,
+  orderActions,
   currentPageNumber,
 }: OrdersTableProps) {
   const [isRateInverted, setIsRateInverted] = useState(false)
-
-  const selectReceiptOrder = useSelectReceiptOrder()
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
   const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step).sort(ordersSorter)
   const onScroll = useCallback(() => {
@@ -260,7 +261,9 @@ export function OrdersTable({
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <Header isOpenOrdersTab={isOpenOrdersTab}>
+          <Header isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+            {isRowSelectable && <HeaderElement></HeaderElement>}
+
             <HeaderElement>
               <Trans>Sell &#x2192; Buy</Trans>
             </HeaderElement>
@@ -356,6 +359,7 @@ export function OrdersTable({
             {ordersPage.map((order) => (
               <OrderRow
                 key={order.id}
+                isRowSelectable={isRowSelectable}
                 isOpenOrdersTab={isOpenOrdersTab}
                 order={order}
                 spotPrice={getSpotPrice({
@@ -367,8 +371,8 @@ export function OrdersTable({
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                 RowElement={RowElement}
                 isRateInverted={isRateInverted}
-                getShowCancellationModal={getShowCancellationModal}
-                onClick={() => selectReceiptOrder(order.id)}
+                orderActions={orderActions}
+                onClick={() => orderActions.selectReceiptOrder(order.id)}
               />
             ))}
           </Rows>

@@ -1,6 +1,6 @@
 import { Orders } from '../../pure/Orders'
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
@@ -13,6 +13,10 @@ import { useAtomValue } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
+import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
+import { UID } from '@cowprotocol/cow-sdk'
+import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
+import { shortenOrderId } from 'utils'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -26,6 +30,23 @@ export function OrdersWidget() {
   const getShowCancellationModal = useCancelOrder()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const getSpotPrice = useGetSpotPrice()
+  const selectReceiptOrder = useSelectReceiptOrder()
+  const [selectedOrderIds, setSelectedOrderIds] = useState<UID[]>([])
+  const [isRowSelectable, setIsRowSelectable] = useState(false)
+
+  const orderActions: LimitOrderActions = {
+    getShowCancellationModal,
+    selectReceiptOrder,
+    toggleOrderForCancellation(orderUid: UID) {
+      setSelectedOrderIds((state) => {
+        if (state.includes(orderUid)) {
+          return state.filter((id) => id !== orderUid)
+        }
+
+        return [...state, orderUid]
+      })
+    },
+  }
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -65,18 +86,25 @@ export function OrdersWidget() {
 
   return (
     <>
-      <Orders
-        chainId={chainId}
-        tabs={tabs}
-        orders={orders}
-        isOpenOrdersTab={isOpenOrdersTab}
-        currentPageNumber={currentPageNumber}
-        pendingOrdersPrices={pendingOrdersPrices}
-        balancesAndAllowances={pendingBalancesAndAllowances}
-        isWalletConnected={!!account}
-        getShowCancellationModal={getShowCancellationModal}
-        getSpotPrice={getSpotPrice}
-      ></Orders>
+      <div>
+        <div>
+          <div>Selected orders: {selectedOrderIds.map((id) => shortenOrderId(id))}</div>
+          <button onClick={() => setIsRowSelectable((state) => !state)}>Cancel multiple orders</button>
+        </div>
+        <Orders
+          chainId={chainId}
+          tabs={tabs}
+          orders={orders}
+          isOpenOrdersTab={isOpenOrdersTab}
+          currentPageNumber={currentPageNumber}
+          pendingOrdersPrices={pendingOrdersPrices}
+          balancesAndAllowances={pendingBalancesAndAllowances}
+          isWalletConnected={!!account}
+          orderActions={orderActions}
+          getSpotPrice={getSpotPrice}
+          isRowSelectable={isRowSelectable}
+        ></Orders>
+      </div>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
     </>
   )

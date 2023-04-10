@@ -5,15 +5,16 @@ import {
   ParsedOrder,
   useLimitOrdersList,
 } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { UID } from '@cowprotocol/cow-sdk'
 
 export function useCloseReceiptModal() {
   const updateReceiptState = useUpdateAtom(updateReceiptAtom)
   return useCallback(() => updateReceiptState({ orderId: null }), [updateReceiptState])
 }
 
-export function useSelectReceiptOrder() {
+export function useSelectReceiptOrder(): (orderId: UID) => void {
   const updateReceiptState = useUpdateAtom(updateReceiptAtom)
-  return useCallback((orderId: string) => updateReceiptState({ orderId }), [updateReceiptState])
+  return useCallback((orderId: UID) => updateReceiptState({ orderId }), [updateReceiptState])
 }
 
 export function useSelectedOrder(): ParsedOrder | null {
