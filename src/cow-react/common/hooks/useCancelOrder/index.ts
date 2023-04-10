@@ -9,12 +9,13 @@ import { ApplicationModal } from 'state/application/reducer'
 import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 
-import { useSendOnChainCancellation, useGetOnChainCancellation } from './useSendOnChainCancellation'
+import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
 import { useGasPrices } from 'state/gas/hooks'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useGetOnChainCancellation } from '@cow/common/hooks/useCancelOrder/useGetOnChainCancellation'
 
 export type UseCancelOrderReturn = (() => void) | null
 
