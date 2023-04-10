@@ -37,13 +37,13 @@ function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: Ord
 
   const showPartiallyFillable = override ?? isPartiallyFillable
 
-  const [labelText, dropDownText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
+  const [labelText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
 
-  const onSelect = () => setOverride(!showPartiallyFillable)
+  const onSelect = (label: string) => setOverride(label === LABELS[0])
 
   return (
     <Menu>
-      {({ isExpanded }: { isExpanded: any }) => (
+      {({ isExpanded }: { isExpanded: boolean }) => (
         <>
           <styledEl.Wrapper>
             <styledEl.StyledMenuButton>
@@ -56,8 +56,11 @@ function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: Ord
             </styledEl.StyledMenuButton>
 
             <styledEl.StyledMenuList portal={false}>
-              <styledEl.StyledMenuHeader>Select order type</styledEl.StyledMenuHeader>
-              <styledEl.StyledMenuItem onSelect={onSelect}>{dropDownText}</styledEl.StyledMenuItem>
+              {LABELS.map((label) => (
+                <styledEl.StyledMenuItem key={label} onSelect={() => onSelect(label)}>
+                  {label}
+                </styledEl.StyledMenuItem>
+              ))}
             </styledEl.StyledMenuList>
           </styledEl.Wrapper>
         </>
