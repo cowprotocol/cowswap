@@ -2,15 +2,16 @@ import {
   ConfirmationModalContent,
   ConfirmationPendingContent,
   OperationType,
+  TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import { GpModal as Modal } from '@cow/common/pure/Modal'
 import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
-import { shortenOrderId } from 'utils'
 import { useCancelMultipleOrders } from '@cow/common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useRequestOrderCancellation } from 'state/orders/hooks'
 import { useAtom } from 'jotai'
+import { ButtonPrimary } from 'components/Button'
 
 interface Props {
   isOpen: boolean
@@ -25,10 +26,14 @@ export function MultipleOrdersCancellationModal(props: Props) {
   const cancelAll = useCancelMultipleOrders()
   const cancelPendingOrder = useRequestOrderCancellation()
   const [cancellationInProgress, setCancellationInProgress] = useState(false)
+  const [cancellationError, setCancellationError] = useState<Error | null>(null)
+
+  const ordersCount = ordersToCancel.length
 
   const dismissAll = useCallback(() => {
     setCancellationInProgress(false)
     onDismiss()
+    setCancellationError(null)
   }, [onDismiss])
 
   const signAndSendCancellation = useCallback(async () => {
@@ -37,7 +42,6 @@ export function MultipleOrdersCancellationModal(props: Props) {
     // Show pending modal
     setCancellationInProgress(true)
 
-    // TODO: display modal in case of error
     try {
       // Sign and send cancellation message
       await cancelAll(ordersToCancel)
@@ -49,21 +53,30 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
       // Clean cancellation queue
       setOrdersToCancel([])
-    } finally {
       dismissAll()
+    } catch (error: any) {
+      setCancellationInProgress(false)
+      setCancellationError(error)
     }
   }, [chainId, cancelPendingOrder, cancelAll, ordersToCancel, dismissAll, setOrdersToCancel])
 
   if (!isOpen || !chainId) return null
 
-  // TODO: add styles and layout
+  if (cancellationError) {
+    return (
+      <Modal isOpen={true} onDismiss={dismissAll}>
+        <TransactionErrorContent onDismiss={dismissAll} message={cancellationError.message} />
+      </Modal>
+    )
+  }
+
   if (cancellationInProgress) {
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
         <ConfirmationPendingContent
           chainId={chainId}
           onDismiss={onDismiss}
-          pendingText={<>Cancelling {ordersToCancel.length} orders</>}
+          pendingText={<>Cancelling {ordersCount} orders</>}
           operationType={OperationType.ORDER_CANCEL}
         />
       </Modal>
@@ -73,13 +86,16 @@ export function MultipleOrdersCancellationModal(props: Props) {
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss}>
       <ConfirmationModalContent
-        title={`Cancel orders ${ordersToCancel.map((order) => shortenOrderId(order.id)).join(',')}`}
+        title={`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}
-        topContent={() => <h3>Top content</h3>}
+        topContent={() => (
+          <div>
+            <p>Are you sure you want to cancel {ordersCount} orders?</p>
+          </div>
+        )}
         bottomContent={() => (
           <div>
-            <button onClick={signAndSendCancellation}>Cancel all</button>
-            <button onClick={onDismiss}>Dismiss</button>
+            <ButtonPrimary onClick={signAndSendCancellation}>Request cancellations</ButtonPrimary>
           </div>
         )}
       />
