@@ -16,6 +16,7 @@ import { useGasPrices } from 'state/gas/hooks'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useGetOnChainCancellation } from '@cow/common/hooks/useCancelOrder/useGetOnChainCancellation'
+import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 export type UseCancelOrderReturn = (() => void) | null
 
@@ -53,15 +54,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       // 3. The order must be PENDING
       const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
 
-      // 1. To be EthFlow cancellable the order must be an EthFlow order
-      // 2. It can be cancelled when the order is CREATING or PENDING
-      // 3. It cannot be cancelled if there's a cancellationHash already
-      const isEthFlowCancellable =
-        isEthFlowOrder &&
-        (order?.status === OrderStatus.CREATING || order?.status === OrderStatus.PENDING) &&
-        !order.cancellationHash
-
-      const isCancellable = !order.isCancelling || isEthFlowCancellable
+      const isCancellable = isOrderCancellable(order)
 
       // When the order is not cancellable, there won't be a callback
       if (!isCancellable) {

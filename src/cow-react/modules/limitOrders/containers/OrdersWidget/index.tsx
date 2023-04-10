@@ -19,10 +19,15 @@ import { shortenOrderId } from 'utils'
 import { Order } from 'state/orders/actions'
 import { useMultipleOrdersCancellation } from '@cow/common/hooks/useMultipleOrdersCancellation'
 import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
+import styled from 'styled-components/macro'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
+
+const ContentWrapper = styled.div`
+  width: 100%;
+`
 
 export function OrdersWidget() {
   const location = useLocation()
@@ -99,7 +104,7 @@ export function OrdersWidget() {
 
   return (
     <>
-      <div>
+      <ContentWrapper>
         <div>
           <div>Selected orders: {selectedOrders.map((order) => shortenOrderId(order.id)).join(',')}</div>
 
@@ -122,7 +127,7 @@ export function OrdersWidget() {
           getSpotPrice={getSpotPrice}
           isRowSelectable={isRowSelectable}
         ></Orders>
-      </div>
+      </ContentWrapper>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
     </>
   )

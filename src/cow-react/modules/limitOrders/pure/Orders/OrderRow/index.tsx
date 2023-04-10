@@ -27,7 +27,6 @@ import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrde
 import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { ZERO_FRACTION } from 'constants/index'
-import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
@@ -106,6 +105,7 @@ export interface OrderRowProps {
   isOpenOrdersTab: boolean
   isRowSelectable: boolean
   orderParams: OrderParams
+  checkbox: JSX.Element
   onClick: () => void
   orderActions: LimitOrderActions
 }
@@ -121,6 +121,7 @@ export function OrderRow({
   onClick,
   prices,
   spotPrice,
+  checkbox,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice, status } = order
@@ -166,15 +167,7 @@ export function OrderRow({
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
-      {isRowSelectable && (
-        <styledEl.CellElement>
-          <styledEl.Checkbox
-            type="checkbox"
-            disabled={getIsEthFlowOrder(order)}
-            onChange={() => orderActions.toggleOrderForCancellation(order)}
-          />
-        </styledEl.CellElement>
-      )}
+      {isRowSelectable && isOpenOrdersTab ? checkbox : null}
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell clickable onClick={onClick}>
         <styledEl.CurrencyLogoPair>
