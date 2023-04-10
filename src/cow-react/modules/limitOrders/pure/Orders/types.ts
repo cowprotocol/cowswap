@@ -5,5 +5,5 @@ import { Order } from 'state/orders/actions'
 export interface LimitOrderActions {
   getShowCancellationModal: (order: Order) => UseCancelOrderReturn
   selectReceiptOrder(orderId: UID): void
-  toggleOrderForCancellation(orderUid: UID): void
+  toggleOrderForCancellation(order: Order): void
 }

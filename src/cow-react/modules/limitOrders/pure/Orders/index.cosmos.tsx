@@ -35,8 +35,8 @@ const orderActions: LimitOrderActions = {
   selectReceiptOrder(orderUid: UID) {
     console.log('selectReceiptOrder', orderUid)
   },
-  toggleOrderForCancellation(orderUid: UID) {
-    console.log('selectOrderForCancellation', orderUid)
+  toggleOrderForCancellation(orders) {
+    console.log('toggleOrderForCancellation', orders)
   },
 }
 

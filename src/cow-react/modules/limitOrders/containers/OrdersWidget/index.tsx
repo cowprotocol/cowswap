@@ -14,9 +14,10 @@ import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrders
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
 import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
-import { UID } from '@cowprotocol/cow-sdk'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { shortenOrderId } from 'utils'
+import { Order } from 'state/orders/actions'
+import { useMultipleOrdersCancellation } from '@cow/common/hooks/useCancelOrder/useMultipleOrdersCancellation'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -31,19 +32,23 @@ export function OrdersWidget() {
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
-  const [selectedOrderIds, setSelectedOrderIds] = useState<UID[]>([])
+  const multipleCancellation = useMultipleOrdersCancellation()
+
+  const [selectedOrders, setSelectedOrders] = useState<Order[]>([])
   const [isRowSelectable, setIsRowSelectable] = useState(false)
 
   const orderActions: LimitOrderActions = {
     getShowCancellationModal,
     selectReceiptOrder,
-    toggleOrderForCancellation(orderUid: UID) {
-      setSelectedOrderIds((state) => {
-        if (state.includes(orderUid)) {
-          return state.filter((id) => id !== orderUid)
+    toggleOrderForCancellation(order: Order) {
+      setSelectedOrders((state) => {
+        const isOrderIncluded = state.find((item) => item.id === order.id)
+
+        if (isOrderIncluded) {
+          return state.filter((item) => item.id !== order.id)
         }
 
-        return [...state, orderUid]
+        return [...state, order]
       })
     },
   }
@@ -88,8 +93,11 @@ export function OrdersWidget() {
     <>
       <div>
         <div>
-          <div>Selected orders: {selectedOrderIds.map((id) => shortenOrderId(id))}</div>
-          <button onClick={() => setIsRowSelectable((state) => !state)}>Cancel multiple orders</button>
+          <div>Selected orders: {selectedOrders.map((order) => shortenOrderId(order.id)).join(',')}</div>
+          <button onClick={() => setIsRowSelectable((state) => !state)}>Multiple cancellation</button>
+          {selectedOrders.length > 0 && (
+            <button onClick={() => multipleCancellation(selectedOrders)}>Cancel ({selectedOrders.length})</button>
+          )}
         </div>
         <Orders
           chainId={chainId}

@@ -171,7 +171,7 @@ export function OrderRow({
           <styledEl.Checkbox
             type="checkbox"
             disabled={getIsEthFlowOrder(order)}
-            onChange={() => orderActions.toggleOrderForCancellation(order.id)}
+            onChange={() => orderActions.toggleOrderForCancellation(order)}
           />
         </styledEl.CellElement>
       )}
