@@ -9,7 +9,7 @@ import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/li
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
@@ -20,6 +20,7 @@ import { Order } from 'state/orders/actions'
 import { useMultipleOrdersCancellation } from '@cow/common/hooks/useMultipleOrdersCancellation'
 import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 import styled from 'styled-components/macro'
+import { useAtom } from 'jotai'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -46,27 +47,27 @@ export function OrdersWidget() {
   const { chainId, account } = useWalletInfo()
   const getShowCancellationModal = useCancelOrder()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
-  const setOrdersToCancel = useUpdateAtom(ordersToCancelAtom)
+  const [ordersToCancel, setOrdersToCancel] = useAtom(ordersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
   const multipleCancellation = useMultipleOrdersCancellation()
 
-  const [selectedOrders, setSelectedOrders] = useState<Order[]>([])
   const [isRowSelectable, setIsRowSelectable] = useState(false)
 
   const orderActions: LimitOrderActions = {
     getShowCancellationModal,
     selectReceiptOrder,
     toggleOrderForCancellation(order: Order) {
-      setSelectedOrders((state) => toggleOrderForCancellation(state, order))
+      if (!ordersToCancel) return
+
+      setOrdersToCancel(toggleOrderForCancellation(ordersToCancel, order))
     },
   }
 
   const toggleMultipleCancellation = useCallback(() => {
-    setIsRowSelectable((state) => !state)
-    setOrdersToCancel([])
-    setSelectedOrders([])
-  }, [setOrdersToCancel])
+    setIsRowSelectable(!isRowSelectable)
+    setOrdersToCancel(isRowSelectable ? null : [])
+  }, [setOrdersToCancel, isRowSelectable])
 
   const cancelAllPendingOrders = useCallback(() => {
     multipleCancellation(ordersList.pending)
@@ -101,12 +102,20 @@ export function OrdersWidget() {
     ordersList.pending
   )
 
+  // TODO: move all multiple cancellation code to another component
   // Reset multiple orders cancellation UI on UI changes
   useEffect(() => {
     setIsRowSelectable(false)
-    setOrdersToCancel([])
-    setSelectedOrders([])
+    setOrdersToCancel(null)
   }, [orders.length, isOpenOrdersTab, chainId, setOrdersToCancel])
+
+  // After successful cancellations ordersToCancel becomes null
+  // And checkboxes hide
+  useEffect(() => {
+    if (ordersToCancel === null) {
+      setIsRowSelectable(false)
+    }
+  }, [ordersToCancel])
 
   // Set page params initially once
   useEffect(() => {
@@ -119,13 +128,15 @@ export function OrdersWidget() {
     <>
       <ContentWrapper>
         <div>
-          <div>Selected orders: {selectedOrders.map((order) => shortenOrderId(order.id)).join(',')}</div>
+          {ordersToCancel && (
+            <div>Selected orders: {ordersToCancel.map((order) => shortenOrderId(order.id)).join(',')}</div>
+          )}
 
           <button onClick={toggleMultipleCancellation}>Multiple cancellation</button>
           <button onClick={cancelAllPendingOrders}>Cancel all pending orders</button>
 
-          {selectedOrders.length > 0 && (
-            <button onClick={() => multipleCancellation(selectedOrders)}>Cancel ({selectedOrders.length})</button>
+          {ordersToCancel && (
+            <button onClick={() => multipleCancellation(ordersToCancel)}>Cancel ({ordersToCancel.length})</button>
           )}
         </div>
         <Orders

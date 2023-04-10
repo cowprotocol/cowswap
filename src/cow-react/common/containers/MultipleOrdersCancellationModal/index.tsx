@@ -28,7 +28,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
   const [cancellationInProgress, setCancellationInProgress] = useState(false)
   const [cancellationError, setCancellationError] = useState<Error | null>(null)
 
-  const ordersCount = ordersToCancel.length
+  const ordersCount = ordersToCancel?.length || 0
 
   const dismissAll = useCallback(() => {
     setCancellationInProgress(false)
@@ -37,7 +37,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
   }, [onDismiss])
 
   const signAndSendCancellation = useCallback(async () => {
-    if (!chainId) return
+    if (!chainId || !ordersToCancel) return
 
     // Show pending modal
     setCancellationInProgress(true)
@@ -52,7 +52,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
       })
 
       // Clean cancellation queue
-      setOrdersToCancel([])
+      setOrdersToCancel(null)
       dismissAll()
     } catch (error: any) {
       setCancellationInProgress(false)
