@@ -211,9 +211,3 @@ export const ExecuteInformationTooltip = styled.div`
   padding: 0;
   margin: 0;
 `
-
-export const Checkbox = styled.input`
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-`

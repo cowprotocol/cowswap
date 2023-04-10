@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useMemo, createRef, RefObject } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
@@ -24,6 +24,10 @@ import { OrderExecutionStatusList } from '@cow/modules/limitOrders/pure/Executio
 import { SpotPricesKeyParams } from '@cow/modules/orders/state/spotPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
+import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
+import { Order } from 'state/orders/actions'
+
+// TODO: move elements to styled.jsx
 
 const TableBox = styled.div`
   display: block;
@@ -58,7 +62,7 @@ const Header = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }
   gap: 16px;
 
   grid-template-columns: ${({ isOpenOrdersTab, isRowSelectable }) =>
-    `${isRowSelectable ? '0.2fr 3fr' : '3.2fr'} repeat(2,2fr) ${
+    `${isRowSelectable && isOpenOrdersTab ? '0.2fr 3fr' : '3.2fr'} repeat(2,2fr) ${
       isOpenOrdersTab ? '2.5fr 1.4fr' : ''
     } 0.7fr 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
@@ -211,6 +215,30 @@ const OrdersExplainerBanner = styled.div`
   }
 `
 
+const Checkbox = styled.input`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`
+
+type CheckboxContainer = { element: JSX.Element; ref: RefObject<HTMLInputElement> }
+
+function getCheckboxContainer(order: Order, orderActions: LimitOrderActions): CheckboxContainer {
+  const ref = createRef<HTMLInputElement>()
+
+  return {
+    ref,
+    element: (
+      <Checkbox
+        ref={ref}
+        type="checkbox"
+        disabled={getIsEthFlowOrder(order)}
+        onChange={() => orderActions.toggleOrderForCancellation(order)}
+      />
+    ),
+  }
+}
+
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
   isRowSelectable: boolean
@@ -253,6 +281,20 @@ export function OrdersTable({
     localStorage.setItem('showOrdersExplainerBanner', 'false')
   }
 
+  const cancelOrdersCheckboxes = useMemo(() => {
+    return orders.reduce((acc, order) => {
+      acc[order.id] = getCheckboxContainer(order, orderActions)
+
+      return acc
+    }, {} as { [orderUid: string]: CheckboxContainer })
+  }, [orders, orderActions])
+
+  const toggleAllOrdersForCancellation = useCallback(() => {
+    Object.values(cancelOrdersCheckboxes).forEach(({ ref }) => {
+      ref.current?.click()
+    })
+  }, [cancelOrdersCheckboxes])
+
   useEffect(() => {
     localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
   }, [showOrdersExplainerBanner])
@@ -262,7 +304,11 @@ export function OrdersTable({
       <TableBox>
         <TableInner onScroll={onScroll}>
           <Header isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
-            {isRowSelectable && <HeaderElement></HeaderElement>}
+            {isRowSelectable && isOpenOrdersTab && (
+              <HeaderElement>
+                <input type="checkbox" onChange={toggleAllOrdersForCancellation} />
+              </HeaderElement>
+            )}
 
             <HeaderElement>
               <Trans>Sell &#x2192; Buy</Trans>
@@ -359,6 +405,7 @@ export function OrdersTable({
             {ordersPage.map((order) => (
               <OrderRow
                 key={order.id}
+                checkbox={cancelOrdersCheckboxes[order.id].element}
                 isRowSelectable={isRowSelectable}
                 isOpenOrdersTab={isOpenOrdersTab}
                 order={order}
