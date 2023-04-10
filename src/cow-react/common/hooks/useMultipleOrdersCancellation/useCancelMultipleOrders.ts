@@ -21,8 +21,6 @@ export function useCancelMultipleOrders(): (orders: Order[]) => Promise<void> {
         throw new Error('Some orders can not be cancelled!')
       }
 
-      // TODO: open pending modal here
-
       const orderUids = ordersToCancel.map((order) => order.id)
       const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellations(orderUids, chainId, signer)
 

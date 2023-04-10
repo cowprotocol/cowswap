@@ -26,6 +26,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { Order } from 'state/orders/actions'
+import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 // TODO: move elements to styled.jsx
 
@@ -232,7 +233,7 @@ function getCheckboxContainer(order: Order, orderActions: LimitOrderActions): Ch
       <Checkbox
         ref={ref}
         type="checkbox"
-        disabled={getIsEthFlowOrder(order)}
+        disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
         onChange={() => orderActions.toggleOrderForCancellation(order)}
       />
     ),
