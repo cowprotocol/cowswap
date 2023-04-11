@@ -48,7 +48,7 @@ const tooltips: { [key: string]: string | JSX.Element } = {
       <br />
       <br />
       Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
-      also be <i>Fill or kill</i>.
+      also be changed to <i>Fill or kill</i> through your order settings.
     </span>
   ),
 }
