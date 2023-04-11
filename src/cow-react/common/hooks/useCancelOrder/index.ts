@@ -54,10 +54,8 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       // 3. The order must be PENDING
       const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
 
-      const isCancellable = isOrderCancellable(order)
-
       // When the order is not cancellable, there won't be a callback
-      if (!isCancellable) {
+      if (!isOrderCancellable(order)) {
         return null
       }
 
