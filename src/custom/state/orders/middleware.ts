@@ -18,7 +18,7 @@ import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { Order } from 'state/orders/actions'
-import { getExecutedSummary } from '@src/custom/utils/trade'
+import { getExecutedSummary } from './helpers'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
