@@ -45,15 +45,12 @@ export const StyledMenuButton = styled(MenuButton)`
   &:hover {
     background: ${({ theme }) => theme.bg2};
 
-    > ${LabelText},
-    > ${StyledSVG} > path { 
-      fill: ${({ theme }) => theme.white}; 
-      color: ${({ theme }) => theme.white}; 
+    > ${LabelText}, > ${StyledSVG} > path {
+      fill: ${({ theme }) => theme.white};
+      color: ${({ theme }) => theme.white};
     }
   }
 `
-
-
 
 export const StyledMenuList = styled(MenuList)`
   box-shadow: 0 4px 8px 0 ${({ theme }) => transparentize(0.95, theme.shadow1)};
