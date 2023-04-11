@@ -12,6 +12,7 @@ import React, { useCallback, useState } from 'react'
 import { useRequestOrderCancellation } from 'state/orders/hooks'
 import { useAtom } from 'jotai'
 import { ButtonPrimary } from 'components/Button'
+import { isRejectRequestProviderError } from 'utils/misc'
 
 interface Props {
   isOpen: boolean
@@ -63,9 +64,13 @@ export function MultipleOrdersCancellationModal(props: Props) {
   if (!isOpen || !chainId) return null
 
   if (cancellationError) {
+    const errorMessage = isRejectRequestProviderError(cancellationError)
+      ? 'User rejected signing'
+      : cancellationError.message
+
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <TransactionErrorContent onDismiss={dismissAll} message={cancellationError.message} />
+        <TransactionErrorContent onDismiss={dismissAll} message={errorMessage} />
       </Modal>
     )
   }
