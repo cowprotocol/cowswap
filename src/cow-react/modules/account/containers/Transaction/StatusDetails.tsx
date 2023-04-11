@@ -15,6 +15,7 @@ import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { CancelButton } from '@cow/common/pure/CancelButton'
+import { ExplorerDataType, getExplorerLink } from '@src/utils/getExplorerLink'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -68,12 +69,13 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
 }
 
 export type StatusDetailsProps = {
+  chainId: number
   activityDerivedState: ActivityDerivedState
   showCancellationModal: (() => void) | null
 }
 
 export function StatusDetails(props: StatusDetailsProps) {
-  const { activityDerivedState, showCancellationModal } = props
+  const { chainId, activityDerivedState, showCancellationModal } = props
 
   const {
     status,
@@ -130,7 +132,11 @@ export function StatusDetails(props: StatusDetailsProps) {
         </StatusLabelBelow>
       )}
       {cancellationHash && (
-        <CancelTxLink href={cancellationHash} target="_blank" title="Cancellation transaction">
+        <CancelTxLink
+          href={getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)}
+          target="_blank"
+          title="Cancellation transaction"
+        >
           <LinkIconFeather size={16} />
         </CancelTxLink>
       )}
