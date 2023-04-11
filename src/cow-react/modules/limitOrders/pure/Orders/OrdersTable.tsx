@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import React, { useCallback, useState, useEffect, useMemo, createRef, RefObject } from 'react'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
@@ -24,9 +24,7 @@ import { OrderExecutionStatusList } from '@cow/modules/limitOrders/pure/Executio
 import { SpotPricesKeyParams } from '@cow/modules/orders/state/spotPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
-import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { Order } from 'state/orders/actions'
-import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 // TODO: move elements to styled.jsx
 
@@ -216,37 +214,13 @@ const OrdersExplainerBanner = styled.div`
   }
 `
 
-const Checkbox = styled.input`
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-`
-
-type CheckboxContainer = { element: JSX.Element; ref: RefObject<HTMLInputElement> }
-
-function getCheckboxContainer(order: Order, orderActions: LimitOrderActions): CheckboxContainer {
-  const ref = createRef<HTMLInputElement>()
-
-  return {
-    ref,
-    element: (
-      <Checkbox
-        ref={ref}
-        type="checkbox"
-        disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
-        onChange={() => orderActions.toggleOrderForCancellation(order)}
-      />
-    ),
-  }
-}
-
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
-  isRowSelectable: boolean
   currentPageNumber: number
   chainId: SupportedChainId | undefined
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
+  selectedOrders: Order[] | null
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: LimitOrderActions
@@ -254,7 +228,7 @@ export interface OrdersTableProps {
 
 export function OrdersTable({
   isOpenOrdersTab,
-  isRowSelectable,
+  selectedOrders,
   chainId,
   orders,
   pendingOrdersPrices,
@@ -271,6 +245,18 @@ export function OrdersTable({
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
   }, [])
 
+  const isRowSelectable = selectedOrders !== null
+
+  const selectedOrdersMap = useMemo(() => {
+    if (!selectedOrders) return {}
+
+    return selectedOrders.reduce((acc, val) => {
+      acc[val.id] = true
+
+      return acc
+    }, {} as { [key: string]: true })
+  }, [selectedOrders])
+
   // Explainer banner for orders
   const [showOrdersExplainerBanner, setShowOrdersExplainerBanner] = useState(() => {
     const item = localStorage.getItem('showOrdersExplainerBanner')
@@ -281,20 +267,6 @@ export function OrdersTable({
     setShowOrdersExplainerBanner(false)
     localStorage.setItem('showOrdersExplainerBanner', 'false')
   }
-
-  const cancelOrdersCheckboxes = useMemo(() => {
-    return orders.reduce((acc, order) => {
-      acc[order.id] = getCheckboxContainer(order, orderActions)
-
-      return acc
-    }, {} as { [orderUid: string]: CheckboxContainer })
-  }, [orders, orderActions])
-
-  const toggleAllOrdersForCancellation = useCallback(() => {
-    Object.values(cancelOrdersCheckboxes).forEach(({ ref }) => {
-      ref.current?.click()
-    })
-  }, [cancelOrdersCheckboxes])
 
   useEffect(() => {
     localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
@@ -307,7 +279,10 @@ export function OrdersTable({
           <Header isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
             {isRowSelectable && isOpenOrdersTab && (
               <HeaderElement>
-                <input type="checkbox" onChange={toggleAllOrdersForCancellation} />
+                <input
+                  type="checkbox"
+                  onChange={(event) => orderActions.toggleAllOrdersForCancellation(!event.target.checked)}
+                />
               </HeaderElement>
             )}
 
@@ -406,8 +381,8 @@ export function OrdersTable({
             {ordersPage.map((order) => (
               <OrderRow
                 key={order.id}
-                checkbox={cancelOrdersCheckboxes[order.id].element}
                 isRowSelectable={isRowSelectable}
+                isRowSelected={!!selectedOrdersMap[order.id]}
                 isOpenOrdersTab={isOpenOrdersTab}
                 order={order}
                 spotPrice={getSpotPrice({

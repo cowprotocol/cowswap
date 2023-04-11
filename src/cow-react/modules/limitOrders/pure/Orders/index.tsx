@@ -125,7 +125,7 @@ export function Orders({
   orders,
   tabs,
   isWalletConnected,
-  isRowSelectable,
+  selectedOrders,
   isOpenOrdersTab,
   balancesAndAllowances,
   orderActions,
@@ -182,7 +182,7 @@ export function Orders({
     return (
       <OrdersTable
         isOpenOrdersTab={isOpenOrdersTab}
-        isRowSelectable={isRowSelectable}
+        selectedOrders={selectedOrders}
         pendingOrdersPrices={pendingOrdersPrices}
         currentPageNumber={currentPageNumber}
         chainId={chainId}

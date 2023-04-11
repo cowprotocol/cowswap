@@ -38,6 +38,9 @@ const orderActions: LimitOrderActions = {
   toggleOrderForCancellation(order) {
     console.log('toggleOrderForCancellation', order)
   },
+  toggleAllOrdersForCancellation() {
+    console.log('toggleAllOrdersForCancellation')
+  },
 }
 
 export default (
@@ -49,7 +52,7 @@ export default (
     tabs={tabs}
     isOpenOrdersTab={true}
     isWalletConnected={true}
-    isRowSelectable={true}
+    selectedOrders={[]}
     balancesAndAllowances={balancesAndAllowances}
     getSpotPrice={() => null}
     orderActions={orderActions}

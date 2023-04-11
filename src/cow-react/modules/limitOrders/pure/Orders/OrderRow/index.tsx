@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
 import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
@@ -28,6 +28,8 @@ import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/Or
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { ZERO_FRACTION } from 'constants/index'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
+import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
+import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -92,6 +94,12 @@ const AllowanceWarning = (symbol: string) => (
   </styledEl.WarningParagraph>
 )
 
+const Checkbox = styled.input`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`
+
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
@@ -104,8 +112,8 @@ export interface OrderRowProps {
   isRateInverted: boolean
   isOpenOrdersTab: boolean
   isRowSelectable: boolean
+  isRowSelected: boolean
   orderParams: OrderParams
-  checkbox: JSX.Element
   onClick: () => void
   orderActions: LimitOrderActions
 }
@@ -116,12 +124,12 @@ export function OrderRow({
   isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
   isRowSelectable,
+  isRowSelected,
   orderActions,
   orderParams,
   onClick,
   prices,
   spotPrice,
-  checkbox,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
   const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice, status } = order
@@ -167,7 +175,14 @@ export function OrderRow({
   return (
     <RowElement isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
-      {isRowSelectable && isOpenOrdersTab ? checkbox : null}
+      {isRowSelectable && isOpenOrdersTab && (
+        <Checkbox
+          type="checkbox"
+          checked={isRowSelected}
+          disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
+          onChange={() => orderActions.toggleOrderForCancellation(order)}
+        />
+      )}
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell clickable onClick={onClick}>
         <styledEl.CurrencyLogoPair>

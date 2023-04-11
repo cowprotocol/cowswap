@@ -1,6 +1,6 @@
 import { Orders } from '../../pure/Orders'
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
 import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
@@ -25,7 +25,7 @@ function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOr
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
-function toggleOrderForCancellation(state: Order[], order: Order): Order[] {
+function toggleOrderInCancellationList(state: Order[], order: Order): Order[] {
   const isOrderIncluded = state.find((item) => item.id === order.id)
 
   if (isOrderIncluded) {
@@ -49,18 +49,6 @@ export function OrdersWidget() {
   const [ordersToCancel, setOrdersToCancel] = useAtom(ordersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
-
-  const isRowSelectable = ordersToCancel !== null
-
-  const orderActions: LimitOrderActions = {
-    getShowCancellationModal,
-    selectReceiptOrder,
-    toggleOrderForCancellation(order: Order) {
-      if (!ordersToCancel) return
-
-      setOrdersToCancel(toggleOrderForCancellation(ordersToCancel, order))
-    },
-  }
 
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
@@ -91,6 +79,29 @@ export function OrdersWidget() {
     ordersList.pending
   )
 
+  const toggleAllOrdersForCancellation = useCallback(
+    (checked: boolean) => {
+      setOrdersToCancel(checked ? [] : orders)
+    },
+    [orders, setOrdersToCancel]
+  )
+
+  const toggleOrderForCancellation = useCallback(
+    (order: Order) => {
+      if (!ordersToCancel) return
+
+      setOrdersToCancel(toggleOrderInCancellationList(ordersToCancel, order))
+    },
+    [ordersToCancel, setOrdersToCancel]
+  )
+
+  const orderActions: LimitOrderActions = {
+    getShowCancellationModal,
+    selectReceiptOrder,
+    toggleOrderForCancellation,
+    toggleAllOrdersForCancellation,
+  }
+
   // Set page params initially once
   useEffect(() => {
     navigate(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
@@ -113,7 +124,7 @@ export function OrdersWidget() {
           isWalletConnected={!!account}
           orderActions={orderActions}
           getSpotPrice={getSpotPrice}
-          isRowSelectable={isRowSelectable}
+          selectedOrders={ordersToCancel}
         ></Orders>
       </ContentWrapper>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
