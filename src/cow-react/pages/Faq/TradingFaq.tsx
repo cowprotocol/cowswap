@@ -27,10 +27,10 @@ export default function TokenFaq() {
 
             <h3 id="what-types-of-orders-does-cowswap-support">What types of orders does CoW Swap support?</h3>
 
-            <p>Swap buy and sell orders, which are always Fill or kill</p>
+            <p>Swap buy and sell orders, which are always Fill or kill.</p>
             <p>
               Limit buy and sell orders, which can either be Partially fillable or Fill or kill. By default, limit
-              orders are Partially fillable
+              orders are Partially fillable.
             </p>
 
             <h3 id="what-token-pairs-does-cowswap-allow-to-trade">
