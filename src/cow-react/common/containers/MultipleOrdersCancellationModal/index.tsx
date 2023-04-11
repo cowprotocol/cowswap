@@ -5,14 +5,14 @@ import {
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
 import { GpModal as Modal } from '@cow/common/pure/Modal'
-import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from '@cow/common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { useWalletInfo } from '@cow/modules/wallet'
 import React, { useCallback, useState } from 'react'
 import { useRequestOrderCancellation } from 'state/orders/hooks'
-import { useAtom } from 'jotai'
 import { ButtonPrimary } from 'components/Button'
 import { isRejectRequestProviderError } from 'utils/misc'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 interface Props {
   isOpen: boolean
@@ -23,7 +23,8 @@ export function MultipleOrdersCancellationModal(props: Props) {
   const { isOpen, onDismiss } = props
 
   const { chainId } = useWalletInfo()
-  const [ordersToCancel, setOrdersToCancel] = useAtom(ordersToCancelAtom)
+  const ordersToCancel = useAtomValue(ordersToCancelAtom)
+  const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
   const cancelAll = useCancelMultipleOrders()
   const cancelPendingOrder = useRequestOrderCancellation()
   const [cancellationInProgress, setCancellationInProgress] = useState(false)
@@ -53,13 +54,13 @@ export function MultipleOrdersCancellationModal(props: Props) {
       })
 
       // Clean cancellation queue
-      setOrdersToCancel(null)
+      updateOrdersToCancel(null)
       dismissAll()
     } catch (error: any) {
       setCancellationInProgress(false)
       setCancellationError(error)
     }
-  }, [chainId, cancelPendingOrder, cancelAll, ordersToCancel, dismissAll, setOrdersToCancel])
+  }, [chainId, cancelPendingOrder, cancelAll, ordersToCancel, dismissAll, updateOrdersToCancel])
 
   if (!isOpen || !chainId) return null
 

@@ -9,16 +9,15 @@ import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/li
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
 import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { Order } from 'state/orders/actions'
-import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 import styled from 'styled-components/macro'
-import { useAtom } from 'jotai'
 import { MultipleCancellationMenu } from '@cow/modules/limitOrders/containers/OrdersWidget/MultipleCancellationMenu'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
@@ -47,7 +46,8 @@ export function OrdersWidget() {
   const { allowsOffchainSigning } = useWalletDetails()
   const getShowCancellationModal = useCancelOrder()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
-  const [ordersToCancel, setOrdersToCancel] = useAtom(ordersToCancelAtom)
+  const ordersToCancel = useAtomValue(ordersToCancelAtom)
+  const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
   const getSpotPrice = useGetSpotPrice()
   const selectReceiptOrder = useSelectReceiptOrder()
 
@@ -82,18 +82,18 @@ export function OrdersWidget() {
 
   const toggleAllOrdersForCancellation = useCallback(
     (checked: boolean) => {
-      setOrdersToCancel(checked ? [] : orders)
+      updateOrdersToCancel(checked ? [] : orders)
     },
-    [orders, setOrdersToCancel]
+    [orders, updateOrdersToCancel]
   )
 
   const toggleOrderForCancellation = useCallback(
     (order: Order) => {
       if (!ordersToCancel) return
 
-      setOrdersToCancel(toggleOrderInCancellationList(ordersToCancel, order))
+      updateOrdersToCancel(toggleOrderInCancellationList(ordersToCancel, order))
     },
-    [ordersToCancel, setOrdersToCancel]
+    [ordersToCancel, updateOrdersToCancel]
   )
 
   const orderActions: LimitOrderActions = {

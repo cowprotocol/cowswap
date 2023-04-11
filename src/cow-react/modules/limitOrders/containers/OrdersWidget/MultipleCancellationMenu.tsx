@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import { useAtom } from 'jotai'
-import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 import { useMultipleOrdersCancellation } from '@cow/common/hooks/useMultipleOrdersCancellation'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 import { CloseIcon } from 'theme'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 interface Props {
   pendingOrders: ParsedOrder[]
@@ -45,14 +45,15 @@ const ActionButton = styled.button`
 `
 
 export function MultipleCancellationMenu({ pendingOrders }: Props) {
-  const [ordersToCancel, setOrdersToCancel] = useAtom(ordersToCancelAtom)
+  const ordersToCancel = useAtomValue(ordersToCancelAtom)
+  const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
   const multipleCancellation = useMultipleOrdersCancellation()
 
   const isMultipleCancelEnabled = ordersToCancel !== null
 
   const toggleMultipleCancellation = useCallback(() => {
-    setOrdersToCancel(isMultipleCancelEnabled ? null : [])
-  }, [setOrdersToCancel, isMultipleCancelEnabled])
+    updateOrdersToCancel(isMultipleCancelEnabled ? null : [])
+  }, [updateOrdersToCancel, isMultipleCancelEnabled])
 
   const cancelAllPendingOrders = useCallback(() => {
     multipleCancellation(pendingOrders)

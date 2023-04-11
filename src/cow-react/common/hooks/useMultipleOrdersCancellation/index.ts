@@ -3,10 +3,10 @@ import { Order } from 'state/orders/actions'
 import { useOpenModal } from '@src/state/application/hooks'
 import { ApplicationModal } from '@src/state/application/reducer'
 import { useUpdateAtom } from 'jotai/utils'
-import { ordersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
+import { updateOrdersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 
 export function useMultipleOrdersCancellation() {
-  const setOrdersToCancel = useUpdateAtom(ordersToCancelAtom)
+  const setOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
   const openModal = useOpenModal(ApplicationModal.MULTIPLE_CANCELLATION)
 
   return useCallback(
