@@ -23,11 +23,13 @@ import { AppDataUpdater } from 'state/appData/AppDataInfoUpdater'
 import { WalletUpdater } from '@cow/modules/wallet'
 import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
 import { SpotPricesUpdater } from 'state/orders/updaters/SpotPricesUpdater'
+import { TokenBalancesUpdater } from '@cow/modules/tokens'
 
 export function Updaters() {
   return (
     <>
       <WalletUpdater />
+      <TokenBalancesUpdater />
       <TokensListUpdater />
       <RadialGradientByChainUpdater />
       <ListsUpdater />
