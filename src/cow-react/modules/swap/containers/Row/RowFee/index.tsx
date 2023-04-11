@@ -81,8 +81,10 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${
       isEthFLow ? ' + gas' : ''
     }`
-    console.log(smartFeeTokenValue, smartFeeFiatValue)
-    const feeToken = isValidNonZeroAmount(smartFeeTokenValue) ? feeAmountWithCurrency : '🎉 Free!'
+
+    const feeToken = isValidNonZeroAmount(smartFeeTokenValue)
+      ? feeAmountWithCurrency
+      : `🎉 Free!${isEthFLow ? ' (+ gas)' : ''}}`
     const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? smartFeeFiatValue && `(≈$${smartFeeFiatValue})` : ''
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
     const includeGasMessage = allowsOffchainSigning && !isEthFLow ? ' (incl. gas costs)' : ''
