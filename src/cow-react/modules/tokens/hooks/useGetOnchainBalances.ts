@@ -26,7 +26,7 @@ export type GetOnchainBalanceResult = { [tokenAddress: string]: TokenBalance }
  * @param tokens
  * @returns
  */
-export function useGetOnchainBalance(account?: string, tokens?: (Token | undefined)[]): GetOnchainBalanceResult {
+export function useGetOnchainBalances(account?: string, tokens?: (Token | undefined)[]): GetOnchainBalanceResult {
   const validatedTokens: Token[] = useMemo(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
     [tokens]

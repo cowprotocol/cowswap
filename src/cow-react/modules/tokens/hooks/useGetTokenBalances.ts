@@ -14,7 +14,7 @@ export interface TokenBalanceSubscriptionResult {
 /**
  * Subscribe to the balance/allwance of some tokens. It will return a function to get the current balance
  */
-export function useGetTokenBalance(subscription: TokenBalanceSubscription): TokenBalanceSubscriptionResult {
+export function useGetTokenBalances(subscription: TokenBalanceSubscription): TokenBalanceSubscriptionResult {
   const balances = useAtomValue(tokenBalancesAtom)
   const subscribeTokens = useSetAtom(subscribeTokensAtom)
   const unsuscribeTokens = useSetAtom(unsubscribeTokensAtom)
