@@ -17,6 +17,8 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
+import { Order } from 'state/orders/actions'
+import { getExecutedSummary } from '@src/custom/utils/trade'
 
 // action syntactic sugar
 const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
@@ -117,10 +119,10 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
           // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
           // because it's nicer there
           const popup = setPopupData(OrderTxTypes.METATXN, {
-            summary,
             id,
+            summary: getExecutedSummary(orderObject?.order as Order) || summary,
             status: OrderActions.OrderStatus.FULFILLED,
-            descriptor: 'was traded',
+            descriptor: null,
           })
           orderAnalytics('Executed', orderClass)
 
