@@ -133,7 +133,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
 
     return (
       <SwapButton disabled={true}>
-        <Trans>{(quote.error && quoteErrorTexts[quote.error.type]) || defaultError }</Trans>
+        <Trans>{(quote.error && quoteErrorTexts[quote.error.type]) || defaultError}</Trans>
       </SwapButton>
     )
   },
