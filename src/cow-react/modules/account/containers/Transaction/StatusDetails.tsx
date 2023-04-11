@@ -1,5 +1,6 @@
 import SVG from 'react-inlinesvg'
 import { ExternalLink } from 'theme'
+import { ExternalLink as LinkIconFeather } from 'react-feather'
 
 import OrderCheckImage from 'assets/cow-swap/order-check.svg'
 import OrderExpiredImage from 'assets/cow-swap/order-expired.svg'
@@ -8,7 +9,7 @@ import OrderCancelledImage from 'assets/cow-swap/order-cancelled.svg'
 import PresignaturePendingImage from 'assets/cow-swap/order-presignature-pending.svg'
 import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 
-import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
+import { StatusLabel, StatusLabelWrapper, StatusLabelBelow, CancelTxLink } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
@@ -88,8 +89,10 @@ export function StatusDetails(props: StatusDetailsProps) {
     isCreating,
   } = activityDerivedState
 
+  const cancellationHash = activityDerivedState.order?.cancellationHash
+
   return (
-    <StatusLabelWrapper>
+    <StatusLabelWrapper withCancellationHash$={!!cancellationHash}>
       <StatusLabel
         color={determinePillColour(status, type)}
         isTransaction={isTransaction}
@@ -125,6 +128,11 @@ export function StatusDetails(props: StatusDetailsProps) {
         <StatusLabelBelow>
           <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>
+      )}
+      {cancellationHash && (
+        <CancelTxLink href={cancellationHash} target="_blank" title="Cancellation transaction">
+          <LinkIconFeather size={16} />
+        </CancelTxLink>
       )}
     </StatusLabelWrapper>
   )
