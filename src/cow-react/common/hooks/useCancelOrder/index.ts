@@ -57,11 +57,9 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       // 2. It can be cancelled when the order is CREATING or PENDING
       // 3. It cannot be cancelled if there's a cancellationHash already
       const isEthFlowCancellable =
-        isEthFlowOrder &&
-        (order?.status === OrderStatus.CREATING || order?.status === OrderStatus.PENDING) &&
-        !order.cancellationHash
+        isEthFlowOrder && (order?.status === OrderStatus.CREATING || order?.status === OrderStatus.PENDING)
 
-      const isCancellable = !order.isCancelling || isEthFlowCancellable
+      const isCancellable = (!order.isCancelling || isEthFlowCancellable) && !order.cancellationHash
 
       // When the order is not cancellable, there won't be a callback
       if (!isCancellable) {
