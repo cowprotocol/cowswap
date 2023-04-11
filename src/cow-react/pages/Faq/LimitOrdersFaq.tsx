@@ -49,26 +49,13 @@ export default function LimitOrderFAQ() {
             <h3 id="what-type-of-limit-orders-does-cow-protocol-support">
               What types of limit orders does CoW Protocol support?
             </h3>
+            <p>CoW Protocol supports Fill or kill as well as Partially fillable limit orders.</p>
+            <p>With Fill or kill, the limit order is executed in its entirety, or not at all.</p>
             <p>
-              Currently, CoW Protocol only supports fill-or-kill limit orders. With fill-or-kill, the limit order is
-              executed in its entirety, or not at all.
-            </p>
-            <p>
-              In the future, CoW Protocol will support partial-fill limit orders as well. With partial-fill limit
-              orders, the limit order does not need to be executed in full. It may be executed in part, so long as the
-              limit price is respected. This would be relevant, for example, if a{' '}
+              With Partially fillable limit orders, the order does not need to be executed in full. It may be executed
+              in part, so long as the limit price is respected. This would be relevant, for example, if a{' '}
               <ExternalLinkFaq href="https://docs.cow.fi/off-chain-services/solvers">solver</ExternalLinkFaq> is able to
               find liquidity to fill half of an order but not all of it.
-            </p>
-
-            <h3 id="when-will-i-be-able-to-place-partially-fillable-limit-orders">
-              When will I be able to place partially-fillable limit orders?
-            </h3>
-            <p>
-              Solvers are currently not capable of handling partially-fillable limit orders, but they’re actively
-              working on it. If you are interested in seeing partially-fillable orders asap, please{' '}
-              <ExternalLinkFaq href="https://t.me/+60olZD2C2HswMzRh">reach out</ExternalLinkFaq> – you could help build
-              a solver that specializes in these types of orders!
             </p>
 
             <h3 id="how-do-fees-work">How do fees work?</h3>
@@ -179,10 +166,10 @@ export default function LimitOrderFAQ() {
               There are a few possible reasons for this:
               <ul>
                 <li>
-                  Though the market price reached your limit price, there wasn’t enough liquidity to fill your order.
-                  CoW Swap currently only supports fill-or-kill orders, so if there isn’t enough liquidity to fill an
-                  order completely, the order doesn’t get filled at all. We are planning to enable partially fillable
-                  orders soon, which will mitigate this risk substantially.
+                  Though the market price reached your limit price, there wasn't enough liquidity to fill your order.
+                  For Fill or kill orders, if there isn't enough liquidity to fill an order completely, the order
+                  doesn't get filled at all. Limit orders do now support also Partially fillable orders, which mitigates
+                  this risk substantially.
                 </li>
                 <li>
                   CoW Swap covers fees on limit orders by executing the order at a slightly better price than the limit
