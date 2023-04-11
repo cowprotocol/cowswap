@@ -68,7 +68,7 @@ export default function LimitOrderFAQ() {
             <p>
               Fees are taken from the surplus CoW Protocol generates for your order – that is, by executing your order
               at a better price than your limit price. CoW Protocol is capable of finding much better prices than are
-              otherwise available due to its unique batch auction mechanism; in situations where it can’t find a better
+              otherwise available due to its unique batch auction mechanism; in situations where it can't find a better
               price, it will wait until the market price is sufficient to cover both your limit price and the network
               fees. This means that your order may not execute exactly when the market price hits your limit price.
             </p>
@@ -80,7 +80,7 @@ export default function LimitOrderFAQ() {
               more than you initially expected to get).
             </p>
             <p>
-              CoW Swap’s unique fee model for limit orders ensures that you will always get the token amount you ordered
+              CoW Swap's unique fee model for limit orders ensures that you will always get the token amount you ordered
               at the limit price you set – or better.
             </p>
 
@@ -96,8 +96,8 @@ export default function LimitOrderFAQ() {
 
             <h3 id="what-if-my-limit-order-reverts-or-expires">What if my limit order reverts or expires?</h3>
             <p>
-              Limit orders placed through CoW Protocol cannot revert. You therefore don’t need to pay fees for reverted
-              orders. If an order expires, you won’t pay for that either.
+              Limit orders placed through CoW Protocol cannot revert. You therefore don't need to pay fees for reverted
+              orders. If an order expires, you won't pay for that either.
             </p>
 
             <h3 id="so-i-can-shamelessly-place-a-bunch-of-orders">
@@ -118,9 +118,9 @@ export default function LimitOrderFAQ() {
               balance, your order will be executed immediately.
             </p>
 
-            <h3 id="who-is-the-counterparty">Who is the counterparty in CoW Protocol’s limit orders?</h3>
+            <h3 id="who-is-the-counterparty">Who is the counterparty in CoW Protocol's limit orders?</h3>
             <p>
-              Limit orders on CoW Protocol don’t need a counterparty to function properly. CoW Protocol – through its
+              Limit orders on CoW Protocol don't need a counterparty to function properly. CoW Protocol – through its
               decentralized network of solvers – sources liquidity from AMMs, DEX aggregators, private market makers,
               and other CoW Protocol users. As soon as a solver is able to find an execution path that meets the
               conditions of a limit order, CoW Protocol will execute the order.
@@ -128,7 +128,7 @@ export default function LimitOrderFAQ() {
 
             <h3 id="what-does-surplus-capturing-limit-orders-mean">What does “surplus-capturing limit orders” mean?</h3>
             <p>
-              CoW Protocol’s limit orders are different from all other DeFi limit orders because they are
+              CoW Protocol's limit orders are different from all other DeFi limit orders because they are
               surplus-capturing.
             </p>
             <p>
@@ -160,7 +160,7 @@ export default function LimitOrderFAQ() {
             </p>
 
             <h3 id="why-isnt-my-order-getting-filled">
-              Why isn’t my order getting filled when the market price hits my limit price?
+              Why isn't my order getting filled when the market price hits my limit price?
             </h3>
             <p>
               There are a few possible reasons for this:
@@ -180,7 +180,7 @@ export default function LimitOrderFAQ() {
             </p>
 
             <h3 id="why-do-i-see-orders-i-didnt-place">
-              Why do I see orders I didn’t place in my limit order history?
+              Why do I see orders I didn't place in my limit order history?
             </h3>
             <p>
               The order history panel visible in the limit orders tab of CoW Swap shows both limit orders and market
@@ -188,9 +188,9 @@ export default function LimitOrderFAQ() {
               orders.
             </p>
 
-            <h3 id="why-cant-i-trade-eth">Why can’t I trade ETH?</h3>
+            <h3 id="why-cant-i-trade-eth">Why can't I trade ETH?</h3>
             <p>
-              You can’t trade ETH directly because ETH is not an ERC-20 token. Limit orders on CoW Protocol currently
+              You can't trade ETH directly because ETH is not an ERC-20 token. Limit orders on CoW Protocol currently
               only work for ERC-20 tokens. If you wish to sell ETH using limit orders on CoW Protocol, you can wrap your
               ETH and place the limit order with WETH.
             </p>
