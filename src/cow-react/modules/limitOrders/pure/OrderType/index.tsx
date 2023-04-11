@@ -12,10 +12,15 @@ export type OrderTypeProps = {
 }
 
 export function OrderType(props: OrderTypeProps) {
-  const { isPartiallyFillable, className } = props
-  const textContent = isPartiallyFillable
-    ? 'This order can be partially filled'
-    : 'This order will either be filled completely or not filled.'
+  const {
+    isPartiallyFillable,
+    className,
+    partiallyFillableOverride: [override],
+  } = props
+  const textContent =
+    override ?? isPartiallyFillable
+      ? 'This order can be partially filled'
+      : 'This order will either be filled completely or not filled.'
 
   return (
     <DetailsRow className={className}>
