@@ -19,7 +19,6 @@ import {
 import { getProfileData } from '@cow/api/gnosisProtocol/api'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { orderBookApi } from '@cow/cowSdk'
-import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 
 export type PostOrderParams = {
   account: string
@@ -84,29 +83,6 @@ function _getSummary(params: PostOrderParams): string {
 
     return `${base} to ${toAddress}`
   }
-}
-
-export function getExecutedSummary(order: Order): string | null {
-  if (!order) {
-    return null
-  }
-
-  const inputT = order.inputToken
-  const outputT = order.outputToken
-
-  const inputToken = new Token(inputT.chainId, inputT.address, inputT.decimals, inputT.symbol, inputT.name)
-  const outputToken = new Token(outputT.chainId, outputT.address, outputT.decimals, outputT.symbol, outputT.name)
-
-  const inputSymbol = inputToken.symbol
-  const outputSymbol = outputToken.symbol
-
-  const inputAmountCurrency = getSellAmountWithFee({ ...order, inputToken })
-  const outputAmountCyrrency = CurrencyAmount.fromRawAmount(outputToken, order.buyAmount)
-
-  const inputAmount = formatTokenAmount(inputAmountCurrency)
-  const outputAmount = formatTokenAmount(outputAmountCyrrency)
-
-  return `Traded ${inputAmount} ${inputSymbol} for a total of ${outputAmount} ${outputSymbol}`
 }
 
 export function getOrderParams(params: PostOrderParams): {
