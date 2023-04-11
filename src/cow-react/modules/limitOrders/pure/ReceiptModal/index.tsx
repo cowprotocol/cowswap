@@ -47,8 +47,8 @@ const tooltips: { [key: string]: string | JSX.Element } = {
       set) or limit orders (which fill at a price you specify).
       <br />
       <br />
-      Market orders are always fill or kill, while limit orders are currently partially fillable. Soon it'll be possible
-      to chose the type
+      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
+      also be changed to <i>Fill or kill</i> through your order settings.
     </span>
   ),
 }

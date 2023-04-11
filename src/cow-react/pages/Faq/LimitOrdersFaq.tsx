@@ -49,26 +49,13 @@ export default function LimitOrderFAQ() {
             <h3 id="what-type-of-limit-orders-does-cow-protocol-support">
               What types of limit orders does CoW Protocol support?
             </h3>
+            <p>CoW Protocol supports Fill or kill as well as Partially fillable limit orders.</p>
+            <p>With Fill or kill, the limit order is executed in its entirety, or not at all.</p>
             <p>
-              Currently, CoW Protocol only supports fill-or-kill limit orders. With fill-or-kill, the limit order is
-              executed in its entirety, or not at all.
-            </p>
-            <p>
-              In the future, CoW Protocol will support partial-fill limit orders as well. With partial-fill limit
-              orders, the limit order does not need to be executed in full. It may be executed in part, so long as the
-              limit price is respected. This would be relevant, for example, if a{' '}
+              With Partially fillable limit orders, the order does not need to be executed in full. It may be executed
+              in part, so long as the limit price is respected. This would be relevant, for example, if a{' '}
               <ExternalLinkFaq href="https://docs.cow.fi/off-chain-services/solvers">solver</ExternalLinkFaq> is able to
               find liquidity to fill half of an order but not all of it.
-            </p>
-
-            <h3 id="when-will-i-be-able-to-place-partially-fillable-limit-orders">
-              When will I be able to place partially-fillable limit orders?
-            </h3>
-            <p>
-              Solvers are currently not capable of handling partially-fillable limit orders, but they’re actively
-              working on it. If you are interested in seeing partially-fillable orders asap, please{' '}
-              <ExternalLinkFaq href="https://t.me/+60olZD2C2HswMzRh">reach out</ExternalLinkFaq> – you could help build
-              a solver that specializes in these types of orders!
             </p>
 
             <h3 id="how-do-fees-work">How do fees work?</h3>
@@ -81,7 +68,7 @@ export default function LimitOrderFAQ() {
             <p>
               Fees are taken from the surplus CoW Protocol generates for your order – that is, by executing your order
               at a better price than your limit price. CoW Protocol is capable of finding much better prices than are
-              otherwise available due to its unique batch auction mechanism; in situations where it can’t find a better
+              otherwise available due to its unique batch auction mechanism; in situations where it can't find a better
               price, it will wait until the market price is sufficient to cover both your limit price and the network
               fees. This means that your order may not execute exactly when the market price hits your limit price.
             </p>
@@ -93,7 +80,7 @@ export default function LimitOrderFAQ() {
               more than you initially expected to get).
             </p>
             <p>
-              CoW Swap’s unique fee model for limit orders ensures that you will always get the token amount you ordered
+              CoW Swap's unique fee model for limit orders ensures that you will always get the token amount you ordered
               at the limit price you set – or better.
             </p>
 
@@ -109,8 +96,8 @@ export default function LimitOrderFAQ() {
 
             <h3 id="what-if-my-limit-order-reverts-or-expires">What if my limit order reverts or expires?</h3>
             <p>
-              Limit orders placed through CoW Protocol cannot revert. You therefore don’t need to pay fees for reverted
-              orders. If an order expires, you won’t pay for that either.
+              Limit orders placed through CoW Protocol cannot revert. You therefore don't need to pay fees for reverted
+              orders. If an order expires, you won't pay for that either.
             </p>
 
             <h3 id="so-i-can-shamelessly-place-a-bunch-of-orders">
@@ -131,9 +118,9 @@ export default function LimitOrderFAQ() {
               balance, your order will be executed immediately.
             </p>
 
-            <h3 id="who-is-the-counterparty">Who is the counterparty in CoW Protocol’s limit orders?</h3>
+            <h3 id="who-is-the-counterparty">Who is the counterparty in CoW Protocol's limit orders?</h3>
             <p>
-              Limit orders on CoW Protocol don’t need a counterparty to function properly. CoW Protocol – through its
+              Limit orders on CoW Protocol don't need a counterparty to function properly. CoW Protocol – through its
               decentralized network of solvers – sources liquidity from AMMs, DEX aggregators, private market makers,
               and other CoW Protocol users. As soon as a solver is able to find an execution path that meets the
               conditions of a limit order, CoW Protocol will execute the order.
@@ -141,7 +128,7 @@ export default function LimitOrderFAQ() {
 
             <h3 id="what-does-surplus-capturing-limit-orders-mean">What does “surplus-capturing limit orders” mean?</h3>
             <p>
-              CoW Protocol’s limit orders are different from all other DeFi limit orders because they are
+              CoW Protocol's limit orders are different from all other DeFi limit orders because they are
               surplus-capturing.
             </p>
             <p>
@@ -173,16 +160,16 @@ export default function LimitOrderFAQ() {
             </p>
 
             <h3 id="why-isnt-my-order-getting-filled">
-              Why isn’t my order getting filled when the market price hits my limit price?
+              Why isn't my order getting filled when the market price hits my limit price?
             </h3>
             <p>
               There are a few possible reasons for this:
               <ul>
                 <li>
-                  Though the market price reached your limit price, there wasn’t enough liquidity to fill your order.
-                  CoW Swap currently only supports fill-or-kill orders, so if there isn’t enough liquidity to fill an
-                  order completely, the order doesn’t get filled at all. We are planning to enable partially fillable
-                  orders soon, which will mitigate this risk substantially.
+                  Though the market price reached your limit price, there wasn't enough liquidity to fill your order.
+                  For Fill or kill orders, if there isn't enough liquidity to fill an order completely, the order
+                  doesn't get filled at all. Limit orders do now support also Partially fillable orders, which mitigates
+                  this risk substantially.
                 </li>
                 <li>
                   CoW Swap covers fees on limit orders by executing the order at a slightly better price than the limit
@@ -193,7 +180,7 @@ export default function LimitOrderFAQ() {
             </p>
 
             <h3 id="why-do-i-see-orders-i-didnt-place">
-              Why do I see orders I didn’t place in my limit order history?
+              Why do I see orders I didn't place in my limit order history?
             </h3>
             <p>
               The order history panel visible in the limit orders tab of CoW Swap shows both limit orders and market
@@ -201,9 +188,9 @@ export default function LimitOrderFAQ() {
               orders.
             </p>
 
-            <h3 id="why-cant-i-trade-eth">Why can’t I trade ETH?</h3>
+            <h3 id="why-cant-i-trade-eth">Why can't I trade ETH?</h3>
             <p>
-              You can’t trade ETH directly because ETH is not an ERC-20 token. Limit orders on CoW Protocol currently
+              You can't trade ETH directly because ETH is not an ERC-20 token. Limit orders on CoW Protocol currently
               only work for ERC-20 tokens. If you wish to sell ETH using limit orders on CoW Protocol, you can wrap your
               ETH and place the limit order with WETH.
             </p>
