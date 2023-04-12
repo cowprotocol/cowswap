@@ -1,41 +1,47 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 import { useMultipleOrdersCancellation } from '@cow/common/hooks/useMultipleOrdersCancellation'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
-import { CloseIcon } from 'theme'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useWalletDetails } from '@cow/modules/wallet'
+import { Trash2 } from 'react-feather'
 
 interface Props {
   pendingOrders: ParsedOrder[]
 }
 
-const Wrapper = styled.div`
-  display: flex;
+const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
+  display: inline-flex;
+  vertical-align: top;
   align-items: center;
+  justify-content: space-between;
   flex-direction: row-reverse;
-  margin-bottom: 15px;
   gap: 10px;
+  margin-left: ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
+  margin-right: 10px;
 `
 
 const ActionButton = styled.button`
-  display: inline-block;
-  background: ${({ theme }) => transparentize(0.88, theme.text3)};
-  color: ${({ theme }) => theme.text1};
+  display: inline-flex;
+  background: ${({ theme }) => transparentize(0.82, theme.danger)};
+  color: ${({ theme }) => theme.danger};
   font-weight: 600;
   text-decoration: none;
   font-size: 13px;
-  padding: 10px 24px;
+  padding: 10px 20px;
+  gap: 5px;
   border: 0;
   outline: none;
   cursor: pointer;
   transition: background 0.15s ease-in-out, color 0.2s ease-in-out;
-  border-radius: 4px;
+  border-radius: 24px;
+  vertical-align: center;
+  margin-right: 5px;
 
   &:hover:not([disabled]) {
-    background: ${({ theme }) => theme.bg1};
-    color: ${({ theme }) => theme.text1};
+    background: ${({ theme }) => transparentize(0.6, theme.danger)};
   }
 
   &[disabled] {
@@ -44,40 +50,71 @@ const ActionButton = styled.button`
   }
 `
 
+const TextButton = styled.button`
+  display: inline-block;
+  color: ${({ theme }) => theme.text1};
+  font-size: 13px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background: none;
+  outline: none;
+  border: none;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+`
+
+const CancelAllButton = styled(TextButton)`
+  text-decoration: none;
+
+  &:hover {
+    color: ${({ theme }) => theme.danger};
+    text-decoration: underline;
+  }
+`
+
 export function MultipleCancellationMenu({ pendingOrders }: Props) {
+  const { allowsOffchainSigning } = useWalletDetails()
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
   const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
   const multipleCancellation = useMultipleOrdersCancellation()
 
-  const isMultipleCancelEnabled = ordersToCancel !== null
-
-  const toggleMultipleCancellation = useCallback(() => {
-    updateOrdersToCancel(isMultipleCancelEnabled ? null : [])
-  }, [updateOrdersToCancel, isMultipleCancelEnabled])
+  const ordersToCancelCount = ordersToCancel.length || 0
 
   const cancelAllPendingOrders = useCallback(() => {
     multipleCancellation(pendingOrders)
   }, [multipleCancellation, pendingOrders])
 
-  const toggleOrCancel = useCallback(() => {
-    if (isMultipleCancelEnabled) {
-      if (!ordersToCancel?.length) return
+  const cancelSelectedOrders = useCallback(() => {
+    multipleCancellation(ordersToCancel)
+  }, [ordersToCancel, multipleCancellation])
 
-      multipleCancellation(ordersToCancel)
-    } else {
-      toggleMultipleCancellation()
-    }
-  }, [isMultipleCancelEnabled, ordersToCancel, multipleCancellation, toggleMultipleCancellation])
+  const clearSelection = useCallback(() => {
+    updateOrdersToCancel([])
+  }, [updateOrdersToCancel])
 
-  if (pendingOrders.length === 0) return null
+  // Enable checkboxes displaying in the orders table once
+  useEffect(() => {
+    clearSelection()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  if (pendingOrders.length === 0 || !allowsOffchainSigning) return null
 
   return (
-    <Wrapper>
-      {isMultipleCancelEnabled && <CloseIcon onClick={toggleMultipleCancellation}></CloseIcon>}
-      <ActionButton disabled={ordersToCancel?.length === 0} onClick={toggleOrCancel}>
-        {isMultipleCancelEnabled ? `Cancel (${ordersToCancel.length})` : 'Multiple cancellation'}
-      </ActionButton>
-      <ActionButton onClick={cancelAllPendingOrders}>Cancel all pending orders</ActionButton>
+    <Wrapper hasSelectedItems={!!ordersToCancelCount}>
+      {!!ordersToCancelCount ? (
+        <div>
+          <ActionButton onClick={cancelSelectedOrders}>
+            <Trash2 size={14} /> Cancel {ordersToCancelCount} selected
+          </ActionButton>
+          <TextButton onClick={clearSelection}>Clear selection</TextButton>
+        </div>
+      ) : (
+        <CancelAllButton onClick={cancelAllPendingOrders}>Cancel all</CancelAllButton>
+      )}
     </Wrapper>
   )
 }

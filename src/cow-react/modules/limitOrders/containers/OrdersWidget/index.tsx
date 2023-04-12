@@ -11,7 +11,7 @@ import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
-import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
 import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
@@ -43,7 +43,6 @@ export function OrdersWidget() {
   const navigate = useNavigate()
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWalletInfo()
-  const { allowsOffchainSigning } = useWalletDetails()
   const getShowCancellationModal = useCancelOrder()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
@@ -89,8 +88,6 @@ export function OrdersWidget() {
 
   const toggleOrderForCancellation = useCallback(
     (order: Order) => {
-      if (!ordersToCancel) return
-
       updateOrdersToCancel(toggleOrderInCancellationList(ordersToCancel, order))
     },
     [ordersToCancel, updateOrdersToCancel]
@@ -113,7 +110,6 @@ export function OrdersWidget() {
   return (
     <>
       <ContentWrapper>
-        {isOpenOrdersTab && allowsOffchainSigning && <MultipleCancellationMenu pendingOrders={ordersList.pending} />}
         <Orders
           chainId={chainId}
           tabs={tabs}
@@ -126,7 +122,9 @@ export function OrdersWidget() {
           orderActions={orderActions}
           getSpotPrice={getSpotPrice}
           selectedOrders={ordersToCancel}
-        ></Orders>
+        >
+          {isOpenOrdersTab && <MultipleCancellationMenu pendingOrders={orders} />}
+        </Orders>
       </ContentWrapper>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
     </>

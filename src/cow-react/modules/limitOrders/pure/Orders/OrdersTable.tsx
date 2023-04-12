@@ -220,7 +220,7 @@ export interface OrdersTableProps {
   chainId: SupportedChainId | undefined
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
-  selectedOrders: Order[] | null
+  selectedOrders: Order[]
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: LimitOrderActions

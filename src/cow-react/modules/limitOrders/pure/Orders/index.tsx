@@ -84,10 +84,10 @@ const Content = styled.div`
   }
 `
 
-const Header = styled.span`
-  display: flex;
+const Header = styled.div`
+  display: grid;
+  grid-template-columns: 150px 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   width: 100%;
   margin: 0 0 24px;
@@ -101,6 +101,12 @@ const Header = styled.span`
     font-size: 24px;
     margin: 0;
   }
+`
+
+const TabsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `
 
 // Todo: Makes this arrow default behavior of <ExternalLink />
@@ -197,10 +203,13 @@ export function Orders({
   return (
     <>
       <OrdersBox>
-        {children}
         <Header>
           <h2>Your Orders</h2>
-          <OrdersTabs tabs={tabs} />
+          {/*TODO: add styles for mobile layout*/}
+          <TabsContainer>
+            {children || <div></div>}
+            <OrdersTabs tabs={tabs} />
+          </TabsContainer>
         </Header>
 
         {content()}
