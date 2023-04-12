@@ -30,6 +30,7 @@ export interface LimitOrdersProps {
   onUserInput(field: Field, typedValue: string): void
   onSwitchTokens(): void
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
+  featurePartialFillsEnabled: boolean
   onCurrencySelection: CurrencySelectionCallback
   onImportDismiss: OnImportDismissCallback
 
@@ -56,6 +57,7 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.onCurrencySelection === b.onCurrencySelection &&
     a.onImportDismiss === b.onImportDismiss &&
     a.partiallyFillableOverride[0] === b.partiallyFillableOverride[0] &&
+    a.featurePartialFillsEnabled === b.featurePartialFillsEnabled &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
     checkTradeFlowContext(a.tradeContext, b.tradeContext) &&

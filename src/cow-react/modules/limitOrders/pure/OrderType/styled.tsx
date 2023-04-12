@@ -32,10 +32,10 @@ export const StyledMenuButton = styled(MenuButton)`
   background: none;
   border: none;
   outline: none;
-  padding: 0;
   margin: 0;
   position: relative;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
+  opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
   display: flex;
   align-items: center;
   background: ${({ theme }) => theme.bg3};
