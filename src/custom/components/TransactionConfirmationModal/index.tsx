@@ -559,7 +559,7 @@ export function TransactionSubmittedContent({
         <DisplayLink id={hash} chainId={chainId} />
         <EthFlowStepper order={order} />
         {activityDerivedState && showProgressBar && (
-          <OrderProgressBar activityDerivedState={activityDerivedState} chainId={chainId} />
+          <OrderProgressBar hash={hash} activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
         <ButtonGroup>
           <AddToMetamask shortLabel currency={currencyToAdd} />
@@ -581,7 +581,7 @@ type DisplayLinkProps = {
   chainId: number
 }
 
-function DisplayLink({ id, chainId }: DisplayLinkProps) {
+export function DisplayLink({ id, chainId }: DisplayLinkProps) {
   const theme = useContext(ThemeContext)
   const { orderCreationHash, status } = useOrder({ id, chainId }) || {}
 

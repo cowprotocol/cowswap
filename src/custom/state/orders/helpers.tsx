@@ -140,6 +140,45 @@ export function setPopupData(
   return { key, content }
 }
 
+export function getExecutedSummaryData(order: ParsedOrder) {
+  const { inputToken, outputToken } = order
+
+  const parsedInputToken = new Token(
+    inputToken.chainId,
+    inputToken.address,
+    inputToken.decimals,
+    inputToken.symbol,
+    inputToken.name
+  )
+  const parsedOutputToken = new Token(
+    outputToken.chainId,
+    outputToken.address,
+    outputToken.decimals,
+    outputToken.symbol,
+    outputToken.name
+  )
+
+  const surplusToken = order.kind === OrderKind.SELL ? parsedOutputToken : parsedInputToken
+
+  const { amount, percentage } = getOrderSurplus(order)
+  const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount.toString())
+  const suprlusPercent = percentage?.multipliedBy(100)?.toFixed(2)
+
+  const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
+    ...order,
+    inputToken: parsedInputToken,
+    outputToken: parsedOutputToken,
+  })
+
+  return {
+    surplusAmount,
+    suprlusPercent,
+    surplusToken,
+    formattedFilledAmount,
+    formattedSwappedAmount,
+  }
+}
+
 const SummaryWrapper = styled.div`
   font-size: 1rem;
 
@@ -167,34 +206,8 @@ export function getExecutedSummary(order: ParsedOrder): JSX.Element | string {
     return ''
   }
 
-  const { inputToken, outputToken } = order
-
-  const parsedInputToken = new Token(
-    inputToken.chainId,
-    inputToken.address,
-    inputToken.decimals,
-    inputToken.symbol,
-    inputToken.name
-  )
-  const parsedOutputToken = new Token(
-    outputToken.chainId,
-    outputToken.address,
-    outputToken.decimals,
-    outputToken.symbol,
-    outputToken.name
-  )
-
-  const surplusToken = order.kind === OrderKind.SELL ? parsedOutputToken : parsedInputToken
-
-  const { amount, percentage } = getOrderSurplus(order)
-  const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, amount.toString())
-  const formattedPercent = percentage?.multipliedBy(100)?.toFixed(2)
-
-  const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
-    ...order,
-    inputToken: parsedInputToken,
-    outputToken: parsedOutputToken,
-  })
+  const { formattedFilledAmount, formattedSwappedAmount, suprlusPercent, surplusAmount, surplusToken } =
+    getExecutedSummaryData(order)
 
   return (
     <SummaryWrapper>
@@ -209,12 +222,12 @@ export function getExecutedSummary(order: ParsedOrder): JSX.Element | string {
         </Strong>
       </div>
 
-      {!!amount && (
+      {!!surplusAmount && (
         <div>
           <span>Order surplus: </span>
           <Strong>
-            <Percentage>+{formattedPercent}%</Percentage>
-            <TokenAmount amount={parsedSurplus} tokenSymbol={surplusToken} />
+            <Percentage>+{suprlusPercent}%</Percentage>
+            <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
           </Strong>
         </div>
       )}

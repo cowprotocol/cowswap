@@ -32,21 +32,30 @@ import { getExplorerOrderLink } from 'utils/explorer'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { CancelButton } from '@cow/common/pure/CancelButton'
+import { parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { getExecutedSummaryData } from '@src/custom/state/orders/helpers'
+import { Order } from 'state/orders/actions'
+import styled from 'styled-components/macro'
+import { DisplayLink } from '../TransactionConfirmationModal'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 const REFRESH_INTERVAL_MS = 200
 const COW_STATE_SECONDS = 30
+const SHOW_CONFIRMED_MS = 4000
 
 type OrderProgressBarProps = {
   activityDerivedState: ActivityDerivedState
   chainId: SupportedChainId
   hideWhenFinished?: boolean
+  hash?: string
 }
 
 type ExecutionState = 'cow' | 'amm' | 'confirmed' | 'unfillable' | 'delayed'
 
 export function OrderProgressBar(props: OrderProgressBarProps) {
-  const { activityDerivedState, chainId, hideWhenFinished = false } = props
+  const { activityDerivedState, chainId, hideWhenFinished = false, hash } = props
   const { order, isConfirmed, isUnfillable = false } = activityDerivedState
+  const [showDetails, setShowDetails] = useState(false)
 
   const orderOpenTime = order?.openSince || order?.creationTime || order?.apiAdditionalInfo?.creationDate
 
@@ -95,9 +104,19 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
   }, [creationTime, validTo, chainId, elapsedSeconds, expirationInSeconds, isPending])
 
   useEffect(() => {
+    let timeout: NodeJS.Timeout
+
     if (isConfirmed) {
       setPercentage(100)
+
+      timeout = setTimeout(() => {
+        setShowDetails(true)
+      }, SHOW_CONFIRMED_MS)
+    } else {
+      setShowDetails(false)
     }
+
+    return () => clearTimeout(timeout)
   }, [isConfirmed])
 
   useEffect(() => {
@@ -176,7 +195,7 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
         )
       }
       case 'confirmed': {
-        return (
+        return !showDetails ? (
           <>
             <ProgressBarInnerWrapper>
               <SuccessProgress percentage={100}>
@@ -201,6 +220,8 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               </StatusGraph>
             </StatusMsgContainer>
           </>
+        ) : (
+          <TransactionExecutedContent hash={hash} chainId={chainId} order={order} />
         )
       }
       case 'unfillable': {
@@ -341,4 +362,77 @@ function useGetProgressBarInfo({
     expirationInSeconds: (validTo.getTime() - creationTime.getTime()) / 1000,
     isPending: orderIsPending,
   }
+}
+
+const ExecutedWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding-bottom: 1rem;
+
+  img {
+    padding: 1rem;
+    margin-right: 10px;
+  }
+
+  a {
+    margin: 0;
+    margin-top: 15px;
+    display: block;
+  }
+
+  > div > div {
+    margin-bottom: 5px;
+  }
+`
+
+const Strong = styled.strong`
+  font-size: 0.9rem;
+  white-space: nowrap;
+`
+
+function TransactionExecutedContent({
+  order,
+  chainId,
+  hash,
+}: {
+  order?: Order
+  chainId: SupportedChainId
+  hash?: string
+}) {
+  if (!order) return null
+
+  const parsedOrder = parseOrder(order)
+  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } =
+    getExecutedSummaryData(parsedOrder)
+
+  return (
+    <ExecutedWrapper>
+      <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." />
+
+      <div>
+        <div>
+          Traded{' '}
+          <Strong>
+            <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />
+          </Strong>{' '}
+          for a total of{' '}
+          <Strong>
+            <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
+          </Strong>
+        </div>
+
+        {!!surplusAmount && (
+          <div>
+            You saved{' '}
+            <Strong>
+              <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
+            </Strong>{' '}
+            on this trade!
+          </div>
+        )}
+
+        <DisplayLink id={hash} chainId={chainId} />
+      </div>
+    </ExecutedWrapper>
+  )
 }
