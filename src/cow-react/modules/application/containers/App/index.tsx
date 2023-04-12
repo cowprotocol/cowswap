@@ -15,6 +15,7 @@ import RedirectAnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers/
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
 import { withLDProvider } from 'launchdarkly-react-client-sdk'
+import { LAUNCH_DARKLY_CLIENT_KEY } from '@cow/constants/launchDarkly'
 
 function WrappedApp() {
   initializeAnalytics()
@@ -45,7 +46,7 @@ function WrappedApp() {
 }
 
 export const App = withLDProvider({
-  clientSideID: process.env.REACT_APP_LC_CLIENT_KEY!,
+  clientSideID: LAUNCH_DARKLY_CLIENT_KEY,
   options: {
     bootstrap: 'localStorage',
   },
