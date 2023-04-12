@@ -1,7 +1,7 @@
 import { Orders } from './index'
 import { OrderTab } from './OrdersTabs'
 import { ordersMock } from './orders.mock'
-import { BalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { EffectiveBalances } from '@cow/modules/tokens'
 
 const tabs: OrderTab[] = [
   {
@@ -18,7 +18,7 @@ const tabs: OrderTab[] = [
 ]
 
 // TODO: set values
-const balancesAndAllowances: BalancesAndAllowances = {
+const effectiveBalances: EffectiveBalances = {
   balances: {},
   allowances: {},
 }
@@ -32,7 +32,7 @@ export default (
     tabs={tabs}
     isOpenOrdersTab={true}
     isWalletConnected={true}
-    balancesAndAllowances={balancesAndAllowances}
+    effectiveBalances={effectiveBalances}
     getSpotPrice={() => null}
     getShowCancellationModal={(order) => {
       if (order.status === 'pending') {
