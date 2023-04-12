@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import styled, { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
+import { ThemeContext } from 'styled-components/macro'
 import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
@@ -30,6 +30,7 @@ import { ZERO_FRACTION } from 'constants/index'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
+import { TableRow, TableRowCheckbox } from '@cow/modules/limitOrders/pure/Orders/styled'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -94,21 +95,10 @@ const AllowanceWarning = (symbol: string) => (
   </styledEl.WarningParagraph>
 )
 
-const Checkbox = styled.input`
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-`
-
 export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
-  RowElement: StyledComponent<
-    'div',
-    DefaultTheme,
-    { isOpenOrdersTab: boolean; isRowSelectable: boolean; hasBackground?: boolean }
-  >
   isRateInverted: boolean
   isOpenOrdersTab: boolean
   isRowSelectable: boolean
@@ -120,7 +110,6 @@ export interface OrderRowProps {
 
 export function OrderRow({
   order,
-  RowElement,
   isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
   isRowSelectable,
@@ -173,10 +162,10 @@ export function OrderRow({
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (
-    <RowElement isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+    <TableRow isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && isOpenOrdersTab && (
-        <Checkbox
+        <TableRowCheckbox
           type="checkbox"
           checked={isRowSelected}
           disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
@@ -321,7 +310,7 @@ export function OrderRow({
           showCancellationModal={showCancellationModal}
         />
       </styledEl.CellElement>
-    </RowElement>
+    </TableRow>
   )
 }
 
