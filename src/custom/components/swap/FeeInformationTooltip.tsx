@@ -57,6 +57,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
   if (!trade || !showHelper) return null
 
   const receiveAmountInfo = type === 'To' ? getOutputReceiveAmountInfo(trade) : getInputReceiveAmountInfo(trade)
+  const currency = type === 'To' ? trade.outputAmount.currency : trade.inputAmount.currency
 
   return (
     <FeeInformationTooltipWrapper>
@@ -69,7 +70,7 @@ export default function FeeInformationTooltip(props: FeeInformationTooltipProps)
             <ReceiveAmountInfoTooltip
               receiveAmountInfo={receiveAmountInfo}
               allowsOffchainSigning={allowsOffchainSigning}
-              currency={trade.outputAmount.currency}
+              currency={currency}
               subsidyAndBalance={subsidyAndBalance}
             />
           }
