@@ -7,7 +7,7 @@ import { Web3ReactConnection } from '../types'
 import { PROVIDERS } from '@src/custom/constants/networks'
 
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
-  (actions) => new Network({ actions, urlMap: PROVIDERS, defaultChainId: 1 })
+  (actions) => new Network({ actions, urlMap: PROVIDERS })
 )
 export const networkConnection: Web3ReactConnection = {
   connector: web3Network,

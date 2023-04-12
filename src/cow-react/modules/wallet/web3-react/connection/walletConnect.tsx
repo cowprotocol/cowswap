@@ -13,7 +13,7 @@ import { useWalletMetaData } from '@cow/modules/wallet'
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
 
-import { RPC_URLS } from 'constants/networks'
+import { PROVIDERS_RPC_URLS } from 'constants/networks'
 import { Web3ReactConnection } from '../types'
 import { default as WalletConnectImage } from '@cow/modules/wallet/api/assets/walletConnectIcon.svg'
 import { WC_DISABLED_TEXT } from '@cow/modules/wallet/constants'
@@ -29,7 +29,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
     new WalletConnect({
       actions,
       options: {
-        rpc: RPC_URLS,
+        rpc: PROVIDERS_RPC_URLS,
         qrcode: true,
       },
       onError,

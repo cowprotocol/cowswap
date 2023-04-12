@@ -9,7 +9,7 @@ import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from '@cow/modules/wallet/api/pure/ConnectWalletOption'
 
 import CowImage from 'assets/cow-swap/cow_v2.svg'
-import { RPC_URLS } from 'constants/networks'
+import { getRpcUrls } from 'constants/networks'
 
 import { TryActivation, onError } from '.'
 import { Web3ReactConnection } from '../types'
@@ -38,7 +38,7 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<AsyncC
             new m.CoinbaseWallet({
               actions,
               options: {
-                url: RPC_URLS[SupportedChainId.MAINNET],
+                url: getRpcUrls(SupportedChainId.MAINNET)[0],
                 appName: 'CoW Swap',
                 appLogoUrl: CowImage,
                 reloadOnDisconnect: false,

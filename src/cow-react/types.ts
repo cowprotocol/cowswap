@@ -8,6 +8,16 @@ export type Writeable<T> = { -readonly [P in keyof T]: T[P] }
 
 export type Nullish<T> = T | null | undefined
 
+/*
+  A generic class type.
+
+  You can use this to refer to a class and not an instance of it.
+  More info at: https://www.typescriptlang.org/docs/handbook/2/generics.html#using-class-types-in-generics
+*/
+export type Newable<T extends new (...args: any) => any> = {
+  new (...args: ConstructorParameters<T>): InstanceType<T>
+}
+
 // This is for Pixel tracking injected code
 declare global {
   interface Window {
