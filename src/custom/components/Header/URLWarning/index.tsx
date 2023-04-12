@@ -90,8 +90,8 @@ export default function URLWarning() {
   const { chainId = ChainId.MAINNET } = useWalletInfo()
 
   // Ger announcement if there's one
-  const { bannerText } = useFlags()
-  const announcementText = useGetAnnouncement(chainId) || bannerText
+  const { announcementBanner } = useFlags()
+  const announcementText = useGetAnnouncement(chainId) || announcementBanner
   const contentHash = announcementText ? hashCode(announcementText).toString() : undefined
 
   const announcementVisible = useAnnouncementVisible(contentHash)
