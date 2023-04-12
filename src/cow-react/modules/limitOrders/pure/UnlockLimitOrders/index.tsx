@@ -3,7 +3,6 @@ import * as styledEl from './styled'
 import { ButtonPrimary } from 'components/Button'
 import SVG from 'react-inlinesvg'
 import iconCompleted from 'assets/cow-swap/check.svg'
-import iconProgress from 'assets/cow-swap/loading.svg'
 import { ExternalLink } from 'theme'
 
 const BULLET_LIST_CONTENT = [
@@ -12,7 +11,15 @@ const BULLET_LIST_CONTENT = [
   { id: 3, content: 'Place multiple orders using the same balance' },
   { id: 4, content: 'Always receive 100% of your order surplus' },
   { id: 5, content: 'Protection from MEV by default' },
-  { id: 6, iconType: 'progress', content: 'Orders are fill or kill. Partial fills coming soon!' },
+  {
+    id: 6,
+    content: (
+      <span>
+        NOW with&nbsp;<b>partial fills</b>&nbsp;support!
+      </span>
+    ),
+    isNew: true,
+  },
 ]
 
 export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }) {
@@ -25,10 +32,10 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
 
       {BULLET_LIST_CONTENT && (
         <styledEl.List>
-          {BULLET_LIST_CONTENT.map(({ id, iconType, content }) => (
-            <li key={id} data-icon={iconType || null}>
+          {BULLET_LIST_CONTENT.map(({ id, isNew, content }) => (
+            <li key={id} data-is-new={isNew || null}>
               <span>
-                <SVG src={iconType && iconType === 'progress' ? iconProgress : iconCompleted} />
+                <SVG src={iconCompleted} />
               </span>{' '}
               {content}
             </li>

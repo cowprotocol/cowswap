@@ -43,6 +43,8 @@ import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
+import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
+import { useAtom } from 'jotai'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -76,11 +78,18 @@ export function LimitOrdersWidget() {
   const { isLoading: isRateLoading, activeRate, feeAmount } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
+  const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
 
   const showRecipient = useMemo(
     () => !isWrapOrUnwrap && settingState.showRecipient,
     [settingState.showRecipient, isWrapOrUnwrap]
   )
+
+  const isExpertMode = useMemo(
+    () => !isWrapOrUnwrap && settingState.expertMode,
+    [isWrapOrUnwrap, settingState.expertMode]
+  )
+
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
   const inputViewAmount = formatInputAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
 
@@ -162,6 +171,7 @@ export function LimitOrdersWidget() {
     allowsOffchainSigning,
     isWrapOrUnwrap,
     showRecipient,
+    isExpertMode,
     recipient,
     chainId,
     onChangeRecipient,
@@ -169,6 +179,7 @@ export function LimitOrdersWidget() {
     onSwitchTokens,
     onCurrencySelection,
     onImportDismiss,
+    partiallyFillableOverride,
     rateInfoParams,
     priceImpact,
     tradeContext,
@@ -197,9 +208,11 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     onSwitchTokens,
     onCurrencySelection,
     onImportDismiss,
+    partiallyFillableOverride,
     allowsOffchainSigning,
     isWrapOrUnwrap,
     showRecipient,
+    isExpertMode,
     recipient,
     onChangeRecipient,
     rateInfoParams,
@@ -220,6 +233,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const currenciesLoadingInProgress = false
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
+  const isPartiallyFillable = tradeContext?.postOrderParams.partiallyFillable ?? true
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -297,6 +311,15 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
               {!isWrapOrUnwrap && (
                 <styledEl.FooterBox>
                   <styledEl.StyledRateInfo rateInfoParams={rateInfoParams} />
+                </styledEl.FooterBox>
+              )}
+
+              {isExpertMode && (
+                <styledEl.FooterBox>
+                  <styledEl.StyledOrderType
+                    isPartiallyFillable={isPartiallyFillable}
+                    partiallyFillableOverride={partiallyFillableOverride}
+                  />
                 </styledEl.FooterBox>
               )}
 

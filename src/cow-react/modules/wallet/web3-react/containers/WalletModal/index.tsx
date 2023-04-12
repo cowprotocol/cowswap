@@ -103,7 +103,8 @@ export function WalletModal() {
 
         dispatch(updateSelectedWallet({ wallet: connectionType }))
       } catch (error: any) {
-        console.debug(`web3-react connection error: ${error}`)
+        console.debug(`[tryActivation] web3-react connection error`, error)
+        dispatch(updateSelectedWallet({ wallet: undefined }))
         dispatch(updateConnectionError({ connectionType, error: error.message }))
       }
     },
@@ -120,6 +121,7 @@ export function WalletModal() {
       tryActivation={tryActivation}
       tryConnection={() => pendingConnector && tryActivation(pendingConnector)}
       view={walletView}
+      account={account}
     />
   )
 }

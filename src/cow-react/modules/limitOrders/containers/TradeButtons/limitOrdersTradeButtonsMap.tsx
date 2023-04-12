@@ -63,7 +63,7 @@ export function SwapButton({
 }
 
 const quoteErrorTexts: { [key in GpQuoteErrorCodes]: string } = {
-  [GpQuoteErrorCodes.UNHANDLED_ERROR]: 'Unhandled error',
+  [GpQuoteErrorCodes.UNHANDLED_ERROR]: 'Error loading price. Try again later.',
   [GpQuoteErrorCodes.TransferEthToContract]:
     'Buying native currency with smart contract wallets is not currently supported',
   [GpQuoteErrorCodes.UnsupportedToken]: 'Unsupported token',
@@ -81,6 +81,11 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   [LimitOrdersFormState.CanTrade]: {
     disabled: false,
     text: 'Review limit order',
+    id: 'review-limit-order-btn',
+  },
+  [LimitOrdersFormState.ExpertCanTrade]: {
+    disabled: false,
+    text: 'Place limit order',
     id: 'review-limit-order-btn',
   },
   [LimitOrdersFormState.SwapIsUnsupported]: {
@@ -109,7 +114,7 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
   },
   [LimitOrdersFormState.InvalidRecipient]: {
     disabled: true,
-    text: 'Enter a recipient',
+    text: 'Enter a valid recipient',
   },
   [LimitOrdersFormState.CantLoadBalances]: {
     disabled: true,
@@ -124,11 +129,11 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     text: 'Sell amount is too small',
   },
   [LimitOrdersFormState.QuoteError]: ({ quote }: TradeButtonsParams) => {
+    const defaultError = quoteErrorTexts[GpQuoteErrorCodes.UNHANDLED_ERROR]
+
     return (
       <SwapButton disabled={true}>
-        <Trans>
-          {quote.error ? quoteErrorTexts[quote.error.type] || 'Error loading price. Try again later.' : 'Unknown error'}
-        </Trans>
+        <Trans>{(quote.error && quoteErrorTexts[quote.error.type]) || defaultError}</Trans>
       </SwapButton>
     )
   },

@@ -1,5 +1,6 @@
 import { FractionLike, Nullish } from '@cow/types'
 import { Percent } from '@uniswap/sdk-core'
+import { ZERO_FRACTION } from 'constants/index'
 
 export type CalculateAmountPercentDifferenceProps = {
   reference: Nullish<FractionLike>
@@ -25,7 +26,7 @@ export function calculatePercentageInRelationToReference({
   reference,
   value,
 }: CalculateAmountPercentDifferenceProps): Percent | undefined {
-  if (!value || !reference) {
+  if (!value || !reference || reference.equalTo(ZERO_FRACTION)) {
     return undefined
   }
 

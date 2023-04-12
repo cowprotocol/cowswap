@@ -31,29 +31,51 @@ export const List = styled.ul`
   display: grid;
   grid-template-columns: 1fr 1fr;
   list-style: none;
-  margin: 0 0 42px;
-  padding: 0 16px;
+  margin: 0 0 28px;
+  padding: 0;
   font-size: 14px;
-  gap: 20px 24px;
+  gap: 10px 12px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: 1fr;
   `}
 
   > li {
+    background: transparent;
     display: grid;
     grid-template-columns: 20px auto;
     align-items: flex-start;
-    gap: 4px;
+    gap: 6px;
     margin: 0;
-    padding: 0;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+
+    &[data-is-new='true'] {
+      background: ${({ theme }) => transparentize(0.87, theme.success)};
+
+      &::after {
+        content: 'NEW!';
+        position: absolute;
+        right: -2px;
+        top: -7px;
+        display: block;
+        padding: 3px 5px;
+        background: ${({ theme }) => theme.success};
+        color: ${({ theme }) => (theme.darkMode ? darken(0.5, theme.success) : theme.white)};
+        border-radius: 10px;
+        font-size: 9px;
+        font-weight: bold;
+      }
+    }
   }
 
   > li > span {
     --size: 18px;
     width: var(--size);
     height: var(--size);
-    display: block;
+    display: inline-block;
+    width: auto;
   }
 
   > li > span > svg {
@@ -64,10 +86,6 @@ export const List = styled.ul`
 
   > li > span > svg > path {
     fill: ${({ theme }) => theme.success};
-  }
-
-  > li[data-icon='progress'] > span > svg > path {
-    fill: ${({ theme }) => theme.warning};
   }
 `
 

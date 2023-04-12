@@ -23,6 +23,7 @@ import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPriceAtom'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useHandleOrderPlacement } from '@cow/modules/limitOrders/hooks/useHandleOrderPlacement'
+import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -57,6 +58,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
   const limitRateState = useAtomValue(limitRateAtom)
+  const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
@@ -105,6 +107,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               rateImpact={rateImpact}
               priceImpact={priceImpact}
               warningsAccepted={warningsAccepted}
+              partiallyFillableOverride={partiallyFillableOverride}
               Warnings={Warnings}
             />
           </styledEl.ConfirmModalWrapper>

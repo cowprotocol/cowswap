@@ -9,6 +9,7 @@ import { areFractionsEqual } from '@cow/utils/areFractionsEqual'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { getAddress } from '@cow/utils/getAddress'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 
 export interface LimitOrdersProps {
   onChangeRecipient(value: string | null): void
@@ -20,12 +21,14 @@ export interface LimitOrdersProps {
   allowsOffchainSigning: boolean
   isWrapOrUnwrap: boolean
   showRecipient: boolean
+  isExpertMode: boolean
 
   recipient: string | null
   chainId: number | undefined
 
   onUserInput(field: Field, typedValue: string): void
   onSwitchTokens(): void
+  partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
   onCurrencySelection: CurrencySelectionCallback
   onImportDismiss: OnImportDismissCallback
 
@@ -50,6 +53,7 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.onSwitchTokens === b.onSwitchTokens &&
     a.onCurrencySelection === b.onCurrencySelection &&
     a.onImportDismiss === b.onImportDismiss &&
+    a.partiallyFillableOverride[0] === b.partiallyFillableOverride[0] &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
     checkPriceImpact(a.priceImpact, b.priceImpact) &&
     checkTradeFlowContext(a.tradeContext, b.tradeContext) &&
