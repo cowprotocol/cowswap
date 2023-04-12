@@ -21,6 +21,7 @@ const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
   gap: 10px;
   margin-left: ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
   margin-right: 10px;
+  min-height: 40px;
 `
 
 const ActionButton = styled.button`

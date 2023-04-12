@@ -93,8 +93,12 @@ const Header = styled.div`
   margin: 0 0 24px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-flow: column wrap;
-    margin: 0 0 16px;
+    display: block;
+    text-align: center;
+
+    > h2 {
+      margin-bottom: 15px!important;
+    }
   `};
 
   > h2 {
@@ -103,10 +107,18 @@ const Header = styled.div`
   }
 `
 
-const TabsContainer = styled.div`
+const TabsContainer = styled.div<{ withSingleChild: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  ${({ theme, withSingleChild }) =>
+    !withSingleChild &&
+    theme.mediaWidth.upToMedium`
+      flex-direction: column-reverse;
+      align-items: end;
+      gap: 10px;
+  `};
 `
 
 // Todo: Makes this arrow default behavior of <ExternalLink />
@@ -205,8 +217,7 @@ export function Orders({
       <OrdersBox>
         <Header>
           <h2>Your Orders</h2>
-          {/*TODO: add styles for mobile layout*/}
-          <TabsContainer>
+          <TabsContainer withSingleChild={!children}>
             {children || <div></div>}
             <OrdersTabs tabs={tabs} />
           </TabsContainer>

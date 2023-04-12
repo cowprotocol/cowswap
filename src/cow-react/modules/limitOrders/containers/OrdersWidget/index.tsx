@@ -123,7 +123,7 @@ export function OrdersWidget() {
           getSpotPrice={getSpotPrice}
           selectedOrders={ordersToCancel}
         >
-          {isOpenOrdersTab && <MultipleCancellationMenu pendingOrders={orders} />}
+          {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={orders} />}
         </Orders>
       </ContentWrapper>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />

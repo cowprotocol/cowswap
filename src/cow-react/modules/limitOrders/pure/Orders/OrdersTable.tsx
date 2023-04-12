@@ -70,8 +70,10 @@ const Header = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }
   border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
   padding: 0 12px;
 
-  ${({ theme, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
-  grid-template-columns: ${`minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
+  ${({ theme, isRowSelectable, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
+  grid-template-columns: ${`${
+    isRowSelectable && isOpenOrdersTab ? '0.2fr minmax(200px,2fr)' : 'minmax(200px,2fr)'
+  } repeat(2,minmax(110px,2fr)) ${
     isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
   } minmax(50px,1fr) 108px 24px`};
   `}
