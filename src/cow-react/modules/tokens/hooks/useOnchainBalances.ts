@@ -12,7 +12,7 @@ import { OnchainState } from '../types'
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
 const DEFAULT_LISTENER_OPTIONS: ListenerOptionsWithGas = { gasRequired: 185_000, blocksPerFetch: 5 }
 
-export type OnchainTokenAmount = OnchainState<CurrencyAmount<Token> | null>
+export type OnchainTokenAmount = OnchainState<CurrencyAmount<Token> | undefined>
 
 export type OnchainTokenAmounts = {
   [tokenAddress: string]: OnchainTokenAmount
@@ -130,7 +130,7 @@ function useOnchainErc20Amounts(
       const amount = value ? JSBI.BigInt(value.toString()) : null
 
       acc[token.address] = {
-        value: amount ? CurrencyAmount.fromRawAmount(token, amount) : acc[token.address].value,
+        value: amount ? CurrencyAmount.fromRawAmount(token, amount) : acc[token.address]?.value,
         loading,
         error,
         syncing,

@@ -31,8 +31,8 @@ export function getOrderParams(
   }
 
   const { balances, allowances } = effectiveBalances
-  const balance = balances[order.inputToken.address]?.value || undefined
-  const allowance = allowances[order.inputToken.address]?.value || undefined
+  const balance = balances[order.inputToken.address]?.value
+  const allowance = allowances[order.inputToken.address]?.value
 
   let hasEnoughBalance, hasEnoughAllowance
 

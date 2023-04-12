@@ -21,11 +21,11 @@ import { Dots } from '../../components/swap/styleds'
 import { SwitchLocaleLink } from '../../components/SwitchLocaleLink'
 import { BIG_INT_ZERO } from '../../constants/misc'
 import { useV2Pairs } from '../../hooks/useV2Pairs'
-import { useTokenBalancesWithLoadingIndicator } from '../../state/connection/hooks'
 import { useStakingInfo } from '../../state/stake/hooks'
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../../state/user/hooks'
 import { ExternalLink, HideSmall, ThemedText } from '../../theme'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useOnchainBalances } from '@cow/modules/tokens'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -100,16 +100,16 @@ export default function Pool() {
     () => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken),
     [tokenPairsWithLiquidityTokens]
   )
-  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-    account ?? undefined,
-    liquidityTokens
-  )
+  const { amounts: v2PairsBalances, isLoading: fetchingV2PairBalances } = useOnchainBalances({
+    account: account ?? undefined,
+    tokens: liquidityTokens,
+  })
 
   // fetch the reserves for all V2 pools in which the user has a balance
   const liquidityTokensWithBalances = useMemo(
     () =>
       tokenPairsWithLiquidityTokens.filter(({ liquidityToken }) =>
-        v2PairsBalances[liquidityToken.address]?.greaterThan('0')
+        v2PairsBalances[liquidityToken.address]?.value?.greaterThan('0')
       ),
     [tokenPairsWithLiquidityTokens, v2PairsBalances]
   )

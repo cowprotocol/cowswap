@@ -1,15 +1,19 @@
+// TODO: Most of the hooks in this file are legacy and should be adapted and re-rexported from the token module
+
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
-import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
-import { nativeOnChain } from '../../constants/tokens'
-import { useInterfaceMulticall } from '../../hooks/useContract'
-import { isAddress } from '../../utils'
+import { isAddress } from 'utils'
+import { nativeOnChain } from 'constants/tokens'
+import { useInterfaceMulticall } from 'hooks/useContract'
+
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useOnchainBalances } from '@cow/modules/tokens'
 import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
 
+// TODO: Move this hooks to some other module. It doens't belong with the tokens
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
@@ -57,7 +61,7 @@ export function useTokenBalance(account?: string, token?: Token): CurrencyAmount
   })
   if (!token) return undefined
 
-  return tokenBalances.amounts[token.address]?.value || undefined
+  return tokenBalances.amounts[token.address]?.value
 }
 
 // get the balance for a single token/account combo
@@ -88,7 +92,7 @@ export function useCurrencyBalances(
     () =>
       currencies?.map((currency) => {
         if (!account || !currency) return undefined
-        if (currency.isToken) return tokenBalances[currency.address]?.value || undefined
+        if (currency.isToken) return tokenBalances[currency.address]?.value
         if (currency.isNative) return ethBalance[account]
         return undefined
       }) ?? [],

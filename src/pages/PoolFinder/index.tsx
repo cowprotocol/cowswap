@@ -21,13 +21,13 @@ import CurrencySearchModal from '../../components/SearchModal/CurrencySearchModa
 import { SwitchLocaleLink } from '../../components/SwitchLocaleLink'
 import { nativeOnChain } from '../../constants/tokens'
 import { PairState, useV2Pair } from '../../hooks/useV2Pairs'
-import { useTokenBalance } from '../../state/connection/hooks'
 import { usePairAdder } from '../../state/user/hooks'
 import { StyledInternalLink } from '../../theme'
 import { ThemedText } from '../../theme'
 import { currencyId } from '../../utils/currencyId'
 import AppBody from '../AppBody'
 import { Dots } from '../Pool/styleds'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 enum Fields {
   TOKEN0 = 0,

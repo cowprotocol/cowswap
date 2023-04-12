@@ -21,6 +21,7 @@ const tabs: OrderTab[] = [
 const effectiveBalances: EffectiveBalances = {
   balances: {},
   allowances: {},
+  isLoading: false,
 }
 
 export default (
