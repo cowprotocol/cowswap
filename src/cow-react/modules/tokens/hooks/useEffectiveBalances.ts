@@ -17,7 +17,9 @@ export type EffectiveBalances = OnchainBalancesAndAllowances
  */
 export function useEffectiveBalances(params: EffectiveBalancesParams): EffectiveBalances {
   const balancesAndAllowances = useOnchainBalancesAndAllowances(params)
-  console.debug('[useEffectiveBalances] Get balancesAndAllowances', params, balancesAndAllowances)
+
+  // TODO: This function still has too many re-renders, we shold investigate (for now, focusing on only the re-factor)
+  // console.debug('[useEffectiveBalances] Get balancesAndAllowances', params, balancesAndAllowances)
 
   // TODO: Apply all the balance transformations (i.e. bundled tx)
 

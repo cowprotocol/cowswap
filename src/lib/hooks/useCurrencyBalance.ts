@@ -1,15 +1,14 @@
-import { Interface } from '@ethersproject/abi'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import ERC20ABI from 'abis/erc20.json'
-import { Erc20Interface } from 'abis/types/Erc20'
 import JSBI from 'jsbi'
-import { useMultipleContractSingleData, useSingleContractMultipleData } from 'lib/hooks/multicall'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
 
 import { nativeOnChain } from '../../constants/tokens'
 import { useInterfaceMulticall } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useOnchainBalances } from '@cow/modules/tokens'
+import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -46,67 +45,32 @@ export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefin
   )
 }
 
-const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
-const tokenBalancesGasRequirement = { gasRequired: 185_000 }
-
+// get the balance for a single token/account combo
 /**
- * Returns a map of token addresses to their eventually consistent token balances for a single account.
+ * @deprecated Use effective balance instead
  */
-export function useTokenBalancesWithLoadingIndicator(
-  address?: string,
-  tokens?: (Token | undefined)[]
-): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
-  const validatedTokens: Token[] = useMemo(
-    () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
-    [tokens]
-  )
-  const validatedTokenAddresses = useMemo(() => validatedTokens.map((vt) => vt.address), [validatedTokens])
+export function useTokenBalance(account?: string, token?: Token): CurrencyAmount<Token> | undefined {
+  const tokens = useMemo(() => [token], [token])
+  const tokenBalances = useOnchainBalances({
+    account,
+    tokens,
+  })
+  if (!token) return undefined
 
-  const balances = useMultipleContractSingleData(
-    validatedTokenAddresses,
-    ERC20Interface,
-    'balanceOf',
-    useMemo(() => [address], [address]),
-    tokenBalancesGasRequirement
-  )
-
-  const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances])
-
-  return useMemo(
-    () => [
-      address && validatedTokens.length > 0
-        ? validatedTokens.reduce<{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }>((memo, token, i) => {
-            const value = balances?.[i]?.result?.[0]
-            const amount = value ? JSBI.BigInt(value.toString()) : undefined
-            if (amount) {
-              memo[token.address] = CurrencyAmount.fromRawAmount(token, amount)
-            }
-            return memo
-          }, {})
-        : {},
-      anyLoading,
-    ],
-    [address, validatedTokens, anyLoading, balances]
-  )
-}
-
-export function useTokenBalances(
-  address?: string,
-  tokens?: (Token | undefined)[]
-): { [tokenAddress: string]: CurrencyAmount<Token> | undefined } {
-  return useTokenBalancesWithLoadingIndicator(address, tokens)[0]
+  return tokenBalances.amounts[token.address]?.value || undefined
 }
 
 // get the balance for a single token/account combo
-export function useTokenBalance(account?: string, token?: Token): CurrencyAmount<Token> | undefined {
-  const tokenBalances = useTokenBalances(
-    account,
-    useMemo(() => [token], [token])
-  )
-  if (!token) return undefined
-  return tokenBalances[token.address]
+/**
+ * @deprecated Use effective balance instead
+ */
+export function useTokenBalances(account?: string, tokens?: (Token | undefined)[]): OnchainTokenAmounts {
+  return useOnchainBalances({ account, tokens }).amounts
 }
 
+/**
+ * @deprecated Use effective balance instead
+ */
 export function useCurrencyBalances(
   account?: string,
   currencies?: (Currency | undefined | null)[]
@@ -124,7 +88,7 @@ export function useCurrencyBalances(
     () =>
       currencies?.map((currency) => {
         if (!account || !currency) return undefined
-        if (currency.isToken) return tokenBalances[currency.address]
+        if (currency.isToken) return tokenBalances[currency.address]?.value || undefined
         if (currency.isNative) return ethBalance[account]
         return undefined
       }) ?? [],
@@ -132,6 +96,9 @@ export function useCurrencyBalances(
   )
 }
 
+/**
+ * @deprecated Use effective balance instead
+ */
 export default function useCurrencyBalance(
   account?: string,
   currency?: Currency | null

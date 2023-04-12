@@ -56,6 +56,7 @@ export interface OnchainBalancesAndAllowancesParams {
 export interface OnchainBalancesAndAllowances {
   balances: OnchainTokenAmounts
   allowances: OnchainTokenAmounts
+  isLoading: boolean
 }
 
 /**
@@ -68,15 +69,26 @@ export function useOnchainBalancesAndAllowances(
 ): OnchainBalancesAndAllowances {
   const { account, spender, tokens, blocksPerFetchAllowance, blocksPerFetchBalance } = params
 
-  const { amounts: balances } = useOnchainBalances({ account, tokens, blocksPerFetch: blocksPerFetchBalance })
-  const { amounts: allowances } = useOnchainAllowances({
+  const { amounts: balances, isLoading: areBalancesLoading } = useOnchainBalances({
+    account,
+    tokens,
+    blocksPerFetch: blocksPerFetchBalance,
+  })
+  const { amounts: allowances, isLoading: areAllowancesLoading } = useOnchainAllowances({
     account,
     tokens,
     spender,
     blocksPerFetch: blocksPerFetchAllowance,
   })
 
-  return useMemo(() => ({ balances, allowances }), [balances, allowances])
+  return useMemo(
+    () => ({
+      balances,
+      allowances,
+      isLoading: areBalancesLoading || areAllowancesLoading,
+    }),
+    [balances, allowances, areBalancesLoading, areAllowancesLoading]
+  )
 }
 
 function useOnchainErc20Amounts(
