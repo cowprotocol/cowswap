@@ -22,11 +22,11 @@ const BASE_PROPS = {
 
 const [trustWallet, trustWalletHooks] = initializeConnector<Connector>(
   (actions) =>
-  new InjectedWallet({
-    actions,
-    walletUrl: WALLET_LINK,
-    searchKeywords: ['isTrust', 'isTrustWallet'],
-  })
+    new InjectedWallet({
+      actions,
+      walletUrl: WALLET_LINK,
+      searchKeywords: ['isTrust', 'isTrustWallet'],
+    })
 )
 export const trustWalletConnection: Web3ReactConnection = {
   connector: trustWallet,
