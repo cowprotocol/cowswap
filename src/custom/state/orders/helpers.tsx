@@ -3,14 +3,14 @@ import styled from 'styled-components/macro'
 import { formatOrderId, shortenOrderId } from 'utils'
 import { OrderID } from '@cow/api/gnosisProtocol'
 import { addPopup } from 'state/application/reducer'
-import { OrderStatus, Order } from './actions'
+import { OrderStatus } from './actions'
 import { CancellationSummary } from '@cow/modules/account/containers/Transaction/styled'
-import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { getFilledAmounts } from '@cow/modules/limitOrders/utils/getFilledAmounts'
 
 type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 
@@ -162,42 +162,50 @@ const Percentage = styled.span`
   margin-right: 5px;
 `
 
-export function getExecutedSummary(order: Order): JSX.Element | string {
+export function getExecutedSummary(order: ParsedOrder): JSX.Element | string {
   if (!order) {
     return ''
   }
 
-  const inputT = order.inputToken
-  const outputT = order.outputToken
+  const { inputToken, outputToken } = order
 
-  const inputToken = new Token(inputT.chainId, inputT.address, inputT.decimals, inputT.symbol, inputT.name)
-  const outputToken = new Token(outputT.chainId, outputT.address, outputT.decimals, outputT.symbol, outputT.name)
+  const parsedInputToken = new Token(
+    inputToken.chainId,
+    inputToken.address,
+    inputToken.decimals,
+    inputToken.symbol,
+    inputToken.name
+  )
+  const parsedOutputToken = new Token(
+    outputToken.chainId,
+    outputToken.address,
+    outputToken.decimals,
+    outputToken.symbol,
+    outputToken.name
+  )
 
-  const inputSymbol = inputToken.symbol
-  const outputSymbol = outputToken.symbol
-
-  const inputAmountCurrency = getSellAmountWithFee({ ...order, inputToken })
-  const outputAmountCyrrency = CurrencyAmount.fromRawAmount(outputToken, order.buyAmount)
-
-  const inputAmount = formatTokenAmount(inputAmountCurrency)
-  const outputAmount = formatTokenAmount(outputAmountCyrrency)
-
-  const surplusToken = order.kind === OrderKind.SELL ? outputToken : inputToken
+  const surplusToken = order.kind === OrderKind.SELL ? parsedOutputToken : parsedInputToken
 
   const { amount, percentage } = getOrderSurplus(order)
   const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, amount.toString())
   const formattedPercent = percentage?.multipliedBy(100)?.toFixed(2)
+
+  const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
+    ...order,
+    inputToken: parsedInputToken,
+    outputToken: parsedOutputToken,
+  })
 
   return (
     <SummaryWrapper>
       <div>
         Traded{' '}
         <Strong>
-          {inputAmount} {inputSymbol}
+          <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />
         </Strong>{' '}
         for a total of{' '}
         <Strong>
-          {outputAmount} {outputSymbol}
+          <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
         </Strong>
       </div>
 
