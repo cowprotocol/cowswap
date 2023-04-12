@@ -32,7 +32,6 @@ import { getExplorerOrderLink } from 'utils/explorer'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { CancelButton } from '@cow/common/pure/CancelButton'
-import { parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getExecutedSummaryData } from '@src/custom/state/orders/helpers'
 import { Order } from 'state/orders/actions'
 import styled from 'styled-components/macro'
@@ -401,9 +400,7 @@ function TransactionExecutedContent({
 }) {
   if (!order) return null
 
-  const parsedOrder = parseOrder(order)
-  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } =
-    getExecutedSummaryData(parsedOrder)
+  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)
 
   return (
     <ExecutedWrapper>

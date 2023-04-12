@@ -3,13 +3,13 @@ import styled from 'styled-components/macro'
 import { formatOrderId, shortenOrderId } from 'utils'
 import { OrderID } from '@cow/api/gnosisProtocol'
 import { addPopup } from 'state/application/reducer'
-import { OrderStatus } from './actions'
+import { Order, OrderStatus } from './actions'
 import { CancellationSummary } from '@cow/modules/account/containers/Transaction/styled'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getFilledAmounts } from '@cow/modules/limitOrders/utils/getFilledAmounts'
 
 type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
@@ -140,7 +140,9 @@ export function setPopupData(
   return { key, content }
 }
 
-export function getExecutedSummaryData(order: ParsedOrder) {
+export function getExecutedSummaryData(order: Order) {
+  const parsedOrder = parseOrder(order)
+
   const { inputToken, outputToken } = order
 
   const parsedInputToken = new Token(
@@ -165,7 +167,7 @@ export function getExecutedSummaryData(order: ParsedOrder) {
   const suprlusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
   const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
-    ...order,
+    ...parsedOrder,
     inputToken: parsedInputToken,
     outputToken: parsedOutputToken,
   })
@@ -201,10 +203,8 @@ const Percentage = styled.span`
   margin-right: 5px;
 `
 
-export function getExecutedSummary(order: ParsedOrder): JSX.Element | string {
-  if (!order) {
-    return ''
-  }
+export function getExecutedSummary(order: Order): JSX.Element | string | null {
+  if (!order) return null
 
   const { formattedFilledAmount, formattedSwappedAmount, suprlusPercent, surplusAmount, surplusToken } =
     getExecutedSummaryData(order)
