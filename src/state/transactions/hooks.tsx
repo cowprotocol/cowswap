@@ -1,11 +1,12 @@
 import { useWalletInfo } from '@cow/modules/wallet'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Token } from '@uniswap/sdk-core'
 import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from '@src/state/hooks'
+import { useAppDispatch } from '@src/custom/state/hooks'
 
 import { addTransaction } from './reducer'
-import { TransactionDetails, TransactionInfo, TransactionType } from './types'
+import { TransactionInfo } from './types'
+import { useAllTransactions } from '@src/custom/state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from '@src/custom/state/enhancedTransactions/reducer'
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (response: TransactionResponse, info: TransactionInfo) => void {
@@ -27,16 +28,7 @@ export function useTransactionAdder(): (response: TransactionResponse, info: Tra
   )
 }
 
-// returns all the transactions for the current chain
-export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
-  const { chainId } = useWalletInfo()
-
-  const state = useAppSelector((state) => state.transactions)
-
-  return chainId ? state[chainId] ?? {} : {}
-}
-
-export function useTransaction(transactionHash?: string): TransactionDetails | undefined {
+export function useTransaction(transactionHash?: string): EnhancedTransactionDetails | undefined {
   const allTransactions = useAllTransactions()
 
   if (!transactionHash) {
@@ -66,36 +58,15 @@ export function useIsTransactionConfirmed(transactionHash?: string): boolean {
  * Returns whether a transaction happened in the last day (86400 seconds * 1000 milliseconds / second)
  * @param tx to check for recency
  */
-export function isTransactionRecent(tx: TransactionDetails): boolean {
+export function isTransactionRecent(tx: EnhancedTransactionDetails): boolean {
   return new Date().getTime() - tx.addedTime < 86_400_000
-}
-
-// returns whether a token has a pending approval transaction
-export function useHasPendingApproval(token?: Token, spender?: string): boolean {
-  const allTransactions = useAllTransactions()
-  return useMemo(
-    () =>
-      typeof token?.address === 'string' &&
-      typeof spender === 'string' &&
-      Object.keys(allTransactions).some((hash) => {
-        const tx = allTransactions[hash]
-        if (!tx) return false
-        if (tx.receipt) {
-          return false
-        } else {
-          if (tx.info.type !== TransactionType.APPROVAL) return false
-          return tx.info.spender === spender && tx.info.tokenAddress === token.address && isTransactionRecent(tx)
-        }
-      }),
-    [allTransactions, spender, token?.address]
-  )
 }
 
 // watch for submissions to claim
 // return null if not done loading, return undefined if not found
 export function useUserHasSubmittedClaim(account?: string): {
   claimSubmitted: boolean
-  claimTxn: TransactionDetails | undefined
+  claimTxn: EnhancedTransactionDetails | undefined
 } {
   const allTransactions = useAllTransactions()
 
@@ -103,7 +74,7 @@ export function useUserHasSubmittedClaim(account?: string): {
   const claimTxn = useMemo(() => {
     const txnIndex = Object.keys(allTransactions).find((hash) => {
       const tx = allTransactions[hash]
-      return tx.info.type === TransactionType.CLAIM && tx.info.recipient === account
+      return tx.claim && tx.claim.recipient === account
     })
     return txnIndex && allTransactions[txnIndex] ? allTransactions[txnIndex] : undefined
   }, [account, allTransactions])

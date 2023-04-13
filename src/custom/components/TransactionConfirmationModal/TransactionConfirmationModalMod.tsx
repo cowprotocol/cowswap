@@ -14,7 +14,6 @@ import { isL2ChainId } from 'utils/chains'
 import Circle from 'assets/images/blue-loader.svg'
 import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
 // import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
-import { TransactionSummary } from '@cow/modules/account/containers/TransactionSummary'
 import { /* ButtonLight */ ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 // import Modal from 'components/Modal'
@@ -345,7 +344,7 @@ export function L2Content({
             )}
           </Text>
           <Text fontWeight={400} fontSize={16} textAlign="center">
-            {transaction ? <TransactionSummary info={transaction.info} /> : pendingText}
+            {transaction?.summary || pendingText}
           </Text>
           {chainId && hash ? (
             <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
