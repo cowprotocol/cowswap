@@ -1,4 +1,5 @@
 import {
+  Network,
   Web3Provider,
   JsonRpcProvider,
   UrlJsonRpcProvider,
@@ -19,27 +20,16 @@ if (typeof INFURA_KEY === 'undefined') {
   throw new Error(`REACT_APP_INFURA_KEY must be a defined environment variable`)
 }
 
-/**
- * These are the network URLs used by the interface when there is not another available source of chain data
- */
-export const RPC_URLS: { [key in SupportedChainId]: string } = {
-  [SupportedChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.RINKEBY]: `https://rinkeby.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.ROPSTEN]: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
-  [SupportedChainId.GOERLI]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.KOVAN]: `https://kovan.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.OPTIMISM]: `https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.OPTIMISTIC_KOVAN]: `https://optimism-kovan.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.ARBITRUM_ONE]: `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.ARBITRUM_RINKEBY]: `https://arbitrum-rinkeby.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.POLYGON]: `https://polygon-mainnet.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.POLYGON_MUMBAI]: `https://polygon-mumbai.infura.io/v3/${INFURA_KEY}`,
-  // [SupportedChainId.CELO]: `https://forno.celo.org`,
-  // [SupportedChainId.CELO_ALFAJORES]: `https://alfajores-forno.celo-testnet.org`,
-  [SupportedChainId.GNOSIS_CHAIN]: `https://rpc.gnosis.gateway.fm`,
+interface RpcConfig extends Network {
+  // You should only need to provide this if you are trying to connect to a custom RPC / network.
+  readonly rpcUrl?: string
 }
 
-export const RPC_CONFIG: { [key in SupportedChainId]: { chainId: SupportedChainId; name: string } } = {
+const STATIC_RPC_URLS: Partial<Record<SupportedChainId, string>> = {
+  [SupportedChainId.GNOSIS_CHAIN]: 'https://rpc.gnosis.gateway.fm',
+}
+
+export const RPC_CONFIG: Record<SupportedChainId, RpcConfig> = {
   [SupportedChainId.MAINNET]: {
     chainId: SupportedChainId.MAINNET,
     name: 'homestead',
@@ -51,6 +41,7 @@ export const RPC_CONFIG: { [key in SupportedChainId]: { chainId: SupportedChainI
   [SupportedChainId.GNOSIS_CHAIN]: {
     chainId: SupportedChainId.GNOSIS_CHAIN,
     name: 'gnosis',
+    rpcUrl: STATIC_RPC_URLS[SupportedChainId.GNOSIS_CHAIN],
   },
 }
 
@@ -92,12 +83,6 @@ const PUBLIC_PROVIDER_LIST: Record<SupportedChainId, ProviderClass[]> = {
   [SupportedChainId.GNOSIS_CHAIN]: [],
 }
 
-const RPC_TYPE: { [key in SupportedChainId]: 'infura' | 'custom' } = {
-  [SupportedChainId.MAINNET]: 'infura',
-  [SupportedChainId.GOERLI]: 'infura',
-  [SupportedChainId.GNOSIS_CHAIN]: 'custom',
-}
-
 function getProvider(chainId: SupportedChainId): JsonRpcProvider[] {
   const result: JsonRpcProvider[] = []
 
@@ -107,10 +92,10 @@ function getProvider(chainId: SupportedChainId): JsonRpcProvider[] {
 
   result.pop()
 
-  if (RPC_TYPE[chainId] === 'infura') {
-    result.push(new InfuraProvider(RPC_CONFIG[chainId], INFURA_KEY))
+  if (typeof RPC_CONFIG[chainId].rpcUrl === 'string') {
+    result.push(new StaticJsonRpcProvider(RPC_CONFIG[chainId].rpcUrl))
   } else {
-    result.push(new StaticJsonRpcProvider(RPC_URLS[chainId]))
+    result.push(new InfuraProvider(RPC_CONFIG[chainId], INFURA_KEY))
   }
 
   if (result.length > 0) {
@@ -144,6 +129,12 @@ export const PROVIDERS_RPC_URLS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: getRpcUrls(SupportedChainId.MAINNET),
   [SupportedChainId.GOERLI]: getRpcUrls(SupportedChainId.GOERLI),
   [SupportedChainId.GNOSIS_CHAIN]: getRpcUrls(SupportedChainId.GNOSIS_CHAIN),
+}
+
+export const PROVIDERS_RPC_URLS_FIRST_ONLY: Record<SupportedChainId, string> = {
+  [SupportedChainId.MAINNET]: PROVIDERS_RPC_URLS[SupportedChainId.MAINNET][0],
+  [SupportedChainId.GOERLI]: PROVIDERS_RPC_URLS[SupportedChainId.GOERLI][0],
+  [SupportedChainId.GNOSIS_CHAIN]: PROVIDERS_RPC_URLS[SupportedChainId.GNOSIS_CHAIN][0],
 }
 
 export const providers = {

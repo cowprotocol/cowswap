@@ -1,7 +1,6 @@
 import { initializeConnector } from '@web3-react/core'
 import { Network } from '@web3-react/network'
 
-// import { RPC_URLS } from 'constants/networks'
 import { ConnectionType } from '@cow/modules/wallet'
 import { Web3ReactConnection } from '../types'
 import { PROVIDERS } from '@src/custom/constants/networks'
