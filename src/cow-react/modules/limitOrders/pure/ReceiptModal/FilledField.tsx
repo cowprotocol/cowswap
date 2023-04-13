@@ -12,7 +12,7 @@ export function FilledField({ order }: Props) {
   const { filledPercentage, formattedPercentage, fullyFilled } = order
   const { action, mainAmount, formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts(order)
 
-  const touched = !!filledPercentage?.gt(0)
+  const touched = filledPercentage?.gt(0)
 
   return (
     <styledEl.Value>

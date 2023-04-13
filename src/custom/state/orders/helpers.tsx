@@ -157,11 +157,6 @@ const Strong = styled.strong`
   white-space: nowrap;
 `
 
-const Percentage = styled.span`
-  color: ${({ theme }) => theme.green1};
-  margin-right: 5px;
-`
-
 export function getExecutedSummary(order: ParsedOrder): JSX.Element | string {
   if (!order) {
     return ''
@@ -186,9 +181,8 @@ export function getExecutedSummary(order: ParsedOrder): JSX.Element | string {
 
   const surplusToken = order.kind === OrderKind.SELL ? parsedOutputToken : parsedInputToken
 
-  const { amount, percentage } = getOrderSurplus(order)
+  const { amount } = getOrderSurplus(order)
   const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, amount.toString())
-  const formattedPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
   const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
     ...order,
@@ -213,7 +207,6 @@ export function getExecutedSummary(order: ParsedOrder): JSX.Element | string {
         <div>
           <span>Order surplus: </span>
           <Strong>
-            <Percentage>+{formattedPercent}%</Percentage>
             <TokenAmount amount={parsedSurplus} tokenSymbol={surplusToken} />
           </Strong>
         </div>
