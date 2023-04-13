@@ -1,16 +1,72 @@
-import { Interface } from '@ethersproject/abi'
+import { Interface, AbiCoder } from '@ethersproject/abi'
 import { isAddress } from '@src/utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import ERC20ABI from 'abis/erc20.json'
 import { Erc20Interface } from 'abis/types/Erc20'
-import { useMultipleContractSingleData } from 'lib/hooks/multicall'
-import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { OnchainState } from '../types'
+import { MultiCallService, AbiItem, ProviderConnector, SolStructType } from '@1inch/multicall'
 
+const abiCoder = new AbiCoder()
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
-const DEFAULT_LISTENER_OPTIONS: ListenerOptionsWithGas = { gasRequired: 185_000, blocksPerFetch: 5 }
+
+class MultiCallConnector implements ProviderConnector {
+  contractEncodeABI(abi: AbiItem[], address: string | null, methodName: string, methodParams: unknown[]): string {
+    return new Interface(abi).encodeFunctionData(methodName as any, methodParams as any)
+  }
+
+  decodeABIParameter<T>(type: string | SolStructType, hex: string): T {
+    return this.decodeABIParameterList<any>([type] as any, hex)[0] as T
+  }
+
+  // Copy-paste from 'web3-eth-abi', I guess we should have smth similar in '@ethersproject/abi'
+  decodeABIParameterList<T>(type: string[] | SolStructType[], hex: string): T {
+    var result = abiCoder.decode(type as any, hex)
+    var returnValues = {} as any
+    var decodedValue
+    if (Array.isArray(result)) {
+      if (type.length > 1) {
+        type.forEach(function (output, i) {
+          decodedValue = result[i]
+          if (decodedValue === '0x') {
+            decodedValue = null
+          }
+          returnValues[i] = decodedValue
+          if (typeof output === 'object' && output.name) {
+            returnValues[output.name] = decodedValue
+          }
+        })
+        return returnValues
+      }
+      return result as T
+    }
+    if (typeof type[0] === 'object' && type[0].name) {
+      returnValues[type[0].name] = result
+    }
+    returnValues[0] = result
+    return returnValues
+  }
+
+  ethCall(contractAddress: string, callData: string, blockNumber?: string): Promise<string> {
+    const params = [{ to: contractAddress, data: callData }, blockNumber || 'latest']
+
+    return (window.ethereum as any).request({
+      method: 'eth_call',
+      params,
+    })
+  }
+}
+
+const multiCallConnector = new MultiCallConnector()
+
+const multiCallService = new MultiCallService(multiCallConnector, '0x8d035edd8e09c3283463dade67cc0d49d6868063')
+
+const multicallParams = {
+  chunkSize: 100,
+  retriesLimit: 3,
+  blockNumber: 'latest',
+}
 
 export type OnchainTokenAmount = OnchainState<CurrencyAmount<Token> | undefined>
 
@@ -96,49 +152,57 @@ function useOnchainErc20Amounts(
   callParams: (string | undefined)[],
   params: OnchainAmountsParams
 ): OnchainAmountsResult {
-  const { account, blocksPerFetch, tokens } = params
+  const { account, tokens } = params
+  const [results, setResults] = useState<string[] | null>(null)
 
   const validatedTokens: Token[] = useMemo(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
     [tokens]
   )
-  const validatedTokenAddresses = useMemo(() => validatedTokens.map((vt) => vt.address), [validatedTokens])
+  const data = useMemo(() => {
+    const validatedParams = callParams.filter((p) => typeof p !== 'undefined')
 
-  // Do on-chain calls
-  const balancesCallState = useMultipleContractSingleData(
-    validatedTokenAddresses,
-    ERC20Interface,
-    erc20Method,
-    callParams,
-    blocksPerFetch ? { ...DEFAULT_LISTENER_OPTIONS, blocksPerFetch } : DEFAULT_LISTENER_OPTIONS
-  )
+    if (!validatedParams.length) return []
 
-  const isLoading: boolean = useMemo(
-    () => balancesCallState.some((callState) => callState.loading),
-    [balancesCallState]
-  )
+    return validatedTokens.map((vt) => {
+      return {
+        to: vt.address,
+        data: ERC20Interface.encodeFunctionData(erc20Method as any, validatedParams as any),
+      }
+    })
+  }, [validatedTokens, erc20Method, callParams])
+
+  useEffect(() => {
+    if (!data.length) return
+
+    // Pure call
+    multiCallService.callByChunks(data, multicallParams).then((res) => {
+      setResults(res)
+    })
+  }, [JSON.stringify(data)])
+
+  const isLoading: boolean = results === null
 
   // Return amounts
   return useMemo(() => {
-    if (!account || validatedTokens.length === 0) {
+    if (!account || !results) {
       return { isLoading, amounts: {} }
     }
 
     const tokenBalances = validatedTokens.reduce<OnchainTokenAmounts>((acc, token, i) => {
-      const { error, loading, result, syncing, valid } = balancesCallState[i]
-      const value = result?.[0]
+      const value = results[i]
       const amount = value ? JSBI.BigInt(value.toString()) : null
 
       acc[token.address] = {
         value: amount ? CurrencyAmount.fromRawAmount(token, amount) : acc[token.address]?.value,
-        loading,
-        error,
-        syncing,
-        valid,
+        loading: false,
+        error: false,
+        syncing: false,
+        valid: true,
       }
       return acc
     }, {})
 
     return { amounts: tokenBalances, isLoading }
-  }, [account, validatedTokens, balancesCallState, isLoading])
+  }, [account, validatedTokens, results, isLoading])
 }
