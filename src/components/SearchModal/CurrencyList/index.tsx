@@ -12,7 +12,6 @@ import styled from 'styled-components/macro'
 
 import TokenListLogo from '../../../assets/svg/tokenlist.svg'
 import { useIsUserAddedToken } from '../../../hooks/Tokens'
-import { useCurrencyBalance } from '../../../state/connection/hooks'
 import { useCombinedActiveList } from '../../../state/lists/hooks'
 import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
 import { ThemedText } from '../../../theme'
@@ -25,6 +24,7 @@ import { MouseoverTooltip } from '../../Tooltip'
 import ImportRow from 'components/SearchModal/ImportRow'
 import { LoadingRows, MenuItem } from '../styleds'
 import { useWalletInfo } from '@cow/modules/wallet'
+import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'

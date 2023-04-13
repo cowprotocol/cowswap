@@ -7,8 +7,6 @@ import { useFavouriteTokens } from 'state/user/hooks'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
 
-export * from '@src/state/connection/hooks'
-
 // mimics useAllBalances
 export function useAllTokenBalances(): [OnchainTokenAmounts, boolean] {
   const { account } = useWalletInfo()

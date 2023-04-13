@@ -20,7 +20,6 @@ import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
 import ImportantIcon from 'assets/cow-swap/important.svg'
 import { ApprovalState, useApproveCallbackFromClaim } from 'hooks/useApproveCallback'
-import { useCurrencyBalance } from 'state/connection/hooks'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { StyledNumericalInput } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 
@@ -41,6 +40,7 @@ import { getProviderErrorMessage } from 'utils/misc'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { useWalletInfo } from '@cow/modules/wallet'
+import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>
