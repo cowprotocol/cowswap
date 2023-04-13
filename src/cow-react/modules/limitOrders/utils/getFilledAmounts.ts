@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
 
 // TODO: using .toNumber() we potentially lose accuracy
-// TODO: must be refactored with replacing bignumber.js by @ethersproject/bignumber
+// TODO: if we do migrations to etherjs v6, we should use native ES6 bignumber
 function legacyBigNumberToCurrencyAmount(currency: Token, value: BigNumber | undefined): CurrencyAmount<Token> {
   return CurrencyAmount.fromRawAmount(currency, Math.ceil((value?.toNumber() || 0) * 10 ** currency.decimals))
 }
@@ -62,7 +62,6 @@ export function getFilledAmounts(order: ParsedOrder) {
   }
 
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
-
   const filledAmountDecimal = filledAmountWithFee?.div(new BigNumber(10 ** mainToken.decimals))
   const formattedFilledAmount = legacyBigNumberToCurrencyAmount(mainToken, filledAmountDecimal)
 
