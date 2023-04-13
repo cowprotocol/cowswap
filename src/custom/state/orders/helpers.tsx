@@ -5,6 +5,12 @@ import { OrderID } from '@cow/api/gnosisProtocol'
 import { addPopup } from 'state/application/reducer'
 import { OrderStatus } from './actions'
 import { CancellationSummary } from '@cow/modules/account/containers/Transaction/styled'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { getFilledAmounts } from '@cow/modules/limitOrders/utils/getFilledAmounts'
 
 type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 
@@ -12,7 +18,7 @@ interface SetOrderSummaryParams {
   id: string
   status?: OrderStatusExtended
   summary?: string | JSX.Element
-  descriptor?: string
+  descriptor?: string | null
 }
 
 // what is passed to addPopup action
@@ -49,11 +55,22 @@ type MetaPopupContent = GPPopupContent<OrderTxTypes.METATXN>
 type TxnPopupContent = GPPopupContent<OrderTxTypes.TXN>
 
 function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
-  return !summary
-    ? `Order ${formatOrderId(id)} ${descriptor || status || ''}`
-    : typeof summary === 'string'
-    ? `${summary} ${descriptor || status || ''}`
-    : summary
+  // If there isn't summary, return generalized summary
+  if (!summary) {
+    return `Order ${formatOrderId(id)} ${descriptor || status || ''}`
+  }
+
+  if (typeof summary === 'string') {
+    // If descriptor is specifically null, just return summary
+    if (descriptor === null) {
+      return summary
+    }
+
+    // Otherwise return summary with descriptor or status
+    return `${summary} ${descriptor || status || ''}`
+  }
+
+  return summary
 }
 
 const Wrapper = styled.div`
@@ -121,4 +138,79 @@ export function setPopupData(
   }
 
   return { key, content }
+}
+
+const SummaryWrapper = styled.div`
+  font-size: 1rem;
+
+  > div {
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0.6rem;
+    }
+  }
+`
+
+const Strong = styled.strong`
+  font-size: 0.9rem;
+  white-space: nowrap;
+`
+
+export function getExecutedSummary(order: ParsedOrder): JSX.Element | string {
+  if (!order) {
+    return ''
+  }
+
+  const { inputToken, outputToken } = order
+
+  const parsedInputToken = new Token(
+    inputToken.chainId,
+    inputToken.address,
+    inputToken.decimals,
+    inputToken.symbol,
+    inputToken.name
+  )
+  const parsedOutputToken = new Token(
+    outputToken.chainId,
+    outputToken.address,
+    outputToken.decimals,
+    outputToken.symbol,
+    outputToken.name
+  )
+
+  const surplusToken = order.kind === OrderKind.SELL ? parsedOutputToken : parsedInputToken
+
+  const { amount } = getOrderSurplus(order)
+  const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, amount.toString())
+
+  const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
+    ...order,
+    inputToken: parsedInputToken,
+    outputToken: parsedOutputToken,
+  })
+
+  return (
+    <SummaryWrapper>
+      <div>
+        Traded{' '}
+        <Strong>
+          <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />
+        </Strong>{' '}
+        for a total of{' '}
+        <Strong>
+          <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
+        </Strong>
+      </div>
+
+      {!!amount && (
+        <div>
+          <span>Order surplus: </span>
+          <Strong>
+            <TokenAmount amount={parsedSurplus} tokenSymbol={surplusToken} />
+          </Strong>
+        </div>
+      )}
+    </SummaryWrapper>
+  )
 }
