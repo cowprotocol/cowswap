@@ -68,15 +68,13 @@ export const CheckboxCheckmark = styled.span`
     top: 0;
     bottom: 0;
     margin: auto;
-    width: calc(var(--checkboxSize) / 3);
-    height: calc(var(--checkboxSize) / 1.5);
+    width: 31%;
+    height: 66%;
     border: solid ${({ theme }) => theme.bg1};
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      width: calc(var(--checkboxSize) / 3.5);
-      height: calc(var(--checkboxSize) / 1.8);
       border-width: 0 3px 3px 0;
     `}
   }
@@ -112,7 +110,7 @@ export const TableRowCheckbox = styled.input`
     transform: none;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
-      top: calc(50% + 2px);
+      top: calc(50% + 4px);
     `}
   }
 `
