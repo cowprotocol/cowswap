@@ -20,6 +20,12 @@ const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
   gap: 6px;
   margin-left: ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
   margin: 0 10px 0 0;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100%;
+    justify-content: center;
+    margin: 15px auto 0;
+  `}
 `
 
 const ActionButton = styled.button`
