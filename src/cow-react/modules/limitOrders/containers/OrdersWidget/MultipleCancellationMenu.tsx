@@ -13,25 +13,24 @@ interface Props {
 }
 
 const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
-  display: inline-flex;
-  vertical-align: top;
+  display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
-  flex-direction: row-reverse;
-  gap: 10px;
+  gap: 6px;
   margin-left: ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
-  margin-right: 10px;
-  min-height: 40px;
+  margin: 0 10px 0 0;
 `
 
 const ActionButton = styled.button`
   display: inline-flex;
-  background: ${({ theme }) => transparentize(0.82, theme.danger)};
+  background: ${({ theme }) => transparentize(0.86, theme.danger)};
   color: ${({ theme }) => theme.danger};
   font-weight: 600;
   text-decoration: none;
   font-size: 13px;
-  padding: 10px 20px;
+  padding: 10px 15px;
+  margin: 0;
   gap: 5px;
   border: 0;
   outline: none;
@@ -39,10 +38,10 @@ const ActionButton = styled.button`
   transition: background 0.15s ease-in-out, color 0.2s ease-in-out;
   border-radius: 24px;
   vertical-align: center;
-  margin-right: 5px;
+
 
   &:hover:not([disabled]) {
-    background: ${({ theme }) => transparentize(0.6, theme.danger)};
+    background: ${({ theme }) => transparentize(0.75, theme.danger)};
   }
 
   &[disabled] {
@@ -107,12 +106,12 @@ export function MultipleCancellationMenu({ pendingOrders }: Props) {
   return (
     <Wrapper hasSelectedItems={!!ordersToCancelCount}>
       {!!ordersToCancelCount ? (
-        <div>
+        <>
           <ActionButton onClick={cancelSelectedOrders}>
             <Trash2 size={14} /> Cancel {ordersToCancelCount} selected
           </ActionButton>
           <TextButton onClick={clearSelection}>Clear selection</TextButton>
-        </div>
+        </>
       ) : (
         <CancelAllButton onClick={cancelAllPendingOrders}>Cancel all</CancelAllButton>
       )}

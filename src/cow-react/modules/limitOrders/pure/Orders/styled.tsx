@@ -79,6 +79,7 @@ export const TableRowCheckbox = styled.input`
   border-radius: var(--checkBoxBorderRadius);
   appearance: none;
   margin: 0;
+  outline: 0;
 
   &:checked {
     background-color: ${({ theme }) => theme.text1};

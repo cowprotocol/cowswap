@@ -88,7 +88,7 @@ const Header = styled.div`
   display: grid;
   grid-template-columns: 150px 1fr;
   align-items: center;
-  gap: 16px;
+  gap: 3px;
   width: 100%;
   margin: 0 0 24px;
 
@@ -110,7 +110,7 @@ const Header = styled.div`
 const TabsContainer = styled.div<{ withSingleChild: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   ${({ theme, withSingleChild }) =>
     !withSingleChild &&
