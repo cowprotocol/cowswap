@@ -35,13 +35,13 @@ export type OnchainAllowancesParams = OnchainAmountsParams & { spender?: string 
 
 export function useOnchainBalances(params: OnchainBalancesParams): OnchainAmountsResult {
   const { account } = params
-  const callParams = useMemo(() => [account], [account])
+  const callParams = [account]
   return useOnchainErc20Amounts('balanceOf', callParams, params)
 }
 
 export function useOnchainAllowances(params: OnchainAllowancesParams): OnchainAmountsResult {
   const { account, spender } = params
-  const callParams = useMemo(() => [account, spender], [account, spender])
+  const callParams = [account, spender]
   return useOnchainErc20Amounts('allowance', callParams, params)
 }
 
