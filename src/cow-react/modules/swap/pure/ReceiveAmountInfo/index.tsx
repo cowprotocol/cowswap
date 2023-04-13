@@ -20,12 +20,12 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
   const isEthFlow = useIsEthFlow()
 
   const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
-  const { type, amountAfterFees, amountBeforeFees, feeAmount } = receiveAmountInfo
+  const { type, amountAfterFees, amountBeforeFees, feeAmount, feeAmountRaw } = receiveAmountInfo
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
   const typeString = type === 'from' ? '+' : '-'
-  const hasFee = feeAmount !== '0'
+  const hasFee = feeAmountRaw && feeAmountRaw.greaterThan(0)
 
   const FeePercent = (
     <span>
