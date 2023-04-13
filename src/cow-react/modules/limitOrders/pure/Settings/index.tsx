@@ -30,10 +30,11 @@ function SettingsBox({ title, tooltip, value, toggle, disabled = false }: Settin
 
 export interface SettingsProps {
   state: LimitOrdersSettingsState
+  featurePartialFillsEnabled: boolean
   onStateChanged: (state: Partial<LimitOrdersSettingsState>) => void
 }
 
-export function Settings({ state, onStateChanged }: SettingsProps) {
+export function Settings({ state, featurePartialFillsEnabled, onStateChanged }: SettingsProps) {
   const { expertMode, showRecipient, partialFillsEnabled } = state
 
   return (
@@ -66,7 +67,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
             amount.
           </>
         }
-        value={partialFillsEnabled}
+        disabled={!featurePartialFillsEnabled}
+        value={featurePartialFillsEnabled && partialFillsEnabled}
         toggle={() => onStateChanged({ partialFillsEnabled: !partialFillsEnabled })}
       />
     </styledEl.SettingsContainer>

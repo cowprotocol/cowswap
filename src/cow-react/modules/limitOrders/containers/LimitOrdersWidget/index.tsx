@@ -45,6 +45,7 @@ import { formatInputAmount } from '@cow/utils/amountFormat'
 import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
+import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -79,6 +80,7 @@ export function LimitOrdersWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
+  const { partialFillsEnabled } = useFeatureFlags()
 
   const showRecipient = useMemo(
     () => !isWrapOrUnwrap && settingsState.showRecipient,
@@ -180,6 +182,7 @@ export function LimitOrdersWidget() {
     onCurrencySelection,
     onImportDismiss,
     partiallyFillableOverride,
+    featurePartialFillsEnabled: partialFillsEnabled,
     rateInfoParams,
     priceImpact,
     tradeContext,
@@ -210,6 +213,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     onCurrencySelection,
     onImportDismiss,
     partiallyFillableOverride,
+    featurePartialFillsEnabled,
     allowsOffchainSigning,
     isWrapOrUnwrap,
     showRecipient,
@@ -235,7 +239,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const currenciesLoadingInProgress = false
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
-  const isPartiallyFillable = settingsState.partialFillsEnabled
+  const isPartiallyFillable = featurePartialFillsEnabled && settingsState.partialFillsEnabled
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -321,6 +325,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                   <styledEl.StyledOrderType
                     isPartiallyFillable={isPartiallyFillable}
                     partiallyFillableOverride={partiallyFillableOverride}
+                    featurePartialFillsEnabled={featurePartialFillsEnabled}
                   />
                 </styledEl.FooterBox>
               )}
