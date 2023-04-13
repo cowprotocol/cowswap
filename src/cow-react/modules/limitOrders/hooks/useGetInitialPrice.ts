@@ -7,8 +7,8 @@ import { getAddress } from '@cow/utils/getAddress'
 import ms from 'ms.macro'
 import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
-import { orderBookApi } from '@cow/cowSdk'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { getNativePrice } from '@cow/api/gnosisProtocol'
 
 type PriceResult = number | Error | undefined
 
@@ -26,7 +26,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
       return parsePrice(1, currency)
     }
 
-    const result = await orderBookApi.getNativePrice(currencyAddress, { chainId })
+    const result = await getNativePrice(chainId, currencyAddress)
 
     if (!result) {
       throw new Error('Cannot parse initial price')

@@ -3,7 +3,7 @@ import { isAddress, shortenAddress } from 'utils'
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
-import { OrderID } from '@cow/api/gnosisProtocol'
+import { getTrades, OrderID } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -273,10 +273,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 }
 
 export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
-  const [trades, profileData] = await Promise.all([
-    orderBookApi.getTrades({ owner: address }, { chainId }),
-    getProfileData(chainId, address),
-  ])
+  const [trades, profileData] = await Promise.all([getTrades(chainId, address), getProfileData(chainId, address)])
 
   return trades.length > 0 || (profileData?.totalTrades ?? 0) > 0
 }
