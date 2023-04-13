@@ -79,11 +79,11 @@ export function OrdersWidget() {
     ordersList.pending
   )
 
-  const toggleAllOrdersForCancellation = useCallback(
-    (checked: boolean) => {
-      updateOrdersToCancel(checked ? [] : orders)
+  const toggleOrdersForCancellation = useCallback(
+    (orders: Order[]) => {
+      updateOrdersToCancel(orders)
     },
-    [orders, updateOrdersToCancel]
+    [updateOrdersToCancel]
   )
 
   const toggleOrderForCancellation = useCallback(
@@ -97,7 +97,7 @@ export function OrdersWidget() {
     getShowCancellationModal,
     selectReceiptOrder,
     toggleOrderForCancellation,
-    toggleAllOrdersForCancellation,
+    toggleOrdersForCancellation,
   }
 
   // Set page params initially once

@@ -6,5 +6,5 @@ export interface LimitOrderActions {
   getShowCancellationModal: (order: Order) => UseCancelOrderReturn
   selectReceiptOrder(orderId: UID): void
   toggleOrderForCancellation(order: Order): void
-  toggleAllOrdersForCancellation(checked: boolean): void
+  toggleOrdersForCancellation(orders: Order[]): void
 }

@@ -244,8 +244,8 @@ export function OrdersTable({
   const allOrdersSelected = useMemo(() => {
     const cancellableOrders = ordersPage.filter(isOrderOffChainCancellable)
 
-    return selectedOrders.length === cancellableOrders.length
-  }, [ordersPage, selectedOrders])
+    return cancellableOrders.every((item) => selectedOrdersMap[item.id])
+  }, [ordersPage, selectedOrdersMap])
 
   // React doesn't support indeterminate attribute
   // Because of it, we have to use element reference
@@ -269,7 +269,9 @@ export function OrdersTable({
                   <TableRowCheckbox
                     ref={checkboxRef}
                     type="checkbox"
-                    onChange={(event) => orderActions.toggleAllOrdersForCancellation(!event.target.checked)}
+                    onChange={(event) =>
+                      orderActions.toggleOrdersForCancellation(event.target.checked ? ordersPage : [])
+                    }
                   />
                   <CheckboxCheckmark />
                 </TableRowCheckboxWrapper>
