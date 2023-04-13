@@ -16,6 +16,7 @@ import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { CancelButton } from '@cow/common/pure/CancelButton'
 import { ExplorerDataType, getExplorerLink } from '@src/utils/getExplorerLink'
+import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -89,9 +90,11 @@ export function StatusDetails(props: StatusDetailsProps) {
     isTransaction,
     isCancelled,
     isCreating,
+    order,
   } = activityDerivedState
 
   const cancellationHash = activityDerivedState.order?.cancellationHash
+  const isCancellable = order ? isOrderCancellable(order) : true
 
   return (
     <StatusLabelWrapper withCancellationHash$={!!cancellationHash}>
@@ -126,12 +129,12 @@ export function StatusDetails(props: StatusDetailsProps) {
         {_getStateLabel(activityDerivedState)}
       </StatusLabel>
 
-      {showCancellationModal && (
+      {showCancellationModal && isCancellable && (
         <StatusLabelBelow>
           <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>
       )}
-      {cancellationHash && (
+      {cancellationHash && !isCancelling && (
         <CancelTxLink
           href={getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)}
           target="_blank"
