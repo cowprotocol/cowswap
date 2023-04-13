@@ -157,9 +157,6 @@ function getRelevantState(): null | keyof AppState {
     case 'add':
       if (pieces[1] === 'v2') return 'mint'
       else return 'mintV3'
-    case 'remove':
-      if (pieces[1] === 'v2') return 'burn'
-      else return 'burnV3'
   }
   return null
 }

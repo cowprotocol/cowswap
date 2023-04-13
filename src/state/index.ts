@@ -4,8 +4,6 @@ import multicall from 'lib/state/multicall'
 import { load, save } from 'redux-localstorage-simple'
 
 import application from './application/reducer'
-import burn from './burn/reducer'
-import burnV3 from './burn/v3/reducer'
 import connection from './connection/reducer'
 import { api as dataApi } from './data/slice'
 import { updateVersion } from '@src/state/global/actions'
@@ -29,8 +27,6 @@ const store = configureStore({
     swap,
     mint,
     mintV3,
-    burn,
-    burnV3,
     multicall: multicall.reducer,
     lists,
     logs,
