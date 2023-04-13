@@ -116,6 +116,11 @@ export const TableRowCheckbox = styled.input`
       top: calc(50% + 4px);
     `}
   }
+
+  &[disabled],
+  &[disabled] + ${CheckboxCheckmark} {
+    cursor: default;
+  }
 `
 
 export const TableRowCheckboxWrapper = styled.label`
@@ -127,7 +132,7 @@ export const TableRowCheckboxWrapper = styled.label`
   position: relative;
   cursor: pointer;
 
-  &:hover > ${TableRowCheckbox}:not(:checked) {
+  &:hover > ${TableRowCheckbox}:not(:checked):not([disabled]) {
     background: ${({ theme }) => transparentize(0.85, theme.text1)};
   }
 `
