@@ -11,7 +11,7 @@ import { useWalletMetaData } from '@cow/modules/wallet'
 import { WC_DISABLED_TEXT } from '@cow/modules/wallet/constants'
 import { InjectedWallet } from '@cow/modules/wallet/web3-react/connectors/Injected'
 
-import { default as TrustImage } from '@cow/modules/wallet/api/assets/trust.png'
+import { default as TrustImage } from '@cow/modules/wallet/api/assets/trust.svg'
 
 const WALLET_LINK = 'https://trustwallet.com/'
 const BASE_PROPS = {
