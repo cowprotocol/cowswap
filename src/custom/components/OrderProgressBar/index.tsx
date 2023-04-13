@@ -37,10 +37,11 @@ import { Order } from 'state/orders/actions'
 import styled from 'styled-components/macro'
 import { DisplayLink } from '../TransactionConfirmationModal'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import ms from 'ms.macro'
 
-const REFRESH_INTERVAL_MS = 200
-const COW_STATE_SECONDS = 30
-const SHOW_CONFIRMED_MS = 4000
+const REFRESH_INTERVAL_MS = ms`0.2s`
+const COW_STATE_SECONDS = ms`0.03s`
+const SHOW_CONFIRMED_MS = ms`4s`
 
 type OrderProgressBarProps = {
   activityDerivedState: ActivityDerivedState
@@ -363,14 +364,24 @@ function useGetProgressBarInfo({
   }
 }
 
+// TODO: Make a dumb component and Cosmos preview for different
 const ExecutedWrapper = styled.div`
   display: flex;
   align-items: center;
   padding-bottom: 1rem;
 
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    font-size: 0.8rem;
+  `};
+
   img {
     padding: 1rem;
     margin-right: 10px;
+
+    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+      padding: 0;
+      max-width: 60px;
+    `};
   }
 
   a {
@@ -420,7 +431,7 @@ function TransactionExecutedContent({
 
         {!!surplusAmount && (
           <div>
-            You saved{' '}
+            You received a surplus of{' '}
             <Strong>
               <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
             </Strong>{' '}

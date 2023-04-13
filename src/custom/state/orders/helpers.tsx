@@ -198,16 +198,10 @@ const Strong = styled.strong`
   white-space: nowrap;
 `
 
-const Percentage = styled.span`
-  color: ${({ theme }) => theme.green1};
-  margin-right: 5px;
-`
-
 export function getExecutedSummary(order: Order): JSX.Element | string | null {
   if (!order) return null
 
-  const { formattedFilledAmount, formattedSwappedAmount, suprlusPercent, surplusAmount, surplusToken } =
-    getExecutedSummaryData(order)
+  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)
 
   return (
     <SummaryWrapper>
@@ -226,7 +220,6 @@ export function getExecutedSummary(order: Order): JSX.Element | string | null {
         <div>
           <span>Order surplus: </span>
           <Strong>
-            <Percentage>+{suprlusPercent}%</Percentage>
             <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
           </Strong>
         </div>
