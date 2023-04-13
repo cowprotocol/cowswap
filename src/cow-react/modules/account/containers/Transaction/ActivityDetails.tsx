@@ -301,7 +301,7 @@ export function ActivityDetails(props: {
               </SummaryInnerRow>
               {surplusAmount?.greaterThan(0) && (
                 <SummaryInnerRow>
-                  <b>Savings</b>
+                  <b>Surplus</b>
                   <i>
                     <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
                   </i>

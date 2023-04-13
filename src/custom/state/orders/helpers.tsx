@@ -6,7 +6,6 @@ import { addPopup } from 'state/application/reducer'
 import { Order, OrderStatus } from './actions'
 import { CancellationSummary } from '@cow/modules/account/containers/Transaction/styled'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
@@ -143,7 +142,7 @@ export function setPopupData(
 export function getExecutedSummaryData(order: Order) {
   const parsedOrder = parseOrder(order)
 
-  const { inputToken, outputToken } = order
+  const { inputToken, outputToken, surplusAmount: amount, surplusPercentage: percentage } = parsedOrder
 
   const parsedInputToken = new Token(
     inputToken.chainId,
@@ -162,8 +161,7 @@ export function getExecutedSummaryData(order: Order) {
 
   const surplusToken = order.kind === OrderKind.SELL ? parsedOutputToken : parsedInputToken
 
-  const { amount, percentage } = getOrderSurplus(order)
-  const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount.toString())
+  const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount?.decimalPlaces(0).toFixed())
   const suprlusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
   const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
