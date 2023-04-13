@@ -9,8 +9,7 @@ import { api as dataApi } from './data/slice'
 import { updateVersion } from '@src/state/global/actions'
 import lists from './lists/reducer'
 import logs from './logs/slice'
-import mint from './mint/reducer'
-import mintV3 from './mint/v3/reducer'
+
 // Mod import { routingApi } from './routing/slice'
 import swap from './swap/reducer'
 import transactions from './transactions/reducer'
@@ -25,8 +24,6 @@ const store = configureStore({
     connection,
     transactions,
     swap,
-    mint,
-    mintV3,
     multicall: multicall.reducer,
     lists,
     logs,

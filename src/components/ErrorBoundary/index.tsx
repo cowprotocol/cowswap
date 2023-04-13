@@ -154,9 +154,6 @@ function getRelevantState(): null | keyof AppState {
   switch (pieces[0]) {
     case 'swap':
       return 'swap'
-    case 'add':
-      if (pieces[1] === 'v2') return 'mint'
-      else return 'mintV3'
   }
   return null
 }
