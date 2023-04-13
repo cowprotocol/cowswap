@@ -30,7 +30,12 @@ import { ZERO_FRACTION } from 'constants/index'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
-import { TableRow, TableRowCheckbox } from '@cow/modules/limitOrders/pure/Orders/styled'
+import {
+  TableRow,
+  TableRowCheckbox,
+  TableRowCheckboxWrapper,
+  CheckboxCheckmark,
+} from '@cow/modules/limitOrders/pure/Orders/styled'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -165,12 +170,15 @@ export function OrderRow({
     <TableRow isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && isOpenOrdersTab && (
-        <TableRowCheckbox
-          type="checkbox"
-          checked={isRowSelected}
-          disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
-          onChange={() => orderActions.toggleOrderForCancellation(order)}
-        />
+        <TableRowCheckboxWrapper>
+          <TableRowCheckbox
+            type="checkbox"
+            checked={isRowSelected}
+            disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
+            onChange={() => orderActions.toggleOrderForCancellation(order)}
+          />
+          <CheckboxCheckmark />
+        </TableRowCheckboxWrapper>
       )}
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell clickable onClick={onClick}>
