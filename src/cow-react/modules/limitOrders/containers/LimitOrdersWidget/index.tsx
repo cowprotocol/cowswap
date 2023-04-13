@@ -69,7 +69,7 @@ export function LimitOrdersWidget() {
   const onCurrencySelection = useOnCurrencySelection()
   const onImportDismiss = useOnImportDismiss()
   const limitOrdersNavigate = useTradeNavigate()
-  const settingState = useAtomValue(limitOrdersSettingsAtom)
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
   const tradeContext = useTradeFlowContext()
@@ -81,13 +81,13 @@ export function LimitOrdersWidget() {
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
 
   const showRecipient = useMemo(
-    () => !isWrapOrUnwrap && settingState.showRecipient,
-    [settingState.showRecipient, isWrapOrUnwrap]
+    () => !isWrapOrUnwrap && settingsState.showRecipient,
+    [settingsState.showRecipient, isWrapOrUnwrap]
   )
 
   const isExpertMode = useMemo(
-    () => !isWrapOrUnwrap && settingState.expertMode,
-    [isWrapOrUnwrap, settingState.expertMode]
+    () => !isWrapOrUnwrap && settingsState.expertMode,
+    [isWrapOrUnwrap, settingsState.expertMode]
   )
 
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
@@ -183,6 +183,7 @@ export function LimitOrdersWidget() {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    settingsState,
     feeAmount,
   }
 
@@ -218,6 +219,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    settingsState,
     feeAmount,
   } = props
 
@@ -233,7 +235,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const currenciesLoadingInProgress = false
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
-  const isPartiallyFillable = tradeContext?.postOrderParams.partiallyFillable ?? true
+  const isPartiallyFillable = settingsState.partialFillsEnabled
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
