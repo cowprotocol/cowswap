@@ -17,7 +17,7 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { getExecutedSummary } from './helpers'
+import { getExecutedSummary } from '@cow/common/pure/ExecutedSummary'
 import { parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { Order } from 'state/orders/actions'
 
