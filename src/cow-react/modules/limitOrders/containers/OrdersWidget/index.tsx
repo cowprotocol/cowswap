@@ -13,7 +13,7 @@ import { useAtomValue } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
-import { useTokensFromOrders } from '@cow/modules/orders'
+import { useInputTokensFromOrders } from '@cow/modules/orders'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -52,7 +52,7 @@ export function OrdersWidget() {
   const isOpenOrdersTab = useMemo(() => OPEN_TAB.id === currentTabId, [currentTabId])
 
   // Get tokens from pending orders (only if the OPEN orders tab is opened)
-  const tokens = useTokensFromOrders(isOpenOrdersTab ? ordersList.pending : [])
+  const tokens = useInputTokensFromOrders(isOpenOrdersTab ? ordersList.pending : [])
 
   // Get effective balance
   const effectiveBalances = useEffectiveBalances({ account, spender, tokens })

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Order } from '@cow/modules/orders'
 
-export function useTokensFromOrders(orders: Order[]) {
+export function useInputTokensFromOrders(orders: Order[]) {
   return useMemo(() => {
     return orders.map((order) => order.inputToken)
     // eslint-disable-next-line react-hooks/exhaustive-deps
