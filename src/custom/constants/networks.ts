@@ -90,8 +90,6 @@ function getProvider(chainId: SupportedChainId): JsonRpcProvider[] {
     result.push(new Web3Provider(window.ethereum, RPC_CONFIG[chainId]))
   }
 
-  result.pop()
-
   if (typeof RPC_CONFIG[chainId].rpcUrl === 'string') {
     result.push(new StaticJsonRpcProvider(RPC_CONFIG[chainId].rpcUrl))
   } else {
