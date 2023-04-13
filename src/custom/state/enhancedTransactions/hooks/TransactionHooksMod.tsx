@@ -49,3 +49,21 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
     [allTransactions, spender, tokenAddress]
   )
 }
+
+export function useIsTransactionConfirmed(transactionHash?: string): boolean {
+  const transactions = useAllTransactions()
+
+  if (!transactionHash || !transactions[transactionHash]) return false
+
+  return Boolean(transactions[transactionHash].receipt)
+}
+
+export function useTransaction(transactionHash?: string): EnhancedTransactionDetails | undefined {
+  const allTransactions = useAllTransactions()
+
+  if (!transactionHash) {
+    return undefined
+  }
+
+  return allTransactions[transactionHash]
+}

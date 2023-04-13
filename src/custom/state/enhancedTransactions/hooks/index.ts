@@ -133,3 +133,20 @@ export function useAllClaimingTransactionIndices() {
     return new Set(flattenedClaimingTransactions)
   }, [claimingTransactions])
 }
+
+// // watch for submissions to claim
+// // return null if not done loading, return undefined if not found
+// export function useUserHasSubmittedClaim(account?: string): {
+//   claimSubmitted: boolean
+//   claimTxn: EnhancedTransactionDetails | undefined
+// } {
+//   const pendingClaims = useAllClaimingTransactions()
+//   const claimTxn = useMemo(
+//     () =>
+//       // find one that is both the user's claim, AND not mined
+//       pendingClaims.find((claim) => claim.claim?.recipient === account),
+//     [account, pendingClaims]
+//   )
+
+//   return { claimSubmitted: !!claimTxn, claimTxn }
+// }
