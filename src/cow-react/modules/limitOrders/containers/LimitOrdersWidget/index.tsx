@@ -45,7 +45,7 @@ import { formatInputAmount } from '@cow/utils/amountFormat'
 import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
-import { useFlags } from 'launchdarkly-react-client-sdk'
+import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -80,7 +80,7 @@ export function LimitOrdersWidget() {
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
-  const { partialFillsEnabled } = useFlags()
+  const { partialFillsEnabled } = useFeatureFlags()
 
   const showRecipient = useMemo(
     () => !isWrapOrUnwrap && settingsState.showRecipient,

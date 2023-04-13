@@ -14,7 +14,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atoms'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useFlags } from 'launchdarkly-react-client-sdk'
+import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
@@ -30,7 +30,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const quoteState = useAtomValue(limitOrdersQuoteAtom)
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
-  const { partialFillsEnabled } = useFlags()
+  const { partialFillsEnabled } = useFeatureFlags()
 
   if (
     !chainId ||

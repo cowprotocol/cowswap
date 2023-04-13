@@ -24,7 +24,7 @@ import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPric
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useHandleOrderPlacement } from '@cow/modules/limitOrders/hooks/useHandleOrderPlacement'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
-import { useFlags } from 'launchdarkly-react-client-sdk'
+import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -60,7 +60,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const executionPrice = useAtomValue(executionPriceAtom)
   const limitRateState = useAtomValue(limitRateAtom)
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
-  const { partialFillsEnabled } = useFlags()
+  const { partialFillsEnabled } = useFeatureFlags()
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
