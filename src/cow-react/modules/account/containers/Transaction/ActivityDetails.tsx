@@ -28,7 +28,7 @@ import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import { StatusDetails } from './StatusDetails'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { getExecutedSummaryData } from '@src/custom/state/orders/helpers'
+import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
