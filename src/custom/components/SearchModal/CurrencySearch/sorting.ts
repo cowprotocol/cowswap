@@ -1,4 +1,4 @@
-import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
+import { TokenAmounts } from '@cow/modules/tokens'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 
@@ -18,7 +18,7 @@ export function balanceComparator(balanceA?: CurrencyAmount<Currency>, balanceB?
   return 0
 }
 
-function getTokenComparator(balances: [OnchainTokenAmounts, boolean]): (tokenA: Token, tokenB: Token) => number {
+function getTokenComparator(balances: [TokenAmounts, boolean]): (tokenA: Token, tokenB: Token) => number {
   return function sortTokens(tokenA: Token, tokenB: Token): number {
     // -1 = a is first
     // 1 = b is first

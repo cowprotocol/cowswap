@@ -23,7 +23,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import useFilterTokens from 'hooks/useFilterTokens'
-import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
+import { TokenAmounts } from '@cow/modules/tokens'
 
 const MAX_ITEMS = 20
 
@@ -32,7 +32,7 @@ enum SORT_FIELD {
   BALANCE = 'balance',
 }
 
-type BalanceType = [OnchainTokenAmounts, boolean]
+type BalanceType = [TokenAmounts, boolean]
 
 type TokenTableParams = {
   tokensData: Token[] | undefined

@@ -3,7 +3,7 @@ import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLim
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
-import { useEffectiveBalances } from '@cow/modules/tokens'
+import { useBalancesAndAllowances } from '@cow/modules/tokens'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
@@ -55,7 +55,7 @@ export function OrdersWidget() {
   const tokens = useInputTokensFromOrders(isOpenOrdersTab ? ordersList.pending : [])
 
   // Get effective balance
-  const effectiveBalances = useEffectiveBalances({ account, spender, tokens })
+  const balancesAndAllowances = useBalancesAndAllowances({ account, spender, tokens })
 
   // Set page params initially once
   useEffect(() => {
@@ -73,7 +73,7 @@ export function OrdersWidget() {
         isOpenOrdersTab={isOpenOrdersTab}
         currentPageNumber={currentPageNumber}
         pendingOrdersPrices={pendingOrdersPrices}
-        effectiveBalances={effectiveBalances}
+        balancesAndAllowances={balancesAndAllowances}
         isWalletConnected={!!account}
         getShowCancellationModal={getShowCancellationModal}
         getSpotPrice={getSpotPrice}

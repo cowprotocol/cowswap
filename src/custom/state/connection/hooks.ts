@@ -5,10 +5,10 @@ import { useMemo } from 'react'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useFavouriteTokens } from 'state/user/hooks'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
+import { TokenAmounts } from '@cow/modules/tokens'
 
 // mimics useAllBalances
-export function useAllTokenBalances(): [OnchainTokenAmounts, boolean] {
+export function useAllTokenBalances(): [TokenAmounts, boolean] {
   const { account } = useWalletInfo()
   const allTokens = useAllTokens()
   // Mod, add favourite tokens to balances
