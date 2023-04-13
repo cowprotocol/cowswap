@@ -10,7 +10,7 @@ jest.mock('@cow/modules/limitOrders/services/tradeFlow')
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 
-const tradeContextMock = 1 as any as TradeFlowContext
+const tradeContextMock = { postOrderParams: { partiallyFillable: true } } as any as TradeFlowContext
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,
   error: undefined,

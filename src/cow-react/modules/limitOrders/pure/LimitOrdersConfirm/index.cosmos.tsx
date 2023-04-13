@@ -12,6 +12,7 @@ import React from 'react'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { SetStateAction } from 'jotai'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -108,6 +109,7 @@ const Fixtures = {
       warningsAccepted={true}
       executionPrice={null}
       onConfirm={() => void 0}
+      partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
     />
   ),
 }
