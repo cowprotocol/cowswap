@@ -14,6 +14,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atoms'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
@@ -29,6 +30,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const quoteState = useAtomValue(limitOrdersQuoteAtom)
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const { partialFillsEnabled } = useFeatureFlags()
 
   if (
     !chainId ||
@@ -51,6 +53,9 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const buyToken = state.outputCurrency as Token
   const feeAmount = CurrencyAmount.fromRawAmount(state.inputCurrency, 0)
   const quoteId = quoteState.response?.id || undefined
+
+  // Depends on the feature flag to allow partial fills or not
+  const partiallyFillable = partialFillsEnabled && settingsState.partialFillsEnabled
 
   return {
     chainId,
@@ -76,7 +81,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       inputAmount: state.inputCurrencyAmount,
       outputAmount: state.outputCurrencyAmount,
       sellAmountBeforeFee: state.inputCurrencyAmount,
-      partiallyFillable: settingsState.partialFillsEnabled,
+      partiallyFillable,
       appDataHash: appData.hash,
       quoteId,
     },

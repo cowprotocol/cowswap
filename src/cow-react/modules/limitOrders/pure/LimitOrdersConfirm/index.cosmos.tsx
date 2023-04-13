@@ -112,6 +112,7 @@ const Fixtures = {
       executionPrice={null}
       onConfirm={() => void 0}
       partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
+      featurePartialFillsEnabled
     />
   ),
 }

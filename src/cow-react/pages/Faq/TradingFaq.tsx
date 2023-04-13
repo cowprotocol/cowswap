@@ -27,7 +27,11 @@ export default function TokenFaq() {
 
             <h3 id="what-types-of-orders-does-cowswap-support">What types of orders does CoW Swap support?</h3>
 
-            <p>At the moment, only limit sell and buy orders (fill-or-kill) are enabled. </p>
+            <p>Swap buy and sell orders, which are always Fill or kill.</p>
+            <p>
+              Limit buy and sell orders, which can either be Partially fillable or Fill or kill. By default, limit
+              orders are Partially fillable.
+            </p>
 
             <h3 id="what-token-pairs-does-cowswap-allow-to-trade">
               What token pairs does CoW Swap allow you to trade?
@@ -127,7 +131,7 @@ export default function TokenFaq() {
 
             <p>
               In order for solvers (order settlement solution providers) to be economically viable, they need to take
-              into account how much gas they spend executing the settlement transaction. The protocol’s fee ensures that
+              into account how much gas they spend executing the settlement transaction. The protocol's fee ensures that
               solvers are incentivized to include the order in a settlement (similar to how gas is paid on traditional
               DEXes). The fee is directly taken from the sell amount, which therefore has to have a certain minimum
               size.
@@ -138,7 +142,7 @@ export default function TokenFaq() {
             </h3>
 
             <p>
-              When an order is executed, the settlement contract withdraws the sell amount from the trader’s token
+              When an order is executed, the settlement contract withdraws the sell amount from the trader's token
               balance via the CoW Protocol Vault Relayer (for more information read{' '}
               <ExternalLinkFaq
                 href="https://github.com/cowprotocol/contracts/blob/main/src/contracts/GPv2VaultRelayer.sol"
@@ -173,7 +177,7 @@ export default function TokenFaq() {
 
             <p>
               Yes, you can directly place buy and sell orders for ETH. Before the actual order is placed, the UI will
-              allow you to wrap and unwrap ETH into WETH without needing to leave the dapp’s UI.
+              allow you to wrap and unwrap ETH into WETH without needing to leave the dapp's UI.
             </p>
 
             <h3 id="why-is-selling-eth-more-troublesome">Why is selling ETH more troublesome?</h3>
