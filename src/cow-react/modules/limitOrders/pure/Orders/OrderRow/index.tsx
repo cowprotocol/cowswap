@@ -30,7 +30,12 @@ import { ZERO_FRACTION } from 'constants/index'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
-import { TableRow, TableRowCheckbox, TableRowCheckboxWrapper, CheckboxCheckmark } from '@cow/modules/limitOrders/pure/Orders/styled'
+import {
+  TableRow,
+  TableRowCheckbox,
+  TableRowCheckboxWrapper,
+  CheckboxCheckmark,
+} from '@cow/modules/limitOrders/pure/Orders/styled'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -172,7 +177,7 @@ export function OrderRow({
             disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
             onChange={() => orderActions.toggleOrderForCancellation(order)}
           />
-          <CheckboxCheckmark/>
+          <CheckboxCheckmark />
         </TableRowCheckboxWrapper>
       )}
       {/* Order sell/buy tokens */}

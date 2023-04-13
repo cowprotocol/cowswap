@@ -24,7 +24,12 @@ import { SpotPricesKeyParams } from '@cow/modules/orders/state/spotPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { Order } from 'state/orders/actions'
-import { TableHeader, TableRowCheckbox, TableRowCheckboxWrapper, CheckboxCheckmark } from '@cow/modules/limitOrders/pure/Orders/styled'
+import {
+  TableHeader,
+  TableRowCheckbox,
+  TableRowCheckboxWrapper,
+  CheckboxCheckmark,
+} from '@cow/modules/limitOrders/pure/Orders/styled'
 import { isOrderOffChainCancellable } from '@cow/common/utils/isOrderOffChainCancellable'
 
 // TODO: move elements to styled.jsx
@@ -261,12 +266,12 @@ export function OrdersTable({
             {isRowSelectable && isOpenOrdersTab && (
               <HeaderElement>
                 <TableRowCheckboxWrapper>
-                <TableRowCheckbox
-                  ref={checkboxRef}
-                  type="checkbox"
-                  onChange={(event) => orderActions.toggleAllOrdersForCancellation(!event.target.checked)}
-                />
-                <CheckboxCheckmark/>
+                  <TableRowCheckbox
+                    ref={checkboxRef}
+                    type="checkbox"
+                    onChange={(event) => orderActions.toggleAllOrdersForCancellation(!event.target.checked)}
+                  />
+                  <CheckboxCheckmark />
                 </TableRowCheckboxWrapper>
               </HeaderElement>
             )}

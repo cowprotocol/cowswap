@@ -39,7 +39,6 @@ const ActionButton = styled.button`
   border-radius: 24px;
   vertical-align: center;
 
-
   &:hover:not([disabled]) {
     background: ${({ theme }) => transparentize(0.75, theme.danger)};
   }

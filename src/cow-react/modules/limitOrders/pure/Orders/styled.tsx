@@ -9,7 +9,8 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   display: grid;
   gap: 14px;
   grid-template-columns: ${({ isOpenOrdersTab, isRowSelectable }) =>
-    `${isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) 3fr' : '3.2fr'} repeat(2,2fr) ${isOpenOrdersTab ? '2.5fr 1.4fr' : ''
+    `${isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) 3fr' : '3.2fr'} repeat(2,2fr) ${
+      isOpenOrdersTab ? '2.5fr 1.4fr' : ''
     } 0.7fr 108px 24px`};
   grid-template-rows: minmax(var(--height), 1fr);
   align-items: center;
@@ -18,9 +19,11 @@ export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectabl
   padding: 0 12px;
 
   ${({ theme, isRowSelectable, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
-  grid-template-columns: ${`${isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) minmax(200px,2fr)' : 'minmax(200px,2fr)'
-    } repeat(2,minmax(110px,2fr)) ${isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
-    } minmax(50px,1fr) 108px 24px`};
+  grid-template-columns: ${`${
+    isRowSelectable && isOpenOrdersTab ? 'var(--checkboxSize) minmax(200px,2fr)' : 'minmax(200px,2fr)'
+  } repeat(2,minmax(110px,2fr)) ${
+    isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
+  } minmax(50px,1fr) 108px 24px`};
   `}
 `
 
@@ -54,20 +57,20 @@ export const CheckboxCheckmark = styled.span`
   top: -1px;
   bottom: 0;
 
-    &::after {
-      content: "";
-      position: absolute;
-      display: none;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      margin: auto;
-      width: calc(var(--checkboxSize) / 3);
-      height: calc(var(--checkboxSize) / 1.5);
-      border: solid ${({ theme }) => theme.bg1};
-      border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
+  &::after {
+    content: '';
+    position: absolute;
+    display: none;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: calc(var(--checkboxSize) / 3);
+    height: calc(var(--checkboxSize) / 1.5);
+    border: solid ${({ theme }) => theme.bg1};
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
   }
 `
 
