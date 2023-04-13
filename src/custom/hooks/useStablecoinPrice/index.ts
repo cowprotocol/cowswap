@@ -3,10 +3,9 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { USDC } from 'constants/tokens'
+import { USDC, USDC_MAINNET } from 'constants/tokens'
 
 import { supportedChainId } from 'utils/supportedChainId'
-import { STABLECOIN_AMOUNT_OUT as STABLECOIN_AMOUNT_OUT_UNI } from 'hooks/useStablecoinPrice'
 import { stringToCurrency } from 'state/swap/extension'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
@@ -18,11 +17,10 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
-export * from '@src/hooks/useStablecoinPrice'
-
 export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
+
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
-  ...STABLECOIN_AMOUNT_OUT_UNI,
+  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC_MAINNET, 100_000e6),
   [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 100e6),
   [SupportedChainId.GOERLI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GOERLI], 100e6),
   [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 10_000e6),
