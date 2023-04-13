@@ -1,11 +1,30 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 export interface OnchainState<T> {
+  /**
+   * Result value for a RPC call
+   */
   value: T
+
+  /**
+   * True if the result has never been fetched. False otherwise
+   */
   loading: boolean
+
+  /**
+   * True if the result is not from the last block
+   */
   syncing: boolean
-  error: boolean
+
+  /**
+   * True if the call was made, is synced and valid
+   */
   valid: boolean
+
+  /**
+   * True if the call was made and is synced, but the return data is invalid
+   */
+  error: boolean
 }
 
 export type OnchainTokenAmount = OnchainState<CurrencyAmount<Token> | undefined>
