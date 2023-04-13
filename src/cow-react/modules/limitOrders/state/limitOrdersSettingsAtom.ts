@@ -2,6 +2,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { defaultLimitOrderDeadline } from '@cow/modules/limitOrders/pure/DeadlineSelector/deadlines'
 import { atom } from 'jotai'
 import { Milliseconds, Timestamp } from '@cow/types'
+import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 
 export interface LimitOrdersSettingsState {
   readonly expertMode: boolean
@@ -27,6 +28,11 @@ export const limitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>
 export const updateLimitOrdersSettingsAtom = atom(null, (get, set, nextState: Partial<LimitOrdersSettingsState>) => {
   set(limitOrdersSettingsAtom, () => {
     const prevState = get(limitOrdersSettingsAtom)
+
+    if (nextState.partialFillsEnabled !== prevState.partialFillsEnabled) {
+      // Whenever `partialFillsEnabled` changes, reset `partiallyFillableOverrideAtom`
+      set(partiallyFillableOverrideAtom, undefined)
+    }
 
     return { ...prevState, ...nextState }
   })

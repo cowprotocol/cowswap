@@ -15,6 +15,8 @@ import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { CancelButton } from '@cow/common/pure/CancelButton'
+import { ExplorerDataType, getExplorerLink } from '@src/utils/getExplorerLink'
+import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 export function GnosisSafeLink(props: {
   chainId: number
@@ -68,12 +70,13 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
 }
 
 export type StatusDetailsProps = {
+  chainId: number
   activityDerivedState: ActivityDerivedState
   showCancellationModal: (() => void) | null
 }
 
 export function StatusDetails(props: StatusDetailsProps) {
-  const { activityDerivedState, showCancellationModal } = props
+  const { chainId, activityDerivedState, showCancellationModal } = props
 
   const {
     status,
@@ -87,9 +90,11 @@ export function StatusDetails(props: StatusDetailsProps) {
     isTransaction,
     isCancelled,
     isCreating,
+    order,
   } = activityDerivedState
 
   const cancellationHash = activityDerivedState.order?.cancellationHash
+  const isCancellable = order ? isOrderCancellable(order) : true
 
   return (
     <StatusLabelWrapper withCancellationHash$={!!cancellationHash}>
@@ -124,13 +129,17 @@ export function StatusDetails(props: StatusDetailsProps) {
         {_getStateLabel(activityDerivedState)}
       </StatusLabel>
 
-      {showCancellationModal && (
+      {showCancellationModal && isCancellable && (
         <StatusLabelBelow>
           <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>
       )}
-      {cancellationHash && (
-        <CancelTxLink href={cancellationHash} target="_blank" title="Cancellation transaction">
+      {cancellationHash && !isCancelling && (
+        <CancelTxLink
+          href={getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)}
+          target="_blank"
+          title="Cancellation transaction"
+        >
           <LinkIconFeather size={16} />
         </CancelTxLink>
       )}

@@ -56,7 +56,7 @@ export function CancelledOrdersUpdater(): null {
         // Filter orders:
         // - Owned by the current connected account
         // - Created in the last 5 min, no further
-        // - Not EthFlow orders already cancelled
+        // - Not an order already cancelled on-chain
         const pending = cancelledRef.current.filter(
           ({ owner, creationTime: creationTimeString, status, cancellationHash }) => {
             const creationTime = new Date(creationTimeString).getTime()
