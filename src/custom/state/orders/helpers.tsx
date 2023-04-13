@@ -3,14 +3,8 @@ import styled from 'styled-components/macro'
 import { formatOrderId, shortenOrderId } from 'utils'
 import { OrderID } from '@cow/api/gnosisProtocol'
 import { addPopup } from 'state/application/reducer'
-import { Order, OrderStatus } from './actions'
+import { OrderStatus } from './actions'
 import { CancellationSummary } from '@cow/modules/account/containers/Transaction/styled'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { getFilledAmounts } from '@cow/modules/limitOrders/utils/getFilledAmounts'
 
 type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 
@@ -138,92 +132,4 @@ export function setPopupData(
   }
 
   return { key, content }
-}
-
-export function getExecutedSummaryData(order: Order) {
-  const parsedOrder = parseOrder(order)
-
-  const { inputToken, outputToken } = order
-
-  const parsedInputToken = new Token(
-    inputToken.chainId,
-    inputToken.address,
-    inputToken.decimals,
-    inputToken.symbol,
-    inputToken.name
-  )
-  const parsedOutputToken = new Token(
-    outputToken.chainId,
-    outputToken.address,
-    outputToken.decimals,
-    outputToken.symbol,
-    outputToken.name
-  )
-
-  const surplusToken = order.kind === OrderKind.SELL ? parsedOutputToken : parsedInputToken
-
-  const { amount, percentage } = getOrderSurplus(order)
-  const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount.toString())
-  const suprlusPercent = percentage?.multipliedBy(100)?.toFixed(2)
-
-  const { formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts({
-    ...parsedOrder,
-    inputToken: parsedInputToken,
-    outputToken: parsedOutputToken,
-  })
-
-  return {
-    surplusAmount,
-    suprlusPercent,
-    surplusToken,
-    formattedFilledAmount,
-    formattedSwappedAmount,
-  }
-}
-
-const SummaryWrapper = styled.div`
-  font-size: 1rem;
-
-  > div {
-    margin-bottom: 1rem;
-
-    &:last-child {
-      margin-bottom: 0.6rem;
-    }
-  }
-`
-
-const Strong = styled.strong`
-  font-size: 0.9rem;
-  white-space: nowrap;
-`
-
-export function getExecutedSummary(order: Order): JSX.Element | string | null {
-  if (!order) return null
-
-  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)
-
-  return (
-    <SummaryWrapper>
-      <div>
-        Traded{' '}
-        <Strong>
-          <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />
-        </Strong>{' '}
-        for a total of{' '}
-        <Strong>
-          <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
-        </Strong>
-      </div>
-
-      {!!surplusAmount && (
-        <div>
-          <span>Order surplus: </span>
-          <Strong>
-            <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
-          </Strong>
-        </div>
-      )}
-    </SummaryWrapper>
-  )
 }
