@@ -16,7 +16,6 @@ import { useCurrency } from 'hooks/Tokens'
 import useENS from 'hooks/useENS'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { isAddress } from 'utils'
-import { useCurrencyBalances } from 'state/connection/hooks'
 // import { AppState } from '../index'
 import { Field, replaceSwapState, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { SwapState } from 'state/swap/reducer'
@@ -48,6 +47,7 @@ import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrA
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { formatSymbol } from '@cow/utils/format'
+import { useCurrencyBalances } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 export * from '@src/state/swap/hooks'
 
