@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Trans } from '@lingui/macro'
-import { Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { Token } from '@uniswap/sdk-core'
 import TokensTableRow from './TokensTableRow'
 import {
   Label,
@@ -23,6 +23,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import useFilterTokens from 'hooks/useFilterTokens'
+import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
 
 const MAX_ITEMS = 20
 
@@ -31,12 +32,7 @@ enum SORT_FIELD {
   BALANCE = 'balance',
 }
 
-type BalanceType = [
-  {
-    [tokenAddress: string]: CurrencyAmount<Token> | undefined
-  },
-  boolean
-]
+type BalanceType = [OnchainTokenAmounts, boolean]
 
 type TokenTableParams = {
   tokensData: Token[] | undefined
@@ -120,8 +116,8 @@ export default function TokenTable({
               // If the sort field is Balance
               if (!balances) return 0
 
-              const balanceA = balances[0][tokenA.address]
-              const balanceB = balances[0][tokenB.address]
+              const balanceA = balances[0][tokenA.address]?.value
+              const balanceB = balances[0][tokenB.address]?.value
               const balanceComp = balanceComparator(balanceA, balanceB)
 
               return applyDirection(balanceComp > 0, sortDirection)
@@ -215,7 +211,7 @@ export default function TokenTable({
                     <TokensTableRow
                       key={data.address}
                       toggleWalletModal={toggleWalletModal}
-                      balance={balances && balances[0][data.address]}
+                      balance={balances && balances[0][data.address]?.value}
                       openTransactionConfirmationModal={openModal}
                       closeModals={closeModal}
                       index={getTokenIndex(i)}

@@ -5,7 +5,7 @@ import { useCallback, useState, useEffect } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
-import { BalancesAndAllowances } from '../../containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { EffectiveBalances } from '@cow/modules/tokens'
 import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
@@ -216,7 +216,7 @@ export interface OrdersTableProps {
   chainId: SupportedChainId | undefined
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
-  balancesAndAllowances: BalancesAndAllowances
+  effectiveBalances: EffectiveBalances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   getShowCancellationModal(order: Order): (() => void) | null
 }
@@ -226,7 +226,7 @@ export function OrdersTable({
   chainId,
   orders,
   pendingOrdersPrices,
-  balancesAndAllowances,
+  effectiveBalances,
   getSpotPrice,
   getShowCancellationModal,
   currentPageNumber,
@@ -364,7 +364,7 @@ export function OrdersTable({
                   buyTokenAddress: order.buyToken,
                 })}
                 prices={pendingOrdersPrices[order.id]}
-                orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+                orderParams={getOrderParams(chainId, effectiveBalances, order)}
                 RowElement={RowElement}
                 isRateInverted={isRateInverted}
                 getShowCancellationModal={getShowCancellationModal}

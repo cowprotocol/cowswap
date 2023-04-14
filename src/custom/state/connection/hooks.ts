@@ -1,15 +1,16 @@
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useTokenBalancesWithLoadingIndicator } from 'lib/hooks/useCurrencyBalance'
+import { Token } from '@uniswap/sdk-core'
+import { useOnchainBalances } from '@cow/modules/tokens'
 import { useMemo } from 'react'
 
 import { useAllTokens } from '../../hooks/Tokens'
 import { useFavouriteTokens } from 'state/user/hooks'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
 
 export * from '@src/state/connection/hooks'
 
 // mimics useAllBalances
-export function useAllTokenBalances(): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
+export function useAllTokenBalances(): [OnchainTokenAmounts, boolean] {
   const { account } = useWalletInfo()
   const allTokens = useAllTokens()
   // Mod, add favourite tokens to balances
@@ -29,6 +30,9 @@ export function useAllTokenBalances(): [{ [tokenAddress: string]: CurrencyAmount
     return Object.values({ ...favTokensObj, ...allTokens })
   }, [allTokens, favTokens])
 
-  const [balances, balancesIsLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, allTokensArray)
-  return [balances ?? {}, balancesIsLoading]
+  const { isLoading, amounts } = useOnchainBalances({
+    account: account ?? undefined,
+    tokens: allTokensArray,
+  })
+  return [amounts ?? {}, isLoading]
 }

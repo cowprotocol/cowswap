@@ -1,29 +1,35 @@
 import { useWalletInfo } from '@cow/modules/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
-import { useTokenBalance, useTokenBalancesWithLoadingIndicator } from 'lib/hooks/useCurrencyBalance'
 import { useMemo } from 'react'
 
 import { UNI } from 'constants/tokens'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useUserUnclaimedAmount } from '../claim/hooks'
 import { useTotalUniEarned } from '../stake/hooks'
+import { useOnchainBalances } from '@cow/modules/tokens'
+import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 export {
   default as useCurrencyBalance,
   useCurrencyBalances,
   useNativeCurrencyBalances,
-  useTokenBalance,
   useTokenBalances,
-  useTokenBalancesWithLoadingIndicator,
-} from 'lib/hooks/useCurrencyBalance'
+} from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 // mimics useAllBalances
-export function useAllTokenBalances(): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
+/**
+ * @deprecated
+ */
+export function useAllTokenBalances(): [OnchainTokenAmounts, boolean] {
   const { account } = useWalletInfo()
   const allTokens = useAllTokens()
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
-  const [balances, balancesIsLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, allTokensArray)
+  const { amounts: balances, isLoading: balancesIsLoading } = useOnchainBalances({
+    account: account ?? undefined,
+    tokens: allTokensArray,
+  })
   return [balances ?? {}, balancesIsLoading]
 }
 

@@ -20,7 +20,6 @@ import { Link } from 'react-router-dom'
 import { Button } from 'rebass/styled-components'
 import { useModalIsOpen, useToggleDelegateModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { useTokenBalance } from 'state/connection/hooks'
 import { ProposalData, ProposalState } from 'state/governance/hooks'
 import { useAllProposalData, useUserDelegatee, useUserVotes } from 'state/governance/hooks'
 import styled from 'styled-components/macro'
@@ -31,6 +30,7 @@ import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { ZERO_ADDRESS } from '../../constants/misc'
 import { UNI } from '../../constants/tokens'
 import { ProposalStatus } from './styled'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 const PageWrapper = styled(AutoColumn)``
 

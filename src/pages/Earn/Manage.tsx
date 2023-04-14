@@ -23,10 +23,10 @@ import useStablecoinPrice from '../../hooks/useStablecoinPrice'
 import { useTotalSupply } from '../../hooks/useTotalSupply'
 import { useV2Pair } from '../../hooks/useV2Pairs'
 import { useToggleWalletModal } from '../../state/application/hooks'
-import { useTokenBalance } from '../../state/connection/hooks'
 import { useStakingInfo } from '../../state/stake/hooks'
 import { ThemedText } from '../../theme'
 import { currencyId } from '../../utils/currencyId'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;

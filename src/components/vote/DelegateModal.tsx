@@ -7,7 +7,6 @@ import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { UNI } from '../../constants/tokens'
 import useENS from '../../hooks/useENS'
-import { useTokenBalance } from '../../state/connection/hooks'
 import { useDelegateCallback } from '../../state/governance/hooks'
 import { ThemedText } from '../../theme'
 import AddressInputPanel from 'components/AddressInputPanel'
@@ -17,6 +16,7 @@ import Modal from '@cow/common/pure/Modal'
 import { LoadingView, SubmittedView } from '../ModalViews'
 import { RowBetween } from '../Row'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;

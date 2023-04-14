@@ -40,7 +40,6 @@ import {
   useToggleVoteModal,
 } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
-import { useTokenBalance } from '../../state/connection/hooks'
 import {
   ProposalData,
   ProposalState,
@@ -54,6 +53,7 @@ import { ExternalLink, StyledInternalLink, ThemedText } from '../../theme'
 import { isAddress } from '../../utils'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ProposalStatus } from './styled'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 const PageWrapper = styled(AutoColumn)`
   width: 100%;

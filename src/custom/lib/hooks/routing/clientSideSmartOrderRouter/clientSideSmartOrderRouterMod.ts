@@ -10,3 +10,7 @@ export function isSupportedChainId(chainId: ChainId | undefined): boolean {
   if (chainId === undefined) return false
   return toSupportedChainId(chainId) !== undefined
 }
+
+export function isSupportedChainIdType(chainId: number): chainId is SupportedChainId {
+  return isSupportedChainId(chainId)
+}

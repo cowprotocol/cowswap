@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { EffectiveBalances } from '@cow/modules/tokens'
 import { Order } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
@@ -16,7 +16,7 @@ export interface OrderParams {
 
 export function getOrderParams(
   chainId: SupportedChainId | undefined,
-  balancesAndAllowances: BalancesAndAllowances,
+  effectiveBalances: EffectiveBalances,
   order: Order
 ): OrderParams {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
@@ -30,9 +30,9 @@ export function getOrderParams(
     invertedActiveRateFiatAmount: null,
   }
 
-  const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address]
-  const allowance = allowances[order.inputToken.address]
+  const { balances, allowances } = effectiveBalances
+  const balance = balances[order.inputToken.address]?.value
+  const allowance = allowances[order.inputToken.address]?.value
 
   let hasEnoughBalance, hasEnoughAllowance
 

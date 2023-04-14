@@ -3,7 +3,7 @@ import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLim
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
-import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
+import { useEffectiveBalances } from '@cow/modules/tokens'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
@@ -13,6 +13,7 @@ import { useAtomValue } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
+import { useTokensFromOrders } from '@cow/modules/orders'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -49,12 +50,12 @@ export function OrdersWidget() {
   }, [currentTabId, ordersList])
 
   const isOpenOrdersTab = useMemo(() => OPEN_TAB.id === currentTabId, [currentTabId])
-  const pendingBalancesAndAllowances = useOrdersBalancesAndAllowances(
-    // Request balances and allowances only for the open orders tab
-    isOpenOrdersTab ? account : undefined,
-    spender,
-    ordersList.pending
-  )
+
+  // Get tokens from pending orders (only if the OPEN orders tab is opened)
+  const tokens = useTokensFromOrders(isOpenOrdersTab ? ordersList.pending : [])
+
+  // Get effective balance
+  const effectiveBalances = useEffectiveBalances({ account, spender, tokens })
 
   // Set page params initially once
   useEffect(() => {
@@ -72,7 +73,7 @@ export function OrdersWidget() {
         isOpenOrdersTab={isOpenOrdersTab}
         currentPageNumber={currentPageNumber}
         pendingOrdersPrices={pendingOrdersPrices}
-        balancesAndAllowances={pendingBalancesAndAllowances}
+        effectiveBalances={effectiveBalances}
         isWalletConnected={!!account}
         getShowCancellationModal={getShowCancellationModal}
         getSpotPrice={getSpotPrice}
