@@ -52,25 +52,32 @@ export default function LimitOrderFAQ() {
             <p>CoW Protocol supports Fill or kill as well as Partially fillable limit orders.</p>
             <p>With Fill or kill, the limit order is executed in its entirety, or not at all.</p>
             <p>
-              With Partially fillable limit orders, meanwhile, the order can be filled gradually as liquidity becomes 
+              With Partially fillable limit orders, meanwhile, the order can be filled gradually as liquidity becomes
               available. Partially fillable orders usually complete faster than Fill or kill orders and also provide
-              better prices, so they are the default mechanism used to execute limit orders on CoW Swap. Users 
-              can turn off Partially fillable limit orders and revert back to Fill or kill through the swap 
-              panel settings. 
+              better prices, so they are the default mechanism used to execute limit orders on CoW Swap. Users can turn
+              off Partially fillable limit orders and revert back to Fill or kill through the swap panel settings.
             </p>
-            <h3 id="How-can-I-place-a-partially-fillable-limit-order">How can I place a partially fillable limit order?</h3>
+            <h3 id="How-can-I-place-a-partially-fillable-limit-order">
+              How can I place a partially fillable limit order?
+            </h3>
             <p>
-              Solvers now support Partially fillable orders, which are enabled by default for all limit order trades. 
-              Once you place a limit order trade, you will be able to see the % of the order that has been filled through your order history panel. 
+              Solvers now support Partially fillable orders, which are enabled by default for all limit order trades.
+              Once you place a limit order trade, you will be able to see the % of the order that has been filled
+              through your order history panel.
             </p>
             <p>
-              If you are interested in building a solver that specializes in Partially-fillable orders, please {' '} reach out 
-              <ExternalLinkFaq href="https://t.me/+60olZD2C2HswMzRh">.
+              If you are interested in building a solver that specializes in Partially-fillable orders, please reach out
+              <ExternalLinkFaq href="https://t.me/+60olZD2C2HswMzRh" />.
             </p>
-            <h3 id="how-can-I-disable-partially-fillable-limit-orders">How can I disable partially fillable limit orders?</h3>
-            <p>Partially fillable limit orders usually provide faster order execution and better prices over Fill or kill orders. This is why they’re 
-              the default mechanism for executing limit orders on CoW Swap. If you’d like to turn off Partially fillable orders and go back to Fill 
-              or kill, you can use the toggle in your swap panel settings.</p>
+            <h3 id="how-can-I-disable-partially-fillable-limit-orders">
+              How can I disable partially fillable limit orders?
+            </h3>
+            <p>
+              Partially fillable limit orders usually provide faster order execution and better prices over Fill or kill
+              orders. This is why they’re the default mechanism for executing limit orders on CoW Swap. If you’d like to
+              turn off Partially fillable orders and go back to Fill or kill, you can use the toggle in your swap panel
+              settings.
+            </p>
             <h3 id="how-do-fees-work">How do fees work?</h3>
             <p>
               Placing and canceling limit orders is completely free on CoW Protocol. (This is notably not the case for
