@@ -1,12 +1,13 @@
-import type { ChainId } from '@uniswap/smart-order-router'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Nullish } from '@cow/types'
 
-export function toSupportedChainId(chainId: ChainId): SupportedChainId | undefined {
+export function toSupportedChainId(chainId: number): SupportedChainId | undefined {
   const numericChainId: number = chainId
   if (SupportedChainId[numericChainId]) return numericChainId
   return undefined
 }
-export function isSupportedChainId(chainId: ChainId | undefined): boolean {
-  if (chainId === undefined) return false
+export function isSupportedChainId(chainId: Nullish<number>): boolean {
+  if (!chainId) return false
+
   return toSupportedChainId(chainId) !== undefined
 }
