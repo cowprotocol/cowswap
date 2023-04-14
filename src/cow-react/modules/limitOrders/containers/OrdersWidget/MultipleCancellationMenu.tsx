@@ -7,6 +7,7 @@ import { transparentize } from 'polished'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useWalletDetails } from '@cow/modules/wallet'
 import { Trash2 } from 'react-feather'
+import { isOrderOffChainCancellable } from '@cow/common/utils/isOrderOffChainCancellable'
 
 interface Props {
   pendingOrders: ParsedOrder[]
@@ -106,7 +107,9 @@ export function MultipleCancellationMenu({ pendingOrders }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  if (pendingOrders.length === 0 || !allowsOffchainSigning) return null
+  const cancellableOrders = pendingOrders.filter(isOrderOffChainCancellable)
+
+  if (cancellableOrders.length === 0 || !allowsOffchainSigning) return null
 
   return (
     <Wrapper hasSelectedItems={!!ordersToCancelCount}>
