@@ -92,7 +92,7 @@ export const List = styled.ul`
 export const ControlSection = styled.div`
   text-align: center;
 
-  & a {
+  & span {
     margin-bottom: 1.2rem;
     display: block;
   }
