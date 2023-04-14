@@ -1,6 +1,6 @@
 import { Actions, Connector } from '@web3-react/types'
 import Web3ProviderEngine from 'web3-provider-engine'
-import TrezorConnect from '@trezor/connect-web'
+import TrezorConnect from 'trezor-connect'
 import transformTypedData from '@trezor/connect-plugin-ethereum'
 
 global.process = { browser: true } as any

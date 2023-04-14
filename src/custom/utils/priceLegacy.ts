@@ -186,9 +186,7 @@ function _checkFeeErrorForData(error: GpQuoteError) {
 }
 
 function formatAtoms(amount: string, decimals: number): string {
-  return BigNumberJs(amount)
-    .div(10 ** decimals)
-    .toString()
+  return new BigNumberJs(amount).div(10 ** decimals).toString()
 }
 
 /**
