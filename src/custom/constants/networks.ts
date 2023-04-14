@@ -4,11 +4,11 @@ import {
   JsonRpcProvider,
   UrlJsonRpcProvider,
   StaticJsonRpcProvider,
-  InfuraProvider as EthersInfuraProvider,
-  CloudflareProvider as EthersCloudflareProvider,
-  AlchemyProvider as EthersAlchemyProvider,
-  PocketProvider as EthersPocketProvider,
-  AnkrProvider as EthersAnkrProvider,
+  InfuraProvider,
+  CloudflareProvider,
+  AlchemyProvider,
+  PocketProvider,
+  AnkrProvider,
 } from '@ethersproject/providers'
 import * as Sentry from '@sentry/react'
 
@@ -53,28 +53,6 @@ export const RPC_CONFIG: Record<SupportedChainId, RpcConfig> = {
  */
 class BaseUrlJsonRpcProvider extends UrlJsonRpcProvider {}
 type ProviderClass = Newable<typeof BaseUrlJsonRpcProvider>
-
-/**
- * UrlJsonRpcProvider instances do not have a getSigner implementation, however we need it.
- *
- * As they are all based on JsonRpcProvider, we can use JsonRpcProvider's getSigner implementation.
- *
- * Why not use JsonRpcProvider directly? Because it does not have specific API provider optimisations,
- * and it does not automatically support community resources.
- *
- * Why not instantiate and return a JsonRpcSigner? Because it has a constructor guard that prevents it from being instantiated directly.
- * Intention with this guard is to prevent users from accidentally using a JsonRpcSigner with another provider. Which is not possible here.
- */
-class InfuraProvider extends EthersInfuraProvider {}
-InfuraProvider.prototype.getSigner = JsonRpcProvider.prototype.getSigner
-class CloudflareProvider extends EthersCloudflareProvider {}
-CloudflareProvider.prototype.getSigner = JsonRpcProvider.prototype.getSigner
-class AlchemyProvider extends EthersAlchemyProvider {}
-AlchemyProvider.prototype.getSigner = JsonRpcProvider.prototype.getSigner
-class PocketProvider extends EthersPocketProvider {}
-PocketProvider.prototype.getSigner = JsonRpcProvider.prototype.getSigner
-class AnkrProvider extends EthersAnkrProvider {}
-AnkrProvider.prototype.getSigner = JsonRpcProvider.prototype.getSigner
 
 // List of public providers that don't require an API key, per chain support.
 const PUBLIC_PROVIDER_LIST: Record<SupportedChainId, ProviderClass[]> = {
