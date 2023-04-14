@@ -84,8 +84,6 @@ Make a copy of `.env` named `.env.local`, this will allow you to set your own co
 
 Your environment MUST have the following variables defined:
 `REACT_APP_INFURA_KEY`=YOUR_INFURA_KEY
-`REACT_APP_NETWORK_URL_1`=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
-`REACT_APP_NETWORK_URL_5`=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
 
 Additionally, to successfully run E2E / Integration tests locally you must have;
 `INTEGRATION_TESTS_INFURA_KEY`=YOUR_INFURA_KEY
@@ -103,7 +101,6 @@ All price feeds are enabled by default, but they can be individually disabled by
 
 | Name             | Environment variable                     | Type                         | Description                                                                                                        |
 | ---------------- | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation.                              |
 | **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
 | **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED`     | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.                               |
 | **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
@@ -137,9 +134,6 @@ To have the interface default to a different network when a wallet is not connec
 
 ```ini
 REACT_APP_SUPPORTED_CHAIN_IDS="1,100,5"
-REACT_APP_NETWORK_URL_1=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
-REACT_APP_NETWORK_URL_5=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
-REACT_APP_NETWORK_URL_100=https://rpc.gnosischain.com
 ```
 
 ### API endpoints
