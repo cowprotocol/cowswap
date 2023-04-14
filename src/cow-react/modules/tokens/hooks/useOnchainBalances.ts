@@ -7,21 +7,10 @@ import { Erc20Interface } from 'abis/types/Erc20'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 import { useMemo } from 'react'
-import { OnchainState } from '../types'
+import { BalancesAndAllowances, BalancesAndAllowancesParams, TokenAmounts, TokenAmountsResult } from '../types'
 
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
 const DEFAULT_LISTENER_OPTIONS: ListenerOptionsWithGas = { gasRequired: 185_000, blocksPerFetch: 5 }
-
-export type OnchainTokenAmount = OnchainState<CurrencyAmount<Token> | undefined>
-
-export type OnchainTokenAmounts = {
-  [tokenAddress: string]: OnchainTokenAmount
-}
-
-export type OnchainAmountsResult = {
-  amounts: OnchainTokenAmounts
-  isLoading: boolean
-}
 
 export interface OnchainAmountsParams {
   account?: string
@@ -33,30 +22,16 @@ export type OnchainBalancesParams = OnchainAmountsParams
 
 export type OnchainAllowancesParams = OnchainAmountsParams & { spender?: string }
 
-export function useOnchainBalances(params: OnchainBalancesParams): OnchainAmountsResult {
+export function useOnchainBalances(params: OnchainBalancesParams): TokenAmountsResult {
   const { account } = params
-  const callParams = useMemo(() => [account], [account])
+  const callParams = [account]
   return useOnchainErc20Amounts('balanceOf', callParams, params)
 }
 
-export function useOnchainAllowances(params: OnchainAllowancesParams): OnchainAmountsResult {
+export function useOnchainAllowances(params: OnchainAllowancesParams): TokenAmountsResult {
   const { account, spender } = params
-  const callParams = useMemo(() => [account, spender], [account, spender])
+  const callParams = [account, spender]
   return useOnchainErc20Amounts('allowance', callParams, params)
-}
-
-export interface OnchainBalancesAndAllowancesParams {
-  account: string | undefined
-  spender: string | undefined
-  tokens: Token[]
-  blocksPerFetchBalance?: number
-  blocksPerFetchAllowance?: number
-}
-
-export interface OnchainBalancesAndAllowances {
-  balances: OnchainTokenAmounts
-  allowances: OnchainTokenAmounts
-  isLoading: boolean
 }
 
 /**
@@ -64,9 +39,7 @@ export interface OnchainBalancesAndAllowances {
  * @param params
  * @returns
  */
-export function useOnchainBalancesAndAllowances(
-  params: OnchainBalancesAndAllowancesParams
-): OnchainBalancesAndAllowances {
+export function useOnchainBalancesAndAllowances(params: BalancesAndAllowancesParams): BalancesAndAllowances {
   const { account, spender, tokens, blocksPerFetchAllowance, blocksPerFetchBalance } = params
 
   const { amounts: balances, isLoading: areBalancesLoading } = useOnchainBalances({
@@ -95,7 +68,7 @@ function useOnchainErc20Amounts(
   erc20Method: 'balanceOf' | 'allowance',
   callParams: (string | undefined)[],
   params: OnchainAmountsParams
-): OnchainAmountsResult {
+): TokenAmountsResult {
   const { account, blocksPerFetch, tokens } = params
 
   const validatedTokens: Token[] = useMemo(
@@ -124,7 +97,7 @@ function useOnchainErc20Amounts(
       return { isLoading, amounts: {} }
     }
 
-    const tokenBalances = validatedTokens.reduce<OnchainTokenAmounts>((acc, token, i) => {
+    const tokenBalances = validatedTokens.reduce<TokenAmounts>((acc, token, i) => {
       const { error, loading, result, syncing, valid } = balancesCallState[i]
       const value = result?.[0]
       const amount = value ? JSBI.BigInt(value.toString()) : null

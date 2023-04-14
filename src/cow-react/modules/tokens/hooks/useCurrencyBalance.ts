@@ -11,7 +11,7 @@ import { useInterfaceMulticall } from 'hooks/useContract'
 
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useOnchainBalances } from '@cow/modules/tokens'
-import { OnchainTokenAmounts } from '@cow/modules/tokens/hooks/useOnchainBalances'
+import { TokenAmounts } from '@cow/modules/tokens'
 
 // TODO: Move this hooks to some other module. It doens't belong with the tokens
 /**
@@ -68,7 +68,7 @@ export function useTokenBalance(account?: string, token?: Token): CurrencyAmount
 /**
  * @deprecated Use effective balance instead
  */
-export function useTokenBalances(account?: string, tokens?: (Token | undefined)[]): OnchainTokenAmounts {
+export function useTokenBalances(account?: string, tokens?: (Token | undefined)[]): TokenAmounts {
   return useOnchainBalances({ account, tokens }).amounts
 }
 

@@ -1,7 +1,7 @@
 import { Orders } from './index'
 import { OrderTab } from './OrdersTabs'
 import { ordersMock } from './orders.mock'
-import { EffectiveBalances } from '@cow/modules/tokens'
+import { BalancesAndAllowances } from '@cow/modules/tokens'
 
 const tabs: OrderTab[] = [
   {
@@ -18,7 +18,7 @@ const tabs: OrderTab[] = [
 ]
 
 // TODO: set values
-const effectiveBalances: EffectiveBalances = {
+const balancesAndAllowances: BalancesAndAllowances = {
   balances: {},
   allowances: {},
   isLoading: false,
@@ -33,7 +33,7 @@ export default (
     tabs={tabs}
     isOpenOrdersTab={true}
     isWalletConnected={true}
-    effectiveBalances={effectiveBalances}
+    balancesAndAllowances={balancesAndAllowances}
     getSpotPrice={() => null}
     getShowCancellationModal={(order) => {
       if (order.status === 'pending') {

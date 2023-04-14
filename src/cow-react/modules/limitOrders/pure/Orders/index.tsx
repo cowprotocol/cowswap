@@ -126,7 +126,7 @@ export function Orders({
   tabs,
   isWalletConnected,
   isOpenOrdersTab,
-  effectiveBalances,
+  balancesAndAllowances,
   getShowCancellationModal,
   currentPageNumber,
   pendingOrdersPrices,
@@ -185,7 +185,7 @@ export function Orders({
         currentPageNumber={currentPageNumber}
         chainId={chainId}
         orders={orders}
-        effectiveBalances={effectiveBalances}
+        balancesAndAllowances={balancesAndAllowances}
         getSpotPrice={getSpotPrice}
         getShowCancellationModal={getShowCancellationModal}
       />
