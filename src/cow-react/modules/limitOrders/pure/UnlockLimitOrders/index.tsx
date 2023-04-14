@@ -46,8 +46,8 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
       <styledEl.ControlSection>
         <span>
           Learn more about{' '}
-          <ExternalLink href="https://cow-protocol.medium.com/the-cow-has-no-limits-342e7eae8794">
-            partially filled orders ↗
+          <ExternalLink href="https://medium.com/@cow-protocol/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders-45f19143e87d">
+            partially fillable orders ↗
           </ExternalLink>
         </span>
         <ButtonPrimary id="unlock-limit-orders-btn" onClick={handleUnlock}>
