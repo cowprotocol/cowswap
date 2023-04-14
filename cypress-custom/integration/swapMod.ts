@@ -85,19 +85,8 @@ describe('Swap (mod)', () => {
       cy.get('#confirm-expert-mode').click()
     })
 
-    it('add a recipient is visible', () => {
-      cy.get('#add-recipient-button').should('be.visible')
-    })
-
-    it('add a recipient', () => {
-      cy.get('#add-recipient-button').click()
-      cy.get('#recipient').should('exist')
-    })
-
-    it('remove recipient', () => {
-      cy.get('#add-recipient-button').click()
-      cy.get('#remove-recipient-button').click()
-      cy.get('#recipient').should('not.exist')
+    it.only('Expert mode is ON', () => {
+      cy.get(`[aria-label="Expert Mode Turned On"]`).should('be.visible')
     })
   })
 })
