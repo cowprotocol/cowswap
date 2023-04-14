@@ -15,6 +15,7 @@ import { RateInfoParams } from '@cow/common/pure/RateInfo'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext
@@ -29,6 +30,8 @@ export interface LimitOrdersConfirmProps {
   executionPrice: Price<Currency, Currency> | null
   limitRateState: LimitRateState
   onConfirm(): void
+  partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
+  featurePartialFillsEnabled: boolean
 }
 
 export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
@@ -45,6 +48,8 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
     settingsState,
     executionPrice,
     limitRateState,
+    partiallyFillableOverride,
+    featurePartialFillsEnabled,
   } = props
 
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
@@ -78,6 +83,8 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
         rateInfoParams={rateInfoParams}
         settingsState={settingsState}
         executionPrice={executionPrice}
+        partiallyFillableOverride={partiallyFillableOverride}
+        featurePartialFillsEnabled={featurePartialFillsEnabled}
       />
       {Warnings}
       <ButtonPrimary onClick={onConfirm} disabled={isTradeDisabled} buttonSize={ButtonSize.BIG}>

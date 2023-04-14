@@ -2,8 +2,9 @@ import { Field } from 'state/swap/actions'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
-import { OrderClass, OrderKind } from 'state/orders/actions'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersConfirm } from './index'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
@@ -11,6 +12,7 @@ import React from 'react'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { SetStateAction } from 'jotai'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -62,6 +64,7 @@ const tradeContext: TradeFlowContext = {
     recipient: '0xaaa',
     recipientAddressOrName: null,
     allowsOffchainSigning: true,
+    partiallyFillable: true,
     appDataHash: '0xabc',
   },
   rateImpact: 0,
@@ -106,6 +109,8 @@ const Fixtures = {
       warningsAccepted={true}
       executionPrice={null}
       onConfirm={() => void 0}
+      partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
+      featurePartialFillsEnabled
     />
   ),
 }

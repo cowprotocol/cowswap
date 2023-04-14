@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'state/enhancedTransactions/hooks'
-import { useOrder, useOrders, useOrdersById, usePendingOrders } from 'state/orders/hooks'
+import { useOrder, useOrders, useOrdersById, useCombinedPendingOrders } from 'state/orders/hooks'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getDateTimestamp } from '@cow/utils/time'
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
 import { useWalletInfo } from '@cow/modules/wallet'
@@ -284,7 +284,7 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
 
 export function useRecentActivityLastPendingOrder() {
   const { chainId } = useWalletInfo()
-  const pending = usePendingOrders({ chainId })
+  const pending = useCombinedPendingOrders({ chainId })
 
   return useMemo(() => {
     if (!pending.length) {

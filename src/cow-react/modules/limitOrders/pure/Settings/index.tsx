@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import QuestionHelper from 'components/QuestionHelper'
-import { useContext } from 'react'
+import { ReactNode, useContext } from 'react'
 import { ThemeContext } from 'styled-components/macro'
 import Toggle from 'components/Toggle'
 import * as styledEl from './styled'
@@ -8,7 +8,7 @@ import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
 
 interface SettingsBoxProps {
   title: string
-  tooltip: string
+  tooltip: ReactNode
   value: boolean
   disabled?: boolean
   toggle: () => void
@@ -30,11 +30,12 @@ function SettingsBox({ title, tooltip, value, toggle, disabled = false }: Settin
 
 export interface SettingsProps {
   state: LimitOrdersSettingsState
+  featurePartialFillsEnabled: boolean
   onStateChanged: (state: Partial<LimitOrdersSettingsState>) => void
 }
 
-export function Settings({ state, onStateChanged }: SettingsProps) {
-  const { expertMode, showRecipient } = state
+export function Settings({ state, featurePartialFillsEnabled, onStateChanged }: SettingsProps) {
+  const { expertMode, showRecipient, partialFillsEnabled } = state
 
   return (
     <styledEl.SettingsContainer>
@@ -51,6 +52,24 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         tooltip="Allows you to choose a destination address for the swap other than the connected one."
         value={showRecipient}
         toggle={() => onStateChanged({ showRecipient: !showRecipient })}
+      />
+
+      <SettingsBox
+        title="Enable Partial Executions"
+        tooltip={
+          <>
+            Allow you to chose whether your limit orders will be <i>Partially fillable</i> or <i>Fill or kill</i>.
+            <br />
+            <br />
+            <i>Fill or kill</i> orders will either be filled fully or not at all.
+            <br />
+            <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill the full
+            amount.
+          </>
+        }
+        disabled={!featurePartialFillsEnabled}
+        value={featurePartialFillsEnabled && partialFillsEnabled}
+        toggle={() => onStateChanged({ partialFillsEnabled: !partialFillsEnabled })}
       />
     </styledEl.SettingsContainer>
   )

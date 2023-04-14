@@ -17,6 +17,8 @@ import { LimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import { limitOrdersFeatures } from '@cow/constants/featureFlags'
 import { DEFAULT_DATE_FORMAT } from '@cow/constants/intl'
+import { OrderType } from '@cow/modules/limitOrders/pure/OrderType'
+import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 
 const Wrapper = styled.div`
   font-size: 13px;
@@ -37,11 +39,21 @@ export interface LimitOrdersDetailsProps {
   settingsState: LimitOrdersSettingsState
   executionPrice: Price<Currency, Currency> | null
   limitRateState: LimitRateState
+  partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
+  featurePartialFillsEnabled: boolean
 }
 
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
-  const { executionPrice, tradeContext, settingsState, rateInfoParams, limitRateState } = props
-  const { account, recipient, recipientAddressOrName } = tradeContext.postOrderParams
+  const {
+    executionPrice,
+    tradeContext,
+    settingsState,
+    rateInfoParams,
+    limitRateState,
+    partiallyFillableOverride,
+    featurePartialFillsEnabled,
+  } = props
+  const { account, recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
   const { feeAmount, activeRate, marketRate } = limitRateState
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
@@ -115,19 +127,11 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
           <span>Active</span>
         </div>
       </styledEl.DetailsRow> */}
-      {/* <styledEl.DetailsRow>
-        <div>
-          <span>Order type</span>{' '}
-          <InfoIcon
-            content={
-              'This order will either be filled completely or not filled. (Support for partially fillable orders is coming soon!)'
-            }
-          />
-        </div>
-        <div>
-          <span>Fill or kill</span>
-        </div>
-      </styledEl.DetailsRow> */}
+      <OrderType
+        isPartiallyFillable={partiallyFillable}
+        partiallyFillableOverride={partiallyFillableOverride}
+        featurePartialFillsEnabled={featurePartialFillsEnabled}
+      />
       {recipientAddressOrName && recipient !== account && (
         <styledEl.DetailsRow>
           <div>

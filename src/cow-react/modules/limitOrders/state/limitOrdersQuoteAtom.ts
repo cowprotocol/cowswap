@@ -1,9 +1,9 @@
 import { atom } from 'jotai'
-import { SimpleGetQuoteResponse } from '@cowprotocol/cow-sdk'
 import GpQuoteError from '@cow/api/gnosisProtocol/errors/QuoteError'
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
 export interface LimitOrdersQuoteState {
-  response?: SimpleGetQuoteResponse
+  response?: OrderQuoteResponse
   error?: GpQuoteError
 }
 

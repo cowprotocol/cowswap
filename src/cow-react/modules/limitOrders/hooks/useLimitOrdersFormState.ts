@@ -13,10 +13,15 @@ import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitO
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { isUnsupportedTokenInQuote } from '@cow/modules/limitOrders/utils/isUnsupportedTokenInQuote'
+import {
+  limitOrdersSettingsAtom,
+  LimitOrdersSettingsState,
+} from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
   CanTrade = 'CanTrade',
+  ExpertCanTrade = 'ExpertCanTrade',
   Loading = 'Loading',
   SwapIsUnsupported = 'SwapIsUnsupported',
   WrapUnwrap = 'WrapUnwrap',
@@ -42,6 +47,7 @@ interface LimitOrdersFormParams {
   currentAllowance: CurrencyAmount<Token> | undefined
   approvalState: ApprovalState
   tradeState: LimitOrdersTradeState
+  settingsState: LimitOrdersSettingsState
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
   activeRate: Fraction | null
@@ -59,6 +65,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     currentAllowance,
     approvalState,
     tradeState,
+    settingsState,
     recipientEnsAddress,
     quote,
     isWrapOrUnwrap,
@@ -152,12 +159,16 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.FeeExceedsFrom
   }
 
+  if (settingsState.expertMode) {
+    return LimitOrdersFormState.ExpertCanTrade
+  }
   return LimitOrdersFormState.CanTrade
 }
 
 export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { chainId, account } = useWalletInfo()
   const tradeState = useLimitOrdersTradeState()
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
@@ -184,6 +195,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
     approvalState,
     currentAllowance,
     tradeState,
+    settingsState,
     recipientEnsAddress,
     quote,
     activeRate,

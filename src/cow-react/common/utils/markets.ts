@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 /**

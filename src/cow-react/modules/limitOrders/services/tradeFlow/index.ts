@@ -15,7 +15,7 @@ import { tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
-import { OrderClass } from 'custom/state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders

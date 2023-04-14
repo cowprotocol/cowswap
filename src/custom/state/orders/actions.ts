@@ -1,12 +1,10 @@
 import { createAction } from '@reduxjs/toolkit'
-import { OrderID, OrderMetaData } from '@cow/api/gnosisProtocol'
-import { OrderCreation } from 'utils/signatures'
 import { Token } from '@uniswap/sdk-core'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SerializedToken } from '@src/state/user/types'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { BigNumberish } from '@ethersproject/bignumber'
-export { OrderKind } from '@cowprotocol/contracts'
+import { UID, EnrichedOrder, OrderClass, OrderCreation } from '@cowprotocol/cow-sdk'
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -18,10 +16,10 @@ export enum OrderStatus {
   FAILED = 'failed',
 }
 
-export enum OrderClass {
-  LIMIT = 'limit',
-  MARKET = 'market',
-}
+// Common states groups
+export const PENDING_STATES = [OrderStatus.PENDING, OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+export const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
+export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
 
 // Abstract type for the order used in the Dapp. It's composed out of 3 types of props:
 //  - Information present in the order creation type used in the API to post new orders
@@ -30,7 +28,7 @@ export enum OrderClass {
 // Doesn't have input/output tokens, these are declared in the subtypes of this base type
 // includes sellAmountBeforeFee as this is required for checking unfillable orders
 export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
-  id: OrderID // Unique identifier for the order: 56 bytes encoded as hex without 0x
+  id: UID // Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // Address, without '0x' prefix
   summary: string // Description of the order, for dapp use only, readable by user
   class: OrderClass // Flag to distinguish order class
@@ -72,7 +70,7 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
  * Note it uses OrderMetaData, which is the return type of the endpoint that gets an order by orderId
  */
 export type OrderInfoApi = Pick<
-  OrderMetaData,
+  EnrichedOrder,
   | 'creationDate'
   | 'availableBalance'
   | 'executedBuyAmount'
@@ -103,17 +101,17 @@ export interface SerializedOrder extends BaseOrder {
 }
 
 export interface AddPendingOrderParams {
-  id: OrderID
+  id: UID
   chainId: ChainId
   order: SerializedOrder
 }
-export type ChangeOrderStatusParams = { id: OrderID; chainId: ChainId }
+export type ChangeOrderStatusParams = { id: UID; chainId: ChainId }
 export type SetOrderCancellationHashParams = ChangeOrderStatusParams & { hash: string }
 
 export const addPendingOrder = createAction<AddPendingOrderParams>('order/addPendingOrder')
 
 export interface OrderFulfillmentData {
-  id: OrderID
+  id: UID
   fulfillmentTime: string
   transactionHash: string
   summary?: string
@@ -136,13 +134,13 @@ export interface FulfillOrdersBatchParams {
 }
 
 export interface BatchOrdersUpdateParams {
-  ids: OrderID[]
+  ids: UID[]
   chainId: ChainId
 }
 
 export type PresignedOrdersParams = BatchOrdersUpdateParams
 export interface UpdatePresignGnosisSafeTxParams {
-  orderId: OrderID
+  orderId: UID
   chainId: ChainId
   safeTransaction: SafeMultisigTransactionResponse
 }
@@ -179,13 +177,13 @@ export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheck
 )
 
 export type SetIsOrderUnfillableParams = {
-  id: OrderID
+  id: UID
   chainId: ChainId
   isUnfillable: boolean
 }
 
 export const setIsOrderUnfillable = createAction<SetIsOrderUnfillableParams>('order/setIsOrderUnfillable')
 
-type RefundItem = { id: OrderID; refundHash: string }
+type RefundItem = { id: UID; refundHash: string }
 export type SetIsOrderRefundedBatch = { chainId: ChainId; items: RefundItem[] }
 export const setIsOrderRefundedBatch = createAction<SetIsOrderRefundedBatch>('order/setIsOrderRefundedBatch')

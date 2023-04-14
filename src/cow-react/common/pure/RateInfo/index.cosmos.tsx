@@ -2,7 +2,7 @@ import { RateInfoParams, RateInfo } from './index'
 import { DAI_GOERLI, USDT_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import styled from 'styled-components/macro'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 

@@ -1,12 +1,9 @@
 import { useMemo } from 'react'
 import useRecentActivity, { TransactionAndOrder } from 'hooks/useRecentActivity'
-import { OrderStatus, OrderClass } from 'state/orders/actions'
-
-const PENDING_STATES = [OrderStatus.PENDING, OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CREATING]
+import { CONFIRMED_STATES, PENDING_STATES } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 const isPending = (data: TransactionAndOrder) => PENDING_STATES.includes(data.status)
-
-const CONFIRMED_STATES = [OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED, OrderStatus.FAILED]
 
 const isConfirmed = (data: TransactionAndOrder) => CONFIRMED_STATES.includes(data.status)
 

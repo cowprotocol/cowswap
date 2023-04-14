@@ -13,7 +13,7 @@ import { SwapConfirmManager, useSwapConfirmManager } from '@cow/modules/swap/hoo
 import { useWETHContract } from 'hooks/useContract'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
@@ -27,7 +27,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { BaseFlowContext } from '@cow/modules/swap/services/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
-import { OrderClass } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -206,6 +206,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     recipientAddressOrName,
     signer: provider.getSigner(),
     allowsOffchainSigning,
+    partiallyFillable: false, // SWAP orders are always fill or kill - for now
     appDataHash: appData.hash,
     quoteId: trade.quoteId,
   }

@@ -1,10 +1,9 @@
 import { GpModal } from '@cow/common/pure/Modal'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CloseIcon } from 'theme'
 import { CurrencyField } from './CurrencyField'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 import { FeeField } from './FeeField'
@@ -16,6 +15,8 @@ import { SurplusField } from './SurplusField'
 import { IdField } from './IdField'
 import { StatusField } from './StatusField'
 import { OrderTypeField } from './OrderTypeField'
+import { OrderStatus } from 'state/orders/actions'
+
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
@@ -34,7 +35,7 @@ const tooltips: { [key: string]: string | JSX.Element } = {
   EXECUTES_AT:
     'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
   FILLED:
-    'CoW Swap doesn’t currently support partial fills. Your order will either be filled completely or not at all.',
+    "CoW Swap doesn't currently support partial fills. Your order will either be filled completely or not at all.",
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
   FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
   CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
@@ -46,7 +47,8 @@ const tooltips: { [key: string]: string | JSX.Element } = {
       set) or limit orders (which fill at a price you specify).
       <br />
       <br />
-      All orders are currently fill or kill, but support for partially fillable limit orders is coming soon!
+      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
+      also be changed to <i>Fill or kill</i> through your order settings.
     </span>
   ),
 }
@@ -94,14 +96,17 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field>
-              {estimatedExecutionPrice ? (
+              {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
                 <>
                   <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
                   <PriceField order={order} price={estimatedExecutionPrice} />
                 </>
               ) : (
                 <>
-                  <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />{' '}
+                  <FieldLabel
+                    label={order.partiallyFillable ? 'Avg. execution price' : 'Execution price'}
+                    tooltip={tooltips.EXECUTION_PRICE}
+                  />{' '}
                   <PriceField order={order} price={executionPrice} />
                 </>
               )}

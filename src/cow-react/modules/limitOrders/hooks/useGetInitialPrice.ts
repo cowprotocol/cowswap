@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 import { useAsyncMemo } from 'use-async-memo'
 
-import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/utils/getAddress'
 import ms from 'ms.macro'
 import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { getNativePrice } from '@cow/api/gnosisProtocol'
 
 type PriceResult = number | Error | undefined
 
@@ -32,7 +32,7 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
       throw new Error('Cannot parse initial price')
     }
 
-    const price = parsePrice(result.price, currency)
+    const price = parsePrice(result.price || 0, currency)
 
     if (!price) {
       throw new Error('Cannot parse initial price')

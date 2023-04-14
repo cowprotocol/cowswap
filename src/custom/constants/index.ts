@@ -4,11 +4,11 @@ import ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
 import ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
 import networksJson from '@cowprotocol/contracts/networks.json'
 
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getAppDataHash } from './appDataHash'
 import ms from 'ms.macro'
 
-import { CowSdk } from '@cowprotocol/cow-sdk'
+import { IpfsConfig } from '@cowprotocol/cow-sdk'
 import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'constants/ipfs'
 
 const { GPv2Settlement, GPv2VaultRelayer } = networksJson
@@ -188,15 +188,11 @@ export const SWR_OPTIONS = {
 }
 
 // TODO: show banner warning when PINATA env vars are missing
-const COW_SDK_OPTIONS = {
-  ipfs: { pinataApiKey: PINATA_API_KEY, pinataApiSecret: PINATA_SECRET_API_KEY },
+export const COW_IPFS_OPTIONS: IpfsConfig = {
+  pinataApiKey: PINATA_API_KEY,
+  pinataApiSecret: PINATA_SECRET_API_KEY,
 }
 
-export const COW_SDK: Record<ChainId, CowSdk<ChainId>> = {
-  [ChainId.MAINNET]: new CowSdk(ChainId.MAINNET, COW_SDK_OPTIONS),
-  [ChainId.GOERLI]: new CowSdk(ChainId.GOERLI, COW_SDK_OPTIONS),
-  [ChainId.GNOSIS_CHAIN]: new CowSdk(ChainId.GNOSIS_CHAIN, COW_SDK_OPTIONS),
-}
 // These are used for Account sidebar menu
 export const ACCOUNT_MENU_LINKS = [
   { title: 'Overview', url: '/account' },

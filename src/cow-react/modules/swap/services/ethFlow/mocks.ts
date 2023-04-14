@@ -1,7 +1,7 @@
 import { WrappingPreviewProps } from '@cow/modules/swap/pure/EthFlow/WrappingPreview'
 
 import { nativeOnChain, WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { EthFlowModalContentProps } from '@cow/modules/swap/pure/EthFlow/EthFlowModalContent'
 import { EthFlowState } from '@cow/modules/swap/services/ethFlow/types'

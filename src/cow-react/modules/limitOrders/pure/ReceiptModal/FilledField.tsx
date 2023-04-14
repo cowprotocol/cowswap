@@ -2,7 +2,7 @@
 import * as styledEl from './styled'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
@@ -76,7 +76,7 @@ export function FilledField({ order, sellAmount, buyAmount }: Props) {
   const formattedFilledAmount = legacyBigNumberToCurrencyAmount(mainToken, filledAmountDecimal)
 
   const swappedAmountDecimal = swappedAmountWithFee.div(new BigNumber(10 ** swappedToken.decimals))
-  const formattedSwappedAmount = legacyBigNumberToCurrencyAmount(outputToken, swappedAmountDecimal)
+  const formattedSwappedAmount = legacyBigNumberToCurrencyAmount(swappedToken, swappedAmountDecimal)
 
   return (
     <styledEl.Value>

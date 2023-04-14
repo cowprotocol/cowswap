@@ -1,17 +1,24 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { isAddress, shortenAddress } from 'utils'
-import { ChangeOrderStatusParams, Order, OrderClass, OrderKind, OrderStatus } from 'state/orders/actions'
+import { ChangeOrderStatusParams, Order, OrderStatus } from 'state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
 
-import { signOrder, signOrderCancellation, UnsignedOrder } from 'utils/signatures'
-import { OrderID, sendOrder as sendOrderApi, sendSignedOrderCancellation } from '@cow/api/gnosisProtocol'
+import { getTrades, OrderID } from '@cow/api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatSymbol } from '@cow/utils/format'
-import { SigningScheme } from '@cowprotocol/contracts'
-import { getProfileData, getTrades } from '@cow/api/gnosisProtocol/api'
+import {
+  EcdsaSigningScheme,
+  OrderClass,
+  OrderKind,
+  UnsignedOrder,
+  SigningScheme,
+  OrderSigningUtils,
+} from '@cowprotocol/cow-sdk'
+import { getProfileData } from '@cow/api/gnosisProtocol/api'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
+import { orderBookApi } from '@cow/cowSdk'
 
 export type PostOrderParams = {
   account: string
@@ -30,6 +37,7 @@ export type PostOrderParams = {
   allowsOffchainSigning: boolean
   appDataHash: string
   class: OrderClass
+  partiallyFillable: boolean
   quoteId?: number
 }
 
@@ -82,8 +90,19 @@ export function getOrderParams(params: PostOrderParams): {
   quoteId: number | undefined
   order: UnsignedOrder
 } {
-  const { kind, inputAmount, outputAmount, sellToken, buyToken, feeAmount, validTo, recipient, appDataHash, quoteId } =
-    params
+  const {
+    kind,
+    inputAmount,
+    outputAmount,
+    sellToken,
+    buyToken,
+    feeAmount,
+    validTo,
+    recipient,
+    partiallyFillable,
+    appDataHash,
+    quoteId,
+  } = params
   const sellTokenAddress = sellToken.address
 
   if (!sellTokenAddress) {
@@ -112,7 +131,7 @@ export function getOrderParams(params: PostOrderParams): {
       feeAmount: feeAmount?.quotient.toString() || '0',
       kind,
       receiver,
-      partiallyFillable: false, // Always fill or kill
+      partiallyFillable,
     },
   }
 }
@@ -187,28 +206,32 @@ export async function signAndPostOrder(params: PostOrderParams): Promise<AddUnse
 
   let signingScheme: SigningScheme
   let signature: string | undefined
+
   if (allowsOffchainSigning) {
-    const signedOrderInfo = await signOrder(unsignedOrder, chainId, signer)
-    signingScheme = signedOrderInfo.signingScheme
+    const signedOrderInfo = await OrderSigningUtils.signOrder(unsignedOrder, chainId, signer)
+    signingScheme =
+      signedOrderInfo.signingScheme === EcdsaSigningScheme.ETHSIGN ? SigningScheme.ETHSIGN : SigningScheme.EIP712
     signature = signedOrderInfo.signature
   } else {
     signingScheme = SigningScheme.PRESIGN
     signature = account
   }
 
+  if (!signature) throw new Error('Signature is undefined!')
+
   // Call API
-  const orderId = await sendOrderApi({
-    chainId,
-    order: {
+  const orderId = await orderBookApi.sendOrder(
+    {
       ...unsignedOrder,
+      from: account,
       receiver,
       signingScheme,
       // Include the signature
       signature,
       quoteId,
     },
-    owner: account,
-  })
+    { chainId }
+  )
 
   const pendingOrderParams: Order = mapUnsignedOrderToOrder({
     unsignedOrder,
@@ -231,24 +254,26 @@ type OrderCancellationParams = {
 }
 
 export async function sendOrderCancellation(params: OrderCancellationParams): Promise<void> {
-  const { orderId, account, chainId, signer, cancelPendingOrder } = params
+  const { orderId, chainId, signer, cancelPendingOrder } = params
 
-  const { signature, signingScheme } = await signOrderCancellation(orderId, chainId, signer)
+  const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer)
 
-  await sendSignedOrderCancellation({
-    chainId,
-    owner: account,
-    cancellation: { orderUid: orderId, signature, signingScheme },
-  })
+  if (!signature) throw new Error('Signature is undefined!')
+
+  await orderBookApi.sendSignedOrderCancellations(
+    {
+      orderUids: [orderId],
+      signature,
+      signingScheme,
+    },
+    { chainId }
+  )
 
   cancelPendingOrder({ chainId, id: orderId })
 }
 
 export async function hasTrades(chainId: ChainId, address: string): Promise<boolean> {
-  const [trades, profileData] = await Promise.all([
-    getTrades({ chainId, owner: address, limit: 1 }),
-    getProfileData(chainId, address),
-  ])
+  const [trades, profileData] = await Promise.all([getTrades(chainId, address), getProfileData(chainId, address)])
 
   return trades.length > 0 || (profileData?.totalTrades ?? 0) > 0
 }

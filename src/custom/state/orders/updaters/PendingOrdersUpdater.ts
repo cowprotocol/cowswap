@@ -11,18 +11,16 @@ import {
   useCancelOrdersBatch,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
-  usePendingOrders,
+  useCombinedPendingOrders,
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
-import { Order, OrderClass, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
-
-import { SupportedChainId as ChainId } from 'constants/chains'
-
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getOrder, OrderID } from '@cow/api/gnosisProtocol'
-
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
@@ -101,11 +99,14 @@ async function _updateCreatingOrders(
           if (!orderData) {
             return
           }
+          // Hack, because Swagger doesn't have isRefunded property and backend is going to delete it soon
+          const ethflowData: (EthflowData & { isRefunded?: boolean }) | undefined = orderData.ethflowData
+
           const updatedOrder = {
             ...order,
             validTo: orderData.ethflowData?.userValidTo || order.validTo,
-            isRefunded: orderData.ethflowData?.isRefunded,
-            refundHash: orderData.ethflowData?.refundTxHash || undefined,
+            isRefunded: ethflowData?.isRefunded,
+            refundHash: ethflowData?.refundTxHash || undefined,
             openSince: Date.now(),
             status: OrderStatus.PENDING, // seen once, can be moved to pending bucket
             apiAdditionalInfo: orderData,
@@ -248,7 +249,7 @@ export function PendingOrdersUpdater(): null {
   const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
 
-  const pending = usePendingOrders({ chainId })
+  const pending = useCombinedPendingOrders({ chainId })
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
 
   // Ref, so we don't rerun useEffect

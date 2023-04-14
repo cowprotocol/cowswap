@@ -30,7 +30,7 @@ import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } fro
 import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
 import TradeGp from './TradeGp'
 
-import { SupportedChainId, SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 
 import { isWrappingTrade } from './utils'
@@ -485,7 +485,13 @@ export interface NativeCurrenciesInfo {
   native: NativeCurrency
 }
 
-export function useIsFeeGreaterThanInput({ address, chainId }: { address?: string | null; chainId?: ChainId }): {
+export function useIsFeeGreaterThanInput({
+  address,
+  chainId,
+}: {
+  address?: string | null
+  chainId?: SupportedChainId
+}): {
   isFeeGreater: boolean
   fee: CurrencyAmount<Currency> | null
 } {
