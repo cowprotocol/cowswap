@@ -15,13 +15,12 @@ import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { CancelButton } from '@cow/common/pure/CancelButton'
-import { ExplorerDataType, getExplorerLink } from '@src/utils/getExplorerLink'
+import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 export function GnosisSafeLink(props: {
   chainId: number
   safeTransaction?: SafeMultisigTransactionResponse
-  gnosisSafeThreshold: number
 }): JSX.Element | null {
   const { chainId, safeTransaction } = props
 
@@ -91,10 +90,19 @@ export function StatusDetails(props: StatusDetailsProps) {
     isCancelled,
     isCreating,
     order,
+    enhancedTransaction,
   } = activityDerivedState
 
   const cancellationHash = activityDerivedState.order?.cancellationHash
   const isCancellable = order ? isOrderCancellable(order) : true
+
+  const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
+  const hasCancellationHash = !!cancellationHash && !isCancelling && !isConfirmed && isCancelled
+  const cancellationTxLink = hasCancellationHash
+    ? safeTransaction
+      ? getSafeWebUrl(chainId, safeTransaction.safe, safeTransaction.safeTxHash)
+      : getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)
+    : null
 
   return (
     <StatusLabelWrapper withCancellationHash$={!!cancellationHash}>
@@ -134,12 +142,8 @@ export function StatusDetails(props: StatusDetailsProps) {
           <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>
       )}
-      {cancellationHash && !isCancelling && (
-        <CancelTxLink
-          href={getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)}
-          target="_blank"
-          title="Cancellation transaction"
-        >
+      {hasCancellationHash && cancellationTxLink && (
+        <CancelTxLink href={cancellationTxLink} target="_blank" title="Cancellation transaction">
           <LinkIconFeather size={16} />
         </CancelTxLink>
       )}

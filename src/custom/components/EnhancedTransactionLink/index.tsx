@@ -24,7 +24,7 @@ export function EnhancedTransactionLink(props: Props) {
       return null
     }
 
-    return <GnosisSafeLink chainId={chainId} safeTransaction={safeTx} gnosisSafeThreshold={gnosisSafeInfo.threshold} />
+    return <GnosisSafeLink chainId={chainId} safeTransaction={safeTx} />
   } else {
     return <ExplorerLink id={tx.hash} type="transaction" />
   }

@@ -129,7 +129,7 @@ function GnosisSafeTxDetails(props: {
       {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} gnosisSafeThreshold={gnosisSafeThreshold} />
+      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} />
     </TransactionInnerDetail>
   )
 }
