@@ -103,9 +103,10 @@ function _transformGpOrderToStoreOrder(
   // That's why it's not used before and an empty string is set instead
   storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order }) || ''
 
-  // It can happen that a cancellation is identified in the app before the API is aware
+  // EthFlow adjustments
+  // It can happen that EthFlow cancellation is identified in the app before the API is aware
   // In that case
-  if (order.status === 'cancelled') {
+  if (order.ethflowData && order.status === 'cancelled') {
     storeOrder.status = OrderStatus.CANCELLED
     storeOrder.isCancelling = false
   }
