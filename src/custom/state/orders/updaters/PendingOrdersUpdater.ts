@@ -16,7 +16,7 @@ import {
   useUpdatePresignGnosisSafeTx,
 } from 'state/orders/hooks'
 import { OrderTransitionStatus } from 'state/orders/utils'
-import { Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
+import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'state/orders/actions'
 import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -28,6 +28,8 @@ import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useUpdateAtom } from 'jotai/utils'
+import { removeOrdersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.
@@ -248,6 +250,7 @@ function _triggerNps(pending: Order[], chainId: ChainId) {
 export function PendingOrdersUpdater(): null {
   const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
+  const removeOrdersToCancel = useUpdateAtom(removeOrdersToCancelAtom)
 
   const pending = useCombinedPendingOrders({ chainId })
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
@@ -256,13 +259,22 @@ export function PendingOrdersUpdater(): null {
   const pendingRef = useRef(pending)
   pendingRef.current = pending
 
-  const fulfillOrdersBatch = useFulfillOrdersBatch()
+  const _fulfillOrdersBatch = useFulfillOrdersBatch()
   const expireOrdersBatch = useExpireOrdersBatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const presignOrders = usePresignOrders()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const getSafeInfo = useGetSafeInfo()
+
+  const fulfillOrdersBatch = useCallback(
+    (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
+      _fulfillOrdersBatch(fulfillOrdersBatchParams)
+      // Remove orders from the cancelling queue (marked by checkbox in the orders table)
+      removeOrdersToCancel(fulfillOrdersBatchParams.ordersData.map((item) => item.id))
+    },
+    [_fulfillOrdersBatch, removeOrdersToCancel]
+  )
 
   const updateOrders = useCallback(
     async (chainId: ChainId, account: string, orderClass: OrderClass) => {

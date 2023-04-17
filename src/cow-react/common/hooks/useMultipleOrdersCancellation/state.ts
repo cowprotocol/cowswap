@@ -1,16 +1,19 @@
 import { atom } from 'jotai'
 import { Order } from 'state/orders/actions'
-import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
-import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
+import { isOrderOffChainCancellable } from '@cow/common/utils/isOrderOffChainCancellable'
 
-// null - when orders cancellation is not enabled
-// [] - when orders cancellation is enabled
-export const ordersToCancelAtom = atom<Order[] | null>(null)
+export const ordersToCancelAtom = atom<Order[]>([])
 
-export const updateOrdersToCancelAtom = atom(null, (get, set, nextState: Order[] | null) => {
+export const updateOrdersToCancelAtom = atom(null, (get, set, nextState: Order[]) => {
   set(ordersToCancelAtom, () => {
-    if (nextState === null) return null
+    return nextState.filter(isOrderOffChainCancellable)
+  })
+})
 
-    return nextState.filter((order) => !getIsEthFlowOrder(order) && isOrderCancellable(order))
+export const removeOrdersToCancelAtom = atom(null, (get, set, ordersUids: string[]) => {
+  set(ordersToCancelAtom, () => {
+    const state = get(ordersToCancelAtom)
+
+    return state.filter((item) => !ordersUids.includes(item.id))
   })
 })

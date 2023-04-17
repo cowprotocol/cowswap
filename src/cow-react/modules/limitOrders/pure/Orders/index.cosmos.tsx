@@ -39,7 +39,7 @@ const orderActions: LimitOrderActions = {
   toggleOrderForCancellation(order) {
     console.log('toggleOrderForCancellation', order)
   },
-  toggleAllOrdersForCancellation() {
+  toggleOrdersForCancellation() {
     console.log('toggleAllOrdersForCancellation')
   },
 }

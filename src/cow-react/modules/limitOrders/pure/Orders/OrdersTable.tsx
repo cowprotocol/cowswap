@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import React, { useCallback, useState, useEffect, useMemo } from 'react'
+import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { OrderRow } from './OrderRow'
 import { InvertRateControl } from '@cow/common/pure/RateInfo'
@@ -10,7 +10,6 @@ import { transparentize } from 'polished'
 import { LIMIT_ORDERS_PAGE_SIZE } from '@cow/modules/limitOrders/const/limitOrdersTabs'
 import { getOrderParams } from './utils/getOrderParams'
 import { ordersSorter } from '@cow/modules/limitOrders/utils/ordersSorter'
-import { RateWrapper } from '@cow/common/pure/RateInfo'
 import QuestionHelper from 'components/QuestionHelper'
 import { RateTooltipHeader } from '@cow/modules/limitOrders/pure/ExecutionPriceTooltip'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
@@ -25,6 +24,13 @@ import { SpotPricesKeyParams } from '@cow/modules/orders/state/spotPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
 import { Order } from 'state/orders/actions'
+import {
+  TableHeader,
+  TableRowCheckbox,
+  TableRowCheckboxWrapper,
+  CheckboxCheckmark,
+} from '@cow/modules/limitOrders/pure/Orders/styled'
+import { isOrderOffChainCancellable } from '@cow/common/utils/isOrderOffChainCancellable'
 
 // TODO: move elements to styled.jsx
 
@@ -53,28 +59,6 @@ const TableInner = styled.div`
   overflow-y: hidden;
   overflow-x: auto;
   ${({ theme }) => theme.colorScrollbar};
-`
-
-const Header = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }>`
-  --height: 50px;
-  display: grid;
-  gap: 16px;
-
-  grid-template-columns: ${({ isOpenOrdersTab, isRowSelectable }) =>
-    `${isRowSelectable && isOpenOrdersTab ? '0.2fr 3fr' : '3.2fr'} repeat(2,2fr) ${
-      isOpenOrdersTab ? '2.5fr 1.4fr' : ''
-    } 0.7fr 108px 24px`};
-  grid-template-rows: minmax(var(--height), 1fr);
-  align-items: center;
-  border: none;
-  border-bottom: 1px solid ${({ theme }) => transparentize(0.8, theme.text3)};
-  padding: 0 12px;
-
-  ${({ theme, isOpenOrdersTab }) => theme.mediaWidth.upToLargeAlt`
-  grid-template-columns: ${`minmax(200px,2fr) repeat(2,minmax(110px,2fr)) ${
-    isOpenOrdersTab ? 'minmax(140px,2.2fr) minmax(100px,1fr)' : ''
-  } minmax(50px,1fr) 108px 24px`};
-  `}
 `
 
 const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
@@ -124,23 +108,6 @@ const HeaderElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean 
       opacity: 0.7;
     }
   `}
-`
-
-const RowElement = styled(Header)`
-  background: transparent;
-  transition: background 0.15s ease-in-out;
-
-  &:hover {
-    background: ${({ theme }) => transparentize(0.9, theme.text3)};
-  }
-
-  &:last-child {
-    border-bottom: 0;
-  }
-
-  ${RateWrapper} {
-    text-align: left;
-  }
 `
 
 const Rows = styled.div`
@@ -220,7 +187,7 @@ export interface OrdersTableProps {
   chainId: SupportedChainId | undefined
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
-  selectedOrders: Order[] | null
+  selectedOrders: Order[]
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: LimitOrderActions
@@ -238,6 +205,8 @@ export function OrdersTable({
   currentPageNumber,
 }: OrdersTableProps) {
   const [isRateInverted, setIsRateInverted] = useState(false)
+  const checkboxRef = useRef<HTMLInputElement>(null)
+
   const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
   const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step).sort(ordersSorter)
   const onScroll = useCallback(() => {
@@ -272,17 +241,40 @@ export function OrdersTable({
     localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
   }, [showOrdersExplainerBanner])
 
+  const allOrdersSelected = useMemo(() => {
+    const cancellableOrders = ordersPage.filter(isOrderOffChainCancellable)
+
+    return cancellableOrders.every((item) => selectedOrdersMap[item.id])
+  }, [ordersPage, selectedOrdersMap])
+
+  // React doesn't support indeterminate attribute
+  // Because of it, we have to use element reference
+  useEffect(() => {
+    const checkbox = checkboxRef.current
+
+    if (!checkbox) return
+
+    checkbox.indeterminate = !!selectedOrders.length && !allOrdersSelected
+    checkbox.checked = allOrdersSelected
+  }, [allOrdersSelected, selectedOrders.length])
+
   return (
     <>
       <TableBox>
         <TableInner onScroll={onScroll}>
-          <Header isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+          <TableHeader isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
             {isRowSelectable && isOpenOrdersTab && (
               <HeaderElement>
-                <input
-                  type="checkbox"
-                  onChange={(event) => orderActions.toggleAllOrdersForCancellation(!event.target.checked)}
-                />
+                <TableRowCheckboxWrapper>
+                  <TableRowCheckbox
+                    ref={checkboxRef}
+                    type="checkbox"
+                    onChange={(event) =>
+                      orderActions.toggleOrdersForCancellation(event.target.checked ? ordersPage : [])
+                    }
+                  />
+                  <CheckboxCheckmark />
+                </TableRowCheckboxWrapper>
               </HeaderElement>
             )}
 
@@ -361,7 +353,7 @@ export function OrdersTable({
               <Trans>Status</Trans>
             </HeaderElement>
             <HeaderElement>{/*Cancel order column*/}</HeaderElement>
-          </Header>
+          </TableHeader>
 
           {/* Show explainer modal if user hasn't closed it */}
           {isOpenOrdersTab && showOrdersExplainerBanner && (
@@ -392,7 +384,6 @@ export function OrdersTable({
                 })}
                 prices={pendingOrdersPrices[order.id]}
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
-                RowElement={RowElement}
                 isRateInverted={isRateInverted}
                 orderActions={orderActions}
                 onClick={() => orderActions.selectReceiptOrder(order.id)}
