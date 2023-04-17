@@ -1,7 +1,7 @@
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useTradeState } from '../useTradeState'
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { switchChain } from '@cow/modules/wallet/web3-react/hooks/switchChain'
 import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from '@cow/modules/wallet'
@@ -54,7 +54,7 @@ export function useSetupTradeState(): void {
    *  - remember the URL changes (/100/USDC/COW)
    *  - apply the URL changes only if user accepted network changes in the wallet
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Do nothing while SPECIAL CASE
     if (rememberedUrlState) return
 
@@ -121,7 +121,7 @@ export function useSetupTradeState(): void {
    * 2. If provider's chainId is the same with chainId in URL, then do nothing
    * 3. When the URL state is remembered, then set it's chainId to the provider
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (providerChainId === currentChainId) return
 
     const targetChainId = rememberedUrlState?.chainId || currentChainId
@@ -146,7 +146,7 @@ export function useSetupTradeState(): void {
    * 2. Navigate to the new chainId with default tokens
    * 3. SPECIAL CASE: if the URL state was remembered, then put it into URL
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (providerChainId === urlChainId) return
     if (!providerChainId || providerChainId === prevProviderChainId) return
 
