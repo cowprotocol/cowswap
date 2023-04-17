@@ -1,7 +1,7 @@
 import { Orders } from './index'
 import { OrderTab } from './OrdersTabs'
 import { ordersMock } from './orders.mock'
-import { BalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { BalancesAndAllowances } from '@cow/modules/tokens'
 
 const tabs: OrderTab[] = [
   {
@@ -21,6 +21,7 @@ const tabs: OrderTab[] = [
 const balancesAndAllowances: BalancesAndAllowances = {
   balances: {},
   allowances: {},
+  isLoading: false,
 }
 
 export default (

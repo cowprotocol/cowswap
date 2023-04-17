@@ -6,7 +6,7 @@ export function toSupportedChainId(chainId: number): SupportedChainId | undefine
   if (SupportedChainId[numericChainId]) return numericChainId
   return undefined
 }
-export function isSupportedChainId(chainId: Nullish<number>): boolean {
+export function isSupportedChainId(chainId: Nullish<number>): chainId is SupportedChainId {
   if (!chainId) return false
 
   return toSupportedChainId(chainId) !== undefined

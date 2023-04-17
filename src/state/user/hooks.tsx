@@ -7,12 +7,12 @@ import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import JSBI from 'jsbi'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual } from 'react-redux'
-import { useAppDispatch, useAppSelector } from '@src/state/hooks'
+import { useAppDispatch, useAppSelector } from '@src/custom/state/hooks'
 
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants/routing'
 import { useAllTokens } from '../../hooks/Tokens'
-import { AppState } from '../index'
+import { AppState } from 'state'
 import {
   addSerializedPair,
   addSerializedToken,

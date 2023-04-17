@@ -12,12 +12,12 @@ import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
-import { useTokenBalance } from 'state/connection/hooks'
 // import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import JSBI from 'jsbi'
 import { supportedChainId } from 'utils/supportedChainId'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
