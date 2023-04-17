@@ -3,10 +3,6 @@
 exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When a transaction is sent Then should change an order status, set a tx hash to order and add the transaction to store 1`] = `
 Array [
   Object {
-    "ethFlow": Object {
-      "orderId": "xx1",
-      "subType": "cancellation",
-    },
     "hash": "0xcfwj23g4fwe111",
   },
 ]
