@@ -122,7 +122,7 @@ export function useSetupTradeState(): void {
    * 3. When the URL state is remembered, then set it's chainId to the provider
    */
   useLayoutEffect(() => {
-    if (providerChainId === currentChainId) return
+    if (!providerChainId || providerChainId === currentChainId) return
 
     const targetChainId = rememberedUrlState?.chainId || currentChainId
 
