@@ -12,7 +12,6 @@ import styled from 'styled-components/macro'
 
 import TokenListLogo from 'assets/svg/tokenlist.svg'
 import { useAllTokens, useIsUserAddedToken } from 'hooks/Tokens'
-import { useCurrencyBalance } from 'state/connection/hooks'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import { ThemedText } from 'theme'
 import Column from 'components/Column'
@@ -30,6 +29,7 @@ import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useWalletInfo } from '@cow/modules/wallet'
+import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'

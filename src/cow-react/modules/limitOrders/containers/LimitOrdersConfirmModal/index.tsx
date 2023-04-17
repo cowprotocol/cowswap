@@ -6,7 +6,6 @@ import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { LimitOrdersConfirm } from '../../pure/LimitOrdersConfirm'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
-import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { GpModal } from '@cow/common/pure/Modal'
@@ -24,6 +23,8 @@ import { executionPriceAtom } from '@cow/modules/limitOrders/state/executionPric
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useHandleOrderPlacement } from '@cow/modules/limitOrders/hooks/useHandleOrderPlacement'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
+import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
+import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -59,6 +60,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const executionPrice = useAtomValue(executionPriceAtom)
   const limitRateState = useAtomValue(limitRateAtom)
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
+  const { partialFillsEnabled } = useFeatureFlags()
 
   const { rawAmount: inputRawAmount } = inputCurrencyInfo
   const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
@@ -108,6 +110,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               priceImpact={priceImpact}
               warningsAccepted={warningsAccepted}
               partiallyFillableOverride={partiallyFillableOverride}
+              featurePartialFillsEnabled={partialFillsEnabled}
               Warnings={Warnings}
             />
           </styledEl.ConfirmModalWrapper>
