@@ -19,7 +19,6 @@ import vCOWImage from 'assets/cow-swap/vCOW.png'
 import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
-import { useTokenBalance } from 'state/connection/hooks'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
 import { COW, V_COW } from 'constants/tokens'
@@ -39,6 +38,7 @@ import { MetaMask } from '@web3-react/metamask'
 import { HelpCircle } from '@cow/common/pure/HelpCircle'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2

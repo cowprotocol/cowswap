@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useCurrencyBalances } from 'state/connection/hooks'
 import { useIsExpertMode } from 'state/user/hooks'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { WrapUnwrapCallback } from 'hooks/useWrapCallback'
@@ -17,6 +16,7 @@ import { useSetupEthFlow } from './hooks/useSetupEthFlow'
 import { useTradeApproveCallback, useTradeApproveState } from '@cow/common/containers/TradeApprove'
 import { HandleSwapCallback } from '@cow/modules/swap/pure/SwapButtons'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useCurrencyBalances } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>

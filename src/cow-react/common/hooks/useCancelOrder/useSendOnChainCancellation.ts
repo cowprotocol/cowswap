@@ -4,6 +4,7 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'state/
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetOnChainCancellation } from './useGetOnChainCancellation'
+import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 
 export function useSendOnChainCancellation() {
   const { chainId } = useWalletInfo()
@@ -18,14 +19,20 @@ export function useSendOnChainCancellation() {
         return
       }
 
+      const isEthFlowOrder = getIsEthFlowOrder(order)
       const { sendTransaction } = await getOnChainCancellation(order)
 
       const receipt = await sendTransaction()
 
       if (receipt?.hash) {
         cancelPendingOrder({ id: order.id, chainId })
-        addTransaction({ hash: receipt.hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
         setOrderCancellationHash({ chainId, id: order.id, hash: receipt.hash })
+
+        if (isEthFlowOrder) {
+          addTransaction({ hash: receipt.hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
+        } else {
+          addTransaction({ hash: receipt.hash })
+        }
       }
     },
     [addTransaction, getOnChainCancellation, cancelPendingOrder, chainId, setOrderCancellationHash]

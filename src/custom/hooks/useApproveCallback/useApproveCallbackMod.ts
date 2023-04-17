@@ -6,8 +6,8 @@ import { Currency, CurrencyAmount /* , Percent, TradeType */ } from '@uniswap/sd
 // import { ApprovalState, useApproval } from 'lib/hooks/useApproval'
 import { useCallback, useMemo } from 'react'
 
-// import { TransactionType } from '../state/transactions/actions'
-// import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
+// import { TransactionType } from '../state/enhancedTransactions/actions'
+// import { useHasPendingApproval, useTransactionAdder } from '../state/enhancedTransactions/hooks'
 // export { ApprovalState } from 'lib/hooks/useApproval'
 
 // MOD imports

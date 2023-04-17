@@ -4,4 +4,4 @@ import { /*AppDispatch,*/ AppState } from 'state'
 // export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector
 
-export * from '@src/state/hooks'
+export * from '@src/custom/state/hooks'

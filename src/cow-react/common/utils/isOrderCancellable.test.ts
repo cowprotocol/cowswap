@@ -16,43 +16,58 @@ describe('isOrderCancellable', () => {
     expect(isOrderCancellable({ ...order, isCancelling: false })).toBe(true)
   })
 
-  describe('When is eth-flow order', () => {
-    it("And order's status is CREATING, then order is cancellable", () => {
-      const order = {
-        inputToken: NATIVE_CURRENCY_BUY_TOKEN[1], // Eth as input token
-        status: OrderStatus.CREATING, // <- CREATING
-        isCancelling: false,
-        cancellationHash: undefined,
-      } as Order
+  it('When an order has a cancellationHash, the it cannot be cancelled', () => {
+    const order = {
+      inputToken: COW[1],
+      status: OrderStatus.PENDING,
+      isCancelling: false,
+      cancellationHash: '0x0003', // <-----
+    } as Order
 
-      expect(isOrderCancellable(order)).toBe(true)
-      expect(isOrderCancellable({ ...order, status: OrderStatus.FULFILLED })).toBe(false)
-    })
-
-    it("And order's status is PENDING, then order is cancellable", () => {
-      const order = {
-        inputToken: NATIVE_CURRENCY_BUY_TOKEN[1], // Eth as input token
-        status: OrderStatus.PENDING, // <- PENDING
-        isCancelling: false,
-        cancellationHash: undefined,
-      } as Order
-
-      expect(isOrderCancellable(order)).toBe(true)
-      expect(isOrderCancellable({ ...order, status: OrderStatus.FAILED })).toBe(false)
-    })
+    expect(isOrderCancellable(order)).toBe(false)
+    expect(isOrderCancellable({ ...order, cancellationHash: undefined })).toBe(true)
   })
 
-  describe('When is not eth-flow order', () => {
-    it('And the is a cancellation hash, then order is NOT cancellable', () => {
+  it("When an order's status is CREATING, then the order is cancellable", () => {
+    const order = {
+      inputToken: NATIVE_CURRENCY_BUY_TOKEN[1],
+      status: OrderStatus.CREATING, // <- CREATING
+      isCancelling: false,
+      cancellationHash: undefined,
+    } as Order
+
+    expect(isOrderCancellable(order)).toBe(true)
+    expect(isOrderCancellable({ ...order, status: OrderStatus.FULFILLED })).toBe(false)
+  })
+
+  it("When an order's status is PENDING, then the order is cancellable", () => {
+    const order = {
+      inputToken: NATIVE_CURRENCY_BUY_TOKEN[1],
+      status: OrderStatus.PENDING, // <- PENDING
+      isCancelling: false,
+      cancellationHash: undefined,
+    } as Order
+
+    expect(isOrderCancellable(order)).toBe(true)
+    expect(isOrderCancellable({ ...order, status: OrderStatus.FAILED })).toBe(false)
+  })
+
+  it("When an order's status is not PENDING or CREATING, then the order is NOT cancellable", () => {
+    ;[
+      OrderStatus.FULFILLED,
+      OrderStatus.PRESIGNATURE_PENDING,
+      OrderStatus.FAILED,
+      OrderStatus.CANCELLED,
+      OrderStatus.EXPIRED,
+    ].forEach((status) => {
       const order = {
-        inputToken: COW[1],
-        status: OrderStatus.PENDING,
+        inputToken: NATIVE_CURRENCY_BUY_TOKEN[1],
+        status, // <----
         isCancelling: false,
-        cancellationHash: '0x0001', // <-----
+        cancellationHash: undefined,
       } as Order
 
       expect(isOrderCancellable(order)).toBe(false)
-      expect(isOrderCancellable({ ...order, cancellationHash: undefined })).toBe(true)
     })
   })
 })

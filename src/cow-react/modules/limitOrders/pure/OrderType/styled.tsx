@@ -7,35 +7,49 @@ export const Wrapper = styled.div`
   position: relative;
 `
 
-export const StyledMenuButton = styled(MenuButton)`
-  background: none;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  position: relative;
-
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  background: ${({ theme }) => theme.bg3};
-  padding: 4px 10px;
-  border-radius: 8px;
+export const LabelText = styled.span`
+  color: ${({ theme }) => theme.text1};
+  transition: color 0.15s ease-in-out;
 `
 
 export const StyledSVG = styled(SVG)`
-  stroke: ${({ theme }) => theme.text1};
-  margin-left: 5px;
-  width: 8px;
-  transition: all 0.15s ease-in;
+  --size: 10px;
+  margin: 0 0 0 5px;
+  width: var(--size);
+  height: var(--size);
+
+  > path {
+    fill: ${({ theme }) => theme.text1};
+    transition: fill 0.15s ease-in-out;
+  }
 
   &.expanded {
     transform: rotate(180deg);
   }
 `
 
-export const LabelText = styled.span`
-  color: ${({ theme }) => theme.text1};
+export const StyledMenuButton = styled(MenuButton)`
+  background: none;
+  border: none;
+  outline: none;
+  margin: 0;
+  position: relative;
+  cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
+  opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};
+  display: flex;
+  align-items: center;
+  background: ${({ theme }) => theme.bg3};
+  padding: 4px 10px;
+  border-radius: 8px;
+
+  &:hover {
+    background: ${({ theme }) => theme.bg2};
+
+    > ${LabelText}, > ${StyledSVG} > path {
+      fill: ${({ theme }) => theme.white};
+      color: ${({ theme }) => theme.white};
+    }
+  }
 `
 
 export const StyledMenuList = styled(MenuList)`
@@ -43,18 +57,25 @@ export const StyledMenuList = styled(MenuList)`
   background: ${({ theme }) => theme.bg1};
   border-radius: 8px;
   z-index: 2;
-  padding: 0.6rem 0.8rem;
   min-width: 100%;
   right: 0;
   position: absolute;
   white-space: nowrap;
   text-align: left;
+  padding: 6px;
 `
 
 export const StyledMenuItem = styled(MenuItem)`
+  padding: 6px 12px;
   color: ${({ theme }) => theme.text1};
-  font-size: 0.8rem;
+  font-size: 13px;
   cursor: pointer;
-  padding: 4px 0;
+  border-radius: 8px;
   font-weight: 400;
+  transition: background 0.1s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.bg2};
+    color: ${({ theme }) => theme.white};
+  }
 `

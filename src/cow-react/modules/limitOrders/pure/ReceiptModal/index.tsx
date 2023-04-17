@@ -47,8 +47,8 @@ const tooltips: { [key: string]: string | JSX.Element } = {
       set) or limit orders (which fill at a price you specify).
       <br />
       <br />
-      Market orders are always fill or kill, while limit orders are currently partially fillable. Soon it'll be possible
-      to chose the type
+      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
+      also be changed to <i>Fill or kill</i> through your order settings.
     </span>
   ),
 }
@@ -59,7 +59,6 @@ export function ReceiptModal({
   onDismiss,
   order,
   chainId,
-  sellAmount,
   buyAmount,
   limitPrice,
   executionPrice,
@@ -114,7 +113,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
-              <FilledField order={order} sellAmount={sellAmount} buyAmount={buyAmount} />
+              <FilledField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>

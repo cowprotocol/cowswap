@@ -6,7 +6,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 import { useRemovePopup } from '../../state/application/hooks'
 import { PopupContent } from '@src/state/application/reducer'
 import FailedNetworkSwitchPopup from '@src/components/Popups/FailedNetworkSwitchPopup'
-import TransactionPopup from './TransactionPopup'
+import TransactionPopup from '@src/custom/components/Popups/TransactionPopupMod'
 
 export const StyledClose = styled(X)`
   position: absolute;

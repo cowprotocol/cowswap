@@ -58,6 +58,7 @@ const Fixtures = {
       executionPrice={null}
       limitRateState={initLimitRateState()}
       partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
+      featurePartialFillsEnabled
     />
   ),
 }

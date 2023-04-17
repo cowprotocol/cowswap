@@ -12,7 +12,7 @@ import WalletConnectIcon from '@cow/modules/wallet/api/assets/walletConnectIcon.
 import FortmaticIcon from '@cow/modules/wallet/api/assets/formatic.png'
 import LedgerIcon from '@cow/modules/wallet/api/assets/ledger.svg'
 import TallyIcon from '@cow/modules/wallet/api/assets/tally.svg'
-import TrustIcon from '@cow/modules/wallet/api/assets/trust.png'
+import TrustIcon from '@cow/modules/wallet/api/assets/trust.svg'
 import KeystoneImage from '@cow/modules/wallet/api/assets/keystone.svg'
 import { Identicon } from '@cow/modules/wallet/api/container/Identicon'
 import { ActivityDescriptors } from 'hooks/useRecentActivity'
@@ -48,7 +48,12 @@ import { isMobile } from 'utils/userAgent'
 import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useDisconnectWallet } from '@cow/modules/wallet'
-import { getConnectionName, getIsCoinbaseWallet, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
+import {
+  getConnectionName,
+  getIsCoinbaseWallet,
+  getIsMetaMask,
+  getIsTrustWallet,
+} from '@cow/modules/wallet/api/utils/connection'
 import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/injected'
 import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 import { coinbaseWalletConnection } from '@cow/modules/wallet/web3-react/connection/coinbase'
@@ -104,12 +109,6 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
     )
   } else if (connectionType === injectedConnection) {
     return <Identicon size={size} />
-  } else if (connectionType === walletConnectConnection) {
-    return (
-      <IconWrapper size={16}>
-        <img src={WalletConnectIcon} alt={'Wallet connect logo'} />
-      </IconWrapper>
-    )
   } else if (connectionType === coinbaseWalletConnection) {
     return (
       <IconWrapper size={16}>
@@ -128,7 +127,7 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
         <img src={TallyIcon} alt={'Tally logo'} />
       </IconWrapper>
     )
-  } else if (connectionType === trustWalletConnection) {
+  } else if (connectionType === trustWalletConnection || getIsTrustWallet(null, walletDetails?.walletName)) {
     return (
       <IconWrapper size={16}>
         <img src={TrustIcon} alt={'Trust logo'} />
@@ -150,6 +149,12 @@ export function getStatusIcon(connector?: Connector | ConnectionType, walletDeta
     return (
       <IconWrapper size={16}>
         <img src={KeystoneImage} alt={'Keystone logo'} />
+      </IconWrapper>
+    )
+  } else if (connectionType === walletConnectConnection) {
+    return (
+      <IconWrapper size={16}>
+        <img src={WalletConnectIcon} alt={'Wallet connect logo'} />
       </IconWrapper>
     )
   }

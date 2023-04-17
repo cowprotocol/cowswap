@@ -1,8 +1,6 @@
 import { useWalletInfo } from '@cow/modules/wallet'
-import { TransactionResponse } from '@ethersproject/providers'
 import MerkleDistributorJson from '@uniswap/merkle-distributor/build/MerkleDistributor.json'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { MERKLE_DISTRIBUTOR_ADDRESS } from 'constants/addresses'
 import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
@@ -11,9 +9,6 @@ import { useEffect, useState } from 'react'
 import { UNI } from '../../constants/tokens'
 import { useContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
-import { calculateGasMargin } from '../../utils/calculateGasMargin'
-import { useTransactionAdder } from '../transactions/hooks'
-import { TransactionType } from '../transactions/types'
 
 const MERKLE_DISTRIBUTOR_ABI = MerkleDistributorJson.abi
 
@@ -152,39 +147,4 @@ export function useUserUnclaimedAmount(account: string | null | undefined): Curr
     return CurrencyAmount.fromRawAmount(uni, JSBI.BigInt(0))
   }
   return CurrencyAmount.fromRawAmount(uni, JSBI.BigInt(userClaimData.amount))
-}
-
-export function useClaimCallback(account: string | null | undefined): {
-  claimCallback: () => Promise<string>
-} {
-  // get claim data for this account
-  const { provider } = useWeb3React()
-  const { chainId } = useWalletInfo()
-  const claimData = useUserClaimData(account)
-
-  // used for popup summary
-  const unclaimedAmount: CurrencyAmount<Token> | undefined = useUserUnclaimedAmount(account)
-  const addTransaction = useTransactionAdder()
-  const distributorContract = useMerkleDistributorContract()
-
-  const claimCallback = async function () {
-    if (!claimData || !account || !provider || !chainId || !distributorContract) return
-
-    const args = [claimData.index, account, claimData.amount, claimData.proof]
-
-    return distributorContract.estimateGas['claim'](...args, {}).then((estimatedGasLimit) => {
-      return distributorContract
-        .claim(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            type: TransactionType.CLAIM,
-            recipient: account,
-            uniAmountRaw: unclaimedAmount?.quotient.toString(),
-          })
-          return response.hash
-        })
-    })
-  }
-
-  return { claimCallback }
 }
