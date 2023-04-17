@@ -1,21 +1,13 @@
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
-// import { setupListeners } from '@reduxjs/toolkit/query/react'
 import multicall from 'lib/state/multicall'
 import { load, save } from 'redux-localstorage-simple'
 
 import application from 'state/application/reducer'
-// import burn from './burn/reducer'
-// import burnV3 from './burn/v3/reducer'
 import connection from 'state/connection/reducer'
-// import { api as dataApi } from './data/slice'
 import { updateVersion } from 'state/global/actions'
 import lists from 'state/lists/reducer'
 import logs from 'state/logs/slice'
-// import mint from './mint/reducer'
-// import mintV3 from './mint/v3/reducer'
-// import { routingApi } from './routing/slice'
 import swap from 'state/swap/reducer'
-// import transactions from './transactions/reducer'
 import user from 'state/user/reducer'
 
 // MOD imports
@@ -37,17 +29,9 @@ const UNISWAP_REDUCERS = {
   application,
   user,
   connection,
-  // transactions,
   swap,
-  /* mint,
-  mintV3,
-  burn,
-  burnV3, */
   multicall: multicall.reducer,
-  // lists,
   logs,
-  /* [dataApi.reducerPath]: dataApi.reducer,
-  [routingApi.reducerPath]: routingApi.reducer, */
 }
 
 const reducers = {
@@ -69,8 +53,6 @@ const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: true, serializableCheck: false })
-      // .concat(dataApi.middleware)
-      // .concat(routingApi.middleware)
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
       .concat(popupMiddleware)
       .concat(cowTokenMiddleware)
@@ -88,10 +70,5 @@ store.dispatch(updateVersion({ chainId: DEFAULT_NETWORK_FOR_LISTS }))
 
 export default store
 
-// need to AppState derive from something other than store
-// otherwise get circular reference
-// if we want to use AppState in Middleware<, AppState>
-// TODO: the original does not do that, maybe no longer needed?
-// export type AppState = ReturnType<typeof store.getState>
 export type AppState = StateFromReducersMapObject<typeof reducers>
 export type AppDispatch = typeof store.dispatch

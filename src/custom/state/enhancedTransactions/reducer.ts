@@ -7,9 +7,9 @@ import {
   replaceTransaction,
   updateSafeTransaction,
   ReplacementType,
+  SerializableTransactionReceipt,
 } from 'state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
-import { SerializableTransactionReceipt } from '@src/state/transactions/types'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
 export enum HashType {

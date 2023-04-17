@@ -1,3 +1,4 @@
+import { TokenAmounts } from '@cow/modules/tokens'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
 import { useMemo } from 'react'
@@ -14,12 +15,10 @@ function balanceComparator(a?: CurrencyAmount<Currency>, b?: CurrencyAmount<Curr
   return 0
 }
 
-type TokenBalances = { [tokenAddress: string]: CurrencyAmount<Token> | undefined }
-
 /** Sorts tokens by currency amount (descending), then symbol (ascending). */
-export function tokenComparator(balances: TokenBalances, a: Token, b: Token) {
+export function tokenComparator(balances: TokenAmounts, a: Token, b: Token) {
   // Sorts by balances
-  const balanceComparison = balanceComparator(balances[a.address], balances[b.address])
+  const balanceComparison = balanceComparator(balances[a.address]?.value, balances[b.address]?.value)
   if (balanceComparison !== 0) return balanceComparison
 
   // Sorts by symbol

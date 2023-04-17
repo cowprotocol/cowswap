@@ -3,7 +3,7 @@ import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLim
 import { useCallback, useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { OrdersReceiptModal } from '@cow/modules/limitOrders/containers/OrdersReceiptModal'
-import { useOrdersBalancesAndAllowances } from './hooks/useOrdersBalancesAndAllowances'
+import { useBalancesAndAllowances } from '@cow/modules/tokens'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from '@cow/modules/limitOrders/utils/buildLimitOrdersUrl'
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from '@cow/modules/limitOrders/const/limitOrdersTabs'
@@ -19,6 +19,7 @@ import { Order } from 'state/orders/actions'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
 import styled from 'styled-components/macro'
 import { MultipleCancellationMenu } from '@cow/modules/limitOrders/containers/OrdersWidget/MultipleCancellationMenu'
+import { useInputTokensFromOrders } from '@cow/modules/orders'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
@@ -73,12 +74,12 @@ export function OrdersWidget() {
   }, [currentTabId, ordersList])
 
   const isOpenOrdersTab = useMemo(() => OPEN_TAB.id === currentTabId, [currentTabId])
-  const pendingBalancesAndAllowances = useOrdersBalancesAndAllowances(
-    // Request balances and allowances only for the open orders tab
-    isOpenOrdersTab ? account : undefined,
-    spender,
-    ordersList.pending
-  )
+
+  // Get tokens from pending orders (only if the OPEN orders tab is opened)
+  const tokens = useInputTokensFromOrders(isOpenOrdersTab ? ordersList.pending : [])
+
+  // Get effective balance
+  const balancesAndAllowances = useBalancesAndAllowances({ account, spender, tokens })
 
   const toggleAllOrdersForCancellation = useCallback(
     (checked: boolean) => {
@@ -121,7 +122,7 @@ export function OrdersWidget() {
           isOpenOrdersTab={isOpenOrdersTab}
           currentPageNumber={currentPageNumber}
           pendingOrdersPrices={pendingOrdersPrices}
-          balancesAndAllowances={pendingBalancesAndAllowances}
+          balancesAndAllowances={balancesAndAllowances}
           isWalletConnected={!!account}
           orderActions={orderActions}
           getSpotPrice={getSpotPrice}

@@ -1,5 +1,5 @@
 /**
- * This file is basically a Mod of src/state/transactions/updater
+ * This file is basically a Mod of src/state/enhancedTransactions/updater
  */
 
 import { useEffect, useMemo } from 'react'

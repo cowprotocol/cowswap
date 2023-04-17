@@ -30,10 +30,11 @@ function SettingsBox({ title, tooltip, value, toggle, disabled = false }: Settin
 
 export interface SettingsProps {
   state: LimitOrdersSettingsState
+  featurePartialFillsEnabled: boolean
   onStateChanged: (state: Partial<LimitOrdersSettingsState>) => void
 }
 
-export function Settings({ state, onStateChanged }: SettingsProps) {
+export function Settings({ state, featurePartialFillsEnabled, onStateChanged }: SettingsProps) {
   const { expertMode, showRecipient, partialFillsEnabled } = state
 
   return (
@@ -60,13 +61,14 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
             Allow you to chose whether your limit orders will be <i>Partially fillable</i> or <i>Fill or kill</i>.
             <br />
             <br />
-            <i>Fill-or-kill</i> orders will either be filled fully or not at all.
+            <i>Fill or kill</i> orders will either be filled fully or not at all.
             <br />
             <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill the full
             amount.
           </>
         }
-        value={partialFillsEnabled}
+        disabled={!featurePartialFillsEnabled}
+        value={featurePartialFillsEnabled && partialFillsEnabled}
         toggle={() => onStateChanged({ partialFillsEnabled: !partialFillsEnabled })}
       />
     </styledEl.SettingsContainer>

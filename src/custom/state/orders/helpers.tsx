@@ -12,7 +12,7 @@ interface SetOrderSummaryParams {
   id: string
   status?: OrderStatusExtended
   summary?: string | JSX.Element
-  descriptor?: string
+  descriptor?: string | null
 }
 
 // what is passed to addPopup action
@@ -49,11 +49,22 @@ type MetaPopupContent = GPPopupContent<OrderTxTypes.METATXN>
 type TxnPopupContent = GPPopupContent<OrderTxTypes.TXN>
 
 function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
-  return !summary
-    ? `Order ${formatOrderId(id)} ${descriptor || status || ''}`
-    : typeof summary === 'string'
-    ? `${summary} ${descriptor || status || ''}`
-    : summary
+  // If there isn't summary, return generalized summary
+  if (!summary) {
+    return `Order ${formatOrderId(id)} ${descriptor || status || ''}`
+  }
+
+  if (typeof summary === 'string') {
+    // If descriptor is specifically null, just return summary
+    if (descriptor === null) {
+      return summary
+    }
+
+    // Otherwise return summary with descriptor or status
+    return `${summary} ${descriptor || status || ''}`
+  }
+
+  return summary
 }
 
 const Wrapper = styled.div`
