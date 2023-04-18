@@ -24,7 +24,6 @@ export const FAQ_MENU: InternalLink[] = [
   { id: MainMenuItemId.FAQ_PROTOCOL, title: 'Protocol', url: Routes.FAQ_PROTOCOL },
   { id: MainMenuItemId.FAQ_TOKEN, title: 'Token', url: Routes.FAQ_TOKEN },
   { id: MainMenuItemId.FAQ_TRADING, title: 'Trading', url: Routes.FAQ_TRADING },
-  { id: MainMenuItemId.FAQ_AFFILIATE, title: 'Affiliate', url: Routes.FAQ_AFFILIATE },
   { id: MainMenuItemId.FAQ_LIMIT_ORDERS, title: 'Limit orders', url: Routes.FAQ_LIMIT_ORDERS },
   { id: MainMenuItemId.FAQ_ETH_FLOW, title: 'Selling Native tokens', url: Routes.FAQ_ETH_FLOW },
 ]

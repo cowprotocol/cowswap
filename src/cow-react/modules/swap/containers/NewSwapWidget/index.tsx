@@ -34,7 +34,6 @@ import {
   NewSwapWarningsTopProps,
 } from '@cow/modules/swap/pure/warnings'
 import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates'
-import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 import { useSetupTradeState } from '@cow/modules/trade'
@@ -204,7 +203,6 @@ export function NewSwapWidget() {
     <>
       <styledEl.Container id="new-swap-widget">
         <NewSwapModals {...swapModalsProps} />
-        <AffiliateStatusCheck />
         <styledEl.ContainerBox id="swap-page">
           <SwapForm {...swapFormProps} />
           {showTradeRates && <TradeRates {...tradeRatesProps} />}

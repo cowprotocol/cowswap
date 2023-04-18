@@ -4,7 +4,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { APP_DATA_HASH } from 'constants/index'
 import { buildAppData, BuildAppDataParams } from 'utils/appData'
 import { appDataInfoAtom } from 'state/appData/atoms'
-import { useReferralAddress } from 'state/affiliate/hooks'
 import { useAppCode } from 'hooks/useAppCode'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useUpdateAtom } from 'jotai/utils'
@@ -22,10 +21,6 @@ export type UseAppDataParams = {
 export function useAppData({ chainId, slippageBips, orderClass }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useUpdateAtom(appDataInfoAtom)
-  // Referrer address, from Redux
-  const referrer = useReferralAddress()
-  // De-normalizing as we only care about the address if it's set, valid and active
-  const referrerAccount = referrer?.value && referrer?.isActive && referrer?.isValid ? referrer.value : undefined
   // AppCode is dynamic and based on how it's loaded (if used as a Gnosis Safe app)
   const appCode = useAppCode()
 
@@ -36,7 +31,7 @@ export function useAppData({ chainId, slippageBips, orderClass }: UseAppDataPara
       return
     }
 
-    const params: BuildAppDataParams = { chainId, slippageBips, referrerAccount, appCode, orderClass }
+    const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass }
 
     const updateAppData = async (): Promise<void> => {
       try {
@@ -58,5 +53,5 @@ export function useAppData({ chainId, slippageBips, orderClass }: UseAppDataPara
     }
 
     updateAppData()
-  }, [appCode, chainId, referrerAccount, setAppDataInfo, slippageBips, orderClass])
+  }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass])
 }
