@@ -51,7 +51,7 @@ export const WBTC_GNOSIS_CHAIN = new Token(
 export const WETH_GNOSIS_CHAIN = new Token(
   ChainId.GNOSIS_CHAIN,
   '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
-  8,
+  18,
   'WETH',
   'Wrapped Ether on Gnosis Chain'
 )
