@@ -106,38 +106,40 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
       {isUnfillable ? (
         <UnfillableLabel>UNFILLABLE</UnfillableLabel>
       ) : (
-        <MouseoverTooltipContent
-          wrap={true}
-          content={
-            <styledEl.ExecuteInformationTooltip>
-              {!isNegativeDifference ? (
-                <>
-                  Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
-                  <b>
-                    <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
-                  </b>
-                  &nbsp;
-                  <span>
-                    (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
-                  </span>
-                  &nbsp;to execute your order.
-                </>
-              ) : (
-                <>Will execute soon!</>
-              )}
-            </styledEl.ExecuteInformationTooltip>
-          }
-          placement="top"
-        >
-          {isUnfillable ? (
-            <UnfillableLabel>UNFILLABLE</UnfillableLabel>
-          ) : (
-            <>
-              <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-              <TokenAmount amount={amount} {...rest} />
-            </>
-          )}
-        </MouseoverTooltipContent>
+        absoluteDifferenceAmount && (
+          <MouseoverTooltipContent
+            wrap={true}
+            content={
+              <styledEl.ExecuteInformationTooltip>
+                {!isNegativeDifference ? (
+                  <>
+                    Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
+                    <b>
+                      <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
+                    </b>
+                    &nbsp;
+                    <span>
+                      (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
+                    </span>
+                    &nbsp;to execute your order.
+                  </>
+                ) : (
+                  <>Will execute soon!</>
+                )}
+              </styledEl.ExecuteInformationTooltip>
+            }
+            placement="top"
+          >
+            {isUnfillable ? (
+              <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+            ) : (
+              <>
+                <styledEl.ExecuteIndicator status={orderExecutionStatus} />
+                <TokenAmount amount={amount} {...rest} />
+              </>
+            )}
+          </MouseoverTooltipContent>
+        )
       )}
       {feeWarning && !isNegativeDifference && (
         <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />
