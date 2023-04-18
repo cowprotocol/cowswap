@@ -102,6 +102,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
         />
       )}
 
+      {/*// TODO: must be replaced by <NotificationBanner>*/}
       {showHighFeeWarning && (
         <styledEl.SmallVolumeWarningBanner>
           <SVG src={AlertTriangle} description="Alert" />

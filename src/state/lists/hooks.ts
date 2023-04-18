@@ -1,22 +1,17 @@
 import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 import { useMemo } from 'react'
-import { useAppSelector } from '@src/state/hooks'
 
 import sortByListPriority from 'utils/listSort'
 
-import BROKEN_LIST from '../../constants/tokenLists/broken.tokenlist.json'
-import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/unsupported.tokenlist.json'
-import { AppState } from '@src/state'
-import { UNSUPPORTED_LIST_URLS } from './../../constants/lists'
+import BROKEN_LIST from 'constants/tokenLists/broken.tokenlist.json'
+import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/unsupported.tokenlist.json'
+import { UNSUPPORTED_LIST_URLS } from 'constants/lists'
+import { useActiveListUrls, useAllLists } from 'state/lists/hooks'
 
 export type TokenAddressMap = ChainTokenMap
 
 type Mutable<T> = {
   -readonly [P in keyof T]: Mutable<T[P]>
-}
-
-export function useAllLists(): AppState['lists']['byUrl'] {
-  return useAppSelector((state) => state.lists.byUrl)
 }
 
 /**
@@ -68,21 +63,6 @@ export function useCombinedTokenMapFromUrls(urls: string[] | undefined): TokenAd
   }, [lists, urls])
 }
 
-// filter out unsupported lists
-export function useActiveListUrls(): string[] | undefined {
-  const activeListUrls = useAppSelector((state) => state.lists.activeListUrls)
-  return useMemo(() => activeListUrls?.filter((url) => !UNSUPPORTED_LIST_URLS.includes(url)), [activeListUrls])
-}
-
-export function useInactiveListUrls(): string[] {
-  const lists = useAllLists()
-  const allActiveListUrls = useActiveListUrls()
-  return useMemo(
-    () => Object.keys(lists).filter((url) => !allActiveListUrls?.includes(url) && !UNSUPPORTED_LIST_URLS.includes(url)),
-    [lists, allActiveListUrls]
-  )
-}
-
 // get all the tokens from active lists, combine with local default tokens
 export function useCombinedActiveList(): TokenAddressMap {
   const activeListUrls = useActiveListUrls()
@@ -99,7 +79,7 @@ export function useUnsupportedTokenList(): TokenAddressMap {
   const localUnsupportedListMap = useMemo(() => tokensToChainTokenMap(UNSUPPORTED_TOKEN_LIST), [])
 
   // get dynamic list of unsupported tokens
-  const loadedUnsupportedListMap = useCombinedTokenMapFromUrls(UNSUPPORTED_LIST_URLS)
+  const loadedUnsupportedListMap = useCombinedTokenMapFromUrls(UNSUPPORTED_LIST_URLS[1])
 
   // format into one token address map
   return useMemo(

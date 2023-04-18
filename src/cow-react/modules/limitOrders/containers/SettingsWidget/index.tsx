@@ -10,11 +10,13 @@ import { ExpertModeModal } from '@cow/common/pure/ExpertModeModal'
 import React, { useCallback, useState } from 'react'
 import * as styledEl from './styled'
 import { useAtomValue } from 'jotai/utils'
+import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
 
 export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const [showExpertConfirm, setShowExpertConfirm] = useState(false)
+  const { partialFillsEnabled } = useFeatureFlags()
 
   const onStateChanged = useCallback(
     (state: Partial<LimitOrdersSettingsState>) => {
@@ -54,7 +56,11 @@ export function SettingsWidget() {
         </styledEl.SettingsButton>
         <styledEl.MenuContent>
           <MenuItem disabled={true} onSelect={() => void 0}>
-            <Settings state={settingsState} onStateChanged={onStateChanged} />
+            <Settings
+              state={settingsState}
+              onStateChanged={onStateChanged}
+              featurePartialFillsEnabled={partialFillsEnabled}
+            />
           </MenuItem>
         </styledEl.MenuContent>
       </Menu>

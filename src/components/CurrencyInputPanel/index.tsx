@@ -11,7 +11,6 @@ import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import useTheme from '../../hooks/useTheme'
-import { useCurrencyBalance } from '../../state/connection/hooks'
 import { ThemedText } from '../../theme'
 import { ButtonGray } from '../Button'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -21,6 +20,7 @@ import { RowBetween, RowFixed } from '../Row'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { FiatValue } from 'components/CurrencyInputPanel/FiatValue'
 import { useWalletInfo } from '@cow/modules/wallet'
+import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}

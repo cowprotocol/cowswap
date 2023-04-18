@@ -20,13 +20,23 @@ const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
  * @param params allows to define the optional rate limit, and the back-off strategy
  * @returns the fetch function that would do the rate-limitted requests
  */
+// Types reference: https://stackoverflow.com/questions/55059436/typescript-conditional-return-type-based-on-string-argument
 export function fetchWithRateLimit(
   params?: FetchWithRateLimit
-): (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> {
+): <T extends (RequestInfo | URL) | (() => Promise<any>)>(
+  input: T,
+  init?: RequestInit
+) => T extends () => infer R ? R : Promise<Response>
+export function fetchWithRateLimit(
+  params?: FetchWithRateLimit
+): (
+  input: RequestInfo | URL | (() => Promise<any>),
+  init?: RequestInit
+) => typeof input extends () => infer R ? R : Promise<Response> {
   const { backoff, rateLimit } = params || {}
 
   // optionally rate limit
-  let limiter = rateLimit ? new RateLimiter(rateLimit) : undefined
+  const limiter = rateLimit ? new RateLimiter(rateLimit) : undefined
 
   return (input, init) =>
     backOff(
@@ -34,6 +44,11 @@ export function fetchWithRateLimit(
         if (limiter) {
           await limiter.removeTokens(1)
         }
+
+        if (typeof input === 'function') {
+          return input()
+        }
+
         return fetch(input, init)
       },
       { ...DEFAULT_BACKOFF_OPTIONS, ...backoff }

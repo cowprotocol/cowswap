@@ -15,11 +15,11 @@ import { isRejectRequestProviderError } from '../utils/misc'
 import { wrapAnalytics } from 'components/analytics'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useCloseModals } from 'state/application/hooks'
-import { useCurrencyBalance } from 'state/connection/hooks'
 import { useTransactionConfirmModal } from '@cow/modules/swap/hooks/useTransactionConfirmModal'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { useWalletInfo } from '@cow/modules/wallet'
+import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')

@@ -43,6 +43,9 @@ import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
+import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
+import { useAtom } from 'jotai'
+import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -67,7 +70,7 @@ export function LimitOrdersWidget() {
   const onCurrencySelection = useOnCurrencySelection()
   const onImportDismiss = useOnImportDismiss()
   const limitOrdersNavigate = useTradeNavigate()
-  const settingState = useAtomValue(limitOrdersSettingsAtom)
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const isSellOrder = useIsSellOrder()
   const tradeContext = useTradeFlowContext()
@@ -76,15 +79,17 @@ export function LimitOrdersWidget() {
   const { isLoading: isRateLoading, activeRate, feeAmount } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const { isWrapOrUnwrap } = useDetectNativeToken()
+  const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
+  const { partialFillsEnabled } = useFeatureFlags()
 
   const showRecipient = useMemo(
-    () => !isWrapOrUnwrap && settingState.showRecipient,
-    [settingState.showRecipient, isWrapOrUnwrap]
+    () => !isWrapOrUnwrap && settingsState.showRecipient,
+    [settingsState.showRecipient, isWrapOrUnwrap]
   )
 
   const isExpertMode = useMemo(
-    () => !isWrapOrUnwrap && settingState.expertMode,
-    [isWrapOrUnwrap, settingState.expertMode]
+    () => !isWrapOrUnwrap && settingsState.expertMode,
+    [isWrapOrUnwrap, settingsState.expertMode]
   )
 
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
@@ -176,9 +181,12 @@ export function LimitOrdersWidget() {
     onSwitchTokens,
     onCurrencySelection,
     onImportDismiss,
+    partiallyFillableOverride,
+    featurePartialFillsEnabled: partialFillsEnabled,
     rateInfoParams,
     priceImpact,
     tradeContext,
+    settingsState,
     feeAmount,
   }
 
@@ -204,6 +212,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     onSwitchTokens,
     onCurrencySelection,
     onImportDismiss,
+    partiallyFillableOverride,
+    featurePartialFillsEnabled,
     allowsOffchainSigning,
     isWrapOrUnwrap,
     showRecipient,
@@ -213,6 +223,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     rateInfoParams,
     priceImpact,
     tradeContext,
+    settingsState,
     feeAmount,
   } = props
 
@@ -228,7 +239,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const currenciesLoadingInProgress = false
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
-  const isPartiallyFillable = !!tradeContext?.postOrderParams.partiallyFillable
+  const isPartiallyFillable = featurePartialFillsEnabled && settingsState.partialFillsEnabled
 
   const subsidyAndBalance: BalanceAndSubsidy = {
     subsidy: {
@@ -311,7 +322,11 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
               {isExpertMode && (
                 <styledEl.FooterBox>
-                  <styledEl.StyledOrderType isPartiallyFillable={isPartiallyFillable} />
+                  <styledEl.StyledOrderType
+                    isPartiallyFillable={isPartiallyFillable}
+                    partiallyFillableOverride={partiallyFillableOverride}
+                    featurePartialFillsEnabled={featurePartialFillsEnabled}
+                  />
                 </styledEl.FooterBox>
               )}
 

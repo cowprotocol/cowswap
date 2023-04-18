@@ -4,14 +4,13 @@ import { SupportedChainId } from '@src/constants/chains'
 import { ARBITRUM_LIST, CELO_LIST, OPTIMISM_LIST, UNSUPPORTED_LIST_URLS } from '@src/constants/lists'
 import useInterval from 'lib/hooks/useInterval'
 import { useCallback, useEffect } from 'react'
-import { useAppDispatch } from '@src/state/hooks'
-import { useAllLists } from 'state/lists/hooks'
+import { useAppDispatch } from '@src/custom/state/hooks'
+import { useActiveListUrls, useAllLists } from 'state/lists/hooks'
 
 import { isCelo } from '../../constants/tokens'
 import { useFetchListCallback } from '../../hooks/useFetchListCallback'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { acceptListUpdate, enableList } from './actions'
-import { useActiveListUrls } from './hooks'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 export default function Updater(): null {

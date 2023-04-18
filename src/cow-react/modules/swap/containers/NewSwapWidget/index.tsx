@@ -15,7 +15,6 @@ import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
 import { useShowRecipientControls } from '@cow/modules/swap/hooks/useShowRecipientControls'
 import usePriceImpact from 'hooks/usePriceImpact'
 import { useTradePricesUpdate } from '@cow/modules/swap/hooks/useTradePricesUpdate'
-import { useCurrencyBalance } from 'state/connection/hooks'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from 'state/swap/actions'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
@@ -44,6 +43,7 @@ import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwapAmountsFromUrl'
 import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
 import { formatInputAmount } from '@cow/utils/amountFormat'
+import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 export function NewSwapWidget() {
   useSetupTradeState()

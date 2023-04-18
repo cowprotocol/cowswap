@@ -12,6 +12,7 @@ import React from 'react'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { SetStateAction } from 'jotai'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -25,6 +26,7 @@ const inputCurrencyInfo: CurrencyInfo = {
     amountAfterFees: '20',
     amountAfterFeesRaw: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
     feeAmount: '10',
+    feeAmountRaw: CurrencyAmount.fromRawAmount(inputCurrency, 10 * 10 ** 18),
   },
   currency: inputCurrency,
   balance: CurrencyAmount.fromRawAmount(inputCurrency, 250 * 10 ** 18),
@@ -41,6 +43,7 @@ const outputCurrencyInfo: CurrencyInfo = {
     amountAfterFees: '20',
     amountAfterFeesRaw: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
     feeAmount: '10',
+    feeAmountRaw: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
   },
   currency: outputCurrency,
   balance: CurrencyAmount.fromRawAmount(outputCurrency, 250 * 10 ** 18),
@@ -108,6 +111,8 @@ const Fixtures = {
       warningsAccepted={true}
       executionPrice={null}
       onConfirm={() => void 0}
+      partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
+      featurePartialFillsEnabled
     />
   ),
 }

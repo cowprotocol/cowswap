@@ -17,7 +17,17 @@ export type CancellationModalProps = {
 
 export function CancellationModal(props: CancellationModalProps): JSX.Element | null {
   const { isOpen, onDismiss, context } = props
-  const { chainId, orderId, summary, error, type, isPendingSignature, triggerCancellation } = context
+  const {
+    chainId,
+    orderId,
+    summary,
+    error,
+    defaultType,
+    isPendingSignature,
+    triggerCancellation,
+    txCost,
+    nativeCurrency,
+  } = context
 
   const shortId = shortenOrderId(orderId || '')
 
@@ -52,11 +62,25 @@ export function CancellationModal(props: CancellationModalProps): JSX.Element | 
           triggerCancellation={triggerCancellation}
           summary={summary ?? ''}
           shortId={shortId}
-          type={type === 'offChain' ? type : 'onChain'}
+          defaultType={defaultType}
+          txCost={txCost}
+          nativeCurrency={nativeCurrency}
         />
       )
     }
-  }, [triggerCancellation, chainId, orderId, error, type, onDismiss, isPendingSignature, summary, shortId])
+  }, [
+    triggerCancellation,
+    chainId,
+    orderId,
+    error,
+    defaultType,
+    onDismiss,
+    isPendingSignature,
+    summary,
+    shortId,
+    txCost,
+    nativeCurrency,
+  ])
 
   return (
     content && (

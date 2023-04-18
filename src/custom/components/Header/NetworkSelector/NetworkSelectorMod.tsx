@@ -31,6 +31,7 @@ import { useRemovePopup, useAddPopup } from 'state/application/hooks'
 import { useTradeTypeInfo } from '@cow/modules/trade'
 import { useMediaQuery, upToMedium } from 'hooks/useMediaQuery'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { getIsTallyWallet } from '@cow/modules/wallet/api/utils/connection'
 
 export const ActiveRowLinkList = styled.div`
   display: flex;
@@ -371,6 +372,8 @@ export default function NetworkSelector() {
   const isSmartContractWallet = useIsSmartContractWallet() // mod
   const isUnsupportedNetwork = !supportedChainId(chainId)
 
+  const isTallyWallet = getIsTallyWallet(provider?.provider)
+
   // MOD - to keep track of the switching in progress and avoid race conditions
   const isSwitching = useRef(false)
 
@@ -477,7 +480,7 @@ export default function NetworkSelector() {
   // Mod: Detect viewport changes and set isUpToMedium
   const isUpToMedium = useMediaQuery(upToMedium)
 
-  if (!chainId || !provider || isSmartContractWallet) {
+  if (!chainId || !provider || isSmartContractWallet || isTallyWallet) {
     return null
   }
 

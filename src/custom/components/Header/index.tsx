@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Routes } from '@cow/constants/routes'
 import { useNavigate } from 'react-router-dom'
-import { useNativeCurrencyBalances } from 'state/connection/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
 
@@ -38,6 +37,7 @@ import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useNativeCurrencyBalances } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   // [ChainId.RINKEBY]: 'Rinkeby',

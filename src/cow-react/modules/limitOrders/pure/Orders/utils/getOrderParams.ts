@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { BalancesAndAllowances } from '@cow/modules/tokens'
 import { Order } from 'state/orders/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
@@ -31,8 +31,8 @@ export function getOrderParams(
   }
 
   const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address]
-  const allowance = allowances[order.inputToken.address]
+  const balance = balances[order.inputToken.address]?.value
+  const allowance = allowances[order.inputToken.address]?.value
 
   let hasEnoughBalance, hasEnoughAllowance
 
