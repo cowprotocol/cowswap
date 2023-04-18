@@ -30,13 +30,14 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
   useEffect(() => {
     const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)
     const outputCurrencyIsDoubled = checkTokensWithSameSymbol(outputCurrencyId)
+    let timeoutId: NodeJS.Timeout | null = null
 
     if (chainId && (inputCurrencyIsDoubled || outputCurrencyIsDoubled)) {
       const doubledSymbol = inputCurrencyIsDoubled ? inputCurrencyId : outputCurrencyId
 
       // TODO: add UI modal instead of alert
       // Show alert in 500ms to avoid glitch with transparent Import token modal
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         alert(alertMessage(doubledSymbol || ''))
       }, 500)
 
@@ -45,6 +46,12 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
         inputCurrencyId: defaultState.inputCurrencyId,
         outputCurrencyId: defaultState.outputCurrencyId,
       })
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
     }
   }, [navigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
 }
