@@ -30,7 +30,8 @@ export function useSetupTradeState(): void {
   const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
 
   const chainIdIsNotSupported = !isSupportedChainId(urlChainId)
-  const currentChainId = !urlChainId || chainIdIsNotSupported ? SupportedChainId.MAINNET : urlChainId
+  const currentChainId =
+    !urlChainId || chainIdIsNotSupported ? prevProviderChainId || SupportedChainId.MAINNET : urlChainId
 
   /**
    * On URL parameter changes
