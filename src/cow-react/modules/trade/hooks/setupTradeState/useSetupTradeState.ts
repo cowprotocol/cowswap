@@ -20,7 +20,9 @@ export function useSetupTradeState(): void {
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
 
-  // SPECIAL CASE (read more bellow)
+  // When wallet is connected, and user navigates to the URL with a new chainId
+  // We must change chainId in provider, and only then change the trade state
+  // Since the network chaning process takes some time, we have to remember the state from URL
   const [rememberedUrlState, setRememberedUrlState] = useState<TradeState | null>(null)
 
   const isWalletConnected = !!account
@@ -33,14 +35,14 @@ export function useSetupTradeState(): void {
   /**
    * On URL parameter changes
    *
-   * 1. SPECIAL CASE, when URL was changed while wallet is connected (read about it bellow)
+   * 1. The case, when chainId in URL was changed while wallet is connected (read about it bellow)
    * 2. When chainId in URL is invalid, then redirect to the default chainId
    * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
    * 4. When URL doesn't contain both tokens, then redirect to the default state
    * 5. When only chainId was changed in URL, then redirect to the default state
    * 6. Otherwise, fill the trade state by data from URL
    *
-   * *** SPECIAL CASE ***
+   * *** When chainId in URL was changed while wallet is connected ***
    * Imagine a case:
    *  - user connected a wallet with chainId = 1, URL looks like /1/swap/WETH
    *  - user changed URL to /100/USDC/COW
@@ -55,7 +57,7 @@ export function useSetupTradeState(): void {
    *  - apply the URL changes only if user accepted network changes in the wallet
    */
   useEffect(() => {
-    // Do nothing while SPECIAL CASE
+    // Do nothing while network change in progress
     if (rememberedUrlState) return
 
     const { inputCurrencyId, outputCurrencyId } = tradeStateFromUrl
@@ -73,7 +75,7 @@ export function useSetupTradeState(): void {
 
     const defaultState = getDefaultTradeState(currentChainId)
 
-    // SPECIAL CASE
+    // Applying of the remembered state after network successfully changed
     if (isWalletConnected && providerAndUrlChainIdMismatch && prevTradeStateFromUrl) {
       setRememberedUrlState(tradeStateFromUrl)
       tradeNavigate(prevTradeStateFromUrl.chainId, prevTradeStateFromUrl)
@@ -113,7 +115,7 @@ export function useSetupTradeState(): void {
    * On:
    *  - chainId in URL changes
    *  - connector changes
-   *  - SPECIAL CASE (rememberedUrlState)
+   *  - (rememberedUrlState)
    *
    * Note: useEagerlyConnect() changes connectors several times at the beginning
    *
@@ -135,7 +137,7 @@ export function useSetupTradeState(): void {
     })
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { connector, urlChainId })
-    // Triggering only when chainId in URL is changes and when connector is changed
+    // Triggering only when chainId in URL is changes, connector is changed or rememberedUrlState is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connector, urlChainId, rememberedUrlState])
 
@@ -144,7 +146,7 @@ export function useSetupTradeState(): void {
    *
    * 1. Do nothing, when provider's chainId matches to the chainId from URL, or it's not supported
    * 2. Navigate to the new chainId with default tokens
-   * 3. SPECIAL CASE: if the URL state was remembered, then put it into URL
+   * 3. If the URL state was remembered, then put it into URL
    */
   useEffect(() => {
     if (providerChainId === urlChainId) return
