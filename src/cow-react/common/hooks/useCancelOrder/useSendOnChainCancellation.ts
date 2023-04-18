@@ -31,7 +31,7 @@ export function useSendOnChainCancellation() {
         if (isEthFlowOrder) {
           addTransaction({ hash: receipt.hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
         } else {
-          addTransaction({ hash: receipt.hash })
+          addTransaction({ hash: receipt.hash, onChainCancellation: { orderId: order.id } })
         }
       }
     },
