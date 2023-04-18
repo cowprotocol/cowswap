@@ -2,6 +2,8 @@ import { Orders } from './index'
 import { OrderTab } from './OrdersTabs'
 import { ordersMock } from './orders.mock'
 import { BalancesAndAllowances } from '@cow/modules/tokens'
+import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
+import { UID } from '@cowprotocol/cow-sdk'
 
 const tabs: OrderTab[] = [
   {
@@ -24,6 +26,24 @@ const balancesAndAllowances: BalancesAndAllowances = {
   isLoading: false,
 }
 
+const orderActions: LimitOrderActions = {
+  getShowCancellationModal: (order) => {
+    if (order.status === 'pending') {
+      return () => alert('cancelling!')
+    }
+    return null
+  },
+  selectReceiptOrder(orderUid: UID) {
+    console.log('selectReceiptOrder', orderUid)
+  },
+  toggleOrderForCancellation(order) {
+    console.log('toggleOrderForCancellation', order)
+  },
+  toggleOrdersForCancellation() {
+    console.log('toggleAllOrdersForCancellation')
+  },
+}
+
 export default (
   <Orders
     pendingOrdersPrices={{}}
@@ -33,13 +53,9 @@ export default (
     tabs={tabs}
     isOpenOrdersTab={true}
     isWalletConnected={true}
+    selectedOrders={[]}
     balancesAndAllowances={balancesAndAllowances}
     getSpotPrice={() => null}
-    getShowCancellationModal={(order) => {
-      if (order.status === 'pending') {
-        return () => alert('cancelling!')
-      }
-      return null
-    }}
+    orderActions={orderActions}
   />
 )
