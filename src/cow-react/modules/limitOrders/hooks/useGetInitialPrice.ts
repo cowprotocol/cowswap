@@ -9,6 +9,7 @@ import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { getNativePrice } from '@cow/api/gnosisProtocol'
+import * as Sentry from '@sentry/browser'
 
 type PriceResult = number | Error | undefined
 
@@ -39,7 +40,26 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
 
     return price
   } catch (error: any) {
-    console.error('[requestPriceForCurrency] Error fetching native_price', error)
+    console.warn('[requestPriceForCurrency] Error fetching native_price', error)
+
+    const sentryError = Object.assign(error, {
+      message: error.message || 'Error fetching native_price ',
+      name: 'NativePriceFetchError',
+    })
+
+    const params = {
+      chainId,
+      tokenAddress: currencyAddress,
+      tokenName: currency?.name,
+      tokenSymbol: currency.symbol,
+    }
+
+    Sentry.captureException(sentryError, {
+      contexts: {
+        params,
+      },
+    })
+
     return error
   }
 }
