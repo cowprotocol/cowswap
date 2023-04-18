@@ -142,13 +142,14 @@ export function useSetupTradeState(): void {
   /**
    * On chainId in provider changes
    *
-   * 1. Do nothing, when provider's chainId matches to the chainId from URL
+   * 1. Do nothing, when provider's chainId matches to the chainId from URL, or it's not supported
    * 2. Navigate to the new chainId with default tokens
    * 3. SPECIAL CASE: if the URL state was remembered, then put it into URL
    */
   useLayoutEffect(() => {
     if (providerChainId === urlChainId) return
     if (!providerChainId || providerChainId === prevProviderChainId) return
+    if (!isSupportedChainId(providerChainId)) return
 
     if (rememberedUrlState) {
       setRememberedUrlState(null)
