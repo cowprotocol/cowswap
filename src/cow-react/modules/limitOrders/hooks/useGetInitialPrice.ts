@@ -9,8 +9,14 @@ import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { getNativePrice } from '@cow/api/gnosisProtocol'
+import { ApiError } from '@cowprotocol/cow-sdk'
 
-type PriceResult = number | Error | undefined
+type ErrorWithApiError = { errorType: string; description: string; rawApiError: ApiError }
+type PriceResult = number | Error | undefined | ErrorWithApiError
+
+function hasApiError(value: any): value is ErrorWithApiError {
+  return value && typeof value === 'object' && value.errorType && value.description && value.rawApiError
+}
 
 const PRICE_UPDATE_INTERVAL = ms`10sec`
 
@@ -53,7 +59,14 @@ export async function requestPrice(
     requestPriceForCurrency(chainId, inputCurrency),
     requestPriceForCurrency(chainId, outputCurrency),
   ]).then(([inputPrice, outputPrice]) => {
-    if (!inputPrice || !outputPrice || inputPrice instanceof Error || outputPrice instanceof Error) {
+    if (
+      !inputPrice ||
+      !outputPrice ||
+      inputPrice instanceof Error ||
+      outputPrice instanceof Error ||
+      hasApiError(inputPrice) ||
+      hasApiError(outputPrice)
+    ) {
       return null
     }
 
