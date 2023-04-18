@@ -29,17 +29,28 @@ import type {
 export interface GPv2SettlementInterface extends utils.Interface {
   functions: {
     "setPreSignature(bytes,bool)": FunctionFragment;
+    "invalidateOrder(bytes)": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "setPreSignature"): FunctionFragment;
+  getFunction(
+    nameOrSignatureOrTopic: "setPreSignature" | "invalidateOrder"
+  ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "setPreSignature",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<boolean>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "invalidateOrder",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "setPreSignature",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "invalidateOrder",
     data: BytesLike
   ): Result;
 
@@ -98,6 +109,11 @@ export interface GPv2Settlement extends BaseContract {
       signed: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    invalidateOrder(
+      orderUid: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   setPreSignature(
@@ -106,10 +122,20 @@ export interface GPv2Settlement extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  invalidateOrder(
+    orderUid: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     setPreSignature(
       orderUid: PromiseOrValue<BytesLike>,
       signed: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    invalidateOrder(
+      orderUid: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -141,12 +167,22 @@ export interface GPv2Settlement extends BaseContract {
       signed: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    invalidateOrder(
+      orderUid: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     setPreSignature(
       orderUid: PromiseOrValue<BytesLike>,
       signed: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    invalidateOrder(
+      orderUid: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

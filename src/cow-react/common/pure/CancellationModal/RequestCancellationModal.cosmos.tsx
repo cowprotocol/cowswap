@@ -1,6 +1,8 @@
 import { RequestCancellationModal, RequestCancellationModalProps } from './RequestCancellationModal'
+import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
+import { BigNumber } from '@ethersproject/bignumber'
 
-const props: Omit<RequestCancellationModalProps, 'type'> = {
+const props: Omit<RequestCancellationModalProps, 'defaultType'> = {
   triggerCancellation(): void {
     alert('Clicked button!')
   },
@@ -9,11 +11,13 @@ const props: Omit<RequestCancellationModalProps, 'type'> = {
   },
   shortId: '0x11111',
   summary: 'This was the order that got cancelled bla bla',
+  txCost: BigNumber.from('150000000000000000'),
+  nativeCurrency: MAINNET_NATIVE_CURRENCY,
 }
 
 const Fixtures = {
-  offChain: <RequestCancellationModal {...props} type="offChain" />,
-  onChain: <RequestCancellationModal {...props} type="onChain" />,
+  offChain: <RequestCancellationModal {...props} defaultType="offChain" />,
+  onChain: <RequestCancellationModal {...props} defaultType="onChain" />,
 }
 
 export default Fixtures
