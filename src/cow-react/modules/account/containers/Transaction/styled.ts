@@ -233,11 +233,12 @@ export const TransactionStatusText = styled.div`
   }
 `
 
-export const StatusLabelWrapper = styled.div`
+export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: ${({ withCancellationHash$ }) => (withCancellationHash$ ? 'row' : 'column wrap')};
   flex: 0 1 auto;
   justify-content: center;
+  align-items: center;
   margin: 0 0 auto auto;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -489,4 +490,8 @@ export const ActivityVisual = styled.div`
     animation: ${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite;
     transform: translateZ(0);
   }
+`
+
+export const CancelTxLink = styled(ExternalLink)`
+  margin-left: 10px;
 `

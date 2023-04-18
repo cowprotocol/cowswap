@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { CancellationModalContext } from '@cow/common/hooks/useCancelOrder/state'
 import { CancellationModal, CancellationModalProps } from '.'
+import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
+import { BigNumber } from '@ethersproject/bignumber'
 
 const context: CancellationModalContext = {
   chainId: 1,
@@ -9,10 +11,12 @@ const context: CancellationModalContext = {
   error: null,
   isPendingSignature: false,
   onDismiss: null,
+  txCost: BigNumber.from('150000000000000000'),
+  nativeCurrency: MAINNET_NATIVE_CURRENCY,
   triggerCancellation: async () => {
     alert('cancelling!!')
   },
-  type: null,
+  defaultType: 'offChain',
 }
 
 const defaultProps: CancellationModalProps = {
@@ -45,10 +49,10 @@ function buildComponent(props?: Partial<CancellationModalProps['context']>) {
 const Fixtures = {
   default: buildComponent(),
   error: buildComponent({ error: 'Failed to do stuff!!' }),
-  offChainPending: buildComponent({ type: 'offChain', isPendingSignature: true }),
-  offChain: buildComponent({ type: 'offChain' }),
-  ethFlowPending: buildComponent({ type: 'ethFlow', isPendingSignature: true }),
-  ethFlow: buildComponent({ type: 'ethFlow' }),
+  offChainPending: buildComponent({ defaultType: 'offChain', isPendingSignature: true }),
+  offChain: buildComponent({ defaultType: 'offChain' }),
+  ethFlowPending: buildComponent({ defaultType: 'onChain', isPendingSignature: true }),
+  ethFlow: buildComponent({ defaultType: 'onChain' }),
 }
 
 export default Fixtures
