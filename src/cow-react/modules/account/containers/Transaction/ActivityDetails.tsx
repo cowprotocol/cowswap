@@ -130,7 +130,7 @@ function GnosisSafeTxDetails(props: {
       {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} gnosisSafeThreshold={gnosisSafeThreshold} />
+      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} />
     </TransactionInnerDetail>
   )
 }
@@ -321,7 +321,11 @@ export function ActivityDetails(props: {
         </SummaryInner>
 
         {/* Status Details: icon, cancel, links */}
-        <StatusDetails showCancellationModal={showCancellationModal} activityDerivedState={activityDerivedState} />
+        <StatusDetails
+          chainId={chainId}
+          showCancellationModal={showCancellationModal}
+          activityDerivedState={activityDerivedState}
+        />
       </Summary>
 
       <EthFlowStepper order={order} />
