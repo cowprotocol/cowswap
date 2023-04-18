@@ -1,4 +1,4 @@
-import { PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { OrderBookApiError, PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { APP_DATA_HASH } from 'constants/index'
 import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
@@ -10,16 +10,9 @@ import { ZERO_ADDRESS } from 'constants/misc'
 import { getAppDataHash } from 'constants/appDataHash'
 import { orderBookApi } from '@cow/cowSdk'
 import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
-import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 import GpQuoteError, { mapOperatorErrorToQuoteError } from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { NativePriceResponse, Trade } from '@cowprotocol/cow-sdk'
-
-const fetchRateLimitted = fetchWithRateLimit({
-  rateLimit: {
-    tokensPerInterval: 5,
-    interval: 'second',
-  },
-})
+import { ApiErrorCodes } from '@cow/api/gnosisProtocol/errors/OperatorError'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -72,7 +65,8 @@ function _fetchProfile(
   data?: any
 ): Promise<Response> {
   const baseUrl = _getProfileApiBaseUrl(chainId)
-  return fetchRateLimitted(baseUrl + url, {
+
+  return fetch(baseUrl + url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
@@ -133,29 +127,31 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
   const { chainId } = params
   const quoteParams = _mapNewToLegacyParams(params)
 
-  return fetchRateLimitted(() => {
-    return orderBookApi.getQuote(quoteParams, { chainId })
-  }).catch((error) => {
-    const errorObject = mapOperatorErrorToQuoteError(error)
+  return orderBookApi.getQuote(quoteParams, { chainId }).catch((error) => {
+    if (error instanceof OrderBookApiError<{ errorType: ApiErrorCodes }>) {
+      const errorObject = mapOperatorErrorToQuoteError(error.body)
 
-    return Promise.reject(errorObject ? new GpQuoteError(errorObject) : error)
+      return Promise.reject(errorObject ? new GpQuoteError(errorObject) : error)
+    }
+
+    return Promise.reject(error)
   })
 }
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<EnrichedOrder | null> {
-  return fetchRateLimitted(() => orderBookApi.getOrder(orderId, { chainId }))
+  return orderBookApi.getOrder(orderId, { chainId })
 }
 
 export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<EnrichedOrder[]> {
-  return fetchRateLimitted(() => orderBookApi.getOrders({ owner, limit, offset }, { chainId }))
+  return orderBookApi.getOrders({ owner, limit, offset }, { chainId })
 }
 
 export async function getTrades(chainId: ChainId, owner: string): Promise<Trade[]> {
-  return fetchRateLimitted(() => orderBookApi.getTrades({ owner }, { chainId }))
+  return orderBookApi.getTrades({ owner }, { chainId })
 }
 
 export async function getNativePrice(chainId: ChainId, currencyAddress: string): Promise<NativePriceResponse> {
-  return fetchRateLimitted(() => orderBookApi.getNativePrice(currencyAddress, { chainId }))
+  return orderBookApi.getNativePrice(currencyAddress, { chainId })
 }
 
 export type ProfileData = {
