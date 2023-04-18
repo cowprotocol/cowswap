@@ -37,8 +37,9 @@ export function getOrderParams(
   let hasEnoughBalance, hasEnoughAllowance
 
   if (order.partiallyFillable) {
-    hasEnoughBalance = !!balance?.greaterThan(ZERO_FRACTION)
-    hasEnoughAllowance = !!allowance?.greaterThan(ZERO_FRACTION)
+    // When balance or allowance are undefined (loading state), show as true
+    hasEnoughBalance = balance === undefined || balance.greaterThan(ZERO_FRACTION)
+    hasEnoughAllowance = allowance === undefined || allowance.greaterThan(ZERO_FRACTION)
   } else {
     hasEnoughBalance = isEnoughAmount(sellAmount, balance)
     hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
