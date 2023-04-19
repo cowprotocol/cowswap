@@ -17,7 +17,7 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
 import { timeSinceInSeconds } from '@cow/utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { getExecutedSummary } from '@cow/common/pure/ExecutedSummary'
+import { ExecutedSummary } from '@cow/common/pure/ExecutedSummary'
 import { parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { Order } from 'state/orders/actions'
 
@@ -120,10 +120,11 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
           // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
           // because it's nicer there
           const parsedOrder = parseOrder(orderObject.order as Order)
+          const summaryComponent = <ExecutedSummary order={parsedOrder} />
 
           const popup = setPopupData(OrderTxTypes.METATXN, {
             id,
-            summary: getExecutedSummary(parsedOrder) || summary,
+            summary: summaryComponent || summary,
             status: OrderActions.OrderStatus.FULFILLED,
             descriptor: null,
           })
