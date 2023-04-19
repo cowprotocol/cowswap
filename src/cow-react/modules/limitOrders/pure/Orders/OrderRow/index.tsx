@@ -152,7 +152,8 @@ export function OrderRow({
   const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
-  const isUnfillable = executedPriceInverted?.equalTo(ZERO_FRACTION) || withWarning
+  const isUnfillable =
+    (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (
