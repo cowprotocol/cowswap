@@ -95,7 +95,9 @@ function finalizeEthereumTransaction(
   }
 
   if (transaction.onChainCancellation) {
-    finalizeOnChainCancellation(receipt, params, hash, transaction.onChainCancellation.orderId)
+    const { orderId, sellTokenSymbol } = transaction.onChainCancellation
+
+    finalizeOnChainCancellation(receipt, params, hash, orderId, sellTokenSymbol)
     return
   }
 
@@ -143,7 +145,7 @@ function finalizeEthFlowTx(
   }
 
   if (subType === 'cancellation') {
-    finalizeOnChainCancellation(receipt, params, hash, orderId)
+    finalizeOnChainCancellation(receipt, params, hash, orderId, nativeCurrencySymbol)
   }
 }
 
@@ -151,9 +153,10 @@ function finalizeOnChainCancellation(
   receipt: TransactionReceipt,
   params: CheckEthereumTransactions,
   hash: string,
-  orderId: string
+  orderId: string,
+  sellTokenSymbol: string
 ) {
-  const { chainId, dispatch, addPopup, nativeCurrencySymbol } = params
+  const { chainId, dispatch, addPopup } = params
 
   if (receipt.status === 1) {
     // If cancellation succeeded, mark order as cancelled
@@ -168,7 +171,7 @@ function finalizeOnChainCancellation(
         txn: {
           hash,
           success: false,
-          summary: `Failed to cancel order selling ${nativeCurrencySymbol}`,
+          summary: `Failed to cancel order selling ${sellTokenSymbol}`,
         },
       },
       hash

@@ -40,7 +40,7 @@ export interface EnhancedTransactionDetails {
   swapVCow?: boolean
   swapLockedGNOvCow?: boolean
   ethFlow?: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' }
-  onChainCancellation?: { orderId: string }
+  onChainCancellation?: { orderId: string; sellTokenSymbol: string }
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
 
