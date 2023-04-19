@@ -41,7 +41,8 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
   }
 
   // Popover container override
-  > div > div {
+  > div > div,
+  > span {
     display: flex;
     align-items: center;
   }
@@ -101,45 +102,45 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
 
+  const content = (
+    <>
+      <styledEl.ExecuteIndicator status={orderExecutionStatus} />
+      <TokenAmount amount={amount} {...rest} />
+    </>
+  )
+
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isUnfillable}>
       {isUnfillable ? (
         <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+      ) : !absoluteDifferenceAmount ? (
+        <span>{content}</span>
       ) : (
-        absoluteDifferenceAmount && (
-          <MouseoverTooltipContent
-            wrap={true}
-            content={
-              <styledEl.ExecuteInformationTooltip>
-                {!isNegativeDifference ? (
-                  <>
-                    Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
-                    <b>
-                      <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
-                    </b>
-                    &nbsp;
-                    <span>
-                      (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
-                    </span>
-                    &nbsp;to execute your order.
-                  </>
-                ) : (
-                  <>Will execute soon!</>
-                )}
-              </styledEl.ExecuteInformationTooltip>
-            }
-            placement="top"
-          >
-            {isUnfillable ? (
-              <UnfillableLabel>UNFILLABLE</UnfillableLabel>
-            ) : (
-              <>
-                <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-                <TokenAmount amount={amount} {...rest} />
-              </>
-            )}
-          </MouseoverTooltipContent>
-        )
+        <MouseoverTooltipContent
+          wrap={true}
+          content={
+            <styledEl.ExecuteInformationTooltip>
+              {!isNegativeDifference ? (
+                <>
+                  Market price needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
+                  <b>
+                    <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
+                  </b>
+                  &nbsp;
+                  <span>
+                    (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
+                  </span>
+                  &nbsp;to execute your order.
+                </>
+              ) : (
+                <>Will execute soon!</>
+              )}
+            </styledEl.ExecuteInformationTooltip>
+          }
+          placement="top"
+        >
+          {content}
+        </MouseoverTooltipContent>
       )}
       {feeWarning && !isNegativeDifference && (
         <UnlikelyToExecuteWarning feePercentage={percentageFee} feeAmount={amountFee} />
