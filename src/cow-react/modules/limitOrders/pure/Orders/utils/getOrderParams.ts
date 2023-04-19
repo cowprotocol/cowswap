@@ -13,7 +13,7 @@ export interface OrderParams {
   hasEnoughAllowance: boolean
 }
 
-const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 1000) // 0.05%
+const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
 
 export function getOrderParams(
   chainId: SupportedChainId | undefined,
