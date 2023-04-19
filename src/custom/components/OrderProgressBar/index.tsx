@@ -38,6 +38,9 @@ import styled from 'styled-components/macro'
 import { DisplayLink } from '../TransactionConfirmationModal'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import ms from 'ms.macro'
+import { useCoingeckoUsdValue } from '@src/custom/hooks/useStablecoinPrice'
+import { MIN_FIAT_SURPLUS_VALUE } from '@src/custom/constants'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
 const REFRESH_INTERVAL_MS = ms`0.2s`
 const COW_STATE_SECONDS = ms`0.03s`
@@ -220,9 +223,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               </StatusGraph>
             </StatusMsgContainer>
           </>
-        ) : (
+        ) : order ? (
           <TransactionExecutedContent hash={hash} chainId={chainId} order={order} />
-        )
+        ) : null
       }
       case 'unfillable': {
         return (
@@ -395,9 +398,16 @@ const ExecutedWrapper = styled.div`
   }
 `
 
-const Strong = styled.strong`
+const StyledTokenAmount = styled(TokenAmount)`
   font-size: 0.9rem;
   white-space: nowrap;
+  font-weight: 600;
+`
+
+const StyledFiatAmount = styled(FiatAmount)`
+  margin-left: 5px;
+  font-size: 12px;
+  font-weight: 600;
 `
 
 function TransactionExecutedContent({
@@ -405,13 +415,15 @@ function TransactionExecutedContent({
   chainId,
   hash,
 }: {
-  order?: Order
+  order: Order
   chainId: SupportedChainId
   hash?: string
 }) {
-  if (!order) return null
-
   const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)
+
+  const fiatValue = useCoingeckoUsdValue(surplusAmount)
+  // I think its fine here to use Number because its always USD value
+  const showFiatValue = Number(fiatValue?.toExact()) > MIN_FIAT_SURPLUS_VALUE
 
   return (
     <ExecutedWrapper>
@@ -419,23 +431,14 @@ function TransactionExecutedContent({
 
       <div>
         <div>
-          Traded{' '}
-          <Strong>
-            <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />
-          </Strong>{' '}
-          for a total of{' '}
-          <Strong>
-            <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
-          </Strong>
+          Traded <StyledTokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} /> for a
+          total of <StyledTokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
         </div>
 
         {!!surplusAmount && (
           <div>
-            You received a surplus of{' '}
-            <Strong>
-              <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
-            </Strong>{' '}
-            on this trade!
+            You received a surplus of <StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />{' '}
+            {showFiatValue && <StyledFiatAmount amount={fiatValue} />} on this trade!
           </div>
         )}
 
