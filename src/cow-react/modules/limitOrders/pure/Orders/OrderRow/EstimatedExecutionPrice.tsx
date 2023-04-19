@@ -41,7 +41,8 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
   }
 
   // Popover container override
-  > div > div {
+  > div > div,
+  > span {
     display: flex;
     align-items: center;
   }
@@ -101,10 +102,19 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
 
+  const content = (
+    <>
+      <styledEl.ExecuteIndicator status={orderExecutionStatus} />
+      <TokenAmount amount={amount} {...rest} />
+    </>
+  )
+
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isUnfillable}>
       {isUnfillable ? (
         <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+      ) : !absoluteDifferenceAmount ? (
+        <span>{content}</span>
       ) : (
         <MouseoverTooltipContent
           wrap={true}
@@ -129,14 +139,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           }
           placement="top"
         >
-          {isUnfillable ? (
-            <UnfillableLabel>UNFILLABLE</UnfillableLabel>
-          ) : (
-            <>
-              <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-              <TokenAmount amount={amount} {...rest} />
-            </>
-          )}
+          {content}
         </MouseoverTooltipContent>
       )}
       {feeWarning && !isNegativeDifference && (
