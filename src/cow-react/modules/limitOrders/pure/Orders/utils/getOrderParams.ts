@@ -1,9 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BalancesAndAllowances } from '@cow/modules/tokens'
 import { Order } from 'state/orders/actions'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
-import { ZERO_FRACTION } from 'constants/index'
 
 export interface OrderParams {
   chainId: SupportedChainId | undefined
@@ -13,6 +12,8 @@ export interface OrderParams {
   hasEnoughBalance: boolean
   hasEnoughAllowance: boolean
 }
+
+const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
 
 export function getOrderParams(
   chainId: SupportedChainId | undefined,
@@ -38,8 +39,10 @@ export function getOrderParams(
 
   if (order.partiallyFillable) {
     // When balance or allowance are undefined (loading state), show as true
-    hasEnoughBalance = balance === undefined || balance.greaterThan(ZERO_FRACTION)
-    hasEnoughAllowance = allowance === undefined || allowance.greaterThan(ZERO_FRACTION)
+    // When loaded, check there's at least PERCENTAGE_FOR_PARTIAL_FILLS of balance/allowance to consider it as enough
+    const amount = sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS)
+    hasEnoughBalance = balance === undefined || isEnoughAmount(amount, balance)
+    hasEnoughAllowance = allowance === undefined || isEnoughAmount(amount, allowance)
   } else {
     hasEnoughBalance = isEnoughAmount(sellAmount, balance)
     hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
