@@ -32,15 +32,8 @@ import { getExplorerOrderLink } from 'utils/explorer'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { CancelButton } from '@cow/common/pure/CancelButton'
-import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
-import { Order } from 'state/orders/actions'
-import styled from 'styled-components/macro'
-import { DisplayLink } from '../TransactionConfirmationModal'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import ms from 'ms.macro'
-import { useCoingeckoUsdValue } from '@src/custom/hooks/useStablecoinPrice'
-import { MIN_FIAT_SURPLUS_VALUE } from '@src/custom/constants'
-import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import { TransactionExecutedContent } from '../TransactionExecutedContent'
 
 const REFRESH_INTERVAL_MS = ms`0.2s`
 const COW_STATE_SECONDS = ms`0.03s`
@@ -365,85 +358,4 @@ function useGetProgressBarInfo({
     expirationInSeconds: (validTo.getTime() - creationTime.getTime()) / 1000,
     isPending: orderIsPending,
   }
-}
-
-// TODO: Make a dumb component and Cosmos preview for different
-const ExecutedWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  padding-bottom: 1rem;
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 0.8rem;
-  `};
-
-  img {
-    padding: 1rem;
-    margin-right: 10px;
-
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 0;
-      max-width: 60px;
-    `};
-  }
-
-  a {
-    margin: 0;
-    margin-top: 15px;
-    display: block;
-  }
-
-  > div > div {
-    margin-bottom: 5px;
-  }
-`
-
-const StyledTokenAmount = styled(TokenAmount)`
-  font-size: 0.9rem;
-  white-space: nowrap;
-  font-weight: 600;
-`
-
-const StyledFiatAmount = styled(FiatAmount)`
-  margin-left: 5px;
-  font-size: 12px;
-  font-weight: 600;
-`
-
-function TransactionExecutedContent({
-  order,
-  chainId,
-  hash,
-}: {
-  order: Order
-  chainId: SupportedChainId
-  hash?: string
-}) {
-  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)
-
-  const fiatValue = useCoingeckoUsdValue(surplusAmount)
-  // I think its fine here to use Number because its always USD value
-  const showFiatValue = Number(fiatValue?.toExact()) > MIN_FIAT_SURPLUS_VALUE
-
-  return (
-    <ExecutedWrapper>
-      <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." />
-
-      <div>
-        <div>
-          Traded <StyledTokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} /> for a
-          total of <StyledTokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
-        </div>
-
-        {!!surplusAmount && (
-          <div>
-            You received a surplus of <StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />{' '}
-            {showFiatValue && <StyledFiatAmount amount={fiatValue} />} on this trade!
-          </div>
-        )}
-
-        <DisplayLink id={hash} chainId={chainId} />
-      </div>
-    </ExecutedWrapper>
-  )
 }
