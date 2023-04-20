@@ -498,11 +498,11 @@ export const CancelTxLink = styled(ExternalLink)`
 `
 
 export const StyledFiatAmount = styled(FiatAmount)`
-  font-weight: 600;
-  font-size: 12px;
   margin: 0;
 `
 
 export const FiatWrapper = styled.span`
   margin-left: 5px;
+  align-items: center;
+  display: flex;
 `
