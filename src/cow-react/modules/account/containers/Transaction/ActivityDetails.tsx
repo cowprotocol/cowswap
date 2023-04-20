@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import React, { ReactNode, useMemo } from 'react'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
 
@@ -12,6 +12,8 @@ import {
   TransactionState as ActivityLink,
   CreationTimeText,
   ActivityVisual,
+  StyledFiatAmount,
+  FiatWrapper,
 } from './styled'
 
 import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
@@ -29,6 +31,8 @@ import { StatusDetails } from './StatusDetails'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
+import { useCoingeckoUsdValue } from '@src/custom/hooks/useStablecoinPrice'
+import { MIN_FIAT_SURPLUS_VALUE } from 'constants/index'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -164,6 +168,21 @@ export function ActivityDetails(props: {
   const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
   const showCancellationModal = activityDerivedState.order ? getShowCancellationModal(activityDerivedState.order) : null
 
+  const { surplusAmount, surplusToken } = useMemo(() => {
+    const output: { surplusToken?: Token; surplusAmount?: CurrencyAmount<Token> } = {}
+
+    if (order) {
+      const summaryData = getExecutedSummaryData(order)
+      output.surplusAmount = summaryData.surplusAmount
+      output.surplusToken = summaryData.surplusToken
+    }
+
+    return output
+  }, [JSON.stringify(order)])
+
+  const fiatValue = useCoingeckoUsdValue(surplusAmount)
+  const showFiatValue = Number(fiatValue?.toExact()) > MIN_FIAT_SURPLUS_VALUE
+
   if (!order && !enhancedTransaction) return null
 
   // Order Summary default object
@@ -176,8 +195,6 @@ export function ActivityDetails(props: {
     invertedActiveRateFiatAmount: null,
   }
   let isOrderFulfilled = false
-  let surplusAmount,
-    surplusToken = null
 
   if (order) {
     const {
@@ -228,10 +245,6 @@ export function ActivityDetails(props: {
         : undefined,
       kind: kind.toString(),
     }
-
-    const executedData = getExecutedSummaryData(order)
-    surplusAmount = executedData.surplusAmount
-    surplusToken = executedData.surplusToken
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
   }
@@ -304,6 +317,11 @@ export function ActivityDetails(props: {
                   <b>Surplus</b>
                   <i>
                     <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
+                    {showFiatValue && (
+                      <FiatWrapper>
+                        (<StyledFiatAmount amount={fiatValue} />)
+                      </FiatWrapper>
+                    )}
                   </i>
                 </SummaryInnerRow>
               )}

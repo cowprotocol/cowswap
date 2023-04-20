@@ -5,6 +5,7 @@ import { RowFixed } from 'components/Row'
 import { transparentize } from 'polished'
 import { StyledLogo } from 'components/CurrencyLogo'
 import { RateWrapper } from '@cow/common/pure/RateInfo'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
 
 export const TransactionWrapper = styled.div`
   width: 100%;
@@ -494,4 +495,14 @@ export const ActivityVisual = styled.div`
 
 export const CancelTxLink = styled(ExternalLink)`
   margin-left: 10px;
+`
+
+export const StyledFiatAmount = styled(FiatAmount)`
+  font-weight: 600;
+  font-size: 12px;
+  margin: 0;
+`
+
+export const FiatWrapper = styled.span`
+  margin-left: 5px;
 `
