@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { retry, RetryableError, RetryOptions } from 'utils/retry'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { RetryResult } from 'types/index'
+import { RetryResult } from 'types'
 import { supportedChainId } from '../utils/supportedChainId'
 import { useWalletInfo } from '@cow/modules/wallet'
 
