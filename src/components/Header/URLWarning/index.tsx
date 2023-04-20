@@ -1,11 +1,11 @@
 import styled from 'styled-components/macro'
-import { RAW_CODE_LINK } from '@src/constants'
+import { RAW_CODE_LINK } from 'constants/index'
 import { AlertTriangle } from 'react-feather'
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'
 import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
-import { Markdown } from '@src/components/Markdown'
+import { Markdown } from 'components/Markdown'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cow/modules/wallet'

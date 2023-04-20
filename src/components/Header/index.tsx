@@ -8,8 +8,6 @@ import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hoo
 import { supportedChainId } from 'utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
-// Components
-import { HeaderRow } from './HeaderMod'
 import {
   Wrapper,
   Title,
@@ -20,12 +18,14 @@ import {
   BalanceText,
   HeaderControls,
   HeaderElement,
+  HeaderRow,
 } from './styled'
+
 import MobileMenuIcon from './MobileMenuIcon'
 import { useWalletInfo, Web3Status } from '@cow/modules/wallet'
 import { OrdersPanel } from '@cow/modules/account/containers/OrdersPanel'
-import NetworkSelector from '@src/components/Header/NetworkSelector'
-import CowBalanceButton from '@src/components/CowBalanceButton'
+import NetworkSelector from 'components/Header/NetworkSelector'
+import CowBalanceButton from 'components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
 import { cowSwapLogo } from 'theme/cowSwapAssets'
 
@@ -39,22 +39,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { useNativeCurrencyBalances } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
-export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
-  // [ChainId.RINKEBY]: 'Rinkeby',
-  // [ChainId.ROPSTEN]: 'Ropsten',
-  [ChainId.GOERLI]: 'Görli',
-  // [ChainId.KOVAN]: 'Kovan',
-  [ChainId.GNOSIS_CHAIN]: 'Gnosis Chain',
-}
-
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',
-}
-
-export interface LinkType {
-  id: number
-  title: string
-  path: string
 }
 
 export default function Header() {

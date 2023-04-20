@@ -6,8 +6,7 @@ import styled from 'styled-components/macro'
 import { Page } from '@cow/modules/application/pure/Page'
 import { MEDIA_WIDTHS } from 'theme'
 // import { UniIcon, LogoImage } from '../Header'
-import { UniIcon, LogoImage } from 'components/Header/styled' // mod
-import { HeaderRow } from 'components/Header/HeaderMod'
+import { UniIcon, LogoImage, HeaderRow } from 'components/Header/styled' // mod
 import Footer from 'components/Footer'
 import { Routes } from '@cow/constants/routes'
 import { sendError } from 'components/analytics'
