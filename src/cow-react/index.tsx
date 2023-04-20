@@ -13,7 +13,7 @@ import Blocklist from 'components/Blocklist'
 import Web3Provider from 'components/Web3Provider'
 import { LanguageProvider } from 'i18n'
 import { App } from '@cow/modules/application/containers/App'
-import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
+import * as serviceWorkerRegistration from '@src/serviceWorkerRegistration'
 import store from 'state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
 

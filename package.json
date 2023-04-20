@@ -40,8 +40,8 @@
     "cosmos:run": "yarn cosmos:clear && cosmos",
     "cosmos:export": "cross-env NODE_ENV=development cosmos-export",
     "widgets:build": "rollup --config --failAfterWarnings --configPlugin typescript2",
-    "sitemap": "node src/custom/sitemap",
-    "writeVersion": "node src/custom/writeVersion"
+    "sitemap": "node src/sitemap",
+    "writeVersion": "node src/writeVersion"
   },
   "browser": {
     "crypto": false
