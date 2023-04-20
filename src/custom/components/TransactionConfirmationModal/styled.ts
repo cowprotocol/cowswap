@@ -37,7 +37,7 @@ export const Header = styled.div`
   z-index: 20;
 `
 
-export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
+export const CloseIconWrapper = styled(CloseIcon) <{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
   opacity: 0.6;
@@ -59,27 +59,15 @@ export const WalletIcon = styled.div`
   width: var(--icon-size);
   height: var(--icon-size);
   border-radius: var(--icon-size);
-  animation: pulser 4s 0.5s ease-in-out infinite;
+  animation: pulser 6s 0.2s ease-in-out infinite;
   position: relative;
 
   @keyframes pulser {
     0% {
-      transform: rotate(0deg) scale(1);
-    }
-    40% {
-      transform: rotate(24deg) scale(1.08);
-    }
-    50% {
-      transform: rotate(24deg) scale(0.98);
-    }
-    55% {
-      transform: rotate(24deg) scale(1.02);
-    }
-    60% {
-      transform: rotate(24deg) scale(0.98);
+      transform: rotate(0deg);
     }
     100% {
-      transform: rotate(0deg) scale(1);
+      transform: rotate(360deg);
     }
   }
 
@@ -453,8 +441,8 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
     height: var(--size);
 
     ${({ listIconAlert }) =>
-      !listIconAlert &&
-      css`
+    !listIconAlert &&
+    css`
         > path:nth-child(1) {
           fill: ${({ theme }) => theme.text3};
           opacity: 1;
@@ -468,8 +456,8 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
       `}
 
     ${({ listIconAlert }) =>
-      listIconAlert &&
-      css`
+    listIconAlert &&
+    css`
         > path {
           fill: ${({ theme }) => transparentize(0.6, theme.text1)};
         }
@@ -505,7 +493,6 @@ export const ApproveFooter = styled.div`
   > ul > li {
     display: flex;
     align-items: center;
-    gap: 6px;
   }
 
   > ul > li > svg {
@@ -513,6 +500,7 @@ export const ApproveFooter = styled.div`
     display: inline-block;
     width: var(--size);
     height: var(--size);
+    margin: 0 6px 0 0;
 
     > path:nth-child(1) {
       fill: ${({ theme }) => theme.text3};

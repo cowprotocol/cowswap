@@ -28,6 +28,11 @@ import { OrderStatus } from 'state/orders/actions'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import checkImage from 'assets/cow-swap/check.svg'
 import alertImage from 'assets/cow-swap/alert-circle.svg'
+import {
+  getIsCoinbaseWallet,
+  getIsMetaMask,
+  getIsTrustWallet,
+} from '@cow/modules/wallet/api/utils/connection'
 import SVG from 'react-inlinesvg'
 import {
   StyledIcon,
@@ -190,6 +195,16 @@ export function ConfirmationPendingContent({
   const operationLabel = getOperationLabel(operationType)
   const operationSubmittedMessage = getSubmittedMessage(operationLabel, operationType)
 
+  // Get Wallets
+  const isCoinbaseWallet = getIsCoinbaseWallet()
+  const isTrustWallet = getIsTrustWallet(null, walletDetails?.walletName)
+  const isMetaMask = getIsMetaMask()
+
+  // Define Compare Items
+  const compareCapLabel = isMetaMask ? 'spending cap' : isTrustWallet ? 'spending limit' : isCoinbaseWallet ? 'spend limit' : 'spending limit'
+  const compareTitleLeft = isMetaMask ? 'Max' : isTrustWallet ? 'Custom' : isCoinbaseWallet ? 'Full balance' : 'Custom'
+  const compareTitleRight = (isMetaMask || isTrustWallet) ? 'Use default' : isCoinbaseWallet ? 'Infinite' : 'Infinite'
+
   return (
     <Wrapper>
       <UpperSection>
@@ -202,11 +217,11 @@ export function ConfirmationPendingContent({
       {operationType === OperationType.APPROVE_TOKEN && (
         <ApproveWrapper>
           <h3>
-            Review and select the ideal <br /> spending cap in your wallet
+            Review and select the ideal <br /> {compareCapLabel} in your wallet
           </h3>
           <ApproveComparison>
             <CompareItem>
-              <h5>'Max'</h5>
+              <h5>'{compareTitleLeft}'</h5>
               <ItemList listIconAlert>
                 <li>
                   <SVG src={alertImage} /> Approval on each order
@@ -217,7 +232,7 @@ export function ConfirmationPendingContent({
               </ItemList>
             </CompareItem>
             <CompareItem highlight recommended>
-              <h5>'Use default'</h5>
+              <h5>'{compareTitleRight}'</h5>
               <ItemList>
                 <li>
                   <SVG src={checkImage} /> Only approve once
@@ -236,14 +251,11 @@ export function ConfirmationPendingContent({
                 <SVG src={checkImage} /> The contract only withdraws funds for signed open orders
               </li>
               <li>
-                <SVG src={checkImage} /> Immutable contract with multiple{' '}
-                <ExternalLink
+                <SVG src={checkImage} /> Immutable contract with multiple&nbsp;<ExternalLink
                   href={'https://github.com/cowprotocol/ethflowcontract/tree/main/audits'}
                   target={'_blank'}
                   rel={'noopener'}
-                >
-                  audits
-                </ExternalLink>
+                >audits</ExternalLink>
               </li>
               <li>
                 <SVG src={checkImage} /> Over 2 years of successful trading with billions in volume
