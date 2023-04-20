@@ -23,15 +23,15 @@ import React, { useEffect, useState } from 'react'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
-import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
+import { SwapFormProps } from '@cow/modules/swap/containers/SwapWidget/types'
 import { ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from '@cow/modules/swap/containers/EthFlow'
-import { NewSwapModals, NewSwapModalsProps } from '@cow/modules/swap/containers/NewSwapModals'
+import { SwapModals, SwapModalsProps } from '@cow/modules/swap/containers/SwapModals'
 import {
-  NewSwapWarningsBottom,
-  NewSwapWarningsBottomProps,
-  NewSwapWarningsTop,
-  NewSwapWarningsTopProps,
+  SwapWarningsBottom,
+  SwapWarningsBottomProps,
+  SwapWarningsTop,
+  SwapWarningsTopProps,
 } from '@cow/modules/swap/pure/warnings'
 import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates'
 import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
@@ -45,7 +45,7 @@ import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
-export function NewSwapWidget() {
+export function SwapWidget() {
   useSetupTradeState()
   useSetupSwapAmountsFromUrl()
 
@@ -151,7 +151,7 @@ export function NewSwapWidget() {
     hasEnoughWrappedBalanceForSwap: swapButtonContext.hasEnoughWrappedBalanceForSwap,
   }
 
-  const swapModalsProps: NewSwapModalsProps = {
+  const swapModalsProps: SwapModalsProps = {
     chainId,
     showNativeWrapModal,
     showCowSubsidyModal,
@@ -159,7 +159,7 @@ export function NewSwapWidget() {
     ethFlowProps,
   }
 
-  const swapWarningsTopProps: NewSwapWarningsTopProps = {
+  const swapWarningsTopProps: SwapWarningsTopProps = {
     trade,
     account,
     feeWarningAccepted,
@@ -171,7 +171,7 @@ export function NewSwapWidget() {
     setImpactWarningAccepted,
   }
 
-  const swapWarningsBottomProps: NewSwapWarningsBottomProps = {
+  const swapWarningsBottomProps: SwapWarningsBottomProps = {
     isSupportedWallet,
     swapIsUnsupported: isSwapUnsupported,
     currencyIn: currencies.INPUT || undefined,
@@ -203,14 +203,14 @@ export function NewSwapWidget() {
   return (
     <>
       <styledEl.Container id="new-swap-widget">
-        <NewSwapModals {...swapModalsProps} />
+        <SwapModals {...swapModalsProps} />
         <AffiliateStatusCheck />
         <styledEl.ContainerBox id="swap-page">
           <SwapForm {...swapFormProps} />
           {showTradeRates && <TradeRates {...tradeRatesProps} />}
-          <NewSwapWarningsTop {...swapWarningsTopProps} />
+          <SwapWarningsTop {...swapWarningsTopProps} />
           <SwapButtons {...swapButtonContext} />
-          <NewSwapWarningsBottom {...swapWarningsBottomProps} />
+          <SwapWarningsBottom {...swapWarningsBottomProps} />
         </styledEl.ContainerBox>
         <NetworkAlert />
       </styledEl.Container>

@@ -7,7 +7,7 @@ import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { NoImpactWarning } from '@cow/modules/trade/pure/NoImpactWarning'
 import styled from 'styled-components/macro'
 
-export interface NewSwapWarningsTopProps {
+export interface SwapWarningsTopProps {
   trade: TradeGp | undefined
   account: string | undefined
   feeWarningAccepted: boolean
@@ -18,7 +18,7 @@ export interface NewSwapWarningsTopProps {
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
 
-export interface NewSwapWarningsBottomProps {
+export interface SwapWarningsBottomProps {
   isSupportedWallet: boolean
   swapIsUnsupported: boolean
   currencyIn: Currency | undefined
@@ -29,7 +29,7 @@ const StyledNoImpactWarning = styled(NoImpactWarning)`
   margin-bottom: 15px;
 `
 
-export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTopProps) {
+export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps) {
   const {
     trade,
     account,
@@ -60,7 +60,7 @@ export const NewSwapWarningsTop = React.memo(function (props: NewSwapWarningsTop
   )
 }, genericPropsChecker)
 
-export const NewSwapWarningsBottom = React.memo(function (props: NewSwapWarningsBottomProps) {
+export const SwapWarningsBottom = React.memo(function (props: SwapWarningsBottomProps) {
   const { isSupportedWallet, swapIsUnsupported, currencyIn, currencyOut } = props
 
   console.debug('SWAP WARNING RENDER BOTTOM: ', props)

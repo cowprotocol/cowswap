@@ -6,7 +6,7 @@ import { TradeApproveWidget } from '@cow/common/containers/TradeApprove/TradeApp
 import { useOnImportDismiss } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 
-export interface NewSwapModalsProps {
+export interface SwapModalsProps {
   chainId: number | undefined
   showNativeWrapModal: boolean
   showCowSubsidyModal: boolean
@@ -14,7 +14,7 @@ export interface NewSwapModalsProps {
   ethFlowProps: EthFlowProps
 }
 
-export const NewSwapModals = React.memo(function (props: NewSwapModalsProps) {
+export const SwapModals = React.memo(function (props: SwapModalsProps) {
   const { chainId, showNativeWrapModal, confirmSwapProps, ethFlowProps } = props
 
   // const closeModals = useCloseModals()

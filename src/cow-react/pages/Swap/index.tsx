@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { NewSwapWidget } from '@cow/modules/swap/containers/NewSwapWidget'
+import { SwapWidget } from '@cow/modules/swap/containers/SwapWidget'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
@@ -8,17 +8,17 @@ import { Routes } from '@cow/constants/routes'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 import { useWalletInfo } from '@cow/modules/wallet'
 
-export function NewSwapPage() {
+export function SwapPage() {
   const params = useParams()
 
   if (!params.chainId) {
-    return <NewSwapPageRedirect />
+    return <SwapPageRedirect />
   }
 
-  return <NewSwapWidget />
+  return <SwapWidget />
 }
 
-function NewSwapPageRedirect() {
+function SwapPageRedirect() {
   const { chainId } = useWalletInfo()
   const location = useLocation()
 

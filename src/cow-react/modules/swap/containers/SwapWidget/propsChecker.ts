@@ -1,4 +1,4 @@
-import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
+import { SwapFormProps } from '@cow/modules/swap/containers/SwapWidget/types'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
