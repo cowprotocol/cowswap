@@ -21,7 +21,7 @@ export default function SwapModalFooter({
   onConfirm,
   swapErrorMessage,
   disabledConfirm,
-}: /* 
+}: /*
   {
   trade: Trade<Currency, Currency, TradeType>
   onConfirm: () => void

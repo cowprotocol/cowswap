@@ -10,7 +10,7 @@ import { isL2ChainId } from 'utils/chains'
 
 import Circle from 'assets/images/blue-loader.svg'
 import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
-import { ButtonPrimary } from '../Button'
+import { ButtonPrimary } from '../../../components/Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import { RowBetween, RowFixed } from 'components/Row'
 import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
