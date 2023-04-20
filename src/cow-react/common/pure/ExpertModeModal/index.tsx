@@ -8,7 +8,7 @@ import { KeyboardEvent, useCallback, useEffect, useState } from 'react'
 
 const ModalContentWrapper = styled.div`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column;
   align-items: center;
   justify-content: center;
   padding: 24px;
