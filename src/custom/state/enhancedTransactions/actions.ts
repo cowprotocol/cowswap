@@ -31,6 +31,7 @@ export type AddTransactionParams = WithChainId &
     | 'swapVCow'
     | 'swapLockedGNOvCow'
     | 'ethFlow'
+    | 'onChainCancellation'
   >
 
 export const addTransaction = createAction<AddTransactionParams>('enhancedTransactions/addTransaction')
