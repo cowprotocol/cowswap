@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { Text } from 'rebass'
 
 import { StyledClose as IconClose } from 'components/Popups/PopupItemMod'
-import Tooltip, { TooltipProps } from 'components/Tooltip/TooltipMod'
+import Tooltip, { TooltipProps } from 'components/Tooltip'
 import { AutoColumn } from 'components/Column'
 
 interface PopupContentProps {
