@@ -10,7 +10,7 @@ export function ZengoBanner() {
   return (
     <styled.Wrapper>
       <styled.Icon>
-        <img src={ZengoImage} alt="ZenGo Image" />
+        <img src={ZengoImage} alt="" />
       </styled.Icon>
 
       <styled.Content>
