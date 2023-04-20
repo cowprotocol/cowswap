@@ -7,7 +7,7 @@ import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 
 // MOD imports
 import { transparentize } from 'polished'
-import { PopoverContainerProps } from '.'
+import { PopoverContainerProps } from './index'
 
 export const PopoverContainer = styled.div<{ show: boolean }>`
   z-index: 9999;
