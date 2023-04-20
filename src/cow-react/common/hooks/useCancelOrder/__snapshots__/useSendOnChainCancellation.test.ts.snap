@@ -6,6 +6,7 @@ Array [
     "hash": "0xcfwj23g4fwe111",
     "onChainCancellation": Object {
       "orderId": "xx1",
+      "sellTokenSymbol": "COW",
     },
   },
 ]
