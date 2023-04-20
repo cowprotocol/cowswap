@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
-import { DEFAULT_PRECISION, LONG_PRECISION } from 'src/constants'
+import { DEFAULT_PRECISION, LONG_PRECISION } from 'constants/index'
 import { CurrencyAmount, Fraction, Price, Currency, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { stringToCurrency } from './extension'
