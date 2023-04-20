@@ -205,7 +205,7 @@ export function ConfirmationPendingContent({
             <h6>No matter your choice, enjoy these benefits:</h6>
             <ul>
               <li><SVG src={checkImage} /> The contract only withdraws funds for signed open orders</li>
-              <li><SVG src={checkImage} /> <ExternalLink href={'#'} target={'_blank'} rel={'noopener'}>Immutable contract</ExternalLink> with multiple <ExternalLink href={'#'} target={'_blank'} rel={'noopener'}>audits</ExternalLink></li>
+              <li><SVG src={checkImage} /> Immutable contract with multiple <ExternalLink href={'https://github.com/cowprotocol/ethflowcontract/tree/main/audits'} target={'_blank'} rel={'noopener'}>audits</ExternalLink></li>
               <li><SVG src={checkImage} /> Over 2 years of successful trading with billions in volume</li>
               <li><SVG src={checkImage} /> Adjust your spending cap anytime</li>
             </ul>
