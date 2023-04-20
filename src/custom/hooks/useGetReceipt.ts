@@ -7,10 +7,7 @@ import { supportedChainId } from '../utils/supportedChainId'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
-const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {
-  // [SupportedChainId.ARBITRUM_ONE]: { n: 10, minWait: 250, maxWait: 1000 },
-  // [SupportedChainId.ARBITRUM_KOVAN]: { n: 10, minWait: 250, maxWait: 1000 },
-}
+const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {}
 
 export type GetReceipt = (hash: string) => RetryResult<TransactionReceipt>
 

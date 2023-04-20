@@ -3,7 +3,6 @@ import ApplicationUpdater from 'state/application/updater'
 import ListsUpdater from 'state/lists/updater'
 import LogsUpdater from 'state/logs/updater'
 import UserUpdater from 'state/user/updater'
-import RadialGradientByChainUpdater from 'theme/RadialGradientByChainUpdater'
 import EnhancedTransactionUpdater from 'state/enhancedTransactions/updater'
 import FeesUpdater from 'state/price/updater'
 import GasUpdater from 'state/gas/updater'
@@ -29,7 +28,6 @@ export function Updaters() {
     <>
       <WalletUpdater />
       <TokensListUpdater />
-      <RadialGradientByChainUpdater />
       <ListsUpdater />
       <UserUpdater />
       <ApplicationUpdater />

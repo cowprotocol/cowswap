@@ -116,7 +116,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
  * Special case when opposite token is wrapped native, then it's fine to invert as it's a wrap
  */
 function getEthFlowOverridesOnSwitch(state: SwapState): Pick<SwapState, 'independentField' | 'typedValue'> {
-  const chainId = state.chainId || ChainId.MAINNET
+  const chainId: ChainId = state.chainId || ChainId.MAINNET
 
   const isNativeOut =
     state[Field.OUTPUT].currencyId?.toUpperCase() === NATIVE_CURRENCY_BUY_TOKEN[chainId].symbol?.toUpperCase()

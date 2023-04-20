@@ -1,5 +1,5 @@
 import { useWalletInfo } from '@cow/modules/wallet'
-import { SupportedChainId } from '@src/constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 

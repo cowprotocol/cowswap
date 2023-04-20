@@ -7,21 +7,17 @@ import { getChainInfo } from 'constants/chainInfo'
 import { CHAIN_IDS_TO_NAMES } from 'constants/chains'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-// import usePrevious from 'hooks/usePrevious'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useRef } from 'react'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useCloseModal, useModalIsOpen, useOpenModal, useToggleModal } from 'state/application/hooks'
-import { /*addPopup,*/ ApplicationModal } from 'state/application/reducer'
+import { ApplicationModal } from 'state/application/reducer'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch } from 'state/hooks'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'
 import { replaceURLParam } from 'utils/routes'
 import { switchChain } from '@cow/modules/wallet/web3-react/hooks/switchChain'
-// import { isMobile } from 'utils/userAgent'
-
-// Mod imports
 import { transparentize, darken } from 'polished'
 import { getExplorerBaseUrl } from 'utils/explorer'
 import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'utils/supportedChainId'
@@ -231,38 +227,11 @@ const NetworkIcon = styled(AlertTriangle)`
   height: 16px;
 `
 
-const BridgeLabel = ({ chainId }: { chainId: SupportedChainId }) => {
-  switch (chainId) {
-    // case SupportedChainId.ARBITRUM_ONE:
-    // case SupportedChainId.ARBITRUM_RINKEBY:
-    //   return <Trans>Arbitrum Bridge</Trans>
-    // case SupportedChainId.OPTIMISM:
-    // case SupportedChainId.OPTIMISTIC_KOVAN:
-    //   return <Trans>Optimism Bridge</Trans>
-    // case SupportedChainId.POLYGON:
-    // case SupportedChainId.POLYGON_MUMBAI:
-    //   return <Trans>Polygon Bridge</Trans>
-    // case SupportedChainId.CELO:
-    // case SupportedChainId.CELO_ALFAJORES:
-    //   return <Trans>Portal Bridge</Trans>
-    default:
-      return <Trans>Bridge</Trans>
-  }
+const BridgeLabel = () => {
+  return <Trans>Bridge</Trans>
 }
 const ExplorerLabel = ({ chainId }: { chainId: SupportedChainId }) => {
   switch (chainId) {
-    // case SupportedChainId.ARBITRUM_ONE:
-    // case SupportedChainId.ARBITRUM_RINKEBY:
-    //   return <Trans>Arbiscan</Trans>
-    // case SupportedChainId.OPTIMISM:
-    // case SupportedChainId.OPTIMISTIC_KOVAN:
-    //   return <Trans>Optimistic Etherscan</Trans>
-    // case SupportedChainId.POLYGON:
-    // case SupportedChainId.POLYGON_MUMBAI:
-    //   return <Trans>Polygonscan</Trans>
-    // case SupportedChainId.CELO:
-    // case SupportedChainId.CELO_ALFAJORES:
-    //   return <Trans>Blockscout</Trans>
     case SupportedChainId.GNOSIS_CHAIN:
       return <Trans>Gnosisscan</Trans>
     default:
@@ -300,7 +269,7 @@ function Row({
         <ActiveRowLinkList>
           {bridge && (
             <ExternalLink href={bridge}>
-              <BridgeLabel chainId={chainId} /> <LinkOutCircle />
+              <BridgeLabel /> <LinkOutCircle />
             </ExternalLink>
           )}
           {explorer && (
@@ -345,22 +314,13 @@ export const getChainNameFromId = (id: string | number) => {
 }
 
 export const NETWORK_SELECTOR_CHAINS: SupportedChainId[] = SUPPORTED_CHAIN_IDS
-/* const NETWORK_SELECTOR_CHAINS = [
-  SupportedChainId.MAINNET,
-  SupportedChainId.POLYGON,
-  SupportedChainId.OPTIMISM,
-  SupportedChainId.ARBITRUM_ONE,
-  SupportedChainId.CELO,
-] */
 
 export default function NetworkSelector() {
   const dispatch = useAppDispatch()
   const { provider, connector } = useWeb3React()
   const { chainId, account } = useWalletInfo()
-  // const previousChainId = usePrevious(chainId)
   const parsedQs = useParsedQueryString()
   const { urlChain, urlChainId } = getParsedChainId(parsedQs)
-  // const previousUrlChainId = usePrevious(urlChainId)
   const node = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const openModal = useOpenModal(ApplicationModal.NETWORK_SELECTOR)

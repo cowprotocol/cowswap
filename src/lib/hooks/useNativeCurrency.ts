@@ -1,5 +1,5 @@
 import { NativeCurrency } from '@uniswap/sdk-core'
-import { SupportedChainId } from '@src/constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { nativeOnChain } from 'constants/tokens'
 import { useMemo } from 'react'
 import { useWalletInfo } from '@cow/modules/wallet'

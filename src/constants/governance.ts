@@ -5,7 +5,7 @@ import {
   TIMELOCK_ADDRESS,
   UNI_ADDRESS,
 } from './addresses'
-import { SupportedChainId } from './chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export const COMMON_CONTRACT_NAMES: Record<number, { [address: string]: string }> = {
   [SupportedChainId.MAINNET]: {

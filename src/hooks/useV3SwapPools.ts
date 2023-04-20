@@ -1,6 +1,6 @@
 import { Currency, Token } from '@uniswap/sdk-core'
 import { FeeAmount, Pool } from '@uniswap/v3-sdk'
-import { SupportedChainId } from '@src/constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useMemo } from 'react'
 import { useAllCurrencyCombinations } from './useAllCurrencyCombinations'
 import { PoolState, usePools } from './usePools'
