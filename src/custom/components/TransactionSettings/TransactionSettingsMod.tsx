@@ -10,7 +10,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
-import QuestionHelper from '../QuestionHelper'
+import QuestionHelper from '../../../components/QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 
 // MOD imports

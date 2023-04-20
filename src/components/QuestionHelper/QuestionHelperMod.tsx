@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import Tooltip from 'components/Tooltip'
 
 // MOD imports
-import { TooltipProps } from '../Tooltip/TooltipMod'
+import { TooltipProps } from 'components/Tooltip/TooltipMod'
 import { QuestionWrapper } from './index'
 
 /* const QuestionWrapper = styled.div`
