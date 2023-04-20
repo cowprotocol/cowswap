@@ -4,6 +4,9 @@ exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When a trans
 Array [
   Object {
     "hash": "0xcfwj23g4fwe111",
+    "onChainCancellation": Object {
+      "orderId": "xx1",
+    },
   },
 ]
 `;
