@@ -21,14 +21,18 @@ export function ExecutedSummary({ order }: { order: Order }) {
       </div>
 
       {!!surplusAmount && (
-        <div>
+        <styledEl.SurplusWrapper>
           <span>Order surplus: </span>
 
           <styledEl.SurplusAmount>
             <styledEl.StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
-            {showFiatValue && <styledEl.StyledFiatAmount amount={fiatValue} />}
+            {showFiatValue && (
+              <styledEl.FiatWrapper>
+                (<styledEl.StyledFiatAmount amount={fiatValue} />)
+              </styledEl.FiatWrapper>
+            )}
           </styledEl.SurplusAmount>
-        </div>
+        </styledEl.SurplusWrapper>
       )}
     </styledEl.SummaryWrapper>
   )

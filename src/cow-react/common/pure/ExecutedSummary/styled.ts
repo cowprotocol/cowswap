@@ -22,10 +22,25 @@ export const StyledTokenAmount = styled(TokenAmount)`
 `
 
 export const StyledFiatAmount = styled(FiatAmount)`
+  font-weight: 600;
   font-size: 12px;
-  margin-left: 5px;
+  margin: 0;
 `
 
 export const SurplusAmount = styled.div`
   white-space: nowrap;
+`
+
+export const FiatWrapper = styled.span`
+  margin-left: 5px;
+`
+
+export const SurplusWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  > span:first-child {
+    margin-right: 5px;
+  }
 `

@@ -37,7 +37,12 @@ export function TransactionExecutedContent({
         {!!surplusAmount && (
           <div>
             You received a surplus of <styledEl.StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />{' '}
-            {showFiatValue && <styledEl.StyledFiatAmount amount={fiatValue} />} on this trade!
+            {showFiatValue && (
+              <span>
+                (<styledEl.StyledFiatAmount amount={fiatValue} />)
+              </span>
+            )}{' '}
+            on this trade!
           </div>
         )}
 
