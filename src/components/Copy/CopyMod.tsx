@@ -7,7 +7,7 @@ import useCopyClipboard from 'hooks/useCopyClipboard'
 import { LinkStyledButton } from 'theme'
 
 // MOD imports
-import { TransactionStatusText } from 'components/Copy'
+import { TransactionStatusText } from 'components/Copy/index'
 
 export const CopyIcon = styled(LinkStyledButton)`
   color: ${({ theme }) => theme.text3};
