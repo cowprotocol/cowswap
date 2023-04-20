@@ -4,6 +4,7 @@ import { ButtonError } from 'components/Button'
 import Modal from '@cow/common/pure/Modal'
 import styled from 'styled-components/macro'
 import { X } from 'react-feather'
+import { KeyboardEvent, useCallback, useEffect, useState } from 'react'
 
 const ModalContentWrapper = styled.div`
   display: flex;
@@ -56,18 +57,62 @@ const StyledCloseIcon = styled(X)`
   }
 `
 
+const ConfirmBox = styled.div`
+  margin-bottom: 15px;
+
+  > p {
+    margin: 0;
+  }
+`
+
+const ConfirmInput = styled.input`
+  border: 1px solid ${({ theme }) => theme.border2};
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 4px;
+  background: ${({ theme }) => theme.bg3};
+  color: ${({ theme }) => theme.text1};
+  outline: none;
+  font-size: 15px;
+
+  &:focus {
+    border: 1px solid ${({ theme }) => theme.blue2};
+  }
+`
+
 export interface ExpertModeModalProps {
   isOpen: boolean
   onDismiss(): void
   onEnable(): void
 }
 
+const confirmWord = t`confirm`
+
 export function ExpertModeModal(props: ExpertModeModalProps) {
   const { isOpen, onDismiss, onEnable } = props
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false)
+
+  const onInput = useCallback((value: string) => {
+    setIsButtonEnabled(value === confirmWord)
+  }, [])
+
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() !== 'enter' || !isButtonEnabled) return
+
+      onEnable()
+    },
+    [isButtonEnabled, onEnable]
+  )
+
+  useEffect(() => {
+    setIsButtonEnabled(false)
+  }, [isOpen])
 
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={100}>
-      <ModalContentWrapper>
+      <ModalContentWrapper onKeyDown={onKeyDown}>
         <Header>
           <b>
             <Trans>Turn on Expert mode?</Trans>
@@ -88,16 +133,19 @@ export function ExpertModeModal(props: ExpertModeModalProps) {
           </strong>
         </p>
 
+        <ConfirmBox>
+          <p>
+            Please type the word <strong>"{confirmWord}"</strong> to enable expert mode:
+          </p>
+          <ConfirmInput onChange={(e) => onInput(e.target.value)} />
+        </ConfirmBox>
+
         <ButtonError
           id="confirm-expert-mode"
           error={true}
           padding={'12px'}
-          onClick={() => {
-            const confirmWord = t`confirm`
-            if (window.prompt(t`Please type the word "${confirmWord}" to enable expert mode.`) === confirmWord) {
-              onEnable()
-            }
-          }}
+          disabled={!isButtonEnabled}
+          onClick={onEnable}
         >
           <Trans>Turn On Expert Mode</Trans>
         </ButtonError>
