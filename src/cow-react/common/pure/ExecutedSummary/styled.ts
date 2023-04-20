@@ -23,7 +23,6 @@ export const StyledTokenAmount = styled(TokenAmount)`
 
 export const StyledFiatAmount = styled(FiatAmount)`
   font-weight: 600;
-  font-size: 12px;
   margin: 0;
 `
 
