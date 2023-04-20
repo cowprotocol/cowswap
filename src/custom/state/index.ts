@@ -1,5 +1,5 @@
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
-import multicall from 'lib/state/multicall'
+import multicall from '@src/lib/state/multicall'
 import { load, save } from 'redux-localstorage-simple'
 
 import application from 'state/application/reducer'

@@ -1,6 +1,6 @@
 import { useWalletInfo } from '@cow/modules/wallet'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
-import multicall from 'lib/state/multicall'
+import multicall from '@src/lib/state/multicall'
 import { SkipFirst } from 'types/tuple'
 
 export type { CallStateResult } from '@uniswap/redux-multicall' // re-export for convenience

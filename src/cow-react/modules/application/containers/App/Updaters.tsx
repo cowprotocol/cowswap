@@ -1,4 +1,4 @@
-import { MulticallUpdater } from 'lib/state/multicall'
+import { MulticallUpdater } from '@src/lib/state/multicall'
 import ApplicationUpdater from 'state/application/updater'
 import ListsUpdater from 'state/lists/updater'
 import LogsUpdater from 'state/logs/updater'
