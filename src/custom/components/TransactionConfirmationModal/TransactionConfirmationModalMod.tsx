@@ -22,7 +22,7 @@ import {
   TransactionSubmittedContent,
   OperationType,
 } from '.'
-import { GPModalHeader, CloseIconWrapper} from './styled'
+import { GPModalHeader, CloseIconWrapper } from './styled'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
 import { useIsTransactionConfirmed, useTransaction } from 'state/enhancedTransactions/hooks'

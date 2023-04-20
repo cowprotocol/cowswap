@@ -37,7 +37,7 @@ export const Header = styled.div`
   z-index: 20;
 `
 
-export const CloseIconWrapper = styled(CloseIcon) <{ margin?: string }>`
+export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
   opacity: 0.6;
@@ -59,7 +59,7 @@ export const WalletIcon = styled.div`
   width: var(--icon-size);
   height: var(--icon-size);
   border-radius: var(--icon-size);
-  animation: pulser 4s .5s ease-in-out infinite;
+  animation: pulser 4s 0.5s ease-in-out infinite;
   position: relative;
 
   @keyframes pulser {
@@ -82,7 +82,7 @@ export const WalletIcon = styled.div`
       transform: rotate(0deg) scale(1);
     }
   }
-      
+
   > div {
     height: 100%;
     width: 100%;
@@ -388,7 +388,7 @@ export const ApproveComparison = styled.div`
   `};
 `
 
-export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boolean; }>`
+export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boolean }>`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -397,12 +397,13 @@ export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boole
   gap: 16px;
   border-radius: 12px;
   font-size: 13px;
-  background: ${({ theme, highlight }) => highlight ? (theme.darkMode ? transparentize(0.8, theme.text3) : transparentize(0.9, theme.text3)) : theme.bg1};
-  border: 1px solid ${({ theme, highlight }) => highlight ? 'none' : transparentize(0.8, theme.text1)};
+  background: ${({ theme, highlight }) =>
+    highlight ? (theme.darkMode ? transparentize(0.8, theme.text3) : transparentize(0.9, theme.text3)) : theme.bg1};
+  border: 1px solid ${({ theme, highlight }) => (highlight ? 'none' : transparentize(0.8, theme.text1))};
   position: relative;
 
   &::before {
-    content: ${({ recommended }) => recommended ? "'Recommended'" : 'none'};
+    content: ${({ recommended }) => (recommended ? "'Recommended'" : 'none')};
     position: absolute;
     top: -7px;
     left: 0;
@@ -418,50 +419,61 @@ export const CompareItem = styled.div<{ highlight?: boolean; recommended?: boole
     letter-spacing: 0.5px;
     text-align: center;
     background: ${({ theme }) => theme.text3};
-    color: ${({ theme }) => theme.darkMode ? theme.blueDark1 : theme.white};
+    color: ${({ theme }) => (theme.darkMode ? theme.blueDark1 : theme.white)};
   }
 
   > h5 {
     font-size: 21px;
-    font-weight: ${({ highlight }) => highlight ? 700 : 500};
+    font-weight: ${({ highlight }) => (highlight ? 700 : 500)};
     margin: 0;
     padding: 0;
   }
 `
 
 export const ItemList = styled.div<{ listIconAlert?: boolean }>`
-    margin: 0 auto;
-    padding: 0;
-    list-style: none;
-    font-size: inherit;
-    color: ${({ theme }) => transparentize(0.2, theme.text1)};
-    gap: 6px;
-    display: flex;
-    flex-flow: column wrap;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  font-size: inherit;
+  color: ${({ theme }) => transparentize(0.2, theme.text1)};
+  gap: 6px;
+  display: flex;
+  flex-flow: column wrap;
 
-   > li {
+  > li {
     display: flex;
     align-items: center;
     gap: 5px;
   }
 
-   > li > svg {
+  > li > svg {
     --size: 12px;
     display: inline-block;
     width: var(--size);
     height: var(--size);
 
-    ${({ listIconAlert }) => !listIconAlert && css`
-      > path:nth-child(1) { fill: ${({ theme }) => theme.text3}; opacity: 1; }
-      > path:nth-child(2) { fill: ${({ theme }) => theme.text3}; }
-      > path:nth-child(3) { fill: ${({ theme }) => theme.white}; }
-    `}
+    ${({ listIconAlert }) =>
+      !listIconAlert &&
+      css`
+        > path:nth-child(1) {
+          fill: ${({ theme }) => theme.text3};
+          opacity: 1;
+        }
+        > path:nth-child(2) {
+          fill: ${({ theme }) => theme.text3};
+        }
+        > path:nth-child(3) {
+          fill: ${({ theme }) => theme.white};
+        }
+      `}
 
-    ${({ listIconAlert }) => listIconAlert && css`
-      > path { 
-        fill: ${({ theme }) => transparentize(0.6, theme.text1)};
-      }
-    `}
+    ${({ listIconAlert }) =>
+      listIconAlert &&
+      css`
+        > path {
+          fill: ${({ theme }) => transparentize(0.6, theme.text1)};
+        }
+      `}
   }
 `
 

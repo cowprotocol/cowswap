@@ -29,9 +29,27 @@ import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import checkImage from 'assets/cow-swap/check.svg'
 import alertImage from 'assets/cow-swap/alert-circle.svg'
 import SVG from 'react-inlinesvg'
-import { StyledIcon, ExternalLinkCustom, Section, Header, ButtonGroup, ButtonCustom, InternalLink, Wrapper, UpperSection, CloseIconWrapper, WalletIcon, ApproveWrapper, ApproveComparison, CompareItem, ItemList, ApproveFooter, LowerSection, StepsWrapper, StepsIconWrapper, } from './styled'
-
-
+import {
+  StyledIcon,
+  ExternalLinkCustom,
+  Section,
+  Header,
+  ButtonGroup,
+  ButtonCustom,
+  InternalLink,
+  Wrapper,
+  UpperSection,
+  CloseIconWrapper,
+  WalletIcon,
+  ApproveWrapper,
+  ApproveComparison,
+  CompareItem,
+  ItemList,
+  ApproveFooter,
+  LowerSection,
+  StepsWrapper,
+  StepsIconWrapper,
+} from './styled'
 
 export * from './TransactionConfirmationModalMod'
 export { default } from './TransactionConfirmationModalMod'
@@ -183,20 +201,30 @@ export function ConfirmationPendingContent({
       {/* Only shown for APPROVE_TOKEN operation */}
       {operationType === OperationType.APPROVE_TOKEN && (
         <ApproveWrapper>
-          <h3>Review and select the ideal <br /> spending cap in your wallet</h3>
+          <h3>
+            Review and select the ideal <br /> spending cap in your wallet
+          </h3>
           <ApproveComparison>
             <CompareItem>
               <h5>'Max'</h5>
               <ItemList listIconAlert>
-                <li><SVG src={alertImage} /> Approval on each order</li>
-                <li><SVG src={alertImage} /> Pay gas on every trade</li>
+                <li>
+                  <SVG src={alertImage} /> Approval on each order
+                </li>
+                <li>
+                  <SVG src={alertImage} /> Pay gas on every trade
+                </li>
               </ItemList>
             </CompareItem>
             <CompareItem highlight recommended>
               <h5>'Use default'</h5>
               <ItemList>
-                <li><SVG src={checkImage} /> Only approve once</li>
-                <li><SVG src={checkImage} /> Save on future gas fees</li>
+                <li>
+                  <SVG src={checkImage} /> Only approve once
+                </li>
+                <li>
+                  <SVG src={checkImage} /> Save on future gas fees
+                </li>
               </ItemList>
             </CompareItem>
           </ApproveComparison>
@@ -204,10 +232,25 @@ export function ConfirmationPendingContent({
           <ApproveFooter>
             <h6>No matter your choice, enjoy these benefits:</h6>
             <ul>
-              <li><SVG src={checkImage} /> The contract only withdraws funds for signed open orders</li>
-              <li><SVG src={checkImage} /> Immutable contract with multiple <ExternalLink href={'https://github.com/cowprotocol/ethflowcontract/tree/main/audits'} target={'_blank'} rel={'noopener'}>audits</ExternalLink></li>
-              <li><SVG src={checkImage} /> Over 2 years of successful trading with billions in volume</li>
-              <li><SVG src={checkImage} /> Adjust your spending cap anytime</li>
+              <li>
+                <SVG src={checkImage} /> The contract only withdraws funds for signed open orders
+              </li>
+              <li>
+                <SVG src={checkImage} /> Immutable contract with multiple{' '}
+                <ExternalLink
+                  href={'https://github.com/cowprotocol/ethflowcontract/tree/main/audits'}
+                  target={'_blank'}
+                  rel={'noopener'}
+                >
+                  audits
+                </ExternalLink>
+              </li>
+              <li>
+                <SVG src={checkImage} /> Over 2 years of successful trading with billions in volume
+              </li>
+              <li>
+                <SVG src={checkImage} /> Adjust your spending cap anytime
+              </li>
             </ul>
           </ApproveFooter>
         </ApproveWrapper>
