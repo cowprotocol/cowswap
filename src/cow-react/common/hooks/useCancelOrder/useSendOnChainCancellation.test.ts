@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cow/modules/wallet'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'state/orders/hooks'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useEthFlowContract, useGP2SettlementContract } from 'hooks/useContract'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'src/constants'
 import { BigNumber } from '@ethersproject/bignumber'
 import { COW } from 'constants/tokens'
 

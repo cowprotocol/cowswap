@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
-import { PENDING_ORDERS_BUFFER, ZERO_FRACTION } from 'constants/index'
+import { PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@src/constants'
 import { Order } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { EnrichedOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'

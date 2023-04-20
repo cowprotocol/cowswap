@@ -22,7 +22,7 @@ import { SwapShowAcceptChanges, TruncatedText } from 'components/swap/styleds'
 
 // MOD imports
 import TradeGp from 'state/swap/TradeGp'
-import { INPUT_OUTPUT_EXPLANATION } from 'constants/index'
+import { INPUT_OUTPUT_EXPLANATION } from '@src/constants'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Field } from 'state/swap/actions'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'

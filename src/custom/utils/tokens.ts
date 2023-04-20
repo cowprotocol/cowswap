@@ -1,6 +1,6 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { GpEther as ETHER, WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '../constants'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '../../constants'
 
 export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
   return tokenAddress === 'ETH' || tokenAddress === ETHER.onChain(chainId).symbol

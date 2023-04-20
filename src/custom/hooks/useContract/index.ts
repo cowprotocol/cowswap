@@ -5,7 +5,7 @@ import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
   GP_SETTLEMENT_CONTRACT_ADDRESS,
   V_COW_CONTRACT_ADDRESS,
-} from 'constants/index'
+} from '@src/constants'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'

@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import EthereumLogo from '../../assets/images/ethereum-logo.png'
 import XDaiLogo from '@src/assets/cow-swap/xdai.png'
 import { useExternalTokenLogo } from '@cow/common/hooks/useExternalTokenLogo'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@src/constants'
 import uriToHttp from '@src/lib/utils/uriToHttp'
 import { ADDRESS_IMAGE_OVERRIDE } from 'constants/tokens'
 

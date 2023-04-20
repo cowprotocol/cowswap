@@ -1,7 +1,7 @@
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { LimitOrdersTradeState, useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
-import { GP_VAULT_RELAYER } from 'constants/index'
+import { GP_VAULT_RELAYER } from '@src/constants'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'

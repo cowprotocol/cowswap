@@ -26,7 +26,7 @@ import { BAD_RECIPIENT_ADDRESSES } from '@src/state/swap/hooks'
 import { useGetQuoteAndStatus, useQuote } from '../price/hooks'
 import { registerOnWindow } from 'utils/misc'
 import { useTradeExactInWithFee, useTradeExactOutWithFee, stringToCurrency } from './extension'
-import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@src/constants'
 import TradeGp from './TradeGp'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'

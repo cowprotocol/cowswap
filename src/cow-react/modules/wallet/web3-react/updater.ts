@@ -5,7 +5,7 @@ import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWa
 import { useIsGnosisSafeWallet, useWalletMetaData } from '@cow/modules/wallet'
 import { useEffect, useMemo, useState } from 'react'
 
-import { UNSUPPORTED_WC_WALLETS } from 'constants/index'
+import { UNSUPPORTED_WC_WALLETS } from '@src/constants'
 import { useSetAtom } from 'jotai'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { getSafeInfo } from '@cow/api/gnosisSafe'

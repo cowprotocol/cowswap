@@ -4,7 +4,7 @@ import { useGasPrices } from 'state/gas/hooks'
 import { BalanceChecks } from '../../../pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { AVG_APPROVE_COST_GWEI } from 'constants/index'
+import { AVG_APPROVE_COST_GWEI } from '@src/constants'
 import { parseUnits } from 'ethers/lib/utils'
 import { useWalletInfo } from '@cow/modules/wallet'
 // eslint-disable-next-line no-restricted-imports

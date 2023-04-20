@@ -8,7 +8,7 @@ import { useMemo /* , useState */ } from 'react'
 // MOD imports
 import { PermitInfo, SignatureData, UseERC20PermitState } from '@src/hooks/useERC20Permit'
 import TradeGp from 'state/swap/TradeGp'
-import { GP_VAULT_RELAYER } from 'custom/constants'
+import { GP_VAULT_RELAYER } from '@src/constants'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 export * from '@src/hooks/useERC20Permit'

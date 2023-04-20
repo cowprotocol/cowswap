@@ -12,7 +12,7 @@ import {
 } from 'utils/gnosis_chain/constants'
 import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from '@src/constants/index'
 import vCowLogo from '@src/assets/cow-swap/vCOW.png'
 import cowLogo from '@src/assets/cow-swap/cow.svg'
 import gnoLogo from '@src/assets/cow-swap/gno.png'

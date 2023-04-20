@@ -2,7 +2,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useEthFlowContract } from 'hooks/useContract'
 import { useBaseFlowContextSetup, getFlowContext } from '@cow/modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from '@cow/modules/swap/services/types'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@src/constants'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useCallback } from 'react'
 import {

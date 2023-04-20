@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { APP_DATA_HASH } from 'constants/index'
+import { APP_DATA_HASH } from '@src/constants'
 import { buildAppData, BuildAppDataParams } from 'utils/appData'
 import { appDataInfoAtom } from 'state/appData/atoms'
 import { useReferralAddress } from 'state/affiliate/hooks'

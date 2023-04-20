@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Order } from 'state/orders/actions'
-import { ZERO_BIG_NUMBER } from 'constants/index'
+import { ZERO_BIG_NUMBER } from '@src/constants'
 
 /**
  * Get order filled amount, both as raw amount (in atoms) and as percentage (from 0 to 1)

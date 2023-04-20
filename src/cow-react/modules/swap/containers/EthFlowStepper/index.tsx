@@ -5,7 +5,7 @@ import {
 } from '@cow/modules/swap/pure/EthFlow/EthFlowStepper'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { Order, OrderStatus } from 'state/orders/actions'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from '@src/constants'
 import { isOrderExpired } from 'state/orders/utils'
 import { useAllTransactions } from 'state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'

@@ -8,7 +8,7 @@ import {
   DISCORD_LINK,
   MEV_TOTAL,
   FLASHBOTS_LINK,
-} from 'constants/index'
+} from '@src/constants'
 import { Page, Content } from '@cow/modules/application/pure/Page'
 import { Routes } from '@cow/constants/routes'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'

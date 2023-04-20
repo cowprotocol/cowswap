@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { RAW_CODE_LINK } from 'constants/index'
+import { RAW_CODE_LINK } from '@src/constants'
 import { AlertTriangle } from 'react-feather'
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'

@@ -5,7 +5,7 @@ import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getDateTimestamp } from '@cow/utils/time'
-import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
+import { MAXIMUM_ORDERS_TO_DISPLAY } from '@src/constants'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 export interface AddedOrder extends Order {

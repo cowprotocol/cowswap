@@ -13,7 +13,7 @@ import { getBestQuote, QuoteResult } from 'utils/price'
 
 import { ZERO_ADDRESS } from 'constants/misc'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { DEFAULT_DECIMALS } from 'constants/index'
+import { DEFAULT_DECIMALS } from '@src/constants'
 import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
 import { onlyResolvesLast } from 'utils/async'

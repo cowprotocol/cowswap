@@ -4,7 +4,7 @@ import { AutoColumn } from '@src/components/Column'
 import { MEDIA_WIDTHS, ThemedText } from '@src/theme'
 import { AutoRow } from '@src/components/Row'
 import { ExternalLink } from 'theme'
-import { CODE_LINK, DISCORD_LINK } from 'constants/index'
+import { CODE_LINK, DISCORD_LINK } from '@src/constants'
 import React from 'react'
 import styled from 'styled-components/macro'
 import { Title } from '@cow/modules/application/pure/Page'
@@ -132,13 +132,13 @@ function issueBody(error: Error): string {
   const relevantState = getRelevantState()
   const deviceData = userAgent
   return `## URL
-  
+
 ${window.location.href}
 
 ${
   relevantState
     ? `## \`${relevantState}\` state
-    
+
 \`\`\`json
 ${JSON.stringify(store.getState()[relevantState], null, 2)}
 \`\`\`

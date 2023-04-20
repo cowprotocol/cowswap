@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'
+import { UNSUPPORTED_TOKENS_FAQ_URL } from '@src/constants'
 import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
 import { StyledLogo } from 'components/CurrencyLogo'
 import { MouseoverTooltip } from 'components/Tooltip'

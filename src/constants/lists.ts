@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { RAW_CODE_LINK } from 'constants/index'
+import { RAW_CODE_LINK } from '@src/constants/index'
 
 export type NetworkLists = {
   [chain in ChainId]: string[]

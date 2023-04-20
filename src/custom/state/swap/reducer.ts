@@ -3,7 +3,7 @@ import { parsedQueryString } from 'hooks/useParsedQueryString'
 
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
 import { queryParametersToSwapState } from 'state/swap/hooks'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@src/constants'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 export interface SwapState {

@@ -12,7 +12,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import { fetchClaim } from './claimData'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'constants/tokens'
-import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'constants/index'
+import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from '@src/constants'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter

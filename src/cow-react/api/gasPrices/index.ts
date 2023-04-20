@@ -1,6 +1,6 @@
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { GAS_FEE_ENDPOINTS, GAS_API_KEYS } from 'constants/index'
+import { GAS_FEE_ENDPOINTS, GAS_API_KEYS } from '@src/constants'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'
 
 const fetchRateLimitted = fetchWithRateLimit({

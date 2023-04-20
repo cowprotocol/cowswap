@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 import { ChevronUp, ChevronDown } from 'react-feather'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'constants/index'
+import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@src/constants'
 import { EthFlowBannerCallbacks } from '@cow/modules/swap/containers/EthFlow/EthFlowBanner'
 import savingsIcon from 'assets/cow-swap/savings.svg'
 import SVG from 'react-inlinesvg'

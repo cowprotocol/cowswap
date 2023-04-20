@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@src/constants'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'

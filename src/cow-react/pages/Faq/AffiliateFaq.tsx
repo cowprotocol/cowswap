@@ -8,7 +8,7 @@ import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
 import { Routes } from '@cow/constants/routes'
-import { BARN_URL, PRODUCTION_URL } from 'constants/index'
+import { BARN_URL, PRODUCTION_URL } from '@src/constants'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics

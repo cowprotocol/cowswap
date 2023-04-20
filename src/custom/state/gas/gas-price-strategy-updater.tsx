@@ -5,7 +5,7 @@ import { gasPriceStrategyAtom } from 'state/gas/atoms'
 import ms from 'ms.macro'
 import { useEffect } from 'react'
 import { getPriceStrategy } from '@cow/api/gnosisProtocol/priceApi'
-import { DEFAULT_GP_PRICE_STRATEGY } from 'constants/index'
+import { DEFAULT_GP_PRICE_STRATEGY } from '@src/constants'
 
 const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 

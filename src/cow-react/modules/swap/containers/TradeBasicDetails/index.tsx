@@ -1,7 +1,7 @@
 import { BoxProps } from 'rebass'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'constants/index'
+import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@src/constants'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { LowerSectionWrapper } from '@cow/modules/swap/pure/styled'
 import { RowFee } from '@cow/modules/swap/containers/Row/RowFee'

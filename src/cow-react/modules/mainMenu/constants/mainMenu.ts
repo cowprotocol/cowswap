@@ -1,5 +1,5 @@
 import { Routes } from '@cow/constants/routes'
-import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
+import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@src/constants'
 import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
 
 // Assets

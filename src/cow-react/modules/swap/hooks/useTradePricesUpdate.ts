@@ -1,6 +1,6 @@
 import { useIsBestQuoteLoading, useIsQuoteLoading, useIsQuoteRefreshing } from 'state/price/hooks'
 import useLoadingWithTimeout from 'hooks/useLoadingWithTimeout'
-import { LONG_LOAD_THRESHOLD, SHORT_LOAD_THRESHOLD } from 'constants/index'
+import { LONG_LOAD_THRESHOLD, SHORT_LOAD_THRESHOLD } from '@src/constants'
 import { useMemo } from 'react'
 
 export function useTradePricesUpdate(): boolean {

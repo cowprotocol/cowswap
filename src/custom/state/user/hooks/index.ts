@@ -9,7 +9,7 @@ import {
 } from 'state/user/reducer'
 import { useUserTransactionTTL, deserializeToken } from '@src/state/user/hooks'
 import { SerializedToken } from 'state/user/types'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_TOKEN } from '@src/constants'
 import { calculateValidTo } from '@cow/utils/time'
 import { useWalletInfo } from '@cow/modules/wallet'
 

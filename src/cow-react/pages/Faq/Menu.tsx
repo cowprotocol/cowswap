@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { SideMenu } from 'components/SideMenu'
-import { FAQ_MENU_LINKS } from 'constants/index'
+import { FAQ_MENU_LINKS } from '@src/constants'
 
 export function FaqMenu() {
   return (

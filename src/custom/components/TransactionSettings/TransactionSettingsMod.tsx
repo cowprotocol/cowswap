@@ -25,7 +25,7 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ETH_FLOW_SLIPPAGE,
-} from 'constants/index'
+} from '@src/constants'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'

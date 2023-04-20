@@ -1,7 +1,7 @@
 import { supportedChainId } from 'utils/supportedChainId'
 import { useExpiredOrders, useSetIsOrderRefundedBatch } from 'state/orders/hooks'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { EXPIRED_ORDERS_PENDING_TIME } from 'constants/index'
+import { EXPIRED_ORDERS_PENDING_TIME } from '@src/constants'
 import { EXPIRED_ORDERS_CHECK_POLL_INTERVAL } from 'state/orders/consts'
 import { useEffect, useCallback, useRef } from 'react'
 import { getOrder } from '@cow/api/gnosisProtocol'

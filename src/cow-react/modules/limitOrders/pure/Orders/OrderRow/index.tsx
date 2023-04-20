@@ -26,7 +26,7 @@ import { calculatePriceDifference, PriceDifference } from '@cow/modules/limitOrd
 import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { ZERO_FRACTION } from 'constants/index'
+import { ZERO_FRACTION } from '@src/constants'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',

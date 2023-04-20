@@ -6,7 +6,7 @@ import { RedirectPathToSwapOnly } from 'pages/Swap/redirects'
 import { Routes as RoutesEnum } from '@cow/constants/routes'
 
 import AnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers'
-import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
+import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@src/constants'
 import { Loading } from 'components/FlashingLoading'
 
 import Account, { AccountOverview } from '@cow/pages/Account'
