@@ -15,7 +15,6 @@ import orders from 'state/orders/reducer'
 import price from 'state/price/reducer'
 import gas from 'state/gas/reducer'
 import profile from 'state/profile/reducer'
-import affiliate from 'state/affiliate/reducer'
 import enhancedTransactions from 'state/enhancedTransactions/reducer'
 import claim from 'state/claim/reducer'
 import cowToken from 'state/cowToken/reducer'
@@ -41,7 +40,6 @@ const reducers = {
   orders,
   price,
   gas,
-  affiliate,
   profile,
   claim,
   cowToken,
