@@ -7,7 +7,6 @@ import { useUpdateAtom } from 'jotai/utils'
 import { updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
-import { useShowFortuneButton } from '@cow/modules/fortune/hooks/useShowFortuneButton'
 
 interface HandleTradeCallback {
   beforeTrade(): void
@@ -26,7 +25,6 @@ export function useHandleOrderPlacement(
   settingsState: LimitOrdersSettingsState,
   callbacks: Partial<HandleTradeCallback>
 ): () => Promise<void> {
-  const showFortuneButton = useShowFortuneButton()
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
 
@@ -44,7 +42,6 @@ export function useHandleOrderPlacement(
         updateLimitOrdersState({ recipient: null })
         // Reset override after successful order placement
         setPartiallyFillableOverride(undefined)
-        showFortuneButton()
       })
       .catch((error: Error) => {
         if (error instanceof PriceImpactDeclineError) return
@@ -66,6 +63,5 @@ export function useHandleOrderPlacement(
     callbacks,
     updateLimitOrdersState,
     setPartiallyFillableOverride,
-    showFortuneButton,
   ])
 }

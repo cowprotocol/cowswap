@@ -6,12 +6,10 @@ import { useCallback } from 'react'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { ethFlow } from '@cow/modules/swap/services/ethFlow'
-import { useShowFortuneButton } from '@cow/modules/fortune/hooks/useShowFortuneButton'
 
 export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<void> {
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
-  const showFortuneButton = useShowFortuneButton()
   const { onChangeRecipient } = useSwapActionHandlers()
 
   return useCallback(async () => {
@@ -24,8 +22,7 @@ export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<voi
       logTradeFlow('ETH FLOW', 'Start eth flow')
       await ethFlow(ethFlowContext, priceImpactParams)
     }
-    showFortuneButton()
 
     onChangeRecipient(null)
-  }, [swapFlowContext, ethFlowContext, priceImpactParams, onChangeRecipient, showFortuneButton])
+  }, [swapFlowContext, ethFlowContext, priceImpactParams, onChangeRecipient])
 }
