@@ -7,7 +7,7 @@ import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
 import { ZERO_ADDRESS } from 'constants/misc'
-import { getAppDataHash } from '@src/constants/appDataHash'
+import { getAppDataHash } from 'constants/appDataHash'
 import { orderBookApi } from '@cow/cowSdk'
 import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { fetchWithRateLimit } from '@cow/common/utils/fetch'

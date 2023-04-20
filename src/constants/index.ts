@@ -5,11 +5,11 @@ import ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
 import networksJson from '@cowprotocol/contracts/networks.json'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getAppDataHash } from '@src/constants/appDataHash'
+import { getAppDataHash } from 'constants/appDataHash'
 import ms from 'ms.macro'
 
 import { IpfsConfig } from '@cowprotocol/cow-sdk'
-import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from '@src/constants/ipfs'
+import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'constants/ipfs'
 
 const { GPv2Settlement, GPv2VaultRelayer } = networksJson
 const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow
