@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import SVG from 'react-inlinesvg'
-import QuestionImage from 'assets/svg/question.svg'
+import QuestionImage from '@src/assets/svg/question.svg'
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 
 const QuestionMark = () => <SVG src={QuestionImage} />
