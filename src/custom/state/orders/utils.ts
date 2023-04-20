@@ -187,6 +187,8 @@ export function getOrderExecutionPrice(
 
 /**
  * Builds order market price, based on quoted amount and fee
+ *
+ * Discounts the fee from sell amount (for sell orders)
  * @param order
  * @param quotedAmount
  * @param feeAmount

@@ -8,7 +8,6 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getBestQuote } from 'utils/price'
 import {
   getEstimatedExecutionPrice,
-  getOrderExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
   isOrderUnfillable,
@@ -136,10 +135,9 @@ export function UnfillableOrdersUpdater(): null {
         order.buyAmount.toString()
       )
 
-      const executionPrice = getOrderExecutionPrice(order, price.amount, fee.amount)
       const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
       const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
-      const isUnfillable = isOrderUnfillable(order, orderPrice, executionPrice)
+      const isUnfillable = isOrderUnfillable(order, orderPrice, marketPrice)
 
       // Only trigger state update if flag changed
       if (order.isUnfillable !== isUnfillable) {
