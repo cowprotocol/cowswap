@@ -5,10 +5,9 @@
 const CHAIN_ID = 5
 const USDC = '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
 const WETH = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
-const QUOTE_APPLY_TIMEOUT = 2000
 
 function acceptFeesExceedWarning() {
-  cy.wait(QUOTE_APPLY_TIMEOUT)
+  cy.get('#swap-button > button').should('contain.text', 'Swap')
   cy.get('body').then(($body) => {
     const feesExceedCheckbox = $body.find('#fees-exceed-checkbox')
     if (feesExceedCheckbox.length > 0) {
@@ -36,7 +35,7 @@ describe('Swap (custom)', () => {
     cy.get('#swap-currency-input .token-amount-input').type('0.1', { force: true, delay: 200 })
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
-    cy.get('#swap-button > button').should('contain.text', 'Swap').click()
+    cy.get('#swap-button > button').should('contain.text', 'Swap').should('be.enabled').click()
     cy.get('#confirm-swap-or-send').should('contain', 'Confirm Swap')
   })
 
@@ -46,6 +45,7 @@ describe('Swap (custom)', () => {
 
     cy.get('#swap-currency-input .token-amount-input').should('be.visible')
     cy.get('#swap-currency-input .token-amount-input').type('0.5', { force: true, delay: 400 })
+
     cy.get('#swap-currency-output .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
     cy.get('#classic-eth-flow-banner').should('contain', 'Switch to the classic WETH').click()

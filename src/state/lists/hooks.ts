@@ -1,17 +1,47 @@
 import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
-import { useMemo } from 'react'
-
+import { useCallback, useMemo } from 'react'
 import sortByListPriority from 'utils/listSort'
-
 import BROKEN_LIST from 'constants/tokenLists/broken.tokenlist.json'
 import UNSUPPORTED_TOKEN_LIST from 'constants/tokenLists/unsupported.tokenlist.json'
-import { UNSUPPORTED_LIST_URLS } from 'constants/lists'
-import { useActiveListUrls, useAllLists } from 'state/lists/hooks'
+import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
+import { AppState } from 'state'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cow/modules/wallet'
+import { supportedChainId } from 'utils/supportedChainId'
+import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { shallowEqual } from 'react-redux'
+import { TokenInfo } from '@uniswap/token-lists'
+import { UnsupportedToken } from '@cow/api/gnosisProtocol'
+import {
+  addGpUnsupportedToken,
+  AddGpUnsupportedTokenParams,
+  removeGpUnsupportedToken,
+  RemoveGpUnsupportedTokenParams,
+} from 'state/lists/actions'
+import { Currency } from '@uniswap/sdk-core'
+import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 
 export type TokenAddressMap = ChainTokenMap
 
 type Mutable<T> = {
   -readonly [P in keyof T]: Mutable<T[P]>
+}
+
+export function useActiveListUrls(): string[] | undefined {
+  const { chainId: connectedChainId } = useWalletInfo()
+  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
+  const activeListUrls = useAppSelector((state) => state.lists[chainId]?.activeListUrls, shallowEqual)
+
+  return useMemo(() => {
+    return activeListUrls?.filter((url) => !UNSUPPORTED_LIST_URLS[chainId]?.includes(url))
+  }, [chainId, activeListUrls])
+}
+
+export function useAllLists(): AppState['lists'][ChainId]['byUrl'] {
+  const { chainId: connectedChainId } = useWalletInfo()
+  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
+
+  return useAppSelector((state) => state.lists[chainId]?.byUrl, shallowEqual)
 }
 
 /**
@@ -87,7 +117,99 @@ export function useUnsupportedTokenList(): TokenAddressMap {
     [brokenListMap, localUnsupportedListMap, loadedUnsupportedListMap]
   )
 }
+
+export function useTokensListFromUrls(urls: string[] | undefined): TokenInfo[] {
+  const lists = useAllLists()
+
+  return useMemo(() => {
+    if (!urls) return []
+
+    return (
+      urls
+        .slice()
+        // sort by priority so top priority goes last
+        .sort(sortByListPriority)
+        .map((url) => {
+          return lists?.[url]?.current?.tokens || []
+        })
+        .flat()
+    )
+  }, [lists, urls])
+}
+
+export function useTokensListWithDefaults(): TokenInfo[] {
+  const { chainId } = useWalletInfo()
+  const activeListUrls = useActiveListUrls()
+  const allTokens = useTokensListFromUrls(activeListUrls)
+  const allUserAddedTokens = useAppSelector(({ user: { tokens } }) => tokens)
+
+  return useMemo(() => {
+    if (!chainId) return []
+
+    const userAddedTokens = Object.values(allUserAddedTokens[chainId] || {}) as TokenInfo[]
+    const defaultTokens = DEFAULT_TOKEN_LIST.tokens
+    return allTokens
+      .concat(defaultTokens)
+      .concat(userAddedTokens)
+      .filter((token) => token.chainId === chainId)
+  }, [allTokens, chainId, allUserAddedTokens])
+}
+
 export function useIsListActive(url: string): boolean {
   const activeListUrls = useActiveListUrls()
   return Boolean(activeListUrls?.includes(url))
+}
+
+export function useGpUnsupportedTokens(): UnsupportedToken | null {
+  const { chainId: connectedChainId } = useWalletInfo()
+  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
+  return useAppSelector((state) => (chainId ? state.lists[chainId]?.gpUnsupportedTokens : null))
+}
+
+export function useAddGpUnsupportedToken() {
+  const dispatch = useAppDispatch()
+
+  return useCallback((params: AddGpUnsupportedTokenParams) => dispatch(addGpUnsupportedToken(params)), [dispatch])
+}
+
+export function useRemoveGpUnsupportedToken() {
+  const dispatch = useAppDispatch()
+
+  return useCallback((params: RemoveGpUnsupportedTokenParams) => dispatch(removeGpUnsupportedToken(params)), [dispatch])
+}
+
+export function useIsUnsupportedTokenGp() {
+  const { chainId } = useWalletInfo()
+  const gpUnsupportedTokens = useGpUnsupportedTokens()
+
+  return useCallback(
+    (address?: string) => {
+      if (!address || !chainId || !gpUnsupportedTokens) return false
+
+      return gpUnsupportedTokens[address.toLowerCase()]
+    },
+    [chainId, gpUnsupportedTokens]
+  )
+}
+
+export function useIsTradeUnsupported(
+  inputCurrency: Currency | null | undefined,
+  outputCurrency: Currency | null | undefined
+): boolean {
+  const isUnsupportedToken = useIsUnsupportedTokenGp()
+  const isInputCurrencyUnsupported = inputCurrency?.isNative ? false : !!isUnsupportedToken(inputCurrency?.address)
+  const isOutputCurrencyUnsupported = outputCurrency?.isNative ? false : !!isUnsupportedToken(outputCurrency?.address)
+
+  return isInputCurrencyUnsupported || isOutputCurrencyUnsupported
+}
+
+export function useInactiveListUrls(): string[] {
+  // MOD: adds { chainId } support to the hooks
+  const { chainId: connectedChainId } = useWalletInfo()
+  const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
+  const lists = useAllLists()
+  const allActiveListUrls = useActiveListUrls()
+  return Object.keys(lists).filter(
+    (url) => !allActiveListUrls?.includes(url) && !UNSUPPORTED_LIST_URLS[chainId].includes(url)
+  )
 }

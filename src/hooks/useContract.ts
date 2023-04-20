@@ -1,12 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-// import QuoterV2Json from '@uniswap/swap-router-contracts/artifacts/contracts/lens/QuoterV2.sol/QuoterV2.json'
-// import IUniswapV2PairJson from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-// import IUniswapV2Router02Json from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-// import QuoterJson from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
-// import TickLensJson from '@uniswap/v3-periphery/artifacts/contracts/lens/TickLens.sol/TickLens.json'
 import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json'
-// import NonfungiblePositionManagerJson from '@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json'
-// import V3MigratorJson from '@uniswap/v3-periphery/artifacts/contracts/V3Migrator.sol/V3Migrator.json'
 import { useWeb3React } from '@web3-react/core'
 import ARGENT_WALLET_DETECTOR_ABI from 'abis/argent-wallet-detector.json'
 import EIP_2612 from 'abis/eip_2612.json'
@@ -18,38 +11,26 @@ import ERC721_ABI from 'abis/erc721.json'
 import ERC1155_ABI from 'abis/erc1155.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
 import WETH_ABI from 'abis/weth.json'
-import {
-  ARGENT_WALLET_DETECTOR_ADDRESS,
-  ENS_REGISTRAR_ADDRESSES,
-  MULTICALL_ADDRESS,
-  NONFUNGIBLE_POSITION_MANAGER_ADDRESSES,
-  QUOTER_ADDRESSES,
-  TICK_LENS_ADDRESSES,
-  V2_ROUTER_ADDRESS,
-  V3_MIGRATOR_ADDRESSES,
-} from 'constants/addresses'
+import { ARGENT_WALLET_DETECTOR_ADDRESS, ENS_REGISTRAR_ADDRESSES, MULTICALL_ADDRESS } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
-import { NonfungiblePositionManager, Quoter, QuoterV2, TickLens, UniswapInterfaceMulticall, V3Migrator } from 'types/v3'
-
+import { UniswapInterfaceMulticall } from 'types/v3'
 import { getContract } from 'utils'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { CoWSwapEthFlow, GPv2Settlement, VCow } from '@cow/abis/types'
+import { isEns, isProd, isStaging } from 'utils/environments'
+import {
+  COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
+  GP_SETTLEMENT_CONTRACT_ADDRESS,
+  V_COW_CONTRACT_ADDRESS,
+} from 'constants/index'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { JsonRpcProvider } from '@ethersproject/providers'
+import CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
+import GPv2_SETTLEMENT_ABI from '@cow/abis/GPv2Settlement.json'
+import V_COW_ABI from '@cow/abis/vCow.json'
 
-// Mod const { abi: IUniswapV2PairABI } = IUniswapV2PairJson
-const IUniswapV2PairABI: any = []
-// Mod const { abi: IUniswapV2Router02ABI } = IUniswapV2Router02Json
-const IUniswapV2Router02ABI: any = []
-// Mod const { abi: QuoterABI } = QuoterJson
-const QuoterABI: any = []
-// Mod const { abi: QuoterV2ABI } = QuoterV2Json
-const QuoterV2ABI: any = []
-// Mod const { abi: TickLensABI } = TickLensJson
-const TickLensABI: any = []
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
-// Mod const { abi: NFTPositionManagerABI } = NonfungiblePositionManagerJson
-const NFTPositionManagerABI: any = []
-// Mod const { abi: V2MigratorABI } = V3MigratorJson
-const V2MigratorABI: any = []
 
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
@@ -73,10 +54,6 @@ export function useContract<T extends Contract = Contract>(
       return null
     }
   }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as T
-}
-
-export function useV2MigratorContract() {
-  return useContract<V3Migrator>(V3_MIGRATOR_ADDRESSES, V2MigratorABI, true)
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
@@ -120,32 +97,82 @@ export function useEIP2612Contract(tokenAddress?: string): Contract | null {
   return useContract(tokenAddress, EIP_2612, false)
 }
 
-export function usePairContract(pairAddress?: string, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(pairAddress, IUniswapV2PairABI, withSignerIfPossible)
-}
-
-export function useV2RouterContract(): Contract | null {
-  return useContract(V2_ROUTER_ADDRESS, IUniswapV2Router02ABI, true)
-}
-
 export function useInterfaceMulticall() {
   return useContract<UniswapInterfaceMulticall>(MULTICALL_ADDRESS, MulticallABI, false) as UniswapInterfaceMulticall
 }
 
-export function useV3NFTPositionManagerContract(withSignerIfPossible?: boolean): NonfungiblePositionManager | null {
-  return useContract<NonfungiblePositionManager>(
-    NONFUNGIBLE_POSITION_MANAGER_ADDRESSES,
-    NFTPositionManagerABI,
-    withSignerIfPossible
+const COWSWAP_ETHFLOW_ABI = CoWSwapEthFlowJson.abi
+
+export function useEthFlowContract(): CoWSwapEthFlow | null {
+  const { chainId } = useWalletInfo()
+
+  const contractEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
+
+  const contractAddress = chainId ? COWSWAP_ETHFLOW_CONTRACT_ADDRESS[contractEnv][chainId] : undefined
+
+  return useContract<CoWSwapEthFlow>(contractAddress, COWSWAP_ETHFLOW_ABI, true)
+}
+
+export function useGP2SettlementContract(): GPv2Settlement | null {
+  const { chainId } = useWalletInfo()
+  return useContract<GPv2Settlement>(
+    chainId ? GP_SETTLEMENT_CONTRACT_ADDRESS[chainId] : undefined,
+    GPv2_SETTLEMENT_ABI,
+    true
   )
 }
 
-export function useQuoter(useQuoterV2: boolean) {
-  return useContract<Quoter | QuoterV2>(QUOTER_ADDRESSES, useQuoterV2 ? QuoterV2ABI : QuoterABI)
+export function useVCowContract() {
+  const { chainId } = useWalletInfo()
+  return useContract<VCow>(chainId ? V_COW_CONTRACT_ADDRESS[chainId] : undefined, V_COW_ABI, true)
 }
 
-export function useTickLens(): TickLens | null {
-  const { chainId } = useWalletInfo()
-  const address = chainId ? TICK_LENS_ADDRESSES[chainId] : undefined
-  return useContract(address, TickLensABI) as TickLens | null
+/**
+ * Non-hook version of useContract
+ */
+function _getContract<T extends Contract = Contract>(
+  addressOrAddressMap: string | { [chainId: number]: string } | undefined,
+  ABI: any,
+  withSignerIfPossible = true,
+  provider?: JsonRpcProvider,
+  account?: string,
+  chainId?: SupportedChainId
+): T | null {
+  if (!addressOrAddressMap || !ABI || !provider || !chainId) return null
+  let address: string | undefined
+  if (typeof addressOrAddressMap === 'string') address = addressOrAddressMap
+  else address = addressOrAddressMap[chainId]
+  if (!address) return null
+  try {
+    return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined) as T
+  } catch (error: any) {
+    console.error('Failed to get contract', error)
+    return null
+  }
+}
+
+/**
+ * Non-hook version of useTokenContract
+ */
+export function getTokenContract(
+  tokenAddress?: string,
+  withSignerIfPossible?: boolean,
+  provider?: JsonRpcProvider,
+  account?: string,
+  chainId?: SupportedChainId
+): Erc20 | null {
+  return _getContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible, provider, account, chainId)
+}
+
+/**
+ * Non-hook version of useBytes32TokenContract
+ */
+export function getBytes32TokenContract(
+  tokenAddress?: string,
+  withSignerIfPossible?: boolean,
+  provider?: JsonRpcProvider,
+  account?: string,
+  chainId?: SupportedChainId
+): Contract | null {
+  return _getContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible, provider, account, chainId)
 }
