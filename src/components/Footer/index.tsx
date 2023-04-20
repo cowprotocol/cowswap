@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Version } from '../Version'
-import { Polling } from '../Header/Polling'
+import { Polling } from 'components/Header/Polling'
 import SVG from 'react-inlinesvg'
 import { footerImage } from 'theme/cowSwapAssets'
 

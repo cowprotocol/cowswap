@@ -7,7 +7,7 @@ import { Routes as RoutesEnum } from '@cow/constants/routes'
 
 import AnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from '@src/constants'
-import { Loading } from 'components/FlashingLoading'
+import { Loading } from '@src/components/FlashingLoading'
 
 import Account, { AccountOverview } from '@cow/pages/Account'
 import { SwapPage } from '@cow/pages/Swap'

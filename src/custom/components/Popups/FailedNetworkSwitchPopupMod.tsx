@@ -9,7 +9,7 @@ import { AutoRow } from 'components/Row'
 
 import { getChainInfo } from 'constants/chainInfo'
 import { useMemo } from 'react'
-import UnsupportedNetworkMessage from 'components/UnsupportedNetworkMessage'
+import UnsupportedNetworkMessage from '@src/components/UnsupportedNetworkMessage'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

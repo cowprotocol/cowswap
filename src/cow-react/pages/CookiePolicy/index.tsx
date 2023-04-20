@@ -1,5 +1,5 @@
 import contentFile from './CookiePolicy.md'
-import { MarkdownPage } from 'components/Markdown'
+import { MarkdownPage } from '@src/components/Markdown'
 import { GdocsListStyle } from '@cow/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'

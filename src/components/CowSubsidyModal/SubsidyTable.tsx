@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { COW_SUBSIDY_DATA } from './constants'
-import { CowSubsidy } from '.'
+import { CowSubsidy } from './index'
 import { transparentize, lighten } from 'polished'
 
 import { V_COW } from 'constants/tokens'

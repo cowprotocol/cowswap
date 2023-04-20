@@ -29,7 +29,7 @@ import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyI
 import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from '.'
 import { transparentize } from 'polished'
-import { WarningProps } from 'components/SwapWarnings'
+import { WarningProps } from '@src/components/SwapWarnings'
 import { RateInfo, RateInfoParams } from '@cow/common/pure/RateInfo'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'

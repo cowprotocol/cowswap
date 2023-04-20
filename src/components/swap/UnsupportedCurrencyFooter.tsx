@@ -8,7 +8,7 @@ import Modal from '@cow/common/pure/Modal'
 import { AutoRow, RowBetween } from 'components/Row'
 import { useState } from 'react'
 import styled from 'styled-components/macro'
-import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from '@src/theme'
+import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'theme'
 
 import { useUnsupportedTokens } from '../../hooks/Tokens'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'

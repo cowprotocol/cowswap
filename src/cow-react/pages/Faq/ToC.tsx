@@ -1,5 +1,5 @@
 import { Content, Title } from '@cow/modules/application/pure/Page'
-import { LinkScrollable } from 'components/Link'
+import { LinkScrollable } from '@src/components/Link'
 import { TocSection } from '.'
 import { PageIndex } from './styled'
 

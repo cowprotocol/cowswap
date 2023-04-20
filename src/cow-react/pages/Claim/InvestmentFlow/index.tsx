@@ -16,7 +16,7 @@ import { InvestSummaryRow } from '@cow/pages/Claim/InvestmentFlow/InvestSummaryR
 import { ClaimSummaryView } from '@cow/pages/Claim/ClaimSummary'
 
 import { Stepper } from 'components/Stepper'
-import { FaqDrawer } from 'components/FaqDrawer'
+import { FaqDrawer } from '@src/components/FaqDrawer'
 
 import {
   useClaimState,
@@ -32,7 +32,7 @@ import { calculateInvestmentAmounts } from 'state/claim/hooks/utils'
 import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 import { ExternalLink } from 'theme'
-import { ExplorerLink } from 'components/ExplorerLink'
+import { ExplorerLink } from '@src/components/ExplorerLink'
 
 import { BadgeVariant } from 'components/Badge'
 import { OperationType } from 'components/TransactionConfirmationModal'

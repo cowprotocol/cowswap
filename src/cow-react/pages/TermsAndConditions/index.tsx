@@ -1,5 +1,5 @@
 import contentFile from './TermsAndConditions.md'
-import { MarkdownPage } from 'components/Markdown'
+import { MarkdownPage } from '@src/components/Markdown'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 import styled from 'styled-components/macro'
 import { BackToTopStyle } from '@cow/modules/application/pure/Page'

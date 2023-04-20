@@ -13,7 +13,7 @@ import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { CancellationType } from '@cow/common/hooks/useCancelOrder/state'
 import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
 import type { BigNumber } from '@ethersproject/bignumber'
-import NotificationBanner from 'components/NotificationBanner'
+import NotificationBanner from '@src/components/NotificationBanner'
 
 export type RequestCancellationModalProps = {
   summary?: string

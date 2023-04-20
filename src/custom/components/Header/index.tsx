@@ -25,7 +25,7 @@ import MobileMenuIcon from './MobileMenuIcon'
 import { useWalletInfo, Web3Status } from '@cow/modules/wallet'
 import { OrdersPanel } from '@cow/modules/account/containers/OrdersPanel'
 import NetworkSelector from '@src/components/Header/NetworkSelector'
-import CowBalanceButton from 'components/CowBalanceButton'
+import CowBalanceButton from '@src/components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
 import { cowSwapLogo } from 'theme/cowSwapAssets'
 

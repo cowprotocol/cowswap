@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
-import CowProtocolLogo from 'components/CowProtocolLogo'
+import CowProtocolLogo from '@src/components/CowProtocolLogo'
 import { useClaimState } from 'state/claim/hooks'
 import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } from './styled'
 import { ClaimCommonTypes } from './types'

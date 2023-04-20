@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { CheckCircle, Frown } from 'react-feather'
 import BadgeOriginal from 'components/Badge'
 
-import { Icon } from 'components/CowProtocolLogo'
+import { Icon } from '@src/components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { Step } from 'components/Stepper'
 import { transparentize, darken, lighten } from 'polished'
@@ -348,7 +348,7 @@ export const ClaimTable = styled.div`
       ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 42px;
       height: 42px;
-      
+
       &::after {
         width: 15px;
         height: 24px;
@@ -394,7 +394,7 @@ export const ClaimTable = styled.div`
         align-items: flex-start;
         gap: 4px 0;
         margin: 0;
-        
+
         &::before {
           font-size: 16px;
           font-weight: normal;

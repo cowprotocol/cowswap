@@ -1,4 +1,4 @@
-import { HighFeeWarning } from 'components/SwapWarnings'
+import { HighFeeWarning } from '@src/components/SwapWarnings'
 import { CompatibilityIssuesWarning } from '@cow/modules/trade/pure/CompatibilityIssuesWarning'
 import TradeGp from 'state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'

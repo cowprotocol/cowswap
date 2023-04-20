@@ -35,7 +35,7 @@ import { CancelButton } from '@cow/common/pure/CancelButton'
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
 import { Order } from 'state/orders/actions'
 import styled from 'styled-components/macro'
-import { DisplayLink } from '../TransactionConfirmationModal'
+import { DisplayLink } from 'components/TransactionConfirmationModal'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import ms from 'ms.macro'
 

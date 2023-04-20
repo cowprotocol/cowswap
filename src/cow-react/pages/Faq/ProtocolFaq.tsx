@@ -1,5 +1,5 @@
 import { Page, Content } from '@cow/modules/application/pure/Page'
-import { LinkScrollable } from 'components/Link'
+import { LinkScrollable } from '@src/components/Link'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
 import { Footer } from '.'

@@ -5,7 +5,7 @@ import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'state/profile/hooks'
 import { hashCode } from 'utils/misc'
 import useFetchFile from 'hooks/useFetchFile'
-import { Markdown } from 'components/Markdown'
+import { Markdown } from '@src/components/Markdown'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cow/modules/wallet'

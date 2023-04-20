@@ -4,9 +4,9 @@ import { animated, useSpring } from '@react-spring/web'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { useRemovePopup } from '../../state/application/hooks'
-import { PopupContent } from '@src/state/application/reducer'
-import FailedNetworkSwitchPopup from '@src/components/Popups/FailedNetworkSwitchPopup'
-import TransactionPopup from '@src/custom/components/Popups/TransactionPopupMod'
+import { PopupContent } from 'state/application/reducer'
+import FailedNetworkSwitchPopup from 'components/Popups/FailedNetworkSwitchPopup'
+import TransactionPopup from 'components/Popups/TransactionPopupMod'
 
 export const StyledClose = styled(X)`
   position: absolute;
