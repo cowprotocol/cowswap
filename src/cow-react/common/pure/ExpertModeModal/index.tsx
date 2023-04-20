@@ -94,7 +94,7 @@ export function ExpertModeModal(props: ExpertModeModalProps) {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false)
 
   const onInput = useCallback((value: string) => {
-    setIsButtonEnabled(value === confirmWord)
+    setIsButtonEnabled(value.toLowerCase().trim() === confirmWord)
   }, [])
 
   const onKeyDown = useCallback(
