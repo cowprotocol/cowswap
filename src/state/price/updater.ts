@@ -9,7 +9,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { Field } from 'state/swap/actions'
-import { useIsUnsupportedTokenGp } from 'state/lists/hooks/hooksMod'
+import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'

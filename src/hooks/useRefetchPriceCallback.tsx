@@ -10,11 +10,7 @@ import GpQuoteError, {
 import { registerOnWindow, getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 
 import { isOnline } from 'hooks/useIsOnline'
-import {
-  useAddGpUnsupportedToken,
-  useIsUnsupportedTokenGp,
-  useRemoveGpUnsupportedToken,
-} from 'state/lists/hooks/hooksMod'
+import { useAddGpUnsupportedToken, useIsUnsupportedTokenGp, useRemoveGpUnsupportedToken } from 'state/lists/hooks'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { useQuoteDispatchers } from 'state/price/hooks'
 import { AddGpUnsupportedTokenParams } from 'state/lists/actions'
