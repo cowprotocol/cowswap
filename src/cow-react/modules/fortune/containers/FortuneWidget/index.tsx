@@ -98,11 +98,11 @@ const FortuneBanner = styled.div`
 
   @keyframes open {
     from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
   }
 `
 
@@ -234,7 +234,9 @@ export function FortuneWidget() {
       {openFortune && (
         <FortuneBanner>
           <StyledCloseIcon onClick={() => updateOpenFortune({ openFortune: null })}>Close</StyledCloseIcon>
-          <FortuneTitle>CoW Fortune <i>of the day</i></FortuneTitle>
+          <FortuneTitle>
+            CoW Fortune <i>of the day</i>
+          </FortuneTitle>
           <FortuneContent>
             <FortuneText>{openFortune.text}</FortuneText>
             <FortuneBannerActions>
