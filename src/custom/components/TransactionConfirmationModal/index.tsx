@@ -29,9 +29,7 @@ import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import checkImage from 'assets/cow-swap/check.svg'
 import alertImage from 'assets/cow-swap/alert-circle.svg'
 import {
-  getIsCoinbaseWallet,
   getIsMetaMask,
-  getIsTrustWallet,
 } from '@cow/modules/wallet/api/utils/connection'
 import SVG from 'react-inlinesvg'
 import {
@@ -55,6 +53,7 @@ import {
   StepsWrapper,
   StepsIconWrapper,
 } from './styled'
+import { useMediaQuery, MediumAndUp } from '@src/custom/hooks/useMediaQuery'
 
 export * from './TransactionConfirmationModalMod'
 export { default } from './TransactionConfirmationModalMod'
@@ -194,16 +193,14 @@ export function ConfirmationPendingContent({
   const operationMessage = getOperationMessage(operationType, chainId)
   const operationLabel = getOperationLabel(operationType)
   const operationSubmittedMessage = getSubmittedMessage(operationLabel, operationType)
-
-  // Get Wallets
-  const isCoinbaseWallet = getIsCoinbaseWallet()
-  const isTrustWallet = getIsTrustWallet(null, walletDetails?.walletName)
   const isMetaMask = getIsMetaMask()
+  const isNotMobile = useMediaQuery(MediumAndUp)
+  const isApproveMetaMaskDesktop = operationType === OperationType.APPROVE_TOKEN && isMetaMask && isNotMobile
 
   // Define Compare Items
-  const compareCapLabel = isMetaMask ? 'spending cap' : isTrustWallet ? 'spending limit' : isCoinbaseWallet ? 'spend limit' : 'spending limit'
-  const compareTitleLeft = isMetaMask ? 'Max' : isTrustWallet ? 'Custom' : isCoinbaseWallet ? 'Full balance' : 'Custom'
-  const compareTitleRight = (isMetaMask || isTrustWallet) ? 'Use default' : isCoinbaseWallet ? 'Infinite' : 'Infinite'
+  const compareCapLabel = 'spending cap';
+  const compareTitleLeft = 'Max';
+  const compareTitleRight = 'Use default';
 
   return (
     <Wrapper>
@@ -213,8 +210,8 @@ export function ConfirmationPendingContent({
         <span>{pendingText}</span>
       </UpperSection>
 
-      {/* Only shown for APPROVE_TOKEN operation */}
-      {operationType === OperationType.APPROVE_TOKEN && (
+      {/* Only shown for APPROVE_TOKEN operation for MetaMask Desktop */}
+      {isApproveMetaMaskDesktop && (
         <ApproveWrapper>
           <h3>
             Review and select the ideal <br /> {compareCapLabel} in your wallet
@@ -269,7 +266,7 @@ export function ConfirmationPendingContent({
       )}
 
       {/* Not shown for APPROVE_TOKEN operation */}
-      {operationType !== OperationType.APPROVE_TOKEN && (
+      {!isApproveMetaMaskDesktop && (
         <LowerSection>
           <h3>
             <span>{operationMessage} </span>
