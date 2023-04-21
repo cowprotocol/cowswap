@@ -9,7 +9,7 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { updateSelectedWallet } from 'state/user/reducer'
 
 import { updateChainId } from './reducer'
-import usePrevious from '@src/hooks/usePrevious'
+import usePrevious from 'hooks/usePrevious'
 
 /* function useQueryCacheInvalidator() {
   const dispatch = useAppDispatch()

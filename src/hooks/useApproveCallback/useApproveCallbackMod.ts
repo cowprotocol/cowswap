@@ -19,7 +19,7 @@ import { useHasPendingApproval, useTransactionAdder } from 'state/enhancedTransa
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { useTokenContract } from 'hooks/useContract'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { ApproveCallbackState, OptionalApproveCallbackParams } from '.'
+import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import usePrevious from 'hooks/usePrevious'

@@ -1,8 +1,8 @@
 import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
-import { Field } from '@src/state/swap/actions'
+import { Field } from 'state/swap/actions'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { useMemo } from 'react'
-import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from '@src/constants'
+import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import TradeGp from 'state/swap/TradeGp'
 
 import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
