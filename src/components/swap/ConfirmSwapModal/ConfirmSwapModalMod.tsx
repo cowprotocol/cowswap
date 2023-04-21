@@ -1,10 +1,6 @@
 import { Trans } from '@lingui/macro'
-// import { Trade } from '@uniswap/router-sdk'
-import { /* Currency,  */ Percent /* , TradeType */ } from '@uniswap/sdk-core'
+import { Percent } from '@uniswap/sdk-core'
 import { useCallback, useMemo } from 'react'
-// import { InterfaceTrade } from 'state/routing/types'
-// import { tradeMeaningfullyDiffers } from 'utils/tradeMeaningFullyDiffer'
-
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   OperationType,
@@ -12,8 +8,6 @@ import TransactionConfirmationModal, {
 } from 'components/TransactionConfirmationModal'
 import SwapModalFooter from 'components/swap/SwapModalFooter'
 import SwapModalHeader from 'components/swap/SwapModalHeader'
-
-// MOD imports
 import TradeGp from 'state/swap/TradeGp'
 import { useWalletDetails } from '@cow/modules/wallet'
 import { SwapConfirmState } from '@cow/modules/swap/state/swapConfirmAtom'
@@ -62,8 +56,8 @@ export default function ConfirmSwapModal({
   onAcceptChanges: () => void
   onConfirm: () => void
   onDismiss: () => void
-  PendingTextComponent: (props: { trade: TradeGp | undefined }) => JSX.Element // mod
-  rateInfoParams: RateInfoParams // mod
+  PendingTextComponent: (props: { trade: TradeGp | undefined }) => JSX.Element
+  rateInfoParams: RateInfoParams
 }) {
   const { swapErrorMessage, showConfirm, attemptingTxn, txHash, tradeToConfirm: originalTrade } = swapConfirmState
   const { allowsOffchainSigning } = useWalletDetails()
@@ -102,16 +96,6 @@ export default function ConfirmSwapModal({
     ) : null
   }, [onConfirm, showAcceptChanges, swapErrorMessage, trade])
 
-  /*
-  // text to show while loading
-  const pendingText = (
-    <Trans>
-      Swapping {trade?.inputAmount?.toSignificant(6)} {trade?.inputAmount?.currency?.symbol} for{' '}
-      {trade?.outputAmount?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol}
-    </Trans>
-  )
-  */
-
   const confirmationContent = useCallback(
     () =>
       swapErrorMessage ? (
@@ -134,7 +118,7 @@ export default function ConfirmSwapModal({
       attemptingTxn={attemptingTxn}
       hash={txHash}
       content={confirmationContent}
-      pendingText={<PendingTextComponent trade={trade} /> /*pendingText*/}
+      pendingText={<PendingTextComponent trade={trade} />}
       currencyToAdd={trade?.outputAmount.currency}
       operationType={OperationType.ORDER_SIGN}
     />

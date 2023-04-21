@@ -1,14 +1,9 @@
 import { Trans } from '@lingui/macro'
-// import { Trade } from '@uniswap/router-sdk'
-// import { Currency, TradeType } from '@uniswap/sdk-core'
 import { ReactNode } from 'react'
 import { Text } from 'rebass'
-
 import { ButtonError } from 'components/Button'
 import { AutoRow } from 'components/Row'
 import { SwapCallbackError } from 'components/swap/styleds'
-
-// MOD imports
 import { ButtonSize } from 'theme/enum'
 
 export interface SwapModalFooterProps {
@@ -17,18 +12,7 @@ export interface SwapModalFooterProps {
   disabledConfirm: boolean
 }
 
-export default function SwapModalFooter({
-  onConfirm,
-  swapErrorMessage,
-  disabledConfirm,
-}: /*
-  {
-  trade: Trade<Currency, Currency, TradeType>
-  onConfirm: () => void
-  swapErrorMessage: ReactNode | undefined
-  disabledConfirm: boolean
-} */
-SwapModalFooterProps) {
+export default function SwapModalFooter({ onConfirm, swapErrorMessage, disabledConfirm }: SwapModalFooterProps) {
   return (
     <>
       <AutoRow>
