@@ -6,7 +6,7 @@ import { APIError, RateOptions } from 'paraswap/build/types'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getTokensFromMarket } from 'utils/misc'
 import { getValidParams } from 'utils/price'
-import { SOLVER_ADDRESS as defaultUserAddress } from '@src/constants'
+import { SOLVER_ADDRESS as defaultUserAddress } from 'constants/index'
 import { PriceInformation } from '@cow/types'
 import { LegacyPriceQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 

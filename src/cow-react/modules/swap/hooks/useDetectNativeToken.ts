@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Token } from '@uniswap/sdk-core'
 
-import { WETH_LOGO_URI } from '@src/constants'
+import { WETH_LOGO_URI } from 'constants/index'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tokens'
 import { supportedChainId } from 'utils/supportedChainId'

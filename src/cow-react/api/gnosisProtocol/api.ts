@@ -1,6 +1,6 @@
 import { PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { APP_DATA_HASH } from '@src/constants'
+import { APP_DATA_HASH } from 'constants/index'
 import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
 
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'

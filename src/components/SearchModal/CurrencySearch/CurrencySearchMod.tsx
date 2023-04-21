@@ -14,7 +14,7 @@ import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo,
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
-import { useAllTokenBalances } from '@src/state/connection/hooks'
+import { useAllTokenBalances } from 'state/connection/hooks'
 import styled, { DefaultTheme } from 'styled-components/macro'
 import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'hooks/Tokens'
 import { ButtonText, CloseIcon, ThemedText } from 'theme'

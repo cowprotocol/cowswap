@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { SideMenu } from 'components/SideMenu'
-import { ACCOUNT_MENU_LINKS } from '@src/constants'
+import { ACCOUNT_MENU_LINKS } from 'constants/index'
 
 export function AccountMenu() {
   return (

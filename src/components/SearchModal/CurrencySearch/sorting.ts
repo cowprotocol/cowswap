@@ -2,7 +2,7 @@ import { TokenAmounts } from '@cow/modules/tokens'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 
-import { useAllTokenBalances } from '@src/state/connection/hooks'
+import { useAllTokenBalances } from 'state/connection/hooks'
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 

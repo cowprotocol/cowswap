@@ -1,5 +1,5 @@
 import { useWalletDetails, useWalletInfo, WalletModal } from '@cow/modules/wallet'
-import { STORAGE_KEY_LAST_PROVIDER } from '@src/constants'
+import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
 import { useCategorizeRecentActivity } from '@cow/common/hooks/useCategorizeRecentActivity'
 
 import { useWeb3React } from '@web3-react/core'

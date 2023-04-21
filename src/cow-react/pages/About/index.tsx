@@ -2,7 +2,7 @@ import { Page, Title, Content, GdocsListStyle } from '@cow/modules/application/p
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkTheme } from 'theme'
-import { MEV_TOTAL, FLASHBOTS_LINK } from '@src/constants'
+import { MEV_TOTAL, FLASHBOTS_LINK } from 'constants/index'
 
 // Assets
 import diagramIMG from 'assets/cow-swap/cowswap-diagram.png'

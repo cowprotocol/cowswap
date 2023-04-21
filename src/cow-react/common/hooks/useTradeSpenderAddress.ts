@@ -1,5 +1,5 @@
 import { useWalletInfo } from '@cow/modules/wallet'
-import { GP_VAULT_RELAYER } from '@src/constants'
+import { GP_VAULT_RELAYER } from 'constants/index'
 import { useMemo } from 'react'
 
 export function useTradeSpenderAddress(): string | undefined {
