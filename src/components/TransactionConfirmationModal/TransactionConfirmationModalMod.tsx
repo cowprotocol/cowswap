@@ -10,10 +10,10 @@ import { isL2ChainId } from 'utils/chains'
 
 import Circle from 'assets/images/blue-loader.svg'
 import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
-import { ButtonPrimary } from '../../../components/Button'
+import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import { RowBetween, RowFixed } from 'components/Row'
-import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
+import AnimatedConfirmation from './AnimatedConfirmation'
 
 import { GpModal } from '@cow/common/pure/Modal'
 import {
@@ -23,7 +23,7 @@ import {
   GPModalHeader,
   CloseIconWrapper,
   OperationType,
-} from '.'
+} from './index'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
 import { useIsTransactionConfirmed, useTransaction } from 'state/enhancedTransactions/hooks'
