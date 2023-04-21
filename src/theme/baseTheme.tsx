@@ -1,11 +1,8 @@
 import { Colors } from 'theme/styled'
-import { colors as colorsUniswap } from '@src/theme'
 import { ButtonSize } from 'theme/enum'
-
 import { createGlobalStyle, css } from 'styled-components/macro'
-
 import { transparentize, lighten } from 'polished'
-
+import { colorsUniswap } from 'theme/colorsUniswap'
 import Cursor1 from 'assets/cow-swap/cursor1.gif'
 import Cursor2 from 'assets/cow-swap/cursor2.gif'
 import Cursor3 from 'assets/cow-swap/cursor3.gif'
@@ -14,9 +11,6 @@ import Cursor4 from 'assets/cow-swap/cursor4.gif'
 // TODO: This shouldn't be in the base theme
 // Modal override items
 // import { HeaderText } from 'components/WalletModal/Option'
-
-export { ThemedText } from '@src/theme'
-export * from '@src/theme/components'
 
 export function colors(darkMode: boolean): Colors {
   return {
@@ -109,6 +103,7 @@ export function colors(darkMode: boolean): Colors {
     info: darkMode ? '#615845' : '#FFEDAF',
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warningText: '#564D00',
+    errorText: '#b91515', // TODO: @NOUNI
   }
 }
 

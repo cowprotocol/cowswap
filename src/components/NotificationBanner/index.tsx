@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
-import { Colors } from 'theme/styled'
 import { X } from 'react-feather'
 import { MEDIA_WIDTHS } from 'theme'
 import { useIsNotificationClosed } from 'state/affiliate/hooks'
@@ -24,7 +23,7 @@ const Banner = styled.div<Pick<BannerProps, 'isVisible' | 'level'>>`
   border-radius: 12px;
   margin: 0 0 16px 0;
   background-color: ${({ theme, level }) => theme[level]};
-  color: ${({ theme, level }) => theme[`${level}Text` as keyof Colors]};
+  color: ${({ theme, level }) => theme[`${level}Text`]};
   font-size: 16px;
   text-align: center;
   justify-content: space-between;
