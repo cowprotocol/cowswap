@@ -5,26 +5,9 @@ import { MEDIA_WIDTHS } from 'theme'
 import { useActivePopups } from 'state/application/hooks'
 import { useURLWarningVisible } from 'state/user/hooks'
 import { AutoColumn } from 'components/Column'
-// import ClaimPopup from './ClaimPopup'
 import PopupItem from 'components/Popups/PopupItem'
-
-// MOD imports
-import { MobilePopupWrapper } from '.'
+import { MobilePopupWrapper } from './index'
 import { useWalletInfo } from '@cow/modules/wallet'
-
-/* const MobilePopupWrapper = styled.div<{ height: string | number }>`
-  position: relative;
-  max-width: 100%;
-  height: ${({ height }) => height};
-  margin: ${({ height }) => (height ? '0 auto;' : 0)};
-  margin-bottom: ${({ height }) => (height ? '20px' : 0)};
-
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: block;
-    padding-top: 20px;
-  `};
-` */
 
 export const MobilePopupInner = styled.div`
   height: 99%;
@@ -72,13 +55,10 @@ export default function Popups() {
   return (
     <>
       <FixedPopupColumn gap="20px" extraPadding={urlWarningActive} xlPadding={isNotOnMainnet}>
-        {/* <ClaimPopup /> */}
         {activePopups.map((item) => (
           <PopupItem key={item.key} content={item.content} popKey={item.key} removeAfterMs={item.removeAfterMs} />
         ))}
       </FixedPopupColumn>
-      {/* mod */}
-      {/* <MobilePopupWrapper height={activePopups?.length > 0 ? 'fit-content' : 0}> */}
       <MobilePopupWrapper show={activePopups?.length > 0}>
         <MobilePopupInner>
           {activePopups // reverse so new items up front

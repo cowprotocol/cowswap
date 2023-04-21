@@ -6,7 +6,7 @@ import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 
-import { ExplorerLink } from '@src/components/ExplorerLink'
+import { ExplorerLink } from 'components/ExplorerLink'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`

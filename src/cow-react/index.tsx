@@ -22,7 +22,7 @@ import AppziButton from 'components/AppziButton'
 import { nodeRemoveChildFix } from 'utils/node'
 import { Provider as AtomProvider } from 'jotai'
 
-import Popups from '@src/components/Popups'
+import Popups from 'components/Popups'
 import { Updaters } from '@cow/modules/application/containers/App/Updaters'
 import { createRoot } from 'react-dom/client'
 

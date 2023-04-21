@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
 
-import { useIsExpertMode } from '@src/state/user/hooks'
+import { useIsExpertMode } from 'state/user/hooks'
 import { useRecentActivityLastPendingOrder } from 'hooks/useRecentActivity'
 import {
   useUpdateAtom,
