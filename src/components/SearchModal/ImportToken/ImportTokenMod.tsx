@@ -7,21 +7,16 @@ import { ButtonPrimary } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
 import { SectionBreak } from 'components/swap/styleds'
-// import { useUnsupportedTokens } from 'hooks/Tokens'
 import useTheme from 'hooks/useTheme'
 import { AlertCircle, ArrowLeft } from 'react-feather'
 import { useAddUserToken } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { CloseIcon, ThemedText } from 'theme'
-
-// import BlockedToken from 'components/SearchModal/BlockedToken'
 import { PaddedColumn } from 'components/SearchModal/styleds'
 import TokenImportCard from 'components/SearchModal/TokenImportCard'
-
-// MOD imports
 import { transparentize } from 'polished'
 import Card from 'components/Card'
-import { CardComponentProps } from '.'
+import { CardComponentProps } from './index'
 
 const Wrapper = styled.div`
   position: relative;
@@ -64,12 +59,6 @@ export function ImportToken(props: ImportProps) {
 
   const addToken = useAddUserToken()
 
-  // const unsupportedTokens = useUnsupportedTokens()
-  // const unsupportedSet = new Set(Object.keys(unsupportedTokens))
-  // const intersection = new Set(tokens.filter((token) => unsupportedSet.has(token.address)))
-  // if (intersection.size > 0) {
-  //   return <BlockedToken onBack={onBack} onDismiss={onDismiss} blockedTokens={Array.from(intersection)} />
-  // }
   return (
     <Wrapper>
       <PaddedColumn gap="14px" style={{ width: '100%', flex: '1 1' }}>

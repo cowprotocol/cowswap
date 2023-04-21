@@ -1,8 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { TokenList } from '@uniswap/token-lists'
-import { sendEvent } from 'components/analytics'
 import { ButtonPrimary } from 'components/Button'
-import Card from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ListLogo from 'components/ListLogo'
 import { AutoRow, RowBetween, RowFixed } from 'components/Row'
@@ -12,15 +9,16 @@ import useTheme from 'hooks/useTheme'
 import { transparentize } from 'polished'
 import { useCallback, useState } from 'react'
 import { AlertTriangle, ArrowLeft } from 'react-feather'
-import { useAppDispatch } from 'state/hooks'
-import { enableList, removeList } from '@src/state/lists/actions'
 import { useAllLists } from 'state/lists/hooks'
 import styled from 'styled-components/macro'
 import { CloseIcon, ThemedText } from 'theme'
 
 import { ExternalLink } from 'theme'
-import { CurrencyModalView } from './CurrencySearchModal'
-import { Checkbox, PaddedColumn, TextDot } from './styleds'
+import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
+import { Checkbox, PaddedColumn, TextDot } from 'components/SearchModal/styleds'
+import { Card } from 'components/SearchModal/ManageLists'
+import { ImportProps } from './index'
+import { addListAnalytics } from 'components/analytics'
 
 const Wrapper = styled.div`
   position: relative;
@@ -28,16 +26,8 @@ const Wrapper = styled.div`
   overflow: auto;
 `
 
-interface ImportProps {
-  listURL: string
-  list: TokenList
-  onDismiss: () => void
-  setModalView: (view: CurrencyModalView) => void
-}
-
-export function ImportList({ listURL, list, setModalView, onDismiss }: ImportProps) {
+export function ImportList({ listURL, list, setModalView, onDismiss, enableList, removeList }: Required<ImportProps>) {
   const theme = useTheme()
-  const dispatch = useAppDispatch()
 
   // user must accept
   const [confirmed, setConfirmed] = useState(false)
@@ -54,27 +44,18 @@ export function ImportList({ listURL, list, setModalView, onDismiss }: ImportPro
     setAddError(null)
     fetchList(listURL)
       .then(() => {
-        sendEvent({
-          category: 'Lists',
-          action: 'Add List',
-          label: listURL,
-        })
-
+        addListAnalytics('Success', listURL)
         // turn list on
-        dispatch(enableList(listURL))
+        enableList(listURL)
         // go back to lists
         setModalView(CurrencyModalView.manage)
       })
       .catch((error) => {
-        sendEvent({
-          category: 'Lists',
-          action: 'Add List Failed',
-          label: listURL,
-        })
+        addListAnalytics('Failed', listURL)
         setAddError(error.message)
-        dispatch(removeList(listURL))
+        removeList(listURL)
       })
-  }, [adding, dispatch, fetchList, listURL, setModalView])
+  }, [adding, enableList, fetchList, listURL, removeList, setModalView])
 
   return (
     <Wrapper>
@@ -94,7 +75,7 @@ export function ImportList({ listURL, list, setModalView, onDismiss }: ImportPro
             <RowBetween>
               <RowFixed>
                 {list.logoURI && <ListLogo logoURI={list.logoURI} size="40px" />}
-                <AutoColumn gap="sm" style={{ marginLeft: '20px' }}>
+                <AutoColumn gap="sm" style={{ marginLeft: '20px', wordBreak: 'break-all' }}>
                   <RowFixed>
                     <ThemedText.Body fontWeight={600} mr="6px">
                       {list.name}
@@ -161,7 +142,6 @@ export function ImportList({ listURL, list, setModalView, onDismiss }: ImportPro
             </ThemedText.Error>
           ) : null}
         </AutoColumn>
-        {/* </Card> */}
       </PaddedColumn>
     </Wrapper>
   )

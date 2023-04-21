@@ -11,7 +11,7 @@ import { transparentize } from 'polished'
 import { AlertCircle } from 'react-feather'
 import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+import { getEtherscanLink as getExplorerLink } from 'utils'
 
 const WarningWrapper = styled(Card)<{ highWarning: boolean }>`
   background-color: ${({ theme, highWarning }) =>
@@ -35,7 +35,7 @@ const TokenImportCard = ({ list, token }: TokenImportCardProps) => {
   const theme = useTheme()
   const { chainId } = useWalletInfo()
   return (
-    <Card backgroundColor={theme.bg2} padding="2rem">
+    <Card backgroundColor={theme.bg4} padding="2rem">
       <AutoColumn gap="10px" justify="center">
         <CurrencyLogo currency={token} size={'32px'} />
         <AutoColumn gap="4px" justify="center">
@@ -47,7 +47,7 @@ const TokenImportCard = ({ list, token }: TokenImportCardProps) => {
           </ThemedText.DarkGray>
         </AutoColumn>
         {chainId && (
-          <ExternalLink href={getExplorerLink(chainId, token.address, ExplorerDataType.ADDRESS)}>
+          <ExternalLink href={getExplorerLink(chainId, token.address, 'address')}>
             <AddressText fontSize={12}>{token.address}</AddressText>
           </ExternalLink>
         )}

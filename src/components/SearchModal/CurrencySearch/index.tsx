@@ -5,9 +5,9 @@ import styled from 'styled-components/macro'
 import { Edit } from 'react-feather'
 import { CurrencySearch as CurrencySearchMod, CurrencySearchProps } from './CurrencySearchMod'
 import { DefaultTheme } from 'styled-components/macro'
-import { Separator } from '@src/components/SearchModal/styleds'
+import { Separator } from 'components/SearchModal/styleds'
 import { transparentize } from 'polished'
-import Column from '@src/components/Column'
+import Column from 'components/Column'
 
 export const ContentWrapper = styled(Column)`
   width: 100%;
@@ -41,18 +41,10 @@ export const ContentWrapper = styled(Column)`
 
 const FooterButtonTextComponent = ({ theme }: { theme: DefaultTheme }) => (
   <RowFixed>
-    <IconWrapper
-      size="16px"
-      marginRight="6px"
-      // stroke={theme.blue1}
-      stroke={theme.text1}
-    >
+    <IconWrapper size="16px" marginRight="6px" stroke={theme.text1}>
       <Edit />
     </IconWrapper>
-    <ThemedText.Main
-      // color={theme.blue1}
-      color={theme.text1}
-    >
+    <ThemedText.Main color={theme.text1}>
       <Trans>Manage Token Lists</Trans>
     </ThemedText.Main>
   </RowFixed>

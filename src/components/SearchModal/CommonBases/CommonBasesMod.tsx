@@ -2,27 +2,16 @@ import { Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
-// import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { AutoRow } from 'components/Row'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 import { currencyId } from 'utils/currencyId'
-
-// MOD imports
 import QuestionHelper from 'components/QuestionHelper'
-import { BaseWrapper, CommonBasesRow, MobileWrapper } from '.' // mod
+import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index' // mod
 import { useFavouriteOrCommonTokens } from 'hooks/useFavouriteOrCommonTokens'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-
-/* const MobileWrapper = styled(AutoColumn)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `};
-` */
-
 export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
-  // mod
   border: 1px solid ${({ theme, disable }) => (disable ? 'transparent' : theme.bg3)};
   border-radius: 10px;
   display: flex;
@@ -77,7 +66,6 @@ const formatAnalyticsEventProperties = (
 
 const MAX_LENGTH_OVERFLOW = 12
 export default function CommonBases({
-  // chainId,
   onSelect,
   selectedCurrency,
   searchQuery,
@@ -95,7 +83,6 @@ export default function CommonBases({
     <MobileWrapper gap="md" showOverflow={tokens.length > MAX_LENGTH_OVERFLOW}>
       <AutoRow padding="0 20px">
         <Text fontWeight={500} fontSize={14}>
-          {/* <Trans>Common bases</Trans> */}
           <Trans>Favourite tokens</Trans>
         </Text>
         <QuestionHelper text={<Trans>Your favourite saved tokens. Edit this list in your account page.</Trans>} />
@@ -123,7 +110,7 @@ export default function CommonBases({
                 >
                   <CurrencyLogoFromList currency={currency} />
                   <Text fontWeight={500} fontSize={16}>
-                    <TokenSymbol token={currency} length={6} /> {/* MOD */}
+                    <TokenSymbol token={currency} length={6} />
                   </Text>
                 </BaseWrapper>
               </TraceEvent>

@@ -9,7 +9,6 @@ import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
-
 import TokenListLogo from 'assets/svg/tokenlist.svg'
 import { useAllTokens, useIsUserAddedToken } from 'hooks/Tokens'
 import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
@@ -20,10 +19,8 @@ import Loader from 'components/Loader'
 import { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltip } from 'components/Tooltip'
 import ImportRow from 'components/SearchModal/ImportRow'
-import { LoadingRows /*, MenuItem*/ } from 'components/SearchModal/styleds'
-
-// MOD imports
-import { MenuItem } from '.' // mod
+import { LoadingRows } from 'components/SearchModal/styleds'
+import { MenuItem } from './index' // mod
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'

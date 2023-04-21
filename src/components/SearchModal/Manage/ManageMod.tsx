@@ -1,48 +1,14 @@
 import { Trans } from '@lingui/macro'
-import { Token } from '@uniswap/sdk-core'
-import { TokenList } from '@uniswap/token-lists'
 import { RowBetween } from 'components/Row'
 import { useState } from 'react'
 import { ArrowLeft } from 'react-feather'
 import { Text } from 'rebass'
-import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
-
-import { CurrencyModalView } from './CurrencySearchModal'
+import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { ManageLists } from 'components/SearchModal/ManageLists'
 import ManageTokens from 'components/SearchModal/ManageTokens'
-import { PaddedColumn, Separator } from './styleds'
-
-const Wrapper = styled.div`
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-flow: column;
-`
-
-const ToggleWrapper = styled(RowBetween)`
-  background-color: ${({ theme }) => theme.bg3};
-  border-radius: 12px;
-  padding: 6px;
-`
-
-const ToggleOption = styled.div<{ active?: boolean }>`
-  width: 48%;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  font-weight: 600;
-  background-color: ${({ theme, active }) => (active ? theme.bg1 : theme.bg3)};
-  color: ${({ theme, active }) => (active ? theme.text1 : theme.text2)};
-  user-select: none;
-
-  :hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
-`
+import { PaddedColumn, Separator } from 'components/SearchModal/styleds'
+import { ManageProps, Wrapper } from './index'
 
 export default function Manage({
   onDismiss,
@@ -50,13 +16,9 @@ export default function Manage({
   setImportList,
   setImportToken,
   setListUrl,
-}: {
-  onDismiss: () => void
-  setModalView: (view: CurrencyModalView) => void
-  setImportToken: (token: Token) => void
-  setImportList: (list: TokenList) => void
-  setListUrl: (url: string) => void
-}) {
+  ToggleOption,
+  ToggleWrapper,
+}: ManageProps) {
   // toggle between tokens and lists
   const [showLists, setShowLists] = useState(true)
 
@@ -74,10 +36,10 @@ export default function Manage({
       <Separator />
       <PaddedColumn style={{ paddingBottom: 0 }}>
         <ToggleWrapper>
-          <ToggleOption onClick={() => setShowLists(!showLists)} active={showLists}>
+          <ToggleOption onClick={() => setShowLists((state) => !state)} active={showLists}>
             <Trans>Lists</Trans>
           </ToggleOption>
-          <ToggleOption onClick={() => setShowLists(!showLists)} active={!showLists}>
+          <ToggleOption onClick={() => setShowLists((state) => !state)} active={!showLists}>
             <Trans>Tokens</Trans>
           </ToggleOption>
         </ToggleWrapper>

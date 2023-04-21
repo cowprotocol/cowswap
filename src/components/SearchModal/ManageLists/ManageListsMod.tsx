@@ -1,24 +1,18 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { TokenList } from '@uniswap/token-lists'
-// import { sendEvent } from 'components/analytics'
-// import Card from 'components/Card'
-// import { UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { useListColor } from 'hooks/useColor'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
-// import ReactGA from 'react-ga4'
 import { usePopper } from 'react-popper'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import styled from 'styled-components/macro'
-
 import { useFetchListCallback } from 'hooks/useFetchListCallback'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import useTheme from 'hooks/useTheme'
 import useToggle from 'hooks/useToggle'
-// import { acceptListUpdate, disableList, enableList, removeList } from 'state/lists/actions'
 import { useActiveListUrls, useAllLists, useIsListActive } from 'state/lists/hooks'
 import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'theme'
 import listVersionLabel from 'utils/listVersionLabel'
@@ -29,9 +23,7 @@ import Row, { RowBetween, RowFixed } from 'components/Row'
 import Toggle from 'components/Toggle'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'components/SearchModal/styleds'
-
-// Mod imports
-import { ListRowProps, RowWrapper, Card } from '.' // mod
+import { ListRowProps, RowWrapper, Card } from './index'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
 import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'components/analytics'
@@ -88,15 +80,6 @@ const StyledListUrlText = styled(ThemedText.Main)<{ active: boolean }>`
   color: ${({ theme, active }) => (active ? theme.white : theme.text2)};
 `
 
-/* const RowWrapper = styled(Row)<{ bgColor: string; active: boolean; hasActiveTokens: boolean }>`
-  background-color: ${({ bgColor, active, theme }) => (active ? bgColor ?? 'transparent' : theme.bg2)};
-  opacity: ${({ hasActiveTokens }) => (hasActiveTokens ? 1 : 0.4)};
-  transition: 200ms;
-  align-items: center;
-  padding: 1rem;
-  border-radius: 20px;
-` */
-
 function listUrlRowHTMLId(listUrl: string) {
   return `list-row-${listUrl.replace(/\./g, '-')}`
 }
@@ -107,8 +90,7 @@ const ListRow = memo(function ListRow({
   removeList,
   enableList,
   disableList,
-}: // }: { listUrl: string }) {
-ListRowProps & { listUrl: string }) {
+}: ListRowProps & { listUrl: string }) {
   // We default to a chainId if none is available
   const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId) ?? DEFAULT_NETWORK_FOR_LISTS
@@ -145,7 +127,6 @@ ListRowProps & { listUrl: string }) {
     if (!pending) return
     updateListAnalytics('List Select', listUrl)
     dispatch(acceptListUpdate(listUrl))
-    // }, [dispatch, listUrl, pending])
   }, [acceptListUpdate, dispatch, listUrl, pending])
 
   const handleRemoveList = useCallback(() => {
@@ -155,19 +136,16 @@ ListRowProps & { listUrl: string }) {
       removeListAnalytics('Confirm', listUrl)
       dispatch(removeList(listUrl))
     }
-    // }, [dispatch, listUrl])
   }, [dispatch, listUrl, removeList])
 
   const handleEnableList = useCallback(() => {
     toggleListAnalytics(true, listUrl)
     dispatch(enableList(listUrl))
-    // }, [dispatch, listUrl])
   }, [dispatch, enableList, listUrl])
 
   const handleDisableList = useCallback(() => {
     toggleListAnalytics(false, listUrl)
     dispatch(disableList(listUrl))
-    // }, [dispatch, listUrl])
   }, [disableList, dispatch, listUrl])
 
   if (!list) return null
@@ -232,7 +210,6 @@ export const ListContainer = styled.div`
   height: 100%;
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
-  /* MOD */
   ${({ theme }) => theme.colorScrollbar};
 `
 
@@ -283,44 +260,6 @@ export function ManageLists({
   const validUrl: boolean = useMemo(() => {
     return uriToHttp(listUrlInput).length > 0 || Boolean(parseENSAddress(listUrlInput))
   }, [listUrlInput])
-
-  // const sortedLists = useMemo(() => {
-  //   const listUrls = Object.keys(lists)
-  //   return listUrls
-  //     .filter((listUrl) => {
-  //       // only show loaded lists, hide unsupported lists
-  //       return Boolean(lists[listUrl].current) && !Boolean(UNSUPPORTED_LIST_URLS.includes(listUrl))
-  //     })
-  //     .sort((listUrlA, listUrlB) => {
-  //       const { current: listA } = lists[listUrlA]
-  //       const { current: listB } = lists[listUrlB]
-
-  //       // first filter on active lists
-  //       if (activeListUrls?.includes(listUrlA) && !activeListUrls?.includes(listUrlB)) {
-  //         return -1
-  //       }
-  //       if (!activeListUrls?.includes(listUrlA) && activeListUrls?.includes(listUrlB)) {
-  //         return 1
-  //       }
-
-  //       if (listA && listB) {
-  //         if (tokenCountByListName[listA.name] > tokenCountByListName[listB.name]) {
-  //           return -1
-  //         }
-  //         if (tokenCountByListName[listA.name] < tokenCountByListName[listB.name]) {
-  //           return 1
-  //         }
-  //         return listA.name.toLowerCase() < listB.name.toLowerCase()
-  //           ? -1
-  //           : listA.name.toLowerCase() === listB.name.toLowerCase()
-  //           ? 0
-  //           : 1
-  //       }
-  //       if (listA) return -1
-  //       if (listB) return 1
-  //       return 0
-  //     })
-  // }, [lists, activeListUrls, tokenCountByListName])
 
   // Mod: Sort only on initial component load to avoid jumping UI issues
   // Next time the component is loaded, the lists will be sorted
@@ -465,7 +404,6 @@ export function ManageLists({
       <ListContainer>
         <AutoColumn gap="md" id="tokens-lists-table">
           {filteredLists.map((listUrl) => (
-            // <ListRow key={listUrl} listUrl={listUrl} />
             <ListRow key={listUrl} listUrl={listUrl} {...listRowProps} />
           ))}
         </AutoColumn>
