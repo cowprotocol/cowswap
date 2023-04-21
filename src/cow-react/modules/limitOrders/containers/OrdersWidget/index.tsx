@@ -11,7 +11,7 @@ import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { pendingOrdersPricesAtom } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useGetSpotPrice } from '@cow/modules/orders/state/spotPricesAtom'
 import { useSelectReceiptOrder } from '@cow/modules/limitOrders/containers/OrdersReceiptModal/hooks'
 import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
@@ -45,6 +45,7 @@ export function OrdersWidget() {
   const ordersList = useLimitOrdersList()
   const { chainId, account } = useWalletInfo()
   const getShowCancellationModal = useCancelOrder()
+  const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
   const updateOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
@@ -123,6 +124,7 @@ export function OrdersWidget() {
           orderActions={orderActions}
           getSpotPrice={getSpotPrice}
           selectedOrders={ordersToCancel}
+          allowsOffchainSigning={allowsOffchainSigning}
         >
           {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={orders} />}
         </Orders>

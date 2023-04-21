@@ -183,6 +183,7 @@ const OrdersExplainerBanner = styled.div`
 
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
+  allowsOffchainSigning: boolean
   currentPageNumber: number
   chainId: SupportedChainId | undefined
   pendingOrdersPrices: PendingOrdersPrices
@@ -196,6 +197,7 @@ export interface OrdersTableProps {
 export function OrdersTable({
   isOpenOrdersTab,
   selectedOrders,
+  allowsOffchainSigning,
   chainId,
   orders,
   pendingOrdersPrices,
@@ -214,7 +216,7 @@ export function OrdersTable({
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
   }, [])
 
-  const isRowSelectable = selectedOrders !== null
+  const isRowSelectable = allowsOffchainSigning
 
   const selectedOrdersMap = useMemo(() => {
     if (!selectedOrders) return {}
@@ -243,6 +245,8 @@ export function OrdersTable({
 
   const allOrdersSelected = useMemo(() => {
     const cancellableOrders = ordersPage.filter(isOrderOffChainCancellable)
+
+    if (!cancellableOrders.length) return false
 
     return cancellableOrders.every((item) => selectedOrdersMap[item.id])
   }, [ordersPage, selectedOrdersMap])
