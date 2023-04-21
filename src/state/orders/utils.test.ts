@@ -4,7 +4,7 @@
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { USDC_MAINNET as USDC, USDT } from 'src/constants/tokens'
+import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
 
 import { classifyOrder, getOrderExecutionPrice, isOrderUnfillable } from './utils'
 import { Price } from '@uniswap/sdk-core'
