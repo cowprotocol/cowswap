@@ -37,7 +37,7 @@ export const Header = styled.div`
   z-index: 20;
 `
 
-export const CloseIconWrapper = styled(CloseIcon) <{ margin?: string }>`
+export const CloseIconWrapper = styled(CloseIcon)<{ margin?: string }>`
   display: flex;
   margin: ${({ margin }) => margin ?? '0 0 0 auto'};
   opacity: 0.6;
@@ -441,8 +441,8 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
     height: var(--size);
 
     ${({ listIconAlert }) =>
-    !listIconAlert &&
-    css`
+      !listIconAlert &&
+      css`
         > path:nth-child(1) {
           fill: ${({ theme }) => theme.text3};
           opacity: 1;
@@ -456,8 +456,8 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
       `}
 
     ${({ listIconAlert }) =>
-    listIconAlert &&
-    css`
+      listIconAlert &&
+      css`
         > path {
           fill: ${({ theme }) => transparentize(0.6, theme.text1)};
         }

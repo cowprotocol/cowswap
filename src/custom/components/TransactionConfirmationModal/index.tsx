@@ -28,9 +28,7 @@ import { OrderStatus } from 'state/orders/actions'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import checkImage from 'assets/cow-swap/check.svg'
 import alertImage from 'assets/cow-swap/alert-circle.svg'
-import {
-  getIsMetaMask,
-} from '@cow/modules/wallet/api/utils/connection'
+import { getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
 import SVG from 'react-inlinesvg'
 import {
   StyledIcon,
@@ -198,9 +196,9 @@ export function ConfirmationPendingContent({
   const isApproveMetaMaskDesktop = operationType === OperationType.APPROVE_TOKEN && isMetaMask && isNotMobile
 
   // Define Compare Items
-  const compareCapLabel = 'spending cap';
-  const compareTitleLeft = 'Max';
-  const compareTitleRight = 'Use default';
+  const compareCapLabel = 'spending cap'
+  const compareTitleLeft = 'Max'
+  const compareTitleRight = 'Use default'
 
   return (
     <Wrapper>
@@ -248,11 +246,14 @@ export function ConfirmationPendingContent({
                 <SVG src={checkImage} /> The contract only withdraws funds for signed open orders
               </li>
               <li>
-                <SVG src={checkImage} /> Immutable contract with multiple&nbsp;<ExternalLink
+                <SVG src={checkImage} /> Immutable contract with multiple&nbsp;
+                <ExternalLink
                   href={'https://github.com/cowprotocol/ethflowcontract/tree/main/audits'}
                   target={'_blank'}
                   rel={'noopener'}
-                >audits</ExternalLink>
+                >
+                  audits
+                </ExternalLink>
               </li>
               <li>
                 <SVG src={checkImage} /> Over 2 years of successful trading with billions in volume
