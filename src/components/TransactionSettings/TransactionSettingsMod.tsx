@@ -10,7 +10,7 @@ import styled, { ThemeContext } from 'styled-components/macro'
 
 import { ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
-import QuestionHelper from '../../../components/QuestionHelper'
+import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'components/Row'
 
 // MOD imports
@@ -25,7 +25,7 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ETH_FLOW_SLIPPAGE,
-} from '@src/constants'
+} from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'

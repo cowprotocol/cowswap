@@ -18,7 +18,7 @@ import Modal from '@cow/common/pure/Modal'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
 import Toggle from '../Toggle'
-import TransactionSettings from '../TransactionSettings'
+import TransactionSettings from 'components/TransactionSettings'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 const StyledMenuIcon = styled(Settings)`
