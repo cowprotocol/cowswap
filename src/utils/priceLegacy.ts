@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/browser'
 import { getQuote } from '@cow/api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
-import { PRICE_API_TIMEOUT_MS } from '@src/constants'
+import { PRICE_API_TIMEOUT_MS } from 'constants/index'
 import {
   getPriceQuote as getPriceQuoteParaswap,
   toPriceInformation as toPriceInformationParaswap,

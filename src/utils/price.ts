@@ -2,7 +2,7 @@ import BigNumberJs from 'bignumber.js'
 import { Percent } from '@uniswap/sdk-core'
 
 import { getQuote } from '@cow/api/gnosisProtocol'
-import { SWR_OPTIONS } from '@src/constants'
+import { SWR_OPTIONS } from 'constants/index'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { toErc20Address } from 'utils/tokens'

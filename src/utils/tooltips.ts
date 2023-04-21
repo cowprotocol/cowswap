@@ -1,5 +1,5 @@
 import { Percent } from '@uniswap/sdk-core'
-import { PERCENTAGE_PRECISION } from '../../constants'
+import { PERCENTAGE_PRECISION } from '../constants'
 import { formatAmountWithPrecision } from '@cow/utils/amountFormat'
 
 export function getMinimumReceivedTooltip(allowedSlippage: Percent, isExactIn: boolean): string {
