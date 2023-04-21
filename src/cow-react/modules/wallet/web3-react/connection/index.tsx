@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 
-import { isChrome, isMobile } from 'utils/userAgent'
+import { /* isChrome, */ isMobile } from 'utils/userAgent'
 import { ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
@@ -21,7 +21,7 @@ import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
-import { tallyWalletConnection, TallyWalletOption } from './tally'
+import { tallyWalletConnection /* TallyWalletOption */ } from './tally'
 import { trustWalletConnection, TrustWalletOption } from './trust'
 import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
 
@@ -106,11 +106,11 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
-  const isChromeMobile = isMobile && isChrome
+  // const isChromeMobile = isMobile && isChrome
   const showKeystone = !isInjectedMobileBrowser && !isMobile && window.ethereum?.isMetaMask
 
   // Show Tally option only in Chrome (includes Brave too), but not on mobile or as an injected browser
-  const showTally = !isInjectedMobileBrowser && isChrome && !isChromeMobile
+  // const showTally = !isInjectedMobileBrowser && isChrome && !isChromeMobile
 
   let injectedOption
   if (!isInjected) {
@@ -136,12 +136,12 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
-  const ledgerOption = (!isInjectedMobileBrowser && <LedgerOption tryActivation={tryActivation} />) ?? null
+  const ledgerOption = (!isInjectedMobileBrowser && !isMobile && <LedgerOption tryActivation={tryActivation} />) ?? null
   const keystoneOption =
     (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || (!isMobile && <InstallKeystoneOption />)
 
   // Injected
-  const tallyOption = (showTally && <TallyWalletOption tryActivation={tryActivation} />) ?? null
+  // const tallyOption = (showTally && <TallyWalletOption tryActivation={tryActivation} />) ?? null
   const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
 
   return (
@@ -153,7 +153,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
       {zengoOption}
       {ambireOption}
       {alphaOption}
-      {tallyOption}
+      {/* {tallyOption} */}
       {trustOption}
       {keystoneOption}
     </>
