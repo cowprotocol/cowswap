@@ -103,7 +103,7 @@ export function colors(darkMode: boolean): Colors {
     info: darkMode ? '#615845' : '#FFEDAF',
     infoText: darkMode ? '#ffca4a' : '#564D00',
     warningText: '#564D00',
-    errorText: '#b91515', // TODO: @NOUNI
+    errorText: '#b91515',
   }
 }
 

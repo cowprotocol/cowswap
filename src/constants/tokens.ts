@@ -187,7 +187,6 @@ export function nativeOnChain(chainId: number): NativeCurrency {
 
 export class GpEther extends Ether {
   public get wrapped(): Token {
-    // TODO: @NOUNI
     if (this.chainId in WRAPPED_NATIVE_CURRENCY) return WRAPPED_NATIVE_CURRENCY[this.chainId as SupportedChainId]
     throw new Error('Unsupported chain ID')
   }
