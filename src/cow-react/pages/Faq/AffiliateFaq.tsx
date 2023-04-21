@@ -1,5 +1,5 @@
 import { Page, Content } from '@cow/modules/application/pure/Page'
-import { LinkScrollable } from '@src/components/Link'
+import { LinkScrollable } from 'components/Link'
 import { Link } from 'react-router-dom'
 
 import { ExternalLinkFaq, Wrapper } from './styled'

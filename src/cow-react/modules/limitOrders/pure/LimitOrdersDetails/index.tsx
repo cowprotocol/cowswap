@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { InfoIcon } from '@src/components/InfoIcon'
+import { InfoIcon } from 'components/InfoIcon'
 import * as styledEl from './styled'
 import styled from 'styled-components/macro'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'

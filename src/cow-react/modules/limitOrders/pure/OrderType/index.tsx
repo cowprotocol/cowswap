@@ -1,5 +1,5 @@
 import { DetailsRow } from '@cow/modules/limitOrders/pure/LimitOrdersDetails/styled'
-import { InfoIcon } from '@src/components/InfoIcon'
+import { InfoIcon } from 'components/InfoIcon'
 import IMAGE_CARET_DOWN from 'assets/cow-swap/carret-down.svg'
 import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import * as styledEl from './styled'

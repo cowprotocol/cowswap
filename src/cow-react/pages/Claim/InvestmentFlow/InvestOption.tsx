@@ -3,7 +3,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { BigNumber } from '@ethersproject/bignumber'
 import SVG from 'react-inlinesvg'
 
-import CowProtocolLogo from '@src/components/CowProtocolLogo'
+import CowProtocolLogo from 'components/CowProtocolLogo'
 import {
   InvestTokenGroup,
   TokenLogo,

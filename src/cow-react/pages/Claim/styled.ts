@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { CheckCircle, Frown } from 'react-feather'
 import BadgeOriginal from 'components/Badge'
 
-import { Icon } from '@src/components/CowProtocolLogo'
+import { Icon } from 'components/CowProtocolLogo'
 import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import { Step } from 'components/Stepper'
 import { transparentize, darken, lighten } from 'polished'

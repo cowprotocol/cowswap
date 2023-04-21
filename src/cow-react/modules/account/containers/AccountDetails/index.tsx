@@ -45,7 +45,7 @@ import { getExplorerAddressLink } from 'utils/explorer'
 import { Connector } from '@web3-react/types'
 import { ConnectionType, useWalletInfo, WalletDetails } from '@cow/modules/wallet'
 import { isMobile } from 'utils/userAgent'
-import UnsupporthedNetworkMessage from '@src/components/UnsupportedNetworkMessage'
+import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useDisconnectWallet } from '@cow/modules/wallet'
 import {

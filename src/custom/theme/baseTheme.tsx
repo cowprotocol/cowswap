@@ -13,7 +13,7 @@ import Cursor4 from 'assets/cow-swap/cursor4.gif'
 
 // TODO: This shouldn't be in the base theme
 // Modal override items
-// import { HeaderText } from '@src/components/WalletModal/Option'
+// import { HeaderText } from 'components/WalletModal/Option'
 
 export { ThemedText } from '@src/theme'
 export * from '@src/theme/components'
@@ -441,7 +441,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     z-index: 2147483004!important;
     display: block!important;
   }
-  
+
   a {
     text-decoration: none;
 

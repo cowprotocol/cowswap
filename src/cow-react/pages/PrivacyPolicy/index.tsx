@@ -1,5 +1,5 @@
 import contentFile from './PrivacyPolicy.md'
-import { MarkdownPage } from '@src/components/Markdown'
+import { MarkdownPage } from 'components/Markdown'
 import { GdocsListStyle } from '@cow/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'

@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import { InfoIcon } from '@src/components/InfoIcon'
+import { InfoIcon } from 'components/InfoIcon'
 
 interface Props {
   label: string

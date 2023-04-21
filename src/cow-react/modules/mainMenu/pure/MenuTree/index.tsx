@@ -1,5 +1,5 @@
 import { HeaderLinks as Wrapper, StyledNavLink } from 'components/Header/styled'
-import MenuDropdown from '@src/components/MenuDropdown'
+import MenuDropdown from 'components/MenuDropdown'
 import { MenuSection, MenuTitle } from 'components/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
 import { ExternalLink as ExternalLinkComponent } from 'theme/components'

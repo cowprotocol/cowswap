@@ -1,15 +1,15 @@
 import { initializeAnalytics } from 'components/AmplitudeAnalytics'
 import { useAnalyticsReporter } from 'components/analytics'
-import TopLevelModals from '@src/components/TopLevelModals'
+import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
-import ErrorBoundary from '@src/components/ErrorBoundary'
+import ErrorBoundary from 'components/ErrorBoundary'
 import Header from 'components/Header'
 
 import DarkModeQueryParamReader from 'theme'
 
 import ReferralLinkUpdater from 'state/affiliate/updater'
 import URLWarning from 'components/Header/URLWarning'
-import Footer from '@src/components/Footer'
+import Footer from 'components/Footer'
 
 import RedirectAnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { RoutesApp } from './RoutesApp'

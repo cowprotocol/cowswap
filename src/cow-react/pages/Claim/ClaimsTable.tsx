@@ -1,7 +1,7 @@
 import { ClaimType, useClaimDispatchers, useClaimState, useClaimTimeInfo, useClaimLinks } from 'state/claim/hooks'
 import styled from 'styled-components/macro'
 import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from '@cow/pages/Claim/styled'
-import CowProtocolLogo from '@src/components/CowProtocolLogo'
+import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ClaimStatus } from 'state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
 import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
