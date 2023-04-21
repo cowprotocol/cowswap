@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
-import { useToggleModal } from '@src/state/application/hooks'
+import { useToggleModal } from 'state/application/hooks'
 import { useCallback } from 'react'
 import { addPopup, ApplicationModal, PopupContent } from 'state/application/reducer'
 import { useAppDispatch } from 'state/hooks'

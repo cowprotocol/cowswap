@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
-import { Order } from '@src/custom/state/orders/actions'
+import { Order } from 'state/orders/actions'
 
 const SummaryWrapper = styled.div`
   font-size: 1rem;
