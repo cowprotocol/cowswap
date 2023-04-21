@@ -6,9 +6,9 @@ import JSBI from 'jsbi'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useEffect, useState } from 'react'
 
-import { UNI } from '../../constants/tokens'
-import { useContract } from '../../hooks/useContract'
-import { isAddress } from '../../utils'
+import { UNI } from '../../../constants/tokens'
+import { useContract } from '../../../hooks/useContract'
+import { isAddress } from '../../../utils'
 
 const MERKLE_DISTRIBUTOR_ABI = MerkleDistributorJson.abi
 

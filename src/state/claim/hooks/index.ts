@@ -60,7 +60,7 @@ import { CallState } from '@uniswap/redux-multicall'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { useWalletInfo } from '@cow/modules/wallet'
 
-export { useUserClaimData, useUserHasAvailableClaim } from '@src/state/claim/hooks'
+export { useUserClaimData, useUserHasAvailableClaim } from './hooksUni'
 
 const CLAIMS_REPO_BRANCH = 'main'
 export const CLAIMS_REPO = `https://raw.githubusercontent.com/cowprotocol/cow-merkle-drop/${CLAIMS_REPO_BRANCH}/`

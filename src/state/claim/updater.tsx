@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ClassifiedUserClaims, useClaimDispatchers, useClaimState, useClassifiedUserClaims } from './hooks'
+import { ClassifiedUserClaims, useClaimDispatchers, useClaimState, useClassifiedUserClaims } from 'state/claim/hooks'
 import { ClaimInfo } from 'state/claim/reducer'
 import { useWalletInfo } from '@cow/modules/wallet'
 
