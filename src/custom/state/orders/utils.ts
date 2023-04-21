@@ -154,39 +154,9 @@ export function isOrderUnfillable(
 }
 
 /**
- * Builds order execution price, based on quoted amount and fee
- *
- * `quotedAmount` will be based on the amount we want to sell (or buy), so it can be less than original amounts
- *
- * @param order
- * @param quoteAmount
- * @param feeAmount
- */
-export function getOrderExecutionPrice(
-  order: Order,
-  quoteAmount: string,
-  feeAmount: string
-): Price<Currency, Currency> {
-  // We get the remainder as the order might have already been partially filled
-  const remainderAmount = getRemainderAmount(order.kind, order)
-
-  if (order.kind === OrderKind.SELL) {
-    // For sell orders, the quoted amount is the buy amount
-    return new Price(order.inputToken, order.outputToken, remainderAmount, quoteAmount)
-  }
-
-  // For buy orders, the quoted amount is the sell amount
-  return new Price(
-    order.inputToken,
-    order.outputToken,
-    // We need to add the quoted fee to have the price, as the quoted amount comes without it
-    JSBI.add(JSBI.BigInt(quoteAmount), JSBI.BigInt(feeAmount)),
-    remainderAmount
-  )
-}
-
-/**
  * Builds order market price, based on quoted amount and fee
+ *
+ * Discounts the fee from sell amount (for sell orders)
  * @param order
  * @param quotedAmount
  * @param feeAmount

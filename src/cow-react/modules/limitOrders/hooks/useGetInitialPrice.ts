@@ -10,6 +10,7 @@ import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { getNativePrice } from '@cow/api/gnosisProtocol'
 import { ApiError } from '@cowprotocol/cow-sdk'
+import * as Sentry from '@sentry/browser'
 
 type ErrorWithApiError = { errorType: string; description: string; rawApiError: ApiError }
 type PriceResult = number | Error | undefined | ErrorWithApiError
@@ -35,17 +36,36 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
     const result = await getNativePrice(chainId, currencyAddress)
 
     if (!result) {
-      throw new Error('Cannot parse initial price')
+      throw new Error('No result from native_price endpoint')
     }
 
     const price = parsePrice(result.price || 0, currency)
-
     if (!price) {
-      throw new Error('Cannot parse initial price')
+      throw new Error("Couldn't parse native_price result")
     }
 
     return price
   } catch (error: any) {
+    console.warn('[requestPriceForCurrency] Error fetching native_price', error)
+
+    const sentryError = Object.assign(error, {
+      message: error.message || 'Error fetching native_price ',
+      name: 'NativePriceFetchError',
+    })
+
+    const params = {
+      chainId,
+      tokenAddress: currencyAddress,
+      tokenName: currency?.name,
+      tokenSymbol: currency.symbol,
+    }
+
+    Sentry.captureException(sentryError, {
+      contexts: {
+        params,
+      },
+    })
+
     return error
   }
 }
