@@ -1,8 +1,9 @@
-import SafeServiceClient, { SafeInfoResponse, SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
+import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
+import { EthersAdapter } from '@safe-global/protocol-kit'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { registerOnWindow } from 'utils/misc'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
-import EthersAdapter from '@safe-global/safe-ethers-lib'
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 
@@ -19,17 +20,18 @@ const CHAIN_SHORT_NAME: Partial<Record<number, string>> = {
   [ChainId.GOERLI]: 'gor', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-5.json
 }
 
-const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeServiceClient | null>> = {}
+const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKit | null>> = {}
 
-function _getClient(chainId: number, library: Web3Provider): SafeServiceClient | null {
+const txServiceUrl = 'https://safe-transaction-goerli.safe.global'
+
+function _getClient(chainId: number, library: Web3Provider): SafeApiKit | null {
   const cachedClient = SAFE_TRANSACTION_SERVICE_CACHE[chainId]
 
   if (cachedClient !== undefined) {
     return cachedClient
   }
 
-  const url = SAFE_TRANSACTION_SERVICE_URL[chainId]
-  const client = url ? createSafeServiceClient(url, library) : null
+  const client = createSafeServiceClient(chainId, library)
 
   // Add client to cache (or null if unknonw network)
   SAFE_TRANSACTION_SERVICE_CACHE[chainId] = client
@@ -37,17 +39,22 @@ function _getClient(chainId: number, library: Web3Provider): SafeServiceClient |
   return client
 }
 
-function createSafeServiceClient(txServiceUrl: string, library: Web3Provider): SafeServiceClient {
+function createSafeServiceClient(chainId: number, library: Web3Provider): SafeApiKit | null {
+  const url = SAFE_TRANSACTION_SERVICE_URL[chainId]
+  if (!url) {
+    return null
+  }
+
   const provider = new Web3Provider(library.send.bind(library) as JsonRpcFetchFunc)
+
   const ethAdapter = new EthersAdapter({
     ethers,
     signerOrProvider: provider.getSigner(0),
   })
-
-  return new SafeServiceClient({ txServiceUrl, ethAdapter })
+  return new SafeApiKit({ txServiceUrl, ethAdapter })
 }
 
-function _getClientOrThrow(chainId: number, library: Web3Provider): SafeServiceClient {
+function _getClientOrThrow(chainId: number, library: Web3Provider): SafeApiKit {
   const client = _getClient(chainId, library)
   if (!client) {
     throw new Error('Unsupported network for Gnosis Safe Transaction Service: ' + chainId)

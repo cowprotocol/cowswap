@@ -1,5 +1,5 @@
-import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SafeInfoResponse } from '@safe-global/api-kit'
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',
@@ -14,7 +14,7 @@ export enum ConnectionType {
   TALLY = 'TALLY',
   TRUST = 'TRUST',
   LEDGER = 'LEDGER',
-  KEYSTONE = 'KEYSTONE',
+  KEYSTONE = 'KEYSTONE'
 }
 
 export const BACKFILLABLE_WALLETS = [ConnectionType.INJECTED, ConnectionType.WALLET_CONNECT]

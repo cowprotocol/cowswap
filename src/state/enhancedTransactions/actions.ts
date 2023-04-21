@@ -1,4 +1,4 @@
-import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { createAction } from '@reduxjs/toolkit'
 import { EnhancedTransactionDetails } from './reducer'
 
