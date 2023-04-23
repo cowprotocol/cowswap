@@ -80,6 +80,7 @@ function pairKey(token0Address: string, token1Address: string) {
   return `${token0Address};${token1Address}`
 }
 
+// TODO: replace by the function from state/user/hooks.ts
 function serializeToken(token: Token): SerializedToken {
   return {
     chainId: token.chainId,
