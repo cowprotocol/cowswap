@@ -85,7 +85,6 @@ export function getTheme(darkMode: boolean): DefaultThemeUniswap {
 }
 
 export const TextWrapper = styled(Text)<{ color: keyof Colors; override?: boolean }>`
-  display: contents;
   color: ${({ color, theme, override }) => {
     const colour = (theme as any)[color]
     if (colour && override) {
