@@ -55,7 +55,7 @@ export default function Updater(): null {
     if (prevAccount && !account) {
       dispatch(updateSelectedWallet({ wallet: undefined }))
     }
-  }, [account, prevAccount])
+  }, [account, dispatch, prevAccount])
 
   return null
 }

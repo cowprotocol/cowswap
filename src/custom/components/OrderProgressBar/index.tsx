@@ -32,12 +32,8 @@ import { getExplorerOrderLink } from 'utils/explorer'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { CancelButton } from '@cow/common/pure/CancelButton'
-import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
-import { Order } from 'state/orders/actions'
-import styled from 'styled-components/macro'
-import { DisplayLink } from '../TransactionConfirmationModal'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import ms from 'ms.macro'
+import { TransactionExecutedContent } from '../TransactionExecutedContent'
 
 const REFRESH_INTERVAL_MS = ms`0.2s`
 const COW_STATE_SECONDS = ms`0.03s`
@@ -220,9 +216,9 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
               </StatusGraph>
             </StatusMsgContainer>
           </>
-        ) : (
+        ) : order ? (
           <TransactionExecutedContent hash={hash} chainId={chainId} order={order} />
-        )
+        ) : null
       }
       case 'unfillable': {
         return (
@@ -362,85 +358,4 @@ function useGetProgressBarInfo({
     expirationInSeconds: (validTo.getTime() - creationTime.getTime()) / 1000,
     isPending: orderIsPending,
   }
-}
-
-// TODO: Make a dumb component and Cosmos preview for different
-const ExecutedWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  padding-bottom: 1rem;
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 0.8rem;
-  `};
-
-  img {
-    padding: 1rem;
-    margin-right: 10px;
-
-    ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      padding: 0;
-      max-width: 60px;
-    `};
-  }
-
-  a {
-    margin: 0;
-    margin-top: 15px;
-    display: block;
-  }
-
-  > div > div {
-    margin-bottom: 5px;
-  }
-`
-
-const Strong = styled.strong`
-  font-size: 0.9rem;
-  white-space: nowrap;
-`
-
-function TransactionExecutedContent({
-  order,
-  chainId,
-  hash,
-}: {
-  order?: Order
-  chainId: SupportedChainId
-  hash?: string
-}) {
-  if (!order) return null
-
-  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)
-
-  return (
-    <ExecutedWrapper>
-      <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." />
-
-      <div>
-        <div>
-          Traded{' '}
-          <Strong>
-            <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />
-          </Strong>{' '}
-          for a total of{' '}
-          <Strong>
-            <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
-          </Strong>
-        </div>
-
-        {!!surplusAmount && (
-          <div>
-            You received a surplus of{' '}
-            <Strong>
-              <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
-            </Strong>{' '}
-            on this trade!
-          </div>
-        )}
-
-        <DisplayLink id={hash} chainId={chainId} />
-      </div>
-    </ExecutedWrapper>
-  )
 }
