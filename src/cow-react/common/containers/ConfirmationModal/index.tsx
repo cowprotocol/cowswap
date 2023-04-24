@@ -3,7 +3,8 @@ import { ConfirmationModal as Pure, ConfirmationModalProps } from '@cow/common/p
 import { useAtomValue } from 'jotai'
 
 export function ConfirmationModal({ isOpen, onDismiss }: Pick<ConfirmationModalProps, 'isOpen' | 'onDismiss'>) {
-  const { title, callToAction, description, onEnable, warning } = useAtomValue(confirmationModalContextAtom)
+  const { title, callToAction, description, onEnable, warning, confirmWord, action } =
+    useAtomValue(confirmationModalContextAtom)
 
   return (
     <Pure
@@ -14,6 +15,8 @@ export function ConfirmationModal({ isOpen, onDismiss }: Pick<ConfirmationModalP
       description={description}
       onEnable={onEnable}
       warning={warning}
+      confirmWord={confirmWord}
+      action={action}
     />
   )
 }

@@ -4,8 +4,12 @@ import { useCallback, useEffect } from 'react'
 import { ApplicationModal } from '@src/state/application/reducer'
 import { useCloseModal, useOpenModal } from '@src/custom/state/application/hooks'
 import { atom, useSetAtom } from 'jotai'
+import { t } from '@lingui/macro'
 
-type TriggerConfirmationParams = Pick<ConfirmationModalProps, 'title' | 'description' | 'callToAction' | 'warning'>
+type TriggerConfirmationParams = Pick<
+  ConfirmationModalProps,
+  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord'
+>
 
 interface ConfirmationModalContext {
   onDismiss: () => void
@@ -13,6 +17,8 @@ interface ConfirmationModalContext {
   callToAction: string
   description?: string
   warning?: string
+  confirmWord: string
+  action: string
   onEnable: () => void
   triggerConfirmation: ({ title, description, callToAction, warning }: TriggerConfirmationParams) => Promise<void>
 }
@@ -22,6 +28,8 @@ const DEFAULT_CONFIRMATION_MODAL_CONTEXT: ConfirmationModalContext = {
   onEnable: () => {},
   title: 'Confirm Action',
   callToAction: 'Confirm',
+  confirmWord: t`confirm`,
+  action: 'confirm',
   triggerConfirmation: async () => {},
 }
 
@@ -38,9 +46,9 @@ export const updateConfirmationModalContextAtom = atom(
 )
 
 export function useConfirmationRequest({
-  onEnable: onEnableParam,
-  onDismiss: onDismissParam,
-}: Pick<ConfirmationModalContext, 'onEnable' | 'onDismiss'>) {
+  onEnable: onEnableParam = () => {},
+  onDismiss: onDismissParam = () => {},
+}: Partial<Pick<ConfirmationModalContext, 'onEnable' | 'onDismiss'>>) {
   const openModal = useOpenModal(ApplicationModal.CONFIRMATION)
   const closeModal = useCloseModal(ApplicationModal.CONFIRMATION)
   const setContext = useSetAtom(updateConfirmationModalContextAtom)
@@ -72,7 +80,5 @@ export function useConfirmationRequest({
     })
   }, [openModal, closeModal, onDismissParam, onEnableParam, resetContext, setContext])
 
-  return {
-    triggerConfirmation,
-  }
+  return triggerConfirmation
 }

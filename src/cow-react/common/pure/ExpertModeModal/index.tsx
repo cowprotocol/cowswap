@@ -92,7 +92,7 @@ export function ExpertModeModal(props: ExpertModeModalProps) {
           </strong>
         </p>
 
-        <ConfirmExpertMode onConfirm={onEnable} action="turn on expert mode">
+        <ConfirmExpertMode onConfirm={onEnable} action="turn on expert mode" confirmWord="confirm">
           <Trans>Turn On Expert Mode</Trans>
         </ConfirmExpertMode>
       </ModalContentWrapper>

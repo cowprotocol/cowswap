@@ -28,6 +28,8 @@ export interface ConfirmationModalProps {
   callToAction?: string
   onDismiss: () => void
   onEnable: () => void
+  confirmWord: string
+  action: string
 }
 
 export function ConfirmationModal({
@@ -38,6 +40,8 @@ export function ConfirmationModal({
   callToAction = 'Confirm',
   onDismiss,
   onEnable,
+  action,
+  confirmWord,
 }: ConfirmationModalProps) {
   const shouldShowDescription = !!description
   const shouldShowWarning = !!warning
@@ -60,7 +64,7 @@ export function ConfirmationModal({
             </Warning>
           </Description>
         )}
-        <ConfirmedButton action="confirm" onConfirm={onEnable}>
+        <ConfirmedButton action={action} confirmWord={confirmWord} onConfirm={onEnable}>
           <Trans>{callToAction}</Trans>
         </ConfirmedButton>
       </ModalContentWrapper>

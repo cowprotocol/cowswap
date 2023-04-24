@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro'
 import { ButtonError } from 'components/Button'
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
-import { t } from '@lingui/macro'
 
 const Container = styled.div``
 const Instruction = styled.p`
@@ -28,18 +27,17 @@ interface ConfirmedButtonProps {
   onConfirm: () => void
   children?: ReactNode
   action: string
+  confirmWord: string
 }
 
-const confirmWord = t`confirm`
-
-function isValidConfirm(value: string): boolean {
+function isValidConfirm(value: string, confirmWord: string): boolean {
   return typeof value === 'string' && value.toLowerCase().trim() === confirmWord
 }
 
-export function ConfirmedButton({ className, onConfirm, children, action }: ConfirmedButtonProps) {
+export function ConfirmedButton({ className, onConfirm, children, action, confirmWord }: ConfirmedButtonProps) {
   const [inputValue, setInputValue] = useState('')
   const onInputChange: ChangeEventHandler<HTMLInputElement> = (event) => setInputValue(event.target.value ?? '')
-  const shouldButtonBeDisabled = !isValidConfirm(inputValue)
+  const shouldButtonBeDisabled = !isValidConfirm(inputValue, confirmWord)
   const onKeyDown: KeyboardEventHandler = useCallback(
     (event) => {
       if (event.key.toLowerCase() !== 'enter' || shouldButtonBeDisabled) {
