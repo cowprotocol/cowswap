@@ -175,7 +175,6 @@ SwapModalHeaderProps) {
           hideInput
           // borderColor={transparentize(0.5, theme.bg0)}
         >
-          {/* TODO: replace <FeeInformationTooltip/> with <ReceiveAmountInfoTooltip /> */}
           <FeeInformationTooltip
             amountAfterFees={<TokenAmount amount={trade.inputAmountWithFee} />}
             amountBeforeFees={<TokenAmount amount={trade.inputAmountWithoutFee} />}

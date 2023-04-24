@@ -7,9 +7,9 @@ import {
   replaceTransaction,
   updateSafeTransaction,
   ReplacementType,
+  SerializableTransactionReceipt,
 } from 'state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
-import { SerializableTransactionReceipt } from '@src/state/transactions/types'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
 export enum HashType {
@@ -40,7 +40,7 @@ export interface EnhancedTransactionDetails {
   swapVCow?: boolean
   swapLockedGNOvCow?: boolean
   ethFlow?: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' }
-
+  onChainCancellation?: { orderId: string; sellTokenSymbol: string }
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
 
@@ -90,6 +90,7 @@ export default createReducer(initialState, (builder) =>
             swapVCow,
             swapLockedGNOvCow,
             ethFlow,
+            onChainCancellation,
           },
         }
       ) => {
@@ -116,6 +117,7 @@ export default createReducer(initialState, (builder) =>
           swapVCow,
           swapLockedGNOvCow,
           ethFlow,
+          onChainCancellation,
         }
         transactions[chainId] = txs
       }

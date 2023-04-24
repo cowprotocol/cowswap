@@ -7,15 +7,15 @@ import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTra
 import * as styledEl from './styled'
 
 export function TradeWidgetLinks() {
-  const tradeState = useTradeState()
+  const { state } = useTradeState()
 
   const tradeContext = useMemo(
     () => ({
-      inputCurrencyId: tradeState?.state.inputCurrencyId || undefined,
-      outputCurrencyId: tradeState?.state.outputCurrencyId || undefined,
-      chainId: tradeState?.state.chainId?.toString(),
+      inputCurrencyId: state?.inputCurrencyId || undefined,
+      outputCurrencyId: state?.outputCurrencyId || undefined,
+      chainId: state?.chainId?.toString(),
     }),
-    [tradeState?.state]
+    [state]
   )
 
   return (

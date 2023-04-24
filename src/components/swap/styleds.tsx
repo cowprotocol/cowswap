@@ -1,4 +1,3 @@
-import { loadingOpacityMixin } from 'components/Loader/styled'
 import { TooltipContainer } from 'components/Tooltip'
 import { transparentize } from 'polished'
 import { MouseEventHandler, ReactNode } from 'react'
@@ -8,7 +7,6 @@ import styled, { css } from 'styled-components/macro'
 
 import { ThemedText } from '../../theme'
 import { AutoColumn } from '../Column'
-import TradePrice from './TradePrice'
 
 export const Container = styled.div`
   max-width: 460px;
@@ -171,8 +169,4 @@ export const ResponsiveTooltipContainer = styled(TooltipContainer)<{ origin?: st
     transform: scale(0.8);
     transform-origin: ${origin ?? 'top left'};
   `}
-`
-
-export const StyledTradePrice = styled(TradePrice)<{ $loading: boolean }>`
-  ${loadingOpacityMixin}
 `

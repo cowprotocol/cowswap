@@ -84,10 +84,14 @@ export default function useRecentActivity() {
     return (
       Object.values(allTransactions)
         // Only show orders for connected account
-        .filter((tx) => tx.from.toLowerCase() === accountLowerCase)
-        // Only recent transactions
-        .filter(isTransactionRecent)
-        .filter(isNotEthFlowTx)
+        .filter((tx) => {
+          return (
+            tx.from.toLowerCase() === accountLowerCase &&
+            isTransactionRecent(tx) &&
+            isNotEthFlowTx(tx) &&
+            isNotOnChainCancellationTx(tx)
+          )
+        })
         .map((tx) => ({
           ...tx,
           // we need to adjust Transaction object and add "id" + "status" to match Orders type
@@ -297,6 +301,10 @@ export function useRecentActivityLastPendingOrder() {
   }, [JSON.stringify(pending)])
 }
 
-export function isNotEthFlowTx(tx: EnhancedTransactionDetails): boolean {
+function isNotEthFlowTx(tx: EnhancedTransactionDetails): boolean {
   return !tx.ethFlow
+}
+
+function isNotOnChainCancellationTx(tx: EnhancedTransactionDetails): boolean {
+  return !tx.onChainCancellation
 }

@@ -77,6 +77,19 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "orderUid",
+        type: "bytes",
+      },
+    ],
+    name: "invalidateOrder",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ] as const;
 
 export class GPv2Settlement__factory {

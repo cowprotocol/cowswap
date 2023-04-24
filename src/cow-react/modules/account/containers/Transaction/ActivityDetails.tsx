@@ -28,6 +28,7 @@ import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import { StatusDetails } from './StatusDetails'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -129,7 +130,7 @@ function GnosisSafeTxDetails(props: {
       {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} gnosisSafeThreshold={gnosisSafeThreshold} />
+      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} />
     </TransactionInnerDetail>
   )
 }
@@ -175,6 +176,8 @@ export function ActivityDetails(props: {
     invertedActiveRateFiatAmount: null,
   }
   let isOrderFulfilled = false
+  let surplusAmount,
+    surplusToken = null
 
   if (order) {
     const {
@@ -225,6 +228,10 @@ export function ActivityDetails(props: {
         : undefined,
       kind: kind.toString(),
     }
+
+    const executedData = getExecutedSummaryData(order)
+    surplusAmount = executedData.surplusAmount
+    surplusToken = executedData.surplusToken
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
   }
@@ -292,6 +299,14 @@ export function ActivityDetails(props: {
                   </>
                 )}
               </SummaryInnerRow>
+              {surplusAmount?.greaterThan(0) && (
+                <SummaryInnerRow>
+                  <b>Surplus</b>
+                  <i>
+                    <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
+                  </i>
+                </SummaryInnerRow>
+              )}
             </>
           ) : (
             summary ?? id
@@ -306,7 +321,11 @@ export function ActivityDetails(props: {
         </SummaryInner>
 
         {/* Status Details: icon, cancel, links */}
-        <StatusDetails showCancellationModal={showCancellationModal} activityDerivedState={activityDerivedState} />
+        <StatusDetails
+          chainId={chainId}
+          showCancellationModal={showCancellationModal}
+          activityDerivedState={activityDerivedState}
+        />
       </Summary>
 
       <EthFlowStepper order={order} />

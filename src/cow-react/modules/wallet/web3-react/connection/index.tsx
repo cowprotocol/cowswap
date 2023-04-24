@@ -1,6 +1,6 @@
 import { Connector } from '@web3-react/types'
 
-import { isMobile } from 'utils/userAgent'
+import { /* isChrome, */ isMobile } from 'utils/userAgent'
 import { ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
@@ -15,11 +15,15 @@ import { gnosisSafeConnection } from './safe'
 import { injectedConnection } from './injected'
 import { coinbaseWalletConnection } from './coinbase'
 import { walletConnectConnection } from './walletConnect'
+import { ledgerConnection, LedgerOption } from './ledger'
 import { fortmaticConnection } from './formatic'
 import { networkConnection } from './network'
 import { ZengoOption } from './zengo'
 import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
+import { tallyWalletConnection /* TallyWalletOption */ } from './tally'
+import { trustWalletConnection, TrustWalletOption } from './trust'
+import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
@@ -28,6 +32,10 @@ const CONNECTIONS: Web3ReactConnection[] = [
   walletConnectConnection,
   fortmaticConnection,
   networkConnection,
+  tallyWalletConnection,
+  trustWalletConnection,
+  ledgerConnection,
+  keystoneConnection,
 ]
 
 export function isChainAllowed(connector: Connector, chainId: number) {
@@ -39,6 +47,10 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case walletConnectConnection.connector:
     case networkConnection.connector:
     case gnosisSafeConnection.connector:
+    case tallyWalletConnection.connector:
+    case trustWalletConnection.connector:
+    case ledgerConnection.connector:
+    case keystoneConnection.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -72,6 +84,14 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return walletConnectConnection
       case ConnectionType.ALPHA:
         return walletConnectConnection
+      case ConnectionType.TALLY:
+        return tallyWalletConnection
+      case ConnectionType.TRUST:
+        return trustWalletConnection
+      case ConnectionType.LEDGER:
+        return ledgerConnection
+      case ConnectionType.KEYSTONE:
+        return keystoneConnection
     }
   }
 }
@@ -86,6 +106,11 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
+  // const isChromeMobile = isMobile && isChrome
+  const showKeystone = !isInjectedMobileBrowser && !isMobile && window.ethereum?.isMetaMask
+
+  // Show Tally option only in Chrome (includes Brave too), but not on mobile or as an injected browser
+  // const showTally = !isInjectedMobileBrowser && isChrome && !isChromeMobile
 
   let injectedOption
   if (!isInjected) {
@@ -107,18 +132,30 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const walletConnectionOption =
     (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
 
+  // Wallet-connect based
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
   const alphaOption = (!isInjectedMobileBrowser && <AlphaOption tryActivation={tryActivation} />) ?? null
+  const ledgerOption = (!isInjectedMobileBrowser && !isMobile && <LedgerOption tryActivation={tryActivation} />) ?? null
+  const keystoneOption =
+    (showKeystone && <KeystoneOption tryActivation={tryActivation} />) || (!isMobile && <InstallKeystoneOption />)
+
+  // Injected
+  // const tallyOption = (showTally && <TallyWalletOption tryActivation={tryActivation} />) ?? null
+  const trustOption = (!isInjectedMobileBrowser && <TrustWalletOption tryActivation={tryActivation} />) ?? null
 
   return (
     <>
       {injectedOption}
       {walletConnectionOption}
       {coinbaseWalletOption}
+      {ledgerOption}
       {zengoOption}
       {ambireOption}
       {alphaOption}
+      {/* {tallyOption} */}
+      {trustOption}
+      {keystoneOption}
     </>
   )
 }

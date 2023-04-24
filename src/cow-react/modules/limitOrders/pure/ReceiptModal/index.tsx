@@ -59,7 +59,6 @@ export function ReceiptModal({
   onDismiss,
   order,
   chainId,
-  sellAmount,
   buyAmount,
   limitPrice,
   executionPrice,
@@ -114,7 +113,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
-              <FilledField order={order} sellAmount={sellAmount} buyAmount={buyAmount} />
+              <FilledField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>

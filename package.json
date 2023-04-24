@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "1.33.2",
+  "version": "1.34.0",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
@@ -62,7 +62,10 @@
     "moduleNameMapper": {
       "@cow/(.*)": "<rootDir>/src/cow-react/$1",
       "@src/(.*)": "<rootDir>/src/$1"
-    }
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ledgerhq/connect-kit-loader)"
+    ]
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^1.1.4",
@@ -71,13 +74,14 @@
     "@cowprotocol/app-data": "v0.1.0-alpha.0",
     "@cowprotocol/contracts": "^1.3.1",
     "@cowprotocol/cow-runner-game": "^0.2.9",
-    "@cowprotocol/cow-sdk": "^2.0.1",
+    "@cowprotocol/cow-sdk": "^2.0.3",
     "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts",
     "@davatar/react": "1.8.1",
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",
     "@gnosis.pm/safe-apps-web3-react": "^1.5.0",
     "@gnosis.pm/safe-service-client": "^1.2.0",
+    "@ledgerhq/connect-kit-loader": "^1.0.2",
     "@lingui/cli": "^3.9.0",
     "@lingui/core": "^3.15.0",
     "@lingui/macro": "^3.15.0",

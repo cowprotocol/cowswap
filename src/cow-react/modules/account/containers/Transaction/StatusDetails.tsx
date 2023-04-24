@@ -1,5 +1,6 @@
 import SVG from 'react-inlinesvg'
 import { ExternalLink } from 'theme'
+import { ExternalLink as LinkIconFeather } from 'react-feather'
 
 import OrderCheckImage from 'assets/cow-swap/order-check.svg'
 import OrderExpiredImage from 'assets/cow-swap/order-expired.svg'
@@ -8,17 +9,18 @@ import OrderCancelledImage from 'assets/cow-swap/order-cancelled.svg'
 import PresignaturePendingImage from 'assets/cow-swap/order-presignature-pending.svg'
 import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 
-import { StatusLabel, StatusLabelWrapper, StatusLabelBelow } from './styled'
+import { StatusLabel, StatusLabelWrapper, StatusLabelBelow, CancelTxLink } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { CancelButton } from '@cow/common/pure/CancelButton'
+import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 export function GnosisSafeLink(props: {
   chainId: number
   safeTransaction?: SafeMultisigTransactionResponse
-  gnosisSafeThreshold: number
 }): JSX.Element | null {
   const { chainId, safeTransaction } = props
 
@@ -67,12 +69,13 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
 }
 
 export type StatusDetailsProps = {
+  chainId: number
   activityDerivedState: ActivityDerivedState
   showCancellationModal: (() => void) | null
 }
 
 export function StatusDetails(props: StatusDetailsProps) {
-  const { activityDerivedState, showCancellationModal } = props
+  const { chainId, activityDerivedState, showCancellationModal } = props
 
   const {
     status,
@@ -86,10 +89,23 @@ export function StatusDetails(props: StatusDetailsProps) {
     isTransaction,
     isCancelled,
     isCreating,
+    order,
+    enhancedTransaction,
   } = activityDerivedState
 
+  const cancellationHash = activityDerivedState.order?.cancellationHash
+  const isCancellable = order ? isOrderCancellable(order) : true
+
+  const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
+  const hasCancellationHash = !!cancellationHash && !isCancelling && !isConfirmed && isCancelled
+  const cancellationTxLink = hasCancellationHash
+    ? safeTransaction
+      ? getSafeWebUrl(chainId, safeTransaction.safe, safeTransaction.safeTxHash)
+      : getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)
+    : null
+
   return (
-    <StatusLabelWrapper>
+    <StatusLabelWrapper withCancellationHash$={!!cancellationHash}>
       <StatusLabel
         color={determinePillColour(status, type)}
         isTransaction={isTransaction}
@@ -121,10 +137,15 @@ export function StatusDetails(props: StatusDetailsProps) {
         {_getStateLabel(activityDerivedState)}
       </StatusLabel>
 
-      {showCancellationModal && (
+      {showCancellationModal && isCancellable && (
         <StatusLabelBelow>
           <CancelButton onClick={showCancellationModal} />
         </StatusLabelBelow>
+      )}
+      {hasCancellationHash && cancellationTxLink && (
+        <CancelTxLink href={cancellationTxLink} target="_blank" title="Cancellation transaction">
+          <LinkIconFeather size={16} />
+        </CancelTxLink>
       )}
     </StatusLabelWrapper>
   )

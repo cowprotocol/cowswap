@@ -246,8 +246,8 @@ export function CurrencySearch({
           )}
         </PaddedColumn>
         <Separator />
-        {searchToken && !searchTokenIsAdded ? (
-          <Column style={{ padding: '20px 0', height: '100%' }}>
+        {searchToken && !searchTokenIsAdded && filteredSortedTokens?.length === 0 ? (
+          <Column id="currency-import" style={{ padding: '20px 0', height: '100%' }}>
             <ImportRow token={searchToken} showImportView={showImportView} setImportToken={setImportToken} />
           </Column>
         ) : filteredSortedTokens?.length > 0 || filteredInactiveTokens?.length > 0 || additionalTokens.length > 0 ? (

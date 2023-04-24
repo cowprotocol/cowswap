@@ -53,17 +53,31 @@ function areChainIdsTheSame(aChainId: Nullish<number>, bChainId: Nullish<number>
   return !!aChainId && !!bChainId && aChainId !== bChainId
 }
 
+// When there is no account from provider (wallet is not connected)
+// And there is no chainId in provider (edge case in E2E tests)
+// Then we use chainId from URL as current
+function getCurrentChainId(
+  account: string | undefined,
+  providerChainId: number | undefined,
+  chainIdFromUrl: number | null
+): number | null {
+  if (account) {
+    return providerChainId || null
+  }
+
+  return providerChainId || chainIdFromUrl
+}
+
 export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
   const { connector } = useWeb3React()
   const [isChainIdSet, setIsChainIdSet] = useState(false)
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
-  const tradeState = useTradeState()
+  const { state, updateState } = useTradeState()
 
   const chainIdFromUrl = tradeStateFromUrl.chainId
-  // When there is no account from provider, then we consider provider as not connected and use chainId from URL as current
-  const currentChainId = (account ? providerChainId : chainIdFromUrl) || providerChainId
+  const currentChainId = getCurrentChainId(account, providerChainId, chainIdFromUrl)
 
   const prevChainIdFromUrl = usePrevious(chainIdFromUrl)
   const prevCurrentChainId = usePrevious(currentChainId)
@@ -79,8 +93,8 @@ export function useSetupTradeState(): void {
 
     if (chainIdFromProviderWasChanged) return false
 
-    return tradeState ? shouldSkipUpdate(tradeStateFromUrl, tradeState.state) : true
-  }, [tradeState, tradeStateFromUrl, chainIdFromProviderWasChanged, chainIdFromUrlWasChanged, account])
+    return state ? shouldSkipUpdate(tradeStateFromUrl, state) : true
+  }, [state, tradeStateFromUrl, chainIdFromProviderWasChanged, chainIdFromUrlWasChanged, account])
 
   const newChainId = useMemo(() => {
     const providerChainId = currentChainId || SupportedChainId.MAINNET
@@ -103,26 +117,26 @@ export function useSetupTradeState(): void {
   }, [account, chainIdFromProviderWasChanged, chainIdFromUrl, currentChainId])
 
   const updateStateAndNavigate = useCallback(() => {
-    if (!tradeState) return
+    if (!state) return
 
     // Reset state to default when chainId was changed in the provider
     const newState: TradeState = chainIdFromProviderWasChanged
       ? getDefaultTradeState(newChainId)
       : {
           chainId: newChainId,
-          recipient: tradeStateFromUrl.recipient || tradeState.state.recipient,
-          ...getUpdatedCurrenciesIds(tradeStateFromUrl, tradeState.state),
+          recipient: tradeStateFromUrl.recipient || state.recipient,
+          ...getUpdatedCurrenciesIds(tradeStateFromUrl, state),
         }
 
     console.debug('UPDATE TRADE STATE:', newState)
 
-    tradeState.updateState(newState)
+    updateState?.(newState)
 
     tradeNavigate(newState.chainId, {
       inputCurrencyId: newState.inputCurrencyId || null,
       outputCurrencyId: newState.outputCurrencyId || null,
     })
-  }, [tradeNavigate, newChainId, chainIdFromProviderWasChanged, tradeState, tradeStateFromUrl])
+  }, [tradeNavigate, newChainId, chainIdFromProviderWasChanged, state, updateState, tradeStateFromUrl])
 
   /**
    * STEP 1
@@ -146,8 +160,12 @@ export function useSetupTradeState(): void {
     setIsChainIdSet(true)
 
     switchChain(connector, chainIdFromUrl)
-      .catch((e) => {
-        console.error(e)
+      .catch((error: Error) => {
+        // We are ignoring Gnosis safe context error
+        // Because it's a normal situation when we are not in Gnosis safe App
+        if (error.name === 'NoSafeContext') return
+
+        console.error('Network switching error: ', error)
       })
       .finally(() => {
         if (!isSubscribed) return
@@ -175,5 +193,5 @@ export function useSetupTradeState(): void {
    * If user opened a link with some token symbol, and we have more than one token with the same symbol in the listing
    * Then we show alert, reset trade state to default and ask user to select token using UI
    */
-  useResetStateWithSymbolDuplication(tradeState?.state || null)
+  useResetStateWithSymbolDuplication(state || null)
 }

@@ -1,5 +1,5 @@
 /**
- * This file is basically a Mod of src/state/transactions/updater
+ * This file is basically a Mod of src/state/enhancedTransactions/updater
  */
 
 import { useEffect, useMemo } from 'react'
@@ -89,20 +89,28 @@ function finalizeEthereumTransaction(
     })
   )
 
-  if (!transaction.ethFlow) {
-    addPopup(
-      {
-        txn: {
-          hash: receipt.transactionHash,
-          success: receipt.status === 1 && transaction.replacementType !== 'cancel',
-          summary: transaction.summary,
-        },
-      },
-      hash
-    )
-  } else {
+  if (transaction.ethFlow) {
     finalizeEthFlowTx(transaction.ethFlow, receipt, params, hash)
+    return
   }
+
+  if (transaction.onChainCancellation) {
+    const { orderId, sellTokenSymbol } = transaction.onChainCancellation
+
+    finalizeOnChainCancellation(receipt, params, hash, orderId, sellTokenSymbol)
+    return
+  }
+
+  addPopup(
+    {
+      txn: {
+        hash: receipt.transactionHash,
+        success: receipt.status === 1 && transaction.replacementType !== 'cancel',
+        summary: transaction.summary,
+      },
+    },
+    hash
+  )
 }
 
 function finalizeEthFlowTx(
@@ -137,25 +145,37 @@ function finalizeEthFlowTx(
   }
 
   if (subType === 'cancellation') {
-    if (receipt.status === 1) {
-      // If cancellation succeeded, mark order as cancelled
-      dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
-    } else {
-      // If cancellation failed:
-      // 1. Update order state and remove the isCancelling flag and cancellationHash
-      dispatch(updateOrder({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }))
-      // 2. Show failure tx pop-up
-      addPopup(
-        {
-          txn: {
-            hash,
-            success: false,
-            summary: `Failed to cancel order selling ${nativeCurrencySymbol}`,
-          },
+    finalizeOnChainCancellation(receipt, params, hash, orderId, nativeCurrencySymbol)
+  }
+}
+
+function finalizeOnChainCancellation(
+  receipt: TransactionReceipt,
+  params: CheckEthereumTransactions,
+  hash: string,
+  orderId: string,
+  sellTokenSymbol: string
+) {
+  const { chainId, dispatch, addPopup } = params
+
+  if (receipt.status === 1) {
+    // If cancellation succeeded, mark order as cancelled
+    dispatch(cancelOrdersBatch({ chainId, ids: [orderId] }))
+  } else {
+    // If cancellation failed:
+    // 1. Update order state and remove the isCancelling flag and cancellationHash
+    dispatch(updateOrder({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }))
+    // 2. Show failure tx pop-up
+    addPopup(
+      {
+        txn: {
+          hash,
+          success: false,
+          summary: `Failed to cancel order selling ${sellTokenSymbol}`,
         },
-        hash
-      )
-    }
+      },
+      hash
+    )
   }
 }
 

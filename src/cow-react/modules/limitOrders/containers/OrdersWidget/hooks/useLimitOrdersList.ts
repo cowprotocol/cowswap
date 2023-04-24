@@ -18,6 +18,7 @@ export interface LimitOrdersList {
   history: ParsedOrder[]
 }
 
+// TODO: we should move this to a separate module independent of limit orders, because it could be used for other oder types
 export interface ParsedOrder extends Order {
   executedBuyAmount: JSBI
   executedSellAmount: JSBI

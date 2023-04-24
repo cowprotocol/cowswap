@@ -1,7 +1,17 @@
 import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
 import { createAction } from '@reduxjs/toolkit'
-import { SerializableTransactionReceipt } from 'state/transactions/types'
 import { EnhancedTransactionDetails } from './reducer'
+
+export interface SerializableTransactionReceipt {
+  to: string
+  from: string
+  contractAddress: string
+  transactionIndex: number
+  blockHash: string
+  transactionHash: string
+  blockNumber: number
+  status?: number
+}
 
 type WithChainId = { chainId: number }
 type WithData = { data?: any }
@@ -21,6 +31,7 @@ export type AddTransactionParams = WithChainId &
     | 'swapVCow'
     | 'swapLockedGNOvCow'
     | 'ethFlow'
+    | 'onChainCancellation'
   >
 
 export const addTransaction = createAction<AddTransactionParams>('enhancedTransactions/addTransaction')

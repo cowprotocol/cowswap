@@ -8,17 +8,23 @@ import { getAddress } from '@cow/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { useWalletInfo } from '@cow/modules/wallet'
+import usePrevious from '@src/hooks/usePrevious'
 
 export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }
 
 export function useQuoteRequestParams(): LimitOrdersQuoteParams | null {
   const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
   const { chainId, account } = useWalletInfo()
+  const prevChainId = usePrevious(chainId)
   const { exactTypedValue } = useTypedValue()
   const { address: recipientEnsAddress } = useENSAddress(recipient)
 
   return useMemo(() => {
     if (!inputCurrency || !outputCurrency || !exactTypedValue || !chainId) {
+      return null
+    }
+
+    if (prevChainId && prevChainId !== chainId) {
       return null
     }
 
@@ -47,5 +53,15 @@ export function useQuoteRequestParams(): LimitOrdersQuoteParams | null {
       toDecimals,
       isEthFlow: false, // EthFlow is not compatible with limit orders
     }
-  }, [account, chainId, exactTypedValue, inputCurrency, orderKind, outputCurrency, recipient, recipientEnsAddress])
+  }, [
+    prevChainId,
+    account,
+    chainId,
+    exactTypedValue,
+    inputCurrency,
+    orderKind,
+    outputCurrency,
+    recipient,
+    recipientEnsAddress,
+  ])
 }
