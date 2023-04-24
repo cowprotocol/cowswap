@@ -8,7 +8,7 @@ import {
 } from '@cow/modules/fortune/state/fortuneStateAtom'
 import { useUpdateAtom } from 'jotai/utils'
 import { lastCheckedFortuneAtom } from '@cow/modules/fortune/state/checkedFortunesListAtom'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { SuccessBanner } from '@cow/pages/Claim/styled'
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -17,6 +17,7 @@ import fortuneCookieImage from 'assets/cow-swap/fortune-cookie.png'
 import { ExternalLink } from 'theme'
 import { X } from 'react-feather'
 import { transparentize } from 'polished'
+import Confetti from 'components/Confetti'
 
 const FortuneButton = styled.div`
   --size: 75px;
@@ -111,6 +112,10 @@ const FortuneBannerActions = styled.div`
   background: ${({ theme }) => theme.grey1};
   padding: 0;
   border-radius: 24px;
+
+  > a {
+    text-decoration: none !important;
+  }
 
   // Tweet button
   > a > div {
@@ -213,9 +218,19 @@ export function FortuneWidget() {
   const updateOpenFortune = useUpdateAtom(updateOpenFortuneAtom)
   const showFortuneButton = useUpdateAtom(showFortuneButtonAtom)
   const openRandomFortune = useOpenRandomFortune()
+  const [isTweetClicked, setIsTweetClicked] = useState(false)
 
   // TODO: add text
   const twitterText = openFortune ? openFortune.text : ''
+
+  const closeModal = useCallback(() => {
+    updateOpenFortune({ openFortune: null })
+    setIsTweetClicked(false)
+  }, [updateOpenFortune])
+
+  const onTweet = useCallback(() => {
+    setIsTweetClicked(true)
+  }, [])
 
   // Show fortune button once a day
   // TODO: improve logic
@@ -233,14 +248,14 @@ export function FortuneWidget() {
     <>
       {openFortune && (
         <FortuneBanner>
-          <StyledCloseIcon onClick={() => updateOpenFortune({ openFortune: null })}>Close</StyledCloseIcon>
+          <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
           <FortuneTitle>
             CoW Fortune <i>of the day</i>
           </FortuneTitle>
           <FortuneContent>
             <FortuneText>{openFortune.text}</FortuneText>
             <FortuneBannerActions>
-              <ExternalLink href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
+              <ExternalLink onClickOptional={onTweet} href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
                 <SuccessBanner type={'Twitter'}>
                   <span>
                     <Trans>Share on Twitter</Trans>
@@ -253,6 +268,7 @@ export function FortuneWidget() {
         </FortuneBanner>
       )}
       {isFortuneButtonVisible && <FortuneButton onClick={openRandomFortune}></FortuneButton>}
+      <Confetti start={isTweetClicked} />
     </>
   )
 }
