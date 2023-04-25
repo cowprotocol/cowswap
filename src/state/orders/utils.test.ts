@@ -6,7 +6,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
 
-import { classifyOrder, getOrderExecutionPrice, isOrderUnfillable } from './utils'
+import { classifyOrder, getOrderMarketPrice, isOrderUnfillable } from './utils'
 import { Price } from '@uniswap/sdk-core'
 import { generateOrder } from './mocks'
 import ms from 'ms.macro'
@@ -39,7 +39,7 @@ describe('isOrderUnfillable', () => {
         order.sellAmount.toString(),
         order.buyAmount.toString()
       )
-      const executionPrice = getOrderExecutionPrice(order, price, fee)
+      const executionPrice = getOrderMarketPrice(order, price, fee)
 
       expect(isOrderUnfillable(order, orderPrice, executionPrice)).toBeFalsy()
     })
@@ -54,7 +54,7 @@ describe('isOrderUnfillable', () => {
         order.sellAmount.toString(),
         order.buyAmount.toString()
       )
-      const executionPrice = getOrderExecutionPrice(order, price, fee)
+      const executionPrice = getOrderMarketPrice(order, price, fee)
 
       expect(isOrderUnfillable(order, orderPrice, executionPrice)).toBeFalsy()
     })
@@ -69,7 +69,7 @@ describe('isOrderUnfillable', () => {
         order.sellAmount.toString(),
         order.buyAmount.toString()
       )
-      const executionPrice = getOrderExecutionPrice(order, price, fee)
+      const executionPrice = getOrderMarketPrice(order, price, fee)
 
       expect(isOrderUnfillable(order, orderPrice, executionPrice)).toBeTruthy()
     })
@@ -89,7 +89,7 @@ describe('isOrderUnfillable', () => {
         order.sellAmount.toString(),
         order.buyAmount.toString()
       )
-      const executionPrice = getOrderExecutionPrice(order, price, fee)
+      const executionPrice = getOrderMarketPrice(order, price, fee)
 
       expect(isOrderUnfillable(order, orderPrice, executionPrice)).toBeFalsy()
     })
@@ -104,7 +104,7 @@ describe('isOrderUnfillable', () => {
         order.sellAmount.toString(),
         order.buyAmount.toString()
       )
-      const executionPrice = getOrderExecutionPrice(order, price, fee)
+      const executionPrice = getOrderMarketPrice(order, price, fee)
 
       expect(isOrderUnfillable(order, orderPrice, executionPrice)).toBeFalsy()
     })
@@ -119,7 +119,7 @@ describe('isOrderUnfillable', () => {
         order.sellAmount.toString(),
         order.buyAmount.toString()
       )
-      const executionPrice = getOrderExecutionPrice(order, price, fee)
+      const executionPrice = getOrderMarketPrice(order, price, fee)
 
       expect(isOrderUnfillable(order, orderPrice, executionPrice)).toBeTruthy()
     })

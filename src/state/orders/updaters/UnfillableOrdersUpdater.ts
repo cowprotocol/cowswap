@@ -8,7 +8,6 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getBestQuote } from 'utils/price'
 import {
   getEstimatedExecutionPrice,
-  getOrderExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
   isOrderUnfillable,
@@ -136,17 +135,16 @@ export function UnfillableOrdersUpdater(): null {
         order.buyAmount.toString()
       )
 
-      const executionPrice = getOrderExecutionPrice(order, price.amount, fee.amount)
       const marketPrice = getOrderMarketPrice(order, price.amount, fee.amount)
       const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
-      const isUnfillable = isOrderUnfillable(order, orderPrice, executionPrice)
+      const isUnfillable = order.class === OrderClass.MARKET && isOrderUnfillable(order, orderPrice, marketPrice)
 
       // Only trigger state update if flag changed
-      if (order.isUnfillable !== isUnfillable) {
+      if (order.isUnfillable !== isUnfillable && order.class === OrderClass.MARKET) {
         setIsOrderUnfillable({ chainId, id: order.id, isUnfillable })
 
         // order.isUnfillable by default is undefined, so we don't want to dispatch this in that case
-        if (typeof order.isUnfillable !== 'undefined' && order.class !== OrderClass.LIMIT) {
+        if (typeof order.isUnfillable !== 'undefined') {
           const label = `${order.inputToken.symbol}, ${order.outputToken.symbol}`
           priceOutOfRangeAnalytics(isUnfillable, label)
         }

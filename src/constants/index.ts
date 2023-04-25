@@ -211,3 +211,6 @@ export const FAQ_MENU_LINKS = [
   { title: 'Limit orders', url: '/faq/limit-order' },
   { title: 'Selling Native tokens', url: '/faq/sell-native' },
 ]
+
+// Min USD value to show surplus
+export const MIN_FIAT_SURPLUS_VALUE = 0.01

@@ -42,7 +42,19 @@ yarn test
 
 ### Integration test
 
-Normally:
+> Make sure you add the required environment varianbles to your `.env.local` file with:
+>
+> - `INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
+> - `INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
+
+To launch it with our development server (so you have live-reloading):
+
+```bash
+yarn start
+yarn cypress
+```
+
+Alternativelly, you can build the project and launch the integration test.
 
 ```bash
 yarn build
@@ -54,13 +66,6 @@ If we want to use the Cypress UI:
 ```bash
 yarn build
 yarn serve
-yarn cypress
-```
-
-If we want to use the Cypress UI, and live reloading on the web app:
-
-```bash
-yarn start
 yarn cypress
 ```
 

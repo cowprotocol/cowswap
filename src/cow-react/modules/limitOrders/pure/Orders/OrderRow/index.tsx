@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { DefaultTheme, StyledComponent, ThemeContext } from 'styled-components/macro'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { ThemeContext } from 'styled-components/macro'
 import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { RateInfo } from '@cow/common/pure/RateInfo'
@@ -27,6 +27,15 @@ import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrde
 import { EstimatedExecutionPrice } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { ZERO_FRACTION } from 'constants/index'
+import { LimitOrderActions } from '@cow/modules/limitOrders/pure/Orders/types'
+import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
+import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
+import {
+  TableRow,
+  TableRowCheckbox,
+  TableRowCheckboxWrapper,
+  CheckboxCheckmark,
+} from '@cow/modules/limitOrders/pure/Orders/styled'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',
@@ -95,20 +104,22 @@ export interface OrderRowProps {
   order: ParsedOrder
   prices: PendingOrderPrices | undefined | null
   spotPrice: Price<Currency, Currency> | undefined | null
-  RowElement: StyledComponent<'div', DefaultTheme, { isOpenOrdersTab?: boolean; hasBackground?: boolean }>
   isRateInverted: boolean
   isOpenOrdersTab: boolean
+  isRowSelectable: boolean
+  isRowSelected: boolean
   orderParams: OrderParams
   onClick: () => void
-  getShowCancellationModal(order: ParsedOrder): (() => void) | null
+  orderActions: LimitOrderActions
 }
 
 export function OrderRow({
   order,
-  RowElement,
   isRateInverted: isGloballyInverted,
   isOpenOrdersTab,
-  getShowCancellationModal,
+  isRowSelectable,
+  isRowSelected,
+  orderActions,
   orderParams,
   onClick,
   prices,
@@ -119,7 +130,7 @@ export function OrderRow({
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
-  const showCancellationModal = getShowCancellationModal(order)
+  const showCancellationModal = orderActions.getShowCancellationModal(order)
 
   const withWarning =
     (!hasEnoughBalance || !hasEnoughAllowance) &&
@@ -157,7 +168,19 @@ export function OrderRow({
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (
-    <RowElement isOpenOrdersTab={isOpenOrdersTab}>
+    <TableRow isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+      {/*Checkbox for multiple cancellation*/}
+      {isRowSelectable && isOpenOrdersTab && (
+        <TableRowCheckboxWrapper>
+          <TableRowCheckbox
+            type="checkbox"
+            checked={isRowSelected}
+            disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
+            onChange={() => orderActions.toggleOrderForCancellation(order)}
+          />
+          <CheckboxCheckmark />
+        </TableRowCheckboxWrapper>
+      )}
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell clickable onClick={onClick}>
         <styledEl.CurrencyLogoPair>
@@ -296,7 +319,7 @@ export function OrderRow({
           showCancellationModal={showCancellationModal}
         />
       </styledEl.CellElement>
-    </RowElement>
+    </TableRow>
   )
 }
 
