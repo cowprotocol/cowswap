@@ -2,9 +2,17 @@ import { useAtom, useAtomValue } from 'jotai'
 import { fortunesListAtom } from '@cow/modules/fortune/state/fortunesListAtom'
 import { useCallback } from 'react'
 import { getRandomInt } from '@cow/utils/getRandomInt'
-import { checkedFortunesListAtom } from '@cow/modules/fortune/state/checkedFortunesListAtom'
+import { CheckedFortunesList, checkedFortunesListAtom } from '@cow/modules/fortune/state/checkedFortunesListAtom'
 import { updateOpenFortuneAtom } from '@cow/modules/fortune/state/fortuneStateAtom'
 import { useUpdateAtom } from 'jotai/utils'
+import { FortuneItem } from '@cow/modules/fortune/types'
+
+function getRandomFortuneFromList(items: FortuneItem[], checkedFortunes: CheckedFortunesList): FortuneItem | null {
+  const list = items.filter((item) => !checkedFortunes[item.id])
+  const index = getRandomInt(0, list.length - 1)
+
+  return list[index] || null
+}
 
 export function useOpenRandomFortune() {
   const fortunesList = useAtomValue(fortunesListAtom)
@@ -12,16 +20,17 @@ export function useOpenRandomFortune() {
   const [checkedFortunes, setCheckedFortunes] = useAtom(checkedFortunesListAtom)
 
   return useCallback(() => {
-    if (fortunesList.state !== 'hasData') return
+    if (fortunesList.state !== 'hasData' || !fortunesList.data.length) return
 
-    const list = fortunesList.data.filter((item) => !checkedFortunes[item.id])
-    // TODO: What to do when there are no fortunes anymore?
-    const index = getRandomInt(0, list.length - 1)
-    const fortune = list[index]
+    let fortune = getRandomFortuneFromList(fortunesList.data, checkedFortunes)
 
-    if (!fortune) return
+    // When all fortunes are checked, then reset the list
+    if (!fortune) {
+      setCheckedFortunes({})
+      fortune = getRandomFortuneFromList(fortunesList.data, {})!
+    }
 
-    setCheckedFortunes({ ...checkedFortunes, [fortune.id]: Math.round(Date.now() / 1000) })
-    setOpenFortuneAtom({ openFortune: fortune, isFortuneButtonVisible: false })
+    setCheckedFortunes({ ...checkedFortunes, [fortune.id]: Date.now() })
+    setOpenFortuneAtom(fortune)
   }, [fortunesList, checkedFortunes, setCheckedFortunes, setOpenFortuneAtom])
 }

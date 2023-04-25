@@ -1,14 +1,10 @@
 import styled from 'styled-components/macro'
 import { useOpenRandomFortune } from '@cow/modules/fortune/hooks/useOpenRandomFortune'
 import { useAtomValue } from 'jotai'
-import {
-  fortuneStateAtom,
-  showFortuneButtonAtom,
-  updateOpenFortuneAtom,
-} from '@cow/modules/fortune/state/fortuneStateAtom'
+import { fortuneStateAtom, updateOpenFortuneAtom } from '@cow/modules/fortune/state/fortuneStateAtom'
 import { useUpdateAtom } from 'jotai/utils'
 import { lastCheckedFortuneAtom } from '@cow/modules/fortune/state/checkedFortunesListAtom'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { SuccessBanner } from '@cow/pages/Claim/styled'
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -33,6 +29,9 @@ const FortuneButton = styled.div`
   animation: floating 3.5s ease-in-out forwards infinite;
   cursor: pointer;
   transform: scale(1);
+  font-size: 40px;
+  line-height: 0;
+  color: ${({ theme }) => theme.blue1};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     --size: 52px;
@@ -209,40 +208,42 @@ const StyledCloseIcon = styled(X)`
   }
 `
 
-const ONE_DAY = 60 * 60 * 24
-
-// TODO: add styles
 export function FortuneWidget() {
-  const { openFortune, isFortuneButtonVisible } = useAtomValue(fortuneStateAtom)
+  const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
   const updateOpenFortune = useUpdateAtom(updateOpenFortuneAtom)
-  const showFortuneButton = useUpdateAtom(showFortuneButtonAtom)
   const openRandomFortune = useOpenRandomFortune()
-  const [isTweetClicked, setIsTweetClicked] = useState(false)
+  const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)
 
   // TODO: add text
   const twitterText = openFortune ? openFortune.text : ''
 
+  const isDailyFortuneChecked = useMemo(() => {
+    if (!lastCheckedFortune) return false
+
+    const lastCheckedFortuneDate = new Date(lastCheckedFortune.checkTimestamp)
+    const today = new Date()
+
+    return (
+      lastCheckedFortuneDate.getUTCFullYear() === today.getUTCFullYear() &&
+      lastCheckedFortuneDate.getUTCMonth() === today.getUTCMonth() &&
+      lastCheckedFortuneDate.getUTCDate() === today.getUTCDate()
+    )
+  }, [lastCheckedFortune])
+
   const closeModal = useCallback(() => {
-    updateOpenFortune({ openFortune: null })
-    setIsTweetClicked(false)
+    updateOpenFortune(null)
+    setIsNewFortuneOpen(false)
   }, [updateOpenFortune])
 
-  const onTweet = useCallback(() => {
-    setIsTweetClicked(true)
-  }, [])
-
-  // Show fortune button once a day
-  // TODO: improve logic
-  useEffect(() => {
-    if (isFortuneButtonVisible) return
-
-    const lastFortuneWasOpenDayAgo = lastCheckedFortune ? Date.now() / 1000 - lastCheckedFortune > ONE_DAY : true
-
-    if (lastFortuneWasOpenDayAgo) {
-      showFortuneButton()
+  const openFortuneModal = useCallback(() => {
+    if (isDailyFortuneChecked && lastCheckedFortune) {
+      updateOpenFortune(lastCheckedFortune.item)
+    } else {
+      openRandomFortune()
+      setIsNewFortuneOpen(true)
     }
-  }, [isFortuneButtonVisible, lastCheckedFortune, showFortuneButton])
+  }, [isDailyFortuneChecked, openRandomFortune, lastCheckedFortune, updateOpenFortune])
 
   return (
     <>
@@ -255,7 +256,7 @@ export function FortuneWidget() {
           <FortuneContent>
             <FortuneText>{openFortune.text}</FortuneText>
             <FortuneBannerActions>
-              <ExternalLink onClickOptional={onTweet} href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
+              <ExternalLink href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
                 <SuccessBanner type={'Twitter'}>
                   <span>
                     <Trans>Share on Twitter</Trans>
@@ -267,8 +268,8 @@ export function FortuneWidget() {
           </FortuneContent>
         </FortuneBanner>
       )}
-      {isFortuneButtonVisible && <FortuneButton onClick={openRandomFortune}></FortuneButton>}
-      <Confetti start={isTweetClicked} />
+      <FortuneButton onClick={openFortuneModal}>{isDailyFortuneChecked ? '' : '*'}</FortuneButton>
+      <Confetti start={isNewFortuneOpen} />
     </>
   )
 }

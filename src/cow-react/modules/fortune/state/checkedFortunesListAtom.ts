@@ -1,17 +1,37 @@
 import { atomWithStorage } from 'jotai/utils'
 import { atom } from 'jotai'
+import { fortunesListAtom } from '@cow/modules/fortune/state/fortunesListAtom'
 
-// Map {id: timestamp}
-export const checkedFortunesListAtom = atomWithStorage<{ [id: number]: number }>('checkedFortunesList', {})
+// Map {id: timestamp (when a fortune was checked)}
+export type CheckedFortunesList = { [id: number]: number }
+
+export const checkedFortunesListAtom = atomWithStorage<CheckedFortunesList>('checkedFortunesList', {})
+
+const lastCheckedFortuneIdAtom = atom((get) => {
+  const list = get(checkedFortunesListAtom)
+  const keys = Object.keys(list)
+  const timestamps = Object.values(list)
+  const biggestTimestamp = timestamps.reduce((timestamp, value) => (value > timestamp ? value : timestamp), 0)
+  const lastCheckedFortuneId = keys.find((key) => list[+key] === biggestTimestamp)
+
+  return lastCheckedFortuneId ? +lastCheckedFortuneId : null
+})
 
 export const lastCheckedFortuneAtom = atom((get) => {
   const list = get(checkedFortunesListAtom)
+  const lastCheckedFortuneId = get(lastCheckedFortuneIdAtom)
+  const fortunesList = get(fortunesListAtom)
 
-  return (
-    Object.values(list).reduce((biggestTimestamp, value) => {
-      if (value > biggestTimestamp) return value
+  if (lastCheckedFortuneId && fortunesList.state === 'hasData') {
+    const item = fortunesList.data.find((item) => item.id === lastCheckedFortuneId)
 
-      return biggestTimestamp
-    }, 0) || null
-  )
+    if (!item) return null
+
+    return {
+      checkTimestamp: list[lastCheckedFortuneId],
+      item,
+    }
+  }
+
+  return null
 })
