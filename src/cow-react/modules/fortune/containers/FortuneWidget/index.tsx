@@ -238,7 +238,7 @@ export function FortuneWidget() {
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   // TODO: add text
-  const twitterText = openFortune ? openFortune.text : ''
+  const twitterText = openFortune ? encodeURIComponent(`🐮💬: “${openFortune.text}” \n\n swap.cow.fi`) : ''
 
   const isDailyFortuneChecked = useMemo(() => {
     if (!lastCheckedFortune) return false
