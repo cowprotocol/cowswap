@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cow/utils/localStorage'
-import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@src/constants'
+import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'constants/index'
 import { DeadlineSettings } from './types'
 
 const LOCAL_STORAGE_KEY = 'UserDeadlineSettings'

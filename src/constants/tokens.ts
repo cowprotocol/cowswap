@@ -13,11 +13,11 @@ import {
 import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
-import vCowLogo from '@src/assets/cow-swap/vCOW.png'
-import cowLogo from '@src/assets/cow-swap/cow.svg'
-import gnoLogo from '@src/assets/cow-swap/gno.png'
-import usdcLogo from '@src/assets/cow-swap/usdc.png'
-import wxDaiLogo from '@src/assets/cow-swap/wxdai.png'
+import vCowLogo from 'assets/cow-swap/vCOW.png'
+import cowLogo from 'assets/cow-swap/cow.svg'
+import gnoLogo from 'assets/cow-swap/gno.png'
+import usdcLogo from 'assets/cow-swap/usdc.png'
+import wxDaiLogo from 'assets/cow-swap/wxdai.png'
 
 export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,
@@ -187,7 +187,6 @@ export function nativeOnChain(chainId: number): NativeCurrency {
 
 export class GpEther extends Ether {
   public get wrapped(): Token {
-    // TODO: @NOUNI
     if (this.chainId in WRAPPED_NATIVE_CURRENCY) return WRAPPED_NATIVE_CURRENCY[this.chainId as SupportedChainId]
     throw new Error('Unsupported chain ID')
   }

@@ -4,7 +4,7 @@ import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'state/use
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from '@cow/utils/localStorage'
 import { SerializedSlippage, SerializedSlippageSettings, Slippage, SlippageSettings } from './types'
-import { MINIMUM_ETH_FLOW_SLIPPAGE } from '@src/constants'
+import { MINIMUM_ETH_FLOW_SLIPPAGE } from 'constants/index'
 
 const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
 

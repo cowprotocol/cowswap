@@ -1,6 +1,6 @@
 import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding, Token, Currency } from '@uniswap/sdk-core'
 import { FractionLike, Nullish } from '@cow/types'
-import { FULL_PRICE_PRECISION } from '@src/constants'
+import { FULL_PRICE_PRECISION } from 'constants/index'
 import { trimTrailingZeros } from '@cow/utils/trimTrailingZeros'
 import JSBI from 'jsbi'
 import { adjustDecimalsAtoms } from '@cow/modules/limitOrders/utils/calculateAmountForRate'

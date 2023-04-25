@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { LONG_LOAD_THRESHOLD } from '@src/constants'
+import { LONG_LOAD_THRESHOLD } from 'constants/index'
 import { Text } from 'rebass'
 import { ThemedText } from 'theme'
 import styled from 'styled-components/macro'

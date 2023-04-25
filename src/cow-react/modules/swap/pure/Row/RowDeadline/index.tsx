@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 
 import { RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from '@src/constants'
+import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'constants/index'
 import { RowSlippageProps } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from '@cow/modules/swap/pure/Row/styled'
 import { RowStyleProps } from '@cow/modules/swap/pure/Row/typings'

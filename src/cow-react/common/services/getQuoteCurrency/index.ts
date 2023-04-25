@@ -3,7 +3,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { DAI, USDC_MAINNET, USDT } from 'constants/tokens'
 import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'
 import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from 'utils/gnosis_chain/constants'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '@src/constants'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 
 // TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
 const STABLE_COINS: { [key in SupportedChainId]: string[] } = {

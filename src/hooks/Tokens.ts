@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'
-import { isL2ChainId } from '@src/utils/chains'
+import { isL2ChainId } from 'utils/chains'
 
 import { useAllLists, useInactiveListUrls } from 'state/lists/hooks'
 import { deserializeToken, useUserAddedTokens } from 'state/user/hooks'

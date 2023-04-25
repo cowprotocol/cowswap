@@ -3,7 +3,7 @@ import { Nullish } from '@cow/types'
 import { assertSameMarket } from '@cow/common/utils/markets'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { adjustDecimalsAtoms } from './calculateAmountForRate'
-import { ZERO_FRACTION } from '@src/constants'
+import { ZERO_FRACTION } from 'constants/index'
 
 const ONE = new Fraction(1)
 

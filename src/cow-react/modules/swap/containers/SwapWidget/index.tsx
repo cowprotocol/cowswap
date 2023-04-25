@@ -40,7 +40,7 @@ import { useSetupTradeState } from '@cow/modules/trade'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwapAmountsFromUrl'
-import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
+import { useIsTradeUnsupported } from 'state/lists/hooks'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 

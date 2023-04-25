@@ -1,7 +1,7 @@
 import { formatFiatAmount } from '@cow/utils/amountFormat'
 import { FractionLike, Nullish } from '@cow/types'
 import { FractionUtils } from '@cow/utils/fractionUtils'
-import { LONG_PRECISION } from '@src/constants'
+import { LONG_PRECISION } from 'constants/index'
 import { FeatureFlag } from '@cow/utils/featureFlags'
 import styled from 'styled-components/macro'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from '@cow/constants/featureFlags'

@@ -1,1 +1,1 @@
-import '@src/serviceWorker'
+import 'serviceWorker'

@@ -2,7 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const BLOCK_EXPLORER_PREFIXES: { [chainId: number]: string } = {
   [SupportedChainId.MAINNET]: 'https://etherscan.io',
-  [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosisscan.io', // TODO: @NOUNI
+  [SupportedChainId.GNOSIS_CHAIN]: 'https://gnosisscan.io',
   [SupportedChainId.GOERLI]: 'https://goerli.etherscan.io',
 }
 

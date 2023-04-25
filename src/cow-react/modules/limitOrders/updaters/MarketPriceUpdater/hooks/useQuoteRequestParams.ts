@@ -6,9 +6,9 @@ import { useMemo } from 'react'
 import { useTypedValue } from '@cow/modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from '@cow/utils/getAddress'
 import useENSAddress from 'hooks/useENSAddress'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from '@src/constants'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
 import { useWalletInfo } from '@cow/modules/wallet'
-import usePrevious from '@src/hooks/usePrevious'
+import usePrevious from 'hooks/usePrevious'
 
 export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }
 

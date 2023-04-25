@@ -14,7 +14,7 @@ import {
   ActivityVisual,
 } from './styled'
 
-import { V_COW_CONTRACT_ADDRESS } from '@src/constants'
+import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
 import CurrencyLogo from 'components/CurrencyLogo'
