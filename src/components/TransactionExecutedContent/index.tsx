@@ -3,8 +3,8 @@ import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
 import { Order } from 'state/orders/actions'
 import { DisplayLink } from '../TransactionConfirmationModal'
-import { useCoingeckoUsdValue } from '@src/custom/hooks/useStablecoinPrice'
-import { MIN_FIAT_SURPLUS_VALUE } from '@src/custom/constants'
+import { useCoingeckoUsdValue } from 'hooks/useStablecoinPrice'
+import { MIN_FIAT_SURPLUS_VALUE } from 'constants/index'
 import * as styledEl from './styled'
 
 export function TransactionExecutedContent({
