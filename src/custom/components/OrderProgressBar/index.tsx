@@ -191,34 +191,38 @@ export function OrderProgressBar(props: OrderProgressBarProps) {
         )
       }
       case 'confirmed': {
-        return !showDetails ? (
-          <>
-            <ProgressBarInnerWrapper>
-              <SuccessProgress percentage={100}>
-                <CowProtocolIcon />
-              </SuccessProgress>
-            </ProgressBarInnerWrapper>
-            <StatusMsgContainer>
-              <StatusWrapper>
-                <GreenCheckIcon size={16} />
-                <StatusMsg>
-                  <strong>Congrats! Your transaction has been confirmed successfully! 🚀 </strong>
-                </StatusMsg>
-              </StatusWrapper>
-              <StatusGraph>
-                <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." />
-                <p>
-                  Your tokens should already be in your wallet, check out your trade on the{' '}
-                  <StyledExternalLink href={order ? getExplorerOrderLink(chainId, order.id) : '#'}>
-                    explorer ↗
-                  </StyledExternalLink>{' '}
-                </p>
-              </StatusGraph>
-            </StatusMsgContainer>
-          </>
-        ) : order ? (
-          <TransactionExecutedContent hash={hash} chainId={chainId} order={order} />
-        ) : null
+        if (!showDetails) {
+          return (
+            <>
+              <ProgressBarInnerWrapper>
+                <SuccessProgress percentage={100}>
+                  <CowProtocolIcon />
+                </SuccessProgress>
+              </ProgressBarInnerWrapper>
+              <StatusMsgContainer>
+                <StatusWrapper>
+                  <GreenCheckIcon size={16} />
+                  <StatusMsg>
+                    <strong>Congrats! Your transaction has been confirmed successfully! 🚀 </strong>
+                  </StatusMsg>
+                </StatusWrapper>
+                <StatusGraph>
+                  <img src={cowMeditatingSmooth} alt="Cow Smoooth ..." />
+                  <p>
+                    Your tokens should already be in your wallet, check out your trade on the{' '}
+                    <StyledExternalLink href={order ? getExplorerOrderLink(chainId, order.id) : '#'}>
+                      explorer ↗
+                    </StyledExternalLink>{' '}
+                  </p>
+                </StatusGraph>
+              </StatusMsgContainer>
+            </>
+          )
+        } else if (order) {
+          return <TransactionExecutedContent hash={hash} chainId={chainId} order={order} />
+        } else {
+          return null
+        }
       }
       case 'unfillable': {
         return (

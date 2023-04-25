@@ -1,5 +1,5 @@
-import React, { ReactNode, useMemo } from 'react'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { ReactNode } from 'react'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
 
@@ -30,9 +30,7 @@ import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import { StatusDetails } from './StatusDetails'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
-import { useCoingeckoUsdValue } from '@src/custom/hooks/useStablecoinPrice'
-import { MIN_FIAT_SURPLUS_VALUE } from 'constants/index'
+import { useGetSurplusData } from '@cow/common/hooks/useGetSurplusFiatValue'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -168,20 +166,7 @@ export function ActivityDetails(props: {
   const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
   const showCancellationModal = activityDerivedState.order ? getShowCancellationModal(activityDerivedState.order) : null
 
-  const { surplusAmount, surplusToken } = useMemo(() => {
-    const output: { surplusToken?: Token; surplusAmount?: CurrencyAmount<Token> } = {}
-
-    if (order) {
-      const summaryData = getExecutedSummaryData(order)
-      output.surplusAmount = summaryData.surplusAmount
-      output.surplusToken = summaryData.surplusToken
-    }
-
-    return output
-  }, [JSON.stringify(order)])
-
-  const fiatValue = useCoingeckoUsdValue(surplusAmount)
-  const showFiatValue = Number(fiatValue?.toExact()) > MIN_FIAT_SURPLUS_VALUE
+  const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
   if (!order && !enhancedTransaction) return null
 
@@ -319,7 +304,7 @@ export function ActivityDetails(props: {
                     <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
                     {showFiatValue && (
                       <FiatWrapper>
-                        (<StyledFiatAmount amount={fiatValue} />)
+                        (<StyledFiatAmount amount={surplusFiatValue} />)
                       </FiatWrapper>
                     )}
                   </i>
