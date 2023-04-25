@@ -7,7 +7,7 @@ import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connectio
 import { useAppSelector } from 'state/hooks'
 
 import { useToggleWalletModal } from 'state/application/hooks'
-import { useCloseFollowTxPopupIfNotPendingOrder } from '@src/custom/components/Popups/FollowPendingTxPopup'
+import { useCloseFollowTxPopupIfNotPendingOrder } from 'components/Popups/FollowPendingTxPopup'
 import { Web3StatusInner } from '@cow/modules/wallet/api/pure/Web3StatusInner'
 import { Wrapper } from '@cow/modules/wallet/api/pure/Web3StatusInner/styled'
 

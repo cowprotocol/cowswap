@@ -22,6 +22,17 @@ export const enum PageName {
   SWAP_PAGE = 'swap-page',
   VOTE_PAGE = 'vote-page',
   // alphabetize additional page names.
+  ACCOUNT_OVERVIEW_PAGE = 'account-overview-page',
+  ACCOUNT_TOKENS_PAGE = 'account-tokens-page',
+  ABOUT_PAGE = 'about-page',
+  FAQ_OVERVIEW_PAGE = 'faq-overview-page',
+  FAQ_PROTOCOL_PAGE = 'faq-protocol-page',
+  FAQ_TOKEN_PAGE = 'faq-token-page',
+  FAQ_TRADING_PAGE = 'faq-trading-page',
+  FAQ_AFFILIATE_PAGE = 'faq-affiliate-page',
+  FAQ_LIMIT_ORDERS_PAGE = 'faq-limit-orders-page',
+  FAQ_ETH_FLOW = 'faq-eth-flow',
+  TOC_PAGE = 'toc-page',
 }
 
 /**

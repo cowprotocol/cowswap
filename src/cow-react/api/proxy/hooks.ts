@@ -5,7 +5,7 @@ import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } f
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isAddress } from 'utils'
 import * as Sentry from '@sentry/react'
-import { ALL_SUPPORTED_CHAIN_IDS } from 'custom/constants/chains'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
 
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0

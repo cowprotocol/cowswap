@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { getChainInfoOrDefault, L2ChainInfo } from 'constants/chainInfo'
-import { SupportedChainId } from '@src/constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ExternalLink, MEDIA_WIDTHS } from 'theme'

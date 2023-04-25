@@ -10,7 +10,7 @@ import { SymbolElement } from '@cow/common/pure/TokenAmount'
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import { calculateOrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 import * as styledEl from './styled'
-import { ZERO_FRACTION } from '@src/custom/constants'
+import { ZERO_FRACTION } from 'constants/index'
 
 const MINUS_ONE_FRACTION = new Fraction(-1)
 export const HIGH_FEE_WARNING_PERCENTAGE = new Percent(1, 10)

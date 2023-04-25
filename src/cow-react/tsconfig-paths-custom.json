@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "paths": {
-      "@cow/*": ["cow-react/*"],
-      "@src/*": ["*"],
-      "*": ["custom/*", "*"]
-    }
-  }
-}
