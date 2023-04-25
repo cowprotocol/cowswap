@@ -1,10 +1,26 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { getVersionUpgrade, TokenList, VersionUpgrade } from '@uniswap/token-lists'
 
-import { DEFAULT_ACTIVE_LIST_URLS } from '../../constants/lists'
-import { DEFAULT_LIST_OF_LISTS } from '@src/constants/lists'
-import { updateVersion } from '../global/actions'
-import { acceptListUpdate, addList, disableList, enableList, fetchTokenList, removeList } from './actions'
+import {
+  DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK,
+  DEFAULT_LIST_OF_LISTS_BY_NETWORK,
+  DEFAULT_NETWORK_FOR_LISTS,
+  UNSUPPORTED_LIST_URLS,
+} from 'constants/lists'
+import { updateVersion } from 'state/global/actions'
+import {
+  acceptListUpdate,
+  addGpUnsupportedToken,
+  addList,
+  disableList,
+  enableList,
+  fetchTokenList,
+  removeGpUnsupportedToken,
+  removeList,
+} from './actions'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { UnsupportedToken } from '@cow/api/gnosisProtocol'
+import { getChainIdValues } from 'utils/misc'
 
 export interface ListsState {
   readonly byUrl: {
@@ -20,6 +36,13 @@ export interface ListsState {
 
   // currently active lists
   readonly activeListUrls: string[] | undefined
+
+  // unsupported tokens
+  readonly gpUnsupportedTokens: UnsupportedToken
+}
+
+export type ListsStateByNetwork = {
+  [chain in ChainId]: ListsState
 }
 
 export type ListState = ListsState['byUrl'][string]
@@ -33,80 +56,110 @@ export const NEW_LIST_STATE: ListState = {
 
 export type Mutable<T> = { -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer U> ? U[] : T[P] }
 
-const initialState: ListsState = {
-  lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS,
+// MOD: setInitialState sets each chainId state individually
+const setInitialListState = (chainId: ChainId): ListsState => ({
+  lastInitializedDefaultListOfLists: DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId],
   byUrl: {
-    ...DEFAULT_LIST_OF_LISTS.reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
-      memo[listUrl] = NEW_LIST_STATE
-      return memo
-    }, {}),
+    ...DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId]
+      .concat(...UNSUPPORTED_LIST_URLS[chainId])
+      .reduce<Mutable<ListsState['byUrl']>>((memo, listUrl) => {
+        memo[listUrl] = NEW_LIST_STATE
+        return memo
+      }, {}),
   },
-  activeListUrls: DEFAULT_ACTIVE_LIST_URLS,
+  activeListUrls: DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK[chainId],
+  gpUnsupportedTokens: {},
+})
+
+// MOD: change the intiialState shape
+// we make an object with each chainId pulled from ChainId enum
+// into a list and reduced into a map
+const initialState: ListsStateByNetwork = {
+  ...getChainIdValues().reduce((memo, chainId) => {
+    if (!memo[chainId]) {
+      memo[chainId] = setInitialListState(chainId)
+    }
+    return memo
+  }, {} as ListsStateByNetwork),
 }
 
 export default createReducer(initialState, (builder) =>
   builder
-    .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
-      const current = state.byUrl[url]?.current ?? null
-      const pendingUpdate = state.byUrl[url]?.pendingUpdate ?? null
+    .addCase(
+      fetchTokenList.pending,
+      (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, requestId, url } }) => {
+        const state = baseState[chainId]
+        const current = state.byUrl[url]?.current ?? null
+        const pendingUpdate = state.byUrl[url]?.pendingUpdate ?? null
 
-      state.byUrl[url] = {
-        current,
-        pendingUpdate,
-        loadingRequestId: requestId,
-        error: null,
+        state.byUrl[url] = {
+          current,
+          pendingUpdate,
+          loadingRequestId: requestId,
+          error: null,
+        }
       }
-    })
-    .addCase(fetchTokenList.fulfilled, (state, { payload: { requestId, tokenList, url } }) => {
-      const current = state.byUrl[url]?.current
-      const loadingRequestId = state.byUrl[url]?.loadingRequestId
+    )
+    .addCase(
+      fetchTokenList.fulfilled,
+      (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, requestId, tokenList, url } }) => {
+        const state = baseState[chainId]
+        const current = state.byUrl[url]?.current
+        const loadingRequestId = state.byUrl[url]?.loadingRequestId
 
-      // no-op if update does nothing
-      if (current) {
-        const upgradeType = getVersionUpgrade(current.version, tokenList.version)
+        // no-op if update does nothing
+        if (current) {
+          const upgradeType = getVersionUpgrade(current.version, tokenList.version)
 
-        if (upgradeType === VersionUpgrade.NONE) return
-        if (loadingRequestId === null || loadingRequestId === requestId) {
+          if (upgradeType === VersionUpgrade.NONE) return
+          if (loadingRequestId === null || loadingRequestId === requestId) {
+            state.byUrl[url] = {
+              current,
+              pendingUpdate: tokenList,
+              loadingRequestId: null,
+              error: null,
+            }
+          }
+        } else {
+          // activate if on default active
+          if (DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK[chainId].includes(url)) {
+            state.activeListUrls?.push(url)
+          }
+
           state.byUrl[url] = {
-            current,
-            pendingUpdate: tokenList,
+            current: tokenList,
+            pendingUpdate: null,
             loadingRequestId: null,
             error: null,
           }
         }
-      } else {
-        // activate if on default active
-        if (DEFAULT_ACTIVE_LIST_URLS.includes(url)) {
-          state.activeListUrls?.push(url)
+      }
+    )
+    .addCase(
+      fetchTokenList.rejected,
+      (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url, requestId, errorMessage } }) => {
+        const state = baseState[chainId]
+        if (state.byUrl[url]?.loadingRequestId !== requestId) {
+          // no-op since it's not the latest request
+          return
         }
 
         state.byUrl[url] = {
-          current: tokenList,
+          current: null,
           pendingUpdate: null,
           loadingRequestId: null,
-          error: null,
+          error: errorMessage,
         }
       }
-    })
-    .addCase(fetchTokenList.rejected, (state, { payload: { url, requestId, errorMessage } }) => {
-      if (state.byUrl[url]?.loadingRequestId !== requestId) {
-        // no-op since it's not the latest request
-        return
-      }
-
-      state.byUrl[url] = {
-        current: state.byUrl[url].current ? state.byUrl[url].current : null,
-        pendingUpdate: null,
-        loadingRequestId: null,
-        error: errorMessage,
-      }
-    })
-    .addCase(addList, (state, { payload: url }) => {
+    )
+    .addCase(addList, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url } }) => {
+      const state = baseState[chainId]
       if (!state.byUrl[url]) {
         state.byUrl[url] = NEW_LIST_STATE
       }
     })
-    .addCase(removeList, (state, { payload: url }) => {
+    .addCase(removeList, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url } }) => {
+      const state = baseState[chainId]
       if (state.byUrl[url]) {
         delete state.byUrl[url]
       }
@@ -115,7 +168,8 @@ export default createReducer(initialState, (builder) =>
         state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
       }
     })
-    .addCase(enableList, (state, { payload: url }) => {
+    .addCase(enableList, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url } }) => {
+      const state = baseState[chainId]
       if (!state.byUrl[url]) {
         state.byUrl[url] = NEW_LIST_STATE
       }
@@ -128,12 +182,14 @@ export default createReducer(initialState, (builder) =>
         state.activeListUrls = [url]
       }
     })
-    .addCase(disableList, (state, { payload: url }) => {
+    .addCase(disableList, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url } }) => {
+      const state = baseState[chainId]
       if (state.activeListUrls && state.activeListUrls.includes(url)) {
         state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
       }
     })
-    .addCase(acceptListUpdate, (state, { payload: url }) => {
+    .addCase(acceptListUpdate, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, url } }) => {
+      const state = baseState[chainId]
       if (!state.byUrl[url]?.pendingUpdate) {
         throw new Error('accept list update called without pending update')
       }
@@ -143,44 +199,66 @@ export default createReducer(initialState, (builder) =>
         pendingUpdate: null,
       }
     })
-    .addCase(updateVersion, (state) => {
-      // state loaded from localStorage, but new lists have never been initialized
-      if (!state.lastInitializedDefaultListOfLists) {
-        state.byUrl = initialState.byUrl
-        state.activeListUrls = initialState.activeListUrls
-      } else if (state.lastInitializedDefaultListOfLists) {
-        const lastInitializedSet = state.lastInitializedDefaultListOfLists.reduce<Set<string>>(
-          (s, l) => s.add(l),
-          new Set()
-        )
-        const newListOfListsSet = DEFAULT_LIST_OF_LISTS.reduce<Set<string>>((s, l) => s.add(l), new Set())
+    .addCase(
+      updateVersion,
+      (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS } }): ListsStateByNetwork | void => {
+        const state = baseState[chainId]
+        // MOD: we need to check the localstrorage list shape against our schema as it has changed
+        if (!state) return (baseState = initialState)
 
-        DEFAULT_LIST_OF_LISTS.forEach((listUrl) => {
-          if (!lastInitializedSet.has(listUrl)) {
-            state.byUrl[listUrl] = NEW_LIST_STATE
-          }
-        })
+        // state loaded from localStorage, but new lists have never been initialized
+        if (!state.lastInitializedDefaultListOfLists) {
+          state.byUrl = initialState[chainId].byUrl
+          state.activeListUrls = initialState[chainId].activeListUrls
+        } else if (state.lastInitializedDefaultListOfLists) {
+          const lastInitializedSet = state.lastInitializedDefaultListOfLists.reduce<Set<string>>(
+            (s, l) => s.add(l),
+            new Set()
+          )
+          const newListOfListsSet = DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId].reduce<Set<string>>(
+            (s, l) => s.add(l),
+            new Set()
+          )
 
-        state.lastInitializedDefaultListOfLists.forEach((listUrl) => {
-          if (!newListOfListsSet.has(listUrl)) {
-            delete state.byUrl[listUrl]
-          }
-        })
+          DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId].forEach((listUrl) => {
+            if (!lastInitializedSet.has(listUrl)) {
+              state.byUrl[listUrl] = NEW_LIST_STATE
+            }
+          })
+
+          state.lastInitializedDefaultListOfLists.forEach((listUrl) => {
+            if (!newListOfListsSet.has(listUrl)) {
+              delete state.byUrl[listUrl]
+            }
+          })
+        }
+
+        state.lastInitializedDefaultListOfLists = DEFAULT_LIST_OF_LISTS_BY_NETWORK[chainId]
+
+        // if no active lists, activate defaults
+        if (!state.activeListUrls) {
+          state.activeListUrls = DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK[chainId]
+
+          // for each list on default list, initialize if needed
+          DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK[chainId].map((listUrl: string) => {
+            if (!state.byUrl[listUrl]) {
+              state.byUrl[listUrl] = NEW_LIST_STATE
+            }
+            return true
+          })
+        }
+
+        if (!state.gpUnsupportedTokens) {
+          state.gpUnsupportedTokens = {}
+        }
       }
-
-      state.lastInitializedDefaultListOfLists = DEFAULT_LIST_OF_LISTS
-
-      // if no active lists, activate defaults
-      if (!state.activeListUrls) {
-        state.activeListUrls = DEFAULT_ACTIVE_LIST_URLS
-
-        // for each list on default list, initialize if needed
-        DEFAULT_ACTIVE_LIST_URLS.map((listUrl: string) => {
-          if (!state.byUrl[listUrl]) {
-            state.byUrl[listUrl] = NEW_LIST_STATE
-          }
-          return true
-        })
-      }
+    )
+    .addCase(addGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, ...restToken } }) => {
+      const state = baseState[chainId]
+      state.gpUnsupportedTokens[restToken.address.toLowerCase()] = restToken
+    })
+    .addCase(removeGpUnsupportedToken, (baseState, { payload: { chainId = DEFAULT_NETWORK_FOR_LISTS, address } }) => {
+      const state = baseState[chainId]
+      delete state.gpUnsupportedTokens[address.toLowerCase()]
     })
 )

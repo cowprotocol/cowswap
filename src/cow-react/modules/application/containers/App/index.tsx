@@ -1,5 +1,5 @@
 import { initializeAnalytics } from 'components/AmplitudeAnalytics'
-import { useAnalyticsReporter } from '@src/custom/components/analytics'
+import { useAnalyticsReporter } from 'components/analytics'
 import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import ErrorBoundary from 'components/ErrorBoundary'

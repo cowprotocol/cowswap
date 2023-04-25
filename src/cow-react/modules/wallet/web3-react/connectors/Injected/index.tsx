@@ -7,7 +7,7 @@ import {
   ProviderRpcError,
   RequestArguments,
 } from '@web3-react/types'
-import { isRejectRequestProviderError } from '@src/custom/utils/misc'
+import { isRejectRequestProviderError } from 'utils/misc'
 
 type InjectedWalletProvider = Provider & {
   providers?: Omit<InjectedWalletProvider, 'providers'>[]

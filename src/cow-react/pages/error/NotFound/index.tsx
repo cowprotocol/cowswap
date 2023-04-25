@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Page, Title, Content, GdocsListStyle } from '@cow/modules/application/pure/Page'
-import { ButtonPrimary } from 'custom/components/Button'
+import { ButtonPrimary } from 'components/Button'
 import cow404IMG from 'assets/cow-swap/cow-404.png'
 
 const Wrapper = styled(Page)`
@@ -52,7 +52,7 @@ const Container = styled.div`
     img {
       max-width: 287px;
     }
-    
+
     h2 {
       font-size: 16px;
       text-align: center;

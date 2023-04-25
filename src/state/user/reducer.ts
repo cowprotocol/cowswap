@@ -2,9 +2,15 @@ import { createSlice } from '@reduxjs/toolkit'
 import { ConnectionType } from '@cow/modules/wallet'
 import { SupportedLocale } from 'constants/locales'
 
-import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants/misc'
-import { updateVersion } from '../global/actions'
-import { SerializedPair, SerializedToken } from './types'
+import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
+import { updateVersion } from 'state/global/actions'
+import { SerializedPair, SerializedToken } from 'state/user/types'
+
+// MOD imports
+// import { serializeToken } from './hooks'
+import { COMMON_BASES } from 'constants/routing'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 const currentTimestamp = () => new Date().getTime()
 
@@ -61,10 +67,49 @@ export interface UserState {
   showSurveyPopup: boolean | undefined
 
   showDonationLink: boolean
+
+  // mod, favourite tokens
+  favouriteTokens: {
+    [chainId: number]: {
+      [address: string]: SerializedToken
+    }
+  }
 }
 
 function pairKey(token0Address: string, token1Address: string) {
   return `${token0Address};${token1Address}`
+}
+
+// TODO: replace by the function from state/user/hooks.ts
+function serializeToken(token: Token): SerializedToken {
+  return {
+    chainId: token.chainId,
+    address: token.address,
+    decimals: token.decimals,
+    symbol: token.symbol,
+    name: token.name,
+  }
+}
+
+function _initialStatePerChain(chainId: number) {
+  return COMMON_BASES[chainId].reduce(
+    (acc2, curr) => {
+      acc2[curr.wrapped.address] = serializeToken(curr.wrapped)
+      return acc2
+    },
+    {} as {
+      [address: string]: SerializedToken
+    }
+  )
+}
+
+const ALL_SUPPORTED_CHAIN_IDS = [SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN, SupportedChainId.GOERLI]
+
+function _initialSavedTokensState() {
+  return ALL_SUPPORTED_CHAIN_IDS.reduce((acc, chain) => {
+    acc[chain] = _initialStatePerChain(chain)
+    return acc
+  }, {} as UserState['favouriteTokens'])
 }
 
 export const initialState: UserState = {
@@ -87,6 +132,8 @@ export const initialState: UserState = {
   URLWarningVisible: true,
   showSurveyPopup: undefined,
   showDonationLink: true,
+  // mod, favourite tokens
+  favouriteTokens: _initialSavedTokensState(),
 }
 
 const userSlice = createSlice({
@@ -176,6 +223,27 @@ const userSlice = createSlice({
       state.recipientToggleVisible = action.payload.recipientToggleVisible
       state.timestamp = currentTimestamp()
     },
+    initFavouriteTokens(state, { payload: { chainId } }) {
+      if (!state.favouriteTokens?.[chainId]) {
+        state.favouriteTokens = _initialSavedTokensState()
+      }
+    },
+    toggleFavouriteToken(state, { payload: { serializedToken } }) {
+      const { chainId, address } = serializedToken
+
+      if (!state.favouriteTokens?.[chainId]) {
+        state.favouriteTokens = _initialSavedTokensState()
+      }
+
+      if (!state.favouriteTokens[chainId][address]) {
+        state.favouriteTokens[chainId][address] = serializedToken
+      } else {
+        delete state.favouriteTokens[chainId][address]
+      }
+    },
+    removeAllFavouriteTokens(state, { payload: { chainId } }) {
+      state.favouriteTokens[chainId] = _initialStatePerChain(chainId)
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(updateVersion, (state) => {
@@ -233,5 +301,8 @@ export const {
   // MOD - legacy Uni code we want to keep
   updateRecipientToggleVisible,
   toggleURLWarning,
+  toggleFavouriteToken,
+  removeAllFavouriteTokens,
+  initFavouriteTokens,
 } = userSlice.actions
 export default userSlice.reducer
