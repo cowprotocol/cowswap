@@ -1,5 +1,6 @@
 import { atom } from 'jotai'
 import { FortuneItem } from '@cow/modules/fortune/types'
+import { atomWithStorage } from 'jotai/utils'
 
 interface FortuneState {
   openFortune: FortuneItem | null
@@ -13,3 +14,5 @@ export const updateOpenFortuneAtom = atom(null, (get, set, openFortune: FortuneI
     return { openFortune }
   })
 })
+
+export const isFortunesFeatureDisabledAtom = atomWithStorage<boolean>('isFortunesFeatureDisabled', false)

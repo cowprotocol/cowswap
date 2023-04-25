@@ -1,10 +1,14 @@
 import styled from 'styled-components/macro'
 import { useOpenRandomFortune } from '@cow/modules/fortune/hooks/useOpenRandomFortune'
-import { useAtomValue } from 'jotai'
-import { fortuneStateAtom, updateOpenFortuneAtom } from '@cow/modules/fortune/state/fortuneStateAtom'
+import { useAtom, useAtomValue } from 'jotai'
+import {
+  fortuneStateAtom,
+  isFortunesFeatureDisabledAtom,
+  updateOpenFortuneAtom,
+} from '@cow/modules/fortune/state/fortuneStateAtom'
 import { useUpdateAtom } from 'jotai/utils'
 import { lastCheckedFortuneAtom } from '@cow/modules/fortune/state/checkedFortunesListAtom'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { SuccessBanner } from '@cow/pages/Claim/styled'
 import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
@@ -108,9 +112,7 @@ const FortuneBanner = styled.div`
 
 const FortuneBannerActions = styled.div`
   display: flex;
-  background: ${({ theme }) => theme.grey1};
-  padding: 0;
-  border-radius: 24px;
+  flex-direction: column;
 
   > a {
     text-decoration: none !important;
@@ -120,6 +122,23 @@ const FortuneBannerActions = styled.div`
   > a > div {
     margin: 0;
     gap: 12px;
+  }
+`
+
+const DontShowAgainBox = styled.div`
+  text-align: center;
+  margin-top: 30px;
+
+  > label {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  > label input {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
   }
 `
 
@@ -141,7 +160,7 @@ const FortuneTitle = styled.h2`
   }
 `
 
-const FortuneText = styled.h3`
+const FortuneText = styled.h3<{ isNewFortuneOpen: boolean }>`
   padding: 24px;
   width: 100%;
   font-size: 34px;
@@ -152,6 +171,7 @@ const FortuneText = styled.h3`
   text-align: center;
   position: relative;
   background: ${({ theme }) => theme.grey1};
+  opacity: ${({ isNewFortuneOpen }) => (isNewFortuneOpen ? 1 : 0.5)};
 
   &:before {
     content: '“';
@@ -174,7 +194,7 @@ const FortuneText = styled.h3`
   }
 `
 
-const FortuneContent = styled.div<{ isNewFortuneOpen: boolean }>`
+const FortuneContent = styled.div`
   display: flex;
   flex-flow: column wrap;
   margin: 0 auto;
@@ -182,7 +202,6 @@ const FortuneContent = styled.div<{ isNewFortuneOpen: boolean }>`
   align-items: center;
   width: 100%;
   max-width: 500px;
-  opacity: ${({ isNewFortuneOpen }) => (isNewFortuneOpen ? 1 : 0.5)};
 `
 
 const StyledCloseIcon = styled(X)`
@@ -213,8 +232,10 @@ export function FortuneWidget() {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
   const updateOpenFortune = useUpdateAtom(updateOpenFortuneAtom)
+  const [isFortunesFeatureDisabled, setIsFortunesFeatureDisabled] = useAtom(isFortunesFeatureDisabledAtom)
   const openRandomFortune = useOpenRandomFortune()
   const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)
+  const checkboxRef = useRef<HTMLInputElement>(null)
 
   // TODO: add text
   const twitterText = openFortune ? openFortune.text : ''
@@ -235,7 +256,11 @@ export function FortuneWidget() {
   const closeModal = useCallback(() => {
     updateOpenFortune(null)
     setIsNewFortuneOpen(false)
-  }, [updateOpenFortune])
+
+    if (checkboxRef.current?.checked) {
+      setIsFortunesFeatureDisabled(true)
+    }
+  }, [updateOpenFortune, checkboxRef, setIsFortunesFeatureDisabled])
 
   const openFortuneModal = useCallback(() => {
     if (isDailyFortuneChecked && lastCheckedFortune) {
@@ -245,6 +270,8 @@ export function FortuneWidget() {
       setIsNewFortuneOpen(true)
     }
   }, [isDailyFortuneChecked, openRandomFortune, lastCheckedFortune, updateOpenFortune])
+
+  if (isFortunesFeatureDisabled) return null
 
   return (
     <>
@@ -260,8 +287,8 @@ export function FortuneWidget() {
               <>Come back tomorrow for your daily fortune</>
             )}
           </FortuneTitle>
-          <FortuneContent isNewFortuneOpen={isNewFortuneOpen}>
-            <FortuneText>{openFortune.text}</FortuneText>
+          <FortuneContent>
+            <FortuneText isNewFortuneOpen={isNewFortuneOpen}>{openFortune.text}</FortuneText>
             <FortuneBannerActions>
               <ExternalLink href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
                 <SuccessBanner type={'Twitter'}>
@@ -271,6 +298,12 @@ export function FortuneWidget() {
                   <SVG src={twitterImage} description="Twitter" />
                 </SuccessBanner>
               </ExternalLink>
+              <DontShowAgainBox>
+                <label>
+                  <input type="checkbox" ref={checkboxRef} />
+                  <span>Don't show it again</span>
+                </label>
+              </DontShowAgainBox>
             </FortuneBannerActions>
           </FortuneContent>
         </FortuneBanner>
