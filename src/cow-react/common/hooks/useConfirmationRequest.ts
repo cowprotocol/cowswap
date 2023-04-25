@@ -1,6 +1,6 @@
 import { atomWithReset, useResetAtom } from 'jotai/utils'
 import { ConfirmationModalProps } from '../pure/ConfirmationModal/ConfirmationModal'
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { ApplicationModal } from '@src/state/application/reducer'
 import { useCloseModal, useOpenModal } from '@src/custom/state/application/hooks'
 import { atom, useSetAtom } from 'jotai'
@@ -8,11 +8,12 @@ import { t } from '@lingui/macro'
 
 type TriggerConfirmationParams = Pick<
   ConfirmationModalProps,
-  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord'
+  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action'
 >
 
 interface ConfirmationModalContext {
   onDismiss: () => void
+  activePromise?: Promise<boolean>
   title: string
   callToAction: string
   description?: string
@@ -54,31 +55,32 @@ export function useConfirmationRequest({
   const setContext = useSetAtom(updateConfirmationModalContextAtom)
   const resetContext = useResetAtom(confirmationModalContextAtom)
   const triggerConfirmation = useCallback(
-    (params: TriggerConfirmationParams) => {
-      setContext(params)
-      openModal()
+    (params: TriggerConfirmationParams): Promise<boolean> => {
+      return new Promise((resolve) => {
+        const onDismiss = () => {
+          closeModal()
+          onDismissParam()
+          resetContext()
+          resolve(false)
+        }
+
+        const onEnable = () => {
+          closeModal()
+          onEnableParam()
+          resetContext()
+          resolve(true)
+        }
+
+        setContext({
+          ...params,
+          onDismiss,
+          onEnable,
+        })
+        openModal()
+      })
     },
-    [setContext, openModal]
+    [setContext, openModal, closeModal, onDismissParam, resetContext, onEnableParam]
   )
-
-  useEffect(() => {
-    const onDismiss = () => {
-      closeModal()
-      onDismissParam()
-      resetContext()
-    }
-
-    const onEnable = () => {
-      closeModal()
-      onEnableParam()
-      resetContext()
-    }
-
-    setContext({
-      onDismiss,
-      onEnable,
-    })
-  }, [openModal, closeModal, onDismissParam, onEnableParam, resetContext, setContext])
 
   return triggerConfirmation
 }

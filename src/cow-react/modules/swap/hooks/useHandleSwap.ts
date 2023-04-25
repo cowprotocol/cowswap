@@ -6,10 +6,12 @@ import { useCallback } from 'react'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { ethFlow } from '@cow/modules/swap/services/ethFlow'
+import { useConfirmPriceImpactWithoutFee } from '@cow/common/hooks/useConfirmPriceImpactWithoutFee'
 
 export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<void> {
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
+  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const { onChangeRecipient } = useSwapActionHandlers()
 
   return useCallback(async () => {
@@ -17,12 +19,12 @@ export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<voi
 
     if (swapFlowContext) {
       logTradeFlow('SWAP FLOW', 'Start swap flow')
-      await swapFlow(swapFlowContext, priceImpactParams)
+      await swapFlow(swapFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
     } else if (ethFlowContext) {
       logTradeFlow('ETH FLOW', 'Start eth flow')
-      await ethFlow(ethFlowContext, priceImpactParams)
+      await ethFlow(ethFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
     }
 
     onChangeRecipient(null)
-  }, [swapFlowContext, ethFlowContext, priceImpactParams, onChangeRecipient])
+  }, [swapFlowContext, ethFlowContext, onChangeRecipient, priceImpactParams, confirmPriceImpactWithoutFee])
 }

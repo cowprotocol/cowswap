@@ -165,6 +165,7 @@ ListRowProps & { listUrl: string }) {
       confirmWord: t`remove`,
       callToAction: t`Remove list`,
       warning: t`Are you sure? You will need to add this list by its url, if you would like to restore it later on.`,
+      action: t`remove list`,
     })
     // }, [dispatch, listUrl])
   }, [listUrl, list, removeListAnalyticsWithConfirm])
