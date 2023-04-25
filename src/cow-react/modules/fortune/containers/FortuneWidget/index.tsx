@@ -204,6 +204,11 @@ const FortuneContent = styled.div`
   max-width: 500px;
 `
 
+const StyledExternalLink = styled(ExternalLink)`
+  background: ${({ theme }) => theme.grey1};
+  border-radius: 24px;
+`
+
 const StyledCloseIcon = styled(X)`
   --size: 56px;
   position: absolute;
@@ -290,18 +295,19 @@ export function FortuneWidget() {
           <FortuneContent>
             <FortuneText isNewFortuneOpen={isNewFortuneOpen}>{openFortune.text}</FortuneText>
             <FortuneBannerActions>
-              <ExternalLink href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
+              <StyledExternalLink href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
                 <SuccessBanner type={'Twitter'}>
                   <span>
                     <Trans>Share on Twitter</Trans>
                   </span>
                   <SVG src={twitterImage} description="Twitter" />
                 </SuccessBanner>
-              </ExternalLink>
+              </StyledExternalLink>
               <DontShowAgainBox>
                 <label>
+                  {/*// TODO: tooltip with explanation*/}
                   <input type="checkbox" ref={checkboxRef} />
-                  <span>Don't show it again</span>
+                  <span>Don't show this again</span>
                 </label>
               </DontShowAgainBox>
             </FortuneBannerActions>
