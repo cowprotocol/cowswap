@@ -174,7 +174,7 @@ const FortuneText = styled.h3`
   }
 `
 
-const FortuneContent = styled.div`
+const FortuneContent = styled.div<{ isNewFortuneOpen: boolean }>`
   display: flex;
   flex-flow: column wrap;
   margin: 0 auto;
@@ -182,6 +182,7 @@ const FortuneContent = styled.div`
   align-items: center;
   width: 100%;
   max-width: 500px;
+  opacity: ${({ isNewFortuneOpen }) => (isNewFortuneOpen ? 1 : 0.5)};
 `
 
 const StyledCloseIcon = styled(X)`
@@ -251,9 +252,15 @@ export function FortuneWidget() {
         <FortuneBanner>
           <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
           <FortuneTitle>
-            CoW Fortune <i>of the day</i>
+            {isNewFortuneOpen ? (
+              <>
+                CoW Fortune <i>of the day</i>
+              </>
+            ) : (
+              <>Come back tomorrow for your daily fortune</>
+            )}
           </FortuneTitle>
-          <FortuneContent>
+          <FortuneContent isNewFortuneOpen={isNewFortuneOpen}>
             <FortuneText>{openFortune.text}</FortuneText>
             <FortuneBannerActions>
               <ExternalLink href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
