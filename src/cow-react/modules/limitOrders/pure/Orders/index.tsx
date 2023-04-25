@@ -145,6 +145,7 @@ export function Orders({
   isWalletConnected,
   selectedOrders,
   isOpenOrdersTab,
+  allowsOffchainSigning,
   balancesAndAllowances,
   orderActions,
   currentPageNumber,
@@ -200,6 +201,7 @@ export function Orders({
     return (
       <OrdersTable
         isOpenOrdersTab={isOpenOrdersTab}
+        allowsOffchainSigning={allowsOffchainSigning}
         selectedOrders={selectedOrders}
         pendingOrdersPrices={pendingOrdersPrices}
         currentPageNumber={currentPageNumber}
