@@ -3,20 +3,13 @@ import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro'
-import { initialState } from 'state/application/initialState' // mod
+import { initialState } from 'state/application/initialState'
 
-type BasePopupContent =
-  //   | {
-  //       txn: {
-  //         hash: string
-  //       }
-  //     }
-  //   | {
-  {
-    failedSwitchNetwork: SupportedChainId
-    // mod: unsupported network
-    unsupportedNetwork?: boolean
-  }
+type BasePopupContent = {
+  failedSwitchNetwork: SupportedChainId
+  // mod: unsupported network
+  unsupportedNetwork?: boolean
+}
 
 // MOD: Modified PopupContent. The mod happened directly in the src file, to avoid redefining the state/hoos/etc
 export type PopupContent = (TxPopupContent | MetaTxPopupContent | BasePopupContent | WarningPopupContent) & {
@@ -73,12 +66,6 @@ export interface ApplicationState {
   readonly openModal: ApplicationModal | null
   readonly popupList: PopupList
 }
-
-/* const initialState: ApplicationState = {
-  chainId: null,
-  openModal: null,
-  popupList: [],
-} */
 
 const applicationSlice = createSlice({
   name: 'application',

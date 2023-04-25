@@ -12,20 +12,11 @@ import {
   ONE_HUNDRED_PERCENT,
   ZERO_PERCENT,
 } from '../constants/misc'
+import TradeGp from 'state/swap/TradeGp'
+import { Field } from 'state/swap/actions'
 
 const THIRTY_BIPS_FEE = new Percent(JSBI.BigInt(30), JSBI.BigInt(10000))
 const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(THIRTY_BIPS_FEE)
-
-export function computeRealizedPriceImpact(trade: Trade<Currency, Currency, TradeType>): Percent {
-  const realizedLpFeePercent = computeRealizedLPFeePercent(trade)
-  return trade.priceImpact.subtract(realizedLpFeePercent)
-}
-
-export function getPriceImpactWarning(priceImpact?: Percent): 'warning' | 'error' | undefined {
-  if (priceImpact?.greaterThan(ALLOWED_PRICE_IMPACT_HIGH)) return 'error'
-  if (priceImpact?.greaterThan(ALLOWED_PRICE_IMPACT_MEDIUM)) return 'warning'
-  return
-}
 
 // computes realized lp fee as a percent
 export function computeRealizedLPFeePercent(trade: Trade<Currency, Currency, TradeType>): Percent {
@@ -97,4 +88,16 @@ export function warningSeverity(priceImpact: Percent | undefined): WarningSeveri
     impact--
   }
   return 0
+}
+
+// computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips
+export function computeSlippageAdjustedAmounts(
+  //   trade: Trade | undefined,
+  trade: TradeGp | undefined,
+  allowedSlippage: Percent
+): { [field in Field]?: CurrencyAmount<Currency> } {
+  return {
+    [Field.INPUT]: trade?.maximumAmountIn(allowedSlippage),
+    [Field.OUTPUT]: trade?.minimumAmountOut(allowedSlippage),
+  }
 }

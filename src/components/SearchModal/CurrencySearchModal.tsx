@@ -4,7 +4,7 @@ import usePrevious from 'hooks/usePrevious'
 import { useCallback, useEffect, useState } from 'react'
 
 import useLast from '../../hooks/useLast'
-import { WrappedTokenInfo } from '../../state/lists/wrappedTokenInfo'
+import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 // import Modal from '../Modal'
 import { GpModal as Modal } from '@cow/common/pure/Modal'
 import { CurrencySearch } from 'components/SearchModal/CurrencySearch'

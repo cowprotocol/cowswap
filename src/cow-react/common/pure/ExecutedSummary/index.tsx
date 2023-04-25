@@ -1,8 +1,8 @@
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
-import { Order } from '@src/custom/state/orders/actions'
-import { useCoingeckoUsdValue } from '@src/custom/hooks/useStablecoinPrice'
+import { Order } from 'state/orders/actions'
+import { useCoingeckoUsdValue } from 'hooks/useStablecoinPrice'
 import * as styledEl from './styled'
-import { MIN_FIAT_SURPLUS_VALUE } from '@src/custom/constants'
+import { MIN_FIAT_SURPLUS_VALUE } from 'constants/index'
 
 export function ExecutedSummary({ order }: { order: Order }) {
   const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)

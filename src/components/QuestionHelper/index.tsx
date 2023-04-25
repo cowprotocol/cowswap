@@ -1,46 +1,28 @@
-import { ReactNode, useCallback, useState } from 'react'
 import styled from 'styled-components/macro'
-import Tooltip from '../Tooltip'
+import SVG from 'react-inlinesvg'
+import QuestionImage from 'assets/svg/question.svg'
+import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 
-const QuestionWrapper = styled.div`
+const QuestionMark = () => <SVG src={QuestionImage} />
+
+export const QuestionWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0px;
-  width: 18px;
-  height: 18px;
+  padding: 0;
+  width: 16px;
+  height: 16px;
   border: none;
-  background: none;
   outline: none;
   cursor: default;
-  border-radius: 36px;
-  font-size: 12px;
-  background-color: ${({ theme }) => theme.bg2};
-  color: ${({ theme }) => theme.text2};
+  border-radius: 16px;
+  background-color: transparent;
 
-  :hover,
-  :focus {
-    opacity: 0.7;
+  > svg > path {
+    stroke: ${({ theme }) => theme.text1};
   }
 `
 
-const QuestionMark = styled.span`
-  font-size: 14px;
-`
-
-export default function QuestionHelper({ text }: { text: ReactNode; size?: number }) {
-  const [show, setShow] = useState<boolean>(false)
-
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
-
-  return (
-    <span style={{ marginLeft: 4, display: 'flex', alignItems: 'center' }}>
-      <Tooltip text={text} show={show}>
-        <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
-          <QuestionMark>?</QuestionMark>
-        </QuestionWrapper>
-      </Tooltip>
-    </span>
-  )
+export default function QuestionHelper(props: Omit<QuestionHelperProps, 'QuestionMark'>) {
+  return <QuestionHelperMod {...props} QuestionMark={QuestionMark} />
 }

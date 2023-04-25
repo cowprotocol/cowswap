@@ -1,4 +1,4 @@
-import { ButtonPrimary } from 'custom/components/Button'
+import { ButtonPrimary } from 'components/Button'
 import { Page, Content } from '@cow/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 
