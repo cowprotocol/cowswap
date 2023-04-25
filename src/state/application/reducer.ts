@@ -63,6 +63,7 @@ export enum ApplicationModal {
   COW_SUBSIDY,
   CANCELLATION,
   CONFIRMATION,
+  MULTIPLE_CANCELLATION,
   // ------------------------------------------------------------------------------
 }
 

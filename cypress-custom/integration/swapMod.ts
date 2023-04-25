@@ -75,30 +75,29 @@ describe('Swap (mod)', () => {
     cy.get('#add-recipient-button').should('not.exist')
   })
 
-  // TODO: fix tests according to the recipient control changes
-  // describe('expert mode', () => {
-  //   beforeEach(() => {
-  //     cy.window().then((win) => {
-  //       cy.stub(win, 'prompt').returns('confirm')
-  //     })
-  //     cy.get('#open-settings-dialog-button').click()
-  //     cy.get('#toggle-expert-mode-button').click()
-  //     cy.get('#confirm-expert-mode').click()
-  //   })
-  //
-  //   it('add a recipient is visible', () => {
-  //     cy.get('#add-recipient-button').should('be.visible')
-  //   })
-  //
-  //   it('add a recipient', () => {
-  //     cy.get('#add-recipient-button').click()
-  //     cy.get('#recipient').should('exist')
-  //   })
-  //
-  //   it('remove recipient', () => {
-  //     cy.get('#add-recipient-button').click()
-  //     cy.get('#remove-recipient-button').click()
-  //     cy.get('#recipient').should('not.exist')
-  //   })
-  // })
+  describe('expert mode', () => {
+    beforeEach(() => {
+      cy.window().then((win) => {
+        cy.stub(win, 'prompt').returns('confirm')
+      })
+      cy.get('#open-settings-dialog-button').click()
+      cy.get('#toggle-expert-mode-button').click()
+      cy.get('#confirm-expert-mode').click()
+    })
+
+    it('Expert mode is ON', () => {
+      cy.get(`[aria-label="Expert Mode Turned On"]`).should('be.visible')
+    })
+  })
+
+  describe('recipient', () => {
+    beforeEach(() => {
+      cy.get('#open-settings-dialog-button').click()
+      cy.get('#toggle-recipient-mode-button').click()
+    })
+
+    it.only('Recipient is visible', () => {
+      cy.get('#recipient').should('exist')
+    })
+  })
 })

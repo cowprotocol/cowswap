@@ -6,14 +6,18 @@ import { cancellationModalContextAtom } from '@cow/common/hooks/useCancelOrder/s
 import { useAtomValue } from 'state/application/atoms'
 import { ConfirmationModal } from '@cow/common/containers/ConfirmationModal'
 import { confirmationModalContextAtom } from '@cow/common/hooks/useConfirmationRequest'
+import { MultipleOrdersCancellationModal } from '@cow/common/containers/MultipleOrdersCancellationModal'
 
 export default function TopLevelModals() {
   const cancelModalOpen = useModalIsOpen(ApplicationModal.CANCELLATION)
-  const cancelModalToggle = useToggleModal(ApplicationModal.CANCELLATION)
-  const { onDismiss: onDismissCancellationModal } = useAtomValue(cancellationModalContextAtom)
-
   const confirmationModalOpen = useModalIsOpen(ApplicationModal.CONFIRMATION)
+  const multipleCancelModalOpen = useModalIsOpen(ApplicationModal.MULTIPLE_CANCELLATION)
+
+  const cancelModalToggle = useToggleModal(ApplicationModal.CANCELLATION)
   const confirmationModalToggle = useToggleModal(ApplicationModal.CONFIRMATION)
+  const multipleCancelModalToggle = useToggleModal(ApplicationModal.MULTIPLE_CANCELLATION)
+
+  const { onDismiss: onDismissCancellationModal } = useAtomValue(cancellationModalContextAtom)
   const { onDismiss: onDismissConfirmationModal } = useAtomValue(confirmationModalContextAtom)
 
   return (
@@ -23,6 +27,7 @@ export default function TopLevelModals() {
         onDismiss={onDismissConfirmationModal || confirmationModalToggle}
       />
       <CancellationModal isOpen={cancelModalOpen} onDismiss={onDismissCancellationModal || cancelModalToggle} />
+      <MultipleOrdersCancellationModal isOpen={multipleCancelModalOpen} onDismiss={multipleCancelModalToggle} />
     </>
   )
 }

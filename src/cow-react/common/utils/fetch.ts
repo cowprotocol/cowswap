@@ -7,11 +7,36 @@ interface FetchWithRateLimit {
   backoff?: BackoffOptions // basic exponential back-off by default
 }
 
+const REQUEST_TIMEOUT = 408
+const TOO_EARLY = 425
+const TOO_MANY_REQUESTS = 429
+const INTERNAL_SERVER_ERROR = 500
+const BAD_GATEWAY = 502
+const SERVICE_UNAVAILABLE = 503
+const GATEWAY_TIMEOUT = 504
+
+const STATUS_CODES_TO_RETRY = [
+  REQUEST_TIMEOUT,
+  TOO_EARLY,
+  TOO_MANY_REQUESTS,
+  INTERNAL_SERVER_ERROR,
+  BAD_GATEWAY,
+  SERVICE_UNAVAILABLE,
+  GATEWAY_TIMEOUT,
+]
+
 // See config in https://www.npmjs.com/package/@insertish/exponential-backoff
 const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
   numOfAttempts: 10,
   maxDelay: Infinity,
   jitter: 'none',
+  retry: (err) => {
+    if (err?.rawApiError?.status) {
+      return STATUS_CODES_TO_RETRY.includes(err.rawApiError.status)
+    }
+
+    return true
+  },
 }
 
 /**
