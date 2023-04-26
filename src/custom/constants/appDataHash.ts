@@ -2,7 +2,16 @@ import { environmentName } from 'utils/environments'
 
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
+let appDataHash: string | undefined = undefined
+
+export function updateAppDataHash(_appDataHash: string | undefined) {
+  appDataHash = _appDataHash
+}
+
 export function getAppDataHash(): string {
+  if (appDataHash) {
+    return appDataHash
+  }
   switch (environmentName) {
     case 'production':
       return process.env.REACT_APP_DATA_HASH_PRODUCTION || DEFAULT_APP_DATA
