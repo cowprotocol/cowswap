@@ -29,6 +29,8 @@ import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import checkImage from 'assets/cow-swap/check.svg'
 import alertImage from 'assets/cow-swap/alert-circle.svg'
 import { getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
+import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 import SVG from 'react-inlinesvg'
 import {
   StyledIcon,
@@ -186,14 +188,14 @@ export function ConfirmationPendingContent({
       return WalletType.EOA
     }
   }, [gnosisSafeInfo, isSmartContractWallet])
-
+  const connectionType = getWeb3ReactConnection(connector)
   const walletNameLabel = getWalletNameLabel(walletType)
   const operationMessage = getOperationMessage(operationType, chainId)
   const operationLabel = getOperationLabel(operationType)
   const operationSubmittedMessage = getSubmittedMessage(operationLabel, operationType)
   const isMetaMask = getIsMetaMask()
   const isNotMobile = useMediaQuery(MediumAndUp)
-  const isApproveMetaMaskDesktop = operationType === OperationType.APPROVE_TOKEN && isMetaMask && isNotMobile
+  const isApproveMetaMaskDesktop = operationType === OperationType.APPROVE_TOKEN && isMetaMask && isNotMobile && connectionType !== walletConnectConnection
 
   // Define Compare Items
   const compareCapLabel = 'spending cap'
