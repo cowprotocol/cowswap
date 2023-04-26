@@ -6,6 +6,7 @@ import { swapFlow } from '@cow/modules/swap/services/swapFlow'
 import { ethFlow } from '@cow/modules/swap/services/ethFlow'
 import { useSwapFlowContext } from './useSwapFlowContext'
 import { useEthFlowContext } from './useEthFlowContext'
+import { withModalProvider } from '@cow/utils/withModalProvider'
 
 jest.mock('./useSwapFlowContext')
 jest.mock('./useEthFlowContext')
@@ -39,7 +40,7 @@ describe('useHandleSwapCallback', () => {
   })
 
   it('When a swap happened, then the recipient value should be deleted', async () => {
-    const { result } = renderHook(() => useHandleSwap(priceImpactMock))
+    const { result } = renderHook(() => useHandleSwap(priceImpactMock), { wrapper: withModalProvider })
 
     await result.current()
 

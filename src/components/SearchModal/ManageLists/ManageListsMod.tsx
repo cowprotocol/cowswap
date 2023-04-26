@@ -28,6 +28,7 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
 import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'components/analytics'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useConfirmationRequest } from '@cow/common/hooks/useConfirmationRequest'
 
 const Wrapper = styled(Column)`
   width: 100%;
@@ -114,6 +115,13 @@ const ListRow = memo(function ListRow({
   const node = useRef<HTMLDivElement>()
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement>()
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
+  const removeListAnalyticsOnConfirm = useCallback(() => {
+    removeListAnalytics('Confirm', listUrl)
+    dispatch(removeList(listUrl))
+  }, [listUrl, dispatch, removeList])
+  const removeListAnalyticsWithConfirm = useConfirmationRequest({
+    onEnable: removeListAnalyticsOnConfirm,
+  })
 
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'auto',
@@ -131,13 +139,16 @@ const ListRow = memo(function ListRow({
 
   const handleRemoveList = useCallback(() => {
     removeListAnalytics('Start', listUrl)
-
-    if (window.prompt(t`Please confirm you would like to remove this list by typing REMOVE`) === `REMOVE`) {
-      removeListAnalytics('Confirm', listUrl)
-      dispatch(removeList(listUrl))
-    }
-  }, [dispatch, listUrl, removeList])
-
+    removeListAnalyticsWithConfirm({
+      title: t`Remove this list?`,
+      description: t`This action will remove from your lists: ${list?.name ?? 'unknown'}`,
+      confirmWord: t`remove`,
+      callToAction: t`Remove list`,
+      warning: t`Are you sure? You will need to add this list by its url, if you would like to restore it later on.`,
+      action: t`remove list`,
+    })
+    // }, [dispatch, listUrl])
+  }, [listUrl, list, removeListAnalyticsWithConfirm])
   const handleEnableList = useCallback(() => {
     toggleListAnalytics(true, listUrl)
     dispatch(enableList(listUrl))

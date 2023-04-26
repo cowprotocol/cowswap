@@ -55,6 +55,7 @@ export enum ApplicationModal {
   TRANSACTION_ERROR,
   COW_SUBSIDY,
   CANCELLATION,
+  CONFIRMATION,
   MULTIPLE_CANCELLATION,
   // ------------------------------------------------------------------------------
 }

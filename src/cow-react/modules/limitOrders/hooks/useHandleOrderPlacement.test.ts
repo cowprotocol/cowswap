@@ -5,6 +5,7 @@ import { tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/t
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '../state/limitOrdersAtom'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { withModalProvider } from '@cow/utils/withModalProvider'
 
 jest.mock('@cow/modules/limitOrders/services/tradeFlow')
 
@@ -25,24 +26,32 @@ describe('useHandleOrderPlacement', () => {
 
   it('When a limit order placed, then the recipient value should be deleted', async () => {
     // Arrange
-    renderHook(() => {
-      const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+    renderHook(
+      () => {
+        const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
-      updateLimitOrdersState({ recipient })
-    })
+        updateLimitOrdersState({ recipient })
+      },
+      { wrapper: withModalProvider }
+    )
 
     // Assert
-    const { result: limitOrdersStateResultBefore } = renderHook(() => useAtomValue(limitOrdersAtom))
+    const { result: limitOrdersStateResultBefore } = renderHook(() => useAtomValue(limitOrdersAtom), {
+      wrapper: withModalProvider,
+    })
     expect(limitOrdersStateResultBefore.current.recipient).toBe(recipient)
 
     // Act
-    const { result } = renderHook(() =>
-      useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, {})
+    const { result } = renderHook(
+      () => useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, {}),
+      { wrapper: withModalProvider }
     )
     await result.current()
 
     // Assert
-    const { result: limitOrdersStateResultAfter } = renderHook(() => useAtomValue(limitOrdersAtom))
+    const { result: limitOrdersStateResultAfter } = renderHook(() => useAtomValue(limitOrdersAtom), {
+      wrapper: withModalProvider,
+    })
     expect(limitOrdersStateResultAfter.current.recipient).toBe(null)
   })
 })
