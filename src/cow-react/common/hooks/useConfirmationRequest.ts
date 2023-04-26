@@ -1,8 +1,8 @@
 import { atomWithReset, useResetAtom } from 'jotai/utils'
 import { ConfirmationModalProps } from '../pure/ConfirmationModal/ConfirmationModal'
 import { useCallback } from 'react'
-import { ApplicationModal } from '@src/state/application/reducer'
-import { useCloseModal, useOpenModal } from '@src/custom/state/application/hooks'
+import { ApplicationModal } from 'state/application/reducer'
+import { useCloseModal, useOpenModal } from 'state/application/hooks'
 import { atom, useSetAtom } from 'jotai'
 import { t } from '@lingui/macro'
 
