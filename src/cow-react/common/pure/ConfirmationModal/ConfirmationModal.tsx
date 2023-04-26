@@ -30,6 +30,7 @@ export interface ConfirmationModalProps {
   onEnable: () => void
   confirmWord: string
   action: string
+  skipInput?: boolean
 }
 
 export function ConfirmationModal({
@@ -42,6 +43,7 @@ export function ConfirmationModal({
   onEnable,
   action,
   confirmWord,
+  skipInput = false,
 }: ConfirmationModalProps) {
   const shouldShowDescription = !!description
   const shouldShowWarning = !!warning
@@ -64,7 +66,7 @@ export function ConfirmationModal({
             </Warning>
           </Description>
         )}
-        <ConfirmedButton action={action} confirmWord={confirmWord} onConfirm={onEnable}>
+        <ConfirmedButton skipInput={skipInput} action={action} confirmWord={confirmWord} onConfirm={onEnable}>
           <Trans>{callToAction}</Trans>
         </ConfirmedButton>
       </ModalContentWrapper>

@@ -8,7 +8,7 @@ import { t } from '@lingui/macro'
 
 type TriggerConfirmationParams = Pick<
   ConfirmationModalProps,
-  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action'
+  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action' | 'skipInput'
 >
 
 interface ConfirmationModalContext {
@@ -21,7 +21,14 @@ interface ConfirmationModalContext {
   confirmWord: string
   action: string
   onEnable: () => void
-  triggerConfirmation: ({ title, description, callToAction, warning }: TriggerConfirmationParams) => Promise<void>
+  skipInput?: boolean
+  triggerConfirmation: ({
+    title,
+    description,
+    callToAction,
+    warning,
+    skipInput,
+  }: TriggerConfirmationParams) => Promise<void>
 }
 
 const DEFAULT_CONFIRMATION_MODAL_CONTEXT: ConfirmationModalContext = {
@@ -31,6 +38,7 @@ const DEFAULT_CONFIRMATION_MODAL_CONTEXT: ConfirmationModalContext = {
   callToAction: 'Confirm',
   confirmWord: t`confirm`,
   action: 'confirm',
+  skipInput: false,
   triggerConfirmation: async () => {},
 }
 

@@ -15,6 +15,13 @@ function getDescription(priceImpactWithoutFee: Percent) {
   return undefined
 }
 
+function shouldSkipInput(priceImpactWithoutFee: Percent) {
+  return (
+    priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN) &&
+    !priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH)
+  )
+}
+
 export function useConfirmPriceImpactWithoutFee() {
   const [isConfirmed, setIsConfirmed] = useState(false)
   const triggerConfirmation = useConfirmationRequest({ onEnable: () => setIsConfirmed(true) })
@@ -33,6 +40,7 @@ export function useConfirmPriceImpactWithoutFee() {
             action: 'continue with this swap',
             callToAction: 'Confirm Swap',
             description: getDescription(priceImpactWithoutFee),
+            skipInput: shouldSkipInput(priceImpactWithoutFee),
           })
           setIsConfirmed(result)
           return result
