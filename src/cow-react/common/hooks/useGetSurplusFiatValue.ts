@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { Order } from 'state/orders/actions'
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
-import { useCoingeckoUsdValue } from '@src/custom/hooks/useStablecoinPrice'
+import { useCoingeckoUsdValue } from '@src/hooks/useStablecoinPrice'
 import { MIN_FIAT_SURPLUS_VALUE } from 'constants/index'
 
 type Output = {
