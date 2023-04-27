@@ -13,7 +13,7 @@ export function getConnectionName(connectionType: ConnectionType, isMetaMask?: b
     case ConnectionType.NETWORK:
       return 'Network'
     case ConnectionType.GNOSIS_SAFE:
-      return 'Gnosis Safe'
+      return 'Safe'
     case ConnectionType.ZENGO:
       return 'Zengo'
     case ConnectionType.AMBIRE:
