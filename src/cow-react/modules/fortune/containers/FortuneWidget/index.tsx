@@ -19,6 +19,7 @@ import { X } from 'react-feather'
 import { transparentize } from 'polished'
 import Confetti from 'components/Confetti'
 import useInterval from '@src/lib/hooks/useInterval'
+import { sendEvent } from 'components/analytics'
 
 const FortuneButton = styled.div`
   --size: 75px;
@@ -287,6 +288,10 @@ export function FortuneWidget() {
   const onTweetShare = useCallback(() => {
     setIsFortunesFeatureDisabled(true)
     setIsFortunedShared(true)
+    sendEvent({
+      category: 'CoWFortune',
+      action: 'Share on Twitter',
+    })
   }, [setIsFortunesFeatureDisabled])
 
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
