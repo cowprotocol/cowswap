@@ -1,11 +1,11 @@
 import React from 'react'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
-import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
-import * as styledEl from '@cow/modules/swap/containers/NewSwapWidget/styled'
+import { SwapFormProps } from '@cow/modules/swap/containers/SwapWidget/types'
+import * as styledEl from '@cow/modules/swap/containers/SwapWidget/styled'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
-import { swapPagePropsChecker } from '@cow/modules/swap/containers/NewSwapWidget/propsChecker'
+import { swapPagePropsChecker } from '@cow/modules/swap/containers/SwapWidget/propsChecker'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 

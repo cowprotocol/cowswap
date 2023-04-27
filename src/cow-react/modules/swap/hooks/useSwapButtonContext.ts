@@ -22,7 +22,7 @@ import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeTok
 import { useEthFlowContext } from '@cow/modules/swap/hooks/useEthFlowContext'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
-import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
+import { useIsTradeUnsupported } from 'state/lists/hooks'
 import { useHandleSwap } from '@cow/modules/swap/hooks/useHandleSwap'
 
 export interface SwapButtonInput {

@@ -10,7 +10,7 @@ import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'cons
 import { Loading } from 'components/FlashingLoading'
 
 import Account, { AccountOverview } from '@cow/pages/Account'
-import { NewSwapPage } from '@cow/pages/NewSwap'
+import { SwapPage } from '@cow/pages/Swap'
 import { ReactNode } from 'react'
 
 // Async routes
@@ -80,7 +80,7 @@ export function RoutesApp() {
         <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 
         {/*Swap*/}
-        <Route path={RoutesEnum.SWAP} element={<NewSwapPage />} />
+        <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}

@@ -1,7 +1,7 @@
 import { RouteHandlerCallbackOptions, RouteMatchCallbackOptions } from 'workbox-core'
 import { getCacheKeyForURL as getCacheKeyForURLMock, matchPrecache as matchPrecacheMock } from 'workbox-precaching'
 
-import { CachedDocument, handleDocument, matchDocument } from 'serviceWorker/document'
+import { CachedDocument, handleDocument, matchDocument } from './document'
 
 jest.mock('workbox-navigation-preload', () => ({ enable: jest.fn() }))
 jest.mock('workbox-precaching', () => ({

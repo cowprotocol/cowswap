@@ -3,7 +3,7 @@ import { LONG_LOAD_THRESHOLD } from 'constants/index'
 import { Text } from 'rebass'
 import { ThemedText } from 'theme'
 import styled from 'styled-components/macro'
-import { Dots } from '@src/components/swap/styleds'
+import { Dots } from 'components/swap/styleds'
 
 const fadeIn = `
   @keyframes fadeIn {

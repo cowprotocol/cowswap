@@ -6,12 +6,9 @@ import { Content, Title } from '@cow/modules/application/pure/Page'
 import { Routes as RoutesEnum } from '@cow/constants/routes'
 import { Loading } from 'components/FlashingLoading'
 import { Container, CardsWrapper } from './styled'
-import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
-import { useWalletInfo } from '@cow/modules/wallet'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ '@cow/pages/Account/Balances'))
@@ -35,14 +32,10 @@ function _getPropsFromRoute(route: string) {
 
 // Note: As we build these single pages, we will remove this component in the future
 export const AccountOverview = () => {
-  const { chainId } = useWalletInfo()
-
   return (
     <Trace page={PageName.ACCOUNT_OVERVIEW_PAGE} shouldLogImpression>
       <Container>
         <PageTitle title="Account Overview" />
-        {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
-
         <CardsWrapper>
           <Balances />
           <Governance />

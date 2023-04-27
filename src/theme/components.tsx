@@ -1,4 +1,4 @@
-import { outboundLink } from 'components/analytics'
+import { externalLinkAnalytics, outboundLink } from 'components/analytics'
 import React, { HTMLProps } from 'react'
 import { ArrowLeft, ExternalLink as LinkIconFeather, Trash, X } from 'react-feather'
 import { Link } from 'react-router-dom'
@@ -212,6 +212,7 @@ export function ExternalLink({
       onClick={(event) => {
         if (onClickOptional) onClickOptional(event)
         handleClickExternalLink(event)
+        externalLinkAnalytics(href)
       }}
       {...rest}
     />

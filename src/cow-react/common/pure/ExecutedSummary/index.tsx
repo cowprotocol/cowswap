@@ -1,5 +1,5 @@
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
-import { Order } from '@src/custom/state/orders/actions'
+import { Order } from 'state/orders/actions'
 import { useGetSurplusData } from '@cow/common/hooks/useGetSurplusFiatValue'
 import * as styledEl from './styled'
 

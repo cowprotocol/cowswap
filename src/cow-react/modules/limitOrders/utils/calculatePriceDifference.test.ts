@@ -1,10 +1,10 @@
 import { Currency, Price } from '@uniswap/sdk-core'
 import { DAI_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'
 import { calculatePriceDifference, CalculatePriceDifferenceParams } from './calculatePriceDifference'
-import tryParseCurrencyAmount from '../../../../custom/lib/utils/tryParseCurrencyAmount'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { buildPriceFromCurrencyAmounts } from './buildPriceFromCurrencyAmounts'
 import { FractionUtils } from '../../../utils/fractionUtils'
-import { ZERO_FRACTION } from '../../../../custom/constants'
+import { ZERO_FRACTION } from '../../../../constants'
 
 function buildPrice(daiAmount: string, usdcAmount: string): Price<Currency, Currency> {
   const quoteAmount = tryParseCurrencyAmount(daiAmount, DAI_GOERLI)
