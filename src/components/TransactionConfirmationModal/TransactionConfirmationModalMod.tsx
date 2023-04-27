@@ -13,19 +13,18 @@ import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import { RowBetween, RowFixed } from 'components/Row'
-import AnimatedConfirmation from './AnimatedConfirmation'
+import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
 
 import { GpModal } from '@cow/common/pure/Modal'
 import {
-  ConfirmationPendingContent,
   ConfirmationModalContentProps,
-  TransactionSubmittedContent,
-  GPModalHeader,
-  CloseIconWrapper,
+  ConfirmationPendingContent,
   OperationType,
-} from './index'
+  TransactionSubmittedContent,
+} from '.'
+import { CloseIconWrapper, GPModalHeader } from './styled'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
+import { handleFollowPendingTxPopupAtom, useUpdateAtom } from 'state/application/atoms'
 import { useIsTransactionConfirmed, useTransaction } from 'state/enhancedTransactions/hooks'
 import { getEtherscanLink as getExplorerLink } from 'utils'
 import { useWalletInfo } from '@cow/modules/wallet'
@@ -84,7 +83,7 @@ export function ConfirmationModalContent({
           <Text fontWeight={600} fontSize={titleSize || 16} style={styles}>
             {title}
           </Text>
-          <CloseIconWrapper onClick={onDismiss} />
+          <CloseIconWrapper onClick={() => onDismiss} />
         </GPModalHeader>
         {topContent()}
       </Section>
