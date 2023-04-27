@@ -21,7 +21,7 @@ import Confetti from 'components/Confetti'
 import useInterval from '@src/lib/hooks/useInterval'
 import { sendEvent } from 'components/analytics'
 
-const FortuneButton = styled.div`
+const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 75px;
   display: inline-block;
   position: fixed;
@@ -32,7 +32,8 @@ const FortuneButton = styled.div`
   height: var(--size);
   border-radius: var(--size);
   text-align: center;
-  animation: floating 3.5s ease-in-out forwards infinite;
+  animation: ${({ isDailyFortuneChecked }) =>
+    isDailyFortuneChecked ? '' : 'floating 3.5s ease-in-out forwards infinite'};
   cursor: pointer;
   transform: scale(1);
   font-size: 40px;
@@ -337,7 +338,7 @@ export function FortuneWidget() {
           </FortuneContent>
         </FortuneBanner>
       )}
-      <FortuneButton onClick={openFortuneModal}>{isDailyFortuneChecked ? '' : '*'}</FortuneButton>
+      <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}></FortuneButton>
       <Confetti start={isNewFortuneOpen} />
     </>
   )
