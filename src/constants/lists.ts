@@ -9,7 +9,6 @@ const COW_DAO_LIST = 'https://files.cow.fi/tokens/CowSwap.json'
 const COW_COINGECKO_LIST = 'https://files.cow.fi/tokens/CoinGecko.json'
 
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
-const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
 const AAVE_LIST = 'tokenlist.aave.eth'
 const SYNTHETIX_LIST = 'synths.snx.eth'
 const WRAPPED_LIST = 'wrapped.tokensoft.eth'
@@ -50,7 +49,6 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       COMPOUND_LIST,
       AAVE_LIST,
       SYNTHETIX_LIST,
-      UMA_LIST,
       WRAPPED_LIST,
       SET_LIST,
       OPYN_LIST,
