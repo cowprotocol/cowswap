@@ -517,3 +517,18 @@ export const HeaderRow = styled(RowFixed)`
    width: 100%;
   `};
 `
+
+export const AnniversaryHat = styled.div`
+  position: absolute;
+  top: -12px;
+  left: 17px;
+  width: 13px;
+  height: 20px;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: block;
+  }
+`

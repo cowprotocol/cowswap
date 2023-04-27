@@ -19,6 +19,7 @@ import {
   HeaderControls,
   HeaderElement,
   HeaderRow,
+  AnniversaryHat
 } from './styled'
 
 import MobileMenuIcon from './MobileMenuIcon'
@@ -27,7 +28,8 @@ import { OrdersPanel } from '@cow/modules/account/containers/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
-import { cowSwapLogo } from 'theme/cowSwapAssets'
+import { cowSwapLogo, AnniversaryHatImage } from 'theme/cowSwapAssets'
+import Confetti from 'components/Confetti'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
@@ -115,11 +117,14 @@ export default function Header() {
 
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
+      {/* Anniversary confetti */}
+      <Confetti start={true} />
       <HeaderModWrapper>
         <HeaderRow>
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
               <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
+                <AnniversaryHat><SVG src={AnniversaryHatImage(darkMode)} /></AnniversaryHat>
                 <SVG src={cowSwapLogo(darkMode)} />
               </LogoImage>
             </UniIcon>
