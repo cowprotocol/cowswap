@@ -19,7 +19,7 @@ import {
   HeaderControls,
   HeaderElement,
   HeaderRow,
-  AnniversaryHat
+  AnniversaryHat,
 } from './styled'
 
 import MobileMenuIcon from './MobileMenuIcon'
@@ -124,7 +124,9 @@ export default function Header() {
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
             <UniIcon>
               <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
-                <AnniversaryHat><SVG src={AnniversaryHatImage(darkMode)} /></AnniversaryHat>
+                <AnniversaryHat>
+                  <SVG src={AnniversaryHatImage(darkMode)} />
+                </AnniversaryHat>
                 <SVG src={cowSwapLogo(darkMode)} />
               </LogoImage>
             </UniIcon>
