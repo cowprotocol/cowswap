@@ -36,7 +36,7 @@ export function GnosisSafeLink(props: {
     return null
   }
 
-  return <ExternalLink href={safeUrl}>View Gnosis Safe ↗</ExternalLink>
+  return <ExternalLink href={safeUrl}>View Safe ↗</ExternalLink>
 }
 
 function _getStateLabel(activityDerivedState: ActivityDerivedState) {

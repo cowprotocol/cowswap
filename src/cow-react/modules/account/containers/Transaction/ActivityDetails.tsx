@@ -104,7 +104,7 @@ function GnosisSafeTxDetails(props: {
           Enough signatures, <b>but not executed</b>
         </span>
         <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          Execute Gnosis Safe transaction
+          Execute Safe transaction
         </TextAlert>
       </>
     )

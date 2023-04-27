@@ -365,7 +365,7 @@ export enum OperationType {
 function getWalletNameLabel(walletType: WalletType): string {
   switch (walletType) {
     case WalletType.SAFE:
-      return 'Gnosis Safe'
+      return 'Safe'
     case WalletType.SC:
       return 'smart contract wallet'
     case WalletType.EOA:
