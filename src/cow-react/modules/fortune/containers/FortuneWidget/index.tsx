@@ -18,6 +18,7 @@ import { ExternalLink } from 'theme'
 import { X } from 'react-feather'
 import { transparentize } from 'polished'
 import Confetti from 'components/Confetti'
+import useInterval from '@src/lib/hooks/useInterval'
 
 const FortuneButton = styled.div`
   --size: 75px;
@@ -240,6 +241,10 @@ export function FortuneWidget() {
   const [isFortunesFeatureDisabled, setIsFortunesFeatureDisabled] = useAtom(isFortunesFeatureDisabledAtom)
   const openRandomFortune = useOpenRandomFortune()
   const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)
+
+  const [today, setToday] = useState(new Date())
+  useInterval(() => setToday(new Date()), 2_000)
+
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   // TODO: add text
@@ -249,14 +254,13 @@ export function FortuneWidget() {
     if (!lastCheckedFortune) return false
 
     const lastCheckedFortuneDate = new Date(lastCheckedFortune.checkTimestamp)
-    const today = new Date()
 
     return (
       lastCheckedFortuneDate.getUTCFullYear() === today.getUTCFullYear() &&
       lastCheckedFortuneDate.getUTCMonth() === today.getUTCMonth() &&
       lastCheckedFortuneDate.getUTCDate() === today.getUTCDate()
     )
-  }, [lastCheckedFortune])
+  }, [lastCheckedFortune, today])
 
   const closeModal = useCallback(() => {
     updateOpenFortune(null)
@@ -271,12 +275,18 @@ export function FortuneWidget() {
     if (isDailyFortuneChecked && lastCheckedFortune) {
       updateOpenFortune(lastCheckedFortune.item)
     } else {
+      setIsFortunesFeatureDisabled(false)
       openRandomFortune()
       setIsNewFortuneOpen(true)
     }
-  }, [isDailyFortuneChecked, openRandomFortune, lastCheckedFortune, updateOpenFortune])
+  }, [isDailyFortuneChecked, openRandomFortune, lastCheckedFortune, updateOpenFortune, setIsFortunesFeatureDisabled])
 
-  if (isFortunesFeatureDisabled) return null
+  const onTweetShare = useCallback(() => {
+    setIsFortunesFeatureDisabled(true)
+    closeModal()
+  }, [closeModal, setIsFortunesFeatureDisabled])
+
+  if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
 
   return (
     <>
@@ -295,7 +305,10 @@ export function FortuneWidget() {
           <FortuneContent>
             <FortuneText isNewFortuneOpen={isNewFortuneOpen}>{openFortune.text}</FortuneText>
             <FortuneBannerActions>
-              <StyledExternalLink href={`https://twitter.com/intent/tweet?text=${twitterText}`}>
+              <StyledExternalLink
+                onClickOptional={onTweetShare}
+                href={`https://twitter.com/intent/tweet?text=${twitterText}`}
+              >
                 <SuccessBanner type={'Twitter'}>
                   <span>
                     <Trans>Share on Twitter</Trans>
@@ -307,7 +320,7 @@ export function FortuneWidget() {
                 <label>
                   {/*// TODO: tooltip with explanation*/}
                   <input type="checkbox" ref={checkboxRef} />
-                  <span>Don't show this again</span>
+                  <span>Don't show this until the next fortune</span>
                 </label>
               </DontShowAgainBox>
             </FortuneBannerActions>
