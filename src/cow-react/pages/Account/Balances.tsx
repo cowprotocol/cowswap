@@ -39,6 +39,7 @@ import { HelpCircle } from '@cow/common/pure/HelpCircle'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
@@ -63,7 +64,8 @@ export default function Profile() {
   const cowToken = COW[chainId]
   const vCowToken = V_COW[chainId]
   // Cow balance
-  const cow = useTokenBalance(account || undefined, chainId ? cowToken : undefined)
+  const cow =
+    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || CurrencyAmount.fromRawAmount(cowToken, 0)
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()
