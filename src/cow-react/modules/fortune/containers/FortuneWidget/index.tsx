@@ -324,7 +324,7 @@ export function FortuneWidget() {
                   <label>
                     {/*// TODO: tooltip with explanation*/}
                     <input type="checkbox" ref={checkboxRef} />
-                    <span>Don't show this until the next fortune</span>
+                    <span>I don't want to see this fortune again</span>
                   </label>
                 </DontShowAgainBox>
               )}
