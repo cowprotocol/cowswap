@@ -260,6 +260,7 @@ export function ConfirmationPendingContent({
         <LowerSection>
           <h3>
             <span>{operationMessage} </span>
+            <br />
             <span>
               <Trans>Follow these steps:</Trans>
             </span>
