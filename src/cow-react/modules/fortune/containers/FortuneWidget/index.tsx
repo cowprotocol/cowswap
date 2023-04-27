@@ -241,6 +241,7 @@ export function FortuneWidget() {
   const [isFortunesFeatureDisabled, setIsFortunesFeatureDisabled] = useAtom(isFortunesFeatureDisabledAtom)
   const openRandomFortune = useOpenRandomFortune()
   const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)
+  const [isFortunedShared, setIsFortunedShared] = useState(false)
 
   const [today, setToday] = useState(new Date())
   useInterval(() => setToday(new Date()), 2_000)
@@ -272,6 +273,8 @@ export function FortuneWidget() {
   }, [updateOpenFortune, checkboxRef, setIsFortunesFeatureDisabled])
 
   const openFortuneModal = useCallback(() => {
+    setIsFortunedShared(false)
+
     if (isDailyFortuneChecked && lastCheckedFortune) {
       updateOpenFortune(lastCheckedFortune.item)
     } else {
@@ -283,8 +286,8 @@ export function FortuneWidget() {
 
   const onTweetShare = useCallback(() => {
     setIsFortunesFeatureDisabled(true)
-    closeModal()
-  }, [closeModal, setIsFortunesFeatureDisabled])
+    setIsFortunedShared(true)
+  }, [setIsFortunesFeatureDisabled])
 
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
 
@@ -316,13 +319,15 @@ export function FortuneWidget() {
                   <SVG src={twitterImage} description="Twitter" />
                 </SuccessBanner>
               </StyledExternalLink>
-              <DontShowAgainBox>
-                <label>
-                  {/*// TODO: tooltip with explanation*/}
-                  <input type="checkbox" ref={checkboxRef} />
-                  <span>Don't show this until the next fortune</span>
-                </label>
-              </DontShowAgainBox>
+              {!isNewFortuneOpen && !isFortunedShared && (
+                <DontShowAgainBox>
+                  <label>
+                    {/*// TODO: tooltip with explanation*/}
+                    <input type="checkbox" ref={checkboxRef} />
+                    <span>Don't show this until the next fortune</span>
+                  </label>
+                </DontShowAgainBox>
+              )}
             </FortuneBannerActions>
           </FortuneContent>
         </FortuneBanner>
