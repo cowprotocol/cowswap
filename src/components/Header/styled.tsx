@@ -520,10 +520,14 @@ export const HeaderRow = styled(RowFixed)`
 
 export const AnniversaryHat = styled.div`
   position: absolute;
+  left: 13%;
   top: -12px;
-  left: 17px;
   width: 13px;
   height: 20px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    left: 11%;
+  `}
 
   > svg {
     width: 100%;
