@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
 import { X } from 'react-feather'
 import { MEDIA_WIDTHS } from 'theme'
-import { useIsNotificationClosed } from 'state/affiliate/hooks'
-import { useAppDispatch } from 'state/hooks'
-import { dismissNotification } from 'state/affiliate/actions'
+import { useNotificationState } from '@cow/common/hooks/useNotificationState'
 
 type Level = 'info' | 'warning' | 'error'
 
@@ -54,24 +52,21 @@ const BannerContainer = styled.div`
 `
 export default function NotificationBanner(props: BannerProps) {
   const { id, isVisible, canClose = true } = props
-  const dispatch = useAppDispatch()
-  const isNotificationClosed = useIsNotificationClosed(id) // TODO: the notification closed state is now tied to the Affiliate state, this should be generic
-  const [isActive, setIsActive] = useState(!isNotificationClosed ?? isVisible)
+  const [isActive, setIsActive] = useState(isVisible)
+  const [{ isClosed }, setNotificationState] = useNotificationState(id)
 
-  const isHidden = !isVisible || isNotificationClosed || !isActive
+  const isHidden = !isVisible || isClosed || !isActive
 
   const handleClose = () => {
     setIsActive(false)
-    if (id) {
-      dispatch(dismissNotification(id))
-    }
+    setNotificationState({ isClosed: true })
   }
 
   useEffect(() => {
-    if (isNotificationClosed !== null) {
-      setIsActive(!isNotificationClosed)
+    if (isClosed !== null) {
+      setIsActive(!isActive)
     }
-  }, [isNotificationClosed, isActive])
+  }, [isClosed, isActive])
 
   return (
     <Banner {...props} isVisible={!isHidden}>

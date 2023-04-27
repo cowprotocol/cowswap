@@ -28,7 +28,6 @@ const Faq = lazy(() => import(/* webpackChunkName: "faq" */ '@cow/pages/Faq'))
 const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ '@cow/pages/Faq/ProtocolFaq'))
 const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ '@cow/pages/Faq/TokenFaq'))
 const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ '@cow/pages/Faq/TradingFaq'))
-const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ '@cow/pages/Faq/AffiliateFaq'))
 const LimitOrdersFaq = lazy(() => import(/* webpackChunkName: "limit_orders_faq" */ '@cow/pages/Faq/LimitOrdersFaq'))
 const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ '@cow/pages/Faq/EthFlowFaq'))
 
@@ -56,7 +55,6 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.FAQ_PROTOCOL, element: <ProtocolFaq /> },
   { route: RoutesEnum.FAQ_TOKEN, element: <TokenFaq /> },
   { route: RoutesEnum.FAQ_TRADING, element: <TradingFaq /> },
-  { route: RoutesEnum.FAQ_AFFILIATE, element: <AffiliateFaq /> },
   { route: RoutesEnum.FAQ_LIMIT_ORDERS, element: <LimitOrdersFaq /> },
   { route: RoutesEnum.FAQ_ETH_FLOW, element: <EthFlowFaq /> },
   { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
