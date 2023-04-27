@@ -7,14 +7,13 @@ import { ThemeContext } from 'styled-components/macro'
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
-import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from 'utils'
+import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel, shortenAddress } from 'utils'
 import { Text } from 'rebass'
 import { CheckCircle, UserCheck } from 'react-feather'
 import GameIcon from 'assets/cow-swap/game.gif'
 import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
 import { getStatusIcon } from '@cow/modules/account/containers/AccountDetails'
 import { OrderProgressBar } from 'components/OrderProgressBar'
-import { shortenAddress } from 'utils'
 import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
 import { Routes } from '@cow/constants/routes'
 import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
@@ -29,25 +28,25 @@ import checkImage from 'assets/cow-swap/check.svg'
 import alertImage from 'assets/cow-swap/alert-circle.svg'
 import SVG from 'react-inlinesvg'
 import {
-  StyledIcon,
-  ExternalLinkCustom,
-  Section,
-  Header,
-  ButtonGroup,
-  ButtonCustom,
-  InternalLink,
-  Wrapper,
-  UpperSection,
-  CloseIconWrapper,
-  WalletIcon,
-  ApproveWrapper,
   ApproveComparison,
-  CompareItem,
-  ItemList,
   ApproveFooter,
+  ApproveWrapper,
+  ButtonCustom,
+  ButtonGroup,
+  CloseIconWrapper,
+  CompareItem,
+  ExternalLinkCustom,
+  Header,
+  InternalLink,
+  ItemList,
   LowerSection,
-  StepsWrapper,
+  Section,
   StepsIconWrapper,
+  StepsWrapper,
+  StyledIcon,
+  UpperSection,
+  WalletIcon,
+  Wrapper,
 } from './styled'
 
 export * from './TransactionConfirmationModalMod'

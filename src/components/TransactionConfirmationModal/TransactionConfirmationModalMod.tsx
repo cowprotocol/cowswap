@@ -17,14 +17,14 @@ import AnimatedConfirmation from 'components/TransactionConfirmationModal/Animat
 
 import { GpModal } from '@cow/common/pure/Modal'
 import {
-  ConfirmationPendingContent,
   ConfirmationModalContentProps,
-  TransactionSubmittedContent,
+  ConfirmationPendingContent,
   OperationType,
+  TransactionSubmittedContent,
 } from '.'
-import { GPModalHeader, CloseIconWrapper } from './styled'
+import { CloseIconWrapper, GPModalHeader } from './styled'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useUpdateAtom, handleFollowPendingTxPopupAtom } from 'state/application/atoms'
+import { handleFollowPendingTxPopupAtom, useUpdateAtom } from 'state/application/atoms'
 import { useIsTransactionConfirmed, useTransaction } from 'state/enhancedTransactions/hooks'
 import { getEtherscanLink as getExplorerLink } from 'utils'
 import { useWalletInfo } from '@cow/modules/wallet'

@@ -447,9 +447,11 @@ export const ItemList = styled.div<{ listIconAlert?: boolean }>`
           fill: ${({ theme }) => theme.text3};
           opacity: 1;
         }
+
         > path:nth-child(2) {
           fill: ${({ theme }) => theme.text3};
         }
+
         > path:nth-child(3) {
           fill: ${({ theme }) => theme.white};
         }
