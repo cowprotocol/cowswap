@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-restricted-imports
-import { t, Trans } from '@lingui/macro'
-import { ButtonError } from 'components/Button'
+import { Trans } from '@lingui/macro'
 import Modal from '@cow/common/pure/Modal'
 import styled from 'styled-components/macro'
 import { X } from 'react-feather'
+import { ConfirmedButton } from '../ConfirmedButton'
 
 const ModalContentWrapper = styled.div`
   display: flex;
@@ -56,6 +56,10 @@ const StyledCloseIcon = styled(X)`
   }
 `
 
+const ConfirmExpertMode = styled(ConfirmedButton)`
+  margin-bottom: 15px;
+`
+
 export interface ExpertModeModalProps {
   isOpen: boolean
   onDismiss(): void
@@ -88,19 +92,9 @@ export function ExpertModeModal(props: ExpertModeModalProps) {
           </strong>
         </p>
 
-        <ButtonError
-          id="confirm-expert-mode"
-          error={true}
-          padding={'12px'}
-          onClick={() => {
-            const confirmWord = t`confirm`
-            if (window.prompt(t`Please type the word "${confirmWord}" to enable expert mode.`) === confirmWord) {
-              onEnable()
-            }
-          }}
-        >
+        <ConfirmExpertMode onConfirm={onEnable} action="turn on expert mode" confirmWord="confirm">
           <Trans>Turn On Expert Mode</Trans>
-        </ButtonError>
+        </ConfirmExpertMode>
       </ModalContentWrapper>
     </Modal>
   )

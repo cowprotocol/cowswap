@@ -26,9 +26,7 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...rest }) => (
-  <AnimatedDialogContent {...rest} />
-)).attrs({
+const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogContent {...rest} />).attrs({
   'aria-label': 'dialog',
 })`
   overflow-y: auto;
@@ -123,7 +121,7 @@ export default function Modal({
               style={props}
               onDismiss={onDismiss}
               initialFocusRef={initialFocusRef}
-              unstable_lockFocusAcrossFrames={false}
+              dangerouslyBypassFocusLock={true}
             >
               <StyledDialogContent
                 {...(isMobile

@@ -3,7 +3,6 @@ import * as styledEl from './styled'
 import { ButtonPrimary } from 'components/Button'
 import SVG from 'react-inlinesvg'
 import iconCompleted from 'assets/cow-swap/check.svg'
-import iconProgress from 'assets/cow-swap/loading.svg'
 import { ExternalLink } from 'theme'
 
 const BULLET_LIST_CONTENT = [
@@ -12,7 +11,15 @@ const BULLET_LIST_CONTENT = [
   { id: 3, content: 'Place multiple orders using the same balance' },
   { id: 4, content: 'Always receive 100% of your order surplus' },
   { id: 5, content: 'Protection from MEV by default' },
-  { id: 6, iconType: 'progress', content: 'Orders are fill or kill. Partial fills coming soon!' },
+  {
+    id: 6,
+    content: (
+      <span>
+        NOW with&nbsp;<b>partial fills</b>&nbsp;support!
+      </span>
+    ),
+    isNew: true,
+  },
 ]
 
 export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }) {
@@ -25,10 +32,10 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
 
       {BULLET_LIST_CONTENT && (
         <styledEl.List>
-          {BULLET_LIST_CONTENT.map(({ id, iconType, content }) => (
-            <li key={id} data-icon={iconType || null}>
+          {BULLET_LIST_CONTENT.map(({ id, isNew, content }) => (
+            <li key={id} data-is-new={isNew || null}>
               <span>
-                <SVG src={iconType && iconType === 'progress' ? iconProgress : iconCompleted} />
+                <SVG src={iconCompleted} />
               </span>{' '}
               {content}
             </li>
@@ -37,9 +44,12 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
       )}
 
       <styledEl.ControlSection>
-        <ExternalLink href="https://cow-protocol.medium.com/the-cow-has-no-limits-342e7eae8794">
-          Learn more about limit orders ↗
-        </ExternalLink>
+        <span>
+          Learn more about{' '}
+          <ExternalLink href="https://medium.com/@cow-protocol/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders-45f19143e87d">
+            partially fillable orders ↗
+          </ExternalLink>
+        </span>
         <ButtonPrimary id="unlock-limit-orders-btn" onClick={handleUnlock}>
           Unlock limit orders (BETA)
         </ButtonPrimary>

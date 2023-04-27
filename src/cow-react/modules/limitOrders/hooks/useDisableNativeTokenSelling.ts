@@ -1,4 +1,3 @@
-import { useWeb3React } from '@web3-react/core'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
@@ -6,13 +5,14 @@ import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 /**
  * Since the selling of ETH is not supported in limit orders
  * We automatically replace it by WETH
  */
 export function useDisableNativeTokenSelling() {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersAtom)
   const limitOrdersNavigate = useTradeNavigate()
 

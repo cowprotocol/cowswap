@@ -1,18 +1,21 @@
 import { useCallback } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 
-import { useWalletInfo } from '@cow/modules/wallet'
-import { Order, OrderStatus } from 'state/orders/actions'
+import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
+import { Order } from 'state/orders/actions'
 import { useCloseModal, useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 
-import { useEthFlowCancelOrder } from './useEthFlowCancelOrder'
+import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
-import { cancellationModalContextAtom, updateCancellationModalContextAtom } from './state'
+import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
+import { useGasPrices } from 'state/gas/hooks'
+import { calculateGasMargin } from 'utils/calculateGasMargin'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { useGetOnChainCancellation } from '@cow/common/hooks/useCancelOrder/useGetOnChainCancellation'
+import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
 
 export type UseCancelOrderReturn = (() => void) | null
 
@@ -27,44 +30,33 @@ export type UseCancelOrderReturn = (() => void) | null
  * In case the order is not eligible, it returns null. This should be used to control whether a cancel button should be displayed
  */
 export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
-  const { chainId } = useWeb3React()
-  const { allowsOffchainSigning } = useWalletInfo()
+  const { chainId } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
   const openModal = useOpenModal(ApplicationModal.CANCELLATION)
   const closeModal = useCloseModal(ApplicationModal.CANCELLATION)
   const setContext = useSetAtom(updateCancellationModalContextAtom)
   const resetContext = useResetAtom(cancellationModalContextAtom)
   const offChainOrderCancel = useOffChainCancelOrder()
-  const ethFlowOrderCancel = useEthFlowCancelOrder()
+  const sendOnChainCancellation = useSendOnChainCancellation()
+  const getOnChainTxInfo = useGetOnChainCancellation()
+  const gasPrices = useGasPrices(chainId)
+  const nativeCurrency = useNativeCurrency()
 
   return useCallback(
     (order: Order) => {
       // Check the 'cancellability'
 
-      const isEthFlowOrder = getIsEthFlowOrder(order)
+      // const isEthFlowOrder = getIsEthFlowOrder(order)
 
       // 1. EthFlow orders will never be able to be cancelled offChain
       // 2. The wallet must support offChain singing
       // 3. The order must be PENDING
-      const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
-
-      // 1. To be EthFlow cancellable the order must be an EthFlow order
-      // 2. It can be cancelled when the order is CREATING or PENDING
-      // 3. It cannot be cancelled if there's a cancellationHash already
-      const isEthFlowCancellable =
-        isEthFlowOrder &&
-        (order?.status === OrderStatus.CREATING || order?.status === OrderStatus.PENDING) &&
-        !order.cancellationHash
-
-      // TODO: For now only ethflow orders are cancellable. Adjust when implementing general hard cancellations
-      const isCancellable = !order.isCancelling && (isOffChainCancellable || isEthFlowCancellable)
+      const isOffChainCancellable = true
 
       // When the order is not cancellable, there won't be a callback
-      if (!isCancellable) {
+      if (!isOrderCancellable(order)) {
         return null
       }
-
-      const type = isOffChainCancellable ? 'offChain' : 'ethFlow'
-      const cancelFn = type === 'offChain' ? offChainOrderCancel : ethFlowOrderCancel
 
       // When dismissing the modal, close it and also reset context
       const onDismiss = () => {
@@ -73,7 +65,9 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       }
 
       // The callback to trigger the cancellation
-      const triggerCancellation = async (): Promise<void> => {
+      const triggerCancellation = async (type: CancellationType): Promise<void> => {
+        const cancelFn = type === 'offChain' ? offChainOrderCancel : sendOnChainCancellation
+
         try {
           setContext({ isPendingSignature: true, error: null })
           // Actual cancellation is triggered here
@@ -81,7 +75,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           // When done, dismiss the modal
           onDismiss()
         } catch (e: any) {
-          const swapErrorMessage = getSwapErrorMessage(e)
+          const swapErrorMessage = getSwapErrorMessage(e?.body.description || e)
           setContext({ error: swapErrorMessage })
         }
         setContext({ isPendingSignature: false })
@@ -94,23 +88,34 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           orderId: order.id,
           chainId,
           summary: order?.summary,
-          type,
+          defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
           onDismiss,
           triggerCancellation,
+          nativeCurrency,
         })
         // Display the actual modal
         openModal()
+        // Estimate tx cost in case when OnChain cancellation is used
+        getOnChainTxInfo(order).then(({ estimatedGas }) => {
+          const gasPrice = +(gasPrices?.average || '0')
+          const txCost = calculateGasMargin(estimatedGas).mul(gasPrice)
+
+          setContext({ txCost })
+        })
       }
     },
     [
       allowsOffchainSigning,
       chainId,
       closeModal,
-      ethFlowOrderCancel,
+      sendOnChainCancellation,
       offChainOrderCancel,
       openModal,
       resetContext,
       setContext,
+      getOnChainTxInfo,
+      gasPrices,
+      nativeCurrency,
     ]
   )
 }

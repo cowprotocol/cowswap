@@ -2,14 +2,17 @@ import { Field } from 'state/swap/actions'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
-import { OrderClass, OrderKind } from 'state/orders/actions'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { TradeFlowContext } from '../../services/tradeFlow'
 import { LimitOrdersConfirm } from './index'
 import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOrdersWarnings'
 import React from 'react'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { defaultLimitOrdersSettings } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { initLimitRateState } from '@cow/modules/limitOrders/state/limitRateAtom'
+import { SetStateAction } from 'jotai'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -23,6 +26,7 @@ const inputCurrencyInfo: CurrencyInfo = {
     amountAfterFees: '20',
     amountAfterFeesRaw: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
     feeAmount: '10',
+    feeAmountRaw: CurrencyAmount.fromRawAmount(inputCurrency, 10 * 10 ** 18),
   },
   currency: inputCurrency,
   balance: CurrencyAmount.fromRawAmount(inputCurrency, 250 * 10 ** 18),
@@ -39,6 +43,7 @@ const outputCurrencyInfo: CurrencyInfo = {
     amountAfterFees: '20',
     amountAfterFeesRaw: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
     feeAmount: '10',
+    feeAmountRaw: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
   },
   currency: outputCurrency,
   balance: CurrencyAmount.fromRawAmount(outputCurrency, 250 * 10 ** 18),
@@ -61,6 +66,7 @@ const tradeContext: TradeFlowContext = {
     recipient: '0xaaa',
     recipientAddressOrName: null,
     allowsOffchainSigning: true,
+    partiallyFillable: true,
     appDataHash: '0xabc',
   },
   rateImpact: 0,
@@ -79,7 +85,7 @@ const rateInfoParams = {
   inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
   outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
   activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  inversedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
+  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
 }
 
 const priceImpact: PriceImpact = {
@@ -100,9 +106,13 @@ const Fixtures = {
       tradeContext={tradeContext}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
+      limitRateState={initLimitRateState()}
       Warnings={Warnings}
       warningsAccepted={true}
+      executionPrice={null}
       onConfirm={() => void 0}
+      partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
+      featurePartialFillsEnabled
     />
   ),
 }

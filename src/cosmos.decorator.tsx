@@ -1,3 +1,5 @@
+import '@reach/dialog/styles.css'
+
 import { ReactNode } from 'react'
 import { Provider } from 'react-redux'
 import { Box, Flex } from 'rebass'
@@ -7,8 +9,8 @@ import ThemeProvider from 'theme'
 import { LanguageProvider } from 'i18n'
 import { HashRouter } from 'react-router-dom'
 import { Web3ReactProvider } from '@web3-react/core'
-import { BlockNumberProvider } from '@src/lib/hooks/useBlockNumber'
-import { injectedConnection } from 'connection'
+import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
+import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/injected'
 
 const Wrapper = styled(Flex)`
   font-family: 'Inter var', sans-serif;

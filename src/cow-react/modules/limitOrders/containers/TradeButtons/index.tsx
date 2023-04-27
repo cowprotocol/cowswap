@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Trans } from '@lingui/macro'
 import { useAtomValue } from 'jotai/utils'
 import { useSetAtom } from 'jotai'
-import { PriceImpactDeclineError, tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
+import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
@@ -15,13 +15,13 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { useWrapCallback } from 'hooks/useWrapCallback'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { transactionConfirmAtom } from '@cow/modules/swap/state/transactionConfirmAtom'
-import { ApplicationModal } from '@src/state/application/reducer'
+import { ApplicationModal } from 'state/application/reducer'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { CompatibilityIssuesWarning } from '@cow/modules/trade/pure/CompatibilityIssuesWarning'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletDetails } from '@cow/modules/wallet'
 import styled from 'styled-components/macro'
 import { isUnsupportedTokenInQuote } from '@cow/modules/limitOrders/utils/isUnsupportedTokenInQuote'
+import { useHandleOrderPlacement } from '@cow/modules/limitOrders/hooks/useHandleOrderPlacement'
 
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
@@ -48,7 +48,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const closeModals = useCloseModals()
   const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
   const { handleSetError, ErrorModal } = useErrorModal()
-  const { isSupportedWallet } = useWalletInfo()
+  const { isSupportedWallet } = useWalletDetails()
   const { inputCurrency, outputCurrency } = tradeState
   const isSwapUnsupported = isUnsupportedTokenInQuote(quote)
 
@@ -60,25 +60,19 @@ export function TradeButtons(props: TradeButtonsProps) {
     showTransactionConfirmationModal,
   }
 
+  const tradeCallbacks = {
+    beforeTrade: () => setConfirmationState({ isPending: true, orderHash: null }),
+    onError: handleSetError,
+    finally: () => setConfirmationState({ isPending: false, orderHash: null }),
+  }
+  const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeCallbacks)
   const doTrade = useCallback(() => {
-    if (settingsState.expertMode && tradeContext) {
-      const beforeTrade = () => setConfirmationState({ isPending: true, orderHash: null })
-
-      tradeFlow(tradeContext, priceImpact, settingsState, beforeTrade)
-        .catch((error) => {
-          if (error instanceof PriceImpactDeclineError) return
-
-          if (error instanceof OperatorError) {
-            handleSetError(error.message)
-          }
-        })
-        .finally(() => {
-          setConfirmationState({ isPending: false, orderHash: null })
-        })
+    if (settingsState.expertMode) {
+      handleTrade()
     } else {
       openConfirmScreen()
     }
-  }, [handleSetError, settingsState, tradeContext, openConfirmScreen, setConfirmationState, priceImpact])
+  }, [settingsState.expertMode, handleTrade, openConfirmScreen])
 
   const buttonFactory = limitOrdersTradeButtonsMap[formState]
 

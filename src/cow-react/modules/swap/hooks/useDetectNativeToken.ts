@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { Token } from '@uniswap/sdk-core'
 
 import { WETH_LOGO_URI } from 'constants/index'
@@ -8,14 +7,15 @@ import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'constants/tok
 import { supportedChainId } from 'utils/supportedChainId'
 import WXDAI_LOGO_URI from 'assets/cow-swap/wxdai.png'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
-import { SupportedChainId as ChainId } from 'constants/chains'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 // TODO: move it to `modules/trade`
 export function useDetectNativeToken() {
-  const { chainId } = useWeb3React()
-  const tradeState = useTradeState()
-  const { inputCurrencyId, outputCurrencyId } = tradeState?.state || {}
+  const { chainId } = useWalletInfo()
+  const { state } = useTradeState()
+  const { inputCurrencyId, outputCurrencyId } = state || {}
 
   const input = useTokenBySymbolOrAddress(inputCurrencyId)
   const output = useTokenBySymbolOrAddress(outputCurrencyId)

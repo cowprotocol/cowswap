@@ -5,18 +5,18 @@ import { useClaimState } from 'state/claim/hooks'
 import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } from './styled'
 import { ClaimCommonTypes } from './types'
 import { ClaimStatus } from 'state/claim/actions'
-import { useTokenBalance } from 'state/connection/hooks'
 import { V_COW } from 'constants/tokens'
-import { useWeb3React } from '@web3-react/core'
 import JSBI from 'jsbi'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useWalletInfo } from '@cow/modules/wallet'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
   unclaimedAmount: ClaimCommonTypes['tokenCurrencyAmount'] | undefined
 }
 
 export function ClaimSummary({ hasClaims, isClaimed, unclaimedAmount }: ClaimSummaryProps) {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { activeClaimAccount, claimStatus, isInvestFlowActive } = useClaimState()
 
   const vCow = chainId ? V_COW[chainId] : undefined

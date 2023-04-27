@@ -1,10 +1,10 @@
-import { useWeb3React } from '@web3-react/core'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
 import { getDefaultTradeState, TradeState } from '../../types/TradeState'
 import { useTradeNavigate } from '../useTradeNavigate'
+import { useWalletInfo } from '@cow/modules/wallet'
 
 const alertMessage = (
   doubledSymbol: string
@@ -22,7 +22,7 @@ Please select the token you need from the UI or use the address of the token ins
  * @see useOnCurrencySelection.ts
  */
 export function useResetStateWithSymbolDuplication(state: TradeState | null): void {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
   const navigate = useTradeNavigate()
   const { inputCurrencyId, outputCurrencyId } = state || {}
@@ -30,13 +30,14 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
   useEffect(() => {
     const inputCurrencyIsDoubled = checkTokensWithSameSymbol(inputCurrencyId)
     const outputCurrencyIsDoubled = checkTokensWithSameSymbol(outputCurrencyId)
+    let timeoutId: NodeJS.Timeout | null = null
 
     if (chainId && (inputCurrencyIsDoubled || outputCurrencyIsDoubled)) {
       const doubledSymbol = inputCurrencyIsDoubled ? inputCurrencyId : outputCurrencyId
 
       // TODO: add UI modal instead of alert
       // Show alert in 500ms to avoid glitch with transparent Import token modal
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         alert(alertMessage(doubledSymbol || ''))
       }, 500)
 
@@ -45,6 +46,12 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
         inputCurrencyId: defaultState.inputCurrencyId,
         outputCurrencyId: defaultState.outputCurrencyId,
       })
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
     }
   }, [navigate, checkTokensWithSameSymbol, chainId, inputCurrencyId, outputCurrencyId])
 }

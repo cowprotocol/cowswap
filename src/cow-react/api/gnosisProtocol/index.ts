@@ -1,7 +1,7 @@
 import * as realApi from './api'
 import * as mockApi from './mock'
 
-export type { UnsupportedToken, OrderID, OrderMetaData } from './api'
+export type { UnsupportedToken, OrderID } from './api'
 
 const useMock = process.env.REACT_APP_MOCK === 'true'
 
@@ -12,13 +12,10 @@ const useMock = process.env.REACT_APP_MOCK === 'true'
 export const {
   // functions that have a mock
   getProfileData,
-  // functions that do not have a mock
-  getOrderLink = realApi.getOrderLink,
-  sendOrder = realApi.sendOrder,
-  sendSignedOrderCancellation = realApi.sendSignedOrderCancellation,
   getQuote = realApi.getQuote,
-  getPriceQuoteLegacy = realApi.getPriceQuoteLegacy,
   getOrder = realApi.getOrder,
+  getOrders = realApi.getOrders,
+  getNativePrice = realApi.getNativePrice,
   getTrades = realApi.getTrades,
   // functions that only have a mock
 } = useMock ? { ...mockApi } : { ...realApi }

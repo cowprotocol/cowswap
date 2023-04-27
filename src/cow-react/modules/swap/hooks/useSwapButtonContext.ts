@@ -1,5 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
@@ -13,22 +12,18 @@ import {
   useWrapType,
   useWrapUnwrapError,
 } from 'hooks/useWrapCallback'
-import { useCallback } from 'react'
-import { logTradeFlow } from '@cow/modules/trade/utils/logger'
-import { swapFlow } from '@cow/modules/swap/services/swapFlow'
-import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
 import { getSwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 import { SwapButtonsContext } from '@cow/modules/swap/pure/SwapButtons'
-import { useGetQuoteAndStatus } from 'state/price/hooks'
+import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'state/price/hooks'
 import { useSwapFlowContext } from '@cow/modules/swap/hooks/useSwapFlowContext'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useEthFlowContext } from '@cow/modules/swap/hooks/useEthFlowContext'
-import { ethFlow } from '@cow/modules/swap/services/ethFlow'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
-import { useIsTradeUnsupported } from 'state/lists/hooks/hooksMod'
+import { useIsTradeUnsupported } from 'state/lists/hooks'
+import { useHandleSwap } from '@cow/modules/swap/hooks/useHandleSwap'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -40,8 +35,8 @@ export interface SwapButtonInput {
 export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext {
   const { feeWarningAccepted, impactWarningAccepted, openNativeWrapModal, priceImpactParams } = input
 
-  const { account, chainId } = useWeb3React()
-  const { isSupportedWallet } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
+  const { isSupportedWallet } = useWalletDetails()
   const {
     v2Trade: trade,
     allowedSlippage,
@@ -57,6 +52,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
+  const isBestQuoteLoading = useIsBestQuoteLoading()
 
   const currencyIn = currencies[Field.INPUT]
   const currencyOut = currencies[Field.OUTPUT]
@@ -81,22 +77,13 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const inputAmount = tryParseCurrencyAmount(typedValue, currencyIn ?? undefined)
   const approvalState = useTradeApproveState(inputAmount || null)
 
-  const handleSwap = useCallback(() => {
-    if (!swapFlowContext && !ethFlowContext) return
-
-    if (swapFlowContext) {
-      logTradeFlow('SWAP FLOW', 'Start swap flow')
-      swapFlow(swapFlowContext, priceImpactParams)
-    } else if (ethFlowContext) {
-      logTradeFlow('ETH FLOW', 'Start eth flow')
-      ethFlow(ethFlowContext, priceImpactParams)
-    }
-  }, [swapFlowContext, ethFlowContext, priceImpactParams])
+  const handleSwap = useHandleSwap(priceImpactParams)
 
   const contextExists = ethFlowContext || swapFlowContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
-  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
+  const gnosisSafeInfo = useGnosisSafeInfo()
+  const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
 
@@ -119,6 +106,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isGettingNewQuote,
     swapCallbackError,
     trade,
+    isBestQuoteLoading,
   })
 
   return {

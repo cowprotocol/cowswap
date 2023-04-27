@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useSwapState } from 'state/swap/hooks'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { GpEther as ETHER } from 'constants/tokens'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { useCloseModals } from 'state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'state/orders/hooks'
 import { useDispatch } from 'react-redux'
@@ -13,7 +13,7 @@ import { SwapConfirmManager, useSwapConfirmManager } from '@cow/modules/swap/hoo
 import { useWETHContract } from 'hooks/useContract'
 import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useUserTransactionTTL } from 'state/user/hooks'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
@@ -27,7 +27,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { BaseFlowContext } from '@cow/modules/swap/services/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
-import { OrderClass } from 'state/orders/actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -73,10 +73,12 @@ interface BaseFlowContextSetup {
 }
 
 export function useBaseFlowContextSetup(): BaseFlowContextSetup {
-  const { account, chainId, provider } = useWeb3React()
+  const { provider } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
+  const { allowsOffchainSigning } = useWalletDetails()
+  const gnosisSafeInfo = useGnosisSafeInfo()
   const { recipient } = useSwapState()
   const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
-  const { allowsOffchainSigning, gnosisSafeInfo } = useWalletInfo()
 
   const appData = useAtomValue(appDataInfoAtom)
   const closeModals = useCloseModals()
@@ -204,6 +206,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     recipientAddressOrName,
     signer: provider.getSigner(),
     allowsOffchainSigning,
+    partiallyFillable: false, // SWAP orders are always fill or kill - for now
     appDataHash: appData.hash,
     quoteId: trade.quoteId,
   }

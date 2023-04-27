@@ -1,10 +1,9 @@
 import { GpModal } from '@cow/common/pure/Modal'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
-import { OrderKind, OrderStatus } from 'state/orders/actions'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CloseIcon } from 'theme'
 import { CurrencyField } from './CurrencyField'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getSellAmountWithFee } from '@cow/modules/limitOrders/utils/getSellAmountWithFee'
 import { FeeField } from './FeeField'
@@ -16,6 +15,7 @@ import { SurplusField } from './SurplusField'
 import { IdField } from './IdField'
 import { StatusField } from './StatusField'
 import { OrderTypeField } from './OrderTypeField'
+import { OrderStatus } from 'state/orders/actions'
 
 interface ReceiptProps {
   isOpen: boolean
@@ -26,13 +26,16 @@ interface ReceiptProps {
   buyAmount: CurrencyAmount<Token>
   limitPrice: Fraction | null
   executionPrice: Fraction | null
+  estimatedExecutionPrice: Fraction | null
 }
 
 const tooltips: { [key: string]: string | JSX.Element } = {
   LIMIT_PRICE: 'You will receive this price or better for your tokens.',
   EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network fees.',
+  EXECUTES_AT:
+    'Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.',
   FILLED:
-    'CoW Swap doesn’t currently support partial fills. Your order will either be filled completely or not at all.',
+    "CoW Swap doesn't currently support partial fills. Your order will either be filled completely or not at all.",
   SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
   FEE: 'CoW Protocol covers the fees by executing your order at a slightly better price than your limit price.',
   CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
@@ -44,7 +47,8 @@ const tooltips: { [key: string]: string | JSX.Element } = {
       set) or limit orders (which fill at a price you specify).
       <br />
       <br />
-      All orders are currently fill or kill, but support for partially fillable limit orders is coming soon!
+      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
+      also be changed to <i>Fill or kill</i> through your order settings.
     </span>
   ),
 }
@@ -55,10 +59,10 @@ export function ReceiptModal({
   onDismiss,
   order,
   chainId,
-  sellAmount,
   buyAmount,
   limitPrice,
   executionPrice,
+  estimatedExecutionPrice,
 }: ReceiptProps) {
   if (!order || !chainId) {
     return null
@@ -66,11 +70,6 @@ export function ReceiptModal({
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
-
-  const showCreationTxLink =
-    (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
-    order.orderCreationHash &&
-    !order.apiAdditionalInfo
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -96,13 +95,25 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label="Execution price" tooltip={tooltips.EXECUTION_PRICE} />
-              <PriceField order={order} price={executionPrice} />
+              {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
+                <>
+                  <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
+                  <PriceField order={order} price={estimatedExecutionPrice} />
+                </>
+              ) : (
+                <>
+                  <FieldLabel
+                    label={order.partiallyFillable ? 'Avg. execution price' : 'Execution price'}
+                    tooltip={tooltips.EXECUTION_PRICE}
+                  />{' '}
+                  <PriceField order={order} price={executionPrice} />
+                </>
+              )}
             </styledEl.Field>
 
             <styledEl.Field>
               <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
-              <FilledField order={order} sellAmount={sellAmount} buyAmount={buyAmount} />
+              <FilledField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -117,7 +128,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Created" tooltip={tooltips.CREATED} />
-              <DateField date={order.parsedCreationtime} />
+              <DateField date={order.parsedCreationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -131,15 +142,10 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field>
-              {showCreationTxLink ? (
+              {order.activityId && (
                 <>
-                  <FieldLabel label="Creation transaction" />
-                  <IdField id={order.orderCreationHash as string} chainId={chainId} />
-                </>
-              ) : (
-                <>
-                  <FieldLabel label="Order ID" />
-                  <IdField id={order.id} chainId={chainId} />
+                  <FieldLabel label={order.activityTitle} />
+                  <IdField id={order.activityId} chainId={chainId} />
                 </>
               )}
             </styledEl.Field>

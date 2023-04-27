@@ -1,5 +1,5 @@
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { OrderKind } from 'state/orders/actions'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import * as styledEl from './styled'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
@@ -17,7 +17,7 @@ export function SurplusField({ order }: Props) {
     return <styledEl.Value>-</styledEl.Value>
   }
 
-  const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, surplusAmount?.toNumber())
+  const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, surplusAmount?.decimalPlaces(0).toFixed())
   const formattedPercent = surplusPercentage?.multipliedBy(100)?.toFixed(2)
 
   return (

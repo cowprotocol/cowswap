@@ -15,6 +15,7 @@ export enum SwapButtonState {
   InsufficientLiquidity = 'InsufficientLiquidity',
   ZeroPrice = 'ZeroPrice',
   TransferToSmartContract = 'TransferToSmartContract',
+  UnsupportedToken = 'UnsupportedToken',
   FetchQuoteError = 'FetchQuoteError',
   OfflineBrowser = 'OfflineBrowser',
   Loading = 'Loading',
@@ -48,6 +49,7 @@ export interface SwapButtonStateParams {
   trade: TradeGp | undefined | null
   isNativeIn: boolean
   isSmartContractWallet: boolean
+  isBestQuoteLoading: boolean
   wrappedToken: Token
 }
 
@@ -58,7 +60,7 @@ const quoteErrorToSwapButtonState: { [key in QuoteError]: SwapButtonState | null
   'transfer-eth-to-smart-contract': SwapButtonState.TransferToSmartContract,
   'fetch-quote-error': SwapButtonState.FetchQuoteError,
   'offline-browser': SwapButtonState.OfflineBrowser,
-  'unsupported-token': null,
+  'unsupported-token': SwapButtonState.UnsupportedToken,
 }
 
 export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonState {
@@ -72,7 +74,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
 
-  if (quoteError) {
+  if (quoteError && ![WrapType.WRAP, WrapType.UNWRAP].includes(wrapType)) {
     const quoteErrorState = quoteErrorToSwapButtonState[quoteError]
 
     if (quoteErrorState) return quoteErrorState
@@ -102,7 +104,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
     return SwapButtonState.ShouldUnwrapNativeToken
   }
 
-  if (swapBlankState || input.isGettingNewQuote) {
+  if (swapBlankState || input.isGettingNewQuote || input.isBestQuoteLoading) {
     return SwapButtonState.Loading
   }
 

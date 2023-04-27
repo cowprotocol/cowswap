@@ -1,17 +1,19 @@
-import { NativeCurrency, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
-import { SupportedChainId } from '@src/constants/chains'
+import { NativeCurrency } from '@uniswap/sdk-core'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { nativeOnChain } from 'constants/tokens'
 import { useMemo } from 'react'
+import { useWalletInfo } from '@cow/modules/wallet'
 
-export default function useNativeCurrency(): NativeCurrency | Token {
-  const { chainId } = useWeb3React()
+export const MAINNET_NATIVE_CURRENCY = nativeOnChain(SupportedChainId.MAINNET)
+
+export default function useNativeCurrency(): NativeCurrency {
+  const { chainId } = useWalletInfo()
   return useMemo(
     () =>
       chainId
         ? nativeOnChain(chainId)
         : // display mainnet when not connected
-          nativeOnChain(SupportedChainId.MAINNET),
+          MAINNET_NATIVE_CURRENCY,
     [chainId]
   )
 }

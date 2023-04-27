@@ -8,7 +8,9 @@ import imageConnectWallet from 'assets/cow-swap/wallet-plus.svg'
 import { Trans } from '@lingui/macro'
 import { ExternalLink } from 'theme'
 import SVG from 'react-inlinesvg'
-import { Web3Status, Wrapper as Web3StatusWrapper } from '@cow/modules/wallet/api/components/Web3Status'
+import { Web3Status } from '@cow/modules/wallet/web3-react/containers/Web3Status'
+import { Wrapper as Web3StatusWrapper } from '@cow/modules/wallet/api/pure/Web3StatusInner/styled'
+import { ReactNode } from 'react'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;
@@ -82,23 +84,41 @@ const Content = styled.div`
   }
 `
 
-const Header = styled.span`
-  display: flex;
+const Header = styled.div`
+  display: grid;
+  grid-template-columns: 150px 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 3px;
   width: 100%;
   margin: 0 0 24px;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-flow: column wrap;
-    margin: 0 0 16px;
+    display: block;
+    text-align: center;
+
+    > h2 {
+      margin-bottom: 15px!important;
+    }
   `};
 
   > h2 {
     font-size: 24px;
     margin: 0;
   }
+`
+
+const TabsContainer = styled.div<{ withSingleChild: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  ${({ theme, withSingleChild }) =>
+    !withSingleChild &&
+    theme.mediaWidth.upToMedium`
+      flex-direction: column-reverse;
+      align-items: end;
+      gap: 10px;
+  `};
 `
 
 // Todo: Makes this arrow default behavior of <ExternalLink />
@@ -115,6 +135,7 @@ const ExternalArrow = styled.span`
 export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   isWalletConnected: boolean
   isOpenOrdersTab: boolean
+  children?: ReactNode
 }
 
 export function Orders({
@@ -122,10 +143,15 @@ export function Orders({
   orders,
   tabs,
   isWalletConnected,
+  selectedOrders,
   isOpenOrdersTab,
+  allowsOffchainSigning,
   balancesAndAllowances,
-  getShowCancellationModal,
+  orderActions,
   currentPageNumber,
+  pendingOrdersPrices,
+  getSpotPrice,
+  children,
 }: OrdersProps) {
   const content = () => {
     if (!isWalletConnected) {
@@ -174,11 +200,16 @@ export function Orders({
 
     return (
       <OrdersTable
+        isOpenOrdersTab={isOpenOrdersTab}
+        allowsOffchainSigning={allowsOffchainSigning}
+        selectedOrders={selectedOrders}
+        pendingOrdersPrices={pendingOrdersPrices}
         currentPageNumber={currentPageNumber}
         chainId={chainId}
         orders={orders}
         balancesAndAllowances={balancesAndAllowances}
-        getShowCancellationModal={getShowCancellationModal}
+        getSpotPrice={getSpotPrice}
+        orderActions={orderActions}
       />
     )
   }
@@ -188,7 +219,10 @@ export function Orders({
       <OrdersBox>
         <Header>
           <h2>Your Orders</h2>
-          <OrdersTabs tabs={tabs} />
+          <TabsContainer withSingleChild={!children}>
+            {children || <div></div>}
+            <OrdersTabs tabs={tabs} />
+          </TabsContainer>
         </Header>
 
         {content()}

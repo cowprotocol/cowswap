@@ -2,7 +2,7 @@ import { CurrencyInputPanelProps } from '@cow/common/pure/CurrencyInputPanel/ind
 import { Field } from 'state/swap/actions'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { COW } from 'constants/tokens'
-import { SupportedChainId } from 'constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PriceImpact } from 'hooks/usePriceImpact'
 
 const currency = COW[SupportedChainId.MAINNET]
@@ -23,6 +23,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
       amountAfterFees: '20',
       amountAfterFeesRaw: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
       feeAmount: '10',
+      feeAmountRaw: CurrencyAmount.fromRawAmount(currency, 10 * 10 ** 18),
     },
     currency,
     balance,

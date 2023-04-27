@@ -1,14 +1,11 @@
-import { loadingOpacityMixin } from 'components/Loader/styled'
 import { TooltipContainer } from 'components/Tooltip'
 import { transparentize } from 'polished'
 import { MouseEventHandler, ReactNode } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
-
-import { ThemedText } from '../../theme'
+import { ThemedText } from 'theme'
 import { AutoColumn } from '../Column'
-import TradePrice from './TradePrice'
 
 export const Container = styled.div`
   max-width: 460px;
@@ -27,8 +24,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   position: relative;
   margin-top: -14px;
   margin-bottom: -14px;
-  left: calc(50% - 16px);
-  /* transform: rotate(90deg); */
+  left: 16px;
   background-color: ${({ theme }) => theme.bg1};
   z-index: 2;
   ${({ clickable }) =>
@@ -171,8 +167,4 @@ export const ResponsiveTooltipContainer = styled(TooltipContainer)<{ origin?: st
     transform: scale(0.8);
     transform-origin: ${origin ?? 'top left'};
   `}
-`
-
-export const StyledTradePrice = styled(TradePrice)<{ $loading: boolean }>`
-  ${loadingOpacityMixin}
 `

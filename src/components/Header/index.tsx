@@ -1,331 +1,157 @@
-import { Trans } from '@lingui/macro'
-import useScrollPosition from '@react-hook/window-scroll'
-import { getChainInfoOrDefault } from 'constants/chainInfo'
-import { SupportedChainId } from '@src/constants/chains'
-import { useWeb3React } from '@web3-react/core'
-import useTheme from 'hooks/useTheme'
-import { darken } from 'polished'
-import { NavLink } from 'react-router-dom'
-import { Text } from 'rebass'
-import { useShowClaimPopup, useToggleSelfClaimModal } from 'state/application/hooks'
-import { useUserHasAvailableClaim } from 'state/claim/hooks'
-import { useNativeCurrencyBalances } from 'state/connection/hooks'
-import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Routes } from '@cow/constants/routes'
+import { useNavigate } from 'react-router-dom'
 import { useDarkModeManager } from 'state/user/hooks'
-import styled from 'styled-components/macro'
+import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
 
-import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
-import { ExternalLink, ThemedText } from '../../theme'
-import ClaimModal from '../claim/ClaimModal'
-import { CardNoise } from '../earn/styled'
-import Menu from '../Menu'
-import Row from '../Row'
-import { Dots } from '../swap/styleds'
-import { Web3Status } from '@cow/modules/wallet'
-import HolidayOrnament from './HolidayOrnament'
-import NetworkSelector from './NetworkSelector'
+import { supportedChainId } from 'utils/supportedChainId'
+import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
-const HeaderFrame = styled.div<{ showBackground: boolean }>`
-  display: grid;
-  grid-template-columns: 120px 1fr 120px;
-  align-items: center;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-  width: 100%;
-  top: 0;
-  position: relative;
-  padding: 1rem;
-  z-index: 21;
-  position: relative;
-  /* Background slide effect on scroll. */
-  background-image: ${({ theme }) => `linear-gradient(to bottom, transparent 50%, ${theme.bg0} 50% )}}`};
-  background-position: ${({ showBackground }) => (showBackground ? '0 -100%' : '0 0')};
-  background-size: 100% 200%;
-  box-shadow: 0px 0px 0px 1px ${({ theme, showBackground }) => (showBackground ? theme.bg2 : 'transparent;')};
-  transition: background-position 0.1s, box-shadow 0.1s;
-  background-blend-mode: hard-light;
+import {
+  Wrapper,
+  Title,
+  LogoImage,
+  HeaderModWrapper,
+  UniIcon,
+  AccountElement,
+  BalanceText,
+  HeaderControls,
+  HeaderElement,
+  HeaderRow,
+} from './styled'
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    grid-template-columns: 48px 1fr 1fr;
-  `};
+import MobileMenuIcon from './MobileMenuIcon'
+import { useWalletInfo, Web3Status } from '@cow/modules/wallet'
+import { OrdersPanel } from '@cow/modules/account/containers/OrdersPanel'
+import NetworkSelector from 'components/Header/NetworkSelector'
+import CowBalanceButton from 'components/CowBalanceButton'
+import SVG from 'react-inlinesvg'
+import { cowSwapLogo } from 'theme/cowSwapAssets'
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding:  1rem;
-    grid-template-columns: 1fr 1fr;
-  `};
+// Assets
+import { toggleDarkModeAnalytics } from 'components/analytics'
+import { useSwapTradeState, useTradeState } from '@cow/modules/trade/hooks/useTradeState'
+import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
+import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useNativeCurrencyBalances } from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding:  1rem;
-    grid-template-columns: 36px 1fr;
-  `};
-`
-
-const HeaderControls = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-self: flex-end;
-`
-
-const HeaderElement = styled.div`
-  display: flex;
-  align-items: center;
-
-  &:not(:first-child) {
-    margin-left: 0.5em;
-  }
-
-  /* addresses safaris lack of support for "gap" */
-  & > *:not(:first-child) {
-    margin-left: 8px;
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    align-items: center;
-  `};
-`
-
-const HeaderLinks = styled(Row)`
-  justify-self: center;
-  background-color: ${({ theme }) => theme.bg0};
-  width: fit-content;
-  padding: 2px;
-  border-radius: 16px;
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: 10px;
-  overflow: auto;
-  align-items: center;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    justify-self: start;
-    `};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    justify-self: center;
-  `};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: row;
-    justify-content: space-between;
-    justify-self: center;
-    z-index: 99;
-    position: fixed;
-    bottom: 0; right: 50%;
-    transform: translate(50%,-50%);
-    margin: 0 auto;
-    background-color: ${({ theme }) => theme.bg0};
-    border: 1px solid ${({ theme }) => theme.bg2};
-    box-shadow: 0px 6px 10px rgb(0 0 0 / 2%);
-  `};
-`
-
-const AccountElement = styled.div<{ active: boolean }>`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background-color: ${({ theme, active }) => (!active ? theme.bg0 : theme.bg0)};
-  border-radius: 16px;
-  white-space: nowrap;
-  width: 100%;
-  height: 40px;
-
-  :focus {
-    border: 1px solid blue;
-  }
-`
-
-const UNIAmount = styled(AccountElement)`
-  color: white;
-  padding: 4px 8px;
-  height: 36px;
-  font-weight: 500;
-  background-color: ${({ theme }) => theme.bg3};
-  background: radial-gradient(174.47% 188.91% at 1.84% 0%, #ff007a 0%, #2172e5 100%), #edeef2;
-`
-
-const UNIWrapper = styled.span`
-  width: fit-content;
-  position: relative;
-  cursor: pointer;
-
-  :hover {
-    opacity: 0.8;
-  }
-
-  :active {
-    opacity: 0.9;
-  }
-`
-
-const BalanceText = styled(Text)`
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    display: none;
-  `};
-`
-
-const Title = styled.a`
-  display: flex;
-  align-items: center;
-  pointer-events: auto;
-  justify-self: flex-start;
-  margin-right: 12px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    justify-self: center;
-  `};
-  :hover {
-    cursor: pointer;
-  }
-`
-
-const UniIcon = styled.div`
-  transition: transform 0.3s ease;
-  :hover {
-    transform: rotate(-5deg);
-  }
-
-  position: relative;
-`
-
-const activeClassName = 'active'
-
-const StyledNavLink = styled(NavLink)`
-  ${({ theme }) => theme.flexRowNoWrap}
-  align-items: left;
-  border-radius: 3rem;
-  outline: none;
-  cursor: pointer;
-  text-decoration: none;
-  color: ${({ theme }) => theme.text2};
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 8px 12px;
-  word-break: break-word;
-  overflow: hidden;
-  white-space: nowrap;
-  &.${activeClassName} {
-    border-radius: 14px;
-    font-weight: 600;
-    justify-content: center;
-    color: ${({ theme }) => theme.text1};
-    background-color: ${({ theme }) => theme.bg1};
-  }
-
-  :hover,
-  :focus {
-    color: ${({ theme }) => darken(0.1, theme.text1)};
-  }
-`
-
-const StyledExternalLink = styled(ExternalLink)`
-  ${({ theme }) => theme.flexRowNoWrap}
-  align-items: left;
-  border-radius: 3rem;
-  outline: none;
-  cursor: pointer;
-  text-decoration: none;
-  color: ${({ theme }) => theme.text2};
-  font-size: 1rem;
-  width: fit-content;
-  margin: 0 12px;
-  font-weight: 500;
-
-  &.${activeClassName} {
-    border-radius: 14px;
-    font-weight: 600;
-    color: ${({ theme }) => theme.text1};
-  }
-
-  :hover,
-  :focus {
-    color: ${({ theme }) => darken(0.1, theme.text1)};
-    text-decoration: none;
-  }
-`
+const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
+  [ChainId.GNOSIS_CHAIN]: 'xDAI',
+}
 
 export default function Header() {
-  const { account, chainId } = useWeb3React()
+  const { account, chainId: connectedChainId } = useWalletInfo()
+  const chainId = supportedChainId(connectedChainId)
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
-  const [darkMode] = useDarkModeManager()
-  const { white, black } = useTheme()
+  const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
+  const [darkMode, toggleDarkModeAux] = useDarkModeManager()
+  const toggleDarkMode = useCallback(() => {
+    toggleDarkModeAnalytics(!darkMode)
+    toggleDarkModeAux()
+  }, [toggleDarkModeAux, darkMode])
+  const swapState = useSwapTradeState()
+  const { state: tradeState } = useTradeState()
 
-  const toggleClaimModal = useToggleSelfClaimModal()
+  const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
+  const handleOpenOrdersPanel = () => {
+    account && setIsOrdersPanelOpen(true)
+  }
+  const handleCloseOrdersPanel = () => {
+    setIsOrdersPanelOpen(false)
+    !isOrdersPanelOpen && removeBodyClass('noScroll')
+  }
 
-  const availableClaim: boolean = useUserHasAvailableClaim(account)
+  const navigate = useNavigate()
+  const handleBalanceButtonClick = () => navigate('/account')
+  const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToMedium = useMediaQuery(upToMedium)
+  const isUpToSmall = useMediaQuery(upToSmall)
+  const isLargeAndUp = useMediaQuery(LargeAndUp)
 
-  const { claimTxn } = useUserHasSubmittedClaim(account ?? undefined)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const handleMobileMenuOnClick = useCallback(() => {
+    isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
+  }, [isUpToLarge, isMobileMenuOpen])
 
-  const showClaimPopup = useShowClaimPopup()
+  const tradeMenuContext = useMemo(() => {
+    const state = tradeState || swapState
+    const defaultTradeState = getDefaultTradeState(chainId || state.chainId || SupportedChainId.MAINNET)
+    const networkWasChanged = chainId && state.chainId && chainId !== state.chainId
 
-  const scrollY = useScrollPosition()
+    // When network was changed - use the deafult trade state
+    const inputCurrencyId =
+      (networkWasChanged
+        ? defaultTradeState.inputCurrencyId
+        : state.inputCurrencyId || defaultTradeState.inputCurrencyId) || undefined
+    const outputCurrencyId =
+      (networkWasChanged
+        ? defaultTradeState.outputCurrencyId
+        : state.outputCurrencyId || defaultTradeState.outputCurrencyId) || undefined
 
-  const {
-    infoLink,
-    nativeCurrency: { symbol: nativeCurrencySymbol },
-  } = getChainInfoOrDefault(chainId)
+    return {
+      inputCurrencyId,
+      outputCurrencyId,
+      chainId: defaultTradeState.chainId?.toString(),
+    }
+  }, [chainId, tradeState, swapState])
+
+  const menuContext: MainMenuContext = {
+    darkMode,
+    toggleDarkMode,
+    handleMobileMenuOnClick,
+    tradeContext: tradeMenuContext,
+  }
+
+  // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
+  // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
+  useEffect(() => {
+    isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
+  }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge, isUpToMedium, isUpToSmall, isLargeAndUp])
 
   return (
-    <HeaderFrame showBackground={scrollY > 45}>
-      <ClaimModal />
-      <Title href=".">
-        <UniIcon>
-          <Logo fill={darkMode ? white : black} width="24px" height="100%" title="logo" />
-          <HolidayOrnament />
-        </UniIcon>
-      </Title>
-      <HeaderLinks>
-        <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
-          <Trans>Swap</Trans>
-        </StyledNavLink>
-        <StyledNavLink data-cy="pool-nav-link" id={`pool-nav-link`} to={'/pool'}>
-          <Trans>Pool</Trans>
-        </StyledNavLink>
-        {(!chainId || chainId === SupportedChainId.MAINNET) && (
-          <StyledNavLink id={`vote-nav-link`} to={'/vote'}>
-            <Trans>Vote</Trans>
-          </StyledNavLink>
-        )}
-        <StyledExternalLink id={`charts-nav-link`} href={infoLink}>
-          <Trans>Charts</Trans>
-          <sup>↗</sup>
-        </StyledExternalLink>
-      </HeaderLinks>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
+      <HeaderModWrapper>
+        <HeaderRow>
+          <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
+            <UniIcon>
+              <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
+                <SVG src={cowSwapLogo(darkMode)} />
+              </LogoImage>
+            </UniIcon>
+          </Title>
+          <MenuTree items={MAIN_MENU} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
+        </HeaderRow>
 
-      <HeaderControls>
-        <HeaderElement>
+        <HeaderControls>
           <NetworkSelector />
-        </HeaderElement>
-        <HeaderElement>
-          {availableClaim && !showClaimPopup && (
-            <UNIWrapper onClick={toggleClaimModal}>
-              <UNIAmount active={!!account && !availableClaim} style={{ pointerEvents: 'auto' }}>
-                <ThemedText.White padding="0 2px">
-                  {claimTxn && !claimTxn?.receipt ? (
-                    <Dots>
-                      <Trans>Claiming UNI</Trans>
-                    </Dots>
-                  ) : (
-                    <Trans>Claim UNI</Trans>
-                  )}
-                </ThemedText.White>
-              </UNIAmount>
-              <CardNoise />
-            </UNIWrapper>
-          )}
-          <AccountElement active={!!account}>
-            {account && userEthBalance ? (
-              <BalanceText style={{ flexShrink: 0, userSelect: 'none' }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                <Trans>
-                  {userEthBalance?.toSignificant(3)} {nativeCurrencySymbol}
-                </Trans>
-              </BalanceText>
-            ) : null}
-            <Web3Status />
-          </AccountElement>
-        </HeaderElement>
-        <HeaderElement>
-          <Menu />
-        </HeaderElement>
-      </HeaderControls>
-    </HeaderFrame>
+
+          <HeaderElement>
+            <CowBalanceButton
+              onClick={handleBalanceButtonClick}
+              account={account}
+              chainId={chainId}
+              isUpToSmall={isUpToSmall}
+            />
+
+            <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
+              {account && userEthBalance && chainId && (
+                <BalanceText>
+                  <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeToken }} />
+                </BalanceText>
+              )}
+              <Web3Status />
+            </AccountElement>
+          </HeaderElement>
+        </HeaderControls>
+
+        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
+        {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
+      </HeaderModWrapper>
+    </Wrapper>
   )
 }

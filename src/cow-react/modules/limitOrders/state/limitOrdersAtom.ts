@@ -1,7 +1,7 @@
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
 
 export interface LimitOrdersState {
@@ -27,7 +27,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
 }
 
 export const limitOrdersAtom = atomWithStorage<LimitOrdersState>(
-  'limit-orders-atom:v3',
+  'limit-orders-atom:v4',
   getDefaultLimitOrdersState(null),
   /**
    * atomWithStorage() has build-in feature to persist state between all tabs

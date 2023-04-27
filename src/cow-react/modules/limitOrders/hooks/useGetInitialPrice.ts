@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 import { useAsyncMemo } from 'use-async-memo'
 
-import { getNativePrice } from '@cow/api/gnosisProtocol/api'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { getAddress } from '@cow/utils/getAddress'
 import ms from 'ms.macro'
 import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import { useWalletInfo } from '@cow/modules/wallet'
+import { getNativePrice } from '@cow/api/gnosisProtocol'
+import * as Sentry from '@sentry/browser'
 
 type PriceResult = number | Error | undefined
 
@@ -29,22 +30,41 @@ async function requestPriceForCurrency(chainId: number | undefined, currency: Cu
     const result = await getNativePrice(chainId, currencyAddress)
 
     if (!result) {
-      throw new Error('Cannot parse initial price')
+      throw new Error('No result from native_price endpoint')
     }
 
-    const price = parsePrice(result.price, currency)
-
+    const price = parsePrice(result.price || 0, currency)
     if (!price) {
-      throw new Error('Cannot parse initial price')
+      throw new Error("Couldn't parse native_price result")
     }
 
     return price
   } catch (error: any) {
+    console.warn('[requestPriceForCurrency] Error fetching native_price', error)
+
+    const sentryError = Object.assign(error, {
+      message: error.message || 'Error fetching native_price ',
+      name: 'NativePriceFetchError',
+    })
+
+    const params = {
+      chainId,
+      tokenAddress: currencyAddress,
+      tokenName: currency?.name,
+      tokenSymbol: currency.symbol,
+    }
+
+    Sentry.captureException(sentryError, {
+      contexts: {
+        params,
+      },
+    })
+
     return error
   }
 }
 
-async function requestPrice(
+export async function requestPrice(
   chainId: number | undefined,
   inputCurrency: Currency | null,
   outputCurrency: Currency | null
@@ -69,7 +89,7 @@ async function requestPrice(
 // When return null it means we failed on price loading
 // TODO: rename it to useNativeBasedPrice
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
-  const { chainId } = useWeb3React()
+  const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
   const [isLoading, setIsLoading] = useState(false)
   const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())

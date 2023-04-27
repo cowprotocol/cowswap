@@ -1,55 +1,72 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { setupListeners } from '@reduxjs/toolkit/query/react'
+import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
 import multicall from 'lib/state/multicall'
 import { load, save } from 'redux-localstorage-simple'
 
-import application from './application/reducer'
-import burn from './burn/reducer'
-import burnV3 from './burn/v3/reducer'
-import connection from './connection/reducer'
-import { api as dataApi } from './data/slice'
-import { updateVersion } from '@src/state/global/actions'
-import lists from './lists/reducer'
-import logs from './logs/slice'
-import mint from './mint/reducer'
-import mintV3 from './mint/v3/reducer'
-// Mod import { routingApi } from './routing/slice'
-import swap from './swap/reducer'
-import transactions from './transactions/reducer'
-import user from './user/reducer'
+import application from 'state/application/reducer'
+import connection from 'state/connection/reducer'
+import { updateVersion } from 'state/global/actions'
+import lists from 'state/lists/reducer'
+import logs from 'state/logs/slice'
+import swap from 'state/swap/reducer'
+import user from 'state/user/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
+// MOD imports
+import orders from 'state/orders/reducer'
+import price from 'state/price/reducer'
+import gas from 'state/gas/reducer'
+import profile from 'state/profile/reducer'
+import enhancedTransactions from 'state/enhancedTransactions/reducer'
+import claim from 'state/claim/reducer'
+import cowToken from 'state/cowToken/reducer'
+
+import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
+import { cowTokenMiddleware } from 'state/cowToken/middleware'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { priceMiddleware } from 'state/price/middleware'
+
+const UNISWAP_REDUCERS = {
+  application,
+  user,
+  connection,
+  swap,
+  multicall: multicall.reducer,
+  logs,
+}
+
+const reducers = {
+  ...UNISWAP_REDUCERS,
+  transactions: enhancedTransactions, // replace transactions state by "enhancedTransactions"
+  lists,
+  orders,
+  price,
+  gas,
+  profile,
+  claim,
+  cowToken,
+}
+
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'orders', 'lists', 'gas', 'affiliate', 'profile', 'swap']
 
 const store = configureStore({
-  reducer: {
-    application,
-    user,
-    connection,
-    transactions,
-    swap,
-    mint,
-    mintV3,
-    burn,
-    burnV3,
-    multicall: multicall.reducer,
-    lists,
-    logs,
-    [dataApi.reducerPath]: dataApi.reducer,
-    // Mod [routingApi.reducerPath]: routingApi.reducer,
-  },
+  reducer: reducers,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: true })
-      .concat(dataApi.middleware)
-      // Mod .concat(routingApi.middleware)
-      .concat(save({ states: PERSISTED_KEYS, debounce: 1000 })),
+    getDefaultMiddleware({ thunk: true, serializableCheck: false })
+      .concat(save({ states: PERSISTED_KEYS, debounce: 1000 }))
+      .concat(popupMiddleware)
+      .concat(cowTokenMiddleware)
+      .concat(soundMiddleware)
+      .concat(appziMiddleware)
+      .concat(priceMiddleware),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
 })
 
-store.dispatch(updateVersion())
+// this instantiate the app / reducers in several places using the default chainId
+store.dispatch(updateVersion({ chainId: DEFAULT_NETWORK_FOR_LISTS }))
 
-setupListeners(store.dispatch)
+// TODO: this is new, should we enable it?
+// setupListeners(store.dispatch)
 
 export default store
 
-export type AppState = ReturnType<typeof store.getState>
+export type AppState = StateFromReducersMapObject<typeof reducers>
 export type AppDispatch = typeof store.dispatch

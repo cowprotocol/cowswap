@@ -1,12 +1,10 @@
-import { useWeb3React } from '@web3-react/core'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { LimitOrdersTradeState, useLimitOrdersTradeState } from './useLimitOrdersTradeState'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
-import { useGnosisSafeInfo } from 'hooks/useGnosisSafeInfo'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import useENSAddress from 'hooks/useENSAddress'
 import { isAddress } from 'utils'
@@ -15,10 +13,15 @@ import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitO
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { isUnsupportedTokenInQuote } from '@cow/modules/limitOrders/utils/isUnsupportedTokenInQuote'
+import {
+  limitOrdersSettingsAtom,
+  LimitOrdersSettingsState,
+} from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
   CanTrade = 'CanTrade',
+  ExpertCanTrade = 'ExpertCanTrade',
   Loading = 'Loading',
   SwapIsUnsupported = 'SwapIsUnsupported',
   WrapUnwrap = 'WrapUnwrap',
@@ -33,6 +36,7 @@ export enum LimitOrdersFormState {
   CantLoadBalances = 'CantLoadBalances',
   QuoteError = 'QuoteError',
   ZeroPrice = 'ZeroPrice',
+  FeeExceedsFrom = 'FeeExceedsFrom',
 }
 
 interface LimitOrdersFormParams {
@@ -43,6 +47,7 @@ interface LimitOrdersFormParams {
   currentAllowance: CurrencyAmount<Token> | undefined
   approvalState: ApprovalState
   tradeState: LimitOrdersTradeState
+  settingsState: LimitOrdersSettingsState
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
   activeRate: Fraction | null
@@ -60,6 +65,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     currentAllowance,
     approvalState,
     tradeState,
+    settingsState,
     recipientEnsAddress,
     quote,
     isWrapOrUnwrap,
@@ -75,8 +81,20 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
   const inputAmountIsNotSet = !inputCurrencyAmount || inputCurrencyAmount.equalTo(0)
   const outputAmountIsNotSet = !outputCurrencyAmount || outputCurrencyAmount.equalTo(0)
+  const feeAmount =
+    quote?.response?.quote?.feeAmount && sellAmount
+      ? CurrencyAmount.fromRawAmount(sellAmount.currency, quote?.response?.quote?.feeAmount)
+      : null
 
-  if (quote?.error) {
+  if (!inputCurrency || !outputCurrency) {
+    return LimitOrdersFormState.NeedToSelectToken
+  }
+
+  if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
+    return LimitOrdersFormState.InvalidRecipient
+  }
+
+  if (!isWrapOrUnwrap && quote?.error) {
     return LimitOrdersFormState.QuoteError
   }
 
@@ -86,10 +104,6 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
   if (!account) {
     return LimitOrdersFormState.WalletIsNotConnected
-  }
-
-  if (!inputCurrency || !outputCurrency) {
-    return LimitOrdersFormState.NeedToSelectToken
   }
 
   if (isWrapOrUnwrap) {
@@ -104,10 +118,6 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
       return LimitOrdersFormState.AmountIsNotSet
     }
-  }
-
-  if (recipient !== null && !recipientEnsAddress && !isAddress(recipient)) {
-    return LimitOrdersFormState.InvalidRecipient
   }
 
   if (!isSupportedWallet) {
@@ -145,14 +155,23 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.ZeroPrice
   }
 
+  if (sellAmount && feeAmount?.greaterThan(sellAmount)) {
+    return LimitOrdersFormState.FeeExceedsFrom
+  }
+
+  if (settingsState.expertMode) {
+    return LimitOrdersFormState.ExpertCanTrade
+  }
   return LimitOrdersFormState.CanTrade
 }
 
 export function useLimitOrdersFormState(): LimitOrdersFormState {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account } = useWalletInfo()
   const tradeState = useLimitOrdersTradeState()
-  const { isSupportedWallet } = useWalletInfo()
-  const isReadonlyGnosisSafeUser = useGnosisSafeInfo()?.isReadOnly || false
+  const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const { isSupportedWallet } = useWalletDetails()
+  const gnosisSafeInfo = useGnosisSafeInfo()
+  const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const { isWrapOrUnwrap } = useDetectNativeToken()
@@ -176,6 +195,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
     approvalState,
     currentAllowance,
     tradeState,
+    settingsState,
     recipientEnsAddress,
     quote,
     activeRate,

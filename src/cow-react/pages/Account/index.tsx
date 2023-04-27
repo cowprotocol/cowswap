@@ -6,9 +6,6 @@ import { Content, Title } from '@cow/modules/application/pure/Page'
 import { Routes as RoutesEnum } from '@cow/constants/routes'
 import { Loading } from 'components/FlashingLoading'
 import { Container, CardsWrapper } from './styled'
-import { useWeb3React } from '@web3-react/core'
-import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
-import { SupportedChainId as ChainId } from 'constants/chains'
 import { PageName } from 'components/AmplitudeAnalytics/constants'
 import { Trace } from 'components/AmplitudeAnalytics/Trace'
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'
@@ -16,14 +13,11 @@ import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ '@cow/pages/Account/Balances'))
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ '@cow/pages/Account/Governance'))
-const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ '@cow/pages/Account/Affiliate'))
 
 function _getPropsFromRoute(route: string) {
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', 'Account overview']
-    case RoutesEnum.ACCOUNT_AFFILIATE:
-      return ['account-affiliate', 'Affiliate']
     case RoutesEnum.ACCOUNT_GOVERNANCE:
       return ['account-governance', 'Governance']
     case RoutesEnum.ACCOUNT_TOKENS:
@@ -35,19 +29,14 @@ function _getPropsFromRoute(route: string) {
 
 // Note: As we build these single pages, we will remove this component in the future
 export const AccountOverview = () => {
-  const { chainId } = useWeb3React()
-
   return (
     <Trace page={PageName.ACCOUNT_OVERVIEW_PAGE} shouldLogImpression>
       <Container>
         <PageTitle title="Account Overview" />
-        {chainId === ChainId.MAINNET && <AffiliateStatusCheck />}
-
         <CardsWrapper>
           <Balances />
           <Governance />
         </CardsWrapper>
-        <Affiliate />
       </Container>
     </Trace>
   )

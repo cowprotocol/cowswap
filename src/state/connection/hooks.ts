@@ -1,49 +1,36 @@
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
-import JSBI from 'jsbi'
-import { useTokenBalance, useTokenBalancesWithLoadingIndicator } from 'lib/hooks/useCurrencyBalance'
+import { Token } from '@uniswap/sdk-core'
+import { useOnchainBalances } from '@cow/modules/tokens'
 import { useMemo } from 'react'
 
-import { UNI } from 'constants/tokens'
-import { useAllTokens } from '../../hooks/Tokens'
-import { useUserUnclaimedAmount } from '../claim/hooks'
-import { useTotalUniEarned } from '../stake/hooks'
-
-export {
-  default as useCurrencyBalance,
-  useCurrencyBalances,
-  useNativeCurrencyBalances,
-  useTokenBalance,
-  useTokenBalances,
-  useTokenBalancesWithLoadingIndicator,
-} from 'lib/hooks/useCurrencyBalance'
+import { useAllTokens } from 'hooks/Tokens'
+import { useFavouriteTokens } from 'state/user/hooks'
+import { useWalletInfo } from '@cow/modules/wallet'
+import { TokenAmounts } from '@cow/modules/tokens'
 
 // mimics useAllBalances
-export function useAllTokenBalances(): [{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }, boolean] {
-  const { account } = useWeb3React()
+export function useAllTokenBalances(): [TokenAmounts, boolean] {
+  const { account } = useWalletInfo()
   const allTokens = useAllTokens()
-  const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
-  const [balances, balancesIsLoading] = useTokenBalancesWithLoadingIndicator(account ?? undefined, allTokensArray)
-  return [balances ?? {}, balancesIsLoading]
-}
+  // Mod, add favourite tokens to balances
+  const favTokens = useFavouriteTokens()
 
-// get the total owned, unclaimed, and unharvested UNI for account
-export function useAggregateUniBalance(): CurrencyAmount<Token> | undefined {
-  const { account, chainId } = useWeb3React()
-
-  const uni = chainId ? UNI[chainId] : undefined
-
-  const uniBalance: CurrencyAmount<Token> | undefined = useTokenBalance(account ?? undefined, uni)
-  const uniUnclaimed: CurrencyAmount<Token> | undefined = useUserUnclaimedAmount(account)
-  const uniUnHarvested: CurrencyAmount<Token> | undefined = useTotalUniEarned()
-
-  if (!uni) return undefined
-
-  return CurrencyAmount.fromRawAmount(
-    uni,
-    JSBI.add(
-      JSBI.add(uniBalance?.quotient ?? JSBI.BigInt(0), uniUnclaimed?.quotient ?? JSBI.BigInt(0)),
-      uniUnHarvested?.quotient ?? JSBI.BigInt(0)
+  const allTokensArray = useMemo(() => {
+    const favTokensObj = favTokens.reduce(
+      (acc, cur: Token) => {
+        acc[cur.address] = cur
+        return acc
+      },
+      {} as {
+        [address: string]: Token
+      }
     )
-  )
+
+    return Object.values({ ...favTokensObj, ...allTokens })
+  }, [allTokens, favTokens])
+
+  const { isLoading, amounts } = useOnchainBalances({
+    account: account ?? undefined,
+    tokens: allTokensArray,
+  })
+  return [amounts ?? {}, isLoading]
 }

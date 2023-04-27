@@ -1,5 +1,7 @@
 /// <reference types="react-scripts" />
 
+declare module '*.md'
+
 declare module '@metamask/jazzicon' {
   export default function (diameter: number, seed: number): HTMLElement
 }
@@ -17,6 +19,8 @@ interface Window {
     autoRefreshOnNetworkChange?: boolean
     setSelectedProvider: (any) => void
     providers: [any]
+    isTrust?: boolean
+    isTrustWallet?: boolean
   }
   web3?: Record<string, unknown>
 }

@@ -1,7 +1,6 @@
 import * as styledEl from './styled'
-import { StatusItem } from '../Orders/OrderRow'
-import { orderStatusTitleMap } from '../Orders/OrderRow'
 import { ParsedOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { OrderStatusBox } from '@cow/modules/limitOrders/pure/OrderStatusBox'
 
 export type Props = {
   order: ParsedOrder
@@ -10,9 +9,7 @@ export type Props = {
 export function StatusField({ order }: Props) {
   return (
     <styledEl.Value>
-      <StatusItem style={{ width: 'auto' }} cancelling={!!order.isCancelling} status={order.status}>
-        {order.isCancelling ? 'Cancelling...' : orderStatusTitleMap[order.status]}
-      </StatusItem>
+      <OrderStatusBox order={order} widthAuto />
     </styledEl.Value>
   )
 }

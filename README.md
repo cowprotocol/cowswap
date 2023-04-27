@@ -3,7 +3,7 @@
 
 CoW Swap is the first trading interface built on top of CoW Protocol.
 
-It allows you to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
+It allows you to buy and sell tokens using gasless orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.
 
 - 🐮**Official Website**🐮: <https://swap.cow.fi/>
 
@@ -11,7 +11,7 @@ It allows you to buy and sell tokens using gas-less orders that are settled peer
 
 - Protocol: <https://cow.fi>
 - Docs: <https://docs.cow.fi>
-- Stats: <https://dune.com/cowprotocol/Gnosis-Protocol-V2>
+- Stats: <https://dune.com/cowprotocol/cowswap>
 - Twitter: [@CoWSwap](https://twitter.com/CoWSwap)
 - Discord: <https://discord.com/invite/cowprotocol>
 
@@ -42,7 +42,19 @@ yarn test
 
 ### Integration test
 
-Normally:
+> Make sure you add the required environment varianbles to your `.env.local` file with:
+>
+> - `INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
+> - `INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
+
+To launch it with our development server (so you have live-reloading):
+
+```bash
+yarn start
+yarn cypress
+```
+
+Alternativelly, you can build the project and launch the integration test.
 
 ```bash
 yarn build
@@ -57,13 +69,6 @@ yarn serve
 yarn cypress
 ```
 
-If we want to use the Cypress UI, and live reloading on the web app:
-
-```bash
-yarn start
-yarn cypress
-```
-
 ### Run cosmos
 
 This will start a server on the `http://localhost:5000/`
@@ -72,13 +77,24 @@ This will start a server on the `http://localhost:5000/`
 yarn run cosmos
 ```
 
-## Configuring the environment (optional)
+## Configuring the environment
 
 The app has some default configuration, but it's highly encouraged to define your own.
 
 ### Local configuration
 
 Make a copy of `.env` named `.env.local`, this will allow you to set your own configuration only in your local environment.
+
+#### What is the mandatory minimum to be able to run the application?
+
+Your environment MUST have the following variables defined:
+`REACT_APP_INFURA_KEY`=YOUR_INFURA_KEY
+`REACT_APP_NETWORK_URL_1`=https://mainnet.infura.io/v3/{YOUR_INFURA_KEY}
+`REACT_APP_NETWORK_URL_5`=https://goerli.infura.io/v3/{YOUR_INFURA_KEY}
+
+Additionally, to successfully run E2E / Integration tests locally you must have;
+`INTEGRATION_TESTS_INFURA_KEY`=YOUR_INFURA_KEY
+`INTEGRATION_TESTS_PRIVATE_KEY`=YOUR_TEST_WALLET_PRIVATE_KEY
 
 ### Production configuration
 
@@ -94,6 +110,7 @@ All price feeds are enabled by default, but they can be individually disabled by
 | ---------------- | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **CoW Protocol** | `REACT_APP_PRICE_FEED_GP_ENABLED`        | `boolean` (default = `true`) | [CoW Protocol](https://docs.cow.fi/) price estimation. Used for all price estimation.                              |
 | **Paraswap**     | `REACT_APP_PRICE_FEED_PARASWAP_ENABLED`  | `boolean` (default = `true`) | [Paraswap](https://paraswap.io/) price estimation. Used for all price estimations.                                 |
+| **1inch**        | `REACT_APP_PRICE_FEED_1INCH_ENABLED`     | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations.                               |
 | **0x**           | `REACT_APP_PRICE_FEED_0X_ENABLED`        | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.                                             |
 | **Coingecko**    | `REACT_APP_PRICE_FEED_COINGECKO_ENABLED` | `boolean` (default = `true`) | [Coingecko](coingecko.com) price estimation. Used only for USD estimations to calculate the slippage on the trade. |
 
@@ -110,7 +127,7 @@ For example, CoW Swap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ
 which has the hexadecimal digest `0x487B02C558D729ABAF3ECF17881A4181E5BC2446429A0995142297E897B6EB37` (See
 [CID Explorer](https://cid.ipfs.io/#QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ) for more details).
 
-The format of the JSON follows this typescript format: <src/custom/utils/metadata.ts>
+The format of the JSON follows this typescript format: <src/utils/metadata.ts>
 
 To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [CoW Swap's Discord channel](https://discord.com/invite/cowprotocol/). For more details, check out the environment file (<.env>)
 
@@ -151,7 +168,7 @@ The sitemap can be found in <./public/sitemap.xml>
 
 To update its content:
 
-1. Edit the list of pages in <./src/custom/sitemap.js>
+1. Edit the list of pages in <./src/sitemap.js>
 2. Run `yarn sitemap`
 3. Commit the changes to git
 

@@ -1,16 +1,19 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BalancesAndAllowances } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useOrdersBalancesAndAllowances'
+import { BalancesAndAllowances } from '@cow/modules/tokens'
 import { Order } from 'state/orders/actions'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 
 export interface OrderParams {
+  chainId: SupportedChainId | undefined
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
   rateInfoParams: RateInfoParams
   hasEnoughBalance: boolean
   hasEnoughAllowance: boolean
 }
+
+const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
 
 export function getOrderParams(
   chainId: SupportedChainId | undefined,
@@ -25,17 +28,28 @@ export function getOrderParams(
     inputCurrencyAmount: sellAmount,
     outputCurrencyAmount: buyAmount,
     activeRateFiatAmount: null,
-    inversedActiveRateFiatAmount: null,
+    invertedActiveRateFiatAmount: null,
   }
 
   const { balances, allowances } = balancesAndAllowances
-  const balance = balances[order.inputToken.address]
-  const allowance = allowances[order.inputToken.address]
+  const balance = balances[order.inputToken.address]?.value
+  const allowance = allowances[order.inputToken.address]?.value
 
-  const hasEnoughBalance = isEnoughAmount(sellAmount, balance)
-  const hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
+  let hasEnoughBalance, hasEnoughAllowance
+
+  if (order.partiallyFillable) {
+    // When balance or allowance are undefined (loading state), show as true
+    // When loaded, check there's at least PERCENTAGE_FOR_PARTIAL_FILLS of balance/allowance to consider it as enough
+    const amount = sellAmount.multiply(PERCENTAGE_FOR_PARTIAL_FILLS)
+    hasEnoughBalance = balance === undefined || isEnoughAmount(amount, balance)
+    hasEnoughAllowance = allowance === undefined || isEnoughAmount(amount, allowance)
+  } else {
+    hasEnoughBalance = isEnoughAmount(sellAmount, balance)
+    hasEnoughAllowance = isEnoughAmount(sellAmount, allowance)
+  }
 
   return {
+    chainId,
     sellAmount,
     buyAmount,
     rateInfoParams,

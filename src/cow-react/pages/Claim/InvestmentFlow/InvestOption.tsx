@@ -20,13 +20,11 @@ import Row from 'components/Row'
 import CheckCircle from 'assets/cow-swap/check.svg'
 import ImportantIcon from 'assets/cow-swap/important.svg'
 import { ApprovalState, useApproveCallbackFromClaim } from 'hooks/useApproveCallback'
-import { useCurrencyBalance } from 'state/connection/hooks'
-import { useWeb3React } from '@web3-react/core'
 import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
 import { StyledNumericalInput } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
 
 import { ButtonConfirmed } from 'components/Button'
-import { ButtonSize } from 'theme'
+import { ButtonSize } from 'theme/enum'
 import Loader from 'components/Loader'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -41,6 +39,8 @@ import { InvestmentFlowProps } from '.'
 import { getProviderErrorMessage } from 'utils/misc'
 import { formatTokenAmount } from '@cow/utils/amountFormat'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useWalletInfo } from '@cow/modules/wallet'
+import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>
@@ -75,7 +75,7 @@ type InvestOptionProps = {
 export default function InvestOption({ claim, openModal, closeModal }: InvestOptionProps) {
   const { currencyAmount, price, cost: maxCost, index } = claim
 
-  const { account, chainId } = useWeb3React()
+  const { account, chainId } = useWalletInfo()
   const { updateInvestAmount, updateInvestError, setIsTouched } = useClaimDispatchers()
   const { investFlowData, activeClaimAccount, estimatedGas } = useClaimState()
 

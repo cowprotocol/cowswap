@@ -13,20 +13,19 @@ import {
 import { useWeb3React } from '@web3-react/core'
 import { getBlockExplorerUrl } from 'utils'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { SupportedChainId as ChainId } from 'constants/chains'
-import { ButtonPrimary } from 'custom/components/Button'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { ButtonPrimary } from 'components/Button'
 import vCOWImage from 'assets/cow-swap/vCOW.png'
 import SVG from 'react-inlinesvg'
 import ArrowIcon from 'assets/cow-swap/arrow.svg'
 import CowImage from 'assets/cow-swap/cow_v2.svg'
-import { useTokenBalance } from 'state/connection/hooks'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'state/cowToken/hooks'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'constants/index'
 import { COW, V_COW } from 'constants/tokens'
 import { useErrorModal } from 'hooks/useErrorMessageAndModal'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import AddToMetamask from '@cow/modules/wallet/api/components/AddToMetamask'
+import AddToMetamask from '@cow/modules/wallet/web3-react/containers/AddToMetamask'
 import { Link } from 'react-router-dom'
 import CopyHelper from 'components/Copy'
 import { SwapVCowStatus } from 'state/cowToken/actions'
@@ -38,12 +37,16 @@ import { getProviderErrorMessage } from 'utils/misc'
 import { MetaMask } from '@web3-react/metamask'
 import { HelpCircle } from '@cow/common/pure/HelpCircle'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { useWalletInfo } from '@cow/modules/wallet'
+import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
 
 export default function Profile() {
-  const { account, chainId = ChainId.MAINNET, provider, connector } = useWeb3React()
+  const { provider, connector } = useWeb3React()
+  const { account, chainId = ChainId.MAINNET } = useWalletInfo()
   const previousAccount = usePrevious(account)
 
   const blockNumber = useBlockNumber()
@@ -61,7 +64,8 @@ export default function Profile() {
   const cowToken = COW[chainId]
   const vCowToken = V_COW[chainId]
   // Cow balance
-  const cow = useTokenBalance(account || undefined, chainId ? cowToken : undefined)
+  const cow =
+    useTokenBalance(account || undefined, chainId ? cowToken : undefined) || CurrencyAmount.fromRawAmount(cowToken, 0)
 
   // vCow balance values
   const { unvested, vested, total, isLoading: isVCowLoading } = useVCowData()

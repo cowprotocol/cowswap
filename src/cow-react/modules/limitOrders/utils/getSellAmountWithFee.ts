@@ -1,4 +1,4 @@
-import { Order } from '@src/custom/state/orders/actions'
+import { Order } from 'state/orders/actions'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 export function getSellAmountWithFee(order: Order): CurrencyAmount<Token> {
