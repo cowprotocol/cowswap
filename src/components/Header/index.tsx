@@ -29,7 +29,6 @@ import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
 import { cowSwapLogo, AnniversaryHatImage } from 'theme/cowSwapAssets'
-import Confetti from 'components/Confetti'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
@@ -117,8 +116,6 @@ export default function Header() {
 
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
-      {/* Anniversary confetti */}
-      <Confetti start={true} />
       <HeaderModWrapper>
         <HeaderRow>
           <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
