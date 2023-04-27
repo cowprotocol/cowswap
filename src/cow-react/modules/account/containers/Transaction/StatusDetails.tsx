@@ -100,7 +100,7 @@ export function StatusDetails(props: StatusDetailsProps) {
   const hasCancellationHash = !!cancellationHash && !isCancelling && !isConfirmed && isCancelled
   const cancellationTxLink = hasCancellationHash
     ? safeTransaction
-      ? getSafeWebUrl(chainId, safeTransaction.safe, safeTransaction.safeTxHash)
+      ? getSafeWebUrl(chainId, safeTransaction.safe, cancellationHash)
       : getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)
     : null
 
