@@ -13,14 +13,11 @@ import { PageTitle } from '@cow/modules/application/containers/PageTitle'
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ '@cow/pages/Account/Balances'))
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ '@cow/pages/Account/Governance'))
-const Affiliate = lazy(() => import(/* webpackChunkName: "affiliate" */ '@cow/pages/Account/Affiliate'))
 
 function _getPropsFromRoute(route: string) {
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', 'Account overview']
-    case RoutesEnum.ACCOUNT_AFFILIATE:
-      return ['account-affiliate', 'Affiliate']
     case RoutesEnum.ACCOUNT_GOVERNANCE:
       return ['account-governance', 'Governance']
     case RoutesEnum.ACCOUNT_TOKENS:
@@ -40,7 +37,6 @@ export const AccountOverview = () => {
           <Balances />
           <Governance />
         </CardsWrapper>
-        <Affiliate />
       </Container>
     </Trace>
   )

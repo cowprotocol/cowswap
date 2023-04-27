@@ -11,7 +11,7 @@ const Wrapper = styled(MarkdownPage)`
 export default function TermsAndConditions() {
   return (
     <>
-      <PageTitle title="ToC" />
+      <PageTitle title="Terms and conditions" />
       <Wrapper contentFile={contentFile} />
     </>
   )

@@ -7,7 +7,6 @@ import Header from 'components/Header'
 
 import DarkModeQueryParamReader from 'theme'
 
-import ReferralLinkUpdater from 'state/affiliate/updater'
 import URLWarning from 'components/Header/URLWarning'
 import Footer from 'components/Footer'
 
@@ -33,7 +32,6 @@ function WrappedApp() {
         </styledEl.HeaderWrapper>
         <styledEl.BodyWrapper>
           <TopLevelModals />
-          <ReferralLinkUpdater />
           <RoutesApp />
           <styledEl.Marginer />
         </styledEl.BodyWrapper>

@@ -207,7 +207,6 @@ export const FAQ_MENU_LINKS = [
   { title: 'Protocol', url: '/faq/protocol' },
   { title: 'Token', url: '/faq/token' },
   { title: 'Trading', url: '/faq/trading' },
-  { title: 'Affiliate', url: '/faq/affiliate' },
   { title: 'Limit orders', url: '/faq/limit-order' },
   { title: 'Selling Native tokens', url: '/faq/sell-native' },
 ]

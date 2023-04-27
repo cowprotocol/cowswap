@@ -1345,13 +1345,15 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-2.0.3.tgz#3f2a9be9d5b7acb928033ffcedaf03c07020d6ee"
-  integrity sha512-f6aXx7k/18OpXdQwblimdzmb/Z/GVFTA8T1i0EFzVXXz6TapKrz/ZVPD0r+ESHa8u8aBg8H8cEpDalqVMMui4A==
+"@cowprotocol/cow-sdk@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-2.0.4.tgz#8844c9508facb5ec7b05299e046513f4803e7eff"
+  integrity sha512-U46rpteCIqYuvjMRc/xs0kWO81Vq5y03ykuTuM7nb058sQV+jQ58IIFGT6NQk1CcaJeeZWA9+nhmlOo9KmhsZA==
   dependencies:
     "@cowprotocol/contracts" "^1.4.0"
     "@ethersproject/abstract-signer" "^5.7.0"
+    exponential-backoff "^3.1.1"
+    limiter "^2.1.0"
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#v1.0.0-artifacts":
   version "1.0.0"

@@ -74,7 +74,7 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   const isValid = !input.inputError && input.feeWarningAccepted && input.impactWarningAccepted
   const swapBlankState = !input.inputError && !input.trade
 
-  if (quoteError) {
+  if (quoteError && ![WrapType.WRAP, WrapType.UNWRAP].includes(wrapType)) {
     const quoteErrorState = quoteErrorToSwapButtonState[quoteError]
 
     if (quoteErrorState) return quoteErrorState

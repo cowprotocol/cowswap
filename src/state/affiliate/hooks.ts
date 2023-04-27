@@ -3,11 +3,11 @@ import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { setReferralAddressActive, updateReferralAddress } from 'state/affiliate/actions'
 
 export function useReferralAddress() {
-  return useAppSelector((state) => state.affiliate.referralAddress)
+  return useAppSelector((state: any) => state.affiliate.referralAddress)
 }
 
 export function useAffiliateAddress() {
-  return useAppSelector((state) => state.affiliate.address)
+  return useAppSelector((state: any) => state.affiliate.address)
 }
 
 export function useResetReferralAddress() {
@@ -23,5 +23,5 @@ export function useSetReferralAddressActive() {
 }
 
 export function useIsNotificationClosed(id?: string): boolean | null {
-  return useAppSelector((state) => (id ? state.affiliate.isNotificationClosed?.[id] ?? false : null))
+  return useAppSelector((state: any) => (id ? state.affiliate.isNotificationClosed?.[id] ?? false : null))
 }
