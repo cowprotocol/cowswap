@@ -1,15 +1,11 @@
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
 import { Order } from 'state/orders/actions'
-import { useCoingeckoUsdValue } from 'hooks/useStablecoinPrice'
+import { useGetSurplusData } from '@cow/common/hooks/useGetSurplusFiatValue'
 import * as styledEl from './styled'
-import { MIN_FIAT_SURPLUS_VALUE } from 'constants/index'
 
 export function ExecutedSummary({ order }: { order: Order }) {
-  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)
-
-  const fiatValue = useCoingeckoUsdValue(surplusAmount)
-  // I think its fine here to use Number because its always USD value
-  const showFiatValue = Number(fiatValue?.toExact()) > MIN_FIAT_SURPLUS_VALUE
+  const { formattedFilledAmount, formattedSwappedAmount } = getExecutedSummaryData(order)
+  const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
   return (
     <styledEl.SummaryWrapper>
@@ -28,7 +24,7 @@ export function ExecutedSummary({ order }: { order: Order }) {
             <styledEl.StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
             {showFiatValue && (
               <styledEl.FiatWrapper>
-                (<styledEl.StyledFiatAmount amount={fiatValue} />)
+                (<styledEl.StyledFiatAmount amount={surplusFiatValue} />)
               </styledEl.FiatWrapper>
             )}
           </styledEl.SurplusAmount>

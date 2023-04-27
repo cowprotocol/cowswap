@@ -3,9 +3,8 @@ import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
 import { Order } from 'state/orders/actions'
 import { DisplayLink } from '../TransactionConfirmationModal'
-import { useCoingeckoUsdValue } from 'hooks/useStablecoinPrice'
-import { MIN_FIAT_SURPLUS_VALUE } from 'constants/index'
 import * as styledEl from './styled'
+import { useGetSurplusData } from '@cow/common/hooks/useGetSurplusFiatValue'
 
 export function TransactionExecutedContent({
   order,
@@ -16,11 +15,8 @@ export function TransactionExecutedContent({
   chainId: SupportedChainId
   hash?: string
 }) {
-  const { formattedFilledAmount, formattedSwappedAmount, surplusAmount, surplusToken } = getExecutedSummaryData(order)
-
-  const fiatValue = useCoingeckoUsdValue(surplusAmount)
-  // I think its fine here to use Number because its always USD value
-  const showFiatValue = Number(fiatValue?.toExact()) > MIN_FIAT_SURPLUS_VALUE
+  const { formattedFilledAmount, formattedSwappedAmount } = getExecutedSummaryData(order)
+  const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 
   return (
     <styledEl.ExecutedWrapper>
@@ -39,7 +35,7 @@ export function TransactionExecutedContent({
             You received a surplus of <styledEl.StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />{' '}
             {showFiatValue && (
               <span>
-                (<styledEl.StyledFiatAmount amount={fiatValue} />)
+                (<styledEl.StyledFiatAmount amount={surplusFiatValue} />)
               </span>
             )}{' '}
             on this trade!
