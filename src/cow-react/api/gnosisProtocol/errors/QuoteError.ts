@@ -60,6 +60,7 @@ export function mapOperatorErrorToQuoteError(error?: ApiErrorObject): GpQuoteErr
   }
 }
 
+// TODO: rename it or delete it
 export default class GpQuoteError extends Error {
   name = 'QuoteErrorObject'
   type: GpQuoteErrorCodes

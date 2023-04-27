@@ -1,6 +1,6 @@
 import { useWalletInfo } from '@cow/modules/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
-import { L2_CHAIN_IDS } from '@src/constants/chains'
+import { L2_CHAIN_IDS } from 'constants/chains'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
 import { useMemo } from 'react'
 import { useAppSelector } from 'state/hooks'

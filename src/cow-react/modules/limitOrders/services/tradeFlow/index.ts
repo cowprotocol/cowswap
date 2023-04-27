@@ -9,13 +9,13 @@ import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOr
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { Web3Provider } from '@ethersproject/providers'
 import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { Percent } from '@uniswap/sdk-core'
 
 export interface TradeFlowContext {
   // signer changes creates redundant re-renders
@@ -38,6 +38,7 @@ export async function tradeFlow(
   params: TradeFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   beforeTrade?: () => void
 ): Promise<string | null> {
   const { account, recipientAddressOrName, sellToken, buyToken } = params.postOrderParams
@@ -53,7 +54,7 @@ export async function tradeFlow(
   logTradeFlow('LIMIT ORDER FLOW', 'STEP 1: confirm price impact')
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
 
-  if (!isTooLowRate && priceImpact.priceImpact && !confirmPriceImpactWithoutFee(priceImpact.priceImpact)) {
+  if (!isTooLowRate && priceImpact.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpact.priceImpact))) {
     throw new PriceImpactDeclineError()
   }
 

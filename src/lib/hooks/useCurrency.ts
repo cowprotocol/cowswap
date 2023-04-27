@@ -8,9 +8,9 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
 import { isChainAllowed } from '@cow/modules/wallet/web3-react/connection'
 
-import { TOKEN_SHORTHANDS } from '../../constants/tokens'
-import { isAddress } from '../../utils'
-import { supportedChainId } from '../../utils/supportedChainId'
+import { TOKEN_SHORTHANDS } from 'constants/tokens'
+import { isAddress } from 'utils'
+import { supportedChainId } from 'utils/supportedChainId'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 // parse a name or symbol from a token response
@@ -104,7 +104,7 @@ export function useCurrencyFromMap(tokens: TokenMap, currencyId?: string | null)
   const nativeCurrency = useNativeCurrency()
   const { connector } = useWeb3React()
   const { chainId } = useWalletInfo()
-  const isNative = Boolean(nativeCurrency && currencyId?.toUpperCase() === 'ETH')
+  const isNative = Boolean(nativeCurrency && ['ETH', 'XDAI'].includes(currencyId?.toUpperCase() || '')) // MOD!!
   const shorthandMatchAddress = useMemo(() => {
     const chain = supportedChainId(chainId)
     return chain && currencyId ? TOKEN_SHORTHANDS[currencyId.toUpperCase()]?.[chain] : undefined

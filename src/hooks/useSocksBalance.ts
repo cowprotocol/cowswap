@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 import { SOCKS_CONTROLLER_ADDRESSES } from 'constants/addresses'
-import { SupportedChainId } from '@src/constants/chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useMemo } from 'react'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'

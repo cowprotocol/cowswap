@@ -1,22 +1,24 @@
-import { useWalletInfo } from '@cow/modules/wallet'
-import { isDevelopmentEnv } from '@src/utils/env'
-import { useEffect } from 'react'
 import { UaEventOptions } from 'react-ga4/types/ga4'
-import { Path } from 'react-router-dom'
 import { isMobile } from 'utils/userAgent'
-import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
-
-import GoogleAnalyticsProvider from './GoogleAnalyticsProvider'
+import { ErrorInfo } from 'react'
+import { GAProvider } from './provider'
+import { Dimensions } from './types'
+import { serviceWorkerAnalytics, initAnalytics } from './events/otherEvents'
+export { useAnalyticsReporter } from './hooks/useAnalyticsReporter'
 
 const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
 export const GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY = 'ga_client_id'
 
 const storedClientId = window.localStorage.getItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY)
 
-const googleAnalytics = new GoogleAnalyticsProvider()
+export const googleAnalytics = new GAProvider()
 
 export function sendEvent(event: string | UaEventOptions, params?: any) {
   return googleAnalytics.sendEvent(event, params)
+}
+
+export function sendError(error: Error, errorInfo: ErrorInfo) {
+  return googleAnalytics.sendError(error, errorInfo)
 }
 
 export function outboundLink(
@@ -30,10 +32,6 @@ export function outboundLink(
   return googleAnalytics.outboundLink({ label }, hitCallback)
 }
 
-export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
-  return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
-}
-
 if (typeof GOOGLE_ANALYTICS_ID === 'string') {
   googleAnalytics.initialize(GOOGLE_ANALYTICS_ID, {
     gaOptions: {
@@ -42,54 +40,22 @@ if (typeof GOOGLE_ANALYTICS_ID === 'string') {
       clientId: storedClientId ?? undefined,
     },
   })
-  googleAnalytics.set({
-    anonymizeIp: true,
-    customBrowserType: !isMobile
-      ? 'desktop'
-      : 'web3' in window || 'ethereum' in window
-      ? 'mobileWeb3'
-      : 'mobileRegular',
-  })
-} else if (isDevelopmentEnv()) {
-  console.warn('No Google Analytics ID found. Initializing with debug mode.')
+  googleAnalytics.setDimension(
+    Dimensions.customBrowserType,
+    !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular'
+  )
+} else {
   googleAnalytics.initialize('test', { gtagOptions: { debug_mode: true } })
 }
 
-const installed = Boolean(window.navigator.serviceWorker?.controller)
-const hit = Boolean((window as any).__isDocumentCached)
-const action = installed ? (hit ? 'Cache hit' : 'Cache miss') : 'Not installed'
-sendEvent({ category: 'Service Worker', action, nonInteraction: true })
+serviceWorkerAnalytics()
+initAnalytics()
 
-function reportWebVitals({ name, delta, id }: Metric) {
-  sendTiming('Web Vitals', name, Math.round(name === 'CLS' ? delta * 1000 : delta), id)
-}
-
-// tracks web vitals and pageviews
-export function useAnalyticsReporter({ pathname, search }: Path) {
-  useEffect(() => {
-    getFCP(reportWebVitals)
-    getFID(reportWebVitals)
-    getLCP(reportWebVitals)
-    getCLS(reportWebVitals)
-  }, [])
-
-  const { chainId } = useWalletInfo()
-  useEffect(() => {
-    // cd1 - custom dimension 1 - chainId
-    googleAnalytics.set({ cd1: chainId ?? 0 })
-  }, [chainId])
-
-  useEffect(() => {
-    googleAnalytics.pageview(`${pathname}${search}`)
-  }, [pathname, search])
-
-  useEffect(() => {
-    // typed as 'any' in react-ga4 -.-
-    googleAnalytics.ga((tracker: any) => {
-      if (!tracker) return
-
-      const clientId = tracker.get('clientId')
-      window.localStorage.setItem(GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY, clientId)
-    })
-  }, [])
-}
+// MOD
+export * from './events/listEvents'
+export * from './events/settingsEvents'
+export * from './events/themeEvents'
+export * from './events/transactionEvents'
+export * from './events/walletEvents'
+export * from './events/swapEvents'
+export * from './events/otherEvents'

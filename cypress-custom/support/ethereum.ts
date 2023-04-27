@@ -5,10 +5,14 @@ import { Eip1193Bridge } from '@ethersproject/experimental/lib/eip1193-bridge'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
-const TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
-const INTEG_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY') || '586e7e6b7c7e437aa41f5da496a749f5'
+const INTEGRATION_TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
+assert(INTEGRATION_TEST_PRIVATE_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
+
+const INTEGRATION_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY')
+assert(INTEGRATION_TESTS_INFURA_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
+
 // address of the above key
-export const TEST_ADDRESS_NEVER_USE = new Wallet(TEST_PRIVATE_KEY).address
+export const TEST_ADDRESS_NEVER_USE = new Wallet(INTEGRATION_TEST_PRIVATE_KEY).address
 
 export const TEST_ADDRESS_NEVER_USE_SHORTENED = `${TEST_ADDRESS_NEVER_USE.substr(
   0,
@@ -110,8 +114,8 @@ Cypress.Commands.overwrite('visit', (original, url, options) => {
     onBeforeLoad(win) {
       options && options.onBeforeLoad && options.onBeforeLoad(win)
       win.localStorage.clear()
-      const provider = new JsonRpcProvider(`https://${chainName}.infura.io/v3/${INTEG_TESTS_INFURA_KEY}`, chainId) // Mod
-      const signer = new Wallet(TEST_PRIVATE_KEY, provider)
+      const provider = new JsonRpcProvider(`https://${chainName}.infura.io/v3/${INTEGRATION_TESTS_INFURA_KEY}`, chainId) // Mod
+      const signer = new Wallet(INTEGRATION_TEST_PRIVATE_KEY, provider)
       win.ethereum = new CustomizedBridge(signer, provider)
     },
   })

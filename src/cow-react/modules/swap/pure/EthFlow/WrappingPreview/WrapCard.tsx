@@ -7,6 +7,7 @@ import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 
 import * as styledEl from '@cow/modules/swap/pure/EthFlow/WrappingPreview/styled'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const BackupTokenImg = styled.img.attrs((attrs) => ({ ...attrs, width: '24px' }))`
   filter: invert(1);
@@ -16,7 +17,7 @@ interface WrapCardProps {
   currency: Currency
   balance?: CurrencyAmount<Currency>
   amountToWrap?: CurrencyAmount<Currency>
-  chainId?: number
+  chainId?: SupportedChainId
 }
 
 export function WrapCard(props: WrapCardProps) {
