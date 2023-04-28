@@ -249,12 +249,12 @@ export function ConfirmationPendingContent({
                 <SVG src={checkImage} /> The contract only withdraws funds for signed open orders
               </li>
               <li>
-                <SVG src={checkImage} />{' '}
-                <ExternalLink href={'#'} target={'_blank'} rel={'noopener'}>
-                  Immutable contract
-                </ExternalLink>{' '}
-                with multiple{' '}
-                <ExternalLink href={'#'} target={'_blank'} rel={'noopener'}>
+                <SVG src={checkImage} /> Immutable contract with multiple&nbsp;
+                <ExternalLink
+                  href="https://github.com/cowprotocol/ethflowcontract/tree/main/audits"
+                  target={'_blank'}
+                  rel={'noopener'}
+                >
                   audits
                 </ExternalLink>
               </li>
