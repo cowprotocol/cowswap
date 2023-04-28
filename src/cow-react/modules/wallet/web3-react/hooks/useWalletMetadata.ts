@@ -105,5 +105,5 @@ export function useIsGnosisApp(): boolean {
 export function useIsGnosisSafeWallet(): boolean {
   const { walletName } = useWalletMetaData()
 
-  return !!walletName?.startsWith('Gnosis Safe')
+  return !!walletName?.startsWith('Safe')
 }
