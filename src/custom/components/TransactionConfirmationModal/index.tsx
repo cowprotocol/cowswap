@@ -2,7 +2,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import React, { ReactNode, useContext, useMemo } from 'react'
+import React, { ReactNode, useContext, useEffect, useMemo } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { CloseIcon } from 'theme'
 // eslint-disable-next-line no-restricted-imports
@@ -28,6 +28,8 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { useOrder } from 'state/orders/hooks'
 import { OrderStatus } from 'state/orders/actions'
 import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
+import { ANIVERSSARY_CONFETTI_KEY } from '@src/constants/misc'
+import Confetti from '@src/components/Confetti'
 
 const Section = styled.div`
   padding: 0 16px 16px;
@@ -543,12 +545,26 @@ export function TransactionSubmittedContent({
   const showProgressBar = activityState === 'open' || activityState === 'filled'
   const { order } = activityDerivedState || {}
 
+  // Confetti
+  // TODO: delete this after a while
+  const showConfetti = !localStorage.getItem(ANIVERSSARY_CONFETTI_KEY)
+
+  useEffect(() => {
+    if (showConfetti) {
+      setTimeout(() => {
+        localStorage.setItem(ANIVERSSARY_CONFETTI_KEY, '1')
+      }, 5000)
+    }
+  }, [showConfetti])
+
   if (!supportedChainId(chainId)) {
     return null
   }
 
   return (
     <Wrapper>
+      {/* Anniversary confetti */}
+      {showConfetti && <Confetti start={true} />}
       <Section>
         <Header>
           <CloseIconWrapper onClick={onDismiss} />

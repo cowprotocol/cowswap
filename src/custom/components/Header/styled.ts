@@ -353,3 +353,22 @@ export const AccountElement = styled(AccountElementUni)<{ active: boolean }>`
     min-width: initial;
   }
 `
+
+export const AnniversaryHat = styled.div`
+  position: absolute;
+  left: 13%;
+  top: -12px;
+  width: 13px;
+  height: 20px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    left: 11%;
+  `}
+
+  > svg {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: block;
+  }
+`
