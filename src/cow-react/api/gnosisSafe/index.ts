@@ -10,14 +10,14 @@ import { ethers } from 'ethers'
 const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
   [ChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
-  [ChainId.GOERLI]: 'https://safe-transaction-goerli.safe.global'
+  [ChainId.GOERLI]: 'https://safe-transaction-goerli.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'
 const CHAIN_SHORT_NAME: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'eth', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-1.json
   [ChainId.GNOSIS_CHAIN]: 'gno', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-100.json
-  [ChainId.GOERLI]: 'gor' // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-5.json
+  [ChainId.GOERLI]: 'gor', // https://github.com/ethereum-lists/chains/blob/master/_data/chains/eip155-5.json
 }
 
 const SAFE_TRANSACTION_SERVICE_CACHE: Partial<Record<number, SafeApiKit | null>> = {}
@@ -47,7 +47,7 @@ function createSafeServiceClient(chainId: number, library: Web3Provider): SafeAp
 
   const ethAdapter = new EthersAdapter({
     ethers,
-    signerOrProvider: provider.getSigner(0)
+    signerOrProvider: provider.getSigner(0),
   })
   return new SafeApiKit({ txServiceUrl: url, ethAdapter })
 }

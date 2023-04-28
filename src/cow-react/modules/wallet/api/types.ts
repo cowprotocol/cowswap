@@ -14,7 +14,7 @@ export enum ConnectionType {
   TALLY = 'TALLY',
   TRUST = 'TRUST',
   LEDGER = 'LEDGER',
-  KEYSTONE = 'KEYSTONE'
+  KEYSTONE = 'KEYSTONE',
 }
 
 export const BACKFILLABLE_WALLETS = [ConnectionType.INJECTED, ConnectionType.WALLET_CONNECT]
