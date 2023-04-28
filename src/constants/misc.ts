@@ -42,3 +42,6 @@ export const ONE_HUNDRED_PERCENT = new Percent('1')
 export const IS_SIDE_BANNER_VISIBLE_KEY = 'IS_SIDEBAR_BANNER_VISIBLE'
 
 export const ONE_FRACTION = new Fraction(1, 1)
+
+// Confetti
+export const ANIVERSSARY_CONFETTI_KEY = 'aniversarry_confetti_showed'
