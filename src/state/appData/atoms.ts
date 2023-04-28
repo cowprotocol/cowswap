@@ -1,3 +1,4 @@
+import { updateAppDataHash } from 'constants/appDataHash'
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
@@ -13,7 +14,10 @@ import { buildDocFilterFn, buildInverseDocFilterFn } from 'state/appData/utils'
 /**
  * Base atom that store the current appDataInfo
  */
-export const appDataInfoAtom = atom<AppDataInfo | null>(null)
+export const appDataInfoAtom = atom<AppDataInfo | null, AppDataInfo | null>(null, (get, set, appDataInfo) => {
+  set(appDataInfoAtom, appDataInfo)
+  updateAppDataHash(appDataInfo?.hash ?? undefined)
+})
 
 /**
  * Base atom that stores all appData pending to be uploaded
