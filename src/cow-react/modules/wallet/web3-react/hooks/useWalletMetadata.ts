@@ -7,8 +7,14 @@ import { default as AlphaImage } from '@cow/modules/wallet/api/assets/alpha.svg'
 
 const WC_DESKTOP_GNOSIS_SAFE_APP_NAME = 'WalletConnect Safe App'
 const WC_MOBILE_GNOSIS_SAFE_APP_NAME = 'Safe'
+const SAFE_APP_NAME = 'Safe App'
 const GNOSIS_SAFE_APP_NAME = 'Gnosis Safe App'
-const GNOSIS_APP_NAMES = [GNOSIS_SAFE_APP_NAME, WC_DESKTOP_GNOSIS_SAFE_APP_NAME, WC_MOBILE_GNOSIS_SAFE_APP_NAME]
+const GNOSIS_APP_NAMES = [
+  SAFE_APP_NAME,
+  GNOSIS_SAFE_APP_NAME,
+  WC_DESKTOP_GNOSIS_SAFE_APP_NAME,
+  WC_MOBILE_GNOSIS_SAFE_APP_NAME,
+]
 
 const SAFE_ICON_URL = 'https://app.safe.global/favicon.ico'
 
@@ -18,7 +24,7 @@ const METADATA_DISCONNECTED: WalletMetaData = {
 }
 
 const METADATA_SAFE: WalletMetaData = {
-  walletName: GNOSIS_SAFE_APP_NAME,
+  walletName: SAFE_APP_NAME,
   icon: SAFE_ICON_URL,
 }
 
@@ -84,7 +90,7 @@ export function useWalletMetaData(): WalletMetaData {
 export function useIsGnosisSafeApp(): boolean {
   const { walletName } = useWalletMetaData()
 
-  return walletName === GNOSIS_SAFE_APP_NAME
+  return walletName === SAFE_APP_NAME
 }
 
 // Safe App, WC desktop, WC mobile

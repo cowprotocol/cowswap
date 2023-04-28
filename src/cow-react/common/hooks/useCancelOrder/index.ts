@@ -3,10 +3,9 @@ import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 
 import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
-import { Order, OrderStatus } from 'state/orders/actions'
+import { Order } from 'state/orders/actions'
 import { useCloseModal, useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
@@ -47,12 +46,12 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
     (order: Order) => {
       // Check the 'cancellability'
 
-      const isEthFlowOrder = getIsEthFlowOrder(order)
+      // const isEthFlowOrder = getIsEthFlowOrder(order)
 
       // 1. EthFlow orders will never be able to be cancelled offChain
       // 2. The wallet must support offChain singing
       // 3. The order must be PENDING
-      const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
+      const isOffChainCancellable = true
 
       // When the order is not cancellable, there won't be a callback
       if (!isOrderCancellable(order)) {
@@ -76,7 +75,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           // When done, dismiss the modal
           onDismiss()
         } catch (e: any) {
-          const swapErrorMessage = getSwapErrorMessage(e)
+          const swapErrorMessage = getSwapErrorMessage(e?.body.description || e)
           setContext({ error: swapErrorMessage })
         }
         setContext({ isPendingSignature: false })

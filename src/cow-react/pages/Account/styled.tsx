@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 import { Page, GdocsListStyle } from '@cow/modules/application/pure/Page'
-import { ButtonPrimary } from 'custom/components/Button'
+import { ButtonPrimary } from 'components/Button'
 import { BannerExplainer } from '@cow/pages/Claim/styled'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'

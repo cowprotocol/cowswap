@@ -17,7 +17,7 @@ import { OrderStatusBox } from '@cow/modules/limitOrders/pure/OrderStatusBox'
 import * as styledEl from './styled'
 import { getEtherscanLink } from 'utils'
 import { PendingOrderPrices } from '@cow/modules/orders/state/pendingOrdersPricesAtom'
-import Loader from '@src/components/Loader'
+import Loader from 'components/Loader'
 import { OrderContextMenu } from '@cow/modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { getQuoteCurrency } from '@cow/common/services/getQuoteCurrency'
@@ -163,7 +163,8 @@ export function OrderRow({
   const priceDiffs = usePricesDifference(prices, spotPrice, isInverted)
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
 
-  const isUnfillable = executedPriceInverted?.equalTo(ZERO_FRACTION) || withWarning
+  const isUnfillable =
+    (executedPriceInverted !== undefined && executedPriceInverted?.equalTo(ZERO_FRACTION)) || withWarning
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (

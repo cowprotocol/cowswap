@@ -1,6 +1,6 @@
 import * as styledEl from './styled'
 import { CurrencySelectButton } from '@cow/modules/swap/pure/CurrencySelectButton'
-import { FiatValue } from 'custom/components/CurrencyInputPanel/FiatValue/FiatValueMod'
+import { FiatValue } from 'components/CurrencyInputPanel/FiatValue/FiatValueMod'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'

@@ -6,7 +6,7 @@ import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
-import { ButtonPrimary, ButtonSecondary } from '@src/components/Button'
+import { ButtonPrimary, ButtonSecondary } from 'components/Button'
 import {
   calculateMinMax,
   formatDateToLocalTime,

@@ -1,5 +1,5 @@
 import { initializeAnalytics } from 'components/AmplitudeAnalytics'
-import { useAnalyticsReporter } from '@src/custom/components/analytics'
+import { useAnalyticsReporter } from 'components/analytics'
 import TopLevelModals from 'components/TopLevelModals'
 import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
 import ErrorBoundary from 'components/ErrorBoundary'
@@ -7,7 +7,6 @@ import Header from 'components/Header'
 
 import DarkModeQueryParamReader from 'theme'
 
-import ReferralLinkUpdater from 'state/affiliate/updater'
 import URLWarning from 'components/Header/URLWarning'
 import Footer from 'components/Footer'
 
@@ -33,7 +32,6 @@ function WrappedApp() {
         </styledEl.HeaderWrapper>
         <styledEl.BodyWrapper>
           <TopLevelModals />
-          <ReferralLinkUpdater />
           <RoutesApp />
           <styledEl.Marginer />
         </styledEl.BodyWrapper>

@@ -1,5 +1,5 @@
 import { SwapForm } from '@cow/modules/swap/pure/SwapForm/index'
-import { SwapFormProps } from '@cow/modules/swap/containers/NewSwapWidget/types'
+import { SwapFormProps } from '@cow/modules/swap/containers/SwapWidget/types'
 import { defaultCurrencyInputPanelProps } from '@cow/common/pure/CurrencyInputPanel/defaultCurrencyInputProps'
 import { GNO } from 'constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'

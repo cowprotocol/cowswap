@@ -348,7 +348,7 @@ export const ClaimTable = styled.div`
       ${({ theme }) => theme.mediaWidth.upToSmall`
       width: 42px;
       height: 42px;
-      
+
       &::after {
         width: 15px;
         height: 24px;
@@ -394,7 +394,7 @@ export const ClaimTable = styled.div`
         align-items: flex-start;
         gap: 4px 0;
         margin: 0;
-        
+
         &::before {
           font-size: 16px;
           font-weight: normal;

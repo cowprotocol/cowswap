@@ -1,5 +1,5 @@
 import { Interface } from '@ethersproject/abi'
-import { isAddress } from '@src/utils'
+import { isAddress } from 'utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import ERC20ABI from 'abis/erc20.json'

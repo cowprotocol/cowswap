@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'state/orders/actions'
@@ -12,6 +12,8 @@ import {
   TransactionState as ActivityLink,
   CreationTimeText,
   ActivityVisual,
+  StyledFiatAmount,
+  FiatWrapper,
 } from './styled'
 
 import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
@@ -28,7 +30,7 @@ import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
 import { StatusDetails } from './StatusDetails'
 import { useCancelOrder } from '@cow/common/hooks/useCancelOrder'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
+import { useGetSurplusData } from '@cow/common/hooks/useGetSurplusFiatValue'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -102,7 +104,7 @@ function GnosisSafeTxDetails(props: {
           Enough signatures, <b>but not executed</b>
         </span>
         <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          Execute Gnosis Safe transaction
+          Execute Safe transaction
         </TextAlert>
       </>
     )
@@ -164,6 +166,8 @@ export function ActivityDetails(props: {
   const showProgressBar = (activityState === 'open' || activityState === 'filled') && order?.class !== 'limit'
   const showCancellationModal = activityDerivedState.order ? getShowCancellationModal(activityDerivedState.order) : null
 
+  const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
+
   if (!order && !enhancedTransaction) return null
 
   // Order Summary default object
@@ -176,8 +180,6 @@ export function ActivityDetails(props: {
     invertedActiveRateFiatAmount: null,
   }
   let isOrderFulfilled = false
-  let surplusAmount,
-    surplusToken = null
 
   if (order) {
     const {
@@ -228,10 +230,6 @@ export function ActivityDetails(props: {
         : undefined,
       kind: kind.toString(),
     }
-
-    const executedData = getExecutedSummaryData(order)
-    surplusAmount = executedData.surplusAmount
-    surplusToken = executedData.surplusToken
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
   }
@@ -304,6 +302,11 @@ export function ActivityDetails(props: {
                   <b>Surplus</b>
                   <i>
                     <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
+                    {showFiatValue && (
+                      <FiatWrapper>
+                        (<StyledFiatAmount amount={surplusFiatValue} />)
+                      </FiatWrapper>
+                    )}
                   </i>
                 </SummaryInnerRow>
               )}

@@ -183,6 +183,7 @@ const OrdersExplainerBanner = styled.div`
 
 export interface OrdersTableProps {
   isOpenOrdersTab: boolean
+  allowsOffchainSigning: boolean
   currentPageNumber: number
   chainId: SupportedChainId | undefined
   pendingOrdersPrices: PendingOrdersPrices
@@ -196,6 +197,7 @@ export interface OrdersTableProps {
 export function OrdersTable({
   isOpenOrdersTab,
   selectedOrders,
+  allowsOffchainSigning,
   chainId,
   orders,
   pendingOrdersPrices,
@@ -214,7 +216,7 @@ export function OrdersTable({
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
   }, [])
 
-  const isRowSelectable = selectedOrders !== null
+  const isRowSelectable = allowsOffchainSigning
 
   const selectedOrdersMap = useMemo(() => {
     if (!selectedOrders) return {}
@@ -241,11 +243,13 @@ export function OrdersTable({
     localStorage.setItem('showOrdersExplainerBanner', showOrdersExplainerBanner.toString())
   }, [showOrdersExplainerBanner])
 
+  const cancellableOrders = useMemo(() => ordersPage.filter(isOrderOffChainCancellable), [ordersPage])
+
   const allOrdersSelected = useMemo(() => {
-    const cancellableOrders = ordersPage.filter(isOrderOffChainCancellable)
+    if (!cancellableOrders.length) return false
 
     return cancellableOrders.every((item) => selectedOrdersMap[item.id])
-  }, [ordersPage, selectedOrdersMap])
+  }, [cancellableOrders, selectedOrdersMap])
 
   // React doesn't support indeterminate attribute
   // Because of it, we have to use element reference
@@ -268,6 +272,7 @@ export function OrdersTable({
                 <TableRowCheckboxWrapper>
                   <TableRowCheckbox
                     ref={checkboxRef}
+                    disabled={cancellableOrders.length === 0}
                     type="checkbox"
                     onChange={(event) =>
                       orderActions.toggleOrdersForCancellation(event.target.checked ? ordersPage : [])

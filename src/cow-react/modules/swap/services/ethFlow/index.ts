@@ -1,14 +1,18 @@
 import { EthFlowContext } from '@cow/modules/swap/services/types'
 import { tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 import { signEthFlowOrderStep } from '@cow/modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderStep'
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
+import { Percent } from '@uniswap/sdk-core'
 
-export async function ethFlow(ethFlowContext: EthFlowContext, priceImpactParams: PriceImpact): Promise<void> {
+export async function ethFlow(
+  ethFlowContext: EthFlowContext,
+  priceImpactParams: PriceImpact,
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
+): Promise<void> {
   const {
     swapFlowAnalyticsContext,
     context,
@@ -23,7 +27,7 @@ export async function ethFlow(ethFlowContext: EthFlowContext, priceImpactParams:
   } = ethFlowContext
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
-  if (priceImpactParams?.priceImpact && !confirmPriceImpactWithoutFee(priceImpactParams.priceImpact)) {
+  if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
     return undefined
   }
 

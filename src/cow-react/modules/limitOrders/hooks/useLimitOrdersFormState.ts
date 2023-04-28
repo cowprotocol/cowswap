@@ -94,7 +94,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.InvalidRecipient
   }
 
-  if (quote?.error) {
+  if (!isWrapOrUnwrap && quote?.error) {
     return LimitOrdersFormState.QuoteError
   }
 

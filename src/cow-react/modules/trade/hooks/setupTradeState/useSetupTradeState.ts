@@ -1,195 +1,172 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { useWeb3React } from '@web3-react/core'
 import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
-import { useTradeNavigate } from '../useTradeNavigate'
-import { getDefaultTradeState, TradeCurrenciesIds, TradeState } from '../../types/TradeState'
 import { useTradeState } from '../useTradeState'
+import { useEffect, useState } from 'react'
 import { switchChain } from '@cow/modules/wallet/web3-react/hooks/switchChain'
-import usePrevious from 'hooks/usePrevious'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-import { Nullish } from '@cow/types'
+import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from '@cow/modules/wallet'
-
-function areCurrenciesTheSame({ inputCurrencyId, outputCurrencyId }: TradeState): boolean {
-  if (!inputCurrencyId && !outputCurrencyId) return false
-
-  return inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
-}
-
-/**
- * Case: we have WETH/COW tokens pair in the sore
- * User decided to select WETH as output currency, and navigated to WETH/WETH
- * In this case, we reverse tokens pair and the result will be: COW/WETH
- */
-function getUpdatedCurrenciesIds(tradeStateFromUrl: TradeState, tradeStateFromStore: TradeState): TradeCurrenciesIds {
-  const currenciesAreTheSame = areCurrenciesTheSame(tradeStateFromUrl)
-
-  const inputCurrencyId = currenciesAreTheSame
-    ? tradeStateFromStore.outputCurrencyId
-    : tradeStateFromUrl.inputCurrencyId
-
-  const outputCurrencyId = currenciesAreTheSame
-    ? tradeStateFromStore.inputCurrencyId
-    : tradeStateFromUrl.outputCurrencyId
-
-  return { inputCurrencyId, outputCurrencyId }
-}
-
-function shouldSkipUpdate(tradeStateFromUrl: TradeState, tradeStateFromStore: TradeState): boolean {
-  const chainIdIsNotChanged = tradeStateFromUrl.chainId === tradeStateFromStore.chainId
-  const inputCurrencyIsNotChanged =
-    tradeStateFromUrl.inputCurrencyId?.toLowerCase() === tradeStateFromStore.inputCurrencyId?.toLowerCase()
-  const outputCurrencyIsNotChanged =
-    tradeStateFromUrl.outputCurrencyId?.toLowerCase() === tradeStateFromStore.outputCurrencyId?.toLowerCase()
-  const recipientIsNotChanged =
-    !tradeStateFromUrl.recipient || tradeStateFromUrl.recipient === tradeStateFromStore.recipient
-
-  return chainIdIsNotChanged && recipientIsNotChanged && inputCurrencyIsNotChanged && outputCurrencyIsNotChanged
-}
-
-function areChainIdsTheSame(aChainId: Nullish<number>, bChainId: Nullish<number>): boolean {
-  return !!aChainId && !!bChainId && aChainId !== bChainId
-}
-
-// When there is no account from provider (wallet is not connected)
-// And there is no chainId in provider (edge case in E2E tests)
-// Then we use chainId from URL as current
-function getCurrentChainId(
-  account: string | undefined,
-  providerChainId: number | undefined,
-  chainIdFromUrl: number | null
-): number | null {
-  if (account) {
-    return providerChainId || null
-  }
-
-  return providerChainId || chainIdFromUrl
-}
+import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
+import usePrevious from 'hooks/usePrevious'
+import { getDefaultTradeState, TradeState } from '@cow/modules/trade/types/TradeState'
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
+  const prevProviderChainId = usePrevious(providerChainId)
+
   const { connector } = useWeb3React()
-  const [isChainIdSet, setIsChainIdSet] = useState(false)
   const tradeNavigate = useTradeNavigate()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
 
-  const chainIdFromUrl = tradeStateFromUrl.chainId
-  const currentChainId = getCurrentChainId(account, providerChainId, chainIdFromUrl)
+  // When wallet is connected, and user navigates to the URL with a new chainId
+  // We must change chainId in provider, and only then change the trade state
+  // Since the network chaning process takes some time, we have to remember the state from URL
+  const [rememberedUrlState, setRememberedUrlState] = useState<TradeState | null>(null)
 
-  const prevChainIdFromUrl = usePrevious(chainIdFromUrl)
-  const prevCurrentChainId = usePrevious(currentChainId)
+  const isWalletConnected = !!account
+  const urlChainId = tradeStateFromUrl.chainId
+  const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
 
-  const chainIdFromUrlWasChanged = areChainIdsTheSame(chainIdFromUrl, prevChainIdFromUrl)
-  const chainIdFromProviderWasChanged =
-    areChainIdsTheSame(currentChainId, prevCurrentChainId) || areChainIdsTheSame(currentChainId, chainIdFromUrl)
+  const chainIdIsNotSupported = !isSupportedChainId(urlChainId)
+  const currentChainId =
+    !urlChainId || chainIdIsNotSupported ? prevProviderChainId || SupportedChainId.MAINNET : urlChainId
 
-  const skipUpdate = useMemo(() => {
-    if (areCurrenciesTheSame(tradeStateFromUrl)) return false
+  /**
+   * On URL parameter changes
+   *
+   * 1. The case, when chainId in URL was changed while wallet is connected (read about it bellow)
+   * 2. When chainId in URL is invalid, then redirect to the default chainId
+   * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
+   * 4. When URL doesn't contain both tokens, then redirect to the default state
+   * 5. When only chainId was changed in URL, then redirect to the default state
+   * 6. Otherwise, fill the trade state by data from URL
+   *
+   * *** When chainId in URL was changed while wallet is connected ***
+   * Imagine a case:
+   *  - user connected a wallet with chainId = 1, URL looks like /1/swap/WETH
+   *  - user changed URL to /100/USDC/COW
+   *
+   * It will require chainId changes in the wallet to 100
+   * In case, if user decline network changes, we will have chainId=100 in URL and chainId=1 in wallet
+   * It creates some problem due to chainIds mismatch
+   *
+   * Because of it, in this case we must:
+   *  - revert the URL to the previous state (/1/swap/WETH)
+   *  - remember the URL changes (/100/USDC/COW)
+   *  - apply the URL changes only if user accepted network changes in the wallet
+   */
+  useEffect(() => {
+    // Do nothing while network change in progress
+    if (rememberedUrlState) return
 
-    if (chainIdFromUrlWasChanged && !!account) return true
+    const { inputCurrencyId, outputCurrencyId } = tradeStateFromUrl
+    const providerAndUrlChainIdMismatch = currentChainId !== prevProviderChainId
 
-    if (chainIdFromProviderWasChanged) return false
+    const onlyChainIdIsChanged =
+      prevTradeStateFromUrl?.inputCurrencyId === inputCurrencyId &&
+      prevTradeStateFromUrl?.outputCurrencyId === outputCurrencyId &&
+      prevTradeStateFromUrl.chainId !== currentChainId
 
-    return state ? shouldSkipUpdate(tradeStateFromUrl, state) : true
-  }, [state, tradeStateFromUrl, chainIdFromProviderWasChanged, chainIdFromUrlWasChanged, account])
+    const tokensAreEmpty = !inputCurrencyId && !outputCurrencyId
 
-  const newChainId = useMemo(() => {
-    const providerChainId = currentChainId || SupportedChainId.MAINNET
-    const validChainIdFromUrl = isSupportedChainId(chainIdFromUrl || undefined)
-      ? chainIdFromUrl || providerChainId
-      : providerChainId
+    const sameTokens =
+      (inputCurrencyId || outputCurrencyId) && inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
 
-    if (!account) {
-      // When wallet is not connected and network was changed in the provider, then use chainId from provider
-      if (chainIdFromProviderWasChanged) {
-        return providerChainId
-      } else {
-        // When wallet is not connected, then use chainId from URL by priority and fallback to provider's value
-        return validChainIdFromUrl
+    const defaultState = getDefaultTradeState(currentChainId)
+
+    // Applying of the remembered state after network successfully changed
+    if (isWalletConnected && providerAndUrlChainIdMismatch && prevTradeStateFromUrl) {
+      setRememberedUrlState(tradeStateFromUrl)
+      tradeNavigate(prevTradeStateFromUrl.chainId, prevTradeStateFromUrl)
+      console.debug(
+        '[TRADE STATE]',
+        'Remembering a new state from URL while changing chainId in provider',
+        tradeStateFromUrl
+      )
+
+      return
+    }
+
+    if (chainIdIsNotSupported || sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
+      tradeNavigate(currentChainId, defaultState)
+
+      if (chainIdIsNotSupported) {
+        console.debug('[TRADE STATE]', 'Url contains invalid chainId, resetting')
+      } else if (sameTokens) {
+        console.debug('[TRADE STATE]', 'Url contains invalid tokens, resetting')
+      } else if (tokensAreEmpty) {
+        console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
+      } else if (onlyChainIdIsChanged) {
+        console.debug('[TRADE STATE]', 'Only chainId was changed in URL, resetting')
       }
-    } else {
-      // When wallet is connected, then always use chainId from provider
-      return providerChainId
+
+      return
     }
-  }, [account, chainIdFromProviderWasChanged, chainIdFromUrl, currentChainId])
 
-  const updateStateAndNavigate = useCallback(() => {
-    if (!state) return
+    updateState?.(tradeStateFromUrl)
+    console.debug('[TRADE STATE]', 'Applying a new state from URL', tradeStateFromUrl)
 
-    // Reset state to default when chainId was changed in the provider
-    const newState: TradeState = chainIdFromProviderWasChanged
-      ? getDefaultTradeState(newChainId)
-      : {
-          chainId: newChainId,
-          recipient: tradeStateFromUrl.recipient || state.recipient,
-          ...getUpdatedCurrenciesIds(tradeStateFromUrl, state),
-        }
+    // Triggering only on changes from URL
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tradeStateFromUrl])
 
-    console.debug('UPDATE TRADE STATE:', newState)
+  /**
+   * On:
+   *  - chainId in URL changes
+   *  - connector changes
+   *  - (rememberedUrlState)
+   *
+   * Note: useEagerlyConnect() changes connectors several times at the beginning
+   *
+   * 1. When chainId in URL is changed, then set it to the provider
+   * 2. If provider's chainId is the same with chainId in URL, then do nothing
+   * 3. When the URL state is remembered, then set it's chainId to the provider
+   */
+  useEffect(() => {
+    if (!providerChainId || providerChainId === currentChainId) return
 
-    updateState?.(newState)
+    const targetChainId = rememberedUrlState?.chainId || currentChainId
 
-    tradeNavigate(newState.chainId, {
-      inputCurrencyId: newState.inputCurrencyId || null,
-      outputCurrencyId: newState.outputCurrencyId || null,
+    switchChain(connector, targetChainId).catch((error: Error) => {
+      // We are ignoring Gnosis safe context error
+      // Because it's a normal situation when we are not in Gnosis safe App
+      if (error.name === 'NoSafeContext') return
+
+      console.error('Network switching error: ', error)
     })
-  }, [tradeNavigate, newChainId, chainIdFromProviderWasChanged, state, updateState, tradeStateFromUrl])
+
+    console.debug('[TRADE STATE]', 'Set chainId to provider', { connector, urlChainId })
+    // Triggering only when chainId in URL is changes, connector is changed or rememberedUrlState is changed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connector, urlChainId, rememberedUrlState])
 
   /**
-   * STEP 1
-   * Unlock network switching in the provider when chainId was changed in the URL
+   * On chainId in provider changes
+   *
+   * 1. Do nothing, when provider's chainId matches to the chainId from URL, or it's not supported
+   * 2. Navigate to the new chainId with default tokens
+   * 3. If the URL state was remembered, then put it into URL
    */
-  useLayoutEffect(() => {
-    if (chainIdFromUrlWasChanged) {
-      setIsChainIdSet(false)
+  useEffect(() => {
+    if (providerChainId === urlChainId) return
+    if (!providerChainId || providerChainId === prevProviderChainId) return
+    if (!isSupportedChainId(providerChainId)) return
+
+    if (rememberedUrlState) {
+      setRememberedUrlState(null)
+      tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
+    } else {
+      tradeNavigate(providerChainId, getDefaultTradeState(providerChainId))
     }
-  }, [chainIdFromUrlWasChanged])
+
+    console.debug('[TRADE STATE]', 'Provider changed chainId', { providerChainId, urlChanges: rememberedUrlState })
+    // Triggering only when chainId was changed in the provider
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [providerChainId, prevProviderChainId])
 
   /**
-   * STEP 2
-   * Set chainId from URL into wallet provider once on page load
-   * It's needed because useWeb3React() returns mainnet chainId by default
-   */
-  useLayoutEffect(() => {
-    if (isChainIdSet || !chainIdFromUrl || !currentChainId) return
-    let isSubscribed = true
-
-    setIsChainIdSet(true)
-
-    switchChain(connector, chainIdFromUrl)
-      .catch((error: Error) => {
-        // We are ignoring Gnosis safe context error
-        // Because it's a normal situation when we are not in Gnosis safe App
-        if (error.name === 'NoSafeContext') return
-
-        console.error('Network switching error: ', error)
-      })
-      .finally(() => {
-        if (!isSubscribed) return
-
-        updateStateAndNavigate()
-      })
-
-    return () => {
-      isSubscribed = false
-    }
-  }, [isChainIdSet, chainIdFromUrl, connector, currentChainId, updateStateAndNavigate])
-
-  /**
-   * STEP 3
-   * Update state in the store when something was changed (chainId or URL params)
-   */
-  useLayoutEffect(() => {
-    if (!isChainIdSet || skipUpdate) return
-
-    updateStateAndNavigate()
-  }, [skipUpdate, isChainIdSet, updateStateAndNavigate])
-
-  /**
-   * STEP 3
    * If user opened a link with some token symbol, and we have more than one token with the same symbol in the listing
    * Then we show alert, reset trade state to default and ask user to select token using UI
    */

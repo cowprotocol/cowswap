@@ -1,5 +1,5 @@
 import { Order, OrderStatus } from 'state/orders/actions'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'custom/constants'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { isOrderCancellable } from './isOrderCancellable'
 import { COW } from 'constants/tokens'
 
