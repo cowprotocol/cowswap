@@ -1,4 +1,4 @@
-import { updateAppDataHash } from '@src/custom/constants/appDataHash'
+import { updateAppDataHash } from 'constants/appDataHash'
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
