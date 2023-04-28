@@ -50,6 +50,10 @@ import {
 } from './styled'
 import { ANIVERSSARY_CONFETTI_KEY } from 'constants/misc'
 import Confetti from 'components/Confetti'
+import { getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
+import { MediumAndUp, useMediaQuery } from 'hooks/useMediaQuery'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
+import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 
 export * from './TransactionConfirmationModalMod'
 export { default } from './TransactionConfirmationModalMod'
@@ -185,10 +189,18 @@ export function ConfirmationPendingContent({
     }
   }, [gnosisSafeInfo, isSmartContractWallet])
 
+  const connectionType = getWeb3ReactConnection(connector)
   const walletNameLabel = getWalletNameLabel(walletType)
   const operationMessage = getOperationMessage(operationType, chainId)
   const operationLabel = getOperationLabel(operationType)
   const operationSubmittedMessage = getSubmittedMessage(operationLabel, operationType)
+  const isMetaMask = getIsMetaMask()
+  const isNotMobile = useMediaQuery(MediumAndUp)
+  const isApproveMetaMaskDesktop =
+    operationType === OperationType.APPROVE_TOKEN &&
+    isMetaMask &&
+    isNotMobile &&
+    connectionType !== walletConnectConnection
 
   return (
     <Wrapper>
@@ -200,7 +212,7 @@ export function ConfirmationPendingContent({
       </UpperSection>
 
       {/* Only shown for APPROVE_TOKEN operation */}
-      {operationType === OperationType.APPROVE_TOKEN && (
+      {isApproveMetaMaskDesktop && (
         <ApproveWrapper>
           <h3>
             Review and select the ideal <br /> spending cap in your wallet
@@ -237,12 +249,12 @@ export function ConfirmationPendingContent({
                 <SVG src={checkImage} /> The contract only withdraws funds for signed open orders
               </li>
               <li>
-                <SVG src={checkImage} />{' '}
-                <ExternalLink href={'#'} target={'_blank'} rel={'noopener'}>
-                  Immutable contract
-                </ExternalLink>{' '}
-                with multiple{' '}
-                <ExternalLink href={'#'} target={'_blank'} rel={'noopener'}>
+                <SVG src={checkImage} /> Immutable contract with multiple&nbsp;
+                <ExternalLink
+                  href="https://github.com/cowprotocol/ethflowcontract/tree/main/audits"
+                  target={'_blank'}
+                  rel={'noopener'}
+                >
                   audits
                 </ExternalLink>
               </li>
@@ -258,7 +270,7 @@ export function ConfirmationPendingContent({
       )}
 
       {/* Not shown for APPROVE_TOKEN operation */}
-      {operationType !== OperationType.APPROVE_TOKEN && (
+      {!isApproveMetaMaskDesktop && (
         <LowerSection>
           <h3>
             <span>{operationMessage} </span>
