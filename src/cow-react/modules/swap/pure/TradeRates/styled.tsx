@@ -5,7 +5,7 @@ import { RateInfo } from '@cow/common/pure/RateInfo'
 import { transparentize } from 'polished'
 
 export const Box = styled.div`
-  margin: 12px 8px;
+  margin: 6px 8px;
 `
 
 export const Row = styled.div`

@@ -285,6 +285,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }
 
   const params = {
+    compactView: false,
     recipient,
     showRecipient,
     isTradePriceUpdating,
