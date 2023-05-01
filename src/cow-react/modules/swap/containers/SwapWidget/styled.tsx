@@ -8,15 +8,6 @@ export const Container = styled.div`
   width: 100%;
 `
 
-export const ContainerBox = styled.div`
-  background: ${({ theme }) => theme.bg1};
-  border: none;
-  border-radius: 16px;
-  box-shadow: ${({ theme }) => theme.boxShadow1};
-  padding: 10px;
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
-`
-
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
