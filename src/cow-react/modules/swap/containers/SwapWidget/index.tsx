@@ -1,4 +1,3 @@
-import * as styledEl from './styled'
 import { useSwapState } from 'state/swap/hooks'
 import {
   useDerivedSwapInfo,
@@ -210,18 +209,16 @@ export function SwapWidget() {
 
   return (
     <>
-      <styledEl.Container id="new-swap-widget">
-        <SwapModals {...swapModalsProps} />
-        <TradeWidget
-          id="swap-page"
-          slots={slots}
-          actions={swapActions}
-          params={params}
-          inputCurrencyInfo={inputCurrencyInfo}
-          outputCurrencyInfo={outputCurrencyInfo}
-        />
-        <NetworkAlert />
-      </styledEl.Container>
+      <SwapModals {...swapModalsProps} />
+      <TradeWidget
+        id="swap-page"
+        slots={slots}
+        actions={swapActions}
+        params={params}
+        inputCurrencyInfo={inputCurrencyInfo}
+        outputCurrencyInfo={outputCurrencyInfo}
+      />
+      <NetworkAlert />
     </>
   )
 }

@@ -3,11 +3,6 @@ import SwapHeader from 'components/swap/SwapHeader'
 import { SetRecipient } from '@cow/modules/swap/containers/SetRecipient'
 import { LoadingWrapper } from '@cow/common/pure/CurrencyArrowSeparator/styled'
 
-export const Container = styled.div`
-  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
-  width: 100%;
-`
-
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
