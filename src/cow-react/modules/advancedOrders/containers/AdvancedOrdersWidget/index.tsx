@@ -5,7 +5,7 @@ import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from '@src/state/swap/actions'
 import { useAdvancedOrdersTradeState } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersTradeState'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -22,7 +22,7 @@ export function AdvancedOrdersWidget() {
     recipient,
     orderKind,
   } = useAdvancedOrdersTradeState()
-  const onCurrencySelection = useOnCurrencySelection()
+  const onCurrencySelection = useNavigateOnCurrencySelection()
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

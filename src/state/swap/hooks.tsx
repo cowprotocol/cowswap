@@ -11,7 +11,7 @@ import { AppState } from 'state'
 import { Field, replaceSwapState, setRecipient, switchCurrencies, typeInput } from './actions'
 import { SwapState } from './reducer'
 import TradeGp from 'state/swap/TradeGp'
-import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { changeSwapAmountAnalytics } from 'components/analytics'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from 'state/user/hooks'
@@ -93,7 +93,7 @@ interface DerivedSwapInfo {
 export function useSwapActionHandlers(): SwapActions {
   const { chainId } = useWalletInfo()
   const dispatch = useAppDispatch()
-  const onCurrencySelection = useOnCurrencySelection()
+  const onCurrencySelection = useNavigateOnCurrencySelection()
   const navigate = useTradeNavigate()
   const swapState = useSwapState()
 

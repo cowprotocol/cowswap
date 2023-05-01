@@ -1,6 +1,6 @@
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from 'state/swap/actions'
-import { CurrencySelectionCallback } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { CurrencySelectionCallback } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
 import { OnImportDismissCallback } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 import { PriceImpact } from 'hooks/usePriceImpact'
