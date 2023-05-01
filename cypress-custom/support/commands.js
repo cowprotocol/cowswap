@@ -42,7 +42,7 @@ function enterInputAmount(tokenAddress, amount, selectToken = false) {
   if (selectToken) {
     selectOutput(tokenAddress)
   }
-  cy.get('#swap-currency-input .token-amount-input').type(amount.toString(), { force: true, delay: 400 })
+  cy.get('#input-currency-input .token-amount-input').type(amount.toString(), { force: true, delay: 400 })
 }
 
 function enterOutputAmount(tokenAddress, amount, selectToken = false) {
@@ -51,7 +51,7 @@ function enterOutputAmount(tokenAddress, amount, selectToken = false) {
   if (selectToken) {
     selectOutput(tokenAddress)
   }
-  cy.get('#swap-currency-input .token-amount-output').type(amount.toString(), { force: true, delay: 400 })
+  cy.get('#input-currency-input .token-amount-output').type(amount.toString(), { force: true, delay: 400 })
 }
 
 function stubResponse({ method, url, alias = 'stubbedResponse', body }) {

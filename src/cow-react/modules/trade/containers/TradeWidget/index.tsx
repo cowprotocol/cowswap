@@ -10,6 +10,7 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { SetRecipientProps } from '@cow/modules/swap/containers/SetRecipient'
+import { t } from '@lingui/macro'
 
 interface TradeWidgetActions {
   onCurrencySelection: CurrencyInputPanelProps['onCurrencySelection']
@@ -20,6 +21,8 @@ interface TradeWidgetActions {
 
 interface TradeWidgetParams {
   recipient: string | null
+  disableNonToken?: boolean
+  isEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
@@ -49,7 +52,16 @@ export function TradeWidget(props: TradeWidgetProps) {
   const { settingsWidget, lockScreen, middleContent, bottomContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
-  const { compactView, showRecipient, isTradePriceUpdating, isRateLoading, priceImpact, recipient } = params
+  const {
+    compactView,
+    showRecipient,
+    isTradePriceUpdating,
+    isRateLoading,
+    isEthFlow = false,
+    disableNonToken = false,
+    priceImpact,
+    recipient,
+  } = params
 
   const { chainId } = useWalletInfo()
   const { isWrapOrUnwrap } = useDetectNativeToken()
@@ -78,7 +90,7 @@ export function TradeWidget(props: TradeWidgetProps) {
             <div>
               <CurrencyInputPanel
                 id="input-currency-input"
-                disableNonToken={false}
+                disableNonToken={disableNonToken}
                 chainId={chainId}
                 loading={currenciesLoadingInProgress}
                 onCurrencySelection={onCurrencySelection}
@@ -103,7 +115,13 @@ export function TradeWidget(props: TradeWidgetProps) {
             <div>
               <CurrencyInputPanel
                 id="output-currency-input"
-                disableNonToken={false}
+                disableNonToken={disableNonToken}
+                inputDisabled={isEthFlow}
+                inputTooltip={
+                  isEthFlow
+                    ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                    : undefined
+                }
                 chainId={chainId}
                 loading={currenciesLoadingInProgress}
                 isRateLoading={isRateLoading}

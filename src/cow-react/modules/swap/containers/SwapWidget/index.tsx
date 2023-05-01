@@ -43,6 +43,7 @@ import { formatInputAmount } from '@cow/utils/amountFormat'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget } from '@cow/modules/trade/containers/TradeWidget'
 import SettingsTab from '@src/components/Settings'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export function SwapWidget() {
   useSetupTradeState()
@@ -61,6 +62,7 @@ export function SwapWidget() {
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
+  const isEthFlow = useIsEthFlow()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -198,6 +200,7 @@ export function SwapWidget() {
   }
 
   const params = {
+    isEthFlow,
     compactView: true,
     recipient,
     showRecipient: showRecipientControls,
