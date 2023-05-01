@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { GnosisSafe } from '@web3-react/gnosis-safe'
 import { Connector } from '@web3-react/types'
-import type { SafeInfo } from '@gnosis.pm/safe-apps-sdk'
+import type { SafeInfo } from '@safe-global/safe-apps-sdk'
 
 export type GnosisSafeSdkInfo = SafeInfo
 
