@@ -19,7 +19,7 @@ const outputCurrency = GNO[SupportedChainId.MAINNET]
 
 const inputCurrencyInfo: CurrencyInfo = {
   field: Field.INPUT,
-  viewAmount: '20',
+  isIndependent: false,
   receiveAmountInfo: {
     type: 'from',
     amountBeforeFees: '30',
@@ -36,7 +36,7 @@ const inputCurrencyInfo: CurrencyInfo = {
 
 const outputCurrencyInfo: CurrencyInfo = {
   field: Field.INPUT,
-  viewAmount: '20',
+  isIndependent: false,
   receiveAmountInfo: {
     type: 'from',
     amountBeforeFees: '30',
