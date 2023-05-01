@@ -25,7 +25,7 @@ export const SwapForm = React.memo(function (props: SwapFormProps) {
   } = props
   const { onCurrencySelection, onSwitchTokens, onChangeRecipient, onUserInput } = swapActions
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
-  const maxBalance = inputCurrencyInfo.balance ? maxAmountSpend(inputCurrencyInfo.balance) : undefined
+  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
   const isEthFlow = useIsEthFlow()
 
