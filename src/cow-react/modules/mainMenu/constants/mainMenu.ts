@@ -47,6 +47,12 @@ export const MAIN_MENU: MenuTreeItem[] = [
             title: 'Limit orders',
             url: Routes.LIMIT_ORDER,
           },
+          {
+            id: MainMenuItemId.ADVANCED_ORDERS,
+            kind: MenuItemKind.DYNAMIC_LINK,
+            title: 'Advanced orders',
+            url: Routes.ADVANCED_ORDERS,
+          },
         ],
       },
     ],

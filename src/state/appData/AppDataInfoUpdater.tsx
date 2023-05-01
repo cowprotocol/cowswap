@@ -14,10 +14,10 @@ export function AppDataUpdater() {
 
   if (!chainId || !tradeTypeInfo) return null
 
-  const isLimitOrders = tradeTypeInfo.tradeType === TradeType.LIMIT_ORDER
-  const allowedSlippage = isLimitOrders ? LIMIT_ORDER_SLIPPAGE : allowedSlippageSwap
+  const isSwapOrder = tradeTypeInfo.tradeType === TradeType.SWAP
+  const allowedSlippage = isSwapOrder ? allowedSlippageSwap : LIMIT_ORDER_SLIPPAGE
   const slippageBips = percentToBips(allowedSlippage)
-  const orderClass = isLimitOrders ? OrderClass.LIMIT : OrderClass.MARKET
+  const orderClass = isSwapOrder ? OrderClass.MARKET : OrderClass.LIMIT
 
   return <AppDataUpdaterMemo chainId={chainId} slippageBips={slippageBips} orderClass={orderClass} />
 }
