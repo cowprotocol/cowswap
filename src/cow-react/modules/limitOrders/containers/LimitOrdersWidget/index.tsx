@@ -3,7 +3,6 @@ import { Field } from 'state/swap/actions'
 import { CurrencyInputPanel } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
@@ -235,17 +234,10 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     return isRateLoading
   }, [isRateLoading, isWrapOrUnwrap, inputCurrency, outputCurrency])
 
-  const currenciesLoadingInProgress = false
+  const currenciesLoadingInProgress = !inputCurrency && !outputCurrency
   const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
   const showSetMax = !!maxBalance && !inputCurrencyInfo.rawAmount?.equalTo(maxBalance)
   const isPartiallyFillable = featurePartialFillsEnabled && settingsState.partialFillsEnabled
-
-  const subsidyAndBalance: BalanceAndSubsidy = {
-    subsidy: {
-      tier: 0,
-      discount: 0,
-    },
-  }
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
@@ -272,7 +264,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 loading={currenciesLoadingInProgress}
                 onCurrencySelection={onCurrencySelection}
                 onUserInput={onUserInput}
-                subsidyAndBalance={subsidyAndBalance}
                 allowsOffchainSigning={allowsOffchainSigning}
                 currencyInfo={inputCurrencyInfo}
                 showSetMax={showSetMax}
@@ -302,7 +293,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 isRateLoading={isRateLoading}
                 onCurrencySelection={onCurrencySelection}
                 onUserInput={onUserInput}
-                subsidyAndBalance={subsidyAndBalance}
                 allowsOffchainSigning={allowsOffchainSigning}
                 currencyInfo={outputCurrencyInfo}
                 priceImpactParams={priceImpact}

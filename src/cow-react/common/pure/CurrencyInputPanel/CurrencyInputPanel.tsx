@@ -34,7 +34,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
-  subsidyAndBalance: BalanceAndSubsidy
+  subsidyAndBalance?: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
   topLabel?: string
@@ -54,7 +54,12 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
-    subsidyAndBalance,
+    subsidyAndBalance = {
+      subsidy: {
+        tier: 0,
+        discount: 0,
+      },
+    },
     topLabel,
     isRateLoading,
   } = props
