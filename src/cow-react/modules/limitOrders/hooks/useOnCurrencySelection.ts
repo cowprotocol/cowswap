@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { Field } from 'state/swap/actions'
 import { Currency } from '@uniswap/sdk-core'
-import { useOnCurrencySelection as useOnCurrencySelectionCommon } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
 import { useUpdateAtom } from 'jotai/utils'
 import { updateLimitOrdersAtom } from '@cow/modules/limitOrders'
@@ -10,7 +10,7 @@ import { convertAmountToCurrency } from '@cow/modules/limitOrders/utils/calculat
 
 export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
-  const onCurrencySelectionCommon = useOnCurrencySelectionCommon()
+  const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
 
   return useCallback(
@@ -31,7 +31,7 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
         if (amount) {
           const converted = convertAmountToCurrency(amount, currency)
 
-          return onCurrencySelectionCommon(field, currency, () => {
+          return navigateOnCurrencySelection(field, currency, () => {
             updateLimitOrdersState({
               [amountField]: FractionUtils.serializeFractionToJSON(converted),
             })
@@ -39,8 +39,8 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
         }
       }
 
-      return onCurrencySelectionCommon(field, currency)
+      return navigateOnCurrencySelection(field, currency)
     },
-    [onCurrencySelectionCommon, updateLimitOrdersState, inputCurrencyAmount, outputCurrencyAmount]
+    [navigateOnCurrencySelection, updateLimitOrdersState, inputCurrencyAmount, outputCurrencyAmount]
   )
 }

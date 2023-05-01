@@ -30,7 +30,7 @@ function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => str
  * if there are more than one token with the same symbol
  * @see useResetStateWithSymbolDuplication.ts
  */
-export function useOnCurrencySelection(): CurrencySelectionCallback {
+export function useNavigateOnCurrencySelection(): CurrencySelectionCallback {
   const { chainId } = useWalletInfo()
   const { state } = useTradeState()
   const navigate = useTradeNavigate()
