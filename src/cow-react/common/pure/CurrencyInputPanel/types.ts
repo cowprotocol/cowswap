@@ -3,12 +3,12 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { ReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
 
 export interface CurrencyInfo {
-  field: Field
   label?: string
-  viewAmount: string
-  rawAmount: CurrencyAmount<Currency> | null
-  receiveAmountInfo: ReceiveAmountInfo | null
+  field: Field
   currency: Currency | null
+  rawAmount: CurrencyAmount<Currency> | null
+  viewAmount: string // TODO: should be calculated in CurrencyInputPanel
+  receiveAmountInfo: ReceiveAmountInfo | null
   balance: CurrencyAmount<Currency> | null
   fiatAmount: CurrencyAmount<Currency> | null
 }

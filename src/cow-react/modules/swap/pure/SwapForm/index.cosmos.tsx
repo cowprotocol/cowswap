@@ -19,7 +19,7 @@ const defaultProps: SwapFormProps = {
     ...defaultCurrencyInputPanelProps.currencyInfo,
     currency: GNO[SupportedChainId.MAINNET],
   },
-  subsidyAndBalance: defaultCurrencyInputPanelProps.subsidyAndBalance,
+  subsidyAndBalance: defaultCurrencyInputPanelProps.subsidyAndBalance!,
   priceImpactParams: defaultCurrencyInputPanelProps.priceImpactParams,
   swapActions: {
     onCurrencySelection() {
