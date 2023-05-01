@@ -1,34 +1,8 @@
 import styled from 'styled-components/macro'
-import { SetRecipient } from '@cow/modules/swap/containers/SetRecipient'
 import { RateInfo } from '@cow/common/pure/RateInfo'
 import { NumericalInput } from '@cow/modules/limitOrders/containers/RateInput/styled'
 import { transparentize, darken } from 'polished'
 import { OrderType } from '@cow/modules/limitOrders/pure/OrderType'
-
-export const Container = styled.div`
-  width: 100%;
-`
-
-export const ContainerBox = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  gap: 6px;
-  background: ${({ theme }) => theme.bg1};
-  border: none;
-  border-radius: 16px;
-  box-shadow: ${({ theme }) => theme.boxShadow1};
-  padding: 10px;
-`
-
-export const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 4px 10px 8px;
-  margin: 0;
-  font-weight: 500;
-  font-size: 16px;
-`
 
 export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
   display: flex;
@@ -65,10 +39,6 @@ export const RateWrapper = styled.div`
   ${NumericalInput} {
     font-size: 21px;
   }
-`
-
-export const StyledRemoveRecipient = styled(SetRecipient)`
-  margin: 15px 0;
 `
 
 export const StyledRateInfo = styled(RateInfo)`

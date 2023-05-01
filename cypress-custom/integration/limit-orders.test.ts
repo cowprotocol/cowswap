@@ -17,11 +17,11 @@ describe('Limit orders', () => {
 
     pickToken('USDC', 'output')
 
-    cy.get('#limit-orders-currency-input .token-amount-input').type(inputAmount.toString())
+    cy.get('#input-currency-input .token-amount-input').type(inputAmount.toString())
     cy.get('#rate-limit-amount-input').clear().type(rate.toString(), { force: true })
     cy.get('#review-limit-order-btn').click()
 
-    cy.get('#limit-orders-currency-output .token-amount-input').should('have.value', outputAmount.toString())
+    cy.get('#output-currency-input .token-amount-input').should('have.value', outputAmount.toString())
     cy.get('#limit-orders-confirm #input-currency-preview .token-amount-input').should(
       'contain.text',
       inputAmount.toString()
