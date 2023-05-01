@@ -16,6 +16,7 @@ import { ReactNode } from 'react'
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '@cow/pages/PrivacyPolicy'))
 const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ '@cow/pages/LimitOrders'))
+const AdvancedOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ '@cow/pages/AdvancedOrders'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ '@cow/pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ '@cow/pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ '@cow/pages/About'))
@@ -50,6 +51,7 @@ function LazyRoute({ route, element, key }: LazyRouteProps) {
 
 const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrders /> },
+  { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrders /> },
   { route: RoutesEnum.ABOUT, element: <About /> },
   { route: RoutesEnum.FAQ, element: <Faq /> },
   { route: RoutesEnum.FAQ_PROTOCOL, element: <ProtocolFaq /> },
