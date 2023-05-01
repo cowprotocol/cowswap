@@ -16,7 +16,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
   allowsOffchainSigning: true,
   currencyInfo: {
     field: Field.INPUT,
-    viewAmount: '20',
+    isIndependent: false,
     receiveAmountInfo: {
       type: 'from',
       amountBeforeFees: '30',

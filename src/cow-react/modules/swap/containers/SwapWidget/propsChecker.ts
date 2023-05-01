@@ -24,7 +24,7 @@ function isCurrencyInfoEqual(prev: CurrencyInfo, next: CurrencyInfo): boolean {
   const isBalanceEqual = areFractionsEqual(prev.balance, next.balance)
   const isFiatAmountEqual = areFractionsEqual(prev.fiatAmount, next.fiatAmount)
   const isRawAmountEqual = areFractionsEqual(prev.rawAmount, next.rawAmount)
-  const isViewAmountEqual = prev.viewAmount === next.viewAmount
+  const isViewAmountEqual = prev.isIndependent === next.isIndependent
 
   return (
     isCurrencyEqual &&
