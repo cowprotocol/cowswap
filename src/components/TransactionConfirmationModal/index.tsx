@@ -251,7 +251,7 @@ export function ConfirmationPendingContent({
               <li>
                 <SVG src={checkImage} /> Immutable contract with multiple&nbsp;
                 <ExternalLink
-                  href="https://github.com/cowprotocol/ethflowcontract/tree/main/audits"
+                  href="https://github.com/cowprotocol/contracts/tree/main/audits"
                   target={'_blank'}
                   rel={'noopener'}
                 >
