@@ -1,24 +1,18 @@
-import { useAtomValue } from 'jotai/utils'
-import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { useWalletInfo } from '@cow/modules/wallet'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
+import { useHigherUSDValue } from '@src/hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useAdvancedOrdersState } from '@cow/modules/advancedOrders'
 import { TradeWidgetState } from '@cow/modules/trade/types/TradeWidgetState'
 import { tryParseFractionalAmount } from '@cow/utils/tryParseFractionalAmount'
 
-export interface LimitOrdersTradeState extends TradeWidgetState {
-  readonly isUnlocked: boolean
-}
-
-export function useLimitOrdersTradeState(): LimitOrdersTradeState {
+export function useAdvancedOrdersTradeState(): TradeWidgetState {
   const { account } = useWalletInfo()
-  const state = useAtomValue(limitOrdersAtom)
+  const state = useAdvancedOrdersState()
 
   const recipient = state.recipient
   const orderKind = state.orderKind
-  const isUnlocked = state.isUnlocked
 
   const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
@@ -40,6 +34,5 @@ export function useLimitOrdersTradeState(): LimitOrdersTradeState {
     outputCurrencyBalance,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
-    isUnlocked,
   })
 }

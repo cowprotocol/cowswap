@@ -3,6 +3,8 @@ import { SetRecipient } from '@cow/modules/swap/containers/SetRecipient'
 
 export const Container = styled.div`
   width: 100%;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  margin: 0 auto;
 `
 
 export const ContainerBox = styled.div`
