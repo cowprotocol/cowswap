@@ -1,6 +1,6 @@
 import React from 'react'
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { LimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
+import { LimitOrdersFullState } from '../../hooks/useLimitOrdersFullState'
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary } from 'components/Button'
 import { ButtonSize } from 'theme/enum'
@@ -22,7 +22,7 @@ export interface WrapUnwrapParams {
 }
 
 export interface TradeButtonsParams {
-  tradeState: LimitOrdersTradeState
+  tradeState: LimitOrdersFullState
   quote: LimitOrdersQuoteState
   toggleWalletModal: () => void
   wrapUnwrapParams: WrapUnwrapParams

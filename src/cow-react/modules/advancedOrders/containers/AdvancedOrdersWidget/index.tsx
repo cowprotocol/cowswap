@@ -3,7 +3,7 @@ import { TradeWidget } from '@cow/modules/trade/containers/TradeWidget'
 import React from 'react'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from '@src/state/swap/actions'
-import { useAdvancedOrdersTradeState } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersTradeState'
+import { useAdvancedOrdersFullState } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersFullState'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
 
@@ -21,7 +21,7 @@ export function AdvancedOrdersWidget() {
     outputCurrencyFiatAmount,
     recipient,
     orderKind,
-  } = useAdvancedOrdersTradeState()
+  } = useAdvancedOrdersFullState()
   const onCurrencySelection = useNavigateOnCurrencySelection()
 
   const inputCurrencyInfo: CurrencyInfo = {

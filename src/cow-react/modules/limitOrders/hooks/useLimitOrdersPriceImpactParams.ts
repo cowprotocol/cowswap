@@ -1,10 +1,10 @@
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
 import type { PriceImpactParams } from 'hooks/usePriceImpact'
 import { useMemo } from 'react'
 
 export function useLimitOrdersPriceImpactParams(): PriceImpactParams {
-  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersFullState()
 
   const abTrade = useSafeMemoObject({
     inputAmount: inputCurrencyAmount,

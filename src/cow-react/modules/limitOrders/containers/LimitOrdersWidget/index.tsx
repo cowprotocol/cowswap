@@ -2,7 +2,7 @@ import * as styledEl from './styled'
 import { Field } from 'state/swap/actions'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
-import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
+import { useLimitOrdersFullState } from '../../hooks/useLimitOrdersFullState'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
@@ -29,7 +29,7 @@ import { useWalletInfo } from '@cow/modules/wallet'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurrencySelection'
+import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
@@ -58,7 +58,7 @@ export function LimitOrdersWidget() {
     recipient,
     isUnlocked,
     orderKind,
-  } = useLimitOrdersTradeState()
+  } = useLimitOrdersFullState()
   const onCurrencySelection = useOnCurrencySelection()
   const onImportDismiss = useOnImportDismiss()
   const limitOrdersNavigate = useTradeNavigate()

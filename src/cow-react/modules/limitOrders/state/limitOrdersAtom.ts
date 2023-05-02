@@ -2,20 +2,16 @@ import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { getDefaultTradeState, TradeRawState } from '@cow/modules/trade/types/TradeRawState'
 
-export interface LimitOrdersState {
-  readonly chainId: number | null
-  readonly inputCurrencyId: string | null
-  readonly outputCurrencyId: string | null
+export interface LimitOrdersRawState extends TradeRawState {
   readonly inputCurrencyAmount: string | null
   readonly outputCurrencyAmount: string | null
-  readonly recipient: string | null
   readonly orderKind: OrderKind
   readonly isUnlocked: boolean
 }
 
-export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): LimitOrdersState {
+export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): LimitOrdersRawState {
   return {
     ...getDefaultTradeState(chainId),
     inputCurrencyAmount: null,
@@ -26,7 +22,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
   }
 }
 
-export const limitOrdersAtom = atomWithStorage<LimitOrdersState>(
+export const limitOrdersAtom = atomWithStorage<LimitOrdersRawState>(
   'limit-orders-atom:v4',
   getDefaultLimitOrdersState(null),
   /**
@@ -37,7 +33,7 @@ export const limitOrdersAtom = atomWithStorage<LimitOrdersState>(
   createJSONStorage(() => localStorage)
 )
 
-export const updateLimitOrdersAtom = atom(null, (get, set, nextState: Partial<LimitOrdersState>) => {
+export const updateLimitOrdersAtom = atom(null, (get, set, nextState: Partial<LimitOrdersRawState>) => {
   set(limitOrdersAtom, () => {
     const prevState = get(limitOrdersAtom)
 

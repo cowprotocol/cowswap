@@ -2,7 +2,7 @@ import { useLayoutEffect } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { getQuote } from '@cow/api/gnosisProtocol'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
 import { updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useQuoteRequestParams } from '../useQuoteRequestParams'
 import { useHandleResponse } from './useHandleResponse'
@@ -29,7 +29,7 @@ export function useFetchMarketPrice() {
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
   const { isWrapOrUnwrap } = useDetectNativeToken()
 
-  const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, orderKind } = useLimitOrdersFullState()
   const handleResponse = useHandleResponse()
 
   const isWindowVisible = useIsWindowVisible()

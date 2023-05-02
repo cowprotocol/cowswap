@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
+import { useLimitOrdersFullState } from './useLimitOrdersFullState'
 
 export function useTypedValue() {
-  const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersTradeState()
+  const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersFullState()
 
   const typedValue = useMemo(() => {
     if (orderKind === OrderKind.SELL) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 import { useAsyncMemo } from 'use-async-memo'
 
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
 import { getAddress } from '@cow/utils/getAddress'
 import ms from 'ms.macro'
 import { parsePrice } from '@cow/modules/limitOrders/utils/parsePrice'
@@ -90,7 +90,7 @@ export async function requestPrice(
 // TODO: rename it to useNativeBasedPrice
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
   const { chainId } = useWalletInfo()
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency } = useLimitOrdersFullState()
   const [isLoading, setIsLoading] = useState(false)
   const [updateTimestamp, setUpdateTimestamp] = useState(Date.now())
   const isWindowVisible = useIsWindowVisible()

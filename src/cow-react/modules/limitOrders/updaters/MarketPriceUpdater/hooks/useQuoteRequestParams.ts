@@ -1,4 +1,4 @@
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { parseUnits } from 'ethers/lib/utils'
@@ -13,7 +13,7 @@ import usePrevious from 'hooks/usePrevious'
 export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }
 
 export function useQuoteRequestParams(): LimitOrdersQuoteParams | null {
-  const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, recipient, orderKind } = useLimitOrdersFullState()
   const { chainId, account } = useWalletInfo()
   const prevChainId = usePrevious(chainId)
   const { exactTypedValue } = useTypedValue()
