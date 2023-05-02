@@ -18,7 +18,7 @@ import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from 'state/swap/actions'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
@@ -176,14 +176,6 @@ export function SwapWidget() {
   }
 
   const showTradeRates = !isWrapUnwrapMode
-
-  /**
-   * Reset recipient value only once at App start
-   */
-  useEffect(() => {
-    swapActions.onChangeRecipient(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const slots = {
     settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
