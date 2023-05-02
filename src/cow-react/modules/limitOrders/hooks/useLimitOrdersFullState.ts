@@ -5,14 +5,14 @@ import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { TradeWidgetState } from '@cow/modules/trade/types/TradeWidgetState'
+import { TradeFullState } from '@cow/modules/trade/types/TradeFullState'
 import { tryParseFractionalAmount } from '@cow/utils/tryParseFractionalAmount'
 
-export interface LimitOrdersTradeState extends TradeWidgetState {
+export interface LimitOrdersFullState extends TradeFullState {
   readonly isUnlocked: boolean
 }
 
-export function useLimitOrdersTradeState(): LimitOrdersTradeState {
+export function useLimitOrdersFullState(): LimitOrdersFullState {
   const { account } = useWalletInfo()
   const state = useAtomValue(limitOrdersAtom)
 

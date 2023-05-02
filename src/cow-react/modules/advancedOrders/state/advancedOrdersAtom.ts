@@ -1,19 +1,15 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { getDefaultTradeState, TradeRawState } from '@cow/modules/trade/types/TradeRawState'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { atom } from 'jotai'
 
-export interface AdvancedOrdersState {
-  readonly chainId: number | null
-  readonly inputCurrencyId: string | null
-  readonly outputCurrencyId: string | null
+export interface AdvancedOrdersRawState extends TradeRawState {
   readonly inputCurrencyAmount: string | null
   readonly outputCurrencyAmount: string | null
-  readonly recipient: string | null
   readonly orderKind: OrderKind
 }
 
-export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null): AdvancedOrdersState {
+export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null): AdvancedOrdersRawState {
   return {
     ...getDefaultTradeState(chainId),
     inputCurrencyAmount: null,
@@ -23,7 +19,7 @@ export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null):
   }
 }
 
-export const advancedOrdersAtom = atomWithStorage<AdvancedOrdersState>(
+export const advancedOrdersAtom = atomWithStorage<AdvancedOrdersRawState>(
   'advanced-orders-atom:v1',
   getDefaultAdvancedOrdersState(null),
   /**
@@ -34,7 +30,7 @@ export const advancedOrdersAtom = atomWithStorage<AdvancedOrdersState>(
   createJSONStorage(() => localStorage)
 )
 
-export const updateAdvancedOrdersAtom = atom(null, (get, set, nextState: Partial<AdvancedOrdersState>) => {
+export const updateAdvancedOrdersAtom = atom(null, (get, set, nextState: Partial<AdvancedOrdersRawState>) => {
   set(advancedOrdersAtom, () => {
     const prevState = get(advancedOrdersAtom)
 

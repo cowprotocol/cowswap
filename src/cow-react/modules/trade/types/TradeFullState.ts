@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-export interface TradeWidgetState {
+export interface TradeFullState {
   readonly inputCurrency: Currency | null
   readonly outputCurrency: Currency | null
   readonly inputCurrencyAmount: CurrencyAmount<Currency> | null

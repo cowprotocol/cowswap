@@ -3,7 +3,7 @@ import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
-import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeRawState'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useWalletInfo } from '@cow/modules/wallet'
 

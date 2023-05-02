@@ -3,13 +3,13 @@ import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrA
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from '@src/hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
-import { useAdvancedOrdersState } from '@cow/modules/advancedOrders'
-import { TradeWidgetState } from '@cow/modules/trade/types/TradeWidgetState'
+import { useAdvancedOrdersRawState } from '@cow/modules/advancedOrders'
+import { TradeFullState } from '@cow/modules/trade/types/TradeFullState'
 import { tryParseFractionalAmount } from '@cow/utils/tryParseFractionalAmount'
 
-export function useAdvancedOrdersTradeState(): TradeWidgetState {
+export function useAdvancedOrdersFullState(): TradeFullState {
   const { account } = useWalletInfo()
-  const state = useAdvancedOrdersState()
+  const state = useAdvancedOrdersRawState()
 
   const recipient = state.recipient
   const orderKind = state.orderKind

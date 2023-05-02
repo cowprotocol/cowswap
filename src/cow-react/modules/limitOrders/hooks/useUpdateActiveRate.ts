@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -13,7 +13,7 @@ export interface UpdateRateCallback {
 }
 
 export function useUpdateActiveRate(): UpdateRateCallback {
-  const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersTradeState()
+  const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersFullState()
   const rateState = useAtomValue(limitRateAtom)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()

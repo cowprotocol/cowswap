@@ -5,7 +5,7 @@ import { Navigate, useLocation, useParams } from 'react-router-dom'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from '@cow/constants/routes'
-import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeRawState'
 import { useWalletInfo } from '@cow/modules/wallet'
 
 export function SwapPage() {

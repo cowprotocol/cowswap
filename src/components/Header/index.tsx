@@ -32,13 +32,14 @@ import { cowSwapLogo, AnniversaryHatImage } from 'theme/cowSwapAssets'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
-import { useSwapTradeState, useTradeState } from '@cow/modules/trade/hooks/useTradeState'
+import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
 import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
-import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { getDefaultTradeState } from '@cow/modules/trade/types/TradeRawState'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { useNativeCurrencyBalances } from '@cow/modules/tokens/hooks/useCurrencyBalance'
+import { useSwapRawState } from '@cow/modules/swap/hooks/useSwapRawState'
 
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',
@@ -55,7 +56,7 @@ export default function Header() {
     toggleDarkModeAnalytics(!darkMode)
     toggleDarkModeAux()
   }, [toggleDarkModeAux, darkMode])
-  const swapState = useSwapTradeState()
+  const swapRawState = useSwapRawState()
   const { state: tradeState } = useTradeState()
 
   const [isOrdersPanelOpen, setIsOrdersPanelOpen] = useState<boolean>(false)
@@ -80,7 +81,7 @@ export default function Header() {
   }, [isUpToLarge, isMobileMenuOpen])
 
   const tradeMenuContext = useMemo(() => {
-    const state = tradeState || swapState
+    const state = tradeState || swapRawState
     const defaultTradeState = getDefaultTradeState(chainId || state.chainId || SupportedChainId.MAINNET)
     const networkWasChanged = chainId && state.chainId && chainId !== state.chainId
 
@@ -99,7 +100,7 @@ export default function Header() {
       outputCurrencyId,
       chainId: defaultTradeState.chainId?.toString(),
     }
-  }, [chainId, tradeState, swapState])
+  }, [chainId, tradeState, swapRawState])
 
   const menuContext: MainMenuContext = {
     darkMode,

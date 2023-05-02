@@ -1,5 +1,5 @@
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { LimitOrdersTradeState, useLimitOrdersTradeState } from './useLimitOrdersTradeState'
+import { LimitOrdersFullState, useLimitOrdersFullState } from './useLimitOrdersFullState'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { ApprovalState } from 'hooks/useApproveCallback'
@@ -46,7 +46,7 @@ interface LimitOrdersFormParams {
   isReadonlyGnosisSafeUser: boolean
   currentAllowance: CurrencyAmount<Token> | undefined
   approvalState: ApprovalState
-  tradeState: LimitOrdersTradeState
+  tradeState: LimitOrdersFullState
   settingsState: LimitOrdersSettingsState
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
@@ -167,7 +167,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
 export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { chainId, account } = useWalletInfo()
-  const tradeState = useLimitOrdersTradeState()
+  const tradeState = useLimitOrdersFullState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
