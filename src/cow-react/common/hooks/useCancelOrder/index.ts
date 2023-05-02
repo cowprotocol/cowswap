@@ -3,7 +3,7 @@ import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 
 import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
-import { Order } from 'state/orders/actions'
+import { Order, OrderStatus } from 'state/orders/actions'
 import { useCloseModal, useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
@@ -16,6 +16,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useGetOnChainCancellation } from '@cow/common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
+import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 
 export type UseCancelOrderReturn = (() => void) | null
 
@@ -46,12 +47,12 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
     (order: Order) => {
       // Check the 'cancellability'
 
-      // const isEthFlowOrder = getIsEthFlowOrder(order)
+      const isEthFlowOrder = getIsEthFlowOrder(order)
 
       // 1. EthFlow orders will never be able to be cancelled offChain
       // 2. The wallet must support offChain singing
       // 3. The order must be PENDING
-      const isOffChainCancellable = true
+      const isOffChainCancellable = !isEthFlowOrder && allowsOffchainSigning && order?.status === OrderStatus.PENDING
 
       // When the order is not cancellable, there won't be a callback
       if (!isOrderCancellable(order)) {
