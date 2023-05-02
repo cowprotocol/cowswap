@@ -1,10 +1,12 @@
 import { useMatch } from 'react-router-dom'
 import { Routes } from '@cow/constants/routes'
 import { useMemo } from 'react'
+import { PathMatch } from '@remix-run/router'
 
 export enum TradeType {
   SWAP,
   LIMIT_ORDER,
+  ADVANCED_ORDERS,
 }
 
 export interface TradeTypeInfo {
@@ -12,21 +14,23 @@ export interface TradeTypeInfo {
   route: Routes
 }
 
-export function useTradeTypeInfo(): TradeTypeInfo | null {
-  const swapMatchWithChainId = useMatch({ path: '/:chainId/swap/', end: false })
-  const swapMatchWithoutChainId = useMatch({ path: '/swap/', end: false })
-  const limitOrderMatchWithChainId = useMatch({ path: '/:chainId/limit-orders/', end: false })
-  const limitOrderMatchWithoutChainId = useMatch({ path: '/limit-orders/', end: false })
+function useMatchTradeRoute(route: string): PathMatch<'chainId'> | null {
+  const withChainId = useMatch({ path: `/:chainId/${route}/`, end: false })
+  const withoutChainId = useMatch({ path: `/${route}/`, end: false })
 
-  const swapMatch = swapMatchWithChainId || swapMatchWithoutChainId
-  const limitOrderMatch = limitOrderMatchWithChainId || limitOrderMatchWithoutChainId
+  return withChainId || withoutChainId
+}
+
+export function useTradeTypeInfo(): TradeTypeInfo | null {
+  const swapMatch = useMatchTradeRoute('swap')
+  const limitOrderMatch = useMatchTradeRoute('limit-orders')
+  const advancedOrdersMatch = useMatchTradeRoute('advanced-orders')
 
   return useMemo(() => {
-    if (!swapMatch && !limitOrderMatch) return null
+    if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }
+    if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDER }
+    if (advancedOrdersMatch) return { tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS }
 
-    return {
-      tradeType: swapMatch ? TradeType.SWAP : TradeType.LIMIT_ORDER,
-      route: swapMatch ? Routes.SWAP : Routes.LIMIT_ORDER,
-    }
-  }, [swapMatch, limitOrderMatch])
+    return null
+  }, [swapMatch, limitOrderMatch, advancedOrdersMatch])
 }

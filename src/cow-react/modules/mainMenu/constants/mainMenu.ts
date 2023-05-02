@@ -1,6 +1,6 @@
 import { Routes } from '@cow/constants/routes'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
-import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
+import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuLink, MenuTreeItem } from '../types'
 
 // Assets
 import IMAGE_DOCS from 'assets/cow-swap/doc.svg'
@@ -14,6 +14,9 @@ import IMAGE_TWITTER from 'assets/cow-swap/twitter.svg'
 import IMAGE_PIE from 'assets/cow-swap/pie.svg'
 import IMAGE_SLICER from 'assets/cow-swap/ninja-cow.png'
 import IMAGE_GAME from 'assets/cow-swap/game.gif'
+import { FeatureFlag } from '@cow/utils/featureFlags'
+import { ADVANCED_ORDERS_FEATURE_FLAG } from '@cow/constants/featureFlags'
+import { isNotNullish } from '@cow/utils/isNotNullish'
 
 export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
   return !!(item.title && item.url)
@@ -47,7 +50,15 @@ export const MAIN_MENU: MenuTreeItem[] = [
             title: 'Limit orders',
             url: Routes.LIMIT_ORDER,
           },
-        ],
+          FeatureFlag.get(ADVANCED_ORDERS_FEATURE_FLAG)
+            ? {
+                id: MainMenuItemId.ADVANCED_ORDERS,
+                kind: MenuItemKind.DYNAMIC_LINK,
+                title: 'Advanced orders',
+                url: Routes.ADVANCED_ORDERS,
+              }
+            : null,
+        ].filter(isNotNullish) as MenuLink[],
       },
     ],
   },
