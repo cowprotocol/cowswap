@@ -11,13 +11,13 @@ import { isAddress } from 'utils'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { isUnsupportedTokenInQuote } from '@cow/modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import {
   limitOrdersSettingsAtom,
   LimitOrdersSettingsState,
 } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { LimitOrdersFullState } from '@cow/modules/limitOrders'
+import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
@@ -175,7 +175,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
-  const { isWrapOrUnwrap } = useDetectNativeToken()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const { inputCurrency, recipient } = tradeState
   const sellAmount = tradeState.inputCurrencyAmount

@@ -24,7 +24,6 @@ import { LimitOrdersWarnings } from '@cow/modules/limitOrders/containers/LimitOr
 import { useLimitOrdersPriceImpactParams } from '@cow/modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
@@ -35,6 +34,7 @@ import { TradeWidget } from '@cow/modules/trade/containers/TradeWidget'
 import usePriceImpact from '@src/hooks/usePriceImpact'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { useLimitOrdersWidgetActions } from '@cow/modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
+import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -62,7 +62,7 @@ export function LimitOrdersWidget() {
   const tradeContext = useTradeFlowContext()
   const { isLoading: isRateLoading, feeAmount } = useAtomValue(limitRateAtom)
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
-  const { isWrapOrUnwrap } = useDetectNativeToken()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
   const { partialFillsEnabled } = useFeatureFlags()
   const widgetActions = useLimitOrdersWidgetActions()
