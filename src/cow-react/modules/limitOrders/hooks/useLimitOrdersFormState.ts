@@ -1,5 +1,5 @@
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { LimitOrdersFullState, useLimitOrdersFullState } from './useLimitOrdersFullState'
+import { useLimitOrdersFullState } from './useLimitOrdersFullState'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { ApprovalState } from 'hooks/useApproveCallback'
@@ -17,6 +17,7 @@ import {
   limitOrdersSettingsAtom,
   LimitOrdersSettingsState,
 } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { LimitOrdersFullState } from '@cow/modules/limitOrders'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',

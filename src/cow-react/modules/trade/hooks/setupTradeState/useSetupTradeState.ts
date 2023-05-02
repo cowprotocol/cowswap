@@ -7,7 +7,7 @@ import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import usePrevious from 'hooks/usePrevious'
-import { getDefaultTradeState, TradeRawState } from '@cow/modules/trade/types/TradeRawState'
+import { getDefaultTradeRawState, TradeRawState } from '@cow/modules/trade/types/TradeRawState'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -74,7 +74,7 @@ export function useSetupTradeState(): void {
     const sameTokens =
       (inputCurrencyId || outputCurrencyId) && inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
 
-    const defaultState = getDefaultTradeState(currentChainId)
+    const defaultState = getDefaultTradeRawState(currentChainId)
 
     // Applying of the remembered state after network successfully changed
     if (isWalletConnected && providerAndUrlChainIdMismatch && prevTradeStateFromUrl) {
@@ -158,7 +158,7 @@ export function useSetupTradeState(): void {
       setRememberedUrlState(null)
       tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
     } else {
-      tradeNavigate(providerChainId, getDefaultTradeState(providerChainId))
+      tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
     }
 
     console.debug('[TRADE STATE]', 'Provider changed chainId', { providerChainId, urlChanges: rememberedUrlState })

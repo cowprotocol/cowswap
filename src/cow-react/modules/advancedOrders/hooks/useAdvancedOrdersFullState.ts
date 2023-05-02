@@ -1,38 +1,19 @@
-import { useWalletInfo } from '@cow/modules/wallet'
-import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
-import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
-import { useHigherUSDValue } from '@src/hooks/useStablecoinPrice'
-import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
-import { useAdvancedOrdersRawState } from '@cow/modules/advancedOrders'
+import { advancedOrdersAtom, advancedOrdersFullStateAtom } from '@cow/modules/advancedOrders'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useBuildTradeFullState } from '@cow/modules/trade/hooks/useBuildTradeFullState'
+import { useEffect } from 'react'
 import { TradeFullState } from '@cow/modules/trade/types/TradeFullState'
-import { tryParseFractionalAmount } from '@cow/utils/tryParseFractionalAmount'
 
 export function useAdvancedOrdersFullState(): TradeFullState {
-  const { account } = useWalletInfo()
-  const state = useAdvancedOrdersRawState()
+  return useAtomValue(advancedOrdersFullStateAtom)
+}
 
-  const recipient = state.recipient
-  const orderKind = state.orderKind
+export function useFillAdvancedOrdersFullState() {
+  const updateFullState = useUpdateAtom(advancedOrdersFullStateAtom)
 
-  const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
-  const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
-  const inputCurrencyAmount = tryParseFractionalAmount(inputCurrency, state.inputCurrencyAmount)
-  const outputCurrencyAmount = tryParseFractionalAmount(outputCurrency, state.outputCurrencyAmount)
-  const inputCurrencyBalance = useCurrencyBalance(account, inputCurrency) || null
-  const outputCurrencyBalance = useCurrencyBalance(account, outputCurrency) || null
-  const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
-  const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
+  const fullState = useBuildTradeFullState(advancedOrdersAtom)
 
-  return useSafeMemoObject({
-    orderKind,
-    recipient,
-    inputCurrency,
-    outputCurrency,
-    inputCurrencyAmount,
-    outputCurrencyAmount,
-    inputCurrencyBalance,
-    outputCurrencyBalance,
-    inputCurrencyFiatAmount,
-    outputCurrencyFiatAmount,
-  })
+  useEffect(() => {
+    updateFullState(fullState)
+  }, [fullState, updateFullState])
 }

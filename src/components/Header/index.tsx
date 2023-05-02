@@ -35,7 +35,7 @@ import { toggleDarkModeAnalytics } from 'components/analytics'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
 import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
-import { getDefaultTradeState } from '@cow/modules/trade/types/TradeRawState'
+import { getDefaultTradeRawState } from '@cow/modules/trade/types/TradeRawState'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import { useNativeCurrencyBalances } from '@cow/modules/tokens/hooks/useCurrencyBalance'
@@ -82,7 +82,7 @@ export default function Header() {
 
   const tradeMenuContext = useMemo(() => {
     const state = tradeState || swapRawState
-    const defaultTradeState = getDefaultTradeState(chainId || state.chainId || SupportedChainId.MAINNET)
+    const defaultTradeState = getDefaultTradeRawState(chainId || state.chainId || SupportedChainId.MAINNET)
     const networkWasChanged = chainId && state.chainId && chainId !== state.chainId
 
     // When network was changed - use the deafult trade state

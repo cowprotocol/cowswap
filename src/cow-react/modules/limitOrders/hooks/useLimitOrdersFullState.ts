@@ -1,45 +1,24 @@
-import { useAtomValue } from 'jotai/utils'
-import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
-import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
-import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
-import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
-import { useWalletInfo } from '@cow/modules/wallet'
-import { TradeFullState } from '@cow/modules/trade/types/TradeFullState'
-import { tryParseFractionalAmount } from '@cow/utils/tryParseFractionalAmount'
-
-export interface LimitOrdersFullState extends TradeFullState {
-  readonly isUnlocked: boolean
-}
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import {
+  limitOrdersAtom,
+  LimitOrdersFullState,
+  limitOrdersFullStateAtom,
+} from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { useEffect } from 'react'
+import { useBuildTradeFullState } from '@cow/modules/trade/hooks/useBuildTradeFullState'
 
 export function useLimitOrdersFullState(): LimitOrdersFullState {
-  const { account } = useWalletInfo()
-  const state = useAtomValue(limitOrdersAtom)
+  return useAtomValue(limitOrdersFullStateAtom)
+}
 
-  const recipient = state.recipient
-  const orderKind = state.orderKind
-  const isUnlocked = state.isUnlocked
+export function useFillLimitOrdersFullState() {
+  const rawState = useAtomValue(limitOrdersAtom)
+  const updateFullState = useUpdateAtom(limitOrdersFullStateAtom)
 
-  const inputCurrency = useTokenBySymbolOrAddress(state.inputCurrencyId)
-  const outputCurrency = useTokenBySymbolOrAddress(state.outputCurrencyId)
-  const inputCurrencyAmount = tryParseFractionalAmount(inputCurrency, state.inputCurrencyAmount)
-  const outputCurrencyAmount = tryParseFractionalAmount(outputCurrency, state.outputCurrencyAmount)
-  const inputCurrencyBalance = useCurrencyBalance(account, inputCurrency) || null
-  const outputCurrencyBalance = useCurrencyBalance(account, outputCurrency) || null
-  const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
-  const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
+  const isUnlocked = rawState.isUnlocked
+  const fullState = useBuildTradeFullState(limitOrdersAtom)
 
-  return useSafeMemoObject({
-    orderKind,
-    recipient,
-    inputCurrency,
-    outputCurrency,
-    inputCurrencyAmount,
-    outputCurrencyAmount,
-    inputCurrencyBalance,
-    outputCurrencyBalance,
-    inputCurrencyFiatAmount,
-    outputCurrencyFiatAmount,
-    isUnlocked,
-  })
+  useEffect(() => {
+    updateFullState({ ...fullState, isUnlocked })
+  }, [fullState, updateFullState, isUnlocked])
 }

@@ -1,6 +1,5 @@
 import React from 'react'
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { LimitOrdersFullState } from '../../hooks/useLimitOrdersFullState'
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary } from 'components/Button'
 import { ButtonSize } from 'theme/enum'
@@ -12,6 +11,7 @@ import TransactionConfirmationModal from 'components/TransactionConfirmationModa
 import { TransactionConfirmState } from '@cow/modules/swap/state/transactionConfirmAtom'
 import { TradeLoadingButton } from '@cow/modules/trade/pure/TradeLoadingButton'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { LimitOrdersFullState } from '@cow/modules/limitOrders'
 
 export interface WrapUnwrapParams {
   isNativeIn: boolean
