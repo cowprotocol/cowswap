@@ -3,7 +3,7 @@ import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useEffect } from 'react'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
-import { getDefaultTradeState } from '@cow/modules/trade/types/TradeRawState'
+import { getDefaultTradeRawState } from '@cow/modules/trade/types/TradeRawState'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useWalletInfo } from '@cow/modules/wallet'
 
@@ -28,7 +28,7 @@ export function useDisableNativeTokenSelling() {
     const isInputNative = !!inputCurrencyId && nativeIds.includes(inputCurrencyId?.toLowerCase())
     const isOutputWrappedNative = !!outputCurrencyId && wrappedIds.includes(outputCurrencyId?.toLowerCase())
 
-    const defaultInputCurrencyId = getDefaultTradeState(chainId).inputCurrencyId
+    const defaultInputCurrencyId = getDefaultTradeRawState(chainId).inputCurrencyId
 
     if (isInputNative && outputCurrencyId && !isOutputWrappedNative) {
       limitOrdersNavigate(chainId, {

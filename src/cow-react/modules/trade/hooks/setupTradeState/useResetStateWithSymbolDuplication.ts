@@ -2,7 +2,7 @@
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
-import { getDefaultTradeState, TradeRawState } from '../../types/TradeRawState'
+import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'
 import { useWalletInfo } from '@cow/modules/wallet'
 
@@ -41,7 +41,7 @@ export function useResetStateWithSymbolDuplication(state: TradeRawState | null):
         alert(alertMessage(doubledSymbol || ''))
       }, 500)
 
-      const defaultState = getDefaultTradeState(chainId)
+      const defaultState = getDefaultTradeRawState(chainId)
       navigate(chainId, {
         inputCurrencyId: defaultState.inputCurrencyId,
         outputCurrencyId: defaultState.outputCurrencyId,
