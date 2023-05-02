@@ -7,19 +7,19 @@ import { TradeWidgetActions } from '@cow/modules/trade/containers/TradeWidget'
 import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
+import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
 
 export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, orderKind } =
     useLimitOrdersFullState()
   const { activeRate } = useAtomValue(limitRateAtom)
-  const { isWrapOrUnwrap } = useDetectNativeToken()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const limitOrdersNavigate = useTradeNavigate()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 

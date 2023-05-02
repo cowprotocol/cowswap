@@ -13,9 +13,9 @@ import { useGetCoingeckoUsdPrice } from '@cow/api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useGetGpUsdcPrice } from 'utils/price'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
 
 export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 
@@ -232,7 +232,7 @@ export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | 
 }
 
 export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
-  const { isWrapOrUnwrap } = useDetectNativeToken()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const checkedCurrencyAmount = isWrapOrUnwrap ? undefined : currencyAmount
   // if iswrap or unwrap use undefined values to not run expensive calculation
   const gpUsdPrice = useUSDCValue(checkedCurrencyAmount)
