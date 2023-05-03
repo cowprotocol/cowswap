@@ -37,16 +37,6 @@ export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
   padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
 `
 
-export const SettingsButton = styled.div`
-  display: flex;
-  background: none;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-`
-
 export const TradeButtonBox = styled.div`
   margin: 10px 0 0;
   display: flex;
