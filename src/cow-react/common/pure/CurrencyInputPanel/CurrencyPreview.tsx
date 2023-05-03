@@ -20,7 +20,7 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
 export function CurrencyPreview(props: CurrencyPreviewProps) {
   const { id, currencyInfo, className, priceImpactParams, topLabel } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
-  const { currency, balance, fiatAmount, rawAmount } = currencyInfo
+  const { currency, balance, fiatAmount, amount } = currencyInfo
 
   return (
     <>
@@ -32,7 +32,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
             <CurrencySelectButton currency={currency || undefined} loading={false} readonlyMode={true} />
           </div>
           <div>
-            <styledEl.TokenAmountStyled className="token-amount-input" amount={rawAmount} />
+            <styledEl.TokenAmountStyled className="token-amount-input" amount={amount} />
           </div>
         </styledEl.CurrencyInputBox>
 

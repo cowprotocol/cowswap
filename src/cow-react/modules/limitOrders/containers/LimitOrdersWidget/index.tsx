@@ -90,7 +90,7 @@ export function LimitOrdersWidget() {
     field: Field.INPUT,
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You sell' : 'You sell at most',
     currency: inputCurrency,
-    rawAmount: inputCurrencyAmount,
+    amount: inputCurrencyAmount,
     isIndependent: orderKind === OrderKind.SELL,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
@@ -100,7 +100,7 @@ export function LimitOrdersWidget() {
     field: Field.OUTPUT,
     label: isWrapOrUnwrap ? undefined : isSellOrder ? 'You receive at least' : 'You receive exactly',
     currency: outputCurrency,
-    rawAmount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
+    amount: isWrapOrUnwrap ? inputCurrencyAmount : outputCurrencyAmount,
     isIndependent: orderKind === OrderKind.BUY,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
@@ -263,7 +263,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
         <styledEl.TradeButtonBox>
           <TradeButtons
-            inputCurrencyAmount={inputCurrencyInfo.rawAmount}
+            inputCurrencyAmount={inputCurrencyInfo.amount}
             tradeContext={tradeContext}
             priceImpact={priceImpact}
             openConfirmScreen={() => setShowConfirmation(true)}

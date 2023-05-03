@@ -6,7 +6,7 @@ export interface CurrencyInfo {
   label?: string
   field: Field
   currency: Currency | null
-  rawAmount: CurrencyAmount<Currency> | null
+  amount: CurrencyAmount<Currency> | null
   isIndependent: boolean
   receiveAmountInfo: ReceiveAmountInfo | null
   balance: CurrencyAmount<Currency> | null

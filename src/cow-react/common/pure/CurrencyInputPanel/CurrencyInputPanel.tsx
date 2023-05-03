@@ -67,9 +67,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
   const isSupportedNetwork = isSupportedChainId(props.chainId as number | undefined)
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
-  const { field, currency, balance, fiatAmount, rawAmount, isIndependent, receiveAmountInfo } = currencyInfo
+  const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
   const disabled = props.disabled || !isSupportedNetwork
-  const viewAmount = formatInputAmount(rawAmount, balance, isIndependent)
+  const viewAmount = formatInputAmount(amount, balance, isIndependent)
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 

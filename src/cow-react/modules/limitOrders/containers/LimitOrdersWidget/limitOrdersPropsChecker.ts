@@ -75,7 +75,7 @@ function checkCurrencyInfo(a: CurrencyInfo, b: CurrencyInfo): boolean {
     a.field === b.field &&
     a.label === b.label &&
     a.isIndependent === b.isIndependent &&
-    areFractionsEqual(a.rawAmount, b.rawAmount) &&
+    areFractionsEqual(a.amount, b.amount) &&
     genericPropsChecker(a.receiveAmountInfo, b.receiveAmountInfo) &&
     getAddress(a.currency) === getAddress(b.currency) &&
     areFractionsEqual(a.balance, b.balance) &&

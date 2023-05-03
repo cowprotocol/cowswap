@@ -62,11 +62,11 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
   const { partialFillsEnabled } = useFeatureFlags()
 
-  const { rawAmount: inputRawAmount } = inputCurrencyInfo
-  const { rawAmount: outputRawAmount, currency: outputCurrency } = outputCurrencyInfo
+  const { amount: inputAmount } = inputCurrencyInfo
+  const { amount: outputAmount, currency: outputCurrency } = outputCurrencyInfo
 
   const rateImpact = useRateImpact()
-  const rateInfoParams = useRateInfoParams(inputRawAmount, outputRawAmount)
+  const rateInfoParams = useRateInfoParams(inputAmount, outputAmount)
   const { handleSetError, ErrorModal } = useErrorModal()
 
   const onDismissConfirmation = useCallback(() => {
@@ -85,7 +85,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const doTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeCallbacks)
 
   const operationType = OperationType.ORDER_SIGN
-  const pendingText = <PendingText inputRawAmount={inputRawAmount} outputRawAmount={outputRawAmount} />
+  const pendingText = <PendingText inputRawAmount={inputAmount} outputRawAmount={outputAmount} />
   const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
 
   return (

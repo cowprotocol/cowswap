@@ -27,7 +27,7 @@ export function AdvancedOrdersWidget() {
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
-    rawAmount: inputCurrencyAmount,
+    amount: inputCurrencyAmount,
     isIndependent: orderKind === OrderKind.SELL,
     receiveAmountInfo: null,
     balance: inputCurrencyBalance,
@@ -36,7 +36,7 @@ export function AdvancedOrdersWidget() {
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
-    rawAmount: outputCurrencyAmount,
+    amount: outputCurrencyAmount,
     isIndependent: orderKind === OrderKind.BUY,
     receiveAmountInfo: null,
     balance: outputCurrencyBalance,
