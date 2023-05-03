@@ -66,10 +66,11 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken()
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
-  const nativeInput = !!(trade?.tradeType === TradeType.EXACT_INPUT)
-    ? trade?.inputAmount
-    : // else use the slippage + fee adjusted amount
-      computeSlippageAdjustedAmounts(trade, allowedSlippage).INPUT
+  const nativeInput =
+    trade?.tradeType === TradeType.EXACT_INPUT
+      ? trade?.inputAmount
+      : // else use the slippage + fee adjusted amount
+        computeSlippageAdjustedAmounts(trade, allowedSlippage).INPUT
   const wrapUnwrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
