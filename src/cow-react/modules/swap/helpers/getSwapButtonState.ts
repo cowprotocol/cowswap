@@ -29,6 +29,7 @@ export enum SwapButtonState {
   SwapWithWrappedToken = 'SwapWithWrappedToken',
   RegularEthFlowSwap = 'EthFlowSwap',
   ExpertModeEthFlowSwap = 'ExpertModeEthFlowSwap',
+  ApproveAndSwap = 'ApproveAndSwap',
 }
 
 export interface SwapButtonStateParams {
@@ -37,6 +38,7 @@ export interface SwapButtonStateParams {
   isReadonlyGnosisSafeUser: boolean
   isExpertMode: boolean
   isSwapUnsupported: boolean
+  isTxBundlingEnabled: boolean
   wrapType: WrapType
   wrapInputError: string | undefined
   quoteError: QuoteError | undefined | null
@@ -113,6 +115,10 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   }
 
   if (!input.isNativeIn && showApproveFlow) {
+    if (input.isTxBundlingEnabled) {
+      // TODO: decide if this should be done re-using the current approval flow state or whether do it custom with bundling
+      return SwapButtonState.ApproveAndSwap
+    }
     return SwapButtonState.NeedApprove
   }
 

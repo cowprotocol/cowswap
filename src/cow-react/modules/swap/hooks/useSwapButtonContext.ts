@@ -24,6 +24,7 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useIsTradeUnsupported } from 'state/lists/hooks'
 import { useHandleSwap } from '@cow/modules/swap/hooks/useHandleSwap'
+import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -86,12 +87,14 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
+  const isTxBundlingEnabled = useIsTxBundlingEnabled()
 
   const swapButtonState = getSwapButtonState({
     account,
     isSupportedWallet,
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
+    isTxBundlingEnabled,
     isExpertMode,
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,
