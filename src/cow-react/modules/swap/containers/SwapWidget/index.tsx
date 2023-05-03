@@ -1,4 +1,3 @@
-import * as styledEl from './styled'
 import { useSwapState } from 'state/swap/hooks'
 import {
   useDerivedSwapInfo,
@@ -23,7 +22,6 @@ import React, { useEffect, useState } from 'react'
 import { useModalIsOpen } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 import { useSwapButtonContext } from '@cow/modules/swap/hooks/useSwapButtonContext'
-import { SwapFormProps } from '@cow/modules/swap/containers/SwapWidget/types'
 import { ConfirmSwapModalSetupProps } from '@cow/modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from '@cow/modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from '@cow/modules/swap/containers/SwapModals'
@@ -34,7 +32,6 @@ import {
   SwapWarningsTopProps,
 } from '@cow/modules/swap/pure/warnings'
 import { TradeRates, TradeRatesProps } from '@cow/modules/swap/pure/TradeRates'
-import { SwapForm } from '@cow/modules/swap/pure/SwapForm'
 import { SwapButtons } from '@cow/modules/swap/pure/SwapButtons'
 import { useSetupTradeState } from '@cow/modules/trade'
 import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
@@ -43,6 +40,9 @@ import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwap
 import { useIsTradeUnsupported } from 'state/lists/hooks'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
+import { TradeWidget, TradeWidgetContainer } from '@cow/modules/trade/containers/TradeWidget'
+import SettingsTab from '@src/components/Settings'
+import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
 export function SwapWidget() {
   useSetupTradeState()
@@ -61,6 +61,7 @@ export function SwapWidget() {
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
+  const isEthFlow = useIsEthFlow()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -115,20 +116,6 @@ export function SwapWidget() {
     openNativeWrapModal,
     priceImpactParams,
   })
-
-  const swapFormProps: SwapFormProps = {
-    chainId,
-    recipient,
-    allowedSlippage,
-    isTradePriceUpdating,
-    inputCurrencyInfo,
-    outputCurrencyInfo,
-    priceImpactParams,
-    swapActions,
-    subsidyAndBalance,
-    allowsOffchainSigning,
-    showRecipientControls,
-  }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.rawAmount, outputCurrencyInfo.rawAmount)
 
@@ -199,19 +186,41 @@ export function SwapWidget() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const slots = {
+    settingsWidget: <SettingsTab placeholderSlippage={allowedSlippage} />,
+    bottomContent: (
+      <>
+        {showTradeRates && <TradeRates {...tradeRatesProps} />}
+        <SwapWarningsTop {...swapWarningsTopProps} />
+        <SwapButtons {...swapButtonContext} />
+        <SwapWarningsBottom {...swapWarningsBottomProps} />
+      </>
+    ),
+  }
+
+  const params = {
+    isEthFlow,
+    compactView: true,
+    recipient,
+    showRecipient: showRecipientControls,
+    isTradePriceUpdating,
+    priceImpact: priceImpactParams,
+  }
+
   return (
     <>
-      <styledEl.Container id="new-swap-widget">
-        <SwapModals {...swapModalsProps} />
-        <styledEl.ContainerBox id="swap-page">
-          <SwapForm {...swapFormProps} />
-          {showTradeRates && <TradeRates {...tradeRatesProps} />}
-          <SwapWarningsTop {...swapWarningsTopProps} />
-          <SwapButtons {...swapButtonContext} />
-          <SwapWarningsBottom {...swapWarningsBottomProps} />
-        </styledEl.ContainerBox>
+      <SwapModals {...swapModalsProps} />
+      <TradeWidgetContainer>
+        <TradeWidget
+          id="swap-page"
+          slots={slots}
+          actions={swapActions}
+          params={params}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+        />
         <NetworkAlert />
-      </styledEl.Container>
+      </TradeWidgetContainer>
     </>
   )
 }

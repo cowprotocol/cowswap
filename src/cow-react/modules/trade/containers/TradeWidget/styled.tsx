@@ -3,6 +3,8 @@ import { SetRecipient } from '@cow/modules/swap/containers/SetRecipient'
 
 export const Container = styled.div`
   width: 100%;
+  max-width: ${({ theme }) => theme.appBody.maxWidth.swap};
+  margin: 0 auto;
 `
 
 export const ContainerBox = styled.div`
@@ -26,10 +28,10 @@ export const Header = styled.div`
   font-size: 16px;
 `
 
-export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
+export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean; compactView: boolean }>`
   display: flex;
   justify-content: space-between;
-  margin: 0;
+  margin: ${({ compactView }) => (compactView ? '-5px 0' : '0')};
   padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
 `
 
