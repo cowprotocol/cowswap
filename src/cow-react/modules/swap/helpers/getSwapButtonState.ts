@@ -30,6 +30,7 @@ export enum SwapButtonState {
   RegularEthFlowSwap = 'EthFlowSwap',
   ExpertModeEthFlowSwap = 'ExpertModeEthFlowSwap',
   ApproveAndSwap = 'ApproveAndSwap',
+  ExpertApproveAndSwap = 'ExpertApproveAndSwap',
 }
 
 export interface SwapButtonStateParams {
@@ -117,6 +118,9 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   if (!input.isNativeIn && showApproveFlow) {
     if (input.isTxBundlingEnabled) {
       // TODO: decide if this should be done re-using the current approval flow state or whether do it custom with bundling
+      if (input.isExpertMode) {
+        return SwapButtonState.ExpertApproveAndSwap
+      }
       return SwapButtonState.ApproveAndSwap
     }
     return SwapButtonState.NeedApprove

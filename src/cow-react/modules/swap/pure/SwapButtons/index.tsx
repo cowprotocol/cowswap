@@ -166,6 +166,13 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
+  [SwapButtonState.ExpertApproveAndSwap]: (props: SwapButtonsContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
+      <styledEl.SwapButtonBox>
+        <Trans>Approve and Swap</Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
   [SwapButtonState.RegularEthFlowSwap]: (props: SwapButtonsContext) => (
     <EthFlowSwapButton isExpertMode={false} {...props} />
   ),
