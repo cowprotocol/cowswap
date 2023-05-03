@@ -64,9 +64,9 @@ export default function NotificationBanner(props: BannerProps) {
 
   useEffect(() => {
     if (isClosed !== null) {
-      setIsActive(!isActive)
+      setIsActive((state) => !state)
     }
-  }, [isClosed, isActive])
+  }, [isClosed])
 
   return (
     <Banner {...props} isVisible={!isHidden}>

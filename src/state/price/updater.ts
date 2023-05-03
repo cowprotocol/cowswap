@@ -12,7 +12,7 @@ import { Field } from 'state/swap/actions'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
 
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
-import { useAllQuotes, useIsQuoteLoading, useSetQuoteError } from './hooks'
+import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
 import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
 import useDebounce from 'hooks/useDebounce'
 import useIsOnline from 'hooks/useIsOnline'
@@ -152,7 +152,7 @@ export default function FeesUpdater(): null {
     return quotesMap && sellCurrencyId ? quotesMap[sellCurrencyId] : undefined
   }, [quotesMap, sellCurrencyId])
 
-  const isLoading = useIsQuoteLoading()
+  const isLoading = useIsBestQuoteLoading()
   const isEthFlow = useIsEthFlow()
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
