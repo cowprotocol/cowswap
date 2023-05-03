@@ -1,5 +1,5 @@
 function _clickOnToken(inputOrOutput) {
-  cy.get(`#swap-currency-${inputOrOutput} .open-currency-select-button`).click()
+  cy.get(`#${inputOrOutput}-currency-input .open-currency-select-button`).click()
 }
 
 function _selectTokenFromSelector(tokenAddress, inputOrOutput) {
@@ -7,7 +7,7 @@ function _selectTokenFromSelector(tokenAddress, inputOrOutput) {
     .scrollIntoView()
     .should('be.visible')
     .click({ force: true })
-  cy.get(`#swap-currency-${inputOrOutput} .token-amount-input`).should('be.visible')
+  cy.get(`#${inputOrOutput}-currency-input .token-amount-input`).should('be.visible')
 }
 
 function _responseHandlerFactory(body) {
