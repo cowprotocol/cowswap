@@ -46,6 +46,8 @@ export interface TradeWidgetProps {
   params: TradeWidgetParams
 }
 
+export const TradeWidgetContainer = styledEl.Container
+
 // TODO: add ImportTokenModal, TradeApproveWidget
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params } = props

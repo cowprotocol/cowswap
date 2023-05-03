@@ -85,7 +85,7 @@ export function ConfirmationModalContent({
           <Text fontWeight={600} fontSize={titleSize || 16} style={styles}>
             {title}
           </Text>
-          <CloseIconWrapper onClick={() => onDismiss} />
+          <CloseIconWrapper onClick={() => onDismiss()} />
         </GPModalHeader>
         {topContent()}
       </Section>
