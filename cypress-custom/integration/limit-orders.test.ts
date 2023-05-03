@@ -1,7 +1,7 @@
 const CHAIN_ID = 5
 
 function pickToken(symbol: string, role: 'input' | 'output') {
-  cy.get(`#limit-orders-currency-${role} .open-currency-select-button`).click()
+  cy.get(`#${role}-currency-input .open-currency-select-button`).click()
   cy.get('#token-search-input').type(symbol)
   cy.get('#currency-list').get('div').contains(symbol).click({ force: true })
 }
