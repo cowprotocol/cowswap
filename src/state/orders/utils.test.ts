@@ -195,7 +195,7 @@ describe('classifyOrder', () => {
 
     // Expired rejects
     it('expired but within buffer', () => {
-      const order: typeof BASE_ORDER = { ...BASE_ORDER, validTo: (Date.now() - ms`1min`) / 1000 }
+      const order: typeof BASE_ORDER = { ...BASE_ORDER, validTo: (Date.now() - ms`30s`) / 1000 }
       expect(classifyOrder(order)).toBe('pending')
     })
 
@@ -204,7 +204,7 @@ describe('classifyOrder', () => {
       const order: typeof BASE_ORDER = {
         ...BASE_ORDER,
         invalidated: true,
-        creationDate: new Date(Date.now() - ms`1min`).toISOString(),
+        creationDate: new Date(Date.now() - ms`30s`).toISOString(),
       }
       expect(classifyOrder(order)).toBe('pending')
     })
