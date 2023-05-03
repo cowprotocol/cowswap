@@ -285,7 +285,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   }
 
   const params = {
-    disableNonToken: true,
+    disableNonToken: false,
     compactView: false,
     recipient,
     showRecipient,

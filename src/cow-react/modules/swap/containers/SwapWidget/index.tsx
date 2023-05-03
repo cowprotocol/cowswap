@@ -40,7 +40,7 @@ import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwap
 import { useIsTradeUnsupported } from 'state/lists/hooks'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
-import { TradeWidget } from '@cow/modules/trade/containers/TradeWidget'
+import { TradeWidget, TradeWidgetContainer } from '@cow/modules/trade/containers/TradeWidget'
 import SettingsTab from '@src/components/Settings'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 
@@ -210,15 +210,17 @@ export function SwapWidget() {
   return (
     <>
       <SwapModals {...swapModalsProps} />
-      <TradeWidget
-        id="swap-page"
-        slots={slots}
-        actions={swapActions}
-        params={params}
-        inputCurrencyInfo={inputCurrencyInfo}
-        outputCurrencyInfo={outputCurrencyInfo}
-      />
-      <NetworkAlert />
+      <TradeWidgetContainer>
+        <TradeWidget
+          id="swap-page"
+          slots={slots}
+          actions={swapActions}
+          params={params}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+        />
+        <NetworkAlert />
+      </TradeWidgetContainer>
     </>
   )
 }
