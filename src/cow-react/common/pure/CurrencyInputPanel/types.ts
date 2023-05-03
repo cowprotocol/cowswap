@@ -6,8 +6,8 @@ export interface CurrencyInfo {
   label?: string
   field: Field
   currency: Currency | null
-  rawAmount: CurrencyAmount<Currency> | null
-  viewAmount: string // TODO: should be calculated in CurrencyInputPanel
+  amount: CurrencyAmount<Currency> | null
+  isIndependent: boolean
   receiveAmountInfo: ReceiveAmountInfo | null
   balance: CurrencyAmount<Currency> | null
   fiatAmount: CurrencyAmount<Currency> | null

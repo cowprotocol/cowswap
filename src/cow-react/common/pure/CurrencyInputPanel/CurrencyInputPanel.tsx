@@ -16,6 +16,7 @@ import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { formatInputAmount } from '@cow/utils/amountFormat'
 
 interface BuiltItProps {
   className: string
@@ -66,9 +67,9 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
 
   const isSupportedNetwork = isSupportedChainId(props.chainId as number | undefined)
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
-  const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
+  const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
   const disabled = props.disabled || !isSupportedNetwork
-
+  const viewAmount = formatInputAmount(amount, balance, isIndependent)
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 

@@ -4,9 +4,7 @@ import React from 'react'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from '@src/state/swap/actions'
 import { useAdvancedOrdersTradeState } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersTradeState'
-import { formatInputAmount } from '@cow/utils/amountFormat'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useOnCurrencySelection } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 
 export function AdvancedOrdersWidget() {
@@ -24,16 +22,13 @@ export function AdvancedOrdersWidget() {
     recipient,
     orderKind,
   } = useAdvancedOrdersTradeState()
-  const { isWrapOrUnwrap } = useDetectNativeToken()
   const onCurrencySelection = useOnCurrencySelection()
-
-  const inputViewAmount = formatInputAmount(inputCurrencyAmount, inputCurrencyBalance, orderKind === OrderKind.SELL)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
-    rawAmount: inputCurrencyAmount,
-    viewAmount: inputViewAmount,
+    amount: inputCurrencyAmount,
+    isIndependent: orderKind === OrderKind.SELL,
     receiveAmountInfo: null,
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
@@ -41,10 +36,8 @@ export function AdvancedOrdersWidget() {
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
-    rawAmount: outputCurrencyAmount,
-    viewAmount: isWrapOrUnwrap
-      ? inputViewAmount
-      : formatInputAmount(outputCurrencyAmount, outputCurrencyBalance, orderKind === OrderKind.BUY),
+    amount: outputCurrencyAmount,
+    isIndependent: orderKind === OrderKind.BUY,
     receiveAmountInfo: null,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,

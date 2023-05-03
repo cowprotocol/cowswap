@@ -19,7 +19,7 @@ const outputCurrency = GNO[SupportedChainId.MAINNET]
 
 const inputCurrencyInfo: CurrencyInfo = {
   field: Field.INPUT,
-  viewAmount: '20',
+  isIndependent: false,
   receiveAmountInfo: {
     type: 'from',
     amountBeforeFees: '30',
@@ -30,13 +30,13 @@ const inputCurrencyInfo: CurrencyInfo = {
   },
   currency: inputCurrency,
   balance: CurrencyAmount.fromRawAmount(inputCurrency, 250 * 10 ** 18),
-  rawAmount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
+  amount: CurrencyAmount.fromRawAmount(inputCurrency, 20 * 10 ** 18),
   fiatAmount: CurrencyAmount.fromRawAmount(inputCurrency, 12 * 10 ** 18),
 }
 
 const outputCurrencyInfo: CurrencyInfo = {
   field: Field.INPUT,
-  viewAmount: '20',
+  isIndependent: false,
   receiveAmountInfo: {
     type: 'from',
     amountBeforeFees: '30',
@@ -47,7 +47,7 @@ const outputCurrencyInfo: CurrencyInfo = {
   },
   currency: outputCurrency,
   balance: CurrencyAmount.fromRawAmount(outputCurrency, 250 * 10 ** 18),
-  rawAmount: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
+  amount: CurrencyAmount.fromRawAmount(outputCurrency, 20 * 10 ** 18),
   fiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 12 * 10 ** 18),
 }
 
@@ -57,9 +57,9 @@ const tradeContext: TradeFlowContext = {
     account: '0x000',
     chainId: 1,
     kind: OrderKind.SELL,
-    inputAmount: inputCurrencyInfo.rawAmount!,
-    outputAmount: outputCurrencyInfo.rawAmount!,
-    sellAmountBeforeFee: inputCurrencyInfo.rawAmount!,
+    inputAmount: inputCurrencyInfo.amount!,
+    outputAmount: outputCurrencyInfo.amount!,
+    sellAmountBeforeFee: inputCurrencyInfo.amount!,
     feeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
     sellToken: inputCurrency,
     buyToken: outputCurrency,

@@ -38,7 +38,6 @@ import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import { useRateInfoParams } from '@cow/common/hooks/useRateInfoParams'
 import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwapAmountsFromUrl'
 import { useIsTradeUnsupported } from 'state/lists/hooks'
-import { formatInputAmount } from '@cow/utils/amountFormat'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer } from '@cow/modules/trade/containers/TradeWidget'
 import SettingsTab from '@src/components/Settings'
@@ -84,8 +83,8 @@ export function SwapWidget() {
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: currencies.INPUT || null,
-    rawAmount: parsedAmounts.INPUT || null,
-    viewAmount: formatInputAmount(parsedAmounts.INPUT, inputCurrencyBalance, independentField === Field.INPUT),
+    amount: parsedAmounts.INPUT || null,
+    isIndependent: independentField === Field.INPUT,
     balance: inputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.inputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.OUTPUT && trade ? getInputReceiveAmountInfo(trade) : null,
@@ -94,8 +93,8 @@ export function SwapWidget() {
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: currencies.OUTPUT || null,
-    rawAmount: parsedAmounts.OUTPUT || null,
-    viewAmount: formatInputAmount(parsedAmounts.OUTPUT, outputCurrencyBalance, independentField === Field.OUTPUT),
+    amount: parsedAmounts.OUTPUT || null,
+    isIndependent: independentField === Field.OUTPUT,
     balance: outputCurrencyBalance,
     fiatAmount: useHigherUSDValue(trade?.outputAmountWithoutFee),
     receiveAmountInfo: independentField === Field.INPUT && trade ? getOutputReceiveAmountInfo(trade) : null,
@@ -117,7 +116,7 @@ export function SwapWidget() {
     priceImpactParams,
   })
 
-  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.rawAmount, outputCurrencyInfo.rawAmount)
+  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   const confirmSwapProps: ConfirmSwapModalSetupProps = {
     trade,
