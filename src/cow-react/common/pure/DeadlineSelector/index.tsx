@@ -1,6 +1,6 @@
 import { Menu } from '@reach/menu-button'
-import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
-import { useEffect, useState } from 'react'
+import { OrderDeadline, ordersDeadlines } from './deadlines'
+import { ReactElement, useEffect, useState } from 'react'
 import { GpModal as Modal } from '@cow/common/pure/Modal'
 import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
@@ -13,7 +13,7 @@ import {
   getInputStartDate,
   getTimeZoneOffset,
   limitDateString,
-} from '@cow/modules/limitOrders/pure/DeadlineSelector/utils'
+} from '@cow/common/pure/DeadlineSelector/utils'
 
 const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: '2-digit',
@@ -25,14 +25,19 @@ const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
 }
 
 export interface DeadlineSelectorProps {
-  deadline: LimitOrderDeadline | undefined
+  deadline: OrderDeadline | undefined
   customDeadline: number | null
-  selectDeadline(deadline: LimitOrderDeadline): void
+  selectDeadline(deadline: OrderDeadline): void
   selectCustomDeadline(deadline: number | null): void
+  label?: ReactElement | string
+  inline?: boolean
+  // TODO: update OrderClass type and use here
+  orderType?: string
+  minHeight?: string
 }
 
 export function DeadlineSelector(props: DeadlineSelectorProps) {
-  const { deadline, customDeadline, selectDeadline, selectCustomDeadline } = props
+  const { deadline, customDeadline, selectDeadline, selectCustomDeadline, orderType, label, inline, minHeight } = props
 
   const currentDeadlineNode = useRef<HTMLButtonElement | null>(null)
   const [[minDate, maxDate], setMinMax] = useState<[Date, Date]>(calculateMinMax)
@@ -62,7 +67,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     }
   }, [maxDate, minDate, selectCustomDeadline, value])
 
-  const existingDeadline = useMemo(() => limitOrdersDeadlines.find((item) => item === deadline), [deadline])
+  const existingDeadline = useMemo(() => ordersDeadlines.find((item) => item === deadline), [deadline])
 
   const customDeadlineTitle = useMemo(() => {
     if (!customDeadline) {
@@ -72,7 +77,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   }, [customDeadline])
 
   const setDeadline = useCallback(
-    (deadline: LimitOrderDeadline) => {
+    (deadline: OrderDeadline) => {
       selectDeadline(deadline)
       selectCustomDeadline(null) // reset custom deadline
       currentDeadlineNode.current?.click() // Close dropdown
@@ -115,17 +120,15 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   }, [onDismiss, selectCustomDeadline, value])
 
   return (
-    <styledEl.Wrapper>
-      <styledEl.Label>
-        <Trans>Expiry</Trans>
-      </styledEl.Label>
+    <styledEl.Wrapper minHeight={minHeight} inline={inline}>
+      <styledEl.Label>{label || <Trans>Expiry</Trans>}</styledEl.Label>
       <Menu>
         <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>
           <span>{customDeadline ? customDeadlineTitle : existingDeadline?.title}</span>
           <ChevronDown size="18" />
         </styledEl.Current>
         <styledEl.ListWrapper>
-          {limitOrdersDeadlines.map((item) => (
+          {ordersDeadlines.map((item) => (
             <li key={item.value}>
               <styledEl.ListItem onSelect={() => setDeadline(item)}>
                 <Trans>{item.title}</Trans>
@@ -149,7 +152,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           </styledEl.ModalHeader>
           <styledEl.ModalContent>
             <styledEl.CustomLabel htmlFor="custom-deadline">
-              <Trans>Choose a custom deadline for your limit order:</Trans>
+              <Trans>Choose a custom deadline for your {orderType} order:</Trans>
               <styledEl.CustomInput
                 type="datetime-local"
                 id="custom-deadline"

@@ -1,4 +1,4 @@
-import { MAX_CUSTOM_DEADLINE, MIN_CUSTOM_DEADLINE } from '@cow/modules/limitOrders/pure/DeadlineSelector/deadlines'
+import { MAX_CUSTOM_DEADLINE, MIN_CUSTOM_DEADLINE } from '@cow/common/pure/DeadlineSelector/deadlines'
 
 export function limitDateString(date: Date | number): string {
   const _date = typeof date === 'number' ? new Date(date * 1000) : date

@@ -30,7 +30,7 @@ interface TradeWidgetParams {
   isRateLoading?: boolean
 }
 
-interface TradeWidgetSlots {
+export interface TradeWidgetSlots {
   settingsWidget: JSX.Element
   lockScreen?: JSX.Element
   middleContent?: JSX.Element

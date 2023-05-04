@@ -3,14 +3,28 @@ import { transparentize } from 'polished'
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { X } from 'react-feather'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ inline?: boolean; minHeight?: string }>`
   background: ${({ theme }) => theme.grey1};
   border-radius: 16px;
   padding: 10px 16px;
-  min-height: 80px;
+  min-height: ${({ minHeight }) => minHeight || '80px'};
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
+
+  ${({ inline }) =>
+    inline &&
+    `
+    justify-content: space-between;
+
+    > span {
+      flex: 1;
+    }
+
+    > button {
+      width: auto;
+    }
+  `}
 `
 
 export const Label = styled.span`

@@ -1,5 +1,5 @@
 import { atomWithStorage } from 'jotai/utils'
-import { defaultLimitOrderDeadline } from '@cow/modules/limitOrders/pure/DeadlineSelector/deadlines'
+import { defaultOrderDeadline } from '@cow/common/pure/DeadlineSelector/deadlines'
 import { atom } from 'jotai'
 import { Milliseconds, Timestamp } from '@cow/types'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
@@ -16,7 +16,7 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   expertMode: false,
   showRecipient: false,
   partialFillsEnabled: true,
-  deadlineMilliseconds: defaultLimitOrderDeadline.value,
+  deadlineMilliseconds: defaultOrderDeadline.value,
   customDeadlineTimestamp: null,
 }
 

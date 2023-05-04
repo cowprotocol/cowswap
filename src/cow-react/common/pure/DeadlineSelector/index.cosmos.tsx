@@ -1,10 +1,10 @@
 import { DeadlineSelector } from './index'
-import { defaultLimitOrderDeadline } from '@cow/modules/limitOrders/pure/DeadlineSelector/deadlines'
+import { defaultOrderDeadline } from '@cow/common/pure/DeadlineSelector/deadlines'
 
 const Fixtures = {
   default: (
     <DeadlineSelector
-      deadline={defaultLimitOrderDeadline}
+      deadline={defaultOrderDeadline}
       customDeadline={null}
       selectDeadline={() => void 0}
       selectCustomDeadline={() => void 0}

@@ -1,6 +1,5 @@
 import { useSetupTradeState } from '@cow/modules/trade'
-import { TradeWidget } from '@cow/modules/trade/containers/TradeWidget'
-import React from 'react'
+import { TradeWidget, TradeWidgetSlots } from '@cow/modules/trade/containers/TradeWidget'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from '@src/state/swap/actions'
 import {
@@ -9,6 +8,7 @@ import {
 } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersFullState'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
+import { DeadlineInput } from '../DeadlineInput'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -48,8 +48,13 @@ export function AdvancedOrdersWidget() {
   }
 
   // TODO
-  const slots = {
+  const slots: TradeWidgetSlots = {
     settingsWidget: <div></div>,
+    bottomContent: (
+      <>
+        <DeadlineInput />
+      </>
+    ),
   }
 
   // TODO
