@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
 import styled, { ThemeContext } from 'styled-components/macro'
-import { darken } from 'polished'
+import { transparentize, darken } from 'polished'
 import SVG from 'react-inlinesvg'
 
 import { MouseoverTooltipContent } from 'components/Tooltip'
@@ -10,7 +10,7 @@ import { SymbolElement } from '@cow/common/pure/TokenAmount'
 import AlertTriangle from 'assets/cow-swap/alert.svg'
 import { calculateOrderExecutionStatus } from '@cow/modules/limitOrders/utils/calculateOrderExecutionStatus'
 import * as styledEl from './styled'
-import { ZERO_FRACTION } from '@src/custom/constants'
+import { ZERO_FRACTION } from 'constants/index'
 
 const MINUS_ONE_FRACTION = new Fraction(-1)
 export const HIGH_FEE_WARNING_PERCENTAGE = new Percent(1, 10)
@@ -41,25 +41,29 @@ export const EstimatedExecutionPriceWrapper = styled.span<{ hasWarning: boolean;
   }
 
   // Popover container override
-  > div > div {
+  > div > div,
+  > span {
     display: flex;
     align-items: center;
   }
 `
 
 const UnfillableLabel = styled.span`
-  height: 28px;
-  width: 90px;
-  border: 1px solid;
-  color: ${({ theme }) => theme.attention};
+  width: 100%;
+  max-width: 90px;
+  background: ${({ theme }) => transparentize(0.86, theme.attention)};
+  color: ${({ theme }) => darken(0.15, theme.attention)};
   position: relative;
-  border-radius: 4px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  overflow: hidden;
+  padding: 6px 2px;
+  margin: 0 4px 0 0;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
 `
 
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
@@ -98,10 +102,19 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const isNegativeDifference = percentageDifferenceInverted?.lessThan(ZERO_FRACTION)
   const marketPriceNeedsToGoDown = isInverted ? !isNegativeDifference : isNegativeDifference
 
+  const content = (
+    <>
+      <styledEl.ExecuteIndicator status={orderExecutionStatus} />
+      <TokenAmount amount={amount} {...rest} />
+    </>
+  )
+
   return (
     <EstimatedExecutionPriceWrapper hasWarning={!!feeWarning} showPointerCursor={!isUnfillable}>
       {isUnfillable ? (
         <UnfillableLabel>UNFILLABLE</UnfillableLabel>
+      ) : !absoluteDifferenceAmount ? (
+        <span>{content}</span>
       ) : (
         <MouseoverTooltipContent
           wrap={true}
@@ -126,14 +139,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           }
           placement="top"
         >
-          {isUnfillable ? (
-            <UnfillableLabel>UNFILLABLE</UnfillableLabel>
-          ) : (
-            <>
-              <styledEl.ExecuteIndicator status={orderExecutionStatus} />
-              <TokenAmount amount={amount} {...rest} />
-            </>
-          )}
+          {content}
         </MouseoverTooltipContent>
       )}
       {feeWarning && !isNegativeDifference && (

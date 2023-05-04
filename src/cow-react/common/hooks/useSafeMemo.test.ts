@@ -2,8 +2,7 @@ import { useSafeMemo } from './useSafeMemo'
 import { renderHook } from '@testing-library/react-hooks'
 import { useMemo, useState } from 'react'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { SupportedChainId as ChainId } from '../../../custom/constants/chains'
-
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 function createInputCurrency() {
   return new Token(ChainId.GOERLI, '0xe583769738b6dd4e7caf8451050d1948be717679', 6, 'USDT', 'Tether USD')
 }

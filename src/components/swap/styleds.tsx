@@ -4,8 +4,7 @@ import { MouseEventHandler, ReactNode } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
-
-import { ThemedText } from '../../theme'
+import { ThemedText } from 'theme'
 import { AutoColumn } from '../Column'
 
 export const Container = styled.div`
@@ -25,8 +24,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   position: relative;
   margin-top: -14px;
   margin-bottom: -14px;
-  left: calc(50% - 16px);
-  /* transform: rotate(90deg); */
+  left: 16px;
   background-color: ${({ theme }) => theme.bg1};
   z-index: 2;
   ${({ clickable }) =>

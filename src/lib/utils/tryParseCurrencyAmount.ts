@@ -6,6 +6,11 @@ import JSBI from 'jsbi'
  * Parses a CurrencyAmount from the passed string.
  * Returns the CurrencyAmount, or undefined if parsing fails.
  */
+export default function tryParseCurrencyAmount<T extends Currency>(value: string, currency: T): CurrencyAmount<T>
+export default function tryParseCurrencyAmount<T extends Currency>(
+  value?: string,
+  currency?: T
+): CurrencyAmount<T> | undefined
 export default function tryParseCurrencyAmount<T extends Currency>(
   value?: string,
   currency?: T
@@ -14,7 +19,9 @@ export default function tryParseCurrencyAmount<T extends Currency>(
     return undefined
   }
   try {
-    const typedValueParsed = parseUnits(value, currency.decimals).toString()
+    const [quotient, remainder] = value.split('.')
+    const fixedNumber = remainder ? quotient + '.' + remainder.slice(0, currency.decimals) : quotient
+    const typedValueParsed = parseUnits(fixedNumber, currency.decimals).toString()
     if (typedValueParsed !== '0') {
       return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(typedValueParsed))
     }

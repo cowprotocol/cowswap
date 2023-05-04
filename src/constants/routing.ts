@@ -1,46 +1,27 @@
 // a list of tokens by chain
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { SupportedChainId } from './chains'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   AMPL,
-  CEUR_CELO,
-  CEUR_CELO_ALFAJORES,
-  CMC02_CELO,
-  CUSD_CELO,
-  CUSD_CELO_ALFAJORES,
+  COW,
   DAI,
-  DAI_ARBITRUM_ONE,
-  DAI_OPTIMISM,
-  DAI_POLYGON,
   ETH2X_FLI,
   FEI,
   FRAX,
   FXS,
-  nativeOnChain,
-  PORTAL_ETH_CELO,
-  PORTAL_USDC_CELO,
   renBTC,
   rETH2,
   sETH2,
   SWISE,
   TRIBE,
-  USDC_ARBITRUM,
   USDC_MAINNET,
-  USDC_OPTIMISM,
-  USDC_POLYGON,
   USDT,
-  USDT_ARBITRUM_ONE,
-  USDT_OPTIMISM,
-  USDT_POLYGON,
   WBTC,
-  WBTC_ARBITRUM_ONE,
-  WBTC_OPTIMISM,
-  WBTC_POLYGON,
-  WETH_POLYGON,
-  WETH_POLYGON_MUMBAI,
   WRAPPED_NATIVE_CURRENCY,
 } from 'constants/tokens'
+import { DAI_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'
+import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN } from 'utils/gnosis_chain/constants'
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]
@@ -66,26 +47,6 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     USDT,
     WBTC,
   ],
-  [SupportedChainId.OPTIMISM]: [
-    ...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.OPTIMISM],
-    DAI_OPTIMISM,
-    USDT_OPTIMISM,
-    WBTC_OPTIMISM,
-  ],
-  [SupportedChainId.ARBITRUM_ONE]: [
-    ...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.ARBITRUM_ONE],
-    DAI_ARBITRUM_ONE,
-    USDT_ARBITRUM_ONE,
-    WBTC_ARBITRUM_ONE,
-  ],
-  [SupportedChainId.POLYGON]: [
-    ...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.POLYGON],
-    DAI_POLYGON,
-    USDC_POLYGON,
-    USDT_POLYGON,
-    WETH_POLYGON,
-  ],
-  [SupportedChainId.CELO]: [CUSD_CELO, CEUR_CELO, CMC02_CELO, PORTAL_USDC_CELO, PORTAL_ETH_CELO],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [SupportedChainId.MAINNET]: {
@@ -115,75 +76,26 @@ export const CUSTOM_BASES: { [chainId: number]: { [tokenAddress: string]: Token[
  */
 export const COMMON_BASES: ChainCurrencyList = {
   [SupportedChainId.MAINNET]: [
-    nativeOnChain(SupportedChainId.MAINNET),
     DAI,
+    COW[SupportedChainId.MAINNET],
     USDC_MAINNET,
     USDT,
     WBTC,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET] as Token,
-  ],
-  [SupportedChainId.ROPSTEN]: [
-    nativeOnChain(SupportedChainId.ROPSTEN),
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.ROPSTEN] as Token,
-  ],
-  [SupportedChainId.RINKEBY]: [
-    nativeOnChain(SupportedChainId.RINKEBY),
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.RINKEBY] as Token,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET],
   ],
   [SupportedChainId.GOERLI]: [
-    nativeOnChain(SupportedChainId.GOERLI),
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI] as Token,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GOERLI],
+    COW[SupportedChainId.GOERLI],
+    DAI_GOERLI,
+    USDC_GOERLI,
   ],
-  [SupportedChainId.KOVAN]: [
-    nativeOnChain(SupportedChainId.KOVAN),
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.KOVAN] as Token,
-  ],
-  [SupportedChainId.ARBITRUM_ONE]: [
-    nativeOnChain(SupportedChainId.ARBITRUM_ONE),
-    DAI_ARBITRUM_ONE,
-    USDC_ARBITRUM,
-    USDT_ARBITRUM_ONE,
-    WBTC_ARBITRUM_ONE,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.ARBITRUM_ONE] as Token,
-  ],
-  [SupportedChainId.ARBITRUM_RINKEBY]: [
-    nativeOnChain(SupportedChainId.ARBITRUM_RINKEBY),
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.ARBITRUM_RINKEBY] as Token,
-  ],
-  [SupportedChainId.OPTIMISM]: [
-    nativeOnChain(SupportedChainId.OPTIMISM),
-    DAI_OPTIMISM,
-    USDC_OPTIMISM,
-    USDT_OPTIMISM,
-    WBTC_OPTIMISM,
-  ],
-  [SupportedChainId.OPTIMISTIC_KOVAN]: [nativeOnChain(SupportedChainId.OPTIMISTIC_KOVAN)],
-  [SupportedChainId.POLYGON]: [
-    nativeOnChain(SupportedChainId.POLYGON),
-    WETH_POLYGON,
-    USDC_POLYGON,
-    DAI_POLYGON,
-    USDT_POLYGON,
-    WBTC_POLYGON,
-  ],
-  [SupportedChainId.POLYGON_MUMBAI]: [
-    nativeOnChain(SupportedChainId.POLYGON_MUMBAI),
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.POLYGON_MUMBAI] as Token,
-    WETH_POLYGON_MUMBAI,
-  ],
-
-  [SupportedChainId.CELO]: [
-    nativeOnChain(SupportedChainId.CELO),
-    CEUR_CELO,
-    CUSD_CELO,
-    PORTAL_ETH_CELO,
-    PORTAL_USDC_CELO,
-    CMC02_CELO,
-  ],
-  [SupportedChainId.CELO_ALFAJORES]: [
-    nativeOnChain(SupportedChainId.CELO_ALFAJORES),
-    CUSD_CELO_ALFAJORES,
-    CEUR_CELO_ALFAJORES,
+  [SupportedChainId.GNOSIS_CHAIN]: [
+    USDC_GNOSIS_CHAIN,
+    WBTC_GNOSIS_CHAIN,
+    COW[SupportedChainId.GNOSIS_CHAIN],
+    WBTC_GNOSIS_CHAIN,
+    WETH_GNOSIS_CHAIN,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GNOSIS_CHAIN],
   ],
 }
 

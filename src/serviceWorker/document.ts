@@ -2,8 +2,6 @@ import { RouteHandlerCallbackOptions, RouteMatchCallbackOptions } from 'workbox-
 import { getCacheKeyForURL, matchPrecache } from 'workbox-precaching'
 import { Route } from 'workbox-routing'
 
-import { isDevelopment } from './utils'
-
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
 export const DOCUMENT = process.env.PUBLIC_URL + '/index.html'
 
@@ -19,12 +17,6 @@ export function matchDocument({ request, url }: RouteMatchCallbackOptions) {
 
   // If this looks like a resource (ie has a file extension), skip.
   if (url.pathname.match(fileExtensionRegexp)) {
-    return false
-  }
-
-  // If this isn't app.uniswap.org (or a local build), skip.
-  // IPFS gateways may not have domain separation, so they cannot use document caching.
-  if (url.hostname !== 'app.uniswap.org' && !isDevelopment()) {
     return false
   }
 
@@ -49,7 +41,7 @@ type HandlerContext = {
  *
  * In addition, this handler may serve an offline document if there is no internet connection.
  */
-export async function handleDocument(this: HandlerContext, { event, request }: RouteHandlerCallbackOptions) {
+export async function handleDocument(this: HandlerContext, { event: _event, request }: RouteHandlerCallbackOptions) {
   // If we are offline, serve the offline document.
   if ('onLine' in navigator && !navigator.onLine) return this?.offlineDocument?.clone() || fetch(request)
 

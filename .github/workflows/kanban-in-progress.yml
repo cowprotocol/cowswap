@@ -14,11 +14,13 @@ jobs:
       - name: Find Linked Issues
         id: links
         uses: hossainemruz/linked-issues@main
+        continue-on-error: true
         with:
           pr_url: ${{github.event.pull_request.html_url}}
           format: IssueNumber
 
       - name: Move issue to In progress status
+        if: ${{ steps.links.outputs.issues != '' }}
         run: >
           curl 'https://api.zenhub.com/p2/workspaces/6246bc1e8d5e5b0010c77c74/repositories/475419392/issues/${{ steps.links.outputs.issues }}/moves' \
             -H 'content-type: application/json' \

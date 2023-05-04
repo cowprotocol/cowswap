@@ -1,216 +1,400 @@
-import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
-import { ReactNode, useCallback, useContext, useState } from 'react'
-import { AlertTriangle, ArrowUpCircle, CheckCircle } from 'react-feather'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import React, { ReactNode, useContext, useMemo } from 'react'
+import { ThemeContext } from 'styled-components/macro'
+// eslint-disable-next-line no-restricted-imports
+import { t, Trans } from '@lingui/macro'
+import { ExternalLink } from 'theme'
+import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel, shortenAddress } from 'utils'
 import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components/macro'
+import { CheckCircle, UserCheck } from 'react-feather'
+import GameIcon from 'assets/cow-swap/game.gif'
+import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
+import { getStatusIcon } from '@cow/modules/account/containers/AccountDetails'
+import { OrderProgressBar } from 'components/OrderProgressBar'
+import { getChainCurrencySymbols } from 'utils/gnosis_chain/hack'
+import { Routes } from '@cow/constants/routes'
+import { ActivityStatus, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
+import { getActivityState, useActivityDerivedState } from 'hooks/useActivityDerivedState'
+import { ActivityDerivedState } from '@cow/modules/account/containers/Transaction'
+import AddToMetamask from '@cow/modules/wallet/web3-react/containers/AddToMetamask' // mod
+import { supportedChainId } from 'utils/supportedChainId'
+import { useOrder } from 'state/orders/hooks'
+import { OrderStatus } from 'state/orders/actions'
+import { EthFlowStepper } from '@cow/modules/swap/containers/EthFlowStepper'
+import checkImage from 'assets/cow-swap/check.svg'
+import alertImage from 'assets/cow-swap/alert-circle.svg'
+import SVG from 'react-inlinesvg'
+import {
+  ApproveComparison,
+  ApproveFooter,
+  ApproveWrapper,
+  ButtonCustom,
+  ButtonGroup,
+  CloseIconWrapper,
+  CompareItem,
+  ExternalLinkCustom,
+  Header,
+  InternalLink,
+  ItemList,
+  LowerSection,
+  Section,
+  StepsIconWrapper,
+  StepsWrapper,
+  StyledIcon,
+  UpperSection,
+  WalletIcon,
+  Wrapper,
+} from './styled'
+import { getIsMetaMask } from '@cow/modules/wallet/api/utils/connection'
+import { MediumAndUp, useMediaQuery } from 'hooks/useMediaQuery'
+import { getWeb3ReactConnection } from '@cow/modules/wallet/web3-react/connection'
+import { walletConnectConnection } from '@cow/modules/wallet/web3-react/connection/walletConnect'
 
-import Circle from '../../assets/images/blue-loader.svg'
-import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
-import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
-import { ButtonLight, ButtonPrimary } from '../Button'
-import { AutoColumn, ColumnCenter } from '../Column'
-import { RowBetween, RowFixed } from '../Row'
+export * from './TransactionConfirmationModalMod'
+export { default } from './TransactionConfirmationModalMod'
 
-const Wrapper = styled.div`
-  width: 100%;
-  padding: 1rem;
-`
-const Section = styled(AutoColumn)<{ inline?: boolean }>`
-  padding: ${({ inline }) => (inline ? '0' : '0')};
-`
+export enum WalletType {
+  SAFE,
+  SC,
+  EOA,
+}
 
-const BottomSection = styled(Section)`
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-`
+export enum OperationType {
+  WRAP_ETHER,
+  UNWRAP_WETH,
+  APPROVE_TOKEN,
+  REVOKE_APPROVE_TOKEN,
+  ORDER_SIGN,
+  ORDER_CANCEL,
+  CONVERT_VCOW,
+  CLAIM_VESTED_COW,
+}
 
-const ConfirmedIcon = styled(ColumnCenter)<{ inline?: boolean }>`
-  padding: ${({ inline }) => (inline ? '20px 0' : '32px 0;')};
-`
+function getWalletNameLabel(walletType: WalletType): string {
+  switch (walletType) {
+    case WalletType.SAFE:
+      return 'Safe'
+    case WalletType.SC:
+      return 'smart contract wallet'
+    case WalletType.EOA:
+      return 'wallet'
+  }
+}
 
-const StyledLogo = styled.img`
-  height: 16px;
-  width: 16px;
-  margin-left: 6px;
-`
+export function getOperationMessage(operationType: OperationType, chainId: number): string {
+  const { native, wrapped } = getChainCurrencySymbols(chainId)
+
+  switch (operationType) {
+    case OperationType.WRAP_ETHER:
+      return 'Wrapping ' + native
+    case OperationType.UNWRAP_WETH:
+      return 'Unwrapping ' + wrapped
+    case OperationType.APPROVE_TOKEN:
+      return 'Approving token'
+    case OperationType.ORDER_CANCEL:
+      return 'Canceling your order'
+    case OperationType.REVOKE_APPROVE_TOKEN:
+      return 'Revoking token approval'
+    case OperationType.CONVERT_VCOW:
+      return 'Converting vCOW to COW'
+    case OperationType.CLAIM_VESTED_COW:
+      return 'Claiming vested COW'
+    default:
+      return 'Almost there!'
+  }
+}
+
+function getOperationLabel(operationType: OperationType): string {
+  switch (operationType) {
+    case OperationType.WRAP_ETHER:
+      return t`wrapping`
+    case OperationType.UNWRAP_WETH:
+      return t`unwrapping`
+    case OperationType.APPROVE_TOKEN:
+      return t`token approval`
+    case OperationType.REVOKE_APPROVE_TOKEN:
+      return t`revoking token approval`
+    case OperationType.ORDER_SIGN:
+      return t`order`
+    case OperationType.ORDER_CANCEL:
+      return t`cancellation`
+    case OperationType.CONVERT_VCOW:
+      return t`vCOW conversion`
+    case OperationType.CLAIM_VESTED_COW:
+      return t`vested COW claim`
+  }
+}
+
+function getSubmittedMessage(operationLabel: string, operationType: OperationType): string {
+  switch (operationType) {
+    case OperationType.ORDER_SIGN:
+      return t`The order is submitted and ready to be settled.`
+    default:
+      return `The ${operationLabel} is submitted.`
+  }
+}
+
+function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
+  if (!activityDerivedState) {
+    return ''
+  }
+
+  const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
+
+  switch (activityDerivedState.status) {
+    case ActivityStatus.CONFIRMED:
+      return `${prefix} Confirmed`
+    case ActivityStatus.EXPIRED:
+      return `${prefix} Expired`
+    case ActivityStatus.CANCELLED:
+      return `${prefix} Cancelled`
+    case ActivityStatus.CANCELLING:
+      return `${prefix} Cancelling`
+    case ActivityStatus.FAILED:
+      return `${prefix} Failed`
+    default:
+      return `${prefix} Submitted`
+  }
+}
 
 export function ConfirmationPendingContent({
   onDismiss,
   pendingText,
-  inline,
+  operationType,
+  chainId,
 }: {
   onDismiss: () => void
   pendingText: ReactNode
-  inline?: boolean // not in modal
+  operationType: OperationType
+  chainId: number
 }) {
+  const { connector } = useWeb3React()
+  const { account } = useWalletInfo()
+  const walletDetails = useWalletDetails()
+  const { ensName, isSmartContractWallet } = walletDetails
+  const gnosisSafeInfo = useGnosisSafeInfo()
+
+  const walletType = useMemo((): WalletType => {
+    if (gnosisSafeInfo) {
+      return WalletType.SAFE
+    } else if (isSmartContractWallet) {
+      return WalletType.SC
+    } else {
+      return WalletType.EOA
+    }
+  }, [gnosisSafeInfo, isSmartContractWallet])
+
+  const connectionType = getWeb3ReactConnection(connector)
+  const walletNameLabel = getWalletNameLabel(walletType)
+  const operationMessage = getOperationMessage(operationType, chainId)
+  const operationLabel = getOperationLabel(operationType)
+  const operationSubmittedMessage = getSubmittedMessage(operationLabel, operationType)
+  const isMetaMask = getIsMetaMask()
+  const isNotMobile = useMediaQuery(MediumAndUp)
+  const isApproveMetaMaskDesktop =
+    operationType === OperationType.APPROVE_TOKEN &&
+    isMetaMask &&
+    isNotMobile &&
+    connectionType !== walletConnectConnection
+
   return (
     <Wrapper>
-      <AutoColumn gap="md">
-        {!inline && (
-          <RowBetween>
-            <div />
-            <CloseIcon onClick={onDismiss} />
-          </RowBetween>
-        )}
-        <ConfirmedIcon inline={inline}>
-          <CustomLightSpinner src={Circle} alt="loader" size={inline ? '40px' : '90px'} />
-        </ConfirmedIcon>
-        <AutoColumn gap="12px" justify={'center'}>
-          <Text fontWeight={500} fontSize={20} textAlign="center">
-            <Trans>Waiting For Confirmation</Trans>
-          </Text>
-          <Text fontWeight={400} fontSize={16} textAlign="center">
-            {pendingText}
-          </Text>
-          <Text fontWeight={500} fontSize={14} color="#565A69" textAlign="center" marginBottom="12px">
-            <Trans>Confirm this transaction in your wallet</Trans>
-          </Text>
-        </AutoColumn>
-      </AutoColumn>
+      <UpperSection>
+        <CloseIconWrapper onClick={onDismiss} />
+
+        <WalletIcon>{getStatusIcon(connector, walletDetails, 56)}</WalletIcon>
+        <span>{pendingText}</span>
+      </UpperSection>
+
+      {/* Only shown for APPROVE_TOKEN operation */}
+      {isApproveMetaMaskDesktop && (
+        <ApproveWrapper>
+          <h3>
+            Review and select the ideal <br /> spending cap in your wallet
+          </h3>
+          <ApproveComparison>
+            <CompareItem>
+              <h5>'Max'</h5>
+              <ItemList listIconAlert>
+                <li>
+                  <SVG src={alertImage} /> Approval on each order
+                </li>
+                <li>
+                  <SVG src={alertImage} /> Pay gas on every trade
+                </li>
+              </ItemList>
+            </CompareItem>
+            <CompareItem highlight recommended>
+              <h5>'Use default'</h5>
+              <ItemList>
+                <li>
+                  <SVG src={checkImage} /> Only approve once
+                </li>
+                <li>
+                  <SVG src={checkImage} /> Save on future gas fees
+                </li>
+              </ItemList>
+            </CompareItem>
+          </ApproveComparison>
+
+          <ApproveFooter>
+            <h6>No matter your choice, enjoy these benefits:</h6>
+            <ul>
+              <li>
+                <SVG src={checkImage} /> The contract only withdraws funds for signed open orders
+              </li>
+              <li>
+                <SVG src={checkImage} /> Immutable contract with multiple&nbsp;
+                <ExternalLink
+                  href="https://github.com/cowprotocol/contracts/tree/main/audits"
+                  target={'_blank'}
+                  rel={'noopener'}
+                >
+                  audits
+                </ExternalLink>
+              </li>
+              <li>
+                <SVG src={checkImage} /> Over 2 years of successful trading with billions in volume
+              </li>
+              <li>
+                <SVG src={checkImage} /> Adjust your spending cap anytime
+              </li>
+            </ul>
+          </ApproveFooter>
+        </ApproveWrapper>
+      )}
+
+      {/* Not shown for APPROVE_TOKEN operation */}
+      {!isApproveMetaMaskDesktop && (
+        <LowerSection>
+          <h3>
+            <span>{operationMessage} </span>
+            <br />
+            <span>
+              <Trans>Follow these steps:</Trans>
+            </span>
+          </h3>
+
+          <StepsWrapper>
+            <div>
+              <StepsIconWrapper>
+                <UserCheck />
+              </StepsIconWrapper>
+              <p>
+                <Trans>
+                  Sign the {operationLabel} with your {walletNameLabel}{' '}
+                  {account && <span>({ensName || shortenAddress(account)})</span>}
+                </Trans>
+              </p>
+            </div>
+            <hr />
+            <div>
+              <StepsIconWrapper>
+                <CheckCircle />
+              </StepsIconWrapper>
+              <p>{operationSubmittedMessage}</p>
+            </div>
+          </StepsWrapper>
+        </LowerSection>
+      )}
     </Wrapper>
   )
 }
+
 export function TransactionSubmittedContent({
   onDismiss,
   chainId,
   hash,
   currencyToAdd,
-  inline,
 }: {
   onDismiss: () => void
   hash: string | undefined
-  chainId: number
+  chainId: ChainId
   currencyToAdd?: Currency | undefined
-  inline?: boolean // not in modal
 }) {
-  const theme = useContext(ThemeContext)
+  const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
+  const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
+  const activityState = activityDerivedState && getActivityState(activityDerivedState)
+  const showProgressBar = activityState === 'open' || activityState === 'filled'
+  const { order } = activityDerivedState || {}
 
-  const { connector } = useWeb3React()
-
-  const token = currencyToAdd?.wrapped
-  const logoURL = useCurrencyLogoURIs(token)[0]
-
-  const [success, setSuccess] = useState<boolean | undefined>()
-
-  const addToken = useCallback(() => {
-    if (!token?.symbol || !connector.watchAsset) return
-    connector
-      .watchAsset({
-        address: token.address,
-        symbol: token.symbol,
-        decimals: token.decimals,
-        image: logoURL,
-      })
-      .then(() => setSuccess(true))
-      .catch(() => setSuccess(false))
-  }, [connector, logoURL, token])
+  if (!supportedChainId(chainId)) {
+    return null
+  }
 
   return (
     <Wrapper>
-      <Section inline={inline}>
-        {!inline && (
-          <RowBetween>
-            <div />
-            <CloseIcon onClick={onDismiss} />
-          </RowBetween>
+      <Section>
+        <Header>
+          <CloseIconWrapper onClick={onDismiss} />
+        </Header>
+        <Text fontWeight={600} fontSize={28}>
+          {getTitleStatus(activityDerivedState)}
+        </Text>
+        <DisplayLink id={hash} chainId={chainId} />
+        <EthFlowStepper order={order} />
+        {activityDerivedState && showProgressBar && (
+          <OrderProgressBar hash={hash} activityDerivedState={activityDerivedState} chainId={chainId} />
         )}
-        <ConfirmedIcon inline={inline}>
-          <ArrowUpCircle strokeWidth={0.5} size={inline ? '40px' : '90px'} color={theme.primary1} />
-        </ConfirmedIcon>
-        <AutoColumn gap="12px" justify={'center'}>
-          <Text fontWeight={500} fontSize={20} textAlign="center">
-            <Trans>Transaction Submitted</Trans>
-          </Text>
-          {chainId && hash && (
-            <ExternalLink href={getExplorerLink(chainId, hash, ExplorerDataType.TRANSACTION)}>
-              <Text fontWeight={500} fontSize={14} color={theme.primary1}>
-                <Trans>View on Explorer</Trans>
-              </Text>
-            </ExternalLink>
-          )}
-          {currencyToAdd && connector.watchAsset && (
-            <ButtonLight mt="12px" padding="6px 12px" width="fit-content" onClick={addToken}>
-              {!success ? (
-                <RowFixed>
-                  <Trans>Add {currencyToAdd.symbol}</Trans>
-                </RowFixed>
-              ) : (
-                <RowFixed>
-                  <Trans>Added {currencyToAdd.symbol} </Trans>
-                  <CheckCircle size={'16px'} stroke={theme.green1} style={{ marginLeft: '6px' }} />
-                </RowFixed>
-              )}
-            </ButtonLight>
-          )}
-          <ButtonPrimary onClick={onDismiss} style={{ margin: '20px 0 0 0' }}>
-            <Text fontWeight={500} fontSize={20}>
-              {inline ? <Trans>Return</Trans> : <Trans>Close</Trans>}
-            </Text>
-          </ButtonPrimary>
-        </AutoColumn>
+        <ButtonGroup>
+          <AddToMetamask shortLabel currency={currencyToAdd} />
+
+          <ButtonCustom>
+            <InternalLink to={Routes.PLAY_COWRUNNER} onClick={onDismiss}>
+              <StyledIcon src={GameIcon} alt="Play CowGame" />
+              Play the CoW Runner Game!
+            </InternalLink>
+          </ButtonCustom>
+        </ButtonGroup>
       </Section>
     </Wrapper>
   )
 }
 
-export function ConfirmationModalContent({
-  title,
-  bottomContent,
-  onDismiss,
-  topContent,
-}: {
+type DisplayLinkProps = {
+  id: string | undefined
+  chainId: number
+}
+
+export function DisplayLink({ id, chainId }: DisplayLinkProps) {
+  const theme = useContext(ThemeContext)
+  const { orderCreationHash, status } = useOrder({ id, chainId }) || {}
+
+  if (!id || !chainId) {
+    return null
+  }
+
+  const ethFlowHash =
+    orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED)
+      ? orderCreationHash
+      : undefined
+  const href = ethFlowHash
+    ? getBlockExplorerUrl(chainId, ethFlowHash, 'transaction')
+    : getEtherscanLink(chainId, id, 'transaction')
+  const label = getExplorerLabel(chainId, ethFlowHash || id, 'transaction')
+
+  return (
+    <ExternalLinkCustom href={href}>
+      <Text fontWeight={500} fontSize={14} color={theme.text3}>
+        {label} ↗
+      </Text>
+    </ExternalLinkCustom>
+  )
+}
+
+export interface ConfirmationModalContentProps {
   title: ReactNode
+  titleSize?: number
+  styles?: React.CSSProperties
+  className?: string // mod
   onDismiss: () => void
   topContent: () => ReactNode
   bottomContent?: () => ReactNode | undefined
-}) {
-  return (
-    <Wrapper>
-      <Section>
-        <RowBetween>
-          <Text fontWeight={500} fontSize={16}>
-            {title}
-          </Text>
-          <CloseIcon onClick={onDismiss} />
-        </RowBetween>
-        {topContent()}
-      </Section>
-      {bottomContent && <BottomSection gap="12px">{bottomContent()}</BottomSection>}
-    </Wrapper>
-  )
 }
 
-export function TransactionErrorContent({ message, onDismiss }: { message: ReactNode; onDismiss: () => void }) {
-  const theme = useContext(ThemeContext)
-  return (
-    <Wrapper>
-      <Section>
-        <RowBetween>
-          <Text fontWeight={500} fontSize={20}>
-            <Trans>Error</Trans>
-          </Text>
-          <CloseIcon onClick={onDismiss} />
-        </RowBetween>
-        <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
-          <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
-          <Text
-            fontWeight={500}
-            fontSize={16}
-            color={theme.red1}
-            style={{ textAlign: 'center', width: '85%', wordBreak: 'break-word' }}
-          >
-            {message}
-          </Text>
-        </AutoColumn>
-      </Section>
-      <BottomSection gap="12px">
-        <ButtonPrimary onClick={onDismiss}>
-          <Trans>Dismiss</Trans>
-        </ButtonPrimary>
-      </BottomSection>
-    </Wrapper>
-  )
+export function ConfirmationModalContent(props: ConfirmationModalContentProps) {
+  return <ConfirmationModalContentMod {...props} />
 }

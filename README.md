@@ -42,7 +42,19 @@ yarn test
 
 ### Integration test
 
-Normally:
+> Make sure you add the required environment varianbles to your `.env.local` file with:
+>
+> - `INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
+> - `INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
+
+To launch it with our development server (so you have live-reloading):
+
+```bash
+yarn start
+yarn cypress
+```
+
+Alternativelly, you can build the project and launch the integration test.
 
 ```bash
 yarn build
@@ -54,13 +66,6 @@ If we want to use the Cypress UI:
 ```bash
 yarn build
 yarn serve
-yarn cypress
-```
-
-If we want to use the Cypress UI, and live reloading on the web app:
-
-```bash
-yarn start
 yarn cypress
 ```
 
@@ -122,7 +127,7 @@ For example, CoW Swap uploaded the file https://cloudflare-ipfs.com/ipfs/QmTDarZ
 which has the hexadecimal digest `0x487B02C558D729ABAF3ECF17881A4181E5BC2446429A0995142297E897B6EB37` (See
 [CID Explorer](https://cid.ipfs.io/#QmTDarZ47oek1miuRd8uuNCy5AFfjzQbWJ7348izx9N8wQ) for more details).
 
-The format of the JSON follows this typescript format: <src/custom/utils/metadata.ts>
+The format of the JSON follows this typescript format: <src/utils/metadata.ts>
 
 To set your own `AppData`, change `REACT_APP_DOMAIN_REGEX_<environment>` environment variable. Ask for yours at [CoW Swap's Discord channel](https://discord.com/invite/cowprotocol/). For more details, check out the environment file (<.env>)
 
@@ -163,7 +168,7 @@ The sitemap can be found in <./public/sitemap.xml>
 
 To update its content:
 
-1. Edit the list of pages in <./src/custom/sitemap.js>
+1. Edit the list of pages in <./src/sitemap.js>
 2. Run `yarn sitemap`
 3. Commit the changes to git
 

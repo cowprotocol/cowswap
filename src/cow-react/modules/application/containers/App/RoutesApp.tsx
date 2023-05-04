@@ -10,12 +10,13 @@ import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'cons
 import { Loading } from 'components/FlashingLoading'
 
 import Account, { AccountOverview } from '@cow/pages/Account'
-import { NewSwapPage } from '@cow/pages/NewSwap'
+import { SwapPage } from '@cow/pages/Swap'
 import { ReactNode } from 'react'
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ '@cow/pages/PrivacyPolicy'))
 const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ '@cow/pages/LimitOrders'))
+const AdvancedOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ '@cow/pages/AdvancedOrders'))
 const CookiePolicy = lazy(() => import(/* webpackChunkName: "cookie_policy" */ '@cow/pages/CookiePolicy'))
 const TermsAndConditions = lazy(() => import(/* webpackChunkName: "terms" */ '@cow/pages/TermsAndConditions'))
 const About = lazy(() => import(/* webpackChunkName: "about" */ '@cow/pages/About'))
@@ -28,7 +29,6 @@ const Faq = lazy(() => import(/* webpackChunkName: "faq" */ '@cow/pages/Faq'))
 const ProtocolFaq = lazy(() => import(/* webpackChunkName: "protocol_faq" */ '@cow/pages/Faq/ProtocolFaq'))
 const TokenFaq = lazy(() => import(/* webpackChunkName: "token_faq" */ '@cow/pages/Faq/TokenFaq'))
 const TradingFaq = lazy(() => import(/* webpackChunkName: "trading_faq" */ '@cow/pages/Faq/TradingFaq'))
-const AffiliateFaq = lazy(() => import(/* webpackChunkName: "affiliate_faq" */ '@cow/pages/Faq/AffiliateFaq'))
 const LimitOrdersFaq = lazy(() => import(/* webpackChunkName: "limit_orders_faq" */ '@cow/pages/Faq/LimitOrdersFaq'))
 const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ '@cow/pages/Faq/EthFlowFaq'))
 
@@ -51,12 +51,12 @@ function LazyRoute({ route, element, key }: LazyRouteProps) {
 
 const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrders /> },
+  { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrders /> },
   { route: RoutesEnum.ABOUT, element: <About /> },
   { route: RoutesEnum.FAQ, element: <Faq /> },
   { route: RoutesEnum.FAQ_PROTOCOL, element: <ProtocolFaq /> },
   { route: RoutesEnum.FAQ_TOKEN, element: <TokenFaq /> },
   { route: RoutesEnum.FAQ_TRADING, element: <TradingFaq /> },
-  { route: RoutesEnum.FAQ_AFFILIATE, element: <AffiliateFaq /> },
   { route: RoutesEnum.FAQ_LIMIT_ORDERS, element: <LimitOrdersFaq /> },
   { route: RoutesEnum.FAQ_ETH_FLOW, element: <EthFlowFaq /> },
   { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
@@ -80,7 +80,7 @@ export function RoutesApp() {
         <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 
         {/*Swap*/}
-        <Route path={RoutesEnum.SWAP} element={<NewSwapPage />} />
+        <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}

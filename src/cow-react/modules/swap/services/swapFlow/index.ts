@@ -3,14 +3,20 @@ import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
 import { signAndPostOrder } from 'utils/trade'
 import { presignOrderStep } from './steps/presignOrderStep'
 import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderStep'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 import { PriceImpact } from 'hooks/usePriceImpact'
+import { Percent } from '@uniswap/sdk-core'
 
-export async function swapFlow(input: SwapFlowContext, priceImpactParams: PriceImpact) {
+export async function swapFlow(
+  input: SwapFlowContext,
+  priceImpactParams: PriceImpact,
+  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
+) {
   logTradeFlow('SWAP FLOW', 'STEP 1: confirm price impact')
-  if (priceImpactParams?.priceImpact && !confirmPriceImpactWithoutFee(priceImpactParams.priceImpact)) return
+  if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
+    return
+  }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')
   tradeFlowAnalytics.swap(input.swapFlowAnalyticsContext)

@@ -7,6 +7,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
+import { useConfirmPriceImpactWithoutFee } from '@cow/common/hooks/useConfirmPriceImpactWithoutFee'
 
 interface HandleTradeCallback {
   beforeTrade(): void
@@ -25,6 +26,7 @@ export function useHandleOrderPlacement(
   settingsState: LimitOrdersSettingsState,
   callbacks: Partial<HandleTradeCallback>
 ): () => Promise<void> {
+  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
 
@@ -35,7 +37,7 @@ export function useHandleOrderPlacement(
     tradeContext.postOrderParams.partiallyFillable =
       partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
 
-    return tradeFlow(tradeContext, priceImpact, settingsState, callbacks.beforeTrade)
+    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, callbacks.beforeTrade)
       .then((orderHash) => {
         callbacks.onTradeSuccess?.(orderHash)
 

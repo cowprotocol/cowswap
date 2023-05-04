@@ -6,7 +6,6 @@ import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { useCloseModal, useOpenModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
@@ -17,6 +16,7 @@ import { calculateGasMargin } from 'utils/calculateGasMargin'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useGetOnChainCancellation } from '@cow/common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { isOrderCancellable } from '@cow/common/utils/isOrderCancellable'
+import { getIsEthFlowOrder } from '@cow/modules/swap/containers/EthFlowStepper'
 
 export type UseCancelOrderReturn = (() => void) | null
 
@@ -76,7 +76,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           // When done, dismiss the modal
           onDismiss()
         } catch (e: any) {
-          const swapErrorMessage = getSwapErrorMessage(e)
+          const swapErrorMessage = getSwapErrorMessage(e?.body?.description || e)
           setContext({ error: swapErrorMessage })
         }
         setContext({ isPendingSignature: false })

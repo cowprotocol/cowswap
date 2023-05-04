@@ -40,7 +40,6 @@ import { useOnCurrencySelection } from '@cow/modules/limitOrders/hooks/useOnCurr
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useSetupLimitOrderAmountsFromUrl } from '@cow/modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
-import AffiliateStatusCheck from 'components/AffiliateStatusCheck'
 import { formatInputAmount } from '@cow/utils/amountFormat'
 import { InfoBanner } from '@cow/modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
@@ -258,7 +257,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   return (
     <>
       <styledEl.Container>
-        <AffiliateStatusCheck />
         <styledEl.ContainerBox>
           <styledEl.Header>
             <TradeWidgetLinks />
@@ -330,7 +328,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 </styledEl.FooterBox>
               )}
 
-              <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />
+              {!isWrapOrUnwrap && <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />}
 
               <styledEl.TradeButtonBox>
                 <TradeButtons

@@ -1,254 +1,145 @@
-// eslint-disable-next-line no-restricted-imports
-import { t, Trans } from '@lingui/macro'
+import { WithClassName } from 'types'
+
+import styled from 'styled-components/macro'
+import { transparentize } from 'polished'
+import { RowFixed } from 'components/Row'
+import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 import { Percent } from '@uniswap/sdk-core'
-import { sendEvent } from 'components/analytics'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-import { useContext, useRef, useState } from 'react'
-import { Settings, X } from 'react-feather'
-import { Text } from 'rebass'
-import styled, { ThemeContext } from 'styled-components/macro'
-import { useOnClickOutside } from '../../hooks/useOnClickOutside'
-import { useModalIsOpen, useToggleSettingsMenu } from '../../state/application/hooks'
-import { ApplicationModal } from '../../state/application/reducer'
-import { useClientSideRouter, useExpertModeManager } from '../../state/user/hooks'
-import { ThemedText } from '../../theme'
-import { ButtonError } from '../Button'
-import { AutoColumn } from '../Column'
-import Modal from '@cow/common/pure/Modal'
-import QuestionHelper from '../QuestionHelper'
-import { RowBetween, RowFixed } from '../Row'
-import Toggle from '../Toggle'
-import TransactionSettings from '../TransactionSettings'
-import { useWalletInfo } from '@cow/modules/wallet'
 
-const StyledMenuIcon = styled(Settings)`
-  height: 20px;
-  width: 20px;
-
-  > * {
-    stroke: ${({ theme }) => theme.text1};
+const Settings = styled(SettingsMod)`
+  ${MenuFlyout} {
+    box-shadow: ${({ theme }) => theme.boxShadow2};
+    border: 1px solid ${({ theme }) => transparentize(0.95, theme.white)};
+    background-color: ${({ theme }) => theme.bg1};
+    color: ${({ theme }) => theme.text1};
+    padding: 0;
+    margin: 0;
+    top: 36px;
+    right: 0;
+    width: 280px;
   }
 
-  :hover {
-    opacity: 0.7;
+  ${RowFixed} {
+    > div {
+      color: ${({ theme }) => theme.text1};
+      opacity: 0.85;
+    }
+  }
+
+  ${StyledMenuButton} {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+
+    &:hover,
+    &:focus {
+      cursor: pointer;
+      outline: none;
+      color: ${({ theme }) => theme.text1};
+    }
+
+    svg {
+      opacity: 1;
+      margin: 0;
+      transition: transform 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
+    }
+
+    &:hover > svg {
+      transform: rotate(180deg);
+    }
+
+    &:hover svg > path,
+    &:hover svg > circle {
+      stroke: ${({ theme }) => theme.text1};
+    }
+  }
+
+  ${StyledMenuIcon} {
+    height: 20px;
+    width: 20px;
+
+    > path,
+    > circle {
+      stroke: ${({ theme }) => transparentize(0.3, theme.text1)};
+      transition: stroke 0.3s ease-in-out;
+    }
+  }
+
+  ${EmojiWrapper} {
+    position: relative;
+    margin: 0 0 0 6px;
+    animation: expertModeOn 3s normal forwards ease-in-out;
+
+    span {
+      font-size: 20px;
+
+      &::after {
+        content: '🐮';
+        font-size: inherit;
+        position: absolute;
+        top: -13px;
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  @keyframes expertModeOn {
+    0% {
+      filter: none;
+    }
+    15% {
+      filter: sepia(1);
+    }
+    30% {
+      filter: sepia(0);
+    }
+    45% {
+      filter: sepia(1);
+    }
+    60% {
+      filter: sepia(0);
+    }
+    75% {
+      filter: sepia(1);
+    }
+    100% {
+      filter: sepia(0);
+    }
   }
 `
 
-const StyledCloseIcon = styled(X)`
-  height: 20px;
-  width: 20px;
-  :hover {
-    cursor: pointer;
-  }
+export interface SettingsButtonProps {
+  toggleSettings: () => void
+  expertMode: boolean
+}
 
-  > * {
-    stroke: ${({ theme }) => theme.text1};
-  }
-`
+export interface SettingsTabProp extends WithClassName {
+  SettingsButton: React.FC<SettingsButtonProps>
+  placeholderSlippage: Percent
+}
 
-const StyledMenuButton = styled.button`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border: none;
-  background-color: transparent;
-  margin: 0;
-  padding: 0;
-  border-radius: 0.5rem;
-  height: 20px;
-
-  :hover,
-  :focus {
-    cursor: pointer;
-    outline: none;
-  }
-`
-const EmojiWrapper = styled.div`
-  position: absolute;
-  bottom: -6px;
-  right: 0px;
-  font-size: 14px;
-`
-
-const StyledMenu = styled.div`
-  margin-left: 0.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  border: none;
-  text-align: left;
-`
-
-const MenuFlyout = styled.span`
-  min-width: 20.125rem;
-  background-color: ${({ theme }) => theme.bg2};
-  border: 1px solid ${({ theme }) => theme.bg3};
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  font-size: 1rem;
-  position: absolute;
-  top: 2rem;
-  right: 0rem;
-  z-index: 100;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    min-width: 18.125rem;
-  `};
-
-  user-select: none;
-`
-
-const Break = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: ${({ theme }) => theme.bg3};
-`
-
-const ModalContentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 0;
-  background-color: ${({ theme }) => theme.bg2};
-  border-radius: 20px;
-`
-
-export default function SettingsTab({ placeholderSlippage }: { placeholderSlippage: Percent }) {
-  const { chainId } = useWalletInfo()
-
-  const node = useRef<HTMLDivElement>()
-  const open = useModalIsOpen(ApplicationModal.SETTINGS)
-  const toggle = useToggleSettingsMenu()
-
-  const theme = useContext(ThemeContext)
-
-  const [expertMode, toggleExpertMode] = useExpertModeManager()
-
-  const [clientSideRouter, setClientSideRouter] = useClientSideRouter()
-
-  // show confirmation view before turning on
-  const [showConfirmation, setShowConfirmation] = useState(false)
-
-  useOnClickOutside(node, open ? toggle : undefined)
-
+function SettingsButton({ toggleSettings, expertMode }: SettingsButtonProps) {
   return (
-    // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
-    <StyledMenu ref={node as any}>
-      <Modal isOpen={showConfirmation} onDismiss={() => setShowConfirmation(false)} maxHeight={100}>
-        <ModalContentWrapper>
-          <AutoColumn gap="lg">
-            <RowBetween style={{ padding: '0 2rem' }}>
-              <div />
-              <Text fontWeight={500} fontSize={20}>
-                <Trans>Are you sure?</Trans>
-              </Text>
-              <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
-            </RowBetween>
-            <Break />
-            <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
-              <Text fontWeight={500} fontSize={20}>
-                <Trans>
-                  Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result
-                  in bad rates and lost funds.
-                </Trans>
-              </Text>
-              <Text fontWeight={600} fontSize={20}>
-                <Trans>ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.</Trans>
-              </Text>
-              <ButtonError
-                error={true}
-                padding={'12px'}
-                onClick={() => {
-                  const confirmWord = t`confirm`
-                  if (window.prompt(t`Please type the word "${confirmWord}" to enable expert mode.`) === confirmWord) {
-                    toggleExpertMode()
-                    setShowConfirmation(false)
-                  }
-                }}
-              >
-                <Text fontSize={20} fontWeight={500} id="confirm-expert-mode">
-                  <Trans>Turn On Expert Mode</Trans>
-                </Text>
-              </ButtonError>
-            </AutoColumn>
-          </AutoColumn>
-        </ModalContentWrapper>
-      </Modal>
-      <StyledMenuButton onClick={toggle} id="open-settings-dialog-button" aria-label={t`Transaction Settings`}>
-        <StyledMenuIcon />
-        {expertMode ? (
-          <EmojiWrapper>
-            <span role="img" aria-label="wizard-icon">
-              🧙
-            </span>
-          </EmojiWrapper>
-        ) : null}
-      </StyledMenuButton>
-      {open && (
-        <MenuFlyout>
-          <AutoColumn gap="md" style={{ padding: '1rem' }}>
-            <Text fontWeight={600} fontSize={14}>
-              <Trans>Transaction Settings</Trans>
-            </Text>
-            <TransactionSettings placeholderSlippage={placeholderSlippage} />
-            <Text fontWeight={600} fontSize={14}>
-              <Trans>Interface Settings</Trans>
-            </Text>
-            {isSupportedChainId(chainId) && (
-              <RowBetween>
-                <RowFixed>
-                  <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
-                    <Trans>Auto Router API</Trans>
-                  </ThemedText.Black>
-                  <QuestionHelper text={<Trans>Use the Uniswap Labs API to get faster quotes.</Trans>} />
-                </RowFixed>
-                <Toggle
-                  id="toggle-optimized-router-button"
-                  isActive={!clientSideRouter}
-                  toggle={() => {
-                    sendEvent({
-                      category: 'Routing',
-                      action: clientSideRouter ? 'enable routing API' : 'disable routing API',
-                    })
-                    setClientSideRouter(!clientSideRouter)
-                  }}
-                />
-              </RowBetween>
-            )}
-            <RowBetween>
-              <RowFixed>
-                <ThemedText.Black fontWeight={400} fontSize={14} color={theme.text2}>
-                  <Trans>Expert Mode</Trans>
-                </ThemedText.Black>
-                <QuestionHelper
-                  text={
-                    <Trans>Allow high price impact trades and skip the confirm screen. Use at your own risk.</Trans>
-                  }
-                />
-              </RowFixed>
-              <Toggle
-                id="toggle-expert-mode-button"
-                isActive={expertMode}
-                toggle={
-                  expertMode
-                    ? () => {
-                        toggleExpertMode()
-                        setShowConfirmation(false)
-                      }
-                    : () => {
-                        toggle()
-                        setShowConfirmation(true)
-                      }
-                }
-              />
-            </RowBetween>
-          </AutoColumn>
-        </MenuFlyout>
-      )}
-    </StyledMenu>
+    <StyledMenuButton onClick={toggleSettings} id="open-settings-dialog-button">
+      <StyledMenuIcon />
+      {expertMode ? (
+        <EmojiWrapper>
+          <span role="img" aria-label="Expert Mode Turned On">
+            🥋
+          </span>
+        </EmojiWrapper>
+      ) : null}
+    </StyledMenuButton>
   )
+}
+
+export default function SettingsTab(props: Omit<SettingsTabProp, 'SettingsButton'>) {
+  return <Settings {...props} SettingsButton={SettingsButton} />
 }

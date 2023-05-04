@@ -1,16 +1,18 @@
 import { Currency, Token } from '@uniswap/sdk-core'
-import { getChainInfo } from '@src/constants/chainInfo'
+import { getChainInfo } from 'constants/chainInfo'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { useMemo } from 'react'
-import { isL2ChainId } from '@src/utils/chains'
+import { isL2ChainId } from 'utils/chains'
 
-import { useAllLists, useCombinedActiveList, useInactiveListUrls } from 'state/lists/hooks'
-import { WrappedTokenInfo } from '../state/lists/wrappedTokenInfo'
-import { useUserAddedTokens } from 'state/user/hooks'
+import { useAllLists, useInactiveListUrls } from 'state/lists/hooks'
+import { deserializeToken, useUserAddedTokens } from 'state/user/hooks'
 import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { useAtomValue } from 'jotai/utils'
+import { tokensByAddressAtom } from '@cow/modules/tokensList/state/tokensListAtom'
+import { checkBySymbolAndAddress } from '@cow/utils/checkBySymbolAndAddress'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
@@ -50,8 +52,7 @@ export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: bo
 }
 
 export function useAllTokens(): { [address: string]: Token } {
-  const allTokens = useCombinedActiveList()
-  return useTokensFromMap(allTokens, true)
+  return useAtomValue(tokensByAddressAtom)
 }
 
 type BridgeInfo = Record<
@@ -79,7 +80,11 @@ export function useUnsupportedTokens(): { [address: string]: Token } {
       return {}
     }
 
-    const listUrl = getChainInfo(chainId).defaultListUrl
+    const listUrl = getChainInfo(chainId)?.defaultListUrl
+
+    if (!listUrl) {
+      return {}
+    }
 
     const { current: list } = listsByUrl[listUrl]
     if (!list) {
@@ -107,26 +112,36 @@ export function useUnsupportedTokens(): { [address: string]: Token } {
   return { ...unsupportedTokens, ...l2InferredBlockedTokens }
 }
 
-export function useSearchInactiveTokenLists(search: string | undefined, minResults = 10): WrappedTokenInfo[] {
+export function useSearchInactiveTokenLists(
+  search: string | undefined,
+  minResults = 10,
+  strictSearch = false
+): Token[] {
   const lists = useAllLists()
   const inactiveUrls = useInactiveListUrls()
   const { chainId } = useWalletInfo()
   const activeTokens = useAllTokens()
+
   return useMemo(() => {
     if (!search || search.trim().length === 0) return []
     const tokenFilter = getTokenFilter(search)
-    const result: WrappedTokenInfo[] = []
+    const result: Token[] = []
     const addressSet: { [address: string]: true } = {}
+
     for (const url of inactiveUrls) {
       const list = lists[url].current
       if (!list) continue
+
       for (const tokenInfo of list.tokens) {
-        if (tokenInfo.chainId === chainId && tokenFilter(tokenInfo)) {
+        const isTokenMatched = strictSearch ? checkBySymbolAndAddress(tokenInfo, search) : tokenFilter(tokenInfo)
+
+        if (tokenInfo.chainId === chainId && isTokenMatched) {
           try {
-            const wrapped: WrappedTokenInfo = new WrappedTokenInfo(tokenInfo, list)
-            if (!(wrapped.address in activeTokens) && !addressSet[wrapped.address]) {
-              addressSet[wrapped.address] = true
-              result.push(wrapped)
+            const tokenAddress = tokenInfo.address.toLowerCase()
+
+            if (!(tokenInfo.address in activeTokens) && !addressSet[tokenAddress]) {
+              addressSet[tokenAddress] = true
+              result.push(deserializeToken(tokenInfo))
               if (result.length >= minResults) return result
             }
           } catch {
@@ -136,7 +151,7 @@ export function useSearchInactiveTokenLists(search: string | undefined, minResul
       }
     }
     return result
-  }, [activeTokens, chainId, inactiveUrls, lists, minResults, search])
+  }, [activeTokens, chainId, inactiveUrls, lists, minResults, search, strictSearch])
 }
 
 export function useIsTokenActive(token: Token | undefined | null): boolean {
