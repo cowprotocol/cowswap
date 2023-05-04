@@ -196,6 +196,11 @@ export function CurrencySearch({
   )
   const additionalTokens = useExternalTokenSearch(searchQuery, existingTokens)
 
+  // Autofocus search input
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
+
   return (
     <Trace name={EventName.TOKEN_SELECTOR_OPENED} modal={ModalName.TOKEN_SELECTOR} shouldLogImpression={true}>
       <ContentWrapper>
