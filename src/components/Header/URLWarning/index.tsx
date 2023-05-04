@@ -48,12 +48,11 @@ const Wrapper = styled.div`
   }
 `
 
-// Announcement content: Modify this file to edit the announcement
-//  https://github.com/gnosis/cowswap/blob/configuration/config/announcements/announcements.md
-const ANNOUNCEMENTS_MARKDOWN_BASE_URL = RAW_CODE_LINK + '/configuration/config'
+// Announcement content: Modify this repository to edit the announcement
+const ANNOUNCEMENTS_MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/cowswap-banner/main'
 
 function getAnnouncementUrl(chainId: number, env?: 'production' | 'barn') {
-  return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}${env ? `/${env}` : ''}/announcements/announcements-${chainId}.md`
+  return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}${env ? `/${env}` : ''}/announcements-${chainId}.md`
 }
 
 const PRODUCTION_ENVS: (typeof environmentName)[] = ['production', 'staging', 'ens']
