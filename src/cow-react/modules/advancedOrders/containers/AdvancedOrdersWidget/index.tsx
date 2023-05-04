@@ -1,6 +1,6 @@
 import { useSetupTradeState } from '@cow/modules/trade'
 import { TradeWidget } from '@cow/modules/trade/containers/TradeWidget'
-import React from 'react'
+import React, { useState } from 'react'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from '@src/state/swap/actions'
 import {
@@ -9,6 +9,7 @@ import {
 } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersFullState'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
+import { TradeFormNumberInput } from '@cow/common/pure/TradeForm/TradeFormNumberInput'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -47,9 +48,16 @@ export function AdvancedOrdersWidget() {
     fiatAmount: outputCurrencyFiatAmount,
   }
 
+  const [numOfParts, setNumOfParts] = useState('0')
+
   // TODO
   const slots = {
     settingsWidget: <div></div>,
+    bottomContent: (
+      <>
+        <TradeFormNumberInput label="Num of parts" value={numOfParts} onChange={setNumOfParts} />
+      </>
+    ),
   }
 
   // TODO
