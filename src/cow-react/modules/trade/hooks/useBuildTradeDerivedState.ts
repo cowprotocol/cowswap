@@ -8,7 +8,7 @@ import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
 
-export function useBuildTradeFullState(stateAtom: Atom<ExtendedTradeRawState>) {
+export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>) {
   const { account } = useWalletInfo()
   const rawState = useAtomValue(stateAtom)
 

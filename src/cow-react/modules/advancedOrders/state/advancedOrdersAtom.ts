@@ -2,7 +2,7 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExtendedTradeRawState, getDefaultTradeRawState } from '@cow/modules/trade/types/TradeRawState'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { atom } from 'jotai'
-import { DEFAULT_TRADE_FULL_STATE, TradeFullState } from '@cow/modules/trade/types/TradeFullState'
+import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from '@cow/modules/trade/types/TradeDerivedState'
 
 export interface AdvancedOrdersRawState extends ExtendedTradeRawState {}
 
@@ -34,6 +34,6 @@ export const updateAdvancedOrdersAtom = atom(null, (get, set, nextState: Partial
   })
 })
 
-export const advancedOrdersFullStateAtom = atom<TradeFullState>({
-  ...DEFAULT_TRADE_FULL_STATE,
+export const advancedOrdersDerivedStateAtom = atom<TradeDerivedState>({
+  ...DEFAULT_TRADE_DERIVED_STATE,
 })

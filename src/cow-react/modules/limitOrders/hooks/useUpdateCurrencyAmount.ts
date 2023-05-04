@@ -11,7 +11,7 @@ import { Field } from 'state/swap/actions'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { Fraction } from '@uniswap/sdk-core'
 import { Writeable } from '@cow/types'
-import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null
@@ -21,7 +21,7 @@ type CurrencyAmountProps = {
 
 export function useUpdateCurrencyAmount() {
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
-  const { inputCurrency, outputCurrency } = useLimitOrdersFullState()
+  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
 
   return useCallback(
     (params: CurrencyAmountProps) => {

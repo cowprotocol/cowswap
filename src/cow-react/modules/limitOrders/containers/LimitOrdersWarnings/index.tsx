@@ -8,7 +8,7 @@ import {
   updateLimitOrdersWarningsAtom,
 } from '@cow/modules/limitOrders/state/limitOrdersWarningsAtom'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
-import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useSetAtom } from 'jotai'
 import { PriceImpact } from 'hooks/usePriceImpact'
@@ -49,7 +49,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const formState = useLimitOrdersFormState()
   const rateImpact = useRateImpact()
   const { chainId, account } = useWalletInfo()
-  const { inputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersFullState()
+  const { inputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
 
   const showPriceImpactWarning =
     !!chainId && !expertMode && !!account && !!priceImpact.error && formState === LimitOrdersFormState.CanTrade

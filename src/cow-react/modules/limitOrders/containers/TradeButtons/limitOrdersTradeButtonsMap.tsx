@@ -11,7 +11,7 @@ import TransactionConfirmationModal from 'components/TransactionConfirmationModa
 import { TransactionConfirmState } from '@cow/modules/swap/state/transactionConfirmAtom'
 import { TradeLoadingButton } from '@cow/modules/trade/pure/TradeLoadingButton'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { LimitOrdersFullState } from '@cow/modules/limitOrders'
+import { LimitOrdersDerivedState } from '@cow/modules/limitOrders'
 
 export interface WrapUnwrapParams {
   isNativeIn: boolean
@@ -22,7 +22,7 @@ export interface WrapUnwrapParams {
 }
 
 export interface TradeButtonsParams {
-  tradeState: LimitOrdersFullState
+  tradeState: LimitOrdersDerivedState
   quote: LimitOrdersQuoteState
   toggleWalletModal: () => void
   wrapUnwrapParams: WrapUnwrapParams

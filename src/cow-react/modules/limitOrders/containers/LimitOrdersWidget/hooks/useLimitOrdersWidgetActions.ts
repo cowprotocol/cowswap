@@ -4,7 +4,7 @@ import tryParseCurrencyAmount from '@src/lib/utils/tryParseCurrencyAmount'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { TradeWidgetActions } from '@cow/modules/trade/containers/TradeWidget'
-import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useUpdateCurrencyAmount } from '@cow/modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
@@ -17,7 +17,7 @@ import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
 export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, orderKind } =
-    useLimitOrdersFullState()
+    useLimitOrdersDerivedState()
   const { activeRate } = useAtomValue(limitRateAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const limitOrdersNavigate = useTradeNavigate()

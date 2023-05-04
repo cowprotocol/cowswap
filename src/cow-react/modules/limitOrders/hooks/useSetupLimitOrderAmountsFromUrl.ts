@@ -6,7 +6,7 @@ import { Writeable } from '@cow/types'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { Price } from '@uniswap/sdk-core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from '@cow/modules/trade/const/tradeUrl'
 import { getIntOrFloat } from '@cow/utils/getIntOrFloat'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -25,7 +25,7 @@ export function useSetupLimitOrderAmountsFromUrl() {
   const params = useMemo(() => new URLSearchParams(search), [search])
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
   const updateRate = useUpdateActiveRate()
-  const { inputCurrency, outputCurrency } = useLimitOrdersFullState()
+  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
 
   const cleanParams = useCallback(() => {
     const queryParams = new URLSearchParams(search)

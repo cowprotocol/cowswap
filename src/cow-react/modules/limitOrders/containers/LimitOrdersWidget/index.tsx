@@ -2,7 +2,7 @@ import * as styledEl from './styled'
 import { Field } from 'state/swap/actions'
 import React, { useMemo, useState } from 'react'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
-import { useFillLimitOrdersFullState, useLimitOrdersFullState } from '../../hooks/useLimitOrdersFullState'
+import { useFillLimitOrdersDerivedState, useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
@@ -40,7 +40,7 @@ export function LimitOrdersWidget() {
   useSetupTradeState()
   useSetupLimitOrderAmountsFromUrl()
   useDisableNativeTokenSelling()
-  useFillLimitOrdersFullState()
+  useFillLimitOrdersDerivedState()
 
   const { chainId } = useWalletInfo()
   const {
@@ -55,7 +55,7 @@ export function LimitOrdersWidget() {
     recipient,
     isUnlocked,
     orderKind,
-  } = useLimitOrdersFullState()
+  } = useLimitOrdersDerivedState()
   const onImportDismiss = useOnImportDismiss()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const isSellOrder = useIsSellOrder()

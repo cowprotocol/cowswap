@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-export interface TradeFullState {
+export interface TradeDerivedState {
   readonly inputCurrency: Currency | null
   readonly outputCurrency: Currency | null
   readonly inputCurrencyAmount: CurrencyAmount<Currency> | null
@@ -14,7 +14,7 @@ export interface TradeFullState {
   readonly orderKind: OrderKind
 }
 
-export const DEFAULT_TRADE_FULL_STATE: TradeFullState = {
+export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   inputCurrency: null,
   outputCurrency: null,
   inputCurrencyAmount: null,

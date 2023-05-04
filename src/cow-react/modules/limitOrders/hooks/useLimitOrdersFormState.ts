@@ -1,5 +1,5 @@
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { useLimitOrdersFullState } from './useLimitOrdersFullState'
+import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { ApprovalState } from 'hooks/useApproveCallback'
@@ -16,7 +16,7 @@ import {
   limitOrdersSettingsAtom,
   LimitOrdersSettingsState,
 } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
-import { LimitOrdersFullState } from '@cow/modules/limitOrders'
+import { LimitOrdersDerivedState } from '@cow/modules/limitOrders'
 import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
 import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
 
@@ -51,7 +51,7 @@ interface LimitOrdersFormParams {
   isTxBundlingEnabled: boolean
   currentAllowance: CurrencyAmount<Token> | undefined
   approvalState: ApprovalState
-  tradeState: LimitOrdersFullState
+  tradeState: LimitOrdersDerivedState
   settingsState: LimitOrdersSettingsState
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
@@ -181,7 +181,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
 
 export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { chainId, account } = useWalletInfo()
-  const tradeState = useLimitOrdersFullState()
+  const tradeState = useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()

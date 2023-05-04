@@ -4,15 +4,15 @@ import React from 'react'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { Field } from '@src/state/swap/actions'
 import {
-  useAdvancedOrdersFullState,
-  useFillAdvancedOrdersFullState,
-} from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersFullState'
+  useAdvancedOrdersDerivedState,
+  useFillAdvancedOrdersDerivedState,
+} from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
-  useFillAdvancedOrdersFullState()
+  useFillAdvancedOrdersDerivedState()
 
   const {
     inputCurrency,
@@ -25,7 +25,7 @@ export function AdvancedOrdersWidget() {
     outputCurrencyFiatAmount,
     recipient,
     orderKind,
-  } = useAdvancedOrdersFullState()
+  } = useAdvancedOrdersDerivedState()
   const onCurrencySelection = useNavigateOnCurrencySelection()
 
   const inputCurrencyInfo: CurrencyInfo = {
