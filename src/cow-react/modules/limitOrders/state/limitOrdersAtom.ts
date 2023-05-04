@@ -2,7 +2,7 @@ import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { atom } from 'jotai'
 import { ExtendedTradeRawState, getDefaultTradeRawState } from '@cow/modules/trade/types/TradeRawState'
-import { getDefaultTradeFullState, TradeFullState } from '@cow/modules/trade/types/TradeFullState'
+import { DEFAULT_TRADE_FULL_STATE, TradeFullState } from '@cow/modules/trade/types/TradeFullState'
 
 export interface LimitOrdersFullState extends TradeFullState {
   readonly isUnlocked: boolean
@@ -42,6 +42,6 @@ export const updateLimitOrdersAtom = atom(null, (get, set, nextState: Partial<Li
 })
 
 export const limitOrdersFullStateAtom = atom<LimitOrdersFullState>({
-  ...getDefaultTradeFullState(),
+  ...DEFAULT_TRADE_FULL_STATE,
   isUnlocked: true,
 })

@@ -14,17 +14,15 @@ export interface TradeFullState {
   readonly orderKind: OrderKind
 }
 
-export function getDefaultTradeFullState(): TradeFullState {
-  return {
-    inputCurrency: null,
-    outputCurrency: null,
-    inputCurrencyAmount: null,
-    outputCurrencyAmount: null,
-    inputCurrencyBalance: null,
-    outputCurrencyBalance: null,
-    inputCurrencyFiatAmount: null,
-    outputCurrencyFiatAmount: null,
-    recipient: null,
-    orderKind: OrderKind.SELL,
-  }
+export const DEFAULT_TRADE_FULL_STATE: TradeFullState = {
+  inputCurrency: null,
+  outputCurrency: null,
+  inputCurrencyAmount: null,
+  outputCurrencyAmount: null,
+  inputCurrencyBalance: null,
+  outputCurrencyBalance: null,
+  inputCurrencyFiatAmount: null,
+  outputCurrencyFiatAmount: null,
+  recipient: null,
+  orderKind: OrderKind.SELL,
 }
