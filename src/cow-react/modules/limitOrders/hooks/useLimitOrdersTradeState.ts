@@ -1,40 +1,15 @@
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useTokenBySymbolOrAddress } from '@cow/common/hooks/useTokenBySymbolOrAddress'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { useSafeMemoObject } from '@cow/common/hooks/useSafeMemo'
-import { FractionUtils } from '@cow/utils/fractionUtils'
 import { useWalletInfo } from '@cow/modules/wallet'
+import { TradeWidgetState } from '@cow/modules/trade/types/TradeWidgetState'
+import { tryParseFractionalAmount } from '@cow/utils/tryParseFractionalAmount'
 
-export interface LimitOrdersTradeState {
-  readonly inputCurrency: Currency | null
-  readonly outputCurrency: Currency | null
-  readonly inputCurrencyAmount: CurrencyAmount<Currency> | null
-  readonly outputCurrencyAmount: CurrencyAmount<Currency> | null
-  readonly inputCurrencyBalance: CurrencyAmount<Currency> | null
-  readonly outputCurrencyBalance: CurrencyAmount<Currency> | null
-  readonly inputCurrencyFiatAmount: CurrencyAmount<Currency> | null
-  readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
-  readonly recipient: string | null
-  readonly orderKind: OrderKind
+export interface LimitOrdersTradeState extends TradeWidgetState {
   readonly isUnlocked: boolean
-}
-
-function tryParseFractionalAmount(currency: Currency | null, amount: string | null): CurrencyAmount<Currency> | null {
-  if (!amount || !currency) return null
-
-  try {
-    const fraction = FractionUtils.parseFractionFromJSON(amount)
-
-    if (!fraction) return null
-
-    return currency ? CurrencyAmount.fromFractionalAmount(currency, fraction.numerator, fraction.denominator) : null
-  } catch (e: any) {
-    return null
-  }
 }
 
 export function useLimitOrdersTradeState(): LimitOrdersTradeState {

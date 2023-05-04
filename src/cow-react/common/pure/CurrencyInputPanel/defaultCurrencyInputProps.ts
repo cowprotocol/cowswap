@@ -16,7 +16,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
   allowsOffchainSigning: true,
   currencyInfo: {
     field: Field.INPUT,
-    viewAmount: '20',
+    isIndependent: false,
     receiveAmountInfo: {
       type: 'from',
       amountBeforeFees: '30',
@@ -27,7 +27,7 @@ export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceIm
     },
     currency,
     balance,
-    rawAmount: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
+    amount: CurrencyAmount.fromRawAmount(currency, 20 * 10 ** 18),
     fiatAmount: CurrencyAmount.fromRawAmount(currency, 12 * 10 ** 18),
   },
   onCurrencySelection() {

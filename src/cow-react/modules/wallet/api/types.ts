@@ -1,5 +1,5 @@
-import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SafeInfoResponse } from '@safe-global/api-kit'
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',

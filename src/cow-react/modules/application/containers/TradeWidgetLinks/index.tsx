@@ -5,6 +5,8 @@ import { useMemo } from 'react'
 import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
 import { parameterizeTradeRoute } from '@cow/modules/trade/utils/parameterizeTradeRoute'
 import * as styledEl from './styled'
+import { FeatureFlag } from '@cow/utils/featureFlags'
+import { ADVANCED_ORDERS_FEATURE_FLAG } from '@cow/constants/featureFlags'
 
 export function TradeWidgetLinks() {
   const { state } = useTradeState()
@@ -40,6 +42,17 @@ export function TradeWidgetLinks() {
           </styledEl.Badge>
         </styledEl.Link>
       </styledEl.MenuItem>
+
+      {FeatureFlag.get(ADVANCED_ORDERS_FEATURE_FLAG) && (
+        <styledEl.MenuItem>
+          <styledEl.Link
+            className={({ isActive }) => (isActive ? 'active' : undefined)}
+            to={parameterizeTradeRoute(tradeContext, Routes.ADVANCED_ORDERS)}
+          >
+            <Trans>Advanced</Trans>
+          </styledEl.Link>
+        </styledEl.MenuItem>
+      )}
     </styledEl.Wrapper>
   )
 }

@@ -26,7 +26,6 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
     options: ['fetch-quote-error', 'insufficient-liquidity', 'fee-exceeds-sell-amount'],
     defaultValue: 'fetch-quote-error',
   })
-  const [viewAmount] = useValue('currencyInfo.viewAmount', { defaultValue: defaultProps.currencyInfo.viewAmount })
   const [priceImpactRaw] = useValue('priceImpactParams.priceImpact', { defaultValue: 2 })
 
   const balance = CurrencyAmount.fromRawAmount(currency, balanceAmountRaw * 10 ** 18)
@@ -37,7 +36,7 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
     ...defaultProps.currencyInfo,
     field,
     balance,
-    viewAmount,
+    isIndependent: false,
     fiatAmount,
   }
 

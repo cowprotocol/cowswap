@@ -1,4 +1,4 @@
-import { SafeInfoResponse } from '@gnosis.pm/safe-service-client'
+import { SafeInfoResponse } from '@safe-global/api-kit'
 
 import { RowFixed } from 'components/Row'
 

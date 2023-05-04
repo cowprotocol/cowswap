@@ -19,7 +19,6 @@ export interface LimitOrdersProps {
 
   isUnlocked: boolean
   isRateLoading: boolean
-  allowsOffchainSigning: boolean
   isWrapOrUnwrap: boolean
   showRecipient: boolean
   isExpertMode: boolean
@@ -47,7 +46,6 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     checkCurrencyInfo(a.outputCurrencyInfo, b.outputCurrencyInfo) &&
     a.isUnlocked === b.isUnlocked &&
     a.isRateLoading === b.isRateLoading &&
-    a.allowsOffchainSigning === b.allowsOffchainSigning &&
     a.isWrapOrUnwrap === b.isWrapOrUnwrap &&
     a.showRecipient === b.showRecipient &&
     a.recipient === b.recipient &&
@@ -76,8 +74,8 @@ function checkCurrencyInfo(a: CurrencyInfo, b: CurrencyInfo): boolean {
   return (
     a.field === b.field &&
     a.label === b.label &&
-    a.viewAmount === b.viewAmount &&
-    areFractionsEqual(a.rawAmount, b.rawAmount) &&
+    a.isIndependent === b.isIndependent &&
+    areFractionsEqual(a.amount, b.amount) &&
     genericPropsChecker(a.receiveAmountInfo, b.receiveAmountInfo) &&
     getAddress(a.currency) === getAddress(b.currency) &&
     areFractionsEqual(a.balance, b.balance) &&

@@ -6,6 +6,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
 import { useSwapState } from 'state/swap/hooks'
 import { useAppDispatch } from 'state/hooks'
+import { useAdvancedOrdersState, useUpdateAdvancedOrdersState } from '@cow/modules/advancedOrders'
 
 export function useSwapTradeState(): TradeState {
   const swapState = useSwapState()
@@ -26,8 +27,11 @@ export function useTradeState(): { state?: TradeState; updateState?: (state: Tra
   const dispatch = useAppDispatch()
   const tradeTypeInfo = useTradeTypeInfo()
 
-  const limitOrdersState = useAtomValue(limitOrdersAtom)
+  const limitOrdersState = useLimitOrdersTradeState()
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+
+  const advancedOrdersState = useAdvancedOrdersState()
+  const updateAdvancedOrdersState = useUpdateAdvancedOrdersState()
 
   const swapState = useSwapState()
   const swapTradeState = useSwapTradeState()
@@ -57,6 +61,13 @@ export function useTradeState(): { state?: TradeState; updateState?: (state: Tra
       }
     }
 
+    if (tradeTypeInfo.tradeType === TradeType.ADVANCED_ORDERS) {
+      return {
+        state: advancedOrdersState,
+        updateState: updateAdvancedOrdersState,
+      }
+    }
+
     return {
       state: limitOrdersState,
       updateState: updateLimitOrdersState,
@@ -67,6 +78,8 @@ export function useTradeState(): { state?: TradeState; updateState?: (state: Tra
     JSON.stringify(tradeTypeInfo),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(limitOrdersState),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(advancedOrdersState),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(swapTradeState),
     updateSwapState,

@@ -9,7 +9,6 @@ const COW_DAO_LIST = 'https://files.cow.fi/tokens/CowSwap.json'
 const COW_COINGECKO_LIST = 'https://files.cow.fi/tokens/CoinGecko.json'
 
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
-const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
 const AAVE_LIST = 'tokenlist.aave.eth'
 const SYNTHETIX_LIST = 'synths.snx.eth'
 const WRAPPED_LIST = 'wrapped.tokensoft.eth'
@@ -23,8 +22,8 @@ const KLEROS_LIST = 't2crtokens.eth'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 
 // Goerli Default
-// TODO: WARINING!!! REMOVE custom after merging in develop
-const GOERLI_LIST = RAW_CODE_LINK + '/main/src/custom/tokens/goerli-token-list.json'
+// TODO: change develop -> main after release
+const GOERLI_LIST = RAW_CODE_LINK + '/develop/src/tokens/goerli-token-list.json'
 
 // XDAI Default
 const HONEY_SWAP_XDAI = 'https://tokens.honeyswap.org'
@@ -50,7 +49,6 @@ export const DEFAULT_LIST_OF_LISTS_BY_NETWORK: NetworkLists = {
       COMPOUND_LIST,
       AAVE_LIST,
       SYNTHETIX_LIST,
-      UMA_LIST,
       WRAPPED_LIST,
       SET_LIST,
       OPYN_LIST,

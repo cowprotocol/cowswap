@@ -12,7 +12,7 @@ import OrderOpenImage from 'assets/cow-swap/order-open.svg'
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow, CancelTxLink } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from '@cow/api/gnosisSafe'
-import { SafeMultisigTransactionResponse } from '@gnosis.pm/safe-service-client'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { getActivityState } from 'hooks/useActivityDerivedState'
 import { CancelButton } from '@cow/common/pure/CancelButton'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
@@ -36,7 +36,7 @@ export function GnosisSafeLink(props: {
     return null
   }
 
-  return <ExternalLink href={safeUrl}>View Gnosis Safe ↗</ExternalLink>
+  return <ExternalLink href={safeUrl}>View Safe ↗</ExternalLink>
 }
 
 function _getStateLabel(activityDerivedState: ActivityDerivedState) {
