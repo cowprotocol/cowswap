@@ -2,7 +2,7 @@ import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import useENSName from 'hooks/useENSName'
 import { useWeb3React } from '@web3-react/core'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
-import { useIsGnosisSafeWallet, useWalletMetaData } from '@cow/modules/wallet'
+import { useIsSafeWallet, useWalletMetaData } from '@cow/modules/wallet'
 import { useEffect, useMemo, useState } from 'react'
 
 import { UNSUPPORTED_WC_WALLETS } from 'constants/index'
@@ -56,12 +56,12 @@ function _useWalletDetails(account?: string): WalletDetails {
 function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { provider, connector } = useWeb3React()
   const { account, chainId, active } = walletInfo
-  const isGnosisSafeConnected = useIsGnosisSafeWallet()
+  const isSafeConnected = useIsSafeWallet()
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo>()
   const { isReadOnly } = useGnosisSafeSdkInfo(connector, active) || {}
 
   useEffect(() => {
-    if (chainId && account && isGnosisSafeConnected && provider) {
+    if (chainId && account && isSafeConnected && provider) {
       getSafeInfo(chainId, account, provider)
         .then((_safeInfo) =>
           setSafeInfo({
@@ -75,7 +75,7 @@ function _useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
     } else {
       setSafeInfo(undefined)
     }
-  }, [setSafeInfo, chainId, account, isGnosisSafeConnected, provider, isReadOnly])
+  }, [setSafeInfo, chainId, account, isSafeConnected, provider, isReadOnly])
 
   return safeInfo
 }
