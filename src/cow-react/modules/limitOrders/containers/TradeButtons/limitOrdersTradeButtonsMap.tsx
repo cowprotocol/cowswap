@@ -83,10 +83,20 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     text: 'Review limit order',
     id: 'review-limit-order-btn',
   },
+  [LimitOrdersFormState.ApproveAndSwap]: {
+    disabled: false,
+    text: 'Review limit order (approve + place)', // TODO: update text, this is only for testing
+    id: 'review-limit-order-btn',
+  },
+  [LimitOrdersFormState.ExpertApproveAndSwap]: {
+    disabled: false,
+    text: 'Approve and place limit order',
+    id: 'approve-and-place-limit-order-btn',
+  },
   [LimitOrdersFormState.ExpertCanTrade]: {
     disabled: false,
     text: 'Place limit order',
-    id: 'review-limit-order-btn',
+    id: 'place-limit-order-btn',
   },
   [LimitOrdersFormState.SwapIsUnsupported]: {
     disabled: true,
