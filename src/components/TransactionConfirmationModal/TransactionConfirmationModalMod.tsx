@@ -2,7 +2,7 @@ import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
 import Badge from 'components/Badge'
 import { getChainInfo } from 'constants/chainInfo'
-import { ReactNode, useContext, useMemo, useEffect } from 'react'
+import { ReactNode, useContext, useMemo } from 'react'
 import { AlertCircle, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -28,8 +28,6 @@ import { handleFollowPendingTxPopupAtom, useUpdateAtom } from 'state/application
 import { useIsTransactionConfirmed, useTransaction } from 'state/enhancedTransactions/hooks'
 import { getEtherscanLink as getExplorerLink } from 'utils'
 import { useWalletInfo } from '@cow/modules/wallet'
-import { ANIVERSSARY_CONFETTI_KEY } from '@src/constants/misc'
-import Confetti from 'components/Confetti'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -176,22 +174,8 @@ export function L2Content({
     else return 'Return'
   }, [inline, isLimitOrderSubmit])
 
-  // Confetti
-  // TODO: delete this after a while
-  const showConfetti = !localStorage.getItem(ANIVERSSARY_CONFETTI_KEY)
-
-  useEffect(() => {
-    if (showConfetti) {
-      setTimeout(() => {
-        localStorage.setItem(ANIVERSSARY_CONFETTI_KEY, '1')
-      }, 5000)
-    }
-  }, [showConfetti])
-
   return (
     <Wrapper>
-      {/* Anniversary confetti */}
-      {showConfetti && <Confetti start={true} />}
       <Section inline={inline}>
         {!inline && (
           <RowBetween mb="16px">
