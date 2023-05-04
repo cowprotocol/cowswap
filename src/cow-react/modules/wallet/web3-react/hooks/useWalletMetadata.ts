@@ -87,23 +87,24 @@ export function useWalletMetaData(): WalletMetaData {
   }, [connectionType, provider, account])
 }
 
-export function useIsGnosisSafeApp(): boolean {
+/**
+ * Detects whether the currently connected wallet is a Safe App
+ * It'll be false if connected to Safe wallet via WalletConnect
+ */
+export function useIsSafeApp(): boolean {
   const { walletName } = useWalletMetaData()
 
   return walletName === SAFE_APP_NAME
 }
 
-// Safe App, WC desktop, WC mobile
-export function useIsGnosisApp(): boolean {
+/**
+ * Detects whether the currently connected wallet is a Safe wallet
+ * regardless of the connection method (WalletConnect or inside Safe as an App)
+ */
+export function useIsSafeWallet(): boolean {
   const { walletName } = useWalletMetaData()
 
   if (!walletName) return false
 
   return GNOSIS_APP_NAMES.includes(walletName)
-}
-
-export function useIsGnosisSafeWallet(): boolean {
-  const { walletName } = useWalletMetaData()
-
-  return !!walletName?.startsWith('Safe')
 }

@@ -18,6 +18,7 @@ import {
 } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { LimitOrdersFullState } from '@cow/modules/limitOrders'
 import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
+import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
@@ -38,6 +39,8 @@ export enum LimitOrdersFormState {
   QuoteError = 'QuoteError',
   ZeroPrice = 'ZeroPrice',
   FeeExceedsFrom = 'FeeExceedsFrom',
+  ApproveAndSwap = 'ApproveAndSwap',
+  ExpertApproveAndSwap = 'ExpertApproveAndSwap',
 }
 
 interface LimitOrdersFormParams {
@@ -45,6 +48,7 @@ interface LimitOrdersFormParams {
   isSwapUnsupported: boolean
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
+  isTxBundlingEnabled: boolean
   currentAllowance: CurrencyAmount<Token> | undefined
   approvalState: ApprovalState
   tradeState: LimitOrdersFullState
@@ -62,6 +66,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   const {
     account,
     isReadonlyGnosisSafeUser,
+    isTxBundlingEnabled,
     isSupportedWallet,
     currentAllowance,
     approvalState,
@@ -86,6 +91,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     quote?.response?.quote?.feeAmount && sellAmount
       ? CurrencyAmount.fromRawAmount(sellAmount.currency, quote?.response?.quote?.feeAmount)
       : null
+  const approvalRequired = approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
 
   if (!inputCurrency || !outputCurrency) {
     return LimitOrdersFormState.NeedToSelectToken
@@ -145,7 +151,13 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.WrapUnwrap
   }
 
-  if (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) {
+  if (approvalRequired) {
+    if (isTxBundlingEnabled) {
+      if (settingsState.expertMode) {
+        return LimitOrdersFormState.ExpertApproveAndSwap
+      }
+      return LimitOrdersFormState.ApproveAndSwap
+    }
     return LimitOrdersFormState.NotApproved
   }
 
@@ -163,6 +175,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   if (settingsState.expertMode) {
     return LimitOrdersFormState.ExpertCanTrade
   }
+
   return LimitOrdersFormState.CanTrade
 }
 
@@ -173,6 +186,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
+  const isTxBundlingEnabled = useIsTxBundlingEnabled()
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -191,6 +205,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const params: LimitOrdersFormParams = {
     account,
     isReadonlyGnosisSafeUser,
+    isTxBundlingEnabled,
     isSwapUnsupported,
     isSupportedWallet,
     approvalState,

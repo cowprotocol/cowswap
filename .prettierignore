@@ -8,6 +8,7 @@ src/abis
 #src/assets
 src/types
 src/cow-react/abis
+CHANGELOG.md
 
 # inherited from uniswap, better not touch it
 public_uniswap/index.html
