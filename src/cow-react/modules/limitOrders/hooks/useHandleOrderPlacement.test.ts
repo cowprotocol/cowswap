@@ -3,7 +3,7 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 import { tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
-import { limitOrdersAtom, updateLimitOrdersAtom } from '../state/limitOrdersAtom'
+import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { withModalProvider } from '@cow/utils/withModalProvider'
 
@@ -28,7 +28,7 @@ describe('useHandleOrderPlacement', () => {
     // Arrange
     renderHook(
       () => {
-        const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+        const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
 
         updateLimitOrdersState({ recipient })
       },
@@ -36,7 +36,7 @@ describe('useHandleOrderPlacement', () => {
     )
 
     // Assert
-    const { result: limitOrdersStateResultBefore } = renderHook(() => useAtomValue(limitOrdersAtom), {
+    const { result: limitOrdersStateResultBefore } = renderHook(() => useAtomValue(limitOrdersRawStateAtom), {
       wrapper: withModalProvider,
     })
     expect(limitOrdersStateResultBefore.current.recipient).toBe(recipient)
@@ -49,7 +49,7 @@ describe('useHandleOrderPlacement', () => {
     await result.current()
 
     // Assert
-    const { result: limitOrdersStateResultAfter } = renderHook(() => useAtomValue(limitOrdersAtom), {
+    const { result: limitOrdersStateResultAfter } = renderHook(() => useAtomValue(limitOrdersRawStateAtom), {
       wrapper: withModalProvider,
     })
     expect(limitOrdersStateResultAfter.current.recipient).toBe(null)

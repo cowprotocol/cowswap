@@ -3,7 +3,7 @@ import { Field } from 'state/swap/actions'
 import React, { useMemo, useState } from 'react'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { useFillLimitOrdersFullState, useLimitOrdersFullState } from '../../hooks/useLimitOrdersFullState'
-import { updateLimitOrdersAtom } from '../../state/limitOrdersAtom'
+import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { SettingsWidget } from '../SettingsWidget'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
@@ -158,7 +158,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const isPartiallyFillable = featurePartialFillsEnabled && settingsState.partialFillsEnabled
 
   const [showConfirmation, setShowConfirmation] = useState(false)
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
 
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 

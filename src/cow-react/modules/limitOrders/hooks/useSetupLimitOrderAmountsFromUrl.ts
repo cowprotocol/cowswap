@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
-import { LimitOrdersRawState, updateLimitOrdersAtom } from '@cow/modules/limitOrders'
+import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from '@cow/modules/limitOrders'
 import { Writeable } from '@cow/types'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { Price } from '@uniswap/sdk-core'
@@ -23,7 +23,7 @@ export function useSetupLimitOrderAmountsFromUrl() {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
   const updateRate = useUpdateActiveRate()
   const { inputCurrency, outputCurrency } = useLimitOrdersFullState()
 

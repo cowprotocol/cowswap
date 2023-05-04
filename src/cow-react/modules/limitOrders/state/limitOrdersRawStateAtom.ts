@@ -22,7 +22,7 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
   }
 }
 
-export const limitOrdersAtom = atomWithStorage<LimitOrdersRawState>(
+export const limitOrdersRawStateAtom = atomWithStorage<LimitOrdersRawState>(
   'limit-orders-atom:v4',
   getDefaultLimitOrdersState(null),
   /**
@@ -33,9 +33,9 @@ export const limitOrdersAtom = atomWithStorage<LimitOrdersRawState>(
   createJSONStorage(() => localStorage)
 )
 
-export const updateLimitOrdersAtom = atom(null, (get, set, nextState: Partial<LimitOrdersRawState>) => {
-  set(limitOrdersAtom, () => {
-    const prevState = get(limitOrdersAtom)
+export const updateLimitOrdersRawStateAtom = atom(null, (get, set, nextState: Partial<LimitOrdersRawState>) => {
+  set(limitOrdersRawStateAtom, () => {
+    const prevState = get(limitOrdersRawStateAtom)
 
     return { ...prevState, ...nextState }
   })

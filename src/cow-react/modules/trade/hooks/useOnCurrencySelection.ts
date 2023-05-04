@@ -4,14 +4,14 @@ import { Currency } from '@uniswap/sdk-core'
 import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useLimitOrdersFullState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFullState'
 import { useUpdateAtom } from 'jotai/utils'
-import { updateLimitOrdersAtom } from '@cow/modules/limitOrders'
+import { updateLimitOrdersRawStateAtom } from '@cow/modules/limitOrders'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { convertAmountToCurrency } from '@cow/modules/limitOrders/utils/calculateExecutionPrice'
 
 export function useOnCurrencySelection(): (field: Field, currency: Currency | null) => void {
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersFullState()
   const navigateOnCurrencySelection = useNavigateOnCurrencySelection()
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
 
   return useCallback(
     (field: Field, currency: Currency | null) => {

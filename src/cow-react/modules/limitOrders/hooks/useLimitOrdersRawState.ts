@@ -1,10 +1,10 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { limitOrdersAtom, LimitOrdersRawState, updateLimitOrdersAtom } from '@cow/modules/limitOrders'
+import { limitOrdersRawStateAtom, LimitOrdersRawState, updateLimitOrdersRawStateAtom } from '@cow/modules/limitOrders'
 
 export function useLimitOrdersRawState(): LimitOrdersRawState {
-  return useAtomValue(limitOrdersAtom)
+  return useAtomValue(limitOrdersRawStateAtom)
 }
 
 export function useUpdateLimitOrdersRawState(): (update: Partial<LimitOrdersRawState>) => void {
-  return useUpdateAtom(updateLimitOrdersAtom)
+  return useUpdateAtom(updateLimitOrdersRawStateAtom)
 }

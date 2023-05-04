@@ -1,9 +1,9 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import {
-  limitOrdersAtom,
+  limitOrdersRawStateAtom,
   LimitOrdersFullState,
   limitOrdersFullStateAtom,
-} from '@cow/modules/limitOrders/state/limitOrdersAtom'
+} from '@cow/modules/limitOrders/state/limitOrdersRawStateAtom'
 import { useEffect } from 'react'
 import { useBuildTradeFullState } from '@cow/modules/trade/hooks/useBuildTradeFullState'
 
@@ -12,11 +12,11 @@ export function useLimitOrdersFullState(): LimitOrdersFullState {
 }
 
 export function useFillLimitOrdersFullState() {
-  const rawState = useAtomValue(limitOrdersAtom)
+  const rawState = useAtomValue(limitOrdersRawStateAtom)
   const updateFullState = useUpdateAtom(limitOrdersFullStateAtom)
 
   const isUnlocked = rawState.isUnlocked
-  const fullState = useBuildTradeFullState(limitOrdersAtom)
+  const fullState = useBuildTradeFullState(limitOrdersRawStateAtom)
 
   useEffect(() => {
     updateFullState({ ...fullState, isUnlocked })

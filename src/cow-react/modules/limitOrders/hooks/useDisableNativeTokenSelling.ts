@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { limitOrdersRawStateAtom } from '@cow/modules/limitOrders/state/limitOrdersRawStateAtom'
 import { useEffect } from 'react'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useTradeNavigate } from '@cow/modules/trade/hooks/useTradeNavigate'
@@ -13,7 +13,7 @@ import { useWalletInfo } from '@cow/modules/wallet'
  */
 export function useDisableNativeTokenSelling() {
   const { chainId } = useWalletInfo()
-  const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersAtom)
+  const { inputCurrencyId, outputCurrencyId } = useAtomValue(limitOrdersRawStateAtom)
   const limitOrdersNavigate = useTradeNavigate()
 
   useEffect(() => {

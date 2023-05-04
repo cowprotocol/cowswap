@@ -2,7 +2,10 @@ import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { LimitOrdersRawState, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import {
+  LimitOrdersRawState,
+  updateLimitOrdersRawStateAtom,
+} from '@cow/modules/limitOrders/state/limitOrdersRawStateAtom'
 import { calculateAmountForRate } from '@cow/modules/limitOrders/utils/calculateAmountForRate'
 import { Field } from 'state/swap/actions'
 import { FractionUtils } from '@cow/utils/fractionUtils'
@@ -17,7 +20,7 @@ type CurrencyAmountProps = {
 }
 
 export function useUpdateCurrencyAmount() {
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
   const { inputCurrency, outputCurrency } = useLimitOrdersFullState()
 
   return useCallback(
