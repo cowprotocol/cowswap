@@ -2,13 +2,16 @@ import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { LimitOrdersState, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import {
+  LimitOrdersRawState,
+  updateLimitOrdersRawStateAtom,
+} from '@cow/modules/limitOrders/state/limitOrdersRawStateAtom'
 import { calculateAmountForRate } from '@cow/modules/limitOrders/utils/calculateAmountForRate'
 import { Field } from 'state/swap/actions'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { Fraction } from '@uniswap/sdk-core'
 import { Writeable } from '@cow/types'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null
@@ -17,8 +20,8 @@ type CurrencyAmountProps = {
 }
 
 export function useUpdateCurrencyAmount() {
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
 
   return useCallback(
     (params: CurrencyAmountProps) => {
@@ -33,7 +36,7 @@ export function useUpdateCurrencyAmount() {
         outputCurrency,
       })
 
-      const update: Partial<Writeable<LimitOrdersState>> = {
+      const update: Partial<Writeable<LimitOrdersRawState>> = {
         orderKind,
         inputCurrencyAmount: FractionUtils.serializeFractionToJSON(field === Field.INPUT ? amount : calculatedAmount),
         outputCurrencyAmount: FractionUtils.serializeFractionToJSON(field === Field.OUTPUT ? amount : calculatedAmount),

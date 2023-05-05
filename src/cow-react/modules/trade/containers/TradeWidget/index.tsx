@@ -2,8 +2,7 @@ import * as styledEl from './styled'
 import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from '@cow/common/pure/CurrencyInputPanel'
 import { CurrencyArrowSeparator } from '@cow/common/pure/CurrencyArrowSeparator'
-import React from 'react'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import React, { useEffect } from 'react'
 import { useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -11,8 +10,9 @@ import { useThrottleFn } from '@cow/common/hooks/useThrottleFn'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { SetRecipientProps } from '@cow/modules/swap/containers/SetRecipient'
 import { t } from '@lingui/macro'
+import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
 
-interface TradeWidgetActions {
+export interface TradeWidgetActions {
   onCurrencySelection: CurrencyInputPanelProps['onCurrencySelection']
   onUserInput: CurrencyInputPanelProps['onUserInput']
   onChangeRecipient: SetRecipientProps['onChangeRecipient']
@@ -66,7 +66,7 @@ export function TradeWidget(props: TradeWidgetProps) {
   } = params
 
   const { chainId } = useWalletInfo()
-  const { isWrapOrUnwrap } = useDetectNativeToken()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning } = useWalletDetails()
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
@@ -76,6 +76,14 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
+
+  /**
+   * Reset recipient value only once at App start
+   */
+  useEffect(() => {
+    onChangeRecipient(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <styledEl.Container id={id}>

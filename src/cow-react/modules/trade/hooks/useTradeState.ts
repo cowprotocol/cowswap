@@ -1,55 +1,24 @@
 import { TradeType, useTradeTypeInfo } from './useTradeTypeInfo'
-import { useCallback, useMemo } from 'react'
-import { TradeState } from '@cow/modules/trade/types/TradeState'
-import { replaceSwapState, ReplaceSwapStatePayload } from 'state/swap/actions'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { limitOrdersAtom, updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
-import { useSwapState } from 'state/swap/hooks'
-import { useAppDispatch } from 'state/hooks'
-import { useAdvancedOrdersState, useUpdateAdvancedOrdersState } from '@cow/modules/advancedOrders'
+import { useMemo } from 'react'
+import { TradeRawState } from '@cow/modules/trade/types/TradeRawState'
+import { useAdvancedOrdersRawState, useUpdateAdvancedOrdersRawState } from '@cow/modules/advancedOrders'
+import {
+  useLimitOrdersRawState,
+  useUpdateLimitOrdersRawState,
+} from '@cow/modules/limitOrders/hooks/useLimitOrdersRawState'
+import { useSwapRawState, useUpdateSwapRawState } from '@cow/modules/swap/hooks/useSwapRawState'
 
-export function useSwapTradeState(): TradeState {
-  const swapState = useSwapState()
-
-  return {
-    chainId: swapState.chainId,
-    recipient: swapState.recipient,
-    inputCurrencyId: swapState.INPUT.currencyId || null,
-    outputCurrencyId: swapState.OUTPUT.currencyId || null,
-  }
-}
-
-export function useLimitOrdersTradeState(): TradeState {
-  return useAtomValue(limitOrdersAtom)
-}
-
-export function useTradeState(): { state?: TradeState; updateState?: (state: TradeState) => void } {
-  const dispatch = useAppDispatch()
+export function useTradeState(): { state?: TradeRawState; updateState?: (state: TradeRawState) => void } {
   const tradeTypeInfo = useTradeTypeInfo()
 
-  const limitOrdersState = useLimitOrdersTradeState()
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const limitOrdersState = useLimitOrdersRawState()
+  const updateLimitOrdersState = useUpdateLimitOrdersRawState()
 
-  const advancedOrdersState = useAdvancedOrdersState()
-  const updateAdvancedOrdersState = useUpdateAdvancedOrdersState()
+  const advancedOrdersState = useAdvancedOrdersRawState()
+  const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 
-  const swapState = useSwapState()
-  const swapTradeState = useSwapTradeState()
-  const updateSwapState = useCallback(
-    (state: TradeState) => {
-      const newState: ReplaceSwapStatePayload = {
-        typedValue: swapState.typedValue,
-        independentField: swapState.independentField,
-        chainId: state.chainId,
-        recipient: state.recipient,
-        inputCurrencyId: state.inputCurrencyId || undefined,
-        outputCurrencyId: state.outputCurrencyId || undefined,
-      }
-
-      dispatch(replaceSwapState(newState))
-    },
-    [swapState, dispatch]
-  )
+  const swapTradeState = useSwapRawState()
+  const updateSwapState = useUpdateSwapRawState()
 
   return useMemo(() => {
     if (!tradeTypeInfo) return {}

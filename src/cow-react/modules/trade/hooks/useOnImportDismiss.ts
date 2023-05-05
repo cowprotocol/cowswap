@@ -1,4 +1,4 @@
-import { useOnCurrencySelection } from './useOnCurrencySelection'
+import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection'
 import { useCallback } from 'react'
 import type { Field } from 'state/swap/actions'
 
@@ -7,7 +7,7 @@ export interface OnImportDismissCallback {
 }
 
 export function useOnImportDismiss(): OnImportDismissCallback {
-  const onCurrencySelection = useOnCurrencySelection()
+  const onCurrencySelection = useNavigateOnCurrencySelection()
 
   return useCallback(
     (unknownFields: Field[]) => {

@@ -1,22 +1,28 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 
-export interface TradeStateFromUrl {
+export interface TradeUrlParams {
   readonly chainId: string | undefined
   readonly inputCurrencyId: string | undefined
   readonly outputCurrencyId: string | undefined
 }
 
-export interface TradeState {
+export interface TradeRawState {
   readonly chainId: number | null
   readonly inputCurrencyId: string | null
   readonly outputCurrencyId: string | null
   readonly recipient: string | null
 }
 
-export type TradeCurrenciesIds = Pick<TradeState, 'inputCurrencyId' | 'outputCurrencyId'>
+export interface ExtendedTradeRawState extends TradeRawState {
+  readonly inputCurrencyAmount: string | null
+  readonly outputCurrencyAmount: string | null
+  readonly orderKind: OrderKind
+}
 
-export function getDefaultTradeState(chainId: SupportedChainId | null): TradeState {
+export type TradeCurrenciesIds = Pick<TradeRawState, 'inputCurrencyId' | 'outputCurrencyId'>
+
+export function getDefaultTradeRawState(chainId: SupportedChainId | null): TradeRawState {
   return {
     chainId,
     inputCurrencyId: chainId ? WETH[chainId]?.symbol || null : null,

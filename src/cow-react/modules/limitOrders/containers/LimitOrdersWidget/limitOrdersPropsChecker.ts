@@ -1,6 +1,4 @@
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
-import { Field } from 'state/swap/actions'
-import { CurrencySelectionCallback } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { OnImportDismissCallback } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 import { PriceImpact } from 'hooks/usePriceImpact'
@@ -11,9 +9,9 @@ import { getAddress } from '@cow/utils/getAddress'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { TradeWidgetActions } from '@cow/modules/trade/containers/TradeWidget'
 
 export interface LimitOrdersProps {
-  onChangeRecipient(value: string | null): void
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
 
@@ -25,12 +23,8 @@ export interface LimitOrdersProps {
 
   recipient: string | null
   chainId: number | undefined
-
-  onUserInput(field: Field, typedValue: string): void
-  onSwitchTokens(): void
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
   featurePartialFillsEnabled: boolean
-  onCurrencySelection: CurrencySelectionCallback
   onImportDismiss: OnImportDismissCallback
 
   rateInfoParams: RateInfoParams
@@ -38,6 +32,7 @@ export interface LimitOrdersProps {
   tradeContext: TradeFlowContext | null
   settingsState: LimitOrdersSettingsState
   feeAmount: CurrencyAmount<Currency> | null
+  widgetActions: TradeWidgetActions
 }
 
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
@@ -50,9 +45,7 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.showRecipient === b.showRecipient &&
     a.recipient === b.recipient &&
     a.chainId === b.chainId &&
-    a.onUserInput === b.onUserInput &&
-    a.onSwitchTokens === b.onSwitchTokens &&
-    a.onCurrencySelection === b.onCurrencySelection &&
+    a.widgetActions === b.widgetActions &&
     a.onImportDismiss === b.onImportDismiss &&
     a.partiallyFillableOverride[0] === b.partiallyFillableOverride[0] &&
     a.featurePartialFillsEnabled === b.featurePartialFillsEnabled &&

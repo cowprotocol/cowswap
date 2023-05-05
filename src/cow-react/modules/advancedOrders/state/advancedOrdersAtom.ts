@@ -1,29 +1,21 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getDefaultTradeState } from '@cow/modules/trade/types/TradeState'
+import { ExtendedTradeRawState, getDefaultTradeRawState } from '@cow/modules/trade/types/TradeRawState'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { atom } from 'jotai'
+import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from '@cow/modules/trade/types/TradeDerivedState'
 
-export interface AdvancedOrdersState {
-  readonly chainId: number | null
-  readonly inputCurrencyId: string | null
-  readonly outputCurrencyId: string | null
-  readonly inputCurrencyAmount: string | null
-  readonly outputCurrencyAmount: string | null
-  readonly recipient: string | null
-  readonly orderKind: OrderKind
-}
+export interface AdvancedOrdersRawState extends ExtendedTradeRawState {}
 
-export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null): AdvancedOrdersState {
+export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null): AdvancedOrdersRawState {
   return {
-    ...getDefaultTradeState(chainId),
+    ...getDefaultTradeRawState(chainId),
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
-    recipient: null,
     orderKind: OrderKind.SELL,
   }
 }
 
-export const advancedOrdersAtom = atomWithStorage<AdvancedOrdersState>(
+export const advancedOrdersAtom = atomWithStorage<AdvancedOrdersRawState>(
   'advanced-orders-atom:v1',
   getDefaultAdvancedOrdersState(null),
   /**
@@ -34,10 +26,14 @@ export const advancedOrdersAtom = atomWithStorage<AdvancedOrdersState>(
   createJSONStorage(() => localStorage)
 )
 
-export const updateAdvancedOrdersAtom = atom(null, (get, set, nextState: Partial<AdvancedOrdersState>) => {
+export const updateAdvancedOrdersAtom = atom(null, (get, set, nextState: Partial<AdvancedOrdersRawState>) => {
   set(advancedOrdersAtom, () => {
     const prevState = get(advancedOrdersAtom)
 
     return { ...prevState, ...nextState }
   })
+})
+
+export const advancedOrdersDerivedStateAtom = atom<TradeDerivedState>({
+  ...DEFAULT_TRADE_DERIVED_STATE,
 })

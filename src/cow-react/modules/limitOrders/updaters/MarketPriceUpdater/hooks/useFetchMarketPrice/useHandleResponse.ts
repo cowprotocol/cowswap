@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { CancelableResult } from 'utils/async'
@@ -44,7 +44,7 @@ export function handleLimitOrderQuoteResponse(
 export function useHandleResponse() {
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
 
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
   const setLimitOrdersQuote = useSetAtom(limitOrdersQuoteAtom)
 
   return useCallback(

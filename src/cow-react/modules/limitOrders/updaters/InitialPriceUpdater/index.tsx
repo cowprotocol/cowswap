@@ -2,14 +2,14 @@ import { useLayoutEffect, useState } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 import { LimitRateState, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
 import { useGetInitialPrice } from '@cow/modules/limitOrders/hooks/useGetInitialPrice'
-import { useLimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
+import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import usePrevious from 'hooks/usePrevious'
 import { useUpdateActiveRate } from '@cow/modules/limitOrders/hooks/useUpdateActiveRate'
 import { Writeable } from '@cow/types'
 
 // Fetch and update initial price for the selected token pair
 export function InitialPriceUpdater() {
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
   const updateRate = useUpdateActiveRate()
 

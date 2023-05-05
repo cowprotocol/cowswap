@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useCallback, useLayoutEffect, useMemo } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
-import { LimitOrdersState, updateLimitOrdersAtom } from '@cow/modules/limitOrders'
+import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from '@cow/modules/limitOrders'
 import { Writeable } from '@cow/types'
 import { FractionUtils } from '@cow/utils/fractionUtils'
 import { Price } from '@uniswap/sdk-core'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from '@cow/modules/trade/const/tradeUrl'
 import { getIntOrFloat } from '@cow/utils/getIntOrFloat'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -23,9 +23,9 @@ export function useSetupLimitOrderAmountsFromUrl() {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
   const updateRate = useUpdateActiveRate()
-  const { inputCurrency, outputCurrency } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
 
   const cleanParams = useCallback(() => {
     const queryParams = new URLSearchParams(search)
@@ -39,7 +39,7 @@ export function useSetupLimitOrderAmountsFromUrl() {
   useLayoutEffect(() => {
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))
     const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
-    const update: Partial<Writeable<LimitOrdersState>> = {}
+    const update: Partial<Writeable<LimitOrdersRawState>> = {}
 
     const sellCurrencyAmount = inputCurrency && sellAmount ? tryParseCurrencyAmount(sellAmount, inputCurrency) : null
     const buyCurrencyAmount = outputCurrency && buyAmount ? tryParseCurrencyAmount(buyAmount, outputCurrency) : null
