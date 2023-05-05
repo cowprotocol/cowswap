@@ -1,3 +1,9 @@
+import { isProd, isBarn, isDev } from 'utils/environments'
+
+const IPFS_BASE_URLS_PUBLIC = ['https://cloudflare-ipfs.coms', 'https://ipfs.io']
+const IPFS_BASE_URLS =
+  isProd && isBarn && isDev ? ['https://ipfs.cow.fi', ...IPFS_BASE_URLS_PUBLIC] : IPFS_BASE_URLS_PUBLIC
+
 /**
  * Given a URI that may be ipfs, ipns, http, https, ar, or data protocol, return the fetch-able http(s) URLs for the same content
  * @param uri to convert to fetch-able http url
@@ -13,7 +19,7 @@ export default function uriToHttp(uri: string): string[] {
       return ['https' + uri.substr(4), uri]
     case 'ipfs':
       const hash = uri.match(/^ipfs:(\/\/)?(ipfs\/)?(.*)$/i)?.[3] // TODO: probably a bug on original code
-      return [`https://cloudflare-ipfs.com/ipfs/${hash}/`, `https://ipfs.io/ipfs/${hash}/`]
+      return IPFS_BASE_URLS.map((url) => `${url}/ipfs/${hash}`)
     case 'ipns':
       const name = uri.match(/^ipns:(\/\/)?(.*)$/i)?.[2]
       return [`https://cloudflare-ipfs.com/ipns/${name}/`, `https://ipfs.io/ipns/${name}/`]
