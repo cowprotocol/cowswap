@@ -6,11 +6,13 @@ import { defaultOrderDeadline } from '@cow/common/pure/DeadlineSelector/deadline
 export interface AdvancedOrdersSettingsState {
   readonly deadlineMilliseconds: Milliseconds
   readonly customDeadlineTimestamp: Timestamp | null
+  readonly numberOfParts: number | null
 }
 
 export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
   deadlineMilliseconds: defaultOrderDeadline.value,
   customDeadlineTimestamp: null,
+  numberOfParts: 1,
 }
 
 export const advancedOrdersSettingsAtom = atomWithStorage<AdvancedOrdersSettingsState>(

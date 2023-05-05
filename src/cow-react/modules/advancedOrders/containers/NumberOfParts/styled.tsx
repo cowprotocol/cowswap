@@ -1,11 +1,19 @@
 import styled from 'styled-components/macro'
+import Input from 'components/NumericalInput'
 
-export const Wrapper = styled.div`
-  background: ${({ theme }) => theme.grey1};
-  border-radius: 16px;
-  padding: 10px 16px;
+export const NumericalInput = styled(Input)`
+  height: 100%;
   display: flex;
-  justify-content: space-between;
-  flex-flow: row wrap;
+  align-items: center;
+  background: none;
+  font-size: 22px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text1};
   flex: 1;
+  width: 100%;
+  max-width: 70px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 20px;
+  `}
 `
