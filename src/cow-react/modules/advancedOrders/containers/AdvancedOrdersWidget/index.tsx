@@ -9,6 +9,8 @@ import {
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
 import { DeadlineInput } from '../DeadlineInput'
+import { NumberOfParts } from '../NumberOfParts'
+import * as styledEl from './styled'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -52,6 +54,11 @@ export function AdvancedOrdersWidget() {
     settingsWidget: <div></div>,
     bottomContent: (
       <>
+        <styledEl.Row>
+          <NumberOfParts />
+          <NumberOfParts />
+        </styledEl.Row>
+
         <DeadlineInput />
       </>
     ),
