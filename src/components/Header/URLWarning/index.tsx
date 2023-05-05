@@ -48,7 +48,7 @@ const Wrapper = styled.div`
 `
 
 // Announcement content: Modify this repository to edit the announcement
-const ANNOUNCEMENTS_MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/cowswap-banner/main'
+const ANNOUNCEMENTS_MARKDOWN_BASE_URL = 'https://raw.githubusercontent.com/cowprotocol/cowswap-banner/main'
 
 function getAnnouncementUrl(chainId: number, env?: 'production' | 'barn') {
   return `${ANNOUNCEMENTS_MARKDOWN_BASE_URL}${env ? `/${env}` : ''}/announcements-${chainId}.md`
