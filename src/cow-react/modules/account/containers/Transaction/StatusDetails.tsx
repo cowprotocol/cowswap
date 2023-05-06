@@ -96,11 +96,15 @@ export function StatusDetails(props: StatusDetailsProps) {
   const cancellationHash = activityDerivedState.order?.cancellationHash
   const isCancellable = order ? isOrderCancellable(order) : true
 
-  const safeTransaction = enhancedTransaction?.safeTransaction || order?.presignGnosisSafeTx
+  const safeAddress =
+    enhancedTransaction?.safeTransaction?.safe ||
+    order?.presignGnosisSafeTx?.safe ||
+    activityDerivedState.gnosisSafeInfo?.address
+
   const hasCancellationHash = !!cancellationHash && !isCancelling && !isConfirmed && isCancelled
   const cancellationTxLink = hasCancellationHash
-    ? safeTransaction
-      ? getSafeWebUrl(chainId, safeTransaction.safe, safeTransaction.safeTxHash)
+    ? safeAddress
+      ? getSafeWebUrl(chainId, safeAddress, cancellationHash)
       : getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)
     : null
 
