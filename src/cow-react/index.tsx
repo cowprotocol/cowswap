@@ -26,6 +26,8 @@ import Popups from 'components/Popups'
 import { Updaters } from '@cow/modules/application/containers/App/Updaters'
 import { createRoot } from 'react-dom/client'
 import { FortuneWidget } from '@cow/modules/fortune/containers/FortuneWidget'
+import { FeatureGuard } from './common/containers/FeatureGuard'
+import { WithLDProvider } from './modules/application/containers/WithLDProvider'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -47,14 +49,18 @@ root.render(
             <Web3Provider>
               <Blocklist>
                 <BlockNumberProvider>
-                  <Updaters />
-                  <ThemeProvider>
-                    <ThemedGlobalStyle />
-                    <FortuneWidget />
-                    <Popups />
-                    <AppziButton />
-                    <App />
-                  </ThemeProvider>
+                  <WithLDProvider>
+                    <Updaters />
+                    <ThemeProvider>
+                      <ThemedGlobalStyle />
+                      <FeatureGuard featureFlag="cowFortuneEnabled">
+                        <FortuneWidget />
+                      </FeatureGuard>
+                      <Popups />
+                      <AppziButton />
+                      <App />
+                    </ThemeProvider>
+                  </WithLDProvider>
                 </BlockNumberProvider>
               </Blocklist>
             </Web3Provider>
