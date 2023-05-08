@@ -20,4 +20,7 @@ export const WidgetLabel = styled.span`
   font-weight: 500;
 `
 
-export const WidgetContent = styled.div``
+export const WidgetContent = styled.div`
+  display: flex;
+  align-items: center;
+`
