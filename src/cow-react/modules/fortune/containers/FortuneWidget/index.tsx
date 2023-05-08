@@ -47,6 +47,26 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     bottom: 0;
   `}
 
+  &::before {
+    content: "";
+    display: block;
+    height: 10px;
+    width: 10px;
+    background: transparent;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+    box-shadow: 0px 0px 50px 30px ${({ theme }) => theme.darkMode ? theme.blueDark2 : theme.blueLight1};
+    z-index: -1;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      box-shadow: none;
+    `}
+  }
+
   &::after {
     --size: 90%;
     content: "";
@@ -163,7 +183,7 @@ const FortuneTitle = styled.h2`
   }
 `
 
-const FortuneText = styled.h3<{ isNewFortuneOpen: boolean }>`
+const FortuneText = styled.h3`
   padding: 24px;
   width: 100%;
   font-size: 34px;
@@ -174,17 +194,16 @@ const FortuneText = styled.h3<{ isNewFortuneOpen: boolean }>`
   text-align: center;
   position: relative;
   background: ${({ theme }) => theme.grey1};
-  opacity: ${({ isNewFortuneOpen }) => (isNewFortuneOpen ? 1 : 0.5)};
 
   &:before {
     content: '“';
-    top: -70px;
+    top: -60px;
     left: 0;
   }
 
   &:after {
     content: '”';
-    bottom: -120px;
+    bottom: -110px;
     right: 0;
   }
 
@@ -205,6 +224,7 @@ const FortuneContent = styled.div`
   align-items: center;
   width: 100%;
   max-width: 500px;
+  color: ${({ theme }) => theme.text1};
 `
 
 const StyledExternalLink = styled(ExternalLink)`
@@ -251,7 +271,7 @@ export function FortuneWidget() {
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   // TODO: add text
-  const twitterText = openFortune ? encodeURIComponent(`🐮💬: “${openFortune.text}” \n\n swap.cow.fi`) : ''
+  const twitterText = openFortune ? encodeURIComponent(`My CoW fortune cookie🐮: “${openFortune.text}” \n\n Get yours at swap.cow.fi @CoWSwap`) : ''
 
   const isDailyFortuneChecked = useMemo(() => {
     if (!lastCheckedFortune) return false
@@ -308,11 +328,11 @@ export function FortuneWidget() {
                 CoW Fortune <i>of the day</i>
               </>
             ) : (
-              <>Come back tomorrow for your daily fortune</>
+              <>Already seen today's fortune? <br/> Return tomorrow for a fresh one!</>
             )}
           </FortuneTitle>
           <FortuneContent>
-            <FortuneText isNewFortuneOpen={isNewFortuneOpen}>{openFortune.text}</FortuneText>
+            <FortuneText>{openFortune.text}</FortuneText>
             <FortuneBannerActions>
               <StyledExternalLink
                 onClickOptional={onTweetShare}
@@ -330,7 +350,7 @@ export function FortuneWidget() {
                   <label>
                     {/*// TODO: tooltip with explanation*/}
                     <input type="checkbox" ref={checkboxRef} />
-                    <span>I don't want to see this fortune again</span>
+                    <span>Hide today's fortune cookie</span>
                   </label>
                 </DontShowAgainBox>
               )}

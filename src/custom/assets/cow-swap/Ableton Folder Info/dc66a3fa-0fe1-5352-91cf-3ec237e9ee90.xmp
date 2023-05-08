@@ -1,0 +1,17 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 5.6.0">
+   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about=""
+            xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:ablFR="https://ns.ableton.com/xmp/fs-resources/1.0/"
+            xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+         <dc:format>application/vnd.ableton.folder</dc:format>
+         <ablFR:resource>folder</ablFR:resource>
+         <ablFR:platform>mac</ablFR:platform>
+         <ablFR:items>
+            <rdf:Bag/>
+         </ablFR:items>
+         <xmp:CreatorTool>Ableton Index 11.2.10</xmp:CreatorTool>
+         <xmp:CreateDate>2023-04-29T18:38:11+01:00</xmp:CreateDate>
+      </rdf:Description>
+   </rdf:RDF>
+</x:xmpmeta>
