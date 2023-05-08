@@ -1,21 +1,18 @@
 import { WidgetField, WidgetLabel, WidgetContent } from '@cow/modules/advancedOrders/pure/WidgetField'
 import { Trans } from '@lingui/macro'
+import { useAtomValue } from 'jotai'
 import QuestionHelper from 'components/QuestionHelper'
-import { useAtomValue, useSetAtom } from 'jotai'
-import {
-  advancedOrdersSettingsAtom,
-  updateAdvancedOrdersSettingsAtom,
-} from '@cow/modules/advancedOrders/state/advancedOrdersSettingsAtom'
+import { advancedOrdersSettingsAtom } from '@cow/modules/advancedOrders/state/advancedOrdersSettingsAtom'
+import { useParseNumberOfParts } from '@cow/modules/advancedOrders/hooks/useParseNumberOfParts'
 import { NumericalInput } from '@cow/modules/advancedOrders/pure/NumericalInput'
+import { MAX_PARTS_NUMBER, MIN_PARTS_NUMBER } from '@src/constants'
+import * as styledEl from './styled'
 
 export function NumberOfParts() {
-  const { numberOfParts } = useAtomValue(advancedOrdersSettingsAtom)
+  const { numberOfParts, numberOfPartsError } = useAtomValue(advancedOrdersSettingsAtom)
+  const parseNumberOfParts = useParseNumberOfParts()
 
-  const updateSettingsState = useSetAtom(updateAdvancedOrdersSettingsAtom)
-
-  const onUserInput = (value: string) => {
-    updateSettingsState({ numberOfParts: Number(value) })
-  }
+  const tooHigh = numberOfParts > MAX_PARTS_NUMBER
 
   return (
     <WidgetField>
@@ -25,8 +22,19 @@ export function NumberOfParts() {
       </WidgetLabel>
 
       <WidgetContent>
-        <NumericalInput value={numberOfParts} onUserInput={onUserInput} />
+        <NumericalInput
+          value={numberOfParts}
+          color={numberOfPartsError ? 'red' : ''}
+          onUserInput={(value) => parseNumberOfParts(value)}
+        />
       </WidgetContent>
+      {numberOfPartsError || tooHigh ? (
+        <styledEl.ErrorRow error={!!numberOfPartsError}>
+          <Trans>
+            Enter number of parts between {MIN_PARTS_NUMBER} and {MAX_PARTS_NUMBER}
+          </Trans>
+        </styledEl.ErrorRow>
+      ) : null}
     </WidgetField>
   )
 }
