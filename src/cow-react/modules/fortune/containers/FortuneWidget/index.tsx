@@ -59,7 +59,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
     bottom: 0;
     top: 0;
     margin: auto;
-    box-shadow: 0px 0px 50px 30px ${({ theme }) => theme.darkMode ? theme.blueDark2 : theme.blueLight1};
+    box-shadow: 0px 0px 50px 30px ${({ theme }) => (theme.darkMode ? theme.blueDark2 : theme.blueLight1)};
     z-index: -1;
 
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -271,7 +271,9 @@ export function FortuneWidget() {
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   // TODO: add text
-  const twitterText = openFortune ? encodeURIComponent(`My CoW fortune cookie🐮: “${openFortune.text}” \n\n Get yours at swap.cow.fi @CoWSwap`) : ''
+  const twitterText = openFortune
+    ? encodeURIComponent(`My CoW fortune cookie🐮: “${openFortune.text}” \n\n Get yours at swap.cow.fi @CoWSwap`)
+    : ''
 
   const isDailyFortuneChecked = useMemo(() => {
     if (!lastCheckedFortune) return false
@@ -328,7 +330,9 @@ export function FortuneWidget() {
                 CoW Fortune <i>of the day</i>
               </>
             ) : (
-              <>Already seen today's fortune? <br/> Return tomorrow for a fresh one!</>
+              <>
+                Already seen today's fortune? <br /> Return tomorrow for a fresh one!
+              </>
             )}
           </FortuneTitle>
           <FortuneContent>
