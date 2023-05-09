@@ -22,23 +22,36 @@ export async function safeBundleFlow(
     return
   }
 
+  const {
+    erc20Contract,
+    spender,
+    context,
+    callbacks,
+    swapConfirmManager,
+    dispatch,
+    appDataInfo,
+    orderParams,
+    settlementContract,
+    safeAppsSdk,
+  } = input
+
   try {
     // For now, bundling ALWAYS includes 2 steps: approve and presign.
     // In the feature users will be able to sort/add steps as they see fit
     logTradeFlow(LOG_PREFIX, 'STEP 2: build approval tx')
     const approveTx = await buildApproveTx({
-      erc20Contract: input.erc20Contract,
-      spender: input.spender,
-      amountToApprove: input.context.trade.inputAmount,
+      erc20Contract,
+      spender,
+      amountToApprove: context.trade.inputAmount,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
-    const { id: orderId, order } = await signAndPostOrder(input.orderParams).finally(() => {
-      input.callbacks.closeModals()
+    const { id: orderId, order } = await signAndPostOrder(orderParams).finally(() => {
+      callbacks.closeModals()
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 4: build presign tx')
-    const presignTx = await buildPresignTx({ settlementContract: input.settlementContract, orderId })
+    const presignTx = await buildPresignTx({ settlementContract, orderId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 5: send safe tx')
     const safeTransactionData: MetaTransactionData[] = [
@@ -46,33 +59,33 @@ export async function safeBundleFlow(
       { to: presignTx.to!, data: presignTx.data!, value: '0', operation: 0 },
     ]
 
-    const safeTx = await input.safeAppsSdk.txs.send({ txs: safeTransactionData })
+    const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: add tx to store')
     addPendingOrderStep(
       {
         id: orderId,
-        chainId: input.context.chainId,
+        chainId: context.chainId,
         order: {
           ...order,
           presignGnosisSafeTxHash: safeTx.safeTxHash,
         },
       },
-      input.dispatch
+      dispatch
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add app data to upload queue')
-    input.callbacks.addAppDataToUploadQueue({ chainId: input.context.chainId, orderId, appData: input.appDataInfo })
+    callbacks.addAppDataToUploadQueue({ chainId: context.chainId, orderId, appData: appDataInfo })
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: show UI of the successfully sent transaction')
-    input.swapConfirmManager.transactionSent(orderId)
+    swapConfirmManager.transactionSent(orderId)
   } catch (error) {
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     // TODO: handle analytics
-    // tradeFlowAnalytics.error(error, swapErrorMessage, input.swapFlowAnalyticsContext)
+    // tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
-    input.swapConfirmManager.setSwapError(swapErrorMessage)
+    swapConfirmManager.setSwapError(swapErrorMessage)
   }
 }
