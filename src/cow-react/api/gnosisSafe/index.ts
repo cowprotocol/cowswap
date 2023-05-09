@@ -59,7 +59,6 @@ export function createSafeApiKitInstance(chainId: number, library: Web3Provider)
 export async function createSafeSdkInstance(safeAddress: string, library: Web3Provider): Promise<Safe> {
   const ethAdapter = _createSafeEthAdapter(library)
 
-  // TODO: not sure whether we'll need to prefix the address with the chain short code
   return Safe.create({ ethAdapter, safeAddress })
 }
 
