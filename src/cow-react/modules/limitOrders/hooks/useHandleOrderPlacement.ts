@@ -62,6 +62,7 @@ export function useHandleOrderPlacement(
     partiallyFillableOverride,
     priceImpact,
     settingsState,
+    confirmPriceImpactWithoutFee,
     callbacks,
     updateLimitOrdersState,
     setPartiallyFillableOverride,
