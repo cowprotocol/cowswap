@@ -29,6 +29,7 @@ import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
+import { useNeedsApproval } from '@cow/common/hooks/useNeedsApproval'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -94,7 +95,9 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
   const isEthFlow = useIsEthFlow()
-  const isSafeBundle = useIsTxBundlingEnabled()
+  const needsApproval = useNeedsApproval(trade?.inputAmount?.currency.wrapped, trade?.inputAmount)
+  const isTxBundlingEnabled = useIsTxBundlingEnabled()
+  const isSafeBundle = isTxBundlingEnabled && needsApproval
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
