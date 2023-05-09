@@ -19,6 +19,7 @@ import { X } from 'react-feather'
 import Confetti from 'components/Confetti'
 import useInterval from '@src/lib/hooks/useInterval'
 import { sendEvent } from 'components/analytics'
+import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 75px;
@@ -114,12 +115,11 @@ const FortuneBanner = styled.div`
   top: 0;
   left: 0;
   bottom: 0;
-  margin: auto;
   z-index: 501;
   background: ${({ theme }) => theme.grey1};
-  padding: 0 32px 32px;
+  padding: 0;
   animation: open 0.3s ease-in-out forwards;
-  overflow-y: auto;
+  overflow: hidden;
 
   @keyframes open {
     from {
@@ -130,6 +130,17 @@ const FortuneBanner = styled.div`
     }
   }
 `
+
+const FortuneBannerInner = styled.div`
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 56px 32px 100px;
+  margin: auto;
+`
+
 
 const FortuneBannerActions = styled.div`
   display: flex;
@@ -194,6 +205,11 @@ const FortuneText = styled.h3`
   color: ${({ theme }) => (theme.darkMode ? theme.bg1 : theme.text1)};
   background: ${({ theme }) => theme.white};
 
+  // small device 
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 26px;
+  `}
+
   &:before {
     content: '“';
     top: -60px;
@@ -208,6 +224,7 @@ const FortuneText = styled.h3`
 
   &:before,
   &:after {
+    color: ${({ theme }) => theme.text1};
     font-size: 100px;
     position: absolute;
     z-index: 1;
@@ -219,7 +236,7 @@ const FortuneContent = styled.div`
   display: flex;
   flex-flow: column wrap;
   margin: 0 auto;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   max-width: 500px;
@@ -237,7 +254,8 @@ const HeaderElement = styled.div`
   justify-content: space-between;
   width: 100%;
   background: ${({ theme }) => theme.grey1};
-  position: sticky;
+  position: fixed;
+  padding: 0 16px;
   top: 0;
   left: 0;
   height: 56px;
@@ -300,6 +318,7 @@ export function FortuneWidget() {
   const closeModal = useCallback(() => {
     updateOpenFortune(null)
     setIsNewFortuneOpen(false)
+    removeBodyClass('noScroll');
 
     if (checkboxRef.current?.checked) {
       setIsFortunesFeatureDisabled(true)
@@ -308,6 +327,10 @@ export function FortuneWidget() {
 
   const openFortuneModal = useCallback(() => {
     setIsFortunedShared(false)
+
+    // Add the 'noScroll' class on body, whenever the fortune modal is opened/closed.
+    // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
+    addBodyClass('noScroll');
 
     if (isDailyFortuneChecked && lastCheckedFortune) {
       updateOpenFortune(lastCheckedFortune.item)
@@ -333,6 +356,7 @@ export function FortuneWidget() {
     <>
       {openFortune && (
         <FortuneBanner>
+          <FortuneBannerInner>
           <HeaderElement>
             <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
           </HeaderElement>
@@ -372,6 +396,7 @@ export function FortuneWidget() {
               )}
             </FortuneBannerActions>
           </FortuneContent>
+          </FortuneBannerInner>
         </FortuneBanner>
       )}
       <FortuneButton isDailyFortuneChecked={isDailyFortuneChecked} onClick={openFortuneModal}></FortuneButton>
