@@ -30,7 +30,7 @@ export function useEthFlowContext(): EthFlowContext | null {
     kind: OrderKind.SELL,
   })
 
-  if (!baseContext || !contract || !baseProps.isEthFlow) return null
+  if (!baseContext || !contract || !baseProps.isEthFlow || baseProps.isSafeBundle) return null
 
   return {
     ...baseContext,

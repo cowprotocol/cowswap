@@ -28,6 +28,7 @@ import { BaseFlowContext } from '@cow/modules/swap/services/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -65,7 +66,8 @@ interface BaseFlowContextSetup {
   ensRecipientAddress: string | null
   allowsOffchainSigning: boolean
   swapConfirmManager: SwapConfirmManager
-  isEthFlow: any
+  isEthFlow: boolean
+  isSafeBundle: boolean
   closeModals: () => void
   addAppDataToUploadQueue: (update: AddAppDataToUploadQueueParams) => void
   addOrderCallback: AddOrderCallback
@@ -92,6 +94,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
   const isEthFlow = useIsEthFlow()
+  const isSafeBundle = useIsTxBundlingEnabled()
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
@@ -115,6 +118,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     allowsOffchainSigning,
     swapConfirmManager,
     isEthFlow,
+    isSafeBundle,
     closeModals,
     addAppDataToUploadQueue,
     addOrderCallback,

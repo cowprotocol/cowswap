@@ -16,7 +16,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     kind: baseProps.trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
   })
 
-  if (!contract || !baseContext || baseProps.isEthFlow) return null
+  if (!contract || !baseContext || baseProps.isEthFlow || baseProps.isSafeBundle) return null
 
   return {
     ...baseContext,
