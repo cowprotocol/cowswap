@@ -29,7 +29,7 @@ function _getClient(chainId: number, library: Web3Provider): SafeApiKit | null {
     return cachedClient
   }
 
-  const client = createSafeServiceClient(chainId, library)
+  const client = createSafeApiKitInstance(chainId, library)
 
   // Add client to cache (or null if unknonw network)
   SAFE_TRANSACTION_SERVICE_CACHE[chainId] = client
@@ -46,7 +46,7 @@ function _createSafeEthAdapter(library: Web3Provider): EthersAdapter {
   })
 }
 
-export function createSafeServiceClient(chainId: number, library: Web3Provider): SafeApiKit | null {
+export function createSafeApiKitInstance(chainId: number, library: Web3Provider): SafeApiKit | null {
   const url = SAFE_TRANSACTION_SERVICE_URL[chainId]
   if (!url) {
     return null

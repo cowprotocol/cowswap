@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useWeb3React } from '@web3-react/core'
-import { createSafeServiceClient } from '@cow/api/gnosisSafe'
+import { createSafeApiKitInstance } from '@cow/api/gnosisSafe'
 import SafeApiKit from '@safe-global/api-kit'
 
-export function useSafeApiClient(): SafeApiKit | null {
+export function useSafeApiKit(): SafeApiKit | null {
   const [safeApiClient, setSafeApiClient] = useState<SafeApiKit | null>(null)
   const { chainId } = useWalletInfo()
   const { provider } = useWeb3React()
