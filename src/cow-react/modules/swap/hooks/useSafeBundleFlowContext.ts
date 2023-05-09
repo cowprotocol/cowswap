@@ -2,7 +2,7 @@ import { TradeType } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { SafeBundleFlowContext } from '@cow/modules/swap/services/types'
-import { getFlowContext, useBaseFlowContextSetup } from '@cow/modules/swap/hooks/useFlowContext'
+import { FlowType, getFlowContext, useBaseFlowContextSetup } from '@cow/modules/swap/hooks/useFlowContext'
 import { useGP2SettlementContract, useTokenContract } from '@src/hooks/useContract'
 import { useTradeSpenderAddress } from '@cow/common/hooks/useTradeSpenderAddress'
 import { useWeb3React } from '@web3-react/core'
@@ -26,7 +26,7 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
     kind: baseProps.trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
   })
 
-  if (!baseContext || !baseProps.isSafeBundle || baseProps.isEthFlow) return null
+  if (!baseContext || baseProps.flowType !== FlowType.SAFE_BUNDLE) return null
 
   return {
     ...baseContext,
