@@ -141,7 +141,6 @@ const FortuneBannerInner = styled.div`
   margin: auto;
 `
 
-
 const FortuneBannerActions = styled.div`
   display: flex;
   flex-direction: column;
@@ -205,7 +204,7 @@ const FortuneText = styled.h3`
   color: ${({ theme }) => (theme.darkMode ? theme.bg1 : theme.text1)};
   background: ${({ theme }) => theme.white};
 
-  // small device 
+  // small device
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 26px;
   `}
@@ -318,7 +317,7 @@ export function FortuneWidget() {
   const closeModal = useCallback(() => {
     updateOpenFortune(null)
     setIsNewFortuneOpen(false)
-    removeBodyClass('noScroll');
+    removeBodyClass('noScroll')
 
     if (checkboxRef.current?.checked) {
       setIsFortunesFeatureDisabled(true)
@@ -330,7 +329,7 @@ export function FortuneWidget() {
 
     // Add the 'noScroll' class on body, whenever the fortune modal is opened/closed.
     // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
-    addBodyClass('noScroll');
+    addBodyClass('noScroll')
 
     if (isDailyFortuneChecked && lastCheckedFortune) {
       updateOpenFortune(lastCheckedFortune.item)
@@ -357,45 +356,45 @@ export function FortuneWidget() {
       {openFortune && (
         <FortuneBanner>
           <FortuneBannerInner>
-          <HeaderElement>
-            <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
-          </HeaderElement>
-          <FortuneTitle>
-            {isNewFortuneOpen ? (
-              <>
-                CoW Fortune <i>of the day</i>
-              </>
-            ) : (
-              <>
-                Already seen today's fortune? <br /> Return tomorrow for a fresh one!
-              </>
-            )}
-          </FortuneTitle>
-          <FortuneContent>
-            <FortuneText>{openFortune.text}</FortuneText>
-            <FortuneBannerActions>
-              <StyledExternalLink
-                onClickOptional={onTweetShare}
-                href={`https://twitter.com/intent/tweet?text=${twitterText}`}
-              >
-                <SuccessBanner type={'Twitter'}>
-                  <span>
-                    <Trans>Share on Twitter</Trans>
-                  </span>
-                  <SVG src={twitterImage} description="Twitter" />
-                </SuccessBanner>
-              </StyledExternalLink>
-              {!isNewFortuneOpen && !isFortunedShared && (
-                <DontShowAgainBox>
-                  <label>
-                    {/*// TODO: tooltip with explanation*/}
-                    <input type="checkbox" ref={checkboxRef} />
-                    <span>Hide today's fortune cookie</span>
-                  </label>
-                </DontShowAgainBox>
+            <HeaderElement>
+              <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
+            </HeaderElement>
+            <FortuneTitle>
+              {isNewFortuneOpen ? (
+                <>
+                  CoW Fortune <i>of the day</i>
+                </>
+              ) : (
+                <>
+                  Already seen today's fortune? <br /> Return tomorrow for a fresh one!
+                </>
               )}
-            </FortuneBannerActions>
-          </FortuneContent>
+            </FortuneTitle>
+            <FortuneContent>
+              <FortuneText>{openFortune.text}</FortuneText>
+              <FortuneBannerActions>
+                <StyledExternalLink
+                  onClickOptional={onTweetShare}
+                  href={`https://twitter.com/intent/tweet?text=${twitterText}`}
+                >
+                  <SuccessBanner type={'Twitter'}>
+                    <span>
+                      <Trans>Share on Twitter</Trans>
+                    </span>
+                    <SVG src={twitterImage} description="Twitter" />
+                  </SuccessBanner>
+                </StyledExternalLink>
+                {!isNewFortuneOpen && !isFortunedShared && (
+                  <DontShowAgainBox>
+                    <label>
+                      {/*// TODO: tooltip with explanation*/}
+                      <input type="checkbox" ref={checkboxRef} />
+                      <span>Hide today's fortune cookie</span>
+                    </label>
+                  </DontShowAgainBox>
+                )}
+              </FortuneBannerActions>
+            </FortuneContent>
           </FortuneBannerInner>
         </FortuneBanner>
       )}
