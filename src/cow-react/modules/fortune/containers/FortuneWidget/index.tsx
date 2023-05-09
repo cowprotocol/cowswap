@@ -16,7 +16,6 @@ import twitterImage from 'assets/cow-swap/twitter.svg'
 import fortuneCookieImage from 'assets/cow-swap/fortune-cookie.png'
 import { ExternalLink } from 'theme'
 import { X } from 'react-feather'
-import { transparentize } from 'polished'
 import Confetti from 'components/Confetti'
 import useInterval from '@src/lib/hooks/useInterval'
 import { sendEvent } from 'components/analytics'
@@ -25,7 +24,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 75px;
   display: inline-block;
   position: fixed;
-  z-index: 500;
+  z-index: 10;
   right: 10px;
   bottom: 94px;
   width: var(--size);
@@ -117,9 +116,8 @@ const FortuneBanner = styled.div`
   bottom: 0;
   margin: auto;
   z-index: 501;
-  background: ${({ theme }) => transparentize(0.95, theme.text3)};
-  backdrop-filter: blur(45px);
-  padding: 32px;
+  background: ${({ theme }) => theme.grey1};
+  padding: 0 32px 32px;
   animation: open 0.3s ease-in-out forwards;
   overflow-y: auto;
 
@@ -184,16 +182,17 @@ const FortuneTitle = styled.h2`
 `
 
 const FortuneText = styled.h3`
-  padding: 24px;
+  padding: 21px;
   width: 100%;
-  font-size: 34px;
+  font-size: 32px;
   border-radius: 42px;
   word-break: break-word;
   margin: 34px auto 70px;
   font-weight: 700;
   text-align: center;
   position: relative;
-  background: ${({ theme }) => theme.grey1};
+  color: ${({ theme }) => theme.darkMode ? theme.bg1 : theme.text1};
+  background: ${({ theme }) => theme.white};
 
   &:before {
     content: '“';
@@ -232,15 +231,26 @@ const StyledExternalLink = styled(ExternalLink)`
   border-radius: 24px;
 `
 
+const HeaderElement = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: ${({ theme }) => theme.grey1};
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 56px;
+  z-index: 10;
+`
+
 const StyledCloseIcon = styled(X)`
   --size: 56px;
-  position: absolute;
-  top: 16px;
-  right: 16px;
   height: var(--size);
   width: var(--size);
   opacity: 0.4;
   transition: opacity 0.3s ease-in-out;
+  margin: 0 0 0 auto;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     --size: 42px;
@@ -272,7 +282,7 @@ export function FortuneWidget() {
 
   // TODO: add text
   const twitterText = openFortune
-    ? encodeURIComponent(`My CoW fortune cookie🐮: “${openFortune.text}” \n\n Get yours at swap.cow.fi @CoWSwap`)
+    ? encodeURIComponent(`My CoW fortune cookie 🐮💬: “${openFortune.text}” \n\n Get yours at swap.cow.fi @CoWSwap`)
     : ''
 
   const isDailyFortuneChecked = useMemo(() => {
@@ -323,7 +333,9 @@ export function FortuneWidget() {
     <>
       {openFortune && (
         <FortuneBanner>
-          <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
+          <HeaderElement>
+            <StyledCloseIcon onClick={closeModal}>Close</StyledCloseIcon>
+          </HeaderElement>
           <FortuneTitle>
             {isNewFortuneOpen ? (
               <>
