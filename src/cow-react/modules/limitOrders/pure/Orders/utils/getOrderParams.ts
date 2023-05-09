@@ -3,6 +3,7 @@ import { BalancesAndAllowances } from '@cow/modules/tokens'
 import { Order } from 'state/orders/actions'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
+import { isEnoughAmount } from '@cow/utils/isEnoughAmount'
 
 export interface OrderParams {
   chainId: SupportedChainId | undefined
@@ -56,15 +57,4 @@ export function getOrderParams(
     hasEnoughBalance,
     hasEnoughAllowance,
   }
-}
-
-function isEnoughAmount(
-  sellAmount: CurrencyAmount<Currency>,
-  targetAmount: CurrencyAmount<Currency> | undefined
-): boolean {
-  if (!targetAmount) return true
-
-  if (targetAmount.equalTo(sellAmount)) return true
-
-  return sellAmount.lessThan(targetAmount)
 }
