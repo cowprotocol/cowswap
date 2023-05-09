@@ -191,7 +191,7 @@ const FortuneText = styled.h3`
   font-weight: 700;
   text-align: center;
   position: relative;
-  color: ${({ theme }) => theme.darkMode ? theme.bg1 : theme.text1};
+  color: ${({ theme }) => (theme.darkMode ? theme.bg1 : theme.text1)};
   background: ${({ theme }) => theme.white};
 
   &:before {
