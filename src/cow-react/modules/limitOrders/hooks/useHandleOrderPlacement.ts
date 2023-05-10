@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { PriceImpactDeclineError, tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
+import { tradeFlow } from '@cow/modules/limitOrders/services/tradeFlow'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -8,6 +8,7 @@ import { updateLimitOrdersRawStateAtom } from '@cow/modules/limitOrders/state/li
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
 import { useConfirmPriceImpactWithoutFee } from '@cow/common/hooks/useConfirmPriceImpactWithoutFee'
+import { PriceImpactDeclineError, TradeFlowContext } from '@cow/modules/limitOrders/services/types'
 
 interface HandleTradeCallback {
   beforeTrade(): void
