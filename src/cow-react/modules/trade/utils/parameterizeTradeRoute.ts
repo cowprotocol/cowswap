@@ -11,6 +11,6 @@ export function parameterizeTradeRoute(
 ): string {
   return route
     .replace('/:chainId?', chainId ? `/${chainId}` : '')
-    .replace('/:inputCurrencyId?', inputCurrencyId ? `/${inputCurrencyId}` : '/_')
-    .replace('/:outputCurrencyId?', outputCurrencyId ? `/${outputCurrencyId}` : '')
+    .replace('/:inputCurrencyId?', inputCurrencyId ? `/${encodeURIComponent(inputCurrencyId)}` : '/_')
+    .replace('/:outputCurrencyId?', outputCurrencyId ? `/${encodeURIComponent(outputCurrencyId)}` : '')
 }
