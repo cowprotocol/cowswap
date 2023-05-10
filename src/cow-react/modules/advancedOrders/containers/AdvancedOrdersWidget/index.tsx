@@ -7,7 +7,7 @@ import {
   useFillAdvancedOrdersFullState,
 } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersFullState'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
+import { useAdvancedOrdersActions } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { DeadlineInput } from '../DeadlineInput'
 import { NumberOfParts } from '../NumberOfParts'
 import { Slippage } from '../Slippage'
@@ -29,7 +29,7 @@ export function AdvancedOrdersWidget() {
     recipient,
     orderKind,
   } = useAdvancedOrdersFullState()
-  const onCurrencySelection = useNavigateOnCurrencySelection()
+  const actions = useAdvancedOrdersActions()
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -65,20 +65,6 @@ export function AdvancedOrdersWidget() {
     ),
   }
 
-  // TODO
-  const actions = {
-    onCurrencySelection,
-    onUserInput() {
-      console.log('onUserInput')
-    },
-    onChangeRecipient() {
-      console.log('onChangeRecipient')
-    },
-    onSwitchTokens() {
-      console.log('onSwitchTokens')
-    },
-  }
-
   const params = {
     recipient,
     compactView: false,
@@ -94,6 +80,7 @@ export function AdvancedOrdersWidget() {
   return (
     <TradeWidget
       id="advanced-orders-page"
+      disableOutput={true}
       slots={slots}
       actions={actions}
       params={params}

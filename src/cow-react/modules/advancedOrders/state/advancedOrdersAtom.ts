@@ -4,7 +4,9 @@ import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { atom } from 'jotai'
 import { getDefaultTradeFullState, TradeFullState } from '@cow/modules/trade/types/TradeFullState'
 
-export interface AdvancedOrdersRawState extends ExtendedTradeRawState {}
+export interface AdvancedOrdersRawState extends ExtendedTradeRawState {
+  readonly typedValue: string | null
+}
 
 export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null): AdvancedOrdersRawState {
   return {
@@ -12,6 +14,7 @@ export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null):
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
     orderKind: OrderKind.SELL,
+    typedValue: null,
   }
 }
 
