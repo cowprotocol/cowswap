@@ -28,6 +28,8 @@ import { BaseFlowContext } from '@cow/modules/swap/services/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
+import { useNeedsApproval } from '@cow/common/hooks/useNeedsApproval'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -49,6 +51,12 @@ const _computeInputAmountForSignature = (params: {
   }
 }
 
+export enum FlowType {
+  REGULAR = 'REGULAR',
+  ETH_FLOW = 'ETH_FLOW',
+  SAFE_BUNDLE = 'SAFE_BUNDLE',
+}
+
 interface BaseFlowContextSetup {
   chainId: number | undefined
   account: string | undefined
@@ -65,7 +73,7 @@ interface BaseFlowContextSetup {
   ensRecipientAddress: string | null
   allowsOffchainSigning: boolean
   swapConfirmManager: SwapConfirmManager
-  isEthFlow: any
+  flowType: FlowType
   closeModals: () => void
   addAppDataToUploadQueue: (update: AddAppDataToUploadQueueParams) => void
   addOrderCallback: AddOrderCallback
@@ -92,6 +100,10 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
   const isEthFlow = useIsEthFlow()
+  const needsApproval = useNeedsApproval(trade?.inputAmount?.currency.wrapped, trade?.inputAmount)
+  const isTxBundlingEnabled = useIsTxBundlingEnabled()
+  const isSafeBundle = isTxBundlingEnabled && needsApproval
+  const flowType = _getFlowType(isSafeBundle, isEthFlow)
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
@@ -114,12 +126,23 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     ensRecipientAddress,
     allowsOffchainSigning,
     swapConfirmManager,
-    isEthFlow,
+    flowType,
     closeModals,
     addAppDataToUploadQueue,
     addOrderCallback,
     dispatch,
   }
+}
+
+function _getFlowType(isSafeBundle: boolean, isEthFlow: boolean): FlowType {
+  if (isSafeBundle) {
+    // Takes precedence over eth flow
+    return FlowType.SAFE_BUNDLE
+  } else if (isEthFlow) {
+    // Takes precedence over regular flow
+    return FlowType.ETH_FLOW
+  }
+  return FlowType.REGULAR
 }
 
 type BaseGetFlowContextProps = {

@@ -25,6 +25,7 @@ import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWa
 import { useIsTradeUnsupported } from 'state/lists/hooks'
 import { useHandleSwap } from '@cow/modules/swap/hooks/useHandleSwap'
 import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
+import { useSafeBundleFlowContext } from '@cow/modules/swap/hooks/useSafeBundleFlowContext'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -52,6 +53,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
+  const safeBundleContext = useSafeBundleFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
 
@@ -81,7 +83,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const handleSwap = useHandleSwap(priceImpactParams)
 
-  const contextExists = ethFlowContext || swapFlowContext
+  const contextExists = ethFlowContext || swapFlowContext || safeBundleContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
   const gnosisSafeInfo = useGnosisSafeInfo()

@@ -10,7 +10,7 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
 import { useWalletInfo } from '@cow/modules/wallet'
 
-async function estimateApprove(
+export async function estimateApprove(
   tokenContract: Erc20,
   spender: string,
   amountToApprove: CurrencyAmount<Currency>
