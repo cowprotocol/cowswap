@@ -16,6 +16,7 @@ import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { formatInputAmount } from '@cow/utils/amountFormat'
 
 interface BuiltItProps {
   className: string
@@ -34,7 +35,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
   priceImpactParams?: PriceImpact
-  subsidyAndBalance: BalanceAndSubsidy
+  subsidyAndBalance?: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
   topLabel?: string
@@ -54,16 +55,21 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
-    subsidyAndBalance,
+    subsidyAndBalance = {
+      subsidy: {
+        tier: 0,
+        discount: 0,
+      },
+    },
     topLabel,
     isRateLoading,
   } = props
 
   const isSupportedNetwork = isSupportedChainId(props.chainId as number | undefined)
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
-  const { field, currency, balance, fiatAmount, viewAmount, receiveAmountInfo } = currencyInfo
+  const { field, currency, balance, fiatAmount, amount, isIndependent, receiveAmountInfo } = currencyInfo
   const disabled = props.disabled || !isSupportedNetwork
-
+  const viewAmount = formatInputAmount(amount, balance, isIndependent)
   const [isCurrencySearchModalOpen, setCurrencySearchModalOpen] = useState(false)
   const [typedValue, setTypedValue] = useState(viewAmount)
 

@@ -4,7 +4,7 @@ import { useAtomValue } from 'jotai/utils'
 import { useSetAtom } from 'jotai'
 import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
 import { limitOrdersSettingsAtom } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
@@ -38,7 +38,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const { tradeContext, openConfirmScreen, priceImpact, inputCurrencyAmount } = props
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const formState = useLimitOrdersFormState()
-  const tradeState = useLimitOrdersTradeState()
+  const tradeState = useLimitOrdersDerivedState()
   const setConfirmationState = useSetAtom(limitOrdersConfirmState)
   const toggleWalletModal = useToggleWalletModal()
   const quote = useAtomValue(limitOrdersQuoteAtom)

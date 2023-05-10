@@ -4,7 +4,7 @@ import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useUpdateAtom } from 'jotai/utils'
-import { updateLimitOrdersAtom } from '@cow/modules/limitOrders/state/limitOrdersAtom'
+import { updateLimitOrdersRawStateAtom } from '@cow/modules/limitOrders/state/limitOrdersRawStateAtom'
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
 import { useConfirmPriceImpactWithoutFee } from '@cow/common/hooks/useConfirmPriceImpactWithoutFee'
@@ -27,7 +27,7 @@ export function useHandleOrderPlacement(
   callbacks: Partial<HandleTradeCallback>
 ): () => Promise<void> {
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
-  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersAtom)
+  const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
 
   return useCallback(() => {

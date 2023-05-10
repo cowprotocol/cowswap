@@ -6,7 +6,7 @@ import { useGP2SettlementContract } from 'hooks/useContract'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
 import useENSAddress from 'hooks/useENSAddress'
-import { useLimitOrdersTradeState } from './useLimitOrdersTradeState'
+import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
@@ -21,7 +21,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
-  const state = useLimitOrdersTradeState()
+  const state = useLimitOrdersDerivedState()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
   const appData = useAtomValue(appDataInfoAtom)

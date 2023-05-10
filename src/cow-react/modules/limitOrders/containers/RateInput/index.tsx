@@ -5,7 +5,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 import { HeadingText } from '@cow/modules/limitOrders/pure/RateInput/HeadingText'
 import { limitRateAtom, updateLimitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
-import { useLimitOrdersTradeState } from '@cow/modules/limitOrders/hooks/useLimitOrdersTradeState'
+import { useLimitOrdersDerivedState } from '@cow/modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { toFraction } from '@cow/modules/limitOrders/utils/toFraction'
 import { useRateImpact } from '@cow/modules/limitOrders/hooks/useRateImpact'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
@@ -42,7 +42,7 @@ export function RateInput() {
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
 
   // Limit order state
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersTradeState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const rateImpact = useRateImpact()
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
   const inputCurrencyId = inputCurrency?.symbol

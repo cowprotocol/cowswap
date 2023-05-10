@@ -2,7 +2,7 @@
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useAreThereTokensWithSameSymbol } from '@cow/common/hooks/useAreThereTokensWithSameSymbol'
-import { getDefaultTradeState, TradeState } from '../../types/TradeState'
+import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'
 import { useWalletInfo } from '@cow/modules/wallet'
 
@@ -21,7 +21,7 @@ Please select the token you need from the UI or use the address of the token ins
  * Example: /limit-orders/0xa47c8bf37f92abed4a126bda807a7b7498661acd/WETH
  * @see useOnCurrencySelection.ts
  */
-export function useResetStateWithSymbolDuplication(state: TradeState | null): void {
+export function useResetStateWithSymbolDuplication(state: TradeRawState | null): void {
   const { chainId } = useWalletInfo()
   const checkTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
   const navigate = useTradeNavigate()
@@ -41,7 +41,7 @@ export function useResetStateWithSymbolDuplication(state: TradeState | null): vo
         alert(alertMessage(doubledSymbol || ''))
       }, 500)
 
-      const defaultState = getDefaultTradeState(chainId)
+      const defaultState = getDefaultTradeRawState(chainId)
       navigate(chainId, {
         inputCurrencyId: defaultState.inputCurrencyId,
         outputCurrencyId: defaultState.outputCurrencyId,

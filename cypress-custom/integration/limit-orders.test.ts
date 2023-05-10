@@ -1,7 +1,7 @@
 const CHAIN_ID = 5
 
 function pickToken(symbol: string, role: 'input' | 'output') {
-  cy.get(`#limit-orders-currency-${role} .open-currency-select-button`).click()
+  cy.get(`#${role}-currency-input .open-currency-select-button`).click()
   cy.get('#token-search-input').type(symbol)
   cy.get('#currency-list').get('div').contains(symbol).click({ force: true })
 }
@@ -17,11 +17,11 @@ describe('Limit orders', () => {
 
     pickToken('USDC', 'output')
 
-    cy.get('#limit-orders-currency-input .token-amount-input').type(inputAmount.toString())
+    cy.get('#input-currency-input .token-amount-input').type(inputAmount.toString())
     cy.get('#rate-limit-amount-input').clear().type(rate.toString(), { force: true })
     cy.get('#review-limit-order-btn').click()
 
-    cy.get('#limit-orders-currency-output .token-amount-input').should('have.value', outputAmount.toString())
+    cy.get('#output-currency-input .token-amount-input').should('have.value', outputAmount.toString())
     cy.get('#limit-orders-confirm #input-currency-preview .token-amount-input').should(
       'contain.text',
       inputAmount.toString()

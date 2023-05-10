@@ -1,12 +1,12 @@
 import { useLocation, useParams } from 'react-router-dom'
 import { useMemo } from 'react'
-import { TradeState } from '../../types/TradeState'
+import { TradeRawState } from '../../types/TradeRawState'
 
 /**
  * Get trade state from URL params and query
  * /1/swap/WETH/DAI?recipient=0x -> { chainId: 1, inputCurrencyId: 'WETH', outputCurrencyId: 'DAI', recipient: '0x' }
  */
-export function useTradeStateFromUrl(): TradeState {
+export function useTradeStateFromUrl(): TradeRawState {
   const params = useParams()
   const location = useLocation()
 
@@ -16,7 +16,7 @@ export function useTradeStateFromUrl(): TradeState {
     const { chainId, inputCurrencyId, outputCurrencyId } = params
     const chainIdAsNumber = chainId && /^\d+$/.test(chainId) ? parseInt(chainId) : null
 
-    const state: TradeState = {
+    const state: TradeRawState = {
       chainId: chainIdAsNumber,
       inputCurrencyId: inputCurrencyId || searchParams.get('inputCurrency') || null,
       outputCurrencyId: outputCurrencyId || searchParams.get('outputCurrency') || null,

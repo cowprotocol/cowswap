@@ -1,4 +1,4 @@
-import { TradeStateFromUrl } from '@cow/modules/trade/types/TradeState'
+import { TradeUrlParams } from '@cow/modules/trade/types/TradeRawState'
 import { Routes } from '@cow/constants/routes'
 
 export enum MenuItemKind {
@@ -74,5 +74,5 @@ export interface MainMenuContext {
   darkMode: boolean
   toggleDarkMode: () => void
   handleMobileMenuOnClick: () => void
-  tradeContext: TradeStateFromUrl
+  tradeContext: TradeUrlParams
 }

@@ -1,6 +1,5 @@
 import React from 'react'
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { LimitOrdersTradeState } from '../../hooks/useLimitOrdersTradeState'
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary } from 'components/Button'
 import { ButtonSize } from 'theme/enum'
@@ -12,6 +11,7 @@ import TransactionConfirmationModal from 'components/TransactionConfirmationModa
 import { TransactionConfirmState } from '@cow/modules/swap/state/transactionConfirmAtom'
 import { TradeLoadingButton } from '@cow/modules/trade/pure/TradeLoadingButton'
 import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { LimitOrdersDerivedState } from '@cow/modules/limitOrders'
 
 export interface WrapUnwrapParams {
   isNativeIn: boolean
@@ -22,7 +22,7 @@ export interface WrapUnwrapParams {
 }
 
 export interface TradeButtonsParams {
-  tradeState: LimitOrdersTradeState
+  tradeState: LimitOrdersDerivedState
   quote: LimitOrdersQuoteState
   toggleWalletModal: () => void
   wrapUnwrapParams: WrapUnwrapParams
@@ -83,10 +83,20 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     text: 'Review limit order',
     id: 'review-limit-order-btn',
   },
+  [LimitOrdersFormState.ApproveAndSwap]: {
+    disabled: false,
+    text: 'Review limit order (approve + place)', // TODO: update text, this is only for testing
+    id: 'review-limit-order-btn',
+  },
+  [LimitOrdersFormState.ExpertApproveAndSwap]: {
+    disabled: false,
+    text: 'Approve and place limit order',
+    id: 'approve-and-place-limit-order-btn',
+  },
   [LimitOrdersFormState.ExpertCanTrade]: {
     disabled: false,
     text: 'Place limit order',
-    id: 'review-limit-order-btn',
+    id: 'place-limit-order-btn',
   },
   [LimitOrdersFormState.SwapIsUnsupported]: {
     disabled: true,

@@ -119,7 +119,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     } else {
       injectedOption = <OpenMetaMaskMobileOption />
     }
-  } else if (!isCoinbaseWallet) {
+  } else {
     if (isMetaMask) {
       injectedOption = <MetaMaskOption tryActivation={tryActivation} />
     } else {

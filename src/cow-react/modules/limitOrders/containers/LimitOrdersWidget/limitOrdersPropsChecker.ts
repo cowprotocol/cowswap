@@ -1,6 +1,4 @@
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
-import { Field } from 'state/swap/actions'
-import { CurrencySelectionCallback } from '@cow/modules/trade/hooks/useOnCurrencySelection'
 import { OnImportDismissCallback } from '@cow/modules/trade/hooks/useOnImportDismiss'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
 import { PriceImpact } from 'hooks/usePriceImpact'
@@ -11,27 +9,22 @@ import { getAddress } from '@cow/utils/getAddress'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { PartiallyFillableOverrideDispatcherType } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { TradeWidgetActions } from '@cow/modules/trade/containers/TradeWidget'
 
 export interface LimitOrdersProps {
-  onChangeRecipient(value: string | null): void
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo
 
   isUnlocked: boolean
   isRateLoading: boolean
-  allowsOffchainSigning: boolean
   isWrapOrUnwrap: boolean
   showRecipient: boolean
   isExpertMode: boolean
 
   recipient: string | null
   chainId: number | undefined
-
-  onUserInput(field: Field, typedValue: string): void
-  onSwitchTokens(): void
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
   featurePartialFillsEnabled: boolean
-  onCurrencySelection: CurrencySelectionCallback
   onImportDismiss: OnImportDismissCallback
 
   rateInfoParams: RateInfoParams
@@ -39,6 +32,7 @@ export interface LimitOrdersProps {
   tradeContext: TradeFlowContext | null
   settingsState: LimitOrdersSettingsState
   feeAmount: CurrencyAmount<Currency> | null
+  widgetActions: TradeWidgetActions
 }
 
 export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps): boolean {
@@ -47,14 +41,11 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     checkCurrencyInfo(a.outputCurrencyInfo, b.outputCurrencyInfo) &&
     a.isUnlocked === b.isUnlocked &&
     a.isRateLoading === b.isRateLoading &&
-    a.allowsOffchainSigning === b.allowsOffchainSigning &&
     a.isWrapOrUnwrap === b.isWrapOrUnwrap &&
     a.showRecipient === b.showRecipient &&
     a.recipient === b.recipient &&
     a.chainId === b.chainId &&
-    a.onUserInput === b.onUserInput &&
-    a.onSwitchTokens === b.onSwitchTokens &&
-    a.onCurrencySelection === b.onCurrencySelection &&
+    a.widgetActions === b.widgetActions &&
     a.onImportDismiss === b.onImportDismiss &&
     a.partiallyFillableOverride[0] === b.partiallyFillableOverride[0] &&
     a.featurePartialFillsEnabled === b.featurePartialFillsEnabled &&
@@ -76,8 +67,8 @@ function checkCurrencyInfo(a: CurrencyInfo, b: CurrencyInfo): boolean {
   return (
     a.field === b.field &&
     a.label === b.label &&
-    a.viewAmount === b.viewAmount &&
-    areFractionsEqual(a.rawAmount, b.rawAmount) &&
+    a.isIndependent === b.isIndependent &&
+    areFractionsEqual(a.amount, b.amount) &&
     genericPropsChecker(a.receiveAmountInfo, b.receiveAmountInfo) &&
     getAddress(a.currency) === getAddress(b.currency) &&
     areFractionsEqual(a.balance, b.balance) &&

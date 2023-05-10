@@ -8,7 +8,7 @@ import { RowFee } from '@cow/modules/swap/containers/Row/RowFee'
 import { RowSlippage } from '@cow/modules/swap/containers/Row/RowSlippage'
 import { RowReceivedAfterSlippage } from '@cow/modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
+import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string
@@ -28,7 +28,7 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   // so we can take both
   const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
   const isEthFlow = useIsEthFlow()
-  const { isWrapOrUnwrap } = useDetectNativeToken()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const showRowFee = trade || fee
   const showRowSlippage =

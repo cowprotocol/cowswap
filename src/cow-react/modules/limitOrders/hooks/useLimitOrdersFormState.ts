@@ -1,5 +1,5 @@
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { LimitOrdersTradeState, useLimitOrdersTradeState } from './useLimitOrdersTradeState'
+import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 import { useSafeMemo } from '@cow/common/hooks/useSafeMemo'
 import { GP_VAULT_RELAYER } from 'constants/index'
 import { ApprovalState } from 'hooks/useApproveCallback'
@@ -11,12 +11,14 @@ import { isAddress } from 'utils'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from '@cow/modules/limitOrders/state/limitOrdersQuoteAtom'
 import { limitRateAtom } from '@cow/modules/limitOrders/state/limitRateAtom'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { isUnsupportedTokenInQuote } from '@cow/modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import {
   limitOrdersSettingsAtom,
   LimitOrdersSettingsState,
 } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
+import { LimitOrdersDerivedState } from '@cow/modules/limitOrders'
+import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
+import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
@@ -37,6 +39,8 @@ export enum LimitOrdersFormState {
   QuoteError = 'QuoteError',
   ZeroPrice = 'ZeroPrice',
   FeeExceedsFrom = 'FeeExceedsFrom',
+  ApproveAndSwap = 'ApproveAndSwap',
+  ExpertApproveAndSwap = 'ExpertApproveAndSwap',
 }
 
 interface LimitOrdersFormParams {
@@ -44,9 +48,10 @@ interface LimitOrdersFormParams {
   isSwapUnsupported: boolean
   isSupportedWallet: boolean
   isReadonlyGnosisSafeUser: boolean
+  isTxBundlingEnabled: boolean
   currentAllowance: CurrencyAmount<Token> | undefined
   approvalState: ApprovalState
-  tradeState: LimitOrdersTradeState
+  tradeState: LimitOrdersDerivedState
   settingsState: LimitOrdersSettingsState
   recipientEnsAddress: string | null
   quote: LimitOrdersQuoteState | null
@@ -61,6 +66,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   const {
     account,
     isReadonlyGnosisSafeUser,
+    isTxBundlingEnabled,
     isSupportedWallet,
     currentAllowance,
     approvalState,
@@ -85,6 +91,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     quote?.response?.quote?.feeAmount && sellAmount
       ? CurrencyAmount.fromRawAmount(sellAmount.currency, quote?.response?.quote?.feeAmount)
       : null
+  const approvalRequired = approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
 
   if (!inputCurrency || !outputCurrency) {
     return LimitOrdersFormState.NeedToSelectToken
@@ -144,7 +151,13 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.WrapUnwrap
   }
 
-  if (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) {
+  if (approvalRequired) {
+    if (isTxBundlingEnabled) {
+      if (settingsState.expertMode) {
+        return LimitOrdersFormState.ExpertApproveAndSwap
+      }
+      return LimitOrdersFormState.ApproveAndSwap
+    }
     return LimitOrdersFormState.NotApproved
   }
 
@@ -162,19 +175,21 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
   if (settingsState.expertMode) {
     return LimitOrdersFormState.ExpertCanTrade
   }
+
   return LimitOrdersFormState.CanTrade
 }
 
 export function useLimitOrdersFormState(): LimitOrdersFormState {
   const { chainId, account } = useWalletInfo()
-  const tradeState = useLimitOrdersTradeState()
+  const tradeState = useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
+  const isTxBundlingEnabled = useIsTxBundlingEnabled()
   const quote = useAtomValue(limitOrdersQuoteAtom)
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
-  const { isWrapOrUnwrap } = useDetectNativeToken()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const { inputCurrency, recipient } = tradeState
   const sellAmount = tradeState.inputCurrencyAmount
@@ -190,6 +205,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const params: LimitOrdersFormParams = {
     account,
     isReadonlyGnosisSafeUser,
+    isTxBundlingEnabled,
     isSwapUnsupported,
     isSupportedWallet,
     approvalState,

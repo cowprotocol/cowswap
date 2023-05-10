@@ -42,7 +42,6 @@ export function useDetectNativeToken() {
       isWrappedOut,
       wrappedToken,
       native,
-      isWrapOrUnwrap: (isNativeIn && isWrappedOut) || (isNativeOut && isWrappedIn),
     }
   }, [input, output, chainId])
 }
