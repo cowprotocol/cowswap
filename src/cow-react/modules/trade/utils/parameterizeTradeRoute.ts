@@ -10,7 +10,7 @@ export function parameterizeTradeRoute(
   route: Routes
 ): string {
   return route
-    .replace('/:chainId?', chainId ? `/${chainId}` : '')
-    .replace('/:inputCurrencyId?', inputCurrencyId ? `/${inputCurrencyId}` : '/_')
-    .replace('/:outputCurrencyId?', outputCurrencyId ? `/${outputCurrencyId}` : '')
+    .replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '')
+    .replace('/:inputCurrencyId?', inputCurrencyId ? `/${encodeURIComponent(inputCurrencyId)}` : '/_')
+    .replace('/:outputCurrencyId?', outputCurrencyId ? `/${encodeURIComponent(outputCurrencyId)}` : '')
 }

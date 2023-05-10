@@ -13,10 +13,8 @@ import Footer from 'components/Footer'
 import RedirectAnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
-import { withLDProvider } from 'launchdarkly-react-client-sdk'
-import { LAUNCH_DARKLY_CLIENT_KEY } from '@cow/constants/launchDarkly'
 
-function WrappedApp() {
+export function App() {
   initializeAnalytics()
   useAnalyticsReporter()
 
@@ -42,10 +40,3 @@ function WrappedApp() {
     </ErrorBoundary>
   )
 }
-
-export const App = withLDProvider({
-  clientSideID: LAUNCH_DARKLY_CLIENT_KEY,
-  options: {
-    bootstrap: 'localStorage',
-  },
-})(WrappedApp)
