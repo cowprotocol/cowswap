@@ -17,6 +17,7 @@ jest.mock('state/swap/hooks')
 jest.mock('@cow/modules/swap/services/swapFlow')
 jest.mock('@cow/modules/swap/services/ethFlow')
 jest.mock('@cow/modules/swap/services/safeBundleFlow')
+jest.mock('@cow/modules/swap/state/transactionConfirmAtom')
 
 const mockUseSwapActionHandlers = useSwapActionHandlers as jest.MockedFunction<typeof useSwapActionHandlers>
 const mockSwapFlow = swapFlow as jest.MockedFunction<typeof swapFlow>
