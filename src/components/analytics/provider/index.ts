@@ -8,6 +8,7 @@ const DIMENSION_MAP = {
   [Dimensions.chainId]: 'dimension1',
   [Dimensions.walletName]: 'dimension2',
   [Dimensions.customBrowserType]: 'dimension3',
+  [Dimensions.userAddress]: 'dimension4',
 }
 
 type DimensionKey = keyof typeof DIMENSION_MAP
@@ -19,7 +20,12 @@ export class GAProvider {
   dimensions: { [key in DimensionKey]: any }
 
   constructor() {
-    this.dimensions = { chainId: '', walletName: '', customBrowserType: '' }
+    this.dimensions = {
+      chainId: '',
+      walletName: '',
+      customBrowserType: '',
+      userAddress: '',
+    }
   }
 
   public sendEvent(event: string | UaEventOptions, params?: any) {

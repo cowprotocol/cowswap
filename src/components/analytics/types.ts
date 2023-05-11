@@ -27,4 +27,5 @@ export enum Dimensions {
   chainId = 'chainId',
   walletName = 'walletName',
   customBrowserType = 'customBrowserType',
+  userAddress = 'userAddress',
 }
