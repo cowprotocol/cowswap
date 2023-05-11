@@ -18360,6 +18360,13 @@ stackframe@^1.3.4:
   resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.3.4.tgz#b881a004c8c149a5e8efef37d51b16e412943310"
   integrity sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw==
 
+static-source-data@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/static-source-data/-/static-source-data-1.0.0.tgz#24261dc6343bb7e2620eff57d87fcfa23a044c36"
+  integrity sha512-wprNt2RVgHVgz4+ktUdtWsFxlnK6o3x5NAsWiG0y9DGSCkU850bOyrp7W7Ib1nGFudBINcD7kbEBRCE+rT7ZVg==
+  dependencies:
+    node-fetch "^2.6.0"
+
 stats-lite@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/stats-lite/-/stats-lite-2.2.0.tgz#278a5571fa1d2e8b1691295dccc0235282393bbf"
@@ -20260,6 +20267,9 @@ webpack-bundle-analyzer@^4.7.0:
     opener "^1.5.2"
     sirv "^1.0.7"
     ws "^7.3.1"
+
+"webpack-data-fetch@file:.yalc/webpack-data-fetch":
+  version "1.0.0"
 
 webpack-dev-middleware@^4.3.0:
   version "4.3.0"

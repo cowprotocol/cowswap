@@ -4,11 +4,51 @@ const webpack = require('webpack')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CracoWorkboxPlugin = require('craco-workbox')
+const StaticSourceData = require('static-source-data')
 const { version } = require('./package.json')
 
 // see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration-overview
 
 const plugins = [
+  new StaticSourceData({
+    test: {
+      url: 'http://localhost:1337/graphql',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization:
+          'Bearer d59b2b0854dacb0441724234a1730770101a6508e9098366a59ce850e2be104d30a0a73b5e740408715fa24af6b75d3127c7bc0a61df171cb7b4b96914e88943f30553f1fd5e16cc55e5ec41066a7c8b0efa9c683ceb35a079aca44e13c3f07166563aad31aa9d88e7c85c52ec3ae3a5009b6b2a82441316c6ac37a6bbd23b27',
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            faqs {
+              data {
+                attributes {
+                  categories {
+                    data {
+                      attributes {
+                        Title
+                        Questions {
+                          data {
+                            attributes {
+                              Title
+                              Answer
+                            }
+                          }
+                        }
+                        Footer
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `,
+      }),
+    },
+  }),
   new webpack.ProvidePlugin({
     Buffer: ['buffer', 'Buffer'],
   }),
