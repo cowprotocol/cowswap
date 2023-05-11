@@ -1,14 +1,13 @@
 import { useWalletInfo } from '@cow/modules/wallet'
-import { Currency, CurrencyAmount, NativeCurrency, Percent, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 
-import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY as WETH } from '../../constants/tokens'
-import useParsedQueryString from '../../hooks/useParsedQueryString'
+import { TOKEN_SHORTHANDS } from '../../constants/tokens'
 import { isAddress } from '../../utils'
 import { AppState } from 'state'
-import { Field, replaceSwapState, setRecipient, switchCurrencies, typeInput } from './actions'
+import { Field, setRecipient, switchCurrencies, typeInput } from './actions'
 import { SwapState } from './reducer'
 import TradeGp from 'state/swap/TradeGp'
 import { useNavigateOnCurrencySelection } from '@cow/modules/trade/hooks/useNavigateOnCurrencySelection'
@@ -27,7 +26,6 @@ import { stringToCurrency, useTradeExactInWithFee, useTradeExactOutWithFee } fro
 import { registerOnWindow } from 'utils/misc'
 import { t } from '@lingui/macro'
 import { formatSymbol } from '@cow/utils/format'
-import { supportedChainId } from 'utils/supportedChainId'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useCurrency } from 'hooks/Tokens'
 
@@ -405,69 +403,6 @@ export function queryParametersToSwapState(
     independentField,
     recipient,
   }
-}
-
-// updates the swap state to use the defaults for a given network
-export function useDefaultsFromURLSearch(): SwapState {
-  const { chainId: _chainId } = useWalletInfo()
-  const chainId = supportedChainId(_chainId)
-  const dispatch = useAppDispatch()
-  const parsedQs = useParsedQueryString()
-
-  // TODO: check whether we can use the new function for native currency
-  // This is not a great fix for setting a default token
-  // but it is better and easiest considering updating default files
-  const defaultInputToken = WETH[chainId || SupportedChainId.MAINNET].address // mod
-
-  const parsedSwapState = useMemo(() => {
-    return queryParametersToSwapState(parsedQs, defaultInputToken, chainId || null) // mod
-  }, [defaultInputToken, parsedQs, chainId]) // mod
-
-  useEffect(() => {
-    if (!chainId) return
-    const inputCurrencyId = parsedSwapState[Field.INPUT].currencyId ?? undefined
-    const outputCurrencyId = parsedSwapState[Field.OUTPUT].currencyId ?? undefined
-
-    dispatch(
-      replaceSwapState({
-        chainId,
-        typedValue: parsedSwapState.typedValue,
-        independentField: parsedSwapState.independentField,
-        inputCurrencyId,
-        outputCurrencyId,
-        recipient: parsedSwapState.recipient,
-      })
-    )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chainId])
-
-  return parsedSwapState
-}
-
-// MODS
-export function useReplaceSwapState() {
-  const dispatch = useAppDispatch()
-  return useCallback(
-    (newState: {
-      chainId: number | null
-      independentField: Field
-      typedValue: string
-      inputCurrencyId?: string | undefined
-      outputCurrencyId?: string | undefined
-      recipient: string | null
-    }) => dispatch(replaceSwapState(newState)),
-    [dispatch]
-  )
-}
-
-export interface NativeCurrenciesInfo {
-  isNativeIn: boolean
-  isNativeOut: boolean
-  isWrappedIn: boolean
-  isWrappedOut: boolean
-  wrappedToken: Token & { logoURI: string }
-  native: NativeCurrency
 }
 
 export function useIsFeeGreaterThanInput({
