@@ -2,7 +2,7 @@ import { TradeRawState } from '@cow/modules/trade/types/TradeRawState'
 import { useSwapState } from 'state/swap/hooks'
 import { useAppDispatch } from '@src/state/hooks'
 import { useCallback } from 'react'
-import { updateSwapState, UpdateSwapStatePayload } from '@src/state/swap/actions'
+import { replaceOnlyTradeRawState, ReplaceOnlyTradeRawStatePayload } from '@src/state/swap/actions'
 
 export function useSwapRawState(): TradeRawState {
   const swapState = useSwapState()
@@ -19,14 +19,14 @@ export function useUpdateSwapRawState(): (update: Partial<TradeRawState>) => voi
 
   return useCallback(
     (state: Partial<TradeRawState>) => {
-      const newState: UpdateSwapStatePayload = {
-        chainId: state.chainId,
-        recipient: state.recipient,
+      const newState: ReplaceOnlyTradeRawStatePayload = {
+        chainId: state.chainId ?? null,
+        recipient: state.recipient ?? null,
         inputCurrencyId: state.inputCurrencyId || undefined,
         outputCurrencyId: state.outputCurrencyId || undefined,
       }
 
-      dispatch(updateSwapState(newState))
+      dispatch(replaceOnlyTradeRawState(newState))
     },
     [dispatch]
   )
