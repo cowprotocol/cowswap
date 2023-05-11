@@ -1,14 +1,9 @@
-import { PostOrderParams, signAndPostOrder } from 'utils/trade'
+import { signAndPostOrder } from 'utils/trade'
 import { presignOrderStep } from '@cow/modules/swap/services/swapFlow/steps/presignOrderStep'
 import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderStep'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { AppDispatch } from 'state'
-import { GPv2Settlement } from '@cow/abis/types'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { Web3Provider } from '@ethersproject/providers'
-import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
@@ -16,23 +11,7 @@ import { SwapFlowAnalyticsContext } from '@cow/modules/trade/utils/analytics'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
-
-export interface TradeFlowContext {
-  // signer changes creates redundant re-renders
-  // validTo must be calculated just before signing of an order
-  postOrderParams: Omit<PostOrderParams, 'validTo' | 'signer'>
-  settlementContract: GPv2Settlement
-  chainId: SupportedChainId
-  dispatch: AppDispatch
-  rateImpact: number
-  appData: AppDataInfo
-  addAppDataToUploadQueue: (update: AddAppDataToUploadQueueParams) => void
-  provider: Web3Provider
-  allowsOffchainSigning: boolean
-  isGnosisSafeWallet: boolean
-}
-
-export class PriceImpactDeclineError extends Error {}
+import { PriceImpactDeclineError, TradeFlowContext } from '@cow/modules/limitOrders/services/types'
 
 export async function tradeFlow(
   params: TradeFlowContext,

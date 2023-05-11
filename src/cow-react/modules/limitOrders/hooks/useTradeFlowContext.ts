@@ -1,4 +1,4 @@
-import { TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
+import { TradeFlowContext } from '@cow/modules/limitOrders/services/types'
 import { useWeb3React } from '@web3-react/core'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
