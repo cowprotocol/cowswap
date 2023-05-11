@@ -72,9 +72,9 @@ export function useAnalyticsReporter() {
     // custom dimension 2 - walletname
     googleAnalytics.setDimension(Dimensions.walletName, account ? walletName : 'Not connected')
 
-    // Set userId and also dimensions because ReactGA.set might not be working
-    googleAnalytics.setDimension(Dimensions.userAddress, account)
-    ReactGA.set({ userId: account })
+    // Set userId and also new dimension because ReactGA.set might not be working
+    googleAnalytics.setDimension(Dimensions.userAddress, `"${account}"`)
+    ReactGA.set({ userId: `"${account}"` })
 
     // Handle pixel tracking on wallet connection
     if (!prevAccount && account) {
