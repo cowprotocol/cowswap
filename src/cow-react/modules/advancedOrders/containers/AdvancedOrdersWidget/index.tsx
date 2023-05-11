@@ -8,6 +8,7 @@ import {
 } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersFullState'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useAdvancedOrdersActions } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersActions'
+import { useIsQuoteLoading } from '@cow/modules/advancedOrders/hooks/useIsQuoteLoading'
 import { DeadlineInput } from '../DeadlineInput'
 import { NumberOfParts } from '../NumberOfParts'
 import { Slippage } from '../Slippage'
@@ -30,6 +31,7 @@ export function AdvancedOrdersWidget() {
     orderKind,
   } = useAdvancedOrdersFullState()
   const actions = useAdvancedOrdersActions()
+  const isTradePriceUpdating = useIsQuoteLoading()
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -69,7 +71,7 @@ export function AdvancedOrdersWidget() {
     recipient,
     compactView: false,
     showRecipient: false,
-    isTradePriceUpdating: false,
+    isTradePriceUpdating,
     priceImpact: {
       priceImpact: undefined,
       error: undefined,

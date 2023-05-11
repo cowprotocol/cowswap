@@ -28,6 +28,8 @@ export function useGetQuote() {
     if (!quoteParams) return
 
     const fetchQuote = () => {
+      setAdvancedOrderQuote({ isLoading: true })
+
       getQuoteOnlyResolveLast(quoteParams)
         .then((response) => {
           const { cancelled, data } = response
@@ -36,7 +38,11 @@ export function useGetQuote() {
             return
           }
 
-          setAdvancedOrderQuote({ response: data })
+          setAdvancedOrderQuote({
+            response: data,
+            isLoading: false,
+          })
+
           updateCurrencyAmount({
             amount: { isTyped: false, value: data.quote.buyAmount },
             currency: outputCurrency,
@@ -45,6 +51,7 @@ export function useGetQuote() {
         })
         .catch((error: GpQuoteError) => {
           console.log('[useGetQuote]:: fetchQuote error', error)
+          setAdvancedOrderQuote({ isLoading: false })
         })
     }
 
