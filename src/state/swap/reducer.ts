@@ -26,7 +26,7 @@ const initialState: SwapState = queryParametersToSwapState(parsedQueryString(), 
 
 export default createReducer<SwapState>(initialState, (builder) =>
   builder
-    // Mod: ranamed field => independentField, added chainId
+    // Mod: renamed field => independentField, added chainId
     .addCase(replaceSwapState, (state, { payload }) => {
       const {
         chainId,
