@@ -1,7 +1,15 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
 
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
+import {
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+  updateSwapState,
+} from 'state/swap/actions'
 import { queryParametersToSwapState } from 'state/swap/hooks'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -55,6 +63,36 @@ export default createReducer<SwapState>(initialState, (builder) =>
         independentField,
         typedValue,
         recipient,
+      }
+    })
+    .addCase(updateSwapState, (state, { payload }) => {
+      const {
+        chainId,
+        typedValue: originalTypedValue,
+        recipient,
+        independentField: originalIndependentField,
+        inputCurrencyId,
+        outputCurrencyId,
+      } = payload
+
+      const { independentField, typedValue } = getEthFlowOverridesOnSelect(
+        inputCurrencyId,
+        originalIndependentField ?? state.independentField,
+        originalTypedValue ?? state.typedValue,
+        state
+      )
+
+      return {
+        chainId: chainId ?? state.chainId,
+        [Field.INPUT]: {
+          currencyId: inputCurrencyId ?? state[Field.INPUT].currencyId,
+        },
+        [Field.OUTPUT]: {
+          currencyId: outputCurrencyId ?? state[Field.OUTPUT].currencyId,
+        },
+        independentField: independentField ?? state.independentField,
+        typedValue: typedValue ?? state.typedValue,
+        recipient: recipient ?? state.recipient,
       }
     })
     .addCase(selectCurrency, (state, { payload: { currencyId, field } }) => {
