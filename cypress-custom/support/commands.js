@@ -36,6 +36,12 @@ function selectInput(tokenAddress) {
   _selectTokenFromSelector(tokenAddress, 'input')
 }
 
+function pickToken(symbol, role) {
+  cy.get(`#${role}-currency-input .open-currency-select-button`).click()
+  cy.get('#token-search-input').type(symbol)
+  cy.get('#currency-list').get('div').contains(symbol).click({ force: true })
+}
+
 function enterInputAmount(tokenAddress, amount, selectToken = false) {
   // Choose whether to also select token
   // or just input amount
@@ -64,4 +70,5 @@ Cypress.Commands.add('swapSelectInput', selectInput)
 Cypress.Commands.add('swapSelectOutput', selectOutput)
 Cypress.Commands.add('swapEnterInputAmount', enterInputAmount)
 Cypress.Commands.add('swapEnterOutputAmount', enterOutputAmount)
+Cypress.Commands.add('limitPickToken', pickToken)
 Cypress.Commands.add('stubResponse', stubResponse)
