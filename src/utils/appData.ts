@@ -10,7 +10,7 @@ export type BuildAppDataParams = {
   slippageBips: string
   orderClass: OrderClass
   referrerAccount?: string
-  utm?: UtmParams
+  utm: UtmParams | undefined
 }
 
 export async function buildAppData({
@@ -19,16 +19,24 @@ export async function buildAppData({
   referrerAccount,
   appCode,
   orderClass,
+  utm,
 }: BuildAppDataParams) {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
 
   const quoteParams = { slippageBips }
   const orderClassParams = { orderClass }
+  const utmParams = utm
+    ? {
+        utm: {
+          ...utm,
+        },
+      }
+    : undefined
 
   const doc = await metadataApiSDK.generateAppDataDoc({
     appDataParams: { appCode, environment: environmentName },
-    metadataParams: { referrerParams, quoteParams, orderClassParams },
+    metadataParams: { referrerParams, quoteParams, orderClassParams, utmParams },
   })
 
   const calculatedAppData = await metadataApiSDK.calculateAppDataHash(doc)

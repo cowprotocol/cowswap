@@ -13,7 +13,7 @@ export type UseAppDataParams = {
   chainId?: SupportedChainId
   slippageBips: string
   orderClass: OrderClass
-  utm?: UtmParams
+  utm: UtmParams | undefined
 }
 
 /**
@@ -38,6 +38,7 @@ export function useAppData({ chainId, slippageBips, orderClass, utm }: UseAppDat
     const updateAppData = async (): Promise<void> => {
       try {
         const { doc, calculatedAppData } = await buildAppData(params)
+        console.log('UTM doc', { utm, doc, calculatedAppData })
 
         console.debug(`[useAppData] appDataInfo`, JSON.stringify(doc), calculatedAppData)
 
@@ -55,5 +56,5 @@ export function useAppData({ chainId, slippageBips, orderClass, utm }: UseAppDat
     }
 
     updateAppData()
-  }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass])
+  }, [appCode, chainId, setAppDataInfo, slippageBips, orderClass, utm])
 }

@@ -24,8 +24,8 @@ export function AppDataUpdater() {
   return <AppDataUpdaterMemo chainId={chainId} slippageBips={slippageBips} orderClass={orderClass} utm={utm} />
 }
 
-const AppDataUpdaterMemo = React.memo(({ chainId, slippageBips, orderClass }: UseAppDataParams) => {
-  useAppData({ chainId, slippageBips, orderClass })
+const AppDataUpdaterMemo = React.memo(({ chainId, slippageBips, orderClass, utm }: UseAppDataParams) => {
+  useAppData({ chainId, slippageBips, orderClass, utm })
 
   return null
 })
