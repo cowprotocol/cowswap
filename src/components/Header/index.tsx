@@ -84,7 +84,7 @@ export default function Header() {
     const defaultTradeState = getDefaultTradeRawState(chainId || state.chainId || SupportedChainId.MAINNET)
     const networkWasChanged = chainId && state.chainId && chainId !== state.chainId
 
-    // When network was changed - use the deafult trade state
+    // When network was changed - use the default trade state
     const inputCurrencyId =
       (networkWasChanged
         ? defaultTradeState.inputCurrencyId
