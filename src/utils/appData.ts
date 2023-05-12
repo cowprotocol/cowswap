@@ -19,20 +19,13 @@ export async function buildAppData({
   referrerAccount,
   appCode,
   orderClass,
-  utm,
+  utm: utmParams,
 }: BuildAppDataParams) {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
 
   const quoteParams = { slippageBips }
   const orderClassParams = { orderClass }
-  const utmParams = utm
-    ? {
-        utm: {
-          ...utm,
-        },
-      }
-    : undefined
 
   const doc = await metadataApiSDK.generateAppDataDoc({
     appDataParams: { appCode, environment: environmentName },
