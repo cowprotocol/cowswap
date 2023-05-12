@@ -13,10 +13,12 @@ import Footer from 'components/Footer'
 import RedirectAnySwapAffectedUsers from '@cow/pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
+import { useInitializeUtm } from '@cow/modules/utm'
 
 export function App() {
   initializeAnalytics()
   useAnalyticsReporter()
+  useInitializeUtm()
 
   return (
     <ErrorBoundary>
