@@ -1,5 +1,5 @@
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
-import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapActionHandlers } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
@@ -20,7 +20,6 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useEthFlowContext } from '@cow/modules/swap/hooks/useEthFlowContext'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useIsTradeUnsupported } from 'state/lists/hooks'
 import { useHandleSwap } from '@cow/modules/swap/hooks/useHandleSwap'
@@ -47,7 +46,6 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     currenciesIds,
     inputError: swapInputError,
   } = useDerivedSwapInfo()
-  const { typedValue } = useSwapState()
   const [isExpertMode] = useExpertModeManager()
   const toggleWalletModal = useToggleWalletModal()
   const { openSwapConfirmModal } = useSwapConfirmManager()
@@ -78,7 +76,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapCallback(wrapUnwrapAmount)
-  const inputAmount = tryParseCurrencyAmount(typedValue, currencyIn ?? undefined)
+  const inputAmount = trade?.inputAmount
   const approvalState = useTradeApproveState(inputAmount || null)
 
   const handleSwap = useHandleSwap(priceImpactParams)
