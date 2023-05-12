@@ -2,13 +2,15 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { environmentName } from 'utils/environments'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { metadataApiSDK } from '@cow/cowSdk'
+import { UtmParams } from '@cow/modules/utm'
 
 export type BuildAppDataParams = {
+  appCode: string
   chainId: SupportedChainId
   slippageBips: string
   orderClass: OrderClass
   referrerAccount?: string
-  appCode: string
+  utm?: UtmParams
 }
 
 export async function buildAppData({

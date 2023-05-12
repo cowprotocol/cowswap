@@ -7,18 +7,20 @@ import { appDataInfoAtom } from 'state/appData/atoms'
 import { useAppCode } from 'hooks/useAppCode'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useUpdateAtom } from 'jotai/utils'
+import { UtmParams } from '@cow/modules/utm'
 
 export type UseAppDataParams = {
   chainId?: SupportedChainId
   slippageBips: string
   orderClass: OrderClass
+  utm?: UtmParams
 }
 
 /**
  * Fetches and updates appDataInfo whenever a dependency changes
  * The hook can be called only from an updater
  */
-export function useAppData({ chainId, slippageBips, orderClass }: UseAppDataParams): void {
+export function useAppData({ chainId, slippageBips, orderClass, utm }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useUpdateAtom(appDataInfoAtom)
   // AppCode is dynamic and based on how it's loaded (if used as a Gnosis Safe app)
@@ -31,7 +33,7 @@ export function useAppData({ chainId, slippageBips, orderClass }: UseAppDataPara
       return
     }
 
-    const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass }
+    const params: BuildAppDataParams = { chainId, slippageBips, appCode, orderClass, utm }
 
     const updateAppData = async (): Promise<void> => {
       try {
