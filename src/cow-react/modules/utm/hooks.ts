@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { UtmParams } from './types'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { utmAtom } from './state'
 
 const UTM_SOURCE_PARAM = 'utm_source'
@@ -28,6 +28,22 @@ function getUtmParams(searchParams: URLSearchParams): UtmParams {
   }
 }
 
+export function useUtm(): UtmParams | undefined {
+  return useAtomValue(utmAtom)
+}
+
+function cleanUpParams(searchParams: URLSearchParams): boolean {
+  let cleanedParams = false
+  ALL_UTM_PARAMS.forEach((param) => {
+    if (searchParams.has(param)) {
+      searchParams.delete(param)
+      cleanedParams = true
+    }
+  })
+
+  return cleanedParams
+}
+
 export function useInitializeUtm() {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
@@ -40,13 +56,15 @@ export function useInitializeUtm() {
       const searchParams = new URLSearchParams(search)
       const utm = getUtmParams(searchParams)
       if (utm.utmCampaign || utm.utmCampaign || utm.utmContent || utm.utmMedium || utm.utmSource) {
-        // Only overrides the UTM if the URL includes any UTM param
+        // Only overrides the UTM if the URL includes at least one UTM param
         setUtm(utm)
       }
 
-      ALL_UTM_PARAMS.forEach((param) => searchParams.delete(param))
-
-      navigate({ pathname, search: searchParams.toString() }, { replace: true })
+      // Clear params from URL and redirect
+      const cleanedParams = cleanUpParams(searchParams)
+      if (cleanedParams) {
+        navigate({ pathname, search: searchParams.toString() }, { replace: true })
+      }
     },
     // No dependencies: It only needs to be initialized once
     // eslint-disable-next-line react-hooks/exhaustive-deps

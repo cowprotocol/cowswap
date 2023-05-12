@@ -2,13 +2,15 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { environmentName } from 'utils/environments'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { metadataApiSDK } from '@cow/cowSdk'
+import { UtmParams } from '@cow/modules/utm'
 
 export type BuildAppDataParams = {
+  appCode: string
   chainId: SupportedChainId
   slippageBips: string
   orderClass: OrderClass
   referrerAccount?: string
-  appCode: string
+  utm: UtmParams | undefined
 }
 
 export async function buildAppData({
@@ -17,6 +19,7 @@ export async function buildAppData({
   referrerAccount,
   appCode,
   orderClass,
+  utm: utmParams,
 }: BuildAppDataParams) {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
@@ -26,7 +29,7 @@ export async function buildAppData({
 
   const doc = await metadataApiSDK.generateAppDataDoc({
     appDataParams: { appCode, environment: environmentName },
-    metadataParams: { referrerParams, quoteParams, orderClassParams },
+    metadataParams: { referrerParams, quoteParams, orderClassParams, utmParams },
   })
 
   const calculatedAppData = await metadataApiSDK.calculateAppDataHash(doc)
