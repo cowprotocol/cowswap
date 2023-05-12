@@ -39,14 +39,13 @@ export function useInitializeUtm() {
     () => {
       const searchParams = new URLSearchParams(search)
       const utm = getUtmParams(searchParams)
-      console.log('UTM', utm, searchParams)
       if (utm.utmCampaign || utm.utmCampaign || utm.utmContent || utm.utmMedium || utm.utmSource) {
         // Only overrides the UTM if the URL includes any UTM param
         setUtm(utm)
       }
 
       ALL_UTM_PARAMS.forEach((param) => searchParams.delete(param))
-      console.log('UTM 2', utm, searchParams)
+
       navigate({ pathname, search: searchParams.toString() }, { replace: true })
     },
     // No dependencies: It only needs to be initialized once
