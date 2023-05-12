@@ -4,8 +4,6 @@ import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import { Field } from 'state/swap/actions'
-import { TradeType } from '@uniswap/sdk-core'
-import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import {
   useHasEnoughWrappedBalanceForSwap,
   useWrapCallback,
@@ -66,18 +64,13 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken()
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
-  const nativeInput =
-    trade?.tradeType === TradeType.EXACT_INPUT
-      ? trade?.inputAmount
-      : // else use the slippage + fee adjusted amount
-        computeSlippageAdjustedAmounts(trade, allowedSlippage).INPUT
+  const nativeInput = trade?.maximumAmountIn(allowedSlippage)
   const wrapUnwrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapCallback(wrapUnwrapAmount)
-  const inputAmount = trade?.inputAmount
-  const approvalState = useTradeApproveState(inputAmount || null)
+  const approvalState = useTradeApproveState(nativeInput || null)
 
   const handleSwap = useHandleSwap(priceImpactParams)
 
@@ -115,7 +108,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   return {
     swapButtonState,
-    inputAmount,
+    inputAmount: nativeInput,
     chainId,
     wrappedToken,
     handleSwap,
