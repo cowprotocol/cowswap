@@ -1,58 +1,39 @@
-// eslint-disable-next-line no-restricted-imports
-import { Trans } from '@lingui/macro'
-import {
-  advancedOrdersSettingsAtom,
-  updateAdvancedOrdersSettingsAtom,
-} from '@cow/modules/advancedOrders/state/advancedOrdersSettingsAtom'
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai/utils'
-import { useCallback, useMemo, useRef } from 'react'
-import { DeadlineSelector } from '@cow/common/pure/DeadlineSelector'
-import { OrderDeadline, ordersDeadlines } from '@cow/common/pure/DeadlineSelector/deadlines'
-import QuestionHelper from 'components/QuestionHelper'
-import * as styledEl from './styled'
+import { useCallback, useRef } from 'react'
+import { DeadlineSelector } from '../DeadlineSelector'
+import { useDeadline } from '../DeadlineSelector/hooks/useDeadline'
+import { useUpdateDeadline } from '../DeadlineSelector/hooks/useUpdateDeadline'
+import { CustomDeadline } from '../DeadlineSelector/types'
 
 export function DeadlineInput() {
-  const { deadlineMilliseconds, customDeadlineTimestamp } = useAtomValue(advancedOrdersSettingsAtom)
-  const updateSettingsState = useSetAtom(updateAdvancedOrdersSettingsAtom)
+  const { isCustomDeadline, deadline, customDeadline } = useDeadline()
+
   const currentDeadlineNode = useRef<HTMLButtonElement>()
-  const existingDeadline = useMemo(() => {
-    return ordersDeadlines.find((item) => item.value === deadlineMilliseconds)
-  }, [deadlineMilliseconds])
+
+  const updateDeadline = useUpdateDeadline()
 
   const selectDeadline = useCallback(
-    (deadline: OrderDeadline) => {
-      updateSettingsState({ deadlineMilliseconds: deadline.value, customDeadlineTimestamp: null })
-      currentDeadlineNode.current?.click() // Close dropdown
+    (deadline: number) => {
+      updateDeadline({ isCustomDeadline: false, deadline })
+      currentDeadlineNode.current?.click()
     },
-    [updateSettingsState]
+    [updateDeadline]
   )
 
   const selectCustomDeadline = useCallback(
-    (customDeadline: number | null) => {
-      updateSettingsState({ customDeadlineTimestamp: customDeadline })
+    (customDeadline: CustomDeadline) => {
+      updateDeadline({ isCustomDeadline: true, customDeadline })
     },
-    [updateSettingsState]
-  )
-
-  // TODO: update text
-  const label = (
-    <styledEl.LabelWrapper>
-      <span>Total time</span>
-      <QuestionHelper text={<Trans>This is some text here</Trans>} />
-    </styledEl.LabelWrapper>
+    [updateDeadline]
   )
 
   return (
     <DeadlineSelector
-      inline
-      label={label}
-      orderType={'TWAP'}
-      minHeight="50px"
-      deadline={existingDeadline}
-      customDeadline={customDeadlineTimestamp}
+      deadline={deadline}
+      isCustomDeadline={isCustomDeadline}
+      customDeadline={customDeadline}
       selectDeadline={selectDeadline}
       selectCustomDeadline={selectCustomDeadline}
+      currentDeadlineNode={currentDeadlineNode}
     />
   )
 }

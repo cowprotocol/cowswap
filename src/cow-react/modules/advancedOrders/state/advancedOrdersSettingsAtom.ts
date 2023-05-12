@@ -1,6 +1,6 @@
 import { atomWithStorage } from 'jotai/utils'
 import { atom } from 'jotai'
-import { Milliseconds, Timestamp } from '@cow/types'
+import { Milliseconds } from '@cow/types'
 import { defaultOrderDeadline } from '@cow/common/pure/DeadlineSelector/deadlines'
 
 export enum SlippageError {
@@ -13,8 +13,12 @@ export enum NumberOfPartsError {
 
 export interface AdvancedOrdersSettingsState {
   // deadline
-  readonly deadlineMilliseconds: Milliseconds
-  readonly customDeadlineTimestamp: Timestamp | null
+  readonly isCustomDeadline: boolean
+  readonly deadline: Milliseconds
+  readonly customDeadline: {
+    hours: number | null
+    minutes: number | null
+  }
 
   // no. of parts
   readonly numberOfParts: number
@@ -27,8 +31,12 @@ export interface AdvancedOrdersSettingsState {
 
 export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
   // deadline
-  deadlineMilliseconds: defaultOrderDeadline.value,
-  customDeadlineTimestamp: null,
+  isCustomDeadline: false,
+  deadline: defaultOrderDeadline.value,
+  customDeadline: {
+    hours: null,
+    minutes: null,
+  },
 
   // no. of parts
   numberOfParts: 1,
