@@ -12,6 +12,7 @@ import { useIsQuoteLoading } from '@cow/modules/advancedOrders/hooks/useIsQuoteL
 import { DeadlineInput } from '../DeadlineInput'
 import { NumberOfParts } from '../NumberOfParts'
 import { Slippage } from '../Slippage'
+import { PartsDisplay } from '../PartsDisplay'
 import * as styledEl from './styled'
 
 export function AdvancedOrdersWidget() {
@@ -62,6 +63,7 @@ export function AdvancedOrdersWidget() {
           <Slippage />
         </styledEl.Row>
 
+        <PartsDisplay />
         <DeadlineInput />
       </>
     ),
