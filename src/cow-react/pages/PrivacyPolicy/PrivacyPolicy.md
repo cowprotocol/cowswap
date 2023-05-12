@@ -46,6 +46,7 @@ We may collect and process Personal Data about your use of our website or websit
 - Behaviour: subpage, duration, and revisit;
 - The date and time of access to the website, The Internet protocol address (“IP address”);
 - The Internet service provider of the accessing system;
+- Connected wallet type and wallet address;
 - session by device; and
 - Any other similar data and information that may be used in the event of attacks on our information technology systems.
 
