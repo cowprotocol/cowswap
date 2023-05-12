@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 import { WidgetField, WidgetLabel } from '../../pure/WidgetField'
+import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -37,4 +39,9 @@ export const Value = styled.div`
     font-size: 18px;
     padding: 5px 0;
   `}
+`
+
+export const Fiat = styled(FiatAmount)`
+  color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  font-size: 13px;
 `

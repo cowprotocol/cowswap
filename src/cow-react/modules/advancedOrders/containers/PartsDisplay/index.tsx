@@ -6,7 +6,7 @@ import { formatInputAmount } from '@cow/utils/amountFormat'
 
 export function PartsDisplay() {
   const { numberOfParts } = useNoOfParts()
-  const { inputPartAmount, outputPartAmount } = usePartsValues()
+  const { inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = usePartsValues()
 
   return (
     <styledEl.Wrapper>
@@ -20,6 +20,8 @@ export function PartsDisplay() {
           <div>{formatInputAmount(inputPartAmount) || '-'}</div>
           <div>{inputPartAmount?.currency.symbol}</div>
         </styledEl.Value>
+
+        <styledEl.Fiat amount={inputFiatAmount} />
       </styledEl.Part>
 
       <styledEl.Part>
@@ -32,6 +34,8 @@ export function PartsDisplay() {
           <div>{formatInputAmount(outputPartAmount) || '-'}</div>
           <div>{outputPartAmount?.currency.symbol}</div>
         </styledEl.Value>
+
+        <styledEl.Fiat amount={outputFiatAmount} />
       </styledEl.Part>
     </styledEl.Wrapper>
   )

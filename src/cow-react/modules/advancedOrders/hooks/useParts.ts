@@ -13,27 +13,52 @@ export function useNoOfParts() {
 type PartsOutput = {
   inputPartAmount: CurrencyAmount<Currency> | null
   outputPartAmount: CurrencyAmount<Currency> | null
+  inputFiatAmount: CurrencyAmount<Currency> | null
+  outputFiatAmount: CurrencyAmount<Currency> | null
 }
 
 export function usePartsValues(): PartsOutput {
-  const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = useAdvancedOrdersFullState()
+  const {
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
+  } = useAdvancedOrdersFullState()
   const { numberOfParts } = useNoOfParts()
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency) {
-      return {
-        inputPartAmount: null,
-        outputPartAmount: null,
-      }
-    } else if (!numberOfParts || !inputCurrencyAmount || !outputCurrencyAmount) {
-      return {
-        inputPartAmount: CurrencyAmount.fromRawAmount(inputCurrency, 0),
-        outputPartAmount: CurrencyAmount.fromRawAmount(outputCurrency, 0),
-      }
+    const output: PartsOutput = {
+      inputPartAmount: null,
+      outputPartAmount: null,
+      inputFiatAmount: null,
+      outputFiatAmount: null,
     }
-    return {
-      inputPartAmount: inputCurrencyAmount?.divide(numberOfParts),
-      outputPartAmount: outputCurrencyAmount?.divide(numberOfParts),
+
+    if (inputCurrency && outputCurrency) {
+      output.inputPartAmount = CurrencyAmount.fromRawAmount(inputCurrency, 0)
+      output.outputPartAmount = CurrencyAmount.fromRawAmount(outputCurrency, 0)
     }
-  }, [numberOfParts, inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency])
+
+    if (inputCurrencyAmount && outputCurrencyAmount && numberOfParts) {
+      output.inputPartAmount = inputCurrencyAmount.divide(numberOfParts)
+      output.outputPartAmount = outputCurrencyAmount.divide(numberOfParts)
+    }
+
+    if (inputCurrencyFiatAmount && outputCurrencyFiatAmount && numberOfParts) {
+      output.inputFiatAmount = inputCurrencyFiatAmount.divide(numberOfParts)
+      output.outputFiatAmount = outputCurrencyFiatAmount.divide(numberOfParts)
+    }
+
+    return output
+  }, [
+    numberOfParts,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyFiatAmount,
+    outputCurrencyFiatAmount,
+  ])
 }
