@@ -33,6 +33,7 @@ export enum ApprovalState {
   NOT_APPROVED = 'NOT_APPROVED',
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
+  NOT_APPROVED_NEEDS_TO_SET_TO_ZERO = 'NOT_APPROVED_NEEDS_TO_SET_TO_ZERO', // Special state to address tokens like USDT, which forces the user to set the approval to zero before setting it to a new value
 }
 
 export interface ApproveCallbackParams {
@@ -79,8 +80,20 @@ export function useApproveCallback({
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN
 
+    const notEnoughAllowance = currentAllowance.lessThan(amountToCheckAgainstAllowance || amountToApprove)
+
+    // Handle Special case for USDT and other tokens that require setting the allowance to zero before setting it to a new value
+    // TODO: Clean this
+    if (
+      notEnoughAllowance &&
+      currentAllowance.currency.address === '0xdac17f958d2ee523a2206206994597c13d831ec7' && // USDT
+      currentAllowance.greaterThan('0')
+    ) {
+      return ApprovalState.NOT_APPROVED_NEEDS_TO_SET_TO_ZERO
+    }
+
     // amountToApprove will be defined if currentAllowance is
-    return currentAllowance.lessThan(amountToCheckAgainstAllowance || amountToApprove)
+    return notEnoughAllowance
       ? pendingApproval
         ? ApprovalState.PENDING
         : ApprovalState.NOT_APPROVED

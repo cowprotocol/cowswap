@@ -25,6 +25,7 @@ export function ApproveButton(props: ApproveButtonProps) {
   const isPending = state === ApprovalState.PENDING
   const isConfirmed = state === ApprovalState.APPROVED
   const disabled = state !== ApprovalState.NOT_APPROVED
+  const needsToSetApprovalToZero = state === ApprovalState.NOT_APPROVED_NEEDS_TO_SET_TO_ZERO
 
   const content = useMemo(() => {
     if (isConfirmed) {
@@ -34,6 +35,31 @@ export function ApproveButton(props: ApproveButtonProps) {
             You can now trade <TokenSymbol token={currency} />
           </Trans>
           <CheckCircle size="24" color={theme.text1} />
+        </>
+      )
+    } else if (needsToSetApprovalToZero) {
+      return (
+        <>
+          <span>
+            <Trans>
+              Unfortunatelly <TokenSymbol token={currency} /> token implementation requires you to disapprove it in
+              order to be able to use it. To avoid this, make sure you use the <strong>default allowance</strong> when
+              you sign it in the wallet
+            </Trans>
+          </span>
+          <MouseoverTooltip
+            text={
+              <Trans>
+                Tokens such as <TokenSymbol token={currency} /> don't allow to set the allowance to a non-zero amount
+                when you have a previous allowance (non-zero allowance). We understand how annoying this is, but this is
+                just a help this Dapp provides to overcome this limitation from <TokenSymbol token={currency} />{' '}
+                implementation, if you don't remove the allowance before you set the new one, the contract will revert,
+                and you will pay gas for nothing.
+              </Trans>
+            }
+          >
+            {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" color={theme.white} />}
+          </MouseoverTooltip>
         </>
       )
     } else {
@@ -58,7 +84,7 @@ export function ApproveButton(props: ApproveButtonProps) {
         </>
       )
     }
-  }, [currency, theme, isPending, isConfirmed])
+  }, [currency, theme, isPending, isConfirmed, needsToSetApprovalToZero])
 
   return (
     <ButtonConfirmed
