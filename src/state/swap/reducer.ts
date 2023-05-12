@@ -1,7 +1,15 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
 
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from 'state/swap/actions'
+import {
+  Field,
+  replaceOnlyTradeRawState,
+  replaceSwapState,
+  selectCurrency,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+} from 'state/swap/actions'
 import { queryParametersToSwapState } from 'state/swap/hooks'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -26,7 +34,7 @@ const initialState: SwapState = queryParametersToSwapState(parsedQueryString(), 
 
 export default createReducer<SwapState>(initialState, (builder) =>
   builder
-    // Mod: ranamed field => independentField, added chainId
+    // Mod: renamed field => independentField, added chainId
     .addCase(replaceSwapState, (state, { payload }) => {
       const {
         chainId,
@@ -54,6 +62,21 @@ export default createReducer<SwapState>(initialState, (builder) =>
         },
         independentField,
         typedValue,
+        recipient,
+      }
+    })
+    .addCase(replaceOnlyTradeRawState, (state, { payload }) => {
+      const { chainId, recipient, inputCurrencyId, outputCurrencyId } = payload
+
+      return {
+        ...state,
+        chainId,
+        [Field.INPUT]: {
+          currencyId: inputCurrencyId ?? null,
+        },
+        [Field.OUTPUT]: {
+          currencyId: outputCurrencyId ?? null,
+        },
         recipient,
       }
     })

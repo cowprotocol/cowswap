@@ -45,6 +45,13 @@ declare namespace Cypress {
     clickOutputToken(): Chainable<Subject>
 
     /**
+     * Pick the 'input' or 'output' token
+     *
+     * @example cy.limitPickToken('DAI', 'input')
+     */
+    limitPickToken(symbol: string, role: 'input' | 'output'): Chainable<Subject>
+
+    /**
      * Set a stubbing intercept on route specified
      *
      * @example cy.stubResponse({ url: '/api/v1/someEndpoint/', alias: 'endpoint', body: { foo: 'foo' } })
