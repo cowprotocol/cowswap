@@ -38,8 +38,6 @@ export function useAppData({ chainId, slippageBips, orderClass, utm }: UseAppDat
     const updateAppData = async (): Promise<void> => {
       try {
         const { doc, calculatedAppData } = await buildAppData(params)
-        console.log('UTM doc', { utm, doc, calculatedAppData })
-
         console.debug(`[useAppData] appDataInfo`, JSON.stringify(doc), calculatedAppData)
 
         if (calculatedAppData?.appDataHash) {
