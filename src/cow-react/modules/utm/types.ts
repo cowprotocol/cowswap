@@ -1,7 +1,7 @@
 export interface UtmParams {
-  utcSource?: string
-  utcMedium?: string
-  utcCampaign?: string
-  utcContent?: string
-  utcTerm?: string
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
+  utmContent?: string
+  utmTerm?: string
 }

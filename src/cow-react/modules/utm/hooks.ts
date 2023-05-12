@@ -1,35 +1,53 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { UtmParams } from './types'
 import { useSetAtom } from 'jotai'
 import { utmAtom } from './state'
 
-function getUtcParams(searchParams: URLSearchParams): UtmParams {
-  const utcSource = searchParams.get('utm_source') || undefined
-  const utcMedium = searchParams.get('utm_medium') || undefined
-  const utcCampaign = searchParams.get('utm_campaign') || undefined
-  const utcContent = searchParams.get('utm_content') || undefined
-  const utcTerm = searchParams.get('utm_term') || undefined
+const UTM_SOURCE_PARAM = 'utm_source'
+const UTM_MEDIUM_PARAM = 'utm_medium'
+const UTM_CAMPAIGN_PARAM = 'utm_campaign'
+const UTM_CONTENT_PARAM = 'utm_content'
+const UTM_TERM_PARAM = 'utm_term'
+
+const ALL_UTM_PARAMS = [UTM_SOURCE_PARAM, UTM_MEDIUM_PARAM, UTM_CAMPAIGN_PARAM, UTM_CONTENT_PARAM, UTM_TERM_PARAM]
+
+function getUtmParams(searchParams: URLSearchParams): UtmParams {
+  const utmSource = searchParams.get(UTM_SOURCE_PARAM) || undefined
+  const utmMedium = searchParams.get(UTM_MEDIUM_PARAM) || undefined
+  const utmCampaign = searchParams.get(UTM_CAMPAIGN_PARAM) || undefined
+  const utmContent = searchParams.get(UTM_CONTENT_PARAM) || undefined
+  const utmTerm = searchParams.get(UTM_TERM_PARAM) || undefined
 
   return {
-    utcSource,
-    utcMedium,
-    utcCampaign,
-    utcContent,
-    utcTerm,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmContent,
+    utmTerm,
   }
 }
 
 export function useInitializeUtm() {
-  const location = useLocation()
+  const navigate = useNavigate()
+  const { search, pathname } = useLocation()
+
   // get atom setter
   const setUtm = useSetAtom(utmAtom)
 
   useEffect(
     () => {
-      const searchParams = new URLSearchParams(location.search)
-      const utm = getUtcParams(searchParams)
-      setUtm(utm)
+      const searchParams = new URLSearchParams(search)
+      const utm = getUtmParams(searchParams)
+      console.log('UTM', utm, searchParams)
+      if (utm.utmCampaign || utm.utmCampaign || utm.utmContent || utm.utmMedium || utm.utmSource) {
+        // Only overrides the UTM if the URL includes any UTM param
+        setUtm(utm)
+      }
+
+      ALL_UTM_PARAMS.forEach((param) => searchParams.delete(param))
+      console.log('UTM 2', utm, searchParams)
+      navigate({ pathname, search: searchParams.toString() }, { replace: true })
     },
     // No dependencies: It only needs to be initialized once
     // eslint-disable-next-line react-hooks/exhaustive-deps
