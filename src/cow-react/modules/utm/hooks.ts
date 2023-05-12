@@ -32,6 +32,18 @@ export function useUtm(): UtmParams | undefined {
   return useAtomValue(utmAtom)
 }
 
+function cleanUpParams(searchParams: URLSearchParams): boolean {
+  let cleanedParams = false
+  ALL_UTM_PARAMS.forEach((param) => {
+    if (searchParams.has(param)) {
+      searchParams.delete(param)
+      cleanedParams = true
+    }
+  })
+
+  return cleanedParams
+}
+
 export function useInitializeUtm() {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
@@ -46,9 +58,11 @@ export function useInitializeUtm() {
       if (utm.utmCampaign || utm.utmCampaign || utm.utmContent || utm.utmMedium || utm.utmSource) {
         // Only overrides the UTM if the URL includes at least one UTM param
         setUtm(utm)
+      }
 
-        // Clear params from URL
-        ALL_UTM_PARAMS.forEach((param) => searchParams.delete(param))
+      // Clear params from URL and redirect
+      const cleanedParams = cleanUpParams(searchParams)
+      if (cleanedParams) {
         navigate({ pathname, search: searchParams.toString() }, { replace: true })
       }
     },
