@@ -11,10 +11,10 @@ export function useDisplayDeadline() {
     } else {
       const { minutes, hours } = customDeadline
 
-      if (minutes && hours) return `${hours} hours and ${minutes} minutes`
+      if (minutes && hours) return `${hours} hours ${minutes} minutes`
       else if (hours) return `${hours} hours`
       else if (minutes) return `${minutes} minutes`
       else return 'Set total time'
     }
-  }, [isCustomDeadline, deadline, ordersDeadlines, customDeadline])
+  }, [isCustomDeadline, deadline, customDeadline])
 }
