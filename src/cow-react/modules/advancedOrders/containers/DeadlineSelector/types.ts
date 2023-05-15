@@ -1,8 +1,8 @@
 import { Milliseconds } from '@cow/types'
 
 export type CustomDeadline = {
-  hours: number | null
-  minutes: number | null
+  hours: number
+  minutes: number
 }
 
 export type DeadlinePayload = {

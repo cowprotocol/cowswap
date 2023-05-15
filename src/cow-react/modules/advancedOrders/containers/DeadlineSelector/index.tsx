@@ -1,12 +1,13 @@
 import { Menu } from '@reach/menu-button'
 import { OrderDeadline, ordersDeadlines } from './deadlines'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { Trans } from '@lingui/macro'
 import { useDisplayDeadline } from './hooks/useDisplayDeadline'
 import { CustomDeadline } from './types'
 import QuestionHelper from 'components/QuestionHelper'
 import * as styledEl from './styled'
+import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
 
 export interface DeadlineSelectorProps {
   deadline: number
@@ -19,8 +20,7 @@ export interface DeadlineSelectorProps {
 }
 
 export function DeadlineSelector(props: DeadlineSelectorProps) {
-  const { customDeadline, selectDeadline, currentDeadlineNode } = props
-
+  const { customDeadline, selectDeadline, selectCustomDeadline, currentDeadlineNode } = props
   const displayDeadline = useDisplayDeadline()
 
   const onSelect = useCallback(
@@ -29,6 +29,12 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     },
     [selectDeadline]
   )
+
+  // Modal related code
+  const [isOpen, setIsOpen] = useState(false)
+
+  const openModal = useCallback(() => setIsOpen(true), [])
+  const onDismiss = useCallback(() => setIsOpen(false), [])
 
   return (
     <styledEl.Wrapper>
@@ -53,8 +59,18 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
               </styledEl.ListItem>
             </li>
           ))}
+          <styledEl.ListItem onSelect={openModal}>
+            <Trans>Custom</Trans>
+          </styledEl.ListItem>
         </styledEl.ListWrapper>
       </Menu>
+
+      <CustomDeadlineSelector
+        selectCustomDeadline={selectCustomDeadline}
+        customDeadline={customDeadline}
+        isOpen={isOpen}
+        onDismiss={onDismiss}
+      />
     </styledEl.Wrapper>
   )
 }

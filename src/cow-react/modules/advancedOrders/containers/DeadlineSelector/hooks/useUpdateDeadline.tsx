@@ -2,9 +2,11 @@ import { useCallback } from 'react'
 import { useSetAtom } from 'jotai'
 import { updateAdvancedOrdersSettingsAtom } from '@cow/modules/advancedOrders/state/advancedOrdersSettingsAtom'
 import { DeadlinePayload } from '../types'
+import { useDeadline } from './useDeadline'
 
 export function useUpdateDeadline() {
   const updateState = useSetAtom(updateAdvancedOrdersSettingsAtom)
+  const prevState = useDeadline()
 
   return useCallback(
     (payload: DeadlinePayload) => {
@@ -17,7 +19,7 @@ export function useUpdateDeadline() {
         update.deadline = deadline
       }
 
-      updateState(update)
+      updateState({ ...prevState, ...update })
     },
     [updateState]
   )

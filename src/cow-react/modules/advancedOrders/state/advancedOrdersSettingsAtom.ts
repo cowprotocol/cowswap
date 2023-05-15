@@ -16,8 +16,8 @@ export interface AdvancedOrdersSettingsState {
   readonly isCustomDeadline: boolean
   readonly deadline: Milliseconds
   readonly customDeadline: {
-    hours: number | null
-    minutes: number | null
+    hours: number
+    minutes: number
   }
 
   // no. of parts
@@ -34,8 +34,8 @@ export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
   isCustomDeadline: false,
   deadline: defaultOrderDeadline.value,
   customDeadline: {
-    hours: null,
-    minutes: null,
+    hours: 0,
+    minutes: 0,
   },
 
   // no. of parts
