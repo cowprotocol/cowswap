@@ -1,6 +1,6 @@
 import { Menu } from '@reach/menu-button'
-import { OrderDeadline, ordersDeadlines } from './deadlines'
-import { useCallback, useState } from 'react'
+import { ordersDeadlines } from './deadlines'
+import { useCallback, useRef, useState } from 'react'
 import { ChevronDown } from 'react-feather'
 import { Trans } from '@lingui/macro'
 import { useDisplayDeadline } from './hooks/useDisplayDeadline'
@@ -8,33 +8,36 @@ import { CustomDeadline } from './types'
 import QuestionHelper from 'components/QuestionHelper'
 import * as styledEl from './styled'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
+import { useDeadline } from '../DeadlineSelector/hooks/useDeadline'
+import { useUpdateDeadline } from './hooks/useUpdateDeadline'
 
-export interface DeadlineSelectorProps {
-  deadline: number
-  parsedDeadline?: OrderDeadline
-  isCustomDeadline: boolean
-  customDeadline: CustomDeadline
-  selectDeadline(deadline: number): void
-  selectCustomDeadline(deadline: CustomDeadline): void
-  currentDeadlineNode: React.MutableRefObject<HTMLButtonElement | undefined>
-}
-
-export function DeadlineSelector(props: DeadlineSelectorProps) {
-  const { customDeadline, selectDeadline, selectCustomDeadline, currentDeadlineNode } = props
-  const displayDeadline = useDisplayDeadline()
-
-  const onSelect = useCallback(
-    (deadline: OrderDeadline) => {
-      selectDeadline(deadline.value)
-    },
-    [selectDeadline]
-  )
+export function DeadlineSelector() {
+  const { customDeadline } = useDeadline()
 
   // Modal related code
   const [isOpen, setIsOpen] = useState(false)
 
   const openModal = useCallback(() => setIsOpen(true), [])
   const onDismiss = useCallback(() => setIsOpen(false), [])
+
+  const currentDeadlineNode = useRef<HTMLButtonElement>()
+  const displayDeadline = useDisplayDeadline()
+  const updateDeadline = useUpdateDeadline()
+
+  const selectDeadline = useCallback(
+    (deadline: number) => {
+      updateDeadline({ isCustomDeadline: false, deadline })
+      currentDeadlineNode.current?.click()
+    },
+    [updateDeadline]
+  )
+
+  const selectCustomDeadline = useCallback(
+    (customDeadline: CustomDeadline) => {
+      updateDeadline({ isCustomDeadline: true, customDeadline })
+    },
+    [updateDeadline]
+  )
 
   return (
     <styledEl.Wrapper>
@@ -54,7 +57,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
         <styledEl.ListWrapper>
           {ordersDeadlines.map((item) => (
             <li key={item.value}>
-              <styledEl.ListItem onSelect={() => onSelect(item)}>
+              <styledEl.ListItem onSelect={() => selectDeadline(item.value)}>
                 <Trans>{item.title}</Trans>
               </styledEl.ListItem>
             </li>
@@ -68,8 +71,8 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       <CustomDeadlineSelector
         selectCustomDeadline={selectCustomDeadline}
         customDeadline={customDeadline}
-        isOpen={isOpen}
         onDismiss={onDismiss}
+        isOpen={isOpen}
       />
     </styledEl.Wrapper>
   )

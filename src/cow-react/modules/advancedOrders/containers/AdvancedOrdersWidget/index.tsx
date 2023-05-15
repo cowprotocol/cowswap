@@ -9,7 +9,7 @@ import {
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useAdvancedOrdersActions } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { useIsQuoteLoading } from '@cow/modules/advancedOrders/hooks/useIsQuoteLoading'
-import { DeadlineInput } from '../DeadlineInput'
+import { DeadlineSelector } from '../DeadlineSelector'
 import { NumberOfParts } from '../NumberOfParts'
 import { Slippage } from '../Slippage'
 import { PartsDisplay } from '../PartsDisplay'
@@ -64,7 +64,7 @@ export function AdvancedOrdersWidget() {
         </styledEl.Row>
 
         <PartsDisplay />
-        <DeadlineInput />
+        <DeadlineSelector />
       </>
     ),
   }
