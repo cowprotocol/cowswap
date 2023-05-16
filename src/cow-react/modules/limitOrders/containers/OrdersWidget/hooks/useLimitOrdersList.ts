@@ -90,7 +90,10 @@ export function useLimitOrdersList(): LimitOrdersList {
   const allNonEmptyOrders = useOrders({ chainId })
   const accountLowerCase = account?.toLowerCase()
 
-  const ordersFilter = useCallback((order: Order) => order.owner.toLowerCase() === accountLowerCase, [accountLowerCase])
+  const ordersFilter = useCallback(
+    (order: Order) => order.owner.toLowerCase() === accountLowerCase && !order.isHidden,
+    [accountLowerCase]
+  )
 
   const allSortedOrders = useMemo(() => {
     return allNonEmptyOrders.filter(ordersFilter).map(parseOrder).sort(ordersSorter)

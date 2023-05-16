@@ -57,8 +57,8 @@ export default function useRecentActivity() {
 
     return (
       allNonEmptyOrders
-        // only show orders for connected account
-        .filter((order) => order.owner.toLowerCase() === accountLowerCase)
+        // only show orders for connected account that are not hidden
+        .filter((order) => order.owner.toLowerCase() === accountLowerCase && !order.isHidden)
         .map((order) =>
           // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
           // and time in MS vs ISO string as Orders uses
