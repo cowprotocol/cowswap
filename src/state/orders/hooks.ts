@@ -20,6 +20,8 @@ import {
   setIsOrderUnfillable,
   SetIsOrderUnfillableParams,
   setOrderCancellationHash,
+  updateOrder,
+  UpdateOrderParams as UpdateOrderParamsAction,
   updatePresignGnosisSafeTx,
   UpdatePresignGnosisSafeTxParams,
 } from './actions'
@@ -312,6 +314,31 @@ export const useAddPendingOrder = (): AddOrderCallback => {
         order,
       }
       return dispatch(addPendingOrder(params))
+    },
+    [dispatch]
+  )
+}
+
+export type UpdateOrderParams = {
+  chainId: ChainId
+  order: Partial<Omit<Order, 'id'>> & Pick<Order, 'id'>
+}
+
+export type UpdateOrderCallback = (params: UpdateOrderParams) => void
+
+export const usePartialUpdateOrder = (): UpdateOrderCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    ({ order, chainId }: UpdateOrderParams) => {
+      const params: UpdateOrderParamsAction = {
+        chainId,
+        order: {
+          ...order,
+          ...(order.inputToken && { inputToken: serializeToken(order.inputToken) }),
+          ...(order.outputToken && { outputToken: serializeToken(order.outputToken) }),
+        },
+      }
+      return dispatch(updateOrder(params))
     },
     [dispatch]
   )
