@@ -25,6 +25,11 @@ import { Nullish } from '@cow/types'
 import { HIGH_FEE_WARNING_PERCENTAGE } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
+const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [
+  LimitOrdersFormState.ExpertApproveAndSwap,
+  LimitOrdersFormState.ApproveAndSwap,
+]
+
 export interface LimitOrdersWarningsProps {
   priceImpact: PriceImpact
   feeAmount?: Nullish<CurrencyAmount<Currency>>
@@ -59,6 +64,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
   const isVisible = showPriceImpactWarning || rateImpact < 0 || showHighFeeWarning
+
+  const showApprovalBundlingBanner = !isConfirmScreen && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(formState)
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -117,6 +124,13 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
             {/* TODO: add link to somewhere */}
             {/*<a href="/">Learn more ↗</a>*/}
           </span>
+        </styledEl.SmallVolumeWarningBanner>
+      )}
+
+      {showApprovalBundlingBanner && (
+        <styledEl.SmallVolumeWarningBanner>
+          <SVG src={AlertTriangle} description="Alert" />
+          <span>The next tx will bundle approval and order placement to make it easier, bla bla</span>
         </styledEl.SmallVolumeWarningBanner>
       )}
     </div>
