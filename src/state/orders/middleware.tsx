@@ -233,15 +233,21 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
   let cowSound
   if (isPendingOrderAction(action)) {
-    cowSound = getCowSoundSend()
+    if (_shouldPlayPendingOrderSound(action.payload)) {
+      cowSound = getCowSoundSend()
+    }
   } else if (isFulfillOrderAction(action)) {
     cowSound = getCowSoundSuccess()
-  } else if (isExpireOrdersAction(action)) {
-    cowSound = getCowSoundError()
-  } else if (isCancelOrderAction(action)) {
+  } else if (isBatchExpireOrderAction(action)) {
+    if (_shouldPlayExpiredOrderSound(action.payload, store)) {
+      cowSound = getCowSoundError()
+    }
+  } else if (isBatchCancelOrderAction(action)) {
     cowSound = getCowSoundError()
   } else if (isFailedTxAction(action)) {
     cowSound = getCowSoundError()
+  } else if (isUpdateOrderAction(action)) {
+    cowSound = _getUpdatedOrderSound(action.payload)
   }
 
   if (cowSound) {
@@ -251,6 +257,33 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   }
 
   return result
+}
+
+function _shouldPlayPendingOrderSound(payload: AddPendingOrderParams): boolean {
+  // Only play COW sound if added pending order is not hidden
+  return !payload.order.isHidden
+}
+
+function _shouldPlayExpiredOrderSound(
+  payload: BatchOrdersUpdateParams,
+  store: MiddlewareAPI<Dispatch<AnyAction>, { orders: OrdersState }>
+): boolean {
+  const { chainId, ids } = payload
+  const orders = store.getState().orders[chainId]
+
+  // Only play COW sound if there's at least one order expired which wasn't hidden
+  return ids.some((id) => {
+    const order = _getOrderById(orders, id)?.order
+    return order && !order.isHidden
+  })
+}
+
+function _getUpdatedOrderSound(payload: UpdateOrderParams) {
+  if (!payload.order.isHidden) {
+    // Trigger COW sound when an order is being updated to a non-hidden state
+    return getCowSoundSend()
+  }
+  return undefined
 }
 
 const isAddPopup = isAnyOf(addPopup)
