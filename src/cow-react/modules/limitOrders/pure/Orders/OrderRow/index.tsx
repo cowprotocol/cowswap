@@ -69,7 +69,7 @@ const BalanceWarning = (symbol: string) => (
       <strong>
         <TokenSymbol token={{ symbol }} />
       </strong>{' '}
-      balance to execute this limit order.
+      balance to execute this order.
       <br />
       <br />
       The order is still open and will become executable when you top up your{' '}
@@ -83,7 +83,7 @@ const BalanceWarning = (symbol: string) => (
 
 const AllowanceWarning = (symbol: string) => (
   <styledEl.WarningParagraph>
-    <h3>Insufficient approval for this limit order</h3>
+    <h3>Insufficient approval for this order</h3>
     <p>
       This order is still open and valid, but you haven’t given CoW Swap sufficient allowance to spend{' '}
       <strong>
