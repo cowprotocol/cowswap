@@ -6,6 +6,7 @@ import React from 'react'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
 import { NoImpactWarning } from '@cow/modules/trade/pure/NoImpactWarning'
 import styled from 'styled-components/macro'
+import { TradeWarning } from '@cow/modules/trade/pure/TradeWarning'
 
 export interface SwapWarningsTopProps {
   trade: TradeGp | undefined
@@ -14,6 +15,7 @@ export interface SwapWarningsTopProps {
   impactWarningAccepted: boolean
   hideUnknownImpactWarning: boolean
   isExpertMode: boolean
+  showApprovalBundlingBanner: boolean
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -37,6 +39,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     impactWarningAccepted,
     isExpertMode,
     hideUnknownImpactWarning,
+    showApprovalBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
   } = props
@@ -54,6 +57,13 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         <StyledNoImpactWarning
           isAccepted={impactWarningAccepted}
           acceptCallback={!isExpertMode && account ? () => setImpactWarningAccepted((state) => !state) : undefined}
+        />
+      )}
+      {showApprovalBundlingBanner && (
+        <TradeWarning
+          text="The next tx will bundle approval and order placement to make it easier, bla bl"
+          tooltipContent="TODO: insert a tooltip content here etc"
+          withoutAccepting
         />
       )}
     </>

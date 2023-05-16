@@ -42,6 +42,9 @@ import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer } from '@cow/modules/trade/containers/TradeWidget'
 import SettingsTab from '@src/components/Settings'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { SwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
+
+const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
 
 export function SwapWidget() {
   useSetupTradeState()
@@ -144,6 +147,8 @@ export function SwapWidget() {
     ethFlowProps,
   }
 
+  const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_BANNER.includes(swapButtonContext.swapButtonState)
+
   const swapWarningsTopProps: SwapWarningsTopProps = {
     trade,
     account,
@@ -152,6 +157,7 @@ export function SwapWidget() {
     // don't show the unknown impact warning on: no trade, wrapping native, no error, or it's loading impact
     hideUnknownImpactWarning: !trade || isWrapUnwrapMode || !priceImpactParams.error || priceImpactParams.loading,
     isExpertMode,
+    showApprovalBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
   }
