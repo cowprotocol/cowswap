@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { ordersDeadlines } from '../deadlines'
 import { useDeadline } from './useDeadline'
+import { displayTime } from '@cow/modules/advancedOrders/utils/displayTime'
 
 export function useDisplayDeadline() {
   const { isCustomDeadline, deadline, customDeadline } = useDeadline()
@@ -10,11 +11,11 @@ export function useDisplayDeadline() {
       return ordersDeadlines.find((d) => deadline === d.value)?.title
     } else {
       const { minutes, hours } = customDeadline
-
-      if (minutes && hours) return `${hours} hours ${minutes} minutes`
-      else if (hours) return `${hours} hours`
-      else if (minutes) return `${minutes} minutes`
-      else return 'Set total time'
+      return displayTime({
+        defaultOutput: 'Set total time',
+        minutes,
+        hours,
+      })
     }
   }, [isCustomDeadline, deadline, customDeadline])
 }

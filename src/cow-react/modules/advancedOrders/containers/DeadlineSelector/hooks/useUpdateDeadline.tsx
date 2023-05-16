@@ -21,6 +21,6 @@ export function useUpdateDeadline() {
 
       updateState({ ...prevState, ...update })
     },
-    [updateState]
+    [updateState, prevState]
   )
 }
