@@ -1,0 +1,1 @@
+export { useFavouriteToken } from './useFavouriteToken'
