@@ -1,12 +1,15 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
 import { PENDING_ORDERS_BUFFER, ZERO_FRACTION } from 'constants/index'
-import { Order } from 'state/orders/actions'
+import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { EnrichedOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import JSBI from 'jsbi'
 import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
+import { UpdateOrderParams } from 'state/orders/hooks'
+import { AppDispatch } from 'state'
+import { serializeToken } from 'state/user/hooks'
 
 export type OrderTransitionStatus =
   | 'unknown'
@@ -359,4 +362,16 @@ export function getRemainderAmount(kind: OrderKind, order: Order): string {
   const executedAmount = JSBI.BigInt((kind === OrderKind.SELL ? executedSellAmountBeforeFees : executedBuyAmount) || 0)
 
   return JSBI.subtract(JSBI.BigInt(fullAmount), executedAmount).toString()
+}
+
+export function partialOrderUpdate({ chainId, order }: UpdateOrderParams, dispatch: AppDispatch): void {
+  const params: UpdateOrderParamsAction = {
+    chainId,
+    order: {
+      ...order,
+      ...(order.inputToken && { inputToken: serializeToken(order.inputToken) }),
+      ...(order.outputToken && { outputToken: serializeToken(order.outputToken) }),
+    },
+  }
+  dispatch(updateOrder(params))
 }
