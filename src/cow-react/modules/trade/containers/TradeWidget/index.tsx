@@ -33,6 +33,7 @@ interface TradeWidgetParams {
 interface TradeWidgetSlots {
   settingsWidget: JSX.Element
   lockScreen?: JSX.Element
+  topContent?: JSX.Element
   middleContent?: JSX.Element
   bottomContent?: JSX.Element
 }
@@ -51,7 +52,7 @@ export const TradeWidgetContainer = styledEl.Container
 // TODO: add ImportTokenModal, TradeApproveWidget
 export function TradeWidget(props: TradeWidgetProps) {
   const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params } = props
-  const { settingsWidget, lockScreen, middleContent, bottomContent } = slots
+  const { settingsWidget, lockScreen, topContent, middleContent, bottomContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
   const {
@@ -92,6 +93,8 @@ export function TradeWidget(props: TradeWidgetProps) {
           <TradeWidgetLinks />
           {!lockScreen && settingsWidget}
         </styledEl.Header>
+
+        {topContent}
 
         {lockScreen ? (
           lockScreen
