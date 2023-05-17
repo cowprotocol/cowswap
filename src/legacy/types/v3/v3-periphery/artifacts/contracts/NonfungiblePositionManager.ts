@@ -13,71 +13,50 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type {
-  FunctionFragment,
-  Result,
-  EventFragment,
-} from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "../../../common";
+} from 'ethers'
+import type { FunctionFragment, Result, EventFragment } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../common'
 
 export declare namespace INonfungiblePositionManager {
   export type CollectParamsStruct = {
-    tokenId: PromiseOrValue<BigNumberish>;
-    recipient: PromiseOrValue<string>;
-    amount0Max: PromiseOrValue<BigNumberish>;
-    amount1Max: PromiseOrValue<BigNumberish>;
-  };
+    tokenId: PromiseOrValue<BigNumberish>
+    recipient: PromiseOrValue<string>
+    amount0Max: PromiseOrValue<BigNumberish>
+    amount1Max: PromiseOrValue<BigNumberish>
+  }
 
-  export type CollectParamsStructOutput = [
-    BigNumber,
-    string,
-    BigNumber,
-    BigNumber
-  ] & {
-    tokenId: BigNumber;
-    recipient: string;
-    amount0Max: BigNumber;
-    amount1Max: BigNumber;
-  };
+  export type CollectParamsStructOutput = [BigNumber, string, BigNumber, BigNumber] & {
+    tokenId: BigNumber
+    recipient: string
+    amount0Max: BigNumber
+    amount1Max: BigNumber
+  }
 
   export type DecreaseLiquidityParamsStruct = {
-    tokenId: PromiseOrValue<BigNumberish>;
-    liquidity: PromiseOrValue<BigNumberish>;
-    amount0Min: PromiseOrValue<BigNumberish>;
-    amount1Min: PromiseOrValue<BigNumberish>;
-    deadline: PromiseOrValue<BigNumberish>;
-  };
+    tokenId: PromiseOrValue<BigNumberish>
+    liquidity: PromiseOrValue<BigNumberish>
+    amount0Min: PromiseOrValue<BigNumberish>
+    amount1Min: PromiseOrValue<BigNumberish>
+    deadline: PromiseOrValue<BigNumberish>
+  }
 
-  export type DecreaseLiquidityParamsStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    tokenId: BigNumber;
-    liquidity: BigNumber;
-    amount0Min: BigNumber;
-    amount1Min: BigNumber;
-    deadline: BigNumber;
-  };
+  export type DecreaseLiquidityParamsStructOutput = [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+    tokenId: BigNumber
+    liquidity: BigNumber
+    amount0Min: BigNumber
+    amount1Min: BigNumber
+    deadline: BigNumber
+  }
 
   export type IncreaseLiquidityParamsStruct = {
-    tokenId: PromiseOrValue<BigNumberish>;
-    amount0Desired: PromiseOrValue<BigNumberish>;
-    amount1Desired: PromiseOrValue<BigNumberish>;
-    amount0Min: PromiseOrValue<BigNumberish>;
-    amount1Min: PromiseOrValue<BigNumberish>;
-    deadline: PromiseOrValue<BigNumberish>;
-  };
+    tokenId: PromiseOrValue<BigNumberish>
+    amount0Desired: PromiseOrValue<BigNumberish>
+    amount1Desired: PromiseOrValue<BigNumberish>
+    amount0Min: PromiseOrValue<BigNumberish>
+    amount1Min: PromiseOrValue<BigNumberish>
+    deadline: PromiseOrValue<BigNumberish>
+  }
 
   export type IncreaseLiquidityParamsStructOutput = [
     BigNumber,
@@ -87,27 +66,27 @@ export declare namespace INonfungiblePositionManager {
     BigNumber,
     BigNumber
   ] & {
-    tokenId: BigNumber;
-    amount0Desired: BigNumber;
-    amount1Desired: BigNumber;
-    amount0Min: BigNumber;
-    amount1Min: BigNumber;
-    deadline: BigNumber;
-  };
+    tokenId: BigNumber
+    amount0Desired: BigNumber
+    amount1Desired: BigNumber
+    amount0Min: BigNumber
+    amount1Min: BigNumber
+    deadline: BigNumber
+  }
 
   export type MintParamsStruct = {
-    token0: PromiseOrValue<string>;
-    token1: PromiseOrValue<string>;
-    fee: PromiseOrValue<BigNumberish>;
-    tickLower: PromiseOrValue<BigNumberish>;
-    tickUpper: PromiseOrValue<BigNumberish>;
-    amount0Desired: PromiseOrValue<BigNumberish>;
-    amount1Desired: PromiseOrValue<BigNumberish>;
-    amount0Min: PromiseOrValue<BigNumberish>;
-    amount1Min: PromiseOrValue<BigNumberish>;
-    recipient: PromiseOrValue<string>;
-    deadline: PromiseOrValue<BigNumberish>;
-  };
+    token0: PromiseOrValue<string>
+    token1: PromiseOrValue<string>
+    fee: PromiseOrValue<BigNumberish>
+    tickLower: PromiseOrValue<BigNumberish>
+    tickUpper: PromiseOrValue<BigNumberish>
+    amount0Desired: PromiseOrValue<BigNumberish>
+    amount1Desired: PromiseOrValue<BigNumberish>
+    amount0Min: PromiseOrValue<BigNumberish>
+    amount1Min: PromiseOrValue<BigNumberish>
+    recipient: PromiseOrValue<string>
+    deadline: PromiseOrValue<BigNumberish>
+  }
 
   export type MintParamsStructOutput = [
     string,
@@ -122,171 +101,139 @@ export declare namespace INonfungiblePositionManager {
     string,
     BigNumber
   ] & {
-    token0: string;
-    token1: string;
-    fee: number;
-    tickLower: number;
-    tickUpper: number;
-    amount0Desired: BigNumber;
-    amount1Desired: BigNumber;
-    amount0Min: BigNumber;
-    amount1Min: BigNumber;
-    recipient: string;
-    deadline: BigNumber;
-  };
+    token0: string
+    token1: string
+    fee: number
+    tickLower: number
+    tickUpper: number
+    amount0Desired: BigNumber
+    amount1Desired: BigNumber
+    amount0Min: BigNumber
+    amount1Min: BigNumber
+    recipient: string
+    deadline: BigNumber
+  }
 }
 
 export interface NonfungiblePositionManagerInterface extends utils.Interface {
   functions: {
-    "DOMAIN_SEPARATOR()": FunctionFragment;
-    "PERMIT_TYPEHASH()": FunctionFragment;
-    "WETH9()": FunctionFragment;
-    "approve(address,uint256)": FunctionFragment;
-    "balanceOf(address)": FunctionFragment;
-    "baseURI()": FunctionFragment;
-    "burn(uint256)": FunctionFragment;
-    "collect((uint256,address,uint128,uint128))": FunctionFragment;
-    "createAndInitializePoolIfNecessary(address,address,uint24,uint160)": FunctionFragment;
-    "decreaseLiquidity((uint256,uint128,uint256,uint256,uint256))": FunctionFragment;
-    "factory()": FunctionFragment;
-    "getApproved(uint256)": FunctionFragment;
-    "increaseLiquidity((uint256,uint256,uint256,uint256,uint256,uint256))": FunctionFragment;
-    "isApprovedForAll(address,address)": FunctionFragment;
-    "mint((address,address,uint24,int24,int24,uint256,uint256,uint256,uint256,address,uint256))": FunctionFragment;
-    "multicall(bytes[])": FunctionFragment;
-    "name()": FunctionFragment;
-    "ownerOf(uint256)": FunctionFragment;
-    "permit(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "positions(uint256)": FunctionFragment;
-    "refundETH()": FunctionFragment;
-    "safeTransferFrom(address,address,uint256)": FunctionFragment;
-    "safeTransferFrom(address,address,uint256,bytes)": FunctionFragment;
-    "selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "selfPermitAllowed(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "selfPermitAllowedIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "setApprovalForAll(address,bool)": FunctionFragment;
-    "supportsInterface(bytes4)": FunctionFragment;
-    "sweepToken(address,uint256,address)": FunctionFragment;
-    "symbol()": FunctionFragment;
-    "tokenByIndex(uint256)": FunctionFragment;
-    "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
-    "tokenURI(uint256)": FunctionFragment;
-    "totalSupply()": FunctionFragment;
-    "transferFrom(address,address,uint256)": FunctionFragment;
-    "uniswapV3MintCallback(uint256,uint256,bytes)": FunctionFragment;
-    "unwrapWETH9(uint256,address)": FunctionFragment;
-  };
+    'DOMAIN_SEPARATOR()': FunctionFragment
+    'PERMIT_TYPEHASH()': FunctionFragment
+    'WETH9()': FunctionFragment
+    'approve(address,uint256)': FunctionFragment
+    'balanceOf(address)': FunctionFragment
+    'baseURI()': FunctionFragment
+    'burn(uint256)': FunctionFragment
+    'collect((uint256,address,uint128,uint128))': FunctionFragment
+    'createAndInitializePoolIfNecessary(address,address,uint24,uint160)': FunctionFragment
+    'decreaseLiquidity((uint256,uint128,uint256,uint256,uint256))': FunctionFragment
+    'factory()': FunctionFragment
+    'getApproved(uint256)': FunctionFragment
+    'increaseLiquidity((uint256,uint256,uint256,uint256,uint256,uint256))': FunctionFragment
+    'isApprovedForAll(address,address)': FunctionFragment
+    'mint((address,address,uint24,int24,int24,uint256,uint256,uint256,uint256,address,uint256))': FunctionFragment
+    'multicall(bytes[])': FunctionFragment
+    'name()': FunctionFragment
+    'ownerOf(uint256)': FunctionFragment
+    'permit(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+    'positions(uint256)': FunctionFragment
+    'refundETH()': FunctionFragment
+    'safeTransferFrom(address,address,uint256)': FunctionFragment
+    'safeTransferFrom(address,address,uint256,bytes)': FunctionFragment
+    'selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+    'selfPermitAllowed(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+    'selfPermitAllowedIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+    'selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+    'setApprovalForAll(address,bool)': FunctionFragment
+    'supportsInterface(bytes4)': FunctionFragment
+    'sweepToken(address,uint256,address)': FunctionFragment
+    'symbol()': FunctionFragment
+    'tokenByIndex(uint256)': FunctionFragment
+    'tokenOfOwnerByIndex(address,uint256)': FunctionFragment
+    'tokenURI(uint256)': FunctionFragment
+    'totalSupply()': FunctionFragment
+    'transferFrom(address,address,uint256)': FunctionFragment
+    'uniswapV3MintCallback(uint256,uint256,bytes)': FunctionFragment
+    'unwrapWETH9(uint256,address)': FunctionFragment
+  }
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "DOMAIN_SEPARATOR"
-      | "PERMIT_TYPEHASH"
-      | "WETH9"
-      | "approve"
-      | "balanceOf"
-      | "baseURI"
-      | "burn"
-      | "collect"
-      | "createAndInitializePoolIfNecessary"
-      | "decreaseLiquidity"
-      | "factory"
-      | "getApproved"
-      | "increaseLiquidity"
-      | "isApprovedForAll"
-      | "mint"
-      | "multicall"
-      | "name"
-      | "ownerOf"
-      | "permit"
-      | "positions"
-      | "refundETH"
-      | "safeTransferFrom(address,address,uint256)"
-      | "safeTransferFrom(address,address,uint256,bytes)"
-      | "selfPermit"
-      | "selfPermitAllowed"
-      | "selfPermitAllowedIfNecessary"
-      | "selfPermitIfNecessary"
-      | "setApprovalForAll"
-      | "supportsInterface"
-      | "sweepToken"
-      | "symbol"
-      | "tokenByIndex"
-      | "tokenOfOwnerByIndex"
-      | "tokenURI"
-      | "totalSupply"
-      | "transferFrom"
-      | "uniswapV3MintCallback"
-      | "unwrapWETH9"
-  ): FunctionFragment;
+      | 'DOMAIN_SEPARATOR'
+      | 'PERMIT_TYPEHASH'
+      | 'WETH9'
+      | 'approve'
+      | 'balanceOf'
+      | 'baseURI'
+      | 'burn'
+      | 'collect'
+      | 'createAndInitializePoolIfNecessary'
+      | 'decreaseLiquidity'
+      | 'factory'
+      | 'getApproved'
+      | 'increaseLiquidity'
+      | 'isApprovedForAll'
+      | 'mint'
+      | 'multicall'
+      | 'name'
+      | 'ownerOf'
+      | 'permit'
+      | 'positions'
+      | 'refundETH'
+      | 'safeTransferFrom(address,address,uint256)'
+      | 'safeTransferFrom(address,address,uint256,bytes)'
+      | 'selfPermit'
+      | 'selfPermitAllowed'
+      | 'selfPermitAllowedIfNecessary'
+      | 'selfPermitIfNecessary'
+      | 'setApprovalForAll'
+      | 'supportsInterface'
+      | 'sweepToken'
+      | 'symbol'
+      | 'tokenByIndex'
+      | 'tokenOfOwnerByIndex'
+      | 'tokenURI'
+      | 'totalSupply'
+      | 'transferFrom'
+      | 'uniswapV3MintCallback'
+      | 'unwrapWETH9'
+  ): FunctionFragment
 
+  encodeFunctionData(functionFragment: 'DOMAIN_SEPARATOR', values?: undefined): string
+  encodeFunctionData(functionFragment: 'PERMIT_TYPEHASH', values?: undefined): string
+  encodeFunctionData(functionFragment: 'WETH9', values?: undefined): string
   encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "PERMIT_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "WETH9", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "approve",
+    functionFragment: 'approve',
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
+  ): string
+  encodeFunctionData(functionFragment: 'balanceOf', values: [PromiseOrValue<string>]): string
+  encodeFunctionData(functionFragment: 'baseURI', values?: undefined): string
+  encodeFunctionData(functionFragment: 'burn', values: [PromiseOrValue<BigNumberish>]): string
+  encodeFunctionData(functionFragment: 'collect', values: [INonfungiblePositionManager.CollectParamsStruct]): string
   encodeFunctionData(
-    functionFragment: "balanceOf",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(functionFragment: "baseURI", values?: undefined): string;
+    functionFragment: 'createAndInitializePoolIfNecessary',
+    values: [PromiseOrValue<string>, PromiseOrValue<string>, PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string
   encodeFunctionData(
-    functionFragment: "burn",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "collect",
-    values: [INonfungiblePositionManager.CollectParamsStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "createAndInitializePoolIfNecessary",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "decreaseLiquidity",
+    functionFragment: 'decreaseLiquidity',
     values: [INonfungiblePositionManager.DecreaseLiquidityParamsStruct]
-  ): string;
-  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
+  ): string
+  encodeFunctionData(functionFragment: 'factory', values?: undefined): string
+  encodeFunctionData(functionFragment: 'getApproved', values: [PromiseOrValue<BigNumberish>]): string
   encodeFunctionData(
-    functionFragment: "getApproved",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "increaseLiquidity",
+    functionFragment: 'increaseLiquidity',
     values: [INonfungiblePositionManager.IncreaseLiquidityParamsStruct]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "isApprovedForAll",
+    functionFragment: 'isApprovedForAll',
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
-  ): string;
+  ): string
+  encodeFunctionData(functionFragment: 'mint', values: [INonfungiblePositionManager.MintParamsStruct]): string
+  encodeFunctionData(functionFragment: 'multicall', values: [PromiseOrValue<BytesLike>[]]): string
+  encodeFunctionData(functionFragment: 'name', values?: undefined): string
+  encodeFunctionData(functionFragment: 'ownerOf', values: [PromiseOrValue<BigNumberish>]): string
   encodeFunctionData(
-    functionFragment: "mint",
-    values: [INonfungiblePositionManager.MintParamsStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multicall",
-    values: [PromiseOrValue<BytesLike>[]]
-  ): string;
-  encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "ownerOf",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "permit",
+    functionFragment: 'permit',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -295,31 +242,19 @@ export interface NonfungiblePositionManagerInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
+  encodeFunctionData(functionFragment: 'positions', values: [PromiseOrValue<BigNumberish>]): string
+  encodeFunctionData(functionFragment: 'refundETH', values?: undefined): string
   encodeFunctionData(
-    functionFragment: "positions",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(functionFragment: "refundETH", values?: undefined): string;
+    functionFragment: 'safeTransferFrom(address,address,uint256)',
+    values: [PromiseOrValue<string>, PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string
   encodeFunctionData(
-    functionFragment: "safeTransferFrom(address,address,uint256)",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
+    functionFragment: 'safeTransferFrom(address,address,uint256,bytes)',
+    values: [PromiseOrValue<string>, PromiseOrValue<string>, PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+  ): string
   encodeFunctionData(
-    functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "selfPermit",
+    functionFragment: 'selfPermit',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -328,9 +263,9 @@ export interface NonfungiblePositionManagerInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "selfPermitAllowed",
+    functionFragment: 'selfPermitAllowed',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -339,9 +274,9 @@ export interface NonfungiblePositionManagerInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "selfPermitAllowedIfNecessary",
+    functionFragment: 'selfPermitAllowedIfNecessary',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -350,9 +285,9 @@ export interface NonfungiblePositionManagerInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "selfPermitIfNecessary",
+    functionFragment: 'selfPermitIfNecessary',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -361,309 +296,204 @@ export interface NonfungiblePositionManagerInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "setApprovalForAll",
+    functionFragment: 'setApprovalForAll',
     values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
-  ): string;
+  ): string
+  encodeFunctionData(functionFragment: 'supportsInterface', values: [PromiseOrValue<BytesLike>]): string
   encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
+    functionFragment: 'sweepToken',
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string
+  encodeFunctionData(functionFragment: 'symbol', values?: undefined): string
+  encodeFunctionData(functionFragment: 'tokenByIndex', values: [PromiseOrValue<BigNumberish>]): string
   encodeFunctionData(
-    functionFragment: "sweepToken",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
-  ): string;
-  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tokenByIndex",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenOfOwnerByIndex",
+    functionFragment: 'tokenOfOwnerByIndex',
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
+  ): string
+  encodeFunctionData(functionFragment: 'tokenURI', values: [PromiseOrValue<BigNumberish>]): string
+  encodeFunctionData(functionFragment: 'totalSupply', values?: undefined): string
   encodeFunctionData(
-    functionFragment: "tokenURI",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
+    functionFragment: 'transferFrom',
+    values: [PromiseOrValue<string>, PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string
   encodeFunctionData(
-    functionFragment: "totalSupply",
-    values?: undefined
-  ): string;
+    functionFragment: 'uniswapV3MintCallback',
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+  ): string
   encodeFunctionData(
-    functionFragment: "transferFrom",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "uniswapV3MintCallback",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "unwrapWETH9",
+    functionFragment: 'unwrapWETH9',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
-  ): string;
+  ): string
 
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "PERMIT_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "WETH9", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "collect", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "createAndInitializePoolIfNecessary",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "decreaseLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getApproved",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "increaseLiquidity",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isApprovedForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "positions", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "refundETH", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "safeTransferFrom(address,address,uint256)",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "selfPermit", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "selfPermitAllowed",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "selfPermitAllowedIfNecessary",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "selfPermitIfNecessary",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setApprovalForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "sweepToken", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokenOfOwnerByIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "totalSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferFrom",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "uniswapV3MintCallback",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "unwrapWETH9",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'DOMAIN_SEPARATOR', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'PERMIT_TYPEHASH', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'WETH9', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'baseURI', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'burn', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'collect', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'createAndInitializePoolIfNecessary', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'decreaseLiquidity', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'factory', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'getApproved', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'increaseLiquidity', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'isApprovedForAll', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'ownerOf', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'permit', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'positions', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'refundETH', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'safeTransferFrom(address,address,uint256)', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'safeTransferFrom(address,address,uint256,bytes)', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'selfPermit', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'selfPermitAllowed', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'selfPermitAllowedIfNecessary', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'selfPermitIfNecessary', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'setApprovalForAll', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'supportsInterface', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'sweepToken', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'tokenByIndex', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'tokenOfOwnerByIndex', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'tokenURI', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'totalSupply', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'transferFrom', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'uniswapV3MintCallback', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'unwrapWETH9', data: BytesLike): Result
 
   events: {
-    "Approval(address,address,uint256)": EventFragment;
-    "ApprovalForAll(address,address,bool)": EventFragment;
-    "Collect(uint256,address,uint256,uint256)": EventFragment;
-    "DecreaseLiquidity(uint256,uint128,uint256,uint256)": EventFragment;
-    "IncreaseLiquidity(uint256,uint128,uint256,uint256)": EventFragment;
-    "Transfer(address,address,uint256)": EventFragment;
-  };
+    'Approval(address,address,uint256)': EventFragment
+    'ApprovalForAll(address,address,bool)': EventFragment
+    'Collect(uint256,address,uint256,uint256)': EventFragment
+    'DecreaseLiquidity(uint256,uint128,uint256,uint256)': EventFragment
+    'IncreaseLiquidity(uint256,uint128,uint256,uint256)': EventFragment
+    'Transfer(address,address,uint256)': EventFragment
+  }
 
-  getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Collect"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DecreaseLiquidity"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "IncreaseLiquidity"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment
+  getEvent(nameOrSignatureOrTopic: 'ApprovalForAll'): EventFragment
+  getEvent(nameOrSignatureOrTopic: 'Collect'): EventFragment
+  getEvent(nameOrSignatureOrTopic: 'DecreaseLiquidity'): EventFragment
+  getEvent(nameOrSignatureOrTopic: 'IncreaseLiquidity'): EventFragment
+  getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment
 }
 
 export interface ApprovalEventObject {
-  owner: string;
-  approved: string;
-  tokenId: BigNumber;
+  owner: string
+  approved: string
+  tokenId: BigNumber
 }
-export type ApprovalEvent = TypedEvent<
-  [string, string, BigNumber],
-  ApprovalEventObject
->;
+export type ApprovalEvent = TypedEvent<[string, string, BigNumber], ApprovalEventObject>
 
-export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
+export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>
 
 export interface ApprovalForAllEventObject {
-  owner: string;
-  operator: string;
-  approved: boolean;
+  owner: string
+  operator: string
+  approved: boolean
 }
-export type ApprovalForAllEvent = TypedEvent<
-  [string, string, boolean],
-  ApprovalForAllEventObject
->;
+export type ApprovalForAllEvent = TypedEvent<[string, string, boolean], ApprovalForAllEventObject>
 
-export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>
 
 export interface CollectEventObject {
-  tokenId: BigNumber;
-  recipient: string;
-  amount0: BigNumber;
-  amount1: BigNumber;
+  tokenId: BigNumber
+  recipient: string
+  amount0: BigNumber
+  amount1: BigNumber
 }
-export type CollectEvent = TypedEvent<
-  [BigNumber, string, BigNumber, BigNumber],
-  CollectEventObject
->;
+export type CollectEvent = TypedEvent<[BigNumber, string, BigNumber, BigNumber], CollectEventObject>
 
-export type CollectEventFilter = TypedEventFilter<CollectEvent>;
+export type CollectEventFilter = TypedEventFilter<CollectEvent>
 
 export interface DecreaseLiquidityEventObject {
-  tokenId: BigNumber;
-  liquidity: BigNumber;
-  amount0: BigNumber;
-  amount1: BigNumber;
+  tokenId: BigNumber
+  liquidity: BigNumber
+  amount0: BigNumber
+  amount1: BigNumber
 }
 export type DecreaseLiquidityEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, BigNumber],
   DecreaseLiquidityEventObject
->;
+>
 
-export type DecreaseLiquidityEventFilter =
-  TypedEventFilter<DecreaseLiquidityEvent>;
+export type DecreaseLiquidityEventFilter = TypedEventFilter<DecreaseLiquidityEvent>
 
 export interface IncreaseLiquidityEventObject {
-  tokenId: BigNumber;
-  liquidity: BigNumber;
-  amount0: BigNumber;
-  amount1: BigNumber;
+  tokenId: BigNumber
+  liquidity: BigNumber
+  amount0: BigNumber
+  amount1: BigNumber
 }
 export type IncreaseLiquidityEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, BigNumber],
   IncreaseLiquidityEventObject
->;
+>
 
-export type IncreaseLiquidityEventFilter =
-  TypedEventFilter<IncreaseLiquidityEvent>;
+export type IncreaseLiquidityEventFilter = TypedEventFilter<IncreaseLiquidityEvent>
 
 export interface TransferEventObject {
-  from: string;
-  to: string;
-  tokenId: BigNumber;
+  from: string
+  to: string
+  tokenId: BigNumber
 }
-export type TransferEvent = TypedEvent<
-  [string, string, BigNumber],
-  TransferEventObject
->;
+export type TransferEvent = TypedEvent<[string, string, BigNumber], TransferEventObject>
 
-export type TransferEventFilter = TypedEventFilter<TransferEvent>;
+export type TransferEventFilter = TypedEventFilter<TransferEvent>
 
 export interface NonfungiblePositionManager extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: NonfungiblePositionManagerInterface;
+  interface: NonfungiblePositionManagerInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
-    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<[string]>;
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<[string]>
 
-    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<[string]>
 
-    WETH9(overrides?: CallOverrides): Promise<[string]>;
+    WETH9(overrides?: CallOverrides): Promise<[string]>
 
     approve(
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
-    balanceOf(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    balanceOf(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[BigNumber]>
 
-    baseURI(overrides?: CallOverrides): Promise<[string]>;
+    baseURI(overrides?: CallOverrides): Promise<[string]>
 
     burn(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     collect(
       params: INonfungiblePositionManager.CollectParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     createAndInitializePoolIfNecessary(
       token0: PromiseOrValue<string>,
@@ -671,47 +501,41 @@ export interface NonfungiblePositionManager extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     decreaseLiquidity(
       params: INonfungiblePositionManager.DecreaseLiquidityParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
-    factory(overrides?: CallOverrides): Promise<[string]>;
+    factory(overrides?: CallOverrides): Promise<[string]>
 
-    getApproved(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    getApproved(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<[string]>
 
     increaseLiquidity(
       params: INonfungiblePositionManager.IncreaseLiquidityParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<[boolean]>
 
     mint(
       params: INonfungiblePositionManager.MintParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
-    name(overrides?: CallOverrides): Promise<[string]>;
+    name(overrides?: CallOverrides): Promise<[string]>
 
-    ownerOf(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    ownerOf(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<[string]>
 
     permit(
       spender: PromiseOrValue<string>,
@@ -721,7 +545,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     positions(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -741,39 +565,37 @@ export interface NonfungiblePositionManager extends BaseContract {
         BigNumber,
         BigNumber
       ] & {
-        nonce: BigNumber;
-        operator: string;
-        token0: string;
-        token1: string;
-        fee: number;
-        tickLower: number;
-        tickUpper: number;
-        liquidity: BigNumber;
-        feeGrowthInside0LastX128: BigNumber;
-        feeGrowthInside1LastX128: BigNumber;
-        tokensOwed0: BigNumber;
-        tokensOwed1: BigNumber;
+        nonce: BigNumber
+        operator: string
+        token0: string
+        token1: string
+        fee: number
+        tickLower: number
+        tickUpper: number
+        liquidity: BigNumber
+        feeGrowthInside0LastX128: BigNumber
+        feeGrowthInside1LastX128: BigNumber
+        tokensOwed0: BigNumber
+        tokensOwed1: BigNumber
       }
-    >;
+    >
 
-    refundETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    refundETH(overrides?: PayableOverrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>
 
-    "safeTransferFrom(address,address,uint256)"(
+    'safeTransferFrom(address,address,uint256)'(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
-    "safeTransferFrom(address,address,uint256,bytes)"(
+    'safeTransferFrom(address,address,uint256,bytes)'(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       _data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     selfPermit(
       token: PromiseOrValue<string>,
@@ -783,7 +605,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -793,7 +615,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -803,7 +625,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -813,95 +635,83 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<[boolean]>
 
     sweepToken(
       token: PromiseOrValue<string>,
       amountMinimum: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
-    symbol(overrides?: CallOverrides): Promise<[string]>;
+    symbol(overrides?: CallOverrides): Promise<[string]>
 
-    tokenByIndex(
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    tokenByIndex(index: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<[BigNumber]>
 
     tokenOfOwnerByIndex(
       owner: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber]>
 
-    tokenURI(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    tokenURI(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<[string]>
 
-    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>
 
     transferFrom(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     uniswapV3MintCallback(
       amount0Owed: PromiseOrValue<BigNumberish>,
       amount1Owed: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     unwrapWETH9(
       amountMinimum: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+    ): Promise<ContractTransaction>
+  }
 
-  DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
+  DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>
 
-  PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+  PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>
 
-  WETH9(overrides?: CallOverrides): Promise<string>;
+  WETH9(overrides?: CallOverrides): Promise<string>
 
   approve(
     to: PromiseOrValue<string>,
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
-  balanceOf(
-    owner: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  balanceOf(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>
 
-  baseURI(overrides?: CallOverrides): Promise<string>;
+  baseURI(overrides?: CallOverrides): Promise<string>
 
   burn(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   collect(
     params: INonfungiblePositionManager.CollectParamsStruct,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   createAndInitializePoolIfNecessary(
     token0: PromiseOrValue<string>,
@@ -909,47 +719,41 @@ export interface NonfungiblePositionManager extends BaseContract {
     fee: PromiseOrValue<BigNumberish>,
     sqrtPriceX96: PromiseOrValue<BigNumberish>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   decreaseLiquidity(
     params: INonfungiblePositionManager.DecreaseLiquidityParamsStruct,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
-  factory(overrides?: CallOverrides): Promise<string>;
+  factory(overrides?: CallOverrides): Promise<string>
 
-  getApproved(
-    tokenId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  getApproved(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>
 
   increaseLiquidity(
     params: INonfungiblePositionManager.IncreaseLiquidityParamsStruct,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   isApprovedForAll(
     owner: PromiseOrValue<string>,
     operator: PromiseOrValue<string>,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<boolean>
 
   mint(
     params: INonfungiblePositionManager.MintParamsStruct,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   multicall(
     data: PromiseOrValue<BytesLike>[],
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
-  name(overrides?: CallOverrides): Promise<string>;
+  name(overrides?: CallOverrides): Promise<string>
 
-  ownerOf(
-    tokenId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  ownerOf(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>
 
   permit(
     spender: PromiseOrValue<string>,
@@ -959,7 +763,7 @@ export interface NonfungiblePositionManager extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   positions(
     tokenId: PromiseOrValue<BigNumberish>,
@@ -979,39 +783,37 @@ export interface NonfungiblePositionManager extends BaseContract {
       BigNumber,
       BigNumber
     ] & {
-      nonce: BigNumber;
-      operator: string;
-      token0: string;
-      token1: string;
-      fee: number;
-      tickLower: number;
-      tickUpper: number;
-      liquidity: BigNumber;
-      feeGrowthInside0LastX128: BigNumber;
-      feeGrowthInside1LastX128: BigNumber;
-      tokensOwed0: BigNumber;
-      tokensOwed1: BigNumber;
+      nonce: BigNumber
+      operator: string
+      token0: string
+      token1: string
+      fee: number
+      tickLower: number
+      tickUpper: number
+      liquidity: BigNumber
+      feeGrowthInside0LastX128: BigNumber
+      feeGrowthInside1LastX128: BigNumber
+      tokensOwed0: BigNumber
+      tokensOwed1: BigNumber
     }
-  >;
+  >
 
-  refundETH(
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  refundETH(overrides?: PayableOverrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>
 
-  "safeTransferFrom(address,address,uint256)"(
+  'safeTransferFrom(address,address,uint256)'(
     from: PromiseOrValue<string>,
     to: PromiseOrValue<string>,
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
-  "safeTransferFrom(address,address,uint256,bytes)"(
+  'safeTransferFrom(address,address,uint256,bytes)'(
     from: PromiseOrValue<string>,
     to: PromiseOrValue<string>,
     tokenId: PromiseOrValue<BigNumberish>,
     _data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   selfPermit(
     token: PromiseOrValue<string>,
@@ -1021,7 +823,7 @@ export interface NonfungiblePositionManager extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   selfPermitAllowed(
     token: PromiseOrValue<string>,
@@ -1031,7 +833,7 @@ export interface NonfungiblePositionManager extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   selfPermitAllowedIfNecessary(
     token: PromiseOrValue<string>,
@@ -1041,7 +843,7 @@ export interface NonfungiblePositionManager extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   selfPermitIfNecessary(
     token: PromiseOrValue<string>,
@@ -1051,97 +853,76 @@ export interface NonfungiblePositionManager extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   setApprovalForAll(
     operator: PromiseOrValue<string>,
     approved: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
-  supportsInterface(
-    interfaceId: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<boolean>
 
   sweepToken(
     token: PromiseOrValue<string>,
     amountMinimum: PromiseOrValue<BigNumberish>,
     recipient: PromiseOrValue<string>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
-  symbol(overrides?: CallOverrides): Promise<string>;
+  symbol(overrides?: CallOverrides): Promise<string>
 
-  tokenByIndex(
-    index: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  tokenByIndex(index: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>
 
   tokenOfOwnerByIndex(
     owner: PromiseOrValue<string>,
     index: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<BigNumber>
 
-  tokenURI(
-    tokenId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  tokenURI(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>
 
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+  totalSupply(overrides?: CallOverrides): Promise<BigNumber>
 
   transferFrom(
     from: PromiseOrValue<string>,
     to: PromiseOrValue<string>,
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   uniswapV3MintCallback(
     amount0Owed: PromiseOrValue<BigNumberish>,
     amount1Owed: PromiseOrValue<BigNumberish>,
     data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   unwrapWETH9(
     amountMinimum: PromiseOrValue<BigNumberish>,
     recipient: PromiseOrValue<string>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   callStatic: {
-    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>
 
-    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>
 
-    WETH9(overrides?: CallOverrides): Promise<string>;
+    WETH9(overrides?: CallOverrides): Promise<string>
 
-    approve(
-      to: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    approve(to: PromiseOrValue<string>, tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>
 
-    balanceOf(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    balanceOf(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>
 
-    baseURI(overrides?: CallOverrides): Promise<string>;
+    baseURI(overrides?: CallOverrides): Promise<string>
 
-    burn(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    burn(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>
 
     collect(
       params: INonfungiblePositionManager.CollectParamsStruct,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & { amount0: BigNumber; amount1: BigNumber }
-    >;
+    ): Promise<[BigNumber, BigNumber] & { amount0: BigNumber; amount1: BigNumber }>
 
     createAndInitializePoolIfNecessary(
       token0: PromiseOrValue<string>,
@@ -1149,62 +930,51 @@ export interface NonfungiblePositionManager extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<string>
 
     decreaseLiquidity(
       params: INonfungiblePositionManager.DecreaseLiquidityParamsStruct,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & { amount0: BigNumber; amount1: BigNumber }
-    >;
+    ): Promise<[BigNumber, BigNumber] & { amount0: BigNumber; amount1: BigNumber }>
 
-    factory(overrides?: CallOverrides): Promise<string>;
+    factory(overrides?: CallOverrides): Promise<string>
 
-    getApproved(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    getApproved(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>
 
     increaseLiquidity(
       params: INonfungiblePositionManager.IncreaseLiquidityParamsStruct,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
-        liquidity: BigNumber;
-        amount0: BigNumber;
-        amount1: BigNumber;
+        liquidity: BigNumber
+        amount0: BigNumber
+        amount1: BigNumber
       }
-    >;
+    >
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<boolean>
 
     mint(
       params: INonfungiblePositionManager.MintParamsStruct,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        tokenId: BigNumber;
-        liquidity: BigNumber;
-        amount0: BigNumber;
-        amount1: BigNumber;
+        tokenId: BigNumber
+        liquidity: BigNumber
+        amount0: BigNumber
+        amount1: BigNumber
       }
-    >;
+    >
 
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
+    multicall(data: PromiseOrValue<BytesLike>[], overrides?: CallOverrides): Promise<string[]>
 
-    name(overrides?: CallOverrides): Promise<string>;
+    name(overrides?: CallOverrides): Promise<string>
 
-    ownerOf(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    ownerOf(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>
 
     permit(
       spender: PromiseOrValue<string>,
@@ -1214,7 +984,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     positions(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -1234,37 +1004,37 @@ export interface NonfungiblePositionManager extends BaseContract {
         BigNumber,
         BigNumber
       ] & {
-        nonce: BigNumber;
-        operator: string;
-        token0: string;
-        token1: string;
-        fee: number;
-        tickLower: number;
-        tickUpper: number;
-        liquidity: BigNumber;
-        feeGrowthInside0LastX128: BigNumber;
-        feeGrowthInside1LastX128: BigNumber;
-        tokensOwed0: BigNumber;
-        tokensOwed1: BigNumber;
+        nonce: BigNumber
+        operator: string
+        token0: string
+        token1: string
+        fee: number
+        tickLower: number
+        tickUpper: number
+        liquidity: BigNumber
+        feeGrowthInside0LastX128: BigNumber
+        feeGrowthInside1LastX128: BigNumber
+        tokensOwed0: BigNumber
+        tokensOwed1: BigNumber
       }
-    >;
+    >
 
-    refundETH(overrides?: CallOverrides): Promise<void>;
+    refundETH(overrides?: CallOverrides): Promise<void>
 
-    "safeTransferFrom(address,address,uint256)"(
+    'safeTransferFrom(address,address,uint256)'(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
-    "safeTransferFrom(address,address,uint256,bytes)"(
+    'safeTransferFrom(address,address,uint256,bytes)'(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       _data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     selfPermit(
       token: PromiseOrValue<string>,
@@ -1274,7 +1044,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -1284,7 +1054,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -1294,7 +1064,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -1304,170 +1074,158 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<boolean>
 
     sweepToken(
       token: PromiseOrValue<string>,
       amountMinimum: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
-    symbol(overrides?: CallOverrides): Promise<string>;
+    symbol(overrides?: CallOverrides): Promise<string>
 
-    tokenByIndex(
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    tokenByIndex(index: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>
 
     tokenOfOwnerByIndex(
       owner: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    tokenURI(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    tokenURI(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>
 
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>
 
     transferFrom(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     uniswapV3MintCallback(
       amount0Owed: PromiseOrValue<BigNumberish>,
       amount1Owed: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     unwrapWETH9(
       amountMinimum: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
-  };
+    ): Promise<void>
+  }
 
   filters: {
-    "Approval(address,address,uint256)"(
+    'Approval(address,address,uint256)'(
       owner?: PromiseOrValue<string> | null,
       approved?: PromiseOrValue<string> | null,
       tokenId?: PromiseOrValue<BigNumberish> | null
-    ): ApprovalEventFilter;
+    ): ApprovalEventFilter
     Approval(
       owner?: PromiseOrValue<string> | null,
       approved?: PromiseOrValue<string> | null,
       tokenId?: PromiseOrValue<BigNumberish> | null
-    ): ApprovalEventFilter;
+    ): ApprovalEventFilter
 
-    "ApprovalForAll(address,address,bool)"(
+    'ApprovalForAll(address,address,bool)'(
       owner?: PromiseOrValue<string> | null,
       operator?: PromiseOrValue<string> | null,
       approved?: null
-    ): ApprovalForAllEventFilter;
+    ): ApprovalForAllEventFilter
     ApprovalForAll(
       owner?: PromiseOrValue<string> | null,
       operator?: PromiseOrValue<string> | null,
       approved?: null
-    ): ApprovalForAllEventFilter;
+    ): ApprovalForAllEventFilter
 
-    "Collect(uint256,address,uint256,uint256)"(
+    'Collect(uint256,address,uint256,uint256)'(
       tokenId?: PromiseOrValue<BigNumberish> | null,
       recipient?: null,
       amount0?: null,
       amount1?: null
-    ): CollectEventFilter;
+    ): CollectEventFilter
     Collect(
       tokenId?: PromiseOrValue<BigNumberish> | null,
       recipient?: null,
       amount0?: null,
       amount1?: null
-    ): CollectEventFilter;
+    ): CollectEventFilter
 
-    "DecreaseLiquidity(uint256,uint128,uint256,uint256)"(
+    'DecreaseLiquidity(uint256,uint128,uint256,uint256)'(
       tokenId?: PromiseOrValue<BigNumberish> | null,
       liquidity?: null,
       amount0?: null,
       amount1?: null
-    ): DecreaseLiquidityEventFilter;
+    ): DecreaseLiquidityEventFilter
     DecreaseLiquidity(
       tokenId?: PromiseOrValue<BigNumberish> | null,
       liquidity?: null,
       amount0?: null,
       amount1?: null
-    ): DecreaseLiquidityEventFilter;
+    ): DecreaseLiquidityEventFilter
 
-    "IncreaseLiquidity(uint256,uint128,uint256,uint256)"(
+    'IncreaseLiquidity(uint256,uint128,uint256,uint256)'(
       tokenId?: PromiseOrValue<BigNumberish> | null,
       liquidity?: null,
       amount0?: null,
       amount1?: null
-    ): IncreaseLiquidityEventFilter;
+    ): IncreaseLiquidityEventFilter
     IncreaseLiquidity(
       tokenId?: PromiseOrValue<BigNumberish> | null,
       liquidity?: null,
       amount0?: null,
       amount1?: null
-    ): IncreaseLiquidityEventFilter;
+    ): IncreaseLiquidityEventFilter
 
-    "Transfer(address,address,uint256)"(
+    'Transfer(address,address,uint256)'(
       from?: PromiseOrValue<string> | null,
       to?: PromiseOrValue<string> | null,
       tokenId?: PromiseOrValue<BigNumberish> | null
-    ): TransferEventFilter;
+    ): TransferEventFilter
     Transfer(
       from?: PromiseOrValue<string> | null,
       to?: PromiseOrValue<string> | null,
       tokenId?: PromiseOrValue<BigNumberish> | null
-    ): TransferEventFilter;
-  };
+    ): TransferEventFilter
+  }
 
   estimateGas: {
-    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>
 
-    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>
 
-    WETH9(overrides?: CallOverrides): Promise<BigNumber>;
+    WETH9(overrides?: CallOverrides): Promise<BigNumber>
 
     approve(
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    balanceOf(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    balanceOf(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>
 
-    baseURI(overrides?: CallOverrides): Promise<BigNumber>;
+    baseURI(overrides?: CallOverrides): Promise<BigNumber>
 
     burn(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     collect(
       params: INonfungiblePositionManager.CollectParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     createAndInitializePoolIfNecessary(
       token0: PromiseOrValue<string>,
@@ -1475,47 +1233,41 @@ export interface NonfungiblePositionManager extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     decreaseLiquidity(
       params: INonfungiblePositionManager.DecreaseLiquidityParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    factory(overrides?: CallOverrides): Promise<BigNumber>;
+    factory(overrides?: CallOverrides): Promise<BigNumber>
 
-    getApproved(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getApproved(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>
 
     increaseLiquidity(
       params: INonfungiblePositionManager.IncreaseLiquidityParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     mint(
       params: INonfungiblePositionManager.MintParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    name(overrides?: CallOverrides): Promise<BigNumber>;
+    name(overrides?: CallOverrides): Promise<BigNumber>
 
-    ownerOf(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ownerOf(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>
 
     permit(
       spender: PromiseOrValue<string>,
@@ -1525,31 +1277,26 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    positions(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    positions(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>
 
-    refundETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    refundETH(overrides?: PayableOverrides & { from?: PromiseOrValue<string> }): Promise<BigNumber>
 
-    "safeTransferFrom(address,address,uint256)"(
+    'safeTransferFrom(address,address,uint256)'(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    "safeTransferFrom(address,address,uint256,bytes)"(
+    'safeTransferFrom(address,address,uint256,bytes)'(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       _data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     selfPermit(
       token: PromiseOrValue<string>,
@@ -1559,7 +1306,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -1569,7 +1316,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -1579,7 +1326,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -1589,96 +1336,84 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>
 
     sweepToken(
       token: PromiseOrValue<string>,
       amountMinimum: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
+    symbol(overrides?: CallOverrides): Promise<BigNumber>
 
-    tokenByIndex(
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    tokenByIndex(index: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>
 
     tokenOfOwnerByIndex(
       owner: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    tokenURI(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    tokenURI(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>
 
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>
 
     transferFrom(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     uniswapV3MintCallback(
       amount0Owed: PromiseOrValue<BigNumberish>,
       amount1Owed: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     unwrapWETH9(
       amountMinimum: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
-    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    WETH9(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    WETH9(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     approve(
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    balanceOf(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    balanceOf(owner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    baseURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    baseURI(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     burn(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     collect(
       params: INonfungiblePositionManager.CollectParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     createAndInitializePoolIfNecessary(
       token0: PromiseOrValue<string>,
@@ -1686,47 +1421,41 @@ export interface NonfungiblePositionManager extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     decreaseLiquidity(
       params: INonfungiblePositionManager.DecreaseLiquidityParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    getApproved(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getApproved(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     increaseLiquidity(
       params: INonfungiblePositionManager.IncreaseLiquidityParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     mint(
       params: INonfungiblePositionManager.MintParamsStruct,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    name(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    ownerOf(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    ownerOf(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     permit(
       spender: PromiseOrValue<string>,
@@ -1736,31 +1465,26 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    positions(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    positions(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    refundETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    refundETH(overrides?: PayableOverrides & { from?: PromiseOrValue<string> }): Promise<PopulatedTransaction>
 
-    "safeTransferFrom(address,address,uint256)"(
+    'safeTransferFrom(address,address,uint256)'(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    "safeTransferFrom(address,address,uint256,bytes)"(
+    'safeTransferFrom(address,address,uint256,bytes)'(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       _data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     selfPermit(
       token: PromiseOrValue<string>,
@@ -1770,7 +1494,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -1780,7 +1504,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -1790,7 +1514,7 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -1800,64 +1524,55 @@ export interface NonfungiblePositionManager extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     setApprovalForAll(
       operator: PromiseOrValue<string>,
       approved: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    supportsInterface(interfaceId: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     sweepToken(
       token: PromiseOrValue<string>,
       amountMinimum: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    tokenByIndex(
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    tokenByIndex(index: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     tokenOfOwnerByIndex(
       owner: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    tokenURI(
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    tokenURI(tokenId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     transferFrom(
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     uniswapV3MintCallback(
       amount0Owed: PromiseOrValue<BigNumberish>,
       amount1Owed: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     unwrapWETH9(
       amountMinimum: PromiseOrValue<BigNumberish>,
       recipient: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }
