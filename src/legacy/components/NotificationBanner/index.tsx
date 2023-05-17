@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
 import { X } from 'react-feather'
 import { MEDIA_WIDTHS } from 'theme'
-import { useNotificationState } from '@cow/common/hooks/useNotificationState'
+import { useNotificationState } from 'common/hooks/useNotificationState'
 
 type Level = 'info' | 'warning' | 'error'
 

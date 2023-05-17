@@ -15,10 +15,10 @@ import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'utils/sou
 import { orderAnalytics } from 'components/analytics'
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
 import { OrderObject, OrdersStateNetwork } from 'state/orders/reducer'
-import { timeSinceInSeconds } from '@cow/utils/time'
+import { timeSinceInSeconds } from 'utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
-import { ExecutedSummary } from '@cow/common/pure/ExecutedSummary'
-import { parseOrder } from '@cow/modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { ExecutedSummary } from 'common/pure/ExecutedSummary'
+import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { Order } from 'state/orders/actions'
 
 // action syntactic sugar

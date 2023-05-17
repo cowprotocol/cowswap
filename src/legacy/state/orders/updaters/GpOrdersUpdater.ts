@@ -10,10 +10,10 @@ import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_
 import { classifyOrder, OrderTransitionStatus } from 'state/orders/utils'
 import { computeOrderSummary } from 'state/orders/updaters/utils'
 import { useTokenLazy } from 'hooks/useTokenLazy'
-import { useGpOrders } from '@cow/api/gnosisProtocol/hooks'
+import { useGpOrders } from 'api/gnosisProtocol/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 function _getTokenFromMapping(
   address: string,

@@ -27,8 +27,8 @@ import { ListRowProps, RowWrapper, Card } from './index'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { supportedChainId } from 'utils/supportedChainId'
 import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'components/analytics'
-import { useWalletInfo } from '@cow/modules/wallet'
-import { useConfirmationRequest } from '@cow/common/hooks/useConfirmationRequest'
+import { useWalletInfo } from 'modules/wallet'
+import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 
 const Wrapper = styled(Column)`
   width: 100%;

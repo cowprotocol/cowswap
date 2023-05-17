@@ -9,9 +9,9 @@ import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useA
 
 import { ClaimType } from 'state/claim/hooks'
 import { supportedChainId } from 'utils/supportedChainId'
-import { EnhancedUserClaimData } from '@cow/pages/Claim/types'
+import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { TransactionResponse } from '@ethersproject/providers'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 

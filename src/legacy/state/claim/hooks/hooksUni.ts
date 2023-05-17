@@ -1,4 +1,4 @@
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import MerkleDistributorJson from '@uniswap/merkle-distributor/build/MerkleDistributor.json'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { MERKLE_DISTRIBUTOR_ADDRESS } from 'constants/addresses'

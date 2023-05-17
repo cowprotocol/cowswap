@@ -7,7 +7,7 @@ import useFetchFile from 'hooks/useFetchFile'
 import { Markdown } from 'components/Markdown'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { environmentName } from 'utils/environments'
 
 export * from './URLWarningMod'

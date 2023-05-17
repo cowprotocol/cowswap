@@ -6,7 +6,7 @@ import { ButtonPrimary } from 'components/Button'
 import { ExternalLink, MEDIA_WIDTHS, ThemedText } from 'theme'
 import { DISCORD_LINK } from 'constants/index'
 import styled from 'styled-components/macro'
-import { Title } from '@cow/modules/application/pure/Page'
+import { Title } from 'modules/application/pure/Page'
 import cowNoConnectionIMG from '@src/legacy/assets/cow-swap/cow-no-connection.png'
 
 /**

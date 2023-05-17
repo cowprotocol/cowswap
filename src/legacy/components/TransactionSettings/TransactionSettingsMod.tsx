@@ -27,11 +27,11 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE,
 } from 'constants/index'
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
-import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
-import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from '@cow/modules/swap/pure/Row/RowSlippageContent'
-import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
-import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from '@cow/modules/swap/pure/Row/RowDeadline'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
+import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
+import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
+import { useWalletInfo } from 'modules/wallet'
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 

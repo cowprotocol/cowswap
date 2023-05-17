@@ -1,4 +1,4 @@
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { ExternalLink } from 'theme'
 import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'utils'
 import { supportedChainId } from 'utils/supportedChainId'

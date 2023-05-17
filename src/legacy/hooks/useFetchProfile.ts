@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { getProfileData } from '@cow/api/gnosisProtocol'
-import { ProfileData } from '@cow/api/gnosisProtocol/api'
+import { getProfileData } from 'api/gnosisProtocol'
+import { ProfileData } from 'api/gnosisProtocol/api'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 type FetchProfileState = {
   profileData: ProfileData | null

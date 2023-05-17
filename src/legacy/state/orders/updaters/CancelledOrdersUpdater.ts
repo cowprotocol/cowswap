@@ -10,7 +10,7 @@ import { CANCELLED_ORDERS_PENDING_TIME } from 'constants/index'
 
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { supportedChainId } from 'utils/supportedChainId'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 /**
  * Updater for cancelled orders.

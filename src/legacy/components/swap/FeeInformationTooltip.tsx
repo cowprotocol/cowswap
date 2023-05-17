@@ -5,9 +5,9 @@ import QuestionHelper from 'components/QuestionHelper'
 import styled from 'styled-components/macro'
 import useTheme from 'hooks/useTheme'
 import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
-import { FiatAmount } from '@cow/common/pure/FiatAmount'
-import { ReceiveAmountInfoTooltip } from '@cow/modules/swap/pure/ReceiveAmountInfo'
-import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from '@cow/modules/swap/helpers/tradeReceiveAmount'
+import { FiatAmount } from 'common/pure/FiatAmount'
+import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
+import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp

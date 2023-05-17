@@ -1,4 +1,4 @@
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { Currency } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 import { useCombinedActiveList } from 'state/lists/hooks'

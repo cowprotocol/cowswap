@@ -6,7 +6,7 @@ import { TokenList } from '@uniswap/token-lists'
 import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import { useDispatch } from 'react-redux'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export interface ImportProps {
   listURL: string

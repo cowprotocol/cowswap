@@ -13,7 +13,7 @@ import {
   handleCloseOrderPopupAtom,
 } from 'state/application/atoms'
 import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
-import { OrderID } from '@cow/api/gnosisProtocol'
+import { OrderID } from 'api/gnosisProtocol'
 import { Order } from 'state/orders/actions'
 
 export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose: () => void } {

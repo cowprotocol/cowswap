@@ -4,8 +4,8 @@ import { useCombinedBalance } from 'state/cowToken/hooks'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
 import { supportedChainId } from 'utils/supportedChainId'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { useWalletInfo } from 'modules/wallet'
 
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;

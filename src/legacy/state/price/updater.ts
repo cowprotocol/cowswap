@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { DEFAULT_DECIMALS } from 'constants/index'
 
-import { UnsupportedToken } from '@cow/api/gnosisProtocol'
-import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from '@cow/api/gnosisProtocol/legacy/types'
+import { UnsupportedToken } from 'api/gnosisProtocol'
+import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
@@ -21,8 +21,8 @@ import { isWrappingTrade } from 'state/swap/utils'
 import { useOrderValidTo } from 'state/user/hooks'
 import { isAddress } from 'utils'
 import useENSAddress from 'hooks/useENSAddress'
-import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useWalletInfo } from 'modules/wallet'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s

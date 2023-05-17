@@ -1,4 +1,4 @@
-import { Web3ReactConnection } from '@cow/modules/wallet/web3-react/types'
+import { Web3ReactConnection } from 'modules/wallet/web3-react/types'
 import { useSelectedWallet } from 'state/user/hooks'
 import { useWeb3React } from '@web3-react/core'
 

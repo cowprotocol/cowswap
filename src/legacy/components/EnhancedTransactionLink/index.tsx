@@ -1,8 +1,8 @@
 import { ExplorerLink } from 'components/ExplorerLink'
-import { GnosisSafeLink } from '@cow/modules/account/containers/Transaction/StatusDetails'
+import { GnosisSafeLink } from 'modules/account/containers/Transaction/StatusDetails'
 
 import { EnhancedTransactionDetails, HashType } from 'state/enhancedTransactions/reducer'
-import { useGnosisSafeInfo, useWalletInfo } from '@cow/modules/wallet'
+import { useGnosisSafeInfo, useWalletInfo } from 'modules/wallet'
 
 interface Props {
   tx: EnhancedTransactionDetails

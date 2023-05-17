@@ -6,7 +6,7 @@ import { FeeAmount, Pool } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { V3_CORE_FACTORY_ADDRESSES } from '../constants/addresses'
 

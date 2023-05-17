@@ -10,7 +10,7 @@ import { currencyId } from 'utils/currencyId'
 import QuestionHelper from 'components/QuestionHelper'
 import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index' // mod
 import { useFavouriteOrCommonTokens } from 'hooks/useFavouriteOrCommonTokens'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   border: 1px solid ${({ theme, disable }) => (disable ? 'transparent' : theme.bg3)};
   border-radius: 10px;

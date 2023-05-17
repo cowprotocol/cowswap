@@ -11,7 +11,7 @@ import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { acceptListUpdate } from 'state/lists/actions'
 import { useActiveListUrls } from 'state/lists/hooks'
 import { updateVersion } from 'state/global/actions'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export default function Updater(): null {
   const { provider } = useWeb3React()

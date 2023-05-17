@@ -1,7 +1,7 @@
 import { Token } from '@uniswap/sdk-core'
 import { ImportToken } from 'components/SearchModal/ImportToken'
 
-import Modal from '@cow/common/pure/Modal'
+import Modal from 'common/pure/Modal'
 
 export default function TokenWarningModal({
   isOpen,

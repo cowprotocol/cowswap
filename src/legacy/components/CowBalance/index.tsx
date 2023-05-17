@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
-import { ClaimSummaryTitle, ClaimTotal, ClaimSummary as ClaimSummaryWrapper } from '@cow/pages/Claim/styled'
+import { ClaimSummaryTitle, ClaimTotal, ClaimSummary as ClaimSummaryWrapper } from 'pages/Claim/styled'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { CowSubsidyInfoProps } from 'components/CowSubsidyModal'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 const Wrapper = styled(ClaimSummaryWrapper)`
   border-radius: 100px;

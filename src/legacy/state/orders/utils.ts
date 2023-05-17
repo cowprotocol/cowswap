@@ -5,8 +5,8 @@ import { Order } from 'state/orders/actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from 'state/orders/consts'
 import { EnrichedOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import JSBI from 'jsbi'
-import { buildPriceFromCurrencyAmounts } from '@cow/modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
-import { getOrderSurplus } from '@cow/modules/limitOrders/utils/getOrderSurplus'
+import { buildPriceFromCurrencyAmounts } from 'modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
+import { getOrderSurplus } from 'modules/limitOrders/utils/getOrderSurplus'
 
 export type OrderTransitionStatus =
   | 'unknown'

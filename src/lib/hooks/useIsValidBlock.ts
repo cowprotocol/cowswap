@@ -3,7 +3,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import useBlockNumber from './useBlockNumber'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 // The oldest block (per chain) to be considered valid.
 const oldestBlockMapAtom = atomWithImmer<{ [chainId: number]: number }>({})

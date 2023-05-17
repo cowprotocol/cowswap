@@ -3,7 +3,6 @@ import { Percent } from '@uniswap/sdk-core'
 import { useCallback, useMemo } from 'react'
 
 import TradeGp from 'state/swap/TradeGp'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   OperationType,
@@ -11,11 +10,12 @@ import TransactionConfirmationModal, {
 } from 'components/TransactionConfirmationModal'
 import { SwapModalFooter } from 'components/swap/SwapModalFooter'
 import SwapModalHeader from 'components/swap/SwapModalHeader'
-import { useWalletDetails } from '@cow/modules/wallet'
-import { SwapConfirmState } from '@cow/modules/swap/state/swapConfirmAtom'
-import { RateInfoParams } from '@cow/common/pure/RateInfo'
-import { useIsSafeApprovalBundle } from '@cow/modules/limitOrders/hooks/useIsSafeApprovalBundle'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { useWalletDetails } from 'modules/wallet'
+import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
+import { RateInfoParams } from 'common/pure/RateInfo'
+import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState

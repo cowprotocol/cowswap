@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { useGasPrices, useUpdateGasPrices } from './hooks'
 import { GAS_PRICE_UPDATE_THRESHOLD } from 'constants/index'
-import { gasFeeApi } from '@cow/api/gasPrices'
+import { gasFeeApi } from 'api/gasPrices'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
   return now - lastUpdated > threshold

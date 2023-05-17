@@ -1,13 +1,13 @@
 import { SafeInfoResponse } from '@safe-global/api-kit'
 import { useMemo } from 'react'
-import { getSafeWebUrl } from '@cow/api/gnosisSafe'
-import { ActivityDerivedState } from '@cow/modules/account/containers/Transaction'
+import { getSafeWebUrl } from 'api/gnosisSafe'
+import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'state/orders/actions'
 import { getEtherscanLink } from 'utils'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
-import { useGnosisSafeInfo } from '@cow/modules/wallet'
+import { useGnosisSafeInfo } from 'modules/wallet'
 
 export function useActivityDerivedState({
   chainId,

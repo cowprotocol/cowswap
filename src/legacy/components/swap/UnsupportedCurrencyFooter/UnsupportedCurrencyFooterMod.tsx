@@ -4,14 +4,14 @@ import { ButtonEmpty } from 'components/Button'
 import Card, { OutlineCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
-import Modal from '@cow/common/pure/Modal'
+import Modal from 'common/pure/Modal'
 import { AutoRow, RowBetween } from 'components/Row'
 import { useState } from 'react'
 import styled from 'styled-components/macro'
 import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'theme'
 import { getEtherscanLink } from 'utils'
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);

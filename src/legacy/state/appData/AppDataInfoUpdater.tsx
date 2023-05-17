@@ -2,11 +2,11 @@ import React from 'react'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useAppData, UseAppDataParams } from 'hooks/useAppData'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { LIMIT_ORDER_SLIPPAGE } from '@cow/modules/limitOrders/const/trade'
-import { TradeType, useTradeTypeInfo } from '@cow/modules/trade'
+import { LIMIT_ORDER_SLIPPAGE } from 'modules/limitOrders/const/trade'
+import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { percentToBips } from 'utils/misc'
-import { useWalletInfo } from '@cow/modules/wallet'
-import { useUtm } from '@cow/modules/utm'
+import { useWalletInfo } from 'modules/wallet'
+import { useUtm } from 'modules/utm'
 
 export function AppDataUpdater() {
   const { chainId } = useWalletInfo()

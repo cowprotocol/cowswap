@@ -23,7 +23,7 @@ import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
 import { useCurrency } from 'hooks/Tokens'
 import { OperationType } from 'components/TransactionConfirmationModal'
 import usePrevious from 'hooks/usePrevious'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
@@ -57,7 +57,7 @@ export interface ApproveCallbackParams {
 
 /**
  * returns a variable indicating the state of the approval and a function which approves if necessary or early returns
- * @deprecated use `@cow/common/hooks/useApproveCallback` + `@cow/common/hooks/useApproveState`
+ * @deprecated use `common/hooks/useApproveCallback` + `common/hooks/useApproveState`
  */
 export function useApproveCallback({
   openTransactionConfirmationModal,

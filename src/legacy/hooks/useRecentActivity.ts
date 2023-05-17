@@ -4,9 +4,9 @@ import { useOrder, useOrders, useOrdersById, useCombinedPendingOrders } from 'st
 import { Order, OrderStatus } from 'state/orders/actions'
 import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getDateTimestamp } from '@cow/utils/time'
+import { getDateTimestamp } from 'utils/time'
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export interface AddedOrder extends Order {
   addedTime: number

@@ -1,5 +1,5 @@
-import { fetchWithBackoff } from '@cow/common/utils/fetch'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { fetchWithBackoff } from 'common/utils/fetch'
+import { useWalletInfo } from 'modules/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'

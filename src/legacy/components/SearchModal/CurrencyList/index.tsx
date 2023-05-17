@@ -13,7 +13,7 @@ import { TagInfo } from 'state/lists/wrappedTokenInfo'
 import Column from 'components/Column'
 import { MenuItem as MenuItemMod } from 'components/SearchModal/styleds'
 import { transparentize } from 'polished'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {

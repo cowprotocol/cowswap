@@ -1,5 +1,5 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Market } from 'types'
+import { Market } from '@src/legacy/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 

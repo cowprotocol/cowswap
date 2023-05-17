@@ -22,11 +22,11 @@ import ImportRow from 'components/SearchModal/ImportRow'
 import { LoadingRows } from 'components/SearchModal/styleds'
 import { MenuItem } from './index' // mod
 import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { TokenAmount } from 'common/pure/TokenAmount'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-import { useWalletInfo } from '@cow/modules/wallet'
-import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'

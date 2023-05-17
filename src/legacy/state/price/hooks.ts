@@ -1,7 +1,7 @@
 import { useSwapState } from 'state/swap/hooks'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { AppDispatch, AppState } from 'state'
 import {

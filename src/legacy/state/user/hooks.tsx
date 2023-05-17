@@ -35,8 +35,8 @@ import {
 } from './reducer'
 import { SerializedPair, SerializedToken } from './types'
 import { useSwapActionHandlers } from '../swap/hooks'
-import { useWalletInfo } from '@cow/modules/wallet'
-import { calculateValidTo } from '@cow/utils/time'
+import { useWalletInfo } from 'modules/wallet'
+import { calculateValidTo } from 'utils/time'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 
 export function deserializeToken(serializedToken: SerializedToken): Token {

@@ -6,7 +6,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { VCow as VCowType } from '@cow/abis/types'
+import { VCow as VCowType } from '@src/abis/types'
 
 import { useVCowContract } from 'hooks/useContract'
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
@@ -51,14 +51,14 @@ import {
   setIsTouched,
   setClaimsCount,
 } from '../actions'
-import { EnhancedUserClaimData } from '@cow/pages/Claim/types'
+import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { supportedChainId } from 'utils/supportedChainId'
 import useIsMounted from 'hooks/useIsMounted'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ClaimInfo } from 'state/claim/reducer'
 import { CallState } from '@uniswap/redux-multicall'
-import { formatTokenAmount } from '@cow/utils/amountFormat'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { formatTokenAmount } from 'utils/amountFormat'
+import { useWalletInfo } from 'modules/wallet'
 
 export { useUserClaimData, useUserHasAvailableClaim } from './hooksUni'
 

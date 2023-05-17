@@ -1,4 +1,4 @@
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { useMemo } from 'react'
 import { useAppSelector } from 'state/hooks'
 import { EnhancedTransactionDetails } from '../reducer'

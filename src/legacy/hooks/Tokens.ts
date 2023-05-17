@@ -9,10 +9,10 @@ import { isL2ChainId } from 'utils/chains'
 import { useAllLists, useInactiveListUrls } from 'state/lists/hooks'
 import { deserializeToken, useUserAddedTokens } from 'state/user/hooks'
 import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { useAtomValue } from 'jotai/utils'
-import { tokensByAddressAtom } from '@cow/modules/tokensList/state/tokensListAtom'
-import { checkBySymbolAndAddress } from '@cow/utils/checkBySymbolAndAddress'
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {

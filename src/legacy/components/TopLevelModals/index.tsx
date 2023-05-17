@@ -1,12 +1,12 @@
 import { useModalIsOpen, useToggleModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
 
-import { CancellationModal } from '@cow/common/containers/CancellationModal'
-import { cancellationModalContextAtom } from '@cow/common/hooks/useCancelOrder/state'
+import { CancellationModal } from 'common/containers/CancellationModal'
+import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { useAtomValue } from 'state/application/atoms'
-import { ConfirmationModal } from '@cow/common/containers/ConfirmationModal'
-import { confirmationModalContextAtom } from '@cow/common/hooks/useConfirmationRequest'
-import { MultipleOrdersCancellationModal } from '@cow/common/containers/MultipleOrdersCancellationModal'
+import { ConfirmationModal } from 'common/containers/ConfirmationModal'
+import { confirmationModalContextAtom } from 'common/hooks/useConfirmationRequest'
+import { MultipleOrdersCancellationModal } from 'common/containers/MultipleOrdersCancellationModal'
 
 export default function TopLevelModals() {
   const cancelModalOpen = useModalIsOpen(ApplicationModal.CANCELLATION)

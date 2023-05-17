@@ -7,7 +7,7 @@ import { useURLWarningVisible } from 'state/user/hooks'
 import { AutoColumn } from 'components/Column'
 import PopupItem from 'components/Popups/PopupItem'
 import { MobilePopupWrapper } from './index'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export const MobilePopupInner = styled.div`
   height: 99%;

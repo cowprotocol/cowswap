@@ -10,7 +10,7 @@ import {
   updateAppDataOnUploadQueueAtom,
 } from 'state/appData/atoms'
 import { AppDataKeyParams, AppDataRecord, UpdateAppDataOnUploadQueueParams } from 'state/appData/types'
-import { metadataApiSDK } from '@cow/cowSdk'
+import { metadataApiSDK } from 'cowSdk'
 
 const UPLOAD_CHECK_INTERVAL = ms`1 minute`
 const BASE_FOR_EXPONENTIAL_BACKOFF = 2 // in seconds, converted to milliseconds later

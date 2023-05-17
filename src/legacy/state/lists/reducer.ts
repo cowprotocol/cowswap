@@ -19,7 +19,7 @@ import {
   removeList,
 } from './actions'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { UnsupportedToken } from '@cow/api/gnosisProtocol'
+import { UnsupportedToken } from 'api/gnosisProtocol'
 import { getChainIdValues } from 'utils/misc'
 
 export interface ListsState {

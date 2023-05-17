@@ -8,7 +8,7 @@ import { ExternalLink, HideSmall } from 'theme'
 import { transparentize } from 'polished'
 import { AutoRow } from 'components/Row'
 import useTheme from 'hooks/useTheme'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const L2Icon = styled.img`
   width: 24px;

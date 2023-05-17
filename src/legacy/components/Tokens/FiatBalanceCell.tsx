@@ -3,7 +3,7 @@ import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
 import { BalanceValue, InfoCircle, FiatValue } from './styled'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import { FiatAmount } from 'common/pure/FiatAmount'
 
 type FiatBalanceCellProps = {
   balance: CurrencyAmount<Token> | undefined

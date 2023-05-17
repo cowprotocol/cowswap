@@ -23,9 +23,9 @@ import FeeInformationTooltip from '../FeeInformationTooltip'
 import { LightCardType } from './index'
 import { transparentize } from 'polished'
 import { WarningProps } from 'components/SwapWarnings'
-import { RateInfo, RateInfoParams } from '@cow/common/pure/RateInfo'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const ArrowWrapper = styled.div`
   --size: 26px;

@@ -6,8 +6,8 @@ import { FallbackPriceImpactParams, PriceImpactTrade } from './types'
 import { calculateFallbackPriceImpact } from 'utils/price'
 import { QuoteInformationObject } from 'state/price/reducer'
 import { QuoteError } from 'state/price/actions'
-import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { PRICE_QUOTE_VALID_TO_TIME } from '@cow/constants/quote'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { PRICE_QUOTE_VALID_TO_TIME } from 'constants/quote'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 
 type SwapParams = { abTrade?: PriceImpactTrade; sellToken?: string | null; buyToken?: string | null }

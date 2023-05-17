@@ -7,7 +7,7 @@ import { useCallback } from 'react'
 import { useAppDispatch } from 'state/hooks'
 
 import { fetchTokenList } from 'state/lists/actions'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const dispatch = useAppDispatch()

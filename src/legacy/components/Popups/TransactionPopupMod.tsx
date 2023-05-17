@@ -7,7 +7,7 @@ import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 
 import { ExplorerLink } from 'components/ExplorerLink'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

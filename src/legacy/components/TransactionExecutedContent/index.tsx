@@ -1,10 +1,10 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import cowMeditatingSmooth from '@src/legacy/assets/images/cow-meditating-smoooth.svg'
-import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
+import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 import { Order } from 'state/orders/actions'
 import { DisplayLink } from '../TransactionConfirmationModal'
 import * as styledEl from './styled'
-import { useGetSurplusData } from '@cow/common/hooks/useGetSurplusFiatValue'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 export function TransactionExecutedContent({
   order,

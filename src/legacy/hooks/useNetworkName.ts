@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { supportedChainId } from 'utils/supportedChainId'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export default function useNetworkName(): string | undefined {
   const { chainId } = useWalletInfo()

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Routes } from '@cow/constants/routes'
+import { Routes } from 'constants/routes'
 import { useNavigate } from 'react-router-dom'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
@@ -22,8 +22,8 @@ import {
 } from './styled'
 
 import MobileMenuIcon from './MobileMenuIcon'
-import { useWalletInfo, Web3Status } from '@cow/modules/wallet'
-import { OrdersPanel } from '@cow/modules/account/containers/OrdersPanel'
+import { useWalletInfo, Web3Status } from 'modules/wallet'
+import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
 import NetworkSelector from 'components/Header/NetworkSelector'
 import CowBalanceButton from 'components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
@@ -31,14 +31,14 @@ import { cowSwapLogo } from 'theme/cowSwapAssets'
 
 // Assets
 import { toggleDarkModeAnalytics } from 'components/analytics'
-import { useTradeState } from '@cow/modules/trade/hooks/useTradeState'
-import { MAIN_MENU, MainMenuContext } from '@cow/modules/mainMenu'
-import { MenuTree } from '@cow/modules/mainMenu/pure/MenuTree'
-import { getDefaultTradeRawState } from '@cow/modules/trade/types/TradeRawState'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
+import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
+import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { useNativeCurrencyBalances } from '@cow/modules/tokens/hooks/useCurrencyBalance'
-import { useSwapRawState } from '@cow/modules/swap/hooks/useSwapRawState'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',

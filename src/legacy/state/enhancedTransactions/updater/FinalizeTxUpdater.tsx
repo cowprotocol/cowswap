@@ -19,9 +19,9 @@ import { useWeb3React } from '@web3-react/core'
 import { supportedChainId } from 'utils/supportedChainId'
 import { cancelOrdersBatch, invalidateOrdersBatch, updateOrder } from 'state/orders/actions'
 import { useSetAtom } from 'jotai'
-import { removeInFlightOrderIdAtom } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
 import ms from 'ms.macro'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 

@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { ApplicationModal } from 'state/application/reducer'
 import { TransactionErrorContent } from 'components/TransactionConfirmationModal'
 import { useOpenModal, useCloseModals, useModalIsOpen } from 'state/application/hooks'
-import { GpModal } from '@cow/common/pure/Modal'
+import { GpModal } from 'common/pure/Modal'
 
 export default function useTransactionErrorModal() {
   const openModal = useOpenModal(ApplicationModal.TRANSACTION_ERROR)

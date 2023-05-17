@@ -1,4 +1,4 @@
-import { useIsSafeApp } from '@cow/modules/wallet'
+import { useIsSafeApp } from 'modules/wallet'
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'constants/index'
 
 const APP_CODE = process.env.REACT_APP_APP_CODE

@@ -23,7 +23,7 @@ import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationMod
 import { useToggleWalletModal } from 'state/application/hooks'
 import usePrevious from 'hooks/usePrevious'
 import useFilterTokens from 'hooks/useFilterTokens'
-import { TokenAmounts } from '@cow/modules/tokens'
+import { TokenAmounts } from 'modules/tokens'
 
 const MAX_ITEMS = 20
 

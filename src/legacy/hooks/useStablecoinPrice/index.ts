@@ -9,13 +9,13 @@ import { supportedChainId } from 'utils/supportedChainId'
 import { stringToCurrency } from 'state/swap/extension'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
-import { useGetCoingeckoUsdPrice } from '@cow/api/coingecko'
+import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useGetGpUsdcPrice } from 'utils/price'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
-import { useIsWrapOrUnwrap } from '@cow/modules/trade/hooks/useIsWrapOrUnwrap'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 

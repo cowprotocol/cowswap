@@ -11,8 +11,8 @@ import { MouseoverTooltip } from 'components/Tooltip'
 // MOD imports
 // mod
 import Loader from 'components/Loader'
-import { formatPercent } from '@cow/utils/amountFormat'
-import { FiatAmount } from '@cow/common/pure/FiatAmount'
+import { formatPercent } from 'utils/amountFormat'
+import { FiatAmount } from 'common/pure/FiatAmount'
 
 export function FiatValue({
   fiatValue,

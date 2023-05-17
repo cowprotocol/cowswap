@@ -35,7 +35,7 @@ import {
   V2OrderObject,
 } from './reducer'
 import { isTruthy } from 'utils/misc'
-import { OrderID } from '@cow/api/gnosisProtocol'
+import { OrderID } from 'api/gnosisProtocol'
 import { deserializeToken, serializeToken } from 'state/user/hooks'
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {

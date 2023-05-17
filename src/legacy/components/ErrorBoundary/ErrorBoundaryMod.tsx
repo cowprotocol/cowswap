@@ -3,12 +3,12 @@ import React, { ErrorInfo, PropsWithChildren } from 'react'
 import styled from 'styled-components/macro'
 
 // MOD imports
-import { Page } from '@cow/modules/application/pure/Page'
+import { Page } from 'modules/application/pure/Page'
 import { MEDIA_WIDTHS } from 'theme'
 // import { UniIcon, LogoImage } from '../Header'
 import { UniIcon, LogoImage, HeaderRow } from 'components/Header/styled' // mod
 import Footer from 'components/Footer'
-import { Routes } from '@cow/constants/routes'
+import { Routes } from 'constants/routes'
 import { sendError } from 'components/analytics'
 import { ChunkLoadError } from 'components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'components/ErrorBoundary/ErrorWithStackTrace'

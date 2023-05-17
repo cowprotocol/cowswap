@@ -6,12 +6,12 @@ import UNSUPPORTED_TOKEN_LIST from '@src/legacy/constants/tokenLists/unsupported
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'constants/lists'
 import { AppState } from 'state'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { supportedChainId } from 'utils/supportedChainId'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { shallowEqual } from 'react-redux'
 import { TokenInfo } from '@uniswap/token-lists'
-import { UnsupportedToken } from '@cow/api/gnosisProtocol'
+import { UnsupportedToken } from 'api/gnosisProtocol'
 import {
   addGpUnsupportedToken,
   AddGpUnsupportedTokenParams,

@@ -1,11 +1,11 @@
 import { Token } from '@uniswap/sdk-core'
-import { useOnchainBalances } from '@cow/modules/tokens'
+import { useOnchainBalances } from 'modules/tokens'
 import { useMemo } from 'react'
 
 import { useAllTokens } from 'hooks/Tokens'
 import { useFavouriteTokens } from 'state/user/hooks'
-import { useWalletInfo } from '@cow/modules/wallet'
-import { TokenAmounts } from '@cow/modules/tokens'
+import { useWalletInfo } from 'modules/wallet'
+import { TokenAmounts } from 'modules/tokens'
 
 // mimics useAllBalances
 export function useAllTokenBalances(): [TokenAmounts, boolean] {

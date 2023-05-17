@@ -5,7 +5,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useTradeExactInWithFee } from 'state/swap/extension'
 import { QuoteInformationObject } from 'state/price/reducer'
 
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
 import { supportedChainId } from 'utils/supportedChainId'
@@ -17,8 +17,8 @@ import { DEFAULT_DECIMALS } from 'constants/index'
 import { QuoteError } from 'state/price/actions'
 import { isWrappingTrade } from 'state/swap/utils'
 import { onlyResolvesLast } from 'utils/async'
-import { LegacyFeeQuoteParams } from '@cow/api/gnosisProtocol/legacy/types'
-import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }

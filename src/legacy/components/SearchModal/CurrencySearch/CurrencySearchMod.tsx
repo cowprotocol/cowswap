@@ -28,8 +28,8 @@ import { PaddedColumn, SearchInput, Separator, PaddedRow } from 'components/Sear
 import useNetworkName from 'hooks/useNetworkName'
 import { ContentWrapper } from './index'
 import { searchByAddressAnalytics } from 'components/analytics'
-import { useWalletInfo } from '@cow/modules/wallet'
-import { useExternalTokenSearch } from '@cow/common/hooks/useExternalTokenSearch'
+import { useWalletInfo } from 'modules/wallet'
+import { useExternalTokenSearch } from 'common/hooks/useExternalTokenSearch'
 
 export const Footer = styled.div`
   width: 100%;

@@ -20,16 +20,16 @@ import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } fr
 import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getOrder, OrderID } from '@cow/api/gnosisProtocol'
+import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
 import { GetSafeInfo, useGetSafeInfo } from 'hooks/useGetSafeInfo'
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'utils/appzi'
-import { timeSinceInSeconds } from '@cow/utils/time'
+import { timeSinceInSeconds } from 'utils/time'
 import { getExplorerOrderLink } from 'utils/explorer'
 import { supportedChainId } from 'utils/supportedChainId'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { useUpdateAtom } from 'jotai/utils'
-import { removeOrdersToCancelAtom } from '@cow/common/hooks/useMultipleOrdersCancellation/state'
+import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.

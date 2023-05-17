@@ -1,8 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { environmentName } from 'utils/environments'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { metadataApiSDK } from '@cow/cowSdk'
-import { UtmParams } from '@cow/modules/utm'
+import { metadataApiSDK } from 'cowSdk'
+import { UtmParams } from 'modules/utm'
 
 export type BuildAppDataParams = {
   appCode: string

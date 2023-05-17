@@ -2,7 +2,7 @@ import '@reach/dialog/styles.css'
 import 'inter-ui'
 
 import 'components/analytics'
-import '@cow/utils/sentry'
+import 'utils/sentry'
 
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 import { StrictMode } from 'react'
@@ -12,7 +12,7 @@ import { HashRouter } from 'react-router-dom'
 import Blocklist from 'components/Blocklist'
 import Web3Provider from 'components/Web3Provider'
 import { LanguageProvider } from 'i18n'
-import { App } from '@cow/modules/application/containers/App'
+import { App } from 'modules/application/containers/App'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 import store from 'state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'theme'
@@ -23,11 +23,11 @@ import { nodeRemoveChildFix } from 'utils/node'
 import { Provider as AtomProvider } from 'jotai'
 
 import Popups from 'components/Popups'
-import { Updaters } from '@cow/modules/application/containers/App/Updaters'
+import { Updaters } from 'modules/application/containers/App/Updaters'
 import { createRoot } from 'react-dom/client'
-import { FortuneWidget } from '@cow/modules/fortune/containers/FortuneWidget'
-import { FeatureGuard } from './common/containers/FeatureGuard'
-import { WithLDProvider } from './modules/application/containers/WithLDProvider'
+import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+import { FeatureGuard } from 'common/containers/FeatureGuard'
+import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600

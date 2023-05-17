@@ -16,8 +16,8 @@ import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCa
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import JSBI from 'jsbi'
 import { supportedChainId } from 'utils/supportedChainId'
-import { useWalletInfo } from '@cow/modules/wallet'
-import { useTokenBalance } from '@cow/modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 

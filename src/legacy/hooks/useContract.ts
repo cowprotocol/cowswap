@@ -16,8 +16,8 @@ import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
 import { UniswapInterfaceMulticall } from 'types/v3'
 import { getContract } from 'utils'
-import { useWalletInfo } from '@cow/modules/wallet'
-import { CoWSwapEthFlow, GPv2Settlement, VCow } from '@cow/abis/types'
+import { useWalletInfo } from 'modules/wallet'
+import { CoWSwapEthFlow, GPv2Settlement, VCow } from '@src/abis/types'
 import { isEns, isProd, isStaging } from 'utils/environments'
 import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,
@@ -27,8 +27,8 @@ import {
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
-import GPv2_SETTLEMENT_ABI from '@cow/abis/GPv2Settlement.json'
-import V_COW_ABI from '@cow/abis/vCow.json'
+import GPv2_SETTLEMENT_ABI from '@src/abis/GPv2Settlement.json'
+import V_COW_ABI from '@src/abis/vCow.json'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 

@@ -6,7 +6,7 @@ import { transparentize, lighten } from 'polished'
 import { V_COW } from 'constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsDarkMode } from 'state/user/hooks'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 const StyledSubsidyTable = styled.table`

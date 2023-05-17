@@ -6,7 +6,7 @@ import { MouseoverTooltipContent } from 'components/Tooltip'
 import { useHighFeeWarning } from 'state/swap/hooks'
 import TradeGp from 'state/swap/TradeGp'
 import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
-import { StyledInfoIcon } from '@cow/modules/swap/pure/styled'
+import { StyledInfoIcon } from 'modules/swap/pure/styled'
 import { useIsDarkMode } from 'state/user/hooks'
 
 interface HighFeeContainerProps {

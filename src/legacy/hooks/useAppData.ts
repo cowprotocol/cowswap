@@ -7,7 +7,7 @@ import { appDataInfoAtom } from 'state/appData/atoms'
 import { useAppCode } from 'hooks/useAppCode'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useUpdateAtom } from 'jotai/utils'
-import { UtmParams } from '@cow/modules/utm'
+import { UtmParams } from 'modules/utm'
 
 export type UseAppDataParams = {
   chainId?: SupportedChainId

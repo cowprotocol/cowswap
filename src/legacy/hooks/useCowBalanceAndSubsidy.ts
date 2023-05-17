@@ -5,7 +5,7 @@ import { useCombinedBalance } from 'state/cowToken/hooks'
 import { COW_SUBSIDY_DATA } from 'components/CowSubsidyModal/constants'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { isSupportedChain } from 'utils/supportedChainId'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const ZERO_BALANCE_SUBSIDY = { subsidy: { tier: 0, discount: COW_SUBSIDY_DATA[0][1] }, balance: undefined }
 

@@ -10,7 +10,7 @@ import styled from 'styled-components/macro'
 import { TextDot } from 'components/SearchModal/styleds'
 import { transparentize } from 'polished'
 import { ButtonPrimary } from 'components/Button'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export interface ListRowProps {
   acceptListUpdate: (url: string) => ReturnType<typeof acceptListUpdate>

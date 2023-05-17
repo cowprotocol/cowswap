@@ -2,19 +2,16 @@ import { BigNumber } from '@ethersproject/bignumber'
 import BigNumberJs from 'bignumber.js'
 import * as Sentry from '@sentry/browser'
 
-import { getQuote } from '@cow/api/gnosisProtocol'
-import GpQuoteError, { GpQuoteErrorCodes } from '@cow/api/gnosisProtocol/errors/QuoteError'
+import { getQuote } from 'api/gnosisProtocol'
+import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
 import { PRICE_API_TIMEOUT_MS } from 'constants/index'
-import {
-  getPriceQuote as getPriceQuoteParaswap,
-  toPriceInformation as toPriceInformationParaswap,
-} from '@cow/api/paraswap'
+import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
 import {
   getPriceQuote as getPriceQuoteMatcha,
   MatchaPriceQuote,
   toPriceInformation as toPriceInformationMatcha,
-} from '@cow/api/matcha-0x'
+} from 'api/matcha-0x'
 
 import { OptimalRate } from 'paraswap-core'
 import { OrderKind } from '@cowprotocol/contracts'
@@ -24,13 +21,13 @@ import {
   LegacyPriceQuoteParams,
   LegacyPromiseRejectedResultWithSource,
   LegacyQuoteParams,
-} from '@cow/api/gnosisProtocol/legacy/types'
-import { FeeInformation, PriceInformation } from '@cow/types'
+} from 'api/gnosisProtocol/legacy/types'
+import { FeeInformation, PriceInformation } from 'types'
 import {
   getPriceQuote as getPriceQuote1inch,
   PriceQuote1inch,
   toPriceInformation as toPriceInformation1inch,
-} from '@cow/api/1inch'
+} from 'api/1inch'
 
 /**
  * ************************************************** *

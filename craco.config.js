@@ -58,7 +58,6 @@ module.exports = {
   webpack: {
     plugins,
     alias: {
-      '@cow': path.resolve(__dirname, 'src/cow-react'),
       '@src': path.resolve(__dirname, 'src'),
       'bn.js': path.resolve(__dirname, 'node_modules/bn.js/lib/bn.js'),
     },

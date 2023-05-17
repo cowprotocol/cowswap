@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro'
 
 import { formatOrderId, shortenOrderId } from 'utils'
-import { OrderID } from '@cow/api/gnosisProtocol'
+import { OrderID } from 'api/gnosisProtocol'
 import { addPopup } from 'state/application/reducer'
 import { OrderStatus } from './actions'
-import { CancellationSummary } from '@cow/modules/account/containers/Transaction/styled'
+import { CancellationSummary } from 'modules/account/containers/Transaction/styled'
 
 type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 

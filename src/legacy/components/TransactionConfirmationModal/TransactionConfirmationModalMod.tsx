@@ -15,7 +15,7 @@ import { AutoColumn, ColumnCenter } from 'components/Column'
 import { RowBetween, RowFixed } from 'components/Row'
 import AnimatedConfirmation from 'components/TransactionConfirmationModal/AnimatedConfirmation'
 
-import { GpModal } from '@cow/common/pure/Modal'
+import { GpModal } from 'common/pure/Modal'
 import {
   ConfirmationModalContentProps,
   ConfirmationPendingContent,
@@ -27,7 +27,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { handleFollowPendingTxPopupAtom, useUpdateAtom } from 'state/application/atoms'
 import { useIsTransactionConfirmed, useTransaction } from 'state/enhancedTransactions/hooks'
 import { getEtherscanLink as getExplorerLink } from 'utils'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export const Wrapper = styled.div`
   width: 100%;

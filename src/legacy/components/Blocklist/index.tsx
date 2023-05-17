@@ -1,4 +1,4 @@
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { Trans } from '@lingui/macro'
 import { ReactNode, useMemo } from 'react'
 

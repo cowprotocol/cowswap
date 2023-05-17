@@ -15,8 +15,8 @@ import { PaddedColumn, SearchInput, Separator } from 'components/SearchModal/sty
 import { ImportTokensRowProps } from './index'
 import useNetworkName from 'hooks/useNetworkName'
 import { getEtherscanLink as getExplorerLink } from 'utils'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { useWalletInfo } from 'modules/wallet'
 
 const Wrapper = styled.div`
   width: 100%;

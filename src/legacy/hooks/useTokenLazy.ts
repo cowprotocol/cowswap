@@ -11,7 +11,7 @@ import { Erc20 } from 'abis/types'
 import { retry } from 'utils/retry'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { supportedChainId } from 'utils/supportedChainId'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}

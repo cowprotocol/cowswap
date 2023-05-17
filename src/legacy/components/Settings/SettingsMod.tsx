@@ -20,7 +20,7 @@ import {
   toggleRecepientAddressAnalytics,
 } from 'components/analytics'
 import { SettingsTabProp } from './index'
-import { ExpertModeModal } from '@cow/common/pure/ExpertModeModal'
+import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 export const StyledMenuIcon = styled(Settings)`
   height: 20px;

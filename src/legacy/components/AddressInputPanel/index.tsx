@@ -9,7 +9,7 @@ import { ExternalLink, ThemedText } from 'theme'
 import { AutoColumn } from 'components/Column'
 import { RowBetween } from 'components/Row'
 import { getBlockExplorerUrl as getExplorerLink } from 'utils'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}

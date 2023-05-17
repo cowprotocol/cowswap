@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 
 import { RowBetween, RowFixed } from 'components/Row'
 import SettingsTab from 'components/Settings'
-import { TradeWidgetLinks } from '@cow/modules/application/containers/TradeWidgetLinks'
+import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 
 const StyledSwapHeader = styled.div`
   width: 100%;
