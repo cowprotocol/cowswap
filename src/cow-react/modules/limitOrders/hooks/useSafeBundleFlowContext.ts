@@ -1,5 +1,5 @@
 import { SafeBundleFlowContext, TradeFlowContext } from '@cow/modules/limitOrders/services/types'
-import { useTokenContract } from '@src/hooks/useContract'
+import { useTokenContract } from '@src/legacy/hooks/useContract'
 import { useTradeSpenderAddress } from '@cow/common/hooks/useTradeSpenderAddress'
 import { useSafeAppsSdk } from '@cow/modules/wallet/web3-react/hooks/useSafeAppsSdk'
 

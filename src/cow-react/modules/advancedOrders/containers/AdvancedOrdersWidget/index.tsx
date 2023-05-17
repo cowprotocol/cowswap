@@ -2,7 +2,7 @@ import { useSetupTradeState } from '@cow/modules/trade'
 import { TradeWidget } from '@cow/modules/trade/containers/TradeWidget'
 import React from 'react'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
-import { Field } from '@src/state/swap/actions'
+import { Field } from '@src/legacy/state/swap/actions'
 import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,

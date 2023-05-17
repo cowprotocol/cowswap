@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Field } from '@src/state/swap/actions'
+import { Field } from '@src/legacy/state/swap/actions'
 import tryParseCurrencyAmount from '@src/lib/utils/tryParseCurrencyAmount'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { FractionUtils } from '@cow/utils/fractionUtils'

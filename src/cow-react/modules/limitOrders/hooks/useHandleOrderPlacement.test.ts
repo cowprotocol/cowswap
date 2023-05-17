@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks'
-import { PriceImpact } from 'hooks/usePriceImpact'
+import { PriceImpact } from '@src/legacy/hooks/usePriceImpact'
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 import { tradeFlow } from '@cow/modules/limitOrders/services/tradeFlow'
 import { safeBundleFlow } from '@cow/modules/limitOrders/services/safeBundleFlow'

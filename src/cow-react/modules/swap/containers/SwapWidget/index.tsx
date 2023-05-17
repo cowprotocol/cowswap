@@ -40,7 +40,7 @@ import { useSetupSwapAmountsFromUrl } from '@cow/modules/swap/hooks/useSetupSwap
 import { useIsTradeUnsupported } from 'state/lists/hooks'
 import useCurrencyBalance from '@cow/modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer } from '@cow/modules/trade/containers/TradeWidget'
-import SettingsTab from '@src/components/Settings'
+import SettingsTab from '@src/legacy/components/Settings'
 import { useIsEthFlow } from '@cow/modules/swap/hooks/useIsEthFlow'
 import { SwapButtonState } from '@cow/modules/swap/helpers/getSwapButtonState'
 
