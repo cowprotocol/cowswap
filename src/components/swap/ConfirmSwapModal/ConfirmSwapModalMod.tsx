@@ -6,7 +6,7 @@ import TransactionConfirmationModal, {
   OperationType,
   TransactionErrorContent,
 } from 'components/TransactionConfirmationModal'
-import SwapModalFooter from 'components/swap/SwapModalFooter'
+import { SwapModalFooter } from 'components/swap/SwapModalFooter'
 import SwapModalHeader from 'components/swap/SwapModalHeader'
 import TradeGp from 'state/swap/TradeGp'
 import { useWalletDetails } from '@cow/modules/wallet'
