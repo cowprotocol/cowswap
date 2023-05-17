@@ -24,6 +24,7 @@ import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrde
 import { Nullish } from '@cow/types'
 import { HIGH_FEE_WARNING_PERCENTAGE } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
+import { BundleTxApprovalBanner } from '@cow/common/pure/WarningBanner/banners'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [
   LimitOrdersFormState.ExpertApproveAndSwap,
@@ -127,12 +128,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
         </styledEl.SmallVolumeWarningBanner>
       )}
 
-      {showApprovalBundlingBanner && (
-        <styledEl.SmallVolumeWarningBanner>
-          <SVG src={AlertTriangle} description="Alert" />
-          <span>The next tx will bundle approval and order placement to make it easier, bla bla</span>
-        </styledEl.SmallVolumeWarningBanner>
-      )}
+      {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
     </div>
   ) : null
 }
