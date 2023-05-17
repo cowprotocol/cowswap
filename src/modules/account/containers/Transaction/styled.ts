@@ -249,7 +249,7 @@ export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>
 `
 
 // TODO: Consolidate status label logic with StatusItem
-// in src/cow-react/modules/limitOrders/pure/Orders/OrderRow.tsx
+// in src/modules/limitOrders/pure/Orders/OrderRow.tsx
 export const StatusLabel = styled.div<{
   isTransaction: boolean
   isPending: boolean
