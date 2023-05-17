@@ -63,9 +63,9 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
-  const isVisible = showPriceImpactWarning || rateImpact < 0 || showHighFeeWarning
-
   const showApprovalBundlingBanner = !isConfirmScreen && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(formState)
+
+  const isVisible = showPriceImpactWarning || rateImpact < 0 || showHighFeeWarning || showApprovalBundlingBanner
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
