@@ -78,6 +78,7 @@ module.exports = {
       ],
       resolve: {
         ...webpackConfig.resolve,
+        modules: [...webpackConfig.resolve.modules, path.resolve(__dirname, 'src/legacy')],
         /**
          * BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
          */
