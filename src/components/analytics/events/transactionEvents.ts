@@ -58,6 +58,16 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
   })
 }
 
+type BundleAction = 'Send' | 'Sign' | 'Reject' | 'Error'
+export function bundleAnalytics(action: BundleAction, orderClass: OrderClass, label?: string, value?: number) {
+  sendEvent({
+    category: Category.BUNDLE,
+    action,
+    label: getClassLabel(orderClass, label),
+    value,
+  })
+}
+
 export type SwapAction = 'Send' | 'Error' | 'Reject'
 export function swapAnalytics(action: SwapAction, orderClass: OrderClass, label?: string, value?: number) {
   sendEvent({
