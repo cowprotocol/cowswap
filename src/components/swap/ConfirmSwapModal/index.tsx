@@ -14,6 +14,8 @@ import SwapModalHeader from 'components/swap/SwapModalHeader'
 import { useWalletDetails } from '@cow/modules/wallet'
 import { SwapConfirmState } from '@cow/modules/swap/state/swapConfirmAtom'
 import { RateInfoParams } from '@cow/common/pure/RateInfo'
+import { useIsSafeApprovalBundle } from '@cow/modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState
@@ -69,11 +71,27 @@ export function ConfirmSwapModal({
     rateInfoParams,
   ])
 
+  const isSafeApprovalBundle = useIsSafeApprovalBundle(trade?.inputAmount.currency.wrapped, trade?.inputAmount)
+  const buttonText = useMemo(
+    () =>
+      isSafeApprovalBundle ? (
+        <>
+          Confirm (Approve&nbsp;{<TokenSymbol token={trade?.inputAmount?.currency.wrapped} length={6} />}&nbsp;and Swap)
+        </>
+      ) : undefined,
+    [isSafeApprovalBundle, trade?.inputAmount?.currency.wrapped]
+  )
+
   const modalBottom = useCallback(() => {
     return trade ? (
-      <SwapModalFooter onConfirm={onConfirm} disabledConfirm={showAcceptChanges} swapErrorMessage={swapErrorMessage} />
+      <SwapModalFooter
+        onConfirm={onConfirm}
+        disabledConfirm={showAcceptChanges}
+        swapErrorMessage={swapErrorMessage}
+        buttonText={buttonText}
+      />
     ) : null
-  }, [onConfirm, showAcceptChanges, swapErrorMessage, trade])
+  }, [buttonText, onConfirm, showAcceptChanges, swapErrorMessage, trade])
 
   const confirmationContent = useCallback(
     () =>

@@ -18,9 +18,10 @@ export interface SwapModalFooterProps {
   onConfirm: () => void
   swapErrorMessage: ReactNode | undefined
   disabledConfirm: boolean
+  buttonText?: ReactNode
 }
 
-export function SwapModalFooter({ onConfirm, swapErrorMessage, disabledConfirm }: SwapModalFooterProps) {
+export function SwapModalFooter({ onConfirm, swapErrorMessage, disabledConfirm, buttonText }: SwapModalFooterProps) {
   return (
     <Wrapper>
       <AutoRow>
@@ -32,7 +33,7 @@ export function SwapModalFooter({ onConfirm, swapErrorMessage, disabledConfirm }
           buttonSize={ButtonSize.BIG}
         >
           <Text fontSize={20} fontWeight={500}>
-            <Trans>Confirm Swap</Trans>
+            <Trans>{buttonText || 'Confirm Swap'}</Trans>
           </Text>
         </ButtonError>
 
