@@ -1,9 +1,10 @@
 import * as styledEl from './styled'
+import ms from 'ms'
 import { GpModal as Modal } from '@cow/common/pure/Modal'
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary } from 'components/Button'
 import { CustomDeadline } from '../DeadlineSelector/types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type ModalProps = {
   isOpen: boolean
@@ -12,11 +13,15 @@ type ModalProps = {
   selectCustomDeadline(deadline: CustomDeadline): void
 }
 
+const MAX_TWAP_ORDER_DEADLINE = ms(`30d`) * 6 // ~ 6months
+const MAX_DEADLINE_ERROR = 'Twap order deadline cannot be longer then 6 months'
+
 export function CustomDeadlineSelector({ isOpen, onDismiss, customDeadline, selectCustomDeadline }: ModalProps) {
   const { hours, minutes } = customDeadline
 
   const [hoursValue, setHoursValue] = useState(hours || 0)
   const [minutesValue, setMinutesValue] = useState(minutes || 0)
+  const [error, setError] = useState<string | null>(null)
 
   const onHoursChange = (v: string) => setHoursValue(Number(v))
   const onMinutesChange = (v: string) => setMinutesValue(Number(v))
@@ -28,6 +33,16 @@ export function CustomDeadlineSelector({ isOpen, onDismiss, customDeadline, sele
       minutes: minutesValue,
     })
   }
+
+  useEffect(() => {
+    const totalTime = ms(`${hoursValue}h`) + ms(`${minutesValue}m`)
+
+    if (totalTime > MAX_TWAP_ORDER_DEADLINE) {
+      setError(MAX_DEADLINE_ERROR)
+    } else {
+      setError(null)
+    }
+  }, [hoursValue, minutesValue])
 
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss}>
@@ -51,11 +66,13 @@ export function CustomDeadlineSelector({ isOpen, onDismiss, customDeadline, sele
           </styledEl.FieldWrapper>
         </styledEl.ModalContent>
 
+        {error && <styledEl.ErrorText>{error}</styledEl.ErrorText>}
+
         <styledEl.ModalFooter>
           <styledEl.CancelButton onClick={onDismiss}>
             <Trans>Cancel</Trans>
           </styledEl.CancelButton>
-          <ButtonPrimary onClick={onApply}>
+          <ButtonPrimary disabled={!!error} onClick={onApply}>
             <Trans>Apply</Trans>
           </ButtonPrimary>
         </styledEl.ModalFooter>

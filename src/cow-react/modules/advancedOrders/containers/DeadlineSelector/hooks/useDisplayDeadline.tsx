@@ -12,7 +12,7 @@ export function useDisplayDeadline() {
     } else {
       const { minutes, hours } = customDeadline
       return displayTime({
-        defaultOutput: 'Set total time',
+        defaultOutput: 'Select time',
         minutes,
         hours,
       })

@@ -15,4 +15,8 @@ export const Wrapper = styled.div`
   > button {
     width: auto;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-direction: column;
+  `}
 `

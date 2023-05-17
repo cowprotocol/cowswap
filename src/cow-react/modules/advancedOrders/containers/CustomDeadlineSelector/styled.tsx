@@ -28,7 +28,7 @@ export const ModalFooter = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  padding: 32px 0 0;
+  padding: 15px 0 0;
   gap: 10px;
 
   > button {
@@ -80,5 +80,12 @@ export const FieldWrapper = styled.div`
 `
 
 export const FieldLabel = styled.span``
+export const Input = styled(NumericalInput)`
+  max-width: 100px;
+`
 
-export const Input = styled(NumericalInput)``
+export const ErrorText = styled.div`
+  color: ${({ theme }) => theme.error};
+  font-size: 14px;
+  margin-top: 10px;
+`

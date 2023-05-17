@@ -30,7 +30,7 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
   overflow: hidden;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 21px;
+    font-size: 18px;
   `}
 
   &:hover {

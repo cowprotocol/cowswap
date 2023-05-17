@@ -5,6 +5,10 @@ export const Wrapper = styled(WidgetField)`
   background-color: ${({ theme }) => theme.bg1};
   border: 1px solid ${({ theme }) => theme.grey1};
   flex-shrink: 1;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 1rem;
+  `}
 `
 
 export const Label = styled(WidgetLabel)`
