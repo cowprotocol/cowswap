@@ -1,8 +1,8 @@
 import styled from 'styled-components/macro'
 
-import uImage from '../../assets/images/big_unicorn.png'
-import noise from '../../assets/images/noise.png'
-import xlUnicorn from '../../assets/images/xl_uni.png'
+import uImage from '@src/legacy/assets/images/big_unicorn.png'
+import noise from '@src/legacy/assets/images/noise.png'
+import xlUnicorn from '@src/legacy/assets/images/xl_uni.png'
 import { AutoColumn } from '../Column'
 
 export const DataCard = styled(AutoColumn)<{ disabled?: boolean }>`

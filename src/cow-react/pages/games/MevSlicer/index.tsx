@@ -2,7 +2,7 @@ import { ButtonPrimary } from 'components/Button'
 import { Page, Content } from '@cow/modules/application/pure/Page'
 import styled from 'styled-components/macro'
 
-import ninjaCowImg from 'assets/cow-swap/ninja-cow.png'
+import ninjaCowImg from '@src/legacy/assets/cow-swap/ninja-cow.png'
 import { gameAnalytics } from 'components/analytics'
 
 import { PageTitle } from '@cow/modules/application/containers/PageTitle'

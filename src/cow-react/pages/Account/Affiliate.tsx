@@ -1,5 +1,5 @@
 import { SectionTitle } from '@cow/modules/application/pure/Page'
-import { Txt } from 'assets/styles/styled'
+import { Txt } from '@src/legacy/assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { useWalletInfo, Web3Status } from '@cow/modules/wallet'
 import { getExplorerAddressLink } from 'utils/explorer'

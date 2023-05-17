@@ -8,7 +8,7 @@ import { formatDateWithTimezone } from '@cow/utils/time'
 import useNetworkName from 'hooks/useNetworkName'
 import { ExternalLink } from 'theme/index'
 import SVG from 'react-inlinesvg'
-import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
+import CowProtocolImage from '@src/legacy/assets/cow-swap/cowprotocol.svg'
 
 type ClaimIntroductionProps = Pick<
   ClaimCommonTypes,

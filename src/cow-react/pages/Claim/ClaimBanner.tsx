@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { useClaimState } from 'state/claim/hooks'
 import { ClaimBanner as ClaimBannerWrapper } from './styled'
-import CheckCircle from 'assets/cow-swap/check.svg'
+import CheckCircle from '@src/legacy/assets/cow-swap/check.svg'
 import { ClaimStatus } from 'state/claim/actions'
 import SVG from 'react-inlinesvg'
 import { ClaimCommonTypes } from '@cow/pages/Claim/types'

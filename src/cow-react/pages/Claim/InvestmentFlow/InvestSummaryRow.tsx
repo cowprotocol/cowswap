@@ -4,7 +4,7 @@ import { TokenLogo, InvestAvailableBar, UserMessage } from '@cow/pages/Claim/sty
 import { ClaimWithInvestmentData } from '@cow/pages/Claim/types'
 import CowProtocolLogo from 'components/CowProtocolLogo'
 import { ONE_HUNDRED_PERCENT } from 'constants/misc'
-import ImportantIcon from 'assets/cow-swap/important.svg'
+import ImportantIcon from '@src/legacy/assets/cow-swap/important.svg'
 import SVG from 'react-inlinesvg'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 

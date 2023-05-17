@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import cowMeditatingSmooth from 'assets/images/cow-meditating-smoooth.svg'
+import cowMeditatingSmooth from '@src/legacy/assets/images/cow-meditating-smoooth.svg'
 import { getExecutedSummaryData } from '@cow/utils/getExecutedSummaryData'
 import { Order } from 'state/orders/actions'
 import { DisplayLink } from '../TransactionConfirmationModal'

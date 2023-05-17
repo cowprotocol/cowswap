@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
-import Plus from 'assets/cow-swap/plus.svg'
-import X from 'assets/cow-swap/x.svg'
-import Checkmark from 'assets/cow-swap/checkmark.svg'
-import Exclamation from 'assets/cow-swap/exclamation.svg'
+import Plus from '@src/legacy/assets/cow-swap/plus.svg'
+import X from '@src/legacy/assets/cow-swap/x.svg'
+import Checkmark from '@src/legacy/assets/cow-swap/checkmark.svg'
+import Exclamation from '@src/legacy/assets/cow-swap/exclamation.svg'
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 

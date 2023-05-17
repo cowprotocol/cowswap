@@ -8,13 +8,13 @@ import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
 import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
 
 import { CustomLightSpinner } from 'theme'
-import Circle from 'assets/images/blue-loader.svg'
+import Circle from '@src/legacy/assets/images/blue-loader.svg'
 import { Countdown } from '@cow/pages/Claim/Countdown'
 import { getPaidClaims, getIndexes } from 'state/claim/hooks/utils'
 import { useEffect } from 'react'
 import { ExternalLink } from 'theme/index'
 import SVG from 'react-inlinesvg'
-import CowProtocolImage from 'assets/cow-swap/cowprotocol.svg'
+import CowProtocolImage from '@src/legacy/assets/cow-swap/cowprotocol.svg'
 import { TokenAmount } from '@cow/common/pure/TokenAmount'
 
 export type ClaimsTableProps = Pick<ClaimCommonTypes, 'claims' | 'hasClaims' | 'isAirdropOnly'>

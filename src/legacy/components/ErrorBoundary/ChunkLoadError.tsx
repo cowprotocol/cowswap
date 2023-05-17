@@ -7,7 +7,7 @@ import { ExternalLink, MEDIA_WIDTHS, ThemedText } from 'theme'
 import { DISCORD_LINK } from 'constants/index'
 import styled from 'styled-components/macro'
 import { Title } from '@cow/modules/application/pure/Page'
-import cowNoConnectionIMG from 'assets/cow-swap/cow-no-connection.png'
+import cowNoConnectionIMG from '@src/legacy/assets/cow-swap/cow-no-connection.png'
 
 /**
  * We use the `cow-no-connection.png` image in case when there is no internet connection
