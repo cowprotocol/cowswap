@@ -16,15 +16,11 @@ import styled from 'styled-components/macro'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '@cow/modules/limitOrders/hooks/useLimitOrdersFormState'
 import { isFractionFalsy } from '@cow/utils/isFractionFalsy'
 import { useWalletInfo } from '@cow/modules/wallet'
-import * as styledEl from '@cow/modules/limitOrders/containers/LimitOrdersWidget/styled'
-import AlertTriangle from 'assets/cow-swap/alert.svg'
-import SVG from 'react-inlinesvg'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { calculatePercentageInRelationToReference } from '@cow/modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { Nullish } from '@cow/types'
 import { HIGH_FEE_WARNING_PERCENTAGE } from '@cow/modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { BundleTxApprovalBanner } from '@cow/common/pure/WarningBanner/banners'
+import { BundleTxApprovalBanner, SmallVolumeWarningBanner } from '@cow/common/pure/WarningBanner/banners'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [
   LimitOrdersFormState.ExpertApproveAndSwap,
@@ -111,23 +107,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       )}
 
       {/*// TODO: must be replaced by <NotificationBanner>*/}
-      {showHighFeeWarning && (
-        <styledEl.SmallVolumeWarningBanner>
-          <SVG src={AlertTriangle} description="Alert" />
-          <span>
-            Small orders are unlikely to be executed. For this order, network fees would be{' '}
-            <b>
-              {feePercentage?.toFixed(2)}% (
-              <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} />)
-            </b>{' '}
-            of your sell amount! Therefore, your order is unlikely to execute.
-            <br />
-            {/* TODO: add link to somewhere */}
-            {/*<a href="/">Learn more ↗</a>*/}
-          </span>
-        </styledEl.SmallVolumeWarningBanner>
-      )}
-
+      {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
     </div>
   ) : null
