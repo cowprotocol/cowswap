@@ -10,6 +10,9 @@ import { buildApproveTx } from '@cow/modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from '@cow/modules/operations/bundle/buildPresignTx'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from '@cow/modules/limitOrders/services/types'
+import { bundleAnalytics } from '@src/components/analytics'
+import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
+import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
@@ -27,8 +30,26 @@ export async function safeBundleFlow(
     throw new PriceImpactDeclineError()
   }
 
+  const {
+    account,
+    recipientAddressOrName,
+    sellToken,
+    buyToken,
+    inputAmount,
+    class: orderClass,
+  } = params.postOrderParams
+
+  const marketLabel = 'Approve and Presign ' + [sellToken.symbol, buyToken.symbol].join(',')
+  const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+    account,
+    recipient: recipientAddressOrName,
+    recipientAddress: recipientAddressOrName,
+    marketLabel,
+    orderClass,
+  }
+
   logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')
-  // tradeFlowAnalytics.swap(swapFlowAnalyticsContext)
+  tradeFlowAnalytics.swap(swapFlowAnalyticsContext, bundleAnalytics)
   beforeTrade?.()
 
   const {
@@ -53,7 +74,7 @@ export async function safeBundleFlow(
     const approveTx = await buildApproveTx({
       erc20Contract,
       spender,
-      amountToApprove: postOrderParams.inputAmount,
+      amountToApprove: inputAmount,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
@@ -90,15 +111,14 @@ export async function safeBundleFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 6: add app data to upload queue')
     addAppDataToUploadQueue({ chainId, orderId, appData })
 
-    // tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+    tradeFlowAnalytics.sign(swapFlowAnalyticsContext, bundleAnalytics)
 
     return orderId
   } catch (error: any) {
     logTradeFlow(LOG_PREFIX, 'STEP 7: ERROR: ', error)
-    // const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error)
 
-    // TODO: handle analytics stuff
-    // tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext, bundleAnalytics)
 
     throw error
   }
