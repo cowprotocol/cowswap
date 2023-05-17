@@ -3,6 +3,7 @@ import { useTradeSpenderAddress } from '@cow/common/hooks/useTradeSpenderAddress
 import { useBalancesAndAllowances } from '@cow/modules/tokens'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { isEnoughAmount } from '@cow/utils/isEnoughAmount'
+import { Nullish } from '@cow/types'
 
 /**
  * Hook to check if a token needs approval
@@ -18,7 +19,7 @@ import { isEnoughAmount } from '@cow/utils/isEnoughAmount'
  * @param amount
  * @returns {boolean}
  */
-export function useNeedsApproval(token: Token | undefined, amount: CurrencyAmount<Currency> | undefined): boolean {
+export function useNeedsApproval(token: Nullish<Token>, amount: Nullish<CurrencyAmount<Currency>>): boolean {
   const { account } = useWalletInfo()
   const spender = useTradeSpenderAddress()
   const tokens = token ? [token] : []
