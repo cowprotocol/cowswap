@@ -1,7 +1,7 @@
 import { useWalletInfo } from '@cow/modules/wallet'
 import { useTradeSpenderAddress } from '@cow/common/hooks/useTradeSpenderAddress'
 import { useBalancesAndAllowances } from '@cow/modules/tokens'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { isEnoughAmount } from '@cow/utils/isEnoughAmount'
 import { Nullish } from '@cow/types'
 
@@ -15,13 +15,13 @@ import { Nullish } from '@cow/types'
  * If allowance is found and is sufficient, returns false
  * If allowance is found and is insufficient, returns true
  *
- * @param token
  * @param amount
  * @returns {boolean}
  */
-export function useNeedsApproval(token: Nullish<Token>, amount: Nullish<CurrencyAmount<Currency>>): boolean {
+export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boolean {
   const { account } = useWalletInfo()
   const spender = useTradeSpenderAddress()
+  const token = amount?.currency.wrapped
   const tokens = token ? [token] : []
   const balancesAndAllowances = useBalancesAndAllowances({ account, spender, tokens })
 

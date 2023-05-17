@@ -71,7 +71,7 @@ export function ConfirmSwapModal({
     rateInfoParams,
   ])
 
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(trade?.inputAmount.currency.wrapped, trade?.inputAmount)
+  const isSafeApprovalBundle = useIsSafeApprovalBundle(trade?.inputAmount)
   const buttonText = useMemo(
     () =>
       isSafeApprovalBundle ? (

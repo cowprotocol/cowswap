@@ -90,7 +90,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const pendingText = <PendingText inputRawAmount={inputAmount} outputRawAmount={outputAmount} />
   const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
 
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount?.currency.wrapped, inputAmount)
+  const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
   const buttonText = isSafeApprovalBundle ? (
     <>
       Confirm (Approve&nbsp;

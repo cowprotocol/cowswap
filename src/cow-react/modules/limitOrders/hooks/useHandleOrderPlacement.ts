@@ -35,10 +35,7 @@ export function useHandleOrderPlacement(
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
-  const isSafeBundle = useIsSafeApprovalBundle(
-    tradeContext?.postOrderParams.sellToken,
-    tradeContext?.postOrderParams.inputAmount
-  )
+  const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
 
   const tradeFn = useCallback(async () => {
     if (isSafeBundle && safeBundleFlowContext) {
