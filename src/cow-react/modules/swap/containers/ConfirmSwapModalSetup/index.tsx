@@ -1,4 +1,4 @@
-import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
+import { ConfirmSwapModal } from 'components/swap/ConfirmSwapModal'
 import { useCallback } from 'react'
 import TradeGp from 'state/swap/TradeGp'
 import { Percent } from '@uniswap/sdk-core'
