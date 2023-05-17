@@ -8,12 +8,10 @@ Overall architecture of the project
 
 ## Modules
 
-Here I would like we add a link to a module explainer with some diagrams.
-
-TODO:
-
-- Module 1
-- Module 2
-- Module 3
-- Module 4
-- Module 5
+- [Trade](../src/cow-react/modules/trade/docs/README.md)
+- Swap
+- Limit orders
+- Accounts
+- AppData
+- Tokens
+- Etc
