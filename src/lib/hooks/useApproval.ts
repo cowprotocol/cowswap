@@ -5,7 +5,7 @@ import { useTokenContract } from 'hooks/useContract'
 import { useTokenAllowance } from 'hooks/useTokenAllowance'
 import { useCallback, useMemo } from 'react'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',

@@ -184,4 +184,4 @@ The plan:
 
 ## Nested docs
 
-1. [Amounts formatting](src/cow-react/utils/amountFormat/README.md)
+1. [Amounts formatting](src/utils/amountFormat/README.md)
