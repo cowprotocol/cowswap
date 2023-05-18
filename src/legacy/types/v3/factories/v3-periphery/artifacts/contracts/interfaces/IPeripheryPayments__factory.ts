@@ -2,70 +2,73 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import type { Provider } from '@ethersproject/providers'
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
 import type {
   IPeripheryPayments,
   IPeripheryPaymentsInterface,
-} from '../../../../../v3-periphery/artifacts/contracts/interfaces/IPeripheryPayments'
+} from "../../../../../v3-periphery/artifacts/contracts/interfaces/IPeripheryPayments";
 
 const _abi = [
   {
     inputs: [],
-    name: 'refundETH',
+    name: "refundETH",
     outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'token',
-        type: 'address',
+        internalType: "address",
+        name: "token",
+        type: "address",
       },
       {
-        internalType: 'uint256',
-        name: 'amountMinimum',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "amountMinimum",
+        type: "uint256",
       },
       {
-        internalType: 'address',
-        name: 'recipient',
-        type: 'address',
+        internalType: "address",
+        name: "recipient",
+        type: "address",
       },
     ],
-    name: 'sweepToken',
+    name: "sweepToken",
     outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'amountMinimum',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "amountMinimum",
+        type: "uint256",
       },
       {
-        internalType: 'address',
-        name: 'recipient',
-        type: 'address',
+        internalType: "address",
+        name: "recipient",
+        type: "address",
       },
     ],
-    name: 'unwrapWETH9',
+    name: "unwrapWETH9",
     outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
   },
-] as const
+] as const;
 
 export class IPeripheryPayments__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): IPeripheryPaymentsInterface {
-    return new utils.Interface(_abi) as IPeripheryPaymentsInterface
+    return new utils.Interface(_abi) as IPeripheryPaymentsInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): IPeripheryPayments {
-    return new Contract(address, _abi, signerOrProvider) as IPeripheryPayments
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): IPeripheryPayments {
+    return new Contract(address, _abi, signerOrProvider) as IPeripheryPayments;
   }
 }
