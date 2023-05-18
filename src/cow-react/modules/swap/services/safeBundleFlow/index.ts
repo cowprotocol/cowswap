@@ -8,8 +8,7 @@ import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderStep'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { signAndPostOrder } from 'utils/trade'
-import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
-import { bundleAnalytics } from 'components/analytics'
+import { tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 
 const LOG_PREFIX = 'SAFE BUNDLE FLOW'
 
@@ -38,12 +37,7 @@ export async function safeBundleFlow(
     swapFlowAnalyticsContext,
   } = input
 
-  const analyticsContext: SwapFlowAnalyticsContext = {
-    ...swapFlowAnalyticsContext,
-    marketLabel: 'Approve and Presign ' + swapFlowAnalyticsContext.marketLabel,
-  }
-
-  tradeFlowAnalytics.swap(analyticsContext, bundleAnalytics)
+  tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
 
   try {
     // For now, bundling ALWAYS includes 2 steps: approve and presign.
@@ -83,7 +77,7 @@ export async function safeBundleFlow(
       },
       dispatch
     )
-    tradeFlowAnalytics.sign(analyticsContext, bundleAnalytics)
+    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add app data to upload queue')
     callbacks.addAppDataToUploadQueue({ chainId: context.chainId, orderId, appData: appDataInfo })
@@ -94,7 +88,7 @@ export async function safeBundleFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 9: error', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    tradeFlowAnalytics.error(error, swapErrorMessage, analyticsContext)
+    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     swapConfirmManager.setSwapError(swapErrorMessage)
   }

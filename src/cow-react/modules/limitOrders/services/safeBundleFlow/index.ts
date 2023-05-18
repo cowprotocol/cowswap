@@ -10,7 +10,6 @@ import { buildApproveTx } from '@cow/modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from '@cow/modules/operations/bundle/buildPresignTx'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from '@cow/modules/limitOrders/services/types'
-import { bundleAnalytics } from 'components/analytics'
 import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 
@@ -39,17 +38,16 @@ export async function safeBundleFlow(
     class: orderClass,
   } = params.postOrderParams
 
-  const marketLabel = 'Approve and Presign ' + [sellToken.symbol, buyToken.symbol].join(',')
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
     account,
     recipient: recipientAddressOrName,
     recipientAddress: recipientAddressOrName,
-    marketLabel,
+    marketLabel: [sellToken.symbol, buyToken.symbol].join(','),
     orderClass,
   }
 
   logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')
-  tradeFlowAnalytics.swap(swapFlowAnalyticsContext, bundleAnalytics)
+  tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
   beforeTrade?.()
 
   const {
@@ -111,14 +109,14 @@ export async function safeBundleFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 6: add app data to upload queue')
     addAppDataToUploadQueue({ chainId, orderId, appData })
 
-    tradeFlowAnalytics.sign(swapFlowAnalyticsContext, bundleAnalytics)
+    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
     logTradeFlow(LOG_PREFIX, 'STEP 7: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
-    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext, bundleAnalytics)
+    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     throw error
   }
