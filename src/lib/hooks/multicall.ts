@@ -1,4 +1,4 @@
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import multicall from 'lib/state/multicall'
 import { SkipFirst } from 'types/tuple'

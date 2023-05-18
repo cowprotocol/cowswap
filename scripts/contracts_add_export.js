@@ -4,9 +4,9 @@
 const fs = require('fs')
 const path = require('path')
 
-const fileTypesIndex = path.resolve(__dirname, '../src/cow-react/abis/types/index.ts')
-const outputBaseAbis = 'export * from "@src/abis/types";\n'
-const outputEthFlowAbis = 'export * from "@cow/abis/types/ethflow";\n'
+const fileTypesIndex = path.resolve(__dirname, '../src/abis/types/index.ts')
+const outputBaseAbis = 'export * from "@src/legacy/abis/types";\n'
+const outputEthFlowAbis = 'export * from "abis/types/ethflow";\n'
 
 fs.appendFile(fileTypesIndex, outputBaseAbis, function (err) {
   if (err) {

@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import { getTxOptimizedSwapRouter, SwapRouterVersion } from 'utils/getTxOptimizedSwapRouter'
 
 import { ApprovalState, useApproval, useApprovalStateForSpender } from 'lib/hooks/useApproval'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 export { ApprovalState } from 'lib/hooks/useApproval'
 
 /** Returns approval state for all known swap routers */
