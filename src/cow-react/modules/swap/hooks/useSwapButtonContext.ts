@@ -1,11 +1,9 @@
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from '@cow/modules/wallet'
-import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapActionHandlers } from 'state/swap/hooks'
 import { useExpertModeManager } from 'state/user/hooks'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useSwapConfirmManager } from '@cow/modules/swap/hooks/useSwapConfirmManager'
 import { Field } from 'state/swap/actions'
-import { TradeType } from '@uniswap/sdk-core'
-import { computeSlippageAdjustedAmounts } from 'utils/prices'
 import {
   useHasEnoughWrappedBalanceForSwap,
   useWrapCallback,
@@ -20,11 +18,11 @@ import { PriceImpact } from 'hooks/usePriceImpact'
 import { useTradeApproveState } from '@cow/common/containers/TradeApprove/useTradeApproveState'
 import { useDetectNativeToken } from '@cow/modules/swap/hooks/useDetectNativeToken'
 import { useEthFlowContext } from '@cow/modules/swap/hooks/useEthFlowContext'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useIsSmartContractWallet } from '@cow/common/hooks/useIsSmartContractWallet'
 import { useIsTradeUnsupported } from 'state/lists/hooks'
 import { useHandleSwap } from '@cow/modules/swap/hooks/useHandleSwap'
 import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
+import { useSafeBundleFlowContext } from '@cow/modules/swap/hooks/useSafeBundleFlowContext'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -46,12 +44,12 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     currenciesIds,
     inputError: swapInputError,
   } = useDerivedSwapInfo()
-  const { typedValue } = useSwapState()
   const [isExpertMode] = useExpertModeManager()
   const toggleWalletModal = useToggleWalletModal()
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
+  const safeBundleContext = useSafeBundleFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
 
@@ -66,22 +64,17 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken()
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
-  const nativeInput =
-    trade?.tradeType === TradeType.EXACT_INPUT
-      ? trade?.inputAmount
-      : // else use the slippage + fee adjusted amount
-        computeSlippageAdjustedAmounts(trade, allowedSlippage).INPUT
+  const nativeInput = trade?.maximumAmountIn(allowedSlippage)
   const wrapUnwrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapCallback(wrapUnwrapAmount)
-  const inputAmount = tryParseCurrencyAmount(typedValue, currencyIn ?? undefined)
-  const approvalState = useTradeApproveState(inputAmount || null)
+  const approvalState = useTradeApproveState(nativeInput || null)
 
   const handleSwap = useHandleSwap(priceImpactParams)
 
-  const contextExists = ethFlowContext || swapFlowContext
+  const contextExists = ethFlowContext || swapFlowContext || safeBundleContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -115,7 +108,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   return {
     swapButtonState,
-    inputAmount,
+    inputAmount: nativeInput,
     chainId,
     wrappedToken,
     handleSwap,

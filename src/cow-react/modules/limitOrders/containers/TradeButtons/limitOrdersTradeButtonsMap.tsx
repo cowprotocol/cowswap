@@ -26,6 +26,7 @@ export interface TradeButtonsParams {
   quote: LimitOrdersQuoteState
   toggleWalletModal: () => void
   wrapUnwrapParams: WrapUnwrapParams
+  doTrade: () => void
 }
 
 interface ButtonConfig {
@@ -83,15 +84,25 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     text: 'Review limit order',
     id: 'review-limit-order-btn',
   },
-  [LimitOrdersFormState.ApproveAndSwap]: {
-    disabled: false,
-    text: 'Review limit order (approve + place)', // TODO: update text, this is only for testing
-    id: 'review-limit-order-btn',
+  [LimitOrdersFormState.ApproveAndSwap]: ({ tradeState: { inputCurrency }, doTrade }: TradeButtonsParams) => {
+    const token = inputCurrency?.wrapped
+    const symbol = <TokenSymbol token={token} length={6} />
+
+    return (
+      <SwapButton disabled={false} onClick={doTrade} id="review-limit-order-btn">
+        <Trans>Review (Approve&nbsp;{symbol}&nbsp;& Limit order)</Trans>
+      </SwapButton>
+    )
   },
-  [LimitOrdersFormState.ExpertApproveAndSwap]: {
-    disabled: false,
-    text: 'Approve and place limit order',
-    id: 'approve-and-place-limit-order-btn',
+  [LimitOrdersFormState.ExpertApproveAndSwap]: ({ tradeState: { inputCurrency }, doTrade }: TradeButtonsParams) => {
+    const token = inputCurrency?.wrapped
+    const symbol = <TokenSymbol token={token} length={6} />
+
+    return (
+      <SwapButton disabled={false} onClick={doTrade} id="approve-and-place-limit-order-btn">
+        <Trans>Confirm (Approve&nbsp;{symbol}&nbsp;& Limit order)</Trans>
+      </SwapButton>
+    )
   },
   [LimitOrdersFormState.ExpertCanTrade]: {
     disabled: false,

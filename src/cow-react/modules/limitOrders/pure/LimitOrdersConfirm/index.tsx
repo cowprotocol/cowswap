@@ -5,7 +5,7 @@ import { ButtonPrimary } from 'components/Button'
 import { CurrencyInfo } from '@cow/common/pure/CurrencyInputPanel/types'
 import { CurrencyPreview } from '@cow/common/pure/CurrencyInputPanel'
 import { LimitOrdersDetails } from '../LimitOrdersDetails'
-import { TradeFlowContext } from '../../services/tradeFlow'
+import { TradeFlowContext } from '../../services/types'
 import * as styledEl from './styled'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { PriceImpact } from 'hooks/usePriceImpact'
@@ -32,6 +32,7 @@ export interface LimitOrdersConfirmProps {
   onConfirm(): void
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
   featurePartialFillsEnabled: boolean
+  buttonText?: ReactNode
 }
 
 export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
@@ -50,6 +51,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
     limitRateState,
     partiallyFillableOverride,
     featurePartialFillsEnabled,
+    buttonText,
   } = props
 
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
@@ -88,7 +90,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
       />
       {Warnings}
       <ButtonPrimary onClick={onConfirm} disabled={isTradeDisabled} buttonSize={ButtonSize.BIG}>
-        <Trans>Confirm</Trans>
+        <Trans>{buttonText || 'Confirm'}</Trans>
       </ButtonPrimary>
     </styledEl.ConfirmWrapper>
   )

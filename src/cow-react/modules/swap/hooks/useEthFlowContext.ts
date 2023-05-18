@@ -1,15 +1,15 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useEthFlowContract } from 'hooks/useContract'
-import { useBaseFlowContextSetup, getFlowContext } from '@cow/modules/swap/hooks/useFlowContext'
+import { FlowType, getFlowContext, useBaseFlowContextSetup } from '@cow/modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from '@cow/modules/swap/services/types'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { useCallback } from 'react'
 import {
-  ethFlowInFlightOrderIdsAtom,
   addInFlightOrderIdAtom,
+  ethFlowInFlightOrderIdsAtom,
 } from '@cow/modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
-import { useSetAtom, useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
@@ -30,7 +30,7 @@ export function useEthFlowContext(): EthFlowContext | null {
     kind: OrderKind.SELL,
   })
 
-  if (!baseContext || !contract || !baseProps.isEthFlow) return null
+  if (!baseContext || !contract || baseProps.flowType !== FlowType.ETH_FLOW) return null
 
   return {
     ...baseContext,

@@ -2,7 +2,7 @@ import { TradeType } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { SwapFlowContext } from '@cow/modules/swap/services/types'
 import { useGP2SettlementContract } from 'hooks/useContract'
-import { getFlowContext, useBaseFlowContextSetup } from '@cow/modules/swap/hooks/useFlowContext'
+import { FlowType, getFlowContext, useBaseFlowContextSetup } from '@cow/modules/swap/hooks/useFlowContext'
 
 export function useSwapFlowContext(): SwapFlowContext | null {
   const contract = useGP2SettlementContract()
@@ -16,7 +16,7 @@ export function useSwapFlowContext(): SwapFlowContext | null {
     kind: baseProps.trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
   })
 
-  if (!contract || !baseContext || baseProps.isEthFlow) return null
+  if (!contract || !baseContext || baseProps.flowType !== FlowType.REGULAR) return null
 
   return {
     ...baseContext,

@@ -1,5 +1,5 @@
 import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
-import { EthersAdapter } from '@safe-global/protocol-kit'
+import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { registerOnWindow } from 'utils/misc'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -29,7 +29,7 @@ function _getClient(chainId: number, library: Web3Provider): SafeApiKit | null {
     return cachedClient
   }
 
-  const client = createSafeServiceClient(chainId, library)
+  const client = createSafeApiKitInstance(chainId, library)
 
   // Add client to cache (or null if unknonw network)
   SAFE_TRANSACTION_SERVICE_CACHE[chainId] = client
@@ -37,19 +37,29 @@ function _getClient(chainId: number, library: Web3Provider): SafeApiKit | null {
   return client
 }
 
-function createSafeServiceClient(chainId: number, library: Web3Provider): SafeApiKit | null {
+function _createSafeEthAdapter(library: Web3Provider): EthersAdapter {
+  const provider = new Web3Provider(library.send.bind(library) as JsonRpcFetchFunc)
+
+  return new EthersAdapter({
+    ethers,
+    signerOrProvider: provider.getSigner(0),
+  })
+}
+
+export function createSafeApiKitInstance(chainId: number, library: Web3Provider): SafeApiKit | null {
   const url = SAFE_TRANSACTION_SERVICE_URL[chainId]
   if (!url) {
     return null
   }
 
-  const provider = new Web3Provider(library.send.bind(library) as JsonRpcFetchFunc)
-
-  const ethAdapter = new EthersAdapter({
-    ethers,
-    signerOrProvider: provider.getSigner(0),
-  })
+  const ethAdapter = _createSafeEthAdapter(library)
   return new SafeApiKit({ txServiceUrl: url, ethAdapter })
+}
+
+export async function createSafeSdkInstance(safeAddress: string, library: Web3Provider): Promise<Safe> {
+  const ethAdapter = _createSafeEthAdapter(library)
+
+  return Safe.create({ ethAdapter, safeAddress })
 }
 
 function _getClientOrThrow(chainId: number, library: Web3Provider): SafeApiKit {

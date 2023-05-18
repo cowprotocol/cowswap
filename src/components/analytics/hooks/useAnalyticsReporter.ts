@@ -18,6 +18,7 @@ import { sendTwitterEvent } from '../pixel/twitter'
 import { sendRedditEvent } from '../pixel/reddit'
 import { sendPavedEvent } from '../pixel/paved'
 import { sendMicrosoftEvent } from '../pixel/microsoft'
+import ReactGA from 'react-ga4'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
@@ -70,6 +71,10 @@ export function useAnalyticsReporter() {
   useEffect(() => {
     // custom dimension 2 - walletname
     googleAnalytics.setDimension(Dimensions.walletName, account ? walletName : 'Not connected')
+
+    // Set userId and also new dimension because ReactGA.set might not be working
+    googleAnalytics.setDimension(Dimensions.userAddress, `"${account}"`)
+    ReactGA.set({ userId: `"${account}"` })
 
     // Handle pixel tracking on wallet connection
     if (!prevAccount && account) {

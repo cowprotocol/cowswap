@@ -16,6 +16,7 @@ import { EthFlowBanner } from '@cow/modules/swap/containers/EthFlow/EthFlowBanne
 import { Field } from 'state/swap/actions'
 import { TradeApproveButton } from '@cow/common/containers/TradeApprove/TradeApproveButton'
 import { genericPropsChecker } from '@cow/utils/genericPropsChecker'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export type HandleSwapCallback = () => void
 
@@ -162,14 +163,18 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
   [SwapButtonState.ApproveAndSwap]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
       <styledEl.SwapButtonBox>
-        <Trans>Approve and Swap</Trans>
+        <Trans>
+          Approve&nbsp;{<TokenSymbol token={props.inputAmount?.currency.wrapped} length={6} />}&nbsp;and Swap
+        </Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
   [SwapButtonState.ExpertApproveAndSwap]: (props: SwapButtonsContext) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
       <styledEl.SwapButtonBox>
-        <Trans>Approve and Swap</Trans>
+        <Trans>
+          Confirm (Approve&nbsp;{<TokenSymbol token={props.inputAmount?.currency.wrapped} length={6} />}&nbsp;and Swap)
+        </Trans>
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { PriceImpactDeclineError, tradeFlow, TradeFlowContext } from '@cow/modules/limitOrders/services/tradeFlow'
+import { tradeFlow } from '@cow/modules/limitOrders/services/tradeFlow'
 import OperatorError from '@cow/api/gnosisProtocol/errors/OperatorError'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -8,6 +8,10 @@ import { updateLimitOrdersRawStateAtom } from '@cow/modules/limitOrders/state/li
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
 import { useConfirmPriceImpactWithoutFee } from '@cow/common/hooks/useConfirmPriceImpactWithoutFee'
+import { safeBundleFlow } from '@cow/modules/limitOrders/services/safeBundleFlow'
+import { useSafeBundleFlowContext } from '@cow/modules/limitOrders/hooks/useSafeBundleFlowContext'
+import { PriceImpactDeclineError, TradeFlowContext } from '@cow/modules/limitOrders/services/types'
+import { useIsSafeApprovalBundle } from '@cow/modules/limitOrders/hooks/useIsSafeApprovalBundle'
 
 interface HandleTradeCallback {
   beforeTrade(): void
@@ -29,17 +33,45 @@ export function useHandleOrderPlacement(
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
+  // tx bundling stuff
+  const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
+  const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
+
+  const tradeFn = useCallback(async () => {
+    if (isSafeBundle && safeBundleFlowContext) {
+      safeBundleFlowContext.postOrderParams.partiallyFillable =
+        partiallyFillableOverride ?? safeBundleFlowContext.postOrderParams.partiallyFillable
+
+      return safeBundleFlow(
+        safeBundleFlowContext,
+        priceImpact,
+        settingsState,
+        confirmPriceImpactWithoutFee,
+        callbacks.beforeTrade
+      )
+    } else if (!isSafeBundle && tradeContext) {
+      tradeContext.postOrderParams.partiallyFillable =
+        partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
+
+      return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, callbacks.beforeTrade)
+    }
+
+    return
+  }, [
+    callbacks.beforeTrade,
+    confirmPriceImpactWithoutFee,
+    isSafeBundle,
+    partiallyFillableOverride,
+    priceImpact,
+    safeBundleFlowContext,
+    settingsState,
+    tradeContext,
+  ])
 
   return useCallback(() => {
-    if (!tradeContext) return Promise.resolve()
-
-    // Apply partiallyFillable override, if it's set
-    tradeContext.postOrderParams.partiallyFillable =
-      partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
-
-    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, callbacks.beforeTrade)
+    return tradeFn()
       .then((orderHash) => {
-        callbacks.onTradeSuccess?.(orderHash)
+        callbacks.onTradeSuccess?.(orderHash || null)
 
         updateLimitOrdersState({ recipient: null })
         // Reset override after successful order placement
@@ -57,13 +89,5 @@ export function useHandleOrderPlacement(
       .finally(() => {
         callbacks.finally?.()
       })
-  }, [
-    tradeContext,
-    partiallyFillableOverride,
-    priceImpact,
-    settingsState,
-    callbacks,
-    updateLimitOrdersState,
-    setPartiallyFillableOverride,
-  ])
+  }, [tradeFn, callbacks, updateLimitOrdersState, setPartiallyFillableOverride])
 }
