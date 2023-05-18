@@ -2,16 +2,16 @@ import { ReactNode } from 'react'
 import styled, { useTheme } from 'styled-components/macro' // import useTheme
 import { lighten, darken, transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
-import iconAlert from '@src/assets/cow-swap/alert.svg';
-import iconInformation from '@src/assets/cow-swap/alert-circle.svg';
-import iconSuccess from '@src/assets/cow-swap/check.svg';
-import iconDanger from '@src/assets/cow-swap/alert.svg';
+import iconAlert from '@src/assets/cow-swap/alert.svg'
+import iconInformation from '@src/assets/cow-swap/alert-circle.svg'
+import iconSuccess from '@src/assets/cow-swap/check.svg'
+import iconDanger from '@src/assets/cow-swap/alert.svg'
 
-type BannerType = 'alert' | 'information' | 'success' | 'danger';
+type BannerType = 'alert' | 'information' | 'success' | 'danger'
 
 interface BannerConfig {
-  icon: string;
-  colorKey: BannerType;
+  icon: string
+  colorKey: BannerType
 }
 
 const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
@@ -31,14 +31,13 @@ const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
     icon: iconDanger,
     colorKey: 'danger',
   },
-};
+}
 
 const Wrapper = styled.span<{ color: string }>`
   display: flex;
   align-items: center;
-  background: ${({ theme, color }) => 
-    theme.darkMode ? transparentize(0.9, color) : transparentize(0.85, color)};
-  color: ${({ theme, color }) => theme.darkMode ? lighten(0.2, color) : darken(0.15, color)};
+  background: ${({ theme, color }) => (theme.darkMode ? transparentize(0.9, color) : transparentize(0.85, color))};
+  color: ${({ theme, color }) => (theme.darkMode ? lighten(0.2, color) : darken(0.15, color))};
   gap: 10px;
   border-radius: 10px;
   margin: 8px auto 0;
@@ -55,7 +54,7 @@ const Wrapper = styled.span<{ color: string }>`
   > svg > path {
     fill: ${({ color }) => color};
   }
-`;
+`
 
 export type InlineBannerProps = {
   content: ReactNode
@@ -64,15 +63,12 @@ export type InlineBannerProps = {
 }
 
 export function InlineBanner({ content, className, type = 'alert' }: InlineBannerProps) {
-  const theme = useTheme();
-  const config = BANNER_CONFIG[type];
-  const color = theme[config.colorKey];
+  const theme = useTheme()
+  const config = BANNER_CONFIG[type]
+  const color = theme[config.colorKey]
 
   return (
-    <Wrapper 
-      className={className}
-      color={color}
-    >
+    <Wrapper className={className} color={color}>
       <SVG src={config.icon} description={type} />
       <span>{content}</span>
     </Wrapper>
