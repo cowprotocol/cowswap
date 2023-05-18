@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { animated } from '@react-spring/web'
 import { CheckCircle, Clock } from 'react-feather'
-import CowProtocolLogo from '@src/legacy/assets/cow-swap/cowprotocol.svg'
+import CowProtocolLogo from 'legacy/assets/cow-swap/cowprotocol.svg'
 import { ExternalLink } from 'theme'
 
 export const ProgressBarWrapper = animated(styled.div`

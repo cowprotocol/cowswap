@@ -4,7 +4,7 @@ import { Currency, Token } from '@uniswap/sdk-core'
 
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'constants/index'
 import { EthFlowBannerCallbacks } from 'modules/swap/containers/EthFlow/EthFlowBanner'
-import savingsIcon from '@src/legacy/assets/cow-swap/savings.svg'
+import savingsIcon from 'legacy/assets/cow-swap/savings.svg'
 import SVG from 'react-inlinesvg'
 import * as styledEl from './styleds'
 import { ButtonPrimary } from 'components/Button'

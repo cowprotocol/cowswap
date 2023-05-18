@@ -17,7 +17,7 @@ import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAto
 import { limitOrdersFeatures } from 'constants/featureFlags'
 import { QuestionWrapper } from 'components/QuestionHelper'
 import SVG from 'react-inlinesvg'
-import iconOrderExecution from '@src/legacy/assets/cow-swap/orderExecution.svg'
+import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
 import { X } from 'react-feather'
 import { OrderExecutionStatusList } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'

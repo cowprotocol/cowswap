@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { ReactComponent as Close } from '@src/legacy/assets/images/x.svg'
+import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
 import { AccountDetails } from '../AccountDetails'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { useToggleWalletModal } from 'state/application/hooks'

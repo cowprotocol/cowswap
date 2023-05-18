@@ -31,7 +31,7 @@ import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partial
 import { useAtom } from 'jotai'
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { TradeWidget } from 'modules/trade/containers/TradeWidget'
-import usePriceImpact from '@src/legacy/hooks/usePriceImpact'
+import usePriceImpact from 'legacy/hooks/usePriceImpact'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'

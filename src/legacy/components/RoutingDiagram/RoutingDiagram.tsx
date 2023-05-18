@@ -11,7 +11,7 @@ import { Box } from 'rebass'
 import styled from 'styled-components/macro'
 import { ThemedText, Z_INDEX } from 'theme'
 
-import { ReactComponent as DotLine } from '@src/legacy/assets/svg/dot_line.svg'
+import { ReactComponent as DotLine } from 'legacy/assets/svg/dot_line.svg'
 import { MouseoverTooltip } from '../Tooltip'
 
 const Wrapper = styled(Box)`

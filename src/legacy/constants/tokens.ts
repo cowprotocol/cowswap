@@ -13,11 +13,11 @@ import {
 import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
-import vCowLogo from '@src/legacy/assets/cow-swap/vCOW.png'
-import cowLogo from '@src/legacy/assets/cow-swap/cow.svg'
-import gnoLogo from '@src/legacy/assets/cow-swap/gno.png'
-import usdcLogo from '@src/legacy/assets/cow-swap/usdc.png'
-import wxDaiLogo from '@src/legacy/assets/cow-swap/wxdai.png'
+import vCowLogo from 'legacy/assets/cow-swap/vCOW.png'
+import cowLogo from 'legacy/assets/cow-swap/cow.svg'
+import gnoLogo from 'legacy/assets/cow-swap/gno.png'
+import usdcLogo from 'legacy/assets/cow-swap/usdc.png'
+import wxDaiLogo from 'legacy/assets/cow-swap/wxdai.png'
 
 export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,

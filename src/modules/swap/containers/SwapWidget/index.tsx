@@ -40,7 +40,7 @@ import { useSetupSwapAmountsFromUrl } from 'modules/swap/hooks/useSetupSwapAmoun
 import { useIsTradeUnsupported } from 'state/lists/hooks'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer } from 'modules/trade/containers/TradeWidget'
-import SettingsTab from '@src/legacy/components/Settings'
+import SettingsTab from 'legacy/components/Settings'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 

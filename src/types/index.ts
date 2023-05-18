@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
-export * from '@src/legacy/types'
+export * from 'legacy/types'
 
 export type Timestamp = number // Example: 1667981900 === Nov 09 2022 14:18:20
 

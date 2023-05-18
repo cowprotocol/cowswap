@@ -1,5 +1,5 @@
 import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { GPv2Settlement } from '@src/abis/types'
+import { GPv2Settlement } from 'abis/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'

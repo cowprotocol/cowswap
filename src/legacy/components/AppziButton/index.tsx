@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import FeedbackIcon from '@src/legacy/assets/cow-swap/feedback.svg'
+import FeedbackIcon from 'legacy/assets/cow-swap/feedback.svg'
 import { isAppziEnabled, openFeedbackAppzi } from 'utils/appzi'
 import SVG from 'react-inlinesvg'
 import { transparentize } from 'polished'

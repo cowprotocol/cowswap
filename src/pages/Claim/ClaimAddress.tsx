@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Trans } from '@lingui/macro'
 import { ButtonSecondary } from 'components/Button'
-import Circle from '@src/legacy/assets/images/blue-loader.svg'
+import Circle from 'legacy/assets/images/blue-loader.svg'
 import { CustomLightSpinner, ThemedText } from 'theme'
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
 import { ClaimCommonTypes } from './types'

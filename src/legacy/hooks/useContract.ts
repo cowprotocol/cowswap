@@ -1,24 +1,16 @@
 import { Contract } from '@ethersproject/contracts'
 import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json'
 import { useWeb3React } from '@web3-react/core'
-import ARGENT_WALLET_DETECTOR_ABI from '@src/legacy/abis/argent-wallet-detector.json'
-import EIP_2612 from '@src/legacy/abis/eip_2612.json'
-import ENS_PUBLIC_RESOLVER_ABI from '@src/legacy/abis/ens-public-resolver.json'
-import ENS_ABI from '@src/legacy/abis/ens-registrar.json'
-import ERC20_ABI from '@src/legacy/abis/erc20.json'
-import ERC20_BYTES32_ABI from '@src/legacy/abis/erc20_bytes32.json'
-import ERC721_ABI from '@src/legacy/abis/erc721.json'
-import ERC1155_ABI from '@src/legacy/abis/erc1155.json'
-import {
-  ArgentWalletDetector,
-  EnsPublicResolver,
-  EnsRegistrar,
-  Erc20,
-  Erc721,
-  Erc1155,
-  Weth,
-} from '@src/legacy/abis/types'
-import WETH_ABI from '@src/legacy/abis/weth.json'
+import ARGENT_WALLET_DETECTOR_ABI from 'legacy/abis/argent-wallet-detector.json'
+import EIP_2612 from 'legacy/abis/eip_2612.json'
+import ENS_PUBLIC_RESOLVER_ABI from 'legacy/abis/ens-public-resolver.json'
+import ENS_ABI from 'legacy/abis/ens-registrar.json'
+import ERC20_ABI from 'legacy/abis/erc20.json'
+import ERC20_BYTES32_ABI from 'legacy/abis/erc20_bytes32.json'
+import ERC721_ABI from 'legacy/abis/erc721.json'
+import ERC1155_ABI from 'legacy/abis/erc1155.json'
+import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'legacy/abis/types'
+import WETH_ABI from 'legacy/abis/weth.json'
 import { ARGENT_WALLET_DETECTOR_ADDRESS, ENS_REGISTRAR_ADDRESSES, MULTICALL_ADDRESS } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useMemo } from 'react'
@@ -36,8 +28,8 @@ import {
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 import CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
-import GPv2_SETTLEMENT_ABI from '@src/abis/GPv2Settlement.json'
-import V_COW_ABI from '@src/abis/vCow.json'
+import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
+import V_COW_ABI from 'abis/vCow.json'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 

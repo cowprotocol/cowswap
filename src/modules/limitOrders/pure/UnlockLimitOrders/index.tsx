@@ -2,7 +2,7 @@ import React from 'react'
 import * as styledEl from './styled'
 import { ButtonPrimary } from 'components/Button'
 import SVG from 'react-inlinesvg'
-import iconCompleted from '@src/legacy/assets/cow-swap/check.svg'
+import iconCompleted from 'legacy/assets/cow-swap/check.svg'
 import { ExternalLink } from 'theme'
 
 const BULLET_LIST_CONTENT = [
