@@ -157,6 +157,9 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       // construct Expired Order Popups for each Order
       action.payload.ids.forEach((id) => {
         const orderObject = _getOrderById(orders, id)
+
+        // Do not trigger expired pop up if order is hidden
+        if (orderObject && !orderObject.order.isHidden) {
           const { summary, class: orderClass } = orderObject.order
 
           const popup = setPopupData(OrderTxTypes.METATXN, {
