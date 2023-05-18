@@ -12,47 +12,41 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "../../../../common";
+} from 'ethers'
+import type { FunctionFragment, Result } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
 
 export interface QuoterInterface extends utils.Interface {
   functions: {
-    "WETH9()": FunctionFragment;
-    "factory()": FunctionFragment;
-    "quoteExactInput(bytes,uint256)": FunctionFragment;
-    "quoteExactInputSingle(address,address,uint24,uint256,uint160)": FunctionFragment;
-    "quoteExactOutput(bytes,uint256)": FunctionFragment;
-    "quoteExactOutputSingle(address,address,uint24,uint256,uint160)": FunctionFragment;
-    "uniswapV3SwapCallback(int256,int256,bytes)": FunctionFragment;
-  };
+    'WETH9()': FunctionFragment
+    'factory()': FunctionFragment
+    'quoteExactInput(bytes,uint256)': FunctionFragment
+    'quoteExactInputSingle(address,address,uint24,uint256,uint160)': FunctionFragment
+    'quoteExactOutput(bytes,uint256)': FunctionFragment
+    'quoteExactOutputSingle(address,address,uint24,uint256,uint160)': FunctionFragment
+    'uniswapV3SwapCallback(int256,int256,bytes)': FunctionFragment
+  }
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "WETH9"
-      | "factory"
-      | "quoteExactInput"
-      | "quoteExactInputSingle"
-      | "quoteExactOutput"
-      | "quoteExactOutputSingle"
-      | "uniswapV3SwapCallback"
-  ): FunctionFragment;
+      | 'WETH9'
+      | 'factory'
+      | 'quoteExactInput'
+      | 'quoteExactInputSingle'
+      | 'quoteExactOutput'
+      | 'quoteExactOutputSingle'
+      | 'uniswapV3SwapCallback'
+  ): FunctionFragment
 
-  encodeFunctionData(functionFragment: "WETH9", values?: undefined): string;
-  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
+  encodeFunctionData(functionFragment: 'WETH9', values?: undefined): string
+  encodeFunctionData(functionFragment: 'factory', values?: undefined): string
   encodeFunctionData(
-    functionFragment: "quoteExactInput",
+    functionFragment: 'quoteExactInput',
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "quoteExactInputSingle",
+    functionFragment: 'quoteExactInputSingle',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
@@ -60,13 +54,13 @@ export interface QuoterInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "quoteExactOutput",
+    functionFragment: 'quoteExactOutput',
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "quoteExactOutputSingle",
+    functionFragment: 'quoteExactOutputSingle',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
@@ -74,78 +68,55 @@ export interface QuoterInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "uniswapV3SwapCallback",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
+    functionFragment: 'uniswapV3SwapCallback',
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+  ): string
 
-  decodeFunctionResult(functionFragment: "WETH9", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteExactInput",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteExactInputSingle",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteExactOutput",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteExactOutputSingle",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "uniswapV3SwapCallback",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'WETH9', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'factory', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'quoteExactInput', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'quoteExactInputSingle', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'quoteExactOutput', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'quoteExactOutputSingle', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'uniswapV3SwapCallback', data: BytesLike): Result
 
-  events: {};
+  events: {}
 }
 
 export interface Quoter extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: QuoterInterface;
+  interface: QuoterInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
-    WETH9(overrides?: CallOverrides): Promise<[string]>;
+    WETH9(overrides?: CallOverrides): Promise<[string]>
 
-    factory(overrides?: CallOverrides): Promise<[string]>;
+    factory(overrides?: CallOverrides): Promise<[string]>
 
     quoteExactInput(
       path: PromiseOrValue<BytesLike>,
       amountIn: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     quoteExactInputSingle(
       tokenIn: PromiseOrValue<string>,
@@ -154,13 +125,13 @@ export interface Quoter extends BaseContract {
       amountIn: PromiseOrValue<BigNumberish>,
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     quoteExactOutput(
       path: PromiseOrValue<BytesLike>,
       amountOut: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     quoteExactOutputSingle(
       tokenIn: PromiseOrValue<string>,
@@ -169,25 +140,25 @@ export interface Quoter extends BaseContract {
       amountOut: PromiseOrValue<BigNumberish>,
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     uniswapV3SwapCallback(
       amount0Delta: PromiseOrValue<BigNumberish>,
       amount1Delta: PromiseOrValue<BigNumberish>,
       path: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[void]>;
-  };
+    ): Promise<[void]>
+  }
 
-  WETH9(overrides?: CallOverrides): Promise<string>;
+  WETH9(overrides?: CallOverrides): Promise<string>
 
-  factory(overrides?: CallOverrides): Promise<string>;
+  factory(overrides?: CallOverrides): Promise<string>
 
   quoteExactInput(
     path: PromiseOrValue<BytesLike>,
     amountIn: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   quoteExactInputSingle(
     tokenIn: PromiseOrValue<string>,
@@ -196,13 +167,13 @@ export interface Quoter extends BaseContract {
     amountIn: PromiseOrValue<BigNumberish>,
     sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   quoteExactOutput(
     path: PromiseOrValue<BytesLike>,
     amountOut: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   quoteExactOutputSingle(
     tokenIn: PromiseOrValue<string>,
@@ -211,25 +182,25 @@ export interface Quoter extends BaseContract {
     amountOut: PromiseOrValue<BigNumberish>,
     sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   uniswapV3SwapCallback(
     amount0Delta: PromiseOrValue<BigNumberish>,
     amount1Delta: PromiseOrValue<BigNumberish>,
     path: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
-  ): Promise<void>;
+  ): Promise<void>
 
   callStatic: {
-    WETH9(overrides?: CallOverrides): Promise<string>;
+    WETH9(overrides?: CallOverrides): Promise<string>
 
-    factory(overrides?: CallOverrides): Promise<string>;
+    factory(overrides?: CallOverrides): Promise<string>
 
     quoteExactInput(
       path: PromiseOrValue<BytesLike>,
       amountIn: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactInputSingle(
       tokenIn: PromiseOrValue<string>,
@@ -238,13 +209,13 @@ export interface Quoter extends BaseContract {
       amountIn: PromiseOrValue<BigNumberish>,
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactOutput(
       path: PromiseOrValue<BytesLike>,
       amountOut: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactOutputSingle(
       tokenIn: PromiseOrValue<string>,
@@ -253,28 +224,28 @@ export interface Quoter extends BaseContract {
       amountOut: PromiseOrValue<BigNumberish>,
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     uniswapV3SwapCallback(
       amount0Delta: PromiseOrValue<BigNumberish>,
       amount1Delta: PromiseOrValue<BigNumberish>,
       path: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
-  };
+    ): Promise<void>
+  }
 
-  filters: {};
+  filters: {}
 
   estimateGas: {
-    WETH9(overrides?: CallOverrides): Promise<BigNumber>;
+    WETH9(overrides?: CallOverrides): Promise<BigNumber>
 
-    factory(overrides?: CallOverrides): Promise<BigNumber>;
+    factory(overrides?: CallOverrides): Promise<BigNumber>
 
     quoteExactInput(
       path: PromiseOrValue<BytesLike>,
       amountIn: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactInputSingle(
       tokenIn: PromiseOrValue<string>,
@@ -283,13 +254,13 @@ export interface Quoter extends BaseContract {
       amountIn: PromiseOrValue<BigNumberish>,
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactOutput(
       path: PromiseOrValue<BytesLike>,
       amountOut: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactOutputSingle(
       tokenIn: PromiseOrValue<string>,
@@ -298,26 +269,26 @@ export interface Quoter extends BaseContract {
       amountOut: PromiseOrValue<BigNumberish>,
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     uniswapV3SwapCallback(
       amount0Delta: PromiseOrValue<BigNumberish>,
       amount1Delta: PromiseOrValue<BigNumberish>,
       path: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
-    WETH9(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    WETH9(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     quoteExactInput(
       path: PromiseOrValue<BytesLike>,
       amountIn: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     quoteExactInputSingle(
       tokenIn: PromiseOrValue<string>,
@@ -326,13 +297,13 @@ export interface Quoter extends BaseContract {
       amountIn: PromiseOrValue<BigNumberish>,
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     quoteExactOutput(
       path: PromiseOrValue<BytesLike>,
       amountOut: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     quoteExactOutputSingle(
       tokenIn: PromiseOrValue<string>,
@@ -341,13 +312,13 @@ export interface Quoter extends BaseContract {
       amountOut: PromiseOrValue<BigNumberish>,
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     uniswapV3SwapCallback(
       amount0Delta: PromiseOrValue<BigNumberish>,
       amount1Delta: PromiseOrValue<BigNumberish>,
       path: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }
