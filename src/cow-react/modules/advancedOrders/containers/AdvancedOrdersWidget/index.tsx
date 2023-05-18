@@ -10,10 +10,15 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useAdvancedOrdersActions } from '@cow/modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { useIsQuoteLoading } from '@cow/modules/advancedOrders/hooks/useIsQuoteLoading'
 import { DeadlineSelector } from '../DeadlineSelector'
-import { NumberOfParts } from '../NumberOfParts'
-import { Slippage } from '../Slippage'
 import { PartsDisplay } from '../PartsDisplay'
 import * as styledEl from './styled'
+import { useParseNumberOfParts } from '../../hooks/useParseNumberOfParts'
+import { useAtomValue } from 'jotai'
+import { advancedOrdersSettingsAtom } from '../../state/advancedOrdersSettingsAtom'
+import { TradeNumberInput } from '@cow/modules/trade/pure/TradeNumberInput'
+import { useState } from 'react'
+import { useParseSlippage } from '../../hooks/useParseSlippage'
+import { useDisplaySlippageValue } from '../../hooks/useDisplaySlippageValue'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -33,6 +38,22 @@ export function AdvancedOrdersWidget() {
   } = useAdvancedOrdersFullState()
   const actions = useAdvancedOrdersActions()
   const isTradePriceUpdating = useIsQuoteLoading()
+
+  // Number of parts
+  const { numberOfPartsError, numberOfPartsValue } = useAtomValue(advancedOrdersSettingsAtom)
+  const parseNumberOfParts = useParseNumberOfParts()
+
+  // Slippage
+  const [slippageInput, setSlippageInput] = useState('')
+  const [slippageWarning, setSlippageWarning] = useState<string | null>(null)
+  const [slippageError, setSlippageError] = useState<string | null>(null)
+
+  const parseSlippageInput = useParseSlippage({
+    setSlippageInput,
+    setSlippageError,
+    setSlippageWarning,
+  })
+  const displaySlippageValue = useDisplaySlippageValue(slippageInput)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -59,8 +80,22 @@ export function AdvancedOrdersWidget() {
     bottomContent: (
       <>
         <styledEl.Row>
-          <NumberOfParts />
-          <Slippage />
+          <TradeNumberInput
+            value={numberOfPartsValue}
+            onUserInput={(v: string) => parseNumberOfParts(v)}
+            error={numberOfPartsError}
+            label="No. of parts"
+            hint="Todo: No of parts hint"
+          />
+          <TradeNumberInput
+            value={displaySlippageValue}
+            onUserInput={(v: string) => parseSlippageInput(v)}
+            error={slippageError}
+            warning={slippageWarning}
+            label="Slippage"
+            hint="Todo: Slippage hint"
+            suffix="%"
+          />
         </styledEl.Row>
 
         <PartsDisplay />

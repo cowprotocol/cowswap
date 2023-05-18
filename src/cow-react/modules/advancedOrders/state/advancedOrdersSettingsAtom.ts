@@ -7,10 +7,6 @@ export enum SlippageError {
   InvalidInput = 'InvalidInput',
 }
 
-export enum NumberOfPartsError {
-  InvalidInput = 'InvalidInput',
-}
-
 export interface AdvancedOrdersSettingsState {
   // deadline
   readonly isCustomDeadline: boolean
@@ -21,11 +17,11 @@ export interface AdvancedOrdersSettingsState {
   }
 
   // no. of parts
-  readonly numberOfParts: number
-  readonly numberOfPartsError: NumberOfPartsError | null
+  numberOfPartsValue: number
+  numberOfPartsError: string | null
 
   // slippage
-  readonly slippage: number | 'auto'
+  readonly slippageValue: number | 'auto'
   readonly slippageError: SlippageError | null
 }
 
@@ -39,11 +35,11 @@ export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
   },
 
   // no. of parts
-  numberOfParts: 1,
+  numberOfPartsValue: 1,
   numberOfPartsError: null,
 
   // slippage
-  slippage: 'auto',
+  slippageValue: 'auto',
   slippageError: null,
 }
 

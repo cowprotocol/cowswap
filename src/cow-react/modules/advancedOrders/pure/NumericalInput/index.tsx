@@ -1,8 +1,12 @@
 import styled from 'styled-components/macro'
 import Input from 'components/NumericalInput'
 
-export const NumericalInput = styled(Input)`
-  color: ${({ theme, color }) => (color === 'red' ? theme.red1 : theme.text1)};
+export const NumericalInput = styled(Input)<{ color?: string }>`
+  color: ${({ theme, color }) => {
+    if (color === 'red') return theme.red1
+    if (color === 'yellow') return theme.yellow1
+    return theme.text1
+  }};
   display: flex;
   align-items: center;
   background: none;
