@@ -4,7 +4,7 @@ import Input from 'components/NumericalInput'
 export const NumericalInput = styled(Input)<{ color?: string }>`
   color: ${({ theme, color }) => {
     if (color === 'red') return theme.red1
-    if (color === 'yellow') return theme.yellow1
+    if (color === 'yellow') return theme.yellow2
     return theme.text1
   }};
   display: flex;

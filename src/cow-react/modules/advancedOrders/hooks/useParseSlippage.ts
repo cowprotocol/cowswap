@@ -53,6 +53,6 @@ export function useParseSlippage({ setSlippageInput, setSlippageError, setSlippa
         }
       }
     },
-    [setSlippage, setSlippageError, setSlippageInput]
+    [setSlippage, setSlippageError, setSlippageInput, setSlippageWarning]
   )
 }

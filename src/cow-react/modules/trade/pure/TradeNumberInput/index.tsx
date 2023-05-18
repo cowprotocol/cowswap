@@ -1,6 +1,7 @@
 import { TradeWidgetField, TradeWidgetFieldProps } from '@cow/modules/trade/pure/TradeWidgetField'
 import { NumericalInput } from '@cow/modules/advancedOrders/pure/NumericalInput'
 import { useMemo } from 'react'
+import { Suffix } from './styled'
 
 export interface TradeNumberInputProps extends TradeWidgetFieldProps {
   value: string | number
@@ -15,6 +16,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 
   const color = useMemo(() => {
     if (error) return 'red'
+    if (warning) return 'yellow'
     else return ''
   }, [error, warning])
 
@@ -22,7 +24,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
     <TradeWidgetField {...props}>
       <>
         <NumericalInput color={color} value={value} onUserInput={onUserInput} />
-        {suffix && <span>{suffix}</span>}
+        {suffix && <Suffix>{suffix}</Suffix>}
       </>
     </TradeWidgetField>
   )

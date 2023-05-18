@@ -1,3 +1,5 @@
 import styled from 'styled-components/macro'
 
-export const foo = styled.div``
+export const Suffix = styled.span`
+  margin-left: 5px;
+`
