@@ -11,7 +11,7 @@ type BannerType = 'alert' | 'information' | 'success' | 'danger';
 
 interface BannerConfig {
   icon: string;
-  colorKey: BannerType; // define color key with type `BannerType`
+  colorKey: BannerType;
 }
 
 const BANNER_CONFIG: Record<BannerType, BannerConfig> = {
@@ -64,9 +64,9 @@ export type InlineBannerProps = {
 }
 
 export function InlineBanner({ content, className, type = 'alert' }: InlineBannerProps) {
-  const theme = useTheme(); // use the theme hook here
+  const theme = useTheme();
   const config = BANNER_CONFIG[type];
-  const color = theme[config.colorKey]; // fetch color value using colorKey and theme
+  const color = theme[config.colorKey];
 
   return (
     <Wrapper 
