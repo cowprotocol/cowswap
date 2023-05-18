@@ -111,8 +111,6 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       return result
     }
 
-    const { pending, presignaturePending, fulfilled, expired, cancelled, creating } = orders
-
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
 
@@ -144,7 +142,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
       // construct Cancelled Order Popups for each Order
       action.payload.ids.forEach((id) => {
-        const orderObject = cancelled?.[id]
+        const orderObject = _getOrderById(orders, id)
 
         if (orderObject) {
           const { order } = orderObject
@@ -158,9 +156,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } else if (action.type === 'order/expireOrdersBatch') {
       // construct Expired Order Popups for each Order
       action.payload.ids.forEach((id) => {
-        const orderObject =
-          pending?.[id] || fulfilled?.[id] || expired?.[id] || creating?.[id] || presignaturePending?.[id]
-        if (orderObject) {
+        const orderObject = _getOrderById(orders, id)
           const { summary, class: orderClass } = orderObject.order
 
           const popup = setPopupData(OrderTxTypes.METATXN, {
@@ -176,7 +172,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       })
     } else if (action.type === 'order/presignOrders') {
       action.payload.ids.forEach((id) => {
-        const orderObject = presignaturePending?.[id]
+        const orderObject = _getOrderById(orders, id)
 
         if (orderObject) {
           const { order } = orderObject
