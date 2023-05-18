@@ -1,7 +1,7 @@
 import { NativeCurrency } from '@uniswap/sdk-core'
 import { ContractTransaction } from '@ethersproject/contracts'
 
-import { CoWSwapEthFlow } from '@src/abis/types'
+import { CoWSwapEthFlow } from 'abis/types/ethflow'
 import { logTradeFlow, logTradeFlowError } from 'modules/trade/utils/logger'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'utils/trade'

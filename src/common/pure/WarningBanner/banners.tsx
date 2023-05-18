@@ -1,8 +1,8 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import Important from 'assets/cow-swap/important.svg'
-import { WarningBanner } from '@cow/common/pure/WarningBanner'
-import { TokenAmount } from '@cow/common/pure/TokenAmount'
-import { Nullish } from '@cow/types'
+import { WarningBanner } from 'common/pure/WarningBanner'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { Nullish } from 'types'
 
 export function BundleTxApprovalBanner() {
   return (

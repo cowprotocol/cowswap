@@ -3,7 +3,7 @@ import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 import { useBalancesAndAllowances } from 'modules/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { isEnoughAmount } from 'utils/isEnoughAmount'
-import { Nullish } from '@src/types'
+import { Nullish } from 'types'
 
 /**
  * Hook to check if a token needs approval

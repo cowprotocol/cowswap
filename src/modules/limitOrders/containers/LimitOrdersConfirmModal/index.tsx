@@ -25,8 +25,8 @@ import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrde
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
-import { useIsSafeApprovalBundle } from '@cow/modules/limitOrders/hooks/useIsSafeApprovalBundle'
-import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
+import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean

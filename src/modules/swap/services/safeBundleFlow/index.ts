@@ -8,7 +8,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { signAndPostOrder } from 'utils/trade'
-import { tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 
 const LOG_PREFIX = 'SAFE BUNDLE FLOW'
 

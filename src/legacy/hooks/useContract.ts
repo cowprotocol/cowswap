@@ -9,7 +9,15 @@ import ERC20_ABI from '@src/legacy/abis/erc20.json'
 import ERC20_BYTES32_ABI from '@src/legacy/abis/erc20_bytes32.json'
 import ERC721_ABI from '@src/legacy/abis/erc721.json'
 import ERC1155_ABI from '@src/legacy/abis/erc1155.json'
-import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
+import {
+  ArgentWalletDetector,
+  EnsPublicResolver,
+  EnsRegistrar,
+  Erc20,
+  Erc721,
+  Erc1155,
+  Weth,
+} from '@src/legacy/abis/types'
 import WETH_ABI from '@src/legacy/abis/weth.json'
 import { ARGENT_WALLET_DETECTOR_ADDRESS, ENS_REGISTRAR_ADDRESSES, MULTICALL_ADDRESS } from 'constants/addresses'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -17,7 +25,8 @@ import { useMemo } from 'react'
 import { UniswapInterfaceMulticall } from 'types/v3'
 import { getContract } from 'utils'
 import { useWalletInfo } from 'modules/wallet'
-import { CoWSwapEthFlow, GPv2Settlement, VCow } from '@src/abis/types'
+import { GPv2Settlement, VCow } from 'abis/types'
+import { CoWSwapEthFlow } from 'abis/types/ethflow'
 import { isEns, isProd, isStaging } from 'utils/environments'
 import {
   COWSWAP_ETHFLOW_CONTRACT_ADDRESS,

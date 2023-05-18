@@ -12,49 +12,69 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers'
-import type { FunctionFragment, Result } from '@ethersproject/abi'
-import type { Listener, Provider } from '@ethersproject/providers'
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
+} from "ethers";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+  PromiseOrValue,
+} from "../../../../common";
 
 export interface IPoolInitializerInterface extends utils.Interface {
   functions: {
-    'createAndInitializePoolIfNecessary(address,address,uint24,uint160)': FunctionFragment
-  }
+    "createAndInitializePoolIfNecessary(address,address,uint24,uint160)": FunctionFragment;
+  };
 
-  getFunction(nameOrSignatureOrTopic: 'createAndInitializePoolIfNecessary'): FunctionFragment
+  getFunction(
+    nameOrSignatureOrTopic: "createAndInitializePoolIfNecessary"
+  ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'createAndInitializePoolIfNecessary',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>, PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string
+    functionFragment: "createAndInitializePoolIfNecessary",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
 
-  decodeFunctionResult(functionFragment: 'createAndInitializePoolIfNecessary', data: BytesLike): Result
+  decodeFunctionResult(
+    functionFragment: "createAndInitializePoolIfNecessary",
+    data: BytesLike
+  ): Result;
 
-  events: {}
+  events: {};
 }
 
 export interface IPoolInitializer extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this
-  attach(addressOrName: string): this
-  deployed(): Promise<this>
+  connect(signerOrProvider: Signer | Provider | string): this;
+  attach(addressOrName: string): this;
+  deployed(): Promise<this>;
 
-  interface: IPoolInitializerInterface
+  interface: IPoolInitializerInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>
+  ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
-  listeners(eventName?: string): Array<Listener>
-  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
-  removeAllListeners(eventName?: string): this
-  off: OnEvent<this>
-  on: OnEvent<this>
-  once: OnEvent<this>
-  removeListener: OnEvent<this>
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
+  listeners(eventName?: string): Array<Listener>;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
+  removeAllListeners(eventName?: string): this;
+  off: OnEvent<this>;
+  on: OnEvent<this>;
+  once: OnEvent<this>;
+  removeListener: OnEvent<this>;
 
   functions: {
     createAndInitializePoolIfNecessary(
@@ -63,8 +83,8 @@ export interface IPoolInitializer extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>
-  }
+    ): Promise<ContractTransaction>;
+  };
 
   createAndInitializePoolIfNecessary(
     token0: PromiseOrValue<string>,
@@ -72,7 +92,7 @@ export interface IPoolInitializer extends BaseContract {
     fee: PromiseOrValue<BigNumberish>,
     sqrtPriceX96: PromiseOrValue<BigNumberish>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     createAndInitializePoolIfNecessary(
@@ -81,10 +101,10 @@ export interface IPoolInitializer extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<string>
-  }
+    ): Promise<string>;
+  };
 
-  filters: {}
+  filters: {};
 
   estimateGas: {
     createAndInitializePoolIfNecessary(
@@ -93,8 +113,8 @@ export interface IPoolInitializer extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>
-  }
+    ): Promise<BigNumber>;
+  };
 
   populateTransaction: {
     createAndInitializePoolIfNecessary(
@@ -103,6 +123,6 @@ export interface IPoolInitializer extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>
-  }
+    ): Promise<PopulatedTransaction>;
+  };
 }

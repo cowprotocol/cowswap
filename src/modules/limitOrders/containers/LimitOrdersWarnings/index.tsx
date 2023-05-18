@@ -20,7 +20,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { BundleTxApprovalBanner, SmallVolumeWarningBanner } from 'common/pure/WarningBanner/banners'
-import { Nullish } from '@src/types'
+import { Nullish } from 'types'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [
   LimitOrdersFormState.ExpertApproveAndSwap,
