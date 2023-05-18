@@ -12,187 +12,149 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "../../../../common";
+} from 'ethers'
+import type { FunctionFragment, Result } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
 
 export declare namespace IQuoterV2 {
   export type QuoteExactInputSingleParamsStruct = {
-    tokenIn: PromiseOrValue<string>;
-    tokenOut: PromiseOrValue<string>;
-    amountIn: PromiseOrValue<BigNumberish>;
-    fee: PromiseOrValue<BigNumberish>;
-    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>;
-  };
+    tokenIn: PromiseOrValue<string>
+    tokenOut: PromiseOrValue<string>
+    amountIn: PromiseOrValue<BigNumberish>
+    fee: PromiseOrValue<BigNumberish>
+    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>
+  }
 
-  export type QuoteExactInputSingleParamsStructOutput = [
-    string,
-    string,
-    BigNumber,
-    number,
-    BigNumber
-  ] & {
-    tokenIn: string;
-    tokenOut: string;
-    amountIn: BigNumber;
-    fee: number;
-    sqrtPriceLimitX96: BigNumber;
-  };
+  export type QuoteExactInputSingleParamsStructOutput = [string, string, BigNumber, number, BigNumber] & {
+    tokenIn: string
+    tokenOut: string
+    amountIn: BigNumber
+    fee: number
+    sqrtPriceLimitX96: BigNumber
+  }
 
   export type QuoteExactOutputSingleParamsStruct = {
-    tokenIn: PromiseOrValue<string>;
-    tokenOut: PromiseOrValue<string>;
-    amount: PromiseOrValue<BigNumberish>;
-    fee: PromiseOrValue<BigNumberish>;
-    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>;
-  };
+    tokenIn: PromiseOrValue<string>
+    tokenOut: PromiseOrValue<string>
+    amount: PromiseOrValue<BigNumberish>
+    fee: PromiseOrValue<BigNumberish>
+    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>
+  }
 
-  export type QuoteExactOutputSingleParamsStructOutput = [
-    string,
-    string,
-    BigNumber,
-    number,
-    BigNumber
-  ] & {
-    tokenIn: string;
-    tokenOut: string;
-    amount: BigNumber;
-    fee: number;
-    sqrtPriceLimitX96: BigNumber;
-  };
+  export type QuoteExactOutputSingleParamsStructOutput = [string, string, BigNumber, number, BigNumber] & {
+    tokenIn: string
+    tokenOut: string
+    amount: BigNumber
+    fee: number
+    sqrtPriceLimitX96: BigNumber
+  }
 }
 
 export interface IQuoterV2Interface extends utils.Interface {
   functions: {
-    "quoteExactInput(bytes,uint256)": FunctionFragment;
-    "quoteExactInputSingle((address,address,uint256,uint24,uint160))": FunctionFragment;
-    "quoteExactOutput(bytes,uint256)": FunctionFragment;
-    "quoteExactOutputSingle((address,address,uint256,uint24,uint160))": FunctionFragment;
-  };
+    'quoteExactInput(bytes,uint256)': FunctionFragment
+    'quoteExactInputSingle((address,address,uint256,uint24,uint160))': FunctionFragment
+    'quoteExactOutput(bytes,uint256)': FunctionFragment
+    'quoteExactOutputSingle((address,address,uint256,uint24,uint160))': FunctionFragment
+  }
 
   getFunction(
-    nameOrSignatureOrTopic:
-      | "quoteExactInput"
-      | "quoteExactInputSingle"
-      | "quoteExactOutput"
-      | "quoteExactOutputSingle"
-  ): FunctionFragment;
+    nameOrSignatureOrTopic: 'quoteExactInput' | 'quoteExactInputSingle' | 'quoteExactOutput' | 'quoteExactOutputSingle'
+  ): FunctionFragment
 
   encodeFunctionData(
-    functionFragment: "quoteExactInput",
+    functionFragment: 'quoteExactInput',
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "quoteExactInputSingle",
+    functionFragment: 'quoteExactInputSingle',
     values: [IQuoterV2.QuoteExactInputSingleParamsStruct]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "quoteExactOutput",
+    functionFragment: 'quoteExactOutput',
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "quoteExactOutputSingle",
+    functionFragment: 'quoteExactOutputSingle',
     values: [IQuoterV2.QuoteExactOutputSingleParamsStruct]
-  ): string;
+  ): string
 
-  decodeFunctionResult(
-    functionFragment: "quoteExactInput",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteExactInputSingle",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteExactOutput",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "quoteExactOutputSingle",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'quoteExactInput', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'quoteExactInputSingle', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'quoteExactOutput', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'quoteExactOutputSingle', data: BytesLike): Result
 
-  events: {};
+  events: {}
 }
 
 export interface IQuoterV2 extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: IQuoterV2Interface;
+  interface: IQuoterV2Interface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
     quoteExactInput(
       path: PromiseOrValue<BytesLike>,
       amountIn: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     quoteExactInputSingle(
       params: IQuoterV2.QuoteExactInputSingleParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     quoteExactOutput(
       path: PromiseOrValue<BytesLike>,
       amountOut: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     quoteExactOutputSingle(
       params: IQuoterV2.QuoteExactOutputSingleParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+    ): Promise<ContractTransaction>
+  }
 
   quoteExactInput(
     path: PromiseOrValue<BytesLike>,
     amountIn: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   quoteExactInputSingle(
     params: IQuoterV2.QuoteExactInputSingleParamsStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   quoteExactOutput(
     path: PromiseOrValue<BytesLike>,
     amountOut: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   quoteExactOutputSingle(
     params: IQuoterV2.QuoteExactOutputSingleParamsStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   callStatic: {
     quoteExactInput(
@@ -201,24 +163,24 @@ export interface IQuoterV2 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber[], number[], BigNumber] & {
-        amountOut: BigNumber;
-        sqrtPriceX96AfterList: BigNumber[];
-        initializedTicksCrossedList: number[];
-        gasEstimate: BigNumber;
+        amountOut: BigNumber
+        sqrtPriceX96AfterList: BigNumber[]
+        initializedTicksCrossedList: number[]
+        gasEstimate: BigNumber
       }
-    >;
+    >
 
     quoteExactInputSingle(
       params: IQuoterV2.QuoteExactInputSingleParamsStruct,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, number, BigNumber] & {
-        amountOut: BigNumber;
-        sqrtPriceX96After: BigNumber;
-        initializedTicksCrossed: number;
-        gasEstimate: BigNumber;
+        amountOut: BigNumber
+        sqrtPriceX96After: BigNumber
+        initializedTicksCrossed: number
+        gasEstimate: BigNumber
       }
-    >;
+    >
 
     quoteExactOutput(
       path: PromiseOrValue<BytesLike>,
@@ -226,73 +188,73 @@ export interface IQuoterV2 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber[], number[], BigNumber] & {
-        amountIn: BigNumber;
-        sqrtPriceX96AfterList: BigNumber[];
-        initializedTicksCrossedList: number[];
-        gasEstimate: BigNumber;
+        amountIn: BigNumber
+        sqrtPriceX96AfterList: BigNumber[]
+        initializedTicksCrossedList: number[]
+        gasEstimate: BigNumber
       }
-    >;
+    >
 
     quoteExactOutputSingle(
       params: IQuoterV2.QuoteExactOutputSingleParamsStruct,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, number, BigNumber] & {
-        amountIn: BigNumber;
-        sqrtPriceX96After: BigNumber;
-        initializedTicksCrossed: number;
-        gasEstimate: BigNumber;
+        amountIn: BigNumber
+        sqrtPriceX96After: BigNumber
+        initializedTicksCrossed: number
+        gasEstimate: BigNumber
       }
-    >;
-  };
+    >
+  }
 
-  filters: {};
+  filters: {}
 
   estimateGas: {
     quoteExactInput(
       path: PromiseOrValue<BytesLike>,
       amountIn: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactInputSingle(
       params: IQuoterV2.QuoteExactInputSingleParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactOutput(
       path: PromiseOrValue<BytesLike>,
       amountOut: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     quoteExactOutputSingle(
       params: IQuoterV2.QuoteExactOutputSingleParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
     quoteExactInput(
       path: PromiseOrValue<BytesLike>,
       amountIn: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     quoteExactInputSingle(
       params: IQuoterV2.QuoteExactInputSingleParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     quoteExactOutput(
       path: PromiseOrValue<BytesLike>,
       amountOut: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     quoteExactOutputSingle(
       params: IQuoterV2.QuoteExactOutputSingleParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }

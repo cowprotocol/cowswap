@@ -13,33 +13,27 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "../../../../common";
+} from 'ethers'
+import type { FunctionFragment, Result } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
 
 export declare namespace IV3Migrator {
   export type MigrateParamsStruct = {
-    pair: PromiseOrValue<string>;
-    liquidityToMigrate: PromiseOrValue<BigNumberish>;
-    percentageToMigrate: PromiseOrValue<BigNumberish>;
-    token0: PromiseOrValue<string>;
-    token1: PromiseOrValue<string>;
-    fee: PromiseOrValue<BigNumberish>;
-    tickLower: PromiseOrValue<BigNumberish>;
-    tickUpper: PromiseOrValue<BigNumberish>;
-    amount0Min: PromiseOrValue<BigNumberish>;
-    amount1Min: PromiseOrValue<BigNumberish>;
-    recipient: PromiseOrValue<string>;
-    deadline: PromiseOrValue<BigNumberish>;
-    refundAsETH: PromiseOrValue<boolean>;
-  };
+    pair: PromiseOrValue<string>
+    liquidityToMigrate: PromiseOrValue<BigNumberish>
+    percentageToMigrate: PromiseOrValue<BigNumberish>
+    token0: PromiseOrValue<string>
+    token1: PromiseOrValue<string>
+    fee: PromiseOrValue<BigNumberish>
+    tickLower: PromiseOrValue<BigNumberish>
+    tickUpper: PromiseOrValue<BigNumberish>
+    amount0Min: PromiseOrValue<BigNumberish>
+    amount1Min: PromiseOrValue<BigNumberish>
+    recipient: PromiseOrValue<string>
+    deadline: PromiseOrValue<BigNumberish>
+    refundAsETH: PromiseOrValue<boolean>
+  }
 
   export type MigrateParamsStructOutput = [
     string,
@@ -56,63 +50,52 @@ export declare namespace IV3Migrator {
     BigNumber,
     boolean
   ] & {
-    pair: string;
-    liquidityToMigrate: BigNumber;
-    percentageToMigrate: number;
-    token0: string;
-    token1: string;
-    fee: number;
-    tickLower: number;
-    tickUpper: number;
-    amount0Min: BigNumber;
-    amount1Min: BigNumber;
-    recipient: string;
-    deadline: BigNumber;
-    refundAsETH: boolean;
-  };
+    pair: string
+    liquidityToMigrate: BigNumber
+    percentageToMigrate: number
+    token0: string
+    token1: string
+    fee: number
+    tickLower: number
+    tickUpper: number
+    amount0Min: BigNumber
+    amount1Min: BigNumber
+    recipient: string
+    deadline: BigNumber
+    refundAsETH: boolean
+  }
 }
 
 export interface IV3MigratorInterface extends utils.Interface {
   functions: {
-    "createAndInitializePoolIfNecessary(address,address,uint24,uint160)": FunctionFragment;
-    "migrate((address,uint256,uint8,address,address,uint24,int24,int24,uint256,uint256,address,uint256,bool))": FunctionFragment;
-    "multicall(bytes[])": FunctionFragment;
-    "selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "selfPermitAllowed(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "selfPermitAllowedIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-  };
+    'createAndInitializePoolIfNecessary(address,address,uint24,uint160)': FunctionFragment
+    'migrate((address,uint256,uint8,address,address,uint24,int24,int24,uint256,uint256,address,uint256,bool))': FunctionFragment
+    'multicall(bytes[])': FunctionFragment
+    'selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+    'selfPermitAllowed(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+    'selfPermitAllowedIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+    'selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
+  }
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "createAndInitializePoolIfNecessary"
-      | "migrate"
-      | "multicall"
-      | "selfPermit"
-      | "selfPermitAllowed"
-      | "selfPermitAllowedIfNecessary"
-      | "selfPermitIfNecessary"
-  ): FunctionFragment;
+      | 'createAndInitializePoolIfNecessary'
+      | 'migrate'
+      | 'multicall'
+      | 'selfPermit'
+      | 'selfPermitAllowed'
+      | 'selfPermitAllowedIfNecessary'
+      | 'selfPermitIfNecessary'
+  ): FunctionFragment
 
   encodeFunctionData(
-    functionFragment: "createAndInitializePoolIfNecessary",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
+    functionFragment: 'createAndInitializePoolIfNecessary',
+    values: [PromiseOrValue<string>, PromiseOrValue<string>, PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string
+  encodeFunctionData(functionFragment: 'migrate', values: [IV3Migrator.MigrateParamsStruct]): string
+  encodeFunctionData(functionFragment: 'multicall', values: [PromiseOrValue<BytesLike>[]]): string
   encodeFunctionData(
-    functionFragment: "migrate",
-    values: [IV3Migrator.MigrateParamsStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multicall",
-    values: [PromiseOrValue<BytesLike>[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "selfPermit",
+    functionFragment: 'selfPermit',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -121,9 +104,9 @@ export interface IV3MigratorInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "selfPermitAllowed",
+    functionFragment: 'selfPermitAllowed',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -132,9 +115,9 @@ export interface IV3MigratorInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "selfPermitAllowedIfNecessary",
+    functionFragment: 'selfPermitAllowedIfNecessary',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -143,9 +126,9 @@ export interface IV3MigratorInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "selfPermitIfNecessary",
+    functionFragment: 'selfPermitIfNecessary',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -154,56 +137,40 @@ export interface IV3MigratorInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
 
-  decodeFunctionResult(
-    functionFragment: "createAndInitializePoolIfNecessary",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "migrate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "selfPermit", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "selfPermitAllowed",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "selfPermitAllowedIfNecessary",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "selfPermitIfNecessary",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'createAndInitializePoolIfNecessary', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'migrate', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'selfPermit', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'selfPermitAllowed', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'selfPermitAllowedIfNecessary', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'selfPermitIfNecessary', data: BytesLike): Result
 
-  events: {};
+  events: {}
 }
 
 export interface IV3Migrator extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: IV3MigratorInterface;
+  interface: IV3MigratorInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
     createAndInitializePoolIfNecessary(
@@ -212,17 +179,17 @@ export interface IV3Migrator extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     migrate(
       params: IV3Migrator.MigrateParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     selfPermit(
       token: PromiseOrValue<string>,
@@ -232,7 +199,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -242,7 +209,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -252,7 +219,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -262,8 +229,8 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+    ): Promise<ContractTransaction>
+  }
 
   createAndInitializePoolIfNecessary(
     token0: PromiseOrValue<string>,
@@ -271,17 +238,17 @@ export interface IV3Migrator extends BaseContract {
     fee: PromiseOrValue<BigNumberish>,
     sqrtPriceX96: PromiseOrValue<BigNumberish>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   migrate(
     params: IV3Migrator.MigrateParamsStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   multicall(
     data: PromiseOrValue<BytesLike>[],
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   selfPermit(
     token: PromiseOrValue<string>,
@@ -291,7 +258,7 @@ export interface IV3Migrator extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   selfPermitAllowed(
     token: PromiseOrValue<string>,
@@ -301,7 +268,7 @@ export interface IV3Migrator extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   selfPermitAllowedIfNecessary(
     token: PromiseOrValue<string>,
@@ -311,7 +278,7 @@ export interface IV3Migrator extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   selfPermitIfNecessary(
     token: PromiseOrValue<string>,
@@ -321,7 +288,7 @@ export interface IV3Migrator extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   callStatic: {
     createAndInitializePoolIfNecessary(
@@ -330,17 +297,11 @@ export interface IV3Migrator extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<string>
 
-    migrate(
-      params: IV3Migrator.MigrateParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    migrate(params: IV3Migrator.MigrateParamsStruct, overrides?: CallOverrides): Promise<void>
 
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
+    multicall(data: PromiseOrValue<BytesLike>[], overrides?: CallOverrides): Promise<string[]>
 
     selfPermit(
       token: PromiseOrValue<string>,
@@ -350,7 +311,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -360,7 +321,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -370,7 +331,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -380,10 +341,10 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
-  };
+    ): Promise<void>
+  }
 
-  filters: {};
+  filters: {}
 
   estimateGas: {
     createAndInitializePoolIfNecessary(
@@ -392,17 +353,17 @@ export interface IV3Migrator extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     migrate(
       params: IV3Migrator.MigrateParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     selfPermit(
       token: PromiseOrValue<string>,
@@ -412,7 +373,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -422,7 +383,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -432,7 +393,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -442,8 +403,8 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
     createAndInitializePoolIfNecessary(
@@ -452,17 +413,17 @@ export interface IV3Migrator extends BaseContract {
       fee: PromiseOrValue<BigNumberish>,
       sqrtPriceX96: PromiseOrValue<BigNumberish>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     migrate(
       params: IV3Migrator.MigrateParamsStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     selfPermit(
       token: PromiseOrValue<string>,
@@ -472,7 +433,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -482,7 +443,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -492,7 +453,7 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -502,6 +463,6 @@ export interface IV3Migrator extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }
