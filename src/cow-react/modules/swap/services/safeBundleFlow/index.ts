@@ -9,7 +9,7 @@ import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderSte
 import { PriceImpact } from 'hooks/usePriceImpact'
 import { signAndPostOrder } from 'utils/trade'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
-import { bundleAnalytics } from '@src/components/analytics'
+import { bundleAnalytics } from 'components/analytics'
 
 const LOG_PREFIX = 'SAFE BUNDLE FLOW'
 
