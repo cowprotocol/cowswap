@@ -99,13 +99,14 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
   const isEthFlow = useIsEthFlow()
-  const isSafeBundle = useIsSafeApprovalBundle(trade?.inputAmount)
-  const flowType = _getFlowType(isSafeBundle, isEthFlow)
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
     allowedSlippage
   )
+
+  const isSafeBundle = useIsSafeApprovalBundle(inputAmountWithSlippage)
+  const flowType = _getFlowType(isSafeBundle, isEthFlow)
 
   return {
     chainId,
