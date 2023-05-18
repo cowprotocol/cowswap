@@ -21,7 +21,7 @@ export type AppDataRecord = AppDataInfo & AppDataUploadStatus & AppDataKeyParams
 
 export type AppDataPendingToUpload = Array<AppDataRecord>
 
-export type UploadDataParams = AppDataKeyParams & {
+export type UploadAppDataParams = AppDataKeyParams & {
   appData: AppDataInfo
 }
 export type UpdateAppDataOnUploadQueueParams = AppDataKeyParams & Partial<AppDataUploadStatus>

@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import {
-  UploadDataParams,
+  UploadAppDataParams,
   AppDataPendingToUpload,
   AppDataInfo,
   RemoveAppDataFromUploadQueueParams,
@@ -30,18 +30,21 @@ export const appDataUploadQueueAtom = atomWithStorage<AppDataPendingToUpload>(
 /**
  * Write only atom to add an appData to upload queue
  */
-export const addAppDataToUploadQueueAtom = atom(null, (get, set, { chainId, orderId, appData }: UploadDataParams) => {
-  set(appDataUploadQueueAtom, () => {
-    const docs = get(appDataUploadQueueAtom)
+export const addAppDataToUploadQueueAtom = atom(
+  null,
+  (get, set, { chainId, orderId, appData }: UploadAppDataParams) => {
+    set(appDataUploadQueueAtom, () => {
+      const docs = get(appDataUploadQueueAtom)
 
-    if (docs.some(buildDocFilterFn(chainId, orderId))) {
-      // Entry already in the queue, ignore
-      return docs
-    }
+      if (docs.some(buildDocFilterFn(chainId, orderId))) {
+        // Entry already in the queue, ignore
+        return docs
+      }
 
-    return [...docs, { chainId, orderId, ...appData, uploading: false, failedAttempts: 0 }]
-  })
-})
+      return [...docs, { chainId, orderId, ...appData, uploading: false, failedAttempts: 0 }]
+    })
+  }
+)
 
 /**
  * Write only atom to update upload status of an appData on upload queue
