@@ -32,6 +32,7 @@ export interface LimitOrdersConfirmProps {
   onConfirm(): void
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
   featurePartialFillsEnabled: boolean
+  buttonText?: ReactNode
 }
 
 export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
@@ -50,6 +51,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
     limitRateState,
     partiallyFillableOverride,
     featurePartialFillsEnabled,
+    buttonText,
   } = props
 
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
@@ -88,7 +90,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
       />
       {Warnings}
       <ButtonPrimary onClick={onConfirm} disabled={isTradeDisabled} buttonSize={ButtonSize.BIG}>
-        <Trans>Confirm</Trans>
+        <Trans>{buttonText || 'Confirm'}</Trans>
       </ButtonPrimary>
     </styledEl.ConfirmWrapper>
   )

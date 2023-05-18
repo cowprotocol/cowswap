@@ -25,6 +25,8 @@ import { useHandleOrderPlacement } from '@cow/modules/limitOrders/hooks/useHandl
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useFeatureFlags } from '@cow/common/hooks/useFeatureFlags'
 import { L2Content as TxSubmittedModal } from 'components/TransactionConfirmationModal'
+import { useIsSafeApprovalBundle } from '@cow/modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { TokenSymbol } from '@cow/common/pure/TokenSymbol'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -88,6 +90,15 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const pendingText = <PendingText inputRawAmount={inputAmount} outputRawAmount={outputAmount} />
   const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
 
+  const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
+  const buttonText = isSafeApprovalBundle ? (
+    <>
+      Confirm (Approve&nbsp;
+      <TokenSymbol token={inputAmount?.currency.wrapped} length={6} />
+      &nbsp;& Limit order)
+    </>
+  ) : undefined
+
   return (
     <>
       <GpModal isOpen={isOpen} onDismiss={onDismiss}>
@@ -112,6 +123,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               partiallyFillableOverride={partiallyFillableOverride}
               featurePartialFillsEnabled={partialFillsEnabled}
               Warnings={Warnings}
+              buttonText={buttonText}
             />
           </styledEl.ConfirmModalWrapper>
         )}

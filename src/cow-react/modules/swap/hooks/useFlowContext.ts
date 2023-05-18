@@ -28,8 +28,7 @@ import { BaseFlowContext } from '@cow/modules/swap/services/types'
 import { calculateValidTo } from '@cow/utils/time'
 import { PostOrderParams } from 'utils/trade'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
-import { useNeedsApproval } from '@cow/common/hooks/useNeedsApproval'
+import { useIsSafeApprovalBundle } from '@cow/modules/limitOrders/hooks/useIsSafeApprovalBundle'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -100,9 +99,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
   const isEthFlow = useIsEthFlow()
-  const needsApproval = useNeedsApproval(trade?.inputAmount?.currency.wrapped, trade?.inputAmount)
-  const isTxBundlingEnabled = useIsTxBundlingEnabled()
-  const isSafeBundle = isTxBundlingEnabled && needsApproval
+  const isSafeBundle = useIsSafeApprovalBundle(trade?.inputAmount)
   const flowType = _getFlowType(isSafeBundle, isEthFlow)
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(

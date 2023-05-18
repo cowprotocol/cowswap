@@ -8,11 +8,10 @@ import { updateLimitOrdersRawStateAtom } from '@cow/modules/limitOrders/state/li
 import { partiallyFillableOverrideAtom } from '@cow/modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
 import { useConfirmPriceImpactWithoutFee } from '@cow/common/hooks/useConfirmPriceImpactWithoutFee'
-import { useNeedsApproval } from '@cow/common/hooks/useNeedsApproval'
-import { useIsTxBundlingEnabled } from '@cow/common/hooks/useIsTxBundlingEnabled'
 import { safeBundleFlow } from '@cow/modules/limitOrders/services/safeBundleFlow'
 import { useSafeBundleFlowContext } from '@cow/modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { PriceImpactDeclineError, TradeFlowContext } from '@cow/modules/limitOrders/services/types'
+import { useIsSafeApprovalBundle } from '@cow/modules/limitOrders/hooks/useIsSafeApprovalBundle'
 
 interface HandleTradeCallback {
   beforeTrade(): void
@@ -36,12 +35,7 @@ export function useHandleOrderPlacement(
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
-  const needsApproval = useNeedsApproval(
-    tradeContext?.postOrderParams.sellToken,
-    tradeContext?.postOrderParams.inputAmount
-  )
-  const isTxBundlingEnabled = useIsTxBundlingEnabled()
-  const isSafeBundle = isTxBundlingEnabled && needsApproval
+  const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
 
   const tradeFn = useCallback(async () => {
     if (isSafeBundle && safeBundleFlowContext) {

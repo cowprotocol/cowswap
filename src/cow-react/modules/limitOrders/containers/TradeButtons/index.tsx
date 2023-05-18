@@ -81,7 +81,7 @@ export function TradeButtons(props: TradeButtonsProps) {
 
   const Button =
     typeof buttonFactory === 'function' ? (
-      buttonFactory({ tradeState, toggleWalletModal, quote, wrapUnwrapParams })
+      buttonFactory({ tradeState, toggleWalletModal, quote, wrapUnwrapParams, doTrade })
     ) : (
       <SwapButton id={buttonFactory.id} onClick={doTrade} disabled={isButtonDisabled}>
         <Trans>{buttonFactory.text}</Trans>
