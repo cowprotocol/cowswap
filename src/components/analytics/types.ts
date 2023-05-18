@@ -13,7 +13,7 @@ export enum Category {
   GAMES = 'Games',
   EXTERNAL_LINK = 'External Link',
   INIT = 'Init',
-  SERVICE_WORKER = 'Service workder',
+  SERVICE_WORKER = 'Service worker',
 }
 
 export interface EventParams {

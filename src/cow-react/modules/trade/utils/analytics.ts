@@ -17,6 +17,10 @@ export const tradeFlowAnalytics = {
     const { marketLabel, orderClass } = context
     signSwapAnalytics(orderClass, marketLabel)
   },
+  approveAndPresign(context: SwapFlowAnalyticsContext) {
+    const { marketLabel, orderClass } = context
+    swapAnalytics('Bundle Approve and Swap', orderClass, marketLabel)
+  },
   error(error: any, errorMessage: string, context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
 

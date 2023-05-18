@@ -58,7 +58,7 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
   })
 }
 
-export type SwapAction = 'Send' | 'Error' | 'Reject'
+export type SwapAction = 'Send' | 'Error' | 'Reject' | 'Bundle Approve and Swap'
 export function swapAnalytics(action: SwapAction, orderClass: OrderClass, label?: string, value?: number) {
   sendEvent({
     category: Category.SWAP,

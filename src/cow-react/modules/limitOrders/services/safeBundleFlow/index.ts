@@ -1,15 +1,17 @@
-import { PriceImpact } from '@src/hooks/usePriceImpact'
+import { PriceImpact } from 'hooks/usePriceImpact'
 import { LimitOrdersSettingsState } from '@cow/modules/limitOrders/state/limitOrdersSettingsAtom'
 import { Percent } from '@uniswap/sdk-core'
 import { logTradeFlow } from '@cow/modules/trade/utils/logger'
 import { LOW_RATE_THRESHOLD_PERCENT } from '@cow/modules/limitOrders/const/trade'
 import { calculateLimitOrdersDeadline } from '@cow/modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { signAndPostOrder } from '@src/utils/trade'
+import { signAndPostOrder } from 'utils/trade'
 import { addPendingOrderStep } from '@cow/modules/trade/utils/addPendingOrderStep'
 import { buildApproveTx } from '@cow/modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from '@cow/modules/operations/bundle/buildPresignTx'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from '@cow/modules/limitOrders/services/types'
+import { getSwapErrorMessage } from '@cow/modules/trade/utils/swapErrorHelper'
+import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from '@cow/modules/trade/utils/analytics'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
@@ -27,8 +29,25 @@ export async function safeBundleFlow(
     throw new PriceImpactDeclineError()
   }
 
+  const {
+    account,
+    recipientAddressOrName,
+    sellToken,
+    buyToken,
+    inputAmount,
+    class: orderClass,
+  } = params.postOrderParams
+
+  const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+    account,
+    recipient: recipientAddressOrName,
+    recipientAddress: recipientAddressOrName,
+    marketLabel: [sellToken.symbol, buyToken.symbol].join(','),
+    orderClass,
+  }
+
   logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')
-  // tradeFlowAnalytics.swap(swapFlowAnalyticsContext)
+  tradeFlowAnalytics.approveAndPresign(swapFlowAnalyticsContext)
   beforeTrade?.()
 
   const {
@@ -53,7 +72,7 @@ export async function safeBundleFlow(
     const approveTx = await buildApproveTx({
       erc20Contract,
       spender,
-      amountToApprove: postOrderParams.inputAmount,
+      amountToApprove: inputAmount,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
@@ -90,15 +109,14 @@ export async function safeBundleFlow(
     logTradeFlow(LOG_PREFIX, 'STEP 6: add app data to upload queue')
     addAppDataToUploadQueue({ chainId, orderId, appData })
 
-    // tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
+    tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
     logTradeFlow(LOG_PREFIX, 'STEP 7: ERROR: ', error)
-    // const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error)
 
-    // TODO: handle analytics stuff
-    // tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
     throw error
   }
