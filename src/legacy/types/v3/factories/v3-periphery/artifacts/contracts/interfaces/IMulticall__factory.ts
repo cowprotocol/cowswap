@@ -2,44 +2,41 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
+import { Contract, Signer, utils } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
 import type {
   IMulticall,
   IMulticallInterface,
-} from "../../../../../v3-periphery/artifacts/contracts/interfaces/IMulticall";
+} from '../../../../../v3-periphery/artifacts/contracts/interfaces/IMulticall'
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes[]",
-        name: "data",
-        type: "bytes[]",
+        internalType: 'bytes[]',
+        name: 'data',
+        type: 'bytes[]',
       },
     ],
-    name: "multicall",
+    name: 'multicall',
     outputs: [
       {
-        internalType: "bytes[]",
-        name: "results",
-        type: "bytes[]",
+        internalType: 'bytes[]',
+        name: 'results',
+        type: 'bytes[]',
       },
     ],
-    stateMutability: "payable",
-    type: "function",
+    stateMutability: 'payable',
+    type: 'function',
   },
-] as const;
+] as const
 
 export class IMulticall__factory {
-  static readonly abi = _abi;
+  static readonly abi = _abi
   static createInterface(): IMulticallInterface {
-    return new utils.Interface(_abi) as IMulticallInterface;
+    return new utils.Interface(_abi) as IMulticallInterface
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IMulticall {
-    return new Contract(address, _abi, signerOrProvider) as IMulticall;
+  static connect(address: string, signerOrProvider: Signer | Provider): IMulticall {
+    return new Contract(address, _abi, signerOrProvider) as IMulticall
   }
 }

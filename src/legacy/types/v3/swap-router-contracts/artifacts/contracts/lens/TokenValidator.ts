@@ -12,109 +12,74 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "../../../../common";
+} from 'ethers'
+import type { FunctionFragment, Result } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
 
 export interface TokenValidatorInterface extends utils.Interface {
   functions: {
-    "batchValidate(address[],address[],uint256)": FunctionFragment;
-    "factoryV2()": FunctionFragment;
-    "positionManager()": FunctionFragment;
-    "uniswapV2Call(address,uint256,uint256,bytes)": FunctionFragment;
-    "validate(address,address[],uint256)": FunctionFragment;
-  };
+    'batchValidate(address[],address[],uint256)': FunctionFragment
+    'factoryV2()': FunctionFragment
+    'positionManager()': FunctionFragment
+    'uniswapV2Call(address,uint256,uint256,bytes)': FunctionFragment
+    'validate(address,address[],uint256)': FunctionFragment
+  }
 
   getFunction(
-    nameOrSignatureOrTopic:
-      | "batchValidate"
-      | "factoryV2"
-      | "positionManager"
-      | "uniswapV2Call"
-      | "validate"
-  ): FunctionFragment;
+    nameOrSignatureOrTopic: 'batchValidate' | 'factoryV2' | 'positionManager' | 'uniswapV2Call' | 'validate'
+  ): FunctionFragment
 
   encodeFunctionData(
-    functionFragment: "batchValidate",
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(functionFragment: "factoryV2", values?: undefined): string;
+    functionFragment: 'batchValidate',
+    values: [PromiseOrValue<string>[], PromiseOrValue<string>[], PromiseOrValue<BigNumberish>]
+  ): string
+  encodeFunctionData(functionFragment: 'factoryV2', values?: undefined): string
+  encodeFunctionData(functionFragment: 'positionManager', values?: undefined): string
   encodeFunctionData(
-    functionFragment: "positionManager",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "uniswapV2Call",
+    functionFragment: 'uniswapV2Call',
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "validate",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
+    functionFragment: 'validate',
+    values: [PromiseOrValue<string>, PromiseOrValue<string>[], PromiseOrValue<BigNumberish>]
+  ): string
 
-  decodeFunctionResult(
-    functionFragment: "batchValidate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "factoryV2", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "positionManager",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "uniswapV2Call",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "validate", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'batchValidate', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'factoryV2', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'positionManager', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'uniswapV2Call', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'validate', data: BytesLike): Result
 
-  events: {};
+  events: {}
 }
 
 export interface TokenValidator extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: TokenValidatorInterface;
+  interface: TokenValidatorInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
     batchValidate(
@@ -122,11 +87,11 @@ export interface TokenValidator extends BaseContract {
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
-    factoryV2(overrides?: CallOverrides): Promise<[string]>;
+    factoryV2(overrides?: CallOverrides): Promise<[string]>
 
-    positionManager(overrides?: CallOverrides): Promise<[string]>;
+    positionManager(overrides?: CallOverrides): Promise<[string]>
 
     uniswapV2Call(
       arg0: PromiseOrValue<string>,
@@ -134,26 +99,26 @@ export interface TokenValidator extends BaseContract {
       arg2: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[void]>;
+    ): Promise<[void]>
 
     validate(
       token: PromiseOrValue<string>,
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+    ): Promise<ContractTransaction>
+  }
 
   batchValidate(
     tokens: PromiseOrValue<string>[],
     baseTokens: PromiseOrValue<string>[],
     amountToBorrow: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
-  factoryV2(overrides?: CallOverrides): Promise<string>;
+  factoryV2(overrides?: CallOverrides): Promise<string>
 
-  positionManager(overrides?: CallOverrides): Promise<string>;
+  positionManager(overrides?: CallOverrides): Promise<string>
 
   uniswapV2Call(
     arg0: PromiseOrValue<string>,
@@ -161,14 +126,14 @@ export interface TokenValidator extends BaseContract {
     arg2: PromiseOrValue<BigNumberish>,
     data: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
-  ): Promise<void>;
+  ): Promise<void>
 
   validate(
     token: PromiseOrValue<string>,
     baseTokens: PromiseOrValue<string>[],
     amountToBorrow: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   callStatic: {
     batchValidate(
@@ -176,11 +141,11 @@ export interface TokenValidator extends BaseContract {
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number[]>;
+    ): Promise<number[]>
 
-    factoryV2(overrides?: CallOverrides): Promise<string>;
+    factoryV2(overrides?: CallOverrides): Promise<string>
 
-    positionManager(overrides?: CallOverrides): Promise<string>;
+    positionManager(overrides?: CallOverrides): Promise<string>
 
     uniswapV2Call(
       arg0: PromiseOrValue<string>,
@@ -188,17 +153,17 @@ export interface TokenValidator extends BaseContract {
       arg2: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<void>
 
     validate(
       token: PromiseOrValue<string>,
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
-  };
+    ): Promise<number>
+  }
 
-  filters: {};
+  filters: {}
 
   estimateGas: {
     batchValidate(
@@ -206,11 +171,11 @@ export interface TokenValidator extends BaseContract {
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
-    factoryV2(overrides?: CallOverrides): Promise<BigNumber>;
+    factoryV2(overrides?: CallOverrides): Promise<BigNumber>
 
-    positionManager(overrides?: CallOverrides): Promise<BigNumber>;
+    positionManager(overrides?: CallOverrides): Promise<BigNumber>
 
     uniswapV2Call(
       arg0: PromiseOrValue<string>,
@@ -218,15 +183,15 @@ export interface TokenValidator extends BaseContract {
       arg2: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     validate(
       token: PromiseOrValue<string>,
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
     batchValidate(
@@ -234,11 +199,11 @@ export interface TokenValidator extends BaseContract {
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
-    factoryV2(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    factoryV2(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    positionManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    positionManager(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     uniswapV2Call(
       arg0: PromiseOrValue<string>,
@@ -246,13 +211,13 @@ export interface TokenValidator extends BaseContract {
       arg2: PromiseOrValue<BigNumberish>,
       data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     validate(
       token: PromiseOrValue<string>,
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }
