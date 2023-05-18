@@ -8,8 +8,8 @@ import {
   appDataUploadQueueAtom,
   removeAppDataFromUploadQueueAtom,
   updateAppDataOnUploadQueueAtom,
-} from 'state/appData/atoms'
-import { AppDataKeyParams, AppDataRecord, UpdateAppDataOnUploadQueueParams } from 'state/appData/types'
+} from '../state/atoms'
+import { AppDataKeyParams, AppDataRecord, UpdateAppDataOnUploadQueueParams } from '../types'
 import { metadataApiSDK } from 'cowSdk'
 
 const UPLOAD_CHECK_INTERVAL = ms`1 minute`

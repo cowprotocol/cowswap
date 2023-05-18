@@ -64,7 +64,7 @@ export async function ethFlow(
     ethFlowContext.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
 
     logTradeFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
-    callbacks.addAppDataToUploadQueue({ chainId: context.chainId, orderId, appData: appDataInfo })
+    callbacks.uploadAppData({ chainId: context.chainId, orderId, appData: appDataInfo })
 
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     swapConfirmManager.transactionSent(orderId)

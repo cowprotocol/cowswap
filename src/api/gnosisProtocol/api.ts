@@ -1,18 +1,17 @@
 import { OrderBookApiError, PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { APP_DATA_HASH } from 'constants/index'
 import { isBarn, isDev, isLocal, isPr } from 'utils/environments'
 
 import { toErc20Address, toNativeBuyAddress } from 'utils/tokens'
 import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
 import { ZERO_ADDRESS } from 'constants/misc'
-import { getAppDataHash } from 'constants/appDataHash'
 import { orderBookApi } from 'cowSdk'
 import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
 import { NativePriceResponse, Trade } from '@cowprotocol/cow-sdk'
 import { ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
+import { getAppDataHash } from 'modules/appData'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -32,7 +31,7 @@ const PROFILE_API_BASE_URL = getProfileUrl()
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
-  'X-AppId': APP_DATA_HASH.toString(),
+  'X-AppId': getAppDataHash(),
 }
 const API_NAME = 'CoW Protocol'
 /**

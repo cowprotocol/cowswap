@@ -47,7 +47,7 @@ export async function swapFlow(
     )
 
     logTradeFlow('SWAP FLOW', 'STEP 6: add app data to upload queue')
-    input.callbacks.addAppDataToUploadQueue({ chainId: input.context.chainId, orderId, appData: input.appDataInfo })
+    input.callbacks.uploadAppData({ chainId: input.context.chainId, orderId, appData: input.appDataInfo })
 
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     input.swapConfirmManager.transactionSent(orderId)

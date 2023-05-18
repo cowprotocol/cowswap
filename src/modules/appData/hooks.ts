@@ -1,7 +1,18 @@
 import { useIsSafeApp } from 'modules/wallet'
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'constants/index'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { addAppDataToUploadQueueAtom, appDataInfoAtom } from './state/atoms'
+import { AppDataInfo } from './types'
 
 const APP_CODE = process.env.REACT_APP_APP_CODE
+
+export function useUploadAppData() {
+  return useUpdateAtom(addAppDataToUploadQueueAtom)
+}
+
+export function useAppData(): AppDataInfo | null {
+  return useAtomValue(appDataInfoAtom)
+}
 
 export function useAppCode(): string {
   const isSafeApp = useIsSafeApp()

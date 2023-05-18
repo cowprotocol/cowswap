@@ -1,15 +1,15 @@
-import { updateAppDataHash } from 'constants/appDataHash'
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import {
-  AddAppDataToUploadQueueParams,
+  UploadDataParams,
   AppDataPendingToUpload,
   AppDataInfo,
   RemoveAppDataFromUploadQueueParams,
   UpdateAppDataOnUploadQueueParams,
-} from 'state/appData/types'
-import { buildDocFilterFn, buildInverseDocFilterFn } from 'state/appData/utils'
+} from '../types'
+import { buildDocFilterFn, buildInverseDocFilterFn } from './utils'
+import { updateAppDataHash } from '../utils/appDataHash'
 
 /**
  * Base atom that store the current appDataInfo
@@ -30,21 +30,18 @@ export const appDataUploadQueueAtom = atomWithStorage<AppDataPendingToUpload>(
 /**
  * Write only atom to add an appData to upload queue
  */
-export const addAppDataToUploadQueueAtom = atom(
-  null,
-  (get, set, { chainId, orderId, appData }: AddAppDataToUploadQueueParams) => {
-    set(appDataUploadQueueAtom, () => {
-      const docs = get(appDataUploadQueueAtom)
+export const addAppDataToUploadQueueAtom = atom(null, (get, set, { chainId, orderId, appData }: UploadDataParams) => {
+  set(appDataUploadQueueAtom, () => {
+    const docs = get(appDataUploadQueueAtom)
 
-      if (docs.some(buildDocFilterFn(chainId, orderId))) {
-        // Entry already in the queue, ignore
-        return docs
-      }
+    if (docs.some(buildDocFilterFn(chainId, orderId))) {
+      // Entry already in the queue, ignore
+      return docs
+    }
 
-      return [...docs, { chainId, orderId, ...appData, uploading: false, failedAttempts: 0 }]
-    })
-  }
-)
+    return [...docs, { chainId, orderId, ...appData, uploading: false, failedAttempts: 0 }]
+  })
+})
 
 /**
  * Write only atom to update upload status of an appData on upload queue
