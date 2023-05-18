@@ -1,4 +1,4 @@
-import { bundleAnalytics, signSwapAnalytics, swapAnalytics } from 'components/analytics'
+import { signSwapAnalytics, swapAnalytics } from 'components/analytics'
 import { USER_SWAP_REJECTED_ERROR } from '@cow/modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 export interface SwapFlowAnalyticsContext {
@@ -9,23 +9,21 @@ export interface SwapFlowAnalyticsContext {
   orderClass: OrderClass
 }
 
-type AnalyticsFn = typeof swapAnalytics | typeof bundleAnalytics
-
 export const tradeFlowAnalytics = {
-  swap(context: SwapFlowAnalyticsContext, analyticsFn: AnalyticsFn = swapAnalytics) {
-    analyticsFn('Send', context.orderClass, context.marketLabel)
+  swap(context: SwapFlowAnalyticsContext) {
+    swapAnalytics('Send', context.orderClass, context.marketLabel)
   },
-  sign(context: SwapFlowAnalyticsContext, analyticsFn?: typeof bundleAnalytics) {
+  sign(context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
-    analyticsFn ? analyticsFn('Sign', orderClass, marketLabel) : signSwapAnalytics(orderClass, marketLabel)
+    signSwapAnalytics(orderClass, marketLabel)
   },
-  error(error: any, errorMessage: string, context: SwapFlowAnalyticsContext, analyticsFn: AnalyticsFn = swapAnalytics) {
+  error(error: any, errorMessage: string, context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
 
     if (errorMessage === USER_SWAP_REJECTED_ERROR) {
-      analyticsFn('Reject', orderClass, marketLabel)
+      swapAnalytics('Reject', orderClass, marketLabel)
     } else {
-      analyticsFn(
+      swapAnalytics(
         'Error',
         orderClass,
         marketLabel,
