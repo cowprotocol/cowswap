@@ -12,85 +12,65 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "../../../../common";
+} from 'ethers'
+import type { FunctionFragment, Result } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
 
 export interface IV2SwapRouterInterface extends utils.Interface {
   functions: {
-    "swapExactTokensForTokens(uint256,uint256,address[],address)": FunctionFragment;
-    "swapTokensForExactTokens(uint256,uint256,address[],address)": FunctionFragment;
-  };
+    'swapExactTokensForTokens(uint256,uint256,address[],address)': FunctionFragment
+    'swapTokensForExactTokens(uint256,uint256,address[],address)': FunctionFragment
+  }
 
-  getFunction(
-    nameOrSignatureOrTopic:
-      | "swapExactTokensForTokens"
-      | "swapTokensForExactTokens"
-  ): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'swapExactTokensForTokens' | 'swapTokensForExactTokens'): FunctionFragment
 
   encodeFunctionData(
-    functionFragment: "swapExactTokensForTokens",
+    functionFragment: 'swapExactTokensForTokens',
     values: [
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>[],
       PromiseOrValue<string>
     ]
-  ): string;
+  ): string
   encodeFunctionData(
-    functionFragment: "swapTokensForExactTokens",
+    functionFragment: 'swapTokensForExactTokens',
     values: [
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>[],
       PromiseOrValue<string>
     ]
-  ): string;
+  ): string
 
-  decodeFunctionResult(
-    functionFragment: "swapExactTokensForTokens",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "swapTokensForExactTokens",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'swapExactTokensForTokens', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'swapTokensForExactTokens', data: BytesLike): Result
 
-  events: {};
+  events: {}
 }
 
 export interface IV2SwapRouter extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: IV2SwapRouterInterface;
+  interface: IV2SwapRouterInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
     swapExactTokensForTokens(
@@ -99,7 +79,7 @@ export interface IV2SwapRouter extends BaseContract {
       path: PromiseOrValue<string>[],
       to: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    ): Promise<ContractTransaction>
 
     swapTokensForExactTokens(
       amountOut: PromiseOrValue<BigNumberish>,
@@ -107,8 +87,8 @@ export interface IV2SwapRouter extends BaseContract {
       path: PromiseOrValue<string>[],
       to: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+    ): Promise<ContractTransaction>
+  }
 
   swapExactTokensForTokens(
     amountIn: PromiseOrValue<BigNumberish>,
@@ -116,7 +96,7 @@ export interface IV2SwapRouter extends BaseContract {
     path: PromiseOrValue<string>[],
     to: PromiseOrValue<string>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   swapTokensForExactTokens(
     amountOut: PromiseOrValue<BigNumberish>,
@@ -124,7 +104,7 @@ export interface IV2SwapRouter extends BaseContract {
     path: PromiseOrValue<string>[],
     to: PromiseOrValue<string>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   callStatic: {
     swapExactTokensForTokens(
@@ -133,7 +113,7 @@ export interface IV2SwapRouter extends BaseContract {
       path: PromiseOrValue<string>[],
       to: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     swapTokensForExactTokens(
       amountOut: PromiseOrValue<BigNumberish>,
@@ -141,10 +121,10 @@ export interface IV2SwapRouter extends BaseContract {
       path: PromiseOrValue<string>[],
       to: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
-  filters: {};
+  filters: {}
 
   estimateGas: {
     swapExactTokensForTokens(
@@ -153,7 +133,7 @@ export interface IV2SwapRouter extends BaseContract {
       path: PromiseOrValue<string>[],
       to: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber>
 
     swapTokensForExactTokens(
       amountOut: PromiseOrValue<BigNumberish>,
@@ -161,8 +141,8 @@ export interface IV2SwapRouter extends BaseContract {
       path: PromiseOrValue<string>[],
       to: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
     swapExactTokensForTokens(
@@ -171,7 +151,7 @@ export interface IV2SwapRouter extends BaseContract {
       path: PromiseOrValue<string>[],
       to: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    ): Promise<PopulatedTransaction>
 
     swapTokensForExactTokens(
       amountOut: PromiseOrValue<BigNumberish>,
@@ -179,6 +159,6 @@ export interface IV2SwapRouter extends BaseContract {
       path: PromiseOrValue<string>[],
       to: PromiseOrValue<string>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }
