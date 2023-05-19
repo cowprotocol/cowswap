@@ -7,7 +7,7 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
   const toggleDarkMode = useCallback(() => {
     toggleDarkModeAux()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleDarkModeAux, darkMode])
 
   return (
@@ -15,7 +15,7 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
       <button onClick={toggleDarkMode}>Toggle DarkMode =&gt; {theme.darkMode ? 'ON' : 'OFF'}</button>
       {children}
     </ThemeContext.Provider>
-  );
-};
+  )
+}
 
-export default DarkModeToggle;
+export default DarkModeToggle
