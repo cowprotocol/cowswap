@@ -9,7 +9,7 @@ See also:
 
 ## Desciption
 
-This module handles adds support for handling UTM codes.
+This module adds support for handling UTM codes.
 
 > 📖 For more information on UTM codes, please read:
 >
