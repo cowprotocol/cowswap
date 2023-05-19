@@ -6,12 +6,12 @@ import { useBytes32TokenContract, useTokenContract } from 'hooks/useContract'
 import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
-import { isChainAllowed } from '@cow/modules/wallet/web3-react/connection'
+import { isChainAllowed } from 'modules/wallet/web3-react/connection'
 
 import { TOKEN_SHORTHANDS } from 'constants/tokens'
 import { isAddress } from 'utils'
 import { supportedChainId } from 'utils/supportedChainId'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/

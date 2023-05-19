@@ -10,7 +10,7 @@ import store from 'state'
 // import ThemeProvider from 'theme'
 
 import catalog from './locales/en-US'
-import { useIsDarkMode } from './state/user/hooks'
+import { useIsDarkMode } from '@src/legacy/state/user/hooks'
 import { theme } from 'theme'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { Connector } from '@web3-react/types'
