@@ -13,8 +13,8 @@ export interface AdvancedOrdersSettingsState {
   }
 
   // no. of parts
-  numberOfPartsValue: number
-  numberOfPartsError: string | null
+  readonly numberOfPartsValue: number
+  readonly numberOfPartsError: string | null
 
   // slippage
   readonly slippageValue: number | 'auto'

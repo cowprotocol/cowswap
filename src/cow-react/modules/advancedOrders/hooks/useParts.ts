@@ -6,14 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export function useNoOfParts() {
   const { numberOfPartsValue, numberOfPartsError } = useAtomValue(advancedOrdersSettingsAtom)
-
-  return useMemo(
-    () => ({
-      numberOfPartsValue,
-      numberOfPartsError,
-    }),
-    [numberOfPartsValue, numberOfPartsError]
-  )
+  return { numberOfPartsValue, numberOfPartsError }
 }
 
 type PartsOutput = {

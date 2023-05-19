@@ -13,12 +13,11 @@ import { DeadlineSelector } from '../DeadlineSelector'
 import { PartsDisplay } from '../PartsDisplay'
 import * as styledEl from './styled'
 import { useParseNumberOfParts } from '../../hooks/useParseNumberOfParts'
-import { useAtomValue } from 'jotai'
-import { advancedOrdersSettingsAtom } from '../../state/advancedOrdersSettingsAtom'
 import { TradeNumberInput } from '@cow/modules/trade/pure/TradeNumberInput'
 import { useState } from 'react'
 import { useParseSlippage } from '../../hooks/useParseSlippage'
 import { useDisplaySlippageValue } from '../../hooks/useDisplaySlippageValue'
+import { useNoOfParts } from '../../hooks/useParts'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -40,7 +39,7 @@ export function AdvancedOrdersWidget() {
   const isTradePriceUpdating = useIsQuoteLoading()
 
   // Number of parts
-  const { numberOfPartsError, numberOfPartsValue } = useAtomValue(advancedOrdersSettingsAtom)
+  const { numberOfPartsError, numberOfPartsValue } = useNoOfParts()
   const parseNumberOfParts = useParseNumberOfParts()
 
   // Slippage
