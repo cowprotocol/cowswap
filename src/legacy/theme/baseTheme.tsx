@@ -35,6 +35,7 @@ export function colors(darkMode: boolean): Colors {
     danger: darkMode ? '#EB3030' : '#D41300',
     warning: darkMode ? '#ED6237' : '#D94719',
     alert: darkMode ? '#DB971E' : '#DB971E',
+    information: darkMode ? '#428dff' : '#0d5ed9',
     success: darkMode ? '#00D897' : '#007B28',
     pending: '#43758C', // deprecate
     attention: '#ff5722', // deprecate
