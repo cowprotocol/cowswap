@@ -4,7 +4,7 @@ import { DAI, USDC_MAINNET, USDT } from 'constants/tokens'
 import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'
 import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from 'utils/gnosis_chain/constants'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
-import { supportedChainId } from '@src/utils/supportedChainId'
+import { supportedChainId } from 'utils/supportedChainId'
 
 // TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
 const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
@@ -31,7 +31,7 @@ export function getQuoteCurrency(
 ): Currency | null {
   const chainId = supportedChainId(_chainId)
 
-  if (chainId || !inputCurrencyAmount || !outputCurrencyAmount) return null
+  if (!chainId || !inputCurrencyAmount || !outputCurrencyAmount) return null
 
   const inputCurrency = inputCurrencyAmount.currency
   const outputCurrency = outputCurrencyAmount.currency
@@ -50,7 +50,7 @@ export function getQuoteCurrencyByStableCoin(
 ): Currency | null {
   const chainId = supportedChainId(_chainId)
 
-  if (!chainId || !supportedChainId(chainId) || !inputCurrency || !outputCurrency) return null
+  if (!chainId || !inputCurrency || !outputCurrency) return null
 
   const stableCoins = STABLE_COINS[chainId]
 
