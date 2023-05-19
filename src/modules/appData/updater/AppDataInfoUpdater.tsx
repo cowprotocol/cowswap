@@ -1,12 +1,12 @@
 import React from 'react'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
-import { useAppData, UseAppDataParams } from 'hooks/useAppData'
+import { useAppDataUpdater, UseAppDataParams } from './useAppDataUpdater'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { LIMIT_ORDER_SLIPPAGE } from 'modules/limitOrders/const/trade'
-import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { percentToBips } from 'utils/misc'
 import { useWalletInfo } from 'modules/wallet'
 import { useUtm } from 'modules/utm'
+import { TradeType, useTradeTypeInfo } from 'modules/trade'
 
 export function AppDataUpdater() {
   const { chainId } = useWalletInfo()
@@ -25,7 +25,7 @@ export function AppDataUpdater() {
 }
 
 const AppDataUpdaterMemo = React.memo(({ chainId, slippageBips, orderClass, utm }: UseAppDataParams) => {
-  useAppData({ chainId, slippageBips, orderClass, utm })
+  useAppDataUpdater({ chainId, slippageBips, orderClass, utm })
 
   return null
 })

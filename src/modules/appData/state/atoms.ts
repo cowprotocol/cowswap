@@ -1,15 +1,15 @@
-import { updateAppDataHash } from 'constants/appDataHash'
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import {
-  AddAppDataToUploadQueueParams,
+  UploadAppDataParams,
   AppDataPendingToUpload,
   AppDataInfo,
   RemoveAppDataFromUploadQueueParams,
   UpdateAppDataOnUploadQueueParams,
-} from 'state/appData/types'
-import { buildDocFilterFn, buildInverseDocFilterFn } from 'state/appData/utils'
+} from '../types'
+import { buildDocFilterFn, buildInverseDocFilterFn } from './utils'
+import { updateAppDataHash } from '../utils/appDataHash'
 
 /**
  * Base atom that store the current appDataInfo
@@ -32,7 +32,7 @@ export const appDataUploadQueueAtom = atomWithStorage<AppDataPendingToUpload>(
  */
 export const addAppDataToUploadQueueAtom = atom(
   null,
-  (get, set, { chainId, orderId, appData }: AddAppDataToUploadQueueParams) => {
+  (get, set, { chainId, orderId, appData }: UploadAppDataParams) => {
     set(appDataUploadQueueAtom, () => {
       const docs = get(appDataUploadQueueAtom)
 

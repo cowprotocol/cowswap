@@ -16,12 +16,11 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
 import { useUserTransactionTTL } from 'state/user/hooks'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atoms'
+import { useUploadAppData, useAppData } from 'modules/appData'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { Weth } from 'legacy/abis/types'
 import TradeGp from 'state/swap/TradeGp'
-import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
+import type { UploadAppDataParams, AppDataInfo } from 'modules/appData'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 import { Web3Provider } from '@ethersproject/providers'
 import { BaseFlowContext } from 'modules/swap/services/types'
@@ -74,7 +73,7 @@ interface BaseFlowContextSetup {
   swapConfirmManager: SwapConfirmManager
   flowType: FlowType
   closeModals: () => void
-  addAppDataToUploadQueue: (update: AddAppDataToUploadQueueParams) => void
+  uploadAppData: (update: UploadAppDataParams) => void
   addOrderCallback: AddOrderCallback
   dispatch: AppDispatch
 }
@@ -87,9 +86,9 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const { recipient } = useSwapState()
   const { v2Trade: trade, allowedSlippage } = useDerivedSwapInfo()
 
-  const appData = useAtomValue(appDataInfoAtom)
+  const appData = useAppData()
   const closeModals = useCloseModals()
-  const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
+  const uploadAppData = useUploadAppData()
   const addOrderCallback = useAddPendingOrder()
   const dispatch = useDispatch<AppDispatch>()
 
@@ -126,7 +125,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
     swapConfirmManager,
     flowType,
     closeModals,
-    addAppDataToUploadQueue,
+    uploadAppData,
     addOrderCallback,
     dispatch,
   }
@@ -167,7 +166,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     allowsOffchainSigning,
     swapConfirmManager,
     closeModals,
-    addAppDataToUploadQueue,
+    uploadAppData,
     addOrderCallback,
     dispatch,
   } = baseProps
@@ -246,7 +245,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     callbacks: {
       closeModals,
       addOrderCallback,
-      addAppDataToUploadQueue,
+      uploadAppData,
     },
     dispatch,
     swapFlowAnalyticsContext,

@@ -70,7 +70,7 @@ export async function tradeFlow(
     )
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: add app data to upload queue')
-    params.addAppDataToUploadQueue({ chainId: params.chainId, orderId, appData: params.appData })
+    params.uploadAppData({ chainId: params.chainId, orderId, appData: params.appData })
 
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 

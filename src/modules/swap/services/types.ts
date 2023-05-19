@@ -7,7 +7,7 @@ import { GPv2Settlement } from 'abis/types'
 import { CoWSwapEthFlow } from 'abis/types/ethflow'
 import { Erc20 } from 'legacy/abis/types'
 import { AppDispatch } from 'state'
-import { AddAppDataToUploadQueueParams, AppDataInfo } from 'state/appData/types'
+import { UploadAppDataParams, AppDataInfo } from 'modules/appData'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
 import { Web3Provider } from '@ethersproject/providers'
@@ -27,7 +27,7 @@ export interface BaseFlowContext {
   callbacks: {
     closeModals: () => void
     addOrderCallback: AddOrderCallback
-    addAppDataToUploadQueue: (params: AddAppDataToUploadQueueParams) => void
+    uploadAppData: (params: UploadAppDataParams) => void
   }
   dispatch: AppDispatch
   swapFlowAnalyticsContext: SwapFlowAnalyticsContext

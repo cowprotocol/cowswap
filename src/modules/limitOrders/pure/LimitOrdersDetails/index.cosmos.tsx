@@ -32,7 +32,7 @@ const tradeContext: TradeFlowContext = {
   },
   rateImpact: 0,
   appData: {} as any,
-  addAppDataToUploadQueue: () => void 0,
+  uploadAppData: () => void 0,
   provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,

@@ -5,7 +5,6 @@ import ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
 import networksJson from '@cowprotocol/contracts/networks.json'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getAppDataHash } from 'constants/appDataHash'
 import ms from 'ms.macro'
 
 import { IpfsConfig } from '@cowprotocol/cow-sdk'
@@ -40,8 +39,6 @@ export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const AVG_APPROVE_COST_GWEI = '50000'
-
-export const APP_DATA_HASH = getAppDataHash()
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 

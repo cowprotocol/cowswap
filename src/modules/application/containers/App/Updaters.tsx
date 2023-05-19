@@ -15,10 +15,9 @@ import {
   ExpiredOrdersUpdater,
 } from 'state/orders/updaters'
 
-import { UploadToIpfsUpdater } from 'state/appData/updater'
+import { UploadToIpfsUpdater, AppDataUpdater } from 'modules/appData'
 import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
-import { AppDataUpdater } from 'state/appData/AppDataInfoUpdater'
 import { WalletUpdater } from 'modules/wallet'
 import { GasPriceStrategyUpdater } from 'state/gas/gas-price-strategy-updater'
 import { SpotPricesUpdater } from 'state/orders/updaters/SpotPricesUpdater'

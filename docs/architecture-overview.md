@@ -40,8 +40,8 @@ Overall architecture of the project
 
 ### appData
 
-- appData
-- affiliate
+- [appData](../src/modules/appData/appData-module.md)
+- ~affiliate~ (not used right now)
 - [utm](../src/modules/utm/utm-module.md)
 
 ### Token modules
