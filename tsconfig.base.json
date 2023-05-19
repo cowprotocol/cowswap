@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "paths": {
-      "@src/*": ["*"],
       "*": ["*", "legacy/*"]
     },
     "target": "es5",

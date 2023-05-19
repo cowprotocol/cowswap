@@ -8,7 +8,7 @@ import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { isL2ChainId } from 'utils/chains'
 
-import Circle from '@src/legacy/assets/images/blue-loader.svg'
+import Circle from 'legacy/assets/images/blue-loader.svg'
 import { CloseIcon, CustomLightSpinner, ExternalLink } from 'theme'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from 'components/Column'

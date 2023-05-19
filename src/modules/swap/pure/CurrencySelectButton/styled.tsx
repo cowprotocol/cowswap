@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { ReactComponent as DropDown } from '@src/legacy/assets/images/dropdown.svg'
+import { ReactComponent as DropDown } from 'legacy/assets/images/dropdown.svg'
 import { lighten, transparentize } from 'polished'
 
 export const CurrencySelectWrapper = styled.button<{ isLoading: boolean; $stubbed: boolean; readonlyMode: boolean }>`

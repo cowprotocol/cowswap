@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import CowError from '@src/legacy/assets/cow-swap/CowError.png'
+import CowError from 'legacy/assets/cow-swap/CowError.png'
 import { AutoColumn } from 'components/Column'
 import { MEDIA_WIDTHS, ThemedText } from 'theme'
 import { AutoRow } from 'components/Row'

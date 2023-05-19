@@ -1,9 +1,9 @@
-import { CoWSwapEthFlow } from '@src/abis/types/ethflow'
+import { CoWSwapEthFlow } from 'abis/types/ethflow'
 import { Order } from 'state/orders/actions'
 import { logTradeFlowError } from 'modules/trade/utils/logger'
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from 'modules/swap/services/ethFlow/const'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { GPv2Settlement } from '@src/abis/types'
+import { GPv2Settlement } from 'abis/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 

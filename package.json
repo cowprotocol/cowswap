@@ -60,9 +60,6 @@
     ]
   },
   "jest": {
-    "moduleNameMapper": {
-      "@src/(.*)": "<rootDir>/src/$1"
-    },
     "transformIgnorePatterns": [
       "node_modules/(?!@ledgerhq/connect-kit-loader)"
     ]

@@ -1,7 +1,7 @@
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
 import { Interface } from '@ethersproject/abi'
-import ERC20_ABI from '@src/legacy/abis/erc20.json'
+import ERC20_ABI from 'legacy/abis/erc20.json'
 import { Erc20Interface } from 'abis/types/Erc20'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useMemo } from 'react'
