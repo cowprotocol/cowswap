@@ -6,7 +6,7 @@ import React from 'react'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import styled from 'styled-components/macro'
-import { BundleTxApprovalBanner } from 'common/pure/WarningBanner/banners'
+import { BundleTxApprovalBanner } from 'common/pure/InlineBanner/banners'
 
 export interface SwapWarningsTopProps {
   trade: TradeGp | undefined
