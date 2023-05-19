@@ -47,8 +47,13 @@ const Wrapper = styled.span<{ color: string }>`
   line-height: 1.2;
 
   > svg {
+    --size: 32px;
     display: block;
-    width: 75px;
+    min-width: var(--size);
+    min-height: var(--size);
+    width: var(--size);
+    height: var(--size);
+    object-fit: contain;
   }
 
   > svg > path {
