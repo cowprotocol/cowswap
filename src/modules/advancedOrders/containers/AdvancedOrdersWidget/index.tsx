@@ -2,7 +2,7 @@ import { useSetupTradeState } from 'modules/trade'
 import { TradeWidget } from 'modules/trade/containers/TradeWidget'
 import React from 'react'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { Field } from '@src/legacy/state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,

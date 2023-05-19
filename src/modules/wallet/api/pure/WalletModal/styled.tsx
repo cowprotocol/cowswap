@@ -1,4 +1,4 @@
-import { ReactComponent as Close } from '@src/legacy/assets/images/x.svg'
+import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
 
 import styled from 'styled-components/macro'
 import { ExternalLink } from 'theme'

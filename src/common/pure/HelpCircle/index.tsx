@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { useIsDarkMode } from 'state/user/hooks'
-import { questionIcon } from '@src/legacy/assets/cow-swap/question'
+import { questionIcon } from 'legacy/assets/cow-swap/question'
 import SVG from 'react-inlinesvg'
 
 const HelpCircleWrapper = styled.div`

@@ -8,7 +8,7 @@ import { useSelectedWallet } from 'state/user/hooks'
 import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 
-import CowImage from '@src/legacy/assets/cow-swap/cow_v2.svg'
+import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
 import { RPC_URLS } from 'constants/networks'
 
 import { TryActivation, onError } from '.'

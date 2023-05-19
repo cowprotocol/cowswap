@@ -3,7 +3,7 @@ import React, { HTMLProps } from 'react'
 import { ArrowLeft, ExternalLink as LinkIconFeather, Trash, X } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components/macro'
-import { anonymizeLink } from '@src/legacy/utils/anonymizeLink'
+import { anonymizeLink } from 'legacy/utils/anonymizeLink'
 
 export const ButtonText = styled.button`
   outline: none;

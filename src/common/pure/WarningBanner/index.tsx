@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import styled from 'styled-components/macro'
 import SVG from 'react-inlinesvg'
-import Alert from '@src/legacy/assets/cow-swap/alert.svg'
+import Alert from 'legacy/assets/cow-swap/alert.svg'
 import { darken, transparentize } from 'polished'
 
 const Wrapper = styled.span`

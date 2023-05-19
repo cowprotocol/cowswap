@@ -9,7 +9,7 @@ import { InterfaceTrade } from 'state/routing/types'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
-import { ReactComponent as GasIcon } from '@src/legacy/assets/images/gas-icon.svg'
+import { ReactComponent as GasIcon } from 'legacy/assets/images/gas-icon.svg'
 import { ResponsiveTooltipContainer } from './styleds'
 import SwapRoute from './SwapRoute'
 

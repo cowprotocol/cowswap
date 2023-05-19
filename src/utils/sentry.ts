@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 
-import pkg from '@src/../package.json'
+import pkg from '../../package.json'
 import { environmentName } from 'utils/environments'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 

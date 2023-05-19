@@ -1,5 +1,5 @@
 import { SectionTitle } from 'modules/application/pure/Page'
-import { Txt } from '@src/legacy/assets/styles/styled'
+import { Txt } from 'legacy/assets/styles/styled'
 import { MouseoverTooltipContent } from 'components/Tooltip'
 import { useWalletInfo, Web3Status } from 'modules/wallet'
 import { getExplorerAddressLink } from 'utils/explorer'

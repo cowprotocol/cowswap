@@ -5,9 +5,9 @@ import { ExternalLink as ExternalLinkTheme } from 'theme'
 import { MEV_TOTAL, FLASHBOTS_LINK } from 'constants/index'
 
 // Assets
-import diagramIMG from '@src/legacy/assets/cow-swap/cowswap-diagram.png'
-import gaslessIMG from '@src/legacy/assets/cow-swap/gasless.png'
-import mevIMG from '@src/legacy/assets/cow-swap/mev.png'
+import diagramIMG from 'legacy/assets/cow-swap/cowswap-diagram.png'
+import gaslessIMG from 'legacy/assets/cow-swap/gasless.png'
+import mevIMG from 'legacy/assets/cow-swap/mev.png'
 import { Routes } from 'constants/routes'
 
 // AmplitudeAnalytics

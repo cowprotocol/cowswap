@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import AlertIcon from '@src/legacy/assets/cow-swap/alert-circle.svg'
+import AlertIcon from 'legacy/assets/cow-swap/alert-circle.svg'
 import SVG from 'react-inlinesvg'
 import { HashLink } from 'react-router-hash-link'
 import { useState, useEffect } from 'react'

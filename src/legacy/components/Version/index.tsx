@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { ExternalLink } from 'theme'
 
-import pkg from '@src/../package.json'
+import pkg from '../../../../package.json'
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getEtherscanLink } from 'utils'
