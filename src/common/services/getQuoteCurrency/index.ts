@@ -4,6 +4,7 @@ import { DAI, USDC_MAINNET, USDT } from 'constants/tokens'
 import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from 'utils/goerli/constants'
 import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from 'utils/gnosis_chain/constants'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { supportedChainId } from 'utils/supportedChainId'
 
 // TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
 const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
@@ -24,10 +25,12 @@ const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
  * 2. Otherwise, take the token with the smallest amount as quote (for 0.0005 WETH -> 3000 COW, WETH is quote)
  */
 export function getQuoteCurrency(
-  chainId: SupportedChainId | undefined,
+  _chainId: SupportedChainId | undefined,
   inputCurrencyAmount: CurrencyAmount<Currency> | null,
   outputCurrencyAmount: CurrencyAmount<Currency> | null
 ): Currency | null {
+  const chainId = supportedChainId(_chainId)
+
   if (!chainId || !inputCurrencyAmount || !outputCurrencyAmount) return null
 
   const inputCurrency = inputCurrencyAmount.currency
@@ -41,10 +44,12 @@ export function getQuoteCurrency(
 }
 
 export function getQuoteCurrencyByStableCoin(
-  chainId: SupportedChainId | undefined,
+  _chainId: SupportedChainId | undefined,
   inputCurrency: Currency | null,
   outputCurrency: Currency | null
 ): Currency | null {
+  const chainId = supportedChainId(_chainId)
+
   if (!chainId || !inputCurrency || !outputCurrency) return null
 
   const stableCoins = STABLE_COINS[chainId]
