@@ -11,17 +11,8 @@ export function useSinglePartTime() {
   return useMemo(() => {
     const { hours: h, minutes: m } = customDeadline
     const totalTime = isCustomDeadline ? ms(`${h}h`) + ms(`${m}m`) : deadline
-    const partTime = totalTime / numberOfParts
+    const time = totalTime / numberOfParts
 
-    let days = Math.floor(ms(`${partTime}ms`) / ms('1d'))
-    let hours = Math.floor((ms(`${partTime}ms`) % ms('1d')) / ms('1h'))
-    let minutes = Math.floor((ms(`${partTime}ms`) % ms('1h')) / ms('1m'))
-
-    return displayTime({
-      defaultOutput: '-',
-      minutes,
-      days,
-      hours,
-    })
+    return displayTime({ time, defaultOutput: '-' })
   }, [deadline, numberOfParts, customDeadline, isCustomDeadline])
 }

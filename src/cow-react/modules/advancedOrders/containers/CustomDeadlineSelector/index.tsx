@@ -23,8 +23,11 @@ export function CustomDeadlineSelector({ isOpen, onDismiss, customDeadline, sele
   const [minutesValue, setMinutesValue] = useState(minutes || 0)
   const [error, setError] = useState<string | null>(null)
 
-  const onHoursChange = (v: string) => setHoursValue(Number(v))
-  const onMinutesChange = (v: string) => setMinutesValue(Number(v))
+  const onHoursChange = (v: string) => setHoursValue(Number(v.replace(/\./g, '')))
+  const onMinutesChange = (v: string) => setMinutesValue(Number(v.replace(/\./g, '')))
+
+  const noValues = !hoursValue && !minutesValue
+  const isDisabled = !!error || noValues
 
   const onApply = () => {
     onDismiss()
@@ -72,7 +75,7 @@ export function CustomDeadlineSelector({ isOpen, onDismiss, customDeadline, sele
           <styledEl.CancelButton onClick={onDismiss}>
             <Trans>Cancel</Trans>
           </styledEl.CancelButton>
-          <ButtonPrimary disabled={!!error} onClick={onApply}>
+          <ButtonPrimary disabled={isDisabled} onClick={onApply}>
             <Trans>Apply</Trans>
           </ButtonPrimary>
         </styledEl.ModalFooter>

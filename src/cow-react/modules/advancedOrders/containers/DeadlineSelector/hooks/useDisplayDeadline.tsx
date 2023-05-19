@@ -1,3 +1,4 @@
+import ms from 'ms'
 import { useMemo } from 'react'
 import { ordersDeadlines } from '../deadlines'
 import { useDeadline } from './useDeadline'
@@ -11,10 +12,11 @@ export function useDisplayDeadline() {
       return ordersDeadlines.find((d) => deadline === d.value)?.title
     } else {
       const { minutes, hours } = customDeadline
+      const time = ms(`${hours}h`) + ms(`${minutes}m`)
+
       return displayTime({
         defaultOutput: 'Select time',
-        minutes,
-        hours,
+        time,
       })
     }
   }, [isCustomDeadline, deadline, customDeadline])
