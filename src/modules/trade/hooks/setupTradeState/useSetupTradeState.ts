@@ -58,9 +58,6 @@ export function useSetupTradeState(): void {
    *  - apply the URL changes only if user accepted network changes in the wallet
    */
   useEffect(() => {
-    // Do nothing while network change in progress
-    if (rememberedUrlState) return
-
     const { inputCurrencyId, outputCurrencyId } = tradeStateFromUrl
     const providerAndUrlChainIdMismatch = currentChainId !== prevProviderChainId
 
@@ -75,6 +72,17 @@ export function useSetupTradeState(): void {
       (inputCurrencyId || outputCurrencyId) && inputCurrencyId?.toLowerCase() === outputCurrencyId?.toLowerCase()
 
     const defaultState = getDefaultTradeRawState(currentChainId)
+
+    // While network change in progress
+    if (rememberedUrlState) {
+      // When only chainId is changed, then do nothing
+      if (onlyChainIdIsChanged) {
+        return
+        // When something besides chainId is changed, then reset remembered URL state
+      } else {
+        setRememberedUrlState(null)
+      }
+    }
 
     // Applying of the remembered state after network successfully changed
     if (isWalletConnected && providerAndUrlChainIdMismatch && prevTradeStateFromUrl) {
