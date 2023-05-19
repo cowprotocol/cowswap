@@ -17,7 +17,7 @@ import { LimitOrdersFormState, useLimitOrdersFormState } from 'modules/limitOrde
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 import { useWalletInfo } from 'modules/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { BundleTxApprovalBanner, SmallVolumeWarningBanner } from 'cow-react/common/pure/InlineBanner/banners'
+import { BundleTxApprovalBanner, SmallVolumeWarningBanner } from 'common/pure/InlineBanner/banners'
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { Nullish } from 'types'
