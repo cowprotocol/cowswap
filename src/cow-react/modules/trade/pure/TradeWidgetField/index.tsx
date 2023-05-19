@@ -1,18 +1,18 @@
-import { Wrapper, Label, Content, ErrorText, WarningText } from './styled'
+import { Wrapper, Label, Content, ErrorText } from './styled'
 import { Trans } from '@lingui/macro'
-import { Nullish } from '@cow/types'
 import QuestionHelper from 'components/QuestionHelper'
+
+export type TradeWidgetFieldError = { type: 'error' | 'warning'; text: string | null } | null
 
 export interface TradeWidgetFieldProps {
   label: string
   children?: JSX.Element
   hint?: JSX.Element | string
-  error?: Nullish<string>
-  warning?: Nullish<string>
+  error?: TradeWidgetFieldError
 }
 
 export function TradeWidgetField(props: TradeWidgetFieldProps) {
-  const { children, label, hint, error, warning } = props
+  const { children, label, hint, error } = props
   return (
     <Wrapper>
       <Label>
@@ -20,8 +20,7 @@ export function TradeWidgetField(props: TradeWidgetFieldProps) {
         {hint && <QuestionHelper text={hint} />}
       </Label>
       <Content>{children}</Content>
-      {error && <ErrorText>{error}</ErrorText>}
-      {warning && <WarningText>{warning}</WarningText>}
+      {error && <ErrorText type={error.type}>{error.text}</ErrorText>}
     </Wrapper>
   )
 }

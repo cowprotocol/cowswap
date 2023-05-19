@@ -17,6 +17,7 @@ import { TradeNumberInput } from '@cow/modules/trade/pure/TradeNumberInput'
 import { useState } from 'react'
 import { useParseSlippage } from '../../hooks/useParseSlippage'
 import { useDisplaySlippageValue } from '../../hooks/useDisplaySlippageValue'
+import { useDisplaySlippageError } from '../../hooks/useDisplaySlippageError'
 import { useNoOfParts } from '../../hooks/useParts'
 
 export function AdvancedOrdersWidget() {
@@ -53,6 +54,7 @@ export function AdvancedOrdersWidget() {
     setSlippageWarning,
   })
   const displaySlippageValue = useDisplaySlippageValue(slippageInput)
+  const displaySlippageError = useDisplaySlippageError(slippageWarning, slippageError)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -82,15 +84,14 @@ export function AdvancedOrdersWidget() {
           <TradeNumberInput
             value={numberOfPartsValue}
             onUserInput={(v: string) => parseNumberOfParts(v)}
-            error={numberOfPartsError}
+            error={numberOfPartsError ? { type: 'error', text: numberOfPartsError } : null}
             label="No. of parts"
             hint="Todo: No of parts hint"
           />
           <TradeNumberInput
             value={displaySlippageValue}
             onUserInput={(v: string) => parseSlippageInput(v)}
-            error={slippageError}
-            warning={slippageWarning}
+            error={displaySlippageError}
             label="Slippage"
             hint="Todo: Slippage hint"
             suffix="%"

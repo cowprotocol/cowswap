@@ -25,12 +25,12 @@ export const Content = styled.div`
   align-items: center;
 `
 
-export const ErrorText = styled.div`
-  color: ${({ theme }) => theme.red1};
+export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
+  color: ${({ theme, type }) => {
+    if (type === 'error') return theme.red1
+    else if (type === 'warning') return theme.yellow2
+    else return theme.text1
+  }};
   font-size: 12px;
-`
-
-export const WarningText = styled.div`
-  color: ${({ theme }) => theme.yellow2};
-  font-size: 12px;
+  margin-top: 5px;
 `
