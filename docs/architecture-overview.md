@@ -8,12 +8,49 @@ Overall architecture of the project
 
 ## Modules
 
-Here I would like we add a link to a module explainer with some diagrams.
+### Core modules
 
-TODO:
+- wallet
+- transactions
+- gas
+- prices
 
-- Module 1
-- Module 2
-- Module 3
-- Module 4
-- Module 5
+### Trading modules
+
+- trade
+- swap
+- limitOrder
+- twap
+
+### Helper trading modules
+
+- cancelOrder
+- wrapNative
+
+### Basic components (UI building blocks)
+
+- components
+- forms
+
+### UI modules
+
+- account
+- notifications
+- activity
+
+### appData
+
+- appData
+- affiliate
+- [utm](../src/modules/utm/utm-module.md)
+
+### Token modules
+
+- tokens
+- tokenLists
+- tokenImages
+- cowToken
+
+### Other
+
+- misc
