@@ -1,9 +1,9 @@
 import { useWalletInfo } from 'modules/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
-import { L2_CHAIN_IDS } from 'constants/chains'
-import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
+import { L2_CHAIN_IDS } from 'legacy/constants/chains'
+import { L2_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 import { useMemo } from 'react'
-import { useAppSelector } from 'state/hooks'
+import { useAppSelector } from 'legacy/state/hooks'
 
 import useCurrentBlockTimestamp from './useCurrentBlockTimestamp'
 

@@ -1,8 +1,8 @@
-import { Field } from 'state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
-import { computeFiatValuePriceImpact } from 'utils/computeFiatValuePriceImpact'
+import { computeFiatValuePriceImpact } from 'legacy/utils/computeFiatValuePriceImpact'
 import { ParsedAmounts } from './types'
 
 export default function useFiatValuePriceImpact(parsedAmounts: ParsedAmounts) {

@@ -1,17 +1,17 @@
 import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
-import { L2_CHAIN_IDS } from 'constants/chains'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'constants/misc'
+import { L2_CHAIN_IDS } from 'legacy/constants/chains'
+import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 // import ms from 'ms.macro'
 import { darken } from 'polished'
 import { useContext, useState } from 'react'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'state/user/hooks'
+import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ThemedText } from 'theme'
-import { AutoColumn } from 'components/Column'
+import { ThemedText } from 'legacy/theme'
+import { AutoColumn } from 'legacy/components/Column'
 import QuestionHelper from '../QuestionHelper'
-import { RowBetween, RowFixed } from 'components/Row'
+import { RowBetween, RowFixed } from 'legacy/components/Row'
 
 // MOD imports
 import {
@@ -25,8 +25,8 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ETH_FLOW_SLIPPAGE,
-} from 'constants/index'
-import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'components/analytics'
+} from 'legacy/constants'
+import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'legacy/components/analytics'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'

@@ -1,9 +1,9 @@
-import { ConfirmationPendingContent, L2Content, OperationType } from 'components/TransactionConfirmationModal'
-import { COW, GNO } from 'constants/tokens'
+import { ConfirmationPendingContent, L2Content, OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { COW, GNO } from 'legacy/constants/tokens'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import store from 'state'
-import { addPendingOrder, OrderStatus } from 'state/orders/actions'
-import { TransactionSubmittedContent } from 'components/TransactionConfirmationModal/index'
+import store from 'legacy/state'
+import { addPendingOrder, OrderStatus } from 'legacy/state/orders/actions'
+import { TransactionSubmittedContent } from 'legacy/components/TransactionConfirmationModal/index'
 import styled from 'styled-components/macro'
 
 const txHash = '0xe87e1d02b052daa9605abe018e8172feffd1bc38ed2284e6hhhhhh' + Date.now()

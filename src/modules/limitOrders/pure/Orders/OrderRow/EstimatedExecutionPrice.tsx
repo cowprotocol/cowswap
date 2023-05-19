@@ -4,13 +4,13 @@ import styled, { ThemeContext } from 'styled-components/macro'
 import { transparentize, darken } from 'polished'
 import SVG from 'react-inlinesvg'
 
-import { MouseoverTooltipContent } from 'components/Tooltip'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { TokenAmount, TokenAmountProps } from 'common/pure/TokenAmount'
 import { SymbolElement } from 'common/pure/TokenAmount'
 import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
 import { calculateOrderExecutionStatus } from 'modules/limitOrders/utils/calculateOrderExecutionStatus'
 import * as styledEl from './styled'
-import { ZERO_FRACTION } from 'constants/index'
+import { ZERO_FRACTION } from 'legacy/constants'
 
 const MINUS_ONE_FRACTION = new Fraction(-1)
 export const HIGH_FEE_WARNING_PERCENTAGE = new Percent(1, 10)

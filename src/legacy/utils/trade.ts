@@ -1,11 +1,11 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { isAddress, shortenAddress } from 'utils/index'
-import { ChangeOrderStatusParams, Order, OrderStatus } from 'state/orders/actions'
-import { AddUnserialisedPendingOrderParams } from 'state/orders/hooks'
+import { isAddress, shortenAddress } from 'legacy/utils/index'
+import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
+import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 
 import { getTrades, OrderID } from 'api/gnosisProtocol'
 import { Signer } from '@ethersproject/abstract-signer'
-import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatSymbol } from 'utils/format'
 import {

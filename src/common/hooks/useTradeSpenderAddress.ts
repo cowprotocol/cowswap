@@ -1,5 +1,5 @@
 import { useWalletInfo } from 'modules/wallet'
-import { GP_VAULT_RELAYER } from 'constants/index'
+import { GP_VAULT_RELAYER } from 'legacy/constants'
 import { useMemo } from 'react'
 
 export function useTradeSpenderAddress(): string | undefined {

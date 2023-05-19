@@ -1,5 +1,5 @@
 import { ConnectionType } from 'modules/wallet'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { walletConnectConnection } from './walletConnect'
 
 import { getConnectionName, getIsAlphaWallet } from 'modules/wallet/api/utils/connection'

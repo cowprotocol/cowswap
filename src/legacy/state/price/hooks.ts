@@ -1,9 +1,9 @@
-import { useSwapState } from 'state/swap/hooks'
+import { useSwapState } from 'legacy/state/swap/hooks'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useWalletInfo } from 'modules/wallet'
 
-import { AppDispatch, AppState } from 'state'
+import { AppDispatch, AppState } from 'legacy/state'
 import {
   updateQuote,
   UpdateQuoteParams,

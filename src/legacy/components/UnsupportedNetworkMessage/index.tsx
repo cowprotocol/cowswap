@@ -1,7 +1,7 @@
-import { getChainInfo } from 'constants/chainInfo'
+import { getChainInfo } from 'legacy/constants/chainInfo'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { SUPPORTED_CHAIN_IDS } from 'utils/supportedChainId'
+import { SUPPORTED_CHAIN_IDS } from 'legacy/utils/supportedChainId'
 
 export const Styled = styled.span`
   max-width: 450px;

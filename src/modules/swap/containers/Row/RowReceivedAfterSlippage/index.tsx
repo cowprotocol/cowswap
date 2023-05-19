@@ -3,9 +3,9 @@ import { Percent, TradeType } from '@uniswap/sdk-core'
 
 import { RowReceivedAfterSlippageContent } from 'modules/swap/pure/Row/RowReceivedAfterSlippageContent'
 
-import { Field } from 'state/swap/actions'
-import TradeGp from 'state/swap/TradeGp'
-import { computeSlippageAdjustedAmounts } from 'utils/prices'
+import { Field } from 'legacy/state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/typings'
 
 export interface RowReceivedAfterSlippageProps extends RowWithShowHelpersProps {

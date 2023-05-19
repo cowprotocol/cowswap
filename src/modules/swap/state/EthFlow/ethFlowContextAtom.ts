@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { ActivityStatus } from 'hooks/useRecentActivity'
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 export interface EthFlowActionContext {
   isNeeded: boolean

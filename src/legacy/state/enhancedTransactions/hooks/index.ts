@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
-import { useAppDispatch } from 'state/hooks'
+import { useAppDispatch } from 'legacy/state/hooks'
 
 import { addTransaction, AddTransactionParams } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
-import { useAllTransactions } from 'state/enhancedTransactions/hooks/index'
+import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks/index'
 import { useWalletInfo, useIsSafeWallet } from 'modules/wallet'
 
 export * from './TransactionHooksMod'

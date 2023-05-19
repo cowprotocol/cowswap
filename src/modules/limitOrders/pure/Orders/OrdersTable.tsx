@@ -10,12 +10,12 @@ import { transparentize } from 'polished'
 import { LIMIT_ORDERS_PAGE_SIZE } from 'modules/limitOrders/const/limitOrdersTabs'
 import { getOrderParams } from './utils/getOrderParams'
 import { ordersSorter } from 'modules/limitOrders/utils/ordersSorter'
-import QuestionHelper from 'components/QuestionHelper'
+import QuestionHelper from 'legacy/components/QuestionHelper'
 import { RateTooltipHeader } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { limitOrdersFeatures } from 'constants/featureFlags'
-import { QuestionWrapper } from 'components/QuestionHelper'
+import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 import SVG from 'react-inlinesvg'
 import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
 import { X } from 'react-feather'
@@ -23,7 +23,7 @@ import { OrderExecutionStatusList } from 'modules/limitOrders/pure/ExecutionPric
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
-import { Order } from 'state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 import {
   TableHeader,
   TableRowCheckbox,

@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react'
 
-import { dismissNotification, updateReferralAddress } from 'state/affiliate/actions'
-import useParseReferralQueryParam from 'hooks/useParseReferralQueryParam'
-import { useAppDispatch } from 'state/hooks'
-import { useReferralAddress } from 'state/affiliate/hooks'
+import { dismissNotification, updateReferralAddress } from 'legacy/state/affiliate/actions'
+import useParseReferralQueryParam from 'legacy/hooks/useParseReferralQueryParam'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { useReferralAddress } from 'legacy/state/affiliate/hooks'
 import { AffiliateState } from './reducer'
 
 export function ReferralLinkUpdater() {

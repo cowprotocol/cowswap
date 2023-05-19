@@ -1,13 +1,13 @@
 import { Token } from '@uniswap/sdk-core'
 import styled, { DefaultTheme } from 'styled-components/macro'
-import Card from 'components/Card'
-import ImportRow from 'components/SearchModal/ImportRow'
+import Card from 'legacy/components/Card'
+import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import ManageTokensMod, { ManageTokensProps, Footer } from './ManageTokensMod'
-import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
-import { Separator } from 'components/SearchModal/styleds'
-import Column from 'components/Column'
-import Row, { RowFixed, RowBetween } from 'components/Row'
-import { ButtonText, LinkIcon } from 'theme'
+import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
+import { Separator } from 'legacy/components/SearchModal/styleds'
+import Column from 'legacy/components/Column'
+import Row, { RowFixed, RowBetween } from 'legacy/components/Row'
+import { ButtonText, LinkIcon } from 'legacy/theme'
 
 export type ImportTokensRowProps = Omit<ManageTokensProps, 'ImportTokensRow'> & {
   theme: DefaultTheme

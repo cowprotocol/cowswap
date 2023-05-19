@@ -1,4 +1,4 @@
-import { signSwapAnalytics, swapAnalytics } from 'components/analytics'
+import { signSwapAnalytics, swapAnalytics } from 'legacy/components/analytics'
 import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 export interface SwapFlowAnalyticsContext {

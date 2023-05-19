@@ -2,7 +2,7 @@ import { Page, Content } from 'modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 import { useEffect } from 'react'
-import { gameAnalytics } from 'components/analytics'
+import { gameAnalytics } from 'legacy/components/analytics'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 const Wrapper = styled(Page)`

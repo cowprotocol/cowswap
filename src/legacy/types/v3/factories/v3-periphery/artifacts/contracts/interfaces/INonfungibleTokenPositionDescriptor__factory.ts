@@ -2,46 +2,55 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers'
-import type { Provider } from '@ethersproject/providers'
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
 import type {
   INonfungibleTokenPositionDescriptor,
   INonfungibleTokenPositionDescriptorInterface,
-} from '../../../../../v3-periphery/artifacts/contracts/interfaces/INonfungibleTokenPositionDescriptor'
+} from "../../../../../v3-periphery/artifacts/contracts/interfaces/INonfungibleTokenPositionDescriptor";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: 'contract INonfungiblePositionManager',
-        name: 'positionManager',
-        type: 'address',
+        internalType: "contract INonfungiblePositionManager",
+        name: "positionManager",
+        type: "address",
       },
       {
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
       },
     ],
-    name: 'tokenURI',
+    name: "tokenURI",
     outputs: [
       {
-        internalType: 'string',
-        name: '',
-        type: 'string',
+        internalType: "string",
+        name: "",
+        type: "string",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
-] as const
+] as const;
 
 export class INonfungibleTokenPositionDescriptor__factory {
-  static readonly abi = _abi
+  static readonly abi = _abi;
   static createInterface(): INonfungibleTokenPositionDescriptorInterface {
-    return new utils.Interface(_abi) as INonfungibleTokenPositionDescriptorInterface
+    return new utils.Interface(
+      _abi
+    ) as INonfungibleTokenPositionDescriptorInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): INonfungibleTokenPositionDescriptor {
-    return new Contract(address, _abi, signerOrProvider) as INonfungibleTokenPositionDescriptor
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): INonfungibleTokenPositionDescriptor {
+    return new Contract(
+      address,
+      _abi,
+      signerOrProvider
+    ) as INonfungibleTokenPositionDescriptor;
   }
 }

@@ -1,5 +1,5 @@
 import { Page, Content } from 'modules/application/pure/Page'
-import { LinkScrollable } from 'components/Link'
+import { LinkScrollable } from 'legacy/components/Link'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
 import { Footer } from '.'
@@ -9,8 +9,8 @@ import { FaqMenu } from './Menu'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 export default function ProtocolFaq() {
   const { toc, faqRef } = useToC()

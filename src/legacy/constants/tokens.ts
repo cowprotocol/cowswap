@@ -9,10 +9,10 @@ import {
   WXDAI,
   XDAI_NAME,
   XDAI_SYMBOL,
-} from 'utils/gnosis_chain/constants'
-import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
+} from 'legacy/utils/gnosis_chain/constants'
+import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import vCowLogo from 'legacy/assets/cow-swap/vCOW.png'
 import cowLogo from 'legacy/assets/cow-swap/cow.svg'
 import gnoLogo from 'legacy/assets/cow-swap/gno.png'

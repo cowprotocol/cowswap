@@ -12,29 +12,35 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers'
-import type { FunctionFragment, Result } from '@ethersproject/abi'
-import type { Listener, Provider } from '@ethersproject/providers'
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
+} from "ethers";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+  PromiseOrValue,
+} from "../../../../common";
 
 export interface ISelfPermitInterface extends utils.Interface {
   functions: {
-    'selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
-    'selfPermitAllowed(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
-    'selfPermitAllowedIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
-    'selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment
-  }
+    "selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+    "selfPermitAllowed(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+    "selfPermitAllowedIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+    "selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+  };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | 'selfPermit'
-      | 'selfPermitAllowed'
-      | 'selfPermitAllowedIfNecessary'
-      | 'selfPermitIfNecessary'
-  ): FunctionFragment
+      | "selfPermit"
+      | "selfPermitAllowed"
+      | "selfPermitAllowedIfNecessary"
+      | "selfPermitIfNecessary"
+  ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'selfPermit',
+    functionFragment: "selfPermit",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -43,9 +49,9 @@ export interface ISelfPermitInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string
+  ): string;
   encodeFunctionData(
-    functionFragment: 'selfPermitAllowed',
+    functionFragment: "selfPermitAllowed",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -54,9 +60,9 @@ export interface ISelfPermitInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string
+  ): string;
   encodeFunctionData(
-    functionFragment: 'selfPermitAllowedIfNecessary',
+    functionFragment: "selfPermitAllowedIfNecessary",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -65,9 +71,9 @@ export interface ISelfPermitInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string
+  ): string;
   encodeFunctionData(
-    functionFragment: 'selfPermitIfNecessary',
+    functionFragment: "selfPermitIfNecessary",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -76,37 +82,50 @@ export interface ISelfPermitInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
-  ): string
+  ): string;
 
-  decodeFunctionResult(functionFragment: 'selfPermit', data: BytesLike): Result
-  decodeFunctionResult(functionFragment: 'selfPermitAllowed', data: BytesLike): Result
-  decodeFunctionResult(functionFragment: 'selfPermitAllowedIfNecessary', data: BytesLike): Result
-  decodeFunctionResult(functionFragment: 'selfPermitIfNecessary', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: "selfPermit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "selfPermitAllowed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "selfPermitAllowedIfNecessary",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "selfPermitIfNecessary",
+    data: BytesLike
+  ): Result;
 
-  events: {}
+  events: {};
 }
 
 export interface ISelfPermit extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this
-  attach(addressOrName: string): this
-  deployed(): Promise<this>
+  connect(signerOrProvider: Signer | Provider | string): this;
+  attach(addressOrName: string): this;
+  deployed(): Promise<this>;
 
-  interface: ISelfPermitInterface
+  interface: ISelfPermitInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>
+  ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
-  listeners(eventName?: string): Array<Listener>
-  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
-  removeAllListeners(eventName?: string): this
-  off: OnEvent<this>
-  on: OnEvent<this>
-  once: OnEvent<this>
-  removeListener: OnEvent<this>
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
+  listeners(eventName?: string): Array<Listener>;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
+  removeAllListeners(eventName?: string): this;
+  off: OnEvent<this>;
+  on: OnEvent<this>;
+  once: OnEvent<this>;
+  removeListener: OnEvent<this>;
 
   functions: {
     selfPermit(
@@ -117,7 +136,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>
+    ): Promise<ContractTransaction>;
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -127,7 +146,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>
+    ): Promise<ContractTransaction>;
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -137,7 +156,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>
+    ): Promise<ContractTransaction>;
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -147,8 +166,8 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>
-  }
+    ): Promise<ContractTransaction>;
+  };
 
   selfPermit(
     token: PromiseOrValue<string>,
@@ -158,7 +177,7 @@ export interface ISelfPermit extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
 
   selfPermitAllowed(
     token: PromiseOrValue<string>,
@@ -168,7 +187,7 @@ export interface ISelfPermit extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
 
   selfPermitAllowedIfNecessary(
     token: PromiseOrValue<string>,
@@ -178,7 +197,7 @@ export interface ISelfPermit extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
 
   selfPermitIfNecessary(
     token: PromiseOrValue<string>,
@@ -188,7 +207,7 @@ export interface ISelfPermit extends BaseContract {
     r: PromiseOrValue<BytesLike>,
     s: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     selfPermit(
@@ -199,7 +218,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>
+    ): Promise<void>;
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -209,7 +228,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>
+    ): Promise<void>;
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -219,7 +238,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>
+    ): Promise<void>;
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -229,10 +248,10 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>
-  }
+    ): Promise<void>;
+  };
 
-  filters: {}
+  filters: {};
 
   estimateGas: {
     selfPermit(
@@ -243,7 +262,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>
+    ): Promise<BigNumber>;
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -253,7 +272,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>
+    ): Promise<BigNumber>;
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -263,7 +282,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>
+    ): Promise<BigNumber>;
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -273,8 +292,8 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>
-  }
+    ): Promise<BigNumber>;
+  };
 
   populateTransaction: {
     selfPermit(
@@ -285,7 +304,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>
+    ): Promise<PopulatedTransaction>;
 
     selfPermitAllowed(
       token: PromiseOrValue<string>,
@@ -295,7 +314,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>
+    ): Promise<PopulatedTransaction>;
 
     selfPermitAllowedIfNecessary(
       token: PromiseOrValue<string>,
@@ -305,7 +324,7 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>
+    ): Promise<PopulatedTransaction>;
 
     selfPermitIfNecessary(
       token: PromiseOrValue<string>,
@@ -315,6 +334,6 @@ export interface ISelfPermit extends BaseContract {
       r: PromiseOrValue<BytesLike>,
       s: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>
-  }
+    ): Promise<PopulatedTransaction>;
+  };
 }

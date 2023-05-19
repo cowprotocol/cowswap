@@ -2,24 +2,24 @@ import { useEffect, useState } from 'react'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useTradeExactInWithFee } from 'state/swap/extension'
-import { QuoteInformationObject } from 'state/price/reducer'
+import { useTradeExactInWithFee } from 'legacy/state/swap/extension'
+import { QuoteInformationObject } from 'legacy/state/price/reducer'
 
 import { useWalletInfo } from 'modules/wallet'
 
-import { getPromiseFulfilledValue, isPromiseFulfilled } from 'utils/misc'
-import { supportedChainId } from 'utils/supportedChainId'
-import { getBestQuote, QuoteResult } from 'utils/price'
+import { getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { getBestQuote, QuoteResult } from 'legacy/utils/price'
 
-import { ZERO_ADDRESS } from 'constants/misc'
+import { ZERO_ADDRESS } from 'legacy/constants/misc'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { DEFAULT_DECIMALS } from 'constants/index'
-import { QuoteError } from 'state/price/actions'
-import { isWrappingTrade } from 'state/swap/utils'
-import { onlyResolvesLast } from 'utils/async'
+import { DEFAULT_DECIMALS } from 'legacy/constants'
+import { QuoteError } from 'legacy/state/price/actions'
+import { isWrappingTrade } from 'legacy/state/swap/utils'
+import { onlyResolvesLast } from 'legacy/utils/async'
 import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 

@@ -1,4 +1,4 @@
-import applicationReducer from 'state/application/reducer'
+import applicationReducer from 'legacy/state/application/reducer'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
 import { ReactNode } from 'react'

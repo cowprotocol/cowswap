@@ -4,8 +4,8 @@
 import { Protocol } from '@uniswap/router-sdk'
 import { Currency, Percent } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { RoutingDiagramEntry } from 'components/swap/SwapRoute'
-import { DAI, USDC_MAINNET, WBTC } from 'constants/tokens'
+import { RoutingDiagramEntry } from 'legacy/components/swap/SwapRoute'
+import { DAI, USDC_MAINNET, WBTC } from 'legacy/constants/tokens'
 import { render } from 'test-utils'
 
 import RoutingDiagram from './RoutingDiagram'
@@ -31,14 +31,14 @@ const multiRoute: RoutingDiagramEntry[] = [
 ]
 
 jest.mock(
-  'components/CurrencyLogo',
+  'legacy/components/CurrencyLogo',
   () =>
     ({ currency }: { currency: Currency }) =>
       `CurrencyLogo currency=${currency.symbol}`
 )
 
 jest.mock(
-  'components/DoubleLogo',
+  'legacy/components/DoubleLogo',
   () =>
     ({ currency0, currency1 }: { currency0: Currency; currency1: Currency }) =>
       `DoubleCurrencyLogo currency0=${currency0.symbol} currency1=${currency1.symbol}`
@@ -46,7 +46,7 @@ jest.mock(
 
 jest.mock('../Popover', () => () => 'Popover')
 
-jest.mock('hooks/useTokenInfoFromActiveList', () => ({
+jest.mock('legacy/hooks/useTokenInfoFromActiveList', () => ({
   useTokenInfoFromActiveList: (currency: Currency) => currency,
 }))
 

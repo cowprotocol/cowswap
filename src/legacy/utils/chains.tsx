@@ -1,5 +1,5 @@
-import { getChainInfo, NetworkType } from 'constants/chainInfo'
-import { SupportedL1ChainId, SupportedL2ChainId } from 'constants/chains'
+import { getChainInfo, NetworkType } from 'legacy/constants/chainInfo'
+import { SupportedL1ChainId, SupportedL2ChainId } from 'legacy/constants/chains'
 
 export function isL1ChainId(chainId: number | undefined): chainId is SupportedL1ChainId {
   const chainInfo = getChainInfo(chainId)

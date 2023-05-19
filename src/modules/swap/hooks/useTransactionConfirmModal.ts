@@ -1,7 +1,7 @@
 import { useUpdateAtom } from 'jotai/utils'
 import { transactionConfirmAtom, TransactionConfirmState } from 'modules/swap/state/transactionConfirmAtom'
-import { useOpenModal } from 'state/application/hooks'
-import { ApplicationModal } from 'state/application/reducer'
+import { useOpenModal } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useCallback } from 'react'
 
 export function useTransactionConfirmModal() {

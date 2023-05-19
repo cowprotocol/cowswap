@@ -1,6 +1,6 @@
 import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection'
 import { useCallback } from 'react'
-import type { Field } from 'state/swap/actions'
+import type { Field } from 'legacy/state/swap/actions'
 
 export interface OnImportDismissCallback {
   (unknownFields: Field[]): void

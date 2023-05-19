@@ -1,5 +1,5 @@
 import { CancellationModal as Pure } from 'common/pure/CancellationModal'
-import { useAtomValue } from 'state/application/atoms'
+import { useAtomValue } from 'legacy/state/application/atoms'
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 
 export type CancellationModalProps = {

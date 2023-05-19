@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components/macro'
-import CowProtocolLogo from 'components/CowProtocolLogo'
-import { useCombinedBalance } from 'state/cowToken/hooks'
+import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { transparentize } from 'polished'
-import { supportedChainId } from 'utils/supportedChainId'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { useWalletInfo } from 'modules/wallet'
 

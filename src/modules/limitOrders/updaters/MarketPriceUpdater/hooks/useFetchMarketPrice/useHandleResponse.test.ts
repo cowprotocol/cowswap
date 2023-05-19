@@ -1,5 +1,5 @@
 import { handleLimitOrderQuoteResponse } from './useHandleResponse'
-import { COW, GNO } from 'constants/tokens'
+import { COW, GNO } from 'legacy/constants/tokens'
 
 describe('handleLimitOrderQuoteResponse()', () => {
   it('Should subtract 0.1% from marketRate', () => {

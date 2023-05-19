@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import styled from 'styled-components/macro'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useClaimState } from 'state/claim/hooks'
-// import useChangeNetworks from 'hooks/useChangeNetworks'
-import NotificationBanner from 'components/NotificationBanner'
+import { useClaimState } from 'legacy/state/claim/hooks'
+// import useChangeNetworks from 'legacy/hooks/useChangeNetworks'
+import NotificationBanner from 'legacy/components/NotificationBanner'
 import { AlertTriangle } from 'react-feather'
-import { ClaimInfo } from 'state/claim/reducer'
+import { ClaimInfo } from 'legacy/state/claim/reducer'
 import { useWalletInfo } from 'modules/wallet'
 
 // const ChainSpan = styled.span``

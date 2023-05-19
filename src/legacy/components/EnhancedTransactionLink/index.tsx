@@ -1,7 +1,7 @@
-import { ExplorerLink } from 'components/ExplorerLink'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { GnosisSafeLink } from 'modules/account/containers/Transaction/StatusDetails'
 
-import { EnhancedTransactionDetails, HashType } from 'state/enhancedTransactions/reducer'
+import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { useGnosisSafeInfo, useWalletInfo } from 'modules/wallet'
 
 interface Props {

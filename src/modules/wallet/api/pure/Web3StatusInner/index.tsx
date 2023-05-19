@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-restricted-imports
 import { Trans } from '@lingui/macro'
 
-import { shortenAddress } from 'utils'
+import { shortenAddress } from 'legacy/utils'
 import StatusIcon from 'modules/wallet/api/pure/StatusIcon'
-import Loader from 'components/Loader'
-import { RowBetween } from 'components/Row'
+import Loader from 'legacy/components/Loader'
+import { RowBetween } from 'legacy/components/Row'
 
-import FollowPendingTxPopup from 'components/Popups/FollowPendingTxPopup'
+import FollowPendingTxPopup from 'legacy/components/Popups/FollowPendingTxPopup'
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 import { ConnectionType } from 'modules/wallet/api/types'
 

@@ -1,13 +1,13 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
-import { useTokenContract } from 'hooks/useContract'
-import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
+import { useTokenContract } from 'legacy/hooks/useContract'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useCallback } from 'react'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { Erc20 } from 'legacy/abis/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
-import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
+import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useWalletInfo } from 'modules/wallet'
 
 export async function estimateApprove(

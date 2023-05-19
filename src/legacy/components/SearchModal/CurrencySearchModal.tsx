@@ -1,16 +1,16 @@
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
-import usePrevious from 'hooks/usePrevious'
+import usePrevious from 'legacy/hooks/usePrevious'
 import { useCallback, useEffect, useState } from 'react'
 
 import useLast from '../../hooks/useLast'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 // import Modal from '../Modal'
 import { GpModal as Modal } from 'common/pure/Modal'
-import { CurrencySearch } from 'components/SearchModal/CurrencySearch'
-import { ImportList } from 'components/SearchModal/ImportList'
-import { ImportToken } from 'components/SearchModal/ImportToken'
-import Manage from 'components/SearchModal/Manage'
+import { CurrencySearch } from 'legacy/components/SearchModal/CurrencySearch'
+import { ImportList } from 'legacy/components/SearchModal/ImportList'
+import { ImportToken } from 'legacy/components/SearchModal/ImportToken'
+import Manage from 'legacy/components/SearchModal/Manage'
 
 export interface CurrencySearchModalProps {
   isOpen: boolean

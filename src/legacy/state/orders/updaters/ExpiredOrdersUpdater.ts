@@ -1,11 +1,11 @@
-import { supportedChainId } from 'utils/supportedChainId'
-import { useExpiredOrders, useSetIsOrderRefundedBatch } from 'state/orders/hooks'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { useExpiredOrders, useSetIsOrderRefundedBatch } from 'legacy/state/orders/hooks'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { EXPIRED_ORDERS_PENDING_TIME } from 'constants/index'
-import { EXPIRED_ORDERS_CHECK_POLL_INTERVAL } from 'state/orders/consts'
+import { EXPIRED_ORDERS_PENDING_TIME } from 'legacy/constants'
+import { EXPIRED_ORDERS_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useEffect, useCallback, useRef } from 'react'
 import { getOrder } from 'api/gnosisProtocol'
-import { SetIsOrderRefundedBatch } from 'state/orders/actions'
+import { SetIsOrderRefundedBatch } from 'legacy/state/orders/actions'
 import { useWalletInfo } from 'modules/wallet'
 
 export function ExpiredOrdersUpdater(): null {

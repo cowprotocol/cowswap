@@ -1,6 +1,6 @@
 import { useWalletInfo } from 'modules/wallet'
 import { useWeb3React } from '@web3-react/core'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 const MISSING_PROVIDER = Symbol()

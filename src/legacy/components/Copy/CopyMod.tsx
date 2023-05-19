@@ -3,11 +3,11 @@ import React from 'react'
 import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import useCopyClipboard from 'hooks/useCopyClipboard'
-import { LinkStyledButton } from 'theme'
+import useCopyClipboard from 'legacy/hooks/useCopyClipboard'
+import { LinkStyledButton } from 'legacy/theme'
 
 // MOD imports
-import { TransactionStatusText } from 'components/Copy/index'
+import { TransactionStatusText } from 'legacy/components/Copy/index'
 
 export const CopyIcon = styled(LinkStyledButton)`
   color: ${({ theme }) => theme.text3};

@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 
 import pkg from '../../package.json'
-import { environmentName } from 'utils/environments'
+import { environmentName } from 'legacy/utils/environments'
 import { SENTRY_IGNORED_GP_QUOTE_ERRORS } from 'api/gnosisProtocol/errors/QuoteError'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN

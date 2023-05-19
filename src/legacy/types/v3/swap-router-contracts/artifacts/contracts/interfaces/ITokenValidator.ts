@@ -12,55 +12,78 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers'
-import type { FunctionFragment, Result } from '@ethersproject/abi'
-import type { Listener, Provider } from '@ethersproject/providers'
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
+} from "ethers";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+  PromiseOrValue,
+} from "../../../../common";
 
 export interface ITokenValidatorInterface extends utils.Interface {
   functions: {
-    'batchValidate(address[],address[],uint256)': FunctionFragment
-    'validate(address,address[],uint256)': FunctionFragment
-  }
+    "batchValidate(address[],address[],uint256)": FunctionFragment;
+    "validate(address,address[],uint256)": FunctionFragment;
+  };
 
-  getFunction(nameOrSignatureOrTopic: 'batchValidate' | 'validate'): FunctionFragment
+  getFunction(
+    nameOrSignatureOrTopic: "batchValidate" | "validate"
+  ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'batchValidate',
-    values: [PromiseOrValue<string>[], PromiseOrValue<string>[], PromiseOrValue<BigNumberish>]
-  ): string
+    functionFragment: "batchValidate",
+    values: [
+      PromiseOrValue<string>[],
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
   encodeFunctionData(
-    functionFragment: 'validate',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>[], PromiseOrValue<BigNumberish>]
-  ): string
+    functionFragment: "validate",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
 
-  decodeFunctionResult(functionFragment: 'batchValidate', data: BytesLike): Result
-  decodeFunctionResult(functionFragment: 'validate', data: BytesLike): Result
+  decodeFunctionResult(
+    functionFragment: "batchValidate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "validate", data: BytesLike): Result;
 
-  events: {}
+  events: {};
 }
 
 export interface ITokenValidator extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this
-  attach(addressOrName: string): this
-  deployed(): Promise<this>
+  connect(signerOrProvider: Signer | Provider | string): this;
+  attach(addressOrName: string): this;
+  deployed(): Promise<this>;
 
-  interface: ITokenValidatorInterface
+  interface: ITokenValidatorInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>
+  ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
-  listeners(eventName?: string): Array<Listener>
-  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
-  removeAllListeners(eventName?: string): this
-  off: OnEvent<this>
-  on: OnEvent<this>
-  once: OnEvent<this>
-  removeListener: OnEvent<this>
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
+  listeners(eventName?: string): Array<Listener>;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
+  removeAllListeners(eventName?: string): this;
+  off: OnEvent<this>;
+  on: OnEvent<this>;
+  once: OnEvent<this>;
+  removeListener: OnEvent<this>;
 
   functions: {
     batchValidate(
@@ -68,29 +91,29 @@ export interface ITokenValidator extends BaseContract {
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>
+    ): Promise<ContractTransaction>;
 
     validate(
       token: PromiseOrValue<string>,
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>
-  }
+    ): Promise<ContractTransaction>;
+  };
 
   batchValidate(
     tokens: PromiseOrValue<string>[],
     baseTokens: PromiseOrValue<string>[],
     amountToBorrow: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
 
   validate(
     token: PromiseOrValue<string>,
     baseTokens: PromiseOrValue<string>[],
     amountToBorrow: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     batchValidate(
@@ -98,17 +121,17 @@ export interface ITokenValidator extends BaseContract {
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number[]>
+    ): Promise<number[]>;
 
     validate(
       token: PromiseOrValue<string>,
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>
-  }
+    ): Promise<number>;
+  };
 
-  filters: {}
+  filters: {};
 
   estimateGas: {
     batchValidate(
@@ -116,15 +139,15 @@ export interface ITokenValidator extends BaseContract {
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>
+    ): Promise<BigNumber>;
 
     validate(
       token: PromiseOrValue<string>,
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>
-  }
+    ): Promise<BigNumber>;
+  };
 
   populateTransaction: {
     batchValidate(
@@ -132,13 +155,13 @@ export interface ITokenValidator extends BaseContract {
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>
+    ): Promise<PopulatedTransaction>;
 
     validate(
       token: PromiseOrValue<string>,
       baseTokens: PromiseOrValue<string>[],
       amountToBorrow: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>
-  }
+    ): Promise<PopulatedTransaction>;
+  };
 }

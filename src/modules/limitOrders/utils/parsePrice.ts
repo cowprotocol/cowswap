@@ -1,5 +1,5 @@
 import { getDecimals } from 'modules/limitOrders/utils/getDecimals'
-import { DEFAULT_DECIMALS } from 'constants/index'
+import { DEFAULT_DECIMALS } from 'legacy/constants'
 import { Currency } from '@uniswap/sdk-core'
 
 export const parsePrice = (price: number, currency: Currency) =>

@@ -1,9 +1,9 @@
 import { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ThemedText } from 'theme'
-import { AutoColumn } from 'components/Column'
-import { AutoRow } from 'components/Row'
+import { ThemedText } from 'legacy/theme'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
 import { AlertCircle } from 'react-feather'
 
 const RowNoFlex = styled(AutoRow)`

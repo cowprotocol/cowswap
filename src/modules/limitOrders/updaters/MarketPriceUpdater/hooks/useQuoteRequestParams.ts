@@ -5,10 +5,10 @@ import { parseUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { useTypedValue } from 'modules/limitOrders/hooks/useTypedValue'
 import { getAddress } from 'utils/getAddress'
-import useENSAddress from 'hooks/useENSAddress'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import useENSAddress from 'legacy/hooks/useENSAddress'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { useWalletInfo } from 'modules/wallet'
-import usePrevious from 'hooks/usePrevious'
+import usePrevious from 'legacy/hooks/usePrevious'
 
 export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }
 

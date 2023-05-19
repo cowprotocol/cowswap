@@ -1,5 +1,5 @@
 import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './TransactionSettingsMod'
-import { RowBetween, RowFixed } from 'components/Row'
+import { RowBetween, RowFixed } from 'legacy/components/Row'
 import styled from 'styled-components/macro'
 import { darken } from 'polished'
 

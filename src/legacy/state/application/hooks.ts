@@ -1,9 +1,9 @@
-import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
+import { DEFAULT_TXN_DISMISS_MS } from 'legacy/constants/misc'
 import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'state/hooks'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
-import { AppState } from 'state'
-import { addPopup, ApplicationModal, PopupContent, removePopup } from 'state/application/reducer'
+import { AppState } from 'legacy/state'
+import { addPopup, ApplicationModal, PopupContent, removePopup } from 'legacy/state/application/reducer'
 import { createAction } from '@reduxjs/toolkit'
 
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')

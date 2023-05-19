@@ -1,8 +1,8 @@
 import * as styledEl from './styled'
 import { CurrencySelectButton } from 'modules/swap/pure/CurrencySelectButton'
-import { FiatValue } from 'components/CurrencyInputPanel/FiatValue/FiatValueMod'
+import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue/FiatValueMod'
 import { Trans } from '@lingui/macro'
-import { PriceImpact } from 'hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { TokenAmount } from 'common/pure/TokenAmount'
 

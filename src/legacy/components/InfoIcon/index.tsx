@@ -1,5 +1,5 @@
 import { Info } from 'react-feather'
-import { MouseoverTooltipContent, TooltipContainer } from 'components/Tooltip'
+import { MouseoverTooltipContent, TooltipContainer } from 'legacy/components/Tooltip'
 import styled from 'styled-components/macro'
 import { ReactNode } from 'react'
 

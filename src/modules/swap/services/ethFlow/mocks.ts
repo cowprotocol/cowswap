@@ -1,6 +1,6 @@
 import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 
-import { nativeOnChain, WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
+import { nativeOnChain, WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 import { EthFlowModalContentProps } from 'modules/swap/pure/EthFlow/EthFlowModalContent'

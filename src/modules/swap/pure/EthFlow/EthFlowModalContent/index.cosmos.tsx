@@ -15,7 +15,7 @@ import {
   WrapSuccessfulTxHashMock,
 } from 'modules/swap/services/ethFlow/transactionsMocks'
 import { EthFlowActionContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
-import { ActivityStatus } from 'hooks/useRecentActivity'
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 const ALL_STATES = Object.values(EthFlowState)
 

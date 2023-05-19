@@ -1,18 +1,24 @@
-import { ClaimType, useClaimDispatchers, useClaimState, useClaimTimeInfo, useClaimLinks } from 'state/claim/hooks'
+import {
+  ClaimType,
+  useClaimDispatchers,
+  useClaimState,
+  useClaimTimeInfo,
+  useClaimLinks,
+} from 'legacy/state/claim/hooks'
 import styled from 'styled-components/macro'
 import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'
-import CowProtocolLogo from 'components/CowProtocolLogo'
-import { ClaimStatus } from 'state/claim/actions'
+import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 // import { UserClaimDataDetails } from './types' TODO: fix in another PR
 import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
-import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
+import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
 
-import { CustomLightSpinner } from 'theme'
+import { CustomLightSpinner } from 'legacy/theme'
 import Circle from 'legacy/assets/images/blue-loader.svg'
 import { Countdown } from 'pages/Claim/Countdown'
-import { getPaidClaims, getIndexes } from 'state/claim/hooks/utils'
+import { getPaidClaims, getIndexes } from 'legacy/state/claim/hooks/utils'
 import { useEffect } from 'react'
-import { ExternalLink } from 'theme/index'
+import { ExternalLink } from 'legacy/theme'
 import SVG from 'react-inlinesvg'
 import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
 import { TokenAmount } from 'common/pure/TokenAmount'

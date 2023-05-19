@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
 import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
-import { useIsExpertMode, useUserTransactionTTL } from 'state/user/hooks'
+import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useToggleSettingsMenu } from 'state/application/hooks'
+import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 

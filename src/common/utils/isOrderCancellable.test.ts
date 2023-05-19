@@ -1,7 +1,7 @@
-import { Order, OrderStatus } from 'state/orders/actions'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { isOrderCancellable } from './isOrderCancellable'
-import { COW } from 'constants/tokens'
+import { COW } from 'legacy/constants/tokens'
 
 describe('isOrderCancellable', () => {
   it('When order cancellation in progress, the it cannot be cancelled', () => {

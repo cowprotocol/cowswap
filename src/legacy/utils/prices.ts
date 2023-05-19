@@ -12,8 +12,8 @@ import {
   ONE_HUNDRED_PERCENT,
   ZERO_PERCENT,
 } from '../constants/misc'
-import TradeGp from 'state/swap/TradeGp'
-import { Field } from 'state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { Field } from 'legacy/state/swap/actions'
 
 const THIRTY_BIPS_FEE = new Percent(JSBI.BigInt(30), JSBI.BigInt(10000))
 const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(THIRTY_BIPS_FEE)

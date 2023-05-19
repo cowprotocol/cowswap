@@ -1,5 +1,5 @@
-import { ButtonSize } from 'theme/enum'
-import { ButtonError } from 'components/Button'
+import { ButtonSize } from 'legacy/theme/enum'
+import { ButtonError } from 'legacy/components/Button'
 
 export interface SwapButtonProps {
   disabled: boolean

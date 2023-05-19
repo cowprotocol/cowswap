@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Field } from 'state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'

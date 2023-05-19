@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import cowMeditatingSmooth from 'legacy/assets/images/cow-meditating-smoooth.svg'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
-import { Order } from 'state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 import { DisplayLink } from '../TransactionConfirmationModal'
 import * as styledEl from './styled'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
