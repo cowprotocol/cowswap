@@ -1,31 +1,31 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { timestamp } from '@cowprotocol/contracts'
 import { useWalletInfo } from 'modules/wallet'
-import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'state/orders/hooks'
-import { Order } from 'state/orders/actions'
+import { useOnlyPendingOrders, useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
+import { Order } from 'legacy/state/orders/actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getBestQuote } from 'utils/price'
+import { getBestQuote } from 'legacy/utils/price'
 import {
   getEstimatedExecutionPrice,
   getOrderMarketPrice,
   getRemainderAmount,
   isOrderUnfillable,
-} from 'state/orders/utils'
-import { getPromiseFulfilledValue } from 'utils/misc'
+} from 'legacy/state/orders/utils'
+import { getPromiseFulfilledValue } from 'legacy/utils/misc'
 import { FeeInformation, PriceInformation } from 'types'
-import { priceOutOfRangeAnalytics } from 'components/analytics'
-import { supportedChainId } from 'utils/supportedChainId'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
-import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { priceOutOfRangeAnalytics } from 'legacy/components/analytics'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { PRICE_QUOTE_VALID_TO_TIME } from 'constants/quote'
 import { useUpdateAtom } from 'jotai/utils'
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
-import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'state/orders/consts'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
-import { GpPriceStrategy } from 'state/gas/atoms'
-import { useGetGpPriceStrategy } from 'hooks/useGetGpPriceStrategy'
+import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
+import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure

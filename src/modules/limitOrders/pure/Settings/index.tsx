@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/macro'
-import QuestionHelper from 'components/QuestionHelper'
+import QuestionHelper from 'legacy/components/QuestionHelper'
 import { ReactNode, useContext } from 'react'
 import { ThemeContext } from 'styled-components/macro'
-import Toggle from 'components/Toggle'
+import Toggle from 'legacy/components/Toggle'
 import * as styledEl from './styled'
 import { LimitOrdersSettingsState } from '../../state/limitOrdersSettingsAtom'
 

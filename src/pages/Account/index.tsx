@@ -4,10 +4,10 @@ import { AccountMenu } from './Menu'
 import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 import { Content, Title } from 'modules/application/pure/Page'
 import { Routes as RoutesEnum } from 'constants/routes'
-import { Loading } from 'components/FlashingLoading'
+import { Loading } from 'legacy/components/FlashingLoading'
 import { Container, CardsWrapper } from './styled'
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 // Account pages

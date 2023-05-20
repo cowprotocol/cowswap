@@ -2,14 +2,14 @@ import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
 import { useCallback, useMemo } from 'react'
 
-import TradeGp from 'state/swap/TradeGp'
+import TradeGp from 'legacy/state/swap/TradeGp'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   OperationType,
   TransactionErrorContent,
-} from 'components/TransactionConfirmationModal'
-import { SwapModalFooter } from 'components/swap/SwapModalFooter'
-import SwapModalHeader from 'components/swap/SwapModalHeader'
+} from 'legacy/components/TransactionConfirmationModal'
+import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
+import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
 import { useWalletDetails } from 'modules/wallet'
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 import { RateInfoParams } from 'common/pure/RateInfo'

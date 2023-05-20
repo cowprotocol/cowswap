@@ -2,7 +2,7 @@ import { GpModal } from 'common/pure/Modal'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CloseIcon } from 'theme'
+import { CloseIcon } from 'legacy/theme'
 import { CurrencyField } from './CurrencyField'
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getSellAmountWithFee } from 'modules/limitOrders/utils/getSellAmountWithFee'
@@ -15,7 +15,7 @@ import { SurplusField } from './SurplusField'
 import { IdField } from './IdField'
 import { StatusField } from './StatusField'
 import { OrderTypeField } from './OrderTypeField'
-import { OrderStatus } from 'state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 interface ReceiptProps {
   isOpen: boolean

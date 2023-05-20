@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
-import { loadingOpacityMixin } from 'components/Loader/styled'
-import Input from 'components/NumericalInput'
+import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
+import Input from 'legacy/components/NumericalInput'
 import { transparentize } from 'polished'
 import { TokenAmount } from 'common/pure/TokenAmount'
 

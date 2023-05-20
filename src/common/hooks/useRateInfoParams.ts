@@ -1,4 +1,4 @@
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useCallback } from 'react'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'

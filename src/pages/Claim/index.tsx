@@ -1,18 +1,23 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
-import useENS from 'hooks/useENS'
-import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import { useUserEnhancedClaimData, useUserUnclaimedAmount, useClaimCallback, ClaimInput } from 'state/claim/hooks'
-import { useToggleWalletModal } from 'state/application/hooks'
-import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'state/claim/hooks/utils'
-import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
-import { ClaimStatus } from 'state/claim/actions'
-import ClaimsOnOtherChainsUpdater from 'state/claim/updater'
+import useENS from 'legacy/hooks/useENS'
+import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import {
+  useUserEnhancedClaimData,
+  useUserUnclaimedAmount,
+  useClaimCallback,
+  ClaimInput,
+} from 'legacy/state/claim/hooks'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'legacy/state/claim/hooks/utils'
+import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { ClaimStatus } from 'legacy/state/claim/actions'
+import ClaimsOnOtherChainsUpdater from 'legacy/state/claim/updater'
 
-import { OperationType } from 'components/TransactionConfirmationModal'
-import Confetti from 'components/Confetti'
-import Loader from 'components/Loader'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import Confetti from 'legacy/components/Confetti'
+import Loader from 'legacy/components/Loader'
 
 import { PageWrapper, InnerPageWrapper } from 'pages/Claim/styled'
 import CanUserClaimMessage from './CanUserClaimMessage'
@@ -26,8 +31,8 @@ import FooterNavButtons from './FooterNavButtons'
 import InvestmentFlow from './InvestmentFlow'
 import { ClaimSummary } from './ClaimSummary'
 
-import usePrevious from 'hooks/usePrevious'
-import { getProviderErrorMessage } from 'utils/misc'
+import usePrevious from 'legacy/hooks/usePrevious'
+import { getProviderErrorMessage } from 'legacy/utils/misc'
 import { useWalletInfo } from 'modules/wallet'
 
 export default function Claim() {

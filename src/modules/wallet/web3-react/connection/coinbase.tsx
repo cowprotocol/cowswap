@@ -4,12 +4,12 @@ import { initializeConnector } from '@web3-react/core'
 import { ConnectionType } from 'modules/wallet'
 import { getConnectionName } from 'modules/wallet/api/utils/connection'
 
-import { useSelectedWallet } from 'state/user/hooks'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
+import { useSelectedWallet } from 'legacy/state/user/hooks'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 
 import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
-import { RPC_URLS } from 'constants/networks'
+import { RPC_URLS } from 'legacy/constants/networks'
 
 import { TryActivation, onError } from '.'
 import { Web3ReactConnection } from '../types'

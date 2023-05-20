@@ -1,9 +1,9 @@
 import { /* ReactNode, */ useCallback, useState } from 'react'
 import styled from 'styled-components/macro'
-import Tooltip from 'components/Tooltip'
+import Tooltip from 'legacy/components/Tooltip'
 
 // MOD imports
-import { TooltipProps } from 'components/Tooltip'
+import { TooltipProps } from 'legacy/components/Tooltip'
 import { QuestionWrapper } from './index'
 
 /* const QuestionWrapper = styled.div`

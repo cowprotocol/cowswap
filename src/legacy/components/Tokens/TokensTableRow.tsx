@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
-import useTheme from 'hooks/useTheme'
+import useTheme from 'legacy/hooks/useTheme'
 import {
   ApproveLabel,
   BalanceValue,
@@ -12,17 +12,17 @@ import {
   TokenText,
 } from './styled'
 import FavouriteTokenButton from './FavouriteTokenButton'
-import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { OperationType } from 'components/TransactionConfirmationModal'
-import { useErrorModal } from 'hooks/useErrorMessageAndModal'
+import { ApprovalState, useApproveCallback } from 'legacy/hooks/useApproveCallback'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
-import usePrevious from 'hooks/usePrevious'
-import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { GP_VAULT_RELAYER } from 'constants/index'
+import usePrevious from 'legacy/hooks/usePrevious'
+import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
+import { GP_VAULT_RELAYER } from 'legacy/constants'
 import BalanceCell from './BalanceCell'
 import FiatBalanceCell from './FiatBalanceCell'
-import Loader from 'components/Loader'
-import { getBlockExplorerUrl } from 'utils'
+import Loader from 'legacy/components/Loader'
+import { getBlockExplorerUrl } from 'legacy/utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Link } from 'react-router-dom'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'

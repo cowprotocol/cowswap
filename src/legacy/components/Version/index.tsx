@@ -1,12 +1,12 @@
 import styled from 'styled-components/macro'
-import { ExternalLink } from 'theme'
+import { ExternalLink } from 'legacy/theme'
 
 import pkg from '../../../../package.json'
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getEtherscanLink } from 'utils'
-import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'constants/index'
-import { DEFAULT_NETWORK_FOR_LISTS } from 'constants/lists'
+import { getEtherscanLink } from 'legacy/utils'
+import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'legacy/constants'
+import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import { useWalletInfo } from 'modules/wallet'
 
 function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {

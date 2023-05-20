@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { RateInfo } from 'common/pure/RateInfo'
-import { QuestionWrapper } from 'components/QuestionHelper'
+import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 
 export const DetailsRow = styled.div`
   display: flex;

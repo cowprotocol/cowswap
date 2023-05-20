@@ -1,9 +1,9 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { ApprovalState } from 'hooks/useApproveCallback'
-import { useTokenAllowance } from 'hooks/useTokenAllowance'
-import { useHasPendingApproval } from 'state/enhancedTransactions/hooks'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
+import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import usePrevious from 'hooks/usePrevious'
+import usePrevious from 'legacy/hooks/usePrevious'
 import { useMemo } from 'react'
 import { useWalletInfo } from 'modules/wallet'
 

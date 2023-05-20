@@ -4,7 +4,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { ReceiptModal } from 'modules/limitOrders/pure/ReceiptModal'
 import { calculatePrice } from 'modules/limitOrders/utils/calculatePrice'
 
-import { supportedChainId } from 'utils/supportedChainId'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { useCloseReceiptModal, useSelectedOrder } from './hooks'
 import { useWalletInfo } from 'modules/wallet'
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'

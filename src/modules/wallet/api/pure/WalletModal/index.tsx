@@ -2,15 +2,15 @@ import { GpModal } from 'common/pure/Modal'
 
 import { Trans } from '@lingui/macro'
 import { Routes } from 'constants/routes'
-import { StyledInternalLink } from 'theme/components'
+import { StyledInternalLink } from 'legacy/theme/components'
 
 import { Connector } from '@web3-react/types'
 
-import { AutoColumn } from 'components/Column'
-import { AutoRow } from 'components/Row'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
 
-import { ThemedText } from 'theme'
-import { LightCard } from 'components/Card'
+import { ThemedText } from 'legacy/theme'
+import { LightCard } from 'legacy/components/Card'
 
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from 'common/pure/Modal'
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'

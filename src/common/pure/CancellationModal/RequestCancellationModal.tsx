@@ -2,10 +2,10 @@ import React, { useCallback, useState } from 'react'
 import styled from 'styled-components/macro'
 import { NavHashLink } from 'react-router-hash-link'
 
-import { LinkStyledButton } from 'theme'
+import { LinkStyledButton } from 'legacy/theme'
 
-import { ButtonPrimary } from 'components/Button'
-import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
 
 import { Routes } from 'constants/routes'
 import { ArrowRight, ArrowLeft } from 'react-feather'
@@ -13,7 +13,7 @@ import { TokenAmount } from 'common/pure/TokenAmount'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
 import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
 import type { BigNumber } from '@ethersproject/bignumber'
-import NotificationBanner from 'components/NotificationBanner'
+import NotificationBanner from 'legacy/components/NotificationBanner'
 
 export type RequestCancellationModalProps = {
   summary?: string

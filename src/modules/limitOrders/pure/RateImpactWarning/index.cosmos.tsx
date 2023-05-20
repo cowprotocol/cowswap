@@ -1,5 +1,5 @@
 import { RateImpactWarning } from './index'
-import { COW } from 'constants/tokens'
+import { COW } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 const Fixtures = {

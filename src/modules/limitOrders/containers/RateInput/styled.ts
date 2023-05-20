@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
-import Input from 'components/NumericalInput'
-import Loader from 'components/Loader'
+import Input from 'legacy/components/NumericalInput'
+import Loader from 'legacy/components/Loader'
 import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`

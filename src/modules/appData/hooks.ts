@@ -1,5 +1,5 @@
 import { useIsSafeApp } from 'modules/wallet'
-import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'constants/index'
+import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'legacy/constants'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { addAppDataToUploadQueueAtom, appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'

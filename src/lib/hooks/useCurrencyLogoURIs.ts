@@ -4,9 +4,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import EthereumLogo from 'legacy/assets/images/ethereum-logo.png'
 import XDaiLogo from 'legacy/assets/cow-swap/xdai.png'
 import { useExternalTokenLogo } from 'common/hooks/useExternalTokenLogo'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'constants/index'
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import uriToHttp from 'lib/utils/uriToHttp'
-import { ADDRESS_IMAGE_OVERRIDE } from 'constants/tokens'
+import { ADDRESS_IMAGE_OVERRIDE } from 'legacy/constants/tokens'
 
 type Network = 'ethereum' | 'xdai'
 

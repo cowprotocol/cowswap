@@ -1,7 +1,7 @@
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { OnImportDismissCallback } from 'modules/trade/hooks/useOnImportDismiss'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { PriceImpact } from 'hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { areFractionsEqual } from 'utils/areFractionsEqual'
 import { genericPropsChecker } from 'utils/genericPropsChecker'

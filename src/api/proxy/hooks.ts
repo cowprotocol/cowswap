@@ -3,9 +3,9 @@ import useSWR from 'swr'
 import { getTokens } from './api'
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { isAddress } from 'utils'
+import { isAddress } from 'legacy/utils'
 import * as Sentry from '@sentry/react'
-import { ALL_SUPPORTED_CHAIN_IDS } from 'constants/chains'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0

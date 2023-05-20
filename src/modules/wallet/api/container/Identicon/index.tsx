@@ -3,7 +3,7 @@ import jazzicon from '@metamask/jazzicon'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Identicon as IdenticonPure } from 'modules/wallet/api/pure/Identicon'
 
-import useENSAvatar from 'hooks/useENSAvatar'
+import useENSAvatar from 'legacy/hooks/useENSAvatar'
 import { useWalletInfo } from 'modules/wallet'
 
 export interface IdenticonProps {

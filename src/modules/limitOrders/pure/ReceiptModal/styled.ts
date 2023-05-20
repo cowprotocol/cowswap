@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { AutoRow } from 'components/Row'
+import { AutoRow } from 'legacy/components/Row'
 
 export const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg1};

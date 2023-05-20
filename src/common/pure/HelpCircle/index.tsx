@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { useIsDarkMode } from 'state/user/hooks'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { questionIcon } from 'legacy/assets/cow-swap/question'
 import SVG from 'react-inlinesvg'
 

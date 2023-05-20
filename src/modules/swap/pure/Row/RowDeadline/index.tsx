@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/macro'
 
-import { RowFixed } from 'components/Row'
-import { MouseoverTooltipContent } from 'components/Tooltip'
-import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'constants/index'
+import { RowFixed } from 'legacy/components/Row'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
+import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
 import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/typings'

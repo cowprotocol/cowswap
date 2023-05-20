@@ -6,8 +6,8 @@ import { Percent, Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { ChainTokenMap } from 'lib/hooks/useTokenList/utils'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getExplorerOrderLink } from 'utils/explorer'
-import { ORDER_ID_SHORT_LENGTH } from 'constants/index'
+import { getExplorerOrderLink } from 'legacy/utils/explorer'
+import { ORDER_ID_SHORT_LENGTH } from 'legacy/constants'
 import JSBI from 'jsbi'
 
 // returns the checksummed address if the address is valid, otherwise returns false

@@ -1,7 +1,7 @@
 import { NativeCurrency, Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { useFavouriteTokens } from 'state/user/hooks'
+import { useFavouriteTokens } from 'legacy/state/user/hooks'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useAtomValue } from 'jotai/utils'
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'

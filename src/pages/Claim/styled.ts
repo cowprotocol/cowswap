@@ -1,16 +1,16 @@
 import styled from 'styled-components/macro'
 import { CheckCircle, Frown } from 'react-feather'
-import BadgeOriginal from 'components/Badge'
+import BadgeOriginal from 'legacy/components/Badge'
 
-import { Icon } from 'components/CowProtocolLogo'
-import { ButtonPrimary, ButtonSecondary } from 'components/Button'
-import { Step } from 'components/Stepper'
+import { Icon } from 'legacy/components/CowProtocolLogo'
+import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
+import { Step } from 'legacy/components/Stepper'
 import { transparentize, darken, lighten } from 'polished'
 import LogoETH from 'legacy/assets/cow-swap/network-mainnet-logo.svg'
 import LogoGNO from 'legacy/assets/cow-swap/gno.png'
 import LogoUSDC from 'legacy/assets/cow-swap/usdc.png'
 import LogoXDAI from 'legacy/assets/cow-swap/xdai.png'
-import { CopyIcon } from 'components/Copy'
+import { CopyIcon } from 'legacy/components/Copy'
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 
 export const InnerPageWrapper = styled.div`

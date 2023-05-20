@@ -3,8 +3,8 @@ import { Trans } from '@lingui/macro'
 import { ConnectionType } from 'modules/wallet'
 import { getConnectionName } from 'modules/wallet/api/utils/connection'
 
-import useTheme from 'hooks/useTheme'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
+import useTheme from 'legacy/hooks/useTheme'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { TryActivation, onError } from '.'
 

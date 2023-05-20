@@ -1,4 +1,4 @@
-import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
+import UnsupportedCurrencyFooter from 'legacy/components/swap/UnsupportedCurrencyFooter'
 import { HashLink } from 'react-router-hash-link'
 import { Currency } from '@uniswap/sdk-core'
 import React from 'react'

@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "paths": {
-      "*": ["*", "legacy/*"]
-    },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

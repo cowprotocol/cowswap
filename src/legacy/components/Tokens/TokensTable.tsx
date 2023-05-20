@@ -16,13 +16,13 @@ import {
   TableHeader,
   NoResults,
 } from './styled'
-import { balanceComparator, useTokenComparator } from 'components/SearchModal/CurrencySearch/sorting'
-import { OperationType } from 'components/TransactionConfirmationModal'
-import { useErrorModal } from 'hooks/useErrorMessageAndModal'
-import useTransactionConfirmationModal from 'hooks/useTransactionConfirmationModal'
-import { useToggleWalletModal } from 'state/application/hooks'
-import usePrevious from 'hooks/usePrevious'
-import useFilterTokens from 'hooks/useFilterTokens'
+import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+import usePrevious from 'legacy/hooks/usePrevious'
+import useFilterTokens from 'legacy/hooks/useFilterTokens'
 import { TokenAmounts } from 'modules/tokens'
 
 const MAX_ITEMS = 20

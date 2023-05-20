@@ -9,5 +9,7 @@ import type * as lens from './lens'
 export type { lens }
 import type * as libraries from './libraries'
 export type { libraries }
+export type { NonfungiblePositionManager } from './NonfungiblePositionManager'
 export type { NonfungibleTokenPositionDescriptor } from './NonfungibleTokenPositionDescriptor'
+export type { SwapRouter } from './SwapRouter'
 export type { V3Migrator } from './V3Migrator'

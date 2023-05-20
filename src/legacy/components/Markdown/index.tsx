@@ -1,16 +1,16 @@
 import { ReactNode } from 'react'
 import ReactMarkdownHtml from 'react-markdown/with-html'
 import ReactMarkdown, { ReactMarkdownPropsBase } from 'react-markdown'
-import useFetchFile from 'hooks/useFetchFile'
+import useFetchFile from 'legacy/hooks/useFetchFile'
 import { HeadingRenderer } from './renderers'
 import { Page, Title, Content } from 'modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
-import { LinkScrollable, Link } from 'components/Link'
+import { LinkScrollable, Link } from 'legacy/components/Link'
 
 // AmplitudeAnalytics
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 interface MarkdownParams extends WithClassName {
   contentFile: string

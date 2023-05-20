@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit'
 import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { SerializedToken } from 'state/user/types'
+import { SerializedToken } from 'legacy/state/user/types'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { BigNumberish } from '@ethersproject/bignumber'
 import { UID, EnrichedOrder, OrderClass, OrderCreation } from '@cowprotocol/cow-sdk'

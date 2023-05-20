@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 import ms from 'ms.macro'
 
-import { COW_IPFS_OPTIONS } from 'constants/index'
+import { COW_IPFS_OPTIONS } from 'legacy/constants'
 
 import {
   appDataUploadQueueAtom,

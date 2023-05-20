@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
 
-import { useIsExpertMode } from 'state/user/hooks'
-import { useRecentActivityLastPendingOrder } from 'hooks/useRecentActivity'
+import { useIsExpertMode } from 'legacy/state/user/hooks'
+import { useRecentActivityLastPendingOrder } from 'legacy/hooks/useRecentActivity'
 import {
   useUpdateAtom,
   useAtomValue,
@@ -11,10 +11,10 @@ import {
   followPendingTxPopupAtom,
   selectAtom,
   handleCloseOrderPopupAtom,
-} from 'state/application/atoms'
+} from 'legacy/state/application/atoms'
 import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
 import { OrderID } from 'api/gnosisProtocol'
-import { Order } from 'state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
 export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose: () => void } {
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)

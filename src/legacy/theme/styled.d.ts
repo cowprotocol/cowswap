@@ -1,4 +1,4 @@
-import { ButtonSize } from 'theme/enum'
+import { ButtonSize } from 'legacy/theme/enum'
 
 export type Color = string
 

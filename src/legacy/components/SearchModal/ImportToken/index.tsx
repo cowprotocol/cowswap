@@ -4,18 +4,18 @@ import styled from 'styled-components/macro'
 import { DefaultTheme } from 'styled-components/macro'
 import { AlertCircle } from 'react-feather'
 import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper } from './ImportTokenMod'
-import Card from 'components/Card'
-import { AutoColumn } from 'components/Column'
-import { RowFixed } from 'components/Row'
-import { ThemedText } from 'theme'
-import { ExternalLink } from 'theme/components'
-import ListLogo from 'components/ListLogo'
-// import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
-import CurrencyLogo from 'components/CurrencyLogo'
-import { PaddedColumn } from 'components/SearchModal/styleds'
+import Card from 'legacy/components/Card'
+import { AutoColumn } from 'legacy/components/Column'
+import { RowFixed } from 'legacy/components/Row'
+import { ThemedText } from 'legacy/theme'
+import { ExternalLink } from 'legacy/theme/components'
+import ListLogo from 'legacy/components/ListLogo'
+// import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
+import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 
 // MOD import
-import { getEtherscanLink as getExplorerLink } from 'utils'
+import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
 export interface CardComponentProps extends Pick<ImportProps, 'list'> {
   chainId?: number

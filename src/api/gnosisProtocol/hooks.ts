@@ -1,8 +1,8 @@
 import useSWR from 'swr'
 
 import { getOrders } from 'api/gnosisProtocol'
-import { AMOUNT_OF_ORDERS_TO_FETCH } from 'constants/index'
-import { supportedChainId } from 'utils/supportedChainId'
+import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { useWalletInfo } from 'modules/wallet'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 

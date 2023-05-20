@@ -15,8 +15,8 @@ import {
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
 
-import { Stepper } from 'components/Stepper'
-import { FaqDrawer } from 'components/FaqDrawer'
+import { Stepper } from 'legacy/components/Stepper'
+import { FaqDrawer } from 'legacy/components/FaqDrawer'
 
 import {
   useClaimState,
@@ -24,18 +24,18 @@ import {
   useHasClaimInvestmentFlowError,
   useSomeNotTouched,
   useClaimLinks,
-} from 'state/claim/hooks'
-import { ClaimStatus } from 'state/claim/actions'
-import { InvestClaim } from 'state/claim/reducer'
-import { calculateInvestmentAmounts } from 'state/claim/hooks/utils'
+} from 'legacy/state/claim/hooks'
+import { ClaimStatus } from 'legacy/state/claim/actions'
+import { InvestClaim } from 'legacy/state/claim/reducer'
+import { calculateInvestmentAmounts } from 'legacy/state/claim/hooks/utils'
 
 import InvestOption from './InvestOption'
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
-import { ExternalLink } from 'theme'
-import { ExplorerLink } from 'components/ExplorerLink'
+import { ExternalLink } from 'legacy/theme'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
 
-import { BadgeVariant } from 'components/Badge'
-import { OperationType } from 'components/TransactionConfirmationModal'
+import { BadgeVariant } from 'legacy/components/Badge'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import RoundArrow from 'legacy/assets/cow-swap/round-arrow.svg'
 import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
 import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'

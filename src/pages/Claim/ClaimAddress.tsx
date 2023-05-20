@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { Trans } from '@lingui/macro'
-import { ButtonSecondary } from 'components/Button'
+import { ButtonSecondary } from 'legacy/components/Button'
 import Circle from 'legacy/assets/images/blue-loader.svg'
-import { CustomLightSpinner, ThemedText } from 'theme'
+import { CustomLightSpinner, ThemedText } from 'legacy/theme'
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
 import { ClaimCommonTypes } from './types'
-import useENS from 'hooks/useENS'
-import { useClaimDispatchers, useClaimState } from 'state/claim/hooks'
-import { ClaimStatus } from 'state/claim/actions'
+import useENS from 'legacy/hooks/useENS'
+import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: () => void

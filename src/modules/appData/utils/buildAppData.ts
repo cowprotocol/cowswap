@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { environmentName } from 'utils/environments'
+import { environmentName } from 'legacy/utils/environments'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { metadataApiSDK } from 'cowSdk'
 import { UtmParams } from 'modules/utm'

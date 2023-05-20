@@ -1,8 +1,8 @@
-import { sendEvent } from 'components/analytics'
+import { sendEvent } from 'legacy/components/analytics'
 import ms from 'ms.macro'
 import { useEffect } from 'react'
-import { ApplicationModal, setOpenModal } from 'state/application/reducer'
-import { useAppDispatch } from 'state/hooks'
+import { ApplicationModal, setOpenModal } from 'legacy/state/application/reducer'
+import { useAppDispatch } from 'legacy/state/hooks'
 
 export default function useAccountRiskCheck(account: string | null | undefined) {
   const dispatch = useAppDispatch()

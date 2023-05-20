@@ -1,5 +1,5 @@
 import { UaEventOptions } from 'react-ga4/types/ga4'
-import { isMobile } from 'utils/userAgent'
+import { isMobile } from 'legacy/utils/userAgent'
 import { ErrorInfo } from 'react'
 import { GAProvider } from './provider'
 import { Dimensions } from './types'

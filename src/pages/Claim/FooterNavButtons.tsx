@@ -6,9 +6,9 @@ import {
   useClaimState,
   useHasClaimInvestmentFlowError,
   useHasZeroInvested,
-} from 'state/claim/hooks'
-import { ButtonPrimary, ButtonSecondary } from 'components/Button'
-import { ClaimStatus } from 'state/claim/actions'
+} from 'legacy/state/claim/hooks'
+import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
 import { ClaimAddressProps } from './ClaimAddress'
 import { ClaimCommonTypes } from 'pages/Claim/types'

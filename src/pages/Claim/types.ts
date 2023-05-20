@@ -1,7 +1,7 @@
-import { UserClaimData } from 'state/claim/hooks'
+import { UserClaimData } from 'legacy/state/claim/hooks'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import { SyntheticEvent } from 'react'
-import { GpEther } from 'constants/tokens'
+import { GpEther } from 'legacy/constants/tokens'
 
 export type ClaimCommonTypes = {
   account: string | null | undefined

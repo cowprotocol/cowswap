@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { orderBookApi } from 'cowSdk'
-import { Order } from 'state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 import { useWeb3React } from '@web3-react/core'
 import { useWalletInfo } from 'modules/wallet'
 

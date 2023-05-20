@@ -1,4 +1,4 @@
-import { Field } from 'state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 

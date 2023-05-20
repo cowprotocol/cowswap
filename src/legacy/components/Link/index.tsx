@@ -1,7 +1,7 @@
-import { ExternalLink } from 'theme'
-import HashLink from 'components/HashLink'
+import { ExternalLink } from 'legacy/theme'
+import HashLink from 'legacy/components/HashLink'
 
-export { ExternalLink } from 'theme'
+export { ExternalLink } from 'legacy/theme'
 const SCROLL_OFFSET = 24
 
 export interface LinkRendererProps {

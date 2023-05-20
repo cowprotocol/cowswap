@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/macro'
-import useCopyClipboard from 'hooks/useCopyClipboard'
+import useCopyClipboard from 'legacy/hooks/useCopyClipboard'
 import React, { useCallback } from 'react'
 import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
-import { LinkStyledButton } from 'theme'
+import { LinkStyledButton } from 'legacy/theme'
 
 const CopyIcon = styled(LinkStyledButton)`
   color: ${({ color, theme }) => color || theme.text3};

@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import { Field } from 'state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 import React, { useMemo, useState } from 'react'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { useFillLimitOrdersDerivedState, useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'

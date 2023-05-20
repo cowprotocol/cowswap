@@ -1,6 +1,6 @@
 import React from 'react'
 import * as styledEl from './styled'
-import TradeGp from 'state/swap/TradeGp'
+import TradeGp from 'legacy/state/swap/TradeGp'
 import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { TradeBasicDetails } from 'modules/swap/containers/TradeBasicDetails'

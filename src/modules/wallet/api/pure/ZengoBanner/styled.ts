@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
-import { ButtonPrimary } from 'components/Button'
-import { ExternalLink } from 'theme'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { ExternalLink } from 'legacy/theme'
 
 export const Wrapper = styled.div`
   display: flex;

@@ -1,6 +1,6 @@
 import { isAnyOf, Middleware } from '@reduxjs/toolkit'
-import { getCowSoundSend, getCowSoundSuccessClaim } from 'utils/sound'
-import { AppState } from 'state'
+import { getCowSoundSend, getCowSoundSuccessClaim } from 'legacy/utils/sound'
+import { AppState } from 'legacy/state'
 import { addTransaction, finalizeTransaction } from '../enhancedTransactions/actions'
 import { ClaimStatus, setClaimStatus } from './actions'
 

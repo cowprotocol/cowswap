@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
-import { WithChainId } from 'state/lists/actions'
+import { WithChainId } from 'legacy/state/lists/actions'
 
 // fired once when the app reloads but before the app renders
 // allows any updates to be applied to store data loaded from localStorage

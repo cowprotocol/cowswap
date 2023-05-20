@@ -1,13 +1,13 @@
-import Loader from 'components/Loader'
+import Loader from 'legacy/components/Loader'
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-import { RedirectPathToSwapOnly } from 'pages/Swap/redirects'
+import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
 import { Routes as RoutesEnum } from 'constants/routes'
 
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
-import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
-import { Loading } from 'components/FlashingLoading'
+import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
+import { Loading } from 'legacy/components/FlashingLoading'
 
 import Account, { AccountOverview } from 'pages/Account'
 import { SwapPage } from 'pages/Swap'

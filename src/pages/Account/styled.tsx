@@ -1,14 +1,14 @@
 import styled, { css } from 'styled-components/macro'
 import { Page, GdocsListStyle } from 'modules/application/pure/Page'
-import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'legacy/components/Button'
 import { BannerExplainer } from 'pages/Claim/styled'
 import * as CSS from 'csstype'
 import { transparentize } from 'polished'
-import { ExternalLink } from 'theme'
+import { ExternalLink } from 'legacy/theme'
 import { ButtonCustom as AddToMetaMask } from 'modules/wallet/api/pure/AddToMetamask'
-import { CopyIcon as ClickToCopy } from 'components/Copy'
+import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 import SVG from 'react-inlinesvg'
-import SpinnerLoader from 'components/Loader'
+import SpinnerLoader from 'legacy/components/Loader'
 
 export const Container = styled.div`
   max-width: 100%;

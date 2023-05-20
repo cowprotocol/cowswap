@@ -1,7 +1,7 @@
 import { Connector } from '@web3-react/types'
 import { ConnectionType } from 'modules/wallet'
 import { getConnectionName, getIsTrustWallet } from 'modules/wallet/api/utils/connection'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { walletConnectConnection } from './walletConnect'
 
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'

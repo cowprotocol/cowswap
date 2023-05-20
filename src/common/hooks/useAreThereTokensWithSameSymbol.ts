@@ -1,4 +1,4 @@
-import { isAddress } from 'utils'
+import { isAddress } from 'legacy/utils'
 import { useCallback } from 'react'
 import { useAtomValue } from 'jotai/utils'
 import { tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
