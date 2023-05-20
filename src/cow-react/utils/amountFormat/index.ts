@@ -41,10 +41,10 @@ export function formatAmountWithPrecision(
   const decimalsSeparator = numberFormat.format(1.1)[1]
 
   // Trim the remainder up to precision
-  const fixedRemainder = remainder.toFixed(precision, undefined, Rounding.ROUND_HALF_UP)
+  const reminderWithPrecission = remainder.toFixed(precision, undefined, Rounding.ROUND_HALF_UP)
 
   // If rounding up means we carry over to the next integer, add 1 to quotient
-  const adjustedQuotient = +fixedRemainder >= 1 ? JSBI.add(quotient, JSBI.BigInt(1)) : quotient
+  const adjustedQuotient = +reminderWithPrecission >= 1 ? JSBI.add(quotient, JSBI.BigInt(1)) : quotient
 
   // Apply the language formatting for the amount
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
@@ -52,12 +52,19 @@ export function formatAmountWithPrecision(
     BigInt(trimTrailingZeros(adjustedQuotient.toString(), decimalsSeparator))
   )
 
-  const formattedRemainder = remainder.greaterThan(0)
-    ? decimalsSeparator + trimTrailingZeros(fixedRemainder.slice(1)).slice(1)
-    : ''
-  const result = formattedQuotient + formattedRemainder + suffix
+  // Remove trailing zeros
+  const reminderWithotTrailingZeros = trimTrailingZeros(reminderWithPrecission)
 
-  return amount.greaterThan(0) && +result === 0 ? lessThanPrecisionSymbol(precision) : result
+  // Make sure the reminder is internationalised
+  const formattedRemainder =
+    reminderWithotTrailingZeros.includes('.') && remainder.greaterThan(0)
+      ? decimalsSeparator + reminderWithotTrailingZeros.slice(2) // removes the integer part and the decimals separator (note how is pre-pended)
+      : ''
+
+  const result = formattedQuotient + (formattedRemainder === '0' ? '' : formattedRemainder) + suffix
+
+  const nonZeroAmountIsRoundedToZero = amount.greaterThan(0) && +result === 0
+  return nonZeroAmountIsRoundedToZero ? lessThanPrecisionSymbol(precision) : result
 }
 
 export function formatInputAmount(
