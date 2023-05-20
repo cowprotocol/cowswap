@@ -53,9 +53,10 @@ export function TokenAmount({
       </>
     )
 
+  const roundedAmount = round ? FractionUtils.round(amount) : amount
   return (
     <Wrapper title={title} className={className} highlight={highlight}>
-      {formatTokenAmount(round ? FractionUtils.round(amount) : amount) || defaultValue}
+      {formatTokenAmount(roundedAmount) || defaultValue}
       <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>
   )
