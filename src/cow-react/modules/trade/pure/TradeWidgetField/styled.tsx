@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 
-export const WidgetField = styled.div`
+export const Wrapper = styled.div`
   background: ${({ theme }) => theme.grey1};
   border-radius: 16px;
   padding: 0.5rem 1rem;
@@ -12,7 +12,7 @@ export const WidgetField = styled.div`
   flex: 1;
 `
 
-export const WidgetLabel = styled.span`
+export const Label = styled.span`
   color: ${({ theme }) => transparentize(0.3, theme.text1)};
   display: flex;
   align-items: center;
@@ -20,7 +20,17 @@ export const WidgetLabel = styled.span`
   font-weight: 500;
 `
 
-export const WidgetContent = styled.div`
+export const Content = styled.div`
   display: flex;
   align-items: center;
+`
+
+export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
+  color: ${({ theme, type }) => {
+    if (type === 'error') return theme.red1
+    else if (type === 'warning') return theme.yellow2
+    else return theme.text1
+  }};
+  font-size: 12px;
+  margin-top: 5px;
 `
