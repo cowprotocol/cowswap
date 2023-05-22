@@ -32,6 +32,8 @@ export function handleLimitOrderQuoteResponse(
   const sellAmount = CurrencyAmount.fromRawAmount(inputCurrency, sellAmountRaw)
   const buyAmount = CurrencyAmount.fromRawAmount(outputCurrency, buyAmountRaw)
 
+  if (sellAmount.equalTo(0) || buyAmount.equalTo(0)) return
+
   const price = FractionUtils.fractionLikeToFraction(new Price({ baseAmount: sellAmount, quoteAmount: buyAmount }))
   const marketRateWithSlippage = price.subtract(price.multiply(LIMIT_ORDERS_PRICE_SLIPPAGE.divide(100)))
 
