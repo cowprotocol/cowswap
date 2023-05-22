@@ -43,6 +43,7 @@ import { TradeWidget, TradeWidgetContainer } from 'modules/trade/containers/Trad
 import SettingsTab from 'legacy/components/Settings'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useShouldZeroApproveSwap } from 'common/hooks/useShouldZeroApproveSwap'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
 
@@ -64,6 +65,7 @@ export function SwapWidget() {
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEthFlow = useIsEthFlow()
+  const shouldZeroApprove = useShouldZeroApproveSwap()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -160,6 +162,7 @@ export function SwapWidget() {
     showApprovalBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
+    shouldZeroApprove,
   }
 
   const swapWarningsBottomProps: SwapWarningsBottomProps = {

@@ -1,0 +1,1 @@
+export { ConfirmationPendingContent } from './ConfirmationPendingContent'

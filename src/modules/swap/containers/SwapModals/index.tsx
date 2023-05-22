@@ -5,6 +5,8 @@ import { ImportTokenModal } from 'modules/trade/containers/ImportTokenModal'
 import { TradeApproveWidget } from 'common/containers/TradeApprove/TradeApproveWidget'
 import { useOnImportDismiss } from 'modules/trade/hooks/useOnImportDismiss'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
+import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
+import { useShouldZeroApproveSwap } from 'common/hooks/useShouldZeroApproveSwap'
 
 export interface SwapModalsProps {
   chainId: number | undefined
@@ -16,6 +18,7 @@ export interface SwapModalsProps {
 
 export const SwapModals = React.memo(function (props: SwapModalsProps) {
   const { chainId, showNativeWrapModal, confirmSwapProps, ethFlowProps } = props
+  const shouldZeroApprove = useShouldZeroApproveSwap()
 
   // const closeModals = useCloseModals()
   const onImportDismiss = useOnImportDismiss()
@@ -28,6 +31,7 @@ export const SwapModals = React.memo(function (props: SwapModalsProps) {
       {/* TODO: Re-enable modal once subsidy is back  */}
       {/*<CowSubsidyModal isOpen={showCowSubsidyModal} onDismiss={closeModals} /> */}
       {<ConfirmSwapModalSetup {...confirmSwapProps} />}
+      {shouldZeroApprove && <ZeroApprovalModal />}
       {showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
       <TradeApproveWidget />
     </>
