@@ -1,16 +1,42 @@
 import { atomWithStorage } from 'jotai/utils'
 import { atom } from 'jotai'
-import { Milliseconds, Timestamp } from '@cow/types'
+import { Milliseconds } from '@cow/types'
 import { defaultOrderDeadline } from '@cow/common/pure/DeadlineSelector/deadlines'
 
 export interface AdvancedOrdersSettingsState {
-  readonly deadlineMilliseconds: Milliseconds
-  readonly customDeadlineTimestamp: Timestamp | null
+  // deadline
+  readonly isCustomDeadline: boolean
+  readonly deadline: Milliseconds
+  readonly customDeadline: {
+    hours: number
+    minutes: number
+  }
+
+  // no. of parts
+  readonly numberOfPartsValue: number
+  readonly numberOfPartsError: string | null
+
+  // slippage
+  readonly slippageValue: number | 'auto'
+  readonly slippageError: string | null
 }
 
 export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
-  deadlineMilliseconds: defaultOrderDeadline.value,
-  customDeadlineTimestamp: null,
+  // deadline
+  isCustomDeadline: false,
+  deadline: defaultOrderDeadline.value,
+  customDeadline: {
+    hours: 0,
+    minutes: 0,
+  },
+
+  // no. of parts
+  numberOfPartsValue: 1,
+  numberOfPartsError: null,
+
+  // slippage
+  slippageValue: 'auto',
+  slippageError: null,
 }
 
 export const advancedOrdersSettingsAtom = atomWithStorage<AdvancedOrdersSettingsState>(
