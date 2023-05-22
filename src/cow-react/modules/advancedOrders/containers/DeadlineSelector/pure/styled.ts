@@ -9,6 +9,7 @@ export const Label = styled.span`
   font-size: 13px;
   font-weight: 500;
   color: ${({ theme }) => transparentize(0.3, theme.text1)};
+  white-space: nowrap;
 `
 
 export const Current = styled(MenuButton)<{ $custom?: boolean }>`
@@ -91,4 +92,5 @@ export const Selector = styled.div`
   display: flex;
   justify-content: space-between;
   flex-basis: 50%;
+  flex-wrap: wrap;
 `

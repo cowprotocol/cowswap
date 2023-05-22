@@ -1,15 +1,19 @@
+import ms from 'ms'
+
 type Params = {
-  hours?: number
-  days?: number
-  minutes?: number
-  seconds?: number
+  time: number
   defaultOutput: string
 }
 
 export function displayTime(params: Params) {
-  const { minutes, hours, seconds, days, defaultOutput } = params
+  const { time, defaultOutput } = params
 
   const output = []
+
+  let days = Math.floor(ms(`${time}ms`) / ms('1d'))
+  let hours = Math.floor((ms(`${time}ms`) % ms('1d')) / ms('1h'))
+  let minutes = Math.floor((ms(`${time}ms`) % ms('1h')) / ms('1m'))
+  let seconds = Math.floor((ms(`${time}ms`) % ms('1m')) / ms('1s'))
 
   if (days) output.push(`${days}d`)
   if (hours) output.push(`${hours}h`)
