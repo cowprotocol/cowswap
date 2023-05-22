@@ -4,16 +4,16 @@
 const fs = require('fs')
 const path = require('path')
 
-const fileTypesIndex = path.resolve(__dirname, '../src/cow-react/abis/types/index.ts')
-const outputBaseAbis = 'export * from "@src/abis/types";\n'
-const outputEthFlowAbis = 'export * from "@cow/abis/types/ethflow";\n'
+const fileTypesIndex = path.resolve(__dirname, '../src/abis/types/index.ts')
+const outputBaseAbis = 'export * from "legacy/abis/types";\n'
+const outputEthFlowAbis = 'export * from "abis/types/ethflow";\n'
 
 fs.appendFile(fileTypesIndex, outputBaseAbis, function (err) {
   if (err) {
     throw err
   }
 
-  console.log('Successfully added contracts export script targetting @src/abis/types/index.ts!')
+  console.log('Successfully added contracts export script targetting abis/types/index.ts!')
 })
 
 fs.appendFile(fileTypesIndex, outputEthFlowAbis, function (err) {

@@ -1,9 +1,5 @@
 {
   "compilerOptions": {
-    "paths": {
-      "@cow/*": ["cow-react/*"],
-      "@src/*": ["*"]
-    },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
