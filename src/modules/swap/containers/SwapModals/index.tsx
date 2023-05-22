@@ -5,8 +5,8 @@ import { ImportTokenModal } from 'modules/trade/containers/ImportTokenModal'
 import { TradeApproveWidget } from 'common/containers/TradeApprove/TradeApproveWidget'
 import { useOnImportDismiss } from 'modules/trade/hooks/useOnImportDismiss'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
-import { ZeroApprovalModal } from '@src/common/containers/ZeroApprovalModal'
-import { useShouldZeroApproveSwap } from '@src/common/hooks/useShouldZeroApproveSwap'
+import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
+import { useShouldZeroApproveSwap } from 'common/hooks/useShouldZeroApproveSwap'
 
 export interface SwapModalsProps {
   chainId: number | undefined

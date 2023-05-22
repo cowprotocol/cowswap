@@ -1,4 +1,4 @@
-import Card from 'components/Card'
+import Card from 'legacy/components/Card'
 import { PropsWithChildren } from 'react'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'

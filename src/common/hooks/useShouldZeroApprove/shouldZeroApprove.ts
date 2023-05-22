@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { Erc20 } from 'abis/types/Erc20'
+import { Erc20 } from 'legacy/abis/types'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 
 interface ShouldZeroApproveParams {

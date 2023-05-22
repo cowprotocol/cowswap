@@ -43,7 +43,7 @@ import { TradeWidget, TradeWidgetContainer } from 'modules/trade/containers/Trad
 import SettingsTab from 'legacy/components/Settings'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useShouldZeroApproveSwap } from '@src/common/hooks/useShouldZeroApproveSwap'
+import { useShouldZeroApproveSwap } from 'common/hooks/useShouldZeroApproveSwap'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
 
