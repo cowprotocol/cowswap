@@ -11,92 +11,76 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
-import type {
-  TypedEventFilter,
-  TypedEvent,
-  TypedListener,
-  OnEvent,
-  PromiseOrValue,
-} from "../../../../common";
+} from 'ethers'
+import type { FunctionFragment, Result } from '@ethersproject/abi'
+import type { Listener, Provider } from '@ethersproject/providers'
+import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from '../../../../common'
 
 export interface IMulticallInterface extends utils.Interface {
   functions: {
-    "multicall(bytes[])": FunctionFragment;
-  };
+    'multicall(bytes[])': FunctionFragment
+  }
 
-  getFunction(nameOrSignatureOrTopic: "multicall"): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'multicall'): FunctionFragment
 
-  encodeFunctionData(
-    functionFragment: "multicall",
-    values: [PromiseOrValue<BytesLike>[]]
-  ): string;
+  encodeFunctionData(functionFragment: 'multicall', values: [PromiseOrValue<BytesLike>[]]): string
 
-  decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result
 
-  events: {};
+  events: {}
 }
 
 export interface IMulticall extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this
+  attach(addressOrName: string): this
+  deployed(): Promise<this>
 
-  interface: IMulticallInterface;
+  interface: IMulticallInterface
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
+  listeners(eventName?: string): Array<Listener>
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
+  removeAllListeners(eventName?: string): this
+  off: OnEvent<this>
+  on: OnEvent<this>
+  once: OnEvent<this>
+  removeListener: OnEvent<this>
 
   functions: {
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+    ): Promise<ContractTransaction>
+  }
 
   multicall(
     data: PromiseOrValue<BytesLike>[],
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  ): Promise<ContractTransaction>
 
   callStatic: {
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-  };
+    multicall(data: PromiseOrValue<BytesLike>[], overrides?: CallOverrides): Promise<string[]>
+  }
 
-  filters: {};
+  filters: {}
 
   estimateGas: {
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
+    ): Promise<BigNumber>
+  }
 
   populateTransaction: {
     multicall(
       data: PromiseOrValue<BytesLike>[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
+    ): Promise<PopulatedTransaction>
+  }
 }

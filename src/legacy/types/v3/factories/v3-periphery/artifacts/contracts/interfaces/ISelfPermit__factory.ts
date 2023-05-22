@@ -2,177 +2,174 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import type { Provider } from "@ethersproject/providers";
+import { Contract, Signer, utils } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
 import type {
   ISelfPermit,
   ISelfPermitInterface,
-} from "../../../../../v3-periphery/artifacts/contracts/interfaces/ISelfPermit";
+} from '../../../../../v3-periphery/artifacts/contracts/interfaces/ISelfPermit'
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "token",
-        type: "address",
+        internalType: 'address',
+        name: 'token',
+        type: 'address',
       },
       {
-        internalType: "uint256",
-        name: "value",
-        type: "uint256",
+        internalType: 'uint256',
+        name: 'value',
+        type: 'uint256',
       },
       {
-        internalType: "uint256",
-        name: "deadline",
-        type: "uint256",
+        internalType: 'uint256',
+        name: 'deadline',
+        type: 'uint256',
       },
       {
-        internalType: "uint8",
-        name: "v",
-        type: "uint8",
+        internalType: 'uint8',
+        name: 'v',
+        type: 'uint8',
       },
       {
-        internalType: "bytes32",
-        name: "r",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 'r',
+        type: 'bytes32',
       },
       {
-        internalType: "bytes32",
-        name: "s",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 's',
+        type: 'bytes32',
       },
     ],
-    name: "selfPermit",
+    name: 'selfPermit',
     outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "token",
-        type: "address",
+        internalType: 'address',
+        name: 'token',
+        type: 'address',
       },
       {
-        internalType: "uint256",
-        name: "nonce",
-        type: "uint256",
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256',
       },
       {
-        internalType: "uint256",
-        name: "expiry",
-        type: "uint256",
+        internalType: 'uint256',
+        name: 'expiry',
+        type: 'uint256',
       },
       {
-        internalType: "uint8",
-        name: "v",
-        type: "uint8",
+        internalType: 'uint8',
+        name: 'v',
+        type: 'uint8',
       },
       {
-        internalType: "bytes32",
-        name: "r",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 'r',
+        type: 'bytes32',
       },
       {
-        internalType: "bytes32",
-        name: "s",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 's',
+        type: 'bytes32',
       },
     ],
-    name: "selfPermitAllowed",
+    name: 'selfPermitAllowed',
     outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "token",
-        type: "address",
+        internalType: 'address',
+        name: 'token',
+        type: 'address',
       },
       {
-        internalType: "uint256",
-        name: "nonce",
-        type: "uint256",
+        internalType: 'uint256',
+        name: 'nonce',
+        type: 'uint256',
       },
       {
-        internalType: "uint256",
-        name: "expiry",
-        type: "uint256",
+        internalType: 'uint256',
+        name: 'expiry',
+        type: 'uint256',
       },
       {
-        internalType: "uint8",
-        name: "v",
-        type: "uint8",
+        internalType: 'uint8',
+        name: 'v',
+        type: 'uint8',
       },
       {
-        internalType: "bytes32",
-        name: "r",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 'r',
+        type: 'bytes32',
       },
       {
-        internalType: "bytes32",
-        name: "s",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 's',
+        type: 'bytes32',
       },
     ],
-    name: "selfPermitAllowedIfNecessary",
+    name: 'selfPermitAllowedIfNecessary',
     outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
     inputs: [
       {
-        internalType: "address",
-        name: "token",
-        type: "address",
+        internalType: 'address',
+        name: 'token',
+        type: 'address',
       },
       {
-        internalType: "uint256",
-        name: "value",
-        type: "uint256",
+        internalType: 'uint256',
+        name: 'value',
+        type: 'uint256',
       },
       {
-        internalType: "uint256",
-        name: "deadline",
-        type: "uint256",
+        internalType: 'uint256',
+        name: 'deadline',
+        type: 'uint256',
       },
       {
-        internalType: "uint8",
-        name: "v",
-        type: "uint8",
+        internalType: 'uint8',
+        name: 'v',
+        type: 'uint8',
       },
       {
-        internalType: "bytes32",
-        name: "r",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 'r',
+        type: 'bytes32',
       },
       {
-        internalType: "bytes32",
-        name: "s",
-        type: "bytes32",
+        internalType: 'bytes32',
+        name: 's',
+        type: 'bytes32',
       },
     ],
-    name: "selfPermitIfNecessary",
+    name: 'selfPermitIfNecessary',
     outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    stateMutability: 'payable',
+    type: 'function',
   },
-] as const;
+] as const
 
 export class ISelfPermit__factory {
-  static readonly abi = _abi;
+  static readonly abi = _abi
   static createInterface(): ISelfPermitInterface {
-    return new utils.Interface(_abi) as ISelfPermitInterface;
+    return new utils.Interface(_abi) as ISelfPermitInterface
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ISelfPermit {
-    return new Contract(address, _abi, signerOrProvider) as ISelfPermit;
+  static connect(address: string, signerOrProvider: Signer | Provider): ISelfPermit {
+    return new Contract(address, _abi, signerOrProvider) as ISelfPermit
   }
 }
