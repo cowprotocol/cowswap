@@ -16,7 +16,7 @@ export function PartsDisplay() {
           <QuestionHelper text={<Trans>TODO: Add buy tooltip text</Trans>} />
         </styledEl.Label>
 
-        <styledEl.Value>
+        <styledEl.Value title={inputPartAmount?.toExact()}>
           <div>{formatInputAmount(inputPartAmount) || '-'}</div>
           <div>{inputPartAmount?.currency.symbol}</div>
         </styledEl.Value>
@@ -30,7 +30,7 @@ export function PartsDisplay() {
           <QuestionHelper text={<Trans>TODO: Add sell tooltip text</Trans>} />
         </styledEl.Label>
 
-        <styledEl.Value>
+        <styledEl.Value title={outputPartAmount?.toExact()}>
           <div>{formatInputAmount(outputPartAmount) || '-'}</div>
           <div>{outputPartAmount?.currency.symbol}</div>
         </styledEl.Value>
