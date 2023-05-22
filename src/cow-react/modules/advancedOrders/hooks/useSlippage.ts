@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { advancedOrdersSettingsAtom } from '../state/advancedOrdersSettingsAtom'
 
 export function useSlippage(): Percent | 'auto' {
-  const { slippage } = useAtomValue(advancedOrdersSettingsAtom)
+  const { slippageValue } = useAtomValue(advancedOrdersSettingsAtom)
 
-  return useMemo(() => (slippage === 'auto' ? 'auto' : new Percent(slippage, 10_000)), [slippage])
+  return useMemo(() => (slippageValue === 'auto' ? 'auto' : new Percent(slippageValue, 10_000)), [slippageValue])
 }
