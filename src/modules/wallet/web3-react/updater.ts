@@ -11,7 +11,7 @@ import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/st
 import { getSafeInfo } from 'api/gnosisSafe'
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 import { getWalletType } from 'modules/wallet/api/utils/getWalletType'
-import { getWalletNameLabel } from '../api/utils/getWalletNameLabel'
+import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 function _checkIsSupportedWallet(walletName?: string): boolean {
   if (walletName && UNSUPPORTED_WC_WALLETS.has(walletName)) {
@@ -102,7 +102,7 @@ export function WalletUpdater() {
     console.log('[WalletUpdater] setWalletDetails', walletDetails)
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
-      walletName: getWalletNameLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
+      walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
       ...walletDetails,
     })
   }, [walletDetails, setWalletDetails, gnosisSafeInfo])
