@@ -184,5 +184,5 @@ The plan:
 
 ## Documentation
 
-1. [Oveall Architecture](./docs//architecture-overview.md)
-2. [Amounts formatting](src/cow-react/utils/amountFormat/README.md)
+1. [Oveall Architecture](docs/architecture-overview.md)
+2. [Amounts formatting](src/utils/amountFormat/README.md)

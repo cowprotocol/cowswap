@@ -1,4 +1,4 @@
-import { TokenAmounts } from '@cow/modules/tokens'
+import { TokenAmounts } from 'modules/tokens'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
 import { useMemo } from 'react'

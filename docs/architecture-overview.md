@@ -8,10 +8,49 @@ Overall architecture of the project
 
 ## Modules
 
-- [Trade](../src/cow-react/modules/trade/docs/README.md)
-- Swap
-- Limit orders
-- Accounts
-- AppData
-- Tokens
-- Etc
+### Core modules
+
+- wallet
+- transactions
+- gas
+- prices
+
+### Trading modules
+
+- [trade](../src/cow-react/modules/trade/docs/README.md)
+- swap
+- limitOrder
+- twap
+
+### Helper trading modules
+
+- cancelOrder
+- wrapNative
+
+### Basic components (UI building blocks)
+
+- components
+- forms
+
+### UI modules
+
+- account
+- notifications
+- activity
+
+### appData
+
+- [appData](../src/modules/appData/appData-module.md)
+- ~affiliate~ (not used right now)
+- [utm](../src/modules/utm/utm-module.md)
+
+### Token modules
+
+- tokens
+- tokenLists
+- tokenImages
+- cowToken
+
+### Other
+
+- misc

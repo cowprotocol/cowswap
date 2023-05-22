@@ -1,6 +1,6 @@
-import { useWalletInfo } from '@cow/modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 import { createMulticall /*, ListenerOptions */ } from '@uniswap/redux-multicall'
-import { useInterfaceMulticall } from 'hooks/useContract'
+import { useInterfaceMulticall } from 'legacy/hooks/useContract'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { combineReducers, createStore } from 'redux'
 

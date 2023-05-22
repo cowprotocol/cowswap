@@ -1,11 +1,11 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useTokenContract } from 'hooks/useContract'
-import { useTokenAllowance } from 'hooks/useTokenAllowance'
+import { useTokenContract } from 'legacy/hooks/useContract'
+import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useCallback, useMemo } from 'react'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+import { useWalletInfo } from 'modules/wallet'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',

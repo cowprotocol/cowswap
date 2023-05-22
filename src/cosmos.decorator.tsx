@@ -3,14 +3,14 @@ import '@reach/dialog/styles.css'
 import { ReactNode } from 'react'
 import { Provider } from 'react-redux'
 import { Box, Flex } from 'rebass'
-import store from 'state'
+import store from 'legacy/state'
 import styled from 'styled-components/macro'
-import ThemeProvider from 'theme'
+import ThemeProvider from 'legacy/theme'
 import { LanguageProvider } from 'i18n'
 import { HashRouter } from 'react-router-dom'
 import { Web3ReactProvider } from '@web3-react/core'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
-import { injectedConnection } from '@cow/modules/wallet/web3-react/connection/injected'
+import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
 
 const Wrapper = styled(Flex)`
   font-family: 'Inter var', sans-serif;
