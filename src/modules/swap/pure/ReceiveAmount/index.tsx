@@ -2,7 +2,7 @@ import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
 import * as styledEl from './styled'
 import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { Currency } from '@uniswap/sdk-core'
-import { BalanceAndSubsidy } from 'hooks/useCowBalanceAndSubsidy'
+import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { Trans } from '@lingui/macro'
 
 export interface ReceiveAmountProps {

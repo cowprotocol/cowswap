@@ -3,9 +3,9 @@ import { COW_SUBSIDY_DATA } from './constants'
 import { CowSubsidy } from './index'
 import { transparentize, lighten } from 'polished'
 
-import { V_COW } from 'constants/tokens'
+import { V_COW } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useIsDarkMode } from 'state/user/hooks'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 

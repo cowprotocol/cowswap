@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { RowBetween } from 'components/Row'
+import { RowBetween } from 'legacy/components/Row'
 import { transparentize } from 'polished'
 import { Info } from 'react-feather'
 

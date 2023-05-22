@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { AutoColumn } from 'components/Column'
+import { AutoColumn } from 'legacy/components/Column'
 
 import { TradeSummaryProps } from 'modules/swap/containers/TradeSummary'
 // Sub-components

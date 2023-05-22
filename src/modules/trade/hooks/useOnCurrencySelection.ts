@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Field } from 'state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 import { Currency } from '@uniswap/sdk-core'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'

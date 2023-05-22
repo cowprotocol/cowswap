@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
-import { useOrders } from 'state/orders/hooks'
+import { useOrders } from 'legacy/state/orders/hooks'
 import { useCallback, useMemo } from 'react'
-import { Order, OrderStatus, PENDING_STATES } from 'state/orders/actions'
+import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { getOrderFilledAmount } from 'modules/limitOrders/utils/getOrderFilledAmount'
 import { getOrderSurplus } from 'modules/limitOrders/utils/getOrderSurplus'
 import { getOrderExecutedAmounts } from 'modules/limitOrders/utils/getOrderExecutedAmounts'

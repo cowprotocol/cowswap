@@ -3,15 +3,15 @@ import {
   ConfirmationPendingContent,
   OperationType,
   TransactionErrorContent,
-} from 'components/TransactionConfirmationModal'
+} from 'legacy/components/TransactionConfirmationModal'
 import { GpModal as Modal } from 'common/pure/Modal'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { useWalletInfo } from 'modules/wallet'
 import React, { useCallback, useState } from 'react'
-import { useRequestOrderCancellation } from 'state/orders/hooks'
-import { ButtonPrimary } from 'components/Button'
-import { isRejectRequestProviderError } from 'utils/misc'
+import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { isRejectRequestProviderError } from 'legacy/utils/misc'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 interface Props {

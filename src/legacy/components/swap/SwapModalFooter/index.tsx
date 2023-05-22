@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 import { Trans } from '@lingui/macro'
 import { Text } from 'rebass'
-import { AutoRow, RowBetween, RowFixed } from 'components/Row'
+import { AutoRow, RowBetween, RowFixed } from 'legacy/components/Row'
 import styled from 'styled-components/macro'
-import { ButtonError } from 'components/Button'
-import { ButtonSize } from 'theme/enum'
-import { SwapCallbackError } from 'components/swap/styleds'
+import { ButtonError } from 'legacy/components/Button'
+import { ButtonSize } from 'legacy/theme/enum'
+import { SwapCallbackError } from 'legacy/components/swap/styleds'
 
 const Wrapper = styled.div`
   ${RowBetween} > div,

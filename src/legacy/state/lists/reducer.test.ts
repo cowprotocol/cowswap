@@ -1,8 +1,8 @@
 import { createStore, Store } from 'redux'
-import { DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK, DEFAULT_LIST_OF_LISTS_BY_NETWORK } from 'constants/lists'
-import { updateVersion } from 'state/global/actions'
-import { fetchTokenList, acceptListUpdate, addList, removeList, enableList } from 'state/lists/actions'
-import reducer, { ListsStateByNetwork } from 'state/lists/reducer'
+import { DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK, DEFAULT_LIST_OF_LISTS_BY_NETWORK } from 'legacy/constants/lists'
+import { updateVersion } from 'legacy/state/global/actions'
+import { fetchTokenList, acceptListUpdate, addList, removeList, enableList } from 'legacy/state/lists/actions'
+import reducer, { ListsStateByNetwork } from 'legacy/state/lists/reducer'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 const DEFAULT_LIST_OF_LISTS = DEFAULT_LIST_OF_LISTS_BY_NETWORK[ChainId.MAINNET]
@@ -601,6 +601,7 @@ describe('list reducer', () => {
         // this is ok.
         Object.keys(byUrl).forEach((url) => {
           if (url !== 'https://unpkg.com/@uniswap/default-token-list@latest/uniswap-default.tokenlist.json') {
+            // eslint-disable-next-line jest/no-conditional-expect
             expect(byUrl[url]).toEqual({
               error: null,
               current: null,

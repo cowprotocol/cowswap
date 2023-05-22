@@ -1,11 +1,11 @@
 import { SwapFlowContext } from '../types'
 import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
-import { signAndPostOrder } from 'utils/trade'
+import { signAndPostOrder } from 'legacy/utils/trade'
 import { presignOrderStep } from './steps/presignOrderStep'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { PriceImpact } from 'hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Percent } from '@uniswap/sdk-core'
 
 export async function swapFlow(
@@ -47,7 +47,7 @@ export async function swapFlow(
     )
 
     logTradeFlow('SWAP FLOW', 'STEP 6: add app data to upload queue')
-    input.callbacks.addAppDataToUploadQueue({ chainId: input.context.chainId, orderId, appData: input.appDataInfo })
+    input.callbacks.uploadAppData({ chainId: input.context.chainId, orderId, appData: input.appDataInfo })
 
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     input.swapConfirmManager.transactionSent(orderId)

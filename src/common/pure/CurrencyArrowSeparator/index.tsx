@@ -1,5 +1,5 @@
 import React from 'react'
-import loadingCowWebp from '@src/legacy/assets/cow-swap/cow-load.webp'
+import loadingCowWebp from 'legacy/assets/cow-swap/cow-load.webp'
 import * as styledEl from './styled'
 
 export interface CurrencyArrowSeparatorProps {

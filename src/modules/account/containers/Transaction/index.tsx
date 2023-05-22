@@ -1,14 +1,14 @@
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
-import { RowFixed } from 'components/Row'
+import { RowFixed } from 'legacy/components/Row'
 
 import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
-import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
-import { ActivityDescriptors, ActivityStatus, ActivityType } from 'hooks/useRecentActivity'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
 
 // import { StateIcon } from './StateIcon'
-import { Order } from 'state/orders/actions'
-import { useActivityDerivedState } from 'hooks/useActivityDerivedState'
+import { Order } from 'legacy/state/orders/actions'
+import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDetails } from './ActivityDetails'
 import { useWalletInfo } from 'modules/wallet'
 

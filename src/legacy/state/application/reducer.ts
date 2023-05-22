@@ -1,9 +1,9 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
-import { DEFAULT_TXN_DISMISS_MS } from 'constants/misc'
+import { DEFAULT_TXN_DISMISS_MS } from 'legacy/constants/misc'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro'
-import { initialState } from 'state/application/initialState'
+import { initialState } from 'legacy/state/application/initialState'
 
 type BasePopupContent = {
   failedSwitchNetwork: SupportedChainId

@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { useCancelledOrders, useFulfillOrdersBatch } from 'state/orders/hooks'
-import { OrderTransitionStatus } from 'state/orders/utils'
-import { OrderFulfillmentData } from 'state/orders/actions'
-import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'state/orders/consts'
+import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
+import { OrderTransitionStatus } from 'legacy/state/orders/utils'
+import { OrderFulfillmentData } from 'legacy/state/orders/actions'
+import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { CANCELLED_ORDERS_PENDING_TIME } from 'constants/index'
+import { CANCELLED_ORDERS_PENDING_TIME } from 'legacy/constants'
 
-import { fetchOrderPopupData, OrderLogPopupMixData } from 'state/orders/updaters/utils'
-import { supportedChainId } from 'utils/supportedChainId'
+import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/updaters/utils'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { useWalletInfo } from 'modules/wallet'
 
 /**

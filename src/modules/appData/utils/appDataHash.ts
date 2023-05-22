@@ -1,4 +1,4 @@
-import { environmentName } from 'utils/environments'
+import { environmentName } from 'legacy/utils/environments'
 
 const DEFAULT_APP_DATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 

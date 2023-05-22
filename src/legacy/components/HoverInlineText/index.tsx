@@ -1,4 +1,4 @@
-import Tooltip from 'components/Tooltip'
+import Tooltip from 'legacy/components/Tooltip'
 import { useState } from 'react'
 import styled from 'styled-components/macro'
 

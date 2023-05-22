@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
-import { useGasPrices } from 'state/gas/hooks'
+import { useGasPrices } from 'legacy/state/gas/hooks'
 import { BalanceChecks } from '../../../pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { AVG_APPROVE_COST_GWEI } from 'constants/index'
+import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
 import { parseUnits } from 'ethers/lib/utils'
 import { useWalletInfo } from 'modules/wallet'
 // eslint-disable-next-line no-restricted-imports

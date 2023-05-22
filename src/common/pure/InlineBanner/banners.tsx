@@ -1,13 +1,12 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import Important from 'assets/cow-swap/important.svg'
-import { WarningBanner } from 'common/pure/WarningBanner'
-import { TokenAmount } from 'common/pure/TokenAmount'
+import { InlineBanner } from './index'
 import { Nullish } from 'types'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 export function BundleTxApprovalBanner() {
   return (
-    <WarningBanner
-      icon={Important}
+    <InlineBanner
+      type={'information'}
       content={
         <>
           <strong>Token approval</strong>: For your convenience, token approval and order placement will be bundled into
@@ -25,7 +24,7 @@ export type SmallVolumeWarningBannerProps = {
 
 export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolumeWarningBannerProps) {
   return (
-    <WarningBanner
+    <InlineBanner
       content={
         <>
           Small orders are unlikely to be executed. For this order, network fees would be{' '}

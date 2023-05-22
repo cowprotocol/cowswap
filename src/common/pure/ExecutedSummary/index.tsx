@@ -1,5 +1,5 @@
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
-import { Order } from 'state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import * as styledEl from './styled'
 

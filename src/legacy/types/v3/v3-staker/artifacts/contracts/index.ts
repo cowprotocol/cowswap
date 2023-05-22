@@ -3,3 +3,4 @@
 /* eslint-disable */
 import type * as interfaces from './interfaces'
 export type { interfaces }
+export type { UniswapV3Staker } from './UniswapV3Staker'

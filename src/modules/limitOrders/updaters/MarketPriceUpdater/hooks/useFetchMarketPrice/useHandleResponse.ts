@@ -5,7 +5,7 @@ import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
-import { CancelableResult } from 'utils/async'
+import { CancelableResult } from 'legacy/utils/async'
 import { FractionUtils } from 'utils/fractionUtils'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 

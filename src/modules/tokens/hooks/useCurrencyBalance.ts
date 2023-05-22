@@ -5,9 +5,9 @@ import JSBI from 'jsbi'
 import { useMemo } from 'react'
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
-import { isAddress } from 'utils'
-import { nativeOnChain } from 'constants/tokens'
-import { useInterfaceMulticall } from 'hooks/useContract'
+import { isAddress } from 'legacy/utils'
+import { nativeOnChain } from 'legacy/constants/tokens'
+import { useInterfaceMulticall } from 'legacy/hooks/useContract'
 
 import { useWalletInfo } from 'modules/wallet'
 import { useOnchainBalances } from 'modules/tokens'

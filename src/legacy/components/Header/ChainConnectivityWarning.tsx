@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/macro'
-import { getChainInfoOrDefault, L2ChainInfo } from 'constants/chainInfo'
+import { getChainInfoOrDefault, L2ChainInfo } from 'legacy/constants/chainInfo'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
-import { ExternalLink, MEDIA_WIDTHS } from 'theme'
+import { ExternalLink, MEDIA_WIDTHS } from 'legacy/theme'
 import { useWalletInfo } from 'modules/wallet'
 
 const BodyRow = styled.div`

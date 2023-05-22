@@ -1,6 +1,6 @@
-import store from 'state'
-import { addTransaction, finalizeTransaction } from 'state/enhancedTransactions/actions'
-import { HashType } from 'state/enhancedTransactions/reducer'
+import store from 'legacy/state'
+import { addTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
+import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
 export const WrapPendingTxHashMock = '0xe87e1d02b052daa9605abe018e8172feffd1bc38ed2284e6f9d7fdb065440bbb'
 export const WrapSuccessfulTxHashMock = '0xe87e1d02b052daa9605abe018e8172feffd1bc38ed2284e6f9d7fdb065440ccc'

@@ -1,12 +1,12 @@
-import { HighFeeWarning } from 'components/SwapWarnings'
+import { HighFeeWarning } from 'legacy/components/SwapWarnings'
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
-import TradeGp from 'state/swap/TradeGp'
+import TradeGp from 'legacy/state/swap/TradeGp'
 import { Currency } from '@uniswap/sdk-core'
 import React from 'react'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import styled from 'styled-components/macro'
-import { BundleTxApprovalBanner } from 'common/pure/WarningBanner/banners'
+import { BundleTxApprovalBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 export interface SwapWarningsTopProps {

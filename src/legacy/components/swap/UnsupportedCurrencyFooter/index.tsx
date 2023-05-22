@@ -3,7 +3,7 @@ import UnsupportedCurrencyFooterMod, {
   UnsupportedCurrencyFooterParams,
   DetailsFooter,
 } from './UnsupportedCurrencyFooterMod'
-import { UNSUPPORTED_TOKENS_FAQ_URL } from 'constants/index'
+import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 

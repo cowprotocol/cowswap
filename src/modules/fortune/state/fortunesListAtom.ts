@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { RAW_CODE_LINK } from 'constants/index'
+import { RAW_CODE_LINK } from 'legacy/constants'
 import { loadable } from 'jotai/utils'
 import { FortuneItem } from 'modules/fortune/types'
 

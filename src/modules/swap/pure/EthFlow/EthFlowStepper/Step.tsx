@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import styled from 'styled-components/macro'
 import { StatusIcon, StatusIconState } from './StatusIcon'
-import { ExplorerLink } from 'components/ExplorerLink'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
 
 export const ExplorerLinkStyled = styled(ExplorerLink)``
 

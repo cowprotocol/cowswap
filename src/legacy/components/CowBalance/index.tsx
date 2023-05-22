@@ -2,8 +2,8 @@ import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
 
 import { ClaimSummaryTitle, ClaimTotal, ClaimSummary as ClaimSummaryWrapper } from 'pages/Claim/styled'
-import CowProtocolLogo from 'components/CowProtocolLogo'
-import { CowSubsidyInfoProps } from 'components/CowSubsidyModal'
+import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { CowSubsidyInfoProps } from 'legacy/components/CowSubsidyModal'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 const Wrapper = styled(ClaimSummaryWrapper)`

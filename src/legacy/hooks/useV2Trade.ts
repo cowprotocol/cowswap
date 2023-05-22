@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 import { Pair, Trade } from '@uniswap/v2-sdk'
 import { useMemo } from 'react'
-import { isTradeBetter } from 'utils/isTradeBetter'
+import { isTradeBetter } from 'legacy/utils/isTradeBetter'
 import { BETTER_TRADE_LESS_HOPS_THRESHOLD } from '../constants/misc'
 import { useAllCurrencyCombinations } from './useAllCurrencyCombinations'
 import { PairState, useV2Pairs } from './useV2Pairs'

@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react'
 
 import styled, { css } from 'styled-components/macro'
-import { WithClassName } from '@src/legacy/types'
+import { WithClassName } from 'legacy/types'
 import { Widget } from 'modules/application/pure/Widget'
 import { lighten } from 'polished'
 

@@ -1,7 +1,7 @@
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 import { BalanceValue } from './styled'
-import Loader from 'components/Loader'
-import useTheme from 'hooks/useTheme'
+import Loader from 'legacy/components/Loader'
+import useTheme from 'legacy/hooks/useTheme'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { useWalletInfo } from 'modules/wallet'
 

@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
-import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'hooks/useRecentActivity'
-import { supportedChainId } from 'utils/supportedChainId'
+import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { LowerSectionSimple, Wrapper } from '../AccountDetails/styled'
 import { renderActivities } from '../AccountDetails'
 import { AccountDetailsProps } from '../AccountDetails'

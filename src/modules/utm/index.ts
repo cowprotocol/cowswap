@@ -1,2 +1,2 @@
-export * from './hooks'
-export * from './types'
+export { useInitializeUtm, useUtm } from './hooks'
+export type { UtmParams } from './types'

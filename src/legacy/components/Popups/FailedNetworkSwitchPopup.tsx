@@ -4,12 +4,12 @@ import { useContext } from 'react'
 import { AlertCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { AutoColumn } from 'components/Column'
-import { AutoRow } from 'components/Row'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
 
-import { getChainInfo } from 'constants/chainInfo'
+import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useMemo } from 'react'
-import UnsupportedNetworkMessage from 'components/UnsupportedNetworkMessage'
+import UnsupportedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

@@ -1,13 +1,13 @@
 import { Trans } from '@lingui/macro'
-import { getChainInfo } from 'constants/chainInfo'
+import { getChainInfo } from 'legacy/constants/chainInfo'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ArrowUpRight } from 'react-feather'
-import { useDarkModeManager } from 'state/user/hooks'
+import { useDarkModeManager } from 'legacy/state/user/hooks'
 import styled from 'styled-components/macro'
-import { ExternalLink, HideSmall } from 'theme'
+import { ExternalLink, HideSmall } from 'legacy/theme'
 import { transparentize } from 'polished'
-import { AutoRow } from 'components/Row'
-import useTheme from 'hooks/useTheme'
+import { AutoRow } from 'legacy/components/Row'
+import useTheme from 'legacy/hooks/useTheme'
 import { useWalletInfo } from 'modules/wallet'
 
 const L2Icon = styled.img`

@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 import { useCallback } from 'react'
 import { EthFlowModalBottomContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalBottomContent'
 
-import { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
+import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
 import {
   BalanceChecks,
   EthFlowModalTopContent,

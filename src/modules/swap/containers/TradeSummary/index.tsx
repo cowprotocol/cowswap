@@ -1,8 +1,8 @@
 import { Percent } from '@uniswap/sdk-core'
-import TradeGp from 'state/swap/TradeGp'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useWalletDetails } from 'modules/wallet'
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
 // Sub-components
 import { TradeSummaryContent } from 'modules/swap/pure/TradeSummary'

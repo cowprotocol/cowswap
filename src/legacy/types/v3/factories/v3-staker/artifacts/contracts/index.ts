@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as interfaces from './interfaces'
+export { UniswapV3Staker__factory } from './UniswapV3Staker__factory'

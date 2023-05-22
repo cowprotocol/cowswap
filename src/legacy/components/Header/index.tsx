@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Routes } from 'constants/routes'
 import { useNavigate } from 'react-router-dom'
-import { useDarkModeManager } from 'state/user/hooks'
-import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'hooks/useMediaQuery'
+import { useDarkModeManager } from 'legacy/state/user/hooks'
+import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
 
-import { supportedChainId } from 'utils/supportedChainId'
-import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import {
   Wrapper,
@@ -24,13 +24,13 @@ import {
 import MobileMenuIcon from './MobileMenuIcon'
 import { useWalletInfo, Web3Status } from 'modules/wallet'
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
-import NetworkSelector from 'components/Header/NetworkSelector'
-import CowBalanceButton from 'components/CowBalanceButton'
+import NetworkSelector from 'legacy/components/Header/NetworkSelector'
+import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import SVG from 'react-inlinesvg'
-import { cowSwapLogo } from 'theme/cowSwapAssets'
+import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
 
 // Assets
-import { toggleDarkModeAnalytics } from 'components/analytics'
+import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'

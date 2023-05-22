@@ -1,18 +1,18 @@
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
-import { ExternalLink as ExternalLinkTheme } from 'theme'
-import { MEV_TOTAL, FLASHBOTS_LINK } from 'constants/index'
+import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
+import { MEV_TOTAL, FLASHBOTS_LINK } from 'legacy/constants'
 
 // Assets
-import diagramIMG from '@src/legacy/assets/cow-swap/cowswap-diagram.png'
-import gaslessIMG from '@src/legacy/assets/cow-swap/gasless.png'
-import mevIMG from '@src/legacy/assets/cow-swap/mev.png'
+import diagramIMG from 'legacy/assets/cow-swap/cowswap-diagram.png'
+import gaslessIMG from 'legacy/assets/cow-swap/gasless.png'
+import mevIMG from 'legacy/assets/cow-swap/mev.png'
 import { Routes } from 'constants/routes'
 
 // AmplitudeAnalytics
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 const ExternalLink = styled(ExternalLinkTheme)``

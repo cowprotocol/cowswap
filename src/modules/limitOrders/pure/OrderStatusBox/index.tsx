@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { OrderStatus } from 'state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 import { orderStatusTitleMap } from 'modules/limitOrders/pure/Orders/OrderRow'
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 

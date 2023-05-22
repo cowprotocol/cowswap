@@ -1,10 +1,10 @@
-import { PriceImpact } from '@src/legacy/hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { Percent } from '@uniswap/sdk-core'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { signAndPostOrder } from '@src/legacy/utils/trade'
+import { signAndPostOrder } from 'legacy/utils/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
@@ -60,7 +60,7 @@ export async function safeBundleFlow(
     appData,
     settlementContract,
     safeAppsSdk,
-    addAppDataToUploadQueue,
+    uploadAppData,
   } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
@@ -107,7 +107,7 @@ export async function safeBundleFlow(
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: add app data to upload queue')
-    addAppDataToUploadQueue({ chainId, orderId, appData })
+    uploadAppData({ chainId, orderId, appData })
 
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 

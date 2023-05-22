@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/macro'
-import useAutoRouterSupported from 'hooks/useAutoRouterSupported'
+import useAutoRouterSupported from 'legacy/hooks/useAutoRouterSupported'
 import styled from 'styled-components/macro'
-import { ThemedText } from 'theme'
+import { ThemedText } from 'legacy/theme'
 
-import { ReactComponent as StaticRouterIcon } from '@src/legacy/assets/svg/static_route.svg'
+import { ReactComponent as StaticRouterIcon } from 'legacy/assets/svg/static_route.svg'
 import AutoRouterIcon from './AutoRouterIcon'
 
 const StyledAutoRouterIcon = styled(AutoRouterIcon)`

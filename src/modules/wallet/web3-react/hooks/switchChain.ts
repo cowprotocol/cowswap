@@ -1,9 +1,9 @@
 import { networkConnection } from 'modules/wallet/web3-react/connection/network'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { Connector } from '@web3-react/types'
-import { getChainInfo } from 'constants/chainInfo'
+import { getChainInfo } from 'legacy/constants/chainInfo'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { RPC_URLS } from 'constants/networks'
+import { RPC_URLS } from 'legacy/constants/networks'
 import { isChainAllowed } from '../connection'
 
 function getRpcUrls(chainId: SupportedChainId): [string] {

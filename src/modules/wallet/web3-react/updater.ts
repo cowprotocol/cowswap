@@ -1,11 +1,11 @@
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
-import useENSName from 'hooks/useENSName'
+import useENSName from 'legacy/hooks/useENSName'
 import { useWeb3React } from '@web3-react/core'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
 import { useEffect, useMemo, useState } from 'react'
 
-import { UNSUPPORTED_WC_WALLETS } from 'constants/index'
+import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
 import { useSetAtom } from 'jotai'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { getSafeInfo } from 'api/gnosisSafe'
