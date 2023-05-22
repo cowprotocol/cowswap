@@ -3,14 +3,6 @@ import { atom } from 'jotai'
 import { Milliseconds } from '@cow/types'
 import { defaultOrderDeadline } from '@cow/common/pure/DeadlineSelector/deadlines'
 
-export enum SlippageError {
-  InvalidInput = 'InvalidInput',
-}
-
-export enum NumberOfPartsError {
-  InvalidInput = 'InvalidInput',
-}
-
 export interface AdvancedOrdersSettingsState {
   // deadline
   readonly isCustomDeadline: boolean
@@ -21,12 +13,12 @@ export interface AdvancedOrdersSettingsState {
   }
 
   // no. of parts
-  readonly numberOfParts: number
-  readonly numberOfPartsError: NumberOfPartsError | null
+  readonly numberOfPartsValue: number
+  readonly numberOfPartsError: string | null
 
   // slippage
-  readonly slippage: number | 'auto'
-  readonly slippageError: SlippageError | null
+  readonly slippageValue: number | 'auto'
+  readonly slippageError: string | null
 }
 
 export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
@@ -39,11 +31,11 @@ export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
   },
 
   // no. of parts
-  numberOfParts: 1,
+  numberOfPartsValue: 1,
   numberOfPartsError: null,
 
   // slippage
-  slippage: 'auto',
+  slippageValue: 'auto',
   slippageError: null,
 }
 

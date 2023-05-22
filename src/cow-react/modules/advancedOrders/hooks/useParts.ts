@@ -5,9 +5,8 @@ import { useMemo } from 'react'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export function useNoOfParts() {
-  const { numberOfParts } = useAtomValue(advancedOrdersSettingsAtom)
-
-  return useMemo(() => ({ numberOfParts }), [numberOfParts])
+  const { numberOfPartsValue, numberOfPartsError } = useAtomValue(advancedOrdersSettingsAtom)
+  return { numberOfPartsValue, numberOfPartsError }
 }
 
 type PartsOutput = {
@@ -26,7 +25,7 @@ export function usePartsValues(): PartsOutput {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
   } = useAdvancedOrdersFullState()
-  const { numberOfParts } = useNoOfParts()
+  const { numberOfPartsValue } = useNoOfParts()
 
   return useMemo(() => {
     const output: PartsOutput = {
@@ -41,19 +40,19 @@ export function usePartsValues(): PartsOutput {
       output.outputPartAmount = CurrencyAmount.fromRawAmount(outputCurrency, 0)
     }
 
-    if (inputCurrencyAmount && outputCurrencyAmount && numberOfParts) {
-      output.inputPartAmount = inputCurrencyAmount.divide(numberOfParts)
-      output.outputPartAmount = outputCurrencyAmount.divide(numberOfParts)
+    if (inputCurrencyAmount && outputCurrencyAmount && numberOfPartsValue) {
+      output.inputPartAmount = inputCurrencyAmount.divide(numberOfPartsValue)
+      output.outputPartAmount = outputCurrencyAmount.divide(numberOfPartsValue)
     }
 
-    if (inputCurrencyFiatAmount && outputCurrencyFiatAmount && numberOfParts) {
-      output.inputFiatAmount = inputCurrencyFiatAmount.divide(numberOfParts)
-      output.outputFiatAmount = outputCurrencyFiatAmount.divide(numberOfParts)
+    if (inputCurrencyFiatAmount && outputCurrencyFiatAmount && numberOfPartsValue) {
+      output.inputFiatAmount = inputCurrencyFiatAmount.divide(numberOfPartsValue)
+      output.outputFiatAmount = outputCurrencyFiatAmount.divide(numberOfPartsValue)
     }
 
     return output
   }, [
-    numberOfParts,
+    numberOfPartsValue,
     inputCurrencyAmount,
     outputCurrencyAmount,
     inputCurrency,

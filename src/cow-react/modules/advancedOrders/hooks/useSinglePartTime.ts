@@ -6,13 +6,13 @@ import { displayTime } from '../utils/displayTime'
 
 export function useSinglePartTime() {
   const { isCustomDeadline, deadline, customDeadline } = useDeadline()
-  const { numberOfParts } = useNoOfParts()
+  const { numberOfPartsValue } = useNoOfParts()
 
   return useMemo(() => {
     const { hours: h, minutes: m } = customDeadline
     const totalTime = isCustomDeadline ? ms(`${h}h`) + ms(`${m}m`) : deadline
-    const time = totalTime / numberOfParts
+    const time = totalTime / numberOfPartsValue
 
     return displayTime({ time, defaultOutput: '-' })
-  }, [deadline, numberOfParts, customDeadline, isCustomDeadline])
+  }, [deadline, numberOfPartsValue, customDeadline, isCustomDeadline])
 }
