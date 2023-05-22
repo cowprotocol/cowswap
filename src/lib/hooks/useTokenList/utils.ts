@@ -1,5 +1,5 @@
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
 type TokenMap = Readonly<{ [tokenAddress: string]: { token: WrappedTokenInfo; list?: TokenList } }>
 export type ChainTokenMap = Readonly<{ [chainId: number]: TokenMap }>
