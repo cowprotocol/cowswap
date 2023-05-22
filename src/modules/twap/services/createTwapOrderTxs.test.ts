@@ -11,7 +11,7 @@ const order: TWAPOrder = {
   buyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, 200_000),
   receiver: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
   numOfParts: 3,
-  startTime: Math.ceil(Date.now() / 1000),
+  startTime: 1684764716,
   timeInterval: 600,
   span: 0,
 }
