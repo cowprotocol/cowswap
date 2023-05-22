@@ -1,4 +1,4 @@
-import { useDerivedSwapInfo } from '@src/legacy/state/swap/hooks'
+import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
 import { useShouldZeroApprove } from './useShouldZeroApprove'
 
 export function useShouldZeroApproveSwap() {
