@@ -17,7 +17,7 @@ export function useSetSlippage(): (slippageTolerance: Percent | 'auto') => void 
         value = 'auto'
       }
       updateSettingsState({
-        slippage: value,
+        slippageValue: value,
       })
     },
     [updateSettingsState]
