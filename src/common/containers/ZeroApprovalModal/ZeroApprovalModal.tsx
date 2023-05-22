@@ -4,7 +4,7 @@ import { shortenAddress } from 'legacy/utils'
 import { GpModal } from 'common/pure/Modal'
 import { useWeb3React } from '@web3-react/core'
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'
-import { useZeroApprovalState } from 'common/hooks/useZeroApprovalState'
+import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
 import { useCallback } from 'react'
 
 interface ZeroApprovalModalProps {

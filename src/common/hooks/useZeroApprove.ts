@@ -3,7 +3,7 @@ import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 import { useApproveCallback } from './useApproveCallback'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useSetAtom } from 'jotai'
-import { zeroApprovalState } from './useZeroApprovalState'
+import { zeroApprovalState } from '../state/useZeroApprovalState'
 
 export function useZeroApprove(currency: Currency) {
   const setZeroApprovalState = useSetAtom(zeroApprovalState)
