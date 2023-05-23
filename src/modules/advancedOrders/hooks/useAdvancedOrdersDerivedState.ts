@@ -1,4 +1,4 @@
-import { advancedOrdersAtom, advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
+import { advancedOrdersAtom, advancedOrdersDerivedStateAtom } from '../state/advancedOrdersAtom'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 import { useEffect } from 'react'

@@ -1,7 +1,6 @@
 import { TradeWidgetField, TradeWidgetFieldProps } from 'modules/trade/pure/TradeWidgetField'
-import { NumericalInput } from 'modules/advancedOrders/pure/NumericalInput'
 import { useMemo } from 'react'
-import { Suffix } from './styled'
+import { NumericalInput, Suffix } from './styled'
 import { TradeWidgetFieldError } from 'modules/trade/pure/TradeWidgetField'
 
 export interface TradeNumberInputProps extends TradeWidgetFieldProps {
@@ -29,3 +28,4 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
     </TradeWidgetField>
   )
 }
+export { NumericalInput } from './styled'

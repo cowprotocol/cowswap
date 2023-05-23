@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 
-export const Wrapper = styled.div`
+export const TradeWidgetFieldBox = styled.div`
   background: ${({ theme }) => theme.grey1};
   border-radius: 16px;
   padding: 0.5rem 1rem;
@@ -12,7 +12,7 @@ export const Wrapper = styled.div`
   flex: 1;
 `
 
-export const Label = styled.span`
+export const TradeWidgetFieldLabel = styled.span`
   color: ${({ theme }) => transparentize(0.3, theme.text1)};
   display: flex;
   align-items: center;

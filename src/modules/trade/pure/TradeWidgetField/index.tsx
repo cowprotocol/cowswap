@@ -1,4 +1,4 @@
-import { Wrapper, Label, Content, ErrorText } from './styled'
+import { TradeWidgetFieldBox, TradeWidgetFieldLabel, Content, ErrorText } from './styled'
 import { Trans } from '@lingui/macro'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
@@ -14,13 +14,13 @@ export interface TradeWidgetFieldProps {
 export function TradeWidgetField(props: TradeWidgetFieldProps) {
   const { children, label, hint, error } = props
   return (
-    <Wrapper>
-      <Label>
+    <TradeWidgetFieldBox>
+      <TradeWidgetFieldLabel>
         <Trans>{label}</Trans>
         {hint && <QuestionHelper text={hint} />}
-      </Label>
+      </TradeWidgetFieldLabel>
       <Content>{children}</Content>
       {error && <ErrorText type={error.type}>{error.text}</ErrorText>}
-    </Wrapper>
+    </TradeWidgetFieldBox>
   )
 }

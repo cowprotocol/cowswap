@@ -1,10 +1,10 @@
 import { AdvancedOrdersWidget } from 'modules/advancedOrders'
-import { QuoteUpdater } from 'modules/advancedOrders/updaters/QuoteUpdater'
+import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
 export default function AdvancedOrdersPage() {
   return (
     <>
-      <QuoteUpdater />
+      <TradeQuoteUpdater />
       <AdvancedOrdersWidget />
     </>
   )
