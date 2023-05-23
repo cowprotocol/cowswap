@@ -9,6 +9,8 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { signAndPostOrder } from 'legacy/utils/trade'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
+import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 
 const LOG_PREFIX = 'SAFE BUNDLE FLOW'
 
@@ -62,6 +64,27 @@ export async function safeBundleFlow(
       { to: approveTx.to!, data: approveTx.data!, value: '0', operation: 0 },
       { to: presignTx.to!, data: presignTx.data!, value: '0', operation: 0 },
     ]
+
+    const shouldZeroApprove = await shouldZeroApproveFn({
+      tokenContract: erc20Contract,
+      spender,
+      amountToApprove: context.trade.inputAmount,
+      isBundle: true,
+    })
+
+    if (shouldZeroApprove) {
+      const zeroApproveTx = await buildZeroApproveTx({
+        erc20Contract,
+        spender,
+        currency: context.trade.inputAmount.currency,
+      })
+      safeTransactionData.unshift({
+        to: zeroApproveTx.to!,
+        data: zeroApproveTx.data!,
+        value: '0',
+        operation: 0,
+      })
+    }
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
 
