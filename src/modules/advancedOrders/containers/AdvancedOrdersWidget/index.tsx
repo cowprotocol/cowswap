@@ -5,9 +5,9 @@ import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWid
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { Field } from 'legacy/state/swap/actions'
 import {
-  useAdvancedOrdersFullState,
-  useFillAdvancedOrdersFullState,
-} from 'modules/advancedOrders/hooks/useAdvancedOrdersFullState'
+  useAdvancedOrdersDerivedState,
+  useFillAdvancedOrdersDerivedState,
+} from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { useIsQuoteLoading } from 'modules/advancedOrders/hooks/useIsQuoteLoading'
 import { DeadlineSelector } from 'modules/advancedOrders/containers/DeadlineSelector'
@@ -22,7 +22,7 @@ import * as styledEl from './styled'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
-  useFillAdvancedOrdersFullState()
+  useFillAdvancedOrdersDerivedState()
 
   const {
     inputCurrency,
@@ -35,7 +35,7 @@ export function AdvancedOrdersWidget() {
     outputCurrencyFiatAmount,
     recipient,
     orderKind,
-  } = useAdvancedOrdersFullState()
+  } = useAdvancedOrdersDerivedState()
   const actions = useAdvancedOrdersActions()
   const isTradePriceUpdating = useIsQuoteLoading()
 

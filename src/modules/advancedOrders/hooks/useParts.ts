@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useAdvancedOrdersFullState } from 'modules/advancedOrders/hooks/useAdvancedOrdersFullState'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
 import { useMemo } from 'react'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -24,7 +24,7 @@ export function usePartsValues(): PartsOutput {
     outputCurrency,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
-  } = useAdvancedOrdersFullState()
+  } = useAdvancedOrdersDerivedState()
   const { numberOfPartsValue } = useNoOfParts()
 
   return useMemo(() => {

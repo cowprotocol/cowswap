@@ -7,7 +7,7 @@ import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 import { useQuoteParams } from './useQuoteParams'
 import { advancedOrdersQuoteAtom } from '../state/advancedOrdersQuoteAtom'
-import { useAdvancedOrdersFullState } from './useAdvancedOrdersFullState'
+import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
 import { Field } from 'legacy/state/swap/actions'
 
@@ -20,7 +20,7 @@ const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 // TODO: this also should be unified for each trade widget
 export function useGetQuote() {
   const quoteParams = useQuoteParams()
-  const { outputCurrency } = useAdvancedOrdersFullState()
+  const { outputCurrency } = useAdvancedOrdersDerivedState()
   const setAdvancedOrderQuote = useSetAtom(advancedOrdersQuoteAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 

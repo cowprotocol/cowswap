@@ -5,11 +5,11 @@ import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateO
 import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
 import { Field } from 'legacy/state/swap/actions'
 import { updateAdvancedOrdersAtom } from '../state/advancedOrdersAtom'
-import { useAdvancedOrdersFullState } from './useAdvancedOrdersFullState'
+import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 
 // TODO: this should be also unified for each trade widget (swap, limit, advanced)
 export function useAdvancedOrdersActions() {
-  const { inputCurrency } = useAdvancedOrdersFullState()
+  const { inputCurrency } = useAdvancedOrdersDerivedState()
 
   const updateAdvancedOrdersState = useUpdateAtom(updateAdvancedOrdersAtom)
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
