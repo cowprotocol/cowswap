@@ -24,7 +24,7 @@ export function useQuoteParams() {
     return {
       sellToken,
       buyToken,
-      amount: currencyAmount.numerator,
+      amount: currencyAmount.quotient,
       chainId,
       receiver: account,
       kind: OrderKind.SELL,
