@@ -1,19 +1,18 @@
-import { useAtomValue } from 'jotai/utils'
-import { advancedOrdersAtom, advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { useMemo } from 'react'
 import { getAddress } from 'utils/getAddress'
-import { parseUnits } from 'ethers/lib/utils'
 import { useWalletInfo } from 'modules/wallet'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
-// TODO: probably also can be unified for each trade widget
 export function useQuoteParams() {
   const { chainId, account } = useWalletInfo()
-  const { inputCurrency, outputCurrency } = useAtomValue(advancedOrdersDerivedStateAtom)
-  const { typedValue } = useAtomValue(advancedOrdersAtom)
+  const { state } = useDerivedTradeState()
+
+  const { inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount, orderKind } = state || {}
+  const currencyAmount = orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !typedValue) {
+    if (!inputCurrency || !outputCurrency || !currencyAmount) {
       return
     }
 
@@ -22,12 +21,10 @@ export function useQuoteParams() {
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
-    const amount = parseUnits(typedValue, inputCurrency?.decimals)
-
     return {
       sellToken,
       buyToken,
-      amount,
+      amount: currencyAmount.quotient,
       chainId,
       receiver: account,
       kind: OrderKind.SELL,
@@ -35,5 +32,5 @@ export function useQuoteParams() {
       fromDecimals,
       isEthFlow: false,
     }
-  }, [inputCurrency, outputCurrency, typedValue, account, chainId])
+  }, [inputCurrency, outputCurrency, currencyAmount, account, chainId])
 }

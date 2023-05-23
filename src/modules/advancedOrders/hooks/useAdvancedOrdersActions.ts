@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
 import { Currency } from '@uniswap/sdk-core'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
-import { useUpdateCurrencyAmount } from './useUpdateCurrencyAmount'
+import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { Field } from 'legacy/state/swap/actions'
 import { updateAdvancedOrdersAtom } from '../state/advancedOrdersAtom'
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
@@ -36,7 +36,6 @@ export function useAdvancedOrdersActions() {
         currency: inputCurrency,
         field,
       })
-      updateAdvancedOrdersState({ typedValue })
     },
     [inputCurrency, updateAdvancedOrdersState, updateCurrencyAmount]
   )
