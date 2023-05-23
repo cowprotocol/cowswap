@@ -25,6 +25,8 @@ describe('Create TWAP order', () => {
   let approveFn: jest.Mock
 
   beforeEach(() => {
+    jest.spyOn(Date, 'now').mockImplementation(() => 1497076708000)
+
     createCowFn = jest.fn().mockReturnValue(CREATE_COW_TX_DATA)
     approveFn = jest.fn().mockReturnValue(APPROVE_TX_DATA)
 
