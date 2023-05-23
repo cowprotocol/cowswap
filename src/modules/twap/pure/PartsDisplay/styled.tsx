@@ -2,6 +2,7 @@ import styled from 'styled-components/macro'
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { transparentize } from 'polished'
 import { TradeWidgetFieldBox, TradeWidgetFieldLabel } from 'modules/trade/pure/TradeWidgetField/styled'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -21,8 +22,7 @@ export const Part = styled(TradeWidgetFieldBox)`
 export const Label = styled(TradeWidgetFieldLabel)`
   font-size: 12px;
 `
-
-export const Value = styled.div`
+export const Amount = styled(TokenAmount)`
   font-size: 20px;
   font-weight: 500;
   padding: 7px 0;
