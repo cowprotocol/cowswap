@@ -3,7 +3,5 @@ import { useShouldZeroApprove } from './useShouldZeroApprove'
 
 export function useShouldZeroApproveSwap() {
   const { parsedAmount } = useDerivedSwapInfo()
-  const shouldZeroApprove = useShouldZeroApprove(parsedAmount)
-
-  return shouldZeroApprove
+  return useShouldZeroApprove(parsedAmount)
 }

@@ -25,6 +25,8 @@ import {
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { Nullish } from 'types'
+import { useShouldZeroApproveLimit } from 'common/hooks/useShouldZeroApproveLimit'
+import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [
   LimitOrdersFormState.ExpertApproveAndSwap,
@@ -55,7 +57,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const formState = useLimitOrdersFormState()
   const rateImpact = useRateImpact()
   const { chainId, account } = useWalletInfo()
-  const { inputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+  const { inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount } = useLimitOrdersDerivedState()
 
   const showPriceImpactWarning =
     !!chainId && !expertMode && !!account && !!priceImpact.error && formState === LimitOrdersFormState.CanTrade
@@ -65,6 +67,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
   const showApprovalBundlingBanner = !isConfirmScreen && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(formState)
+  const shouldZeroApprove = useShouldZeroApproveLimit()
+  const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
   const isSafeViaWc = useIsSafeViaWc()
   const showSafeWcBundlingBanner =
@@ -75,7 +79,8 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     rateImpact < 0 ||
     showHighFeeWarning ||
     showApprovalBundlingBanner ||
-    showSafeWcBundlingBanner
+    showSafeWcBundlingBanner ||
+    shouldZeroApprove
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -101,6 +106,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   return isVisible ? (
     <div className={className}>
+      {showZeroApprovalWarning && <ZeroApprovalWarning currency={inputCurrency} />}
       {showPriceImpactWarning && (
         <StyledNoImpactWarning
           withoutAccepting={isConfirmScreen}
