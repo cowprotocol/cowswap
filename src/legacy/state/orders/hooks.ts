@@ -37,6 +37,7 @@ import {
 import { isTruthy } from 'legacy/utils/misc'
 import { OrderID } from 'api/gnosisProtocol'
 import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
@@ -160,9 +161,7 @@ export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = _concatOrdersState(state, ORDER_LIST_KEYS).map(_deserializeOrder).filter(isTruthy)
-
-    return allOrders
+    return _concatOrdersState(state, ORDER_LIST_KEYS).map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
@@ -317,6 +316,18 @@ export const useAddPendingOrder = (): AddOrderCallback => {
     },
     [dispatch]
   )
+}
+
+export type UpdateOrderParams = {
+  chainId: ChainId
+  order: Partial<Omit<Order, 'id'>> & Pick<Order, 'id'>
+}
+
+export type UpdateOrderCallback = (params: UpdateOrderParams) => void
+
+export const usePartialUpdateOrder = (): UpdateOrderCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((params: UpdateOrderParams) => partialOrderUpdate(params, dispatch), [dispatch])
 }
 
 export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
