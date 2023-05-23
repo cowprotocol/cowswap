@@ -1,11 +1,14 @@
 import { TradeType, useTradeTypeInfo } from './useTradeTypeInfo'
 import { useMemo } from 'react'
-import { TradeRawState } from 'modules/trade/types/TradeRawState'
+import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 import { useAdvancedOrdersRawState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSwapRawState, useUpdateSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 
-export function useTradeState(): { state?: TradeRawState; updateState?: (state: TradeRawState) => void } {
+export function useTradeState(): {
+  state?: TradeRawState
+  updateState?: (update: Partial<ExtendedTradeRawState>) => void
+} {
   const tradeTypeInfo = useTradeTypeInfo()
 
   const limitOrdersState = useLimitOrdersRawState()

@@ -1,10 +1,9 @@
 import { useCallback } from 'react'
-import { useUpdateAtom } from 'jotai/utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { FractionUtils } from 'utils/fractionUtils'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { updateAdvancedOrdersAtom } from '../state/advancedOrdersAtom'
 import { Field } from 'legacy/state/swap/actions'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
 
 type AmountType = {
   value: string
@@ -19,7 +18,7 @@ type UpdateCurrencyAmountProps = {
 
 // TODO: probably also can be unified with other trade widgets
 export function useUpdateCurrencyAmount() {
-  const updateAdvancedOrdersState = useUpdateAtom(updateAdvancedOrdersAtom)
+  const { updateState } = useTradeState()
 
   return useCallback(
     ({ field, currency, amount }: UpdateCurrencyAmountProps) => {
@@ -39,8 +38,8 @@ export function useUpdateCurrencyAmount() {
       const currencyAmount = FractionUtils.serializeFractionToJSON(parsedAmount)
       const currencyField = field === Field.INPUT ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
 
-      updateAdvancedOrdersState({ [currencyField]: currencyAmount })
+      updateState?.({ [currencyField]: currencyAmount })
     },
-    [updateAdvancedOrdersState]
+    [updateState]
   )
 }

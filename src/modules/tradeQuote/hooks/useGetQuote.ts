@@ -6,10 +6,10 @@ import { getQuote } from 'api/gnosisProtocol'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 import { useQuoteParams } from './useQuoteParams'
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useUpdateCurrencyAmount } from 'modules/advancedOrders/hooks/useUpdateCurrencyAmount'
+import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { Field } from 'legacy/state/swap/actions'
-import { tradeQuoteAtom } from '../state/tradeQuoteAtom'
+import { tradeQuoteAtom } from 'modules/tradeQuote/state/tradeQuoteAtom'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 // Every 10s
 const PRICE_UPDATE_INTERVAL = 10_000
@@ -17,18 +17,20 @@ const PRICE_UPDATE_INTERVAL = 10_000
 // Solves the problem of multiple requests
 const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
-// TODO: this also should be unified for each trade widget
 export function useGetQuote() {
   const quoteParams = useQuoteParams()
-  const { outputCurrency } = useAdvancedOrdersDerivedState()
-  const setAdvancedOrderQuote = useSetAtom(tradeQuoteAtom)
+  const { state } = useDerivedTradeState()
+
+  const updateQuoteState = useSetAtom(tradeQuoteAtom)
   const updateCurrencyAmount = useUpdateCurrencyAmount()
+
+  const outputCurrency = state?.outputCurrency
 
   useLayoutEffect(() => {
     if (!quoteParams) return
 
     const fetchQuote = () => {
-      setAdvancedOrderQuote({ isLoading: true })
+      updateQuoteState({ isLoading: true })
 
       getQuoteOnlyResolveLast(quoteParams)
         .then((response) => {
@@ -38,7 +40,7 @@ export function useGetQuote() {
             return
           }
 
-          setAdvancedOrderQuote({
+          updateQuoteState({
             response: data,
             isLoading: false,
           })
@@ -51,7 +53,7 @@ export function useGetQuote() {
         })
         .catch((error: GpQuoteError) => {
           console.log('[useGetQuote]:: fetchQuote error', error)
-          setAdvancedOrderQuote({ isLoading: false })
+          updateQuoteState({ isLoading: false })
         })
     }
 
@@ -60,7 +62,7 @@ export function useGetQuote() {
     const intervalId = setInterval(fetchQuote, PRICE_UPDATE_INTERVAL)
 
     return () => clearInterval(intervalId)
-  }, [quoteParams, outputCurrency, setAdvancedOrderQuote, updateCurrencyAmount])
+  }, [quoteParams, outputCurrency, updateQuoteState, updateCurrencyAmount])
 
   return null
 }
