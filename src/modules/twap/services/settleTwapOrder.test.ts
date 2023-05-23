@@ -28,7 +28,7 @@ const order: TWAPOrder = {
   buyAmount: CurrencyAmount.fromRawAmount(WETH_GOERLI, 5_000),
   receiver: '0xca063a2ab07491ee991dcecb456d1265f842b568',
   numOfParts: 5,
-  startTime: Math.ceil(Date.now() / 1000),
+  startTime: 1497076708,
   timeInterval: 350,
   span: 0,
 }
@@ -40,6 +40,8 @@ const useTradeSpenderAddressMock = useTradeSpenderAddress as jest.MockedFunction
 
 describe('settleTwapOrder - integration test', () => {
   beforeEach(() => {
+    jest.spyOn(Date, 'now').mockImplementation(() => 1497076708000)
+
     useSafeAppsSdkMock.mockReturnValue({ txs: { send: () => Promise.resolve({ safeTxHash: '0x00b' }) } } as any)
     useComposableCowContractMock.mockReturnValue({
       interface: { encodeFunctionData: () => '0xCREATE_COW_TX_DATA' },
