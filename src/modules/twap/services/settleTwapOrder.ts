@@ -1,7 +1,7 @@
 import { createTwapOrderTxs } from './createTwapOrderTxs'
 import { TWAPOrder } from '../types'
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
-import { SendTransactionsResponse } from '@safe-global/safe-apps-sdk/src/types'
+import { SendTransactionsResponse } from '@safe-global/safe-apps-sdk'
 
 export async function settleTwapOrder(
   order: TWAPOrder,
