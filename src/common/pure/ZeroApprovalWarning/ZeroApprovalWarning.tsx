@@ -8,7 +8,7 @@ const Link = styled(HashLink)`
 `
 
 interface ZeroApprovalWarningProps {
-  currency: Currency | undefined
+  currency: Currency | undefined | null
 }
 
 // TODO: Replace with FAQ link once available.
