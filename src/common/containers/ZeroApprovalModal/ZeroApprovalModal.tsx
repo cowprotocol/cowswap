@@ -5,7 +5,7 @@ import { GpModal } from 'common/pure/Modal'
 import { useWeb3React } from '@web3-react/core'
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'
 import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 interface ZeroApprovalModalProps {
   onDismiss?: () => void
@@ -16,8 +16,12 @@ export function ZeroApprovalModal({ onDismiss = () => {} }: ZeroApprovalModalPro
   const walletDetails = useWalletDetails()
   const { connector } = useWeb3React()
   const { isApproving, currency } = useZeroApprovalState()
+  const [hasUserClosedModal, setHasUserClosedModal] = useState(false)
+
+  const shouldShow = isApproving && !hasUserClosedModal
 
   const handleDismiss = useCallback(() => {
+    setHasUserClosedModal(true)
     onDismiss()
   }, [onDismiss])
 
@@ -26,9 +30,9 @@ export function ZeroApprovalModal({ onDismiss = () => {} }: ZeroApprovalModalPro
   const symbol = currency?.symbol?.toUpperCase() ?? 'Unknown Currency' // This should never happen.
 
   return (
-    <GpModal isOpen={isApproving} onDismiss={handleDismiss}>
+    <GpModal isOpen={shouldShow} onDismiss={handleDismiss}>
       <ConfirmationPendingContent
-        onDismiss={onDismiss}
+        onDismiss={handleDismiss}
         statusIcon={getStatusIcon(connector, walletDetails, 56)}
         title={
           <>
