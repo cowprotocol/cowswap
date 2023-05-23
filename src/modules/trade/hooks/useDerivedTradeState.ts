@@ -24,13 +24,5 @@ export function useDerivedTradeState(): { state?: TradeDerivedState } {
     return {
       state: limitOrdersDerivedState,
     }
-  }, [
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(tradeTypeInfo),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(limitOrdersDerivedState),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(advancedOrdersDerivedState),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  ])
+  }, [tradeTypeInfo, limitOrdersDerivedState, advancedOrdersDerivedState])
 }
