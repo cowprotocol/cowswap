@@ -15,9 +15,13 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import styled from 'styled-components/macro'
 import { LimitOrdersFormState, useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
-import { useWalletInfo } from 'modules/wallet'
+import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { BundleTxApprovalBanner, SmallVolumeWarningBanner } from 'common/pure/InlineBanner/banners'
+import {
+  BundleTxApprovalBanner,
+  BundleTxSafeWcBanner,
+  SmallVolumeWarningBanner,
+} from 'common/pure/InlineBanner/banners'
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { Nullish } from 'types'
@@ -62,7 +66,16 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   const showApprovalBundlingBanner = !isConfirmScreen && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(formState)
 
-  const isVisible = showPriceImpactWarning || rateImpact < 0 || showHighFeeWarning || showApprovalBundlingBanner
+  const isSafeViaWc = useIsSafeViaWc()
+  const showSafeWcBundlingBanner =
+    !isConfirmScreen && !showApprovalBundlingBanner && isSafeViaWc && formState === LimitOrdersFormState.NotApproved
+
+  const isVisible =
+    showPriceImpactWarning ||
+    rateImpact < 0 ||
+    showHighFeeWarning ||
+    showApprovalBundlingBanner ||
+    showSafeWcBundlingBanner
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -75,7 +88,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       updateLimitOrdersWarnings({ isRateImpactAccepted: false })
     }
   }, [updateLimitOrdersWarnings, isConfirmScreen])
-
   const onAcceptPriceImpact = useCallback(() => {
     updateLimitOrdersWarnings({ isPriceImpactAccepted: !isPriceImpactAccepted })
   }, [updateLimitOrdersWarnings, isPriceImpactAccepted])
@@ -109,6 +121,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {/*// TODO: must be replaced by <NotificationBanner>*/}
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
+      {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
     </div>
   ) : null
 }
