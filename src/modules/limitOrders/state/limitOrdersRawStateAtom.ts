@@ -19,7 +19,6 @@ export function getDefaultLimitOrdersState(chainId: SupportedChainId | null): Li
     outputCurrencyAmount: null,
     orderKind: OrderKind.SELL,
     isUnlocked: false,
-    typedValue: null,
   }
 }
 

@@ -36,7 +36,6 @@ export function useAdvancedOrdersActions() {
         currency: inputCurrency,
         field,
       })
-      updateAdvancedOrdersState({ typedValue })
     },
     [inputCurrency, updateAdvancedOrdersState, updateCurrencyAmount]
   )
