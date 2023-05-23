@@ -1,5 +1,6 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+// Read more: https://github.com/rndlabs/composable-cow#data-structure
 export interface TWAPOrder {
   sellAmount: CurrencyAmount<Token>
   buyAmount: CurrencyAmount<Token>
