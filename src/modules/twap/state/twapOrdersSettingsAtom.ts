@@ -51,3 +51,9 @@ export const updateTwapOrdersSettingsAtom = atom(null, (get, set, nextState: Par
     return { ...prevState, ...nextState }
   })
 })
+
+export const twapNumOfPartsAtom = atom((get) => {
+  const { numberOfPartsValue, numberOfPartsError } = get(twapOrdersSettingsAtom)
+
+  return { numberOfPartsValue, numberOfPartsError }
+})

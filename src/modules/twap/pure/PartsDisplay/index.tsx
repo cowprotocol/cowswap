@@ -1,9 +1,11 @@
 import { Trans } from '@lingui/macro'
 import * as styledEl from './styled'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { useNoOfParts, usePartsValues } from '../../hooks/useParts'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
+import { useAtomValue } from 'jotai/utils'
+import { partsStateAtom } from '../../state/partsStateAtom'
+import { twapNumOfPartsAtom } from '../../state/twapOrdersSettingsAtom'
 
 interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
@@ -29,8 +31,8 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
 }
 
 export function PartsDisplay() {
-  const { numberOfPartsValue } = useNoOfParts()
-  const { inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = usePartsValues()
+  const { numberOfPartsValue } = useAtomValue(twapNumOfPartsAtom)
+  const { inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = useAtomValue(partsStateAtom)
 
   return (
     <styledEl.Wrapper>

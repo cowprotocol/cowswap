@@ -2,16 +2,17 @@ import * as styledEl from './styled'
 import { TradeNumberInput } from '../../../trade/pure/TradeNumberInput'
 import { PartsDisplay } from '../../pure/PartsDisplay'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { useNoOfParts } from '../../hooks/useParts'
 import { useParseNumberOfParts } from '../../hooks/useParseNumberOfParts'
 import { useState } from 'react'
 import { useParseSlippage } from '../../hooks/useParseSlippage'
 import { useDisplaySlippageValue } from '../../hooks/useDisplaySlippageValue'
 import { useDisplaySlippageError } from '../../hooks/useDisplaySlippageError'
+import { useAtomValue } from 'jotai'
+import { twapNumOfPartsAtom } from '../../state/twapOrdersSettingsAtom'
 
 export function TwapFormWidget() {
   // Number of parts
-  const { numberOfPartsError, numberOfPartsValue } = useNoOfParts()
+  const { numberOfPartsError, numberOfPartsValue } = useAtomValue(twapNumOfPartsAtom)
   const parseNumberOfParts = useParseNumberOfParts()
 
   // Slippage
