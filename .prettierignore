@@ -6,8 +6,7 @@ build
 src/**/*.d.ts
 src/abis
 src/legacy/abis
-#src/assets
-src/types
+src/legacy/types
 CHANGELOG.md
 
 # inherited from uniswap, better not touch it
