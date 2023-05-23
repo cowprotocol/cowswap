@@ -77,6 +77,7 @@ export function getValidParams(params: LegacyPriceQuoteParams) {
   return { ...params, baseToken, quoteToken }
 }
 
+// TODO: the function throws error, when initialValue = '0'
 export function calculateFallbackPriceImpact(initialValue: string, finalValue: string) {
   const initialValueBn = new BigNumberJs(initialValue)
   const finalValueBn = new BigNumberJs(finalValue)
