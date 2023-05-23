@@ -9,3 +9,9 @@ export const Row = styled.div`
     grid-gap: 6px;
   `}
 `
+
+export const DeadlineRow = styled(Row)`
+  grid-gap: 0;
+  background: ${({ theme }) => theme.grey1};
+  border-radius: 16px;
+`

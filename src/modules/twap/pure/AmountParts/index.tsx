@@ -28,7 +28,7 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   )
 }
 
-export function PartsDisplay({ partsState }: { partsState: PartsState }) {
+export function AmountParts({ partsState }: { partsState: PartsState }) {
   const { numberOfPartsValue, inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = partsState
 
   return (

@@ -1,60 +1,72 @@
-import { useCallback, useRef, useState } from 'react'
-
-import { useDisplayDeadline } from '../../hooks/useDisplayDeadline'
-import { CustomDeadline } from './types'
+import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
+import React, { useCallback, useMemo, useState } from 'react'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
-import { useDeadline } from '../../hooks/useDeadline'
-import { useUpdateDeadline } from '../../hooks/useUpdateDeadline'
-import { DeadlineDisplayPart } from '../DeadlineDisplayPart'
-import { Selector } from './pure/Selector'
-import * as styledEl from './styled'
+import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
+import styled from 'styled-components/macro'
 
-export function DeadlineSelector() {
-  const { customDeadline } = useDeadline()
+interface DeadlineSelectorProps {
+  items: TradeSelectItem[]
+  deadline: TwapOrdersDeadline
+  setDeadline(value: TwapOrdersDeadline): void
+}
 
-  // Modal related code
-  const [isOpen, setIsOpen] = useState(false)
+const CUSTOM_OPTION: TradeSelectItem = { label: 'Custom', value: 'CUSTOM_ITEM_VALUE' }
 
-  const openModal = useCallback(() => setIsOpen(true), [])
-  const onDismiss = useCallback(() => setIsOpen(false), [])
+const StyledTradeSelect = styled(TradeSelect)`
+  font-size: 14px;
+  font-weight: 500;
+`
 
-  const currentDeadlineNode = useRef<HTMLButtonElement>()
-  const displayDeadline = useDisplayDeadline()
-  const updateDeadline = useUpdateDeadline()
+export function DeadlineSelector(props: DeadlineSelectorProps) {
+  const {
+    items,
+    deadline: { deadline, customDeadline, isCustomDeadline },
+    setDeadline,
+  } = props
+  const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
 
-  const selectDeadline = useCallback(
-    (deadline: number) => {
-      updateDeadline({ isCustomDeadline: false, deadline })
-      currentDeadlineNode.current?.click()
+  const itemsWithCustom = useMemo(() => {
+    return [...items, CUSTOM_OPTION]
+  }, [items])
+
+  const onSelect = useCallback(
+    (item: TradeSelectItem) => {
+      if (item === CUSTOM_OPTION) {
+        setIsCustomModalOpen(true)
+      } else {
+        setDeadline({
+          isCustomDeadline: false,
+          deadline: item.value as number,
+          customDeadline: defaultCustomDeadline,
+        })
+      }
     },
-    [updateDeadline]
+    [setIsCustomModalOpen, setDeadline]
   )
 
-  const selectCustomDeadline = useCallback(
-    (customDeadline: CustomDeadline) => {
-      updateDeadline({ isCustomDeadline: true, customDeadline })
-    },
-    [updateDeadline]
-  )
+  const activeLabel = useMemo(() => {
+    if (isCustomDeadline) {
+      return `${customDeadline.hours}h ${customDeadline.minutes}m`
+    }
+
+    return items.find((item) => item.value === deadline)?.label || ''
+  }, [items, deadline, customDeadline, isCustomDeadline])
 
   return (
-    <styledEl.Wrapper>
-      <Selector
-        currentDeadlineNode={currentDeadlineNode}
-        selectDeadline={selectDeadline}
-        openModal={openModal}
-        customDeadline={customDeadline}
-        displayDeadline={displayDeadline}
+    <>
+      <StyledTradeSelect
+        label="Total time"
+        hint="TODO: Some hint"
+        items={itemsWithCustom}
+        activeLabel={activeLabel}
+        onSelect={onSelect}
       />
-
-      <DeadlineDisplayPart />
-
       <CustomDeadlineSelector
-        selectCustomDeadline={selectCustomDeadline}
+        selectCustomDeadline={(value) => setDeadline({ isCustomDeadline: true, customDeadline: value, deadline: 0 })}
         customDeadline={customDeadline}
-        onDismiss={onDismiss}
-        isOpen={isOpen}
+        onDismiss={() => setIsCustomModalOpen(false)}
+        isOpen={isCustomModalOpen}
       />
-    </styledEl.Wrapper>
+    </>
   )
 }

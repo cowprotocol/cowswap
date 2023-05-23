@@ -1,24 +1,20 @@
 import ms from 'ms'
 
-type Params = {
-  time: number
-  defaultOutput: string
-}
+const [oneD, oneH, oneM, oneS] = [ms('1d'), ms('1h'), ms('1m'), ms('1s')]
+export function displayTime(time: number): string {
+  const timeMs = ms(`${time}ms`)
+  const days = Math.floor(timeMs / oneD)
+  const hours = Math.floor((timeMs % oneD) / oneH)
+  const minutes = Math.floor((timeMs % oneH) / oneM)
+  const seconds = Math.floor((timeMs % oneM) / oneS)
 
-export function displayTime(params: Params) {
-  const { time, defaultOutput } = params
-
-  const output = []
-
-  const days = Math.floor(ms(`${time}ms`) / ms('1d'))
-  const hours = Math.floor((ms(`${time}ms`) % ms('1d')) / ms('1h'))
-  const minutes = Math.floor((ms(`${time}ms`) % ms('1h')) / ms('1m'))
-  const seconds = Math.floor((ms(`${time}ms`) % ms('1m')) / ms('1s'))
-
-  if (days) output.push(`${days}d`)
-  if (hours) output.push(`${hours}h`)
-  if (minutes) output.push(`${minutes}m`)
-  if (seconds) output.push(`${seconds}s`)
-
-  return output.length ? output.join(' ') : defaultOutput
+  return [
+    [days, 'd'],
+    [hours, 'h'],
+    [minutes, 'm'],
+    [seconds, 's'],
+  ]
+    .filter(([value]) => !!value)
+    .map(([value, suffix]) => `${value}${suffix}`)
+    .join(' ')
 }

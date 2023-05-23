@@ -1,17 +1,27 @@
 import * as styledEl from './styled'
-import { TradeNumberInput } from '../../../trade/pure/TradeNumberInput'
-import { PartsDisplay } from '../../pure/PartsDisplay'
-import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
+import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
+import { AmountParts } from '../../pure/AmountParts'
 import { useAtomValue } from 'jotai'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { useUpdateAtom } from 'jotai/utils'
 import { partsStateAtom } from '../../state/partsStateAtom'
+import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { useMemo } from 'react'
+import { displayTime } from 'utils/displayTime'
+import { orderDeadlines } from '../../const'
 
 export function TwapFormWidget() {
-  // Number of parts
-  const { numberOfPartsValue, slippageValue } = useAtomValue(twapOrdersSettingsAtom)
+  const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
+    useAtomValue(twapOrdersSettingsAtom)
   const partsState = useAtomValue(partsStateAtom)
   const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
+
+  const partsTime = useMemo(() => {
+    const timestamp = isCustomDeadline ? (customDeadline.hours * 60 + customDeadline.minutes) * 60 * 1000 : deadline
+
+    return displayTime(timestamp / numberOfPartsValue)
+  }, [numberOfPartsValue, deadline, customDeadline, isCustomDeadline])
 
   return (
     <>
@@ -35,8 +45,23 @@ export function TwapFormWidget() {
         />
       </styledEl.Row>
 
-      <PartsDisplay partsState={partsState} />
-      <DeadlineSelector />
+      <AmountParts partsState={partsState} />
+
+      <styledEl.DeadlineRow>
+        <DeadlineSelector
+          deadline={{
+            deadline,
+            customDeadline,
+            isCustomDeadline,
+          }}
+          items={orderDeadlines}
+          setDeadline={(value) => updateState(value)}
+        />
+
+        <TradeTextBox label="Part every" hint="TODO: part every tooltip">
+          <>{partsTime}</>
+        </TradeTextBox>
+      </styledEl.DeadlineRow>
     </>
   )
 }

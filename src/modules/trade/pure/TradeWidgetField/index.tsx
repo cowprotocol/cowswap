@@ -9,12 +9,13 @@ export interface TradeWidgetFieldProps {
   children?: JSX.Element
   hint?: JSX.Element | string
   error?: TradeWidgetFieldError
+  className?: string
 }
 
 export function TradeWidgetField(props: TradeWidgetFieldProps) {
-  const { children, label, hint, error } = props
+  const { className, children, label, hint, error } = props
   return (
-    <TradeWidgetFieldBox>
+    <TradeWidgetFieldBox className={className}>
       <TradeWidgetFieldLabel>
         <Trans>{label}</Trans>
         {hint && <QuestionHelper text={hint} />}

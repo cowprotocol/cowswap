@@ -3,10 +3,11 @@ import ms from 'ms'
 import { GpModal as Modal } from 'common/pure/Modal'
 import { Trans } from '@lingui/macro'
 import { ButtonPrimary } from 'legacy/components/Button'
-import { CustomDeadline } from '../DeadlineSelector/types'
 import { useEffect, useState } from 'react'
 
-type ModalProps = {
+type CustomDeadline = { hours: number; minutes: number }
+
+interface CustomDeadlineSelectorProps {
   isOpen: boolean
   onDismiss: () => void
   customDeadline: CustomDeadline
@@ -16,7 +17,8 @@ type ModalProps = {
 const MAX_TWAP_ORDER_DEADLINE = ms(`30d`) * 6 // ~ 6months
 const MAX_DEADLINE_ERROR = 'Twap order deadline cannot be longer then 6 months'
 
-export function CustomDeadlineSelector({ isOpen, onDismiss, customDeadline, selectCustomDeadline }: ModalProps) {
+export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
+  const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
   const { hours, minutes } = customDeadline
 
   const [hoursValue, setHoursValue] = useState(hours || 0)
