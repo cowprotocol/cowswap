@@ -2,53 +2,40 @@ import * as styledEl from './styled'
 import { TradeNumberInput } from '../../../trade/pure/TradeNumberInput'
 import { PartsDisplay } from '../../pure/PartsDisplay'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { useParseNumberOfParts } from '../../hooks/useParseNumberOfParts'
-import { useState } from 'react'
-import { useParseSlippage } from '../../hooks/useParseSlippage'
-import { useDisplaySlippageValue } from '../../hooks/useDisplaySlippageValue'
-import { useDisplaySlippageError } from '../../hooks/useDisplaySlippageError'
 import { useAtomValue } from 'jotai'
-import { twapNumOfPartsAtom } from '../../state/twapOrdersSettingsAtom'
+import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import { useUpdateAtom } from 'jotai/utils'
+import { partsStateAtom } from '../../state/partsStateAtom'
 
 export function TwapFormWidget() {
   // Number of parts
-  const { numberOfPartsError, numberOfPartsValue } = useAtomValue(twapNumOfPartsAtom)
-  const parseNumberOfParts = useParseNumberOfParts()
-
-  // Slippage
-  const [slippageInput, setSlippageInput] = useState('')
-  const [slippageWarning, setSlippageWarning] = useState<string | null>(null)
-  const [slippageError, setSlippageError] = useState<string | null>(null)
-
-  const parseSlippageInput = useParseSlippage({
-    setSlippageInput,
-    setSlippageError,
-    setSlippageWarning,
-  })
-  const displaySlippageValue = useDisplaySlippageValue(slippageInput)
-  const displaySlippageError = useDisplaySlippageError(slippageWarning, slippageError)
+  const { numberOfPartsValue, slippageValue } = useAtomValue(twapOrdersSettingsAtom)
+  const partsState = useAtomValue(partsStateAtom)
+  const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
   return (
     <>
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
-          onUserInput={(v: string) => parseNumberOfParts(v)}
-          error={numberOfPartsError ? { type: 'error', text: numberOfPartsError } : null}
+          onUserInput={(value: number | null) => updateState({ numberOfPartsValue: value || 1 })}
+          min={1}
+          max={100}
           label="No. of parts"
           hint="Todo: No of parts hint"
         />
         <TradeNumberInput
-          value={displaySlippageValue}
-          onUserInput={(v: string) => parseSlippageInput(v)}
-          error={displaySlippageError}
+          value={slippageValue}
+          onUserInput={(value: number | null) => updateState({ slippageValue: value })}
+          decimalsPlaces={2}
+          max={50}
           label="Slippage"
           hint="Todo: Slippage hint"
           suffix="%"
         />
       </styledEl.Row>
 
-      <PartsDisplay />
+      <PartsDisplay partsState={partsState} />
       <DeadlineSelector />
     </>
   )

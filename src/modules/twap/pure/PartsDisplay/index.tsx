@@ -3,9 +3,7 @@ import * as styledEl from './styled'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
-import { useAtomValue } from 'jotai/utils'
-import { partsStateAtom } from '../../state/partsStateAtom'
-import { twapNumOfPartsAtom } from '../../state/twapOrdersSettingsAtom'
+import { PartsState } from '../../state/partsStateAtom'
 
 interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
@@ -30,9 +28,8 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   )
 }
 
-export function PartsDisplay() {
-  const { numberOfPartsValue } = useAtomValue(twapNumOfPartsAtom)
-  const { inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = useAtomValue(partsStateAtom)
+export function PartsDisplay({ partsState }: { partsState: PartsState }) {
+  const { numberOfPartsValue, inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = partsState
 
   return (
     <styledEl.Wrapper>

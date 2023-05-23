@@ -3,11 +3,12 @@ import { useMemo } from 'react'
 import { displayTime } from 'utils/displayTime'
 import { useDeadline } from './useDeadline'
 import { useAtomValue } from 'jotai'
-import { twapNumOfPartsAtom } from '../state/twapOrdersSettingsAtom'
+import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
+// TODO: refactor
 export function useSinglePartTime() {
   const { isCustomDeadline, deadline, customDeadline } = useDeadline()
-  const { numberOfPartsValue } = useAtomValue(twapNumOfPartsAtom)
+  const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
 
   return useMemo(() => {
     const { hours: h, minutes: m } = customDeadline

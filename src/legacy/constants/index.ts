@@ -210,7 +210,3 @@ export const FAQ_MENU_LINKS = [
 
 // Min USD value to show surplus
 export const MIN_FIAT_SURPLUS_VALUE = 0.01
-
-// TWAP orders
-export const MIN_PARTS_NUMBER = 0
-export const MAX_PARTS_NUMBER = 100
