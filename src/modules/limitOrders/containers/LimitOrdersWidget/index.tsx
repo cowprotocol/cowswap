@@ -35,6 +35,7 @@ import usePriceImpact from 'legacy/hooks/usePriceImpact'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -43,19 +44,22 @@ export function LimitOrdersWidget() {
   useFillLimitOrdersDerivedState()
 
   const { chainId } = useWalletInfo()
+  const { isUnlocked } = useLimitOrdersDerivedState()
+  const { state } = useDerivedTradeState()
+
   const {
     inputCurrency,
     outputCurrency,
     inputCurrencyAmount,
-    outputCurrencyAmount,
-    inputCurrencyBalance,
-    outputCurrencyBalance,
-    inputCurrencyFiatAmount,
-    outputCurrencyFiatAmount,
-    recipient,
-    isUnlocked,
     orderKind,
-  } = useLimitOrdersDerivedState()
+    inputCurrencyBalance,
+    outputCurrencyAmount,
+    outputCurrencyBalance,
+    outputCurrencyFiatAmount,
+    inputCurrencyFiatAmount,
+    recipient,
+  } = state
+
   const onImportDismiss = useOnImportDismiss()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const isSellOrder = useIsSellOrder()

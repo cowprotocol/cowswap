@@ -3,32 +3,33 @@ import { useSetupTradeState } from 'modules/trade'
 import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWidget'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { Field } from 'legacy/state/swap/actions'
-import {
-  useAdvancedOrdersDerivedState,
-  useFillAdvancedOrdersDerivedState,
-} from '../../hooks/useAdvancedOrdersDerivedState'
+import { useFillAdvancedOrdersDerivedState } from '../../hooks/useAdvancedOrdersDerivedState'
 import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
 import { useIsQuoteLoading } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
   useFillAdvancedOrdersDerivedState()
 
+  const actions = useAdvancedOrdersActions()
+  const isTradePriceUpdating = useIsQuoteLoading()
+
+  const { state } = useDerivedTradeState()
+
   const {
     inputCurrency,
     outputCurrency,
     inputCurrencyAmount,
-    outputCurrencyAmount,
-    inputCurrencyBalance,
-    outputCurrencyBalance,
-    inputCurrencyFiatAmount,
-    outputCurrencyFiatAmount,
-    recipient,
     orderKind,
-  } = useAdvancedOrdersDerivedState()
-  const actions = useAdvancedOrdersActions()
-  const isTradePriceUpdating = useIsQuoteLoading()
+    inputCurrencyBalance,
+    outputCurrencyAmount,
+    outputCurrencyBalance,
+    outputCurrencyFiatAmount,
+    inputCurrencyFiatAmount,
+    recipient,
+  } = state
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
