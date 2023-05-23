@@ -7,6 +7,7 @@ import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import styled from 'styled-components/macro'
 import { BundleTxApprovalBanner } from 'common/pure/InlineBanner/banners'
+import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 export interface SwapWarningsTopProps {
   trade: TradeGp | undefined
@@ -16,6 +17,7 @@ export interface SwapWarningsTopProps {
   hideUnknownImpactWarning: boolean
   isExpertMode: boolean
   showApprovalBundlingBanner: boolean
+  shouldZeroApprove: boolean
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -42,12 +44,14 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     showApprovalBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
+    shouldZeroApprove,
   } = props
 
   console.debug('SWAP WARNING RENDER TOP: ', props)
 
   return (
     <>
+      {shouldZeroApprove && <ZeroApprovalWarning currency={trade?.inputAmount.currency} />}
       <HighFeeWarning
         trade={trade}
         acceptedStatus={feeWarningAccepted}

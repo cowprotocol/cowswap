@@ -125,7 +125,7 @@ describe('Amounts formatting', () => {
       const result2 = formatFiatAmount(getAmount('60001444', 3))
 
       expect(result1).toBe('7,344,360.23')
-      expect(result2).toBe('60.00B')
+      expect(result2).toBe('60B')
     })
   })
 
