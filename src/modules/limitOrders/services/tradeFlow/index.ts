@@ -12,6 +12,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
 export async function tradeFlow(
   params: TradeFlowContext,
@@ -50,33 +51,47 @@ export async function tradeFlow(
       signer: params.provider.getSigner(),
       validTo,
     })
-
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: presign order (optional)')
-    const presignTx = await (params.allowsOffchainSigning
-      ? Promise.resolve(null)
-      : presignOrderStep(orderId, params.settlementContract))
-
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: add pending order step')
     addPendingOrderStep(
       {
         id: orderId,
         chainId: params.chainId,
         order: {
           ...order,
-          presignGnosisSafeTxHash: params.isGnosisSafeWallet && presignTx ? presignTx.hash : undefined,
+          isHidden: !params.allowsOffchainSigning,
         },
       },
       params.dispatch
     )
 
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: add app data to upload queue')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: presign order (optional)')
+    const presignTx = await (params.allowsOffchainSigning
+      ? Promise.resolve(null)
+      : presignOrderStep(orderId, params.settlementContract))
+
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: unhide SC order (optional)')
+    if (presignTx) {
+      partialOrderUpdate(
+        {
+          chainId: params.chainId,
+          order: {
+            id: order.id,
+            presignGnosisSafeTxHash: params.isGnosisSafeWallet ? presignTx.hash : undefined,
+            isHidden: false,
+          },
+        },
+        params.dispatch
+      )
+    }
+
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: add app data to upload queue')
     params.uploadAppData({ chainId: params.chainId, orderId, appData: params.appData })
 
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: ERROR: ', error)
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
