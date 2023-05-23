@@ -1,16 +1,17 @@
-import { useAtomValue } from 'jotai/utils'
-import { advancedOrdersAtom, advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
 import { useMemo } from 'react'
 import { getAddress } from 'utils/getAddress'
 import { parseUnits } from 'ethers/lib/utils'
 import { useWalletInfo } from 'modules/wallet'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
-// TODO: probably also can be unified for each trade widget
 export function useQuoteParams() {
   const { chainId, account } = useWalletInfo()
-  const { inputCurrency, outputCurrency } = useAtomValue(advancedOrdersDerivedStateAtom)
-  const { typedValue } = useAtomValue(advancedOrdersAtom)
+  const { state } = useDerivedTradeState()
+
+  const inputCurrency = state?.inputCurrency
+  const outputCurrency = state?.outputCurrency
+  const typedValue = state?.typedValue
 
   return useMemo(() => {
     if (!inputCurrency || !outputCurrency || !typedValue) {

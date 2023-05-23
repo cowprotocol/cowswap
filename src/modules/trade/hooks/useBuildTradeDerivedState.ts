@@ -14,6 +14,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
 
   const recipient = rawState.recipient
   const orderKind = rawState.orderKind
+  const typedValue = rawState.typedValue
 
   const inputCurrency = useTokenBySymbolOrAddress(rawState.inputCurrencyId)
   const outputCurrency = useTokenBySymbolOrAddress(rawState.outputCurrencyId)
@@ -35,5 +36,6 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
     outputCurrencyBalance,
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
+    typedValue,
   })
 }

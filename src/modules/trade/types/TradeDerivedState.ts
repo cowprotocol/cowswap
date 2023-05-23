@@ -12,6 +12,7 @@ export interface TradeDerivedState {
   readonly outputCurrencyFiatAmount: CurrencyAmount<Currency> | null
   readonly recipient: string | null
   readonly orderKind: OrderKind
+  readonly typedValue: string | null
 }
 
 export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
@@ -25,4 +26,5 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   outputCurrencyFiatAmount: null,
   recipient: null,
   orderKind: OrderKind.SELL,
+  typedValue: null,
 }

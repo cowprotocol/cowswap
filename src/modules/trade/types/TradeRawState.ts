@@ -18,6 +18,7 @@ export interface ExtendedTradeRawState extends TradeRawState {
   readonly inputCurrencyAmount: string | null
   readonly outputCurrencyAmount: string | null
   readonly orderKind: OrderKind
+  readonly typedValue: string | null
 }
 
 export type TradeCurrenciesIds = Pick<TradeRawState, 'inputCurrencyId' | 'outputCurrencyId'>
