@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { InlineBanner } from './index'
 import { Nullish } from 'types'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { ExternalLink } from 'theme'
+import { ExternalLink } from 'legacy/theme'
 
 export function BundleTxApprovalBanner() {
   return (
