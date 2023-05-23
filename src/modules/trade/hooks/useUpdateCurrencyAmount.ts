@@ -16,7 +16,6 @@ type UpdateCurrencyAmountProps = {
   field: Field
 }
 
-// TODO: probably also can be unified with other trade widgets
 export function useUpdateCurrencyAmount() {
   const { updateState } = useTradeState()
 
