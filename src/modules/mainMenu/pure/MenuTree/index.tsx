@@ -1,12 +1,12 @@
-import { HeaderLinks as Wrapper, StyledNavLink } from 'components/Header/styled'
-import MenuDropdown from 'components/MenuDropdown'
-import { MenuSection, MenuTitle } from 'components/MenuDropdown/styled'
+import { HeaderLinks as Wrapper, StyledNavLink } from 'legacy/components/Header/styled'
+import MenuDropdown from 'legacy/components/MenuDropdown'
+import { MenuSection, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
-import { ExternalLink as ExternalLinkComponent } from 'theme/components'
+import { ExternalLink as ExternalLinkComponent } from 'legacy/theme/components'
 
 // Assets
-import IMAGE_MOON from '@src/legacy/assets/cow-swap/moon.svg'
-import IMAGE_SUN from '@src/legacy/assets/cow-swap/sun.svg'
+import IMAGE_MOON from 'legacy/assets/cow-swap/moon.svg'
+import IMAGE_SUN from 'legacy/assets/cow-swap/sun.svg'
 import {
   DropDownItem,
   DynamicLink,

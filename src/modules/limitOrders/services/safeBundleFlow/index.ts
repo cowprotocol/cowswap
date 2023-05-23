@@ -12,7 +12,7 @@ import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from 'modules/limitOrders/services/types'
-import { partialOrderUpdate } from 'state/orders/utils'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
@@ -61,7 +61,7 @@ export async function safeBundleFlow(
     appData,
     settlementContract,
     safeAppsSdk,
-    addAppDataToUploadQueue,
+    uploadAppData,
   } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
@@ -120,7 +120,7 @@ export async function safeBundleFlow(
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: add app data to upload queue')
-    addAppDataToUploadQueue({ chainId, orderId, appData })
+    uploadAppData({ chainId, orderId, appData })
 
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 

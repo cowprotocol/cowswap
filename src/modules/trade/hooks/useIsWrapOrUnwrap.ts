@@ -1,8 +1,8 @@
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { useWalletInfo } from 'modules/wallet'
-import { supportedChainId } from 'utils/supportedChainId'
-import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
 import { useMemo } from 'react'
 

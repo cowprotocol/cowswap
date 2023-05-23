@@ -6,8 +6,8 @@ import {
   DEFAULT_LIST_OF_LISTS_BY_NETWORK,
   DEFAULT_NETWORK_FOR_LISTS,
   UNSUPPORTED_LIST_URLS,
-} from 'constants/lists'
-import { updateVersion } from 'state/global/actions'
+} from 'legacy/constants/lists'
+import { updateVersion } from 'legacy/state/global/actions'
 import {
   acceptListUpdate,
   addGpUnsupportedToken,
@@ -20,7 +20,7 @@ import {
 } from './actions'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UnsupportedToken } from 'api/gnosisProtocol'
-import { getChainIdValues } from 'utils/misc'
+import { getChainIdValues } from 'legacy/utils/misc'
 
 export interface ListsState {
   readonly byUrl: {

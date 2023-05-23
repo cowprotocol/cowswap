@@ -3,7 +3,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { useGetInitialPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
-import usePrevious from 'hooks/usePrevious'
+import usePrevious from 'legacy/hooks/usePrevious'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
 import { Writeable } from 'types'
 

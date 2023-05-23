@@ -2,16 +2,15 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { useWeb3React } from '@web3-react/core'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { useGP2SettlementContract } from 'hooks/useContract'
+import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'state'
-import useENSAddress from 'hooks/useENSAddress'
+import { AppDispatch } from 'legacy/state'
+import useENSAddress from 'legacy/hooks/useENSAddress'
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useAtomValue } from 'jotai/utils'
 import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
-import { useUpdateAtom } from 'jotai/utils'
-import { addAppDataToUploadQueueAtom, appDataInfoAtom } from 'state/appData/atoms'
+import { useUploadAppData, useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
@@ -24,8 +23,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const state = useLimitOrdersDerivedState()
   const settlementContract = useGP2SettlementContract()
   const dispatch = useDispatch<AppDispatch>()
-  const appData = useAtomValue(appDataInfoAtom)
-  const addAppDataToUploadQueue = useUpdateAtom(addAppDataToUploadQueueAtom)
+  const appData = useAppData()
+  const uploadAppData = useUploadAppData()
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
   const quoteState = useAtomValue(limitOrdersQuoteAtom)
   const rateImpact = useRateImpact()
@@ -64,7 +63,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
     isGnosisSafeWallet,
     dispatch,
     provider,
-    addAppDataToUploadQueue,
+    uploadAppData,
     appData,
     rateImpact,
     postOrderParams: {

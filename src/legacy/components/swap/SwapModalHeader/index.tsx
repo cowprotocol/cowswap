@@ -1,10 +1,10 @@
 import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 import styled from 'styled-components/macro'
-import { LightCard as LightCardUni } from 'components/Card'
-import { HighFeeWarning as HighFeeWarningBase } from 'components/SwapWarnings'
+import { LightCard as LightCardUni } from 'legacy/components/Card'
+import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
 import { useWalletDetails } from 'modules/wallet'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
-import { SwapShowAcceptChanges } from 'components/swap/styleds'
+import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
 import { transparentize } from 'polished'
 import React from 'react'
 

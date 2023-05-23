@@ -8,20 +8,20 @@ import {
   DISCORD_LINK,
   MEV_TOTAL,
   FLASHBOTS_LINK,
-} from 'constants/index'
+} from 'legacy/constants'
 import { Page, Content } from 'modules/application/pure/Page'
 import { Routes } from 'constants/routes'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import { FaqMenu } from './Menu'
-import { StyledInternalLink } from 'theme'
+import { StyledInternalLink } from 'legacy/theme'
 
 import { useToC } from './hooks'
 import ToC from './ToC'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 export interface TocSection {
   section: TocItem

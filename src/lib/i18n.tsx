@@ -1,6 +1,6 @@
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
-import { DEFAULT_LOCALE, SupportedLocale } from 'constants/locales'
+import { DEFAULT_LOCALE, SupportedLocale } from 'legacy/constants/locales'
 import {
   af,
   ar,

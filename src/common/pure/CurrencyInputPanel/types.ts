@@ -1,4 +1,4 @@
-import { Field } from 'state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 

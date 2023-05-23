@@ -1,27 +1,27 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
-import { Order } from 'state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 import { useWalletInfo } from 'modules/wallet'
-import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'state/orders/hooks'
-import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
-import { useEthFlowContract, useGP2SettlementContract } from 'hooks/useContract'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
+import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { BigNumber } from '@ethersproject/bignumber'
-import { COW } from 'constants/tokens'
+import { COW } from 'legacy/constants/tokens'
 
 const chainId = 1
 const settlementCancellationTxHash = '0xcfwj23g4fwe111'
 const ethFlowCancellationTxHash = '0xcfwj23g4fwe222'
 
-jest.mock('state/orders/hooks')
+jest.mock('legacy/state/orders/hooks')
 jest.mock('modules/wallet', () => {
   return {
     ...jest.requireActual('modules/wallet'),
     useWalletInfo: jest.fn().mockReturnValue({ chainId }),
   }
 })
-jest.mock('state/enhancedTransactions/hooks')
-jest.mock('hooks/useContract')
+jest.mock('legacy/state/enhancedTransactions/hooks')
+jest.mock('legacy/hooks/useContract')
 
 const orderMock = {
   id: 'xx1',

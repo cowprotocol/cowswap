@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { tradeApproveStateAtom } from './tradeApproveStateAtom'
-import TransactionConfirmationModal, { OperationType } from 'components/TransactionConfirmationModal'
+import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import React from 'react'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 

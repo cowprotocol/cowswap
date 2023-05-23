@@ -1,14 +1,14 @@
-import { initializeAnalytics } from 'components/AmplitudeAnalytics'
-import { useAnalyticsReporter } from 'components/analytics'
-import TopLevelModals from 'components/TopLevelModals'
-import ApeModeQueryParamReader from 'hooks/useApeModeQueryParamReader'
-import ErrorBoundary from 'components/ErrorBoundary'
-import Header from 'components/Header'
+import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
+import { useAnalyticsReporter } from 'legacy/components/analytics'
+import TopLevelModals from 'legacy/components/TopLevelModals'
+import ApeModeQueryParamReader from 'legacy/hooks/useApeModeQueryParamReader'
+import ErrorBoundary from 'legacy/components/ErrorBoundary'
+import Header from 'legacy/components/Header'
 
-import DarkModeQueryParamReader from 'theme'
+import DarkModeQueryParamReader from 'legacy/theme'
 
-import URLWarning from 'components/Header/URLWarning'
-import Footer from 'components/Footer'
+import URLWarning from 'legacy/components/Header/URLWarning'
+import Footer from 'legacy/components/Footer'
 
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 import { RoutesApp } from './RoutesApp'

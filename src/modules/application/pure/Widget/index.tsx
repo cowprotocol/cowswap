@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { BodyWrapper as BodyWrapperMod } from 'pages/AppBody'
+import { BodyWrapper as BodyWrapperMod } from 'legacy/pages/AppBody'
 
 const Wrapper = styled(BodyWrapperMod)`
   background: ${({ theme }) => theme.bg1};

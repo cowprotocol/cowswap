@@ -1,8 +1,8 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 import { Token } from '@uniswap/sdk-core'
-import { useFavouriteTokens, useToggleFavouriteToken } from 'state/user/hooks'
-import { ButtonStar } from 'components/Button'
-import useTheme from 'hooks/useTheme'
+import { useFavouriteTokens, useToggleFavouriteToken } from 'legacy/state/user/hooks'
+import { ButtonStar } from 'legacy/components/Button'
+import useTheme from 'legacy/hooks/useTheme'
 import styled from 'styled-components/macro'
 
 export const StyledButtonStar = styled(ButtonStar)`

@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { SOCKS_CONTROLLER_ADDRESSES } from 'constants/addresses'
+import { SOCKS_CONTROLLER_ADDRESSES } from 'legacy/constants/addresses'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useMemo } from 'react'
 import { useWalletInfo } from 'modules/wallet'

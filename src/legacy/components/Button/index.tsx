@@ -3,8 +3,8 @@ import styled from 'styled-components/macro'
 import { ButtonProps } from 'rebass/styled-components'
 import { ChevronDown, Star } from 'react-feather'
 import { transparentize, darken, lighten } from 'polished'
-import useTheme from 'hooks/useTheme'
-import { RowBetween } from 'components/Row'
+import useTheme from 'legacy/hooks/useTheme'
+import { RowBetween } from 'legacy/components/Row'
 
 import {
   // Import only the basic buttons
@@ -15,7 +15,7 @@ import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
-import { ButtonSize } from 'theme/enum'
+import { ButtonSize } from 'legacy/theme/enum'
 
 export * from './ButtonMod'
 

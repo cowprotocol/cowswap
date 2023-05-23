@@ -40,3 +40,9 @@ export interface WalletDetails {
 }
 
 export type GnosisSafeInfo = SafeInfoResponse & { isReadOnly?: boolean }
+
+export enum WalletType {
+  SAFE,
+  SC,
+  EOA,
+}

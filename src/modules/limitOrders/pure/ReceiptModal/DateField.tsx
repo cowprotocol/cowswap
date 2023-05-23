@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import useTimeAgo from 'hooks/useTimeAgo'
+import useTimeAgo from 'legacy/hooks/useTimeAgo'
 import { format } from 'date-fns'
 
 interface Props {

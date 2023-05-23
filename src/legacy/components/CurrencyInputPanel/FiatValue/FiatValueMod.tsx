@@ -3,14 +3,14 @@ import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 
-import useTheme from 'hooks/useTheme'
-import { ThemedText } from 'theme'
-import { warningSeverity } from 'utils/prices'
-import { MouseoverTooltip } from 'components/Tooltip'
+import useTheme from 'legacy/hooks/useTheme'
+import { ThemedText } from 'legacy/theme'
+import { warningSeverity } from 'legacy/utils/prices'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
 
 // MOD imports
 // mod
-import Loader from 'components/Loader'
+import Loader from 'legacy/components/Loader'
 import { formatPercent } from 'utils/amountFormat'
 import { FiatAmount } from 'common/pure/FiatAmount'
 

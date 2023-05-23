@@ -1,5 +1,5 @@
 import { SwapFormProps } from 'modules/swap/containers/SwapWidget/types'
-import { PriceImpact } from 'hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { genericPropsChecker } from 'utils/genericPropsChecker'

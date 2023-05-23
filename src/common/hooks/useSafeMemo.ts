@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { CurrencyAmount, NativeCurrency, Token } from '@uniswap/sdk-core'
-import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
 export function useSafeMemoDeps(deps: unknown[]): unknown[] {
   return deps.map((dep) => {

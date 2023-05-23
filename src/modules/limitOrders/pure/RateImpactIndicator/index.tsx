@@ -1,6 +1,6 @@
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
-import { MouseoverTooltipContent } from 'components/Tooltip'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { Currency } from '@uniswap/sdk-core'
 import { TokenSymbol } from 'common/pure/TokenSymbol'

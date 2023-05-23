@@ -1,7 +1,7 @@
 import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { registerOnWindow } from 'utils/misc'
+import { registerOnWindow } from 'legacy/utils/misc'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
 // eslint-disable-next-line no-restricted-imports

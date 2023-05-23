@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
-import Loader from 'components/Loader'
-import { ButtonPrimary } from 'components/Button'
+import Loader from 'legacy/components/Loader'
+import { ButtonPrimary } from 'legacy/components/Button'
 
 const ButtonWrapper = styled.div`
   display: flex;

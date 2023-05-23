@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 
-import { useToggleSettingsMenu } from 'state/application/hooks'
+import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'

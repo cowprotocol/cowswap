@@ -1,5 +1,5 @@
-import { ApplicationState } from 'state/application/reducer'
-import { localWarning } from 'state/application/localWarning'
+import { ApplicationState } from 'legacy/state/application/reducer'
+import { localWarning } from 'legacy/state/application/localWarning'
 
 const popupList: ApplicationState['popupList'] = []
 

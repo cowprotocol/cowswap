@@ -3,7 +3,7 @@ import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { PriceImpact } from 'hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
 import { Percent } from '@uniswap/sdk-core'
@@ -64,7 +64,7 @@ export async function ethFlow(
     ethFlowContext.addTransaction({ hash: txReceipt.hash, ethFlow: { orderId: order.id, subType: 'creation' } })
 
     logTradeFlow('ETH FLOW', 'STEP 6: add app data to upload queue')
-    callbacks.addAppDataToUploadQueue({ chainId: context.chainId, orderId, appData: appDataInfo })
+    callbacks.uploadAppData({ chainId: context.chainId, orderId, appData: appDataInfo })
 
     logTradeFlow('ETH FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     swapConfirmManager.transactionSent(orderId)

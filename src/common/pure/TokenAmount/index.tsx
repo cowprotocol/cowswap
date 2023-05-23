@@ -2,7 +2,7 @@ import { formatTokenAmount } from 'utils/amountFormat'
 import { FractionLike, Nullish } from 'types'
 import { TokenSymbol, TokenSymbolProps } from 'common/pure/TokenSymbol'
 import { FractionUtils } from 'utils/fractionUtils'
-import { LONG_PRECISION } from 'constants/index'
+import { LONG_PRECISION } from 'legacy/constants'
 import { FeatureFlag } from 'utils/featureFlags'
 import styled from 'styled-components/macro'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'constants/featureFlags'
@@ -53,9 +53,10 @@ export function TokenAmount({
       </>
     )
 
+  const roundedAmount = round ? FractionUtils.round(amount) : amount
   return (
     <Wrapper title={title} className={className} highlight={highlight}>
-      {formatTokenAmount(round ? FractionUtils.round(amount) : amount) || defaultValue}
+      {formatTokenAmount(roundedAmount) || defaultValue}
       <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>
   )

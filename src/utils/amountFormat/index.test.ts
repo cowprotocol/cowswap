@@ -1,7 +1,7 @@
 import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { DAI_GOERLI } from 'utils/goerli/constants'
-import { USDC_GNOSIS_CHAIN } from '../../../utils/gnosis_chain/constants'
+import { DAI_GOERLI } from 'legacy/utils/goerli/constants'
+import { USDC_GNOSIS_CHAIN } from 'legacy/utils/gnosis_chain/constants'
 
 describe('Amounts formatting', () => {
   const decimals = DAI_GOERLI.decimals
@@ -125,7 +125,7 @@ describe('Amounts formatting', () => {
       const result2 = formatFiatAmount(getAmount('60001444', 3))
 
       expect(result1).toBe('7,344,360.23')
-      expect(result2).toBe('60.00B')
+      expect(result2).toBe('60B')
     })
   })
 

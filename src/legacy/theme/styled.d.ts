@@ -1,4 +1,4 @@
-import { ButtonSize } from 'theme/enum'
+import { ButtonSize } from 'legacy/theme/enum'
 
 export type Color = string
 
@@ -86,6 +86,7 @@ export interface Colors extends ColorsUniswap {
   tableHeadBG: Color
   tableRowBG: Color
   info: Color
+  information: Color
   warning: Color
   alert: Color
   danger: Color

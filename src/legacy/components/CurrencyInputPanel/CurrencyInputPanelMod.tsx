@@ -1,7 +1,7 @@
-import { loadingOpacityMixin } from 'components/Loader/styled'
+import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
 import styled from 'styled-components/macro'
-import { Input as NumericalInput } from 'components/NumericalInput'
-import { FeeInformationTooltipWrapper } from 'components/swap/FeeInformationTooltip'
+import { Input as NumericalInput } from 'legacy/components/NumericalInput'
+import { FeeInformationTooltipWrapper } from 'legacy/components/swap/FeeInformationTooltip'
 
 // TODO: refactor these styles
 export const InputPanel = styled.div<{ hideInput?: boolean }>`

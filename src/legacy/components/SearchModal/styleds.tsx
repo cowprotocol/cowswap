@@ -1,4 +1,4 @@
-import { LoadingRows as BaseLoadingRows } from 'components/Loader/styled'
+import { LoadingRows as BaseLoadingRows } from 'legacy/components/Loader/styled'
 import styled from 'styled-components/macro'
 import { AutoColumn } from '../Column'
 import { RowBetween } from '../Row'

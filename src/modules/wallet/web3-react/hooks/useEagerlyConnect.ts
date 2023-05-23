@@ -3,7 +3,7 @@ import { networkConnection } from 'modules/wallet/web3-react/connection/network'
 import { gnosisSafeConnection } from 'modules/wallet/web3-react/connection/safe'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 import { useEffect } from 'react'
-import { useAppSelector } from 'state/hooks'
+import { useAppSelector } from 'legacy/state/hooks'
 import { BACKFILLABLE_WALLETS } from 'modules/wallet/api/types'
 
 async function connect(connector: Connector) {

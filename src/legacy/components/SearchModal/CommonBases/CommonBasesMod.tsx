@@ -1,15 +1,15 @@
 import { Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
-import { ElementName, Event, EventName } from 'components/AmplitudeAnalytics/constants'
-import { TraceEvent } from 'components/AmplitudeAnalytics/TraceEvent'
-import CurrencyLogo from 'components/CurrencyLogo'
-import { AutoRow } from 'components/Row'
+import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
+import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { AutoRow } from 'legacy/components/Row'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
-import { currencyId } from 'utils/currencyId'
-import QuestionHelper from 'components/QuestionHelper'
+import { currencyId } from 'legacy/utils/currencyId'
+import QuestionHelper from 'legacy/components/QuestionHelper'
 import { BaseWrapper, CommonBasesRow, MobileWrapper } from './index' // mod
-import { useFavouriteOrCommonTokens } from 'hooks/useFavouriteOrCommonTokens'
+import { useFavouriteOrCommonTokens } from 'legacy/hooks/useFavouriteOrCommonTokens'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 export const BaseWrapperMod = styled.div<{ disable?: boolean }>`
   border: 1px solid ${({ theme, disable }) => (disable ? 'transparent' : theme.bg3)};

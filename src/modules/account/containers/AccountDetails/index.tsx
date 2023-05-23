@@ -1,11 +1,11 @@
 import { Fragment } from 'react'
 
-import { getExplorerLabel, shortenAddress } from 'utils'
+import { getExplorerLabel, shortenAddress } from 'legacy/utils'
 
-import Copy from 'components/Copy'
+import Copy from 'legacy/components/Copy'
 import { Trans } from '@lingui/macro'
 
-import { getEtherscanLink } from 'utils'
+import { getEtherscanLink } from 'legacy/utils'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
 import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
@@ -15,7 +15,7 @@ import TallyIcon from 'modules/wallet/api/assets/tally.svg'
 import TrustIcon from 'modules/wallet/api/assets/trust.svg'
 import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
-import { ActivityDescriptors } from 'hooks/useRecentActivity'
+import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import Activity from 'modules/account/containers/Transaction'
 
 import {
@@ -36,16 +36,16 @@ import {
   IconWrapper,
   TransactionListWrapper,
 } from './styled'
-import { MouseoverTooltip } from 'components/Tooltip'
-import { supportedChainId } from 'utils/supportedChainId'
-import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'hooks/useRecentActivity'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { CreationDateText } from '../Transaction/styled'
-import { ExternalLink } from 'theme'
-import { getExplorerAddressLink } from 'utils/explorer'
+import { ExternalLink } from 'legacy/theme'
+import { getExplorerAddressLink } from 'legacy/utils/explorer'
 import { Connector } from '@web3-react/types'
 import { ConnectionType, useWalletInfo, WalletDetails } from 'modules/wallet'
-import { isMobile } from 'utils/userAgent'
-import UnsupporthedNetworkMessage from 'components/UnsupportedNetworkMessage'
+import { isMobile } from 'legacy/utils/userAgent'
+import UnsupporthedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useDisconnectWallet } from 'modules/wallet'
 import {

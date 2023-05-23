@@ -10,8 +10,8 @@ import { Routes } from 'constants/routes'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 export default function TokenFaq() {
   const { toc, faqRef } = useToC()

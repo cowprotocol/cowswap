@@ -8,11 +8,6 @@
   "exclude": [
     "node_modules",
     "cypress",
-    "src/**/*.test.ts",
-    "src/page/App.tsx",
-    "src/state/routing/slice.ts",
-    "src/hooks/useBestTrade.ts",
-    "src/state/routing/useRoutingAPITrade.ts"
   ],
   "include": [
     "src/**/*"

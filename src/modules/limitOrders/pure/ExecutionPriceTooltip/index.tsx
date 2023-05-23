@@ -1,7 +1,7 @@
 import * as styledEl from './styled'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
-import { useHigherUSDValue } from 'hooks/useStablecoinPrice'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
 import { convertAmountToCurrency } from 'modules/limitOrders/utils/calculateExecutionPrice'

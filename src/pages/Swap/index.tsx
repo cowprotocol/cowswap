@@ -2,7 +2,7 @@ import React from 'react'
 
 import { SwapWidget } from 'modules/swap/containers/SwapWidget'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 import { Routes } from 'constants/routes'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'

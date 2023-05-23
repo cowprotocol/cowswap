@@ -4,8 +4,8 @@ import * as Sentry from '@sentry/browser'
 
 import { getQuote } from 'api/gnosisProtocol'
 import GpQuoteError, { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
-import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'utils/misc'
-import { PRICE_API_TIMEOUT_MS } from 'constants/index'
+import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'legacy/utils/misc'
+import { PRICE_API_TIMEOUT_MS } from 'legacy/constants'
 import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
 import {
   getPriceQuote as getPriceQuoteMatcha,

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { COMMON_BASES } from 'constants/routing'
-import { useFavouriteTokens } from 'state/user/hooks'
+import { COMMON_BASES } from 'legacy/constants/routing'
+import { useFavouriteTokens } from 'legacy/state/user/hooks'
 import { useWalletInfo } from 'modules/wallet'
 
 export function useFavouriteOrCommonTokens() {

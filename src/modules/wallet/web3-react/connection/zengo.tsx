@@ -1,5 +1,5 @@
 import { ConnectionType } from 'modules/wallet'
-import { useIsActiveWallet } from 'hooks/useIsActiveWallet'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { getConnectionName, getIsZengoWallet } from 'modules/wallet/api/utils/connection'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'

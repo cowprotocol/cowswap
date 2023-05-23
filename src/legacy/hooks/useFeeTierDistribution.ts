@@ -1,13 +1,13 @@
 // import { skipToken } from '@reduxjs/toolkit/query/react'
 import { Currency /*Token*/ } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
-// import { sendEvent } from 'components/analytics'
+// import { sendEvent } from 'legacy/components/analytics'
 // import useBlockNumber from 'lib/hooks/useBlockNumber'
 // import ms from 'ms.macro'
 // import { useMemo } from 'react'
-// import { useFeeTierDistributionQuery } from 'state/data/enhanced'
+// import { useFeeTierDistributionQuery } from 'legacy/state/data/enhanced'
 // NOTE: Modding original file because we no longer generate the file below
-// import { FeeTierDistributionQuery } from 'state/data/generated'
+// import { FeeTierDistributionQuery } from 'legacy/state/data/generated'
 
 // import { PoolState, usePool } from './usePools'
 

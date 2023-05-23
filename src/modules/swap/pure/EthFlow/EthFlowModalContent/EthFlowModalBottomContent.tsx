@@ -7,7 +7,7 @@ import { EthFlowState } from '../../../services/ethFlow/types'
 import { useCallback, useMemo } from 'react'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
-import { ActivityStatus } from 'hooks/useRecentActivity'
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions, isExpertMode: boolean) {
   if (state === EthFlowState.WrapAndApproveFailed) {

@@ -1,21 +1,21 @@
 import SVG from 'react-inlinesvg'
-import { ExternalLink } from 'theme'
+import { ExternalLink } from 'legacy/theme'
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 
-import OrderCheckImage from '@src/legacy/assets/cow-swap/order-check.svg'
-import OrderExpiredImage from '@src/legacy/assets/cow-swap/order-expired.svg'
-import OrderCancelledImage from '@src/legacy/assets/cow-swap/order-cancelled.svg'
+import OrderCheckImage from 'legacy/assets/cow-swap/order-check.svg'
+import OrderExpiredImage from 'legacy/assets/cow-swap/order-expired.svg'
+import OrderCancelledImage from 'legacy/assets/cow-swap/order-cancelled.svg'
 
-import PresignaturePendingImage from '@src/legacy/assets/cow-swap/order-presignature-pending.svg'
-import OrderOpenImage from '@src/legacy/assets/cow-swap/order-open.svg'
+import PresignaturePendingImage from 'legacy/assets/cow-swap/order-presignature-pending.svg'
+import OrderOpenImage from 'legacy/assets/cow-swap/order-open.svg'
 
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow, CancelTxLink } from './styled'
 import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { getActivityState } from 'hooks/useActivityDerivedState'
+import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { CancelButton } from 'common/pure/CancelButton'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 export function GnosisSafeLink(props: {

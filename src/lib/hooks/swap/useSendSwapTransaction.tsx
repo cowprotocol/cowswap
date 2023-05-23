@@ -7,9 +7,9 @@ import { Currency, TradeType } from '@uniswap/sdk-core'
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 import { Trade as V3Trade } from '@uniswap/v3-sdk'
 import { useMemo } from 'react'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
-import isZero from 'utils/isZero'
-import { swapErrorToUserReadableMessage } from 'utils/swapErrorToUserReadableMessage'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+import isZero from 'legacy/utils/isZero'
+import { swapErrorToUserReadableMessage } from 'legacy/utils/swapErrorToUserReadableMessage'
 
 type AnyTrade =
   | V2Trade<Currency, Currency, TradeType>

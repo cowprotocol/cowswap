@@ -1,7 +1,7 @@
-import { GpPriceStrategy } from 'state/gas/atoms'
+import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { RAW_CODE_LINK } from 'constants/index'
-import { environmentName } from 'utils/environments'
+import { RAW_CODE_LINK } from 'legacy/constants'
+import { environmentName } from 'legacy/utils/environments'
 
 const API_NAME = 'CoW Protocol'
 const STRATEGY_URL_BASE = RAW_CODE_LINK + '/configuration/config/'

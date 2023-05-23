@@ -8,8 +8,8 @@ import { FaqMenu } from './Menu'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 export default function LimitOrderFAQ() {
   const { toc, faqRef } = useToC()

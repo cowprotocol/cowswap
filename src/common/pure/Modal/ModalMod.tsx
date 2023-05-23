@@ -5,7 +5,7 @@ import { animated, useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import styled, { css } from 'styled-components/macro'
 
-import { isMobile } from '@src/legacy/utils/userAgent'
+import { isMobile } from 'legacy/utils/userAgent'
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

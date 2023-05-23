@@ -1,13 +1,13 @@
 import { useWalletDetails, useWalletInfo, WalletModal } from 'modules/wallet'
-import { STORAGE_KEY_LAST_PROVIDER } from 'constants/index'
+import { STORAGE_KEY_LAST_PROVIDER } from 'legacy/constants'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 import { useWeb3React } from '@web3-react/core'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { useAppSelector } from 'state/hooks'
+import { useAppSelector } from 'legacy/state/hooks'
 
-import { useToggleWalletModal } from 'state/application/hooks'
-import { useCloseFollowTxPopupIfNotPendingOrder } from 'components/Popups/FollowPendingTxPopup'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+import { useCloseFollowTxPopupIfNotPendingOrder } from 'legacy/components/Popups/FollowPendingTxPopup'
 import { Web3StatusInner } from 'modules/wallet/api/pure/Web3StatusInner'
 import { Wrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
 

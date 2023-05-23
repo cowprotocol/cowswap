@@ -6,7 +6,7 @@ import { namehash } from '@ethersproject/hash'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import uriToHttp from 'lib/utils/uriToHttp'
 import { useEffect, useMemo, useState } from 'react'
-import { safeNamehash } from 'utils/safeNamehash'
+import { safeNamehash } from 'legacy/utils/safeNamehash'
 
 import { isAddress } from '../utils'
 import isZero from '../utils/isZero'

@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'legacy/components/Button'
 import { transparentize } from 'polished'
 
 export const BannerWrapper = styled.div`

@@ -1,7 +1,7 @@
-import { Field } from 'state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { COW, GNO } from 'constants/tokens'
+import { COW, GNO } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
@@ -9,7 +9,7 @@ import { TradeFlowContext } from '../../services/types'
 import { LimitOrdersConfirm } from './index'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import React from 'react'
-import { PriceImpact } from 'hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { SetStateAction } from 'jotai'
@@ -71,7 +71,7 @@ const tradeContext: TradeFlowContext = {
   },
   rateImpact: 0,
   appData: {} as any,
-  addAppDataToUploadQueue: () => void 0,
+  uploadAppData: () => void 0,
   provider: {} as any,
   settlementContract: {} as any,
   chainId: 1,
