@@ -1,0 +1,37 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "contract IConditionalOrder",
+            "name": "handler",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "salt",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes",
+            "name": "staticInput",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct IConditionalOrder.ConditionalOrderParams",
+        "name": "params",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bool",
+        "name": "dispatch",
+        "type": "bool"
+      }
+    ],
+    "name": "create",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
