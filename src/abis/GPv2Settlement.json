@@ -78,5 +78,12 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "domainSeparator",
+    "outputs": [{ "name": "", "type": "bytes32" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ]
