@@ -5,7 +5,7 @@ import { GpModal } from 'common/pure/Modal'
 import { useWeb3React } from '@web3-react/core'
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'
 import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface ZeroApprovalModalProps {
   onDismiss?: () => void
@@ -24,6 +24,12 @@ export function ZeroApprovalModal({ onDismiss = () => {} }: ZeroApprovalModalPro
     setHasUserClosedModal(true)
     onDismiss()
   }, [onDismiss])
+
+  useEffect(() => {
+    if (!isApproving && hasUserClosedModal) {
+      setHasUserClosedModal(false)
+    }
+  }, [isApproving, hasUserClosedModal])
 
   const { walletName, ensName } = walletDetails
   const walletAddress = ensName || (account ? shortenAddress(account) : '')
