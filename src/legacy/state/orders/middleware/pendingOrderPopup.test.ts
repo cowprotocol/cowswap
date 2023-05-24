@@ -1,4 +1,4 @@
-import { pendingOrderActionMiddleware } from './pendingOrderActionMiddleware'
+import { pendingOrderPopup } from './pendingOrderPopup'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch } from 'redux'
 import { AppState } from '../../index'
@@ -36,7 +36,7 @@ const MOCK_ORDERS_STORE = {
 const storeMock = mock<MiddlewareAPI<Dispatch, AppState>>()
 const payloadMock = mock<AddPendingOrderParams>()
 
-describe('pendingOrderActionMiddleware', () => {
+describe('pendingOrderPopup', () => {
   when(storeMock.getState()).thenReturn({ orders: MOCK_ORDERS_STORE } as any)
   when(payloadMock.chainId).thenReturn(1)
 
@@ -48,14 +48,14 @@ describe('pendingOrderActionMiddleware', () => {
   it('should not trigger pop up for inexistent order', () => {
     when(payloadMock.id).thenReturn('0x000')
 
-    pendingOrderActionMiddleware(instance(storeMock), instance(payloadMock))
+    pendingOrderPopup(instance(storeMock), instance(payloadMock))
 
     verify(storeMock.dispatch(anything())).never()
   })
   it('should trigger pop up for ethflow order', () => {
     when(payloadMock.id).thenReturn('0x001')
 
-    pendingOrderActionMiddleware(instance(storeMock), instance(payloadMock))
+    pendingOrderPopup(instance(storeMock), instance(payloadMock))
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 
@@ -66,7 +66,7 @@ describe('pendingOrderActionMiddleware', () => {
     // @ts-ignore
     when(payloadMock.order).thenReturn({ isHidden: false })
 
-    pendingOrderActionMiddleware(instance(storeMock), instance(payloadMock))
+    pendingOrderPopup(instance(storeMock), instance(payloadMock))
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 
@@ -77,7 +77,7 @@ describe('pendingOrderActionMiddleware', () => {
     // @ts-ignore
     when(payloadMock.order).thenReturn({ isHidden: true })
 
-    pendingOrderActionMiddleware(instance(storeMock), instance(payloadMock))
+    pendingOrderPopup(instance(storeMock), instance(payloadMock))
 
     verify(storeMock.dispatch(anything())).never()
   })

@@ -2,9 +2,9 @@
 // a corresponding Popup action is dispatched
 import { AppState } from '../../index'
 import { getOrderByIdFromState, OrderIDWithPopup, OrderTxTypes, setPopupData } from '../helpers'
-import { pendingOrderActionMiddleware } from './pendingOrderActionMiddleware'
-import { updateOrderActionMiddleware } from './updateOrderActionMiddleware'
-import { batchFulfillOrderActionMiddleware } from './batchFulfillOrderActionMiddleware'
+import { pendingOrderPopup } from './pendingOrderPopup'
+import { updateOrderPopup } from './updateOrderPopup'
+import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
 import { orderAnalytics } from '../../../components/analytics'
 import * as OrderActions from '../actions'
 import { addPopup } from '../../application/reducer'
@@ -30,9 +30,9 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
   const idsAndPopups: OrderIDWithPopup[] = []
   if (isPendingOrderAction(action)) {
-    pendingOrderActionMiddleware(store, action.payload)
+    pendingOrderPopup(store, action.payload)
   } else if (isUpdateOrderAction(action)) {
-    updateOrderActionMiddleware(store, action.payload)
+    updateOrderPopup(store, action.payload)
   } else if (isBatchOrderAction(action)) {
     const { chainId } = action.payload
 
@@ -45,7 +45,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
-      batchFulfillOrderActionMiddleware(store, action.payload, orders)
+      batchFulfillOrderPopup(store, action.payload, orders)
     } else if (action.type === 'order/cancelOrdersBatch') {
       // Why is this and the next condition are not using a `isAnyOf` like the others?
       // Because these 3 actions (this and the next 2) have the exact same payload structure.

@@ -10,7 +10,7 @@ import { ExecutedSummary } from '../../../../common/pure/ExecutedSummary'
 import * as OrderActions from '../actions'
 import { OrdersStateNetwork } from '../reducer'
 
-export function batchFulfillOrderActionMiddleware(
+export function batchFulfillOrderPopup(
   store: MiddlewareAPI<Dispatch, AppState>,
   payload: FulfillOrdersBatchParams,
   orders: OrdersStateNetwork

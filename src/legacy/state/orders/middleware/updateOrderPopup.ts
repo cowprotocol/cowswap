@@ -6,7 +6,7 @@ import { AppState } from '../../index'
 import { Dispatch } from 'redux'
 import { addPopup } from '../../application/reducer'
 
-export function updateOrderActionMiddleware(store: MiddlewareAPI<Dispatch, AppState>, payload: UpdateOrderParams) {
+export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payload: UpdateOrderParams) {
   const { chainId, order } = payload
 
   // use current state to lookup orders' data

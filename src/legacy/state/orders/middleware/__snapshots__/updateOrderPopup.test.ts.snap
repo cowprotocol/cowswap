@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`updateOrderActionMiddleware should trigger pop up for visible order 1`] = `
+exports[`updateOrderPopup should trigger pop up for visible order 1`] = `
 Object {
   "payload": Object {
     "id": "0x001",

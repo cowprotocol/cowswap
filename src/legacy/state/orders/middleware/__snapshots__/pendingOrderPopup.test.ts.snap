@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`pendingOrderActionMiddleware should trigger pop up for ethflow order 1`] = `
+exports[`pendingOrderPopup should trigger pop up for ethflow order 1`] = `
 Object {
   "payload": Object {
     "id": "0x001",
@@ -19,7 +19,7 @@ Object {
 }
 `;
 
-exports[`pendingOrderActionMiddleware should trigger pop up for regular order 1`] = `
+exports[`pendingOrderPopup should trigger pop up for regular order 1`] = `
 Object {
   "payload": Object {
     "id": "0x002",

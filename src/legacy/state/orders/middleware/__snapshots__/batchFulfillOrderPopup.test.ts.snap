@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`batchFulfillOrderActionMiddleware should trigger pop ups if there are pending orders 1`] = `
+exports[`batchFulfillOrderPopup should trigger pop ups if there are pending orders 1`] = `
 Object {
   "payload": Object {
     "id": "0x001",

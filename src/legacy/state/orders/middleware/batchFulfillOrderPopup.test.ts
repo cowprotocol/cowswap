@@ -3,7 +3,7 @@ import { anything, capture, instance, mock, resetCalls, verify, when } from 'ts-
 import { AppState } from '../../index'
 import { FulfillOrdersBatchParams } from '../actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { batchFulfillOrderActionMiddleware } from './batchFulfillOrderActionMiddleware'
+import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
 
 const MOCK_ETHFLOW_ORDER = {
   '0x001': {
@@ -35,7 +35,7 @@ const payloadMock = mock<FulfillOrdersBatchParams>()
 
 const BASE_PAYLOAD = { fulfillmentTime: '', transactionHash: '' }
 
-describe('batchFulfillOrderActionMiddleware', () => {
+describe('batchFulfillOrderPopup', () => {
   beforeEach(() => {
     resetCalls(storeMock)
     resetCalls(payloadMock)
@@ -45,7 +45,7 @@ describe('batchFulfillOrderActionMiddleware', () => {
     when(payloadMock.ordersData).thenReturn([{ id: '0x000', ...BASE_PAYLOAD }])
 
     // @ts-ignore
-    batchFulfillOrderActionMiddleware(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
+    batchFulfillOrderPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
 
     verify(storeMock.dispatch(anything())).never()
   })
@@ -57,7 +57,7 @@ describe('batchFulfillOrderActionMiddleware', () => {
     ])
 
     // @ts-ignore
-    batchFulfillOrderActionMiddleware(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
+    batchFulfillOrderPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE)
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 
