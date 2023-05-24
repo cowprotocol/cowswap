@@ -63,7 +63,7 @@ export function useApproveCallback(
     }
 
     const estimation = await estimateApprove(tokenContract, spender, amountToApprove)
-
+    const operationLabel = amountToApprove.greaterThan('0') ? 'Approve' : 'Revoke approval'
     return tokenContract
       .approve(spender, estimation.approveAmount, {
         gasLimit: calculateGasMargin(estimation.gasLimit),
@@ -71,7 +71,7 @@ export function useApproveCallback(
       .then((response: TransactionResponse) => {
         addTransaction({
           hash: response.hash,
-          summary: 'Approve ' + token.symbol,
+          summary: `${operationLabel} ${token.symbol}`,
           approval: { tokenAddress: token.address, spender },
         })
         return response
