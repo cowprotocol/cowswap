@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`pendingOrderActionMiddleware When some conditions, then should dispatch addPopup event 1`] = `
+exports[`pendingOrderActionMiddleware should trigger pop up for ethflow order 1`] = `
 Object {
   "payload": Object {
     "id": "0x001",
@@ -13,6 +13,25 @@ Object {
         },
       },
       "key": "0xhash_submitted",
+    },
+  },
+  "type": "application/addPopup",
+}
+`;
+
+exports[`pendingOrderActionMiddleware should trigger pop up for regular order 1`] = `
+Object {
+  "payload": Object {
+    "id": "0x002",
+    "popup": Object {
+      "content": Object {
+        "metatxn": Object {
+          "id": "0x002",
+          "success": true,
+          "summary": "summary submitted",
+        },
+      },
+      "key": "0x002_submitted",
     },
   },
   "type": "application/addPopup",

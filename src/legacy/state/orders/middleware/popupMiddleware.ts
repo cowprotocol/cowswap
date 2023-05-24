@@ -30,9 +30,9 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
   const idsAndPopups: OrderIDWithPopup[] = []
   if (isPendingOrderAction(action)) {
-    return pendingOrderActionMiddleware(store, action.payload, result)
+    pendingOrderActionMiddleware(store, action.payload)
   } else if (isUpdateOrderAction(action)) {
-    return updateOrderActionMiddleware(store, action.payload, result)
+    updateOrderActionMiddleware(store, action.payload)
   } else if (isBatchOrderAction(action)) {
     const { chainId } = action.payload
 

@@ -6,11 +6,7 @@ import { AppState } from '../../index'
 import { Dispatch } from 'redux'
 import { addPopup } from '../../application/reducer'
 
-export function pendingOrderActionMiddleware(
-  store: MiddlewareAPI<Dispatch, AppState>,
-  payload: AddPendingOrderParams,
-  result: any
-) {
+export function pendingOrderActionMiddleware(store: MiddlewareAPI<Dispatch, AppState>, payload: AddPendingOrderParams) {
   const { id, chainId } = payload
 
   // use current state to lookup orders' data
@@ -18,7 +14,7 @@ export function pendingOrderActionMiddleware(
   const orderObject = getOrderByIdFromState(orders, id)
 
   if (!orderObject) {
-    return result
+    return
   }
   // look up Order.summary for Popup
   const { summary, class: orderClass } = orderObject.order
