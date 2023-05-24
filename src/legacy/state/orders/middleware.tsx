@@ -8,17 +8,18 @@ import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { buildCancellationPopupSummary, OrderIDWithPopup, OrderTxTypes, PopupPayload, setPopupData } from './helpers'
+import { getOrderByIdFromState, OrderIDWithPopup, OrderTxTypes, setPopupData } from './helpers'
 import { registerOnWindow } from 'legacy/utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'legacy/utils/sound'
 import { orderAnalytics } from 'legacy/components/analytics'
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
-import { OrderObject, OrdersState, OrdersStateNetwork } from 'legacy/state/orders/reducer'
+import { OrdersState } from 'legacy/state/orders/reducer'
 import { timeSinceInSeconds } from 'utils/time'
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
-import { ExecutedSummary } from 'common/pure/ExecutedSummary'
-import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { Order } from 'legacy/state/orders/actions'
+import { pendingOrderActionMiddleware } from './middlewares/pendingOrderActionMiddleware'
+import { updateOrderActionMiddleware } from './middlewares/updateOrderActionMiddleware'
+import { batchFulfillOrderActionMiddleware } from './middlewares/batchFulfillOrderActionMiddleware'
+import { buildCancellationPopupSummary } from './buildCancellationPopupSummary'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
@@ -43,64 +44,9 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
   const idsAndPopups: OrderIDWithPopup[] = []
   if (isPendingOrderAction(action)) {
-    const { id, chainId } = action.payload
-
-    // use current state to lookup orders' data
-    const orders = store.getState().orders[chainId]
-    const orderObject = _getOrderById(orders, id)
-
-    if (!orderObject) {
-      return result
-    }
-    // look up Order.summary for Popup
-    const { summary, class: orderClass } = orderObject.order
-
-    let popup: PopupPayload
-
-    const hash = orderObject.order.orderCreationHash
-    if (hash) {
-      // EthFlow Order
-      popup = setPopupData(OrderTxTypes.TXN, {
-        summary,
-        status: 'submitted',
-        id: hash,
-        hash,
-      })
-      orderAnalytics('Posted', orderClass, 'EthFlow')
-    } else if (!action.payload.order.isHidden) {
-      // Pending Order Popup, if it's not hidden
-      popup = setPopupData(OrderTxTypes.METATXN, { summary, status: 'submitted', id })
-      orderAnalytics('Posted', orderClass, 'Offchain')
-    }
-
-    if (popup) {
-      idsAndPopups.push({
-        id,
-        popup,
-      })
-    }
+    return pendingOrderActionMiddleware(store, action.payload, result)
   } else if (isUpdateOrderAction(action)) {
-    const { chainId, order } = action.payload
-
-    // use current state to lookup orders' data
-    const orders = store.getState().orders[chainId]
-    const orderObject = _getOrderById(orders, order.id)
-
-    // This was a presign order created hidden
-    // Trigger the popup if order is no longer hidden
-    if (!action.payload.order.isHidden && orderObject) {
-      const popup = setPopupData(OrderTxTypes.METATXN, {
-        summary: orderObject.order.summary,
-        status: 'submitted',
-        id: order.id,
-      })
-      orderAnalytics('Posted', orderObject.order.class, 'Presign')
-
-      idsAndPopups.push({
-        id: order.id,
-        popup,
-      })
-    }
+    return updateOrderActionMiddleware(store, action.payload, result)
   } else if (isBatchOrderAction(action)) {
     const { chainId } = action.payload
 
@@ -113,27 +59,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
     if (isBatchFulfillOrderAction(action)) {
       // construct Fulfilled Order Popups for each Order
-
-      action.payload.ordersData.forEach(({ id, summary }) => {
-        const orderObject = _getOrderById(orders, id)
-        if (orderObject) {
-          const { class: orderClass } = orderObject.order
-          // it's an OrderTxTypes.TXN, yes, but we still want to point to the explorer
-          // because it's nicer there
-          const parsedOrder = parseOrder(orderObject.order as Order)
-          const summaryComponent = <ExecutedSummary order={parsedOrder} />
-
-          const popup = setPopupData(OrderTxTypes.METATXN, {
-            id,
-            summary: summaryComponent || summary,
-            status: OrderActions.OrderStatus.FULFILLED,
-            descriptor: null,
-          })
-          orderAnalytics('Executed', orderClass)
-
-          idsAndPopups.push({ id, popup })
-        }
-      })
+      batchFulfillOrderActionMiddleware(store, action.payload, orders)
     } else if (action.type === 'order/cancelOrdersBatch') {
       // Why is this and the next condition are not using a `isAnyOf` like the others?
       // Because these 3 actions (this and the next 2) have the exact same payload structure.
@@ -142,7 +68,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
 
       // construct Cancelled Order Popups for each Order
       action.payload.ids.forEach((id) => {
-        const orderObject = _getOrderById(orders, id)
+        const orderObject = getOrderByIdFromState(orders, id)
 
         if (orderObject) {
           const { order } = orderObject
@@ -156,7 +82,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     } else if (action.type === 'order/expireOrdersBatch') {
       // construct Expired Order Popups for each Order
       action.payload.ids.forEach((id) => {
-        const orderObject = _getOrderById(orders, id)
+        const orderObject = getOrderByIdFromState(orders, id)
 
         // Do not trigger expired pop up if order is hidden
         if (orderObject && !orderObject.order.isHidden) {
@@ -175,7 +101,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       })
     } else if (action.type === 'order/presignOrders') {
       action.payload.ids.forEach((id) => {
-        const orderObject = _getOrderById(orders, id)
+        const orderObject = getOrderByIdFromState(orders, id)
 
         if (orderObject) {
           const { order } = orderObject
@@ -272,7 +198,7 @@ function _shouldPlayExpiredOrderSound(
 
   // Only play COW sound if there's at least one order expired which wasn't hidden
   return ids.some((id) => {
-    const order = _getOrderById(orders, id)?.order
+    const order = getOrderByIdFromState(orders, id)?.order
     return order && !order.isHidden
   })
 }
@@ -323,7 +249,7 @@ function _triggerNps(
   npsParams: Parameters<typeof openNpsAppziSometimes>[0]
 ) {
   const orders = store.getState().orders[chainId]
-  const order = _getOrderById(orders, orderId)?.order
+  const order = getOrderByIdFromState(orders, orderId)?.order
   const openSince = order?.openSince
   const explorerUrl = getExplorerOrderLink(chainId, orderId)
 
@@ -333,24 +259,6 @@ function _triggerNps(
   }
 
   openNpsAppziSometimes({ ...npsParams, secondsSinceOpen: timeSinceInSeconds(openSince), explorerUrl, chainId })
-}
-
-function _getOrderById(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
-  if (!orders) {
-    return
-  }
-
-  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, failed } = orders
-
-  return (
-    pending?.[id] ||
-    presignaturePending?.[id] ||
-    fulfilled?.[id] ||
-    expired?.[id] ||
-    cancelled?.[id] ||
-    creating?.[id] ||
-    failed?.[id]
-  )
 }
 
 function _buildCancellationPopup(order: SerializedOrder) {
