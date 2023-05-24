@@ -14,11 +14,15 @@ export enum ApprovalState {
   APPROVED = 'APPROVED',
 }
 
+export interface ApprovalStateForSpenderParams {
+  approvalState: ApprovalState
+}
+
 export function useApprovalStateForSpender(
   amountToApprove: CurrencyAmount<Currency> | undefined,
   spender: string | undefined,
   useIsPendingApproval: (token?: Token, spender?: string) => boolean
-): ApprovalState {
+): ApprovalStateForSpenderParams {
   const { account } = useWalletInfo()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
 
@@ -26,17 +30,25 @@ export function useApprovalStateForSpender(
   const pendingApproval = useIsPendingApproval(token, spender)
 
   return useMemo(() => {
-    if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
-    if (amountToApprove.currency.isNative) return ApprovalState.APPROVED
+    if (!amountToApprove || !spender) return { approvalState: ApprovalState.UNKNOWN }
+    if (amountToApprove.currency.isNative) return { approvalState: ApprovalState.APPROVED }
     // we might not have enough data to know whether or not we need to approve
-    if (!currentAllowance) return ApprovalState.UNKNOWN
+    if (!currentAllowance)
+      return {
+        approvalState: ApprovalState.UNKNOWN,
+      }
 
     // amountToApprove will be defined if currentAllowance is
-    return currentAllowance.lessThan(amountToApprove)
+    const approvalState = currentAllowance.lessThan(amountToApprove)
       ? pendingApproval
         ? ApprovalState.PENDING
         : ApprovalState.NOT_APPROVED
       : ApprovalState.APPROVED
+
+    return {
+      approvalState,
+      currentAllowance,
+    }
   }, [amountToApprove, currentAllowance, pendingApproval, spender])
 }
 
@@ -52,7 +64,7 @@ export function useApproval(
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
 
   // check the current approval status
-  const approvalState = useApprovalStateForSpender(amountToApprove, spender, useIsPendingApproval)
+  const approvalState = useApprovalStateForSpender(amountToApprove, spender, useIsPendingApproval).approvalState
 
   const tokenContract = useTokenContract(token?.address)
 

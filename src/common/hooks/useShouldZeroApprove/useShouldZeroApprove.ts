@@ -18,10 +18,10 @@ export function useShouldZeroApprove(amountToApprove: CurrencyAmount<Currency> |
     let isStale = false
     ;(async () => {
       const result = await shouldZeroApproveFn({
+        approvalState: approvalState.approvalState,
         amountToApprove,
         tokenContract,
         spender,
-        approvalState,
       })
 
       if (!isStale) {
