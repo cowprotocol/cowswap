@@ -11,6 +11,7 @@ import {
 import { Link } from 'react-router-dom'
 
 import { StyledInternalLink } from 'legacy/theme'
+import { LinkScrollable } from 'legacy/components/Link'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
