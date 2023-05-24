@@ -1,0 +1,58 @@
+import { MiddlewareAPI } from '@reduxjs/toolkit'
+import { AnyAction, Dispatch } from 'redux'
+import { AppState } from '../../index'
+import { UpdateOrderParams } from '../actions'
+import { OrderClass } from '@cowprotocol/cow-sdk'
+import { anything, capture, instance, mock, resetCalls, verify, when } from 'ts-mockito'
+import { updateOrderActionMiddleware } from './updateOrderActionMiddleware'
+
+const MOCK_ORDERS_STORE = {
+  1: {
+    pending: {
+      '0x001': {
+        id: '0x001',
+        order: {
+          summary: 'summary',
+          orderClass: OrderClass.LIMIT,
+        },
+      },
+    },
+  },
+}
+
+const storeMock = mock<MiddlewareAPI<Dispatch, AppState>>()
+const payloadMock = mock<UpdateOrderParams>()
+
+describe('updateOrderActionMiddleware', () => {
+  when(storeMock.getState()).thenReturn({ orders: MOCK_ORDERS_STORE } as any)
+  when(payloadMock.chainId).thenReturn(1)
+
+  beforeEach(() => {
+    resetCalls(storeMock)
+    resetCalls(payloadMock)
+  })
+
+  it('should not trigger pop up for inexistent order', () => {
+    when(payloadMock.order).thenReturn({ id: '0x000' } as any)
+
+    updateOrderActionMiddleware(instance(storeMock), instance(payloadMock))
+
+    verify(storeMock.dispatch(anything())).never()
+  })
+  it('should not trigger pop up for hidden order', () => {
+    when(payloadMock.order).thenReturn({ id: '0x001', isHidden: true } as any)
+
+    updateOrderActionMiddleware(instance(storeMock), instance(payloadMock))
+
+    verify(storeMock.dispatch(anything())).never()
+  })
+  it('should trigger pop up for visible order', () => {
+    when(payloadMock.order).thenReturn({ id: '0x001', isHidden: false } as any)
+
+    updateOrderActionMiddleware(instance(storeMock), instance(payloadMock))
+
+    const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
+
+    expect(addPopupAction).toMatchSnapshot()
+  })
+})

@@ -15,7 +15,7 @@ export function updateOrderActionMiddleware(store: MiddlewareAPI<Dispatch, AppSt
 
   // This was a presign order created hidden
   // Trigger the popup if order is no longer hidden
-  if (!payload.order.isHidden && orderObject) {
+  if (!order.isHidden && orderObject) {
     const popup = setPopupData(OrderTxTypes.METATXN, {
       summary: orderObject.order.summary,
       status: 'submitted',

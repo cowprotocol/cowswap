@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`updateOrderActionMiddleware should trigger pop up for visible order 1`] = `
+Object {
+  "payload": Object {
+    "id": "0x001",
+    "popup": Object {
+      "content": Object {
+        "metatxn": Object {
+          "id": "0x001",
+          "success": true,
+          "summary": "summary submitted",
+        },
+      },
+      "key": "0x001_submitted",
+    },
+  },
+  "type": "application/addPopup",
+}
+`;
