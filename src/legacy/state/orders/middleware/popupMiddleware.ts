@@ -1,17 +1,13 @@
-// on each Pending, Expired, Fulfilled order action
-// a corresponding Popup action is dispatched
+import { Middleware } from 'redux'
+import { isAnyOf } from '@reduxjs/toolkit'
+import * as OrderActions from '../actions'
 import { AppState } from '../../index'
-import { getOrderByIdFromState, OrderIDWithPopup, OrderTxTypes, setPopupData } from '../helpers'
 import { pendingOrderPopup } from './pendingOrderPopup'
 import { updateOrderPopup } from './updateOrderPopup'
 import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
-import { orderAnalytics } from '../../../components/analytics'
-import * as OrderActions from '../actions'
-import { addPopup } from '../../application/reducer'
-import { Middleware } from 'redux'
-import { isAnyOf } from '@reduxjs/toolkit'
-import { SerializedOrder } from '../actions'
-import { buildCancellationPopupSummary } from '../buildCancellationPopupSummary'
+import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
+import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
+import { batchPresingOrdersPopup } from './batchPresignOrdersPopup'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
@@ -28,7 +24,6 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
-  const idsAndPopups: OrderIDWithPopup[] = []
   if (isPendingOrderAction(action)) {
     pendingOrderPopup(store, action.payload)
   } else if (isUpdateOrderAction(action)) {
@@ -52,82 +47,14 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       // Seems like redux is not smart enough to differentiate based on action.type,
       // so we need to do it manually like this
 
-      // construct Cancelled Order Popups for each Order
-      action.payload.ids.forEach((id) => {
-        const orderObject = getOrderByIdFromState(orders, id)
-
-        if (orderObject) {
-          const { order } = orderObject
-
-          const popup = _buildCancellationPopup(order)
-          orderAnalytics('Canceled', order.class)
-
-          idsAndPopups.push({ id, popup })
-        }
-      })
+      batchCancelOrdersPopup(store, action.payload, orders)
     } else if (action.type === 'order/expireOrdersBatch') {
       // construct Expired Order Popups for each Order
-      action.payload.ids.forEach((id) => {
-        const orderObject = getOrderByIdFromState(orders, id)
-
-        // Do not trigger expired pop up if order is hidden
-        if (orderObject && !orderObject.order.isHidden) {
-          const { summary, class: orderClass } = orderObject.order
-
-          const popup = setPopupData(OrderTxTypes.METATXN, {
-            success: false,
-            summary,
-            id,
-            status: OrderActions.OrderStatus.EXPIRED,
-          })
-          orderAnalytics('Expired', orderClass)
-
-          idsAndPopups.push({ id, popup })
-        }
-      })
+      batchExpireOrdersPopup(store, action.payload, orders)
     } else if (action.type === 'order/presignOrders') {
-      action.payload.ids.forEach((id) => {
-        const orderObject = getOrderByIdFromState(orders, id)
-
-        if (orderObject) {
-          const { order } = orderObject
-
-          const popup = setPopupData(OrderTxTypes.METATXN, { summary: order.summary, status: 'presigned', id })
-          orderAnalytics('Posted', order.class, 'Pre-Signed')
-          idsAndPopups.push({ id, popup })
-        }
-      })
+      batchPresingOrdersPopup(store, action.payload, orders)
     }
   }
 
-  // dispatch all necessary Popups
-  // empty if for unrelated actions
-  idsAndPopups.forEach(({ popup }) => {
-    store.dispatch(addPopup(popup))
-  })
-
   return result
-}
-
-function _buildCancellationPopup(order: SerializedOrder) {
-  const { cancellationHash, apiAdditionalInfo, id, summary } = order
-
-  if (cancellationHash && !apiAdditionalInfo) {
-    // EthFlow order which has been cancelled and does not exist on the backend
-    // Use the `tx` popup
-    return setPopupData(OrderTxTypes.TXN, {
-      success: true,
-      summary: buildCancellationPopupSummary(id, summary),
-      hash: cancellationHash,
-      id,
-    })
-  } else {
-    // Regular order being cancelled
-    // Use `metatx` popup
-    return setPopupData(OrderTxTypes.METATXN, {
-      success: true,
-      summary: buildCancellationPopupSummary(id, summary),
-      id,
-    })
-  }
 }
