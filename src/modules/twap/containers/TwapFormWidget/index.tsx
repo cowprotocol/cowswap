@@ -9,19 +9,25 @@ import { partsStateAtom } from '../../state/partsStateAtom'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { useMemo } from 'react'
 import { displayTime } from 'utils/displayTime'
-import { orderDeadlines } from '../../const'
+import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines } from '../../const'
+import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
+import { useTwapFormActions } from '../../hooks/useTwapFormActions'
+import { useTwapFormState } from '../../hooks/useTwapFormState'
 
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
   const partsState = useAtomValue(partsStateAtom)
+  const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
-  const partsTime = useMemo(() => {
-    const timestamp = isCustomDeadline ? (customDeadline.hours * 60 + customDeadline.minutes) * 60 * 1000 : deadline
+  const formActions = useTwapFormActions()
+  const formState = useTwapFormState()
 
-    return displayTime(timestamp / numberOfPartsValue)
-  }, [numberOfPartsValue, deadline, customDeadline, isCustomDeadline])
+  const partsTime = useMemo(() => {
+    return displayTime((timeInterval * 1000) / numberOfPartsValue)
+  }, [numberOfPartsValue, timeInterval])
 
   return (
     <>
@@ -38,6 +44,7 @@ export function TwapFormWidget() {
           value={slippageValue}
           onUserInput={(value: number | null) => updateState({ slippageValue: value })}
           decimalsPlaces={2}
+          placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
           max={50}
           label="Slippage"
           hint="Todo: Slippage hint"
@@ -62,6 +69,8 @@ export function TwapFormWidget() {
           <>{partsTime}</>
         </TradeTextBox>
       </styledEl.DeadlineRow>
+
+      <PrimaryActionButton state={formState} context={formActions} />
     </>
   )
 }

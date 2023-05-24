@@ -1,5 +1,8 @@
 import ms from 'ms.macro'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Percent } from '@uniswap/sdk-core'
+
+export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
 export type OrderDeadline = { label: string; value: number }
 
