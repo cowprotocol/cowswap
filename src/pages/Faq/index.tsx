@@ -14,6 +14,7 @@ import { Routes } from 'constants/routes'
 import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
 import { FaqMenu } from './Menu'
 import { StyledInternalLink } from 'legacy/theme'
+import { LinkScrollable } from 'legacy/components/Link'
 
 import { useToC } from './hooks'
 import ToC from './ToC'
