@@ -1,22 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`pendingOrderActionMiddleware When some conditions, then should dispatch addPopup event 1`] = `
-Array [
-  Object {
-    "payload": Object {
-      "id": "0x001",
-      "popup": Object {
-        "content": Object {
-          "txn": Object {
-            "hash": "0xhash",
-            "success": true,
-            "summary": "summary submitted",
-          },
+Object {
+  "payload": Object {
+    "id": "0x001",
+    "popup": Object {
+      "content": Object {
+        "txn": Object {
+          "hash": "0xhash",
+          "success": true,
+          "summary": "summary submitted",
         },
-        "key": "0xhash_submitted",
       },
+      "key": "0xhash_submitted",
     },
-    "type": "application/addPopup",
   },
-]
+  "type": "application/addPopup",
+}
 `;
