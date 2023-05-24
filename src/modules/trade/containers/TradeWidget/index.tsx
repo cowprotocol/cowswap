@@ -11,6 +11,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { t } from '@lingui/macro'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
 export interface TradeWidgetActions {
   onCurrencySelection: CurrencyInputPanelProps['onCurrencySelection']
@@ -88,6 +89,8 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   return (
     <styledEl.Container id={id}>
+      <TradeQuoteUpdater />
+
       <styledEl.ContainerBox>
         <styledEl.Header>
           <TradeWidgetLinks />

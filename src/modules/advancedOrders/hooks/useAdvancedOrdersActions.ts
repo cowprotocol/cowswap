@@ -1,17 +1,14 @@
 import { useCallback } from 'react'
-import { useUpdateAtom } from 'jotai/utils'
 import { Currency } from '@uniswap/sdk-core'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { Field } from 'legacy/state/swap/actions'
-import { updateAdvancedOrdersAtom } from '../state/advancedOrdersAtom'
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 
 // TODO: this should be also unified for each trade widget (swap, limit, advanced)
 export function useAdvancedOrdersActions() {
   const { inputCurrency } = useAdvancedOrdersDerivedState()
 
-  const updateAdvancedOrdersState = useUpdateAtom(updateAdvancedOrdersAtom)
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
@@ -37,7 +34,7 @@ export function useAdvancedOrdersActions() {
         field,
       })
     },
-    [inputCurrency, updateAdvancedOrdersState, updateCurrencyAmount]
+    [inputCurrency, updateCurrencyAmount]
   )
 
   // TODO: implement this one

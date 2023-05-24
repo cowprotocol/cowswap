@@ -10,8 +10,11 @@ import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { useMemo } from 'react'
 import { displayTime } from 'utils/displayTime'
 import { orderDeadlines } from '../../const'
+import { useQuoteObserver } from 'modules/twap/hooks/useQuoteObserver'
 
 export function TwapFormWidget() {
+  useQuoteObserver()
+
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
   const partsState = useAtomValue(partsStateAtom)

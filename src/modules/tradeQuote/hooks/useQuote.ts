@@ -2,19 +2,21 @@ import { useMemo } from 'react'
 import { useAtomValue } from 'jotai/utils'
 import { tradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { TradeQuoteState } from '../state/tradeQuoteAtom'
+import { DEFAULT_QUOTE_RESPONSE } from '../state/tradeQuoteAtom'
 
-export function useIsQuoteLoading() {
+export function useQuote(): TradeQuoteState {
   const { state } = useDerivedTradeState()
-  const { isLoading } = useAtomValue(tradeQuoteAtom)
+  const quoteState = useAtomValue(tradeQuoteAtom)
 
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
 
   return useMemo(() => {
     if (!inputCurrency || !outputCurrency) {
-      return false
+      return DEFAULT_QUOTE_RESPONSE
     }
 
-    return !!isLoading
-  }, [inputCurrency, outputCurrency, isLoading])
+    return quoteState
+  }, [inputCurrency, outputCurrency, quoteState])
 }
