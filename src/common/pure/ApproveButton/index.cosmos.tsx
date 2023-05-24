@@ -21,9 +21,9 @@ const Custom = () => {
   const currency = currencyRaw === COW_TOKEN.symbol ? COW_TOKEN : GNO_TOKEN
 
   return (
-  <DemoContainer>
-    <ApproveButton currency={currency} state={state} onClick={() => void 0} />
-  </DemoContainer>
+    <DemoContainer>
+      <ApproveButton currency={currency} state={state} onClick={() => void 0} />
+    </DemoContainer>
   )
 }
 
