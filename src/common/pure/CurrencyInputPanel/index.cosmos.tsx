@@ -60,9 +60,9 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
 
 const Custom = () => {
   return (
-  <DemoContainer>
-    <CurrencyInputPanel {...defaultProps} {...useCustomProps()} />
-  </DemoContainer>
+    <DemoContainer>
+      <CurrencyInputPanel {...defaultProps} {...useCustomProps()} />
+    </DemoContainer>
   )
 }
 

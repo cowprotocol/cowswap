@@ -41,7 +41,7 @@ const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   return (
     <ThemeContext.Provider value={theme}>
       <DarkModeToggleButton onClick={toggleDarkMode}>
-      <SVG src={darkMode ? IMAGE_SUN : IMAGE_MOON} description={description} /> {label}
+        <SVG src={darkMode ? IMAGE_SUN : IMAGE_MOON} description={description} /> {label}
       </DarkModeToggleButton>
 
       {children}
@@ -89,27 +89,25 @@ connector.activate(chainId)
 const Fixture = ({ children }: { children: ReactNode }) => {
   return (
     <StrictMode>
-    <FixedGlobalStyle />
-    <Provider store={store}>
-      <HashRouter>
-        <ThemeProvider>
-        <ThemedGlobalStyle />
-          <LanguageProvider>
-            <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
-              <BlockNumberProvider>
-                <Wrapper>
-                  <DarkModeToggle>
-                    <WrapperInner>
-                      {children}
-                    </WrapperInner>
-                  </DarkModeToggle>
-                </Wrapper>
-              </BlockNumberProvider>
-            </Web3ReactProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </HashRouter>
-    </Provider>
+      <FixedGlobalStyle />
+      <Provider store={store}>
+        <HashRouter>
+          <ThemeProvider>
+            <ThemedGlobalStyle />
+            <LanguageProvider>
+              <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
+                <BlockNumberProvider>
+                  <Wrapper>
+                    <DarkModeToggle>
+                      <WrapperInner>{children}</WrapperInner>
+                    </DarkModeToggle>
+                  </Wrapper>
+                </BlockNumberProvider>
+              </Web3ReactProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </HashRouter>
+      </Provider>
     </StrictMode>
   )
 }
