@@ -39,9 +39,7 @@ export default function TokenFaq() {
               Any valid ERC20 token pair that does not apply transfer fees, and for which there is some basic liquidity
               on a DEX (like Uniswap or Balancer).
             </p>
-             <p>
-              With the introduction of the yearn Seasolver, you can also trade some LP tokens directly on CoW Swap.
-            </p>
+            <p>With the introduction of the yearn Seasolver, you can also trade some LP tokens directly on CoW Swap.</p>
 
             <h3 id="what-token-pairs-does-cowswap-not-allow-to-trade">
               What token pairs does CoW Swap NOT allow you to trade?
@@ -89,9 +87,9 @@ export default function TokenFaq() {
 
             <ol>
               <li>
-                Approve the CoW Protocol smart contract to spend the token on your behalf. By executing this smart contract
-                interaction you are approving the contract to withdraw the funds from your wallet once the trade you
-                have signed has been filled in a batch auction.
+                Approve the CoW Protocol smart contract to spend the token on your behalf. By executing this smart
+                contract interaction you are approving the contract to withdraw the funds from your wallet once the
+                trade you have signed has been filled in a batch auction.
               </li>
               <li>
                 Once the approval has been mined, the next step is to sign a meta-tx in which you will see the
@@ -177,9 +175,9 @@ export default function TokenFaq() {
             <h3 id="can-i-buy-and-sell-eth-in-cowswap">Can I buy and sell ETH in CoW Swap?</h3>
 
             <p>
-              Yes, you can directly place buy and sell orders for ETH. Etieher the UI will
-              prompt you to wrap and unwrap ETH into WETH without needing to leave the dapp's UI, or you can trade 
-              leveraging the native sell token flow.
+              Yes, you can directly place buy and sell orders for ETH. Etieher the UI will prompt you to wrap and unwrap
+              ETH into WETH without needing to leave the dapp's UI, or you can trade leveraging the native sell token
+              flow.
             </p>
 
             <h3 id="why-is-selling-eth-more-troublesome">Why is selling ETH more troublesome?</h3>
@@ -190,13 +188,14 @@ export default function TokenFaq() {
             </p>
 
             <p>
-              In order to sell ETH, you can either wrap it first to make it ERC20 compatible or you can use the 
-              native token sell flow to let the protocol do it for you. 
+              In order to sell ETH, you can either wrap it first to make it ERC20 compatible or you can use the native
+              token sell flow to let the protocol do it for you.
             </p>
 
-            <p>Wrapping is done by making an ETH deposit into the WETH contract. After doing so, you will get a 
-              balance of WETH of the same amount of ETH previously deposited. You can withdraw your ETH from the 
-              WETH contract at any time. This is called unwrapping WETH.
+            <p>
+              Wrapping is done by making an ETH deposit into the WETH contract. After doing so, you will get a balance
+              of WETH of the same amount of ETH previously deposited. You can withdraw your ETH from the WETH contract
+              at any time. This is called unwrapping WETH.
             </p>
 
             <p>

@@ -30,31 +30,32 @@ export default function TokenFaq() {
               <ExternalLinkFaq href="https://etherscan.io/address/0xd057b63f5e69cf1b929b356b579cba08d7688048">
                 vCOW
               </ExternalLinkFaq>{' '}
-              which is the non-transferable governance token that powers the CoW Protocol, but per {' '} 
+              which is the non-transferable governance token that powers the CoW Protocol, but per{' '}
               <ExternalLinkFaq href="https://snapshot.org/#/cow.eth/proposal/0x7f2d0e26225fec1dd19ae4870532a09014a69f2d973dde0a7b8296d556f221df">
                 CIP-5
               </ExternalLinkFaq>{' '}
-              the token became transferable and is known as {' '} 
+              the token became transferable and is known as{' '}
               <ExternalLinkFaq href="https://etherscan.io/token/0xdef1ca1fb7fbcdc777520aa7f396b4e015f497ab">
                 COW
               </ExternalLinkFaq>{' '}
             </p>
             <p>
-              At launch the token was a pure virtual token for governance meaning that the token was not transferrable. 
-              This implies that the token will not be transferable. The token entitles its holders with voting rights 
-              in the CoW DAO. It was up to CoW DAO to vote on whether making the token transferable complies with applicable laws.
+              At launch the token was a pure virtual token for governance meaning that the token was not transferrable.
+              This implies that the token will not be transferable. The token entitles its holders with voting rights in
+              the CoW DAO. It was up to CoW DAO to vote on whether making the token transferable complies with
+              applicable laws.
             </p>
             <p>
               The token&apos;s main purpose is to govern and curate essential infrastructure components of the CoW
-              Protocol ecosystem. Per CIP5, CoW DAO holders decided to enable the swapping of vCOW tokens into COW tokens. 
-              COW is a standard ERC-20 token which can be transferred and traded freely.
+              Protocol ecosystem. Per CIP5, CoW DAO holders decided to enable the swapping of vCOW tokens into COW
+              tokens. COW is a standard ERC-20 token which can be transferred and traded freely.
             </p>
             <p>Be cautious, some people may create fake COW tokens, that are not affiliated with this project.</p>
             <p>
               Follow <ExternalLinkFaq href="https://twitter.com/CoWSwap">@CoWSwap</ExternalLinkFaq> on Twitter to be up
               to date!
             </p>
-            
+
             <h3 id="where-can-you-swap-vcow-tokens-for-the-new-cow-tokens">
               Where can you swap vCOW tokens for the new COW token?
             </h3>

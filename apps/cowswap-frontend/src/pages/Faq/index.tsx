@@ -69,13 +69,14 @@ export default function Faq() {
             <h3 id="what-is-cowswap">What is CoW Swap?</h3>
             <p>CoW Swap is the first trading interface built on top of CoW Protocol.</p>
             <p>
-              CoW Swap is a Meta DEX aggregator that allows you to buy and sell tokens using gasless orders that are 
-              settled peer-to-peer among users, or into any on-chain liquidity source while providing protection from MEV.
+              CoW Swap is a Meta DEX aggregator that allows you to buy and sell tokens using gasless orders that are
+              settled peer-to-peer among users, or into any on-chain liquidity source while providing protection from
+              MEV.
             </p>
 
             <h3 id="why-is-cowswap-a-meta-dex-aggregator">What makes CoW Swap a &quot;Meta&quot; DEX aggregator?</h3>
             <p>
-              CoW Swap is built on top of CoW Protocol and is a fully permissionless trading protocol that leverages 
+              CoW Swap is built on top of CoW Protocol and is a fully permissionless trading protocol that leverages
               Batch Auctions as its price finding mechanism.
             </p>
             <p>
@@ -142,10 +143,10 @@ export default function Faq() {
 
             <p>
               Batches are decentrally settled by external, independent parties (called “solvers”) on-chain. A solver is
-              a person or entity who submits order settlement solutions that maximize users trade surplus for a given batch.
-              Solvers are incentivized to implement professional transaction management techniques that allow them to
-              set very tight slippage bounds on any interactions with external liquidity sources (e.g., trading CoW
-              excess on Uniswap). This dramatically reduces the manipulation surface of MEV bots.
+              a person or entity who submits order settlement solutions that maximize users trade surplus for a given
+              batch. Solvers are incentivized to implement professional transaction management techniques that allow
+              them to set very tight slippage bounds on any interactions with external liquidity sources (e.g., trading
+              CoW excess on Uniswap). This dramatically reduces the manipulation surface of MEV bots.
             </p>
 
             <p>
@@ -163,11 +164,11 @@ export default function Faq() {
 
             <p>
               If CoWs (Coincidence of Wants) orders exist in a batch, the “smaller” order is matched fully with the
-              larger order. The excess of the larger order is settled with the best available base on-chain liquidity. 
-              The clearing price for both orders will be the price of the token with the excess amount on external 
+              larger order. The excess of the larger order is settled with the best available base on-chain liquidity.
+              The clearing price for both orders will be the price of the token with the excess amount on external
               liquidity sources to which the protocol is connected.
             </p>
-            
+
             <h3 id="wallet-not-supported">Why is my wallet not supported?</h3>
             <p>
               CoW Swap uses offline signatures to offer gasless orders. Additionally, Smart Contract (SC) wallets are
