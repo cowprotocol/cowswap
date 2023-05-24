@@ -1,11 +1,9 @@
-import { LinkScrollable } from 'legacy/components/Link'
-
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
-import { ExternalLinkFaq, Wrapper } from './styled'
+import { Wrapper } from './styled'
 import ToC from './ToC'
 
 import { Footer } from '.'
@@ -46,10 +44,10 @@ export default function ProtocolFaq() {
             </h3>
             <p>CoW Protocol can connect to all on-chain liquidity as it is a layer on top of all trading venues.</p>
             <p>
-              When CoW Protocol does not have enough CoWs (Coincidence of Wants) among the orders available for a batch, it
-              taps other AMMs’ liquidity to be able to settle the traders’ orders. CoW Protocol can be connected to any
-              on-chain liquidity sources and can therefore enjoy the benefits of concentrating the fragmented liquidity
-              across DeFi.
+              When CoW Protocol does not have enough CoWs (Coincidence of Wants) among the orders available for a batch,
+              it taps other AMMs’ liquidity to be able to settle the traders’ orders. CoW Protocol can be connected to
+              any on-chain liquidity sources and can therefore enjoy the benefits of concentrating the fragmented
+              liquidity across DeFi.
             </p>
             <h3 id="how-is-cowswap-able-to-offer-better-prices-than-aggregators-themselves">
               How is CoW Protocol able to offer better prices?
@@ -57,18 +55,18 @@ export default function ProtocolFaq() {
             <p>
               Before using on-chain liquidity, CoW Protocol tries to find CoWs (Coincidences of Wants) within the set of
               currently valid orders and match them directly with one another. CoWs result in better prices because no
-              fee is paid to the liquidity provider (e.g., 0.3% for Uniswap v2). In the case that CoW Swap does not have any 
-              CoWs, it taps into the DEX that gives the next best price. This results in the same or better performance
-              than existing DEX aggregators.
+              fee is paid to the liquidity provider (e.g., 0.3% for Uniswap v2). In the case that CoW Swap does not have
+              any CoWs, it taps into the DEX that gives the next best price. This results in the same or better
+              performance than existing DEX aggregators.
             </p>
             <h3 id="how-can-i-become-a-liquidity-provider">How can I become a liquidity provider?</h3>
             <p>
-              CoW Protocol <b>does not</b> have liquidity providers. Instead, it connects to all on-chain liquidity that is
-              provided across different protocols. Since orders only incur a cost if traded, active market makers can
+              CoW Protocol <b>does not</b> have liquidity providers. Instead, it connects to all on-chain liquidity that
+              is provided across different protocols. Since orders only incur a cost if traded, active market makers can
               observe the orderbook and place counter orders (creating a CoW) to prevent settling trades via external
               liquidity.
             </p>
-            
+
             <h3 id="what-are-gnosis-protocol-v2-solvers">What are CoW Protocol&apos;s Solvers?</h3>
             <p>
               In CoW Protocol, instead of using a central operator or a constant function market maker to determine
@@ -93,7 +91,7 @@ export default function ProtocolFaq() {
                 solutions, or take the risk of being slashed by the CoW DAO for wrongdoing.
               </li>
             </ol>
-            
+
             <Footer />
           </Content>
         </Page>
