@@ -1,14 +1,14 @@
 import { AnyAction, Dispatch, isAnyOf, Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
 
 import { addPopup } from 'legacy/state/application/reducer'
-import { AppState } from 'legacy/state'
-import * as OrderActions from './actions'
-import { AddPendingOrderParams, BatchOrdersUpdateParams, SerializedOrder, UpdateOrderParams } from './actions'
+import { AppState } from 'legacy/state/index'
+import * as OrderActions from '../actions'
+import { AddPendingOrderParams, BatchOrdersUpdateParams, SerializedOrder, UpdateOrderParams } from '../actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { getOrderByIdFromState, OrderIDWithPopup, OrderTxTypes, setPopupData } from './helpers'
+import { getOrderByIdFromState, OrderIDWithPopup, OrderTxTypes, setPopupData } from '../helpers'
 import { registerOnWindow } from 'legacy/utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'legacy/utils/sound'
 import { orderAnalytics } from 'legacy/components/analytics'
@@ -16,10 +16,10 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/app
 import { OrdersState } from 'legacy/state/orders/reducer'
 import { timeSinceInSeconds } from 'utils/time'
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
-import { pendingOrderActionMiddleware } from './middlewares/pendingOrderActionMiddleware'
-import { updateOrderActionMiddleware } from './middlewares/updateOrderActionMiddleware'
-import { batchFulfillOrderActionMiddleware } from './middlewares/batchFulfillOrderActionMiddleware'
-import { buildCancellationPopupSummary } from './buildCancellationPopupSummary'
+import { pendingOrderActionMiddleware } from './pendingOrderActionMiddleware'
+import { updateOrderActionMiddleware } from './updateOrderActionMiddleware'
+import { batchFulfillOrderActionMiddleware } from './batchFulfillOrderActionMiddleware'
+import { buildCancellationPopupSummary } from '../buildCancellationPopupSummary'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
