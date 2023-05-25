@@ -93,6 +93,28 @@ describe('appziMiddleware', () => {
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
     })
+
+    it('should open appzi if order is hidden', () => {
+      when(mockStore.getState()).thenReturn({
+        orders: {
+          1: {
+            pending: {
+              '0x1': {
+                order: {
+                  id: '0x1',
+                  class: OrderClass.MARKET,
+                  isHidden: true,
+                },
+              },
+            },
+          },
+        },
+      } as any)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
   })
   describe('batch expire', () => {
     beforeEach(() => {
@@ -140,6 +162,50 @@ describe('appziMiddleware', () => {
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not open appzi if market order is hidden', () => {
+      when(mockStore.getState()).thenReturn({
+        orders: {
+          1: {
+            pending: {
+              '0x1': {
+                order: {
+                  id: '0x1',
+                  class: OrderClass.MARKET,
+                  isHidden: true,
+                },
+              },
+            },
+          },
+        },
+      } as any)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should not open appzi if limit order is hidden', () => {
+      when(mockStore.getState()).thenReturn({
+        orders: {
+          1: {
+            pending: {
+              '0x1': {
+                order: {
+                  id: '0x1',
+                  class: OrderClass.LIMIT,
+                  isHidden: true,
+                },
+              },
+            },
+          },
+        },
+      } as any)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
     })
   })
 })
