@@ -6,7 +6,7 @@ import React from 'react'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import styled from 'styled-components/macro'
-import { BundleTxApprovalBanner } from 'common/pure/InlineBanner/banners'
+import { BundleTxApprovalBanner, BundleTxSafeWcBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 export interface SwapWarningsTopProps {
@@ -18,6 +18,7 @@ export interface SwapWarningsTopProps {
   isExpertMode: boolean
   showApprovalBundlingBanner: boolean
   shouldZeroApprove: boolean
+  showSafeWcBundlingBanner: boolean
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -42,6 +43,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     isExpertMode,
     hideUnknownImpactWarning,
     showApprovalBundlingBanner,
+    showSafeWcBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
@@ -64,6 +66,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         />
       )}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
+      {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
     </>
   )
 }, genericPropsChecker)

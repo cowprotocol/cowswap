@@ -26,9 +26,9 @@ function useSwapApprovalStates(
   const v2RouterAddress = chainId ? V2_ROUTER_ADDRESS[chainId] : undefined
   const v3RouterAddress = chainId ? V3_ROUTER_ADDRESS[chainId] : undefined
   const swapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
-  const v2 = useApprovalStateForSpender(amountToApprove, v2RouterAddress, useIsPendingApproval)
-  const v3 = useApprovalStateForSpender(amountToApprove, v3RouterAddress, useIsPendingApproval)
-  const v2V3 = useApprovalStateForSpender(amountToApprove, swapRouterAddress, useIsPendingApproval)
+  const v2 = useApprovalStateForSpender(amountToApprove, v2RouterAddress, useIsPendingApproval).approvalState
+  const v3 = useApprovalStateForSpender(amountToApprove, v3RouterAddress, useIsPendingApproval).approvalState
+  const v2V3 = useApprovalStateForSpender(amountToApprove, swapRouterAddress, useIsPendingApproval).approvalState
 
   return useMemo(() => ({ v2, v3, v2V3 }), [v2, v2V3, v3])
 }

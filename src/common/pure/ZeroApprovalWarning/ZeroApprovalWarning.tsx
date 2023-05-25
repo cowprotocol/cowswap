@@ -2,13 +2,14 @@ import { HashLink } from 'react-router-hash-link'
 import { WarningCard } from '../WarningCard'
 import styled from 'styled-components/macro'
 import { Currency } from '@uniswap/sdk-core'
+import { Nullish } from 'types'
 
 const Link = styled(HashLink)`
   text-decoration: underline;
 `
 
 interface ZeroApprovalWarningProps {
-  currency: Currency | undefined
+  currency: Nullish<Currency>
 }
 
 // TODO: Replace with FAQ link once available.

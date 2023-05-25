@@ -5,6 +5,7 @@ import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { DemoContainer } from 'cosmos.decorator'
 
 interface BuiltItProps {
   className: string
@@ -23,7 +24,7 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
   const { currency, balance, fiatAmount, amount } = currencyInfo
 
   return (
-    <>
+    <DemoContainer>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={false} disabled={false}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
@@ -53,6 +54,6 @@ export function CurrencyPreview(props: CurrencyPreviewProps) {
           </div>
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
-    </>
+    </DemoContainer>
   )
 }

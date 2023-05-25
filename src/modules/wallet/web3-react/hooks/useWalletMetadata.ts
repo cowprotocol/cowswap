@@ -108,3 +108,14 @@ export function useIsSafeWallet(): boolean {
 
   return GNOSIS_APP_NAMES.includes(walletName)
 }
+
+/**
+ * Detects whether the currently connected wallet is a Safe wallet
+ * but NOT loaded as a Safe App
+ */
+export function useIsSafeViaWc(): boolean {
+  const isSafeApp = useIsSafeApp()
+  const isSafeWallet = useIsSafeWallet()
+
+  return isSafeWallet && !isSafeApp
+}
