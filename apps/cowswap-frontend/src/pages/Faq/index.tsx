@@ -1,7 +1,6 @@
 import {
   GPAUDIT_LINK,
   COWWIKI_LINK,
-  GNOSIS_FORUM_ROADTODECENT_LINK,
   FLASHBOYS_LINK,
   DISCORD_LINK,
   MEV_TOTAL,
@@ -10,8 +9,8 @@ import {
 
 import { Link } from 'react-router-dom'
 
-import { StyledInternalLink } from 'legacy/theme'
 import { LinkScrollable } from 'legacy/components/Link'
+import { StyledInternalLink } from 'legacy/theme'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
