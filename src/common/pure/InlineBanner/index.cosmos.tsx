@@ -1,28 +1,19 @@
 import { InlineBanner } from '.'
-import styled from 'styled-components/macro'
-
-const Wrapper = styled.div`
-  max-width: 470px;
-  width: 100%;
-  height: 100%;
-  padding: 50px 10px;
-  border-radius: 16px;
-  background-color: ${({ theme }) => theme.grey1};
-`
+import { DemoContainer } from 'cosmos.decorator'
 
 const Fixtures = {
   'default (alert)': (
-    <Wrapper>
+    <DemoContainer>
       <InlineBanner content={<strong>This is an alert banner.</strong>} />
-    </Wrapper>
+    </DemoContainer>
   ),
   alert: (
-    <Wrapper>
+    <DemoContainer>
       <InlineBanner type="alert" content={<strong>This is an alert banner (explicitly passed type).</strong>} />
-    </Wrapper>
+    </DemoContainer>
   ),
   information: (
-    <Wrapper>
+    <DemoContainer>
       <InlineBanner
         type="information"
         content={
@@ -32,20 +23,20 @@ const Fixtures = {
           </>
         }
       />
-    </Wrapper>
+    </DemoContainer>
   ),
   success: (
-    <Wrapper>
+    <DemoContainer>
       <InlineBanner type="success" content={<strong>Operation completed successfully!</strong>} />
-    </Wrapper>
+    </DemoContainer>
   ),
   danger: (
-    <Wrapper>
+    <DemoContainer>
       <InlineBanner type="danger" content={<strong>Something went wrong! Please try again.</strong>} />
-    </Wrapper>
+    </DemoContainer>
   ),
   smallVolumeWarning: (
-    <Wrapper>
+    <DemoContainer>
       <InlineBanner
         content={
           <>
@@ -54,7 +45,7 @@ const Fixtures = {
           </>
         }
       />
-    </Wrapper>
+    </DemoContainer>
   ),
 }
 
