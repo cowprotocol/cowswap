@@ -7,7 +7,7 @@ import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
-import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
+import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { useQuote } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
 

@@ -1,7 +1,7 @@
 import { atomWithStorage } from 'jotai/utils'
 import { atom } from 'jotai'
 import { Milliseconds } from 'types'
-import { defaultOrderDeadline } from '../const'
+import { defaultNumOfParts, defaultOrderDeadline } from '../const'
 
 export interface TwapOrdersDeadline {
   readonly isCustomDeadline: boolean
@@ -27,7 +27,7 @@ export const defaultTwapOrdersSettings: TwapOrdersSettingsState = {
   isCustomDeadline: false,
   deadline: defaultOrderDeadline.value,
   customDeadline: defaultCustomDeadline,
-  numberOfPartsValue: 1,
+  numberOfPartsValue: defaultNumOfParts,
   // null = auto
   slippageValue: null,
 }
