@@ -9,26 +9,29 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 import { useIsSafeWallet } from 'modules/wallet'
+import { pollUntil } from 'common/utils/pollUntil'
+import SafeApiKit from '@safe-global/api-kit'
 
-function wait(ms = 1000) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
-}
-
-async function poll<T>(
-  fn: () => Promise<T | null>,
-  fnCondition: (result: T | null) => boolean,
-  ms: number
-): Promise<T | null> {
-  let result = await fn()
-
-  while (fnCondition(result)) {
-    await wait(ms)
-    result = await fn()
-  }
-
-  return result
+async function waitForSafeTransactionExecution({
+  safeApiKit,
+  txHash,
+}: {
+  safeApiKit: SafeApiKit
+  txHash: string
+}): Promise<SafeMultisigTransactionResponse | null> {
+  return await pollUntil(
+    async () => {
+      try {
+        return await safeApiKit.getTransaction(txHash)
+      } catch {
+        return null
+      }
+    },
+    (transaction: SafeMultisigTransactionResponse | null) => {
+      return transaction ? !transaction.isExecuted : true
+    },
+    1000
+  )
 }
 
 export function useZeroApprove(currency: Currency) {
@@ -47,19 +50,7 @@ export function useZeroApprove(currency: Currency) {
 
       // For Wallet Connect based Safe Wallet connections, wait for transaction to be executed.
       if (txReceipt && safeApiKit && isSafeWallet && isWalletConnect) {
-        await poll(
-          async () => {
-            try {
-              return await safeApiKit.getTransaction(txReceipt?.hash)
-            } catch {
-              return null
-            }
-          },
-          (transaction: SafeMultisigTransactionResponse | null) => {
-            return transaction ? !transaction.isExecuted : true
-          },
-          1000
-        )
+        await waitForSafeTransactionExecution({ safeApiKit, txHash: txReceipt.hash })
       }
     } finally {
       setZeroApprovalState({ isApproving: false })
