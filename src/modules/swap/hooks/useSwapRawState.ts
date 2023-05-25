@@ -1,5 +1,5 @@
 import { TradeRawState } from 'modules/trade/types/TradeRawState'
-import { useSwapState } from 'state/swap/hooks'
+import { useSwapState } from 'legacy/state/swap/hooks'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { useCallback } from 'react'
 import { replaceOnlyTradeRawState, ReplaceOnlyTradeRawStatePayload } from 'legacy/state/swap/actions'

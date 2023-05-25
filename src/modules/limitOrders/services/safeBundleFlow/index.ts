@@ -12,6 +12,9 @@ import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { SwapFlowAnalyticsContext, tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from 'modules/limitOrders/services/types'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
+import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
@@ -60,7 +63,7 @@ export async function safeBundleFlow(
     appData,
     settlementContract,
     safeAppsSdk,
-    addAppDataToUploadQueue,
+    uploadAppData,
   } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
@@ -81,39 +84,72 @@ export async function safeBundleFlow(
       signer: provider.getSigner(),
       validTo,
     })
-
-    logTradeFlow(LOG_PREFIX, 'STEP 4: build presign tx')
-    const presignTx = await buildPresignTx({ settlementContract, orderId })
-
-    logTradeFlow(LOG_PREFIX, 'STEP 5: send safe tx')
-    const safeTransactionData: MetaTransactionData[] = [
-      { to: approveTx.to!, data: approveTx.data!, value: '0', operation: 0 },
-      { to: presignTx.to!, data: presignTx.data!, value: '0', operation: 0 },
-    ]
-
-    const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
-
-    logTradeFlow(LOG_PREFIX, 'STEP 6: add pending order step')
+    logTradeFlow(LOG_PREFIX, 'STEP 4: add order, but hidden')
     addPendingOrderStep(
       {
         id: orderId,
         chainId: chainId,
         order: {
           ...order,
-          presignGnosisSafeTxHash: safeTx.safeTxHash,
+          isHidden: true,
         },
       },
       dispatch
     )
 
-    logTradeFlow(LOG_PREFIX, 'STEP 6: add app data to upload queue')
-    addAppDataToUploadQueue({ chainId, orderId, appData })
+    logTradeFlow(LOG_PREFIX, 'STEP 5: build presign tx')
+    const presignTx = await buildPresignTx({ settlementContract, orderId })
+
+    logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
+    const safeTransactionData: MetaTransactionData[] = [
+      { to: approveTx.to!, data: approveTx.data!, value: '0', operation: 0 },
+      { to: presignTx.to!, data: presignTx.data!, value: '0', operation: 0 },
+    ]
+
+    const shouldZeroApprove = await shouldZeroApproveFn({
+      tokenContract: erc20Contract,
+      spender,
+      amountToApprove: inputAmount,
+      isBundle: true,
+    })
+
+    if (shouldZeroApprove) {
+      const zeroApproveTx = await buildZeroApproveTx({
+        erc20Contract,
+        spender,
+        currency: inputAmount.currency,
+      })
+      safeTransactionData.unshift({
+        to: zeroApproveTx.to!,
+        data: zeroApproveTx.data!,
+        value: '0',
+        operation: 0,
+      })
+    }
+
+    const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
+
+    logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
+    partialOrderUpdate(
+      {
+        chainId: chainId,
+        order: {
+          id: order.id,
+          presignGnosisSafeTxHash: safeTx.safeTxHash,
+          isHidden: false,
+        },
+      },
+      dispatch
+    )
+
+    logTradeFlow(LOG_PREFIX, 'STEP 8: add app data to upload queue')
+    uploadAppData({ chainId, orderId, appData })
 
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
-    logTradeFlow(LOG_PREFIX, 'STEP 7: ERROR: ', error)
+    logTradeFlow(LOG_PREFIX, 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

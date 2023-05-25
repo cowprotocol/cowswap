@@ -8,14 +8,14 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { VCow as VCowType } from 'abis/types'
 
-import { useVCowContract } from 'hooks/useContract'
+import { useVCowContract } from 'legacy/hooks/useContract'
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
-import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { GpEther, V_COW } from 'constants/tokens'
+import { GpEther, V_COW } from 'legacy/constants/tokens'
 
-import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { isAddress } from 'utils'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+import { isAddress } from 'legacy/utils'
 
 import {
   getClaimKey,
@@ -23,13 +23,13 @@ import {
   isFreeClaim,
   claimTypeToTokenAmount,
   transformRepoClaimsToUserClaims,
-} from 'state/claim/hooks/utils'
+} from 'legacy/state/claim/hooks/utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useAllClaimingTransactionIndices } from 'state/enhancedTransactions/hooks'
+import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
 
-import { AppDispatch } from 'state'
+import { AppDispatch } from 'legacy/state'
 import { useSelector, useDispatch } from 'react-redux'
-import { AppState } from 'state'
+import { AppState } from 'legacy/state'
 
 import {
   setInputAddress,
@@ -52,10 +52,10 @@ import {
   setClaimsCount,
 } from '../actions'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
-import { supportedChainId } from 'utils/supportedChainId'
-import useIsMounted from 'hooks/useIsMounted'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import useIsMounted from 'legacy/hooks/useIsMounted'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { ClaimInfo } from 'state/claim/reducer'
+import { ClaimInfo } from 'legacy/state/claim/reducer'
 import { CallState } from '@uniswap/redux-multicall'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { useWalletInfo } from 'modules/wallet'

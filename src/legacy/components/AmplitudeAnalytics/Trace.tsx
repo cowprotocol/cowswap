@@ -1,7 +1,13 @@
 import { createContext, memo, PropsWithChildren, useContext, useEffect, useMemo } from 'react'
 
 import { sendAnalyticsEvent } from '.'
-import { ElementName, EventName, ModalName, PageName, SectionName } from 'components/AmplitudeAnalytics/constants' // Mod
+import {
+  ElementName,
+  EventName,
+  ModalName,
+  PageName,
+  SectionName,
+} from 'legacy/components/AmplitudeAnalytics/constants' // Mod
 
 export interface ITraceContext {
   // Highest order context: eg Swap or Explore.

@@ -2,8 +2,8 @@ import { useState, useRef } from 'react'
 import { MenuFlyout, Content } from './styled'
 import IMAGE_CARRET_DOWN from 'legacy/assets/cow-swap/carret-down.svg'
 import SVG from 'react-inlinesvg'
-import { useMediaQuery, LargeAndUp } from 'hooks/useMediaQuery'
-import { useOnClickOutside } from 'hooks/useOnClickOutside'
+import { useMediaQuery, LargeAndUp } from 'legacy/hooks/useMediaQuery'
+import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 
 interface MenuProps {
   title: string

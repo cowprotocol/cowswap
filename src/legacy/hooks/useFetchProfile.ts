@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getProfileData } from 'api/gnosisProtocol'
 import { ProfileData } from 'api/gnosisProtocol/api'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { useWalletInfo } from 'modules/wallet'
 
 type FetchProfileState = {

@@ -1,5 +1,5 @@
 import SVG from 'react-inlinesvg'
-import { ExternalLink } from 'theme'
+import { ExternalLink } from 'legacy/theme'
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 
 import OrderCheckImage from 'legacy/assets/cow-swap/order-check.svg'
@@ -13,9 +13,9 @@ import { StatusLabel, StatusLabelWrapper, StatusLabelBelow, CancelTxLink } from 
 import { ActivityDerivedState, determinePillColour } from './index'
 import { getSafeWebUrl } from 'api/gnosisSafe'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { getActivityState } from 'hooks/useActivityDerivedState'
+import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { CancelButton } from 'common/pure/CancelButton'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 export function GnosisSafeLink(props: {

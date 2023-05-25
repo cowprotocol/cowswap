@@ -4,19 +4,19 @@ import {
   ConfirmationModalContent,
   ConfirmationModalContentProps,
   ConfirmationModalProps,
-} from 'components/TransactionConfirmationModal'
+} from 'legacy/components/TransactionConfirmationModal'
 import { GpModal } from 'common/pure/Modal'
-import { AutoColumn } from 'components/Column'
+import { AutoColumn } from 'legacy/components/Column'
 import { Text } from 'rebass'
 
-import Row from 'components/Row'
-import { ExternalLink } from 'components/Link'
+import Row from 'legacy/components/Row'
+import { ExternalLink } from 'legacy/components/Link'
 
 import CowBalance from '../CowBalance'
 import SubsidyTable from './SubsidyTable'
 import { SUBSIDY_INFO_MESSAGE } from './constants'
 
-import useCowBalanceAndSubsidy from 'hooks/useCowBalanceAndSubsidy'
+import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { useWalletInfo } from 'modules/wallet'
 
 export type CowSubsidy = { tier: number; discount: number }

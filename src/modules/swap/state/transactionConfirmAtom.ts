@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { OperationType } from 'components/TransactionConfirmationModal'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
 
 export interface TransactionConfirmState {
   operationType: OperationType

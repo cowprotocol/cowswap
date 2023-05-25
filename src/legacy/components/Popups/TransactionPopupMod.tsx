@@ -2,11 +2,11 @@ import { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ThemedText } from 'theme'
-import { AutoColumn } from 'components/Column'
-import { AutoRow } from 'components/Row'
+import { ThemedText } from 'legacy/theme'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
 
-import { ExplorerLink } from 'components/ExplorerLink'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { useWalletInfo } from 'modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`

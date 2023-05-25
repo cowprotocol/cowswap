@@ -8,7 +8,7 @@ import {
   updateSafeTransaction,
   ReplacementType,
   SerializableTransactionReceipt,
-} from 'state/enhancedTransactions/actions'
+} from 'legacy/state/enhancedTransactions/actions'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 

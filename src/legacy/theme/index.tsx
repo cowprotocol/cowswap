@@ -10,9 +10,9 @@ import {
   colors as colorsBaseTheme,
   FixedGlobalStyle as FixedGlobalStyleBase,
   themeVariables as baseThemeVariables,
-} from 'theme/baseTheme'
+} from 'legacy/theme/baseTheme'
 import React, { useMemo } from 'react'
-import { useIsDarkMode } from 'state/user/hooks'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }
 
 export const MEDIA_WIDTHS = {

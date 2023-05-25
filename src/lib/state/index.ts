@@ -1,7 +1,7 @@
 import { createMulticall } from '@uniswap/redux-multicall'
 import { combineReducers, createStore } from 'redux'
 
-import price from 'state/price/reducer' // MOD
+import price from 'legacy/state/price/reducer' // MOD
 
 export * from 'lib/state/multicall'
 

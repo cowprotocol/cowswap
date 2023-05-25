@@ -2,15 +2,15 @@ import BigNumberJs from 'bignumber.js'
 import { Percent } from '@uniswap/sdk-core'
 
 import { getQuote } from 'api/gnosisProtocol'
-import { SWR_OPTIONS } from 'constants/index'
+import { SWR_OPTIONS } from 'legacy/constants'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { toErc20Address } from 'utils/tokens'
+import { toErc20Address } from 'legacy/utils/tokens'
 import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { FeeInformation, PriceInformation } from 'types'
 import useSWR, { SWRConfiguration } from 'swr'
-import { getUsdQuoteValidTo } from 'hooks/useStablecoinPrice'
-import { GpPriceStrategy } from 'state/gas/atoms'
+import { getUsdQuoteValidTo } from 'legacy/hooks/useStablecoinPrice'
+import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
@@ -57,7 +57,7 @@ export async function getBestQuote({
   } else {
     console.debug('[GP PRICE::API] getBestQuote - Attempting best quote retrieval using LEGACY strategy, hang tight.')
 
-    const { getBestQuoteLegacy } = await import('utils/priceLegacy')
+    const { getBestQuoteLegacy } = await import('legacy/utils/priceLegacy')
 
     return getBestQuoteLegacy({ quoteParams, fetchFee, previousFee, isPriceRefresh: false })
   }
@@ -77,6 +77,7 @@ export function getValidParams(params: LegacyPriceQuoteParams) {
   return { ...params, baseToken, quoteToken }
 }
 
+// TODO: the function throws error, when initialValue = '0'
 export function calculateFallbackPriceImpact(initialValue: string, finalValue: string) {
   const initialValueBn = new BigNumberJs(initialValue)
   const finalValueBn = new BigNumberJs(finalValue)
@@ -117,7 +118,7 @@ export async function getGpUsdcPrice({ strategy, quoteParams }: Pick<LegacyQuote
       quoteToken: quoteParams.sellToken,
     }
 
-    const { getBestPrice } = await import('utils/priceLegacy')
+    const { getBestPrice } = await import('legacy/utils/priceLegacy')
 
     const quote = await getBestPrice(legacyParams)
 

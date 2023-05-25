@@ -1,5 +1,5 @@
 import * as styledEl from './styled'
-import { Field } from 'state/swap/actions'
+import { Field } from 'legacy/state/swap/actions'
 import React, { useMemo, useState } from 'react'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { useFillLimitOrdersDerivedState, useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
@@ -35,6 +35,8 @@ import usePriceImpact from 'legacy/hooks/usePriceImpact'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useShouldZeroApproveLimit } from 'common/hooks/useShouldZeroApproveLimit'
+import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -159,6 +161,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const [showConfirmation, setShowConfirmation] = useState(false)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
+  const shouldZeroApprove = useShouldZeroApproveLimit()
 
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
@@ -225,6 +228,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         outputCurrencyInfo={outputCurrencyInfo}
       />
       <TradeApproveWidget />
+      {shouldZeroApprove && <ZeroApprovalModal />}
       {tradeContext && (
         <LimitOrdersConfirmModal
           isOpen={showConfirmation}

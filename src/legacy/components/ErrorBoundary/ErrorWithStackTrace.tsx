@@ -1,15 +1,15 @@
 import { Trans } from '@lingui/macro'
 import CowError from 'legacy/assets/cow-swap/CowError.png'
-import { AutoColumn } from 'components/Column'
-import { MEDIA_WIDTHS, ThemedText } from 'theme'
-import { AutoRow } from 'components/Row'
-import { ExternalLink } from 'theme'
-import { CODE_LINK, DISCORD_LINK } from 'constants/index'
+import { AutoColumn } from 'legacy/components/Column'
+import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
+import { AutoRow } from 'legacy/components/Row'
+import { ExternalLink } from 'legacy/theme'
+import { CODE_LINK, DISCORD_LINK } from 'legacy/constants'
 import React from 'react'
 import styled from 'styled-components/macro'
 import { Title } from 'modules/application/pure/Page'
-import { userAgent } from 'utils/userAgent'
-import store, { AppState } from 'state'
+import { userAgent } from 'legacy/utils/userAgent'
+import store, { AppState } from 'legacy/state'
 
 const FlexContainer = styled.div`
   display: flex;

@@ -1,4 +1,4 @@
-import { DEFAULT_DECIMALS } from 'constants/index'
+import { DEFAULT_DECIMALS } from 'legacy/constants'
 import { Currency } from '@uniswap/sdk-core'
 
 export function getDecimals(currency: Currency): number {

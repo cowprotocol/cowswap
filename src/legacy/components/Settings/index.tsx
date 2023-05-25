@@ -2,7 +2,7 @@ import { WithClassName } from 'types'
 
 import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
-import { RowFixed } from 'components/Row'
+import { RowFixed } from 'legacy/components/Row'
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
 import { Percent } from '@uniswap/sdk-core'
 

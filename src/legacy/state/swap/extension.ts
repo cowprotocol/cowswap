@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
-import { QuoteInformationObject } from 'state/price/reducer'
+import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import TradeGp, { _constructTradePrice } from './TradeGp'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 

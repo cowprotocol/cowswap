@@ -1,5 +1,5 @@
-import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'constants/ipfs'
-import { isLocal } from 'utils/environments'
+import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'legacy/constants/ipfs'
+import { isLocal } from 'legacy/utils/environments'
 
 let warningMsg
 

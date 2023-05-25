@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
-import { PriceImpact } from 'hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useUpdateAtom } from 'jotai/utils'
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'

@@ -1,26 +1,25 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { DEFAULT_DECIMALS } from 'constants/index'
+import { DEFAULT_DECIMALS } from 'legacy/constants'
 
-import { UnsupportedToken } from 'api/gnosisProtocol'
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { Field } from 'state/swap/actions'
-import { useIsUnsupportedTokenGp } from 'state/lists/hooks'
+import { Field } from 'legacy/state/swap/actions'
+import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
-import { useRefetchQuoteCallback } from 'hooks/useRefetchPriceCallback'
-import useDebounce from 'hooks/useDebounce'
-import useIsOnline from 'hooks/useIsOnline'
+import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
+import useDebounce from 'legacy/hooks/useDebounce'
+import useIsOnline from 'legacy/hooks/useIsOnline'
 import { QuoteInformationObject } from './reducer'
-import { isWrappingTrade } from 'state/swap/utils'
-import { useOrderValidTo } from 'state/user/hooks'
-import { isAddress } from 'utils'
-import useENSAddress from 'hooks/useENSAddress'
+import { isWrappingTrade } from 'legacy/state/swap/utils'
+import { useOrderValidTo } from 'legacy/state/user/hooks'
+import { isAddress } from 'legacy/utils'
+import useENSAddress from 'legacy/hooks/useENSAddress'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -28,7 +27,6 @@ export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire
 const WAITING_TIME_BETWEEN_EQUAL_REQUESTS = 5000 // Prevents from sending the same request to often (max, every 5s)
-const UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL = 10 * 60 * 1000 // if unsupported token was added > 10min ago, re-try
 
 type FeeQuoteParams = Omit<LegacyFeeQuoteParamsFull, 'validTo'>
 
@@ -117,20 +115,7 @@ function isRefetchQuoteRequired(
   return false
 }
 
-function unsupportedTokenNeedsRecheck(
-  unsupportedToken: UnsupportedToken[string] | false,
-  lastUnsupportedCheck: null | number
-) {
-  if (!unsupportedToken) return false
-
-  const lastCheckTime = lastUnsupportedCheck || unsupportedToken.dateAdded
-  const shouldUpdate = Date.now() - lastCheckTime > UNSUPPORTED_TOKEN_REFETCH_CHECK_INTERVAL
-
-  return shouldUpdate
-}
-
 export default function FeesUpdater(): null {
-  const [lastUnsupportedCheck, setLastUnsupportedCheck] = useState<null | number>(null)
   const { chainId, account } = useWalletInfo()
 
   const { independentField, typedValue: rawTypedValue, recipient } = useSwapState()
@@ -232,27 +217,17 @@ export default function FeesUpdater(): null {
 
     const unsupportedToken = isUnsupportedTokenGp(sellCurrencyId) || isUnsupportedTokenGp(buyCurrencyId)
 
-    // if there is no more unsupported token, and there was previously, we set last check back to null
-    if (!unsupportedToken && lastUnsupportedCheck) {
-      setLastUnsupportedCheck(null)
-    }
-
     // Callback to re-fetch both the fee and the price
     const refetchQuoteIfRequired = () => {
-      // IS an unsupported token and it's been greater than the threshold time
-      const unsupportedNeedsCheck = unsupportedTokenNeedsRecheck(unsupportedToken, lastUnsupportedCheck)
-
       // if no token is unsupported and needs refetching
       const hasToRefetch = !unsupportedToken && isRefetchQuoteRequired(isLoading, quoteParams, quoteInfo)
 
-      if (unsupportedNeedsCheck || hasToRefetch) {
+      if (hasToRefetch) {
         // Decide if this is a new quote, or just a refresh
         const thereIsPreviousPrice = !!quoteInfo?.price?.amount
         const isPriceRefresh = quoteInfo
           ? thereIsPreviousPrice && quoteUsingSameParameters(quoteParams, quoteInfo)
           : false
-
-        setLastUnsupportedCheck(Date.now())
 
         refetchQuote({
           quoteParams,
@@ -290,7 +265,6 @@ export default function FeesUpdater(): null {
     isLoading,
     setQuoteError,
     account,
-    lastUnsupportedCheck,
     receiver,
     validTo,
     buyTokenAddressInvalid,

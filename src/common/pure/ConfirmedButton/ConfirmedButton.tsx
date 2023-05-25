@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { ButtonError } from 'components/Button'
+import { ButtonError } from 'legacy/components/Button'
 import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useState } from 'react'
 
 const Container = styled.div``

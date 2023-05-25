@@ -1,4 +1,4 @@
-import { Order } from 'state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 import JSBI from 'jsbi'
 
 /**

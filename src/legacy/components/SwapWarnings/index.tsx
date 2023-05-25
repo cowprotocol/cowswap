@@ -2,12 +2,12 @@ import React, { useContext, useMemo } from 'react'
 import { AlertTriangle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { Fraction } from '@uniswap/sdk-core'
-import { MouseoverTooltipContent } from 'components/Tooltip'
-import { useHighFeeWarning } from 'state/swap/hooks'
-import TradeGp from 'state/swap/TradeGp'
-import { AuxInformationContainer } from 'components/CurrencyInputPanel/CurrencyInputPanelMod'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
+import { useHighFeeWarning } from 'legacy/state/swap/hooks'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { AuxInformationContainer } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
-import { useIsDarkMode } from 'state/user/hooks'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 interface HighFeeContainerProps {
   padding?: string

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { isAddress } from 'utils'
+import { isAddress } from 'legacy/utils'
 import { Token } from '@uniswap/sdk-core'
 
 export default function useFilterTokens(tokens: Token[], query: string): Token[] {

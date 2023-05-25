@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import { Repeat } from 'react-feather'
-import QuestionHelper from 'components/QuestionHelper'
+import QuestionHelper from 'legacy/components/QuestionHelper'
 import { RateInfo } from 'common/pure/RateInfo'
 import { transparentize } from 'polished'
 

@@ -4,13 +4,13 @@ import { Token } from '@uniswap/sdk-core'
 import { Contract } from '@ethersproject/contracts'
 
 import { useWeb3React } from '@web3-react/core'
-import { getBytes32TokenContract, getTokenContract } from 'hooks/useContract'
+import { getBytes32TokenContract, getTokenContract } from 'legacy/hooks/useContract'
 import { parseStringOrBytes32 } from 'lib/hooks/useCurrency'
-import { useAddUserToken } from 'state/user/hooks'
+import { useAddUserToken } from 'legacy/state/user/hooks'
 import { Erc20 } from 'legacy/abis/types'
-import { retry } from 'utils/retry'
+import { retry } from 'legacy/utils/retry'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { supportedChainId } from 'utils/supportedChainId'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { useWalletInfo } from 'modules/wallet'
 
 const contractsCache: Record<string, Erc20> = {}

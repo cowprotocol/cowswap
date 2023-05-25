@@ -2,9 +2,9 @@
  * @jest-environment ./custom-test-env.js
  */
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 
-import { USDC_MAINNET as USDC, USDT } from 'constants/tokens'
+import { USDC_MAINNET as USDC, USDT } from 'legacy/constants/tokens'
 
 import { classifyOrder, getOrderMarketPrice, isOrderUnfillable } from './utils'
 import { Price } from '@uniswap/sdk-core'
@@ -137,8 +137,8 @@ describe('classifyOrder', () => {
     executedBuyAmount: '0',
     executedSellAmountBeforeFees: '0',
     kind: OrderKind.SELL,
-    signingScheme: 'eip712',
-    status: 'open',
+    signingScheme: SigningScheme.EIP712,
+    status: OrderStatus.OPEN,
   }
 
   describe('unknown', () => {
@@ -171,13 +171,13 @@ describe('classifyOrder', () => {
   })
   describe('presignaturePending', () => {
     it('is pending pre-signature', () => {
-      const order: typeof BASE_ORDER = { ...BASE_ORDER, status: 'presignaturePending' }
+      const order: typeof BASE_ORDER = { ...BASE_ORDER, status: OrderStatus.PRESIGNATURE_PENDING }
       expect(classifyOrder(order)).toBe('presignaturePending')
     })
   })
   describe('presigned', () => {
     it('is presigned when open and signScheme is presign', () => {
-      const order: typeof BASE_ORDER = { ...BASE_ORDER, signingScheme: 'presign' }
+      const order: typeof BASE_ORDER = { ...BASE_ORDER, signingScheme: SigningScheme.PRESIGN }
       expect(classifyOrder(order)).toBe('presigned')
     })
   })
@@ -219,11 +219,15 @@ describe('classifyOrder', () => {
 
     // Presigned rejects
     it('open but signing method not presign', () => {
-      const order: typeof BASE_ORDER = { ...BASE_ORDER, signingScheme: 'eip712' }
+      const order: typeof BASE_ORDER = { ...BASE_ORDER, signingScheme: SigningScheme.EIP712 }
       expect(classifyOrder(order)).toBe('pending')
     })
     it('presign but not open', () => {
-      const order: typeof BASE_ORDER = { ...BASE_ORDER, signingScheme: 'presign', status: 'fulfilled' }
+      const order: typeof BASE_ORDER = {
+        ...BASE_ORDER,
+        signingScheme: SigningScheme.PRESIGN,
+        status: OrderStatus.FULFILLED,
+      }
       expect(classifyOrder(order)).toBe('pending')
     })
   })

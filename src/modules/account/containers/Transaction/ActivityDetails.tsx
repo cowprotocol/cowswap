@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { OrderStatus } from 'state/orders/actions'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
   Summary,
@@ -16,15 +16,15 @@ import {
   FiatWrapper,
 } from './styled'
 
-import { V_COW_CONTRACT_ADDRESS } from 'constants/index'
+import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
-import CurrencyLogo from 'components/CurrencyLogo'
-import { OrderProgressBar } from 'components/OrderProgressBar'
-import { useToken } from 'hooks/Tokens'
-import { ActivityStatus } from 'hooks/useRecentActivity'
-import { getActivityState } from 'hooks/useActivityDerivedState'
-import { V_COW, COW } from 'constants/tokens'
+import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
+import { useToken } from 'legacy/hooks/Tokens'
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
+import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { V_COW, COW } from 'legacy/constants/tokens'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { StatusDetails } from './StatusDetails'

@@ -1,10 +1,10 @@
 import ManageMod from './ManageMod'
 import styled from 'styled-components/macro'
 import { Token } from '@uniswap/sdk-core'
-import { RowBetween } from 'components/Row'
+import { RowBetween } from 'legacy/components/Row'
 import { TokenList } from '@uniswap/token-lists'
-import { CurrencyModalView } from 'components/SearchModal/CurrencySearchModal'
-import { SearchInput, Separator } from 'components/SearchModal/styleds'
+import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
+import { SearchInput, Separator } from 'legacy/components/SearchModal/styleds'
 import { transparentize } from 'polished'
 
 export const Wrapper = styled.div`

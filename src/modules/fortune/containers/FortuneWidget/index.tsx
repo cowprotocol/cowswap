@@ -14,12 +14,12 @@ import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
 import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
-import { ExternalLink } from 'theme'
+import { ExternalLink } from 'legacy/theme'
 import { X } from 'react-feather'
-import Confetti from 'components/Confetti'
+import Confetti from 'legacy/components/Confetti'
 import useInterval from 'lib/hooks/useInterval'
-import { sendEvent } from 'components/analytics'
-import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
+import { sendEvent } from 'legacy/components/analytics'
+import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 75px;

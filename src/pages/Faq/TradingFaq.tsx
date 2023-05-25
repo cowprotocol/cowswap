@@ -1,6 +1,6 @@
 import { Page, Content } from 'modules/application/pure/Page'
 
-import { LinkScrollable } from 'components/Link'
+import { LinkScrollable } from 'legacy/components/Link'
 import { Wrapper, ExternalLinkFaq } from './styled'
 import { Footer } from '.'
 import { useToC } from './hooks'
@@ -9,8 +9,8 @@ import { FaqMenu } from './Menu'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 export default function TokenFaq() {
   const { toc, faqRef } = useToC()

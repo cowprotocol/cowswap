@@ -1,5 +1,5 @@
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
-import { USDC_GOERLI, WETH_GOERLI } from 'utils/goerli/constants'
+import { USDC_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
 import { rawToTokenAmount } from '../../../utils/rawToTokenAmount'
 import { calculateExecutionPrice, convertAmountToCurrency } from './calculateExecutionPrice'
 import { OrderKind } from '@cowprotocol/contracts'

@@ -1,9 +1,9 @@
 import React from 'react'
 import * as styledEl from './styled'
-import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'legacy/components/Button'
 import SVG from 'react-inlinesvg'
 import iconCompleted from 'legacy/assets/cow-swap/check.svg'
-import { ExternalLink } from 'theme'
+import { ExternalLink } from 'legacy/theme'
 
 const BULLET_LIST_CONTENT = [
   { id: 1, content: 'Set any limit price and time horizon' },

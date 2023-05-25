@@ -1,9 +1,9 @@
-import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'legacy/components/Button'
 import { Page, Content } from 'modules/application/pure/Page'
 import styled from 'styled-components/macro'
 
 import ninjaCowImg from 'legacy/assets/cow-swap/ninja-cow.png'
-import { gameAnalytics } from 'components/analytics'
+import { gameAnalytics } from 'legacy/components/analytics'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 

@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
 import { AccountDetails } from '../AccountDetails'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { useToggleWalletModal } from 'state/application/hooks'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { transparentize } from 'polished'
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 

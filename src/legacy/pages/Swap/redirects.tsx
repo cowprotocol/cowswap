@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
-import { useAppDispatch } from 'state/hooks'
+import { useAppDispatch } from 'legacy/state/hooks'
 
 import { ApplicationModal, setOpenModal } from '../../state/application/reducer'
 

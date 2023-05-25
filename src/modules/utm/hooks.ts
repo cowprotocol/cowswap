@@ -44,7 +44,7 @@ function cleanUpParams(searchParams: URLSearchParams): boolean {
   return cleanedParams
 }
 
-export function useInitializeUtm() {
+export function useInitializeUtm(): void {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
 

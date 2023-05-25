@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import TradeGp from 'state/swap/TradeGp'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
 export interface SwapConfirmState {
   showConfirm: boolean

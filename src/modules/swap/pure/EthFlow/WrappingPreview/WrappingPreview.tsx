@@ -3,7 +3,7 @@ import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { WrapCard } from 'modules/swap/pure/EthFlow/WrappingPreview/WrapCard'
 import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
 
-import { colors } from 'theme'
+import { colors } from 'legacy/theme'
 
 const COLOUR_SHEET = colors(false)
 

@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { shortenOrderId } from 'utils'
+import { shortenOrderId } from 'legacy/utils'
 import { GpModal as Modal } from 'common/pure/Modal'
 import {
   ConfirmationPendingContent,
   OperationType,
   TransactionErrorContent,
-} from 'components/TransactionConfirmationModal'
+} from 'legacy/components/TransactionConfirmationModal'
 import { RequestCancellationModal } from './RequestCancellationModal'
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
 

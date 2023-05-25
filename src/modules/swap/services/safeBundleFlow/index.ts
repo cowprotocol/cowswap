@@ -6,9 +6,11 @@ import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { PriceImpact } from 'hooks/usePriceImpact'
-import { signAndPostOrder } from 'utils/trade'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { signAndPostOrder } from 'legacy/utils/trade'
 import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
+import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 
 const LOG_PREFIX = 'SAFE BUNDLE FLOW'
 
@@ -63,6 +65,27 @@ export async function safeBundleFlow(
       { to: presignTx.to!, data: presignTx.data!, value: '0', operation: 0 },
     ]
 
+    const shouldZeroApprove = await shouldZeroApproveFn({
+      tokenContract: erc20Contract,
+      spender,
+      amountToApprove: context.trade.inputAmount,
+      isBundle: true,
+    })
+
+    if (shouldZeroApprove) {
+      const zeroApproveTx = await buildZeroApproveTx({
+        erc20Contract,
+        spender,
+        currency: context.trade.inputAmount.currency,
+      })
+      safeTransactionData.unshift({
+        to: zeroApproveTx.to!,
+        data: zeroApproveTx.data!,
+        value: '0',
+        operation: 0,
+      })
+    }
+
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: add tx to store')
@@ -80,7 +103,7 @@ export async function safeBundleFlow(
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add app data to upload queue')
-    callbacks.addAppDataToUploadQueue({ chainId: context.chainId, orderId, appData: appDataInfo })
+    callbacks.uploadAppData({ chainId: context.chainId, orderId, appData: appDataInfo })
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: show UI of the successfully sent transaction')
     swapConfirmManager.transactionSent(orderId)

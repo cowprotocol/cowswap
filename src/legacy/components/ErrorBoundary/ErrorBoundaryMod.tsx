@@ -4,14 +4,14 @@ import styled from 'styled-components/macro'
 
 // MOD imports
 import { Page } from 'modules/application/pure/Page'
-import { MEDIA_WIDTHS } from 'theme'
+import { MEDIA_WIDTHS } from 'legacy/theme'
 // import { UniIcon, LogoImage } from '../Header'
-import { UniIcon, LogoImage, HeaderRow } from 'components/Header/styled' // mod
-import Footer from 'components/Footer'
+import { UniIcon, LogoImage, HeaderRow } from 'legacy/components/Header/styled' // mod
+import Footer from 'legacy/components/Footer'
 import { Routes } from 'constants/routes'
-import { sendError } from 'components/analytics'
-import { ChunkLoadError } from 'components/ErrorBoundary/ChunkLoadError'
-import { ErrorWithStackTrace } from 'components/ErrorBoundary/ErrorWithStackTrace'
+import { sendError } from 'legacy/components/analytics'
+import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
+import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 
 /* const FallbackWrapper = styled.div`
   display: flex;

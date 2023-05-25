@@ -3,10 +3,10 @@ import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 import { RowReceivedAfterSlippageProps } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 
-import { RowFixed } from 'components/Row'
-import { MouseoverTooltipContent } from 'components/Tooltip'
+import { RowFixed } from 'legacy/components/Row'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
-import { getMinimumReceivedTooltip } from 'utils/tooltips'
+import { getMinimumReceivedTooltip } from 'legacy/utils/tooltips'
 import { StyledRowBetween, TextWrapper } from '../styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { TokenAmount } from 'common/pure/TokenAmount'

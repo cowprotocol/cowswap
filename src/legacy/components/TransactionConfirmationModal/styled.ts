@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
-import { CloseIcon, ExternalLink } from 'theme'
-import { RowBetween } from 'components/Row'
+import { CloseIcon, ExternalLink } from 'legacy/theme'
+import { RowBetween } from 'legacy/components/Row'
 import { Link } from 'react-router-dom'
 import { transparentize } from 'polished'
 

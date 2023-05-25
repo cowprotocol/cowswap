@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
-import { useAppDispatch } from 'state/hooks'
-import { sdk } from 'utils/blocknative'
-import { replaceTransaction } from 'state/enhancedTransactions/actions'
-import { useAllTransactionHashes } from 'state/enhancedTransactions/hooks'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { sdk } from 'legacy/utils/blocknative'
+import { replaceTransaction } from 'legacy/state/enhancedTransactions/actions'
+import { useAllTransactionHashes } from 'legacy/state/enhancedTransactions/hooks'
 import { Dispatch } from 'redux'
 import { useWeb3React } from '@web3-react/core'
-import { supportedChainId } from 'utils/supportedChainId'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { useWalletInfo } from 'modules/wallet'
 
 function watchTxChanges(pendingHashes: string[], chainId: number, dispatch: Dispatch) {

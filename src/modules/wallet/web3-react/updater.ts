@@ -1,15 +1,17 @@
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
-import useENSName from 'hooks/useENSName'
+import useENSName from 'legacy/hooks/useENSName'
 import { useWeb3React } from '@web3-react/core'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
 import { useEffect, useMemo, useState } from 'react'
 
-import { UNSUPPORTED_WC_WALLETS } from 'constants/index'
+import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
 import { useSetAtom } from 'jotai'
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { getSafeInfo } from 'api/gnosisSafe'
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
+import { getWalletType } from 'modules/wallet/api/utils/getWalletType'
+import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 function _checkIsSupportedWallet(walletName?: string): boolean {
   if (walletName && UNSUPPORTED_WC_WALLETS.has(walletName)) {
@@ -98,8 +100,12 @@ export function WalletUpdater() {
   // Update wallet details
   useEffect(() => {
     console.log('[WalletUpdater] setWalletDetails', walletDetails)
-    setWalletDetails(walletDetails)
-  }, [walletDetails, setWalletDetails])
+    const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
+    setWalletDetails({
+      walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
+      ...walletDetails,
+    })
+  }, [walletDetails, setWalletDetails, gnosisSafeInfo])
 
   // Update Gnosis Safe info
   useEffect(() => {

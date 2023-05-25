@@ -1,4 +1,4 @@
-import useTheme from 'hooks/useTheme'
+import useTheme from 'legacy/hooks/useTheme'
 import styled, { keyframes } from 'styled-components/macro'
 
 const Wrapper = styled.div`

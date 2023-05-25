@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { DEFAULT_GP_PRICE_STRATEGY } from 'constants/index'
+import { DEFAULT_GP_PRICE_STRATEGY } from 'legacy/constants'
 
 export type GpPriceStrategy = 'COWSWAP' | 'LEGACY'
 

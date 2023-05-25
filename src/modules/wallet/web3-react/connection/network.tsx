@@ -1,7 +1,7 @@
 import { initializeConnector } from '@web3-react/core'
 import { Network } from '@web3-react/network'
 
-import { RPC_URLS } from 'constants/networks'
+import { RPC_URLS } from 'legacy/constants/networks'
 import { ConnectionType } from 'modules/wallet'
 import { Web3ReactConnection } from '../types'
 import { toSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'

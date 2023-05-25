@@ -1,5 +1,5 @@
 import { Routes } from 'constants/routes'
-import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'constants/index'
+import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuLink, MenuTreeItem } from '../types'
 
 // Assets

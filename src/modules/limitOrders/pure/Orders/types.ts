@@ -1,6 +1,6 @@
 import { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
 import { UID } from '@cowprotocol/cow-sdk'
-import { Order } from 'state/orders/actions'
+import { Order } from 'legacy/state/orders/actions'
 
 export interface LimitOrderActions {
   getShowCancellationModal: (order: Order) => UseCancelOrderReturn

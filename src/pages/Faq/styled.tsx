@@ -1,7 +1,7 @@
-import { ExternalLink as ExternalLinkTheme } from 'theme'
+import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 import styled from 'styled-components/macro'
 import { Content } from 'modules/application/pure/Page'
-import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary } from 'legacy/components/Button'
 import { transparentize } from 'polished'
 
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`

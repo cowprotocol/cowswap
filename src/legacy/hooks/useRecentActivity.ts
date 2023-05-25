@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'state/enhancedTransactions/hooks'
-import { useOrder, useOrders, useOrdersById, useCombinedPendingOrders } from 'state/orders/hooks'
-import { Order, OrderStatus } from 'state/orders/actions'
-import { EnhancedTransactionDetails } from 'state/enhancedTransactions/reducer'
+import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
+import { useOrder, useOrders, useOrdersById, useCombinedPendingOrders } from 'legacy/state/orders/hooks'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getDateTimestamp } from 'utils/time'
-import { MAXIMUM_ORDERS_TO_DISPLAY } from 'constants/index'
+import { MAXIMUM_ORDERS_TO_DISPLAY } from 'legacy/constants'
 import { useWalletInfo } from 'modules/wallet'
 
 export interface AddedOrder extends Order {
@@ -57,8 +57,8 @@ export default function useRecentActivity() {
 
     return (
       allNonEmptyOrders
-        // only show orders for connected account
-        .filter((order) => order.owner.toLowerCase() === accountLowerCase)
+        // only show orders for connected account that are not hidden
+        .filter((order) => order.owner.toLowerCase() === accountLowerCase && !order.isHidden)
         .map((order) =>
           // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
           // and time in MS vs ISO string as Orders uses

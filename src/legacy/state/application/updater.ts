@@ -1,13 +1,13 @@
 import { useWalletInfo } from 'modules/wallet'
 import { useWeb3React } from '@web3-react/core'
-import useDebounce from 'hooks/useDebounce'
-import useIsWindowVisible from 'hooks/useIsWindowVisible'
+import useDebounce from 'legacy/hooks/useDebounce'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { useEffect, useState } from 'react'
-import { useAppDispatch } from 'state/hooks'
-import { supportedChainId } from 'utils/supportedChainId'
-import { updateSelectedWallet } from 'state/user/reducer'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { updateSelectedWallet } from 'legacy/state/user/reducer'
 import { updateChainId } from './reducer'
-import usePrevious from 'hooks/usePrevious'
+import usePrevious from 'legacy/hooks/usePrevious'
 
 export default function Updater(): null {
   const { chainId } = useWalletInfo()

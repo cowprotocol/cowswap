@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components/macro'
 import { Check, ChevronDown } from 'react-feather'
-import { useOnClickOutside } from 'hooks/useOnClickOutside'
+import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 import { useWeb3React } from '@web3-react/core'
 import { ensNames } from 'pages/Account/ens'
-import { useAffiliateAddress } from 'state/affiliate/hooks'
-import { updateAddress } from 'state/affiliate/actions'
-import { useAppDispatch } from 'state/hooks'
-import { isAddress, shortenAddress } from 'utils'
+import { useAffiliateAddress } from 'legacy/state/affiliate/hooks'
+import { updateAddress } from 'legacy/state/affiliate/actions'
+import { useAppDispatch } from 'legacy/state/hooks'
+import { isAddress, shortenAddress } from 'legacy/utils'
 import { useWalletInfo } from 'modules/wallet'
 
 type AddressSelectorProps = {

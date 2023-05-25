@@ -1,7 +1,7 @@
 // Util functions that only pertain to/deal with operator API related stuff
 import BigNumber from 'bignumber.js'
-import { ZERO_BIG_NUMBER } from 'constants/index'
-import { Order } from 'state/orders/actions'
+import { ZERO_BIG_NUMBER } from 'legacy/constants'
+import { Order } from 'legacy/state/orders/actions'
 import { getOrderExecutedAmounts } from './getOrderExecutedAmounts'
 
 type Surplus = {

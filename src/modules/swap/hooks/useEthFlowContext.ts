@@ -1,9 +1,9 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useEthFlowContract } from 'hooks/useContract'
+import { useEthFlowContract } from 'legacy/hooks/useContract'
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from 'modules/swap/services/types'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'constants/index'
-import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useCallback } from 'react'
 import {
   addInFlightOrderIdAtom,

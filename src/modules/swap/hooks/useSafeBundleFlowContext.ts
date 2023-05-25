@@ -1,6 +1,6 @@
 import { TradeType } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { SafeBundleFlowContext } from 'modules/swap/services/types'
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { useGP2SettlementContract, useTokenContract } from 'legacy/hooks/useContract'

@@ -1,13 +1,13 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { TransactionResponse } from '@ethersproject/providers'
-import { useTokenContract } from 'hooks/useContract'
-import { useTransactionAdder } from 'state/enhancedTransactions/hooks'
+import { useTokenContract } from 'legacy/hooks/useContract'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useCallback } from 'react'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { Erc20 } from 'legacy/abis/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
-import { APPROVE_GAS_LIMIT_DEFAULT } from 'hooks/useApproveCallback/useApproveCallbackMod'
+import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useWalletInfo } from 'modules/wallet'
 
 export async function estimateApprove(
@@ -63,7 +63,6 @@ export function useApproveCallback(
     }
 
     const estimation = await estimateApprove(tokenContract, spender, amountToApprove)
-
     return tokenContract
       .approve(spender, estimation.approveAmount, {
         gasLimit: calculateGasMargin(estimation.gasLimit),
@@ -71,7 +70,7 @@ export function useApproveCallback(
       .then((response: TransactionResponse) => {
         addTransaction({
           hash: response.hash,
-          summary: 'Approve ' + token.symbol,
+          summary: amountToApprove.greaterThan('0') ? `Approve ${token.symbol}` : `Revoke ${token.symbol} approval`,
           approval: { tokenAddress: token.address, spender },
         })
         return response

@@ -1,5 +1,5 @@
 import { AlertTriangle } from 'react-feather'
-import { InfoIcon } from 'components/InfoIcon'
+import { InfoIcon } from 'legacy/components/InfoIcon'
 import React, { ReactNode } from 'react'
 import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'

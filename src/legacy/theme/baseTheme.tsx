@@ -1,8 +1,8 @@
-import { Colors } from 'theme/styled'
-import { ButtonSize } from 'theme/enum'
+import { Colors } from 'legacy/theme/styled'
+import { ButtonSize } from 'legacy/theme/enum'
 import { createGlobalStyle, css } from 'styled-components/macro'
 import { transparentize, lighten } from 'polished'
-import { colorsUniswap } from 'theme/colorsUniswap'
+import { colorsUniswap } from 'legacy/theme/colorsUniswap'
 import Cursor1 from 'legacy/assets/cow-swap/cursor1.gif'
 import Cursor2 from 'legacy/assets/cow-swap/cursor2.gif'
 import Cursor3 from 'legacy/assets/cow-swap/cursor3.gif'
@@ -10,7 +10,7 @@ import Cursor4 from 'legacy/assets/cow-swap/cursor4.gif'
 
 // TODO: This shouldn't be in the base theme
 // Modal override items
-// import { HeaderText } from 'components/WalletModal/Option'
+// import { HeaderText } from 'legacy/components/WalletModal/Option'
 
 export function colors(darkMode: boolean): Colors {
   return {

@@ -1,10 +1,10 @@
 import { Percent } from '@uniswap/sdk-core'
 import { useEffect, useRef } from 'react'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'state/user/hooks'
+import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStorage'
 import { SerializedSlippage, SerializedSlippageSettings, Slippage, SlippageSettings } from './types'
-import { MINIMUM_ETH_FLOW_SLIPPAGE } from 'constants/index'
+import { MINIMUM_ETH_FLOW_SLIPPAGE } from 'legacy/constants'
 
 const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
 

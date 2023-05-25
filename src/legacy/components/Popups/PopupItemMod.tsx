@@ -3,13 +3,13 @@ import { X } from 'react-feather'
 import { animated, useSpring } from '@react-spring/web'
 import styled, { FlattenInterpolation, ThemeContext, ThemeProps, DefaultTheme } from 'styled-components/macro'
 
-import { useRemovePopup } from 'state/application/hooks'
-import { PopupContent } from 'state/application/reducer'
-import FailedNetworkSwitchPopup from 'components/Popups/FailedNetworkSwitchPopup'
+import { useRemovePopup } from 'legacy/state/application/hooks'
+import { PopupContent } from 'legacy/state/application/reducer'
+import FailedNetworkSwitchPopup from 'legacy/components/Popups/FailedNetworkSwitchPopup'
 import TransactionPopup from './TransactionPopupMod'
 
 // MOD imports
-import { WarningPopup } from 'components/Popups/WarningPopup'
+import { WarningPopup } from 'legacy/components/Popups/WarningPopup'
 
 export const StyledClose = styled(X)`
   position: absolute;

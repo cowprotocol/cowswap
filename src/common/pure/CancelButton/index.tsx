@@ -1,4 +1,4 @@
-import { LinkStyledButton } from 'theme'
+import { LinkStyledButton } from 'legacy/theme'
 
 export type CancelButtonProps = {
   onClick: () => void

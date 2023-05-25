@@ -1,5 +1,5 @@
 import { Page, Content } from 'modules/application/pure/Page'
-import { LinkScrollable } from 'components/Link'
+import { LinkScrollable } from 'legacy/components/Link'
 import { Link } from 'react-router-dom'
 
 import { ExternalLinkFaq, Wrapper } from './styled'
@@ -8,12 +8,12 @@ import { useToC } from './hooks'
 import ToC from './ToC'
 import { FaqMenu } from './Menu'
 import { Routes } from 'constants/routes'
-import { BARN_URL, PRODUCTION_URL } from 'constants/index'
+import { BARN_URL, PRODUCTION_URL } from 'legacy/constants'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 
 // AmplitudeAnalytics
-import { PageName } from 'components/AmplitudeAnalytics/constants'
-import { Trace } from 'components/AmplitudeAnalytics/Trace'
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 const PROD = `https://${PRODUCTION_URL}`
 const BARN = `https://${BARN_URL}`
