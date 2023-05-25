@@ -6,7 +6,7 @@ import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAm
 
 export function useQuoteObserver() {
   const { state } = useDerivedTradeState()
-  const { response, isLoading } = useQuote()
+  const { response } = useQuote()
 
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const outputCurrency = state?.outputCurrency
@@ -16,12 +16,12 @@ export function useQuoteObserver() {
       return
     }
 
-    const value = !isLoading ? response.quote.buyAmount : ''
+    const value = response.quote.buyAmount
 
     updateCurrencyAmount({
       amount: { isTyped: false, value },
       currency: outputCurrency,
       field: Field.OUTPUT,
     })
-  }, [outputCurrency, response, isLoading, updateCurrencyAmount])
+  }, [outputCurrency, response, updateCurrencyAmount])
 }

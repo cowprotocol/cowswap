@@ -4,6 +4,8 @@ import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateO
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { Field } from 'legacy/state/swap/actions'
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
+import { updateTradeQuoteAtom } from 'modules/tradeQuote'
+import { useSetAtom } from 'jotai'
 
 // TODO: this should be also unified for each trade widget (swap, limit, advanced)
 export function useAdvancedOrdersActions() {
@@ -11,6 +13,7 @@ export function useAdvancedOrdersActions() {
 
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
+  const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
 
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency | null) => {
@@ -22,8 +25,9 @@ export function useAdvancedOrdersActions() {
         currency,
       })
       naviageOnCurrencySelection(field, currency)
+      updateQuoteState({ response: null })
     },
-    [naviageOnCurrencySelection, updateCurrencyAmount]
+    [naviageOnCurrencySelection, updateCurrencyAmount, updateQuoteState]
   )
 
   const onUserInput = useCallback(
