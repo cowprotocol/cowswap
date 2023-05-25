@@ -10,6 +10,7 @@ export function useQuoteParams() {
 
   const { inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount, orderKind } = state || {}
   const currencyAmount = orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount
+  const amount = currencyAmount?.quotient.toString()
 
   return useMemo(() => {
     if (!inputCurrency || !outputCurrency || !currencyAmount) {
@@ -24,7 +25,7 @@ export function useQuoteParams() {
     return {
       sellToken,
       buyToken,
-      amount: currencyAmount.quotient,
+      amount,
       chainId,
       receiver: account,
       kind: OrderKind.SELL,
@@ -32,5 +33,5 @@ export function useQuoteParams() {
       fromDecimals,
       isEthFlow: false,
     }
-  }, [inputCurrency, outputCurrency, currencyAmount, account, chainId])
+  }, [inputCurrency, outputCurrency, amount, account, chainId])
 }
