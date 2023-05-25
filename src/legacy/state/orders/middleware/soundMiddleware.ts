@@ -26,13 +26,6 @@ const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isAddPopup = isAnyOf(addPopup)
 
-/**
- * Checks whether the action is `addPopup` for a `txn` which failed
- */
-function isFailedTxAction(action: unknown): boolean {
-  return isAddPopup(action) && action.payload?.content?.txn?.success === false
-}
-
 export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   const result = next(action)
 
@@ -105,4 +98,11 @@ function _getUpdatedOrderSound(payload: UpdateOrderParams) {
     return getCowSoundSend()
   }
   return undefined
+}
+
+/**
+ * Checks whether the action is `addPopup` for a `txn` which failed
+ */
+function isFailedTxAction(action: unknown): boolean {
+  return isAddPopup(action) && action.payload?.content?.txn?.success === false
 }
