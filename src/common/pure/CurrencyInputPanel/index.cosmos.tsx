@@ -7,6 +7,7 @@ import { useSelect, useValue } from 'react-cosmos/fixture'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { defaultCurrencyInputPanelProps } from './defaultCurrencyInputProps'
 import { CurrencyPreview } from './CurrencyPreview'
+import { DemoContainer } from 'cosmos.decorator'
 
 const currency = COW[SupportedChainId.MAINNET]
 const defaultProps = defaultCurrencyInputPanelProps
@@ -58,7 +59,11 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
 }
 
 const Custom = () => {
-  return <CurrencyInputPanel {...defaultProps} {...useCustomProps()} />
+  return (
+    <DemoContainer>
+      <CurrencyInputPanel {...defaultProps} {...useCustomProps()} />
+    </DemoContainer>
+  )
 }
 
 const Fixtures = {

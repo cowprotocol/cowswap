@@ -15,12 +15,18 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import styled from 'styled-components/macro'
 import { LimitOrdersFormState, useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
-import { useWalletInfo } from 'modules/wallet'
+import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { BundleTxApprovalBanner, SmallVolumeWarningBanner } from 'common/pure/InlineBanner/banners'
+import {
+  BundleTxApprovalBanner,
+  BundleTxSafeWcBanner,
+  SmallVolumeWarningBanner,
+} from 'common/pure/InlineBanner/banners'
 import { HIGH_FEE_WARNING_PERCENTAGE } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { Nullish } from 'types'
+import { useShouldZeroApproveLimit } from 'common/hooks/useShouldZeroApproveLimit'
+import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [
   LimitOrdersFormState.ExpertApproveAndSwap,
@@ -51,7 +57,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const formState = useLimitOrdersFormState()
   const rateImpact = useRateImpact()
   const { chainId, account } = useWalletInfo()
-  const { inputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
+  const { inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount } = useLimitOrdersDerivedState()
 
   const showPriceImpactWarning =
     !!chainId && !expertMode && !!account && !!priceImpact.error && formState === LimitOrdersFormState.CanTrade
@@ -61,8 +67,20 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
   const showApprovalBundlingBanner = !isConfirmScreen && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(formState)
+  const shouldZeroApprove = useShouldZeroApproveLimit()
+  const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
-  const isVisible = showPriceImpactWarning || rateImpact < 0 || showHighFeeWarning || showApprovalBundlingBanner
+  const isSafeViaWc = useIsSafeViaWc()
+  const showSafeWcBundlingBanner =
+    !isConfirmScreen && !showApprovalBundlingBanner && isSafeViaWc && formState === LimitOrdersFormState.NotApproved
+
+  const isVisible =
+    showPriceImpactWarning ||
+    rateImpact < 0 ||
+    showHighFeeWarning ||
+    showApprovalBundlingBanner ||
+    showSafeWcBundlingBanner ||
+    shouldZeroApprove
 
   // Reset price impact flag when there is no price impact
   useEffect(() => {
@@ -75,7 +93,6 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       updateLimitOrdersWarnings({ isRateImpactAccepted: false })
     }
   }, [updateLimitOrdersWarnings, isConfirmScreen])
-
   const onAcceptPriceImpact = useCallback(() => {
     updateLimitOrdersWarnings({ isPriceImpactAccepted: !isPriceImpactAccepted })
   }, [updateLimitOrdersWarnings, isPriceImpactAccepted])
@@ -89,6 +106,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
 
   return isVisible ? (
     <div className={className}>
+      {showZeroApprovalWarning && <ZeroApprovalWarning currency={inputCurrency} />}
       {showPriceImpactWarning && (
         <StyledNoImpactWarning
           withoutAccepting={isConfirmScreen}
@@ -109,6 +127,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
       {/*// TODO: must be replaced by <NotificationBanner>*/}
       {showHighFeeWarning && <SmallVolumeWarningBanner feeAmount={feeAmount} feePercentage={feePercentage} />}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
+      {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
     </div>
   ) : null
 }

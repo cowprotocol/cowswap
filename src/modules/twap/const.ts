@@ -3,6 +3,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type OrderDeadline = { label: string; value: number }
 
+export const defaultNumOfParts = 1
+
 export const defaultOrderDeadline: OrderDeadline = { label: '1 Hour', value: ms`1 hour` }
 
 export const orderDeadlines: OrderDeadline[] = [
