@@ -10,7 +10,7 @@ export const DEFAULT_QUOTE_RESPONSE = {
 export interface TradeQuoteState {
   response: OrderQuoteResponse | null
   error: GpQuoteError | null
-  isLoading: boolean | boolean
+  isLoading: boolean
 }
 
 export const tradeQuoteAtom = atom<TradeQuoteState>(DEFAULT_QUOTE_RESPONSE)
