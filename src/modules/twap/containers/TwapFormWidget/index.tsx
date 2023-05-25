@@ -7,9 +7,8 @@ import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../stat
 import { useUpdateAtom } from 'jotai/utils'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { orderDeadlines, defaultNumOfParts } from '../../const'
+import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines, defaultNumOfParts } from '../../const'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
-import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines } from '../../const'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { useTwapFormActions } from '../../hooks/useTwapFormActions'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
@@ -60,9 +59,9 @@ export function TwapFormWidget() {
         <TradeTextBox label="Part every" hint="TODO: part every tooltip">
           <>{deadlinePartsDisplay(numberOfPartsValue, deadlineState)}</>
         </TradeTextBox>
-
-        <PrimaryActionButton state={formState} context={formActions} />
       </styledEl.DeadlineRow>
+
+      <PrimaryActionButton state={formState} context={formActions} />
     </>
   )
 }
