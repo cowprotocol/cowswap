@@ -5,11 +5,13 @@ import { TWAPOrder } from '../types'
 import { walletInfoAtom } from '../../wallet/api/state'
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 import { DEFAULT_TWAP_SLIPPAGE } from '../const'
+import { customDeadlineToSeconds } from '../utils/deadlinePartsDisplay'
 
 export const twapTimeIntervalAtom = atom<number>((get) => {
-  const { isCustomDeadline, customDeadline, deadline } = get(twapOrdersSettingsAtom)
+  const { numberOfPartsValue, isCustomDeadline, customDeadline, deadline } = get(twapOrdersSettingsAtom)
+  const seconds = isCustomDeadline ? customDeadlineToSeconds(customDeadline) : deadline / 1000
 
-  return isCustomDeadline ? (customDeadline.hours * 60 + customDeadline.minutes) * 6 : Math.round(deadline / 1000)
+  return seconds / numberOfPartsValue
 })
 
 export const twapOrderAtom = atom<TWAPOrder | null>((get) => {

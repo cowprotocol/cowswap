@@ -12,11 +12,13 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { useTwapFormActions } from '../../hooks/useTwapFormActions'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
+import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
   const partsState = useAtomValue(partsStateAtom)
+  const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
   const formActions = useTwapFormActions()
@@ -57,7 +59,7 @@ export function TwapFormWidget() {
         <DeadlineSelector deadline={deadlineState} items={orderDeadlines} setDeadline={(value) => updateState(value)} />
 
         <TradeTextBox label="Part every" hint="TODO: part every tooltip">
-          <>{deadlinePartsDisplay(numberOfPartsValue, deadlineState)}</>
+          <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
       </styledEl.DeadlineRow>
 
