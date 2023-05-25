@@ -6,7 +6,7 @@ import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
 import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'
 
-export function batchPresingOrdersPopup(
+export function batchPresignOrdersPopup(
   store: MiddlewareAPI<Dispatch, AppState>,
   payload: PresignedOrdersParams,
   orders: OrdersStateNetwork

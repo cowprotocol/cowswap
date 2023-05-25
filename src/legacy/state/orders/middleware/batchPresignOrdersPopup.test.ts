@@ -3,7 +3,7 @@ import { anything, capture, instance, mock, resetCalls, verify, when } from 'ts-
 import { AppState } from '../../index'
 import { PresignedOrdersParams } from '../actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { batchPresingOrdersPopup } from './batchPresignOrdersPopup'
+import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
 
 const MOCK_REGULAR_ORDER = {
   '0x001': {
@@ -31,7 +31,7 @@ describe('batchPresingOrdersPopup', () => {
   it('should not trigger pop up if there are no pending orders', () => {
     when(payloadMock.ids).thenReturn(['0x000'])
 
-    batchPresingOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
+    batchPresignOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
 
     verify(storeMock.dispatch(anything())).never()
   })
@@ -39,7 +39,7 @@ describe('batchPresingOrdersPopup', () => {
   it('should trigger pop ups if there are pending orders', () => {
     when(payloadMock.ids).thenReturn(['0x001'])
 
-    batchPresingOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
+    batchPresignOrdersPopup(instance(storeMock), instance(payloadMock), MOCK_ORDERS_STORE as any)
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 

@@ -7,7 +7,7 @@ import { updateOrderPopup } from './updateOrderPopup'
 import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
 import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
-import { batchPresingOrdersPopup } from './batchPresignOrdersPopup'
+import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
@@ -52,7 +52,7 @@ export const popupMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       // construct Expired Order Popups for each Order
       batchExpireOrdersPopup(store, action.payload, orders)
     } else if (action.type === 'order/presignOrders') {
-      batchPresingOrdersPopup(store, action.payload, orders)
+      batchPresignOrdersPopup(store, action.payload, orders)
     }
   }
 
