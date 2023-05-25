@@ -44,10 +44,11 @@ export function getQuoteCurrency(
 }
 
 export function getQuoteCurrencyByStableCoin(
-  chainId: SupportedChainId | undefined,
+  _chainId: SupportedChainId | undefined,
   inputCurrency: Currency | null,
   outputCurrency: Currency | null
 ): Currency | null {
+  const chainId = supportedChainId(_chainId)
   if (!chainId || !isSupportedChain(chainId) || !inputCurrency || !outputCurrency) return null
 
   const stableCoins = STABLE_COINS[chainId]
