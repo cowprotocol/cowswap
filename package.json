@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "1.37.1",
+  "version": "1.38.0",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
@@ -22,10 +22,10 @@
     "serve:ci": "serve website -l 3000",
     "cypress": "cypress open",
     "contracts:add:export": "node ./scripts/contracts_add_export.js",
-    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/cow-react/abis/types './src/cow-react/abis/**/*.json'",
-    "contracts:compile:abi-ethflow": "typechain --target ethers-v5 --out-dir src/cow-react/abis/types/ethflow \"./node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\"",
-    "contracts:compile:abi-uniswap": "typechain --target ethers-v5 --out-dir src/abis/types \"./src/abis/**/*.json\"",
-    "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
+    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir src/abis/types './src/abis/**/*.json'",
+    "contracts:compile:abi-ethflow": "typechain --target ethers-v5 --out-dir src/abis/types/ethflow \"./node_modules/@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/*.json\"",
+    "contracts:compile:abi-uniswap": "typechain --target ethers-v5 --out-dir src/legacy/abis/types \"./src/legacy/abis/**/*.json\"",
+    "contracts:compile:v3": "typechain --target ethers-v5 --out-dir src/legacy/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:abi-ethflow && yarn contracts:add:export && yarn contracts:compile:abi-uniswap && yarn contracts:compile:v3",
     "prei18n:extract": "touch src/locales/en-US.po",
     "optimize-bundle": "node ./scripts/fix-ethereumjs-bundle.js",
@@ -60,10 +60,6 @@
     ]
   },
   "jest": {
-    "moduleNameMapper": {
-      "@cow/(.*)": "<rootDir>/src/cow-react/$1",
-      "@src/(.*)": "<rootDir>/src/$1"
-    },
     "transformIgnorePatterns": [
       "node_modules/(?!@ledgerhq/connect-kit-loader)"
     ]

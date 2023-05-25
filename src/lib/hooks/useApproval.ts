@@ -1,11 +1,11 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useTokenContract } from 'hooks/useContract'
-import { useTokenAllowance } from 'hooks/useTokenAllowance'
+import { useTokenContract } from 'legacy/hooks/useContract'
+import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useCallback, useMemo } from 'react'
-import { calculateGasMargin } from 'utils/calculateGasMargin'
-import { useWalletInfo } from '@cow/modules/wallet'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+import { useWalletInfo } from 'modules/wallet'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -14,11 +14,45 @@ export enum ApprovalState {
   APPROVED = 'APPROVED',
 }
 
+export interface ApprovalStateForSpenderResult {
+  approvalState: ApprovalState
+  currentAllowance?: CurrencyAmount<Token>
+}
+
+function toApprovalState(
+  amountToApprove: CurrencyAmount<Currency> | undefined,
+  spender: string | undefined,
+  currentAllowance?: CurrencyAmount<Token>,
+  pendingApproval?: boolean
+): ApprovalState {
+  // Unknown amount or spender
+  if (!amountToApprove || !spender) {
+    return ApprovalState.UNKNOWN
+  }
+
+  // Native ETH is always approved
+  if (amountToApprove.currency.isNative) {
+    return ApprovalState.APPROVED
+  }
+
+  // Unknown allowance
+  if (!currentAllowance) {
+    return ApprovalState.UNKNOWN
+  }
+
+  // Enough allowance
+  if (!currentAllowance.lessThan(amountToApprove)) {
+    return ApprovalState.APPROVED
+  }
+
+  return pendingApproval ? ApprovalState.PENDING : ApprovalState.NOT_APPROVED
+}
+
 export function useApprovalStateForSpender(
   amountToApprove: CurrencyAmount<Currency> | undefined,
   spender: string | undefined,
   useIsPendingApproval: (token?: Token, spender?: string) => boolean
-): ApprovalState {
+): ApprovalStateForSpenderResult {
   const { account } = useWalletInfo()
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
 
@@ -26,17 +60,8 @@ export function useApprovalStateForSpender(
   const pendingApproval = useIsPendingApproval(token, spender)
 
   return useMemo(() => {
-    if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
-    if (amountToApprove.currency.isNative) return ApprovalState.APPROVED
-    // we might not have enough data to know whether or not we need to approve
-    if (!currentAllowance) return ApprovalState.UNKNOWN
-
-    // amountToApprove will be defined if currentAllowance is
-    return currentAllowance.lessThan(amountToApprove)
-      ? pendingApproval
-        ? ApprovalState.PENDING
-        : ApprovalState.NOT_APPROVED
-      : ApprovalState.APPROVED
+    const approvalState = toApprovalState(amountToApprove, spender, currentAllowance, pendingApproval)
+    return { approvalState, currentAllowance }
   }, [amountToApprove, currentAllowance, pendingApproval, spender])
 }
 
@@ -52,7 +77,7 @@ export function useApproval(
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : undefined
 
   // check the current approval status
-  const approvalState = useApprovalStateForSpender(amountToApprove, spender, useIsPendingApproval)
+  const approvalState = useApprovalStateForSpender(amountToApprove, spender, useIsPendingApproval).approvalState
 
   const tokenContract = useTokenContract(token?.address)
 
