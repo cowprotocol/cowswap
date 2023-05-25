@@ -6,6 +6,7 @@ import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useCallback, useMemo } from 'react'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { useWalletInfo } from 'modules/wallet'
+import { Nullish } from 'types'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -15,7 +16,7 @@ export enum ApprovalState {
 }
 
 export function useApprovalStateForSpender(
-  amountToApprove: CurrencyAmount<Currency> | undefined,
+  amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
   useIsPendingApproval: (token?: Token, spender?: string) => boolean
 ): ApprovalState {

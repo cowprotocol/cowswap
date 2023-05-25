@@ -4,9 +4,10 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useEffect, useState } from 'react'
 import { useTokenContract } from 'legacy/hooks/useContract'
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
+import { Nullish } from 'types'
 
 // TODO: Handle tokens that don't allow approvals larger than the balance of the wallet
-export function useShouldZeroApprove(amountToApprove: CurrencyAmount<Currency> | undefined): boolean {
+export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): boolean {
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
   const spender = useTradeSpenderAddress()
   const tokenContract = useTokenContract(

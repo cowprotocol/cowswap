@@ -44,12 +44,14 @@ import SettingsTab from 'legacy/components/Settings'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { useShouldZeroApproveSwap } from 'common/hooks/useShouldZeroApproveSwap'
+import { useFillSwapDerivedState } from '../../state/useSwapDerivedState'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
 
 export function SwapWidget() {
   useSetupTradeState()
   useSetupSwapAmountsFromUrl()
+  useFillSwapDerivedState()
 
   const { chainId, account } = useWalletInfo()
   const { allowedSlippage, currencies, currenciesIds, v2Trade: trade } = useDerivedSwapInfo()
@@ -142,7 +144,6 @@ export function SwapWidget() {
   }
 
   const swapModalsProps: SwapModalsProps = {
-    chainId,
     showNativeWrapModal,
     showCowSubsidyModal,
     confirmSwapProps,

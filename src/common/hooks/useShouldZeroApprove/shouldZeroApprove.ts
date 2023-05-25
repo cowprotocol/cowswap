@@ -1,12 +1,13 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Erc20 } from 'legacy/abis/types'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { Nullish } from 'types'
 
 interface ShouldZeroApproveParams {
   approvalState: ApprovalState
   tokenContract: Erc20 | null
   spender: string | undefined
-  amountToApprove: CurrencyAmount<Currency> | undefined
+  amountToApprove: Nullish<CurrencyAmount<Currency>>
 }
 
 export async function shouldZeroApprove({
