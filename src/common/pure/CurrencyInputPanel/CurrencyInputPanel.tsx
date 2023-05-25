@@ -17,6 +17,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { formatInputAmount } from 'utils/amountFormat'
+import { DemoContainer } from 'cosmos.decorator'
 
 interface BuiltItProps {
   className: string
@@ -121,7 +122,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   )
 
   return (
-    <>
+    <DemoContainer>
       <styledEl.Wrapper id={id} className={className} withReceiveAmountInfo={!!receiveAmountInfo} disabled={disabled}>
         {topLabel && <styledEl.CurrencyTopLabel>{topLabel}</styledEl.CurrencyTopLabel>}
 
@@ -184,6 +185,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
         showCurrencyAmount={true}
         disableNonToken={disableNonToken}
       />
-    </>
+    </DemoContainer>
   )
 }
