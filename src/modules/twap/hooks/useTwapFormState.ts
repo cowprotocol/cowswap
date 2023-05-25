@@ -14,7 +14,7 @@ export function useTwapFormState(): TwapFormState {
   const twapOrder = useAtomValue(twapOrderAtom)
 
   const verification = useAsyncMemo(
-    () => extensibleFallbackContext ? verifyExtensibleFallback(extensibleFallbackContext) : null,
+    () => (extensibleFallbackContext ? verifyExtensibleFallback(extensibleFallbackContext) : null),
     [extensibleFallbackContext],
     null
   )
