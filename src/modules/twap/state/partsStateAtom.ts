@@ -2,6 +2,7 @@ import { atom } from 'jotai'
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { defaultNumOfParts } from '../const'
 
 export interface PartsState {
   numberOfPartsValue: number | null
@@ -16,7 +17,7 @@ export const partsStateAtom = atom<PartsState>((get) => {
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrencyFiatAmount, outputCurrencyFiatAmount } =
     get(advancedOrdersDerivedStateAtom)
 
-  const divider = numberOfPartsValue || 1
+  const divider = numberOfPartsValue || defaultNumOfParts
 
   return {
     numberOfPartsValue,

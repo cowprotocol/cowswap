@@ -7,10 +7,9 @@ import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../stat
 import { useUpdateAtom } from 'jotai/utils'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { useMemo } from 'react'
-import { displayTime } from 'utils/displayTime'
+import { orderDeadlines, defaultNumOfParts } from '../../const'
+import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines } from '../../const'
-import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { useTwapFormActions } from '../../hooks/useTwapFormActions'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
@@ -19,23 +18,24 @@ export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
   const partsState = useAtomValue(partsStateAtom)
-  const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
   const formActions = useTwapFormActions()
   const formState = useTwapFormState()
 
-  const partsTime = useMemo(() => {
-    return displayTime((timeInterval * 1000) / numberOfPartsValue)
-  }, [numberOfPartsValue, timeInterval])
+  const deadlineState = {
+    deadline,
+    customDeadline,
+    isCustomDeadline,
+  }
 
   return (
     <>
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
-          onUserInput={(value: number | null) => updateState({ numberOfPartsValue: value || 1 })}
-          min={1}
+          onUserInput={(value: number | null) => updateState({ numberOfPartsValue: value || defaultNumOfParts })}
+          min={defaultNumOfParts}
           max={100}
           label="No. of parts"
           hint="Todo: No of parts hint"
@@ -55,22 +55,14 @@ export function TwapFormWidget() {
       <AmountParts partsState={partsState} />
 
       <styledEl.DeadlineRow>
-        <DeadlineSelector
-          deadline={{
-            deadline,
-            customDeadline,
-            isCustomDeadline,
-          }}
-          items={orderDeadlines}
-          setDeadline={(value) => updateState(value)}
-        />
+        <DeadlineSelector deadline={deadlineState} items={orderDeadlines} setDeadline={(value) => updateState(value)} />
 
         <TradeTextBox label="Part every" hint="TODO: part every tooltip">
-          <>{partsTime}</>
+          <>{deadlinePartsDisplay(numberOfPartsValue, deadlineState)}</>
         </TradeTextBox>
-      </styledEl.DeadlineRow>
 
-      <PrimaryActionButton state={formState} context={formActions} />
+        <PrimaryActionButton state={formState} context={formActions} />
+      </styledEl.DeadlineRow>
     </>
   )
 }

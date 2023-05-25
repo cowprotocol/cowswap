@@ -46,6 +46,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
     [onUserInput, value, min, max, decimalsPlaces]
   )
 
+  // Initial setup of value
   useEffect(() => {
     onChange(value ? value.toString() : '')
     // eslint-disable-next-line react-hooks/exhaustive-deps
