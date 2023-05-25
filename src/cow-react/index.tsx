@@ -1,7 +1,7 @@
 import '@reach/dialog/styles.css'
 import 'inter-ui'
 
-import 'components/analytics'
+import 'legacy/components/analytics'
 import 'utils/sentry'
 
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
