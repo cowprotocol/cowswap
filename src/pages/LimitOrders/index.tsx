@@ -1,7 +1,7 @@
 import * as styledEl from './styled'
 import {
   LimitOrdersWidget,
-  MarketPriceUpdater,
+  QuoteObserverUpdater,
   InitialPriceUpdater,
   ExecutionPriceUpdater,
   OrdersWidget,
@@ -14,7 +14,7 @@ export default function LimitOrderPage() {
 
   return (
     <>
-      <MarketPriceUpdater />
+      <QuoteObserverUpdater />
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
 

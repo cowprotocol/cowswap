@@ -4,7 +4,7 @@ import { useQuote } from 'modules/tradeQuote'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 
-export function useQuoteObserver() {
+export function QuoteObserverUpdater() {
   const { state } = useDerivedTradeState()
   const { response } = useQuote()
 
@@ -24,4 +24,6 @@ export function useQuoteObserver() {
       field: Field.OUTPUT,
     })
   }, [outputCurrency, response, updateCurrencyAmount])
+
+  return null
 }

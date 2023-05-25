@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import { useQuote } from 'modules/tradeQuote'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
@@ -8,7 +8,7 @@ import { useUpdateAtom } from 'jotai/utils'
 
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
-export function MarketPriceUpdater() {
+export function QuoteObserverUpdater() {
   const { response, error } = useQuote()
   const { state } = useDerivedTradeState()
 
@@ -17,7 +17,7 @@ export function MarketPriceUpdater() {
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
 
-  useMemo(() => {
+  useEffect(() => {
     if (!outputCurrency || !inputCurrency || !response) {
       return
     }

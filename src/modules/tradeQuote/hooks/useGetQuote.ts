@@ -23,6 +23,7 @@ export function useGetQuote() {
 
   useLayoutEffect(() => {
     if (!quoteParams) {
+      updateQuoteState({ response: null, isLoading: false })
       return
     }
 
