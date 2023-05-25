@@ -37,8 +37,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { account, chainId } = useWalletInfo()
   const { isSupportedWallet } = useWalletDetails()
   const {
+    sellAmountMaxSpend,
     v2Trade: trade,
-    allowedSlippage,
     parsedAmount,
     currencies,
     currenciesIds,
@@ -64,13 +64,14 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken()
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
-  const nativeInput = trade?.maximumAmountIn(allowedSlippage)
-  const wrapUnwrapAmount = isNativeInSwap ? (nativeInput || parsedAmount)?.wrapped : nativeInput || parsedAmount
+  const wrapUnwrapAmount = isNativeInSwap
+    ? (sellAmountMaxSpend || parsedAmount)?.wrapped
+    : sellAmountMaxSpend || parsedAmount
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
   const wrapCallback = useWrapCallback(wrapUnwrapAmount)
-  const approvalState = useTradeApproveState(nativeInput || null)
+  const approvalState = useTradeApproveState(sellAmountMaxSpend || null)
 
   const handleSwap = useHandleSwap(priceImpactParams)
 
@@ -108,7 +109,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   return {
     swapButtonState,
-    inputAmount: nativeInput,
+    inputAmount: sellAmountMaxSpend || undefined,
     chainId,
     wrappedToken,
     handleSwap,

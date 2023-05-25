@@ -3,11 +3,13 @@ import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
 import { TradeApproveModal } from 'common/containers/TradeApprove'
 import React from 'react'
 import { useWalletInfo } from 'modules/wallet'
-import { useShouldZeroApproveSwap } from 'common/hooks/useShouldZeroApproveSwap'
+import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
+import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 
 export function TradeWidgetModals() {
   const { chainId } = useWalletInfo()
-  const shouldZeroApprove = useShouldZeroApproveSwap()
+  const { state } = useDerivedTradeState()
+  const shouldZeroApprove = useShouldZeroApprove(state?.sellAmountMaxSpend)
 
   return (
     <>

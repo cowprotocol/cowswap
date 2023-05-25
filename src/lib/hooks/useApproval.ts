@@ -21,7 +21,7 @@ export interface ApprovalStateForSpenderResult {
 }
 
 function toApprovalState(
-  amountToApprove: CurrencyAmount<Currency> | undefined,
+  amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
   currentAllowance?: CurrencyAmount<Token>,
   pendingApproval?: boolean

@@ -12,7 +12,7 @@ export function useSwapDerivedState(): SwapDerivedState {
 
 export function useFillSwapDerivedState() {
   const { independentField, recipient } = useSwapState()
-  const { v2Trade, currencyBalances, currencies } = useDerivedSwapInfo()
+  const { v2Trade, currencyBalances, currencies, sellAmountMaxSpend } = useDerivedSwapInfo()
 
   const inputCurrency = currencies.INPUT || null
   const outputCurrency = currencies.OUTPUT || null
@@ -32,6 +32,7 @@ export function useFillSwapDerivedState() {
       outputCurrency,
       inputCurrencyAmount,
       outputCurrencyAmount,
+      sellAmountMaxSpend,
       inputCurrencyBalance,
       outputCurrencyBalance,
       inputCurrencyFiatAmount,
@@ -45,6 +46,7 @@ export function useFillSwapDerivedState() {
     outputCurrency,
     inputCurrencyAmount?.quotient,
     outputCurrencyAmount?.quotient,
+    sellAmountMaxSpend?.quotient,
     inputCurrencyBalance?.quotient,
     outputCurrencyBalance?.quotient,
     inputCurrencyFiatAmount?.quotient,
