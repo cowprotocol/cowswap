@@ -4,6 +4,7 @@ import {
   getIsZengoWallet,
   getIsAmbireWallet,
   getIsAlphaWallet,
+  getIsTrustWallet,
 } from 'modules/wallet/api/utils/connection'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
@@ -55,7 +56,11 @@ export function WalletConnectV2Option({ tryActivation }: { tryActivation: TryAct
 
   const isWalletConnect = useIsActiveWallet(walletConnectConnectionV2)
   const isActive =
-    isWalletConnect && !getIsZengoWallet(walletName) && !getIsAmbireWallet(walletName) && !getIsAlphaWallet(walletName)
+    isWalletConnect &&
+    !getIsZengoWallet(walletName) &&
+    !getIsAmbireWallet(walletName) &&
+    !getIsAlphaWallet(walletName) &&
+    !getIsTrustWallet(null, walletName)
   const tooltipText = !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
 
   return (
