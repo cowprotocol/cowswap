@@ -12,6 +12,7 @@ import { ordersSorter } from 'modules/limitOrders/utils/ordersSorter'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import { useWalletInfo } from 'modules/wallet'
 import { isPartiallyFilled } from 'modules/limitOrders/utils/isPartiallyFilled'
+import { isNotExpired } from 'legacy/state/orders/utils'
 
 export interface LimitOrdersList {
   pending: ParsedOrder[]
@@ -102,7 +103,7 @@ export function useLimitOrdersList(): LimitOrdersList {
   return useMemo(() => {
     const { pending, history } = allSortedOrders.reduce(
       (acc, order) => {
-        if (PENDING_STATES.includes(order.status)) {
+        if (PENDING_STATES.includes(order.status) && isNotExpired(order)) {
           acc.pending.push(order)
         } else {
           acc.history.push(order)
