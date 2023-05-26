@@ -57,7 +57,13 @@ const Wrapper = styled.div<{
   }
 `
 
-export type OrderStatusBoxProps = { order: ParsedOrder; widthAuto?: boolean; withWarning?: boolean; clickable?: boolean; onClick?: () => void }
+export type OrderStatusBoxProps = {
+  order: ParsedOrder
+  widthAuto?: boolean
+  withWarning?: boolean
+  clickable?: boolean
+  onClick?: () => void
+}
 
 export function OrderStatusBox({ order, widthAuto, withWarning, clickable, onClick }: OrderStatusBoxProps) {
   return (
