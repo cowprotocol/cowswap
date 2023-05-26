@@ -57,7 +57,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const formState = useLimitOrdersFormState()
   const rateImpact = useRateImpact()
   const { chainId, account } = useWalletInfo()
-  const { sellAmountMaxSpend, inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount } =
+  const { slippageAdjustedSellAmount, inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount } =
     useLimitOrdersDerivedState()
 
   const showPriceImpactWarning =
@@ -68,7 +68,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
   const showApprovalBundlingBanner = !isConfirmScreen && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(formState)
-  const shouldZeroApprove = useShouldZeroApprove(sellAmountMaxSpend)
+  const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
   const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
   const isSafeViaWc = useIsSafeViaWc()

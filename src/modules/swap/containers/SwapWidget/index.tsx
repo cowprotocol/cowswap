@@ -54,7 +54,13 @@ export function SwapWidget() {
   useFillSwapDerivedState()
 
   const { chainId, account } = useWalletInfo()
-  const { sellAmountMaxSpend, allowedSlippage, currencies, currenciesIds, v2Trade: trade } = useDerivedSwapInfo()
+  const {
+    slippageAdjustedSellAmount,
+    allowedSlippage,
+    currencies,
+    currenciesIds,
+    v2Trade: trade,
+  } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
   const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
@@ -67,7 +73,7 @@ export function SwapWidget() {
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEthFlow = useIsEthFlow()
-  const shouldZeroApprove = useShouldZeroApprove(sellAmountMaxSpend)
+  const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({

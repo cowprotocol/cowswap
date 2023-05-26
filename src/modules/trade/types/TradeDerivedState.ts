@@ -17,7 +17,7 @@ export interface TradeDerivedState {
    * Since the market is liquid, there might be a slippage, let's assume it's 2%.
    * So, the final sell amount will be 552 COW + 2% = 563.04
    */
-  readonly sellAmountMaxSpend: CurrencyAmount<Currency> | null
+  readonly slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
   readonly inputCurrencyBalance: CurrencyAmount<Currency> | null
   readonly outputCurrencyBalance: CurrencyAmount<Currency> | null
   readonly inputCurrencyFiatAmount: CurrencyAmount<Currency> | null
@@ -31,7 +31,7 @@ export const DEFAULT_TRADE_DERIVED_STATE: TradeDerivedState = {
   outputCurrency: null,
   inputCurrencyAmount: null,
   outputCurrencyAmount: null,
-  sellAmountMaxSpend: null,
+  slippageAdjustedSellAmount: null,
   inputCurrencyBalance: null,
   outputCurrencyBalance: null,
   inputCurrencyFiatAmount: null,

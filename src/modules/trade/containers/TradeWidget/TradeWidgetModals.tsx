@@ -9,7 +9,7 @@ import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 export function TradeWidgetModals() {
   const { chainId } = useWalletInfo()
   const { state } = useDerivedTradeState()
-  const shouldZeroApprove = useShouldZeroApprove(state?.sellAmountMaxSpend)
+  const shouldZeroApprove = useShouldZeroApprove(state?.slippageAdjustedSellAmount)
 
   return (
     <>
