@@ -4,6 +4,7 @@ import { AppState } from '../../index'
 import { FulfillOrdersBatchParams } from '../actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
+import { setPopupData } from '../helpers'
 
 const MOCK_ETHFLOW_ORDER = {
   '0x001': {
@@ -30,6 +31,14 @@ const MOCK_ORDERS_STORE = {
   pending: { ...MOCK_ETHFLOW_ORDER, ...MOCK_REGULAR_ORDER },
 }
 
+const MOCK_POPUP_DATA = 'mock popup data'
+
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
+  setPopupData: jest.fn(),
+}))
+
+const setPopupDataMock = setPopupData as jest.MockedFunction<typeof setPopupData>
 const storeMock = mock<MiddlewareAPI<Dispatch, AppState>>()
 const payloadMock = mock<FulfillOrdersBatchParams>()
 
@@ -39,6 +48,7 @@ describe('batchFulfillOrderPopup', () => {
   beforeEach(() => {
     resetCalls(storeMock)
     resetCalls(payloadMock)
+    setPopupDataMock.mockReturnValue(MOCK_POPUP_DATA as any)
   })
 
   it('should not trigger pop up if there are no pending orders', () => {
@@ -61,7 +71,7 @@ describe('batchFulfillOrderPopup', () => {
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 
-    expect(addPopupAction).toMatchSnapshot()
+    expect(addPopupAction.payload).toEqual(MOCK_POPUP_DATA)
 
     verify(storeMock.dispatch(anything())).twice()
   })

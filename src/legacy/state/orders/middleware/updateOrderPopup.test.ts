@@ -5,6 +5,7 @@ import { UpdateOrderParams } from '../actions'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { anything, capture, instance, mock, resetCalls, verify, when } from 'ts-mockito'
 import { updateOrderPopup } from './updateOrderPopup'
+import { setPopupData } from '../helpers'
 
 const MOCK_ORDERS_STORE = {
   1: {
@@ -20,6 +21,15 @@ const MOCK_ORDERS_STORE = {
   },
 }
 
+const MOCK_POPUP_DATA = 'mock popup data'
+
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
+  setPopupData: jest.fn(),
+}))
+
+const setPopupDataMock = setPopupData as jest.MockedFunction<typeof setPopupData>
+
 const storeMock = mock<MiddlewareAPI<Dispatch, AppState>>()
 const payloadMock = mock<UpdateOrderParams>()
 
@@ -30,6 +40,7 @@ describe('updateOrderPopup', () => {
   beforeEach(() => {
     resetCalls(storeMock)
     resetCalls(payloadMock)
+    setPopupDataMock.mockReturnValue(MOCK_POPUP_DATA as any)
   })
 
   it('should not trigger pop up for inexistent order', () => {
@@ -53,6 +64,6 @@ describe('updateOrderPopup', () => {
 
     const [addPopupAction] = capture(storeMock.dispatch<AnyAction>).first()
 
-    expect(addPopupAction).toMatchSnapshot()
+    expect(addPopupAction.payload).toEqual(MOCK_POPUP_DATA)
   })
 })
