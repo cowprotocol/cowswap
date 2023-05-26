@@ -1,18 +1,8 @@
-import { TwapOrdersDeadline } from '../state/twapOrdersSettingsAtom'
 import ms from 'ms'
 
 const [oneD, oneH, oneM, oneS] = [ms('1d'), ms('1h'), ms('1m'), ms('1s')]
-
-export function customDeadlineToSeconds(customDeadline: TwapOrdersDeadline['customDeadline']): number {
-  const hoursToMinutes = customDeadline.hours * 60
-  const minutesToSeconds = (hoursToMinutes + customDeadline.minutes) * 60
-
-  return minutesToSeconds
-}
-
-export function deadlinePartsDisplay(timeInterval: number): string {
-  const timeMs = ms(`${timeInterval * 1000}ms`)
-
+export function displayTime(time: number): string {
+  const timeMs = ms(`${time}ms`)
   const days = Math.floor(timeMs / oneD)
   const hours = Math.floor((timeMs % oneD) / oneH)
   const minutes = Math.floor((timeMs % oneH) / oneM)
