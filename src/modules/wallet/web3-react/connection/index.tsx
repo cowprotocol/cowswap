@@ -24,12 +24,14 @@ import { AlphaOption } from './alpha'
 import { tallyWalletConnection /* TallyWalletOption */ } from './tally'
 import { trustWalletConnection, TrustWalletOption } from './trust'
 import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
+import { WalletConnectV2Option, walletConnectConnectionV2 } from './walletConnectV2'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,
   injectedConnection,
   coinbaseWalletConnection,
   walletConnectConnection,
+  walletConnectConnectionV2,
   fortmaticConnection,
   networkConnection,
   tallyWalletConnection,
@@ -51,6 +53,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case trustWalletConnection.connector:
     case ledgerConnection.connector:
     case keystoneConnection.connector:
+    case walletConnectConnectionV2.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -72,6 +75,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return coinbaseWalletConnection
       case ConnectionType.WALLET_CONNECT:
         return walletConnectConnection
+      case ConnectionType.WALLET_CONNECT_V2:
+        return walletConnectConnectionV2
       case ConnectionType.ZENGO:
         return walletConnectConnection
       case ConnectionType.FORTMATIC:
@@ -132,6 +137,9 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const walletConnectionOption =
     (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
 
+  const walletConnectionV2Option =
+    (!isInjectedMobileBrowser && <WalletConnectV2Option tryActivation={tryActivation} />) ?? null
+
   // Wallet-connect based
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
@@ -148,6 +156,7 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
     <>
       {injectedOption}
       {walletConnectionOption}
+      {walletConnectionV2Option}
       {coinbaseWalletOption}
       {ledgerOption}
       {zengoOption}
