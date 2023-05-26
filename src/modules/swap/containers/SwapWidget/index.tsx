@@ -43,16 +43,24 @@ import { TradeWidget, TradeWidgetContainer } from 'modules/trade/containers/Trad
 import SettingsTab from 'legacy/components/Settings'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useShouldZeroApproveSwap } from 'common/hooks/useShouldZeroApproveSwap'
+import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
+import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
 
 export function SwapWidget() {
   useSetupTradeState()
   useSetupSwapAmountsFromUrl()
+  useFillSwapDerivedState()
 
   const { chainId, account } = useWalletInfo()
-  const { allowedSlippage, currencies, currenciesIds, v2Trade: trade } = useDerivedSwapInfo()
+  const {
+    slippageAdjustedSellAmount,
+    allowedSlippage,
+    currencies,
+    currenciesIds,
+    v2Trade: trade,
+  } = useDerivedSwapInfo()
   const wrapType = useWrapType()
   const parsedAmounts = useSwapCurrenciesAmounts(wrapType)
   const { isSupportedWallet, allowsOffchainSigning } = useWalletDetails()
@@ -65,7 +73,7 @@ export function SwapWidget() {
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEthFlow = useIsEthFlow()
-  const shouldZeroApprove = useShouldZeroApproveSwap()
+  const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -142,7 +150,6 @@ export function SwapWidget() {
   }
 
   const swapModalsProps: SwapModalsProps = {
-    chainId,
     showNativeWrapModal,
     showCowSubsidyModal,
     confirmSwapProps,

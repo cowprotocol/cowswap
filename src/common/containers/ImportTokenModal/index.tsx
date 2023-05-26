@@ -8,14 +8,14 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { Field } from 'legacy/state/swap/actions'
 import { useAtomValue } from 'jotai/utils'
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
+import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 
 export interface ImportTokenModalProps {
   chainId: number
-  onDismiss(unknownFields: Field[]): void
 }
 
 export function ImportTokenModal(props: ImportTokenModalProps) {
-  const { chainId, onDismiss } = props
+  const { chainId } = props
 
   const { state } = useTradeState()
   const loadedInputCurrency = useSearchInactiveTokenLists(
@@ -24,6 +24,14 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
     true //
   )?.[0]
   const loadedOutputCurrency = useSearchInactiveTokenLists(state?.outputCurrencyId || undefined, 1, true)?.[0]
+  const onCurrencySelection = useNavigateOnCurrencySelection()
+
+  const onDismiss = useCallback(
+    (unknownFields: Field[]) => {
+      unknownFields.forEach((field) => onCurrencySelection(field, null))
+    },
+    [onCurrencySelection]
+  )
 
   const urlLoadedTokens: Token[] = useMemo(
     () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c?.isToken ?? false) ?? [],
