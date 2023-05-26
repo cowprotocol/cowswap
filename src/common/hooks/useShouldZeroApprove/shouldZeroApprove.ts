@@ -36,10 +36,7 @@ export async function shouldZeroApprove({
 
   try {
     // Check if the trade is possible via estimating gas.
-    await tokenContract.estimateGas.approve(
-      spender,
-      amountToApprove.multiply(10 ** amountToApprove.currency.decimals).toExact()
-    )
+    await tokenContract.estimateGas.approve(spender, amountToApprove.quotient.toString())
 
     return false
   } catch (err) {
