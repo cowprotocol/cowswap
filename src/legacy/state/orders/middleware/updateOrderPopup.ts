@@ -23,11 +23,6 @@ export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, paylo
     })
     orderAnalytics('Posted', orderObject.order.class, 'Presign')
 
-    store.dispatch(
-      addPopup({
-        id: order.id,
-        popup,
-      })
-    )
+    store.dispatch(addPopup(popup))
   }
 }

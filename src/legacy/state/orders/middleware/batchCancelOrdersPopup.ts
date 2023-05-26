@@ -4,7 +4,7 @@ import { CancelOrdersBatchParams, SerializedOrder } from '../actions'
 import { OrdersStateNetwork } from '../reducer'
 import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
 import { orderAnalytics } from '../../../components/analytics'
-import { addPopup } from '../../application/reducer'
+import { addPopup, AddPopupPayload } from '../../application/reducer'
 import { buildCancellationPopupSummary } from '../buildCancellationPopupSummary'
 
 export function batchCancelOrdersPopup(
@@ -22,12 +22,7 @@ export function batchCancelOrdersPopup(
       const popup = _buildCancellationPopup(order)
       orderAnalytics('Canceled', order.class)
 
-      store.dispatch(
-        addPopup({
-          id,
-          popup,
-        })
-      )
+      store.dispatch(addPopup(popup))
     }
   })
 }
@@ -43,7 +38,7 @@ function _buildCancellationPopup(order: SerializedOrder) {
       summary: buildCancellationPopupSummary(id, summary),
       hash: cancellationHash,
       id,
-    })
+    }) as unknown as AddPopupPayload
   } else {
     // Regular order being cancelled
     // Use `metatx` popup
@@ -51,6 +46,6 @@ function _buildCancellationPopup(order: SerializedOrder) {
       success: true,
       summary: buildCancellationPopupSummary(id, summary),
       id,
-    })
+    }) as unknown as AddPopupPayload
   }
 }

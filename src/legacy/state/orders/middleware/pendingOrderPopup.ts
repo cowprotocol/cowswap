@@ -1,10 +1,10 @@
-import { getOrderByIdFromState, OrderTxTypes, PopupPayload, setPopupData } from '../helpers'
+import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
 import { orderAnalytics } from '../../../components/analytics'
 import { AddPendingOrderParams } from '../actions'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { AppState } from '../../index'
 import { Dispatch } from 'redux'
-import { addPopup } from '../../application/reducer'
+import { addPopup, AddPopupPayload } from '../../application/reducer'
 
 export function pendingOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payload: AddPendingOrderParams) {
   const { id, chainId } = payload
@@ -19,7 +19,7 @@ export function pendingOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payl
   // look up Order.summary for Popup
   const { summary, class: orderClass } = orderObject.order
 
-  let popup: PopupPayload
+  let popup: AddPopupPayload | undefined = undefined
 
   const hash = orderObject.order.orderCreationHash
   if (hash) {
@@ -29,7 +29,7 @@ export function pendingOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payl
       status: 'submitted',
       id: hash,
       hash,
-    })
+    }) as AddPopupPayload
     orderAnalytics('Posted', orderClass, 'EthFlow')
   } else if (!payload.order.isHidden) {
     // Pending Order Popup, if it's not hidden
@@ -38,11 +38,6 @@ export function pendingOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payl
   }
 
   if (popup) {
-    store.dispatch(
-      addPopup({
-        id,
-        popup,
-      })
-    )
+    store.dispatch(addPopup(popup))
   }
 }

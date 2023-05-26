@@ -32,12 +32,7 @@ export function batchFulfillOrderPopup(
       })
       orderAnalytics('Executed', orderClass)
 
-      store.dispatch(
-        addPopup({
-          id,
-          popup,
-        })
-      )
+      store.dispatch(addPopup(popup))
     }
   })
 }

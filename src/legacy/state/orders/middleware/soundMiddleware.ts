@@ -104,5 +104,5 @@ function _getUpdatedOrderSound(payload: UpdateOrderParams) {
  * Checks whether the action is `addPopup` for a `txn` which failed
  */
 function isFailedTxAction(action: unknown): boolean {
-  return isAddPopup(action) && action.payload?.content?.txn?.success === false
+  return isAddPopup(action) && 'txn' in action.payload.content && action.payload.content.txn.success === false
 }

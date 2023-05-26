@@ -27,12 +27,7 @@ export function batchExpireOrdersPopup(
       })
       orderAnalytics('Expired', orderClass)
 
-      store.dispatch(
-        addPopup({
-          id,
-          popup,
-        })
-      )
+      store.dispatch(addPopup(popup))
     }
   })
 }

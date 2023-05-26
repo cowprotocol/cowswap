@@ -1,6 +1,4 @@
 import { formatOrderId } from 'legacy/utils'
-import { OrderID } from 'api/gnosisProtocol'
-import { addPopup } from 'legacy/state/application/reducer'
 import { OrderStatus } from './actions'
 import { OrderObject, OrdersStateNetwork } from './reducer'
 
@@ -11,13 +9,6 @@ interface SetOrderSummaryParams {
   status?: OrderStatusExtended
   summary?: string | JSX.Element
   descriptor?: string | null
-}
-
-// what is passed to addPopup action
-export type PopupPayload = Parameters<typeof addPopup>[0]
-export interface OrderIDWithPopup {
-  id: OrderID
-  popup: PopupPayload
 }
 
 export enum OrderTxTypes {

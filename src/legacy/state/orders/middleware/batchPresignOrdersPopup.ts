@@ -20,12 +20,7 @@ export function batchPresignOrdersPopup(
       const popup = setPopupData(OrderTxTypes.METATXN, { summary: order.summary, status: 'presigned', id })
       orderAnalytics('Posted', order.class, 'Pre-Signed')
 
-      store.dispatch(
-        addPopup({
-          id,
-          popup,
-        })
-      )
+      store.dispatch(addPopup(popup))
     }
   })
 }
