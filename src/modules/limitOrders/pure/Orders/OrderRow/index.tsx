@@ -282,7 +282,7 @@ export function OrderRow({
       )} */}
 
       {/* Filled % */}
-      <styledEl.CellElement doubleRow>
+      <styledEl.CellElement doubleRow clickable onClick={onClick}>
         <b>{formattedPercentage}%</b>
         <styledEl.ProgressBar value={formattedPercentage}></styledEl.ProgressBar>
       </styledEl.CellElement>
@@ -290,7 +290,7 @@ export function OrderRow({
       {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
-          <OrderStatusBox order={order} withWarning={withWarning} />
+          <OrderStatusBox order={order} withWarning={withWarning} clickable onClick={onClick} />
           {withWarning && (
             <styledEl.WarningIndicator>
               <MouseoverTooltipContent
