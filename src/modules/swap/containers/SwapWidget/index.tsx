@@ -8,7 +8,7 @@ import {
 } from 'legacy/state/swap/hooks'
 import { useWrapType, WrapType } from 'legacy/hooks/useWrapCallback'
 import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
@@ -151,6 +151,10 @@ export function SwapWidget() {
 
   const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_BANNER.includes(swapButtonContext.swapButtonState)
 
+  const isSafeViaWc = useIsSafeViaWc()
+  const showSafeWcBundlingBanner =
+    !showApprovalBundlingBanner && isSafeViaWc && swapButtonContext.swapButtonState === SwapButtonState.NeedApprove
+
   const swapWarningsTopProps: SwapWarningsTopProps = {
     trade,
     account,
@@ -160,6 +164,7 @@ export function SwapWidget() {
     hideUnknownImpactWarning: !trade || isWrapUnwrapMode || !priceImpactParams.error || priceImpactParams.loading,
     isExpertMode,
     showApprovalBundlingBanner,
+    showSafeWcBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,

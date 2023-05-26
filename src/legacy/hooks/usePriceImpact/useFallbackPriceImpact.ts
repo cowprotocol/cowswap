@@ -101,7 +101,7 @@ export default function useFallbackPriceImpact({
     if (quoteError) {
       setImpact(undefined)
       setError(quoteError)
-    } else if (!loading && abIn && abOut && baOut) {
+    } else if (!loading && abIn && abIn !== '0' && abOut && baOut) {
       // AB Trade is a SELL - we pass the inputAMount as the initial value
       // else we pass the outputAmount as the initialValue
       // Final value is the output of the BA trade as we always SELL in BA

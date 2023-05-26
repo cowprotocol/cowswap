@@ -1,14 +1,15 @@
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useSetupTradeState } from 'modules/trade'
-import { TradeWidget } from 'modules/trade/containers/TradeWidget'
-import React from 'react'
+import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWidget'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { Field } from 'legacy/state/swap/actions'
 import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
-} from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
+} from '../../hooks/useAdvancedOrdersDerivedState'
+import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
+import { useIsQuoteLoading } from 'modules/tradeQuote'
+import { TwapFormWidget } from 'modules/twap'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -26,7 +27,8 @@ export function AdvancedOrdersWidget() {
     recipient,
     orderKind,
   } = useAdvancedOrdersDerivedState()
-  const onCurrencySelection = useNavigateOnCurrencySelection()
+  const actions = useAdvancedOrdersActions()
+  const isTradePriceUpdating = useIsQuoteLoading()
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -48,29 +50,21 @@ export function AdvancedOrdersWidget() {
   }
 
   // TODO
-  const slots = {
+  const slots: TradeWidgetSlots = {
     settingsWidget: <div></div>,
-  }
-
-  // TODO
-  const actions = {
-    onCurrencySelection,
-    onUserInput() {
-      console.log('onUserInput')
-    },
-    onChangeRecipient() {
-      console.log('onChangeRecipient')
-    },
-    onSwitchTokens() {
-      console.log('onSwitchTokens')
-    },
+    bottomContent: (
+      <>
+        {/*TODO: conditionally display a widget for current advanced order type*/}
+        <TwapFormWidget />
+      </>
+    ),
   }
 
   const params = {
     recipient,
     compactView: false,
     showRecipient: false,
-    isTradePriceUpdating: false,
+    isTradePriceUpdating,
     priceImpact: {
       priceImpact: undefined,
       error: undefined,
@@ -81,6 +75,7 @@ export function AdvancedOrdersWidget() {
   return (
     <TradeWidget
       id="advanced-orders-page"
+      disableOutput={true}
       slots={slots}
       actions={actions}
       params={params}

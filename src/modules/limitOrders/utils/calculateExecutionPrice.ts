@@ -44,7 +44,8 @@ export function convertAmountToCurrency(
 export function calculateExecutionPrice(params: ExecutionPriceParams): Price<Currency, Currency> | null {
   const { inputCurrencyAmount, outputCurrencyAmount, feeAmount, marketRate } = params
 
-  if (!inputCurrencyAmount || !outputCurrencyAmount || !feeAmount || !marketRate) return null
+  if (!inputCurrencyAmount || !outputCurrencyAmount || !feeAmount || !marketRate || inputCurrencyAmount.equalTo(0))
+    return null
 
   if (inputCurrencyAmount.currency !== feeAmount.currency) return null
 

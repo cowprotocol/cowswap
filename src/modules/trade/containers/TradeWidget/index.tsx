@@ -30,7 +30,7 @@ interface TradeWidgetParams {
   isRateLoading?: boolean
 }
 
-interface TradeWidgetSlots {
+export interface TradeWidgetSlots {
   settingsWidget: JSX.Element
   lockScreen?: JSX.Element
   middleContent?: JSX.Element
@@ -44,13 +44,14 @@ export interface TradeWidgetProps {
   outputCurrencyInfo: CurrencyInfo
   actions: TradeWidgetActions
   params: TradeWidgetParams
+  disableOutput?: boolean
 }
 
 export const TradeWidgetContainer = styledEl.Container
 
 // TODO: add ImportTokenModal, TradeApproveWidget
 export function TradeWidget(props: TradeWidgetProps) {
-  const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params } = props
+  const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, middleContent, bottomContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
@@ -126,7 +127,7 @@ export function TradeWidget(props: TradeWidgetProps) {
               <CurrencyInputPanel
                 id="output-currency-input"
                 disableNonToken={disableNonToken}
-                inputDisabled={isEthFlow}
+                inputDisabled={isEthFlow || disableOutput}
                 inputTooltip={
                   isEthFlow
                     ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`

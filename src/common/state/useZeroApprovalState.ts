@@ -11,6 +11,5 @@ export const zeroApprovalState = atom<ZeroApprovalState>({
 })
 
 export function useZeroApprovalState() {
-  const state = useAtomValue(zeroApprovalState)
-  return state
+  return useAtomValue(zeroApprovalState)
 }
