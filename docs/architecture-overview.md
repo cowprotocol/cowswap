@@ -17,7 +17,7 @@ Overall architecture of the project
 
 ### Trading modules
 
-- [trade](../src/cow-react/modules/trade/docs/README.md)
+- [trade](../src/modules/trade/docs/trade-module.md)
 - swap
 - limitOrder
 - twap

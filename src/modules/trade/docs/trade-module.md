@@ -27,12 +27,12 @@ At the same time, strike a balance between code cohesion and solution scalabilit
 
 ## TradeWidget structure diagram (sub-modules)
 
-![Structure](./structure.drawio.svg)
+![Structure](structure.drawio.svg)
 
 ## State diagram
 
-![State](./state.drawio.svg)
+![State](state.drawio.svg)
 
 ## Abstraction diagram
 
-![Abstraction](./abstraction.drawio.svg)
+![Abstraction](abstraction.drawio.svg)
