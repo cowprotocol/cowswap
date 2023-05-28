@@ -26,7 +26,6 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
-
 export const StyledMenuIcon = styled(Settings)`
   height: 20px;
   width: 20px;

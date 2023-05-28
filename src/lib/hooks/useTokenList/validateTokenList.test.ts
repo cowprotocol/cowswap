@@ -2,7 +2,6 @@ import { TokenInfo } from '@uniswap/token-lists'
 
 import { validateTokens } from './validateTokenList'
 
-
 const INVALID_TOKEN: TokenInfo = {
   name: 'Dai Stablecoin',
   address: '0xD3ADB33F',

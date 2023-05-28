@@ -18,7 +18,6 @@ import useENSName from './useENSName'
 import { isAddress } from '../utils'
 import isZero from '../utils/isZero'
 
-
 /**
  * Returns the ENS avatar URI, if available.
  * Spec: https://gist.github.com/Arachnid/9db60bd75277969ee1689c8742b75182.

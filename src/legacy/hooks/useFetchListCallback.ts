@@ -11,7 +11,6 @@ import { fetchTokenList } from 'legacy/state/lists/actions'
 import getTokenList from 'lib/hooks/useTokenList/fetchTokenList'
 import resolveENSContentHash from 'lib/utils/resolveENSContentHash'
 
-
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
   const dispatch = useAppDispatch()
   const { chainId } = useWalletInfo()

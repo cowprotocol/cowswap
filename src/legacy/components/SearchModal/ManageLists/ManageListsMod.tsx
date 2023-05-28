@@ -35,7 +35,6 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'
 
-
 const Wrapper = styled(Column)`
   width: 100%;
   height: 100%;

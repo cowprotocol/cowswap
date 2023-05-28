@@ -15,7 +15,6 @@ import useTheme from 'legacy/hooks/useTheme'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
 
-
 export const TokenSection = styled.div<{ dim?: boolean }>`
   padding: 4px 20px;
   height: 56px;

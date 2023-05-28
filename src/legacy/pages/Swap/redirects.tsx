@@ -6,7 +6,6 @@ import { useAppDispatch } from 'legacy/state/hooks'
 
 import { ApplicationModal, setOpenModal } from '../../state/application/reducer'
 
-
 // Redirects to swap but only replace the pathname
 export function RedirectPathToSwapOnly() {
   const location = useLocation()

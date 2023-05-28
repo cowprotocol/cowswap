@@ -7,7 +7,6 @@ import { RowBetween } from 'legacy/components/Row'
 import useTheme from 'legacy/hooks/useTheme'
 import { ButtonSize } from 'legacy/theme/enum'
 
-
 // MOD imports
 
 type ButtonProps = Omit<ButtonPropsOriginal, 'css'>

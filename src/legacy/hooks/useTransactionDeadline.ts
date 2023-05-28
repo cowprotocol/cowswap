@@ -10,7 +10,6 @@ import { useAppSelector } from 'legacy/state/hooks'
 
 import useCurrentBlockTimestamp from './useCurrentBlockTimestamp'
 
-
 // combines the block timestamp with the user setting to give the deadline that should be used for any submitted transaction
 export default function useTransactionDeadline(): BigNumber | undefined {
   const { chainId } = useWalletInfo()

@@ -10,7 +10,6 @@ import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { Loading } from 'legacy/components/FlashingLoading'
 
-
 import { AccountMenu } from './Menu'
 import { Container, CardsWrapper } from './styled'
 import { Wrapper, AccountPageWrapper } from './Tokens/styled'

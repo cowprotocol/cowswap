@@ -5,7 +5,6 @@ import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
 import Loader from 'legacy/components/Loader'
 import { ThemedText } from 'legacy/theme'
 
-
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};
   align-items: center;

@@ -7,7 +7,6 @@ import { useENSRegistrarContract, useENSResolverContract } from './useContract'
 
 import isZero from '../utils/isZero'
 
-
 /**
  * Does a lookup for an ENS name to find its contenthash.
  */

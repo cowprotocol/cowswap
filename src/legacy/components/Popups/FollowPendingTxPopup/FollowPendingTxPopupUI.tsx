@@ -7,7 +7,6 @@ import { AutoColumn } from 'legacy/components/Column'
 import { StyledClose as IconClose } from 'legacy/components/Popups/PopupItemMod'
 import Tooltip, { TooltipProps } from 'legacy/components/Tooltip'
 
-
 interface PopupContentProps {
   onCheck: () => void
   onClose: () => void

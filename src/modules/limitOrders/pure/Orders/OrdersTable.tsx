@@ -32,7 +32,6 @@ import QuestionHelper from 'legacy/components/QuestionHelper'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 import { Order } from 'legacy/state/orders/actions'
 
-
 import { OrderRow } from './OrderRow'
 import { OrdersTablePagination } from './OrdersTablePagination'
 import { getOrderParams } from './utils/getOrderParams'

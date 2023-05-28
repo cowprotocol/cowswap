@@ -1,4 +1,3 @@
-
 // Assets
 import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
 import { Routes } from 'constants/routes'
@@ -16,7 +15,6 @@ import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { FeatureFlag } from 'utils/featureFlags'
 import { isNotNullish } from 'utils/isNotNullish'
-
 
 import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuLink, MenuTreeItem } from '../types'
 

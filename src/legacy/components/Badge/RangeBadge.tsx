@@ -6,7 +6,6 @@ import Badge, { BadgeVariant } from 'legacy/components/Badge'
 
 import { MouseoverTooltip } from '../Tooltip'
 
-
 const BadgeWrapper = styled.div`
   font-size: 14px;
   display: flex;

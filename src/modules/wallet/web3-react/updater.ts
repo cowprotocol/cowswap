@@ -11,7 +11,6 @@ import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
 import useENSName from 'legacy/hooks/useENSName'
 
-
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'

@@ -14,7 +14,6 @@ import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { useEthFlowContract } from 'legacy/hooks/useContract'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()
   const baseProps = useBaseFlowContextSetup()

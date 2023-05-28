@@ -1,4 +1,3 @@
-
 import React from 'react'
 
 import { Navigate, useLocation, useParams } from 'react-router-dom'
@@ -10,7 +9,6 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { Routes } from 'constants/routes'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
-
 
 export function SwapPage() {
   const params = useParams()

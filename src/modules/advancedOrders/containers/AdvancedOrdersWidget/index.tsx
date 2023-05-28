@@ -8,7 +8,6 @@ import { TwapFormWidget } from 'modules/twap'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { Field } from 'legacy/state/swap/actions'
 
-
 import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
 import {
   useAdvancedOrdersDerivedState,

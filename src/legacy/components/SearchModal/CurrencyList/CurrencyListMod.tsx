@@ -33,7 +33,6 @@ import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 
-
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
 }

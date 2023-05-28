@@ -15,7 +15,6 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-
 import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'

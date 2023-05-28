@@ -8,7 +8,6 @@ import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAm
 
 import { Field } from 'legacy/state/swap/actions'
 
-
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 
 import { updateAdvancedOrdersAtom } from '../state/advancedOrdersAtom'

@@ -15,11 +15,9 @@ import { COW, GNO } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/swap/actions'
 
-
 import { LimitOrdersConfirm } from './index'
 
 import { TradeFlowContext } from '../../services/types'
-
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]

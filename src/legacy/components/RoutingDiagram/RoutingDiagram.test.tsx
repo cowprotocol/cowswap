@@ -11,7 +11,6 @@ import { DAI, USDC_MAINNET, WBTC } from 'legacy/constants/tokens'
 
 import RoutingDiagram from './RoutingDiagram'
 
-
 const percent = (strings: TemplateStringsArray) => new Percent(parseInt(strings[0]), 100)
 
 const singleRoute: RoutingDiagramEntry = {

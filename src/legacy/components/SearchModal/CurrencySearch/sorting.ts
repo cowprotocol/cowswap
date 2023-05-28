@@ -6,7 +6,6 @@ import { TokenAmounts } from 'modules/tokens'
 
 import { useAllTokenBalances } from 'legacy/state/connection/hooks'
 
-
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 
 // compare two token amounts with highest one coming first

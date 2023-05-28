@@ -25,8 +25,6 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-
-
 import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 

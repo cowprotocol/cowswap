@@ -21,8 +21,6 @@ import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMu
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 import { Order } from 'legacy/state/orders/actions'
 
-
-
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 

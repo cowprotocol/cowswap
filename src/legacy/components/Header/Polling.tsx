@@ -21,7 +21,6 @@ import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 
 import { MouseoverTooltip } from '../Tooltip'
 
-
 export const StyledPolling = styled.div<{ warning: boolean }>`
   position: fixed;
   display: flex;

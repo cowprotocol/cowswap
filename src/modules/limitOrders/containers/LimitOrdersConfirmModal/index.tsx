@@ -27,7 +27,6 @@ import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { CloseIcon } from 'legacy/theme'
 
-
 import * as styledEl from './styled'
 
 import { LimitOrdersConfirm } from '../../pure/LimitOrdersConfirm'

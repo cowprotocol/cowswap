@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import useIsAnySwapAffectedUser from './useIsAnySwapAffectedUser'
 
-
 const WARNING_PAGE = '/anyswap-affected-users'
 
 export default function RedirectAnySwapAffectedUsers() {

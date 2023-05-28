@@ -6,9 +6,6 @@ import ms from 'ms.macro'
 
 import { COW_IPFS_OPTIONS } from 'legacy/constants'
 
-
-
-
 import {
   appDataUploadQueueAtom,
   removeAppDataFromUploadQueueAtom,

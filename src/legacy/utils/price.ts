@@ -11,7 +11,6 @@ import { getUsdQuoteValidTo } from 'legacy/hooks/useStablecoinPrice'
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 import { toErc20Address } from 'legacy/utils/tokens'
 
-
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 
 /**

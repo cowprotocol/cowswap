@@ -16,7 +16,6 @@ import Footer from 'legacy/components/Footer'
 import { UniIcon, LogoImage, HeaderRow } from 'legacy/components/Header/styled' // mod
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
-
 /* const FallbackWrapper = styled.div`
   display: flex;
   flex-direction: column;

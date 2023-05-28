@@ -6,7 +6,6 @@ import validateTokenList from './validateTokenList'
 
 import type { TokenList } from '@uniswap/token-lists'
 
-
 export const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
 
 const listCache = new Map<string, TokenList>()

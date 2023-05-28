@@ -12,7 +12,6 @@ import { toURL } from './utils'
 
 import pkg from '../../package.json'
 
-
 const WEB_VERSION = pkg.version
 
 declare const self: ServiceWorkerGlobalScope

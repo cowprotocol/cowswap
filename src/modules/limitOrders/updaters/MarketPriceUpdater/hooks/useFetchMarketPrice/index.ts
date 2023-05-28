@@ -15,7 +15,6 @@ import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { onlyResolvesLast } from 'legacy/utils/async'
 
-
 import { useHandleResponse } from './useHandleResponse'
 
 import { useQuoteRequestParams } from '../useQuoteRequestParams'

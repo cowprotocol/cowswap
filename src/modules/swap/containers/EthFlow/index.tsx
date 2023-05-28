@@ -18,7 +18,6 @@ import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { useIsExpertMode } from 'legacy/state/user/hooks'
 
-
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'

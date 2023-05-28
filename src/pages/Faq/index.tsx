@@ -1,6 +1,3 @@
-
-
-
 // AmplitudeAnalytics
 import { Link } from 'react-router-dom'
 
@@ -20,7 +17,6 @@ import {
   FLASHBOTS_LINK,
 } from 'legacy/constants'
 import { StyledInternalLink } from 'legacy/theme'
-
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'

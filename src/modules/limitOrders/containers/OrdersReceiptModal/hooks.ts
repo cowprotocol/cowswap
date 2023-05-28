@@ -6,7 +6,6 @@ import { UID } from '@cowprotocol/cow-sdk'
 import { ParsedOrder, useLimitOrdersList } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { updateReceiptAtom, receiptAtom } from 'modules/limitOrders/state/limitOrdersReceiptAtom'
 
-
 export function useCloseReceiptModal() {
   const updateReceiptState = useUpdateAtom(updateReceiptAtom)
   return useCallback(() => updateReceiptState({ orderId: null }), [updateReceiptState])

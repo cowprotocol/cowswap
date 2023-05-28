@@ -5,7 +5,6 @@ import { ButtonSecondary } from 'legacy/components/Button'
 
 import { NumericalInput } from '../../../trade/pure/TradeNumberInput'
 
-
 export const ModalWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;

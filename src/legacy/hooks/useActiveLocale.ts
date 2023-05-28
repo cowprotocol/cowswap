@@ -7,7 +7,6 @@ import { useUserLocale } from 'legacy/state/user/hooks'
 import { parsedQueryString } from './useParsedQueryString'
 import useParsedQueryString from './useParsedQueryString'
 
-
 /**
  * Given a locale string (e.g. from user agent), return the best match for corresponding SupportedLocale
  * @param maybeSupportedLocale the fuzzy locale identifier

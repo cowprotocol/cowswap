@@ -10,7 +10,6 @@ import { stringToCurrency } from './extension'
 import TradeGp from './TradeGp'
 import Trade, { _constructTradePrice } from './TradeGp'
 
-
 const WETH_MAINNET = new Token(ChainId.MAINNET, WETH[1].address, 18)
 const DAI_MAINNET = new Token(ChainId.MAINNET, '0x6b175474e89094c44da98b954eedeac495271d0f', 18)
 

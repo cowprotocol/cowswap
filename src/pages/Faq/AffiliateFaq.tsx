@@ -1,5 +1,3 @@
-
-
 // AmplitudeAnalytics
 import { Link } from 'react-router-dom'
 
@@ -11,7 +9,6 @@ import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { LinkScrollable } from 'legacy/components/Link'
 import { BARN_URL, PRODUCTION_URL } from 'legacy/constants'
-
 
 import { Footer } from '.'
 

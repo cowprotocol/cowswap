@@ -9,7 +9,6 @@ import Column from 'legacy/components/Column'
 import useTheme from 'legacy/hooks/useTheme'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 
-
 const ContentWrapper = styled(Column)`
   align-items: center;
   margin: 32px;

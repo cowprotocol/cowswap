@@ -10,7 +10,6 @@ import { ThemedText } from 'legacy/theme'
 
 import { ResponsiveTooltipContainer } from './styleds'
 
-
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.bg1};
   border-bottom-left-radius: 20px;

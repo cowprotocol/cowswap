@@ -1,4 +1,3 @@
-
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { PermitInfo, PermitType, useERC20Permit } from './useERC20Permit'

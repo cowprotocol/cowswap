@@ -9,8 +9,6 @@ import { DEFAULT_GP_PRICE_STRATEGY } from 'legacy/constants'
 import { gasPriceStrategyAtom } from 'legacy/state/gas/atoms'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
-
 const GP_PRICE_STRATEGY_INTERVAL_TIME = ms`30 minutes`
 
 export function GasPriceStrategyUpdater(): null {

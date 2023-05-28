@@ -2,7 +2,6 @@ import { SUPPORTED_LOCALES, SupportedLocale } from 'legacy/constants/locales'
 
 import formatLocaleNumber from './formatLocaleNumber'
 
-
 const INPUT = 4000000.123 // 4 million
 
 function expectedOutput(l: SupportedLocale): string {

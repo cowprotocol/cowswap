@@ -13,7 +13,6 @@ import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 
 import { V3_CORE_FACTORY_ADDRESSES } from '../constants/addresses'
 
-
 const IUniswapV3PoolStateABI = IUniswapV3PoolState.abi
 const POOL_STATE_INTERFACE = new Interface(IUniswapV3PoolStateABI)
 

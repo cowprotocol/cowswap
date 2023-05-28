@@ -1,4 +1,3 @@
-
 // Assets
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
@@ -16,7 +15,6 @@ import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { MEV_TOTAL, FLASHBOTS_LINK } from 'legacy/constants'
 import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
-
 
 const ExternalLink = styled(ExternalLinkTheme)``
 

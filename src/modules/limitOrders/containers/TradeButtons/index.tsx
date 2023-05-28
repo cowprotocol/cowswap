@@ -23,7 +23,6 @@ import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
 import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-
 import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
 
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'

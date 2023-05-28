@@ -13,7 +13,6 @@ import { useSearchInactiveTokenLists } from 'legacy/hooks/Tokens'
 import { Field } from 'legacy/state/swap/actions'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 export interface ImportTokenModalProps {
   chainId: number
 }

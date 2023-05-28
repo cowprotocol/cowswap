@@ -9,7 +9,6 @@ import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 import { approvalAnalytics } from 'legacy/components/analytics'
 import { isRejectRequestProviderError } from 'legacy/utils/misc'
 
-
 import { updateTradeApproveStateAtom } from './tradeApproveStateAtom'
 
 interface TradeApproveCallbackParams {

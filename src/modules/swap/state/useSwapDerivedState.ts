@@ -7,7 +7,6 @@ import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 
-
 import { SwapDerivedState, swapDerivedStateAtom } from './swapDerivedStateAtom'
 
 export function useSwapDerivedState(): SwapDerivedState {

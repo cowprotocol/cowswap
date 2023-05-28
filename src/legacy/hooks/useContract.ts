@@ -36,7 +36,6 @@ import { UniswapInterfaceMulticall } from 'legacy/types/v3'
 import { getContract } from 'legacy/utils'
 import { isEns, isProd, isStaging } from 'legacy/utils/environments'
 
-
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 
 // returns null on errors

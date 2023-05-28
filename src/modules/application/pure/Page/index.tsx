@@ -1,4 +1,3 @@
-
 import { PropsWithChildren } from 'react'
 
 import { lighten } from 'polished'
@@ -7,7 +6,6 @@ import styled, { css } from 'styled-components/macro'
 import { Widget } from 'modules/application/pure/Widget'
 
 import { WithClassName } from 'legacy/types'
-
 
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;

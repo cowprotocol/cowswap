@@ -1,4 +1,3 @@
-
 import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import styled from 'styled-components/macro'

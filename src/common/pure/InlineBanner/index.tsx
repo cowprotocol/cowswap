@@ -9,7 +9,6 @@ import iconAlert from 'legacy/assets/cow-swap/alert.svg'
 import iconDanger from 'legacy/assets/cow-swap/alert.svg'
 import iconSuccess from 'legacy/assets/cow-swap/check.svg'
 
-
 type BannerType = 'alert' | 'information' | 'success' | 'danger'
 
 interface BannerConfig {

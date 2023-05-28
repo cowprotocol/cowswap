@@ -1,4 +1,3 @@
-
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
@@ -13,7 +12,6 @@ import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
 import { ExternalLinkFaq, Wrapper } from './styled'
 import ToC from './ToC'
-
 
 export default function ProtocolFaq() {
   const { toc, faqRef } = useToC()

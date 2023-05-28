@@ -1,4 +1,3 @@
-
 import styled from 'styled-components/macro'
 
 import uImage from 'legacy/assets/images/big_unicorn.png'

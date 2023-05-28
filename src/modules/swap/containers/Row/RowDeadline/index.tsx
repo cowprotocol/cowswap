@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react'
 
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'

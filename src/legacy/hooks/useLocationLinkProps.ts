@@ -10,7 +10,6 @@ import useParsedQueryString from 'legacy/hooks/useParsedQueryString'
 
 import { useActiveLocale } from './useActiveLocale'
 
-
 export function useLocationLinkProps(locale: SupportedLocale | null): {
   to?: LocationDescriptor
   onClick?: () => void

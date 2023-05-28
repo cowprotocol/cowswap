@@ -8,7 +8,6 @@ import styled, { css } from 'styled-components/macro'
 
 import { isMobile } from 'legacy/utils/userAgent'
 
-
 const AnimatedDialogOverlay = animated(DialogOverlay)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledDialogOverlay = styled(AnimatedDialogOverlay)`

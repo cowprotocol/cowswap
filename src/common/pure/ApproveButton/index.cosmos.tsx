@@ -1,4 +1,3 @@
-
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DemoContainer } from 'cosmos.decorator'
 import { useSelect } from 'react-cosmos/fixture'
