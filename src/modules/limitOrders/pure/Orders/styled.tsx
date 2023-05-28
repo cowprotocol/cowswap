@@ -1,5 +1,6 @@
-import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TableHeader = styled.div<{ isOpenOrdersTab: boolean; isRowSelectable: boolean }>`

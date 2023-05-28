@@ -1,9 +1,12 @@
-import { Orders } from './index'
-import { OrderTab } from './OrdersTabs'
-import { ordersMock } from './orders.mock'
-import { BalancesAndAllowances } from 'modules/tokens'
-import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
 import { UID } from '@cowprotocol/cow-sdk'
+
+import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
+import { BalancesAndAllowances } from 'modules/tokens'
+
+import { ordersMock } from './orders.mock'
+import { OrderTab } from './OrdersTabs'
+
+import { Orders } from './index'
 
 const tabs: OrderTab[] = [
   {

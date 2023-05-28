@@ -3,6 +3,7 @@ import { getCacheKeyForURL as getCacheKeyForURLMock, matchPrecache as matchPreca
 
 import { CachedDocument, handleDocument, matchDocument } from './document'
 
+
 jest.mock('workbox-navigation-preload', () => ({ enable: jest.fn() }))
 jest.mock('workbox-precaching', () => ({
   getCacheKeyForURL: jest.fn(),

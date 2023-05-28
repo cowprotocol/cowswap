@@ -6,6 +6,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { ButtonSecondary } from 'legacy/components/Button'
 
+
 export const Web3StatusGeneric = styled(ButtonSecondary)``
 
 export const Web3StatusError = styled(Web3StatusGeneric)`

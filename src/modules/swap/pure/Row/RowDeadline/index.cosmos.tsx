@@ -1,5 +1,6 @@
-import { RowDeadlineContent, RowDeadlineProps } from '.'
 import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
+
+import { RowDeadlineContent, RowDeadlineProps } from '.'
 
 const defaultProps: RowDeadlineProps = {
   toggleSettings: console.log,

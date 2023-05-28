@@ -1,8 +1,10 @@
-import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
-import styled from 'styled-components/macro'
-import { Content } from 'modules/application/pure/Page'
-import { ButtonPrimary } from 'legacy/components/Button'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { Content } from 'modules/application/pure/Page'
+
+import { ButtonPrimary } from 'legacy/components/Button'
+import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`
   text-decoration: underline;

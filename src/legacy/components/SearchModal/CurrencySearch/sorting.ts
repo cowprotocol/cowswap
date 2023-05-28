@@ -1,8 +1,11 @@
-import { TokenAmounts } from 'modules/tokens'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
 
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { TokenAmounts } from 'modules/tokens'
+
 import { useAllTokenBalances } from 'legacy/state/connection/hooks'
+
 
 const PRIORITISED_TOKENS = ['COW', 'GNO']
 

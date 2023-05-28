@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit'
-import { WithChainId } from 'legacy/state/lists/actions'
+
 import { GasFeeEndpointResponse } from 'api/gasPrices'
+import { WithChainId } from 'legacy/state/lists/actions'
 
 export type UpdateGasPrices = GasFeeEndpointResponse & WithChainId
 

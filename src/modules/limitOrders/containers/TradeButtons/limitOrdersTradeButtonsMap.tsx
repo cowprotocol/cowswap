@@ -1,17 +1,21 @@
 import React from 'react'
-import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
+
 import { Trans } from '@lingui/macro'
-import { ButtonPrimary } from 'legacy/components/Button'
-import { ButtonSize } from 'legacy/theme/enum'
-import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
+
+import { LimitOrdersDerivedState } from 'modules/limitOrders'
 import { LimitOrdersQuoteState } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
-import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
-import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
 import { TransactionConfirmState } from 'modules/swap/state/transactionConfirmAtom'
 import { TradeLoadingButton } from 'modules/trade/pure/TradeLoadingButton'
+
+import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
+import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { LimitOrdersDerivedState } from 'modules/limitOrders'
+import { ButtonPrimary } from 'legacy/components/Button'
+import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
+import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
+import { ButtonSize } from 'legacy/theme/enum'
+
+import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 export interface WrapUnwrapParams {
   isNativeIn: boolean

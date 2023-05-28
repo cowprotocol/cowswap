@@ -1,10 +1,12 @@
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from 'legacy/constants/locales'
 import { useMemo } from 'react'
+
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from 'legacy/constants/locales'
 import store from 'legacy/state'
 import { useUserLocale } from 'legacy/state/user/hooks'
 
-import useParsedQueryString from './useParsedQueryString'
 import { parsedQueryString } from './useParsedQueryString'
+import useParsedQueryString from './useParsedQueryString'
+
 
 /**
  * Given a locale string (e.g. from user agent), return the best match for corresponding SupportedLocale

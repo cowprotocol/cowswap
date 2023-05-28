@@ -1,5 +1,6 @@
-import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
 import styled from 'styled-components/macro'
+
+import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
 import { Input as NumericalInput } from 'legacy/components/NumericalInput'
 import { FeeInformationTooltipWrapper } from 'legacy/components/swap/FeeInformationTooltip'
 

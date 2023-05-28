@@ -1,9 +1,12 @@
-import useSWR from 'swr'
 import { useState, useEffect } from 'react'
+
 import { useWeb3React } from '@web3-react/core'
-import useIsArgentWallet from 'legacy/hooks/useIsArgentWallet'
-import useIsAmbireWallet from 'legacy/hooks/useIsAmbireWallet'
+import useSWR from 'swr'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import useIsAmbireWallet from 'legacy/hooks/useIsAmbireWallet'
+import useIsArgentWallet from 'legacy/hooks/useIsArgentWallet'
 
 function useCheckIsSmartContract(): boolean | undefined {
   const { provider } = useWeb3React()

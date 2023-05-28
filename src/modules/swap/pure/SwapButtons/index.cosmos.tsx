@@ -1,9 +1,12 @@
-import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useSelect } from 'react-cosmos/fixture'
-import { SwapButtons, SwapButtonsContext } from './index'
+
+import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+
 import { Field } from 'legacy/state/swap/actions'
+import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
+
+import { SwapButtons, SwapButtonsContext } from './index'
 
 const currency = WETH_GOERLI
 const amount = 200000000

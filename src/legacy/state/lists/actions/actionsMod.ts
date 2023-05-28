@@ -1,8 +1,8 @@
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { ActionCreatorWithPayload, createAction } from '@reduxjs/toolkit'
 import { TokenList, Version } from '@uniswap/token-lists'
 
 // MOD imports
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 export interface WithChainId {
   chainId?: ChainId

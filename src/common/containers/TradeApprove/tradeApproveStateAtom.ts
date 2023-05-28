@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+
 import { Currency } from '@uniswap/sdk-core'
 
 export interface TradeApproveState {

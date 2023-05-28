@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
+
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import useIsAnySwapAffectedUser from './useIsAnySwapAffectedUser'
+
 
 const WARNING_PAGE = '/anyswap-affected-users'
 

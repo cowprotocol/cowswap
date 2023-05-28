@@ -1,31 +1,37 @@
+import React, { useContext, useMemo } from 'react'
+
 import { Trans } from '@lingui/macro'
 import { Percent, TradeType } from '@uniswap/sdk-core'
-import React, { useContext, useMemo } from 'react'
+import { transparentize } from 'polished'
 import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { ThemedText } from 'legacy/theme'
-import { isAddress, shortenAddress } from 'legacy/utils'
+
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { AutoColumn } from 'legacy/components/Column'
+import { AuxInformationContainer } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue'
+
+import { LightCardType } from './index'
+
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
 import { SwapShowAcceptChanges, TruncatedText } from 'legacy/components/swap/styleds'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
-import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
-import { Field } from 'legacy/state/swap/actions'
-import { AuxInformationContainer } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
-import FeeInformationTooltip from '../FeeInformationTooltip'
-import { LightCardType } from './index'
-import { transparentize } from 'polished'
 import { WarningProps } from 'legacy/components/SwapWarnings'
-import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { TokenAmount } from 'common/pure/TokenAmount'
+import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { Field } from 'legacy/state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { ThemedText } from 'legacy/theme'
+import { isAddress, shortenAddress } from 'legacy/utils'
+import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
+
+import FeeInformationTooltip from '../FeeInformationTooltip'
+
 
 export const ArrowWrapper = styled.div`
   --size: 26px;

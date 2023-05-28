@@ -1,6 +1,8 @@
-import { Field } from 'legacy/state/swap/actions'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+
+import { Field } from 'legacy/state/swap/actions'
 
 export interface CurrencyInfo {
   label?: string

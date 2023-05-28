@@ -1,8 +1,10 @@
 import React from 'react'
+
 import styled from 'styled-components/macro'
 
 import useHttpLocations from '../../hooks/useHttpLocations'
 import Logo from '../Logo'
+
 
 export const StyledListLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};

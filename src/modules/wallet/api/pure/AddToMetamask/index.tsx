@@ -1,11 +1,14 @@
 import React, { useContext } from 'react'
+
 import { Currency } from '@uniswap/sdk-core'
+import { CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { CheckCircle } from 'react-feather'
-import { RowFixed } from 'legacy/components/Row'
 import MetaMaskLogo from 'modules/wallet/api/assets/metamask.png'
+
 import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { RowFixed } from 'legacy/components/Row'
+
 
 export const ButtonCustom = styled.button`
   display: flex;

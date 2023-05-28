@@ -1,15 +1,16 @@
 import { Trans } from '@lingui/macro'
 import { Currency, TradeType } from '@uniswap/sdk-core'
+import styled from 'styled-components/macro'
+
+import { ReactComponent as GasIcon } from 'legacy/assets/images/gas-icon.svg'
 import { sendEvent } from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
 import { LoadingOpacityContainer } from 'legacy/components/Loader/styled'
 import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { InterfaceTrade } from 'legacy/state/routing/types'
-import styled from 'styled-components/macro'
 import { ThemedText } from 'legacy/theme'
 
-import { ReactComponent as GasIcon } from 'legacy/assets/images/gas-icon.svg'
 import { ResponsiveTooltipContainer } from './styleds'
 import SwapRoute from './SwapRoute'
 

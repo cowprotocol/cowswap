@@ -1,13 +1,16 @@
-import { SafeInfoResponse } from '@safe-global/api-kit'
 import { useMemo } from 'react'
-import { getSafeWebUrl } from 'api/gnosisSafe'
+
+import { SafeInfoResponse } from '@safe-global/api-kit'
+
 import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+import { useGnosisSafeInfo } from 'modules/wallet'
+
+import { getSafeWebUrl } from 'api/gnosisSafe'
+import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { getEtherscanLink } from 'legacy/utils'
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
-import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
-import { useGnosisSafeInfo } from 'modules/wallet'
 
 export function useActivityDerivedState({
   chainId,

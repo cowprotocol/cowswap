@@ -1,12 +1,15 @@
-import { IConditionalOrder } from 'abis/types/ComposableCoW'
-import { defaultAbiCoder } from '@ethersproject/abi'
-import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
-import { TWAPOrder, TWAPOrderStruct } from '../types'
-import { TWAP_HANDLER_ADDRESS, TWAP_ORDER_STRUCT } from '../const'
-import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders'
-import { hexZeroPad } from '@ethersproject/bytes'
-import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { defaultAbiCoder } from '@ethersproject/abi'
+import { hexZeroPad } from '@ethersproject/bytes'
+import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+
+import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders'
+
+import { IConditionalOrder } from 'abis/types/ComposableCoW'
+
+import { TWAP_HANDLER_ADDRESS, TWAP_ORDER_STRUCT } from '../const'
+import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
+import { TWAPOrder, TWAPOrderStruct } from '../types'
 
 function getTwapOrderParamsStruct(
   chainId: SupportedChainId,

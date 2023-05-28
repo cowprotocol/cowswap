@@ -1,8 +1,11 @@
-import * as styledEl from './styled'
-import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { Fraction } from '@uniswap/sdk-core'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import * as styledEl from './styled'
 
 interface Props {
   order: ParsedOrder

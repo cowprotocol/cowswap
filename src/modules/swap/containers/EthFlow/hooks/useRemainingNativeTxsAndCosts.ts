@@ -1,12 +1,15 @@
 import { useMemo } from 'react'
-import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
-import { useGasPrices } from 'legacy/state/gas/hooks'
-import { BalanceChecks } from '../../../pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import { parseUnits } from 'ethers/lib/utils'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
+import { useGasPrices } from 'legacy/state/gas/hooks'
+
+import { BalanceChecks } from '../../../pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
 // eslint-disable-next-line no-restricted-imports
 
 export const MINIMUM_TXS = '10'

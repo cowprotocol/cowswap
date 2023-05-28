@@ -1,6 +1,9 @@
-import { useWalletInfo } from 'modules/wallet'
-import { Currency } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
+
+import { Currency } from '@uniswap/sdk-core'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { useCombinedActiveList } from 'legacy/state/lists/hooks'
 
 /**

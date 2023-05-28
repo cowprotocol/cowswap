@@ -1,16 +1,18 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components/macro'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Trans } from '@lingui/macro'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { transparentize } from 'polished'
 import { Repeat } from 'react-feather'
+import styled from 'styled-components/macro'
+
+import { usePrice } from 'common/hooks/usePrice'
+import { FiatAmount } from 'common/pure/FiatAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { getAddress } from 'utils/getAddress'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { usePrice } from 'common/hooks/usePrice'
-import { transparentize } from 'polished'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { FiatAmount } from 'common/pure/FiatAmount'
 
 const DEFAULT_DECIMALS = 4
 

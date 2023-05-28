@@ -1,8 +1,11 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
 
+import { BigNumber } from '@ethersproject/bignumber'
+
+import { useSingleCallResult } from 'lib/hooks/multicall'
+
 import { useInterfaceMulticall } from './useContract'
+
 
 // gets the current timestamp from the blockchain
 export default function useCurrentBlockTimestamp(): BigNumber | undefined {

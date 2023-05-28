@@ -1,22 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import * as styledEl from './styled'
-import { CurrencySelectButton } from 'modules/swap/pure/CurrencySelectButton'
-import { Currency } from '@uniswap/sdk-core'
-import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
-import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue/FiatValueMod'
-import { Trans } from '@lingui/macro'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
-import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
-import { setMaxSellTokensAnalytics } from 'legacy/components/analytics'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
-import { Field } from 'legacy/state/swap/actions'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { Trans } from '@lingui/macro'
+import { Currency } from '@uniswap/sdk-core'
+
+import { CurrencySelectButton } from 'modules/swap/pure/CurrencySelectButton'
+import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
+
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { setMaxSellTokensAnalytics } from 'legacy/components/analytics'
+import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue/FiatValueMod'
+import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
+import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { formatInputAmount } from 'utils/amountFormat'
+
+import * as styledEl from './styled'
 
 interface BuiltItProps {
   className: string

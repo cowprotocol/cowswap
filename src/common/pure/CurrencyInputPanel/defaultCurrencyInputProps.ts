@@ -1,9 +1,10 @@
-import { CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel/index'
-import { Field } from 'legacy/state/swap/actions'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { COW } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel/index'
+import { COW } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
 
 const currency = COW[SupportedChainId.MAINNET]
 const balance = CurrencyAmount.fromRawAmount(currency, 250 * 10 ** 18)

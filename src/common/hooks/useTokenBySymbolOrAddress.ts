@@ -1,12 +1,15 @@
-import { NativeCurrency, Token } from '@uniswap/sdk-core'
+import { useAtomValue } from 'jotai/utils'
 import { useMemo } from 'react'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import { NativeCurrency, Token } from '@uniswap/sdk-core'
+
+import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
+import { useWalletInfo } from 'modules/wallet'
+
 import { useFavouriteTokens } from 'legacy/state/user/hooks'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
-import { useAtomValue } from 'jotai/utils'
-import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
-import { useWalletInfo } from 'modules/wallet'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | NativeCurrency | null {
   const { chainId } = useWalletInfo()

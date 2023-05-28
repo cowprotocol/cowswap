@@ -1,6 +1,8 @@
+import { ReactNode } from 'react'
+
 import { Trans } from '@lingui/macro'
 import { CheckCircle, UserCheck } from 'react-feather'
-import { ReactNode } from 'react'
+
 import { Wrapper } from './styled'
 import { UpperSection } from './styled'
 import { CloseIconWrapper } from './styled'

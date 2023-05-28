@@ -1,8 +1,10 @@
-import { useMemo } from 'react'
 import { useAtomValue } from 'jotai'
+import { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+
 import { limitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
+
 
 // Returns boolean if the current order kind is SELL or BUY
 export function useIsSellOrder(): boolean {

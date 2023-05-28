@@ -1,5 +1,6 @@
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
+
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 // returns derived ethflow state from current props

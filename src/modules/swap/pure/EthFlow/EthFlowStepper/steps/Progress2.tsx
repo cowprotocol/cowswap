@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+
 import { Progress, EthFlowStepperProps, SmartOrderStatus, ProgressProps } from '..'
 
 export function Progress2({ order, creation, refund, cancellation }: EthFlowStepperProps) {

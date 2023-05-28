@@ -1,5 +1,5 @@
-import { Token } from '@uniswap/sdk-core'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Token } from '@uniswap/sdk-core'
 
 // Todo: address should be updated
 export const DAI_GOERLI = new Token(ChainId.GOERLI, '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60', 18, 'DAI', 'DAI')

@@ -1,4 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
+
 import { SEARCH_TOKENS } from './queries'
 import { FetchTokensApiResult } from './types'
 

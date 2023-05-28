@@ -1,19 +1,24 @@
-import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { useWeb3React } from '@web3-react/core'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'legacy/state'
-import useENSAddress from 'legacy/hooks/useENSAddress'
-import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
+
+import { OrderClass } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
+import { useDispatch } from 'react-redux'
+
 import { useUploadAppData, useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
+import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
+
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useGP2SettlementContract } from 'legacy/hooks/useContract'
+import useENSAddress from 'legacy/hooks/useENSAddress'
+import { AppDispatch } from 'legacy/state'
+
+
+import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()

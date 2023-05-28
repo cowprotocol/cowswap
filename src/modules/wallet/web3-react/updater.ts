@@ -1,16 +1,21 @@
-import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
-import useENSName from 'legacy/hooks/useENSName'
-import { useWeb3React } from '@web3-react/core'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
-import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
-import { useSetAtom } from 'jotai'
-import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
-import { getSafeInfo } from 'api/gnosisSafe'
-import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
+import { useWeb3React } from '@web3-react/core'
+
+import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
 import { getWalletType } from 'modules/wallet/api/utils/getWalletType'
+
+import { getSafeInfo } from 'api/gnosisSafe'
+import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
+import useENSName from 'legacy/hooks/useENSName'
+
+
+import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
+
+import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
+import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
 function _checkIsSupportedWallet(walletName?: string): boolean {

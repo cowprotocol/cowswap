@@ -1,17 +1,18 @@
 // TODO: Most of the hooks in this file are legacy and should be adapted and re-rexported from the token module
 
+import { useMemo } from 'react'
+
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
-import { useMemo } from 'react'
-import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
-import { isAddress } from 'legacy/utils'
-import { nativeOnChain } from 'legacy/constants/tokens'
-import { useInterfaceMulticall } from 'legacy/hooks/useContract'
-
-import { useWalletInfo } from 'modules/wallet'
 import { useOnchainBalances } from 'modules/tokens'
 import { TokenAmounts } from 'modules/tokens'
+import { useWalletInfo } from 'modules/wallet'
+
+import { nativeOnChain } from 'legacy/constants/tokens'
+import { useInterfaceMulticall } from 'legacy/hooks/useContract'
+import { isAddress } from 'legacy/utils'
+import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 
 // TODO: Move this hooks to some other module. It doens't belong with the tokens
 /**

@@ -1,8 +1,27 @@
 import { ReactNode } from 'react'
+
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
+
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
+
+import { ActivityDerivedState } from './index'
+
+import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
+import { V_COW, COW } from 'legacy/constants/tokens'
+import { useToken } from 'legacy/hooks/Tokens'
+import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { StatusDetails } from './StatusDetails'
+import { GnosisSafeLink } from './StatusDetails'
 import {
   Summary,
   SummaryInner,
@@ -16,21 +35,6 @@ import {
   FiatWrapper,
 } from './styled'
 
-import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import { ActivityDerivedState } from './index'
-import { GnosisSafeLink } from './StatusDetails'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
-import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
-import { useToken } from 'legacy/hooks/Tokens'
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
-import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
-import { V_COW, COW } from 'legacy/constants/tokens'
-import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
-import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-import { StatusDetails } from './StatusDetails'
-import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',

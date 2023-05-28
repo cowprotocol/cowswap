@@ -1,8 +1,10 @@
-import { ButtonSize } from 'legacy/theme/enum'
 import { Text } from 'rebass'
+
+import { TradeLoadingButton } from 'modules/trade/pure/TradeLoadingButton'
+
 import { ButtonError } from 'legacy/components/Button'
 import { RowBetween } from 'legacy/components/Row'
-import { TradeLoadingButton } from 'modules/trade/pure/TradeLoadingButton'
+import { ButtonSize } from 'legacy/theme/enum'
 
 export interface SwapButtonBoxProps {
   showLoading?: boolean

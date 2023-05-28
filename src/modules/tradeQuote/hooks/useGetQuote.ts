@@ -1,15 +1,19 @@
-import { useLayoutEffect } from 'react'
 import { useSetAtom } from 'jotai'
-import { onlyResolvesLast } from 'legacy/utils/async'
+import { useLayoutEffect } from 'react'
+
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
+
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
+import { tradeQuoteAtom } from 'modules/tradeQuote/state/tradeQuoteAtom'
 
 import { getQuote } from 'api/gnosisProtocol'
-import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
-import { useQuoteParams } from './useQuoteParams'
-import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { Field } from 'legacy/state/swap/actions'
-import { tradeQuoteAtom } from 'modules/tradeQuote/state/tradeQuoteAtom'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { onlyResolvesLast } from 'legacy/utils/async'
+
+
+import { useQuoteParams } from './useQuoteParams'
 
 // Every 10s
 const PRICE_UPDATE_INTERVAL = 10_000

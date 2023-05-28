@@ -9,6 +9,7 @@ import reducer, {
   updateChainId,
 } from './reducer'
 
+
 describe('application reducer', () => {
   let store: Store<ApplicationState>
 

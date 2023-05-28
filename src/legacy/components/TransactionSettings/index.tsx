@@ -1,7 +1,9 @@
-import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './TransactionSettingsMod'
-import { RowBetween, RowFixed } from 'legacy/components/Row'
-import styled from 'styled-components/macro'
 import { darken } from 'polished'
+import styled from 'styled-components/macro'
+
+import { RowBetween, RowFixed } from 'legacy/components/Row'
+
+import SlippageTabsMod, { TransactionSettingsProps, OptionCustom } from './TransactionSettingsMod'
 
 const Wrapper = styled.div`
   ${RowBetween} > button, ${OptionCustom} {

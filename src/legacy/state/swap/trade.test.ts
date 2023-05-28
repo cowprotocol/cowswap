@@ -1,13 +1,15 @@
-import { parseUnits } from '@ethersproject/units'
-import { DEFAULT_PRECISION, LONG_PRECISION } from 'legacy/constants'
-import { CurrencyAmount, Fraction, Price, Currency, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { stringToCurrency } from './extension'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { parseUnits } from '@ethersproject/units'
+import { CurrencyAmount, Fraction, Price, Currency, Percent, Token, TradeType } from '@uniswap/sdk-core'
+
+import { DEFAULT_PRECISION, LONG_PRECISION } from 'legacy/constants'
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
-import Trade, { _constructTradePrice } from './TradeGp'
+import { stringToCurrency } from './extension'
 import TradeGp from './TradeGp'
+import Trade, { _constructTradePrice } from './TradeGp'
+
 
 const WETH_MAINNET = new Token(ChainId.MAINNET, WETH[1].address, 18)
 const DAI_MAINNET = new Token(ChainId.MAINNET, '0x6b175474e89094c44da98b954eedeac495271d0f', 18)

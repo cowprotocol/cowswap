@@ -1,21 +1,26 @@
 import React, { ReactNode } from 'react'
+
 import { Trans } from '@lingui/macro'
-import { ButtonSize } from 'legacy/theme/enum'
-import { ButtonPrimary } from 'legacy/components/Button'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { CurrencyPreview } from 'common/pure/CurrencyInputPanel'
-import { LimitOrdersDetails } from '../LimitOrdersDetails'
-import { TradeFlowContext } from '../../services/types'
-import * as styledEl from './styled'
-import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { CurrencySeparatorBox } from 'modules/limitOrders/containers/LimitOrdersWidget/styled'
-import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
-import { RateInfoParams } from 'common/pure/RateInfo'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
+
+import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
+import { CurrencySeparatorBox } from 'modules/limitOrders/containers/LimitOrdersWidget/styled'
+import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
+
+import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
+import { CurrencyPreview } from 'common/pure/CurrencyInputPanel'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { RateInfoParams } from 'common/pure/RateInfo'
+import { ButtonPrimary } from 'legacy/components/Button'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { ButtonSize } from 'legacy/theme/enum'
+
+import * as styledEl from './styled'
+
+import { TradeFlowContext } from '../../services/types'
+import { LimitOrdersDetails } from '../LimitOrdersDetails'
 
 export interface LimitOrdersConfirmProps {
   tradeContext: TradeFlowContext

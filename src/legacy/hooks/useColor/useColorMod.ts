@@ -1,8 +1,10 @@
 import { useLayoutEffect, useState } from 'react'
-import uriToHttp from 'lib/utils/uriToHttp'
+
 import Vibrant from 'node-vibrant/lib/bundle'
-import { hex } from 'wcag-contrast'
 import { shade } from 'polished'
+import { hex } from 'wcag-contrast'
+
+import uriToHttp from 'lib/utils/uriToHttp'
 
 export async function getColorFromUriPath(uri: string): Promise<string | null> {
   const formattedPath = uriToHttp(uri)[0]

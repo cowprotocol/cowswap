@@ -1,15 +1,17 @@
+import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
+
 import { Trans } from '@lingui/macro'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
-import { ChangeEvent, Context, ReactNode, useCallback, useContext } from 'react'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components/macro'
 
-import useENS from 'legacy/hooks/useENS'
-import { ExternalLink, ThemedText } from 'legacy/theme'
+import { useWalletInfo } from 'modules/wallet'
+
 import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween } from 'legacy/components/Row'
+import useENS from 'legacy/hooks/useENS'
+import { ExternalLink, ThemedText } from 'legacy/theme'
 import { getBlockExplorerUrl as getExplorerLink } from 'legacy/utils'
-import { useWalletInfo } from 'modules/wallet'
 
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}

@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
-import { Order } from 'legacy/state/orders/actions'
+
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
+import { Order } from 'legacy/state/orders/actions'
 
 export const ordersToCancelAtom = atom<Order[]>([])
 

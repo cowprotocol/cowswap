@@ -1,12 +1,14 @@
+import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import type { Order } from '@cowprotocol/contracts'
-import { CoWSwapEthFlow } from 'abis/types/ethflow'
 import { logTradeFlow } from 'modules/trade/utils/logger'
+
+import { CoWSwapEthFlow } from 'abis/types/ethflow'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { getOrderParams, PostOrderParams } from 'legacy/utils/trade'
 import { MAX_VALID_TO_EPOCH } from 'utils/time'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
+
+import type { Order } from '@cowprotocol/contracts'
 
 export interface UniqueOrderIdResult {
   orderId: string

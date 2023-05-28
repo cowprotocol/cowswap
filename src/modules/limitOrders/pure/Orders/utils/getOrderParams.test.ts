@@ -1,7 +1,9 @@
-import { getOrderParams } from './getOrderParams'
-import { ordersMock } from '../orders.mock'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { getOrderParams } from './getOrderParams'
+
 import { BalancesAndAllowances } from '../../../../tokens'
+import { ordersMock } from '../orders.mock'
 
 describe('getOrderParams', () => {
   const BASE_ORDER = ordersMock[0]

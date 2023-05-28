@@ -1,11 +1,13 @@
-import { ButtonPrimary } from 'legacy/components/Button'
-import { Page, Content } from 'modules/application/pure/Page'
 import styled from 'styled-components/macro'
+
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Page, Content } from 'modules/application/pure/Page'
 
 import ninjaCowImg from 'legacy/assets/cow-swap/ninja-cow.png'
 import { gameAnalytics } from 'legacy/components/analytics'
+import { ButtonPrimary } from 'legacy/components/Button'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
+
 
 const GAME_URL = 'https://mevslicer.netlify.app/'
 

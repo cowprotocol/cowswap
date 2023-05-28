@@ -1,24 +1,24 @@
+import { OrderClass } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { AnyAction, Dispatch, isAnyOf, Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
 
-import { addPopup } from 'legacy/state/application/reducer'
+import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+
+import { ExecutedSummary } from 'common/pure/ExecutedSummary'
+import { orderAnalytics } from 'legacy/components/analytics'
 import { AppState } from 'legacy/state'
-import * as OrderActions from './actions'
-import { AddPendingOrderParams, BatchOrdersUpdateParams, SerializedOrder, UpdateOrderParams } from './actions'
-import { OrderClass } from '@cowprotocol/cow-sdk'
-
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-
-import { buildCancellationPopupSummary, OrderIDWithPopup, OrderTxTypes, PopupPayload, setPopupData } from './helpers'
+import { addPopup } from 'legacy/state/application/reducer'
+import { Order } from 'legacy/state/orders/actions'
+import { OrderObject, OrdersState, OrdersStateNetwork } from 'legacy/state/orders/reducer'
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
+import { getExplorerOrderLink } from 'legacy/utils/explorer'
 import { registerOnWindow } from 'legacy/utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'legacy/utils/sound'
-import { orderAnalytics } from 'legacy/components/analytics'
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
-import { OrderObject, OrdersState, OrdersStateNetwork } from 'legacy/state/orders/reducer'
 import { timeSinceInSeconds } from 'utils/time'
-import { getExplorerOrderLink } from 'legacy/utils/explorer'
-import { ExecutedSummary } from 'common/pure/ExecutedSummary'
-import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { Order } from 'legacy/state/orders/actions'
+
+import { AddPendingOrderParams, BatchOrdersUpdateParams, SerializedOrder, UpdateOrderParams } from './actions'
+import * as OrderActions from './actions'
+import { buildCancellationPopupSummary, OrderIDWithPopup, OrderTxTypes, PopupPayload, setPopupData } from './helpers'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)

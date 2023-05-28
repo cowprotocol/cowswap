@@ -1,13 +1,15 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import styled from 'styled-components/macro'
-import { MEDIA_WIDTHS } from 'legacy/theme'
 
-import { useActivePopups } from 'legacy/state/application/hooks'
-import { useURLWarningVisible } from 'legacy/state/user/hooks'
+import { useWalletInfo } from 'modules/wallet'
+
 import { AutoColumn } from 'legacy/components/Column'
 import PopupItem from 'legacy/components/Popups/PopupItem'
+import { useActivePopups } from 'legacy/state/application/hooks'
+import { useURLWarningVisible } from 'legacy/state/user/hooks'
+import { MEDIA_WIDTHS } from 'legacy/theme'
+
 import { MobilePopupWrapper } from './index'
-import { useWalletInfo } from 'modules/wallet'
 
 export const MobilePopupInner = styled.div`
   height: 99%;

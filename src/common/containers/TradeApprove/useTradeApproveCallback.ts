@@ -1,11 +1,15 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
+
 import { TransactionResponse } from '@ethersproject/providers'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 import { approvalAnalytics } from 'legacy/components/analytics'
 import { isRejectRequestProviderError } from 'legacy/utils/misc'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+
 import { updateTradeApproveStateAtom } from './tradeApproveStateAtom'
 
 interface TradeApproveCallbackParams {

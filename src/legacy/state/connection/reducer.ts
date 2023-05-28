@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+
 import { ConnectionType } from 'modules/wallet'
 
 export interface ConnectionState {

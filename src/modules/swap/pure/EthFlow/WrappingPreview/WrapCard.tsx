@@ -1,13 +1,14 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
-import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
-import { CHAIN_INFO } from 'legacy/constants/chainInfo'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 
 import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CHAIN_INFO } from 'legacy/constants/chainInfo'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
 const BackupTokenImg = styled.img.attrs((attrs) => ({ ...attrs, width: '24px' }))`
   filter: invert(1);

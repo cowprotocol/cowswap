@@ -1,8 +1,11 @@
 import { useMemo } from 'react'
-import { getAddress } from 'utils/getAddress'
-import { useWalletInfo } from 'modules/wallet'
+
 import { OrderKind } from '@cowprotocol/cow-sdk'
+
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useWalletInfo } from 'modules/wallet'
+
+import { getAddress } from 'utils/getAddress'
 
 export function useQuoteParams() {
   const { chainId, account } = useWalletInfo()

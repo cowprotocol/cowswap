@@ -1,27 +1,33 @@
-import React, { useCallback } from 'react'
-import { Trans } from '@lingui/macro'
-import { useAtomValue } from 'jotai/utils'
 import { useSetAtom } from 'jotai'
-import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
-import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
-import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
-import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
-import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
+import { useAtomValue } from 'jotai/utils'
+import React, { useCallback } from 'react'
+
+import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import styled from 'styled-components/macro'
+
+import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
+import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
-import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { useWalletDetails } from 'modules/wallet'
-import styled from 'styled-components/macro'
-import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
-import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
+
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
+import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
+
+
+import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
+
+import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
+import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;

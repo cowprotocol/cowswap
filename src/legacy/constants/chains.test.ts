@@ -1,5 +1,6 @@
-import { ALL_SUPPORTED_CHAIN_IDS } from './chains'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { ALL_SUPPORTED_CHAIN_IDS } from './chains'
 
 describe('chains', () => {
   describe('ALL_SUPPORTED_CHAIN_IDS', () => {

@@ -1,16 +1,17 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { createSlice } from '@reduxjs/toolkit'
-import { ConnectionType } from 'modules/wallet'
-import { SupportedLocale } from 'legacy/constants/locales'
+import { Token } from '@uniswap/sdk-core'
 
+import { ConnectionType } from 'modules/wallet'
+
+import { SupportedLocale } from 'legacy/constants/locales'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
+import { COMMON_BASES } from 'legacy/constants/routing'
 import { updateVersion } from 'legacy/state/global/actions'
 import { SerializedPair, SerializedToken } from 'legacy/state/user/types'
 
 // MOD imports
 // import { serializeToken } from './hooks'
-import { COMMON_BASES } from 'legacy/constants/routing'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
 
 const currentTimestamp = () => new Date().getTime()
 

@@ -1,5 +1,6 @@
-import { InlineBanner } from '.'
 import { DemoContainer } from 'cosmos.decorator'
+
+import { InlineBanner } from '.'
 
 const Fixtures = {
   'default (alert)': (

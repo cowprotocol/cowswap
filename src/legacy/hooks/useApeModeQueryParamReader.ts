@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
+
 import { useAppDispatch } from 'legacy/state/hooks'
 
-import { updateUserExpertMode } from '../state/user/reducer'
 import useParsedQueryString from './useParsedQueryString'
+
+import { updateUserExpertMode } from '../state/user/reducer'
+
 
 export default function ApeModeQueryParamReader(): null {
   useApeModeQueryParamReader()

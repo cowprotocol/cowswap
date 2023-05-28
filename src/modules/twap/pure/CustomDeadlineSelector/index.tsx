@@ -1,9 +1,12 @@
-import * as styledEl from './styled'
-import ms from 'ms'
-import { GpModal as Modal } from 'common/pure/Modal'
-import { Trans } from '@lingui/macro'
-import { ButtonPrimary } from 'legacy/components/Button'
 import { useEffect, useState } from 'react'
+
+import { Trans } from '@lingui/macro'
+import ms from 'ms'
+
+import { GpModal as Modal } from 'common/pure/Modal'
+import { ButtonPrimary } from 'legacy/components/Button'
+
+import * as styledEl from './styled'
 
 type CustomDeadline = { hours: number; minutes: number }
 

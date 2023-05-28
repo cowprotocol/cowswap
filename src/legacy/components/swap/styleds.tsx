@@ -1,10 +1,13 @@
-import { TooltipContainer } from 'legacy/components/Tooltip'
-import { transparentize } from 'polished'
 import { MouseEventHandler, ReactNode } from 'react'
+
+import { transparentize } from 'polished'
 import { AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { css } from 'styled-components/macro'
+
+import { TooltipContainer } from 'legacy/components/Tooltip'
 import { ThemedText } from 'legacy/theme'
+
 import { AutoColumn } from '../Column'
 
 export const Container = styled.div`

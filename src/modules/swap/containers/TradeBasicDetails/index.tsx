@@ -1,14 +1,16 @@
-import { BoxProps } from 'rebass'
-import TradeGp from 'legacy/state/swap/TradeGp'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { BoxProps } from 'rebass'
+
+import { RowFee } from 'modules/swap/containers/Row/RowFee'
+import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
+import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { LowerSectionWrapper } from 'modules/swap/pure/styled'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { LowerSectionWrapper } from 'modules/swap/pure/styled'
-import { RowFee } from 'modules/swap/containers/Row/RowFee'
-import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
-import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
 interface TradeBasicDetailsProp extends BoxProps {
   allowedSlippage: Percent | string

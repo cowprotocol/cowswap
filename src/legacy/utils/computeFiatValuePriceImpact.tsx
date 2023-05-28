@@ -3,6 +3,7 @@ import JSBI from 'jsbi'
 
 import { ONE_HUNDRED_PERCENT } from '../constants/misc'
 
+
 export function computeFiatValuePriceImpact(
   fiatValueInput: CurrencyAmount<Currency> | undefined | null,
   fiatValueOutput: CurrencyAmount<Currency> | undefined | null
