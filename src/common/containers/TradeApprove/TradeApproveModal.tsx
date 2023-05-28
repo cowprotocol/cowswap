@@ -4,7 +4,7 @@ import TransactionConfirmationModal, { OperationType } from 'legacy/components/T
 import React from 'react'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
-export function TradeApproveWidget() {
+export function TradeApproveModal() {
   const [{ approveInProgress, currency }, setState] = useAtom(tradeApproveStateAtom)
 
   return (

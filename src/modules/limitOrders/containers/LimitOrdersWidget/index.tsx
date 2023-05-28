@@ -13,17 +13,13 @@ import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { useIsSellOrder } from '../../hooks/useIsSellOrder'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { TradeApproveWidget } from 'common/containers/TradeApprove/TradeApproveWidget'
 import { useSetupTradeState } from 'modules/trade'
-import { ImportTokenModal } from 'modules/trade/containers/ImportTokenModal'
-import { useOnImportDismiss } from 'modules/trade/hooks/useOnImportDismiss'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { useDisableNativeTokenSelling } from 'modules/limitOrders/hooks/useDisableNativeTokenSelling'
 import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersPriceImpactParams } from 'modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from 'modules/wallet'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import { useSetupLimitOrderAmountsFromUrl } from 'modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
@@ -35,8 +31,6 @@ import usePriceImpact from 'legacy/hooks/usePriceImpact'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useShouldZeroApproveLimit } from 'common/hooks/useShouldZeroApproveLimit'
-import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -44,7 +38,6 @@ export function LimitOrdersWidget() {
   useDisableNativeTokenSelling()
   useFillLimitOrdersDerivedState()
 
-  const { chainId } = useWalletInfo()
   const {
     inputCurrency,
     outputCurrency,
@@ -58,7 +51,6 @@ export function LimitOrdersWidget() {
     isUnlocked,
     orderKind,
   } = useLimitOrdersDerivedState()
-  const onImportDismiss = useOnImportDismiss()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const isSellOrder = useIsSellOrder()
   const tradeContext = useTradeFlowContext()
@@ -111,8 +103,6 @@ export function LimitOrdersWidget() {
     showRecipient,
     isExpertMode,
     recipient,
-    chainId,
-    onImportDismiss,
     partiallyFillableOverride,
     featurePartialFillsEnabled: partialFillsEnabled,
     rateInfoParams,
@@ -131,10 +121,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     inputCurrencyInfo,
     outputCurrencyInfo,
     isUnlocked,
-    chainId,
     isRateLoading,
     widgetActions,
-    onImportDismiss,
     partiallyFillableOverride,
     featurePartialFillsEnabled,
     isWrapOrUnwrap,
@@ -161,7 +149,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const [showConfirmation, setShowConfirmation] = useState(false)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
-  const shouldZeroApprove = useShouldZeroApproveLimit()
 
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
@@ -227,8 +214,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
       />
-      <TradeApproveWidget />
-      {shouldZeroApprove && <ZeroApprovalModal />}
       {tradeContext && (
         <LimitOrdersConfirmModal
           isOpen={showConfirmation}
@@ -239,7 +224,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           onDismiss={() => setShowConfirmation(false)}
         />
       )}
-      {chainId && <ImportTokenModal chainId={chainId} onDismiss={onImportDismiss} />}
       {isUnlocked && <InfoBanner />}
     </>
   )
