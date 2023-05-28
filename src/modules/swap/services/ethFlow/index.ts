@@ -9,9 +9,7 @@ import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
-
 
 export async function ethFlow(
   ethFlowContext: EthFlowContext,

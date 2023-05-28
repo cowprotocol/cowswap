@@ -7,7 +7,6 @@ import { PrecacheEntry } from 'workbox-precaching/_types'
 import { registerRoute, Route } from 'workbox-routing'
 import { CacheFirst } from 'workbox-strategies'
 
-
 import { DocumentRoute } from './document'
 import { toURL } from './utils'
 

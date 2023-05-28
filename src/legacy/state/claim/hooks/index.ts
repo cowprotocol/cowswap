@@ -57,10 +57,6 @@ import {
   setClaimsCount,
 } from '../actions'
 
-
-
-
-
 export { useUserClaimData, useUserHasAvailableClaim } from './hooksUni'
 
 const CLAIMS_REPO_BRANCH = 'main'

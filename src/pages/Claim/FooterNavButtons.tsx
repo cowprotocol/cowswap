@@ -18,7 +18,6 @@ import { ClaimCommonTypes } from 'pages/Claim/types'
 import { ClaimAddressProps } from './ClaimAddress'
 import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
 
-
 type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed' | 'isAirdropOnly'> &
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {
     isPaidClaimsOnly: boolean

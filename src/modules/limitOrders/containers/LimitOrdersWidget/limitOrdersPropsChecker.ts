@@ -12,8 +12,6 @@ import { areFractionsEqual } from 'utils/areFractionsEqual'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { getAddress } from 'utils/getAddress'
 
-
-
 export interface LimitOrdersProps {
   inputCurrencyInfo: CurrencyInfo
   outputCurrencyInfo: CurrencyInfo

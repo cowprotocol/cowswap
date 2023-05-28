@@ -17,12 +17,6 @@ import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
 import { zeroApprovalState } from '../state/useZeroApprovalState'
 
-
-
-
-
-
-
 async function waitForSafeTransactionExecution({
   safeApiKit,
   txHash,

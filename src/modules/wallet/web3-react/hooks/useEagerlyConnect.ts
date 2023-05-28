@@ -9,7 +9,6 @@ import { gnosisSafeConnection } from 'modules/wallet/web3-react/connection/safe'
 
 import { useAppSelector } from 'legacy/state/hooks'
 
-
 async function connect(connector: Connector) {
   try {
     if (connector.connectEagerly) {

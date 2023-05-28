@@ -33,7 +33,6 @@ import {
 } from './styled'
 import { formatInt, formatDecimal } from './utils'
 
-
 const NotificationMessages = ({ error, chainId }: { error?: unknown; chainId: ChainId }) => (
   <>
     {error && (

@@ -1,4 +1,3 @@
-
 import { UploadToIpfsUpdater, AppDataUpdater } from 'modules/appData'
 import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'

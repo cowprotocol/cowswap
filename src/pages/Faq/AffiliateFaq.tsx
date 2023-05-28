@@ -17,8 +17,6 @@ import { FaqMenu } from './Menu'
 import { ExternalLinkFaq, Wrapper } from './styled'
 import ToC from './ToC'
 
-
-
 // AmplitudeAnalytics
 
 const PROD = `https://${PRODUCTION_URL}`

@@ -16,7 +16,6 @@ import {
   TextAlert,
 } from '../../containers/Transaction/styled'
 
-
 export const WalletName = styled.div`
   width: initial;
   font-size: 0.825rem;

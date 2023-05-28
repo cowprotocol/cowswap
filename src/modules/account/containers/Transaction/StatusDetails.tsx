@@ -10,7 +10,6 @@ import OrderCheckImage from 'legacy/assets/cow-swap/order-check.svg'
 import OrderExpiredImage from 'legacy/assets/cow-swap/order-expired.svg'
 import OrderOpenImage from 'legacy/assets/cow-swap/order-open.svg'
 
-
 import { ActivityDerivedState, determinePillColour } from './index'
 
 import PresignaturePendingImage from 'legacy/assets/cow-swap/order-presignature-pending.svg'

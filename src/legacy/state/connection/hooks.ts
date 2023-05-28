@@ -9,7 +9,6 @@ import { useWalletInfo } from 'modules/wallet'
 import { useAllTokens } from 'legacy/hooks/Tokens'
 import { useFavouriteTokens } from 'legacy/state/user/hooks'
 
-
 // mimics useAllBalances
 export function useAllTokenBalances(): [TokenAmounts, boolean] {
   const { account } = useWalletInfo()

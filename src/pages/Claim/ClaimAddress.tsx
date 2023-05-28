@@ -12,7 +12,6 @@ import { CustomLightSpinner, ThemedText } from 'legacy/theme'
 import { CheckAddress, InputField, InputFieldTitle, InputErrorText } from './styled'
 import { ClaimCommonTypes } from './types'
 
-
 export type ClaimAddressProps = Pick<ClaimCommonTypes, 'account'> & {
   toggleWalletModal: () => void
 }

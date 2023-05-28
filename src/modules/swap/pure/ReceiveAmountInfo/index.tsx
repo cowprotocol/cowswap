@@ -9,9 +9,6 @@ import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-
-
-
 import * as styledEl from './styled'
 
 export interface ReceiveAmountInfoTooltipProps {

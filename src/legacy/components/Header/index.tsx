@@ -39,13 +39,7 @@ import {
   HeaderRow,
 } from './styled'
 
-
-
 // Assets
-
-
-
-
 
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',

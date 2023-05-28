@@ -7,7 +7,6 @@ import { useWalletInfo } from 'modules/wallet'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 import { isEnoughAmount } from 'utils/isEnoughAmount'
 
-
 /**
  * Hook to check if a token needs approval
  *

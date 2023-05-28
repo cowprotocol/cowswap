@@ -19,9 +19,6 @@ import useENSAddress from 'legacy/hooks/useENSAddress'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { isAddress } from 'legacy/utils'
 
-
-
-
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export enum LimitOrdersFormState {

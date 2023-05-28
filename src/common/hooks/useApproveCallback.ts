@@ -13,9 +13,6 @@ import { useTokenContract } from 'legacy/hooks/useContract'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
-
-
-
 export async function estimateApprove(
   tokenContract: Erc20,
   spender: string,

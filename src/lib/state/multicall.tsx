@@ -6,7 +6,6 @@ import { useWalletInfo } from 'modules/wallet'
 import { useInterfaceMulticall } from 'legacy/hooks/useContract'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 
-
 const multicall = createMulticall()
 const reducer = combineReducers({ [multicall.reducerPath]: multicall.reducer })
 export const store = createStore(reducer)

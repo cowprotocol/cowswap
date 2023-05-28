@@ -10,7 +10,6 @@ import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensW
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'
 
-
 const alertMessage = (
   doubledSymbol: string
 ) => t`There is more than one token in the list of tokens with the symbol: ${doubledSymbol}.

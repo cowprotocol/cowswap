@@ -36,13 +36,6 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
 
-
-
-
-
-
-
-
 export const Footer = styled.div`
   width: 100%;
   border-radius: 20px;

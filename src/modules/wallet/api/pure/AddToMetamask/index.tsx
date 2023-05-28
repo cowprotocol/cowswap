@@ -4,7 +4,6 @@ import { Currency } from '@uniswap/sdk-core'
 import { CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-
 import MetaMaskLogo from 'modules/wallet/api/assets/metamask.png'
 
 import { TokenSymbol } from 'common/pure/TokenSymbol'

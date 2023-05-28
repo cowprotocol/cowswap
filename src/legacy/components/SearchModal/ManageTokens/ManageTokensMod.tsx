@@ -23,7 +23,6 @@ import { ButtonText, ExternalLink, ExternalLinkIcon, ThemedText, TrashIcon } fro
 import { isAddress } from 'legacy/utils'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
-
 const Wrapper = styled.div`
   width: 100%;
   height: calc(100% - 60px);

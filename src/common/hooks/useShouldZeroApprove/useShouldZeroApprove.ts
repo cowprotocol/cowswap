@@ -10,9 +10,6 @@ import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
 
 import { useTradeSpenderAddress } from '../useTradeSpenderAddress'
 
-
-
-
 // TODO: Handle tokens that don't allow approvals larger than the balance of the wallet
 export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): boolean {
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)

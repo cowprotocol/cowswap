@@ -19,8 +19,6 @@ import { AppDispatch } from 'legacy/state'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
-
-
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
   const { chainId, account } = useWalletInfo()

@@ -3,7 +3,6 @@ import { useSelect } from 'react-cosmos/fixture'
 
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 
-
 import { Field } from 'legacy/state/swap/actions'
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 

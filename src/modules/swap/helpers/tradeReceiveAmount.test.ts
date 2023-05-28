@@ -8,8 +8,6 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from './tradeReceiveAmount'
 
-
-
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]
 const amount = 250

@@ -34,8 +34,6 @@ import { ClaimSummary } from './ClaimSummary'
 import FooterNavButtons from './FooterNavButtons'
 import InvestmentFlow from './InvestmentFlow'
 
-
-
 export default function Claim() {
   const { account, chainId } = useWalletInfo()
 

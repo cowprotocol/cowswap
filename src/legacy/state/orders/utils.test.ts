@@ -11,7 +11,6 @@ import { USDC_MAINNET as USDC, USDT } from 'legacy/constants/tokens'
 import { generateOrder } from './mocks'
 import { classifyOrder, getOrderMarketPrice, isOrderUnfillable } from './utils'
 
-
 // Picked stable coins with same amount of decimals (6) for making easier to visually reason the amounts
 const sellToken = USDT
 const buyToken = USDC

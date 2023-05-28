@@ -17,7 +17,6 @@ import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 
-
 jest.mock('modules/limitOrders/services/tradeFlow')
 jest.mock('modules/limitOrders/services/safeBundleFlow')
 

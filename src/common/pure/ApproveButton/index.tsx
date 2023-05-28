@@ -14,8 +14,6 @@ import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 import { ButtonSize } from 'legacy/theme/enum'
 
-
-
 export interface ApproveButtonProps {
   currency: Currency | undefined | null
   state: ApprovalState

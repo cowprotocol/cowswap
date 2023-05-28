@@ -43,9 +43,6 @@ import InvestOption from './InvestOption'
 
 import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 
-
-
-
 const STEPS_DATA = [
   {
     title: 'Start',

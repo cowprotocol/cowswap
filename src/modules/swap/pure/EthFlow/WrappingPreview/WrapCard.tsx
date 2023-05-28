@@ -10,7 +10,6 @@ import { CHAIN_INFO } from 'legacy/constants/chainInfo'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
-
 const BackupTokenImg = styled.img.attrs((attrs) => ({ ...attrs, width: '24px' }))`
   filter: invert(1);
 `

@@ -6,7 +6,6 @@ import { TokenAmount } from 'common/pure/TokenAmount'
 
 import * as styledEl from './styled'
 
-
 export type Props = { order: ParsedOrder }
 
 export function FeeField({ order }: Props): JSX.Element | null {

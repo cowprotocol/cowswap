@@ -10,7 +10,6 @@ import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStor
 
 import { SerializedSlippage, SerializedSlippageSettings, Slippage, SlippageSettings } from './types'
 
-
 const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
 
 export function EthFlowSlippageUpdater() {

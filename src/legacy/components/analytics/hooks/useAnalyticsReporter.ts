@@ -22,7 +22,6 @@ import { sendRedditEvent } from '../pixel/reddit'
 import { sendTwitterEvent } from '../pixel/twitter'
 import { Dimensions } from '../types'
 
-
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)
 }

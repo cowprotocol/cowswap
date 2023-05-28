@@ -11,7 +11,6 @@ import { shortenAddress } from 'legacy/utils'
 
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
 
-
 export interface Web3StatusInnerProps {
   account?: string | null
   chainId?: number

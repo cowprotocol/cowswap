@@ -9,7 +9,6 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy
 
 import { useGetOnChainCancellation } from './useGetOnChainCancellation'
 
-
 export function useSendOnChainCancellation() {
   const { chainId } = useWalletInfo()
   const setOrderCancellationHash = useSetOrderCancellationHash()

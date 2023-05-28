@@ -10,7 +10,6 @@ import { SOLVER_ADDRESS as defaultUserAddress } from 'legacy/constants'
 import { getTokensFromMarket } from 'legacy/utils/misc'
 import { getValidParams } from 'legacy/utils/price'
 
-
 type ParaSwapPriceQuote = OptimalRate
 
 export const API_NAME = 'ParaSwap'

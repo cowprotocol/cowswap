@@ -12,7 +12,6 @@ import { useSelectedWallet } from 'legacy/state/user/hooks'
 
 import { TryActivation, onError } from '.'
 
-
 import { AsyncConnector } from './asyncConnector'
 
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'

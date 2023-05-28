@@ -11,10 +11,6 @@ import { COW_SUBSIDY_DATA } from './constants'
 
 import { CowSubsidy } from './index'
 
-
-
-
-
 const StyledSubsidyTable = styled.table`
   width: 100%;
   margin: 0 0 24px;

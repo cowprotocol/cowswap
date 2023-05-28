@@ -10,7 +10,6 @@ import { getDiscountFromBalance } from 'legacy/components/CowSubsidyModal/utils'
 import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
 import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
-
 const ZERO_BALANCE_SUBSIDY = { subsidy: { tier: 0, discount: COW_SUBSIDY_DATA[0][1] }, balance: undefined }
 
 export interface BalanceAndSubsidy {

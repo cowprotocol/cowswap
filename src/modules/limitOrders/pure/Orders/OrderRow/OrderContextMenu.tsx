@@ -5,7 +5,6 @@ import { transparentize } from 'polished'
 import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-
 export const ContextMenuButton = styled(MenuButton)`
   background: none;
   border: 0;

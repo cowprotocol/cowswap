@@ -16,14 +16,6 @@ import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
 import { useTradeState } from '../useTradeState'
 
-
-
-
-
-
-
-
-
 export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)

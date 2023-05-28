@@ -4,7 +4,6 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-
 import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'

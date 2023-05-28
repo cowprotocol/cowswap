@@ -19,8 +19,6 @@ import { cancellationModalContextAtom, CancellationType, updateCancellationModal
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
-
-
 export type UseCancelOrderReturn = (() => void) | null
 
 /**

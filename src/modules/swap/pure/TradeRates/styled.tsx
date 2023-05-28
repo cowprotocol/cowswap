@@ -5,7 +5,6 @@ import styled from 'styled-components/macro'
 import { RateInfo } from 'common/pure/RateInfo'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
-
 export const Box = styled.div`
   margin: 6px 8px;
 `

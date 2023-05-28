@@ -17,7 +17,6 @@ import { useIsExpertMode } from 'legacy/state/user/hooks'
 
 import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
 
-
 export function useLastPendingOrder(): { lastPendingOrder: Order | null; onClose: () => void } {
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
   const setLastOrderClosed = useUpdateAtom(handleCloseOrderPopupAtom)

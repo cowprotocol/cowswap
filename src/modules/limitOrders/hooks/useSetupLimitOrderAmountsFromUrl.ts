@@ -15,8 +15,6 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { FractionUtils } from 'utils/fractionUtils'
 import { getIntOrFloat } from 'utils/getIntOrFloat'
 
-
-
 /**
  * Parse sell/buy amount from URL and apply to Limit orders widget
  * Example:

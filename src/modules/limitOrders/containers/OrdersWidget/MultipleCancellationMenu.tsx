@@ -8,7 +8,6 @@ import styled from 'styled-components/macro'
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { useWalletDetails } from 'modules/wallet'
 
-
 import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCancellation'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'

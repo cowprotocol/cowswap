@@ -43,8 +43,6 @@ import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants/rout
 import { useAllTokens } from '../../hooks/Tokens'
 import { useSwapActionHandlers } from '../swap/hooks'
 
-
-
 export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(
     serializedToken.chainId,

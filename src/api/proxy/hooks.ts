@@ -11,8 +11,6 @@ import { getTokens } from './api'
 
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
 
-
-
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0
 }

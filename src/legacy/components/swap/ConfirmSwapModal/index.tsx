@@ -19,10 +19,6 @@ import TransactionConfirmationModal, {
 } from 'legacy/components/TransactionConfirmationModal'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-
-
-
-
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState
   trade: TradeGp | undefined

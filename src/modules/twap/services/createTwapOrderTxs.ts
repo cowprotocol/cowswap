@@ -11,9 +11,6 @@ import { TWAP_HANDLER_ADDRESS, TWAP_ORDER_STRUCT } from '../const'
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { TWAPOrder, TWAPOrderStruct } from '../types'
 
-
-
-
 function getTwapOrderParamsStruct(
   chainId: SupportedChainId,
   order: TWAPOrder

@@ -12,7 +12,6 @@ import { calculateAmountForRate } from 'modules/limitOrders/utils/calculateAmoun
 import { Field } from 'legacy/state/swap/actions'
 import { FractionUtils } from 'utils/fractionUtils'
 
-
 type CurrencyAmountProps = {
   activeRate: Fraction | null
   amount: Fraction | null

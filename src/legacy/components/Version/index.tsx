@@ -11,8 +11,6 @@ import { getEtherscanLink } from 'legacy/utils'
 
 import pkg from '../../../../package.json'
 
-
-
 function _getContractsUrls(chainId: ChainId, contractAddressMap: typeof GP_SETTLEMENT_CONTRACT_ADDRESS) {
   const contractAddress = contractAddressMap[chainId]
   if (!contractAddress) return '-'

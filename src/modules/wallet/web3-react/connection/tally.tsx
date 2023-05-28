@@ -11,7 +11,6 @@ import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { Web3ReactConnection } from '../types'
 
-
 const WALLET_LINK = 'https://chrome.google.com/webstore/detail/taho/eajafomhmkipbjmfmhebemolkcicgfmd'
 const BASE_PROPS = {
   color: '#4196FC',

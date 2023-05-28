@@ -15,7 +15,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
 
-
 const LOG_PREFIX = 'SAFE BUNDLE FLOW'
 
 export async function safeBundleFlow(

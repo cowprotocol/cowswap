@@ -15,7 +15,6 @@ import { ZERO_FRACTION } from 'legacy/constants'
 
 import * as styledEl from './styled'
 
-
 const MINUS_ONE_FRACTION = new Fraction(-1)
 export const HIGH_FEE_WARNING_PERCENTAGE = new Percent(1, 10)
 

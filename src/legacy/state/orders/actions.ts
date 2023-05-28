@@ -7,7 +7,6 @@ import { Token } from '@uniswap/sdk-core'
 
 import { SerializedToken } from 'legacy/state/user/types'
 
-
 export enum OrderStatus {
   PENDING = 'pending',
   PRESIGNATURE_PENDING = 'presignaturePending',

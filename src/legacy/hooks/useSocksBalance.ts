@@ -8,7 +8,6 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { SOCKS_CONTROLLER_ADDRESSES } from 'legacy/constants/addresses'
 
-
 // technically a 721, not an ERC20, but suffices for our purposes
 const SOCKS = new Token(SupportedChainId.MAINNET, SOCKS_CONTROLLER_ADDRESSES[SupportedChainId.MAINNET], 0)
 

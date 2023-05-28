@@ -6,7 +6,6 @@ import gnosisChainIndex from './gnosisChain.json'
 import goerliIndex from './goerli.json'
 import mainnetIndex from './mainnet.json'
 
-
 interface Claim {
   index: number
   amount: string

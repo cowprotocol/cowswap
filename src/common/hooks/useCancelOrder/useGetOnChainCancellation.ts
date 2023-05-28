@@ -10,7 +10,6 @@ import {
 import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { Order } from 'legacy/state/orders/actions'
 
-
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
   const ethFlowContract = useEthFlowContract()
   const settlementContract = useGP2SettlementContract()

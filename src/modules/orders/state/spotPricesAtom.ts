@@ -6,7 +6,6 @@ import { Currency, Price } from '@uniswap/sdk-core'
 
 import { getCanonicalMarketChainKey } from 'common/utils/markets'
 
-
 export type SpotPrices = Record<string, Price<Currency, Currency>>
 
 export type SpotPricesKeyParams = {

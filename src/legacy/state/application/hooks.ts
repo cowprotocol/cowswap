@@ -7,7 +7,6 @@ import { AppState } from 'legacy/state'
 import { addPopup, ApplicationModal, PopupContent, removePopup } from 'legacy/state/application/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
-
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 
 export function useModalIsOpen(modal: ApplicationModal): boolean {

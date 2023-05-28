@@ -13,7 +13,6 @@ import useENS from 'legacy/hooks/useENS'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 import { getBlockExplorerUrl as getExplorerLink } from 'legacy/utils'
 
-
 const InputPanel = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;

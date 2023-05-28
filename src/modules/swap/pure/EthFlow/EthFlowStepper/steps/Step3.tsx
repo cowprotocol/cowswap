@@ -7,7 +7,6 @@ import Exclamation from 'legacy/assets/cow-swap/exclamation.svg'
 import Finish from 'legacy/assets/cow-swap/finish.svg'
 import Refund from 'legacy/assets/cow-swap/refund.svg'
 
-
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { Step, StepProps, ExplorerLinkStyled } from '../Step'
 

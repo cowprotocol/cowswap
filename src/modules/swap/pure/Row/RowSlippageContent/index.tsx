@@ -10,7 +10,6 @@ import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'legacy/constants'
 
-
 export const ClickableText = styled.button`
   background: none;
   border: none;

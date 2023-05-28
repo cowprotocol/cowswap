@@ -9,8 +9,6 @@ import { calculatePercentage } from 'legacy/state/claim/hooks/utils'
 import { TokenLogo, InvestAvailableBar, UserMessage } from 'pages/Claim/styled'
 import { ClaimWithInvestmentData } from 'pages/Claim/types'
 
-
-
 export type Props = { claim: ClaimWithInvestmentData }
 
 export function InvestSummaryRow(props: Props): JSX.Element | null {

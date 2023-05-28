@@ -7,7 +7,6 @@ import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
 
 import { createSafeApiKitInstance } from 'api/gnosisSafe'
 
-
 export function useSafeApiKit(): SafeApiKit | null {
   const [safeApiClient, setSafeApiClient] = useState<SafeApiKit | null>(null)
   const { chainId } = useWalletInfo()

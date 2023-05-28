@@ -11,7 +11,6 @@ import { STORAGE_KEY_LAST_PROVIDER } from 'legacy/constants'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useAppSelector } from 'legacy/state/hooks'
 
-
 export function Web3Status() {
   const { connector } = useWeb3React()
   const { account, active, chainId } = useWalletInfo()

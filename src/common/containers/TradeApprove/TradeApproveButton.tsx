@@ -9,7 +9,6 @@ import { ApproveButton } from 'common/pure/ApproveButton'
 import { useTradeApproveCallback } from './useTradeApproveCallback'
 import { useTradeApproveState } from './useTradeApproveState'
 
-
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
   children?: React.ReactNode

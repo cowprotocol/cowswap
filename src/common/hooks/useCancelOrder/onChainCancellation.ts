@@ -9,7 +9,6 @@ import { CoWSwapEthFlow } from 'abis/types/ethflow'
 import { Order } from 'legacy/state/orders/actions'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
-
 const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
 
 export interface OnChainCancellation {

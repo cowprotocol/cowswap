@@ -31,8 +31,6 @@ import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 import { PostOrderParams } from 'legacy/utils/trade'
 import { calculateValidTo } from 'utils/time'
 
-
-
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
   inputWithSlippage: CurrencyAmount<Currency>

@@ -9,9 +9,7 @@ import savingsIcon from 'legacy/assets/cow-swap/savings.svg'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'legacy/constants'
 
-
 import * as styledEl from './styleds'
-
 
 export interface EthFlowBannerContentProps extends EthFlowBannerCallbacks {
   native: Currency

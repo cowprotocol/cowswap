@@ -10,9 +10,7 @@ import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { TryActivation, onError } from '.'
 
-
 import { Web3ReactConnection } from '../types'
-
 
 const TOOLTIP_TEXT = 'Connect your Keystone wallet using MetaMask'
 const TOOLTIP_INSTALL_TEXT = 'Install Metamask to use Keystone wallet'

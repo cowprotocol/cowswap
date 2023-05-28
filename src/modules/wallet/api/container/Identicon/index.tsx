@@ -8,7 +8,6 @@ import { Identicon as IdenticonPure } from 'modules/wallet/api/pure/Identicon'
 
 import useENSAvatar from 'legacy/hooks/useENSAvatar'
 
-
 export interface IdenticonProps {
   size?: number
   account?: string

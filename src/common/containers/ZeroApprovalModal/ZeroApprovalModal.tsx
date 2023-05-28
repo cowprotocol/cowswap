@@ -10,7 +10,6 @@ import { GpModal } from 'common/pure/Modal'
 import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
 import { shortenAddress } from 'legacy/utils'
 
-
 interface ZeroApprovalModalProps {
   onDismiss?: () => void
 }

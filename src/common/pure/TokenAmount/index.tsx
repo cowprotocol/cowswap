@@ -9,7 +9,6 @@ import { formatTokenAmount } from 'utils/amountFormat'
 import { FeatureFlag } from 'utils/featureFlags'
 import { FractionUtils } from 'utils/fractionUtils'
 
-
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};
   color: ${({ lowVolumeWarning, theme }) =>

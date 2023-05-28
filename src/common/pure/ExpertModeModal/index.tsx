@@ -5,7 +5,6 @@ import styled from 'styled-components/macro'
 
 import Modal from 'common/pure/Modal'
 
-
 import { ConfirmedButton } from '../ConfirmedButton'
 
 const ModalContentWrapper = styled.div`

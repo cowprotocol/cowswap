@@ -10,7 +10,6 @@ import usePrevious from 'legacy/hooks/usePrevious'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
-
 function getCurrencyToApprove(amountToApprove: CurrencyAmount<Currency> | null): Token | undefined {
   if (!amountToApprove) return undefined
 

@@ -1,4 +1,3 @@
-
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
@@ -6,7 +5,6 @@ import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/walle
 
 import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 import { /* isChrome, */ isMobile } from 'legacy/utils/userAgent'
-
 
 import { AlphaOption } from './alpha'
 import { AmbireOption } from './ambire'

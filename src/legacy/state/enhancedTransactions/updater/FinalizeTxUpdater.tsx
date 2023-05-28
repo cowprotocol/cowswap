@@ -28,11 +28,6 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
 
-
-
-
-
-
 const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
 type TxInterface = Pick<

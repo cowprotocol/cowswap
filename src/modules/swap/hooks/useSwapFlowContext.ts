@@ -6,7 +6,6 @@ import { SwapFlowContext } from 'modules/swap/services/types'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 
-
 export function useSwapFlowContext(): SwapFlowContext | null {
   const contract = useGP2SettlementContract()
   const baseProps = useBaseFlowContextSetup()

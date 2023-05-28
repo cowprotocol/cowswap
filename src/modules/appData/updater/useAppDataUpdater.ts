@@ -11,7 +11,6 @@ import { useAppCode } from '../hooks'
 import { appDataInfoAtom } from '../state/atoms'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 
-
 export type UseAppDataParams = {
   chainId?: SupportedChainId
   slippageBips: string

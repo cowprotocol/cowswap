@@ -8,7 +8,6 @@ import { Field } from 'legacy/state/swap/actions'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { FractionUtils } from 'utils/fractionUtils'
 
-
 type AmountType = {
   value: string
   isTyped: boolean

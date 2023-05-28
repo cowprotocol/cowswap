@@ -6,8 +6,6 @@ import CurrencyLogo from 'legacy/components/CurrencyLogo'
 
 import * as styledEl from './styled'
 
-
-
 export interface CurrencySelectButtonProps {
   currency?: Currency
   loading: boolean

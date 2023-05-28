@@ -11,7 +11,6 @@ import { shortenOrderId } from 'legacy/utils'
 
 import { RequestCancellationModal } from './RequestCancellationModal'
 
-
 export type CancellationModalProps = {
   isOpen: boolean
   onDismiss: () => void

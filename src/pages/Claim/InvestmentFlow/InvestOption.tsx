@@ -13,7 +13,6 @@ import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
 import { ButtonConfirmed } from 'legacy/components/Button'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 
-
 import { InvestmentFlowProps } from '.'
 
 import { StyledNumericalInput } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
@@ -46,7 +45,6 @@ import {
   WarningWrapper,
 } from '../styled'
 import { EnhancedUserClaimData } from '../types'
-
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>

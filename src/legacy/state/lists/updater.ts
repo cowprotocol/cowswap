@@ -16,7 +16,6 @@ import { useActiveListUrls } from 'legacy/state/lists/hooks'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 import useInterval from 'lib/hooks/useInterval'
 
-
 export default function Updater(): null {
   const { provider } = useWeb3React()
   const { chainId: connectedChainId } = useWalletInfo()

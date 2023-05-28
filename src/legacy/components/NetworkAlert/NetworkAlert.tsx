@@ -12,9 +12,6 @@ import useTheme from 'legacy/hooks/useTheme'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { ExternalLink, HideSmall } from 'legacy/theme'
 
-
-
-
 const L2Icon = styled.img`
   width: 24px;
   height: 24px;

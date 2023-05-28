@@ -32,7 +32,6 @@ import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 import { replaceURLParam } from 'legacy/utils/routes'
 import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 export const ActiveRowLinkList = styled.div`
   display: flex;
   flex-direction: column;

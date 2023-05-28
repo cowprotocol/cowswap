@@ -8,7 +8,6 @@ import { delay } from 'legacy/utils/misc'
 
 import { EthFlowActions } from './useEthFlowActions'
 
-
 import { EthFlowState } from '../../../services/ethFlow/types'
 import {
   ethFlowContextAtom,

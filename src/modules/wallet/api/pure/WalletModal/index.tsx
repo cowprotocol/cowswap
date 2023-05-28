@@ -16,7 +16,6 @@ import { StyledInternalLink } from 'legacy/theme/components'
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 
-
 export type WalletModalView = 'options' | 'account' | 'pending'
 
 interface WalletModalProps {

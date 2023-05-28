@@ -20,7 +20,6 @@ import * as OrderActions from './actions'
 import { AddPendingOrderParams, BatchOrdersUpdateParams, SerializedOrder, UpdateOrderParams } from './actions'
 import { buildCancellationPopupSummary, OrderIDWithPopup, OrderTxTypes, PopupPayload, setPopupData } from './helpers'
 
-
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)
 const isPendingOrderAction = isAnyOf(OrderActions.addPendingOrder)

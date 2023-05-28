@@ -19,8 +19,6 @@ import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { fetchClaim } from './claimData'
 
-
-
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[SupportedChainId.MAINNET]
 

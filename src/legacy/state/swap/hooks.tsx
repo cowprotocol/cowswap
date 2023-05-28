@@ -10,7 +10,6 @@ import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateO
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useWalletInfo } from 'modules/wallet'
 
-
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
 import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'

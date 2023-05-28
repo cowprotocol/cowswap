@@ -37,7 +37,6 @@ import {
   StyledCoWLink,
 } from './styled'
 
-
 import { TransactionExecutedContent } from '../TransactionExecutedContent'
 
 const REFRESH_INTERVAL_MS = ms`0.2s`

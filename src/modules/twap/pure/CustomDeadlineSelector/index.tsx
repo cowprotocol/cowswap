@@ -8,7 +8,6 @@ import { ButtonPrimary } from 'legacy/components/Button'
 
 import * as styledEl from './styled'
 
-
 type CustomDeadline = { hours: number; minutes: number }
 
 interface CustomDeadlineSelectorProps {

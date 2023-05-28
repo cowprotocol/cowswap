@@ -15,9 +15,6 @@ import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-
-
-
 interface HandleTradeCallback {
   beforeTrade(): void
 

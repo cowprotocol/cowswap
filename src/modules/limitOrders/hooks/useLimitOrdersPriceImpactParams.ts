@@ -5,7 +5,6 @@ import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOr
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import type { PriceImpactParams } from 'legacy/hooks/usePriceImpact'
 
-
 export function useLimitOrdersPriceImpactParams(): PriceImpactParams {
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
 

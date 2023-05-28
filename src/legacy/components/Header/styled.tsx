@@ -9,8 +9,6 @@ import styled, { css } from 'styled-components/macro'
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 import Row, { RowFixed } from 'legacy/components/Row'
 
-
-
 const activeClassName = 'active'
 
 export const TitleMod = styled.a`

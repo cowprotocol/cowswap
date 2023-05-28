@@ -12,9 +12,6 @@ import { AutoRow } from 'legacy/components/Row'
 import { DISCORD_LINK } from 'legacy/constants'
 import { ExternalLink, MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 
-
-
-
 /**
  * We use the `cow-no-connection.png` image in case when there is no internet connection
  * Cause of it we must preload the image before lost of connection

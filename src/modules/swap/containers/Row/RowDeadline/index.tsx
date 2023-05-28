@@ -8,7 +8,6 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-
 export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()
   const toggleSettings = useToggleSettingsMenu()

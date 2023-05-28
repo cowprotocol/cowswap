@@ -22,8 +22,6 @@ import { ExternalLink as ExternalLinkComponent } from 'legacy/theme/components'
 
 // Assets
 
-
-
 // TODO: decompose the file
 
 interface MenuImageProps {
