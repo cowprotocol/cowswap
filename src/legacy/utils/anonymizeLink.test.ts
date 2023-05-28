@@ -7,17 +7,9 @@ describe('#anonymizeLink', () => {
   it('anonymizes any addresses in etherscan urls', () => {
     expect(anonymizeLink('https://etherscan.io/address/0xabcd')).toEqual('https://etherscan.io/address/***')
   })
-  it('anonymizes any addresses in etherscan urls', () => {
-    expect(anonymizeLink('https://etherscan.io/address/0xabcd')).toEqual('https://etherscan.io/address/***')
-  })
   it('anonymizes any addresses in testnet etherscan urls', () => {
     expect(anonymizeLink('https://rinkeby.etherscan.io/address/0xabcd')).toEqual(
       'https://rinkeby.etherscan.io/address/***'
-    )
-  })
-  it('anonymizes any addresses in testnet etherscan urls', () => {
-    expect(anonymizeLink('https://ropsten.etherscan.io/address/0xabcd')).toEqual(
-      'https://ropsten.etherscan.io/address/***'
     )
   })
   it('anonymizes hashes in the middle of the url', () => {
