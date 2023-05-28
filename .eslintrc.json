@@ -65,6 +65,9 @@
         },
         "newlines-between": "always"
       }
-    ]
+    ],
+    "prefer-const": "error",
+    "no-unneeded-ternary": "error",
+    "no-var": "error"
   }
 }

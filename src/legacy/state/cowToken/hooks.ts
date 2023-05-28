@@ -187,7 +187,7 @@ export function useCombinedBalance() {
   return useMemo(() => {
     let tmpBalance = JSBI.BigInt(0)
 
-    const isLoading = account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance) ? true : false
+    const isLoading = !!(account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance))
 
     const cow = COW[supportedChainId(chainId) || SupportedChainId.MAINNET]
 
