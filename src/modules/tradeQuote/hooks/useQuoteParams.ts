@@ -16,7 +16,7 @@ export function useQuoteParams() {
   const amount = currencyAmount?.quotient.toString()
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !currencyAmount) {
+    if (!inputCurrency || !outputCurrency || !amount) {
       return
     }
 

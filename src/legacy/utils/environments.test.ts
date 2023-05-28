@@ -26,10 +26,6 @@ describe('Detect environments using host and path', () => {
     it('swap.cow.fi', () => {
       expect(checkEnvironment('swap.cow.fi', '')).toEqual(isProduction)
     })
-
-    it('swap.cow.fi', () => {
-      expect(checkEnvironment('swap.cow.fi', '')).toEqual(isProduction)
-    })
   })
 
   describe('Is ENS', () => {

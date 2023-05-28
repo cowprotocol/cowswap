@@ -19,8 +19,9 @@ import { OrderStatusBox } from 'modules/limitOrders/pure/OrderStatusBox'
 import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { calculatePriceDifference, PriceDifference } from 'modules/limitOrders/utils/calculatePriceDifference'
 import { getSellAmountWithFee } from 'modules/limitOrders/utils/getSellAmountWithFee'
-
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfo } from 'common/pure/RateInfo'
 import { TokenAmount } from 'common/pure/TokenAmount'
@@ -35,8 +36,6 @@ import { ZERO_FRACTION } from 'legacy/constants'
 import useTimeAgo from 'legacy/hooks/useTimeAgo'
 import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { getEtherscanLink } from 'legacy/utils'
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
-
 import { getAddress } from 'utils/getAddress'
 
 import * as styledEl from './styled'

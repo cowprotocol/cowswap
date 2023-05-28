@@ -10,9 +10,6 @@ import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import useTheme from 'legacy/hooks/useTheme'
 import { ThemedText } from 'legacy/theme'
 import { warningSeverity } from 'legacy/utils/prices'
-
-// MOD imports
-// mod
 import { formatPercent } from 'utils/amountFormat'
 
 export function FiatValue({

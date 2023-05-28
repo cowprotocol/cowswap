@@ -6,8 +6,6 @@ import { RowFixed } from 'legacy/components/Row'
 import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
-
-// import { StateIcon } from './StateIcon'
 import { Order } from 'legacy/state/orders/actions'
 
 import { ActivityDetails } from './ActivityDetails'

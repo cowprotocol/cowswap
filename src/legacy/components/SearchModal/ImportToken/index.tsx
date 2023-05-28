@@ -12,9 +12,6 @@ import { RowFixed } from 'legacy/components/Row'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import { ThemedText } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme/components'
-// import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
-
-// MOD import
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
 import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper } from './ImportTokenMod'

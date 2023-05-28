@@ -1,4 +1,3 @@
-
 // Assets
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
@@ -10,13 +9,10 @@ import { Routes } from 'constants/routes'
 import diagramIMG from 'legacy/assets/cow-swap/cowswap-diagram.png'
 import gaslessIMG from 'legacy/assets/cow-swap/gasless.png'
 import mevIMG from 'legacy/assets/cow-swap/mev.png'
-
-// AmplitudeAnalytics
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { MEV_TOTAL, FLASHBOTS_LINK } from 'legacy/constants'
 import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
-
 
 const ExternalLink = styled(ExternalLinkTheme)``
 

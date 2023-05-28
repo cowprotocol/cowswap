@@ -8,13 +8,12 @@ import { TwapFormWidget } from 'modules/twap'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { Field } from 'legacy/state/swap/actions'
 
-
 import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
 import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
 } from '../../hooks/useAdvancedOrdersDerivedState'
-const s = 1
+
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
   useFillAdvancedOrdersDerivedState()

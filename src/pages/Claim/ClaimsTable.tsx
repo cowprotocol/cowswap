@@ -15,8 +15,6 @@ import {
   useClaimTimeInfo,
   useClaimLinks,
 } from 'legacy/state/claim/hooks'
-// import { UserClaimDataDetails } from './types' TODO: fix in another PR
-
 import { getPaidClaims, getIndexes } from 'legacy/state/claim/hooks/utils'
 import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
 import { CustomLightSpinner } from 'legacy/theme'

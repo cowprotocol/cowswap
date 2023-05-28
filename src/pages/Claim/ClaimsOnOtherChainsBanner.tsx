@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-// import useChangeNetworks from 'legacy/hooks/useChangeNetworks'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 

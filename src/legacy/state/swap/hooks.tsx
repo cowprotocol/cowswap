@@ -382,6 +382,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
       currenciesIds,
       inputError,
       parsedAmount,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       JSON.stringify(v2Trade),
       slippageAdjustedSellAmount,
     ] // mod

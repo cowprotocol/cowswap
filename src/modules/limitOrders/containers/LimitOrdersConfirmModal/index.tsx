@@ -13,8 +13,8 @@ import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-
 import { useWalletInfo } from 'modules/wallet'
+
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'

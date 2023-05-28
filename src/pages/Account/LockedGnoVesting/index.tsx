@@ -3,8 +3,6 @@ import { useCallback, useState, useEffect } from 'react'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
-
-// import ReactGA from 'react-ga4'
 import SVG from 'react-inlinesvg'
 
 import { useWalletInfo } from 'modules/wallet'

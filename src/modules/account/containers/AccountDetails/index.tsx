@@ -6,7 +6,6 @@ import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { isMobile } from 'legacy/utils/userAgent'
 import Activity from 'modules/account/containers/Transaction'
 import { ConnectionType, useWalletInfo, WalletDetails } from 'modules/wallet'
 import { useDisconnectWallet } from 'modules/wallet'
@@ -34,6 +33,7 @@ import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
 import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
 import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+
 import Copy from 'legacy/components/Copy'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import UnsupporthedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
@@ -44,6 +44,7 @@ import { getEtherscanLink } from 'legacy/utils'
 import { getExplorerLabel, shortenAddress } from 'legacy/utils'
 import { getExplorerAddressLink } from 'legacy/utils/explorer'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { isMobile } from 'legacy/utils/userAgent'
 
 import {
   NetworkCard,
