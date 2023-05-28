@@ -1,6 +1,7 @@
 import { Atom, atom, useAtom, useAtomValue } from 'jotai'
-import { SetAtom } from 'jotai/core/atom'
 import { atomWithStorage } from 'jotai/utils'
+
+import { SetAtom } from 'jotai/core/atom'
 
 interface NotificationState {
   isClosed: boolean

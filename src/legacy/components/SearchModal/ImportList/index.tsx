@@ -1,12 +1,15 @@
 import { useCallback } from 'react'
 
-import { ImportList as ImportListMod } from './ImportListMod'
-import { enableList as enableListMod, removeList as removeListMod } from 'legacy/state/lists/actions'
 import { TokenList } from '@uniswap/token-lists'
+import { useDispatch } from 'react-redux'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
-import { useDispatch } from 'react-redux'
-import { useWalletInfo } from 'modules/wallet'
+import { enableList as enableListMod, removeList as removeListMod } from 'legacy/state/lists/actions'
+
+import { ImportList as ImportListMod } from './ImportListMod'
 
 export interface ImportProps {
   listURL: string

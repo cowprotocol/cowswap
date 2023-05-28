@@ -1,7 +1,9 @@
 import { OrderKind, OrderQuoteResponse, SigningScheme } from '@cowprotocol/cow-sdk'
-import { handleLimitOrderQuoteResponse } from './useHandleResponse'
+
 import { COW, GNO } from 'legacy/constants/tokens'
 import { CancelableResult } from 'legacy/utils/async'
+
+import { handleLimitOrderQuoteResponse } from './useHandleResponse'
 
 describe('handleLimitOrderQuoteResponse()', () => {
   it('Should subtract 0.1% from marketRate', () => {

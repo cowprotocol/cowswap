@@ -1,9 +1,11 @@
-import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
+
 import { safeNamehash } from 'legacy/utils/safeNamehash'
+import { useSingleCallResult } from 'lib/hooks/multicall'
+
+import { useENSRegistrarContract, useENSResolverContract } from './useContract'
 
 import isZero from '../utils/isZero'
-import { useENSRegistrarContract, useENSResolverContract } from './useContract'
 
 /**
  * Does a lookup for an ENS name to find its contenthash.

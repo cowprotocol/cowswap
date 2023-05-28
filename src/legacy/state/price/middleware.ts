@@ -1,6 +1,8 @@
 import { Middleware, isAnyOf } from '@reduxjs/toolkit'
-import { AppState } from 'legacy/state'
+
 import { initialPriceLoadAnalytics } from 'legacy/components/analytics'
+import { AppState } from 'legacy/state'
+
 import * as PriceActions from './actions'
 
 const isUpdateQuoteAction = isAnyOf(PriceActions.updateQuote)

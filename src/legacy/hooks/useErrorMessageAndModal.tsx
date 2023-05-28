@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
+
 import { ErrorMessageProps, SwapCallbackError } from 'legacy/components/swap/styleds'
+
 import useTransactionErrorModal from './useTransactionErrorModal'
 
 /**

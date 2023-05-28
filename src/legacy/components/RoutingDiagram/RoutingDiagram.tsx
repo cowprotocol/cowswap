@@ -1,17 +1,18 @@
 import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
+import { Box } from 'rebass'
+import styled from 'styled-components/macro'
+
+import { ReactComponent as DotLine } from 'legacy/assets/svg/dot_line.svg'
 import Badge from 'legacy/components/Badge'
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
 import DoubleCurrencyLogo from 'legacy/components/DoubleLogo'
 import Row, { AutoRow } from 'legacy/components/Row'
 import { RoutingDiagramEntry } from 'legacy/components/swap/SwapRoute'
 import { useTokenInfoFromActiveList } from 'legacy/hooks/useTokenInfoFromActiveList'
-import { Box } from 'rebass'
-import styled from 'styled-components/macro'
 import { ThemedText, Z_INDEX } from 'legacy/theme'
 
-import { ReactComponent as DotLine } from 'legacy/assets/svg/dot_line.svg'
 import { MouseoverTooltip } from '../Tooltip'
 
 const Wrapper = styled(Box)`

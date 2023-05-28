@@ -1,6 +1,8 @@
 import { Percent } from '@uniswap/sdk-core'
-import { warningSeverity } from '../../utils/prices'
+
 import { ErrorText } from './styleds'
+
+import { warningSeverity } from '../../utils/prices'
 
 /**
  * Formatted version of price impact text with warning colors

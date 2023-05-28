@@ -1,5 +1,6 @@
-import useTheme from 'legacy/hooks/useTheme'
 import styled, { keyframes } from 'styled-components/macro'
+
+import useTheme from 'legacy/hooks/useTheme'
 
 const Wrapper = styled.div`
   height: 90px;

@@ -1,7 +1,9 @@
+import React from 'react'
+
+import { TwapFormState } from './getTwapFormState'
+
 import { ButtonPrimary } from '../../../../legacy/components/Button'
 import { ButtonSize } from '../../../../legacy/theme/enum'
-import React from 'react'
-import { TwapFormState } from './getTwapFormState'
 import { TwapFormActions } from '../../hooks/useTwapFormActions'
 
 export interface PrimaryActionButtonContext extends TwapFormActions {}

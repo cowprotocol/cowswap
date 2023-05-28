@@ -1,5 +1,5 @@
-import styled from 'styled-components/macro'
 import { transparentize, darken } from 'polished'
+import styled from 'styled-components/macro'
 
 export const Container = styled.div`
   padding: 16px;

@@ -1,22 +1,27 @@
-import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import React, { ReactNode } from 'react'
-import { ButtonSize } from 'legacy/theme/enum'
-import { Trans } from '@lingui/macro'
-import { ButtonError, ButtonPrimary } from 'legacy/components/Button'
-import { Text } from 'rebass'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { AutoRow } from 'legacy/components/Row'
-import { GreyCard } from 'legacy/components/Card'
-import { GpEther } from 'legacy/constants/tokens'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { AutoColumn } from 'legacy/components/Column'
-import * as styledEl from './styled'
-import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
+import { Trans } from '@lingui/macro'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Text } from 'rebass'
+
+
 import { EthFlowBanner } from 'modules/swap/containers/EthFlow/EthFlowBanner'
-import { Field } from 'legacy/state/swap/actions'
+import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
-import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { ButtonError, ButtonPrimary } from 'legacy/components/Button'
+import { GreyCard } from 'legacy/components/Card'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
+import { GpEther } from 'legacy/constants/tokens'
+import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
+import { Field } from 'legacy/state/swap/actions'
+import { ButtonSize } from 'legacy/theme/enum'
+import { genericPropsChecker } from 'utils/genericPropsChecker'
+
+import * as styledEl from './styled'
 
 export type HandleSwapCallback = () => void
 

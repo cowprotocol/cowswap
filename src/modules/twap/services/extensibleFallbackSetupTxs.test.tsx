@@ -1,7 +1,9 @@
-import { extensibleFallbackSetupTxs } from './extensibleFallbackSetupTxs'
-import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
+
+import { extensibleFallbackSetupTxs } from './extensibleFallbackSetupTxs'
+
+import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 describe('extensibleFallbackSetupTxs - service to generate transactions for ExtensibleFallback setup', () => {
   it('Should create a bundle of two transactions: setFallbackHandler and setDomainVerifier', async () => {

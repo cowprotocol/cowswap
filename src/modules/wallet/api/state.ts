@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 export const walletInfoAtom = atom<WalletInfo>({})
 

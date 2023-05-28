@@ -1,6 +1,8 @@
-import Tooltip from 'legacy/components/Tooltip'
 import { useState } from 'react'
+
 import styled from 'styled-components/macro'
+
+import Tooltip from 'legacy/components/Tooltip'
 
 export const TextWrapper = styled.span<{
   margin: boolean

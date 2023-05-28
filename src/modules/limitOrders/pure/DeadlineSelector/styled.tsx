@@ -1,7 +1,7 @@
-import styled from 'styled-components/macro'
-import { transparentize } from 'polished'
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
+import { transparentize } from 'polished'
 import { X } from 'react-feather'
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div<{ inline?: boolean; minHeight?: string }>`
   background: ${({ theme }) => theme.grey1};

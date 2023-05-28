@@ -1,9 +1,15 @@
-import { useWalletInfo } from 'modules/wallet'
+import { memo, useState } from 'react'
+
 import { Trans } from '@lingui/macro'
 import { Protocol } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { FeeAmount } from '@uniswap/v3-sdk'
+import { Plus } from 'react-feather'
+import styled from 'styled-components/macro'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import AnimatedDropdown from 'legacy/components/AnimatedDropdown'
 import { AutoColumn } from 'legacy/components/Column'
 import { LoadingRows } from 'legacy/components/Loader/styled'
@@ -11,11 +17,8 @@ import RoutingDiagram from 'legacy/components/RoutingDiagram/RoutingDiagram'
 import { AutoRow, RowBetween } from 'legacy/components/Row'
 import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from 'legacy/constants/chains'
 import useAutoRouterSupported from 'legacy/hooks/useAutoRouterSupported'
-import { memo, useState } from 'react'
-import { Plus } from 'react-feather'
 import { InterfaceTrade } from 'legacy/state/routing/types'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
-import styled from 'styled-components/macro'
 import { Separator, ThemedText } from 'legacy/theme'
 
 import { AutoRouterLabel, AutoRouterLogo } from './RouterLabel'

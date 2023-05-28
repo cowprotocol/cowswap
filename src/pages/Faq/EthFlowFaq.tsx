@@ -1,15 +1,17 @@
+import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
-import { ExternalLinkFaq, Wrapper } from './styled'
-import { Footer } from '.'
-import { useToC } from './hooks'
-import ToC from './ToC'
-import { FaqMenu } from './Menu'
-import { PageTitle } from 'modules/application/containers/PageTitle'
-
-// AmplitudeAnalytics
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+
+import { Footer } from '.'
+
+import { useToC } from './hooks'
+import { FaqMenu } from './Menu'
+import { ExternalLinkFaq, Wrapper } from './styled'
+import ToC from './ToC'
+
+// AmplitudeAnalytics
 
 export default function EthFlowFAQ() {
   const { toc, faqRef } = useToC()

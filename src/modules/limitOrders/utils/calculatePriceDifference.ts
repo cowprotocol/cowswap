@@ -1,9 +1,11 @@
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
+
 import { assertSameMarket } from 'common/utils/markets'
-import { FractionUtils } from 'utils/fractionUtils'
-import { adjustDecimalsAtoms } from './calculateAmountForRate'
 import { ZERO_FRACTION } from 'legacy/constants'
+import { FractionUtils } from 'utils/fractionUtils'
+
+import { adjustDecimalsAtoms } from './calculateAmountForRate'
 
 const ONE = new Fraction(1)
 

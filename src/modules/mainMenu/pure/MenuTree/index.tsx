@@ -1,12 +1,5 @@
-import { HeaderLinks as Wrapper, StyledNavLink } from 'legacy/components/Header/styled'
-import MenuDropdown from 'legacy/components/MenuDropdown'
-import { MenuSection, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 import SVG from 'react-inlinesvg'
-import { ExternalLink as ExternalLinkComponent } from 'legacy/theme/components'
 
-// Assets
-import IMAGE_MOON from 'legacy/assets/cow-swap/moon.svg'
-import IMAGE_SUN from 'legacy/assets/cow-swap/sun.svg'
 import {
   DropDownItem,
   DynamicLink,
@@ -18,7 +11,18 @@ import {
   MenuTreeItem,
 } from 'modules/mainMenu/types'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
+
 import { Routes } from 'constants/routes'
+import IMAGE_MOON from 'legacy/assets/cow-swap/moon.svg'
+import IMAGE_SUN from 'legacy/assets/cow-swap/sun.svg'
+import { HeaderLinks as Wrapper, StyledNavLink } from 'legacy/components/Header/styled'
+import MenuDropdown from 'legacy/components/MenuDropdown'
+import { MenuSection, MenuTitle } from 'legacy/components/MenuDropdown/styled'
+import { ExternalLink as ExternalLinkComponent } from 'legacy/theme/components'
+
+// Assets
+
+
 
 // TODO: decompose the file
 

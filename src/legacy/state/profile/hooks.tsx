@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
-import { closeAnnouncement } from './actions'
+
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+
+import { closeAnnouncement } from './actions'
 
 export function useAnnouncementVisible(contentHash?: string): boolean {
   const announcementVisible = useAppSelector((state) => state.profile.announcementVisible)

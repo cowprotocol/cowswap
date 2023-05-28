@@ -1,6 +1,9 @@
-import { createReducer, PayloadAction } from '@reduxjs/toolkit'
-import { OrderID } from 'api/gnosisProtocol'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { createReducer, PayloadAction } from '@reduxjs/toolkit'
+import { Writable } from 'types'
+
+import { OrderID } from 'api/gnosisProtocol'
+
 import {
   addOrUpdateOrders,
   addPendingOrder,
@@ -23,7 +26,7 @@ import {
   updatePresignGnosisSafeTx,
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
-import { Writable } from 'types'
+
 
 export interface OrderObject {
   id: OrderID

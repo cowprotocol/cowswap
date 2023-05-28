@@ -1,10 +1,12 @@
-import { Trans } from '@lingui/macro'
-import { getChainInfoOrDefault, L2ChainInfo } from 'legacy/constants/chainInfo'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Trans } from '@lingui/macro'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
-import { ExternalLink, MEDIA_WIDTHS } from 'legacy/theme'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { getChainInfoOrDefault, L2ChainInfo } from 'legacy/constants/chainInfo'
+import { ExternalLink, MEDIA_WIDTHS } from 'legacy/theme'
 
 const BodyRow = styled.div`
   color: ${({ theme }) => theme.black};

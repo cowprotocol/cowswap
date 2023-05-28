@@ -1,7 +1,9 @@
 import styled from 'styled-components/macro'
-import SwapHeader from 'legacy/components/swap/SwapHeader'
+
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
+
 import { LoadingWrapper } from 'common/pure/CurrencyArrowSeparator/styled'
+import SwapHeader from 'legacy/components/swap/SwapHeader'
 
 export const Header = styled.div`
   display: flex;

@@ -1,7 +1,9 @@
-import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { DAI_GOERLI } from 'legacy/utils/goerli/constants'
+
 import { USDC_GNOSIS_CHAIN } from 'legacy/utils/gnosis_chain/constants'
+import { DAI_GOERLI } from 'legacy/utils/goerli/constants'
+
+import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 
 describe('Amounts formatting', () => {
   const decimals = DAI_GOERLI.decimals

@@ -1,12 +1,15 @@
+import React, { useCallback, useMemo, useState } from 'react'
+
 import { Options, Placement } from '@popperjs/core'
 import { Portal } from '@reach/portal'
-import useInterval from 'lib/hooks/useInterval'
-import React, { useCallback, useMemo, useState } from 'react'
+import { transparentize } from 'polished'
 import { usePopper } from 'react-popper'
 import styled, { DefaultTheme, StyledComponent } from 'styled-components/macro'
 
+import useInterval from 'lib/hooks/useInterval'
+
 // MOD imports
-import { transparentize } from 'polished'
+
 import { PopoverContainerProps } from './index'
 
 export const PopoverContainer = styled.div<{ show: boolean }>`

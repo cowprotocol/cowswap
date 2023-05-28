@@ -1,10 +1,11 @@
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import useSWR from 'swr'
+
+import { useWalletInfo } from 'modules/wallet'
 
 import { getOrders } from 'api/gnosisProtocol'
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { useWalletInfo } from 'modules/wallet'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 export function useGpOrders(account?: string | null, refreshInterval?: number): EnrichedOrder[] | undefined {
   const { chainId: _chainId } = useWalletInfo()

@@ -1,5 +1,6 @@
-import { darken, transparentize } from 'polished'
 import { useState } from 'react'
+
+import { darken, transparentize } from 'polished'
 import styled, { keyframes } from 'styled-components/macro'
 import { WithClassName } from 'types'
 

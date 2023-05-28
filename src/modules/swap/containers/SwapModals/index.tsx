@@ -1,6 +1,8 @@
+import React from 'react'
+
 import { ConfirmSwapModalSetup, ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowModal, EthFlowProps } from 'modules/swap/containers/EthFlow'
-import React from 'react'
+
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 export interface SwapModalsProps {

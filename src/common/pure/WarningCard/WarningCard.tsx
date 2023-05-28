@@ -1,7 +1,9 @@
-import Card from 'legacy/components/Card'
 import { PropsWithChildren } from 'react'
+
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
+
+import Card from 'legacy/components/Card'
 
 const Wrapper = styled(Card)`
   background: linear-gradient(0deg, rgba(255, 233, 194, 0.8), rgba(255, 233, 194, 0.8)), #ffffff;

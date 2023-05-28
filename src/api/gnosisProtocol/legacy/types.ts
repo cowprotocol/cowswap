@@ -1,6 +1,7 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { FeeInformation, PriceInformation } from 'types'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { FeeInformation, PriceInformation } from 'types'
+
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 
 type FeeQuoteParams = Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> & {

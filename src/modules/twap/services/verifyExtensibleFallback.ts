@@ -1,6 +1,8 @@
-import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 import { COMPOSABLE_COW_ADDRESS } from 'modules/advancedOrders/const'
+
 import { getSignatureVerifierContract } from './getSignatureVerifierContract'
+
+import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 export enum ExtensibleFallbackVerification {
   HAS_EXTENSIBLE_FALLBACK,

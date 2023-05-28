@@ -1,15 +1,17 @@
-import { useWalletInfo } from 'modules/wallet'
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
+import { transparentize } from 'polished'
+import { AlertCircle } from 'react-feather'
+import styled, { useTheme } from 'styled-components/macro'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
 import ListLogo from 'legacy/components/ListLogo'
 import { RowFixed } from 'legacy/components/Row'
-import { transparentize } from 'polished'
-import { AlertCircle } from 'react-feather'
-import styled, { useTheme } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 

@@ -1,18 +1,26 @@
-import { Field } from 'legacy/state/swap/actions'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { COW, GNO } from 'legacy/constants/tokens'
+import { SetStateAction } from 'jotai'
+import React from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { TradeFlowContext } from '../../services/types'
-import { LimitOrdersConfirm } from './index'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+
+
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
-import React from 'react'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
-import { SetStateAction } from 'jotai'
+
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { COW, GNO } from 'legacy/constants/tokens'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
+
+import { LimitOrdersConfirm } from './index'
+
+import { TradeFlowContext } from '../../services/types'
+
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]

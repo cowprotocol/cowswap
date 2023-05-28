@@ -1,16 +1,15 @@
-import BigNumberJs from 'bignumber.js'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
+import BigNumberJs from 'bignumber.js'
+import useSWR, { SWRConfiguration } from 'swr'
+import { FeeInformation, PriceInformation } from 'types'
 
 import { getQuote } from 'api/gnosisProtocol'
-import { SWR_OPTIONS } from 'legacy/constants'
-
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { toErc20Address } from 'legacy/utils/tokens'
 import { LegacyFeeQuoteParams, LegacyPriceQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
-import { FeeInformation, PriceInformation } from 'types'
-import useSWR, { SWRConfiguration } from 'swr'
+import { SWR_OPTIONS } from 'legacy/constants'
 import { getUsdQuoteValidTo } from 'legacy/hooks/useStablecoinPrice'
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
+import { toErc20Address } from 'legacy/utils/tokens'
 
 export type QuoteResult = [PromiseSettledResult<PriceInformation>, PromiseSettledResult<FeeInformation>]
 

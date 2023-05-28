@@ -1,7 +1,9 @@
 import styled from 'styled-components/macro'
+
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
-import { ButtonPrimary } from 'legacy/components/Button'
+
 import cow404IMG from 'legacy/assets/cow-swap/cow-404.png'
+import { ButtonPrimary } from 'legacy/components/Button'
 import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 
 const ExternalLink = styled(ExternalLinkTheme)``

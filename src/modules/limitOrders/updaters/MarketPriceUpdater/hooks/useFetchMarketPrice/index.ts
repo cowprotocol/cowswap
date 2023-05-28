@@ -1,19 +1,26 @@
-import { useLayoutEffect } from 'react'
+import { useSetAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
+import { useLayoutEffect } from 'react'
+
+import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
+
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
+import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useWalletInfo } from 'modules/wallet'
 
 import { getQuote } from 'api/gnosisProtocol'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { useQuoteRequestParams } from '../useQuoteRequestParams'
-import { useHandleResponse } from './useHandleResponse'
-import { useSetAtom } from 'jotai'
-import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
-import { onlyResolvesLast } from 'legacy/utils/async'
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
-import { useWalletInfo } from 'modules/wallet'
-import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { onlyResolvesLast } from 'legacy/utils/async'
+
+import { useHandleResponse } from './useHandleResponse'
+
+import { useQuoteRequestParams } from '../useQuoteRequestParams'
+
+
+
 
 // Every 10s
 const PRICE_UPDATE_INTERVAL = 10_000

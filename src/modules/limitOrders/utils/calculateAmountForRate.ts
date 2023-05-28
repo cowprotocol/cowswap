@@ -1,6 +1,7 @@
-import { Field } from 'legacy/state/swap/actions'
 import { Currency, Fraction } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
+
+import { Field } from 'legacy/state/swap/actions'
 
 export type RateCalculationParams = {
   amount: Fraction | null

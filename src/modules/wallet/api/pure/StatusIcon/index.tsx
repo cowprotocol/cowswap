@@ -1,6 +1,6 @@
-import { ConnectionType } from 'modules/wallet'
 import styled from 'styled-components/macro'
 
+import { ConnectionType } from 'modules/wallet'
 import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
 import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
 import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'

@@ -1,6 +1,7 @@
-import { RateImpactIndicator } from 'modules/limitOrders/pure/RateImpactIndicator'
 import { Currency } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
+
+import { RateImpactIndicator } from 'modules/limitOrders/pure/RateImpactIndicator'
 
 type Props = {
   currency: Currency | null

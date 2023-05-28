@@ -1,10 +1,12 @@
-import { createTwapOrderTxs } from './createTwapOrderTxs'
-import { TWAPOrder } from '../types'
-import { CurrencyAmount } from '@uniswap/sdk-core'
-import { COW } from '../../../legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { createTwapOrderTxs } from './createTwapOrderTxs'
+
+import { COW } from '../../../legacy/constants/tokens'
 import { WETH_GOERLI } from '../../../legacy/utils/goerli/constants'
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
+import { TWAPOrder } from '../types'
 
 const order: TWAPOrder = {
   sellAmount: CurrencyAmount.fromRawAmount(COW[SupportedChainId.GOERLI], 100_000_000_000),

@@ -1,6 +1,8 @@
-import { LAUNCH_DARKLY_CLIENT_KEY } from 'constants/launchDarkly'
-import { withLDProvider } from 'launchdarkly-react-client-sdk'
 import { PropsWithChildren } from 'react'
+
+import { withLDProvider } from 'launchdarkly-react-client-sdk'
+
+import { LAUNCH_DARKLY_CLIENT_KEY } from 'constants/launchDarkly'
 
 function InnerWithLDProvider({ children }: PropsWithChildren) {
   return <>{children}</>

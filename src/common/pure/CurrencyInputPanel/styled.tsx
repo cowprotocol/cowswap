@@ -1,8 +1,9 @@
+import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
 import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
 import Input from 'legacy/components/NumericalInput'
-import { transparentize } from 'polished'
-import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; disabled: boolean }>`
   display: flex;

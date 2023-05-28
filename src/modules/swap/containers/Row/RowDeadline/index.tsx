@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
 
-import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
-import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+
+import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
+import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
+
 
 export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()

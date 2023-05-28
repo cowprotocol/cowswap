@@ -1,5 +1,4 @@
 import * as CSS from 'csstype'
-
 import styled from 'styled-components/macro'
 
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`

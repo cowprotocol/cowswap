@@ -1,7 +1,8 @@
-import { ArrowRight } from 'react-feather'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
-import { WrapCard } from 'modules/swap/pure/EthFlow/WrappingPreview/WrapCard'
+import { ArrowRight } from 'react-feather'
+
 import * as styledEl from 'modules/swap/pure/EthFlow/WrappingPreview/styled'
+import { WrapCard } from 'modules/swap/pure/EthFlow/WrappingPreview/WrapCard'
 
 import { colors } from 'legacy/theme'
 

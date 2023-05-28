@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+
 import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
 import { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import { useOpenModal, useCloseModals, useModalIsOpen } from 'legacy/state/application/hooks'
