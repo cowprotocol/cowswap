@@ -11,7 +11,6 @@ import { filterToKey, isHistoricalLog, Log } from './utils'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
 
-
 export enum LogsState {
   // The filter is invalid
   INVALID,

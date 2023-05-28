@@ -12,7 +12,6 @@ import { isHistoricalLog, keyToFilter } from './utils'
 
 import { useAppDispatch, useAppSelector } from '../hooks'
 
-
 export default function Updater(): null {
   const dispatch = useAppDispatch()
   const state = useAppSelector((state) => state.logs)

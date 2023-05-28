@@ -9,7 +9,6 @@ import { WarningPopup } from 'legacy/components/Popups/WarningPopup'
 import { useRemovePopup } from 'legacy/state/application/hooks'
 import { PopupContent } from 'legacy/state/application/reducer'
 
-
 // MOD imports
 import TransactionPopup from './TransactionPopupMod'
 

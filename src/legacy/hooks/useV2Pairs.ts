@@ -9,7 +9,6 @@ import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 
 import { V2_FACTORY_ADDRESSES } from '../constants/addresses'
 
-
 const IUniswapV2PairABI = IUniswapV2PairJson.abi
 const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
 

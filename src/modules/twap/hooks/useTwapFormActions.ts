@@ -4,7 +4,6 @@ import { useCallback } from 'react'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import ms from 'ms.macro'
 
-
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 

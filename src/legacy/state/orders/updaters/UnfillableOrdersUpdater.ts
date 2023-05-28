@@ -30,9 +30,6 @@ import { getPromiseFulfilledValue } from 'legacy/utils/misc'
 import { getBestQuote } from 'legacy/utils/price'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
-
-
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
  */

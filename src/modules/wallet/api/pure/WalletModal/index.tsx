@@ -1,5 +1,3 @@
-
-
 import { Trans } from '@lingui/macro'
 import { Connector } from '@web3-react/types'
 
@@ -15,7 +13,6 @@ import { AutoColumn } from 'legacy/components/Column'
 import { AutoRow } from 'legacy/components/Row'
 import { ThemedText } from 'legacy/theme'
 import { StyledInternalLink } from 'legacy/theme/components'
-
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 

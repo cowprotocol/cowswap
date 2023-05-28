@@ -28,10 +28,7 @@ import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme
 import { nodeRemoveChildFix } from 'legacy/utils/node'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
-
-
 // import { EventUpdater } from 'legacy/state/orders/mocks'
-
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600

@@ -1,4 +1,3 @@
-
 import { useCallback, useMemo } from 'react'
 
 import SimpleAccountDetails from 'modules/account/containers/SimpleAccountDetails'

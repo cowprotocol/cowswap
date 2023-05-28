@@ -10,15 +10,12 @@ import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import { useSelectedWallet } from 'legacy/state/user/hooks'
 
-
 import { TryActivation, onError } from '.'
 
 import { AsyncConnector } from './asyncConnector'
 
 import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'
 import { Web3ReactConnection } from '../types'
-
-
 
 const coinbaseInjectedOption = {
   color: '#315CF5',

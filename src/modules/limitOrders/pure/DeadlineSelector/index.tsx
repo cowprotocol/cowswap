@@ -16,7 +16,6 @@ import {
 import { GpModal as Modal } from 'common/pure/Modal'
 import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
 
-
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
 import * as styledEl from './styled'
 

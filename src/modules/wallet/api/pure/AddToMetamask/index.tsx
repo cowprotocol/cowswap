@@ -9,7 +9,6 @@ import MetaMaskLogo from 'modules/wallet/api/assets/metamask.png'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { RowFixed } from 'legacy/components/Row'
 
-
 export const ButtonCustom = styled.button`
   display: flex;
   flex: 1 1 auto;

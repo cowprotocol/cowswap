@@ -17,7 +17,6 @@ import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import useENSAddress from 'legacy/hooks/useENSAddress'
 import { AppDispatch } from 'legacy/state'
 
-
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export function useTradeFlowContext(): TradeFlowContext | null {

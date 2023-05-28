@@ -16,7 +16,6 @@ import useTheme from 'legacy/hooks/useTheme'
 
 import { Web3ReactConnection } from '../types'
 
-
 const METAMASK_DEEP_LINK = 'https://metamask.app.link/dapp/'
 
 const metamaskCommonOption = {

@@ -1,4 +1,3 @@
-
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
 
@@ -21,7 +20,6 @@ import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { Web3ReactConnection } from '../types'
-
 
 export const walletConnectOption = {
   color: '#4196FC',

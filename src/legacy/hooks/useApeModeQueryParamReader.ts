@@ -6,7 +6,6 @@ import useParsedQueryString from './useParsedQueryString'
 
 import { updateUserExpertMode } from '../state/user/reducer'
 
-
 export default function ApeModeQueryParamReader(): null {
   useApeModeQueryParamReader()
   return null

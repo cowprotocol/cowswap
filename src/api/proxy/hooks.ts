@@ -7,7 +7,6 @@ import useSWR from 'swr'
 import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
 import { isAddress } from 'legacy/utils'
 
-
 import { getTokens } from './api'
 
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'

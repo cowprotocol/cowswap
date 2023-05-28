@@ -17,7 +17,6 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { theme } from 'legacy/theme'
 // import ThemeProvider from 'legacy/theme'
 
-
 import catalog from './locales/en-US'
 
 i18n.load({

@@ -6,7 +6,6 @@ import { useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Order } from 'legacy/state/orders/actions'
 
-
 export function useMultipleOrdersCancellation() {
   const setOrdersToCancel = useUpdateAtom(updateOrdersToCancelAtom)
   const openModal = useOpenModal(ApplicationModal.MULTIPLE_CANCELLATION)

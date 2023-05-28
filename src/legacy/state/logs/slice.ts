@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { filterToKey, Log } from './utils'
 
-
 export interface LogsState {
   [chainId: number]: {
     [filterKey: string]: {

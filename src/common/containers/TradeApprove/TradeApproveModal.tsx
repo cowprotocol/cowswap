@@ -4,7 +4,6 @@ import React from 'react'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
 
-
 import { tradeApproveStateAtom } from './tradeApproveStateAtom'
 
 export function TradeApproveModal() {

@@ -8,7 +8,6 @@ import useDebounce from './useDebounce'
 
 import isZero from '../utils/isZero'
 
-
 /**
  * Does a lookup for an ENS name to find its address.
  */

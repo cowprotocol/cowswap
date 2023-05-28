@@ -1,4 +1,3 @@
-
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import SVG from 'react-inlinesvg'
@@ -19,7 +18,6 @@ import { ExternalLink } from 'legacy/theme'
 import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
 import { StatusLabel, StatusLabelWrapper, StatusLabelBelow, CancelTxLink } from './styled'
-
 
 export function GnosisSafeLink(props: {
   chainId: number

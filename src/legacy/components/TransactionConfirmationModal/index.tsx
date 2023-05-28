@@ -34,7 +34,6 @@ import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel, shortenAddress
 import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 import {
   ApproveComparison,
   ApproveFooter,

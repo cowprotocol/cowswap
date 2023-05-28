@@ -35,7 +35,6 @@ import {
   FiatWrapper,
 } from './styled'
 
-
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
   to: '',

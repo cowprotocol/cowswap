@@ -8,7 +8,6 @@ import { TransactionStatusText } from 'legacy/components/Copy/index'
 import useCopyClipboard from 'legacy/hooks/useCopyClipboard'
 import { LinkStyledButton } from 'legacy/theme'
 
-
 // MOD imports
 
 export const CopyIcon = styled(LinkStyledButton)`

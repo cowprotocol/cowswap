@@ -1,4 +1,3 @@
-
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
@@ -6,7 +5,6 @@ import { OrderClass } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { UtmParams } from 'modules/utm'
-
 
 import { APP_DATA_HASH } from '../constants'
 import { useAppCode } from '../hooks'

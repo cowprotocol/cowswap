@@ -7,7 +7,6 @@ import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useContract } from './useContract'
 import useENSAddress from './useENSAddress'
 
-
 const CHAIN_DATA_ABI = [
   {
     inputs: [],

@@ -18,7 +18,6 @@ import { Field } from 'legacy/state/swap/actions'
 import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-
 export interface ConfirmSwapModalSetupProps {
   trade: TradeGp | undefined
   recipient: string | null

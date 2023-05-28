@@ -11,8 +11,6 @@ import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 
-
-
 import { setupExtensibleFallbackHandler } from './setupExtensibleFallbackHandler'
 
 import { useExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'

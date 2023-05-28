@@ -6,8 +6,6 @@ import styled from 'styled-components/macro'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { ExternalLink } from 'legacy/theme'
 
-
-
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};
   padding: 1rem;

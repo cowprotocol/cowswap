@@ -27,7 +27,6 @@ import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 // Assets
 
-
 import MobileMenuIcon from './MobileMenuIcon'
 import {
   Wrapper,

@@ -24,7 +24,6 @@ import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { getBlockExplorerUrl } from 'legacy/utils'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
-
 import BalanceCell from './BalanceCell'
 import FavouriteTokenButton from './FavouriteTokenButton'
 import FiatBalanceCell from './FiatBalanceCell'

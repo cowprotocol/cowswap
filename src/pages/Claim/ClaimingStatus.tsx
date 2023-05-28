@@ -33,7 +33,6 @@ import {
   SuccessBanner,
 } from 'pages/Claim/styled'
 
-
 import { ClaimCommonTypes } from './types'
 
 const COW_TWEET_TEMPLATE =

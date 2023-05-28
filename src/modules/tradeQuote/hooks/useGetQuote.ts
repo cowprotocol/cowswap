@@ -12,7 +12,6 @@ import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 import { Field } from 'legacy/state/swap/actions'
 import { onlyResolvesLast } from 'legacy/utils/async'
 
-
 import { useQuoteParams } from './useQuoteParams'
 
 // Every 10s

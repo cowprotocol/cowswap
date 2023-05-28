@@ -14,7 +14,6 @@ import { LimitOrdersDetails } from './index'
 
 import { TradeFlowContext } from '../../services/types'
 
-
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
 

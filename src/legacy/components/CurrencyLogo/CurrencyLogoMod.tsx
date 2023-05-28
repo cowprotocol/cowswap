@@ -6,7 +6,6 @@ import styled from 'styled-components/macro'
 import Logo from 'legacy/components/Logo'
 import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 
-
 export const StyledLogo = styled(Logo)<{ size: string; $native: boolean }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};

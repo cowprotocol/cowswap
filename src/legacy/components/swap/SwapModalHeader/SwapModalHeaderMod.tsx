@@ -32,7 +32,6 @@ import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 
 import FeeInformationTooltip from '../FeeInformationTooltip'
 
-
 export const ArrowWrapper = styled.div`
   --size: 26px;
   padding: 0;

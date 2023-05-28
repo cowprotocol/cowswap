@@ -12,7 +12,6 @@ import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
 
-
 import { ethFlowContextAtom, updateEthFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
 
 export interface EthFlowActionCallbacks {

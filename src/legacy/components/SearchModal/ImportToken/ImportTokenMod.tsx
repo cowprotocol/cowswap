@@ -21,7 +21,6 @@ import useTheme from 'legacy/hooks/useTheme'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
 
-
 const Wrapper = styled.div`
   position: relative;
   width: 100%;

@@ -4,7 +4,6 @@ import { Currency, Token } from '@uniswap/sdk-core'
 
 import { ADDITIONAL_BASES, BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from '../constants/routing'
 
-
 export function useAllCurrencyCombinations(currencyA?: Currency, currencyB?: Currency): [Token, Token][] {
   const chainId = currencyA?.chainId
 

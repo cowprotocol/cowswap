@@ -12,7 +12,6 @@ import {
 } from '../types'
 import { updateAppDataHash } from '../utils/appDataHash'
 
-
 /**
  * Base atom that store the current appDataInfo
  */

@@ -22,7 +22,6 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import usePriceImpact from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/swap/actions'
 
-
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import * as styledEl from './styled'
 

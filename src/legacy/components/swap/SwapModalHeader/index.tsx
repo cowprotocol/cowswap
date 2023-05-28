@@ -10,7 +10,6 @@ import { LightCard as LightCardUni } from 'legacy/components/Card'
 import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
 import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
 
-
 import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`

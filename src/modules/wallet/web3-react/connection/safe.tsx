@@ -6,7 +6,6 @@ import { AsyncConnector } from './asyncConnector'
 
 import { Web3ReactConnection } from '../types'
 
-
 const [web3GnosisSafe, web3GnosisSafeHooks] = initializeConnector<AsyncConnector>(
   (actions) =>
     new AsyncConnector(() => import('@web3-react/gnosis-safe').then((m) => new m.GnosisSafe({ actions })), actions)

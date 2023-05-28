@@ -3,7 +3,6 @@ import { Trade as V2Trade } from '@uniswap/v2-sdk'
 
 import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from '../constants/misc'
 
-
 // returns whether tradeB is better than tradeA by at least a threshold percentage amount
 // only used by v2 hooks
 export function isTradeBetter(

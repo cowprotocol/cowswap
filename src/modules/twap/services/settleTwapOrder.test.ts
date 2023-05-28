@@ -15,7 +15,6 @@ import { COW } from 'legacy/constants/tokens'
 import { useTokenContract } from 'legacy/hooks/useContract'
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
-
 import { settleTwapOrder } from './settleTwapOrder'
 
 import { useTwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'

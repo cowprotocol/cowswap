@@ -12,9 +12,6 @@ import { useMultipleOrdersCancellation } from 'common/hooks/useMultipleOrdersCan
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
-
-
-
 interface Props {
   pendingOrders: ParsedOrder[]
 }

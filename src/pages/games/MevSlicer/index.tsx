@@ -7,8 +7,6 @@ import ninjaCowImg from 'legacy/assets/cow-swap/ninja-cow.png'
 import { gameAnalytics } from 'legacy/components/analytics'
 import { ButtonPrimary } from 'legacy/components/Button'
 
-
-
 const GAME_URL = 'https://mevslicer.netlify.app/'
 
 const Wrapper = styled(Page)`

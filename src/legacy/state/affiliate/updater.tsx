@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect } from 'react'
 
 import useParseReferralQueryParam from 'legacy/hooks/useParseReferralQueryParam'

@@ -11,7 +11,6 @@ import { TryActivation } from '.'
 
 import { walletConnectConnection } from './walletConnect'
 
-
 export const zengoOption = {
   color: '#4196FC',
   icon: ZengoImage,

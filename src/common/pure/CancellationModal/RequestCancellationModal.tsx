@@ -13,9 +13,6 @@ import NotificationBanner from 'legacy/components/NotificationBanner'
 import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
 import { LinkStyledButton } from 'legacy/theme'
 
-
-
-
 import type { BigNumber } from '@ethersproject/bignumber'
 
 export type RequestCancellationModalProps = {
