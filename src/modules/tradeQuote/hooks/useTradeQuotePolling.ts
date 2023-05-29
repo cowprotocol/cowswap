@@ -16,6 +16,7 @@ const PRICE_UPDATE_INTERVAL = 10_000
 const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
 export function useTradeQuotePolling() {
+  // TODO: add throttling
   const quoteParams = useQuoteParams()
 
   const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
