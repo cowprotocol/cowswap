@@ -1,11 +1,11 @@
-import { PriceImpact } from '../../../hooks/usePriceImpact'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import styled, { DefaultTheme } from 'styled-components/macro'
 import { Percent } from '@uniswap/sdk-core'
-import { warningSeverity } from '../../../utils/prices'
-import { MouseoverTooltip } from '../../Tooltip'
+import { warningSeverity } from 'legacy/utils/prices'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { t } from '@lingui/macro'
-import { formatPercent } from '../../../../utils/amountFormat'
-import Loader from '../../Loader'
+import { formatPercent } from 'utils/amountFormat'
+import Loader from 'legacy/components/Loader'
 
 export interface PriceImpactIndicatorProps {
   priceImpactParams?: PriceImpact
