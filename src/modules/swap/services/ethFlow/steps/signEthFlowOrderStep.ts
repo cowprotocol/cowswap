@@ -10,8 +10,6 @@ import { Order } from 'legacy/state/orders/actions'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { getOrderParams, mapUnsignedOrderToOrder, PostOrderParams } from 'legacy/utils/trade'
 
-
-
 type EthFlowOrderParams = Omit<PostOrderParams, 'sellToken'> & {
   sellToken: NativeCurrency
 }

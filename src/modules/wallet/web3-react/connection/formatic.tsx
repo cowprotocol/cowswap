@@ -7,14 +7,11 @@ import { getConnectionName } from 'modules/wallet/api/utils/connection'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-
-
 import { TryActivation } from '.'
 
 import { AsyncConnector } from './asyncConnector'
 
 import { Web3ReactConnection } from '../types'
-
 
 const [web3Fortmatic, web3FortmaticHooks] = initializeConnector<AsyncConnector>(
   (actions) =>

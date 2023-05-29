@@ -8,7 +8,6 @@ import useTheme from 'legacy/hooks/useTheme'
 
 import { BalanceValue } from './styled'
 
-
 type BalanceCellProps = {
   balance: CurrencyAmount<Token> | undefined
 }

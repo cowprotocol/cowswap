@@ -34,12 +34,6 @@ import { CloseIconWrapper, GPModalHeader } from './styled'
 
 import { ButtonPrimary } from '../Button'
 
-
-
-
-
-
-
 export const Wrapper = styled.div`
   width: 100%;
   /* padding: 1rem; */

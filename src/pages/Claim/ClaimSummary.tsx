@@ -14,7 +14,6 @@ import { useClaimState } from 'legacy/state/claim/hooks'
 import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } from './styled'
 import { ClaimCommonTypes } from './types'
 
-
 type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
   unclaimedAmount: ClaimCommonTypes['tokenCurrencyAmount'] | undefined
 }

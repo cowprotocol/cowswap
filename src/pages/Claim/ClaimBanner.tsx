@@ -9,8 +9,6 @@ import { ClaimCommonTypes } from 'pages/Claim/types'
 
 import { ClaimBanner as ClaimBannerWrapper } from './styled'
 
-
-
 type ClaimBannerProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
   isClaimed: boolean
 }

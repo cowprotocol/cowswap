@@ -7,11 +7,9 @@ import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-
 import { TryActivation } from '.'
 
 import { walletConnectConnection } from './walletConnect'
-
 
 export const zengoOption = {
   color: '#4196FC',

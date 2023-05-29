@@ -14,7 +14,6 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 
-
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 

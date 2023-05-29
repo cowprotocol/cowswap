@@ -1,4 +1,3 @@
-
 import { CancellationModal } from 'common/containers/CancellationModal'
 import { ConfirmationModal } from 'common/containers/ConfirmationModal'
 import { MultipleOrdersCancellationModal } from 'common/containers/MultipleOrdersCancellationModal'

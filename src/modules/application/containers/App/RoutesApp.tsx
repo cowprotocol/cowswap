@@ -12,7 +12,6 @@ import Account, { AccountOverview } from 'pages/Account'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { SwapPage } from 'pages/Swap'
 
-
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
 const LimitOrders = lazy(() => import(/* webpackChunkName: "limit_orders" */ 'pages/LimitOrders'))

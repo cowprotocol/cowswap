@@ -6,7 +6,6 @@ import { Content } from 'modules/application/pure/Page'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 
-
 export const ExternalLinkFaq = styled(ExternalLinkTheme)`
   text-decoration: underline;
   font-weight: normal;

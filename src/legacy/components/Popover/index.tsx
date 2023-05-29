@@ -4,7 +4,6 @@ import styled from 'styled-components/macro'
 import PopoverMod, { Arrow as ArrowMod, PopoverContainer as PopoverContainerMod } from './PopoverMod'
 import { PopoverProps } from './PopoverMod'
 
-
 export * from './PopoverMod'
 
 export interface PopoverContainerProps {

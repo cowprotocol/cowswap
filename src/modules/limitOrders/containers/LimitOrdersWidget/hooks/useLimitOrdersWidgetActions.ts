@@ -17,7 +17,6 @@ import { Field } from 'legacy/state/swap/actions'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { FractionUtils } from 'utils/fractionUtils'
 
-
 export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const { chainId } = useWalletInfo()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, orderKind } =

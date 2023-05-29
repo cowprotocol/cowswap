@@ -11,8 +11,6 @@ import { useTokenContract } from 'legacy/hooks/useContract'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
-
-
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
   NOT_APPROVED = 'NOT_APPROVED',

@@ -13,7 +13,6 @@ import { useAppDispatch } from 'legacy/state/hooks'
 import { isAddress, shortenAddress } from 'legacy/utils'
 import { ensNames } from 'pages/Account/ens'
 
-
 type AddressSelectorProps = {
   address: string
 }

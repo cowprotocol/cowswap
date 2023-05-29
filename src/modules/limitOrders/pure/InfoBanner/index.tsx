@@ -7,7 +7,6 @@ import AlertIcon from 'legacy/assets/cow-swap/alert-circle.svg'
 
 import * as styledEl from './styled'
 
-
 export function InfoBanner() {
   // Explainer banner for orders
   const LOCAL_STORAGE_KEY = 'limitOrders_showInfoBanner'

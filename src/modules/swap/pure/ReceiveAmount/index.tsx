@@ -8,8 +8,6 @@ import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import * as styledEl from './styled'
 
-
-
 export interface ReceiveAmountProps {
   receiveAmountInfo: ReceiveAmountInfo
   currency: Currency

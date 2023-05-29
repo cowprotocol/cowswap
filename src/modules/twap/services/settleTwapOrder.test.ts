@@ -20,12 +20,6 @@ import { settleTwapOrder } from './settleTwapOrder'
 import { useTwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { TWAPOrder } from '../types'
 
-
-
-
-
-
-
 jest.mock('modules/wallet/web3-react/hooks/useSafeAppsSdk')
 jest.mock('modules/advancedOrders/hooks/useComposableCowContract')
 jest.mock('common/hooks/useNeedsApproval')

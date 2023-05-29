@@ -6,7 +6,6 @@ import { useWalletInfo } from 'modules/wallet'
 
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 
-
 import { addListener, removeListener } from './slice'
 import { filterToKey, isHistoricalLog, Log } from './utils'
 

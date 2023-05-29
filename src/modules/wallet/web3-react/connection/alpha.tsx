@@ -11,9 +11,6 @@ import { TryActivation } from '.'
 
 import { walletConnectConnection } from './walletConnect'
 
-
-
-
 const alphaOption = {
   color: '#4196FC',
   icon: AlphaImage,

@@ -11,10 +11,6 @@ import { IconWrapper, ThemedText } from 'legacy/theme'
 
 import { CurrencySearch as CurrencySearchMod, CurrencySearchProps } from './CurrencySearchMod'
 
-
-
-
-
 export const ContentWrapper = styled(Column)`
   width: 100%;
   flex: 1 1 fit-content;

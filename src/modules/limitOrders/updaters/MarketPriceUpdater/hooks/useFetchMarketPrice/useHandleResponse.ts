@@ -12,7 +12,6 @@ import { LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/l
 import { CancelableResult } from 'legacy/utils/async'
 import { FractionUtils } from 'utils/fractionUtils'
 
-
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
 export function handleLimitOrderQuoteResponse(

@@ -13,7 +13,6 @@ import { settleTwapOrder } from '../services/settleTwapOrder'
 import { setupExtensibleFallbackHandler } from '../services/setupExtensibleFallbackHandler'
 import { twapOrderAtom } from '../state/twapOrderAtom'
 
-
 export interface TwapFormActions {
   createTwapOrder(): void
   setFallbackHandler(): void

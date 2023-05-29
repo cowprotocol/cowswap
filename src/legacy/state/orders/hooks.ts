@@ -41,7 +41,6 @@ import {
   V2OrderObject,
 } from './reducer'
 
-
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
 }

@@ -34,9 +34,7 @@ import { ThemedText } from 'legacy/theme'
 
 import QuestionHelper from '../QuestionHelper'
 
-
 // MOD imports
-
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 

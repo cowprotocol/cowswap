@@ -14,7 +14,6 @@ import { AccountMenu } from './Menu'
 import { Container, CardsWrapper } from './styled'
 import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 
-
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))

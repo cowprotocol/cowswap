@@ -5,7 +5,6 @@ import styled from 'styled-components/macro'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
-
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 interface RateImpactAcknowledge {

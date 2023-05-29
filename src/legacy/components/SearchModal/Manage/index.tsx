@@ -7,7 +7,6 @@ import { RowBetween } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { SearchInput, Separator } from 'legacy/components/SearchModal/styleds'
 
-
 import ManageMod from './ManageMod'
 
 export const Wrapper = styled.div`

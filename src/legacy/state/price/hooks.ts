@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useDispatch, useSelector } from 'react-redux'
 
-
 import { useWalletInfo } from 'modules/wallet'
 
 import { AppDispatch, AppState } from 'legacy/state'
@@ -21,7 +20,6 @@ import {
   RefreshQuoteParams,
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
-
 
 type GetNewQuoteCallback = (params: GetQuoteParams) => void
 type RefreshQuoteCallback = (params: RefreshQuoteParams) => void

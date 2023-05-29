@@ -9,7 +9,6 @@ import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { useCombinedBalance } from 'legacy/state/cowToken/hooks'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 export const Wrapper = styled.div<{ isLoading: boolean }>`
   background-color: transparent;
   color: ${({ theme }) => theme.text1};

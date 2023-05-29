@@ -11,7 +11,6 @@ import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
 
-
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | NativeCurrency | null {
   const { chainId } = useWalletInfo()
   const tokensByAddress = useAtomValue(tokensByAddressAtom)

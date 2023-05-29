@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react'
 
 import { Trans } from '@lingui/macro'

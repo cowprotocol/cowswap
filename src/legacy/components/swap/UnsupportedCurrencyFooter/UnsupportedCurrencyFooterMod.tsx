@@ -16,7 +16,6 @@ import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'
 
-
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);
   padding-bottom: 20px;

@@ -7,7 +7,6 @@ import { useWalletInfo } from 'modules/wallet'
 
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 
-
 import { fetchedLogs, fetchedLogsError, fetchingLogs } from './slice'
 import { isHistoricalLog, keyToFilter } from './utils'
 

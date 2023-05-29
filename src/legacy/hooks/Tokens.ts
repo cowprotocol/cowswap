@@ -17,9 +17,6 @@ import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
 
 import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
 
-
-
-
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
   const { chainId } = useWalletInfo()

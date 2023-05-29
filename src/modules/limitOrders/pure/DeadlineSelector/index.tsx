@@ -5,7 +5,6 @@ import { Trans } from '@lingui/macro'
 import { Menu } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'
 
-
 import {
   calculateMinMax,
   formatDateToLocalTime,

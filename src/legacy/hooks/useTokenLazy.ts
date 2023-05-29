@@ -14,7 +14,6 @@ import { retry } from 'legacy/utils/retry'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { parseStringOrBytes32 } from 'lib/hooks/useCurrency'
 
-
 const contractsCache: Record<string, Erc20> = {}
 const bytes32ContractsCache: Record<string, Contract> = {}
 

@@ -7,7 +7,6 @@ import { WrapType } from 'legacy/hooks/useWrapCallback'
 import { QuoteError } from 'legacy/state/price/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-
 export enum SwapButtonState {
   SwapIsUnsupported = 'SwapIsUnsupported',
   WalletIsUnsupported = 'WalletIsUnsupported',

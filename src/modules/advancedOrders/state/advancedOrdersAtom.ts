@@ -6,7 +6,6 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
 import { ExtendedTradeRawState, getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 
-
 export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null): ExtendedTradeRawState {
   return {
     ...getDefaultTradeRawState(chainId),

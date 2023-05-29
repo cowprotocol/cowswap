@@ -16,7 +16,6 @@ import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 function _getTokenFromMapping(
   address: string,
   chainId: ChainId,

@@ -17,7 +17,6 @@ import { ExternalLink, ThemedText } from 'legacy/theme'
 import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 
-
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
 
 import { MouseoverTooltip } from '../Tooltip'

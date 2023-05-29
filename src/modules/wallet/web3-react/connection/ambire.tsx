@@ -11,9 +11,6 @@ import { TryActivation } from '.'
 
 import { walletConnectConnection } from './walletConnect'
 
-
-
-
 const ambireOption = {
   color: '#4196FC',
   icon: AmbireImage,

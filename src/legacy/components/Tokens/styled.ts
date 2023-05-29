@@ -6,7 +6,6 @@ import styled from 'styled-components/macro'
 import { BaseButton } from 'legacy/components/Button'
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
 
-
 export const TokenSearchInput = styled.input`
   margin: 0;
   font-size: 14px;

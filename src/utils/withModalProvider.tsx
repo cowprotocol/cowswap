@@ -5,7 +5,6 @@ import { Provider } from 'react-redux'
 
 import applicationReducer from 'legacy/state/application/reducer'
 
-
 const combinedReducers = combineReducers({
   application: applicationReducer,
 })

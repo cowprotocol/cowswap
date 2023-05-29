@@ -13,7 +13,6 @@ import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import { WRAPPED_NATIVE_CURRENCY as WETH, GpEther as ETHER } from 'legacy/constants/tokens'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 // TODO: move it to `modules/trade`
 export function useDetectNativeToken() {
   const { chainId } = useWalletInfo()

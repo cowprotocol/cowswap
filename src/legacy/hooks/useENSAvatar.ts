@@ -11,7 +11,6 @@ import { safeNamehash } from 'legacy/utils/safeNamehash'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import uriToHttp from 'lib/utils/uriToHttp'
 
-
 import { useENSRegistrarContract, useENSResolverContract, useERC721Contract, useERC1155Contract } from './useContract'
 import useDebounce from './useDebounce'
 import useENSName from './useENSName'

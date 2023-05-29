@@ -1,4 +1,3 @@
-
 import { transparentize, darken, lighten } from 'polished'
 import { CheckCircle, Frown } from 'react-feather'
 import styled from 'styled-components/macro'

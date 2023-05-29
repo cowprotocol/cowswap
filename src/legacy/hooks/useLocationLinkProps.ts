@@ -8,9 +8,6 @@ import { sendEvent } from 'legacy/components/analytics'
 import { SupportedLocale } from 'legacy/constants/locales'
 import useParsedQueryString from 'legacy/hooks/useParsedQueryString'
 
-
-
-
 import { useActiveLocale } from './useActiveLocale'
 
 export function useLocationLinkProps(locale: SupportedLocale | null): {

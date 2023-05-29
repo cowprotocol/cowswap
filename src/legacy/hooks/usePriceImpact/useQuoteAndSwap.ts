@@ -20,7 +20,6 @@ import { getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
 import { getBestQuote, QuoteResult } from 'legacy/utils/price'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 
 type ExactInSwapParams = {

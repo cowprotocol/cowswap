@@ -7,8 +7,6 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { nativeOnChain } from 'legacy/constants/tokens'
 
-
-
 export const MAINNET_NATIVE_CURRENCY = nativeOnChain(SupportedChainId.MAINNET)
 
 export default function useNativeCurrency(): NativeCurrency {

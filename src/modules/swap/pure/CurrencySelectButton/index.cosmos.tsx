@@ -5,7 +5,6 @@ import { CurrencySelectButton, CurrencySelectButtonProps } from 'modules/swap/pu
 
 import { COW, GNO } from 'legacy/constants/tokens'
 
-
 const COW_TOKEN = COW[SupportedChainId.MAINNET]
 const GNO_TOKEN = GNO[SupportedChainId.MAINNET]
 

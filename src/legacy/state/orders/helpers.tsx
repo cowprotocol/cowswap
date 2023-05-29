@@ -8,7 +8,6 @@ import { formatOrderId, shortenOrderId } from 'legacy/utils'
 
 import { OrderStatus } from './actions'
 
-
 type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 
 interface SetOrderSummaryParams {

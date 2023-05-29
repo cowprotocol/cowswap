@@ -6,7 +6,6 @@ import { FiatRate } from 'common/pure/RateInfo/'
 import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
-
 export interface RowFeeContentProps extends RowWithShowHelpersProps {
   includeGasMessage: string
   tooltip: string

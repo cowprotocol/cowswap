@@ -15,7 +15,6 @@ import { walletConnectConnection } from './walletConnect'
 
 import { Web3ReactConnection } from '../types'
 
-
 const WALLET_LINK = 'https://trustwallet.com/'
 const BASE_PROPS = {
   color: '#4196FC',

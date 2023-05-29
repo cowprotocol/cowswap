@@ -3,11 +3,9 @@ import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
-
 import { RowFixed } from 'legacy/components/Row'
 
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
-
 
 const Settings = styled(SettingsMod)`
   ${MenuFlyout} {

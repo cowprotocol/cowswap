@@ -5,7 +5,6 @@ import { TokenInfo } from '@uniswap/token-lists'
 
 import { TokenAmounts } from 'modules/tokens'
 
-
 /** Sorts currency amounts (descending). */
 function balanceComparator(a?: CurrencyAmount<Currency>, b?: CurrencyAmount<Currency>) {
   if (a && b) {

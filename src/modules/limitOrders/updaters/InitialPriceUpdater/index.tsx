@@ -11,8 +11,6 @@ import usePrevious from 'legacy/hooks/usePrevious'
 
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 
-
-
 // Fetch and update initial price for the selected token pair
 export function InitialPriceUpdater() {
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()

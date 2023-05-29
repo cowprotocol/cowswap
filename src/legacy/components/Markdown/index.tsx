@@ -7,7 +7,6 @@ import { WithClassName } from 'types'
 
 import { Page, Title, Content } from 'modules/application/pure/Page'
 
-
 // AmplitudeAnalytics
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'

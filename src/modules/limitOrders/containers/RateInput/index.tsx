@@ -23,9 +23,6 @@ import { formatInputAmount } from 'utils/amountFormat'
 import { getAddress } from 'utils/getAddress'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 
-
-
-
 import * as styledEl from './styled'
 
 export function RateInput() {

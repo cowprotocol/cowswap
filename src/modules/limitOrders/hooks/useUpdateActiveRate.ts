@@ -8,8 +8,6 @@ import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOr
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { limitRateAtom, LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
-
-
 type RateUpdateParams = Pick<LimitRateState, 'activeRate' | 'isTypedValue' | 'isRateFromUrl'>
 
 export interface UpdateRateCallback {

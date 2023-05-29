@@ -9,7 +9,6 @@ import { Orders } from './index'
 
 import { OrderTab } from './OrdersTabs'
 
-
 const tabs: OrderTab[] = [
   {
     id: 'open',

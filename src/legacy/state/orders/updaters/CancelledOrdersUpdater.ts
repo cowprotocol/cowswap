@@ -12,7 +12,6 @@ import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/u
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 /**
  * Updater for cancelled orders.
  *

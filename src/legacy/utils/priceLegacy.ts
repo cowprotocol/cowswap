@@ -28,8 +28,6 @@ import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceIn
 import { PRICE_API_TIMEOUT_MS } from 'legacy/constants'
 import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'legacy/utils/misc'
 
-
-
 /**
  * ************************************************** *
  * ************************************************** *

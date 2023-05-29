@@ -4,7 +4,6 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
-
 import { getOrderExecutedAmounts } from 'modules/limitOrders/utils/getOrderExecutedAmounts'
 import { getOrderFilledAmount } from 'modules/limitOrders/utils/getOrderFilledAmount'
 import { getOrderSurplus } from 'modules/limitOrders/utils/getOrderSurplus'

@@ -12,7 +12,6 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { getEtherscanLink } from 'legacy/utils'
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
 
-
 export function useActivityDerivedState({
   chainId,
   activity,

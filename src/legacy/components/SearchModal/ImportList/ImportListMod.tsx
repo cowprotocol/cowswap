@@ -23,8 +23,6 @@ import { useAllLists } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme'
 
-
-
 const Wrapper = styled.div`
   position: relative;
   width: 100%;

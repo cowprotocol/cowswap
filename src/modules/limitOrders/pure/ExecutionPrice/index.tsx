@@ -5,7 +5,6 @@ import { useExecutionPriceFiat } from 'modules/limitOrders/hooks/useExecutionPri
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
-
 export interface ExecutionPriceProps {
   executionPrice: Price<Currency, Currency>
   isInverted: boolean

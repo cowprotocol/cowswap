@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai/utils'
 import { useMemo } from 'react'
 
-
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
 import { useWalletInfo } from 'modules/wallet'

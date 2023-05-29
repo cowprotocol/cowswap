@@ -28,11 +28,6 @@ import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limi
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 
-
-
-
-
-
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
 `

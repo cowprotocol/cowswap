@@ -16,7 +16,6 @@ import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-
 export function WalletModal() {
   const dispatch = useAppDispatch()
   const { connector } = useWeb3React()

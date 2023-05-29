@@ -19,9 +19,6 @@ import { useHandleResponse } from './useHandleResponse'
 
 import { useQuoteRequestParams } from '../useQuoteRequestParams'
 
-
-
-
 // Every 10s
 const PRICE_UPDATE_INTERVAL = 10_000
 

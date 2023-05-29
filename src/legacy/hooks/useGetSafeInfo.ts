@@ -10,7 +10,6 @@ import { getSafeTransaction } from 'api/gnosisSafe'
 import { retry, RetryOptions } from 'legacy/utils/retry'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 
 export type GetSafeInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>

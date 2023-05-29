@@ -10,7 +10,6 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useCloseReceiptModal, useSelectedOrder } from './hooks'
 
-
 export type OrdersReceiptModalProps = {
   pendingOrdersPrices: PendingOrdersPrices
 }

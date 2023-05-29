@@ -10,8 +10,6 @@ import { updateQuote, setQuoteError, getNewQuote, refreshQuote, QuoteError } fro
 
 import { PrefillStateRequired } from '../orders/reducer'
 
-
-
 // API Doc: https://protocol-rinkeby.dev.gnosisdev.com/api
 
 export const EMPTY_FEE = {

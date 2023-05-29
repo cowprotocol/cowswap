@@ -7,7 +7,6 @@ import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
 
-
 interface DeadlineSelectorProps {
   items: TradeSelectItem[]
   deadline: TwapOrdersDeadline

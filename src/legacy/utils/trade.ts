@@ -20,7 +20,6 @@ import { isAddress, shortenAddress } from 'legacy/utils/index'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 
-
 export type PostOrderParams = {
   account: string
   chainId: ChainId

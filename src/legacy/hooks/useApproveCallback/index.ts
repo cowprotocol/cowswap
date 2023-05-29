@@ -15,9 +15,6 @@ import { EnhancedUserClaimData } from 'pages/Claim/types'
 
 import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'
 
-
-
-
 export { ApprovalState, useApproveCallback } from './useApproveCallbackMod'
 
 export type ApproveCallbackFromTradeParams = Pick<

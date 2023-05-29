@@ -23,8 +23,6 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
 import { QuoteInformationObject } from './reducer'
 
-
-
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s
 const RENEW_FEE_QUOTES_BEFORE_EXPIRATION_TIME = 30000 // Will renew the quote if there's less than 30 seconds left for the quote to expire

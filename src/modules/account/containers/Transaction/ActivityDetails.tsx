@@ -2,8 +2,6 @@ import { ReactNode } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-
-
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'

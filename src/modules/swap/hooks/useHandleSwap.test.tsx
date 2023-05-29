@@ -13,8 +13,6 @@ import { useEthFlowContext } from './useEthFlowContext'
 import { useHandleSwap } from './useHandleSwap'
 import { useSwapFlowContext } from './useSwapFlowContext'
 
-
-
 jest.mock('./useSwapFlowContext')
 jest.mock('./useEthFlowContext')
 jest.mock('./useSafeBundleFlowContext')

@@ -1,7 +1,6 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
-
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getSellAmountWithFee } from 'modules/limitOrders/utils/getSellAmountWithFee'
 

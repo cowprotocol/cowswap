@@ -8,7 +8,6 @@ import { toSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter
 
 import { Web3ReactConnection } from '../types'
 
-
 // Trying to get chainId from URL (#/100/swap)
 // eslint-disable-next-line no-restricted-globals
 const urlChainIdMatch = location.hash.match(/^#\/(\d{1,9})\D/)

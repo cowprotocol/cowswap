@@ -10,8 +10,6 @@ import { trimTrailingZeros } from 'utils/trimTrailingZeros'
 
 import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
 
-
-
 export function formatFiatAmount(amount: Nullish<FractionLike>): string {
   return formatAmountWithPrecision(amount, FIAT_PRECISION)
 }

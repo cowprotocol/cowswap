@@ -13,11 +13,6 @@ import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constan
 import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/state/lists/actions'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-
-
-
-
-
 import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 
 export interface ListRowProps {

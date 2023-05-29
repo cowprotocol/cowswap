@@ -5,7 +5,6 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 import { tradeQuoteAtom } from '../state/tradeQuoteAtom'
 
-
 export function useIsQuoteLoading() {
   const { state } = useDerivedTradeState()
   const { isLoading } = useAtomValue(tradeQuoteAtom)

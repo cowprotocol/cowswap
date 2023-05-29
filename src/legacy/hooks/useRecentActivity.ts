@@ -11,7 +11,6 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder, useOrders, useOrdersById, useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 import { getDateTimestamp } from 'utils/time'
 
-
 export interface AddedOrder extends Order {
   addedTime: number
 }

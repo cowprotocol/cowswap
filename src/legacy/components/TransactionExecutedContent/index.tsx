@@ -9,7 +9,6 @@ import * as styledEl from './styled'
 
 import { DisplayLink } from '../TransactionConfirmationModal'
 
-
 export function TransactionExecutedContent({
   order,
   chainId,

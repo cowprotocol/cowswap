@@ -12,7 +12,6 @@ import { formatDateWithTimezone } from 'utils/time'
 import { IntroDescription, BannerExplainer } from './styled'
 import { ClaimCommonTypes } from './types'
 
-
 type ClaimIntroductionProps = Pick<
   ClaimCommonTypes,
   'hasClaims' | 'isClaimed' | 'handleChangeAccount' | 'isAirdropOnly'

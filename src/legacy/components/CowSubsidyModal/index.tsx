@@ -21,8 +21,6 @@ import SubsidyTable from './SubsidyTable'
 
 import CowBalance from '../CowBalance'
 
-
-
 export type CowSubsidy = { tier: number; discount: number }
 export interface CowSubsidyInfoProps {
   account?: string

@@ -16,7 +16,6 @@ import {
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 import { isRejectRequestProviderError } from 'legacy/utils/misc'
 
-
 interface Props {
   isOpen: boolean
   onDismiss: () => void

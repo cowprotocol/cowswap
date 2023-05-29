@@ -8,7 +8,6 @@ import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 import { useGasPrices, useUpdateGasPrices } from './hooks'
 
-
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
   return now - lastUpdated > threshold
 }

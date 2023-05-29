@@ -7,7 +7,6 @@ import { ClaimStatus, setClaimStatus } from './actions'
 
 import { addTransaction, finalizeTransaction } from '../enhancedTransactions/actions'
 
-
 const isFinalizeTransaction = isAnyOf(finalizeTransaction)
 const isAddTransaction = isAnyOf(addTransaction)
 

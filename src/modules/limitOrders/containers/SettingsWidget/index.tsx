@@ -16,9 +16,6 @@ import {
   updateLimitOrdersSettingsAtom,
 } from '../../state/limitOrdersSettingsAtom'
 
-
-
-
 export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)

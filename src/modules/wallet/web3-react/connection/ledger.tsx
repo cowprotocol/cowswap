@@ -9,12 +9,9 @@ import { getConnectionName } from 'modules/wallet/api/utils/connection'
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-
 import { AsyncConnector } from './asyncConnector'
 
 import { Web3ReactConnection } from '../types'
-
-
 
 const BASE_PROPS = {
   color: '#4196FC',

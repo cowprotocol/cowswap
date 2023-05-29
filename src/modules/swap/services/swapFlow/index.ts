@@ -13,7 +13,6 @@ import { presignOrderStep } from './steps/presignOrderStep'
 import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
 import { SwapFlowContext } from '../types'
 
-
 export async function swapFlow(
   input: SwapFlowContext,
   priceImpactParams: PriceImpact,

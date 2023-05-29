@@ -27,7 +27,6 @@ import {
 } from './actions'
 import { ContractDeploymentBlocks } from './consts'
 
-
 export interface OrderObject {
   id: OrderID
   order: SerializedOrder

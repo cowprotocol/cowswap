@@ -8,7 +8,6 @@ import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 import { sendOrderCancellation } from 'legacy/utils/trade'
 
-
 export function useOffChainCancelOrder() {
   const { provider } = useWeb3React()
   const { account, chainId } = useWalletInfo()

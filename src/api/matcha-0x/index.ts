@@ -8,7 +8,6 @@ import { fetchWithRateLimit } from 'common/utils/fetch'
 import { getTokensFromMarket } from 'legacy/utils/misc'
 import { getValidParams } from 'legacy/utils/price'
 
-
 // copy/pasting as the library types correspond to the internal types, not API response
 // e.g "price: BigNumber" when we want the API response type: "price: string"
 // see link below to see

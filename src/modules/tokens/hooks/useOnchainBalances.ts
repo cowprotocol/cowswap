@@ -5,12 +5,10 @@ import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 
-
 import ERC20ABI from 'legacy/abis/erc20.json'
 import { Erc20Interface } from 'legacy/abis/types/Erc20'
 import { isAddress } from 'legacy/utils'
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
-
 
 import { BalancesAndAllowances, BalancesAndAllowancesParams, TokenAmounts, TokenAmountsResult } from '../types'
 

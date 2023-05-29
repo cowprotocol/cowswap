@@ -17,10 +17,6 @@ import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
 
 import { Widget } from '../Widget'
 
-
-
-
-
 const OrdersBox = styled(Widget)`
   min-height: 200px;
   width: 100%;

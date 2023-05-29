@@ -15,10 +15,6 @@ import TransactionConfirmationModal from 'legacy/components/TransactionConfirmat
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { ButtonSize } from 'legacy/theme/enum'
 
-
-
-
-
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 export interface WrapUnwrapParams {

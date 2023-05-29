@@ -38,12 +38,6 @@ import {
   TokenText,
 } from './styled'
 
-
-
-
-
-
-
 type DataRowParams = {
   tokenData: Token
   index: number
