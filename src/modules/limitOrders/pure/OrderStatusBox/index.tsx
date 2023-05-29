@@ -11,6 +11,7 @@ const Wrapper = styled.div<{
   cancelling?: boolean
   withWarning?: boolean
   widthAuto?: boolean
+  clickable?: boolean
 }>`
   --height: 28px;
   --statusColor: ${({ theme, status, cancelling, partiallyFilled }) =>
@@ -41,6 +42,7 @@ const Wrapper = styled.div<{
   font-weight: 600;
   height: var(--height);
   width: ${({ widthAuto }) => (widthAuto ? 'auto' : '100%')};
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   &::before {
     content: '';
@@ -57,9 +59,14 @@ const Wrapper = styled.div<{
   }
 `
 
-export type OrderStatusBoxProps = { order: ParsedOrder; widthAuto?: boolean; withWarning?: boolean }
+export type OrderStatusBoxProps = {
+  order: ParsedOrder
+  widthAuto?: boolean
+  withWarning?: boolean
+  onClick?: () => void
+}
 
-export function OrderStatusBox({ order, widthAuto, withWarning }: OrderStatusBoxProps) {
+export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
   return (
     <Wrapper
       cancelling={order.isCancelling}
@@ -67,6 +74,8 @@ export function OrderStatusBox({ order, widthAuto, withWarning }: OrderStatusBox
       status={order.status}
       widthAuto={widthAuto}
       withWarning={withWarning}
+      clickable={!!onClick}
+      onClick={onClick}
     >
       {/* Status overrides for special cases */}
       {
