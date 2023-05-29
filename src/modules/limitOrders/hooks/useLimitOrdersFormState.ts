@@ -9,13 +9,13 @@ import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import useENSAddress from 'legacy/hooks/useENSAddress'
 import { isAddress } from 'legacy/utils'
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { limitOrdersSettingsAtom, LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { LimitOrdersDerivedState } from 'modules/limitOrders'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
@@ -51,7 +51,7 @@ interface LimitOrdersFormParams {
   tradeState: LimitOrdersDerivedState
   settingsState: LimitOrdersSettingsState
   recipientEnsAddress: string | null
-  quote: LimitOrdersQuoteState | null
+  quote: TradeQuoteState | null
   activeRate: Fraction | null
   isWrapOrUnwrap: boolean
   isRateLoading: boolean
@@ -184,7 +184,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isTxBundlingEnabled = useIsTxBundlingEnabled()
-  const quote = useAtomValue(limitOrdersQuoteAtom)
+  const quote = useTradeQuote()
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 

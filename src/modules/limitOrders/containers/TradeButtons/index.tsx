@@ -9,7 +9,6 @@ import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
-import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
@@ -22,6 +21,7 @@ import { useWalletDetails } from 'modules/wallet'
 import styled from 'styled-components/macro'
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
@@ -41,7 +41,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const tradeState = useLimitOrdersDerivedState()
   const setConfirmationState = useSetAtom(limitOrdersConfirmState)
   const toggleWalletModal = useToggleWalletModal()
-  const quote = useAtomValue(limitOrdersQuoteAtom)
+  const quote = useTradeQuote()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
   const wrapUnwrapCallback = useWrapCallback(inputCurrencyAmount)
   const transactionConfirmState = useAtomValue(transactionConfirmAtom)

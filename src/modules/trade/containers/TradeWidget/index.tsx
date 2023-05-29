@@ -11,6 +11,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { t } from '@lingui/macro'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { TradeQuoteUpdater } from 'modules/tradeQuote'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
 export interface TradeWidgetActions {
@@ -29,6 +30,7 @@ interface TradeWidgetParams {
   isTradePriceUpdating: boolean
   priceImpact: PriceImpact
   isRateLoading?: boolean
+  disableQuotePolling?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -65,6 +67,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     disableNonToken = false,
     priceImpact,
     recipient,
+    disableQuotePolling = false,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -88,7 +91,8 @@ export function TradeWidget(props: TradeWidgetProps) {
   }, [])
 
   return (
-    <>
+    <styledEl.Container id={id}>
+      {!disableQuotePolling && <TradeQuoteUpdater />}
       <TradeWidgetModals />
 
       <styledEl.Container id={id}>
@@ -157,6 +161,6 @@ export function TradeWidget(props: TradeWidgetProps) {
           )}
         </styledEl.ContainerBox>
       </styledEl.Container>
-    </>
+    </styledEl.Container>
   )
 }
