@@ -1,7 +1,7 @@
-import { useGetQuote } from '../../hooks/useGetQuote'
+import { useTradeQuotePolling } from '../../hooks/useTradeQuotePolling'
 
 export function TradeQuoteUpdater() {
-  useGetQuote()
+  useTradeQuotePolling()
 
   return null
 }

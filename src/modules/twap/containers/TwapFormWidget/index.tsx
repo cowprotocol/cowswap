@@ -13,6 +13,7 @@ import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { useTwapFormActions } from '../../hooks/useTwapFormActions'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
 
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
@@ -32,6 +33,7 @@ export function TwapFormWidget() {
 
   return (
     <>
+      <QuoteObserverUpdater />
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}

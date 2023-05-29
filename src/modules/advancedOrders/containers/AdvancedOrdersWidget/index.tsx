@@ -6,9 +6,9 @@ import { Field } from 'legacy/state/swap/actions'
 import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
-} from '../../hooks/useAdvancedOrdersDerivedState'
-import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
-import { useIsQuoteLoading } from 'modules/tradeQuote'
+} from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
+import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
 
 export function AdvancedOrdersWidget() {
@@ -28,7 +28,7 @@ export function AdvancedOrdersWidget() {
     orderKind,
   } = useAdvancedOrdersDerivedState()
   const actions = useAdvancedOrdersActions()
-  const isTradePriceUpdating = useIsQuoteLoading()
+  const { isLoading: isTradePriceUpdating } = useTradeQuote()
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

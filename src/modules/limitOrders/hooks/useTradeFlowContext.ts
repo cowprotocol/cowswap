@@ -9,11 +9,11 @@ import useENSAddress from 'legacy/hooks/useENSAddress'
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { useUploadAppData, useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
@@ -26,7 +26,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const appData = useAppData()
   const uploadAppData = useUploadAppData()
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
-  const quoteState = useAtomValue(limitOrdersQuoteAtom)
+  const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const { partialFillsEnabled } = useFeatureFlags()
