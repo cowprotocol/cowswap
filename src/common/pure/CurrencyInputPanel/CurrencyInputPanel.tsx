@@ -25,7 +25,7 @@ interface BuiltItProps {
 export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   id: string
   chainId: SupportedChainId | undefined
-  loading: boolean
+  areCurrenciesLoading: boolean
   disabled?: boolean
   inputDisabled?: boolean
   inputTooltip?: string
@@ -44,7 +44,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
 export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
   const {
     id,
-    loading,
+    areCurrenciesLoading,
     currencyInfo,
     className,
     priceImpactParams,
@@ -115,7 +115,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
       value={typedValue}
       disabled={inputDisabled}
       onUserInput={onUserInputDispatch}
-      $loading={loading}
+      $loading={areCurrenciesLoading}
     />
   )
 
@@ -129,7 +129,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
             <CurrencySelectButton
               onClick={() => setCurrencySearchModalOpen(true)}
               currency={disabled ? undefined : currency || undefined}
-              loading={loading || disabled}
+              loading={areCurrenciesLoading || disabled}
             />
           </div>
           <div>
