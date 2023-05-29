@@ -13,7 +13,7 @@ const balance = CurrencyAmount.fromRawAmount(currency, 250 * 10 ** 18)
 export const defaultCurrencyInputPanelProps: CurrencyInputPanelProps & { priceImpactParams: PriceImpact } = {
   chainId: 5,
   id: 'currency-panel',
-  loading: false,
+  areCurrenciesLoading: false,
   showSetMax: true,
   allowsOffchainSigning: true,
   currencyInfo: {

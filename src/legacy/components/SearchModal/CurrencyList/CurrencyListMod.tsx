@@ -12,7 +12,7 @@ import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalyt
 import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import Loader from 'legacy/components/Loader'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 import { RowBetween, RowFixed } from 'legacy/components/Row'

@@ -1,22 +1,17 @@
-import { useState } from 'react'
-
-import { Currency } from '@uniswap/sdk-core'
-
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
-
+import { Currency } from '@uniswap/sdk-core'
 import { ButtonEmpty } from 'legacy/components/Button'
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import Modal from 'common/pure/Modal'
 import { AutoRow, RowBetween } from 'legacy/components/Row'
-import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
+import { useState } from 'react'
+import styled from 'styled-components/macro'
 import { CloseIcon, ExternalLink, ThemedText, Z_INDEX } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'
-
+import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { useWalletInfo } from 'modules/wallet'
-
-import Modal from 'common/pure/Modal'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
   padding-top: calc(16px + 2rem);

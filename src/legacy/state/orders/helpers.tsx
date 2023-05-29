@@ -1,13 +1,6 @@
-import styled from 'styled-components/macro'
-
-import { addPopup } from 'legacy/state/application/reducer'
-import { formatOrderId, shortenOrderId } from 'legacy/utils'
-
-import { CancellationSummary } from 'modules/account/containers/Transaction/styled'
-
-import { OrderID } from 'api/gnosisProtocol'
-
+import { formatOrderId } from 'legacy/utils'
 import { OrderStatus } from './actions'
+import { OrderObject, OrdersStateNetwork } from './reducer'
 
 type OrderStatusExtended = OrderStatus | 'submitted' | 'presigned'
 
@@ -16,13 +9,6 @@ interface SetOrderSummaryParams {
   status?: OrderStatusExtended
   summary?: string | JSX.Element
   descriptor?: string | null
-}
-
-// what is passed to addPopup action
-export type PopupPayload = Parameters<typeof addPopup>[0]
-export interface OrderIDWithPopup {
-  id: OrderID
-  popup: PopupPayload
 }
 
 export enum OrderTxTypes {
@@ -70,28 +56,6 @@ function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryPar
   return summary
 }
 
-const Wrapper = styled.div`
-  & > p:first-child {
-    margin-top: 0;
-  }
-
-  & > p:last-child {
-    margin-bottom: 0;
-  }
-`
-
-export function buildCancellationPopupSummary(id: string, summary: string | undefined): JSX.Element {
-  return (
-    <Wrapper>
-      <p>Order successfully cancelled</p>
-      <p>
-        Order <strong>{shortenOrderId(id)}</strong>:
-      </p>
-      <CancellationSummary as="p">{summary}</CancellationSummary>
-    </Wrapper>
-  )
-}
-
 // Metatxn popup
 export function setPopupData(
   type: OrderTxTypes.METATXN,
@@ -135,4 +99,22 @@ export function setPopupData(
   }
 
   return { key, content }
+}
+
+export function getOrderByIdFromState(orders: OrdersStateNetwork | undefined, id: string): OrderObject | undefined {
+  if (!orders) {
+    return
+  }
+
+  const { pending, presignaturePending, fulfilled, expired, cancelled, creating, failed } = orders
+
+  return (
+    pending?.[id] ||
+    presignaturePending?.[id] ||
+    fulfilled?.[id] ||
+    expired?.[id] ||
+    cancelled?.[id] ||
+    creating?.[id] ||
+    failed?.[id]
+  )
 }

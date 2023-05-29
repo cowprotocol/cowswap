@@ -8,7 +8,7 @@ import styled, { useTheme } from 'styled-components/macro'
 
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import ListLogo from 'legacy/components/ListLogo'
 import { RowFixed } from 'legacy/components/Row'
 import { ExternalLink, ThemedText } from 'legacy/theme'

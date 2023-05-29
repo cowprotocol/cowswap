@@ -6,7 +6,7 @@ import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import Column from 'legacy/components/Column'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator } from 'legacy/components/SearchModal/styleds'

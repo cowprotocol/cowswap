@@ -1,21 +1,21 @@
 import { Token } from '@uniswap/sdk-core'
-
 import { Trans } from '@lingui/macro'
-import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 import { DefaultTheme } from 'styled-components/macro'
-
+import { AlertCircle } from 'react-feather'
+import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper } from './ImportTokenMod'
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
-import ListLogo from 'legacy/components/ListLogo'
 import { RowFixed } from 'legacy/components/Row'
-import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import { ThemedText } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme/components'
-import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
+import ListLogo from 'legacy/components/ListLogo'
+// import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 
-import { AddressText, ImportProps, ImportToken as ImportTokenMod, WarningWrapper } from './ImportTokenMod'
+// MOD import
+import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
 export interface CardComponentProps extends Pick<ImportProps, 'list'> {
   chainId?: number

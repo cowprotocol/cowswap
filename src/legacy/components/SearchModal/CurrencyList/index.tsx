@@ -1,22 +1,19 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
-import { t } from '@lingui/macro'
-import { transparentize } from 'polished'
-import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
-
-import { LightGreyCard } from 'legacy/components/Card'
-import Column from 'legacy/components/Column'
-import { StyledLogo } from 'legacy/components/CurrencyLogo'
-import { RowFixed } from 'legacy/components/Row'
-import { MenuItem as MenuItemMod } from 'legacy/components/SearchModal/styleds'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
-import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
-
 import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
+import { StyledLogo } from 'common/pure/CurrencyLogo'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { RowFixed } from 'legacy/components/Row'
+import { LightGreyCard } from 'legacy/components/Card'
+import { HashLink } from 'react-router-hash-link'
+// eslint-disable-next-line no-restricted-imports
+import { t } from '@lingui/macro'
+import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
+import Column from 'legacy/components/Column'
+import { MenuItem as MenuItemMod } from 'legacy/components/SearchModal/styleds'
+import { transparentize } from 'polished'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 const UNSUPPORTED_TOKEN_TAG = [
   {

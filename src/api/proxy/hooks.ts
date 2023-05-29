@@ -1,16 +1,12 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import * as Sentry from '@sentry/react'
 import useSWR from 'swr'
-
-import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
-import { isAddress } from 'legacy/utils'
-
 import { getTokens } from './api'
-
 import type { Chain, FetchTokensApiResult, FetchTokensResult, TokenLogoCache } from './types'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isAddress } from 'legacy/utils'
+import * as Sentry from '@sentry/react'
+import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
+import { Nullish } from '../../types'
 
 function isValidQuery(query: string): boolean {
   return typeof query === 'string' && query.length > 0
@@ -100,7 +96,7 @@ export function useProxyTokens(query: string): FetchTokensResult[] {
   }
 }
 
-export function useProxyTokenLogo(chainId?: number, address?: string): string | undefined {
+export function useProxyTokenLogo(chainId?: SupportedChainId, address?: Nullish<string>): string | undefined {
   const tokenLogos = useAtomValue(tokenLogoCache)
 
   if (!chainId || !address) {

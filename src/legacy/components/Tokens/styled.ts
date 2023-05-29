@@ -1,10 +1,9 @@
-import { transparentize } from 'polished'
-import { HelpCircle } from 'react-feather'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
-
+import { Link } from 'react-router-dom'
+import { transparentize } from 'polished'
 import { BaseButton } from 'legacy/components/Button'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { HelpCircle } from 'react-feather'
 
 export const TokenSearchInput = styled.input`
   margin: 0;

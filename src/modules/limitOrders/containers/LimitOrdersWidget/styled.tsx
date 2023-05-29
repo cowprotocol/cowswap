@@ -1,17 +1,8 @@
-import { transparentize, darken } from 'polished'
 import styled from 'styled-components/macro'
-
-import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
-import { OrderType } from 'modules/limitOrders/pure/OrderType'
-
 import { RateInfo } from 'common/pure/RateInfo'
-
-export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
-`
+import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
+import { transparentize, darken } from 'polished'
+import { OrderType } from 'modules/limitOrders/pure/OrderType'
 
 export const TradeButtonBox = styled.div`
   margin: 10px 0 0;

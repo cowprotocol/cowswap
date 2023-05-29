@@ -220,6 +220,7 @@ export function SwapWidget() {
     showRecipient: showRecipientControls,
     isTradePriceUpdating,
     priceImpact: priceImpactParams,
+    disableQuotePolling: true,
   }
 
   return (

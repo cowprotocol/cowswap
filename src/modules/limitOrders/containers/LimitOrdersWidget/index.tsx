@@ -18,6 +18,7 @@ import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partial
 import { useSetupTradeState } from 'modules/trade'
 import { TradeWidget } from 'modules/trade/containers/TradeWidget'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -60,7 +61,8 @@ export function LimitOrdersWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const isSellOrder = useIsSellOrder()
   const tradeContext = useTradeFlowContext()
-  const { isLoading: isRateLoading, feeAmount } = useAtomValue(limitRateAtom)
+  const { feeAmount } = useAtomValue(limitRateAtom)
+  const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)

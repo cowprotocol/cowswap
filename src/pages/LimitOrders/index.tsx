@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai/utils'
 
 import {
   LimitOrdersWidget,
-  MarketPriceUpdater,
+  QuoteObserverUpdater,
   InitialPriceUpdater,
   ExecutionPriceUpdater,
   OrdersWidget,
@@ -16,7 +16,7 @@ export default function LimitOrderPage() {
 
   return (
     <>
-      <MarketPriceUpdater />
+      <QuoteObserverUpdater />
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
 
