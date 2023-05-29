@@ -1,6 +1,7 @@
-import * as dotenv from 'dotenv'
-import fs from 'fs'
 import { defineConfig } from 'cypress'
+import * as dotenv from 'dotenv'
+
+import fs from 'fs'
 
 let env = {}
 
