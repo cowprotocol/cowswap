@@ -4,7 +4,6 @@ import { Trans } from '@lingui/macro'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { ButtonSize } from 'legacy/theme/enum'
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
-import { LimitOrdersQuoteState } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
@@ -12,6 +11,7 @@ import { TransactionConfirmState } from 'modules/swap/state/transactionConfirmAt
 import { TradeLoadingButton } from 'modules/trade/pure/TradeLoadingButton'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { LimitOrdersDerivedState } from 'modules/limitOrders'
+import { TradeQuoteState } from 'modules/tradeQuote'
 
 export interface WrapUnwrapParams {
   isNativeIn: boolean
@@ -23,7 +23,7 @@ export interface WrapUnwrapParams {
 
 export interface TradeButtonsParams {
   tradeState: LimitOrdersDerivedState
-  quote: LimitOrdersQuoteState
+  quote: TradeQuoteState
   toggleWalletModal: () => void
   wrapUnwrapParams: WrapUnwrapParams
   doTrade: () => void
