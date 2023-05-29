@@ -122,6 +122,9 @@ describe('prices', () => {
     it('max for undefined', () => {
       expect(warningSeverity(undefined)).toEqual(4)
     })
+    it('correct for -1', () => {
+      expect(warningSeverity(new Percent(-1))).toEqual(-1)
+    })
     it('correct for 0', () => {
       expect(warningSeverity(new Percent(0))).toEqual(0)
     })
