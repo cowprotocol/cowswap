@@ -15,7 +15,7 @@ const PRICE_UPDATE_INTERVAL = 10_000
 // Solves the problem of multiple requests
 const getQuoteOnlyResolveLast = onlyResolvesLast<OrderQuoteResponse>(getQuote)
 
-export function useGetQuote() {
+export function useTradeQuotePolling() {
   const quoteParams = useQuoteParams()
 
   const updateQuoteState = useSetAtom(updateTradeQuoteAtom)

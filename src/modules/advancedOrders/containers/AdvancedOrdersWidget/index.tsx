@@ -8,7 +8,7 @@ import {
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
-import { useQuote } from 'modules/tradeQuote'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
 
 export function AdvancedOrdersWidget() {
@@ -28,7 +28,7 @@ export function AdvancedOrdersWidget() {
     orderKind,
   } = useAdvancedOrdersDerivedState()
   const actions = useAdvancedOrdersActions()
-  const { isLoading: isTradePriceUpdating } = useQuote()
+  const { isLoading: isTradePriceUpdating } = useTradeQuote()
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

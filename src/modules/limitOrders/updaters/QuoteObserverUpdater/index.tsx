@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useQuote } from 'modules/tradeQuote'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 import { FractionUtils } from 'utils/fractionUtils'
@@ -9,7 +9,7 @@ import { useUpdateAtom } from 'jotai/utils'
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
 export function QuoteObserverUpdater() {
-  const { response } = useQuote()
+  const { response, error } = useTradeQuote()
   const { state } = useDerivedTradeState()
 
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)

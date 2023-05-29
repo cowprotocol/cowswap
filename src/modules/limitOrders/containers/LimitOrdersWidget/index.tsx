@@ -31,7 +31,7 @@ import usePriceImpact from 'legacy/hooks/usePriceImpact'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useQuote } from 'modules/tradeQuote'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -56,7 +56,7 @@ export function LimitOrdersWidget() {
   const isSellOrder = useIsSellOrder()
   const tradeContext = useTradeFlowContext()
   const { feeAmount } = useAtomValue(limitRateAtom)
-  const { isLoading: isRateLoading } = useQuote()
+  const { isLoading: isRateLoading } = useTradeQuote()
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)

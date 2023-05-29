@@ -30,6 +30,7 @@ interface TradeWidgetParams {
   isTradePriceUpdating: boolean
   priceImpact: PriceImpact
   isRateLoading?: boolean
+  disableQuotePolling?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -66,6 +67,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     disableNonToken = false,
     priceImpact,
     recipient,
+    disableQuotePolling = false,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -89,8 +91,8 @@ export function TradeWidget(props: TradeWidgetProps) {
   }, [])
 
   return (
-    <>
-      <TradeQuoteUpdater />
+    <styledEl.Container id={id}>
+      {!disableQuotePolling && <TradeQuoteUpdater />}
       <TradeWidgetModals />
 
       <styledEl.Container id={id}>
@@ -159,6 +161,6 @@ export function TradeWidget(props: TradeWidgetProps) {
           )}
         </styledEl.ContainerBox>
       </styledEl.Container>
-    </>
+    </styledEl.Container>
   )
 }

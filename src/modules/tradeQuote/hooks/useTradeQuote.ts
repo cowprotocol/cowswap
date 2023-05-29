@@ -5,7 +5,7 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { TradeQuoteState } from '../state/tradeQuoteAtom'
 import { DEFAULT_QUOTE_RESPONSE } from '../state/tradeQuoteAtom'
 
-export function useQuote(): TradeQuoteState {
+export function useTradeQuote(): TradeQuoteState {
   const { state } = useDerivedTradeState()
   const quoteState = useAtomValue(tradeQuoteAtom)
 
