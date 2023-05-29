@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import * as styledEl from './styled'
-import { CurrencySelectButton } from 'modules/swap/pure/CurrencySelectButton'
+import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { Currency } from '@uniswap/sdk-core'
 import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
 import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue/FiatValueMod'
