@@ -1,5 +1,5 @@
 import { Currency } from '@uniswap/sdk-core'
-import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
+import useCurrencyLogoURIs from './hooks/useCurrencyLogoURIs'
 import React from 'react'
 import styled from 'styled-components/macro'
 

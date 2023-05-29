@@ -6,7 +6,7 @@ import { getIsMetaMask } from 'modules/wallet/api/utils/connection'
 import { addTokenToMetamaskAnalytics } from 'legacy/components/analytics'
 import { AddToMetamask as AddToMetamaskPure } from 'modules/wallet/api/pure/AddToMetamask'
 
-import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
+import useCurrencyLogoURIs from 'common/pure/CurrencyLogo/hooks/useCurrencyLogoURIs'
 
 export type AddToMetamaskProps = {
   currency: Currency | undefined
