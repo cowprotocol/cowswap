@@ -4,7 +4,6 @@ import { FractionLike, Nullish } from 'types'
 
 import { ZERO_FRACTION } from 'legacy/constants'
 
-
 export type CalculateAmountPercentDifferenceProps = {
   reference: Nullish<FractionLike>
   value: Nullish<FractionLike>

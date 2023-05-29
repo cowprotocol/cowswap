@@ -7,7 +7,6 @@ import { updateVersion } from 'legacy/state/global/actions'
 import { fetchTokenList, acceptListUpdate, addList, removeList, enableList } from 'legacy/state/lists/actions'
 import reducer, { ListsStateByNetwork } from 'legacy/state/lists/reducer'
 
-
 const DEFAULT_LIST_OF_LISTS = DEFAULT_LIST_OF_LISTS_BY_NETWORK[ChainId.MAINNET]
 
 const STUB_TOKEN_LIST = {

@@ -2,8 +2,6 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { RAW_CODE_LINK } from 'legacy/constants'
 
-
-
 export type NetworkLists = {
   [chain in ChainId]: string[]
 }

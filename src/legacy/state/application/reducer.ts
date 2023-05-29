@@ -6,7 +6,6 @@ import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-component
 import { DEFAULT_TXN_DISMISS_MS } from 'legacy/constants/misc'
 import { initialState } from 'legacy/state/application/initialState'
 
-
 type BasePopupContent = {
   failedSwitchNetwork: SupportedChainId
   // mod: unsupported network

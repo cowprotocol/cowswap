@@ -1,4 +1,3 @@
-
 import ApplicationUpdater from 'legacy/state/application/updater'
 import EnhancedTransactionUpdater from 'legacy/state/enhancedTransactions/updater'
 import { GasPriceStrategyUpdater } from 'legacy/state/gas/gas-price-strategy-updater'

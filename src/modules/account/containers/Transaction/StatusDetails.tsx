@@ -19,7 +19,6 @@ import { StatusLabel, StatusLabelWrapper, StatusLabelBelow, CancelTxLink } from 
 
 import { ActivityDerivedState, determinePillColour } from './index'
 
-
 export function GnosisSafeLink(props: {
   chainId: number
   safeTransaction?: SafeMultisigTransactionResponse

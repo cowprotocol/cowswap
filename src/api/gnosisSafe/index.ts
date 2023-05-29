@@ -9,7 +9,6 @@ import { ethers } from 'ethers'
 
 import { registerOnWindow } from 'legacy/utils/misc'
 
-
 const SAFE_TRANSACTION_SERVICE_URL: Partial<Record<number, string>> = {
   [ChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
   [ChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',

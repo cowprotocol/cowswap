@@ -1,4 +1,3 @@
-
 import { ExternalLink } from 'legacy/theme'
 import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'legacy/utils'
 import { supportedChainId } from 'legacy/utils/supportedChainId'

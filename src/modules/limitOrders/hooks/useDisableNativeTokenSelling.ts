@@ -9,7 +9,6 @@ import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo } from 'modules/wallet'
 
-
 /**
  * Since the selling of ETH is not supported in limit orders
  * We automatically replace it by WETH

@@ -9,7 +9,6 @@ import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 import { networkConnection } from 'modules/wallet/web3-react/connection/network'
 import { gnosisSafeConnection } from 'modules/wallet/web3-react/connection/safe'
 
-
 async function connect(connector: Connector) {
   try {
     if (connector.connectEagerly) {

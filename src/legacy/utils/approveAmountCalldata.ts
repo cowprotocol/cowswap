@@ -5,8 +5,6 @@ import { Interface } from '@ethersproject/abi'
 
 import { Erc20Interface } from 'legacy/abis/types/Erc20'
 
-
-
 const ERC20_INTERFACE = new Interface([
   {
     constant: false,

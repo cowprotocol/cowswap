@@ -6,7 +6,6 @@ import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 
 import { useWalletInfo } from 'modules/wallet'
 
-
 const MISSING_PROVIDER = Symbol()
 const BlockNumberContext = createContext<
   | {

@@ -5,7 +5,6 @@ import ReactMarkdownHtml from 'react-markdown/with-html'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
-
 // AmplitudeAnalytics
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'

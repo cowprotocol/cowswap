@@ -5,7 +5,6 @@ import { useTokensListWithDefaults } from 'legacy/state/lists/hooks'
 
 import { tokensByAddressAtom, tokensBySymbolAtom, TokenWithLogo } from 'modules/tokensList/state/tokensListAtom'
 
-
 /**
  * This updater protects from redundant recalculations
  * Using it we call useTokensListWithDefaults() and map it's result only once

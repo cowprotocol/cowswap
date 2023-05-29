@@ -5,7 +5,6 @@ import { useAppSelector } from 'legacy/state/hooks'
 import { BACKFILLABLE_WALLETS, ConnectionType } from 'modules/wallet'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
-
 const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS, ConnectionType.FORTMATIC]
 
 export function useOrderedConnections() {

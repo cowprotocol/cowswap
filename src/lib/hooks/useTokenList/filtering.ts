@@ -1,9 +1,7 @@
-
 import { NativeCurrency, Token } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
 
 import { isAddress } from 'legacy/utils'
-
 
 const alwaysTrue = () => true
 

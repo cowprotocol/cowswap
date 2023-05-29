@@ -1,4 +1,3 @@
-
 import { useContext } from 'react'
 import { useMemo } from 'react'
 
@@ -12,7 +11,6 @@ import { AutoColumn } from 'legacy/components/Column'
 import { AutoRow } from 'legacy/components/Row'
 import UnsupportedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
 import { getChainInfo } from 'legacy/constants/chainInfo'
-
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

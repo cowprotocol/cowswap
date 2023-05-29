@@ -6,7 +6,6 @@ import uriToHttp from 'lib/utils/uriToHttp'
 
 import validateTokenList from './validateTokenList'
 
-
 export const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
 
 const listCache = new Map<string, TokenList>()

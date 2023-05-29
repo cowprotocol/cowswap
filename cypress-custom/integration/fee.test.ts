@@ -1,4 +1,3 @@
-
 import { GetQuoteResponse } from '@cowprotocol/contracts'
 import { WETH9 as WETH } from '@uniswap/sdk-core'
 

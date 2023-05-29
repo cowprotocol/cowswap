@@ -1,4 +1,3 @@
-
 import { ButtonSecondary } from 'legacy/components/Button'
 import CopyHelper from 'legacy/components/Copy'
 import { ClaimStatus } from 'legacy/state/claim/actions'

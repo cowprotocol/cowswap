@@ -1,12 +1,6 @@
 {
-  "extends": [
-    "react-app",
-    "react-app/jest",
-    "plugin:cypress/recommended"
-  ],
-  "plugins": [
-    "unused-imports"
-  ],
+  "extends": ["react-app", "react-app/jest", "plugin:cypress/recommended"],
+  "plugins": ["unused-imports"],
   "rules": {
     "no-restricted-imports": [
       "error",
@@ -23,15 +17,11 @@
         ],
         "patterns": [
           {
-            "group": [
-              "**/dist"
-            ],
+            "group": ["**/dist"],
             "message": "Do not import from dist/ - this is an implementation detail, and breaks tree-shaking."
           },
           {
-            "group": [
-              "!styled-components/macro"
-            ]
+            "group": ["!styled-components/macro"]
           }
         ]
       }
@@ -77,19 +67,8 @@
             "position": "before"
           }
         ],
-        "pathGroupsExcludedImportTypes": [
-          "react"
-        ],
-        "groups": [
-          "external",
-          "builtin",
-          "internal",
-          "sibling",
-          "parent",
-          "object",
-          "index",
-          "type"
-        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "groups": ["external", "builtin", "internal", "sibling", "parent", "object", "index", "type"],
         "alphabetize": {
           "order": "asc",
           "caseInsensitive": true
@@ -103,10 +82,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "cypress/**",
-        "cypress-custom/**"
-      ],
+      "files": ["cypress/**", "cypress-custom/**"],
       "rules": {
         "jest/valid-expect": 0,
         "testing-library/await-async-utils": 0

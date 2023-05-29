@@ -8,7 +8,6 @@ import { OrderTab } from './OrdersTabs'
 
 import { Orders } from './index'
 
-
 const tabs: OrderTab[] = [
   {
     id: 'open',

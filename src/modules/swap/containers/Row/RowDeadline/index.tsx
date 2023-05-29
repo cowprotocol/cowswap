@@ -8,7 +8,6 @@ import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
-
 export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()
   const toggleSettings = useToggleSettingsMenu()

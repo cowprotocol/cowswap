@@ -2,8 +2,6 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-
-
 const CANT_BE_PARTIALLY_FILLED_STATUSES = [OrderStatus.FULFILLED, OrderStatus.PENDING]
 
 export function isPartiallyFilled(order: Order): boolean {

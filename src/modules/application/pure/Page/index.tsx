@@ -7,7 +7,6 @@ import { WithClassName } from 'legacy/types'
 
 import { Widget } from 'modules/application/pure/Widget'
 
-
 export const PageWrapper = styled(Widget)`
   padding: 0 24px 24px;
   max-width: ${({ theme }) => theme.appBody.maxWidth.content};

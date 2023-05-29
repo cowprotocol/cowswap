@@ -1,4 +1,3 @@
-
 import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
 import { useAnalyticsReporter } from 'legacy/components/analytics'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'

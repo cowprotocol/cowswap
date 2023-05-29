@@ -10,7 +10,6 @@ import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
 
-
 export const ClickableText = styled.button`
   background: none;
   border: none;

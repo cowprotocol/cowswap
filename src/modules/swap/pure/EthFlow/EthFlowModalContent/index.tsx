@@ -15,7 +15,6 @@ import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
-
 export interface EthFlowModalContentProps {
   state: EthFlowState
   isExpertMode: boolean

@@ -10,7 +10,6 @@ import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/typings'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
 
-
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
   return (
     <Trans>

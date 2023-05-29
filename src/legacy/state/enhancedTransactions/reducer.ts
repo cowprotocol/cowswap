@@ -14,7 +14,6 @@ import {
   SerializableTransactionReceipt,
 } from 'legacy/state/enhancedTransactions/actions'
 
-
 export enum HashType {
   ETHEREUM_TX = 'ETHEREUM_TX',
   GNOSIS_SAFE_TX = 'GNOSIS_SAFE_TX',

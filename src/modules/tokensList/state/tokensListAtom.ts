@@ -2,8 +2,6 @@ import { atom } from 'jotai'
 
 import { Token } from '@uniswap/sdk-core'
 
-
-
 // It's a hack for useCurrencyLogoURIs(), must be refactored
 export class TokenWithLogo extends Token {
   constructor(

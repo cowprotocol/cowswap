@@ -5,7 +5,6 @@ import { RAW_CODE_LINK } from 'legacy/constants'
 
 import { FortuneItem } from 'modules/fortune/types'
 
-
 const FILE_PATH = '/configuration/config/fortunes.json'
 
 const fortuneFetchAtom = atom(async () => {

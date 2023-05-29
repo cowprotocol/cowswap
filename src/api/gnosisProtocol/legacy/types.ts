@@ -5,8 +5,6 @@ import { FeeInformation, PriceInformation } from 'types'
 
 import { GpPriceStrategy } from 'legacy/state/gas/atoms'
 
-
-
 type FeeQuoteParams = Pick<EnrichedOrder, 'sellToken' | 'buyToken' | 'kind'> & {
   amount: string
   userAddress?: string | null

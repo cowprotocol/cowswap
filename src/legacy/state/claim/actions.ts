@@ -4,7 +4,6 @@ import { createAction } from '@reduxjs/toolkit'
 
 import { ClaimInfo } from 'legacy/state/claim/reducer'
 
-
 export enum ClaimStatus {
   DEFAULT = 'DEFAULT',
   ATTEMPTING = 'ATTEMPTING',

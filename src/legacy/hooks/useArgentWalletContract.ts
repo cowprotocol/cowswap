@@ -1,4 +1,3 @@
-
 import ArgentWalletContractABI from 'legacy/abis/argent-wallet-contract.json'
 import { ArgentWalletContract } from 'legacy/abis/types'
 

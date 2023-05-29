@@ -4,7 +4,6 @@ import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTrans
 import { GnosisSafeLink } from 'modules/account/containers/Transaction/StatusDetails'
 import { useGnosisSafeInfo, useWalletInfo } from 'modules/wallet'
 
-
 interface Props {
   tx: EnhancedTransactionDetails
 }

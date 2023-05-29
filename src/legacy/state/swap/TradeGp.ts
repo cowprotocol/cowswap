@@ -6,7 +6,6 @@ import { FeeInformation, PriceInformation } from 'types'
 import { ONE_FRACTION } from 'legacy/constants/misc'
 import { CanonicalMarketParams, getCanonicalMarket } from 'legacy/utils/misc'
 
-
 export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>
 
 export type TradeWithFee = Omit<Trade<Currency, Currency, TradeType>, 'nextMidPrice' | 'exactIn' | 'exactOut'> & {

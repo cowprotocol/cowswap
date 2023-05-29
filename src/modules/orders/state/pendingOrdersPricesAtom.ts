@@ -2,8 +2,6 @@ import { atom } from 'jotai'
 
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-
-
 export interface PendingOrderPrices {
   marketPrice: Price<Currency, Currency>
   estimatedExecutionPrice: Price<Currency, Currency>

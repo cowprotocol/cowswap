@@ -5,7 +5,6 @@ import { isAddress } from 'legacy/utils'
 
 import { tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
 
-
 export function useAreThereTokensWithSameSymbol(): (tokenAddressOrSymbol: string | null | undefined) => boolean {
   const tokensBySymbol = useAtomValue(tokensBySymbolAtom)
 
