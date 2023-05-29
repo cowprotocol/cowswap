@@ -9,7 +9,7 @@ import { useUpdateAtom } from 'jotai/utils'
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
 export function QuoteObserverUpdater() {
-  const { response, error } = useQuote()
+  const { response } = useQuote()
   const { state } = useDerivedTradeState()
 
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)
@@ -19,11 +19,6 @@ export function QuoteObserverUpdater() {
 
   useEffect(() => {
     if (!outputCurrency || !inputCurrency || !response) {
-      return
-    }
-
-    if (error) {
-      updateLimitRateState({ marketRate: null })
       return
     }
 
@@ -39,7 +34,7 @@ export function QuoteObserverUpdater() {
     const marketRate = price.subtract(price.multiply(LIMIT_ORDERS_PRICE_SLIPPAGE.divide(100)))
 
     updateLimitRateState({ marketRate, feeAmount })
-  }, [response, inputCurrency, outputCurrency, error, updateLimitRateState])
+  }, [response, inputCurrency, outputCurrency, updateLimitRateState])
 
   return null
 }
