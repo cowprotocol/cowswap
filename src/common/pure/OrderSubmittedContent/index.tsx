@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   gap: 20px;
   align-items: center;
   flex-direction: column;
+  padding-top: 20px;
 `
 
 const Caption = styled.h3`
