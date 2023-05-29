@@ -83,6 +83,8 @@ interface DerivedSwapInfo {
   currenciesIds: { [field in Field]?: string | null }
   currencyBalances: { [field in Field]?: CurrencyAmount<Currency> }
   parsedAmount: CurrencyAmount<Currency> | undefined
+  // TODO: remove duplications of the value (v2Trade?.maximumAmountIn(allowedSlippage))
+  slippageAdjustedSellAmount: CurrencyAmount<Currency> | null
   inputError?: string
   v2Trade: TradeGp | undefined
   allowedSlippage: Percent
@@ -313,6 +315,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
   // const autoSlippageTolerance = useAutoSlippageTolerance(trade.trade)  // mod
   // const allowedSlippage = useUserSlippageToleranceWithDefault(autoSlippageTolerance) // mod
   const allowedSlippage = useUserSlippageToleranceWithDefault(INITIAL_ALLOWED_SLIPPAGE_PERCENT) // mod
+  const slippageAdjustedSellAmount = v2Trade?.maximumAmountIn(allowedSlippage) || null
 
   const inputError = useMemo(() => {
     let inputError: string | undefined
@@ -340,7 +343,8 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
 
     // compare input balance to max input based on version
     // const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], trade.trade?.maximumAmountIn(allowedSlippage)] // mod
-    const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], v2Trade?.maximumAmountIn(allowedSlippage)] // mod
+    const balanceIn = currencyBalances[Field.INPUT]
+    const amountIn = slippageAdjustedSellAmount
 
     // Balance not loaded - fix for https://github.com/cowprotocol/cowswap/issues/451
     if (!balanceIn && inputCurrency) {
@@ -352,7 +356,7 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
     }
 
     return inputError
-  }, [account, allowedSlippage, currencies, currencyBalances, inputCurrency, parsedAmount, to, v2Trade]) // mod
+  }, [account, slippageAdjustedSellAmount, currencies, currencyBalances, inputCurrency, parsedAmount, to]) // mod
 
   return useMemo(
     () => {
@@ -364,10 +368,19 @@ export function useDerivedSwapInfo(): DerivedSwapInfo {
         inputError,
         v2Trade: v2Trade || undefined, // mod
         allowedSlippage,
+        slippageAdjustedSellAmount: slippageAdjustedSellAmount,
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [allowedSlippage, currencyBalances, currenciesIds, inputError, parsedAmount, JSON.stringify(v2Trade)] // mod
+    [
+      allowedSlippage,
+      currencyBalances,
+      currenciesIds,
+      inputError,
+      parsedAmount,
+      JSON.stringify(v2Trade),
+      slippageAdjustedSellAmount,
+    ] // mod
   )
 }
 

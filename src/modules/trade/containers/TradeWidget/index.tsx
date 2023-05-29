@@ -12,6 +12,7 @@ import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { t } from '@lingui/macro'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
+import { TradeWidgetModals } from './TradeWidgetModals'
 
 export interface TradeWidgetActions {
   onCurrencySelection: CurrencyInputPanelProps['onCurrencySelection']
@@ -88,73 +89,76 @@ export function TradeWidget(props: TradeWidgetProps) {
   }, [])
 
   return (
-    <styledEl.Container id={id}>
+    <>
       <TradeQuoteUpdater />
+      <TradeWidgetModals />
 
-      <styledEl.ContainerBox>
-        <styledEl.Header>
-          <TradeWidgetLinks />
-          {!lockScreen && settingsWidget}
-        </styledEl.Header>
+      <styledEl.Container id={id}>
+        <styledEl.ContainerBox>
+          <styledEl.Header>
+            <TradeWidgetLinks />
+            {!lockScreen && settingsWidget}
+          </styledEl.Header>
 
-        {lockScreen ? (
-          lockScreen
-        ) : (
-          <>
-            <div>
-              <CurrencyInputPanel
-                id="input-currency-input"
-                disableNonToken={disableNonToken}
-                chainId={chainId}
-                loading={currenciesLoadingInProgress}
-                onCurrencySelection={onCurrencySelection}
-                onUserInput={onUserInput}
-                allowsOffchainSigning={allowsOffchainSigning}
-                currencyInfo={inputCurrencyInfo}
-                showSetMax={showSetMax}
-                topLabel={inputCurrencyInfo.label}
-              />
-            </div>
-            {!isWrapOrUnwrap && middleContent}
-            <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={!isWrapOrUnwrap && showRecipient}>
-              <CurrencyArrowSeparator
-                isCollapsed={compactView}
-                hasSeparatorLine={!compactView}
-                border={!compactView}
-                onSwitchTokens={throttledOnSwitchTokens}
-                withRecipient={showRecipient}
-                isLoading={isTradePriceUpdating}
-              />
-            </styledEl.CurrencySeparatorBox>
-            <div>
-              <CurrencyInputPanel
-                id="output-currency-input"
-                disableNonToken={disableNonToken}
-                inputDisabled={isEthFlow || disableOutput}
-                inputTooltip={
-                  isEthFlow
-                    ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
-                    : undefined
-                }
-                chainId={chainId}
-                loading={currenciesLoadingInProgress}
-                isRateLoading={isRateLoading}
-                onCurrencySelection={onCurrencySelection}
-                onUserInput={onUserInput}
-                allowsOffchainSigning={allowsOffchainSigning}
-                currencyInfo={outputCurrencyInfo}
-                priceImpactParams={priceImpact}
-                topLabel={outputCurrencyInfo.label}
-              />
-            </div>
-            {showRecipient && (
-              <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
-            )}
+          {lockScreen ? (
+            lockScreen
+          ) : (
+            <>
+              <div>
+                <CurrencyInputPanel
+                  id="input-currency-input"
+                  disableNonToken={disableNonToken}
+                  chainId={chainId}
+                  loading={currenciesLoadingInProgress}
+                  onCurrencySelection={onCurrencySelection}
+                  onUserInput={onUserInput}
+                  allowsOffchainSigning={allowsOffchainSigning}
+                  currencyInfo={inputCurrencyInfo}
+                  showSetMax={showSetMax}
+                  topLabel={inputCurrencyInfo.label}
+                />
+              </div>
+              {!isWrapOrUnwrap && middleContent}
+              <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={!isWrapOrUnwrap && showRecipient}>
+                <CurrencyArrowSeparator
+                  isCollapsed={compactView}
+                  hasSeparatorLine={!compactView}
+                  border={!compactView}
+                  onSwitchTokens={throttledOnSwitchTokens}
+                  withRecipient={showRecipient}
+                  isLoading={isTradePriceUpdating}
+                />
+              </styledEl.CurrencySeparatorBox>
+              <div>
+                <CurrencyInputPanel
+                  id="output-currency-input"
+                  disableNonToken={disableNonToken}
+                  inputDisabled={isEthFlow || disableOutput}
+                  inputTooltip={
+                    isEthFlow
+                      ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                      : undefined
+                  }
+                  chainId={chainId}
+                  loading={currenciesLoadingInProgress}
+                  isRateLoading={isRateLoading}
+                  onCurrencySelection={onCurrencySelection}
+                  onUserInput={onUserInput}
+                  allowsOffchainSigning={allowsOffchainSigning}
+                  currencyInfo={outputCurrencyInfo}
+                  priceImpactParams={priceImpact}
+                  topLabel={outputCurrencyInfo.label}
+                />
+              </div>
+              {showRecipient && (
+                <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
+              )}
 
-            {bottomContent}
-          </>
-        )}
-      </styledEl.ContainerBox>
-    </styledEl.Container>
+              {bottomContent}
+            </>
+          )}
+        </styledEl.ContainerBox>
+      </styledEl.Container>
+    </>
   )
 }

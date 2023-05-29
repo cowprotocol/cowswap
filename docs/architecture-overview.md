@@ -17,7 +17,7 @@ Overall architecture of the project
 
 ### Trading modules
 
-- trade
+- [trade](../src/modules/trade/docs/trade-module.md)
 - swap
 - limitOrder
 - twap
