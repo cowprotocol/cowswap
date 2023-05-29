@@ -21,7 +21,6 @@ import CheckCircle from 'legacy/assets/cow-swap/check.svg'
 import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
 import { ApprovalState, useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
-import { StyledNumericalInput } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
 
 import { ButtonConfirmed } from 'legacy/components/Button'
 import { ButtonSize } from 'legacy/theme/enum'
@@ -41,6 +40,13 @@ import { formatTokenAmount } from 'utils/amountFormat'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { useWalletInfo } from 'modules/wallet'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
+import styled from 'styled-components/macro'
+import { Input as NumericalInput } from 'legacy/components/NumericalInput'
+
+const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
+  ${loadingOpacityMixin}
+`
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>

@@ -11,7 +11,7 @@ import { ThemedText } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme/components'
 import ListLogo from 'legacy/components/ListLogo'
 // import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 
 // MOD import

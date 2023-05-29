@@ -1,6 +1,6 @@
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
 import styled from 'styled-components/macro'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { CHAIN_INFO } from 'legacy/constants/chainInfo'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'

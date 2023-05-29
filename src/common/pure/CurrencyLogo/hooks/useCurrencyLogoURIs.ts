@@ -3,10 +3,10 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import EthereumLogo from 'legacy/assets/images/ethereum-logo.png'
 import XDaiLogo from 'legacy/assets/cow-swap/xdai.png'
-import { useExternalTokenLogo } from 'common/hooks/useExternalTokenLogo'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import uriToHttp from 'lib/utils/uriToHttp'
 import { ADDRESS_IMAGE_OVERRIDE } from 'legacy/constants/tokens'
+import { useProxyTokenLogo } from 'api/proxy'
 
 type Network = 'ethereum' | 'xdai'
 
@@ -42,9 +42,9 @@ function getTokenLogoURI(address: string, chainId: SupportedChainId = SupportedC
 const currencyLogoCache = new Map<string, Array<string>>()
 // TODO: must be refactored
 export default function useCurrencyLogoURIs(currency?: Currency | null): string[] {
-  const externalLogo = useExternalTokenLogo(currency)
-  // There is a modification of Token in useDetectNativeToken()
   const currencyAddress = currency ? (currency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : currency.address) : null
+  // There is a modification of Token in useDetectNativeToken()
+  const externalLogo = useProxyTokenLogo(currency?.chainId, currencyAddress)
   const cacheKey = `${currencyAddress}|${currency?.chainId}`
   const cached = currencyLogoCache.get(cacheKey)
 

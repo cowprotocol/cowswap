@@ -111,7 +111,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   id="input-currency-input"
                   disableNonToken={disableNonToken}
                   chainId={chainId}
-                  loading={currenciesLoadingInProgress}
+                  areCurrenciesLoading={currenciesLoadingInProgress}
                   onCurrencySelection={onCurrencySelection}
                   onUserInput={onUserInput}
                   allowsOffchainSigning={allowsOffchainSigning}
@@ -142,7 +142,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                       : undefined
                   }
                   chainId={chainId}
-                  loading={currenciesLoadingInProgress}
+                  areCurrenciesLoading={currenciesLoadingInProgress}
                   isRateLoading={isRateLoading}
                   onCurrencySelection={onCurrencySelection}
                   onUserInput={onUserInput}

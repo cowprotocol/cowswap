@@ -3,13 +3,12 @@ import { Trans } from '@lingui/macro'
 import { ButtonSize } from 'legacy/theme/enum'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { CurrencyPreview } from 'common/pure/CurrencyInputPanel'
+import { CurrencyAmountPreview } from 'common/pure/CurrencyInputPanel'
 import { LimitOrdersDetails } from '../LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
 import * as styledEl from './styled'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { CurrencySeparatorBox } from 'modules/limitOrders/containers/LimitOrdersWidget/styled'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -59,12 +58,12 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
 
   return (
     <styledEl.ConfirmWrapper id="limit-orders-confirm">
-      <CurrencyPreview
+      <CurrencyAmountPreview
         id="input-currency-preview"
         currencyInfo={inputCurrencyInfo}
         topLabel={inputCurrencyInfo.label}
       />
-      <CurrencySeparatorBox withRecipient={false}>
+      <styledEl.CurrencySeparatorBox withRecipient={false}>
         <CurrencyArrowSeparator
           withRecipient={false}
           isCollapsed={false}
@@ -72,8 +71,8 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
           hasSeparatorLine={true}
           onSwitchTokens={() => null}
         />
-      </CurrencySeparatorBox>
-      <CurrencyPreview
+      </styledEl.CurrencySeparatorBox>
+      <CurrencyAmountPreview
         id="output-currency-preview"
         currencyInfo={outputCurrencyInfo}
         topLabel={outputCurrencyInfo.label}

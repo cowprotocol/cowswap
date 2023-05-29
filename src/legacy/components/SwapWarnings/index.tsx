@@ -5,9 +5,9 @@ import { Fraction } from '@uniswap/sdk-core'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { useHighFeeWarning } from 'legacy/state/swap/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
-import { AuxInformationContainer } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
+import { AuxInformationContainer } from '../swap/styleds'
 
 interface HighFeeContainerProps {
   padding?: string

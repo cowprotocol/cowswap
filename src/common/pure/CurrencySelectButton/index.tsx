@@ -1,4 +1,4 @@
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Currency } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'

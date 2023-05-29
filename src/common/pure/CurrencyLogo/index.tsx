@@ -1,5 +1,5 @@
 import { Currency } from '@uniswap/sdk-core'
-import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
+import useCurrencyLogoURIs from './hooks/useCurrencyLogoURIs'
 import React from 'react'
 import styled from 'styled-components/macro'
 
@@ -23,7 +23,7 @@ export const StyledLogo = styled(Logo)<{ size: string; $native: boolean }>`
   color: ${({ theme }) => theme.black}!important; // MOD
 `
 
-export default function CurrencyLogo({
+export function CurrencyLogo({
   currency,
   size = '24px',
   style,

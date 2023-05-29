@@ -1,6 +1,6 @@
 import { ButtonConfirmed } from 'legacy/components/Button'
 import { AutoRow } from 'legacy/components/Row'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Trans } from '@lingui/macro'
 import Loader from 'legacy/components/Loader'
 import { CheckCircle, HelpCircle } from 'react-feather'
