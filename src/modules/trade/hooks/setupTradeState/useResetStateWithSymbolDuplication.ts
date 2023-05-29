@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { useEffect } from 'react'
 
 import { t } from '@lingui/macro'
@@ -9,7 +8,6 @@ import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensW
 
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'
-
 
 const alertMessage = (
   doubledSymbol: string

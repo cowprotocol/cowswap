@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
 import { Trans, t } from '@lingui/macro'
@@ -40,11 +39,6 @@ import {
 } from './styled'
 
 import { CardsLoader, CardsSpinner } from '../styled'
-
-
-
-
-
 
 export enum PageViewKeys {
   ALL_TOKENS = 'ALL_TOKENS',

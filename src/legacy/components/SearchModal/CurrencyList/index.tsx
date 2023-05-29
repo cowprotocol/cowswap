@@ -15,7 +15,6 @@ import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
 
 import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
-// eslint-disable-next-line no-restricted-imports
 
 const UNSUPPORTED_TOKEN_TAG = [
   {

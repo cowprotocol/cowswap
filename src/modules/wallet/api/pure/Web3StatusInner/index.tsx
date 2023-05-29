@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { Trans } from '@lingui/macro'
 
 import StatusIcon from 'modules/wallet/api/pure/StatusIcon'
@@ -10,7 +9,6 @@ import { RowBetween } from 'legacy/components/Row'
 import { shortenAddress } from 'legacy/utils'
 
 import { NetworkIcon, Text, Web3StatusConnect, Web3StatusConnected, Web3StatusError } from './styled'
-
 
 export interface Web3StatusInnerProps {
   account?: string | null

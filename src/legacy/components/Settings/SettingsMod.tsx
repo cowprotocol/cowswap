@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { useCallback, useContext, useRef, useState } from 'react'
 
 import { Trans } from '@lingui/macro'
@@ -25,8 +24,6 @@ import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
-
-
 
 export const StyledMenuIcon = styled(Settings)`
   height: 20px;

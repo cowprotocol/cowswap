@@ -1,6 +1,9 @@
 import { useMemo } from 'react'
 
-import { useAdvancedOrdersRawState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
+import {
+  useAdvancedOrdersRawState,
+  useUpdateAdvancedOrdersRawState,
+} from 'modules/advancedOrders/hooks/useAdvancedOrdersRawState'
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
 import { useSwapRawState, useUpdateSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { ExtendedTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'

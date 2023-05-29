@@ -11,10 +11,6 @@ import { useGasPrices } from 'legacy/state/gas/hooks'
 
 import { BalanceChecks } from '../../../pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
 
-
-
-// eslint-disable-next-line no-restricted-imports
-
 export const MINIMUM_TXS = '10'
 export const DEFAULT_GAS_FEE = parseUnits('50', 'gwei')
 

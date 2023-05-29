@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { useMemo } from 'react'
 
 import { t } from '@lingui/macro'

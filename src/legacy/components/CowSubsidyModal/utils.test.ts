@@ -1,6 +1,3 @@
-/**
- * @jest-environment ./custom-test-env.js
- */
 import { formatUnits } from '@ethersproject/units'
 import { BigNumber } from 'bignumber.js'
 

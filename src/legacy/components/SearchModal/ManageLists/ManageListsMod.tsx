@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { t, Trans } from '@lingui/macro'

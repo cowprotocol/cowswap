@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { t, Trans } from '@lingui/macro'
@@ -35,13 +34,6 @@ import { isAddress } from 'legacy/utils'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
-
-
-
-
-
-
-
 
 export const Footer = styled.div`
   width: 100%;

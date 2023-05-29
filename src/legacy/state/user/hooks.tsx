@@ -25,7 +25,6 @@ import {
   toggleFavouriteToken,
   toggleURLWarning,
   updateHideClosedPositions,
-  // TODO: mod, move to mod file
   updateRecipientToggleVisible,
   updateShowDonationLink,
   updateShowSurveyPopup,
@@ -42,8 +41,6 @@ import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants/routing'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useSwapActionHandlers } from '../swap/hooks'
-
-
 
 export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(
