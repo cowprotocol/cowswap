@@ -6,10 +6,11 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { usePrice } from 'common/hooks/usePrice'
 import { useWalletInfo } from 'modules/wallet'
+import { Nullish } from 'types'
 
 export function useRateInfoParams(
-  inputCurrencyAmount: CurrencyAmount<Currency> | null,
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
 ): RateInfoParams {
   const { chainId } = useWalletInfo()
 

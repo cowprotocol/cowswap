@@ -2,16 +2,15 @@ import React, { ReactNode } from 'react'
 import { Trans } from '@lingui/macro'
 import { ButtonSize } from 'legacy/theme/enum'
 import { ButtonPrimary } from 'legacy/components/Button'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { CurrencyAmountPreview } from 'common/pure/CurrencyInputPanel'
+import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 import * as styledEl from './styled'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 export interface TradeConfirmationProps {
   children: JSX.Element
-  inputCurrencyInfo: CurrencyInfo
-  outputCurrencyInfo: CurrencyInfo
+  inputCurrencyInfo: CurrencyPreviewInfo
+  outputCurrencyInfo: CurrencyPreviewInfo
   onConfirm(): void
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
@@ -31,11 +30,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   return (
     <styledEl.ConfirmWrapper id="trade-confirmation">
-      <CurrencyAmountPreview
-        id="input-currency-preview"
-        currencyInfo={inputCurrencyInfo}
-        topLabel={inputCurrencyInfo.label}
-      />
+      <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
       <styledEl.CurrencySeparatorBox withRecipient={false}>
         <CurrencyArrowSeparator
           withRecipient={false}
@@ -48,7 +43,6 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
       <CurrencyAmountPreview
         id="output-currency-preview"
         currencyInfo={outputCurrencyInfo}
-        topLabel={outputCurrencyInfo.label}
         priceImpactParams={priceImpact}
       />
       {children}

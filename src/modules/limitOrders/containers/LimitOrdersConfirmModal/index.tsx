@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import { useAtom } from 'jotai'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { CloseIcon } from 'legacy/theme'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { TradeConfirmation } from 'modules/trade/pure/TradeConfirmation'
 import { TradeFlowContext } from '../../services/types'
 import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
@@ -29,12 +28,14 @@ import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeAppr
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
+import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+import { Nullish } from 'types'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
   tradeContext: TradeFlowContext
-  inputCurrencyInfo: CurrencyInfo
-  outputCurrencyInfo: CurrencyInfo
+  inputCurrencyInfo: CurrencyPreviewInfo
+  outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
   onDismiss(): void
 }
@@ -43,8 +44,8 @@ function PendingText({
   inputRawAmount,
   outputRawAmount,
 }: {
-  inputRawAmount: CurrencyAmount<Currency> | null
-  outputRawAmount: CurrencyAmount<Currency> | null
+  inputRawAmount: Nullish<CurrencyAmount<Currency>>
+  outputRawAmount: Nullish<CurrencyAmount<Currency>>
 }) {
   const inputTitle = <TokenAmount amount={inputRawAmount} tokenSymbol={inputRawAmount?.currency} />
   const outputTitle = <TokenAmount amount={outputRawAmount} tokenSymbol={outputRawAmount?.currency} />
@@ -67,7 +68,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { partialFillsEnabled } = useFeatureFlags()
 
   const { amount: inputAmount } = inputCurrencyInfo
-  const { amount: outputAmount, currency: outputCurrency } = outputCurrencyInfo
+  const { amount: outputAmount } = outputCurrencyInfo
+
+  const outputCurrency = outputAmount?.currency
 
   const rateImpact = useRateImpact()
   const rateInfoParams = useRateInfoParams(inputAmount, outputAmount)

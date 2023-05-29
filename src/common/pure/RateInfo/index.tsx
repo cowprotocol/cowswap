@@ -11,15 +11,16 @@ import { transparentize } from 'polished'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { FiatAmount } from 'common/pure/FiatAmount'
+import { Nullish } from 'types'
 
 const DEFAULT_DECIMALS = 4
 
 export interface RateInfoParams {
   chainId: SupportedChainId | undefined
-  inputCurrencyAmount: CurrencyAmount<Currency> | null
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
-  activeRateFiatAmount: CurrencyAmount<Currency> | null
-  invertedActiveRateFiatAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  activeRateFiatAmount: Nullish<CurrencyAmount<Currency>>
+  invertedActiveRateFiatAmount: Nullish<CurrencyAmount<Currency>>
 }
 
 export interface RateInfoProps {

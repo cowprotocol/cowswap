@@ -3,23 +3,32 @@ import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
 import { Trans } from '@lingui/macro'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { Nullish } from 'types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 interface BuiltItProps {
   className: string
 }
 
+export interface CurrencyPreviewInfo {
+  amount: Nullish<CurrencyAmount<Currency>>
+  fiatAmount: Nullish<CurrencyAmount<Currency>>
+  balance: Nullish<CurrencyAmount<Currency>>
+  label?: Nullish<string>
+}
+
 export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   id: string
-  currencyInfo: CurrencyInfo
+  currencyInfo: CurrencyPreviewInfo
   priceImpactParams?: PriceImpact
-  topLabel?: string
 }
 
 export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
-  const { id, currencyInfo, className, priceImpactParams, topLabel } = props
-  const { currency, balance, fiatAmount, amount } = currencyInfo
+  const { id, currencyInfo, className, priceImpactParams } = props
+  const { balance, fiatAmount, amount } = currencyInfo
+  const topLabel = currencyInfo.label
+  const currency = amount?.currency
 
   return (
     <>
@@ -28,7 +37,7 @@ export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
 
         <styledEl.CurrencyInputBox>
           <div>
-            <CurrencySelectButton currency={currency || undefined} loading={false} readonlyMode={true} />
+            <CurrencySelectButton currency={currency} loading={false} readonlyMode={true} />
           </div>
           <div>
             <styledEl.TokenAmountStyled className="token-amount-input" amount={amount} />

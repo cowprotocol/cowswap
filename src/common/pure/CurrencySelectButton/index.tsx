@@ -3,9 +3,10 @@ import { Currency } from '@uniswap/sdk-core'
 import * as styledEl from './styled'
 import { Trans } from '@lingui/macro'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { Nullish } from 'types'
 
 export interface CurrencySelectButtonProps {
-  currency?: Currency
+  currency?: Nullish<Currency>
   loading: boolean
   readonlyMode?: boolean
   onClick?(): void
