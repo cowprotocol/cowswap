@@ -6,7 +6,7 @@ import XDaiLogo from 'legacy/assets/cow-swap/xdai.png'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import uriToHttp from 'lib/utils/uriToHttp'
 import { ADDRESS_IMAGE_OVERRIDE } from 'legacy/constants/tokens'
-import { useProxyTokenLogo } from '../../../../api/proxy'
+import { useProxyTokenLogo } from 'api/proxy'
 
 type Network = 'ethereum' | 'xdai'
 
@@ -43,8 +43,8 @@ const currencyLogoCache = new Map<string, Array<string>>()
 // TODO: must be refactored
 export default function useCurrencyLogoURIs(currency?: Currency | null): string[] {
   const currencyAddress = currency ? (currency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : currency.address) : null
-  const externalLogo = useProxyTokenLogo(currency?.chainId, currencyAddress)
   // There is a modification of Token in useDetectNativeToken()
+  const externalLogo = useProxyTokenLogo(currency?.chainId, currencyAddress)
   const cacheKey = `${currencyAddress}|${currency?.chainId}`
   const cached = currencyLogoCache.get(cacheKey)
 
