@@ -15,7 +15,7 @@ import { limitOrdersSettingsAtom, LimitOrdersSettingsState } from 'modules/limit
 import { LimitOrdersDerivedState } from 'modules/limitOrders'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
-import { TradeQuoteState, useQuote } from 'modules/tradeQuote'
+import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
@@ -184,7 +184,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isTxBundlingEnabled = useIsTxBundlingEnabled()
-  const quote = useQuote()
+  const quote = useTradeQuote()
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 

@@ -9,7 +9,7 @@ import { useUpdateAtom } from 'jotai/utils'
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 
 export function QuoteObserverUpdater() {
-  const { response, error } = useTradeQuote()
+  const { response } = useTradeQuote()
   const { state } = useDerivedTradeState()
 
   const updateLimitRateState = useUpdateAtom(updateLimitRateAtom)

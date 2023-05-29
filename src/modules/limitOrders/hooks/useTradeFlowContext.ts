@@ -13,7 +13,7 @@ import { useUploadAppData, useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
-import { useQuote } from 'modules/tradeQuote'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 export function useTradeFlowContext(): TradeFlowContext | null {
   const { provider } = useWeb3React()
@@ -26,7 +26,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const appData = useAppData()
   const uploadAppData = useUploadAppData()
   const { address: ensRecipientAddress } = useENSAddress(state.recipient)
-  const quoteState = useQuote()
+  const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const { partialFillsEnabled } = useFeatureFlags()

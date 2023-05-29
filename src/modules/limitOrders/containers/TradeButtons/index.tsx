@@ -21,7 +21,7 @@ import { useWalletDetails } from 'modules/wallet'
 import styled from 'styled-components/macro'
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
-import { useQuote } from 'modules/tradeQuote'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
@@ -41,7 +41,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const tradeState = useLimitOrdersDerivedState()
   const setConfirmationState = useSetAtom(limitOrdersConfirmState)
   const toggleWalletModal = useToggleWalletModal()
-  const quote = useQuote()
+  const quote = useTradeQuote()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
   const wrapUnwrapCallback = useWrapCallback(inputCurrencyAmount)
   const transactionConfirmState = useAtomValue(transactionConfirmAtom)
