@@ -27,6 +27,8 @@ import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { L2Content as TxSubmittedModal } from 'legacy/components/TransactionConfirmationModal'
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
+import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
@@ -88,7 +90,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
 
   const operationType = OperationType.ORDER_SIGN
   const pendingText = <PendingText inputRawAmount={inputAmount} outputRawAmount={outputAmount} />
-  const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+
+  const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
+  const isConfirmDisabled = isTooLowRate ? !warningsAccepted : false
 
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
   const buttonText = isSafeApprovalBundle ? (
@@ -109,22 +113,26 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               <CloseIcon onClick={() => onDismiss()} />
             </styledEl.ConfirmHeader>
             <TradeConfirmation
-              executionPrice={executionPrice}
-              limitRateState={limitRateState}
-              settingsState={settingsState}
-              tradeContext={tradeContext}
-              rateInfoParams={rateInfoParams}
               inputCurrencyInfo={inputCurrencyInfo}
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}
-              rateImpact={rateImpact}
+              isConfirmDisabled={isConfirmDisabled}
               priceImpact={priceImpact}
-              warningsAccepted={warningsAccepted}
-              partiallyFillableOverride={partiallyFillableOverride}
-              featurePartialFillsEnabled={partialFillsEnabled}
-              Warnings={Warnings}
               buttonText={buttonText}
-            />
+            >
+              <>
+                <LimitOrdersDetails
+                  limitRateState={limitRateState}
+                  tradeContext={tradeContext}
+                  rateInfoParams={rateInfoParams}
+                  settingsState={settingsState}
+                  executionPrice={executionPrice}
+                  partiallyFillableOverride={partiallyFillableOverride}
+                  featurePartialFillsEnabled={partialFillsEnabled}
+                />
+                <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+              </>
+            </TradeConfirmation>
           </styledEl.ConfirmModalWrapper>
         )}
       </GpModal>

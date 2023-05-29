@@ -3,16 +3,9 @@ import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { COW, GNO } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { OrderClass } from '@cowprotocol/cow-sdk'
-import { TradeFlowContext } from '../../../limitOrders/services/types'
 import { TradeConfirmation } from './index'
-import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import React from 'react'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
-import { SetStateAction } from 'jotai'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]
@@ -51,69 +44,23 @@ const outputCurrencyInfo: CurrencyInfo = {
   fiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 12 * 10 ** 18),
 }
 
-const tradeContext: TradeFlowContext = {
-  postOrderParams: {
-    class: OrderClass.LIMIT,
-    account: '0x000',
-    chainId: 1,
-    kind: OrderKind.SELL,
-    inputAmount: inputCurrencyInfo.amount!,
-    outputAmount: outputCurrencyInfo.amount!,
-    sellAmountBeforeFee: inputCurrencyInfo.amount!,
-    feeAmount: CurrencyAmount.fromRawAmount(outputCurrency, 10 * 10 ** 18),
-    sellToken: inputCurrency,
-    buyToken: outputCurrency,
-    recipient: '0xaaa',
-    recipientAddressOrName: null,
-    allowsOffchainSigning: true,
-    partiallyFillable: true,
-    appDataHash: '0xabc',
-  },
-  rateImpact: 0,
-  appData: {} as any,
-  uploadAppData: () => void 0,
-  provider: {} as any,
-  settlementContract: {} as any,
-  chainId: 1,
-  dispatch: (() => void 0) as any,
-  allowsOffchainSigning: true,
-  isGnosisSafeWallet: false,
-}
-
-const rateInfoParams = {
-  chainId: 5,
-  inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
-  outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
-  activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
-}
-
 const priceImpact: PriceImpact = {
   priceImpact: new Percent(20000, 10),
   loading: false,
   error: undefined,
 }
 
-const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
-
 const Fixtures = {
   default: (
     <TradeConfirmation
-      rateInfoParams={rateInfoParams}
-      settingsState={defaultLimitOrdersSettings}
-      rateImpact={1}
-      priceImpact={priceImpact}
-      tradeContext={tradeContext}
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
-      limitRateState={initLimitRateState()}
-      Warnings={Warnings}
-      warningsAccepted={true}
-      executionPrice={null}
       onConfirm={() => void 0}
-      partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
-      featurePartialFillsEnabled
-    />
+      isConfirmDisabled={false}
+      priceImpact={priceImpact}
+    >
+      <span>Trade confirmation</span>
+    </TradeConfirmation>
   ),
 }
 

@@ -16,11 +16,11 @@ describe('Limit orders', () => {
     cy.get('#review-limit-order-btn').click()
 
     cy.get('#output-currency-input .token-amount-input').should('have.value', outputAmount.toString())
-    cy.get('#limit-orders-confirm #input-currency-preview .token-amount-input').should(
+    cy.get('#trade-confirmation #input-currency-preview .token-amount-input').should(
       'contain.text',
       inputAmount.toString()
     )
-    cy.get('#limit-orders-confirm #output-currency-preview .token-amount-input').should('contain.text', '200B')
+    cy.get('#trade-confirmation #output-currency-preview .token-amount-input').should('contain.text', '200B')
   })
 
   describe('url params', () => {
