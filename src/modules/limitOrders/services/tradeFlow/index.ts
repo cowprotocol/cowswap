@@ -1,18 +1,20 @@
-import { signAndPostOrder } from 'legacy/utils/trade'
-import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
-import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
-import { logTradeFlow } from 'modules/trade/utils/logger'
-import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
-import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { signAndPostOrder } from 'legacy/utils/trade'
+
+import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
+import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
+import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { logTradeFlow } from 'modules/trade/utils/logger'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 export async function tradeFlow(
   params: TradeFlowContext,

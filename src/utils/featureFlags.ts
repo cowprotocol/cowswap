@@ -1,5 +1,6 @@
-import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
 import { isProdLike } from 'legacy/utils/environments'
+
+import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
 
 // We can define here some flags to be enabled while we develop
 // TODO: update this before the deployment

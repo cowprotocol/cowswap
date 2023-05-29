@@ -1,19 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'legacy/constants'
+import { COW as COW_TOKENS } from 'legacy/constants/tokens'
+import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
+import { useContract } from 'legacy/hooks/useContract'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import MERKLE_DROP_ABI from 'abis/MerkleDrop.json'
 import TOKEN_DISTRO_ABI from 'abis/TokenDistro.json'
 import { MerkleDrop, TokenDistro } from 'abis/types'
 import { useSingleCallResult } from 'lib/hooks/multicall'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useContract } from 'legacy/hooks/useContract'
-import { COW as COW_TOKENS } from 'legacy/constants/tokens'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+
 import { fetchClaim } from './claimData'
-import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
-import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'legacy/constants'
-import { useWalletInfo } from 'modules/wallet'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const COW = COW_TOKENS[SupportedChainId.MAINNET]

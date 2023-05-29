@@ -1,32 +1,40 @@
+import React, { ReactNode, useContext, useMemo } from 'react'
+
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import React, { ReactNode, useContext, useMemo } from 'react'
-import { ThemeContext } from 'styled-components/macro'
-// eslint-disable-next-line no-restricted-imports
+
 import { t, Trans } from '@lingui/macro'
+import { CheckCircle, UserCheck } from 'react-feather'
+import SVG from 'react-inlinesvg'
+import { Text } from 'rebass'
+import { ThemeContext } from 'styled-components/macro'
+
+import alertImage from 'legacy/assets/cow-swap/alert-circle.svg'
+import checkImage from 'legacy/assets/cow-swap/check.svg'
+import GameIcon from 'legacy/assets/cow-swap/game.gif'
+import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
+import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
+import { MediumAndUp, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { ActivityStatus, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
+import { OrderStatus } from 'legacy/state/orders/actions'
+import { useOrder } from 'legacy/state/orders/hooks'
 import { ExternalLink } from 'legacy/theme'
 import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel, shortenAddress } from 'legacy/utils'
-import { Text } from 'rebass'
-import { CheckCircle, UserCheck } from 'react-feather'
-import GameIcon from 'legacy/assets/cow-swap/game.gif'
-import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
-import { getStatusIcon } from 'modules/account/containers/AccountDetails'
-import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
-import { Routes } from 'constants/routes'
-import { ActivityStatus, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
-import { getActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
-import { ActivityDerivedState } from 'modules/account/containers/Transaction'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask' // mod
 import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { useOrder } from 'legacy/state/orders/hooks'
-import { OrderStatus } from 'legacy/state/orders/actions'
+
+import { getStatusIcon } from 'modules/account/containers/AccountDetails'
+import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-import checkImage from 'legacy/assets/cow-swap/check.svg'
-import alertImage from 'legacy/assets/cow-swap/alert-circle.svg'
-import SVG from 'react-inlinesvg'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { getIsMetaMask } from 'modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask' // mod
+
+import { Routes } from 'constants/routes'
+
 import {
   ApproveComparison,
   ApproveFooter,
@@ -48,10 +56,7 @@ import {
   WalletIcon,
   Wrapper,
 } from './styled'
-import { getIsMetaMask } from 'modules/wallet/api/utils/connection'
-import { MediumAndUp, useMediaQuery } from 'legacy/hooks/useMediaQuery'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { ConfirmationModalContent as ConfirmationModalContentMod } from './TransactionConfirmationModalMod'
 
 export * from './TransactionConfirmationModalMod'
 export { default } from './TransactionConfirmationModalMod'

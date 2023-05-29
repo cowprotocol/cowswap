@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import {
   GPAUDIT_LINK,
   COWWIKI_LINK,
@@ -9,19 +11,19 @@ import {
   MEV_TOTAL,
   FLASHBOTS_LINK,
 } from 'legacy/constants'
-import { Page, Content } from 'modules/application/pure/Page'
-import { Routes } from 'constants/routes'
-import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
-import { FaqMenu } from './Menu'
 import { StyledInternalLink } from 'legacy/theme'
 
-import { useToC } from './hooks'
-import ToC from './ToC'
 import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Page, Content } from 'modules/application/pure/Page'
+
+import { Routes } from 'constants/routes'
+
+import { useToC } from './hooks'
+import { FaqMenu } from './Menu'
+import { ExternalLinkFaq, Wrapper, ButtonNav, FooterWrapper } from './styled'
+import ToC from './ToC'
 
 // AmplitudeAnalytics
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 
 export interface TocSection {
   section: TocItem

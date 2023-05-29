@@ -1,6 +1,8 @@
-import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 import { Order } from 'legacy/state/orders/actions'
+
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+
 import * as styledEl from './styled'
 
 export function ExecutedSummary({ order }: { order: Order }) {

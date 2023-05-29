@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+
 import { setReferralAddressActive, updateReferralAddress } from 'legacy/state/affiliate/actions'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
 export function useReferralAddress() {
   return useAppSelector((state: any) => state.affiliate.referralAddress)

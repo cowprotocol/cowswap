@@ -1,8 +1,11 @@
 import { isAnyOf, Middleware } from '@reduxjs/toolkit'
+
 import { AppState } from 'legacy/state'
-import { finalizeTransaction } from '../enhancedTransactions/actions'
-import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 import { getCowSoundSuccess, getCowSoundError } from 'legacy/utils/sound'
+
+import { setSwapVCowStatus, SwapVCowStatus } from './actions'
+
+import { finalizeTransaction } from '../enhancedTransactions/actions'
 
 const isFinalizeTransaction = isAnyOf(finalizeTransaction)
 

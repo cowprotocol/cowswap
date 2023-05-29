@@ -1,7 +1,19 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
-import { Trans } from '@lingui/macro'
+
 import { Token } from '@uniswap/sdk-core'
-import TokensTableRow from './TokensTableRow'
+
+import { Trans } from '@lingui/macro'
+
+import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import useFilterTokens from 'legacy/hooks/useFilterTokens'
+import usePrevious from 'legacy/hooks/usePrevious'
+import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+
+import { TokenAmounts } from 'modules/tokens'
+
 import {
   Label,
   Wrapper,
@@ -16,14 +28,7 @@ import {
   TableHeader,
   NoResults,
 } from './styled'
-import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
-import usePrevious from 'legacy/hooks/usePrevious'
-import useFilterTokens from 'legacy/hooks/useFilterTokens'
-import { TokenAmounts } from 'modules/tokens'
+import TokensTableRow from './TokensTableRow'
 
 const MAX_ITEMS = 20
 

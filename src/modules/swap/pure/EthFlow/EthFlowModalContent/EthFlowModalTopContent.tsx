@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
-
-import styled from 'styled-components/macro'
 import { transparentize, darken } from 'polished'
+import styled from 'styled-components/macro'
+
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 
 const ModalMessage = styled.div`

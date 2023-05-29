@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
+
 import { Field } from 'legacy/state/swap/actions'
-import { useTradeQuote } from 'modules/tradeQuote'
+
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 export function QuoteObserverUpdater() {
   const { state } = useDerivedTradeState()

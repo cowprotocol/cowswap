@@ -1,13 +1,15 @@
-import JSBI from 'jsbi'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import JSBI from 'jsbi'
+
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { ReceiptModal } from 'modules/limitOrders/pure/ReceiptModal'
 import { calculatePrice } from 'modules/limitOrders/utils/calculatePrice'
-
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { useCloseReceiptModal, useSelectedOrder } from './hooks'
-import { useWalletInfo } from 'modules/wallet'
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useCloseReceiptModal, useSelectedOrder } from './hooks'
 
 export type OrdersReceiptModalProps = {
   pendingOrdersPrices: PendingOrdersPrices

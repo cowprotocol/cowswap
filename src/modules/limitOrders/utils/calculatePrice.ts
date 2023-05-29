@@ -1,6 +1,8 @@
 import { Price, Token } from '@uniswap/sdk-core'
-import { isZero } from './isZero'
+
 import JSBI from 'jsbi'
+
+import { isZero } from './isZero'
 
 interface CalculatePriceParams {
   buyAmount: JSBI | undefined

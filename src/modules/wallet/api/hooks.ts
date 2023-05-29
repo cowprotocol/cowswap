@@ -1,5 +1,7 @@
 import { useAtomValue } from 'jotai/utils'
+
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from 'modules/wallet'
+
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from './state'
 
 export function useWalletInfo(): WalletInfo {

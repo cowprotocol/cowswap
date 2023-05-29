@@ -1,6 +1,8 @@
-import { atomWithStorage } from 'jotai/utils'
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
+
 import { Milliseconds } from 'types'
+
 import { defaultNumOfParts, defaultOrderDeadline } from '../const'
 
 export interface TwapOrdersDeadline {

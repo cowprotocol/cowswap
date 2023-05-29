@@ -1,10 +1,13 @@
 import { atom } from 'jotai'
-import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
+
 import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
-import { TWAPOrder } from '../types'
-import { walletInfoAtom } from '../../wallet/api/state'
+
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
+
+import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
+import { walletInfoAtom } from '../../wallet/api/state'
 import { DEFAULT_TWAP_SLIPPAGE } from '../const'
+import { TWAPOrder } from '../types'
 import { customDeadlineToSeconds } from '../utils/deadlinePartsDisplay'
 
 export const twapTimeIntervalAtom = atom<number>((get) => {

@@ -1,18 +1,22 @@
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
-import { Field } from 'legacy/state/swap/actions'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { FractionUtils } from 'utils/fractionUtils'
-import { TradeWidgetActions } from 'modules/trade/containers/TradeWidget'
+
+import { Field } from 'legacy/state/swap/actions'
+
+import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
-import { useWalletInfo } from 'modules/wallet'
-import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelection'
+import { TradeWidgetActions } from 'modules/trade/containers/TradeWidget'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelection'
+import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useWalletInfo } from 'modules/wallet'
+
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { FractionUtils } from 'utils/fractionUtils'
 
 export function useLimitOrdersWidgetActions(): TradeWidgetActions {
   const { chainId } = useWalletInfo()

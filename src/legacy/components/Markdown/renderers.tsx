@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
-import visit from 'unist-util-visit'
+
 import { Node as MarkdownNode } from 'unist'
+import visit from 'unist-util-visit'
 
 const constructId = (text: string): string => text.toLowerCase().replace(/\W/g, '-')
 

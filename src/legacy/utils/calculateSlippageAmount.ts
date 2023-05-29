@@ -1,5 +1,7 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
 import JSBI from 'jsbi'
+
 import { ONE_FRACTION } from 'legacy/constants/misc'
 
 export function calculateSlippageAmount(value: CurrencyAmount<Currency>, slippage: Percent): [JSBI, JSBI] {

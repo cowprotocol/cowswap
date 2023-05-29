@@ -1,6 +1,8 @@
-import { shortenOrderId } from '../../utils'
-import { CancellationSummary } from 'modules/account/containers/Transaction/styled'
 import styled from 'styled-components/macro'
+
+import { CancellationSummary } from 'modules/account/containers/Transaction/styled'
+
+import { shortenOrderId } from '../../utils'
 
 // Moved this function to separate file to avoid curcular deps
 

@@ -1,7 +1,10 @@
-import { Percent } from '@uniswap/sdk-core'
-import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
-import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from 'legacy/constants/misc'
 import { useCallback, useState } from 'react'
+
+import { Percent } from '@uniswap/sdk-core'
+
+import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from 'legacy/constants/misc'
+
+import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 
 function getDescription(priceImpactWithoutFee: Percent) {
   if (!priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN)) {

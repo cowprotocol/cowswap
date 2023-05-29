@@ -1,21 +1,24 @@
-import { Plural, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
+
+import { Plural, Trans } from '@lingui/macro'
+import { transparentize } from 'polished'
+import { AlertCircle, ArrowLeft } from 'react-feather'
+import styled from 'styled-components/macro'
+
 import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
 import { ButtonPrimary } from 'legacy/components/Button'
+import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween } from 'legacy/components/Row'
-import { SectionBreak } from 'legacy/components/swap/styleds'
-import useTheme from 'legacy/hooks/useTheme'
-import { AlertCircle, ArrowLeft } from 'react-feather'
-import { useAddUserToken } from 'legacy/state/user/hooks'
-import styled from 'styled-components/macro'
-import { CloseIcon, ThemedText } from 'legacy/theme'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
 import TokenImportCard from 'legacy/components/SearchModal/TokenImportCard'
-import { transparentize } from 'polished'
-import Card from 'legacy/components/Card'
+import { SectionBreak } from 'legacy/components/swap/styleds'
+import useTheme from 'legacy/hooks/useTheme'
+import { useAddUserToken } from 'legacy/state/user/hooks'
+import { CloseIcon, ThemedText } from 'legacy/theme'
+
 import { CardComponentProps } from './index'
 
 const Wrapper = styled.div`

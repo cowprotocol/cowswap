@@ -1,6 +1,34 @@
 import { useEffect, useMemo } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import SVG from 'react-inlinesvg'
+
+import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
+import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
+import RoundArrow from 'legacy/assets/cow-swap/round-arrow.svg'
+import { BadgeVariant } from 'legacy/components/Badge'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
+import { FaqDrawer } from 'legacy/components/FaqDrawer'
+import { Stepper } from 'legacy/components/Stepper'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ClaimStatus } from 'legacy/state/claim/actions'
+import {
+  useClaimState,
+  useClaimDispatchers,
+  useHasClaimInvestmentFlowError,
+  useSomeNotTouched,
+  useClaimLinks,
+} from 'legacy/state/claim/hooks'
+import { calculateInvestmentAmounts } from 'legacy/state/claim/hooks/utils'
+import { InvestClaim } from 'legacy/state/claim/reducer'
+import { ExternalLink } from 'legacy/theme'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
+import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import {
   InvestFlow,
   InvestContent,
@@ -12,36 +40,10 @@ import {
   UserMessage,
   BannerExplainer,
 } from 'pages/Claim/styled'
-import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
-import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
-
-import { Stepper } from 'legacy/components/Stepper'
-import { FaqDrawer } from 'legacy/components/FaqDrawer'
-
-import {
-  useClaimState,
-  useClaimDispatchers,
-  useHasClaimInvestmentFlowError,
-  useSomeNotTouched,
-  useClaimLinks,
-} from 'legacy/state/claim/hooks'
-import { ClaimStatus } from 'legacy/state/claim/actions'
-import { InvestClaim } from 'legacy/state/claim/reducer'
-import { calculateInvestmentAmounts } from 'legacy/state/claim/hooks/utils'
 
 import InvestOption from './InvestOption'
-import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
-import { ExternalLink } from 'legacy/theme'
-import { ExplorerLink } from 'legacy/components/ExplorerLink'
 
-import { BadgeVariant } from 'legacy/components/Badge'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import RoundArrow from 'legacy/assets/cow-swap/round-arrow.svg'
-import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
-import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
-import SVG from 'react-inlinesvg'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from 'modules/wallet'
+import { ClaimCommonTypes, ClaimWithInvestmentData, EnhancedUserClaimData } from '../types'
 
 const STEPS_DATA = [
   {

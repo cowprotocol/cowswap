@@ -1,14 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import styled, { css } from 'styled-components/macro'
-import { Check, ChevronDown } from 'react-feather'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
+
 import { useWeb3React } from '@web3-react/core'
-import { ensNames } from 'pages/Account/ens'
-import { useAffiliateAddress } from 'legacy/state/affiliate/hooks'
+
+import { Check, ChevronDown } from 'react-feather'
+import styled, { css } from 'styled-components/macro'
+
+import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 import { updateAddress } from 'legacy/state/affiliate/actions'
+import { useAffiliateAddress } from 'legacy/state/affiliate/hooks'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { isAddress, shortenAddress } from 'legacy/utils'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { ensNames } from 'pages/Account/ens'
 
 type AddressSelectorProps = {
   address: string

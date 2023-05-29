@@ -1,24 +1,27 @@
-import { useWeb3React } from '@web3-react/core'
 import { useEffect } from 'react'
+
+import { useWeb3React } from '@web3-react/core'
+
+import ReactGA from 'react-ga4'
 import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 // Mod imports
+import usePrevious from 'legacy/hooks/usePrevious'
+
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { getConnectionName, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
-import { Dimensions } from '../types'
-import usePrevious from 'legacy/hooks/usePrevious'
 
+import { googleAnalytics, GOOGLE_ANALYTICS_CLIENT_ID_STORAGE_KEY } from '../index'
 import { PIXEL_EVENTS } from '../pixel/constants'
 import { sendFacebookEvent } from '../pixel/facebook'
 import { sendLinkedinEvent } from '../pixel/linkedin'
-import { sendTwitterEvent } from '../pixel/twitter'
-import { sendRedditEvent } from '../pixel/reddit'
-import { sendPavedEvent } from '../pixel/paved'
 import { sendMicrosoftEvent } from '../pixel/microsoft'
-import ReactGA from 'react-ga4'
+import { sendPavedEvent } from '../pixel/paved'
+import { sendRedditEvent } from '../pixel/reddit'
+import { sendTwitterEvent } from '../pixel/twitter'
+import { Dimensions } from '../types'
 
 export function sendTiming(timingCategory: any, timingVar: any, timingValue: any, timingLabel: any) {
   return googleAnalytics.gaCommandSendTiming(timingCategory, timingVar, timingValue, timingLabel)

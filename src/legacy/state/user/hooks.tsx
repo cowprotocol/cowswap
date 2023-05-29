@@ -1,18 +1,23 @@
+import { useCallback, useMemo } from 'react'
+
 import { Currency, Percent, Token } from '@uniswap/sdk-core'
 import { computePairAddress, Pair } from '@uniswap/v2-sdk'
+
+import JSBI from 'jsbi'
+import { shallowEqual } from 'react-redux'
+
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { L2_CHAIN_IDS } from 'legacy/constants/chains'
 import { SupportedLocale } from 'legacy/constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
-import JSBI from 'jsbi'
-import { useCallback, useMemo } from 'react'
-import { shallowEqual } from 'react-redux'
+import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 
-import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
-import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants/routing'
-import { useAllTokens } from '../../hooks/Tokens'
-import { AppState } from 'legacy/state'
+import { useWalletInfo } from 'modules/wallet'
+
+import { calculateValidTo } from 'utils/time'
+
 import {
   addSerializedPair,
   addSerializedToken,
@@ -22,7 +27,6 @@ import {
   toggleFavouriteToken,
   toggleURLWarning,
   updateHideClosedPositions,
-  // TODO: mod, move to mod file
   updateRecipientToggleVisible,
   updateShowDonationLink,
   updateShowSurveyPopup,
@@ -34,10 +38,11 @@ import {
   updateUserSlippageTolerance,
 } from './reducer'
 import { SerializedPair, SerializedToken } from './types'
+
+import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
+import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants/routing'
+import { useAllTokens } from '../../hooks/Tokens'
 import { useSwapActionHandlers } from '../swap/hooks'
-import { useWalletInfo } from 'modules/wallet'
-import { calculateValidTo } from 'utils/time'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 
 export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(

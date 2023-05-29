@@ -1,13 +1,14 @@
 // On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
-import { AppState } from '../../index'
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '../../../utils/sound'
-import { AddPendingOrderParams, BatchOrdersUpdateParams, UpdateOrderParams } from '../actions'
-import { OrdersState } from '../reducer'
-import { getOrderByIdFromState } from '../helpers'
-import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
-import * as OrderActions from '../actions'
 import { isAnyOf } from '@reduxjs/toolkit'
+import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
+
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from '../../../utils/sound'
 import { addPopup } from '../../application/reducer'
+import { AppState } from '../../index'
+import { AddPendingOrderParams, BatchOrdersUpdateParams, UpdateOrderParams } from '../actions'
+import * as OrderActions from '../actions'
+import { getOrderByIdFromState } from '../helpers'
+import { OrdersState } from '../reducer'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)

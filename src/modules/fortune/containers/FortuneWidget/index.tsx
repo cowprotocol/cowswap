@@ -1,25 +1,29 @@
-import styled from 'styled-components/macro'
-import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { useAtom, useAtomValue } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
+import { useCallback, useMemo, useRef, useState } from 'react'
+
+import { Trans } from '@lingui/macro'
+import { X } from 'react-feather'
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
+import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
+import { sendEvent } from 'legacy/components/analytics'
+import Confetti from 'legacy/components/Confetti'
+import { ExternalLink } from 'legacy/theme'
+import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
+
+import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
+import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
 import {
   fortuneStateAtom,
   isFortunesFeatureDisabledAtom,
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
-import { useUpdateAtom } from 'jotai/utils'
-import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { SuccessBanner } from 'pages/Claim/styled'
-import { Trans } from '@lingui/macro'
-import SVG from 'react-inlinesvg'
-import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
-import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
-import { ExternalLink } from 'legacy/theme'
-import { X } from 'react-feather'
-import Confetti from 'legacy/components/Confetti'
+
 import useInterval from 'lib/hooks/useInterval'
-import { sendEvent } from 'legacy/components/analytics'
-import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
+import { SuccessBanner } from 'pages/Claim/styled'
 
 const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   --size: 75px;

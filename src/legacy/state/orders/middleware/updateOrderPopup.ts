@@ -1,10 +1,11 @@
-import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
-import { orderAnalytics } from '../../../components/analytics'
-import { UpdateOrderParams } from '../actions'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
-import { AppState } from '../../index'
 import { Dispatch } from 'redux'
+
+import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'
+import { AppState } from '../../index'
+import { UpdateOrderParams } from '../actions'
+import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
 
 export function updateOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payload: UpdateOrderParams) {
   const { chainId, order } = payload

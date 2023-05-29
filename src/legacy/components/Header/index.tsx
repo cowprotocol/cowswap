@@ -1,13 +1,33 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Routes } from 'constants/routes'
-import { useNavigate } from 'react-router-dom'
-import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
 
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import SVG from 'react-inlinesvg'
+import { useNavigate } from 'react-router-dom'
+
+import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
+import CowBalanceButton from 'legacy/components/CowBalanceButton'
+import NetworkSelector from 'legacy/components/Header/NetworkSelector'
+import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
+import { useDarkModeManager } from 'legacy/state/user/hooks'
+import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
+import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
+import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
+import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
+import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
+import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
+import { useWalletInfo, Web3Status } from 'modules/wallet'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { Routes } from 'constants/routes'
+
+import MobileMenuIcon from './MobileMenuIcon'
 import {
   Wrapper,
   Title,
@@ -21,24 +41,7 @@ import {
   HeaderRow,
 } from './styled'
 
-import MobileMenuIcon from './MobileMenuIcon'
-import { useWalletInfo, Web3Status } from 'modules/wallet'
-import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
-import NetworkSelector from 'legacy/components/Header/NetworkSelector'
-import CowBalanceButton from 'legacy/components/CowBalanceButton'
-import SVG from 'react-inlinesvg'
-import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
-
 // Assets
-import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
-import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
-import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
-import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',

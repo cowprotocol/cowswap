@@ -1,7 +1,9 @@
-import { TokenAmounts } from 'modules/tokens'
+import { useMemo } from 'react'
+
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { TokenInfo } from '@uniswap/token-lists'
-import { useMemo } from 'react'
+
+import { TokenAmounts } from 'modules/tokens'
 
 /** Sorts currency amounts (descending). */
 function balanceComparator(a?: CurrencyAmount<Currency>, b?: CurrencyAmount<Currency>) {

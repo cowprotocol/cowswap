@@ -1,27 +1,28 @@
 import { useEffect, useMemo } from 'react'
 
-import { DEFAULT_DECIMALS } from 'legacy/constants'
-
-import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { Field } from 'legacy/state/swap/actions'
-import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
-
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
-import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
-import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
+import { DEFAULT_DECIMALS } from 'legacy/constants'
 import useDebounce from 'legacy/hooks/useDebounce'
+import useENSAddress from 'legacy/hooks/useENSAddress'
 import useIsOnline from 'legacy/hooks/useIsOnline'
-import { QuoteInformationObject } from './reducer'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
+import { useRefetchQuoteCallback } from 'legacy/hooks/useRefetchPriceCallback'
+import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
+import { Field } from 'legacy/state/swap/actions'
+import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
 import { isAddress } from 'legacy/utils'
-import useENSAddress from 'legacy/hooks/useENSAddress'
+
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { useWalletInfo } from 'modules/wallet'
+
+import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+
+import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'
+import { QuoteInformationObject } from './reducer'
 
 export const TYPED_VALUE_DEBOUNCE_TIME = 350
 const REFETCH_CHECK_INTERVAL = 10000 // Every 10s

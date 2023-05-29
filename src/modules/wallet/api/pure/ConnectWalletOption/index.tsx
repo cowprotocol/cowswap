@@ -1,9 +1,10 @@
 import React from 'react'
-import styled from 'styled-components/macro'
-import { darken, lighten } from 'polished'
 
-import { ExternalLink } from 'legacy/theme'
+import { darken, lighten } from 'polished'
+import styled from 'styled-components/macro'
+
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { ExternalLink } from 'legacy/theme'
 
 const InfoCard = styled.button<{ isActive?: boolean }>`
   background-color: ${({ theme, isActive }) => (isActive ? theme.bg3 : theme.bg2)};

@@ -1,12 +1,16 @@
-import { useWalletInfo } from 'modules/wallet'
-import { Filter } from '@ethersproject/providers'
-import { useWeb3React } from '@web3-react/core'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useEffect, useMemo } from 'react'
 
-import { useAppDispatch, useAppSelector } from '../hooks'
+import { Filter } from '@ethersproject/providers'
+import { useWeb3React } from '@web3-react/core'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import useBlockNumber from 'lib/hooks/useBlockNumber'
+
 import { fetchedLogs, fetchedLogsError, fetchingLogs } from './slice'
 import { isHistoricalLog, keyToFilter } from './utils'
+
+import { useAppDispatch, useAppSelector } from '../hooks'
 
 export default function Updater(): null {
   const dispatch = useAppDispatch()

@@ -1,15 +1,18 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useSetupTradeState } from 'modules/trade'
-import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWidget'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
 import { Field } from 'legacy/state/swap/actions'
+
+import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
-import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
+import { useSetupTradeState } from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWidget'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
+
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()

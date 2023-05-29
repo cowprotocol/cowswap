@@ -1,5 +1,6 @@
-import * as styledEl from './styled'
 import { InfoIcon } from 'legacy/components/InfoIcon'
+
+import * as styledEl from './styled'
 
 interface Props {
   label: string

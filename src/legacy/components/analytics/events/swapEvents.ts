@@ -1,8 +1,8 @@
-import { sendEvent } from '../index'
-import { Category } from '../types'
-
 import { Field } from 'legacy/state/swap/actions'
 import { debounce } from 'legacy/utils/misc'
+
+import { sendEvent } from '../index'
+import { Category } from '../types'
 
 export function currencySelectAnalytics(field: Field, label: string | undefined) {
   sendEvent({

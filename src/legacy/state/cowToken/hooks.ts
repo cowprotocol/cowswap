@@ -1,23 +1,26 @@
 import { useCallback, useMemo } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { TransactionResponse } from '@ethersproject/providers'
-
-import { useVCowContract } from 'legacy/hooks/useContract'
-import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { V_COW, COW } from 'legacy/constants/tokens'
-import { AppState } from 'legacy/state'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-import { setSwapVCowStatus, SwapVCowStatus } from './actions'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
-// import { useCowFromLockedGnoBalances } from 'pages/Profile/LockedGnoVesting/hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TransactionResponse } from '@ethersproject/providers'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import JSBI from 'jsbi'
+
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { V_COW, COW } from 'legacy/constants/tokens'
+import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
+import { useVCowContract } from 'legacy/hooks/useContract'
+import { AppState } from 'legacy/state'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { useWalletInfo } from 'modules/wallet'
+
 import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
+
+import { setSwapVCowStatus, SwapVCowStatus } from './actions'
 
 export type SetSwapVCowStatusCallback = (payload: SwapVCowStatus) => void
 
@@ -185,7 +188,7 @@ export function useCombinedBalance() {
   return useMemo(() => {
     let tmpBalance = JSBI.BigInt(0)
 
-    const isLoading = account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance) ? true : false
+    const isLoading = !!(account && (!vCowBalance /* || !lockedGnoBalance */ || !cowBalance))
 
     const cow = COW[supportedChainId(chainId) || SupportedChainId.MAINNET]
 

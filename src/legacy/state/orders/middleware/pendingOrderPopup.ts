@@ -1,10 +1,11 @@
-import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
-import { orderAnalytics } from '../../../components/analytics'
-import { AddPendingOrderParams } from '../actions'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
-import { AppState } from '../../index'
 import { Dispatch } from 'redux'
+
+import { orderAnalytics } from '../../../components/analytics'
 import { addPopup, AddPopupPayload } from '../../application/reducer'
+import { AppState } from '../../index'
+import { AddPendingOrderParams } from '../actions'
+import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
 
 export function pendingOrderPopup(store: MiddlewareAPI<Dispatch, AppState>, payload: AddPendingOrderParams) {
   const { id, chainId } = payload

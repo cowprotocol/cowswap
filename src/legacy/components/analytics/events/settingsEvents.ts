@@ -1,6 +1,7 @@
+import { debounce } from 'legacy/utils/misc'
+
 import { sendEvent } from '../index'
 import { Category } from '../types'
-import { debounce } from 'legacy/utils/misc'
 
 export function toggleExpertModeAnalytics(enable: boolean) {
   sendEvent({

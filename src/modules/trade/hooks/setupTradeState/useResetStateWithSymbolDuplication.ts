@@ -1,10 +1,13 @@
-// eslint-disable-next-line no-restricted-imports
-import { t } from '@lingui/macro'
 import { useEffect } from 'react'
+
+import { t } from '@lingui/macro'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
+
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
 import { useTradeNavigate } from '../useTradeNavigate'
-import { useWalletInfo } from 'modules/wallet'
 
 const alertMessage = (
   doubledSymbol: string

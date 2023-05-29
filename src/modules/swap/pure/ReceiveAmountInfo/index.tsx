@@ -1,11 +1,17 @@
 import React from 'react'
-import * as styledEl from './styled'
-import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+
 import { Currency } from '@uniswap/sdk-core'
-import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
+
 import { Trans } from '@lingui/macro'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
+
+import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import * as styledEl from './styled'
 
 export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo

@@ -1,11 +1,14 @@
 import { Trans } from '@lingui/macro'
-import { useClaimState } from 'legacy/state/claim/hooks'
-import { ClaimBanner as ClaimBannerWrapper } from './styled'
-import CheckCircle from 'legacy/assets/cow-swap/check.svg'
-import { ClaimStatus } from 'legacy/state/claim/actions'
 import SVG from 'react-inlinesvg'
-import { ClaimCommonTypes } from 'pages/Claim/types'
+
+import CheckCircle from 'legacy/assets/cow-swap/check.svg'
 import useNetworkName from 'legacy/hooks/useNetworkName'
+import { ClaimStatus } from 'legacy/state/claim/actions'
+import { useClaimState } from 'legacy/state/claim/hooks'
+
+import { ClaimCommonTypes } from 'pages/Claim/types'
+
+import { ClaimBanner as ClaimBannerWrapper } from './styled'
 
 type ClaimBannerProps = Pick<ClaimCommonTypes, 'hasClaims'> & {
   isClaimed: boolean

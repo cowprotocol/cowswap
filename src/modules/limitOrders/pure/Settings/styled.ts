@@ -1,5 +1,5 @@
-import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
 
 export const SettingsTitle = styled.h3`
   font-weight: 600;

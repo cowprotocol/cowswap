@@ -1,12 +1,16 @@
-import { FractionLike, Nullish } from 'types'
 import { Currency, CurrencyAmount, Percent, Rounding } from '@uniswap/sdk-core'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
-import { AMOUNT_PRECISION, FIAT_PRECISION, PERCENTAGE_PRECISION, ZERO_FRACTION } from 'legacy/constants'
-import { trimTrailingZeros } from 'utils/trimTrailingZeros'
-import { FractionUtils } from 'utils/fractionUtils'
-import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
-import { INTL_NUMBER_FORMAT } from 'constants/intl'
+
 import JSBI from 'jsbi'
+import { FractionLike, Nullish } from 'types'
+
+import { AMOUNT_PRECISION, FIAT_PRECISION, PERCENTAGE_PRECISION, ZERO_FRACTION } from 'legacy/constants'
+import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
+
+import { INTL_NUMBER_FORMAT } from 'constants/intl'
+import { FractionUtils } from 'utils/fractionUtils'
+import { trimTrailingZeros } from 'utils/trimTrailingZeros'
+
+import { getPrecisionForAmount, getSuffixForAmount, lessThanPrecisionSymbol, trimHugeAmounts } from './utils'
 
 export function formatFiatAmount(amount: Nullish<FractionLike>): string {
   return formatAmountWithPrecision(amount, FIAT_PRECISION)

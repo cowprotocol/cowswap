@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+
 import { Order } from 'modules/orders'
 
 export function useInputTokensFromOrders(orders: Order[]) {

@@ -1,12 +1,15 @@
 import React from 'react'
 
-import { SwapWidget } from 'modules/swap/containers/SwapWidget'
 import { Navigate, useLocation, useParams } from 'react-router-dom'
+
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
-import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { Routes } from 'constants/routes'
+
+import { SwapWidget } from 'modules/swap/containers/SwapWidget'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
+import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 import { useWalletInfo } from 'modules/wallet'
+
+import { Routes } from 'constants/routes'
 
 export function SwapPage() {
   const params = useParams()

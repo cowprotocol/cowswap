@@ -1,16 +1,22 @@
-import { useCallback } from 'react'
-import { useTradeSpenderAddress } from './useTradeSpenderAddress'
-import { useApproveCallback } from './useApproveCallback'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useSetAtom } from 'jotai'
-import { zeroApprovalState } from '../state/useZeroApprovalState'
-import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-import { useIsSafeWallet } from 'modules/wallet'
-import { pollUntil } from 'common/utils/pollUntil'
+import { useCallback } from 'react'
+
 import SafeApiKit from '@safe-global/api-kit'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+
+import { useIsSafeWallet } from 'modules/wallet'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+
+import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
+import { pollUntil } from 'common/utils/pollUntil'
+
+import { useApproveCallback } from './useApproveCallback'
+import { useTradeSpenderAddress } from './useTradeSpenderAddress'
+
+import { zeroApprovalState } from '../state/useZeroApprovalState'
 
 async function waitForSafeTransactionExecution({
   safeApiKit,

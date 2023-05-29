@@ -1,4 +1,6 @@
 // Button.fixture.jsx
+import { ReactElement } from 'react'
+
 import {
   BaseButton,
   ButtonPrimary,
@@ -9,7 +11,6 @@ import {
   ButtonYellow,
   ButtonOutlined,
 } from '../index'
-import { ReactElement } from 'react'
 
 const examples = [
   {

@@ -1,10 +1,14 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useCallback } from 'react'
+
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { useSelector, useDispatch } from 'react-redux'
-import { GasState } from './reducer'
-import { updateGasPrices, UpdateGasPrices } from './actions'
+
 import { AppDispatch } from 'legacy/state'
 import { AppState } from 'legacy/state'
+
+import { updateGasPrices, UpdateGasPrices } from './actions'
+import { GasState } from './reducer'
 
 export function useGasPrices(chainId?: ChainId) {
   return useSelector<AppState, GasState[ChainId] | null>((state) => {

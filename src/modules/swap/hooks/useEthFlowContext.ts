@@ -1,15 +1,18 @@
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback } from 'react'
+
 import { OrderKind } from '@cowprotocol/cow-sdk'
+
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { useEthFlowContract } from 'legacy/hooks/useContract'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+
 import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
 import { EthFlowContext } from 'modules/swap/services/types'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useCallback } from 'react'
 import {
   addInFlightOrderIdAtom,
   ethFlowInFlightOrderIdsAtom,
 } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
-import { useAtomValue, useSetAtom } from 'jotai'
 
 export function useEthFlowContext(): EthFlowContext | null {
   const contract = useEthFlowContract()

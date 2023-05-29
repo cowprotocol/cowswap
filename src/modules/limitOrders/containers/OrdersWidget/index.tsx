@@ -1,25 +1,31 @@
-import { Orders } from '../../pure/Orders'
-import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
-import { useCallback, useEffect, useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { OrdersReceiptModal } from 'modules/limitOrders/containers/OrdersReceiptModal'
-import { useBalancesAndAllowances } from 'modules/tokens'
-import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from 'modules/limitOrders/utils/buildLimitOrdersUrl'
-import { LIMIT_ORDERS_TABS, OPEN_TAB } from 'modules/limitOrders/const/limitOrdersTabs'
-import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
-import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { useSelectReceiptOrder } from 'modules/limitOrders/containers/OrdersReceiptModal/hooks'
-import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
-import { Order } from 'legacy/state/orders/actions'
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useCallback, useEffect, useMemo } from 'react'
+
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
+
+import { GP_VAULT_RELAYER } from 'legacy/constants'
+import { Order } from 'legacy/state/orders/actions'
+
+import { LIMIT_ORDERS_TABS, OPEN_TAB } from 'modules/limitOrders/const/limitOrdersTabs'
+import { OrdersReceiptModal } from 'modules/limitOrders/containers/OrdersReceiptModal'
+import { useSelectReceiptOrder } from 'modules/limitOrders/containers/OrdersReceiptModal/hooks'
 import { MultipleCancellationMenu } from 'modules/limitOrders/containers/OrdersWidget/MultipleCancellationMenu'
+import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
+import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from 'modules/limitOrders/utils/buildLimitOrdersUrl'
 import { useInputTokensFromOrders } from 'modules/orders'
+import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
+import { useBalancesAndAllowances } from 'modules/tokens'
+import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+
+import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
+import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
+
+import { Orders } from '../../pure/Orders'
 
 function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history

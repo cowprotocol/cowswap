@@ -1,8 +1,9 @@
-// eslint-disable-next-line no-restricted-imports
 import { Trans } from '@lingui/macro'
-import Modal from 'common/pure/Modal'
-import styled from 'styled-components/macro'
 import { X } from 'react-feather'
+import styled from 'styled-components/macro'
+
+import Modal from 'common/pure/Modal'
+
 import { ConfirmedButton } from '../ConfirmedButton'
 
 const ModalContentWrapper = styled.div`

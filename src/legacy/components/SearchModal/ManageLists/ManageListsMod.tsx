@@ -1,34 +1,39 @@
-// eslint-disable-next-line no-restricted-imports
-import { t, Trans } from '@lingui/macro'
-import { TokenList } from '@uniswap/token-lists'
-import { useListColor } from 'legacy/hooks/useColor'
-import parseENSAddress from 'lib/utils/parseENSAddress'
-import uriToHttp from 'lib/utils/uriToHttp'
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
+import { TokenList } from '@uniswap/token-lists'
+
+import { t, Trans } from '@lingui/macro'
 import { CheckCircle, Settings } from 'react-feather'
 import { usePopper } from 'react-popper'
-import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import styled from 'styled-components/macro'
-import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
-import useTheme from 'legacy/hooks/useTheme'
-import useToggle from 'legacy/hooks/useToggle'
-import { useActiveListUrls, useAllLists, useIsListActive } from 'legacy/state/lists/hooks'
-import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
-import listVersionLabel from 'legacy/utils/listVersionLabel'
+
+import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'legacy/components/analytics'
 import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
 import Column, { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
 import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
-import Toggle from 'legacy/components/Toggle'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'legacy/components/SearchModal/styleds'
-import { ListRowProps, RowWrapper, Card } from './index'
+import Toggle from 'legacy/components/Toggle'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
+import { useListColor } from 'legacy/hooks/useColor'
+import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
+import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
+import useTheme from 'legacy/hooks/useTheme'
+import useToggle from 'legacy/hooks/useToggle'
+import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+import { useActiveListUrls, useAllLists, useIsListActive } from 'legacy/state/lists/hooks'
+import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
+import listVersionLabel from 'legacy/utils/listVersionLabel'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'legacy/components/analytics'
+
 import { useWalletInfo } from 'modules/wallet'
+
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
+import parseENSAddress from 'lib/utils/parseENSAddress'
+import uriToHttp from 'lib/utils/uriToHttp'
+
+import { ListRowProps, RowWrapper, Card } from './index'
 
 const Wrapper = styled(Column)`
   width: 100%;

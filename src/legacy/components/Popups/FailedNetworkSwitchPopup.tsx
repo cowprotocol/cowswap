@@ -1,15 +1,16 @@
-import { Trans } from '@lingui/macro'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useContext } from 'react'
+import { useMemo } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { AutoRow } from 'legacy/components/Row'
-
-import { getChainInfo } from 'legacy/constants/chainInfo'
-import { useMemo } from 'react'
 import UnsupportedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
+import { getChainInfo } from 'legacy/constants/chainInfo'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

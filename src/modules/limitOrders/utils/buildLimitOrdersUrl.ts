@@ -1,6 +1,7 @@
-import { Location } from 'history'
-import { LIMIT_ORDERS_TABS } from 'modules/limitOrders/const/limitOrdersTabs'
 import { Path } from '@remix-run/router/history'
+import { Location } from 'history'
+
+import { LIMIT_ORDERS_TABS } from 'modules/limitOrders/const/limitOrdersTabs'
 
 const LIMIT_ORDERS_TAB_KEY = 'tab'
 const LIMIT_ORDERS_PAGE_KEY = 'page'

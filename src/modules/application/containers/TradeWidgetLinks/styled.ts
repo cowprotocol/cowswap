@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
-import { NavLink } from 'react-router-dom'
 import { transparentize } from 'polished'
+import { NavLink } from 'react-router-dom'
+import styled from 'styled-components/macro'
 
 export const Badge = styled.div`
   background: ${({ theme }) => theme.grey1};

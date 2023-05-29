@@ -1,19 +1,19 @@
 import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
 import { useAnalyticsReporter } from 'legacy/components/analytics'
+import ErrorBoundary from 'legacy/components/ErrorBoundary'
+import Footer from 'legacy/components/Footer'
+import Header from 'legacy/components/Header'
+import URLWarning from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import ApeModeQueryParamReader from 'legacy/hooks/useApeModeQueryParamReader'
-import ErrorBoundary from 'legacy/components/ErrorBoundary'
-import Header from 'legacy/components/Header'
-
 import DarkModeQueryParamReader from 'legacy/theme'
 
-import URLWarning from 'legacy/components/Header/URLWarning'
-import Footer from 'legacy/components/Footer'
+import { useInitializeUtm } from 'modules/utm'
 
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
+
 import { RoutesApp } from './RoutesApp'
 import * as styledEl from './styled'
-import { useInitializeUtm } from 'modules/utm'
 
 export function App() {
   initializeAnalytics()

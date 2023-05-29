@@ -1,5 +1,39 @@
-import { Trans } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
+import { MetaMask } from '@web3-react/metamask'
+
+import { Trans } from '@lingui/macro'
+import SVG from 'react-inlinesvg'
+import { Link } from 'react-router-dom'
+
+import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
+import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
+import vCOWImage from 'legacy/assets/cow-swap/vCOW.png'
+import { ButtonPrimary } from 'legacy/components/Button'
+import CopyHelper from 'legacy/components/Copy'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'legacy/constants'
+import { COW, V_COW } from 'legacy/constants/tokens'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import usePrevious from 'legacy/hooks/usePrevious'
+import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
+import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
+import { getBlockExplorerUrl } from 'legacy/utils'
+import { getProviderErrorMessage } from 'legacy/utils/misc'
+
+import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
+
+import { HelpCircle } from 'common/pure/HelpCircle'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
+import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import {
   ExtLink,
   Card,
@@ -10,36 +44,8 @@ import {
   CardsLoader,
   CardsSpinner,
 } from 'pages/Account/styled'
-import { useWeb3React } from '@web3-react/core'
-import { getBlockExplorerUrl } from 'legacy/utils'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { ButtonPrimary } from 'legacy/components/Button'
-import vCOWImage from 'legacy/assets/cow-swap/vCOW.png'
-import SVG from 'react-inlinesvg'
-import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
-import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
-import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
-import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import { COW, V_COW } from 'legacy/constants/tokens'
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
-import { Link } from 'react-router-dom'
-import CopyHelper from 'legacy/components/Copy'
-import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
-import usePrevious from 'legacy/hooks/usePrevious'
+
 import LockedGnoVesting from './LockedGnoVesting'
-import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
-import { getProviderErrorMessage } from 'legacy/utils/misc'
-import { MetaMask } from '@web3-react/metamask'
-import { HelpCircle } from 'common/pure/HelpCircle'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { useWalletInfo } from 'modules/wallet'
-import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2

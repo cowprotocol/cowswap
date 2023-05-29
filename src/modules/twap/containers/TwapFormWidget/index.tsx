@@ -1,19 +1,22 @@
-import * as styledEl from './styled'
+import { useAtomValue } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
+
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
-import { AmountParts } from '../../pure/AmountParts'
-import { useAtomValue } from 'jotai'
-import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
-import { useUpdateAtom } from 'jotai/utils'
-import { partsStateAtom } from '../../state/partsStateAtom'
-import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
+
+import * as styledEl from './styled'
+
 import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines, defaultNumOfParts } from '../../const'
-import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
-import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { useTwapFormActions } from '../../hooks/useTwapFormActions'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
+import { AmountParts } from '../../pure/AmountParts'
+import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
+import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
-import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
+import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =

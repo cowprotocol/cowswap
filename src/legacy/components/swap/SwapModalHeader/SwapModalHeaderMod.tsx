@@ -1,30 +1,36 @@
-import { Trans } from '@lingui/macro'
-import { Percent, TradeType } from '@uniswap/sdk-core'
 import React, { useContext, useMemo } from 'react'
+
+import { Percent, TradeType } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { transparentize } from 'polished'
 import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { ThemedText } from 'legacy/theme'
-import { isAddress, shortenAddress } from 'legacy/utils'
+
 import { ButtonPrimary } from 'legacy/components/Button'
 import { AutoColumn } from 'legacy/components/Column'
-import { FiatValue } from 'common/pure/FiatValue'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
 import { AuxInformationContainer, SwapShowAcceptChanges, TruncatedText } from 'legacy/components/swap/styleds'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
-import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
-import { Field } from 'legacy/state/swap/actions'
-import FeeInformationTooltip from '../FeeInformationTooltip'
-import { LightCardType } from './index'
-import { transparentize } from 'polished'
 import { WarningProps } from 'legacy/components/SwapWarnings'
+import { INPUT_OUTPUT_EXPLANATION } from 'legacy/constants'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { Field } from 'legacy/state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { ThemedText } from 'legacy/theme'
+import { isAddress, shortenAddress } from 'legacy/utils'
+import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
+
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { FiatValue } from 'common/pure/FiatValue'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import { LightCardType } from './index'
+
+import FeeInformationTooltip from '../FeeInformationTooltip'
 
 export const ArrowWrapper = styled.div`
   --size: 26px;

@@ -1,9 +1,12 @@
-import { Currency } from '@uniswap/sdk-core'
-import useCurrencyLogoURIs from './hooks/useCurrencyLogoURIs'
 import React from 'react'
+
+import { Currency } from '@uniswap/sdk-core'
+
 import styled from 'styled-components/macro'
 
 import Logo from 'legacy/components/Logo'
+
+import useCurrencyLogoURIs from './hooks/useCurrencyLogoURIs'
 
 export const StyledLogo = styled(Logo)<{ size: string; $native: boolean }>`
   width: ${({ size }) => size};

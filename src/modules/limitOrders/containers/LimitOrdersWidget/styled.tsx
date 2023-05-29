@@ -1,8 +1,10 @@
-import styled from 'styled-components/macro'
-import { RateInfo } from 'common/pure/RateInfo'
-import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
 import { transparentize, darken } from 'polished'
+import styled from 'styled-components/macro'
+
+import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
+
+import { RateInfo } from 'common/pure/RateInfo'
 
 export const TradeButtonBox = styled.div`
   margin: 10px 0 0;

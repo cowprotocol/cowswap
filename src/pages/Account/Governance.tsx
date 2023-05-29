@@ -1,5 +1,6 @@
-import { ExtLink, BannerCard, BannerCardContent, BannerCardSvg, CardActions } from './styled'
 import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
+
+import { ExtLink, BannerCard, BannerCardContent, BannerCardSvg, CardActions } from './styled'
 
 export default function Governance() {
   return (

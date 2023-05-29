@@ -1,5 +1,6 @@
-import { TwapOrdersDeadline } from '../state/twapOrdersSettingsAtom'
 import ms from 'ms'
+
+import { TwapOrdersDeadline } from '../state/twapOrdersSettingsAtom'
 
 const [oneD, oneH, oneM, oneS] = [ms('1d'), ms('1h'), ms('1m'), ms('1s')]
 

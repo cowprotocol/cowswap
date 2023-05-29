@@ -1,4 +1,5 @@
 import { createStore, Store } from 'redux'
+
 import { addTransaction, checkedTransaction, clearAllTransactions, finalizeTransaction } from './actions'
 import reducer, { HashType, initialState, EnhancedTransactionState } from './reducer'
 

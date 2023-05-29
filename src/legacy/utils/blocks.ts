@@ -1,5 +1,5 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
 import { Log } from '@ethersproject/abstract-provider'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 export const buildBlock2DateMap = async (provider: JsonRpcProvider, logs: Log[]): Promise<Record<string, Date>> => {
   // only check unique blocks
