@@ -1,11 +1,9 @@
 import { useCallback } from 'react'
 
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+
 import { Text } from 'rebass'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { GpModal } from 'common/pure/Modal'
 import { AutoColumn } from 'legacy/components/Column'
 import { ExternalLink } from 'legacy/components/Link'
 import Row from 'legacy/components/Row'
@@ -15,6 +13,10 @@ import {
   ConfirmationModalProps,
 } from 'legacy/components/TransactionConfirmationModal'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { GpModal } from 'common/pure/Modal'
 
 import { SUBSIDY_INFO_MESSAGE } from './constants'
 import SubsidyTable from './SubsidyTable'

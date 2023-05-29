@@ -4,6 +4,12 @@ import React, { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { L2Content as TxSubmittedModal } from 'legacy/components/TransactionConfirmationModal'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { CloseIcon } from 'legacy/theme'
+
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
@@ -21,11 +27,6 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { GpModal } from 'common/pure/Modal'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import { L2Content as TxSubmittedModal } from 'legacy/components/TransactionConfirmationModal'
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { CloseIcon } from 'legacy/theme'
 
 import * as styledEl from './styled'
 

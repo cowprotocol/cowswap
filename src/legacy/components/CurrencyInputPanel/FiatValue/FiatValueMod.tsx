@@ -1,14 +1,16 @@
 import { useMemo } from 'react'
 
-import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { FiatAmount } from 'common/pure/FiatAmount'
+import { t } from '@lingui/macro'
+
 import Loader from 'legacy/components/Loader'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import useTheme from 'legacy/hooks/useTheme'
 import { ThemedText } from 'legacy/theme'
 import { warningSeverity } from 'legacy/utils/prices'
+
+import { FiatAmount } from 'common/pure/FiatAmount'
 import { formatPercent } from 'utils/amountFormat'
 
 export function FiatValue({

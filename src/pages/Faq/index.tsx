@@ -1,9 +1,5 @@
 import { Link } from 'react-router-dom'
 
-import { PageTitle } from 'modules/application/containers/PageTitle'
-import { Page, Content } from 'modules/application/pure/Page'
-
-import { Routes } from 'constants/routes'
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import {
@@ -16,6 +12,11 @@ import {
   FLASHBOTS_LINK,
 } from 'legacy/constants'
 import { StyledInternalLink } from 'legacy/theme'
+
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Page, Content } from 'modules/application/pure/Page'
+
+import { Routes } from 'constants/routes'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'

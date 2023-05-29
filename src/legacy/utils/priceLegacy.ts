@@ -1,9 +1,13 @@
 import { OrderKind } from '@cowprotocol/contracts'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import * as Sentry from '@sentry/browser'
 import BigNumberJs from 'bignumber.js'
 import { OptimalRate } from 'paraswap-core'
 import { FeeInformation, PriceInformation } from 'types'
+
+import { PRICE_API_TIMEOUT_MS } from 'legacy/constants'
+import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'legacy/utils/misc'
 
 import {
   getPriceQuote as getPriceQuote1inch,
@@ -25,8 +29,6 @@ import {
   toPriceInformation as toPriceInformationMatcha,
 } from 'api/matcha-0x'
 import { getPriceQuote as getPriceQuoteParaswap, toPriceInformation as toPriceInformationParaswap } from 'api/paraswap'
-import { PRICE_API_TIMEOUT_MS } from 'legacy/constants'
-import { getCanonicalMarket, isPromiseFulfilled, withTimeout } from 'legacy/utils/misc'
 
 /**
  * ************************************************** *

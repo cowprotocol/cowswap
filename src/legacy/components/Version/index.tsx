@@ -1,13 +1,14 @@
-import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import styled from 'styled-components/macro'
 
-import { useWalletInfo } from 'modules/wallet'
+import contractsPkg from '@cowprotocol/contracts/package.json'
+import styled from 'styled-components/macro'
 
 import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'legacy/constants'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import { ExternalLink } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'
+
+import { useWalletInfo } from 'modules/wallet'
 
 import pkg from '../../../../package.json'
 

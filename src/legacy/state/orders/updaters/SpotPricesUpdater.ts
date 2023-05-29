@@ -2,18 +2,20 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
+
 import { useWeb3React } from '@web3-react/core'
+
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
+import { useUpdateAtom } from 'legacy/state/application/atoms'
+import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
+import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { requestPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { UpdateSpotPriceAtom, updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getCanonicalMarketChainKey } from 'common/utils/markets'
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
-import { useUpdateAtom } from 'legacy/state/application/atoms'
-import { SPOT_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
-import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { FractionUtils } from 'utils/fractionUtils'
 
 type MarketRecord = Record<

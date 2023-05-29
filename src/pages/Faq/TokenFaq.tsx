@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom'
 
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
 import { Routes } from 'constants/routes'
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-
-import { Footer } from '.'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
+
+import { Footer } from '.'
+
 import { ExternalLinkFaq, Wrapper } from './styled'
 import ToC from './ToC'
 

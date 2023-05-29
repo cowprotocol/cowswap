@@ -2,15 +2,12 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { timestamp } from '@cowprotocol/contracts'
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+
 import { FeeInformation, PriceInformation } from 'types'
 
-import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { useWalletInfo } from 'modules/wallet'
-
-import { PRICE_QUOTE_VALID_TO_TIME } from 'constants/quote'
 import { priceOutOfRangeAnalytics } from 'legacy/components/analytics'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
@@ -29,6 +26,11 @@ import {
 import { getPromiseFulfilledValue } from 'legacy/utils/misc'
 import { getBestQuote } from 'legacy/utils/price'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { useWalletInfo } from 'modules/wallet'
+
+import { PRICE_QUOTE_VALID_TO_TIME } from 'constants/quote'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure

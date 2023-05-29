@@ -1,4 +1,5 @@
 import { Currency } from '@uniswap/sdk-core'
+
 import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'

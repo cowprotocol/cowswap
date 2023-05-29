@@ -2,13 +2,14 @@ import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 import usePrevious from 'legacy/hooks/usePrevious'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 function getCurrencyToApprove(amountToApprove: CurrencyAmount<Currency> | null): Token | undefined {
   if (!amountToApprove) return undefined

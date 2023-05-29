@@ -1,26 +1,18 @@
 import { useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
 import { Contract } from '@ethersproject/contracts'
 import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json'
 import { useWeb3React } from '@web3-react/core'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
-import { GPv2Settlement, VCow } from 'abis/types'
-import { CoWSwapEthFlow } from 'abis/types/ethflow'
-import V_COW_ABI from 'abis/vCow.json'
 import ARGENT_WALLET_DETECTOR_ABI from 'legacy/abis/argent-wallet-detector.json'
 import EIP_2612 from 'legacy/abis/eip_2612.json'
 import ENS_PUBLIC_RESOLVER_ABI from 'legacy/abis/ens-public-resolver.json'
 import ENS_ABI from 'legacy/abis/ens-registrar.json'
 import ERC1155_ABI from 'legacy/abis/erc1155.json'
 import ERC20_ABI from 'legacy/abis/erc20.json'
-
-import type { JsonRpcProvider } from '@ethersproject/providers'
-
 import ERC20_BYTES32_ABI from 'legacy/abis/erc20_bytes32.json'
 import ERC721_ABI from 'legacy/abis/erc721.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'legacy/abis/types'
@@ -35,6 +27,15 @@ import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { UniswapInterfaceMulticall } from 'legacy/types/v3'
 import { getContract } from 'legacy/utils'
 import { isEns, isProd, isStaging } from 'legacy/utils/environments'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
+import { GPv2Settlement, VCow } from 'abis/types'
+import { CoWSwapEthFlow } from 'abis/types/ethflow'
+import V_COW_ABI from 'abis/vCow.json'
+
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 

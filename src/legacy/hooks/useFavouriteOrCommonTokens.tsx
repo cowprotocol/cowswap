@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { COMMON_BASES } from 'legacy/constants/routing'
 import { useFavouriteTokens } from 'legacy/state/user/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
 
 export function useFavouriteOrCommonTokens() {
   const { chainId } = useWalletInfo()

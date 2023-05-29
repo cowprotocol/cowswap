@@ -11,13 +11,14 @@ import { Flex } from 'rebass'
 import styled from 'styled-components/macro'
 import { ThemeContext } from 'styled-components/macro'
 
-import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
-
 import IMAGE_MOON from 'legacy/assets/cow-swap/moon.svg'
 import IMAGE_SUN from 'legacy/assets/cow-swap/sun.svg'
 import store from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
+
+import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
+
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
 const DarkModeToggleButton = styled.button`

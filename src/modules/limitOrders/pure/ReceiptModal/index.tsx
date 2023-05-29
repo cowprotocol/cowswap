@@ -1,12 +1,13 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
+import { OrderStatus } from 'legacy/state/orders/actions'
+import { CloseIcon } from 'legacy/theme'
+
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getSellAmountWithFee } from 'modules/limitOrders/utils/getSellAmountWithFee'
 
 import { GpModal } from 'common/pure/Modal'
-import { OrderStatus } from 'legacy/state/orders/actions'
-import { CloseIcon } from 'legacy/theme'
 
 import { CurrencyField } from './CurrencyField'
 import { DateField } from './DateField'

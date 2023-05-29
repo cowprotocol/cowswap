@@ -5,14 +5,14 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { COW, GNO } from 'legacy/constants/tokens'
+
 import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 
-import { COW, GNO } from 'legacy/constants/tokens'
+import { TradeFlowContext } from '../../services/types'
 
 import { LimitOrdersDetails } from './index'
-
-import { TradeFlowContext } from '../../services/types'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]

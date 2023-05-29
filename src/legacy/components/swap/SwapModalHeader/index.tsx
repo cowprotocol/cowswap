@@ -3,12 +3,12 @@ import React from 'react'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
-import { useWalletDetails } from 'modules/wallet'
-
 import { LightCard as LightCardUni } from 'legacy/components/Card'
 import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
 import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
+
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { useWalletDetails } from 'modules/wallet'
 
 import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 

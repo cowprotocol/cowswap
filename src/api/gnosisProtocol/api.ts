@@ -2,15 +2,17 @@ import { OrderBookApiError, PriceQuality, SupportedChainId as ChainId } from '@c
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { NativePriceResponse, Trade } from '@cowprotocol/cow-sdk'
+
 import { orderBookApi } from 'cowSdk'
+
+import { ZERO_ADDRESS } from 'legacy/constants/misc'
+import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
+import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
 
 import { getAppDataHash } from 'modules/appData'
 
 import { ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
-import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
-import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
 
 import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 

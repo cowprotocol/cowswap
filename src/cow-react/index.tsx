@@ -13,12 +13,6 @@ import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
-import { App } from 'modules/application/containers/App'
-import { Updaters } from 'modules/application/containers/App/Updaters'
-import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
-import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
-
-import { FeatureGuard } from 'common/containers/FeatureGuard'
 import AppziButton from 'legacy/components/AppziButton'
 import Blocklist from 'legacy/components/Blocklist'
 import Popups from 'legacy/components/Popups'
@@ -26,6 +20,13 @@ import Web3Provider from 'legacy/components/Web3Provider'
 import store from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
 import { nodeRemoveChildFix } from 'legacy/utils/node'
+
+import { App } from 'modules/application/containers/App'
+import { Updaters } from 'modules/application/containers/App/Updaters'
+import { WithLDProvider } from 'modules/application/containers/WithLDProvider'
+import { FortuneWidget } from 'modules/fortune/containers/FortuneWidget'
+
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 
 // Node removeChild hackaround

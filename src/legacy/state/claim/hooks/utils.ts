@@ -14,6 +14,7 @@ import {
 } from 'legacy/state/claim/hooks/index'
 import { ClaimInput } from 'legacy/state/claim/hooks/index'
 import { InvestClaim } from 'legacy/state/claim/reducer'
+
 import { EnhancedUserClaimData, InvestmentAmounts } from 'pages/Claim/types'
 
 /**

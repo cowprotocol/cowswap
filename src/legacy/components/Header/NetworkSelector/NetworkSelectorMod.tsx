@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { transparentize, darken } from 'polished'
@@ -11,13 +12,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { css } from 'styled-components/macro'
 
-import { useTradeTypeInfo } from 'modules/trade'
-import { useWalletInfo } from 'modules/wallet'
-import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
-import { getWeb3ReactConnection, isChainAllowed } from 'modules/wallet/web3-react/connection'
-import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
-
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import { CHAIN_IDS_TO_NAMES } from 'legacy/constants/chains'
 import { useMediaQuery, upToMedium } from 'legacy/hooks/useMediaQuery'
@@ -31,6 +25,14 @@ import { ExternalLink, MEDIA_WIDTHS } from 'legacy/theme'
 import { getExplorerBaseUrl } from 'legacy/utils/explorer'
 import { replaceURLParam } from 'legacy/utils/routes'
 import { SUPPORTED_CHAIN_IDS, supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useTradeTypeInfo } from 'modules/trade'
+import { useWalletInfo } from 'modules/wallet'
+import { getIsTallyWallet } from 'modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection, isChainAllowed } from 'modules/wallet/web3-react/connection'
+import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
+
+import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 
 export const ActiveRowLinkList = styled.div`
   display: flex;

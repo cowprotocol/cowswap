@@ -1,10 +1,10 @@
-import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { t } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
 import { StyledLogo } from 'legacy/components/CurrencyLogo'
@@ -13,6 +13,8 @@ import { MenuItem as MenuItemMod } from 'legacy/components/SearchModal/styleds'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
 import { TagInfo } from 'legacy/state/lists/wrappedTokenInfo'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 import CurrencyListMod, { StyledBalanceText, Tag as TagMod, TagContainer } from './CurrencyListMod'
 

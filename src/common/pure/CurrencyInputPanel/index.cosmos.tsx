@@ -1,5 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
 import { DemoContainer } from 'cosmos.decorator'
 import { useSelect, useValue } from 'react-cosmos/fixture'
 

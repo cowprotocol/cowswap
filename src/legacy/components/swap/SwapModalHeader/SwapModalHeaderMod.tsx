@@ -1,22 +1,17 @@
 import React, { useContext, useMemo } from 'react'
 
-import { Trans } from '@lingui/macro'
 import { Percent, TradeType } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { AutoColumn } from 'legacy/components/Column'
 import { AuxInformationContainer } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
 import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue'
-
-import { LightCardType } from './index'
-
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 import { AdvancedSwapDetails } from 'legacy/components/swap/AdvancedSwapDetails'
@@ -29,6 +24,12 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { ThemedText } from 'legacy/theme'
 import { isAddress, shortenAddress } from 'legacy/utils'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
+
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import { LightCardType } from './index'
 
 import FeeInformationTooltip from '../FeeInformationTooltip'
 

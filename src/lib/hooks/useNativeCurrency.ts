@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { NativeCurrency } from '@uniswap/sdk-core'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { nativeOnChain } from 'legacy/constants/tokens'
+
+import { useWalletInfo } from 'modules/wallet'
 
 export const MAINNET_NATIVE_CURRENCY = nativeOnChain(SupportedChainId.MAINNET)
 

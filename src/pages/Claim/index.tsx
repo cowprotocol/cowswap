@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import Confetti from 'legacy/components/Confetti'
 import Loader from 'legacy/components/Loader'
 import { OperationType } from 'legacy/components/TransactionConfirmationModal'
@@ -21,6 +19,9 @@ import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'legacy/state/claim/hooks/utils'
 import ClaimsOnOtherChainsUpdater from 'legacy/state/claim/updater'
 import { getProviderErrorMessage } from 'legacy/utils/misc'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { PageWrapper, InnerPageWrapper } from 'pages/Claim/styled'
 
 import CanUserClaimMessage from './CanUserClaimMessage'

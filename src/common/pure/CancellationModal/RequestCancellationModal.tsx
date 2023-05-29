@@ -1,17 +1,19 @@
 import React, { useCallback, useState } from 'react'
 
 import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
+
 import { ArrowRight, ArrowLeft } from 'react-feather'
 import { NavHashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
-import { CancellationType } from 'common/hooks/useCancelOrder/state'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
 import { ButtonPrimary } from 'legacy/components/Button'
 import NotificationBanner from 'legacy/components/NotificationBanner'
 import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
 import { LinkStyledButton } from 'legacy/theme'
+
+import { CancellationType } from 'common/hooks/useCancelOrder/state'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { Routes } from 'constants/routes'
 
 import type { BigNumber } from '@ethersproject/bignumber'
 

@@ -3,14 +3,14 @@ import React, { useCallback } from 'react'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { Title } from 'modules/application/pure/Page'
-
 import cowNoConnectionIMG from 'legacy/assets/cow-swap/cow-no-connection.png'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { AutoColumn } from 'legacy/components/Column'
 import { AutoRow } from 'legacy/components/Row'
 import { DISCORD_LINK } from 'legacy/constants'
 import { ExternalLink, MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
+
+import { Title } from 'modules/application/pure/Page'
 
 /**
  * We use the `cow-no-connection.png` image in case when there is no internet connection

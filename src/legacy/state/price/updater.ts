@@ -2,10 +2,6 @@ import { useEffect, useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useWalletInfo } from 'modules/wallet'
-
-import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import { DEFAULT_DECIMALS } from 'legacy/constants'
 import useDebounce from 'legacy/hooks/useDebounce'
 import useENSAddress from 'legacy/hooks/useENSAddress'
@@ -18,6 +14,11 @@ import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
 import { isAddress } from 'legacy/utils'
+
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useWalletInfo } from 'modules/wallet'
+
+import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 import { useAllQuotes, useIsBestQuoteLoading, useSetQuoteError } from './hooks'

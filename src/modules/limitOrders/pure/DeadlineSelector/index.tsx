@@ -5,6 +5,8 @@ import { Trans } from '@lingui/macro'
 import { Menu } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'
 
+import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
+
 import {
   calculateMinMax,
   formatDateToLocalTime,
@@ -14,7 +16,6 @@ import {
 } from 'modules/limitOrders/pure/DeadlineSelector/utils'
 
 import { GpModal as Modal } from 'common/pure/Modal'
-import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
 
 import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
 import * as styledEl from './styled'

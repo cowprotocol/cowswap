@@ -5,7 +5,6 @@ import { Settings } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 import {
   showExpertModeConfirmationAnalytics,
   toggleExpertModeAnalytics,
@@ -16,14 +15,15 @@ import QuestionHelper from 'legacy/components/QuestionHelper'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 import Toggle from 'legacy/components/Toggle'
 import TransactionSettings from 'legacy/components/TransactionSettings'
-
-import { SettingsTabProp } from './index'
-
 import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 import { useModalIsOpen, useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useExpertModeManager, useRecipientToggleManager } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
+
+import { ExpertModeModal } from 'common/pure/ExpertModeModal'
+
+import { SettingsTabProp } from './index'
 
 export const StyledMenuIcon = styled(Settings)`
   height: 20px;

@@ -1,15 +1,11 @@
 import { useMemo } from 'react'
 
-import { Trans } from '@lingui/macro'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
-import { useWalletInfo } from 'modules/wallet'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
 import CowProtocolIcon from 'legacy/assets/cow-swap/cowprotocol.svg'
 import discordImage from 'legacy/assets/cow-swap/discord.svg'
 import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
@@ -24,6 +20,12 @@ import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { useAllClaimingTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { ExternalLink } from 'legacy/theme'
 import { shortenAddress } from 'legacy/utils'
+
+import { useWalletInfo } from 'modules/wallet'
+import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { Routes } from 'constants/routes'
 import {
   ConfirmOrLoadingWrapper,
   ConfirmedIcon,

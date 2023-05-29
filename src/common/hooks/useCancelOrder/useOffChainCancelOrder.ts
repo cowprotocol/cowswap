@@ -2,11 +2,11 @@ import { useCallback } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 import { sendOrderCancellation } from 'legacy/utils/trade'
+
+import { useWalletInfo } from 'modules/wallet'
 
 export function useOffChainCancelOrder() {
   const { provider } = useWeb3React()

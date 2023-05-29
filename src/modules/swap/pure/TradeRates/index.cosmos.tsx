@@ -1,11 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
 
+import { COW, GNO } from 'legacy/constants/tokens'
+import TradeGp from 'legacy/state/swap/TradeGp'
+
 import { TradeRates, TradeRatesProps } from 'modules/swap/pure/TradeRates/index'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { COW, GNO } from 'legacy/constants/tokens'
-import TradeGp from 'legacy/state/swap/TradeGp'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]

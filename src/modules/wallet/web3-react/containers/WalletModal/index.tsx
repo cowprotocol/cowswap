@@ -3,11 +3,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
-import { ConnectionType, useWalletInfo } from 'modules/wallet'
-import { WalletModal as WalletModalPure, WalletModalView } from 'modules/wallet/api/pure/WalletModal'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-
 import { changeWalletAnalytics } from 'legacy/components/analytics'
 import usePrevious from 'legacy/hooks/usePrevious'
 import { useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -15,6 +10,11 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { updateConnectionError } from 'legacy/state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
+
+import { ConnectionType, useWalletInfo } from 'modules/wallet'
+import { WalletModal as WalletModalPure, WalletModalView } from 'modules/wallet/api/pure/WalletModal'
+import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 
 export function WalletModal() {
   const dispatch = useAppDispatch()

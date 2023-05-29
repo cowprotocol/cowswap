@@ -1,5 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 

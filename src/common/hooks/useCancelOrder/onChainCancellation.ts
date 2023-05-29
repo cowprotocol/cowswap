@@ -1,13 +1,14 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 
+import { Order } from 'legacy/state/orders/actions'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+
 import { ETHFLOW_GAS_LIMIT_DEFAULT } from 'modules/swap/services/ethFlow/const'
 import { logTradeFlowError } from 'modules/trade/utils/logger'
 
 import { GPv2Settlement } from 'abis/types'
 import { CoWSwapEthFlow } from 'abis/types/ethflow'
-import { Order } from 'legacy/state/orders/actions'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
 const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
 

@@ -1,12 +1,13 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+
 import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
 import { ExecuteIndicator } from 'modules/limitOrders/pure/Orders/OrderRow/styled'
 import { convertAmountToCurrency } from 'modules/limitOrders/utils/calculateExecutionPrice'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
 import * as styledEl from './styled'
 

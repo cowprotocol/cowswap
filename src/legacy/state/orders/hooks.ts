@@ -1,13 +1,15 @@
 import { useCallback, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { useDispatch, useSelector } from 'react-redux'
 
-import { OrderID } from 'api/gnosisProtocol'
 import { AppDispatch, AppState } from 'legacy/state'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
 import { isTruthy } from 'legacy/utils/misc'
+
+import { OrderID } from 'api/gnosisProtocol'
 
 import {
   addOrUpdateOrders,

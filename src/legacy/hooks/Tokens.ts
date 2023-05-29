@@ -4,13 +4,14 @@ import { useMemo } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
-import { useWalletInfo } from 'modules/wallet'
-
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
 import { deserializeToken, useUserAddedTokens } from 'legacy/state/user/hooks'
 import { isL2ChainId } from 'legacy/utils/chains'
+
+import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
+import { useWalletInfo } from 'modules/wallet'
+
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
 import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'

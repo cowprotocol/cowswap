@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
 
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
+
 import SimpleAccountDetails from 'modules/account/containers/SimpleAccountDetails'
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
-
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import { ActionButton } from './ActionButton'
 

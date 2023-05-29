@@ -3,14 +3,15 @@ import { useLayoutEffect } from 'react'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
+import { Field } from 'legacy/state/swap/actions'
+import { onlyResolvesLast } from 'legacy/utils/async'
+
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { tradeQuoteAtom } from 'modules/tradeQuote/state/tradeQuoteAtom'
 
 import { getQuote } from 'api/gnosisProtocol'
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
-import { Field } from 'legacy/state/swap/actions'
-import { onlyResolvesLast } from 'legacy/utils/async'
 
 import { useQuoteParams } from './useQuoteParams'
 

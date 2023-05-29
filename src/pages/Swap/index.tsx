@@ -2,13 +2,14 @@ import React from 'react'
 
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
+
 import { SwapWidget } from 'modules/swap/containers/SwapWidget'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 import { useWalletInfo } from 'modules/wallet'
 
 import { Routes } from 'constants/routes'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
 export function SwapPage() {
   const params = useParams()

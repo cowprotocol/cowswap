@@ -2,23 +2,23 @@ import { ReactNode } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-
-import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
-
-import { ActivityDerivedState } from './index'
-
 import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import { V_COW, COW } from 'legacy/constants/tokens'
 import { useToken } from 'legacy/hooks/Tokens'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { OrderStatus } from 'legacy/state/orders/actions'
+
+import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
+
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
+import { TokenAmount } from 'common/pure/TokenAmount'
+
+import { ActivityDerivedState } from './index'
 
 import { StatusDetails } from './StatusDetails'
 import { GnosisSafeLink } from './StatusDetails'

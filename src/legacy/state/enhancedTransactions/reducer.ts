@@ -1,4 +1,5 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
+
 import { createReducer } from '@reduxjs/toolkit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
@@ -12,6 +13,7 @@ import {
   ReplacementType,
   SerializableTransactionReceipt,
 } from 'legacy/state/enhancedTransactions/actions'
+
 
 export enum HashType {
   ETHEREUM_TX = 'ETHEREUM_TX',

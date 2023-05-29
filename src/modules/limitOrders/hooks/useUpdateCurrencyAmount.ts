@@ -3,13 +3,15 @@ import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Fraction } from '@uniswap/sdk-core'
+
 import { Writeable } from 'types'
+
+import { Field } from 'legacy/state/swap/actions'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import { calculateAmountForRate } from 'modules/limitOrders/utils/calculateAmountForRate'
 
-import { Field } from 'legacy/state/swap/actions'
 import { FractionUtils } from 'utils/fractionUtils'
 
 type CurrencyAmountProps = {

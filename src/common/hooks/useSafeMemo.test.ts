@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { renderHook } from '@testing-library/react-hooks'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { renderHook } from '@testing-library/react-hooks'
 
 import { useSafeMemo } from './useSafeMemo'
 function createInputCurrency() {

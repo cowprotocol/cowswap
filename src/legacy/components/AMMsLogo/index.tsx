@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import styled from 'styled-components/macro'
 
 import ZeroX from 'legacy/assets/cow-swap/ammslogo/0x.png'

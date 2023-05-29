@@ -1,6 +1,9 @@
 import { initializeConnector } from '@web3-react/core'
 import { WalletConnect } from '@web3-react/walletconnect'
 
+import { RPC_URLS } from 'legacy/constants/networks'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+
 import { ConnectionType } from 'modules/wallet'
 import { useWalletMetaData } from 'modules/wallet'
 import { default as WalletConnectImage } from 'modules/wallet/api/assets/walletConnectIcon.svg'
@@ -15,9 +18,6 @@ import {
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
 import { TryActivation, onError } from '.'
-
-import { RPC_URLS } from 'legacy/constants/networks'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { Web3ReactConnection } from '../types'
 

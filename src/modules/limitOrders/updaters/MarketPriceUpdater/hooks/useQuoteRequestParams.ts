@@ -1,16 +1,18 @@
 import { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
+
 import { parseUnits } from 'ethers/lib/utils'
+
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import useENSAddress from 'legacy/hooks/useENSAddress'
+import usePrevious from 'legacy/hooks/usePrevious'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useTypedValue } from 'modules/limitOrders/hooks/useTypedValue'
 import { useWalletInfo } from 'modules/wallet'
 
 import { LegacyFeeQuoteParams as FeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
-import useENSAddress from 'legacy/hooks/useENSAddress'
-import usePrevious from 'legacy/hooks/usePrevious'
 import { getAddress } from 'utils/getAddress'
 
 export type LimitOrdersQuoteParams = Omit<FeeQuoteParams, 'validTo'> & { validTo?: number }

@@ -1,8 +1,9 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'

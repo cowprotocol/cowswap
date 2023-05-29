@@ -1,6 +1,14 @@
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Erc20 } from 'legacy/abis/types'
+import { AppDispatch } from 'legacy/state'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { AddOrderCallback } from 'legacy/state/orders/hooks'
+import TradeGp from 'legacy/state/swap/TradeGp'
+import { PostOrderParams } from 'legacy/utils/trade'
 
 import { UploadAppDataParams, AppDataInfo } from 'modules/appData'
 import { SwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
@@ -8,12 +16,6 @@ import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { GPv2Settlement } from 'abis/types'
 import { CoWSwapEthFlow } from 'abis/types/ethflow'
-import { Erc20 } from 'legacy/abis/types'
-import { AppDispatch } from 'legacy/state'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { AddOrderCallback } from 'legacy/state/orders/hooks'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { PostOrderParams } from 'legacy/utils/trade'
 
 export interface BaseFlowContext {
   context: {

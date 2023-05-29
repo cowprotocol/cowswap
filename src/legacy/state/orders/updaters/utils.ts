@@ -1,10 +1,11 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
 
-import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { stringToCurrency } from 'legacy/state/swap/extension'
+
+import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 

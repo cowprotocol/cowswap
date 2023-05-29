@@ -2,8 +2,18 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'
+
+import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
+import CowBalanceButton from 'legacy/components/CowBalanceButton'
+import NetworkSelector from 'legacy/components/Header/NetworkSelector'
+import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
+import { useDarkModeManager } from 'legacy/state/user/hooks'
+import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
 import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
@@ -16,14 +26,6 @@ import { useWalletInfo, Web3Status } from 'modules/wallet'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { Routes } from 'constants/routes'
-import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
-import CowBalanceButton from 'legacy/components/CowBalanceButton'
-import NetworkSelector from 'legacy/components/Header/NetworkSelector'
-import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
-import { useDarkModeManager } from 'legacy/state/user/hooks'
-import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {

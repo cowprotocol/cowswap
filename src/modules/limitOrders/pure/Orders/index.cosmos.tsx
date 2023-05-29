@@ -4,10 +4,10 @@ import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersMock } from './orders.mock'
+import { OrderTab } from './OrdersTabs'
 
 import { Orders } from './index'
 
-import { OrderTab } from './OrdersTabs'
 
 const tabs: OrderTab[] = [
   {

@@ -1,12 +1,12 @@
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+
 import { ConnectionType } from 'modules/wallet'
 import { default as KeystoneImage } from 'modules/wallet/api/assets/keystone.svg'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { getConnectionName } from 'modules/wallet/api/utils/connection'
-
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { TryActivation, onError } from '.'
 

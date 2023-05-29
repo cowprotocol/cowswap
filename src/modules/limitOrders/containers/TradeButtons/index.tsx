@@ -2,9 +2,16 @@ import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai/utils'
 import React, { useCallback } from 'react'
 
-import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
+
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
+import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -16,12 +23,6 @@ import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupport
 import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { useWalletDetails } from 'modules/wallet'
-
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
-import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
-import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
 

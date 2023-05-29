@@ -2,6 +2,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 
 import { ZERO_FRACTION } from 'legacy/constants'
 import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
+
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { FractionUtils } from 'utils/fractionUtils'
 

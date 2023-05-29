@@ -7,6 +7,7 @@ import useNetworkName from 'legacy/hooks/useNetworkName'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimState, useClaimTimeInfo, useClaimLinks } from 'legacy/state/claim/hooks'
 import { ExternalLink } from 'legacy/theme'
+
 import { formatDateWithTimezone } from 'utils/time'
 
 import { IntroDescription, BannerExplainer } from './styled'

@@ -3,6 +3,7 @@ import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { ThemedText } from 'legacy/theme'
+
 import { Card } from 'pages/Account/styled'
 
 export const MenuWrapper = styled.div`

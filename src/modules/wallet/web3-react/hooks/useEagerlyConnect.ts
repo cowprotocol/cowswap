@@ -2,12 +2,13 @@ import { useEffect } from 'react'
 
 import { Connector } from '@web3-react/types'
 
+import { useAppSelector } from 'legacy/state/hooks'
+
 import { BACKFILLABLE_WALLETS } from 'modules/wallet/api/types'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 import { networkConnection } from 'modules/wallet/web3-react/connection/network'
 import { gnosisSafeConnection } from 'modules/wallet/web3-react/connection/safe'
 
-import { useAppSelector } from 'legacy/state/hooks'
 
 async function connect(connector: Connector) {
   try {

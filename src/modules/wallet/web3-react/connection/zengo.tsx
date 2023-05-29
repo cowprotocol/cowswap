@@ -1,11 +1,11 @@
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+
 import { ConnectionType } from 'modules/wallet'
 import { useWalletMetaData } from 'modules/wallet'
 import { default as ZengoImage } from 'modules/wallet/api/assets/zengo.svg'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { getConnectionName, getIsZengoWallet } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
-
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { TryActivation } from '.'
 

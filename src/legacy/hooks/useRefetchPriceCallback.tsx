@@ -1,14 +1,5 @@
 import { useCallback } from 'react'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-
-import { isValidOperatorError, ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
-import GpQuoteError, {
-  GpQuoteErrorCodes,
-  GpQuoteErrorDetails,
-  isValidQuoteError,
-} from 'api/gnosisProtocol/errors/QuoteError'
-import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { isOnline } from 'legacy/hooks/useIsOnline'
 import { AddGpUnsupportedTokenParams } from 'legacy/state/lists/actions'
@@ -24,6 +15,16 @@ import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { CancelableResult, onlyResolvesLast } from 'legacy/utils/async'
 import { registerOnWindow, getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
 import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
+
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+
+import { isValidOperatorError, ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
+import GpQuoteError, {
+  GpQuoteErrorCodes,
+  GpQuoteErrorDetails,
+  isValidQuoteError,
+} from 'api/gnosisProtocol/errors/QuoteError'
+import { LegacyFeeQuoteParams, LegacyQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { calculateValidTo } from 'utils/time'
 
 interface HandleQuoteErrorParams {

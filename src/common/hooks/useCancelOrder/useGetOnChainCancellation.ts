@@ -1,5 +1,8 @@
 import { useCallback } from 'react'
 
+import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
+import { Order } from 'legacy/state/orders/actions'
+
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 
 import {
@@ -7,8 +10,6 @@ import {
   getOnChainCancellation,
   OnChainCancellation,
 } from 'common/hooks/useCancelOrder/onChainCancellation'
-import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
-import { Order } from 'legacy/state/orders/actions'
 
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
   const ethFlowContract = useEthFlowContract()

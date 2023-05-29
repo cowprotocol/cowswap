@@ -1,12 +1,10 @@
 import { useCallback, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import JSBI from 'jsbi'
 
-import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
+import { TransactionResponse } from '@ethersproject/providers'
+import JSBI from 'jsbi'
 
 import { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import { V_COW, COW } from 'legacy/constants/tokens'
@@ -16,6 +14,10 @@ import { AppState } from 'legacy/state'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+
 import { useSingleCallResult, CallStateResult as Result } from 'lib/hooks/multicall'
 
 import { setSwapVCowStatus, SwapVCowStatus } from './actions'

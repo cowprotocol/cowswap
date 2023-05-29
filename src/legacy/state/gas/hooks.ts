@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { useSelector, useDispatch } from 'react-redux'
 
 import { AppDispatch } from 'legacy/state'

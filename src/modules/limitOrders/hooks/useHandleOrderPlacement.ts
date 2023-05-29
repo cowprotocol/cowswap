@@ -2,6 +2,8 @@ import { useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
@@ -13,7 +15,6 @@ import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partial
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 interface HandleTradeCallback {
   beforeTrade(): void

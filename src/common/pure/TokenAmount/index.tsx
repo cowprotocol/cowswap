@@ -2,9 +2,10 @@ import { darken, transparentize } from 'polished'
 import styled from 'styled-components/macro'
 import { FractionLike, Nullish } from 'types'
 
+import { LONG_PRECISION } from 'legacy/constants'
+
 import { TokenSymbol, TokenSymbolProps } from 'common/pure/TokenSymbol'
 import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'constants/featureFlags'
-import { LONG_PRECISION } from 'legacy/constants'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { FeatureFlag } from 'utils/featureFlags'
 import { FractionUtils } from 'utils/fractionUtils'

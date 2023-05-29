@@ -1,22 +1,17 @@
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { t, Trans } from '@lingui/macro'
 import { TokenList } from '@uniswap/token-lists'
+
+import { t, Trans } from '@lingui/macro'
 import { CheckCircle, Settings } from 'react-feather'
 import { usePopper } from 'react-popper'
 import styled from 'styled-components/macro'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 import { updateListAnalytics, removeListAnalytics, toggleListAnalytics } from 'legacy/components/analytics'
 import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
 import Column, { AutoColumn } from 'legacy/components/Column'
 import ListLogo from 'legacy/components/ListLogo'
 import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
-
-import { ListRowProps, RowWrapper, Card } from './index'
-
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator, SeparatorDark } from 'legacy/components/SearchModal/styleds'
 import Toggle from 'legacy/components/Toggle'
@@ -31,8 +26,14 @@ import { useActiveListUrls, useAllLists, useIsListActive } from 'legacy/state/li
 import { ExternalLink, IconWrapper, LinkStyledButton, ThemedText } from 'legacy/theme'
 import listVersionLabel from 'legacy/utils/listVersionLabel'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'
+
+import { ListRowProps, RowWrapper, Card } from './index'
 
 const Wrapper = styled(Column)`
   width: 100%;

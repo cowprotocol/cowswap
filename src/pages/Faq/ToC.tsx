@@ -1,6 +1,6 @@
-import { Content, Title } from 'modules/application/pure/Page'
-
 import { LinkScrollable } from 'legacy/components/Link'
+
+import { Content, Title } from 'modules/application/pure/Page'
 
 import { PageIndex } from './styled'
 

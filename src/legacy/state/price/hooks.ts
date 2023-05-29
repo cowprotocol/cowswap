@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useDispatch, useSelector } from 'react-redux'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'legacy/state'
 import { useSwapState } from 'legacy/state/swap/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
 
 import {
   updateQuote,

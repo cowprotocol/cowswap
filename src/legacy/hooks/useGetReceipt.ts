@@ -4,10 +4,10 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
 import { RetryResult } from 'types'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { retry, RetryableError, RetryOptions } from 'legacy/utils/retry'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {}

@@ -2,13 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
+import { shortenAddress } from 'legacy/utils'
+
 import { getStatusIcon } from 'modules/account/containers/AccountDetails'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { GpModal } from 'common/pure/Modal'
 import { useZeroApprovalState } from 'common/state/useZeroApprovalState'
-import { shortenAddress } from 'legacy/utils'
 
 interface ZeroApprovalModalProps {
   onDismiss?: () => void

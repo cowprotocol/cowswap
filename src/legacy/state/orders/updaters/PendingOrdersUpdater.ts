@@ -1,13 +1,9 @@
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback, useEffect, useRef } from 'react'
 
-import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { getOrder, OrderID } from 'api/gnosisProtocol'
-import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
@@ -31,6 +27,11 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { getOrder, OrderID } from 'api/gnosisProtocol'
+import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { timeSinceInSeconds } from 'utils/time'
 
 /**

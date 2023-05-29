@@ -1,8 +1,14 @@
 import React, { useMemo, useState } from 'react'
 
 import { Currency, Price } from '@uniswap/sdk-core'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import ArrowDownImage from 'legacy/assets/cow-swap/arrowDownRight.svg'
+import { InfoIcon } from 'legacy/components/InfoIcon'
+import QuestionHelper from 'legacy/components/QuestionHelper'
+import { isAddress, shortenAddress } from 'legacy/utils'
 
 import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
@@ -16,10 +22,6 @@ import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculat
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { limitOrdersFeatures } from 'constants/featureFlags'
 import { DEFAULT_DATE_FORMAT } from 'constants/intl'
-import ArrowDownImage from 'legacy/assets/cow-swap/arrowDownRight.svg'
-import { InfoIcon } from 'legacy/components/InfoIcon'
-import QuestionHelper from 'legacy/components/QuestionHelper'
-import { isAddress, shortenAddress } from 'legacy/utils'
 import { formatInputAmount } from 'utils/amountFormat'
 
 import * as styledEl from './styled'

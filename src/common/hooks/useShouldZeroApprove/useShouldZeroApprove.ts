@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { Nullish } from 'types'
 
 import { useTokenContract } from 'legacy/hooks/useContract'
+
 import { useApprovalStateForSpender } from 'lib/hooks/useApproval'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'

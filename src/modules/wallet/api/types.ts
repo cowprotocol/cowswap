@@ -1,5 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { SafeInfoResponse } from '@safe-global/api-kit'
+
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',

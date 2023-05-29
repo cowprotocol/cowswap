@@ -9,9 +9,6 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
 import ms from 'ms.macro'
 
-import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
-import { useWalletInfo } from 'modules/wallet'
-
 import { GetReceipt, useGetReceipt } from 'legacy/hooks/useGetReceipt'
 import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
 import { AppDispatch } from 'legacy/state'
@@ -22,6 +19,10 @@ import { useAppDispatch } from 'legacy/state/hooks'
 import { cancelOrdersBatch, invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { useWalletInfo } from 'modules/wallet'
+
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 

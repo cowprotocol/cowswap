@@ -1,12 +1,18 @@
 import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Trans } from '@lingui/macro'
 import { Currency, Price } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
+import { QuestionWrapper } from 'legacy/components/QuestionHelper'
+import QuestionHelper from 'legacy/components/QuestionHelper'
+import { Order } from 'legacy/state/orders/actions'
 
 import { LIMIT_ORDERS_PAGE_SIZE } from 'modules/limitOrders/const/limitOrdersTabs'
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
@@ -27,10 +33,6 @@ import { BalancesAndAllowances } from 'modules/tokens'
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 import { limitOrdersFeatures } from 'constants/featureFlags'
-import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import QuestionHelper from 'legacy/components/QuestionHelper'
-import { Order } from 'legacy/state/orders/actions'
 
 import { OrderRow } from './OrderRow'
 import { OrdersTablePagination } from './OrdersTablePagination'

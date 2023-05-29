@@ -1,5 +1,6 @@
-import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
 

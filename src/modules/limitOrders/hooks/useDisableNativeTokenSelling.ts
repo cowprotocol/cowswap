@@ -1,13 +1,14 @@
 import { useAtomValue } from 'jotai/utils'
 import { useEffect } from 'react'
 
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+
 import { limitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo } from 'modules/wallet'
 
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 
 /**
  * Since the selling of ETH is not supported in limit orders

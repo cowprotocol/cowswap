@@ -2,6 +2,8 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { DEFAULT_DECIMALS } from 'legacy/constants'
 
+
+
 export function getDecimals(currency: Currency): number {
   const customMap: { [key: string]: number } = {
     ALI: 18,

@@ -1,8 +1,9 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { fetchWithRateLimit } from 'common/utils/fetch'
 import { GAS_FEE_ENDPOINTS, GAS_API_KEYS } from 'legacy/constants'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
+
+import { fetchWithRateLimit } from 'common/utils/fetch'
 
 const fetchRateLimitted = fetchWithRateLimit({
   rateLimit: {

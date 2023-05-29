@@ -2,9 +2,8 @@ import { useEffect, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import SVG from 'react-inlinesvg'
 
-import { useWalletInfo } from 'modules/wallet'
+import SVG from 'react-inlinesvg'
 
 import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
 import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
@@ -25,6 +24,9 @@ import {
 import { calculateInvestmentAmounts } from 'legacy/state/claim/hooks/utils'
 import { InvestClaim } from 'legacy/state/claim/reducer'
 import { ExternalLink } from 'legacy/theme'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { ClaimSummaryView } from 'pages/Claim/ClaimSummary'
 import { InvestSummaryRow } from 'pages/Claim/InvestmentFlow/InvestSummaryRow'
 import {

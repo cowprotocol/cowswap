@@ -1,11 +1,10 @@
-import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
+
+import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { AlertCircle } from 'react-feather'
 import styled, { useTheme } from 'styled-components/macro'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
@@ -14,6 +13,8 @@ import ListLogo from 'legacy/components/ListLogo'
 import { RowFixed } from 'legacy/components/Row'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
+
+import { useWalletInfo } from 'modules/wallet'
 
 const WarningWrapper = styled(Card)<{ highWarning: boolean }>`
   background-color: ${({ theme, highWarning }) =>

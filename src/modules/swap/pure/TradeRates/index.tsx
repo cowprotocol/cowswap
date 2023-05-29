@@ -2,11 +2,12 @@ import React from 'react'
 
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import TradeGp from 'legacy/state/swap/TradeGp'
+
 import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
 import { TradeBasicDetails } from 'modules/swap/containers/TradeBasicDetails'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
-import TradeGp from 'legacy/state/swap/TradeGp'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 import * as styledEl from './styled'

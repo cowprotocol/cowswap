@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { useTransition } from '@react-spring/web'
 import ms from 'ms.macro'
 
-import { ActivityDerivedState } from 'modules/account/containers/Transaction'
-
-import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { CancelButton } from 'common/pure/CancelButton'
 import loadingCowWebp from 'legacy/assets/cow-swap/cow-load.webp'
 import ammsGraphGC from 'legacy/assets/images/amms-graph-gc.svg'
 import ammsGraphEth from 'legacy/assets/images/amms-graph.svg'
@@ -18,6 +14,12 @@ import cowMeditatingGraph from 'legacy/assets/images/cow-meditating.svg'
 import { AMMsLogo } from 'legacy/components/AMMsLogo'
 import { EXPECTED_EXECUTION_TIME, getPercentage } from 'legacy/components/OrderProgressBar/utils'
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
+
+import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+import { CancelButton } from 'common/pure/CancelButton'
 
 import {
   ProgressBarWrapper,

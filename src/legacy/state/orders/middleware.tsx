@@ -1,10 +1,8 @@
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
+
 import { AnyAction, Dispatch, isAnyOf, Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
 
-import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-
-import { ExecutedSummary } from 'common/pure/ExecutedSummary'
 import { orderAnalytics } from 'legacy/components/analytics'
 import { AppState } from 'legacy/state'
 import { addPopup } from 'legacy/state/application/reducer'
@@ -14,6 +12,10 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/app
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
 import { registerOnWindow } from 'legacy/utils/misc'
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'legacy/utils/sound'
+
+import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+
+import { ExecutedSummary } from 'common/pure/ExecutedSummary'
 import { timeSinceInSeconds } from 'utils/time'
 
 import * as OrderActions from './actions'

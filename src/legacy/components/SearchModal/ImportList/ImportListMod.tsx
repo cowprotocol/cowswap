@@ -12,9 +12,6 @@ import ListLogo from 'legacy/components/ListLogo'
 import { AutoRow, RowBetween, RowFixed } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { Card } from 'legacy/components/SearchModal/ManageLists'
-
-import { ImportProps } from './index'
-
 import { Checkbox, PaddedColumn, TextDot } from 'legacy/components/SearchModal/styleds'
 import { SectionBreak } from 'legacy/components/swap/styleds'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
@@ -22,6 +19,8 @@ import useTheme from 'legacy/hooks/useTheme'
 import { useAllLists } from 'legacy/state/lists/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme'
+
+import { ImportProps } from './index'
 
 const Wrapper = styled.div`
   position: relative;

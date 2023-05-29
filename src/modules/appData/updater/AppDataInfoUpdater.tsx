@@ -2,13 +2,13 @@ import React from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
+import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
+import { percentToBips } from 'legacy/utils/misc'
+
 import { LIMIT_ORDER_SLIPPAGE } from 'modules/limitOrders/const/trade'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { useUtm } from 'modules/utm'
 import { useWalletInfo } from 'modules/wallet'
-
-import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
-import { percentToBips } from 'legacy/utils/misc'
 
 import { useAppDataUpdater, UseAppDataParams } from './useAppDataUpdater'
 

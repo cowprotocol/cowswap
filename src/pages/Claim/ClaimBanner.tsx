@@ -5,6 +5,7 @@ import CheckCircle from 'legacy/assets/cow-swap/check.svg'
 import useNetworkName from 'legacy/hooks/useNetworkName'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimState } from 'legacy/state/claim/hooks'
+
 import { ClaimCommonTypes } from 'pages/Claim/types'
 
 import { ClaimBanner as ClaimBannerWrapper } from './styled'

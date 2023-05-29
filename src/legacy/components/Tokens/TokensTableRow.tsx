@@ -2,16 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
+
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
-import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { useWalletInfo } from 'modules/wallet'
-
-import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { Routes } from 'constants/routes'
 import EtherscanImage from 'legacy/assets/cow-swap/etherscan-icon.svg'
 import Loader from 'legacy/components/Loader'
 import { OperationType } from 'legacy/components/TransactionConfirmationModal'
@@ -22,6 +16,14 @@ import usePrevious from 'legacy/hooks/usePrevious'
 import useTheme from 'legacy/hooks/useTheme'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { getBlockExplorerUrl } from 'legacy/utils'
+
+import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { Routes } from 'constants/routes'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'

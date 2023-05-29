@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
-import { Trans, t } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
+
+import { Trans, t } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { Check } from 'react-feather'
-
-import { PageTitle } from 'modules/application/containers/PageTitle'
-import { useWalletInfo } from 'modules/wallet'
 
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
@@ -24,6 +22,9 @@ import { CloseIcon } from 'legacy/theme'
 import { isAddress } from 'legacy/utils'
 import { isTruthy } from 'legacy/utils/misc'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { useWalletInfo } from 'modules/wallet'
 
 import {
   Menu,

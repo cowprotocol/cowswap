@@ -2,8 +2,13 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { renderHook } from '@testing-library/react-hooks'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { renderHook } from '@testing-library/react-hooks'
+
+import { COW } from 'legacy/constants/tokens'
+import { useTokenContract } from 'legacy/hooks/useContract'
+import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { walletInfoAtom } from 'modules/wallet/api/state'
@@ -11,9 +16,6 @@ import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-import { COW } from 'legacy/constants/tokens'
-import { useTokenContract } from 'legacy/hooks/useContract'
-import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { settleTwapOrder } from './settleTwapOrder'
 

@@ -1,4 +1,5 @@
 import { Percent } from '@uniswap/sdk-core'
+
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 import { WithClassName } from 'types'

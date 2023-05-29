@@ -1,5 +1,10 @@
-import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
+
+import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { signAndPostOrder } from 'legacy/utils/trade'
 
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
@@ -11,9 +16,6 @@ import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { signAndPostOrder } from 'legacy/utils/trade'
 
 const LOG_PREFIX = 'SAFE BUNDLE FLOW'
 

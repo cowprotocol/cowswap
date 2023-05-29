@@ -3,6 +3,7 @@ import { ReactNode, useCallback } from 'react'
 import { SupportedLocale } from 'legacy/constants/locales'
 import { initialLocale, useActiveLocale } from 'legacy/hooks/useActiveLocale'
 import { useUserLocaleManager } from 'legacy/state/user/hooks'
+
 import { dynamicActivate, Provider } from 'lib/i18n'
 
 dynamicActivate(initialLocale)

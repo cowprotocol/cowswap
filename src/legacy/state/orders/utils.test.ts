@@ -1,5 +1,6 @@
 import { OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Price } from '@uniswap/sdk-core'
+
 import ms from 'ms.macro'
 
 import { USDC_MAINNET as USDC, USDT } from 'legacy/constants/tokens'

@@ -2,12 +2,13 @@ import { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+
 import { useWalletInfo } from 'modules/wallet'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export function useRateInfoParams(

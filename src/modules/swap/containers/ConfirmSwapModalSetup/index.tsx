@@ -3,12 +3,6 @@ import { useCallback } from 'react'
 
 import { Percent } from '@uniswap/sdk-core'
 
-import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
-import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
-import { swapConfirmAtom } from 'modules/swap/state/swapConfirmAtom'
-import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
-
-import { RateInfoParams } from 'common/pure/RateInfo'
 import { ConfirmSwapModal } from 'legacy/components/swap/ConfirmSwapModal'
 import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -17,6 +11,13 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { Field } from 'legacy/state/swap/actions'
 import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
+
+import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
+import { swapConfirmAtom } from 'modules/swap/state/swapConfirmAtom'
+import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
+
+import { RateInfoParams } from 'common/pure/RateInfo'
 
 export interface ConfirmSwapModalSetupProps {
   trade: TradeGp | undefined

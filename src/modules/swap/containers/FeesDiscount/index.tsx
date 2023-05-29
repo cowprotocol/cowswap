@@ -2,13 +2,13 @@ import { Trans } from '@lingui/macro'
 import { BoxProps, Text } from 'rebass'
 import styled, { DefaultTheme } from 'styled-components/macro'
 
-import { LowerSectionWrapper } from 'modules/swap/pure/styled'
-import { StyledInfoIcon } from 'modules/swap/pure/styled'
-
 import { SUBSIDY_INFO_MESSAGE } from 'legacy/components/CowSubsidyModal/constants'
 import { AutoRow } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
+
+import { StyledInfoIcon } from 'modules/swap/pure/styled'
+import { LowerSectionWrapper } from 'modules/swap/pure/styled'
 
 interface FeesDiscountProps extends BoxProps {
   theme: DefaultTheme

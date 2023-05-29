@@ -1,6 +1,12 @@
 import { Trans } from '@lingui/macro'
 import { Connector } from '@web3-react/types'
 
+import { LightCard } from 'legacy/components/Card'
+import { AutoColumn } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
+import { ThemedText } from 'legacy/theme'
+import { StyledInternalLink } from 'legacy/theme/components'
+
 import { PendingView } from 'modules/wallet/api/pure/PendingView'
 import { ZengoBanner } from 'modules/wallet/api/pure/ZengoBanner'
 import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/connection'
@@ -8,11 +14,6 @@ import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/c
 import { GpModal } from 'common/pure/Modal'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from 'common/pure/Modal'
 import { Routes } from 'constants/routes'
-import { LightCard } from 'legacy/components/Card'
-import { AutoColumn } from 'legacy/components/Column'
-import { AutoRow } from 'legacy/components/Row'
-import { ThemedText } from 'legacy/theme'
-import { StyledInternalLink } from 'legacy/theme/components'
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 

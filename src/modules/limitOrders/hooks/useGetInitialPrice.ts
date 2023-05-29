@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
 
-import * as Sentry from '@sentry/browser'
 import { Currency, Fraction } from '@uniswap/sdk-core'
+
+import * as Sentry from '@sentry/browser'
 import ms from 'ms.macro'
 import { useAsyncMemo } from 'use-async-memo'
+
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { parsePrice } from 'modules/limitOrders/utils/parsePrice'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getNativePrice } from 'api/gnosisProtocol'
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { getAddress } from 'utils/getAddress'
 
 type PriceResult = number | Error | undefined

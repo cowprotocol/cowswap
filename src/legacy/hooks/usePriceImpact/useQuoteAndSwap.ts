@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useWalletInfo } from 'modules/wallet'
-
-import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { DEFAULT_DECIMALS } from 'legacy/constants'
 import { ZERO_ADDRESS } from 'legacy/constants/misc'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
@@ -19,6 +15,11 @@ import { onlyResolvesLast } from 'legacy/utils/async'
 import { getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
 import { getBestQuote, QuoteResult } from 'legacy/utils/price'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useWalletInfo } from 'modules/wallet'
+
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 

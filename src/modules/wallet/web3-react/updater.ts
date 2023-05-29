@@ -3,13 +3,14 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
+import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
+import useENSName from 'legacy/hooks/useENSName'
+
 import { useIsSafeWallet, useWalletMetaData } from 'modules/wallet'
 import { getWalletType } from 'modules/wallet/api/utils/getWalletType'
 
 import { getSafeInfo } from 'api/gnosisSafe'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { UNSUPPORTED_WC_WALLETS } from 'legacy/constants'
-import useENSName from 'legacy/hooks/useENSName'
 
 import { useSafeAppsSdkInfo } from './hooks/useSafeAppsSdkInfo'
 

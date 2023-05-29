@@ -2,13 +2,14 @@ import { lazy, Suspense } from 'react'
 
 import { useLocation, Outlet } from 'react-router-dom'
 
+import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+import { Loading } from 'legacy/components/FlashingLoading'
+
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Content, Title } from 'modules/application/pure/Page'
 
 import { Routes as RoutesEnum } from 'constants/routes'
-import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-import { Loading } from 'legacy/components/FlashingLoading'
 
 import { AccountMenu } from './Menu'
 import { Container, CardsWrapper } from './styled'

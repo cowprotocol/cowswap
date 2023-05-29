@@ -1,5 +1,6 @@
-import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 import { DefaultTheme } from 'styled-components/macro'

@@ -7,6 +7,13 @@ import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
+import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
+import { sendEvent } from 'legacy/components/analytics'
+import Confetti from 'legacy/components/Confetti'
+import { ExternalLink } from 'legacy/theme'
+import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
+
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
 import { lastCheckedFortuneAtom } from 'modules/fortune/state/checkedFortunesListAtom'
 import {
@@ -15,12 +22,6 @@ import {
   updateOpenFortuneAtom,
 } from 'modules/fortune/state/fortuneStateAtom'
 
-import fortuneCookieImage from 'legacy/assets/cow-swap/fortune-cookie.png'
-import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
-import { sendEvent } from 'legacy/components/analytics'
-import Confetti from 'legacy/components/Confetti'
-import { ExternalLink } from 'legacy/theme'
-import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 import useInterval from 'lib/hooks/useInterval'
 import { SuccessBanner } from 'pages/Claim/styled'
 

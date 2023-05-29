@@ -2,11 +2,12 @@ import { useMemo } from 'react'
 
 import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
 
+import TradeGp from 'legacy/state/swap/TradeGp'
+
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
 import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 
-import TradeGp from 'legacy/state/swap/TradeGp'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { formatFiatAmount, formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'

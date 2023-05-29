@@ -1,3 +1,10 @@
+
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { isOrderExpired } from 'legacy/state/orders/utils'
+
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import {
   EthFlowStepper as Pure,
@@ -5,11 +12,6 @@ import {
   SmartOrderStatus,
 } from 'modules/swap/pure/EthFlow/EthFlowStepper'
 
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
-import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { isOrderExpired } from 'legacy/state/orders/utils'
 import { formatSymbol } from 'utils/format'
 
 type EthFlowStepperProps = {

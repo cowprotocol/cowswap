@@ -1,16 +1,3 @@
-import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
-import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
-import { useSafeBundleFlowContext } from 'modules/swap/hooks/useSafeBundleFlowContext'
-import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
-import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
-import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-
-import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import {
   useHasEnoughWrappedBalanceForSwap,
@@ -24,6 +11,20 @@ import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
+
+import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
+import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
+import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
+import { useSafeBundleFlowContext } from 'modules/swap/hooks/useSafeBundleFlowContext'
+import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
+import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
+
+import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
+import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean

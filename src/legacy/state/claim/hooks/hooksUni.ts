@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 
-import MerkleDistributorJson from '@uniswap/merkle-distributor/build/MerkleDistributor.json'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import JSBI from 'jsbi'
 
-import { useWalletInfo } from 'modules/wallet'
+import MerkleDistributorJson from '@uniswap/merkle-distributor/build/MerkleDistributor.json'
+import JSBI from 'jsbi'
 
 import { MERKLE_DISTRIBUTOR_ADDRESS } from 'legacy/constants/addresses'
 import { UNI } from 'legacy/constants/tokens'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { useContract } from '../../../hooks/useContract'

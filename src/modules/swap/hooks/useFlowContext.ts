@@ -1,19 +1,11 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { useDispatch } from 'react-redux'
-
-import { useUploadAppData, useAppData } from 'modules/appData'
-import type { UploadAppDataParams, AppDataInfo } from 'modules/appData'
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
-import { BaseFlowContext } from 'modules/swap/services/types'
-import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { Weth } from 'legacy/abis/types'
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
@@ -29,6 +21,16 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 import { PostOrderParams } from 'legacy/utils/trade'
+
+import type { UploadAppDataParams, AppDataInfo } from 'modules/appData'
+import { useUploadAppData, useAppData } from 'modules/appData'
+import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { BaseFlowContext } from 'modules/swap/services/types'
+import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
+
 import { calculateValidTo } from 'utils/time'
 
 const _computeInputAmountForSignature = (params: {

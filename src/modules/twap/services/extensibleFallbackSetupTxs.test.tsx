@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { Web3Provider } from '@ethersproject/providers'
 
 import { extensibleFallbackSetupTxs } from './extensibleFallbackSetupTxs'

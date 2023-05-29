@@ -1,8 +1,10 @@
-import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
 
-import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { Trans } from '@lingui/macro'
+
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
+
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import * as styledEl from './styled'
 

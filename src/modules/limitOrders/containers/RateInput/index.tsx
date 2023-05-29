@@ -3,6 +3,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { RefreshCw } from 'react-feather'
 
+import Loader from 'legacy/components/Loader'
+import QuestionHelper from 'legacy/components/QuestionHelper'
+
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
@@ -17,8 +20,6 @@ import { useWalletInfo } from 'modules/wallet'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
 import { limitOrdersFeatures } from 'constants/featureFlags'
-import Loader from 'legacy/components/Loader'
-import QuestionHelper from 'legacy/components/QuestionHelper'
 import { formatInputAmount } from 'utils/amountFormat'
 import { getAddress } from 'utils/getAddress'
 import { isFractionFalsy } from 'utils/isFractionFalsy'

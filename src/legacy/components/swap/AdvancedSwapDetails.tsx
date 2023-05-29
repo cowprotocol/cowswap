@@ -1,8 +1,8 @@
 import { Percent } from '@uniswap/sdk-core'
 
-import { TradeSummary } from 'modules/swap/containers/TradeSummary'
-
 import TradeGp from 'legacy/state/swap/TradeGp'
+
+import { TradeSummary } from 'modules/swap/containers/TradeSummary'
 
 export interface AdvancedSwapDetailsProps {
   trade?: TradeGp

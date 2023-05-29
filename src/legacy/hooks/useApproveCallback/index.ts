@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
-import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
 
-import { useWalletInfo } from 'modules/wallet'
+import { TransactionResponse } from '@ethersproject/providers'
 
 import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import { ClaimType } from 'legacy/state/claim/hooks'
@@ -11,6 +10,9 @@ import { Field } from 'legacy/state/swap/actions'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 
 import { ApprovalState, ApproveCallbackParams, useApproveCallback } from './useApproveCallbackMod'

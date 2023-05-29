@@ -1,13 +1,15 @@
-import networksJson from '@cowprotocol/contracts/networks.json'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { IpfsConfig } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Token, Fraction, Percent } from '@uniswap/sdk-core'
+
+import networksJson from '@cowprotocol/contracts/networks.json'
 import ethFlowBarnJson from '@cowprotocol/ethflowcontract/networks.barn.json'
 import ethFlowProdJson from '@cowprotocol/ethflowcontract/networks.prod.json'
-import { Token, Fraction, Percent } from '@uniswap/sdk-core'
 import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
 
 import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'legacy/constants/ipfs'
+
 
 const { GPv2Settlement, GPv2VaultRelayer } = networksJson
 const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow

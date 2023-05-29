@@ -3,6 +3,10 @@ import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
+import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
+import { useIsExpertMode } from 'legacy/state/user/hooks'
+
 import { getDerivedEthFlowState } from 'modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
@@ -14,9 +18,6 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'
 import { GpModal } from 'common/pure/Modal'
-import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
-import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { useIsExpertMode } from 'legacy/state/user/hooks'
 
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'

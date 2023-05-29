@@ -2,8 +2,13 @@ import { useAtomValue } from 'jotai/utils'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
 import { useWeb3React } from '@web3-react/core'
 import { useDispatch } from 'react-redux'
+
+import { useGP2SettlementContract } from 'legacy/hooks/useContract'
+import useENSAddress from 'legacy/hooks/useENSAddress'
+import { AppDispatch } from 'legacy/state'
 
 import { useUploadAppData, useAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -13,9 +18,6 @@ import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSe
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
-import useENSAddress from 'legacy/hooks/useENSAddress'
-import { AppDispatch } from 'legacy/state'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 

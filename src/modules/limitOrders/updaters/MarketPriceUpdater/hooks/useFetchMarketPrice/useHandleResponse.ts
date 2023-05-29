@@ -5,11 +5,12 @@ import { useCallback } from 'react'
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
+import { CancelableResult } from 'legacy/utils/async'
+
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
-import { CancelableResult } from 'legacy/utils/async'
 import { FractionUtils } from 'utils/fractionUtils'
 
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%

@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CallState } from '@uniswap/redux-multicall'
+import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { CallState } from '@uniswap/redux-multicall'
-import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { VCow as VCowType } from 'abis/types'
 import { GpEther, V_COW } from 'legacy/constants/tokens'
 import { useVCowContract } from 'legacy/hooks/useContract'
 import useIsMounted from 'legacy/hooks/useIsMounted'
@@ -32,6 +30,10 @@ import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransacti
 import { isAddress } from 'legacy/utils'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { VCow as VCowType } from 'abis/types'
 import { useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { EnhancedUserClaimData } from 'pages/Claim/types'
 import { formatTokenAmount } from 'utils/amountFormat'

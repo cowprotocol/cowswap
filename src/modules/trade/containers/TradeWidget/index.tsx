@@ -2,6 +2,9 @@ import React, { useEffect } from 'react'
 
 import { t } from '@lingui/macro'
 
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
+
 import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
@@ -11,8 +14,6 @@ import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'

@@ -2,6 +2,9 @@ import { Trans } from '@lingui/macro'
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+import useTheme from 'legacy/hooks/useTheme'
+
 import { ConnectionType } from 'modules/wallet'
 import { default as InjectedImage } from 'modules/wallet/api/assets/arrow-right.svg'
 import { default as InjectedImageDark } from 'modules/wallet/api/assets/arrow-right.svg'
@@ -9,11 +12,7 @@ import { default as MetamaskImage } from 'modules/wallet/api/assets/metamask.png
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { getConnectionName } from 'modules/wallet/api/utils/connection'
 
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-
 import { TryActivation, onError } from '.'
-
-import useTheme from 'legacy/hooks/useTheme'
 
 import { Web3ReactConnection } from '../types'
 

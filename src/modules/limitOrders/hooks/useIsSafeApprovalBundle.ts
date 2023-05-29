@@ -1,4 +1,5 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { Nullish } from 'types'
 
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'

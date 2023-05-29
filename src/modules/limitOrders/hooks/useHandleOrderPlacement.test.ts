@@ -2,6 +2,8 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
 import { renderHook } from '@testing-library/react-hooks'
 
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
@@ -9,7 +11,6 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { withModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'

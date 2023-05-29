@@ -1,6 +1,7 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
+
 import styled from 'styled-components/macro'
 
 import { ButtonStar } from 'legacy/components/Button'

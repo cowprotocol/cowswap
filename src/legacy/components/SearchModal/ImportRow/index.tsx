@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
+
 import styled from 'styled-components/macro'
 
 import { ButtonPrimary } from 'legacy/components/Button'

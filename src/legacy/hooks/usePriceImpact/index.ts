@@ -1,6 +1,7 @@
 import { Percent } from '@uniswap/sdk-core'
 
 import { QuoteError } from 'legacy/state/price/actions'
+
 import { getAddress } from 'utils/getAddress'
 
 import { ParsedAmounts, PriceImpactTrade } from './types'

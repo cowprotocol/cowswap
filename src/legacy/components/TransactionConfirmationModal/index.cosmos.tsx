@@ -1,4 +1,5 @@
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import styled from 'styled-components/macro'
 
 import { ConfirmationPendingContent, L2Content, OperationType } from 'legacy/components/TransactionConfirmationModal'
@@ -6,6 +7,7 @@ import { TransactionSubmittedContent } from 'legacy/components/TransactionConfir
 import { COW, GNO } from 'legacy/constants/tokens'
 import store from 'legacy/state'
 import { addPendingOrder, OrderStatus } from 'legacy/state/orders/actions'
+
 
 const txHash = '0xe87e1d02b052daa9605abe018e8172feffd1bc38ed2284e6hhhhhh' + Date.now()
 

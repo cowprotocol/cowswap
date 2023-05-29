@@ -1,9 +1,8 @@
 import { useCallback, useEffect } from 'react'
 
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
-import { useWeb3React } from '@web3-react/core'
 
-import { useWalletInfo } from 'modules/wallet'
+import { useWeb3React } from '@web3-react/core'
 
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import { useFetchListCallback } from 'legacy/hooks/useFetchListCallback'
@@ -14,6 +13,9 @@ import { acceptListUpdate } from 'legacy/state/lists/actions'
 import { useAllLists } from 'legacy/state/lists/hooks'
 import { useActiveListUrls } from 'legacy/state/lists/hooks'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import useInterval from 'lib/hooks/useInterval'
 
 export default function Updater(): null {

@@ -2,10 +2,11 @@ import { useCallback, useLayoutEffect, useMemo } from 'react'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
-
 import { Field } from 'legacy/state/swap/actions'
 import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
+
+import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
+
 import { getIntOrFloat } from 'utils/getIntOrFloat'
 
 /**

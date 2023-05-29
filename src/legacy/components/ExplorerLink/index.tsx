@@ -1,8 +1,9 @@
-import { useWalletInfo } from 'modules/wallet'
 
 import { ExternalLink } from 'legacy/theme'
 import { BlockExplorerLinkType, getExplorerLabel, getEtherscanLink } from 'legacy/utils'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
 
 interface Props {
   id: string

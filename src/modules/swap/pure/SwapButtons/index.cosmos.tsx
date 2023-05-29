@@ -1,10 +1,11 @@
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import { useSelect } from 'react-cosmos/fixture'
 
-import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+import { useSelect } from 'react-cosmos/fixture'
 
 import { Field } from 'legacy/state/swap/actions'
 import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
+
+import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 
 import { SwapButtons, SwapButtonsContext } from './index'
 

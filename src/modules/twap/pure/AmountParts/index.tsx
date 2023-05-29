@@ -1,5 +1,6 @@
-import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'

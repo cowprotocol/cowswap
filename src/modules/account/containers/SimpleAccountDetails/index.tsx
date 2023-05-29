@@ -2,10 +2,10 @@ import { Fragment } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
 
 import { renderActivities } from '../AccountDetails'
 import { AccountDetailsProps } from '../AccountDetails'

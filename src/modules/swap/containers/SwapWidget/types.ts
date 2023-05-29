@@ -1,9 +1,10 @@
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { SwapActions } from 'legacy/state/swap/hooks'
+
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 export interface SwapFormProps {
   chainId: number | undefined

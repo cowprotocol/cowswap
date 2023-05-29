@@ -3,12 +3,12 @@ import { useContext } from 'react'
 import { AlertCircle, CheckCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { AutoColumn } from 'legacy/components/Column'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { AutoRow } from 'legacy/components/Row'
 import { ThemedText } from 'legacy/theme'
+
+import { useWalletInfo } from 'modules/wallet'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

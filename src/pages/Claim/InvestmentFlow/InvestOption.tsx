@@ -1,20 +1,14 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 
-import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { BigNumber } from '@ethersproject/bignumber'
 import SVG from 'react-inlinesvg'
 
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
 import CheckCircle from 'legacy/assets/cow-swap/check.svg'
 import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
 import { ButtonConfirmed } from 'legacy/components/Button'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-
-import { InvestmentFlowProps } from '.'
-
 import { StyledNumericalInput } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
 import Loader from 'legacy/components/Loader'
 import Row from 'legacy/components/Row'
@@ -29,9 +23,16 @@ import { useGasPrices } from 'legacy/state/gas/hooks'
 import { ButtonSize } from 'legacy/theme/enum'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { getProviderErrorMessage } from 'legacy/utils/misc'
+
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
+
+import { InvestmentFlowProps } from '.'
 
 import { IS_TESTING_ENV } from '../const'
 import {

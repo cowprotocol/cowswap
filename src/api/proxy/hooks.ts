@@ -1,6 +1,7 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import * as Sentry from '@sentry/react'
 import useSWR from 'swr'
 

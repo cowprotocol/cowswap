@@ -1,5 +1,25 @@
 import React, { useState } from 'react'
 
+import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
+import SettingsTab from 'legacy/components/Settings'
+import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
+import usePriceImpact from 'legacy/hooks/usePriceImpact'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { useWrapType, WrapType } from 'legacy/hooks/useWrapCallback'
+import { useModalIsOpen } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
+import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
+import { Field } from 'legacy/state/swap/actions'
+import { useSwapState } from 'legacy/state/swap/hooks'
+import {
+  useDerivedSwapInfo,
+  useHighFeeWarning,
+  useIsFeeGreaterThanInput,
+  useSwapActionHandlers,
+  useUnknownImpactWarning,
+} from 'legacy/state/swap/hooks'
+import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
+
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
@@ -28,25 +48,6 @@ import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
-import SettingsTab from 'legacy/components/Settings'
-import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
-import usePriceImpact from 'legacy/hooks/usePriceImpact'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { useWrapType, WrapType } from 'legacy/hooks/useWrapCallback'
-import { useModalIsOpen } from 'legacy/state/application/hooks'
-import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
-import { Field } from 'legacy/state/swap/actions'
-import { useSwapState } from 'legacy/state/swap/hooks'
-import {
-  useDerivedSwapInfo,
-  useHighFeeWarning,
-  useIsFeeGreaterThanInput,
-  useSwapActionHandlers,
-  useUnknownImpactWarning,
-} from 'legacy/state/swap/hooks'
-import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
 

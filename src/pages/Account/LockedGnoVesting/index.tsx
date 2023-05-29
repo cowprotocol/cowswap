@@ -1,14 +1,11 @@
 import { useCallback, useState, useEffect } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import SVG from 'react-inlinesvg'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { HelpCircle } from 'common/pure/HelpCircle'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
 import cowImage from 'legacy/assets/cow-swap/cow_v2.svg'
 import { claimAnalytics } from 'legacy/components/analytics'
@@ -23,6 +20,11 @@ import usePrevious from 'legacy/hooks/usePrevious'
 import { ButtonSize } from 'legacy/theme/enum'
 import { getBlockExplorerUrl } from 'legacy/utils'
 import { getProviderErrorMessage, isRejectRequestProviderError } from 'legacy/utils/misc'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { HelpCircle } from 'common/pure/HelpCircle'
+import { TokenAmount } from 'common/pure/TokenAmount'
 import { Card, BalanceDisplay, ConvertWrapper, VestingBreakdown, CardActions, ExtLink } from 'pages/Account/styled'
 import { formatDateWithTimezone } from 'utils/time'
 

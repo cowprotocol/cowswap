@@ -1,5 +1,8 @@
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { nativeOnChain, WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowModalContentProps } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
@@ -8,7 +11,6 @@ import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { defaultEthFlowContext, EthFlowActionContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
-import { nativeOnChain, WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
 const native = nativeOnChain(SupportedChainId.GOERLI)
 const wrapped = WETH[SupportedChainId.GOERLI]

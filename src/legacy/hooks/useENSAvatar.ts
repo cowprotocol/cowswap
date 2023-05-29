@@ -4,10 +4,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'
 
+import { safeNamehash } from 'legacy/utils/safeNamehash'
+
 import { useWalletInfo } from 'modules/wallet'
 
 import { fetchWithBackoff } from 'common/utils/fetch'
-import { safeNamehash } from 'legacy/utils/safeNamehash'
 import { useSingleCallResult } from 'lib/hooks/multicall'
 import uriToHttp from 'lib/utils/uriToHttp'
 

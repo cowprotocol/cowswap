@@ -4,16 +4,18 @@ import React, { ErrorInfo, PropsWithChildren } from 'react'
 import styled from 'styled-components/macro'
 
 // MOD imports
-import { Page } from 'modules/application/pure/Page'
 
 // import { UniIcon, LogoImage } from '../Header'
-import { Routes } from 'constants/routes'
 import { sendError } from 'legacy/components/analytics'
 import { ChunkLoadError } from 'legacy/components/ErrorBoundary/ChunkLoadError'
 import { ErrorWithStackTrace } from 'legacy/components/ErrorBoundary/ErrorWithStackTrace'
 import Footer from 'legacy/components/Footer'
 import { UniIcon, LogoImage, HeaderRow } from 'legacy/components/Header/styled' // mod
 import { MEDIA_WIDTHS } from 'legacy/theme'
+
+import { Page } from 'modules/application/pure/Page'
+
+import { Routes } from 'constants/routes'
 
 /* const FallbackWrapper = styled.div`
   display: flex;

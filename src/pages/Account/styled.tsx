@@ -3,13 +3,14 @@ import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled, { css } from 'styled-components/macro'
 
-import { Page, GdocsListStyle } from 'modules/application/pure/Page'
-import { ButtonCustom as AddToMetaMask } from 'modules/wallet/api/pure/AddToMetamask'
-
 import { ButtonPrimary } from 'legacy/components/Button'
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 import SpinnerLoader from 'legacy/components/Loader'
 import { ExternalLink } from 'legacy/theme'
+
+import { Page, GdocsListStyle } from 'modules/application/pure/Page'
+import { ButtonCustom as AddToMetaMask } from 'modules/wallet/api/pure/AddToMetamask'
+
 import { BannerExplainer } from 'pages/Claim/styled'
 
 export const Container = styled.div`

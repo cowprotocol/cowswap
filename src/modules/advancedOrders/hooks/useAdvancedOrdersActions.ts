@@ -2,10 +2,10 @@ import { useCallback } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
+import { Field } from 'legacy/state/swap/actions'
+
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
-
-import { Field } from 'legacy/state/swap/actions'
 
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 

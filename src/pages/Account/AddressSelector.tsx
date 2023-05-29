@@ -4,13 +4,14 @@ import { useWeb3React } from '@web3-react/core'
 import { Check, ChevronDown } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
 import { updateAddress } from 'legacy/state/affiliate/actions'
 import { useAffiliateAddress } from 'legacy/state/affiliate/hooks'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { isAddress, shortenAddress } from 'legacy/utils'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { ensNames } from 'pages/Account/ens'
 
 type AddressSelectorProps = {

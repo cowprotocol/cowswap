@@ -1,8 +1,9 @@
+import { useTokenContract } from 'legacy/hooks/useContract'
+
 import { SafeBundleFlowContext, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-import { useTokenContract } from 'legacy/hooks/useContract'
 
 export function useSafeBundleFlowContext(tradeContext: TradeFlowContext | null): SafeBundleFlowContext | null {
   const sellToken = tradeContext?.postOrderParams.sellToken

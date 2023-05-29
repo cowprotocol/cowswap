@@ -1,6 +1,8 @@
 import { initializeConnector } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+
 import { ConnectionType } from 'modules/wallet'
 import { useWalletMetaData } from 'modules/wallet'
 import { default as TrustImage } from 'modules/wallet/api/assets/trust.svg'
@@ -8,8 +10,6 @@ import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption
 import { getConnectionName, getIsTrustWallet } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 import { InjectedWallet } from 'modules/wallet/web3-react/connectors/Injected'
-
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
 import { walletConnectConnection } from './walletConnect'
 

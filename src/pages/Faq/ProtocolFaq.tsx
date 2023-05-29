@@ -1,15 +1,16 @@
-import { PageTitle } from 'modules/application/containers/PageTitle'
-import { Page, Content } from 'modules/application/pure/Page'
-
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
 import { LinkScrollable } from 'legacy/components/Link'
 
-import { Footer } from '.'
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Page, Content } from 'modules/application/pure/Page'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'
 import { ExternalLinkFaq, Wrapper } from './styled'
+
+import { Footer } from '.'
+
 import ToC from './ToC'
 
 // AmplitudeAnalytics

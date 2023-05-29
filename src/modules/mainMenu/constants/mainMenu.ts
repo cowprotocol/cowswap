@@ -1,5 +1,3 @@
-import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
-import { Routes } from 'constants/routes'
 import IMAGE_CODE from 'legacy/assets/cow-swap/code.svg'
 import IMAGE_COOKIE_POLICY from 'legacy/assets/cow-swap/cookie-policy.svg'
 import IMAGE_DISCORD from 'legacy/assets/cow-swap/discord.svg'
@@ -12,6 +10,9 @@ import IMAGE_PRIVACY_POLICY from 'legacy/assets/cow-swap/privacy-policy.svg'
 import IMAGE_TERMS_AND_CONDITIONS from 'legacy/assets/cow-swap/terms-and-conditions.svg'
 import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
+
+import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
+import { Routes } from 'constants/routes'
 import { FeatureFlag } from 'utils/featureFlags'
 import { isNotNullish } from 'utils/isNotNullish'
 

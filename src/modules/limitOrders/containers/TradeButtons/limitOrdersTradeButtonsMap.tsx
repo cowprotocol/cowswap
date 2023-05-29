@@ -2,6 +2,11 @@ import React from 'react'
 
 import { Trans } from '@lingui/macro'
 
+import { ButtonPrimary } from 'legacy/components/Button'
+import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
+import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
+import { ButtonSize } from 'legacy/theme/enum'
+
 import { LimitOrdersDerivedState } from 'modules/limitOrders'
 import { LimitOrdersQuoteState } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { TransactionConfirmState } from 'modules/swap/state/transactionConfirmAtom'
@@ -10,10 +15,6 @@ import { TradeLoadingButton } from 'modules/trade/pure/TradeLoadingButton'
 import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove/TradeApproveButton'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { ButtonPrimary } from 'legacy/components/Button'
-import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
-import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { ButtonSize } from 'legacy/theme/enum'
 
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 

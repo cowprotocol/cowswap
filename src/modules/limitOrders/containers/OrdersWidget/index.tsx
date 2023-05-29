@@ -4,6 +4,9 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
+import { GP_VAULT_RELAYER } from 'legacy/constants'
+import { Order } from 'legacy/state/orders/actions'
+
 import { LIMIT_ORDERS_TABS, OPEN_TAB } from 'modules/limitOrders/const/limitOrdersTabs'
 import { OrdersReceiptModal } from 'modules/limitOrders/containers/OrdersReceiptModal'
 import { useSelectReceiptOrder } from 'modules/limitOrders/containers/OrdersReceiptModal/hooks'
@@ -18,8 +21,6 @@ import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
-import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { Order } from 'legacy/state/orders/actions'
 
 import { LimitOrdersList, ParsedOrder, useLimitOrdersList } from './hooks/useLimitOrdersList'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'

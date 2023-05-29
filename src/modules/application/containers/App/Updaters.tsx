@@ -1,7 +1,3 @@
-import { UploadToIpfsUpdater, AppDataUpdater } from 'modules/appData'
-import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
-import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
-import { WalletUpdater } from 'modules/wallet'
 
 import ApplicationUpdater from 'legacy/state/application/updater'
 import EnhancedTransactionUpdater from 'legacy/state/enhancedTransactions/updater'
@@ -20,6 +16,12 @@ import { SpotPricesUpdater } from 'legacy/state/orders/updaters/SpotPricesUpdate
 import FeesUpdater from 'legacy/state/price/updater'
 import SentryUpdater from 'legacy/state/sentry/updater'
 import UserUpdater from 'legacy/state/user/updater'
+
+import { UploadToIpfsUpdater, AppDataUpdater } from 'modules/appData'
+import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
+import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
+import { WalletUpdater } from 'modules/wallet'
+
 import { MulticallUpdater } from 'lib/state/multicall'
 
 export function Updaters() {

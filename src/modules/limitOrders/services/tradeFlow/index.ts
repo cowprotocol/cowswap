@@ -1,6 +1,10 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
 
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { signAndPostOrder } from 'legacy/utils/trade'
+
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -11,10 +15,6 @@ import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { signAndPostOrder } from 'legacy/utils/trade'
 
 export async function tradeFlow(
   params: TradeFlowContext,

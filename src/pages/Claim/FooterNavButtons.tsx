@@ -3,8 +3,6 @@ import { ReactNode, useEffect, useRef } from 'react'
 import { isAddress } from '@ethersproject/address'
 import { Trans } from '@lingui/macro'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
@@ -13,6 +11,9 @@ import {
   useHasClaimInvestmentFlowError,
   useHasZeroInvested,
 } from 'legacy/state/claim/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { ClaimCommonTypes } from 'pages/Claim/types'
 
 import { ClaimAddressProps } from './ClaimAddress'

@@ -1,9 +1,10 @@
 import styled from 'styled-components/macro'
 
+import { OrderStatus } from 'legacy/state/orders/actions'
+
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { orderStatusTitleMap } from 'modules/limitOrders/pure/Orders/OrderRow'
 
-import { OrderStatus } from 'legacy/state/orders/actions'
 
 const Wrapper = styled.div<{
   status: OrderStatus

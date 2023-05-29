@@ -1,22 +1,15 @@
 import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 
-import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import styled from 'styled-components/macro'
 
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
-
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import TokenListLogo from 'legacy/assets/svg/tokenlist.svg'
 import { ElementName, Event, EventName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { TraceEvent } from 'legacy/components/AmplitudeAnalytics/TraceEvent'
-
-import { MenuItem } from './index' // mod
-
 import { LightGreyCard } from 'legacy/components/Card'
 import Column from 'legacy/components/Column'
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
@@ -31,7 +24,15 @@ import useTheme from 'legacy/hooks/useTheme'
 import { useIsUnsupportedTokenGp } from 'legacy/state/lists/hooks'
 import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
+
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+
+import { MenuItem } from './index' // mod
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'

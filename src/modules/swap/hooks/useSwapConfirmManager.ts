@@ -1,10 +1,10 @@
 import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { swapConfirmAtom } from 'modules/swap/state/swapConfirmAtom'
-
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
+
+import { swapConfirmAtom } from 'modules/swap/state/swapConfirmAtom'
 
 export interface SwapConfirmManager {
   setSwapError(swapErrorMessage: string): void

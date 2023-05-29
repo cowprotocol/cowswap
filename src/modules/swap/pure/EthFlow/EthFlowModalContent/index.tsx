@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 
 import styled from 'styled-components/macro'
 
+import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
+
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { ethFlowConfigs } from 'modules/swap/pure/EthFlow/EthFlowModalContent/configs'
 import { EthFlowModalBottomContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalBottomContent'
@@ -13,7 +15,6 @@ import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
-import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
 
 export interface EthFlowModalContentProps {
   state: EthFlowState

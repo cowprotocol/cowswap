@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
-import { useWalletInfo } from 'modules/wallet'
-
 import useDebounce from 'legacy/hooks/useDebounce'
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import usePrevious from 'legacy/hooks/usePrevious'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
 
 import { updateChainId } from './reducer'
 

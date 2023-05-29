@@ -1,13 +1,14 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
 import styled from 'styled-components/macro'
+
+import { AutoColumn } from 'legacy/components/Column'
 
 import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
 import { RowFee } from 'modules/swap/containers/Row/RowFee'
 import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
 import { TradeSummaryProps } from 'modules/swap/containers/TradeSummary'
-
-import { AutoColumn } from 'legacy/components/Column'
 
 // Sub-components
 

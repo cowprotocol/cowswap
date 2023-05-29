@@ -3,8 +3,11 @@ import { useAtomValue } from 'jotai/utils'
 import React, { useCallback, useEffect } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { LimitOrdersFormState, useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
@@ -26,7 +29,6 @@ import {
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'

@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { useSelect, useValue } from 'react-cosmos/fixture'
 import styled from 'styled-components/macro'
 
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
+
 import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
 import { getEthFlowModalContentProps } from 'modules/swap/services/ethFlow/mocks'
 import {
@@ -18,7 +20,6 @@ import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { EthFlowActionContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
 import { GpModal } from 'common/pure/Modal'
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 const ALL_STATES = Object.values(EthFlowState)
 

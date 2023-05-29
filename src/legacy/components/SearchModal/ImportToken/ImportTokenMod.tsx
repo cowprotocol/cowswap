@@ -1,6 +1,7 @@
-import { Plural, Trans } from '@lingui/macro'
 import { Currency, Token } from '@uniswap/sdk-core'
 import { TokenList } from '@uniswap/token-lists'
+
+import { Plural, Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { AlertCircle, ArrowLeft } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -12,14 +13,13 @@ import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween } from 'legacy/components/Row'
 import { PaddedColumn } from 'legacy/components/SearchModal/styleds'
-
-import { CardComponentProps } from './index'
-
 import TokenImportCard from 'legacy/components/SearchModal/TokenImportCard'
 import { SectionBreak } from 'legacy/components/swap/styleds'
 import useTheme from 'legacy/hooks/useTheme'
 import { useAddUserToken } from 'legacy/state/user/hooks'
 import { CloseIcon, ThemedText } from 'legacy/theme'
+
+import { CardComponentProps } from './index'
 
 const Wrapper = styled.div`
   position: relative;

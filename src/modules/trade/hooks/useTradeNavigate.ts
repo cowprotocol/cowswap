@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useTradeTypeInfo } from 'modules/trade/hooks/useTradeTypeInfo'

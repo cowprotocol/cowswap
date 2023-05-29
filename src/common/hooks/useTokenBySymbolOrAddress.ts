@@ -3,10 +3,11 @@ import { useMemo } from 'react'
 
 import { NativeCurrency, Token } from '@uniswap/sdk-core'
 
+import { useFavouriteTokens } from 'legacy/state/user/hooks'
+
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useWalletInfo } from 'modules/wallet'
 
-import { useFavouriteTokens } from 'legacy/state/user/hooks'
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'

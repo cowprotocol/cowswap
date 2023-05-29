@@ -1,4 +1,5 @@
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+
 import JSBI from 'jsbi'
 import { FractionLike, Nullish } from 'types'
 

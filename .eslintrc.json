@@ -52,9 +52,19 @@
       {
         "pathGroups": [
           {
+            "pattern": "{@cowprotocol/*,@uniswap/*}",
+            "group": "external",
+            "position": "before"
+          },
+          {
             "pattern": "{react,jotai,jotai/*}",
             "group": "external",
             "position": "before"
+          },
+          {
+            "pattern": "legacy/**",
+            "group": "external",
+            "position": "after"
           },
           {
             "pattern": "modules/**",
@@ -76,8 +86,8 @@
           "internal",
           "sibling",
           "parent",
-          "index",
           "object",
+          "index",
           "type"
         ],
         "alphabetize": {

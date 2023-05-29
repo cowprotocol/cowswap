@@ -1,8 +1,9 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
-import { BigNumber } from '@ethersproject/bignumber'
 import { NativeCurrency } from '@uniswap/sdk-core'
+
+import { BigNumber } from '@ethersproject/bignumber'
 
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 

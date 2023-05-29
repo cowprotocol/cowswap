@@ -1,4 +1,5 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { Nullish } from 'types'
 
 import { useBalancesAndAllowances } from 'modules/tokens'

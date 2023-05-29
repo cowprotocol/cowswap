@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price, Token /*, TradeType*/ } from '@uniswap/sdk-core'
+
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useWalletInfo } from 'modules/wallet'
-
-import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import { USDC, USDC_MAINNET } from 'legacy/constants/tokens'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { stringToCurrency } from 'legacy/state/swap/extension'
 import { useGetGpUsdcPrice } from 'legacy/utils/price'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useGetCoingeckoUsdPrice } from 'api/coingecko'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 

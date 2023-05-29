@@ -1,16 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { t } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { t } from '@lingui/macro'
 import { ParsedQs } from 'qs'
 
-import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useWalletInfo } from 'modules/wallet'
-
-import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
 import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'
 import { useCurrency } from 'legacy/hooks/Tokens'
@@ -24,6 +19,13 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useIsExpertMode, useUserSlippageToleranceWithDefault } from 'legacy/state/user/hooks'
 import { registerOnWindow } from 'legacy/utils/misc'
+
+import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
+import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { formatSymbol } from 'utils/format'
 

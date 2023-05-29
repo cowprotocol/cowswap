@@ -3,11 +3,11 @@ import { useLayoutEffect, useState } from 'react'
 
 import { Writeable } from 'types'
 
+import usePrevious from 'legacy/hooks/usePrevious'
+
 import { useGetInitialPrice } from 'modules/limitOrders/hooks/useGetInitialPrice'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
 import { LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-
-import usePrevious from 'legacy/hooks/usePrevious'
 
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 

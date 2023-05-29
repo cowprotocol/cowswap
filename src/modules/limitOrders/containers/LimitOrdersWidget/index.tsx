@@ -4,6 +4,9 @@ import React, { useMemo, useState } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
+import usePriceImpact from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
+
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
@@ -19,8 +22,6 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import usePriceImpact from 'legacy/hooks/usePriceImpact'
-import { Field } from 'legacy/state/swap/actions'
 
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import * as styledEl from './styled'

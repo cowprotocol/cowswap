@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 import { Trans } from '@lingui/macro'
 import ms from 'ms'
 
-import { GpModal as Modal } from 'common/pure/Modal'
 import { ButtonPrimary } from 'legacy/components/Button'
+
+import { GpModal as Modal } from 'common/pure/Modal'
 
 import * as styledEl from './styled'
 

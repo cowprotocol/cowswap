@@ -1,28 +1,18 @@
 import { ReactNode, useContext, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { AlertCircle, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { GpModal } from 'common/pure/Modal'
 import Circle from 'legacy/assets/images/blue-loader.svg'
 import Badge from 'legacy/components/Badge'
 import { AutoColumn, ColumnCenter } from 'legacy/components/Column'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 import AnimatedConfirmation from 'legacy/components/TransactionConfirmationModal/AnimatedConfirmation'
-
-import {
-  ConfirmationModalContentProps,
-  ConfirmationPendingContent,
-  OperationType,
-  TransactionSubmittedContent,
-} from '.'
-
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import { handleFollowPendingTxPopupAtom, useUpdateAtom } from 'legacy/state/application/atoms'
 import { useIsTransactionConfirmed, useTransaction } from 'legacy/state/enhancedTransactions/hooks'
@@ -30,7 +20,18 @@ import { CloseIcon, CustomLightSpinner, ExternalLink } from 'legacy/theme'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 import { isL2ChainId } from 'legacy/utils/chains'
 
+import { useWalletInfo } from 'modules/wallet'
+
+import { GpModal } from 'common/pure/Modal'
+
 import { CloseIconWrapper, GPModalHeader } from './styled'
+
+import {
+  ConfirmationModalContentProps,
+  ConfirmationPendingContent,
+  OperationType,
+  TransactionSubmittedContent,
+} from '.'
 
 import { ButtonPrimary } from '../Button'
 

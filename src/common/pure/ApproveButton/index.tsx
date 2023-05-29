@@ -1,11 +1,11 @@
 import { useContext, useMemo } from 'react'
 
-import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import { ThemeContext } from 'styled-components/macro'
 
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { ButtonConfirmed } from 'legacy/components/Button'
 import CurrencyLogo from 'legacy/components/CurrencyLogo'
 import Loader from 'legacy/components/Loader'
@@ -13,6 +13,8 @@ import { AutoRow } from 'legacy/components/Row'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 import { ButtonSize } from 'legacy/theme/enum'
+
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 export interface ApproveButtonProps {
   currency: Currency | undefined | null

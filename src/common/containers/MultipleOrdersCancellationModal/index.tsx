@@ -1,11 +1,6 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import React, { useCallback, useState } from 'react'
 
-import { useWalletInfo } from 'modules/wallet'
-
-import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
-import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
-import { GpModal as Modal } from 'common/pure/Modal'
 import { ButtonPrimary } from 'legacy/components/Button'
 import {
   ConfirmationModalContent,
@@ -15,6 +10,12 @@ import {
 } from 'legacy/components/TransactionConfirmationModal'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 import { isRejectRequestProviderError } from 'legacy/utils/misc'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
+import { GpModal as Modal } from 'common/pure/Modal'
 
 interface Props {
   isOpen: boolean

@@ -2,13 +2,14 @@ import { useAtomValue } from 'jotai/utils'
 
 import { Atom } from 'jotai/core/atom'
 
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 import { tryParseFractionalAmount } from 'utils/tryParseFractionalAmount'
 
 export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>) {

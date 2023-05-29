@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
 
+import { useAllTokens } from 'legacy/hooks/Tokens'
+import { useFavouriteTokens } from 'legacy/state/user/hooks'
+
 import { useOnchainBalances } from 'modules/tokens'
 import { TokenAmounts } from 'modules/tokens'
 import { useWalletInfo } from 'modules/wallet'
-
-import { useAllTokens } from 'legacy/hooks/Tokens'
-import { useFavouriteTokens } from 'legacy/state/user/hooks'
 
 // mimics useAllBalances
 export function useAllTokenBalances(): [TokenAmounts, boolean] {

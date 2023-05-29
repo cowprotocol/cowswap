@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useCallback, useRef, PropsWithChildren } from 'react'
 
-import { OrderID } from 'api/gnosisProtocol'
 import { useRecentActivityLastPendingOrder } from 'legacy/hooks/useRecentActivity'
 import {
   useUpdateAtom,
@@ -14,6 +13,8 @@ import {
 } from 'legacy/state/application/atoms'
 import { Order } from 'legacy/state/orders/actions'
 import { useIsExpertMode } from 'legacy/state/user/hooks'
+
+import { OrderID } from 'api/gnosisProtocol'
 
 import { FollowPendingTxPopupUI } from './FollowPendingTxPopupUI'
 

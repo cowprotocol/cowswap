@@ -1,17 +1,19 @@
 import { useContext } from 'react'
 
 import { Currency, CurrencyAmount, Fraction, Percent } from '@uniswap/sdk-core'
+
 import { transparentize, darken } from 'polished'
 import SVG from 'react-inlinesvg'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { calculateOrderExecutionStatus } from 'modules/limitOrders/utils/calculateOrderExecutionStatus'
-
-import { TokenAmount, TokenAmountProps } from 'common/pure/TokenAmount'
-import { SymbolElement } from 'common/pure/TokenAmount'
 import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { ZERO_FRACTION } from 'legacy/constants'
+
+import { calculateOrderExecutionStatus } from 'modules/limitOrders/utils/calculateOrderExecutionStatus'
+
+import { SymbolElement } from 'common/pure/TokenAmount'
+import { TokenAmount, TokenAmountProps } from 'common/pure/TokenAmount'
 
 import * as styledEl from './styled'
 

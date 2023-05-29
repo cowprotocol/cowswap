@@ -1,19 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Trans } from '@lingui/macro'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router-dom'
 
-import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useWalletInfo } from 'modules/wallet'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
-
-import { HelpCircle } from 'common/pure/HelpCircle'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import ArrowIcon from 'legacy/assets/cow-swap/arrow.svg'
 import CowImage from 'legacy/assets/cow-swap/cow_v2.svg'
 import vCOWImage from 'legacy/assets/cow-swap/vCOW.png'
@@ -30,6 +25,13 @@ import { SwapVCowStatus } from 'legacy/state/cowToken/actions'
 import { useVCowData, useSwapVCowCallback, useSetSwapVCowStatus, useSwapVCowStatus } from 'legacy/state/cowToken/hooks'
 import { getBlockExplorerUrl } from 'legacy/utils'
 import { getProviderErrorMessage } from 'legacy/utils/misc'
+
+import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
+
+import { HelpCircle } from 'common/pure/HelpCircle'
+import { TokenAmount } from 'common/pure/TokenAmount'
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useCowFromLockedGnoBalances } from 'pages/Account/LockedGnoVesting/hooks'
 import {

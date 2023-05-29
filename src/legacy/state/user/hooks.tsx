@@ -2,10 +2,9 @@ import { useCallback, useMemo } from 'react'
 
 import { Currency, Percent, Token } from '@uniswap/sdk-core'
 import { computePairAddress, Pair } from '@uniswap/v2-sdk'
+
 import JSBI from 'jsbi'
 import { shallowEqual } from 'react-redux'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { L2_CHAIN_IDS } from 'legacy/constants/chains'
@@ -14,6 +13,9 @@ import { L2_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import { AppState } from 'legacy/state'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { calculateValidTo } from 'utils/time'
 
 import {

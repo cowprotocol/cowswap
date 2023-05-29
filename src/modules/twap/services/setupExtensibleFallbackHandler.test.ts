@@ -6,10 +6,10 @@ import { renderHook } from '@testing-library/react-hooks'
 import { useWeb3React } from '@web3-react/core'
 import { WithMockedWeb3 } from 'test-utils'
 
+import { useGP2SettlementContract } from 'legacy/hooks/useContract'
+
 import { walletInfoAtom } from 'modules/wallet/api/state'
 import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
-
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 
 import { setupExtensibleFallbackHandler } from './setupExtensibleFallbackHandler'
 

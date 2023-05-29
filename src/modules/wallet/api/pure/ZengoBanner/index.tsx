@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/macro'
 
-import { default as ZengoImage } from 'modules/wallet/api/assets/zengo.svg'
-
 import { ExternalLink } from 'legacy/theme'
+
+import { default as ZengoImage } from 'modules/wallet/api/assets/zengo.svg'
 
 import * as styled from './styled'
 

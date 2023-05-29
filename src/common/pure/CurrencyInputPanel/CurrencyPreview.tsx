@@ -1,11 +1,12 @@
 import { Trans } from '@lingui/macro'
 
+import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue/FiatValueMod'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
 import { CurrencySelectButton } from 'modules/swap/pure/CurrencySelectButton'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue/FiatValueMod'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import * as styledEl from './styled'
 

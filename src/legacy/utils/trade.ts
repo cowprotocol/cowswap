@@ -1,4 +1,3 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -7,16 +6,19 @@ import {
   SigningScheme,
   OrderSigningUtils,
 } from '@cowprotocol/cow-sdk'
-import { Signer } from '@ethersproject/abstract-signer'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { Signer } from '@ethersproject/abstract-signer'
 import { orderBookApi } from 'cowSdk'
 
-import { getTrades, OrderID } from 'api/gnosisProtocol'
-import { getProfileData } from 'api/gnosisProtocol/api'
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
 import { isAddress, shortenAddress } from 'legacy/utils/index'
+
+import { getTrades, OrderID } from 'api/gnosisProtocol'
+import { getProfileData } from 'api/gnosisProtocol/api'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 

@@ -1,15 +1,10 @@
 import { useContext, useState } from 'react'
 
-import { Trans } from '@lingui/macro'
 import { Percent } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { darken } from 'polished'
 import styled, { ThemeContext } from 'styled-components/macro'
-
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
-import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
-import { useWalletInfo } from 'modules/wallet'
 
 import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
@@ -31,6 +26,12 @@ import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
 // import ms from 'ms.macro'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
+
+import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
+import { useWalletInfo } from 'modules/wallet'
 
 import QuestionHelper from '../QuestionHelper'
 

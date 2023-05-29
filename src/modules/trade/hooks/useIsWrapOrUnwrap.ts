@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
-import { useWalletInfo } from 'modules/wallet'
-
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { useWalletInfo } from 'modules/wallet'
+
 import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
 
 export function useIsWrapOrUnwrap(): boolean {

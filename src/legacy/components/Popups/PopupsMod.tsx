@@ -1,13 +1,14 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import styled from 'styled-components/macro'
 
-import { useWalletInfo } from 'modules/wallet'
+import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import PopupItem from 'legacy/components/Popups/PopupItem'
 import { useActivePopups } from 'legacy/state/application/hooks'
 import { useURLWarningVisible } from 'legacy/state/user/hooks'
 import { MEDIA_WIDTHS } from 'legacy/theme'
+
+import { useWalletInfo } from 'modules/wallet'
 
 import { MobilePopupWrapper } from './index'
 

@@ -18,6 +18,7 @@ import price from 'legacy/state/price/reducer'
 import profile from 'legacy/state/profile/reducer'
 import swap from 'legacy/state/swap/reducer'
 import user from 'legacy/state/user/reducer'
+
 import multicall from 'lib/state/multicall'
 
 import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'

@@ -3,6 +3,8 @@ import { useCallback } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
+import { Field } from 'legacy/state/swap/actions'
+
 import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
@@ -13,7 +15,6 @@ import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelecti
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useWalletInfo } from 'modules/wallet'
 
-import { Field } from 'legacy/state/swap/actions'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { FractionUtils } from 'utils/fractionUtils'
 

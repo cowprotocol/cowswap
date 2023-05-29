@@ -1,7 +1,9 @@
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+
 import JSBI from 'jsbi'
 
 import { DEFAULT_LOCALE, SupportedLocale } from 'legacy/constants/locales'
+
 import formatLocaleNumber from 'lib/utils/formatLocaleNumber'
 
 export function formatCurrencyAmount(

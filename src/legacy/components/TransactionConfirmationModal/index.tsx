@@ -1,24 +1,15 @@
 import React, { ReactNode, useContext, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { t, Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
+
+import { t, Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { CheckCircle, UserCheck } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components/macro'
 
-import { getStatusIcon } from 'modules/account/containers/AccountDetails'
-import { ActivityDerivedState } from 'modules/account/containers/Transaction'
-import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { getIsMetaMask } from 'modules/wallet/api/utils/connection'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask' // mod
-
-import { Routes } from 'constants/routes'
 import alertImage from 'legacy/assets/cow-swap/alert-circle.svg'
 import checkImage from 'legacy/assets/cow-swap/check.svg'
 import GameIcon from 'legacy/assets/cow-swap/game.gif'
@@ -32,6 +23,17 @@ import { ExternalLink } from 'legacy/theme'
 import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel, shortenAddress } from 'legacy/utils'
 import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { getStatusIcon } from 'modules/account/containers/AccountDetails'
+import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { getIsMetaMask } from 'modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask' // mod
+
+import { Routes } from 'constants/routes'
 
 import {
   ApproveComparison,

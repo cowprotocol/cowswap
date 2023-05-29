@@ -2,6 +2,8 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from 'legacy/constants/locales'
 
+
+
 interface FormatLocaleNumberArgs {
   number: CurrencyAmount<Currency> | Price<Currency, Currency> | number
   locale: string | null | undefined

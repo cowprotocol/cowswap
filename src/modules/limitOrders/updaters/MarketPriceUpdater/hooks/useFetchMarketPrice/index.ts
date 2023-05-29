@@ -4,6 +4,9 @@ import { useLayoutEffect } from 'react'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
+import { onlyResolvesLast } from 'legacy/utils/async'
+
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
@@ -12,8 +15,6 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getQuote } from 'api/gnosisProtocol'
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
-import { onlyResolvesLast } from 'legacy/utils/async'
 
 import { useHandleResponse } from './useHandleResponse'
 

@@ -2,6 +2,12 @@ import { useAtomValue } from 'jotai/utils'
 
 import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
+import { GP_VAULT_RELAYER } from 'legacy/constants'
+import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import useENSAddress from 'legacy/hooks/useENSAddress'
+import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
+import { isAddress } from 'legacy/utils'
+
 import { LimitOrdersDerivedState } from 'modules/limitOrders'
 import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
 import { limitOrdersSettingsAtom, LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
@@ -13,11 +19,6 @@ import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wall
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
-import useENSAddress from 'legacy/hooks/useENSAddress'
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
-import { isAddress } from 'legacy/utils'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 

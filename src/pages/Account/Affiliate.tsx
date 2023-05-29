@@ -1,11 +1,7 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { RefreshCcw } from 'react-feather'
 
-import { SectionTitle } from 'modules/application/pure/Page'
-import { useWalletInfo, Web3Status } from 'modules/wallet'
-
-import { useHasOrders } from 'api/gnosisProtocol/hooks'
-import { HelpCircle } from 'common/pure/HelpCircle'
 import { Txt } from 'legacy/assets/styles/styled'
 import Copy from 'legacy/components/Copy/CopyMod'
 import NotificationBanner from 'legacy/components/NotificationBanner'
@@ -16,6 +12,12 @@ import useTimeAgo from 'legacy/hooks/useTimeAgo'
 import { useAffiliateAddress } from 'legacy/state/affiliate/hooks'
 import { shortenAddress } from 'legacy/utils'
 import { getExplorerAddressLink } from 'legacy/utils/explorer'
+
+import { SectionTitle } from 'modules/application/pure/Page'
+import { useWalletInfo, Web3Status } from 'modules/wallet'
+
+import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { HelpCircle } from 'common/pure/HelpCircle'
 
 import AddressSelector from './AddressSelector'
 import {

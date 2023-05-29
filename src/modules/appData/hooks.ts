@@ -1,8 +1,8 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 
-import { useIsSafeApp } from 'modules/wallet'
-
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from 'legacy/constants'
+
+import { useIsSafeApp } from 'modules/wallet'
 
 import { addAppDataToUploadQueueAtom, appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'

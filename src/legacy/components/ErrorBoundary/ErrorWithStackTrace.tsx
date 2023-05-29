@@ -3,8 +3,6 @@ import React from 'react'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { Title } from 'modules/application/pure/Page'
-
 import CowError from 'legacy/assets/cow-swap/CowError.png'
 import { AutoColumn } from 'legacy/components/Column'
 import { AutoRow } from 'legacy/components/Row'
@@ -13,6 +11,8 @@ import store, { AppState } from 'legacy/state'
 import { MEDIA_WIDTHS, ThemedText } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme'
 import { userAgent } from 'legacy/utils/userAgent'
+
+import { Title } from 'modules/application/pure/Page'
 
 const FlexContainer = styled.div`
   display: flex;

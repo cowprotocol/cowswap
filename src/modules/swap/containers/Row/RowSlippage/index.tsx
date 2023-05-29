@@ -2,11 +2,12 @@ import { useMemo } from 'react'
 
 import { Percent } from '@uniswap/sdk-core'
 
+import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
+
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
-import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { formatPercent } from 'utils/amountFormat'
 
 export interface RowSlippageProps {

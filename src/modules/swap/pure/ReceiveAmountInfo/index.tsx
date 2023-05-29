@@ -1,13 +1,15 @@
 import React from 'react'
 
-import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+
+import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import * as styledEl from './styled'
 

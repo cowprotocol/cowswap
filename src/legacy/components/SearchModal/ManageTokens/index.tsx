@@ -1,4 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
+
 import styled, { DefaultTheme } from 'styled-components/macro'
 
 import Card from 'legacy/components/Card'

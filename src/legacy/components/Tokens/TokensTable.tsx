@@ -1,9 +1,8 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 
-import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 
-import { TokenAmounts } from 'modules/tokens'
+import { Trans } from '@lingui/macro'
 
 import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
 import { OperationType } from 'legacy/components/TransactionConfirmationModal'
@@ -12,6 +11,8 @@ import useFilterTokens from 'legacy/hooks/useFilterTokens'
 import usePrevious from 'legacy/hooks/usePrevious'
 import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
+
+import { TokenAmounts } from 'modules/tokens'
 
 import {
   Label,

@@ -1,14 +1,15 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
-
-import { useWalletInfo } from 'modules/wallet'
 
 import { Markdown } from 'legacy/components/Markdown'
 import useFetchFile from 'legacy/hooks/useFetchFile'
 import { useAnnouncementVisible, useCloseAnnouncement } from 'legacy/state/profile/hooks'
 import { environmentName } from 'legacy/utils/environments'
 import { hashCode } from 'legacy/utils/misc'
+
+import { useWalletInfo } from 'modules/wallet'
 
 import URLWarningUni, { PhishAlert, StyledClose } from './URLWarningMod'
 

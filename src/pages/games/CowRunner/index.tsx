@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 
 import { CowGame } from '@cowprotocol/cow-runner-game'
+
 import styled from 'styled-components/macro'
+
+import { gameAnalytics } from 'legacy/components/analytics'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
-
-import { gameAnalytics } from 'legacy/components/analytics'
 
 const Wrapper = styled(Page)`
   min-height: initial;

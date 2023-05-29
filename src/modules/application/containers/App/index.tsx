@@ -1,4 +1,3 @@
-import { useInitializeUtm } from 'modules/utm'
 
 import { initializeAnalytics } from 'legacy/components/AmplitudeAnalytics'
 import { useAnalyticsReporter } from 'legacy/components/analytics'
@@ -9,6 +8,9 @@ import URLWarning from 'legacy/components/Header/URLWarning'
 import TopLevelModals from 'legacy/components/TopLevelModals'
 import ApeModeQueryParamReader from 'legacy/hooks/useApeModeQueryParamReader'
 import DarkModeQueryParamReader from 'legacy/theme'
+
+import { useInitializeUtm } from 'modules/utm'
+
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
 import { RoutesApp } from './RoutesApp'
