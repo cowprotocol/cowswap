@@ -290,7 +290,7 @@ export function OrderRow({
       {/* Status label */}
       <styledEl.CellElement>
         <styledEl.StatusBox>
-          <OrderStatusBox order={order} withWarning={withWarning} clickable onClick={onClick} />
+          <OrderStatusBox order={order} withWarning={withWarning} clickable={!!onClick} onClick={onClick} />
           {withWarning && (
             <styledEl.WarningIndicator>
               <MouseoverTooltipContent
