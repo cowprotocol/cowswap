@@ -1,9 +1,12 @@
+import { OrderClass } from '@cowprotocol/cow-sdk'
+
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { anything, capture, instance, mock, resetCalls, verify, when } from 'ts-mockito'
+
+import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
+
 import { AppState } from '../../index'
 import { ExpireOrdersBatchParams } from '../actions'
-import { OrderClass } from '@cowprotocol/cow-sdk'
-import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
 import { setPopupData } from '../helpers'
 
 const MOCK_ETHFLOW_ORDER = {

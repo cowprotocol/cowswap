@@ -8,8 +8,9 @@ import styled, { css } from 'styled-components/macro'
 import { TooltipContainer } from 'legacy/components/Tooltip'
 import { ThemedText } from 'legacy/theme'
 
-import { AutoColumn } from '../Column'
 import { FeeInformationTooltipWrapper } from './FeeInformationTooltip'
+
+import { AutoColumn } from '../Column'
 
 export const Container = styled.div`
   max-width: 460px;

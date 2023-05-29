@@ -1,11 +1,12 @@
 import { Dispatch, MiddlewareAPI } from 'redux'
-import { AppState } from '../../index'
-import { ExpireOrdersBatchParams } from '../actions'
-import { OrdersStateNetwork } from '../reducer'
-import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
-import * as OrderActions from '../actions'
+
 import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'
+import { AppState } from '../../index'
+import { ExpireOrdersBatchParams } from '../actions'
+import * as OrderActions from '../actions'
+import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
+import { OrdersStateNetwork } from '../reducer'
 
 export function batchExpireOrdersPopup(
   store: MiddlewareAPI<Dispatch, AppState>,

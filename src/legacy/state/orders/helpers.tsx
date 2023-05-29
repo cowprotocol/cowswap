@@ -1,4 +1,5 @@
 import { formatOrderId } from 'legacy/utils'
+
 import { OrderStatus } from './actions'
 import { OrderObject, OrdersStateNetwork } from './reducer'
 

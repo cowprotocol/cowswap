@@ -1,13 +1,15 @@
-import { pendingOrderPopup } from './pendingOrderPopup'
-import { updateOrderPopup } from './updateOrderPopup'
-import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
+import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
+import { instance, mock, resetCalls, when } from 'ts-mockito'
+
 import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
+import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
 import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
-import { AppState } from '../../index'
-import { instance, mock, resetCalls, when } from 'ts-mockito'
-import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
+import { pendingOrderPopup } from './pendingOrderPopup'
 import { popupMiddleware } from './popupMiddleware'
+import { updateOrderPopup } from './updateOrderPopup'
+
+import { AppState } from '../../index'
 
 // Mock simple fns using raw jest
 jest.mock('./pendingOrderPopup')

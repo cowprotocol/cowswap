@@ -1,13 +1,15 @@
-import { Middleware } from 'redux'
 import { isAnyOf } from '@reduxjs/toolkit'
-import * as OrderActions from '../actions'
-import { AppState } from '../../index'
-import { pendingOrderPopup } from './pendingOrderPopup'
-import { updateOrderPopup } from './updateOrderPopup'
-import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
+import { Middleware } from 'redux'
+
 import { batchCancelOrdersPopup } from './batchCancelOrdersPopup'
 import { batchExpireOrdersPopup } from './batchExpireOrdersPopup'
+import { batchFulfillOrderPopup } from './batchFulfillOrderPopup'
 import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
+import { pendingOrderPopup } from './pendingOrderPopup'
+import { updateOrderPopup } from './updateOrderPopup'
+
+import { AppState } from '../../index'
+import * as OrderActions from '../actions'
 
 // action syntactic sugar
 // const isSingleOrderChangeAction = isAnyOf(OrderActions.addPendingOrder)

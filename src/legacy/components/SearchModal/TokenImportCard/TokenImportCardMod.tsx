@@ -8,13 +8,14 @@ import styled, { useTheme } from 'styled-components/macro'
 
 import Card from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import ListLogo from 'legacy/components/ListLogo'
 import { RowFixed } from 'legacy/components/Row'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
 import { useWalletInfo } from 'modules/wallet'
+
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 const WarningWrapper = styled(Card)<{ highWarning: boolean }>`
   background-color: ${({ theme, highWarning }) =>

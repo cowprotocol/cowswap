@@ -1,8 +1,11 @@
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { Currency } from '@uniswap/sdk-core'
-import * as styledEl from './styled'
+
 import { Trans } from '@lingui/macro'
+
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import * as styledEl from './styled'
 
 export interface CurrencySelectButtonProps {
   currency?: Currency

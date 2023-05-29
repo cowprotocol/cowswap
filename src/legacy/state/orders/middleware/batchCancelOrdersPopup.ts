@@ -1,11 +1,12 @@
 import { Dispatch, MiddlewareAPI } from 'redux'
-import { AppState } from '../../index'
-import { CancelOrdersBatchParams, SerializedOrder } from '../actions'
-import { OrdersStateNetwork } from '../reducer'
-import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
+
 import { orderAnalytics } from '../../../components/analytics'
 import { addPopup, AddPopupPayload } from '../../application/reducer'
+import { AppState } from '../../index'
+import { CancelOrdersBatchParams, SerializedOrder } from '../actions'
 import { buildCancellationPopupSummary } from '../buildCancellationPopupSummary'
+import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
+import { OrdersStateNetwork } from '../reducer'
 
 export function batchCancelOrdersPopup(
   store: MiddlewareAPI<Dispatch, AppState>,

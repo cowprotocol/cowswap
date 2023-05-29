@@ -1,41 +1,48 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { ThemeContext } from 'styled-components/macro'
-import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
-import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
-import { RateInfo } from 'common/pure/RateInfo'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { OrderParams } from '../utils/getOrderParams'
-import { getSellAmountWithFee } from 'modules/limitOrders/utils/getSellAmountWithFee'
-import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
-import SVG from 'react-inlinesvg'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import useTimeAgo from 'legacy/hooks/useTimeAgo'
-import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { OrderStatusBox } from 'modules/limitOrders/pure/OrderStatusBox'
-import * as styledEl from './styled'
-import { getEtherscanLink } from 'legacy/utils'
-import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import Loader from 'legacy/components/Loader'
-import { OrderContextMenu } from 'modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
-import { getAddress } from 'utils/getAddress'
-import { calculatePriceDifference, PriceDifference } from 'modules/limitOrders/utils/calculatePriceDifference'
-import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
-import { EstimatedExecutionPrice } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
+
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+
+import SVG from 'react-inlinesvg'
+import { ThemeContext } from 'styled-components/macro'
+
+import AlertTriangle from 'legacy/assets/cow-swap/alert.svg'
+import Loader from 'legacy/components/Loader'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { ZERO_FRACTION } from 'legacy/constants'
-import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
-import { isOrderCancellable } from 'common/utils/isOrderCancellable'
+import useTimeAgo from 'legacy/hooks/useTimeAgo'
+import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
+import { getEtherscanLink } from 'legacy/utils'
+
+import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { EstimatedExecutionPrice } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
+import { OrderContextMenu } from 'modules/limitOrders/pure/Orders/OrderRow/OrderContextMenu'
 import {
   TableRow,
   TableRowCheckbox,
   TableRowCheckboxWrapper,
   CheckboxCheckmark,
 } from 'modules/limitOrders/pure/Orders/styled'
+import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
+import { OrderStatusBox } from 'modules/limitOrders/pure/OrderStatusBox'
+import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
+import { calculatePriceDifference, PriceDifference } from 'modules/limitOrders/utils/calculatePriceDifference'
+import { getSellAmountWithFee } from 'modules/limitOrders/utils/getSellAmountWithFee'
+import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { RateInfo } from 'common/pure/RateInfo'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
+import { isOrderCancellable } from 'common/utils/isOrderCancellable'
+import { getAddress } from 'utils/getAddress'
+
+import * as styledEl from './styled'
+
+import { OrderParams } from '../utils/getOrderParams'
 
 export const orderStatusTitleMap: { [key in OrderStatus]: string } = {
   [OrderStatus.PENDING]: 'Open',

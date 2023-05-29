@@ -1,9 +1,13 @@
-import { instance, mock, resetCalls, when } from 'ts-mockito'
-import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
-import { AppState } from '../../index'
-import { appziMiddleware } from './appziMiddleware'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+
+import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
+import { instance, mock, resetCalls, when } from 'ts-mockito'
+
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
+
+import { appziMiddleware } from './appziMiddleware'
+
+import { AppState } from '../../index'
 
 jest.mock('legacy/utils/appzi')
 

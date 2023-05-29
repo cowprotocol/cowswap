@@ -1,12 +1,13 @@
-import { Currency } from '@uniswap/sdk-core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency } from '@uniswap/sdk-core'
 
-import EthereumLogo from 'legacy/assets/images/ethereum-logo.png'
 import XDaiLogo from 'legacy/assets/cow-swap/xdai.png'
+import EthereumLogo from 'legacy/assets/images/ethereum-logo.png'
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
-import uriToHttp from 'lib/utils/uriToHttp'
 import { ADDRESS_IMAGE_OVERRIDE } from 'legacy/constants/tokens'
+
 import { useProxyTokenLogo } from 'api/proxy'
+import uriToHttp from 'lib/utils/uriToHttp'
 
 type Network = 'ethereum' | 'xdai'
 
