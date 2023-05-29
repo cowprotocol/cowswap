@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
+
 import { dismissNotification, setReferralAddressActive, updateAddress, updateReferralAddress } from './actions'
 
 export interface AffiliateState {

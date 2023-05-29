@@ -1,5 +1,5 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export interface TradeDerivedState {
   readonly inputCurrency: Currency | null

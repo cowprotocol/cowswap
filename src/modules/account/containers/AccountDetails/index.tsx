@@ -1,22 +1,50 @@
 import { Fragment } from 'react'
 
-import { getExplorerLabel, shortenAddress } from 'legacy/utils'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { useWeb3React } from '@web3-react/core'
+import { Connector } from '@web3-react/types'
 
-import Copy from 'legacy/components/Copy'
 import { Trans } from '@lingui/macro'
 
+import Copy from 'legacy/components/Copy'
+import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import UnsupporthedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
+import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
+import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
+import { ExternalLink } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { getExplorerLabel, shortenAddress } from 'legacy/utils'
+import { getExplorerAddressLink } from 'legacy/utils/explorer'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+import { isMobile } from 'legacy/utils/userAgent'
+
+import Activity from 'modules/account/containers/Transaction'
+import { ConnectionType, useWalletInfo, WalletDetails } from 'modules/wallet'
+import { useDisconnectWallet } from 'modules/wallet'
 import CoinbaseWalletIcon from 'modules/wallet/api/assets/coinbase.svg'
-import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
 import FortmaticIcon from 'modules/wallet/api/assets/formatic.png'
+import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
 import LedgerIcon from 'modules/wallet/api/assets/ledger.svg'
 import TallyIcon from 'modules/wallet/api/assets/tally.svg'
 import TrustIcon from 'modules/wallet/api/assets/trust.svg'
-import KeystoneImage from 'modules/wallet/api/assets/keystone.svg'
+import WalletConnectIcon from 'modules/wallet/api/assets/walletConnectIcon.svg'
 import { Identicon } from 'modules/wallet/api/container/Identicon'
-import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
-import Activity from 'modules/account/containers/Transaction'
+import { useWalletDetails } from 'modules/wallet/api/hooks'
+import {
+  getConnectionName,
+  getIsCoinbaseWallet,
+  getIsMetaMask,
+  getIsTrustWallet,
+} from 'modules/wallet/api/utils/connection'
+import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+import { coinbaseWalletConnection } from 'modules/wallet/web3-react/connection/coinbase'
+import { fortmaticConnection } from 'modules/wallet/web3-react/connection/formatic'
+import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
+import { keystoneConnection } from 'modules/wallet/web3-react/connection/keystone'
+import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
+import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
+import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
+import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
 
 import {
   NetworkCard,
@@ -36,34 +64,8 @@ import {
   IconWrapper,
   TransactionListWrapper,
 } from './styled'
-import { MouseoverTooltip } from 'legacy/components/Tooltip'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
+
 import { CreationDateText } from '../Transaction/styled'
-import { ExternalLink } from 'legacy/theme'
-import { getExplorerAddressLink } from 'legacy/utils/explorer'
-import { Connector } from '@web3-react/types'
-import { ConnectionType, useWalletInfo, WalletDetails } from 'modules/wallet'
-import { isMobile } from 'legacy/utils/userAgent'
-import UnsupporthedNetworkMessage from 'legacy/components/UnsupportedNetworkMessage'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useDisconnectWallet } from 'modules/wallet'
-import {
-  getConnectionName,
-  getIsCoinbaseWallet,
-  getIsMetaMask,
-  getIsTrustWallet,
-} from 'modules/wallet/api/utils/connection'
-import { injectedConnection } from 'modules/wallet/web3-react/connection/injected'
-import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
-import { coinbaseWalletConnection } from 'modules/wallet/web3-react/connection/coinbase'
-import { fortmaticConnection } from 'modules/wallet/web3-react/connection/formatic'
-import { tallyWalletConnection } from 'modules/wallet/web3-react/connection/tally'
-import { useWalletDetails } from 'modules/wallet/api/hooks'
-import { useWeb3React } from '@web3-react/core'
-import { trustWalletConnection } from 'modules/wallet/web3-react/connection/trust'
-import { ledgerConnection } from 'modules/wallet/web3-react/connection/ledger'
-import { keystoneConnection } from 'modules/wallet/web3-react/connection/keystone'
 
 export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GOERLI]: 'Görli',

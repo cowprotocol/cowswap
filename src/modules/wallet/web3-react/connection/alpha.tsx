@@ -1,14 +1,15 @@
-import { ConnectionType } from 'modules/wallet'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-import { walletConnectConnection } from './walletConnect'
 
-import { getConnectionName, getIsAlphaWallet } from 'modules/wallet/api/utils/connection'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
-import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
+import { ConnectionType } from 'modules/wallet'
 import { useWalletMetaData } from 'modules/wallet'
+import { default as AlphaImage } from 'modules/wallet/api/assets/alpha.svg'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getConnectionName, getIsAlphaWallet } from 'modules/wallet/api/utils/connection'
+import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
+
 import { TryActivation } from '.'
 
-import { default as AlphaImage } from 'modules/wallet/api/assets/alpha.svg'
+import { walletConnectConnection } from './walletConnect'
 
 const alphaOption = {
   color: '#4196FC',

@@ -1,35 +1,40 @@
-// eslint-disable-next-line no-restricted-imports
-import { t, Trans } from '@lingui/macro'
-import { Currency, Token } from '@uniswap/sdk-core'
-import { EventName, ModalName } from 'legacy/components/AmplitudeAnalytics/constants'
-import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
-import useDebounce from 'legacy/hooks/useDebounce'
-import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
-import useTheme from 'legacy/hooks/useTheme'
-import useToggle from 'legacy/hooks/useToggle'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
-import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
 import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
+import { Currency, Token } from '@uniswap/sdk-core'
+
+import { t, Trans } from '@lingui/macro'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
-import { useAllTokenBalances } from 'legacy/state/connection/hooks'
 import styled, { DefaultTheme } from 'styled-components/macro'
-import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'legacy/hooks/Tokens'
-import { ButtonText, CloseIcon, ThemedText } from 'legacy/theme'
-import { isAddress } from 'legacy/utils'
+
+import { EventName, ModalName } from 'legacy/components/AmplitudeAnalytics/constants'
+import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+import { searchByAddressAnalytics } from 'legacy/components/analytics'
 import Column from 'legacy/components/Column'
 import Row /* RowBetween , RowFixed */ from 'legacy/components/Row'
 import CommonBases from 'legacy/components/SearchModal/CommonBases'
 import CurrencyList from 'legacy/components/SearchModal/CurrencyList'
 import ImportRow from 'legacy/components/SearchModal/ImportRow'
 import { PaddedColumn, SearchInput, Separator, PaddedRow } from 'legacy/components/SearchModal/styleds'
+import { useAllTokens, useIsUserAddedToken, useSearchInactiveTokenLists, useToken } from 'legacy/hooks/Tokens'
+import useDebounce from 'legacy/hooks/useDebounce'
 import useNetworkName from 'legacy/hooks/useNetworkName'
-import { ContentWrapper } from './index'
-import { searchByAddressAnalytics } from 'legacy/components/analytics'
+import { useOnClickOutside } from 'legacy/hooks/useOnClickOutside'
+import useTheme from 'legacy/hooks/useTheme'
+import useToggle from 'legacy/hooks/useToggle'
+import { useAllTokenBalances } from 'legacy/state/connection/hooks'
+import { ButtonText, CloseIcon, ThemedText } from 'legacy/theme'
+import { isAddress } from 'legacy/utils'
+
 import { useWalletInfo } from 'modules/wallet'
+
 import { useExternalTokenSearch } from 'common/hooks/useExternalTokenSearch'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
+import { tokenComparator, useSortTokensByQuery } from 'lib/hooks/useTokenList/sorting'
+
+import { ContentWrapper } from './index'
 
 export const Footer = styled.div`
   width: 100%;

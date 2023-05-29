@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
-
 import { darken } from 'polished'
 import { Activity } from 'react-feather'
 import styled, { css } from 'styled-components/macro'

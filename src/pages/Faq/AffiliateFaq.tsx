@@ -1,19 +1,24 @@
-import { Page, Content } from 'modules/application/pure/Page'
-import { LinkScrollable } from 'legacy/components/Link'
 import { Link } from 'react-router-dom'
 
-import { ExternalLinkFaq, Wrapper } from './styled'
-import { Footer } from '.'
-import { useToC } from './hooks'
-import ToC from './ToC'
-import { FaqMenu } from './Menu'
-import { Routes } from 'constants/routes'
-import { BARN_URL, PRODUCTION_URL } from 'legacy/constants'
-import { PageTitle } from 'modules/application/containers/PageTitle'
-
-// AmplitudeAnalytics
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+import { LinkScrollable } from 'legacy/components/Link'
+import { BARN_URL, PRODUCTION_URL } from 'legacy/constants'
+
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Page, Content } from 'modules/application/pure/Page'
+
+import { Routes } from 'constants/routes'
+
+import { useToC } from './hooks'
+import { FaqMenu } from './Menu'
+
+import { Footer } from '.'
+
+import { ExternalLinkFaq, Wrapper } from './styled'
+import ToC from './ToC'
+
+// AmplitudeAnalytics
 
 const PROD = `https://${PRODUCTION_URL}`
 const BARN = `https://${BARN_URL}`

@@ -1,10 +1,13 @@
-import { pendingOrderPopup } from './pendingOrderPopup'
+import { OrderClass } from '@cowprotocol/cow-sdk'
+
 import { MiddlewareAPI } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch } from 'redux'
+import { anything, capture, instance, mock, resetCalls, verify, when } from 'ts-mockito'
+
+import { pendingOrderPopup } from './pendingOrderPopup'
+
 import { AppState } from '../../index'
 import { AddPendingOrderParams } from '../actions'
-import { OrderClass } from '@cowprotocol/cow-sdk'
-import { anything, capture, instance, mock, resetCalls, verify, when } from 'ts-mockito'
 import { setPopupData } from '../helpers'
 
 const MOCK_ETHFLOW_ORDER = {

@@ -1,8 +1,11 @@
-import { instance, mock, resetCalls, when } from 'ts-mockito'
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
-import { AppState } from '../../index'
+import { instance, mock, resetCalls, when } from 'ts-mockito'
+
 import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'legacy/utils/sound'
+
 import { soundMiddleware } from './soundMiddleware'
+
+import { AppState } from '../../index'
 
 const mockStore = mock<MiddlewareAPI<Dispatch, AppState>>()
 const nextMock = jest.fn()

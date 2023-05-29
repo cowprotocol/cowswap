@@ -1,6 +1,8 @@
-import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
-import { extensibleFallbackSetupTxs } from './extensibleFallbackSetupTxs'
 import { SendTransactionsResponse } from '@safe-global/safe-apps-sdk'
+
+import { extensibleFallbackSetupTxs } from './extensibleFallbackSetupTxs'
+
+import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 export async function setupExtensibleFallbackHandler(
   context: ExtensibleFallbackContext

@@ -1,8 +1,12 @@
-import { Trans } from '@lingui/macro'
-import * as styledEl from './styled'
-import QuestionHelper from 'legacy/components/QuestionHelper'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
+
+import QuestionHelper from 'legacy/components/QuestionHelper'
+
+import * as styledEl from './styled'
+
 import { PartsState } from '../../state/partsStateAtom'
 
 interface TradeAmountPreviewProps {

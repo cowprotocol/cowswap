@@ -1,5 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
+
+import { metadataApiSDK } from 'cowSdk'
 import ms from 'ms.macro'
 
 import { COW_IPFS_OPTIONS } from 'legacy/constants'
@@ -10,7 +12,6 @@ import {
   updateAppDataOnUploadQueueAtom,
 } from '../state/atoms'
 import { AppDataKeyParams, AppDataRecord, UpdateAppDataOnUploadQueueParams } from '../types'
-import { metadataApiSDK } from 'cowSdk'
 
 const UPLOAD_CHECK_INTERVAL = ms`1 minute`
 const BASE_FOR_EXPONENTIAL_BACKOFF = 2 // in seconds, converted to milliseconds later

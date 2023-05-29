@@ -1,13 +1,16 @@
-import { BoxProps } from 'rebass'
-import TradeGp from 'legacy/state/swap/TradeGp'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { BoxProps } from 'rebass'
+
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { LowerSectionWrapper } from 'modules/swap/pure/styled'
+import TradeGp from 'legacy/state/swap/TradeGp'
+
 import { RowFee } from 'modules/swap/containers/Row/RowFee'
-import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
 import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
+import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { LowerSectionWrapper } from 'modules/swap/pure/styled'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 interface TradeBasicDetailsProp extends BoxProps {

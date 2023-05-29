@@ -1,8 +1,8 @@
+import { ParsedAmounts } from 'legacy/hooks/usePriceImpact/types'
+import { WrapType } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/swap/actions'
 import { useSwapState } from 'legacy/state/swap/hooks'
-import { WrapType } from 'legacy/hooks/useWrapCallback'
 import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
-import { ParsedAmounts } from 'legacy/hooks/usePriceImpact/types'
 
 export function useSwapCurrenciesAmounts(wrapType: WrapType): ParsedAmounts {
   const { independentField } = useSwapState()

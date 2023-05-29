@@ -1,8 +1,11 @@
 import { useAtom } from 'jotai'
-import { tradeApproveStateAtom } from './tradeApproveStateAtom'
-import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import React from 'react'
+
+import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
+
 import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import { tradeApproveStateAtom } from './tradeApproveStateAtom'
 
 export function TradeApproveModal() {
   const [{ approveInProgress, currency }, setState] = useAtom(tradeApproveStateAtom)

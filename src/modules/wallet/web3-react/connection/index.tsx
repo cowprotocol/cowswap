@@ -1,29 +1,30 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
-import { /* isChrome, */ isMobile } from 'legacy/utils/userAgent'
 import { ALL_SUPPORTED_CHAIN_IDS } from 'legacy/constants/chains'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { /* isChrome, */ isMobile } from 'legacy/utils/userAgent'
+
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 
-import { Web3ReactConnection } from '../types'
-import { ConnectionType } from '../../api/types'
-
-import { CoinbaseWalletOption } from './coinbase'
-import { InjectedOption, InstallMetaMaskOption, MetaMaskOption, OpenMetaMaskMobileOption } from './injected'
-import { WalletConnectOption } from './walletConnect'
-import { gnosisSafeConnection } from './safe'
-import { injectedConnection } from './injected'
-import { coinbaseWalletConnection } from './coinbase'
-import { walletConnectConnection } from './walletConnect'
-import { ledgerConnection, LedgerOption } from './ledger'
-import { fortmaticConnection } from './formatic'
-import { networkConnection } from './network'
-import { ZengoOption } from './zengo'
-import { AmbireOption } from './ambire'
 import { AlphaOption } from './alpha'
+import { AmbireOption } from './ambire'
+import { CoinbaseWalletOption } from './coinbase'
+import { coinbaseWalletConnection } from './coinbase'
+import { fortmaticConnection } from './formatic'
+import { InjectedOption, InstallMetaMaskOption, MetaMaskOption, OpenMetaMaskMobileOption } from './injected'
+import { injectedConnection } from './injected'
+import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
+import { ledgerConnection, LedgerOption } from './ledger'
+import { networkConnection } from './network'
+import { gnosisSafeConnection } from './safe'
 import { tallyWalletConnection /* TallyWalletOption */ } from './tally'
 import { trustWalletConnection, TrustWalletOption } from './trust'
-import { InstallKeystoneOption, keystoneConnection, KeystoneOption } from './keystone'
+import { WalletConnectOption } from './walletConnect'
+import { walletConnectConnection } from './walletConnect'
+import { ZengoOption } from './zengo'
+
+import { ConnectionType } from '../../api/types'
+import { Web3ReactConnection } from '../types'
 
 const CONNECTIONS: Web3ReactConnection[] = [
   gnosisSafeConnection,

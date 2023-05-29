@@ -1,5 +1,31 @@
+import { useMemo } from 'react'
+
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
 import { Trans } from '@lingui/macro'
+import SVG from 'react-inlinesvg'
+import { Link } from 'react-router-dom'
+
+import CowProtocolIcon from 'legacy/assets/cow-swap/cowprotocol.svg'
+import discordImage from 'legacy/assets/cow-swap/discord.svg'
+import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
+import { ButtonSecondary } from 'legacy/components/Button'
+import CopyHelper from 'legacy/components/Copy'
+import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
+import { ExplorerLink } from 'legacy/components/ExplorerLink'
+import { V_COW } from 'legacy/constants/tokens'
+import { ClaimStatus } from 'legacy/state/claim/actions'
+import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { useAllClaimingTransactions } from 'legacy/state/enhancedTransactions/hooks'
+import { ExternalLink } from 'legacy/theme'
+import { shortenAddress } from 'legacy/utils'
+
+import { useWalletInfo } from 'modules/wallet'
+import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { Routes } from 'constants/routes'
 import {
   ConfirmOrLoadingWrapper,
   ConfirmedIcon,
@@ -8,28 +34,8 @@ import {
   BannersWrapper,
   SuccessBanner,
 } from 'pages/Claim/styled'
-import { ClaimStatus } from 'legacy/state/claim/actions'
-import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
-import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-import { useAllClaimingTransactions } from 'legacy/state/enhancedTransactions/hooks'
-import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
-import { ExplorerLink } from 'legacy/components/ExplorerLink'
-import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
-import { V_COW } from 'legacy/constants/tokens'
-import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
-import SVG from 'react-inlinesvg'
-import twitterImage from 'legacy/assets/cow-swap/twitter.svg'
-import discordImage from 'legacy/assets/cow-swap/discord.svg'
-import CowProtocolIcon from 'legacy/assets/cow-swap/cowprotocol.svg'
-import { ExternalLink } from 'legacy/theme'
-import { shortenAddress } from 'legacy/utils'
-import CopyHelper from 'legacy/components/Copy'
-import { ButtonSecondary } from 'legacy/components/Button'
+
 import { ClaimCommonTypes } from './types'
-import { Routes } from 'constants/routes'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { useWalletInfo } from 'modules/wallet'
 
 const COW_TWEET_TEMPLATE =
   'I just joined the 🐮 CoWmunity @CoWSwap and claimed my first vCOW tokens! Join me at https://swap.cow.fi/'

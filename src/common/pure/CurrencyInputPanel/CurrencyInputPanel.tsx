@@ -1,22 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import * as styledEl from './styled'
-import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
-import { Currency } from '@uniswap/sdk-core'
-import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
-import { FiatValue } from 'common/pure/FiatValue'
-import { Trans } from '@lingui/macro'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
-import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
-import { setMaxSellTokensAnalytics } from 'legacy/components/analytics'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
-import { Field } from 'legacy/state/swap/actions'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+
+import { setMaxSellTokensAnalytics } from 'legacy/components/analytics'
+import CurrencySearchModal from 'legacy/components/SearchModal/CurrencySearchModal'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
+import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
+
+import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
+
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
+import { FiatValue } from 'common/pure/FiatValue'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { formatInputAmount } from 'utils/amountFormat'
+
+import * as styledEl from './styled'
 
 interface BuiltItProps {
   className: string

@@ -36,6 +36,57 @@
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
-    ]
-  }
+    ],
+    "import/order": [
+      "error",
+      {
+        "pathGroups": [
+          {
+            "pattern": "{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "{react,jotai,jotai/*}",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "legacy/**",
+            "group": "external",
+            "position": "after"
+          },
+          {
+            "pattern": "modules/**",
+            "group": "builtin",
+            "position": "after"
+          },
+          {
+            "pattern": "{api,abis,common,constants,legacy,lib,pages,types,utils}/**",
+            "group": "internal",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "groups": ["external", "builtin", "internal", "sibling", "parent", "object", "index", "type"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "newlines-between": "always"
+      }
+    ],
+    "prefer-const": "error",
+    "no-unneeded-ternary": "error",
+    "no-var": "error"
+  },
+  "overrides": [
+    {
+      "files": ["cypress/**", "cypress-custom/**"],
+      "rules": {
+        "jest/valid-expect": 0,
+        "testing-library/await-async-utils": 0
+      }
+    }
+  ]
 }

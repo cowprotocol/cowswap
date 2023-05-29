@@ -1,6 +1,9 @@
-import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { NEVER_RELOAD, useSingleCallResult } from 'lib/hooks/multicall'
+
 import { useArgentWalletDetectorContract } from './useContract'
 
 export default function useIsArgentWallet(): boolean {

@@ -1,12 +1,15 @@
-import SafeAppsSDK from '@safe-global/safe-apps-sdk'
-import { GPv2Settlement } from 'abis/types'
-import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
-import { useWeb3React } from '@web3-react/core'
-import { Web3Provider } from '@ethersproject/providers'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from 'modules/wallet'
+import { Web3Provider } from '@ethersproject/providers'
+import SafeAppsSDK from '@safe-global/safe-apps-sdk'
+import { useWeb3React } from '@web3-react/core'
+
+import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { isSupportedChain } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
+import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
+
+import { GPv2Settlement } from 'abis/types'
 
 export interface ExtensibleFallbackContext {
   chainId: SupportedChainId

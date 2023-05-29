@@ -1,8 +1,10 @@
+import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
-import { Order } from 'legacy/state/orders/actions'
+
 import { useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useUpdateAtom } from 'jotai/utils'
+import { Order } from 'legacy/state/orders/actions'
+
 import { updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 
 export function useMultipleOrdersCancellation() {

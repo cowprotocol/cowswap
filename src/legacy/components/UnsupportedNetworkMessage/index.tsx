@@ -1,6 +1,7 @@
-import { getChainInfo } from 'legacy/constants/chainInfo'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
+
+import { getChainInfo } from 'legacy/constants/chainInfo'
 import { SUPPORTED_CHAIN_IDS } from 'legacy/utils/supportedChainId'
 
 export const Styled = styled.span`

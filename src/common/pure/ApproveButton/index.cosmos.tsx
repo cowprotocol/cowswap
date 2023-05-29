@@ -1,10 +1,12 @@
-import { ApproveButton } from '.'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { DemoContainer } from 'cosmos.decorator'
+import { useSelect } from 'react-cosmos/fixture'
 
 import { COW, GNO } from 'legacy/constants/tokens'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useSelect } from 'react-cosmos/fixture'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
-import { DemoContainer } from 'cosmos.decorator'
+
+import { ApproveButton } from '.'
 
 const COW_TOKEN = COW[SupportedChainId.MAINNET]
 const GNO_TOKEN = GNO[SupportedChainId.MAINNET]

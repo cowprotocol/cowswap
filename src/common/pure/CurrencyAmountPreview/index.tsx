@@ -1,10 +1,13 @@
-import * as styledEl from '../CurrencyInputPanel/styled'
+import { Trans } from '@lingui/macro'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
-import { Trans } from '@lingui/macro'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { TokenAmount } from 'common/pure/TokenAmount'
+
+import * as styledEl from '../CurrencyInputPanel/styled'
 
 interface BuiltItProps {
   className: string

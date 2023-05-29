@@ -1,9 +1,11 @@
-import styled from 'styled-components/macro'
-import { useIsDarkMode } from 'legacy/state/user/hooks'
-import { Version } from '../Version'
-import { Polling } from 'legacy/components/Header/Polling'
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+import { Polling } from 'legacy/components/Header/Polling'
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { footerImage } from 'legacy/theme/cowSwapAssets'
+
+import { Version } from '../Version'
 
 const Wrapper = styled.div`
   display: flex;

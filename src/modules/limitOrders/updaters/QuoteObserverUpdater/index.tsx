@@ -1,10 +1,13 @@
-import { useEffect } from 'react'
-import { useTradeQuote } from 'modules/tradeQuote'
-import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
-import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
-import { FractionUtils } from 'utils/fractionUtils'
-import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { useUpdateAtom } from 'jotai/utils'
+import { useEffect } from 'react'
+
+import { CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+
+import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useTradeQuote } from 'modules/tradeQuote'
+
+import { FractionUtils } from 'utils/fractionUtils'
 
 export const LIMIT_ORDERS_PRICE_SLIPPAGE = new Percent(1, 10) // 0.1%
 

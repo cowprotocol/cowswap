@@ -1,11 +1,12 @@
+import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
+
 import NetworkSelectorMod, {
   SelectorLabel,
   SelectorControls,
   FlyoutMenu,
   FlyoutMenuContents,
 } from './NetworkSelectorMod'
-import { transparentize } from 'polished'
 export { getChainNameFromId, getParsedChainId } from './NetworkSelectorMod'
 
 const Wrapper = styled.div`

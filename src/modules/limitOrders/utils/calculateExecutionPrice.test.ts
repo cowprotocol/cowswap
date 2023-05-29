@@ -1,8 +1,11 @@
-import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
-import { USDC_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
-import { rawToTokenAmount } from '../../../utils/rawToTokenAmount'
-import { calculateExecutionPrice, convertAmountToCurrency } from './calculateExecutionPrice'
 import { OrderKind } from '@cowprotocol/contracts'
+import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
+
+import { USDC_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
+
+import { calculateExecutionPrice, convertAmountToCurrency } from './calculateExecutionPrice'
+
+import { rawToTokenAmount } from '../../../utils/rawToTokenAmount'
 
 describe('calculateExecutionPrice', () => {
   describe('When market price is less than execution price', () => {

@@ -1,12 +1,14 @@
-import { formatTokenAmount } from 'utils/amountFormat'
-import { FractionLike, Nullish } from 'types'
-import { TokenSymbol, TokenSymbolProps } from 'common/pure/TokenSymbol'
-import { FractionUtils } from 'utils/fractionUtils'
-import { LONG_PRECISION } from 'legacy/constants'
-import { FeatureFlag } from 'utils/featureFlags'
-import styled from 'styled-components/macro'
-import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'constants/featureFlags'
 import { darken, transparentize } from 'polished'
+import styled from 'styled-components/macro'
+import { FractionLike, Nullish } from 'types'
+
+import { LONG_PRECISION } from 'legacy/constants'
+
+import { TokenSymbol, TokenSymbolProps } from 'common/pure/TokenSymbol'
+import { AMOUNTS_FORMATTING_FEATURE_FLAG } from 'constants/featureFlags'
+import { formatTokenAmount } from 'utils/amountFormat'
+import { FeatureFlag } from 'utils/featureFlags'
+import { FractionUtils } from 'utils/fractionUtils'
 
 export const Wrapper = styled.span<{ highlight: boolean; lowVolumeWarning?: boolean }>`
   background: ${({ highlight }) => (highlight ? 'rgba(196,18,255,0.4)' : '')};

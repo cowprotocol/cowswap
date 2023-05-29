@@ -1,16 +1,21 @@
-import styled from 'styled-components/macro'
-import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
-import { OrdersTable, OrdersTableProps } from './OrdersTable'
-import { Widget } from '../Widget'
+import { ReactNode } from 'react'
+
+import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
 import cowMeditatingV2 from 'legacy/assets/cow-swap/meditating-cow-v2.svg'
 import imageConnectWallet from 'legacy/assets/cow-swap/wallet-plus.svg'
-import { Trans } from '@lingui/macro'
 import { ExternalLink } from 'legacy/theme'
-import SVG from 'react-inlinesvg'
-import { Web3Status } from 'modules/wallet/web3-react/containers/Web3Status'
+
 import { Wrapper as Web3StatusWrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
-import { ReactNode } from 'react'
+import { Web3Status } from 'modules/wallet/web3-react/containers/Web3Status'
+
+import { OrdersTable, OrdersTableProps } from './OrdersTable'
+import { OrdersTabs, OrdersTabsProps } from './OrdersTabs'
+
+import { Widget } from '../Widget'
 
 const OrdersBox = styled(Widget)`
   min-height: 200px;

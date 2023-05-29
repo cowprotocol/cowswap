@@ -1,9 +1,12 @@
+import { useContext } from 'react'
+
+import { ArrowDown } from 'react-feather'
+import { ThemeContext } from 'styled-components/macro'
+
+import { AddressInputPanel } from 'legacy/components/AddressInputPanel'
 import { AutoRow } from 'legacy/components/Row'
 import { ArrowWrapper } from 'legacy/components/swap/styleds'
-import { ArrowDown } from 'react-feather'
-import { AddressInputPanel } from 'legacy/components/AddressInputPanel'
-import { useContext } from 'react'
-import { ThemeContext } from 'styled-components/macro'
+
 export interface SetRecipientProps {
   recipient: string
   onChangeRecipient(recipient: string | null): void

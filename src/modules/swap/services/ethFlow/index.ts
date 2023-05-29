@@ -1,12 +1,15 @@
-import { EthFlowContext } from 'modules/swap/services/types'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { Percent } from '@uniswap/sdk-core'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
 import { signEthFlowOrderStep } from 'modules/swap/services/ethFlow/steps/signEthFlowOrderStep'
+import { EthFlowContext } from 'modules/swap/services/types'
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+
 import { calculateUniqueOrderId } from './steps/calculateUniqueOrderId'
-import { Percent } from '@uniswap/sdk-core'
 
 export async function ethFlow(
   ethFlowContext: EthFlowContext,

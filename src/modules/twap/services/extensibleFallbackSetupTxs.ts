@@ -1,7 +1,10 @@
-import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
-import { getSignatureVerifierContract } from './getSignatureVerifierContract'
-import { COMPOSABLE_COW_ADDRESS, SAFE_EXTENSIBLE_HANDLER_ADDRESS } from 'modules/advancedOrders/const'
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+
+import { COMPOSABLE_COW_ADDRESS, SAFE_EXTENSIBLE_HANDLER_ADDRESS } from 'modules/advancedOrders/const'
+
+import { getSignatureVerifierContract } from './getSignatureVerifierContract'
+
+import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 export async function extensibleFallbackSetupTxs(context: ExtensibleFallbackContext): Promise<MetaTransactionData[]> {
   const { chainId, safeAppsSdk, settlementContract } = context

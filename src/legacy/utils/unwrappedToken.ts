@@ -1,6 +1,7 @@
 import { Currency } from '@uniswap/sdk-core'
 
 import { nativeOnChain, WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+
 import { supportedChainId } from './supportedChainId'
 
 export function unwrappedToken(currency: Currency): Currency {

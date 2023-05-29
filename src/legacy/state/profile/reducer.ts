@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
+
 import { closeAnnouncement } from './actions'
 
 export interface ProfileState {

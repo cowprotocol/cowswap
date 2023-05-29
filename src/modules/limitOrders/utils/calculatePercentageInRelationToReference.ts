@@ -1,5 +1,7 @@
-import { FractionLike, Nullish } from 'types'
 import { Percent } from '@uniswap/sdk-core'
+
+import { FractionLike, Nullish } from 'types'
+
 import { ZERO_FRACTION } from 'legacy/constants'
 
 export type CalculateAmountPercentDifferenceProps = {

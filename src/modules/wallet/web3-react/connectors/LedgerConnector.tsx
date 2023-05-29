@@ -1,5 +1,6 @@
-import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
 import { Web3Provider, ExternalProvider } from '@ethersproject/providers'
+import { Actions, Connector, Provider, RequestArguments } from '@web3-react/types'
+
 import type { LedgerConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader'
 
 type LedgerProvider = Provider & {

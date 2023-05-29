@@ -1,9 +1,12 @@
 import { Currency } from '@uniswap/sdk-core'
-import styled from 'styled-components/macro'
-import { AutoRow } from 'legacy/components/Row'
-import { AutoColumn as AutoColumnUni } from 'legacy/components/Column'
-import { BaseWrapperMod } from './CommonBasesMod'
+
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { AutoColumn as AutoColumnUni } from 'legacy/components/Column'
+import { AutoRow } from 'legacy/components/Row'
+
+import { BaseWrapperMod } from './CommonBasesMod'
 
 export { default } from './CommonBasesMod'
 

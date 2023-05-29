@@ -1,7 +1,8 @@
 // Copied from @cowprotocol/cow-js
 
-import { DEFAULT_DECIMALS } from 'legacy/constants'
 import { BigNumber } from 'bignumber.js'
+
+import { DEFAULT_DECIMALS } from 'legacy/constants'
 
 interface PriceTokenInfo {
   amount: BigNumber | string

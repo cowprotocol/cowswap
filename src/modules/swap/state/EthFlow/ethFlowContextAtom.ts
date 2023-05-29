@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 export interface EthFlowActionContext {

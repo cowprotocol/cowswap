@@ -1,8 +1,10 @@
-import { useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { UtmParams } from './types'
 import { useAtomValue, useSetAtom } from 'jotai'
+import { useEffect } from 'react'
+
+import { useLocation, useNavigate } from 'react-router-dom'
+
 import { utmAtom } from './state'
+import { UtmParams } from './types'
 
 const UTM_SOURCE_PARAM = 'utm_source'
 const UTM_MEDIUM_PARAM = 'utm_medium'

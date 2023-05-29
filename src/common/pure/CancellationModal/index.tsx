@@ -1,13 +1,16 @@
 import { useMemo } from 'react'
-import { shortenOrderId } from 'legacy/utils'
-import { GpModal as Modal } from 'common/pure/Modal'
+
 import {
   ConfirmationPendingContent,
   OperationType,
   TransactionErrorContent,
 } from 'legacy/components/TransactionConfirmationModal'
-import { RequestCancellationModal } from './RequestCancellationModal'
+import { shortenOrderId } from 'legacy/utils'
+
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
+import { GpModal as Modal } from 'common/pure/Modal'
+
+import { RequestCancellationModal } from './RequestCancellationModal'
 
 export type CancellationModalProps = {
   isOpen: boolean

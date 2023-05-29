@@ -1,16 +1,20 @@
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useCallback, useLayoutEffect, useMemo } from 'react'
 import { useUpdateAtom } from 'jotai/utils'
-import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
-import { Writeable } from 'types'
-import { FractionUtils } from 'utils/fractionUtils'
-import { Price } from '@uniswap/sdk-core'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
-import { getIntOrFloat } from 'utils/getIntOrFloat'
+import { useCallback, useLayoutEffect, useMemo } from 'react'
+
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { Price } from '@uniswap/sdk-core'
+
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Writeable } from 'types'
+
+import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
+import { TRADE_URL_BUY_AMOUNT_KEY, TRADE_URL_SELL_AMOUNT_KEY } from 'modules/trade/const/tradeUrl'
+
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { FractionUtils } from 'utils/fractionUtils'
+import { getIntOrFloat } from 'utils/getIntOrFloat'
 
 /**
  * Parse sell/buy amount from URL and apply to Limit orders widget

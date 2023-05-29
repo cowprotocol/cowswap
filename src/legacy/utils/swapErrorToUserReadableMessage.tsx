@@ -1,5 +1,6 @@
-import { Trans } from '@lingui/macro'
 import { ReactNode } from 'react'
+
+import { Trans } from '@lingui/macro'
 /**
  * This is hacking out the revert reason from the ethers provider thrown error however it can.
  * This object seems to be undocumented by ethers.

@@ -1,21 +1,25 @@
-import { Trans } from '@lingui/macro'
-import { Percent } from '@uniswap/sdk-core'
 import { useCallback, useMemo } from 'react'
 
-import TradeGp from 'legacy/state/swap/TradeGp'
+import { Percent } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+
+import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
+import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   OperationType,
   TransactionErrorContent,
 } from 'legacy/components/TransactionConfirmationModal'
-import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
-import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
-import { useWalletDetails } from 'modules/wallet'
-import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
-import { RateInfoParams } from 'common/pure/RateInfo'
+import TradeGp from 'legacy/state/swap/TradeGp'
+
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
+import { useWalletDetails } from 'modules/wallet'
+
+import { RateInfoParams } from 'common/pure/RateInfo'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState

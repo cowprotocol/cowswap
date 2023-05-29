@@ -1,6 +1,8 @@
-import { useWalletInfo } from 'modules/wallet'
-import { Trans } from '@lingui/macro'
 import { ReactNode, useMemo } from 'react'
+
+import { Trans } from '@lingui/macro'
+
+import { useWalletInfo } from 'modules/wallet'
 
 const BLOCKED_ADDRESSES: string[] = [
   '0x7Db418b5D567A4e0E8c59Ad71BE1FcE48f3E6107',

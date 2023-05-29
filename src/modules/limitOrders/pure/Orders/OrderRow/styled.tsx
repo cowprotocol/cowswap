@@ -1,7 +1,9 @@
-import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
-import { RateWrapper } from 'common/pure/RateInfo'
+import styled from 'styled-components/macro'
+
 import { OrderExecutionStatus } from 'modules/limitOrders/utils/calculateOrderExecutionStatus'
+
+import { RateWrapper } from 'common/pure/RateInfo'
 
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   --height: 28px;

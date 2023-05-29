@@ -1,11 +1,16 @@
 import { useCallback } from 'react'
-import { useWeb3React } from '@web3-react/core'
-import { getSafeTransaction } from 'api/gnosisSafe'
+
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { retry, RetryOptions } from 'legacy/utils/retry'
+import { useWeb3React } from '@web3-react/core'
+
 import { RetryResult } from 'types'
+
+import { retry, RetryOptions } from 'legacy/utils/retry'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { getSafeTransaction } from 'api/gnosisSafe'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 

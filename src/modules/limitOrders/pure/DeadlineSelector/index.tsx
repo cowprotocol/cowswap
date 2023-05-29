@@ -1,12 +1,12 @@
-import { Menu } from '@reach/menu-button'
-import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
 import { useEffect, useState } from 'react'
-import { GpModal as Modal } from 'common/pure/Modal'
 import { ChangeEventHandler, useCallback, useMemo, useRef } from 'react'
-import { ChevronDown } from 'react-feather'
-import * as styledEl from './styled'
+
 import { Trans } from '@lingui/macro'
+import { Menu } from '@reach/menu-button'
+import { ChevronDown } from 'react-feather'
+
 import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
+
 import {
   calculateMinMax,
   formatDateToLocalTime,
@@ -14,6 +14,11 @@ import {
   getTimeZoneOffset,
   limitDateString,
 } from 'modules/limitOrders/pure/DeadlineSelector/utils'
+
+import { GpModal as Modal } from 'common/pure/Modal'
+
+import { LimitOrderDeadline, limitOrdersDeadlines } from './deadlines'
+import * as styledEl from './styled'
 
 const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: '2-digit',

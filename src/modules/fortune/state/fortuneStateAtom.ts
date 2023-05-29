@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
-import { FortuneItem } from 'modules/fortune/types'
 import { atomWithStorage } from 'jotai/utils'
+
+import { FortuneItem } from 'modules/fortune/types'
 
 interface FortuneState {
   openFortune: FortuneItem | null

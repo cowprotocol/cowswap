@@ -1,8 +1,10 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import mainnetIndex from './mainnet.json'
+
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+
 import gnosisChainIndex from './gnosisChain.json'
 import goerliIndex from './goerli.json'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
+import mainnetIndex from './mainnet.json'
 
 interface Claim {
   index: number
