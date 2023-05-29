@@ -238,6 +238,7 @@
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "ts-mockito": "^2.6.1",
     "typechain": "^8.1.1",
     "webpack-bundle-analyzer": "^4.7.0"
   }

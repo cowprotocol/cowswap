@@ -1,5 +1,4 @@
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { OnImportDismissCallback } from 'modules/trade/hooks/useOnImportDismiss'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
@@ -22,10 +21,8 @@ export interface LimitOrdersProps {
   isExpertMode: boolean
 
   recipient: string | null
-  chainId: number | undefined
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
   featurePartialFillsEnabled: boolean
-  onImportDismiss: OnImportDismissCallback
 
   rateInfoParams: RateInfoParams
   priceImpact: PriceImpact
@@ -44,9 +41,7 @@ export function limitOrdersPropsChecker(a: LimitOrdersProps, b: LimitOrdersProps
     a.isWrapOrUnwrap === b.isWrapOrUnwrap &&
     a.showRecipient === b.showRecipient &&
     a.recipient === b.recipient &&
-    a.chainId === b.chainId &&
     a.widgetActions === b.widgetActions &&
-    a.onImportDismiss === b.onImportDismiss &&
     a.partiallyFillableOverride[0] === b.partiallyFillableOverride[0] &&
     a.featurePartialFillsEnabled === b.featurePartialFillsEnabled &&
     checkRateInfoParams(a.rateInfoParams, b.rateInfoParams) &&
