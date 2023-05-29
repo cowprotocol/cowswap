@@ -16,7 +16,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 
-export interface LimitOrdersConfirmProps {
+export interface TradeConfirmationProps {
   tradeContext: TradeFlowContext
   rateInfoParams: RateInfoParams
   inputCurrencyInfo: CurrencyInfo
@@ -34,7 +34,7 @@ export interface LimitOrdersConfirmProps {
   buttonText?: ReactNode
 }
 
-export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
+export function TradeConfirmation(props: TradeConfirmationProps) {
   const {
     tradeContext,
     inputCurrencyInfo,

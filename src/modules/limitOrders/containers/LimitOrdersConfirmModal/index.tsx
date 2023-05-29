@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { CloseIcon } from 'legacy/theme'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { LimitOrdersConfirm } from '../../../trade/pure/LimitOrdersConfirm'
+import { TradeConfirmation } from 'modules/trade/pure/TradeConfirmation'
 import { TradeFlowContext } from '../../services/types'
 import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
@@ -108,7 +108,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               <styledEl.ConfirmHeaderTitle>Review limit order</styledEl.ConfirmHeaderTitle>
               <CloseIcon onClick={() => onDismiss()} />
             </styledEl.ConfirmHeader>
-            <LimitOrdersConfirm
+            <TradeConfirmation
               executionPrice={executionPrice}
               limitRateState={limitRateState}
               settingsState={settingsState}

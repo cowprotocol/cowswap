@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { TradeFlowContext } from '../../../limitOrders/services/types'
-import { LimitOrdersConfirm } from './index'
+import { TradeConfirmation } from './index'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import React from 'react'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -98,7 +98,7 @@ const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceI
 
 const Fixtures = {
   default: (
-    <LimitOrdersConfirm
+    <TradeConfirmation
       rateInfoParams={rateInfoParams}
       settingsState={defaultLimitOrdersSettings}
       rateImpact={1}
