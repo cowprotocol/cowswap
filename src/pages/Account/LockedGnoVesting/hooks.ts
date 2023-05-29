@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-
 import { ContractTransaction } from '@ethersproject/contracts'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'legacy/constants'

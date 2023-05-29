@@ -2,6 +2,7 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
+
 import ms from 'ms.macro'
 
 import { DEFAULT_GP_PRICE_STRATEGY } from 'legacy/constants'

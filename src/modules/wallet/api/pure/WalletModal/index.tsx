@@ -1,5 +1,6 @@
-import { Trans } from '@lingui/macro'
 import { Connector } from '@web3-react/types'
+
+import { Trans } from '@lingui/macro'
 
 import { LightCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'

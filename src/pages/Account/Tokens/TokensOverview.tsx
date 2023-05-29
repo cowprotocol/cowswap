@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
 import { Token } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
 
 import { Trans, t } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { Check } from 'react-feather'
 
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'

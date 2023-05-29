@@ -7,9 +7,9 @@ import {
   OrderSigningUtils,
 } from '@cowprotocol/cow-sdk'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Signer } from '@ethersproject/abstract-signer'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { Signer } from '@ethersproject/abstract-signer'
 import { orderBookApi } from 'cowSdk'
 
 import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'

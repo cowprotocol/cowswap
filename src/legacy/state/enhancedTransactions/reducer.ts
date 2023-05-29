@@ -1,7 +1,7 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 import { createReducer } from '@reduxjs/toolkit'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 import {
   addTransaction,

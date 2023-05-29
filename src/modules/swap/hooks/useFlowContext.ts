@@ -1,10 +1,10 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
+
 import { useDispatch } from 'react-redux'
 
 import { Weth } from 'legacy/abis/types'

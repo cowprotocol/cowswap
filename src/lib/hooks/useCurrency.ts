@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
-import { Currency, Token } from '@uniswap/sdk-core'
-
 import { arrayify } from '@ethersproject/bytes'
 import { parseBytes32String } from '@ethersproject/strings'
+import { Currency, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { TOKEN_SHORTHANDS } from 'legacy/constants/tokens'

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWeb3React } from '@web3-react/core'
 
 import { Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { transparentize, darken } from 'polished'
 import { ParsedQs } from 'qs'
 import { ArrowDownCircle } from 'react-feather'

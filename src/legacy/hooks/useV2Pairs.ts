@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { computePairAddress, Pair } from '@uniswap/v2-sdk'
-
 import { Interface } from '@ethersproject/abi'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import IUniswapV2PairJson from '@uniswap/v2-core/build/IUniswapV2Pair.json'
+import { computePairAddress, Pair } from '@uniswap/v2-sdk'
 
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 

@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
-
 import { useWeb3React } from '@web3-react/core'
 
 import { addTokenToMetamaskAnalytics } from 'legacy/components/analytics'

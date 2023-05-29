@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
+import MerkleDistributorJson from '@uniswap/merkle-distributor/build/MerkleDistributor.json'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import MerkleDistributorJson from '@uniswap/merkle-distributor/build/MerkleDistributor.json'
 import JSBI from 'jsbi'
 
 import { MERKLE_DISTRIBUTOR_ADDRESS } from 'legacy/constants/addresses'

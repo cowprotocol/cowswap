@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
-
 import { useWeb3React } from '@web3-react/core'
 
 import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'

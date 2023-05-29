@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Nullish } from 'types'
 
 import { Erc20 } from 'legacy/abis/types'

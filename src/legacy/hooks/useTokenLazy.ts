@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
 
-import { Token } from '@uniswap/sdk-core'
-
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
 import { Erc20 } from 'legacy/abis/types'

@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 
+import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { BigNumber } from '@ethersproject/bignumber'
 import SVG from 'react-inlinesvg'
 
 import CheckCircle from 'legacy/assets/cow-swap/check.svg'

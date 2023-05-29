@@ -2,8 +2,8 @@ import { useAtomValue } from 'jotai/utils'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-
 import { useWeb3React } from '@web3-react/core'
+
 import { useDispatch } from 'react-redux'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'

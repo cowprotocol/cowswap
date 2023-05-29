@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
+
 import { Check, ChevronDown } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
 

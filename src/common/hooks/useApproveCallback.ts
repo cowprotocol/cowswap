@@ -1,10 +1,9 @@
 import { useCallback } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Erc20 } from 'legacy/abis/types'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'

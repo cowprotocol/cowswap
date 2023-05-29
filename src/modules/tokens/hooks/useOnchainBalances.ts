@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
+import { Interface } from '@ethersproject/abi'
 import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { Interface } from '@ethersproject/abi'
 import JSBI from 'jsbi'
 
 import ERC20ABI from 'legacy/abis/erc20.json'

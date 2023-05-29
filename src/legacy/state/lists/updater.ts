@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react'
 
 import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/token-lists'
-
 import { useWeb3React } from '@web3-react/core'
 
 import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'

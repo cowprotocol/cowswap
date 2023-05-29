@@ -42,7 +42,7 @@
       {
         "pathGroups": [
           {
-            "pattern": "{@cowprotocol/*,@uniswap/*}",
+            "pattern": "{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**",
             "group": "external",
             "position": "before"
           },

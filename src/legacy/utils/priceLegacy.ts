@@ -1,6 +1,6 @@
 import { OrderKind } from '@cowprotocol/contracts'
-
 import { BigNumber } from '@ethersproject/bignumber'
+
 import * as Sentry from '@sentry/browser'
 import BigNumberJs from 'bignumber.js'
 import { OptimalRate } from 'paraswap-core'

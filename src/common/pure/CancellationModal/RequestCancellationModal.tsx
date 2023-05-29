@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
+import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, NativeCurrency } from '@uniswap/sdk-core'
 
 import { ArrowRight, ArrowLeft } from 'react-feather'
@@ -14,8 +15,6 @@ import { LinkStyledButton } from 'legacy/theme'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { Routes } from 'constants/routes'
-
-import type { BigNumber } from '@ethersproject/bignumber'
 
 export type RequestCancellationModalProps = {
   summary?: string

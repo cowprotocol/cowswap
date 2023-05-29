@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CallState } from '@uniswap/redux-multicall'
-import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
-
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
+import { CallState } from '@uniswap/redux-multicall'
+import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
+
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
 import { useSelector, useDispatch } from 'react-redux'

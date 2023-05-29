@@ -1,10 +1,11 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
+import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
+import { Connector } from '@web3-react/types'
+
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { render } from '@testing-library/react'
-import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
-import { Connector } from '@web3-react/types'
 import { en } from 'make-plural/plurals'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'

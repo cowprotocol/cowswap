@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Token } from '@uniswap/sdk-core'
-
 import { getAddress } from '@ethersproject/address'
+import { Token } from '@uniswap/sdk-core'
 
 import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { useAllTokens } from 'legacy/hooks/Tokens'

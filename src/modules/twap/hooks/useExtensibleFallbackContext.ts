@@ -1,5 +1,4 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { useWeb3React } from '@web3-react/core'

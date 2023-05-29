@@ -1,6 +1,5 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TradeType } from '@uniswap/sdk-core'
-
 import { useWeb3React } from '@web3-react/core'
 
 import { useGP2SettlementContract, useTokenContract } from 'legacy/hooks/useContract'

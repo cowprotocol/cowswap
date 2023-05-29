@@ -1,6 +1,7 @@
-import { Trans } from '@lingui/macro'
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
+
+import { Trans } from '@lingui/macro'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 import useTheme from 'legacy/hooks/useTheme'

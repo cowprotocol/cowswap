@@ -1,8 +1,8 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { t } from '@lingui/macro'
 
 import { wrapAnalytics } from 'legacy/components/analytics'

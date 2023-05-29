@@ -3,6 +3,7 @@ import '@reach/dialog/styles.css'
 import React, { StrictMode, useCallback, useContext, ReactNode } from 'react'
 
 import { Web3ReactProvider } from '@web3-react/core'
+
 import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
 import { Provider } from 'react-redux'

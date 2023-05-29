@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 
-import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
-
 import { TransactionResponse } from '@ethersproject/providers'
+import { Currency, CurrencyAmount, MaxUint256, Percent, Token } from '@uniswap/sdk-core'
 
 import { GP_VAULT_RELAYER, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import { ClaimType } from 'legacy/state/claim/hooks'

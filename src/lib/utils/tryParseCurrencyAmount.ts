@@ -1,6 +1,6 @@
+import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { parseUnits } from '@ethersproject/units'
 import JSBI from 'jsbi'
 
 /**

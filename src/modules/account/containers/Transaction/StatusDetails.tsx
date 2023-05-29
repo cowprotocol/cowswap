@@ -1,4 +1,5 @@
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+
 import { ExternalLink as LinkIconFeather } from 'react-feather'
 import SVG from 'react-inlinesvg'
 

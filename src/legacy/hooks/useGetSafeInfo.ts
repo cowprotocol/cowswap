@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { useWeb3React } from '@web3-react/core'
+
 import { RetryResult } from 'types'
 
 import { retry, RetryOptions } from 'legacy/utils/retry'

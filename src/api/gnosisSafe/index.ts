@@ -1,9 +1,9 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
 import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 

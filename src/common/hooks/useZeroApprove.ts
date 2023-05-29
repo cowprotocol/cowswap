@@ -1,10 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
 import SafeApiKit from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 

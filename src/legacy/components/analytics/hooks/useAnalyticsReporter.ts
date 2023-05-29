@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
+
 import ReactGA from 'react-ga4'
 import { useLocation } from 'react-router-dom'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'

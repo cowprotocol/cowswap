@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import CoWSwapEthFlowJson from '@cowprotocol/ethflowcontract/artifacts/CoWSwapEthFlow.sol/CoWSwapEthFlow.json'
 import { Contract } from '@ethersproject/contracts'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import UniswapInterfaceMulticallJson from '@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json'
 import { useWeb3React } from '@web3-react/core'
 
@@ -34,8 +34,6 @@ import GPv2_SETTLEMENT_ABI from 'abis/GPv2Settlement.json'
 import { GPv2Settlement, VCow } from 'abis/types'
 import { CoWSwapEthFlow } from 'abis/types/ethflow'
 import V_COW_ABI from 'abis/vCow.json'
-
-import type { JsonRpcProvider } from '@ethersproject/providers'
 
 const { abi: MulticallABI } = UniswapInterfaceMulticallJson
 

@@ -1,6 +1,5 @@
-import { Percent } from '@uniswap/sdk-core'
-
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { Percent } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'

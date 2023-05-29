@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
-
 import type { SafeInfo } from '@safe-global/safe-apps-sdk'
+
+import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 
 export type GnosisSafeSdkInfo = SafeInfo
 

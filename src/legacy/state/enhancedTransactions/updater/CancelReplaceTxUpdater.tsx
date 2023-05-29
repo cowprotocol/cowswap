@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
+
 import { Dispatch } from 'redux'
 
 import { replaceTransaction } from 'legacy/state/enhancedTransactions/actions'

@@ -7,6 +7,7 @@ import { useEffect, useMemo } from 'react'
 
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
+
 import ms from 'ms.macro'
 
 import { GetReceipt, useGetReceipt } from 'legacy/hooks/useGetReceipt'

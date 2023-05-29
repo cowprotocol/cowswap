@@ -1,6 +1,6 @@
+import contractsPkg from '@cowprotocol/contracts/package.json'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import contractsPkg from '@cowprotocol/contracts/package.json'
 import styled from 'styled-components/macro'
 
 import { CODE_LINK, GP_VAULT_RELAYER, GP_SETTLEMENT_CONTRACT_ADDRESS } from 'legacy/constants'

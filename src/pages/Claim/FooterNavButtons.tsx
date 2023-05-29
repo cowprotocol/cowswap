@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { isAddress } from '@ethersproject/address'
+
 import { Trans } from '@lingui/macro'
 
 import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'

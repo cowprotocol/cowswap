@@ -1,5 +1,4 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { Connector } from '@web3-react/types'
 
 import { getChainInfo } from 'legacy/constants/chainInfo'

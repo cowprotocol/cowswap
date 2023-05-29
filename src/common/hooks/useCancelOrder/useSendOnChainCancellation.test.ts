@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+
 import { renderHook } from '@testing-library/react-hooks'
 
 import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'

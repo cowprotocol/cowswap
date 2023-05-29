@@ -1,10 +1,10 @@
 import { Fragment } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-
-import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
+
+import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
 import { MouseoverTooltip } from 'legacy/components/Tooltip'

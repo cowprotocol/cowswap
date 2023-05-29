@@ -1,11 +1,11 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Percent, Token } from '@uniswap/sdk-core'
-import { FeeAmount } from '@uniswap/v3-sdk'
-
 import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
+import { Percent, Token } from '@uniswap/sdk-core'
+import { FeeAmount } from '@uniswap/v3-sdk'
+
 import JSBI from 'jsbi'
 
 import { ORDER_ID_SHORT_LENGTH } from 'legacy/constants'

@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { TransactionResponse } from '@ethersproject/providers'
 import JSBI from 'jsbi'
 
 import { OperationType } from 'legacy/components/TransactionConfirmationModal'

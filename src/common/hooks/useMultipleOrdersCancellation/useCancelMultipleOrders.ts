@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
-
 import { useWeb3React } from '@web3-react/core'
+
 import { orderBookApi } from 'cowSdk'
 
 import { Order } from 'legacy/state/orders/actions'

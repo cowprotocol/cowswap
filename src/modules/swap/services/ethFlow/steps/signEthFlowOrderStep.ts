@@ -1,7 +1,6 @@
 import { OrderClass, UnsignedOrder } from '@cowprotocol/cow-sdk'
-import { NativeCurrency } from '@uniswap/sdk-core'
-
 import { ContractTransaction } from '@ethersproject/contracts'
+import { NativeCurrency } from '@uniswap/sdk-core'
 
 import { Order } from 'legacy/state/orders/actions'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'

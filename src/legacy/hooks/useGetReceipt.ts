@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { useWeb3React } from '@web3-react/core'
+
 import { RetryResult } from 'types'
 
 import { retry, RetryableError, RetryOptions } from 'legacy/utils/retry'

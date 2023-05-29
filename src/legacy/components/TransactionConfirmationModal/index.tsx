@@ -2,9 +2,9 @@ import React, { ReactNode, useContext, useMemo } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@uniswap/sdk-core'
+import { useWeb3React } from '@web3-react/core'
 
 import { t, Trans } from '@lingui/macro'
-import { useWeb3React } from '@web3-react/core'
 import { CheckCircle, UserCheck } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { Text } from 'rebass'

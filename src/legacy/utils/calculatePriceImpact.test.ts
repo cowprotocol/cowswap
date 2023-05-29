@@ -1,7 +1,7 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { parseUnits } from '@ethersproject/units'
 import { CurrencyAmount, Percent, Token, WETH9 } from '@uniswap/sdk-core'
 
-import { parseUnits } from '@ethersproject/units'
 import BigNumber from 'bignumber.js'
 
 function _calculateAbaPriceImpact(initialValue: string, finalValue: string) {

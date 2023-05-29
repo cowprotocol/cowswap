@@ -1,7 +1,6 @@
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
 import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Erc20 } from 'legacy/abis/types'
 import { AppDispatch } from 'legacy/state'

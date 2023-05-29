@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
 import { Nullish } from 'types'
 
 import { useTokenContract } from 'legacy/hooks/useContract'

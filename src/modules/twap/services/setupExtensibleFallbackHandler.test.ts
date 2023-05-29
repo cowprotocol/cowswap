@@ -2,8 +2,9 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
 import { Web3Provider } from '@ethersproject/providers'
-import { renderHook } from '@testing-library/react-hooks'
 import { useWeb3React } from '@web3-react/core'
+
+import { renderHook } from '@testing-library/react-hooks'
 import { WithMockedWeb3 } from 'test-utils'
 
 import { useGP2SettlementContract } from 'legacy/hooks/useContract'
