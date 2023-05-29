@@ -1,7 +1,8 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { buildPriceFromCurrencyAmounts } from 'modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 import { Nullish } from 'types'
+
+import { buildPriceFromCurrencyAmounts } from 'modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 

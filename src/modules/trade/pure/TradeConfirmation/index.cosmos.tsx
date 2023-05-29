@@ -1,11 +1,15 @@
-import { Field } from 'legacy/state/swap/actions'
-import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { COW, GNO } from 'legacy/constants/tokens'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TradeConfirmation } from './index'
 import React from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { COW, GNO } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
+
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
+import { TradeConfirmation } from './index'
 
 const inputCurrency = COW[SupportedChainId.MAINNET]
 const outputCurrency = GNO[SupportedChainId.MAINNET]

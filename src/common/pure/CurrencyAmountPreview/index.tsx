@@ -1,11 +1,15 @@
-import * as styledEl from '../CurrencyInputPanel/styled'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { Nullish } from 'types'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'common/pure/FiatValue'
-import { Trans } from '@lingui/macro'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { Nullish } from 'types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import * as styledEl from '../CurrencyInputPanel/styled'
 
 interface BuiltItProps {
   className: string

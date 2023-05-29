@@ -1,11 +1,15 @@
 import React, { ReactNode } from 'react'
+
 import { Trans } from '@lingui/macro'
-import { ButtonSize } from 'legacy/theme/enum'
+
 import { ButtonPrimary } from 'legacy/components/Button'
-import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
-import * as styledEl from './styled'
-import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { ButtonSize } from 'legacy/theme/enum'
+
+import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
+import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
+
+import * as styledEl from './styled'
 
 export interface TradeConfirmationProps {
   children: JSX.Element
