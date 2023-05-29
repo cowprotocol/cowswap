@@ -4,13 +4,6 @@ import { NumericalInput } from 'modules/limitOrders/containers/RateInput/styled'
 import { transparentize, darken } from 'polished'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
 
-export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  margin: 0;
-  padding: ${({ withRecipient }) => (withRecipient ? '0 10px' : '0')};
-`
-
 export const TradeButtonBox = styled.div`
   margin: 10px 0 0;
   display: flex;
