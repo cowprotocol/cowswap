@@ -4,6 +4,7 @@ import { DEFAULT_TXN_DISMISS_MS } from 'legacy/constants/misc'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FlattenInterpolation, ThemeProps, DefaultTheme } from 'styled-components/macro'
 import { initialState } from 'legacy/state/application/initialState'
+import { Nullish } from 'types'
 
 type BasePopupContent = {
   failedSwitchNetwork: SupportedChainId
@@ -62,6 +63,16 @@ export enum ApplicationModal {
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
 
+export type AddPopupPayload = {
+  readonly content: PopupContent
+  readonly key?: Nullish<string>
+  readonly removeAfterMs?: Nullish<number>
+}
+
+export type AddPopupActionParams = {
+  readonly payload: AddPopupPayload
+}
+
 export interface ApplicationState {
   readonly chainId: number | null
   readonly openModal: ApplicationModal | null
@@ -79,7 +90,11 @@ const applicationSlice = createSlice({
     setOpenModal(state, action) {
       state.openModal = action.payload
     },
-    addPopup(state, { payload: { content, key, removeAfterMs = DEFAULT_TXN_DISMISS_MS } }) {
+    addPopup(state, action: AddPopupActionParams) {
+      const {
+        payload: { content, key, removeAfterMs = DEFAULT_TXN_DISMISS_MS },
+      } = action
+
       state.popupList = (key ? state.popupList.filter((popup) => popup.key !== key) : state.popupList).concat([
         {
           key: key || nanoid(),
