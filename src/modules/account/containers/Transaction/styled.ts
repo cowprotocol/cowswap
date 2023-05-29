@@ -3,7 +3,7 @@ import { StyledSVG } from 'legacy/components/Loader'
 import { ExternalLink, LinkStyledButton, StyledLink } from 'legacy/theme'
 import { RowFixed } from 'legacy/components/Row'
 import { transparentize } from 'polished'
-import { StyledLogo } from 'legacy/components/CurrencyLogo'
+import { StyledLogo } from 'common/pure/CurrencyLogo'
 import { RateWrapper } from 'common/pure/RateInfo'
 import { FiatAmount } from 'common/pure/FiatAmount'
 

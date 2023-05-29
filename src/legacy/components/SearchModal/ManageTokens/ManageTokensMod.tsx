@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/macro'
 import { Token } from '@uniswap/sdk-core'
 import Column from 'legacy/components/Column'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
 import { useToken } from 'legacy/hooks/Tokens'
 import { ChangeEventHandler, RefObject, useCallback, useMemo, useRef, useState } from 'react'

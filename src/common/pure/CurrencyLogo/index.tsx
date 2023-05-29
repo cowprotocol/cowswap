@@ -23,7 +23,7 @@ export const StyledLogo = styled(Logo)<{ size: string; $native: boolean }>`
   color: ${({ theme }) => theme.black}!important; // MOD
 `
 
-export default function CurrencyLogo({
+export function CurrencyLogo({
   currency,
   size = '24px',
   style,

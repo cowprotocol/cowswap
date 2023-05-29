@@ -19,7 +19,7 @@ import {
 import { V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import { ActivityDerivedState } from './index'
 import { GnosisSafeLink } from './StatusDetails'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
 import { useToken } from 'legacy/hooks/Tokens'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
