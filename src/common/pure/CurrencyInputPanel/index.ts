@@ -1,2 +1,2 @@
 export * from './CurrencyInputPanel'
-export * from './CurrencyPreview'
+export * from '../CurrencyAmountPreview'

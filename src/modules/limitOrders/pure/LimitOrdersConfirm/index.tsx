@@ -3,7 +3,7 @@ import { Trans } from '@lingui/macro'
 import { ButtonSize } from 'legacy/theme/enum'
 import { ButtonPrimary } from 'legacy/components/Button'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { CurrencyPreview } from 'common/pure/CurrencyInputPanel'
+import { CurrencyAmountPreview } from 'common/pure/CurrencyInputPanel'
 import { LimitOrdersDetails } from '../LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
 import * as styledEl from './styled'
@@ -59,7 +59,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
 
   return (
     <styledEl.ConfirmWrapper id="limit-orders-confirm">
-      <CurrencyPreview
+      <CurrencyAmountPreview
         id="input-currency-preview"
         currencyInfo={inputCurrencyInfo}
         topLabel={inputCurrencyInfo.label}
@@ -73,7 +73,7 @@ export function LimitOrdersConfirm(props: LimitOrdersConfirmProps) {
           onSwitchTokens={() => null}
         />
       </CurrencySeparatorBox>
-      <CurrencyPreview
+      <CurrencyAmountPreview
         id="output-currency-preview"
         currencyInfo={outputCurrencyInfo}
         topLabel={outputCurrencyInfo.label}

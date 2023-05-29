@@ -1,4 +1,4 @@
-import * as styledEl from './styled'
+import * as styledEl from '../CurrencyInputPanel/styled'
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 import { FiatValue } from 'legacy/components/CurrencyInputPanel/FiatValue/FiatValueMod'
 import { Trans } from '@lingui/macro'
@@ -17,7 +17,7 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   topLabel?: string
 }
 
-export function CurrencyPreview(props: CurrencyPreviewProps) {
+export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
   const { id, currencyInfo, className, priceImpactParams, topLabel } = props
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
   const { currency, balance, fiatAmount, amount } = currencyInfo
