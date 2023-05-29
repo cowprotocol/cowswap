@@ -61,11 +61,10 @@ export type OrderStatusBoxProps = {
   order: ParsedOrder
   widthAuto?: boolean
   withWarning?: boolean
-  clickable?: boolean
   onClick?: () => void
 }
 
-export function OrderStatusBox({ order, widthAuto, withWarning, clickable, onClick }: OrderStatusBoxProps) {
+export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
   return (
     <Wrapper
       cancelling={order.isCancelling}
@@ -73,7 +72,7 @@ export function OrderStatusBox({ order, widthAuto, withWarning, clickable, onCli
       status={order.status}
       widthAuto={widthAuto}
       withWarning={withWarning}
-      clickable={clickable}
+      clickable={!!onClick}
       onClick={onClick}
     >
       {/* Status overrides for special cases */}
