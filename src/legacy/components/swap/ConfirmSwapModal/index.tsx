@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
-import { Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
+import { Nullish } from 'types'
 
 import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
 import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
@@ -11,6 +12,7 @@ import { LegacyConfirmationModalContent } from 'legacy/components/TransactionCon
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { useIsSafeEthFlow } from 'modules/swap/hooks/useIsSafeEthFlow'
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 import { useWalletDetails } from 'modules/wallet'
 
@@ -73,16 +75,8 @@ export function ConfirmSwapModal({
     rateInfoParams,
   ])
 
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(trade?.maximumAmountIn(allowedSlippage))
-  const buttonText = useMemo(
-    () =>
-      isSafeApprovalBundle ? (
-        <>
-          Confirm (Approve&nbsp;{<TokenSymbol token={trade?.inputAmount?.currency.wrapped} length={6} />}&nbsp;and Swap)
-        </>
-      ) : undefined,
-    [isSafeApprovalBundle, trade?.inputAmount?.currency.wrapped]
-  )
+  const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
+  const buttonText = useButtonText(slippageAdjustedSellAmount)
 
   const modalBottom = useCallback(() => {
     return trade ? (
@@ -151,4 +145,30 @@ function tradeMeaningfullyDiffers(tradeA: TradeGp, tradeB: TradeGp): boolean {
     !tradeA.outputAmount.currency.equals(tradeB.outputAmount.currency) ||
     !tradeA.outputAmount.equalTo(tradeB.outputAmount)
   )
+}
+
+function useButtonText(slippageAdjustedSellAmount: Nullish<CurrencyAmount<Currency>>) {
+  const isSafeApprovalBundle = useIsSafeApprovalBundle(slippageAdjustedSellAmount)
+  const isSafeEthFlowBundle = useIsSafeEthFlow()
+  const sellCurrency = slippageAdjustedSellAmount?.currency
+
+  return useMemo(() => {
+    if (isSafeEthFlowBundle) {
+      return (
+        <>
+          Confirm (Wrap&nbsp;{<TokenSymbol token={sellCurrency} length={6} />}
+          &nbsp;and Swap)
+        </>
+      )
+    } else if (isSafeApprovalBundle) {
+      return (
+        <>
+          Confirm (Approve&nbsp;{<TokenSymbol token={sellCurrency?.wrapped} length={6} />}
+          &nbsp;and Swap)
+        </>
+      )
+    } else {
+      return undefined
+    }
+  }, [isSafeApprovalBundle, isSafeEthFlowBundle, sellCurrency])
 }
