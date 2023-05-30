@@ -23,16 +23,14 @@ import { isL2ChainId } from 'legacy/utils/chains'
 import { useWalletInfo } from 'modules/wallet'
 
 import { GpModal } from 'common/pure/Modal'
+import { TransactionSubmittedContent } from 'common/pure/TransactionSubmittedContent'
 
 import { CloseIconWrapper, GPModalHeader } from './styled'
 
-import {
-  ConfirmationModalContentProps,
-  ConfirmationPendingContent,
-  OperationType,
-  TransactionSubmittedContent,
-} from '.'
+import { ConfirmationModalContentProps, ConfirmationPendingContent, OperationType } from '.'
 
+import { useActivityDerivedState } from '../../hooks/useActivityDerivedState'
+import { useMultipleActivityDescriptors } from '../../hooks/useRecentActivity'
 import { ButtonPrimary } from '../Button'
 
 export const Wrapper = styled.div`
@@ -265,6 +263,8 @@ export default function TransactionConfirmationModal({
 }: ConfirmationModalProps) {
   const { chainId } = useWalletInfo()
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
+  const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] })
+  const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
 
   if (!chainId) return null
 
@@ -292,6 +292,7 @@ export default function TransactionConfirmationModal({
         <TransactionSubmittedContent
           chainId={chainId}
           hash={hash}
+          activityDerivedState={activityDerivedState}
           onDismiss={_onDismiss}
           currencyToAdd={currencyToAdd}
         />
