@@ -63,6 +63,6 @@ export type SafeBundleApprovalFlowContext = BaseSafeFlowContext & {
   erc20Contract: Erc20
 }
 
-export type SafeEthFlowContext = BaseFlowContext & {
+export type SafeBundleEthFlowContext = BaseSafeFlowContext & {
   wrappedNativeContract: Weth
 }
