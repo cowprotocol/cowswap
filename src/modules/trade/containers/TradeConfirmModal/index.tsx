@@ -2,10 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import React, { useCallback } from 'react'
 
-import { CloseIcon } from 'legacy/theme'
 import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
-import * as styledEl from 'modules/limitOrders/containers/LimitOrdersConfirmModal/styled'
 import { TradeConfirmation } from 'modules/trade/pure/TradeConfirmation'
 import { useWalletDisplayedAddress, useWalletInfo } from 'modules/wallet'
 
@@ -71,13 +69,9 @@ export function TradeConfirmModal() {
 
   if (confirmationState) {
     return (
-      <styledEl.ConfirmModalWrapper>
-        <styledEl.ConfirmHeader>
-          <styledEl.ConfirmHeaderTitle>Review limit order</styledEl.ConfirmHeaderTitle>
-          <CloseIcon onClick={onDismiss} />
-        </styledEl.ConfirmHeader>
-        <TradeConfirmation {...confirmationState}>{confirmationState.children}</TradeConfirmation>
-      </styledEl.ConfirmModalWrapper>
+      <TradeConfirmation {...confirmationState} onDismiss={onDismiss}>
+        {confirmationState.children}
+      </TradeConfirmation>
     )
   }
 

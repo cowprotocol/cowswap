@@ -9,7 +9,6 @@ import { Nullish } from 'types'
 import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { CloseIcon } from 'legacy/theme'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
@@ -30,8 +29,6 @@ import { GpModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-
-import * as styledEl from './styled'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
@@ -118,33 +115,29 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
     <>
       <GpModal isOpen={isOpen} onDismiss={onDismiss}>
         {tradeContext && (
-          <styledEl.ConfirmModalWrapper>
-            <styledEl.ConfirmHeader>
-              <styledEl.ConfirmHeaderTitle>Review limit order</styledEl.ConfirmHeaderTitle>
-              <CloseIcon onClick={() => onDismiss()} />
-            </styledEl.ConfirmHeader>
-            <TradeConfirmation
-              inputCurrencyInfo={inputCurrencyInfo}
-              outputCurrencyInfo={outputCurrencyInfo}
-              onConfirm={doTrade}
-              isConfirmDisabled={isConfirmDisabled}
-              priceImpact={priceImpact}
-              buttonText={buttonText}
-            >
-              <>
-                <LimitOrdersDetails
-                  limitRateState={limitRateState}
-                  tradeContext={tradeContext}
-                  rateInfoParams={rateInfoParams}
-                  settingsState={settingsState}
-                  executionPrice={executionPrice}
-                  partiallyFillableOverride={partiallyFillableOverride}
-                  featurePartialFillsEnabled={partialFillsEnabled}
-                />
-                <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
-              </>
-            </TradeConfirmation>
-          </styledEl.ConfirmModalWrapper>
+          <TradeConfirmation
+            title="Review limit order"
+            inputCurrencyInfo={inputCurrencyInfo}
+            outputCurrencyInfo={outputCurrencyInfo}
+            onConfirm={doTrade}
+            onDismiss={onDismiss}
+            isConfirmDisabled={isConfirmDisabled}
+            priceImpact={priceImpact}
+            buttonText={buttonText}
+          >
+            <>
+              <LimitOrdersDetails
+                limitRateState={limitRateState}
+                tradeContext={tradeContext}
+                rateInfoParams={rateInfoParams}
+                settingsState={settingsState}
+                executionPrice={executionPrice}
+                partiallyFillableOverride={partiallyFillableOverride}
+                featurePartialFillsEnabled={partialFillsEnabled}
+              />
+              <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+            </>
+          </TradeConfirmation>
         )}
       </GpModal>
       {chainId && confirmationState.orderHash && (

@@ -19,6 +19,7 @@ const account = '0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01'
 const defaultTxHash = '0x1e0e4acc2c5316b43240699c74a0f3e10ef2a3228904c981dddfb451d32ee8f4'
 
 const confirmationState: TradeConfirmationProps = {
+  title: 'Review order',
   children: <span>Some content</span>,
   inputCurrencyInfo: inputCurrencyInfoMock,
   outputCurrencyInfo: outputCurrencyInfoMock,
@@ -26,6 +27,9 @@ const confirmationState: TradeConfirmationProps = {
   isConfirmDisabled: false,
   onConfirm() {
     console.log('onConfirm')
+  },
+  onDismiss() {
+    console.log('onDismiss')
   },
 }
 
