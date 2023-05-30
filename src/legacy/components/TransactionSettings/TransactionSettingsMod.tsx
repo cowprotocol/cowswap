@@ -28,7 +28,7 @@ import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransacti
 import { ThemedText } from 'legacy/theme'
 
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useWalletInfo } from 'modules/wallet'
@@ -133,7 +133,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext)
 
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
   const { native: nativeCurrency } = useDetectNativeToken()
 
   const userSlippageTolerance = useUserSlippageTolerance()

@@ -7,7 +7,7 @@ import { Trans } from '@lingui/macro'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
@@ -23,7 +23,7 @@ export interface ReceiveAmountInfoTooltipProps {
 const MAX_TOKEN_SYMBOL_LENGTH = 6
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
 
   const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
   const { type, amountAfterFees, amountBeforeFees, feeAmount, feeAmountRaw } = receiveAmountInfo

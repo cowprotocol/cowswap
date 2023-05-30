@@ -5,7 +5,7 @@ import { Percent } from '@uniswap/sdk-core'
 import { MINIMUM_ETH_FLOW_SLIPPAGE } from 'legacy/constants'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'legacy/state/user/hooks'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStorage'
 
@@ -16,7 +16,7 @@ const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
 export function EthFlowSlippageUpdater() {
   const currentSlippage = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
 
   // On updater mount, load previous slippage from localStorage and set it
   useEffect(() => {

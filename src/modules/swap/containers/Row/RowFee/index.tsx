@@ -4,7 +4,7 @@ import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowFeeContent } from 'modules/swap/pure/Row/RowFeeContent'
 import { RowWithShowHelpersProps } from 'modules/swap/pure/Row/types'
 
@@ -60,7 +60,7 @@ function isValidNonZeroAmount(value: string): boolean {
 export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
-  const isEthFLow = useIsEthFlow()
+  const isEthFLow = useIsEoaEthFlow()
   const native = useNativeCurrency()
 
   const tooltip = useMemo(() => {

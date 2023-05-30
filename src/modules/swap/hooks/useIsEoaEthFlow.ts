@@ -4,7 +4,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 
-export function useIsEthFlow(): boolean {
+export function useIsEoaEthFlow(): boolean {
   const isSwapEth = useIsSwapEth()
 
   const isSmartContractWallet = useIsSmartContractWallet()

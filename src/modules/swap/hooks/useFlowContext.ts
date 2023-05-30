@@ -25,7 +25,7 @@ import { PostOrderParams } from 'legacy/utils/trade'
 import type { UploadAppDataParams, AppDataInfo } from 'modules/appData'
 import { useUploadAppData, useAppData } from 'modules/appData'
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { BaseFlowContext } from 'modules/swap/services/types'
 import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
@@ -101,7 +101,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
