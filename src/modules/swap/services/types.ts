@@ -15,6 +15,7 @@ import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { GPv2Settlement } from 'abis/types'
 import { CoWSwapEthFlow } from 'abis/types/ethflow'
+import { FlowType } from '../hooks/useFlowContext'
 
 export interface BaseFlowContext {
   context: {
@@ -22,6 +23,7 @@ export interface BaseFlowContext {
     trade: TradeGp
     inputAmountWithSlippage: CurrencyAmount<Currency>
     outputAmountWithSlippage: CurrencyAmount<Currency>
+    flowType: FlowType
   }
   flags: {
     allowsOffchainSigning: boolean

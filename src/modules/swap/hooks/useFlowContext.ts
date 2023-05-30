@@ -32,6 +32,7 @@ import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { calculateValidTo } from 'utils/time'
+import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 
 const _computeInputAmountForSignature = (params: {
   input: CurrencyAmount<Currency>
@@ -57,6 +58,7 @@ export enum FlowType {
   REGULAR = 'REGULAR',
   ETH_FLOW = 'ETH_FLOW',
   SAFE_BUNDLE = 'SAFE_BUNDLE',
+  SAFE_ETH_FLOW = 'SAFE_ETH_FLOW',
 }
 
 interface BaseFlowContextSetup {
@@ -102,6 +104,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
   const isEthFlow = useIsEoaEthFlow()
+  const isSafeEthFlow = useIsSafeEthFlow()
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
     trade,
@@ -109,7 +112,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   )
 
   const isSafeBundle = useIsSafeApprovalBundle(inputAmountWithSlippage)
-  const flowType = _getFlowType(isSafeBundle, isEthFlow)
+  const flowType = _getFlowType(isSafeBundle, isEthFlow, isSafeEthFlow)
 
   return {
     chainId,
@@ -135,10 +138,12 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   }
 }
 
-function _getFlowType(isSafeBundle: boolean, isEthFlow: boolean): FlowType {
+function _getFlowType(isSafeBundle: boolean, isEthFlow: boolean, isSafeEthFlow: boolean): FlowType {
   if (isSafeBundle) {
     // Takes precedence over eth flow
     return FlowType.SAFE_BUNDLE
+  } else if (isSafeEthFlow) {
+    return FlowType.SAFE_ETH_FLOW
   } else if (isEthFlow) {
     // Takes precedence over regular flow
     return FlowType.ETH_FLOW
@@ -173,6 +178,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
     uploadAppData,
     addOrderCallback,
     dispatch,
+    flowType,
   } = baseProps
 
   if (
@@ -241,6 +247,7 @@ export function getFlowContext({ baseProps, sellToken, kind }: BaseGetFlowContex
       trade,
       inputAmountWithSlippage,
       outputAmountWithSlippage,
+      flowType,
     },
     flags: {
       allowsOffchainSigning,
