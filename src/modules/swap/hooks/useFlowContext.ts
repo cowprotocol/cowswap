@@ -139,11 +139,12 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
 }
 
 function _getFlowType(isSafeBundle: boolean, isEthFlow: boolean, isSafeEthFlow: boolean): FlowType {
-  if (isSafeBundle) {
+  if (isSafeEthFlow) {
+    // Takes precedence over bundle approval
+    return FlowType.SAFE_BUNDLE_ETH
+  } else if (isSafeBundle) {
     // Takes precedence over eth flow
     return FlowType.SAFE_BUNDLE_APPROVAL
-  } else if (isSafeEthFlow) {
-    return FlowType.SAFE_BUNDLE_ETH
   } else if (isEthFlow) {
     // Takes precedence over regular flow
     return FlowType.ETH_FLOW
