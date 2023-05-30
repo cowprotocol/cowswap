@@ -97,7 +97,7 @@ export default function TransactionConfirmationModal({
 }: ConfirmationModalProps) {
   const { chainId } = useWalletInfo()
   const setShowFollowPendingTxPopup = useUpdateAtom(handleFollowPendingTxPopupAtom)
-  const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] }) || []
+  const activities = useMultipleActivityDescriptors({ chainId, ids: [hash || ''] })
   const activityDerivedState = useActivityDerivedState({ chainId, activity: activities[0] })
 
   if (!chainId) return null

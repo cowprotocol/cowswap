@@ -47,7 +47,13 @@ function _triggerNps(
   const explorerUrl = getExplorerOrderLink(chainId, orderId)
 
   // Open Appzi NPS for limit orders only if they were filled before `PENDING_TOO_LONG_TIME` since creating
-  if (order?.class === OrderClass.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)) {
+  const isLimitOrderRecentlyTraded =
+    order?.class === OrderClass.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)
+
+  // Do not show NPS if the order is hidden and expired
+  const isHiddenAndExpired = order?.isHidden && npsParams?.expired
+
+  if (isHiddenAndExpired || isLimitOrderRecentlyTraded) {
     return
   }
 

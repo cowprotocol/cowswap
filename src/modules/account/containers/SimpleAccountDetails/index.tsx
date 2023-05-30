@@ -30,8 +30,7 @@ export default function SimpleAccountDetails({
   const { chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
 
-  const activities =
-    useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) }) || []
+  const activities = useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) })
   const activitiesGroupedByDate = groupActivitiesByDay(activities)
 
   if (!pendingTransactions.length && !confirmedTransactions.length) return null
