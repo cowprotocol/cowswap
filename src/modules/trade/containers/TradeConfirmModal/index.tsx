@@ -4,19 +4,14 @@ import React, { useCallback } from 'react'
 
 import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
-import { useWalletDisplayedAddress, useWalletInfo } from 'modules/wallet'
+import { useWalletInfo } from 'modules/wallet'
 
-import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
-import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
-import { tradeConfirmStateAtom, updateTradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
+import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
 
-const description = `Almost there! \n Follow these steps:`
-const operationLabel = 'order'
-const operationSubmittedMessage = 'The order is submitted and ready to be settled.'
+import { tradeConfirmStateAtom, updateTradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
 
 export interface TradeConfirmModalProps {
   children: JSX.Element
@@ -26,8 +21,6 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   const { children } = props
 
   const { chainId } = useWalletInfo()
-  const walletAddress = useWalletDisplayedAddress()
-  const statusIcon = useWalletStatusIcon()
 
   const { pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
   const updateState = useUpdateAtom(updateTradeConfirmStateAtom)
@@ -43,26 +36,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
   }
 
   if (pendingTrade) {
-    const { inputAmount, outputAmount } = pendingTrade
-
-    const title = (
-      <>
-        Placing an order <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} /> for{' '}
-        <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
-      </>
-    )
-
-    return (
-      <ConfirmationPendingContent
-        onDismiss={onDismiss}
-        walletAddress={walletAddress}
-        statusIcon={statusIcon}
-        title={title}
-        description={description}
-        operationLabel={operationLabel}
-        operationSubmittedMessage={operationSubmittedMessage}
-      />
-    )
+    return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
   }
 
   // TODO: use <TransactionSubmittedContent/> for Swap
