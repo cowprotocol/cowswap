@@ -12,13 +12,13 @@ describe('Amounts formatting', () => {
 
   describe('Amounts', () => {
     it('Zero amount', () => {
-      const result = formatTokenAmount(getAmount('0', 0))
+      const result = formatTokenAmount(getAmount('0', 0)) // 0 DAI
 
       expect(result).toBe('0')
     })
 
     it('Extra small amount', () => {
-      const result = formatTokenAmount(getAmount('1', -decimals))
+      const result = formatTokenAmount(getAmount('1', -decimals)) // 1e-18 DAI
 
       expect(result).toBe('< 0.000001')
     })
@@ -27,6 +27,30 @@ describe('Amounts formatting', () => {
       const result = formatTokenAmount(getAmount('1', -4))
 
       expect(result).toBe('0.0001')
+    })
+
+    it('Trim one trailing zero', () => {
+      const result = formatTokenAmount(getAmount('1000010', -4)) // 100.0010
+
+      expect(result).toBe('100.001')
+    })
+
+    it('Trim two trailing zero', () => {
+      const result = formatTokenAmount(getAmount('10000100', -5)) // 100.00100
+
+      expect(result).toBe('100.001')
+    })
+
+    it('Trim all trailing zero', () => {
+      const result = formatTokenAmount(getAmount('10000000', -5)) // 100.00000
+
+      expect(result).toBe('100')
+    })
+
+    it('Format decimals up ()', () => {
+      const result = formatTokenAmount(getAmount('9999999999999999999', -decimals)) // 9.99... DAI
+
+      expect(result).toBe('10')
     })
 
     it('One amount', () => {
