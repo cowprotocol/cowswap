@@ -4,7 +4,6 @@ export const ConfirmModalWrapper = styled.div`
   width: 100%;
   padding: 0;
   border-radius: 16px;
-  background: ${({ theme }) => theme.bg1};
   overflow-y: auto; // fallback for 'overlay'
   overflow-y: overlay;
   height: inherit;
@@ -16,7 +15,6 @@ export const ConfirmHeader = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: ${({ theme }) => theme.bg1};
   position: sticky;
   top: 0;
   left: 0;

@@ -32,8 +32,7 @@ const confirmationState: TradeConfirmationProps = {
 const Wrapper = styled.div`
   width: 560px;
   margin: 0 auto;
-  background: white;
-  padding: 10px;
+  background: ${({ theme }) => theme.bg1};
   border-radius: 15px;
 `
 
