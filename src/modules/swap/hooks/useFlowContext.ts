@@ -1,5 +1,4 @@
-import { OrderClass } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -15,15 +14,14 @@ import useENSAddress from 'legacy/hooks/useENSAddress'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { AddOrderCallback, useAddPendingOrder } from 'legacy/state/orders/hooks'
-import { useSwapState } from 'legacy/state/swap/hooks'
-import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
+import { useDerivedSwapInfo, useSwapState } from 'legacy/state/swap/hooks'
 import TradeGp from 'legacy/state/swap/TradeGp'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { computeSlippageAdjustedAmounts } from 'legacy/utils/prices'
 import { PostOrderParams } from 'legacy/utils/trade'
 
-import type { UploadAppDataParams, AppDataInfo } from 'modules/appData'
-import { useUploadAppData, useAppData } from 'modules/appData'
+import type { AppDataInfo, UploadAppDataParams } from 'modules/appData'
+import { useAppData, useUploadAppData } from 'modules/appData'
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { SwapConfirmManager, useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
@@ -32,6 +30,7 @@ import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { calculateValidTo } from 'utils/time'
+
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
 
 const _computeInputAmountForSignature = (params: {
