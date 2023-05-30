@@ -6,6 +6,7 @@ import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
+import { GpModal } from 'common/pure/Modal'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
@@ -14,11 +15,12 @@ import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
 import { tradeConfirmStateAtom, updateTradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
 
 export interface TradeConfirmModalProps {
+  isOpen: boolean
   children: JSX.Element
 }
 
 export function TradeConfirmModal(props: TradeConfirmModalProps) {
-  const { children } = props
+  const { isOpen, children } = props
 
   const { chainId } = useWalletInfo()
 
@@ -31,18 +33,24 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
 
   if (!isSupportedChain(chainId)) return null
 
-  if (error) {
-    return <TransactionErrorContent message={error} onDismiss={onDismiss} />
-  }
+  return (
+    <GpModal isOpen={isOpen} onDismiss={onDismiss}>
+      {(() => {
+        if (error) {
+          return <TransactionErrorContent message={error} onDismiss={onDismiss} />
+        }
 
-  if (pendingTrade) {
-    return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
-  }
+        if (pendingTrade) {
+          return <TradeConfirmPendingContent pendingTrade={pendingTrade} onDismiss={onDismiss} />
+        }
 
-  // TODO: use <TransactionSubmittedContent/> for Swap
-  if (transactionHash) {
-    return <OrderSubmittedContent chainId={chainId} onDismiss={onDismiss} hash={transactionHash} />
-  }
+        // TODO: use <TransactionSubmittedContent/> for Swap
+        if (transactionHash) {
+          return <OrderSubmittedContent chainId={chainId} onDismiss={onDismiss} hash={transactionHash} />
+        }
 
-  return children
+        return children
+      })()}
+    </GpModal>
+  )
 }

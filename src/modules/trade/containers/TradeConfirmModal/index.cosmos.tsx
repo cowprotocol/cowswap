@@ -4,7 +4,6 @@ import React, { useEffect } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from 'mocks/tradeStateMock'
-import styled from 'styled-components/macro'
 
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
@@ -37,13 +36,6 @@ const confirmationState: TradeConfirmationProps = {
     console.log('onDismiss')
   },
 }
-
-const Wrapper = styled.div`
-  width: 560px;
-  margin: 0 auto;
-  background: ${({ theme }) => theme.bg1};
-  border-radius: 15px;
-`
 
 function Custom({ stateValue }: { stateValue: string }) {
   const updateWalletInfo = useUpdateAtom(walletInfoAtom)
@@ -83,7 +75,7 @@ function Custom({ stateValue }: { stateValue: string }) {
   }, [updateWalletInfo, updateState])
 
   return (
-    <TradeConfirmModal>
+    <TradeConfirmModal isOpen={true}>
       <TradeConfirmation {...confirmationState} onDismiss={console.log}>
         <span>Some content</span>
       </TradeConfirmation>
@@ -92,26 +84,10 @@ function Custom({ stateValue }: { stateValue: string }) {
 }
 
 const Fixtures = {
-  default: (
-    <Wrapper>
-      <Custom stateValue="default" />
-    </Wrapper>
-  ),
-  pending: (
-    <Wrapper>
-      <Custom stateValue="pending" />
-    </Wrapper>
-  ),
-  error: (
-    <Wrapper>
-      <Custom stateValue="error" />
-    </Wrapper>
-  ),
-  success: (
-    <Wrapper>
-      <Custom stateValue="success" />
-    </Wrapper>
-  ),
+  default: <Custom stateValue="default" />,
+  pending: <Custom stateValue="pending" />,
+  error: <Custom stateValue="error" />,
+  success: <Custom stateValue="success" />,
 }
 
 export default Fixtures
