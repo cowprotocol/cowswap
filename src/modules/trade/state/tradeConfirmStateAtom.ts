@@ -1,19 +1,17 @@
 import { atom } from 'jotai'
 
-import { TradeConfirmationProps } from '../pure/TradeConfirmation'
+import { TradeAmounts } from '../types/TradeAmounts'
 
 interface TradeConfirmModalState {
-  isPending: boolean
+  pendingTrade: TradeAmounts | null
   transactionHash: string | null
   error: string | null
-  confirmationState: TradeConfirmationProps | null
 }
 
 export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
-  isPending: false,
+  pendingTrade: null,
   transactionHash: null,
   error: null,
-  confirmationState: null,
 })
 
 export const updateTradeConfirmStateAtom = atom(null, (get, set, nextState: Partial<TradeConfirmModalState>) => {

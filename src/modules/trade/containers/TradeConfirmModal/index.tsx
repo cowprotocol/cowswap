@@ -4,7 +4,6 @@ import React, { useCallback } from 'react'
 
 import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
-import { TradeConfirmation } from 'modules/trade/pure/TradeConfirmation'
 import { useWalletDisplayedAddress, useWalletInfo } from 'modules/wallet'
 
 import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
@@ -19,16 +18,22 @@ const description = `Almost there! \n Follow these steps:`
 const operationLabel = 'order'
 const operationSubmittedMessage = 'The order is submitted and ready to be settled.'
 
-export function TradeConfirmModal() {
+export interface TradeConfirmModalProps {
+  children: JSX.Element
+}
+
+export function TradeConfirmModal(props: TradeConfirmModalProps) {
+  const { children } = props
+
   const { chainId } = useWalletInfo()
   const walletAddress = useWalletDisplayedAddress()
   const statusIcon = useWalletStatusIcon()
 
-  const { isPending, transactionHash, confirmationState, error } = useAtomValue(tradeConfirmStateAtom)
+  const { pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
   const updateState = useUpdateAtom(updateTradeConfirmStateAtom)
 
   const onDismiss = useCallback(() => {
-    updateState({ isPending: false, transactionHash: null, confirmationState: null })
+    updateState({ pendingTrade: null, transactionHash: null })
   }, [updateState])
 
   if (!isSupportedChain(chainId)) return null
@@ -37,10 +42,8 @@ export function TradeConfirmModal() {
     return <TransactionErrorContent message={error} onDismiss={onDismiss} />
   }
 
-  if (confirmationState && isPending) {
-    const { inputCurrencyInfo, outputCurrencyInfo } = confirmationState
-    const inputAmount = inputCurrencyInfo.amount
-    const outputAmount = outputCurrencyInfo.amount
+  if (pendingTrade) {
+    const { inputAmount, outputAmount } = pendingTrade
 
     const title = (
       <>
@@ -67,15 +70,5 @@ export function TradeConfirmModal() {
     return <OrderSubmittedContent chainId={chainId} onDismiss={onDismiss} hash={transactionHash} />
   }
 
-  if (confirmationState) {
-    return (
-      <TradeConfirmation {...confirmationState} onDismiss={onDismiss}>
-        {confirmationState.children}
-      </TradeConfirmation>
-    )
-  }
-
-  // TODO: Error state
-
-  return null
+  return children
 }

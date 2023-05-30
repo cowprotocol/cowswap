@@ -21,7 +21,7 @@ export interface TradeConfirmationProps {
   priceImpact: PriceImpact
   title: JSX.Element | string
   buttonText?: JSX.Element
-  children: JSX.Element
+  children?: JSX.Element
 }
 
 export function TradeConfirmation(props: TradeConfirmationProps) {

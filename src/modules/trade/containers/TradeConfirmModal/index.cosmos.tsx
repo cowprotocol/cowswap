@@ -1,26 +1,31 @@
 import { useUpdateAtom } from 'jotai/utils'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from 'mocks/tradeStateMock'
-import { useValue } from 'react-cosmos/fixture'
 import styled from 'styled-components/macro'
 
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
-import { TradeConfirmationProps } from '../../pure/TradeConfirmation'
+import { TradeConfirmation, TradeConfirmationProps } from '../../pure/TradeConfirmation'
 import { updateTradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
 
 import { TradeConfirmModal } from './index'
+
+import { TradeAmounts } from '../../types/TradeAmounts'
 
 const chainId = SupportedChainId.MAINNET
 const account = '0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01'
 const defaultTxHash = '0x1e0e4acc2c5316b43240699c74a0f3e10ef2a3228904c981dddfb451d32ee8f4'
 
+const tradeAmounts: TradeAmounts = {
+  inputAmount: inputCurrencyInfoMock.amount!,
+  outputAmount: outputCurrencyInfoMock.amount!,
+}
+
 const confirmationState: TradeConfirmationProps = {
   title: 'Review order',
-  children: <span>Some content</span>,
   inputCurrencyInfo: inputCurrencyInfoMock,
   outputCurrencyInfo: outputCurrencyInfoMock,
   priceImpact: priceImpactMock,
@@ -40,56 +45,71 @@ const Wrapper = styled.div`
   border-radius: 15px;
 `
 
-function Custom() {
+function Custom({ stateValue }: { stateValue: string }) {
   const updateWalletInfo = useUpdateAtom(walletInfoAtom)
   const updateState = useUpdateAtom(updateTradeConfirmStateAtom)
 
-  const [isPending] = useValue('isPending', { defaultValue: false })
-  const [isTransactionSent] = useValue('isTransactionSent', { defaultValue: false })
-  const [hasError] = useValue('hasError', { defaultValue: false })
-
   useEffect(() => {
-    if (hasError) {
+    if (stateValue === 'error') {
       updateState({
         error: 'Something wrong',
       })
       return
     }
 
-    if (isPending) {
+    if (stateValue === 'pending') {
       updateState({
-        isPending: true,
+        pendingTrade: tradeAmounts,
         transactionHash: null,
         error: null,
       })
       return
     }
 
-    if (isTransactionSent) {
+    if (stateValue === 'success') {
       updateState({
-        isPending: false,
         transactionHash: defaultTxHash,
+        pendingTrade: null,
         error: null,
       })
       return
     }
 
-    updateState({ transactionHash: null, isPending: false, error: null })
-  }, [hasError, isPending, isTransactionSent, updateState])
+    updateState({ transactionHash: null, pendingTrade: null, error: null })
+  }, [stateValue, updateState])
 
   useEffect(() => {
     updateWalletInfo({ chainId, account })
-
-    updateState({ confirmationState })
   }, [updateWalletInfo, updateState])
 
-  return <TradeConfirmModal />
+  return (
+    <TradeConfirmModal>
+      <TradeConfirmation {...confirmationState} onDismiss={console.log}>
+        <span>Some content</span>
+      </TradeConfirmation>
+    </TradeConfirmModal>
+  )
 }
 
 const Fixtures = {
   default: (
     <Wrapper>
-      <Custom />
+      <Custom stateValue="default" />
+    </Wrapper>
+  ),
+  pending: (
+    <Wrapper>
+      <Custom stateValue="pending" />
+    </Wrapper>
+  ),
+  error: (
+    <Wrapper>
+      <Custom stateValue="error" />
+    </Wrapper>
+  ),
+  success: (
+    <Wrapper>
+      <Custom stateValue="success" />
     </Wrapper>
   ),
 }
