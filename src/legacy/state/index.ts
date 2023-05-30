@@ -1,28 +1,27 @@
 import { configureStore, StateFromReducersMapObject } from '@reduxjs/toolkit'
-import multicall from 'lib/state/multicall'
 import { load, save } from 'redux-localstorage-simple'
 
+import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
 import application from 'legacy/state/application/reducer'
+import claim from 'legacy/state/claim/reducer'
 import connection from 'legacy/state/connection/reducer'
+import { cowTokenMiddleware } from 'legacy/state/cowToken/middleware'
+import cowToken from 'legacy/state/cowToken/reducer'
+import enhancedTransactions from 'legacy/state/enhancedTransactions/reducer'
+import gas from 'legacy/state/gas/reducer'
 import { updateVersion } from 'legacy/state/global/actions'
 import lists from 'legacy/state/lists/reducer'
 import logs from 'legacy/state/logs/slice'
+import orders from 'legacy/state/orders/reducer'
+import { priceMiddleware } from 'legacy/state/price/middleware'
+import price from 'legacy/state/price/reducer'
+import profile from 'legacy/state/profile/reducer'
 import swap from 'legacy/state/swap/reducer'
 import user from 'legacy/state/user/reducer'
 
-// MOD imports
-import orders from 'legacy/state/orders/reducer'
-import price from 'legacy/state/price/reducer'
-import gas from 'legacy/state/gas/reducer'
-import profile from 'legacy/state/profile/reducer'
-import enhancedTransactions from 'legacy/state/enhancedTransactions/reducer'
-import claim from 'legacy/state/claim/reducer'
-import cowToken from 'legacy/state/cowToken/reducer'
+import multicall from 'lib/state/multicall'
 
 import { appziMiddleware, popupMiddleware, soundMiddleware } from './orders/middleware'
-import { cowTokenMiddleware } from 'legacy/state/cowToken/middleware'
-import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
-import { priceMiddleware } from 'legacy/state/price/middleware'
 
 const UNISWAP_REDUCERS = {
   application,

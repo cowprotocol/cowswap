@@ -1,9 +1,9 @@
 import { Trans } from '@lingui/macro'
-import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
 import styled from 'styled-components/macro'
-import { ThemedText } from 'legacy/theme'
 
+import { ButtonEmpty, ButtonPrimary } from 'legacy/components/Button'
 import Loader from 'legacy/components/Loader'
+import { ThemedText } from 'legacy/theme'
 
 const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};

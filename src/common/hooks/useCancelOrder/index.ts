@@ -1,22 +1,24 @@
-import { useCallback } from 'react'
 import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
+import { useCallback } from 'react'
 
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-
-import { useSendOnChainCancellation } from './useSendOnChainCancellation'
-import { useOffChainCancelOrder } from './useOffChainCancelOrder'
-import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
 import { useGasPrices } from 'legacy/state/gas/hooks'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
-import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
+import { useOffChainCancelOrder } from './useOffChainCancelOrder'
+import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
 export type UseCancelOrderReturn = (() => void) | null
 

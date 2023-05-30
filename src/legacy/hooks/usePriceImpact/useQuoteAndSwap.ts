@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useTradeExactInWithFee } from 'legacy/state/swap/extension'
-import { QuoteInformationObject } from 'legacy/state/price/reducer'
-
-import { useWalletInfo } from 'modules/wallet'
-
-import { getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { getBestQuote, QuoteResult } from 'legacy/utils/price'
-
-import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_DECIMALS } from 'legacy/constants'
+import { ZERO_ADDRESS } from 'legacy/constants/misc'
+import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { QuoteError } from 'legacy/state/price/actions'
+import { QuoteInformationObject } from 'legacy/state/price/reducer'
+import { useTradeExactInWithFee } from 'legacy/state/swap/extension'
 import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { onlyResolvesLast } from 'legacy/utils/async'
-import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
+import { getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
+import { getBestQuote, QuoteResult } from 'legacy/utils/price'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+
 import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
+import { useWalletInfo } from 'modules/wallet'
+
+import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 type WithLoading = { loading: boolean; setLoading: (state: boolean) => void }
 

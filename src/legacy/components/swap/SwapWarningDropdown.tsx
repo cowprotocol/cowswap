@@ -1,10 +1,12 @@
-import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { Info } from 'react-feather'
+import styled from 'styled-components/macro'
+
 import { RowBetween } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { Info } from 'react-feather'
 import { InterfaceTrade } from 'legacy/state/routing/types'
-import styled from 'styled-components/macro'
 import { ThemedText } from 'legacy/theme'
 
 import { ResponsiveTooltipContainer } from './styleds'

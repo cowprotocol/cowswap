@@ -1,6 +1,7 @@
-import ms from 'ms.macro'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
+
+import ms from 'ms.macro'
 
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 

@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+
 import { AutoRow } from 'legacy/components/Row'
 
 export const Wrapper = styled.div`

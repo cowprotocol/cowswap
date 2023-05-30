@@ -1,17 +1,20 @@
-import { Page, Content } from 'modules/application/pure/Page'
-
-import { ExternalLinkFaq, Wrapper } from './styled'
 import { Link } from 'react-router-dom'
-import { Footer } from '.'
-import { useToC } from './hooks'
-import ToC from './ToC'
-import { FaqMenu } from './Menu'
-import { Routes } from 'constants/routes'
-import { PageTitle } from 'modules/application/containers/PageTitle'
 
-// AmplitudeAnalytics
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+
+import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Page, Content } from 'modules/application/pure/Page'
+
+import { Routes } from 'constants/routes'
+
+import { useToC } from './hooks'
+import { FaqMenu } from './Menu'
+
+import { Footer } from '.'
+
+import { ExternalLinkFaq, Wrapper } from './styled'
+import ToC from './ToC'
 
 export default function TokenFaq() {
   const { toc, faqRef } = useToC()

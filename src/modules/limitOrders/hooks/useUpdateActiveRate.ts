@@ -1,10 +1,12 @@
-import { useCallback } from 'react'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { limitRateAtom, LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { useCallback } from 'react'
+
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
+
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders'
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
+import { limitRateAtom, LimitRateState, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
 type RateUpdateParams = Pick<LimitRateState, 'activeRate' | 'isTypedValue' | 'isRateFromUrl'>
 

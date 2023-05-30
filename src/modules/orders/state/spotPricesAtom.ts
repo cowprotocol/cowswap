@@ -1,9 +1,10 @@
 import { atom, useAtomValue } from 'jotai'
-import { Currency, Price } from '@uniswap/sdk-core'
+import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Price } from '@uniswap/sdk-core'
+
 import { getCanonicalMarketChainKey } from 'common/utils/markets'
-import { useCallback } from 'react'
 
 export type SpotPrices = Record<string, Price<Currency, Currency>>
 

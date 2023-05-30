@@ -1,13 +1,16 @@
-import { Trans } from '@lingui/macro'
-import { ChevronUp, ChevronDown } from 'react-feather'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'legacy/constants'
-import { EthFlowBannerCallbacks } from 'modules/swap/containers/EthFlow/EthFlowBanner'
-import savingsIcon from 'legacy/assets/cow-swap/savings.svg'
+import { Trans } from '@lingui/macro'
+import { ChevronUp, ChevronDown } from 'react-feather'
 import SVG from 'react-inlinesvg'
-import * as styledEl from './styleds'
+
+import savingsIcon from 'legacy/assets/cow-swap/savings.svg'
 import { ButtonPrimary } from 'legacy/components/Button'
+import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'legacy/constants'
+
+import { EthFlowBannerCallbacks } from 'modules/swap/containers/EthFlow/EthFlowBanner'
+
+import * as styledEl from './styleds'
 
 export interface EthFlowBannerContentProps extends EthFlowBannerCallbacks {
   native: Currency

@@ -1,22 +1,27 @@
-import { useMemo } from 'react'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useIsExpertMode } from 'legacy/state/user/hooks'
-import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
-import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { GpModal } from 'common/pure/Modal'
-import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
-import { getDerivedEthFlowState } from 'modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
-import { ethFlowContextAtom } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 import { useAtomValue } from 'jotai/utils'
-import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
+import { useMemo } from 'react'
+
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
-import { useEthFlowActions } from './hooks/useEthFlowActions'
-import { useSetupEthFlow } from './hooks/useSetupEthFlow'
-import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'
+import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
+import { useIsExpertMode } from 'legacy/state/user/hooks'
+
+import { getDerivedEthFlowState } from 'modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
+import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
+import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
+import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
-import { useWalletInfo } from 'modules/wallet'
+import { ethFlowContextAtom } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'
+import { GpModal } from 'common/pure/Modal'
+
+import { useEthFlowActions } from './hooks/useEthFlowActions'
+import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
+import { useSetupEthFlow } from './hooks/useSetupEthFlow'
 
 export interface EthFlowProps {
   nativeInput?: CurrencyAmount<Currency>

@@ -1,5 +1,6 @@
-import { BalancesAndAllowances, BalancesAndAllowancesParams } from '../types'
 import { useOnchainBalancesAndAllowances } from './useOnchainBalances'
+
+import { BalancesAndAllowances, BalancesAndAllowancesParams } from '../types'
 
 /**
  * Return the balances and allowances of the tokens.

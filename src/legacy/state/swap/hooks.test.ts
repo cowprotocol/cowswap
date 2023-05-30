@@ -1,7 +1,3 @@
-/**
- * @jest-environment ./custom-test-env.js
- */
-
 import { parse } from 'qs'
 
 import { Field } from './actions'

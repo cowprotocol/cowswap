@@ -1,16 +1,19 @@
-import { useEffect, useState } from 'react'
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 import { useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai/utils'
+import { useEffect, useState } from 'react'
+
+import { ApprovalState } from 'legacy/hooks/useApproveCallback'
+import { ActivityDescriptors, ActivityStatus } from 'legacy/hooks/useRecentActivity'
+import { delay } from 'legacy/utils/misc'
+
+import { EthFlowActions } from './useEthFlowActions'
+
+import { EthFlowState } from '../../../services/ethFlow/types'
 import {
   ethFlowContextAtom,
   resetEthFlowContextAtom,
   updateEthFlowContextAtom,
 } from '../../../state/EthFlow/ethFlowContextAtom'
-import { ActivityDescriptors, ActivityStatus } from 'legacy/hooks/useRecentActivity'
-import { useAtomValue } from 'jotai/utils'
-import { EthFlowActions } from './useEthFlowActions'
-import { delay } from 'legacy/utils/misc'
-import { EthFlowState } from '../../../services/ethFlow/types'
 
 interface EthFlowSetupParams {
   state: EthFlowState

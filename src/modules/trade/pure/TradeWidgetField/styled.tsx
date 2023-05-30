@@ -1,5 +1,5 @@
-import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
 
 export const TradeWidgetFieldBox = styled.div`
   background: ${({ theme }) => theme.grey1};

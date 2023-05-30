@@ -6,8 +6,9 @@
 // ***********************************************************
 
 // Import commands.ts using ES2015 syntax:
-import { injected } from './ethereum'
 import assert = require('assert')
+
+import { injected } from './ethereum'
 
 const chainName = 'goerli' // Mod
 

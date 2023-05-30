@@ -1,9 +1,12 @@
-import { useWalletInfo } from 'modules/wallet'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-import { useBalancesAndAllowances } from 'modules/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { isEnoughAmount } from 'utils/isEnoughAmount'
+
 import { Nullish } from 'types'
+
+import { useBalancesAndAllowances } from 'modules/tokens'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
+import { isEnoughAmount } from 'utils/isEnoughAmount'
 
 /**
  * Hook to check if a token needs approval

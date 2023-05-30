@@ -1,21 +1,25 @@
-import { GpModal } from 'common/pure/Modal'
-import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
-import * as styledEl from './styled'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
+
+import { OrderStatus } from 'legacy/state/orders/actions'
 import { CloseIcon } from 'legacy/theme'
-import { CurrencyField } from './CurrencyField'
+
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { getSellAmountWithFee } from 'modules/limitOrders/utils/getSellAmountWithFee'
+
+import { GpModal } from 'common/pure/Modal'
+
+import { CurrencyField } from './CurrencyField'
+import { DateField } from './DateField'
 import { FeeField } from './FeeField'
 import { FieldLabel } from './FieldLabel'
-import { PriceField } from './PriceField'
-import { DateField } from './DateField'
 import { FilledField } from './FilledField'
-import { SurplusField } from './SurplusField'
 import { IdField } from './IdField'
-import { StatusField } from './StatusField'
 import { OrderTypeField } from './OrderTypeField'
-import { OrderStatus } from 'legacy/state/orders/actions'
+import { PriceField } from './PriceField'
+import { StatusField } from './StatusField'
+import * as styledEl from './styled'
+import { SurplusField } from './SurplusField'
 
 interface ReceiptProps {
   isOpen: boolean

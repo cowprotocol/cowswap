@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
+
 import { FiatAmount } from '../FiatAmount'
 
 export const SummaryWrapper = styled.div`

@@ -1,8 +1,11 @@
-import Modal, { ContentWrapper } from 'common/pure/Modal'
-import { ConfirmedButton } from '../ConfirmedButton'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
+
+import Modal, { ContentWrapper } from 'common/pure/Modal'
+
 import { ConfirmationModalHeader } from './ConfirmationModalHeader'
+
+import { ConfirmedButton } from '../ConfirmedButton'
 
 const ModalContentWrapper = styled(ContentWrapper)`
   flex: 1;

@@ -1,4 +1,5 @@
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
+
 import { Routes } from 'constants/routes'
 
 export enum MenuItemKind {

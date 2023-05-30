@@ -1,11 +1,24 @@
-import { SectionTitle } from 'modules/application/pure/Page'
-import { Txt } from 'legacy/assets/styles/styled'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { useWalletInfo, Web3Status } from 'modules/wallet'
-import { getExplorerAddressLink } from 'legacy/utils/explorer'
-import { shortenAddress } from 'legacy/utils'
-import Copy from 'legacy/components/Copy/CopyMod'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { RefreshCcw } from 'react-feather'
+
+import { Txt } from 'legacy/assets/styles/styled'
+import Copy from 'legacy/components/Copy/CopyMod'
+import NotificationBanner from 'legacy/components/NotificationBanner'
+import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
+import useFetchProfile from 'legacy/hooks/useFetchProfile'
+import useReferralLink from 'legacy/hooks/useReferralLink'
+import useTimeAgo from 'legacy/hooks/useTimeAgo'
+import { useAffiliateAddress } from 'legacy/state/affiliate/hooks'
+import { shortenAddress } from 'legacy/utils'
+import { getExplorerAddressLink } from 'legacy/utils/explorer'
+
+import { SectionTitle } from 'modules/application/pure/Page'
+import { useWalletInfo, Web3Status } from 'modules/wallet'
+
+import { useHasOrders } from 'api/gnosisProtocol/hooks'
+import { HelpCircle } from 'common/pure/HelpCircle'
+
 import AddressSelector from './AddressSelector'
 import {
   Wrapper,
@@ -20,15 +33,7 @@ import {
   Loader,
   TimeFormatted,
 } from './styled'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { formatInt, formatDecimal } from './utils'
-import useReferralLink from 'legacy/hooks/useReferralLink'
-import useFetchProfile from 'legacy/hooks/useFetchProfile'
-import useTimeAgo from 'legacy/hooks/useTimeAgo'
-import NotificationBanner from 'legacy/components/NotificationBanner'
-import { useHasOrders } from 'api/gnosisProtocol/hooks'
-import { useAffiliateAddress } from 'legacy/state/affiliate/hooks'
-import { HelpCircle } from 'common/pure/HelpCircle'
 
 const NotificationMessages = ({ error, chainId }: { error?: unknown; chainId: ChainId }) => (
   <>

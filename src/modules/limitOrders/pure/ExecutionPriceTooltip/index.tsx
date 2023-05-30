@@ -1,11 +1,15 @@
-import * as styledEl from './styled'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { FiatAmount } from 'common/pure/FiatAmount'
+
 import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
-import { convertAmountToCurrency } from 'modules/limitOrders/utils/calculateExecutionPrice'
 import { ExecuteIndicator } from 'modules/limitOrders/pure/Orders/OrderRow/styled'
+import { convertAmountToCurrency } from 'modules/limitOrders/utils/calculateExecutionPrice'
+
+import { FiatAmount } from 'common/pure/FiatAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
+
+import * as styledEl from './styled'
 
 export interface ExecutionPriceTooltipProps {
   isInverted: boolean

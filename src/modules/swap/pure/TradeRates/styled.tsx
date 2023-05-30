@@ -1,8 +1,10 @@
-import styled from 'styled-components/macro'
-import { Repeat } from 'react-feather'
-import QuestionHelper from 'legacy/components/QuestionHelper'
-import { RateInfo } from 'common/pure/RateInfo'
 import { transparentize } from 'polished'
+import { Repeat } from 'react-feather'
+import styled from 'styled-components/macro'
+
+import QuestionHelper from 'legacy/components/QuestionHelper'
+
+import { RateInfo } from 'common/pure/RateInfo'
 
 export const Box = styled.div`
   margin: 6px 8px;

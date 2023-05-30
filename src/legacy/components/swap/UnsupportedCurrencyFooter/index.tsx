@@ -1,11 +1,13 @@
+import { transparentize } from 'polished'
 import { HashLink } from 'react-router-hash-link'
+import styled from 'styled-components/macro'
+
+import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
+
 import UnsupportedCurrencyFooterMod, {
   UnsupportedCurrencyFooterParams,
   DetailsFooter,
 } from './UnsupportedCurrencyFooterMod'
-import { UNSUPPORTED_TOKENS_FAQ_URL } from 'legacy/constants'
-import styled from 'styled-components/macro'
-import { transparentize } from 'polished'
 
 const DEFAULT_DETAILS_TEXT = (
   <div>

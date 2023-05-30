@@ -1,16 +1,20 @@
-import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
-import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
-import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { TokenList } from '@uniswap/token-lists'
+
+import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { ButtonPrimary } from 'legacy/components/Button'
+import CardUni from 'legacy/components/Card'
+import Row, { RowFixed, RowBetween } from 'legacy/components/Row'
+import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
+import { TextDot } from 'legacy/components/SearchModal/styleds'
+import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import { acceptListUpdate, removeList, disableList, enableList } from 'legacy/state/lists/actions'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
-import Row, { RowFixed, RowBetween } from 'legacy/components/Row'
-import CardUni from 'legacy/components/Card'
-import styled from 'styled-components/macro'
-import { TextDot } from 'legacy/components/SearchModal/styleds'
-import { transparentize } from 'polished'
-import { ButtonPrimary } from 'legacy/components/Button'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { ManageLists as ManageListsMod, ListContainer, PopoverContainer } from './ManageListsMod'
 
 export interface ListRowProps {
   acceptListUpdate: (url: string) => ReturnType<typeof acceptListUpdate>

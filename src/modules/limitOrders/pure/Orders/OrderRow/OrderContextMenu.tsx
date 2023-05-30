@@ -1,8 +1,9 @@
-import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
-import { transparentize } from 'polished'
-import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import styled, { ThemeContext } from 'styled-components/macro'
 import { useContext } from 'react'
+
+import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
+import { transparentize } from 'polished'
+import { FileText, Link2, MoreVertical, Trash2 } from 'react-feather'
+import styled, { ThemeContext } from 'styled-components/macro'
 
 export const ContextMenuButton = styled(MenuButton)`
   background: none;

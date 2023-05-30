@@ -1,7 +1,9 @@
-import { ExtensibleFallbackVerification, verifyExtensibleFallback } from './verifyExtensibleFallback'
-import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Web3Provider } from '@ethersproject/providers'
+
+import { ExtensibleFallbackVerification, verifyExtensibleFallback } from './verifyExtensibleFallback'
+
+import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 const defaultJsonRpcHandler = (method: string) => {
   if (method === 'eth_chainId') return Promise.resolve(5)

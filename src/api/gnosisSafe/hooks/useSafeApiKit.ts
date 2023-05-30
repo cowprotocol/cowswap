@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
-import { useWeb3React } from '@web3-react/core'
-import { createSafeApiKitInstance } from 'api/gnosisSafe'
+
 import SafeApiKit from '@safe-global/api-kit'
+import { useWeb3React } from '@web3-react/core'
+
+import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
+
+import { createSafeApiKitInstance } from 'api/gnosisSafe'
 
 export function useSafeApiKit(): SafeApiKit | null {
   const [safeApiClient, setSafeApiClient] = useState<SafeApiKit | null>(null)

@@ -1,14 +1,19 @@
 import { lazy, Suspense } from 'react'
+
 import { useLocation, Outlet } from 'react-router-dom'
-import { AccountMenu } from './Menu'
-import { Wrapper, AccountPageWrapper } from './Tokens/styled'
-import { Content, Title } from 'modules/application/pure/Page'
-import { Routes as RoutesEnum } from 'constants/routes'
-import { Loading } from 'legacy/components/FlashingLoading'
-import { Container, CardsWrapper } from './styled'
+
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
 import { Trace } from 'legacy/components/AmplitudeAnalytics/Trace'
+import { Loading } from 'legacy/components/FlashingLoading'
+
 import { PageTitle } from 'modules/application/containers/PageTitle'
+import { Content, Title } from 'modules/application/pure/Page'
+
+import { Routes as RoutesEnum } from 'constants/routes'
+
+import { AccountMenu } from './Menu'
+import { Container, CardsWrapper } from './styled'
+import { Wrapper, AccountPageWrapper } from './Tokens/styled'
 
 // Account pages
 const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Account/Balances'))

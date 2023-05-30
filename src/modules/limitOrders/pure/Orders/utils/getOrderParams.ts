@@ -1,7 +1,10 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BalancesAndAllowances } from 'modules/tokens'
-import { Order } from 'legacy/state/orders/actions'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { Order } from 'legacy/state/orders/actions'
+
+import { BalancesAndAllowances } from 'modules/tokens'
+
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { isEnoughAmount } from 'utils/isEnoughAmount'
 

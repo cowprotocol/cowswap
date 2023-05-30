@@ -1,7 +1,9 @@
-import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
-import { RateWrapper } from 'common/pure/RateInfo'
+import styled from 'styled-components/macro'
+
 import { OrderExecutionStatus } from 'modules/limitOrders/utils/calculateOrderExecutionStatus'
+
+import { RateWrapper } from 'common/pure/RateInfo'
 
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   --height: 28px;
@@ -84,7 +86,7 @@ export const AmountItem = styled.div`
   }
 `
 
-export const CellElement = styled.div<{ doubleRow?: boolean; hasBackground?: boolean }>`
+export const CellElement = styled.div<{ clickable?: boolean; doubleRow?: boolean; hasBackground?: boolean }>`
   padding: 0 ${({ hasBackground }) => (hasBackground ? '10px' : '0')};
   font-size: 12px;
   font-weight: 500;
@@ -95,6 +97,7 @@ export const CellElement = styled.div<{ doubleRow?: boolean; hasBackground?: boo
   align-items: ${({ doubleRow }) => (doubleRow ? 'flex-start' : 'center')};
   text-align: left;
   background: ${({ theme, hasBackground }) => (hasBackground ? transparentize(0.92, theme.text3) : 'transparent')};
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   > b {
     font-weight: 500;

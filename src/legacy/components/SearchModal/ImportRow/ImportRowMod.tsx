@@ -1,18 +1,21 @@
-import { Trans } from '@lingui/macro'
+import { CSSProperties } from 'react'
+
 import { Token } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { CheckCircle } from 'react-feather'
+import styled from 'styled-components/macro'
+
 import { ButtonPrimary } from 'legacy/components/Button'
 import { AutoColumn } from 'legacy/components/Column'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
 import ListLogo from 'legacy/components/ListLogo'
 import { AutoRow, RowFixed } from 'legacy/components/Row'
 import { useIsTokenActive, useIsUserAddedToken } from 'legacy/hooks/Tokens'
 import useTheme from 'legacy/hooks/useTheme'
-import { CSSProperties } from 'react'
-import { CheckCircle } from 'react-feather'
-import styled from 'styled-components/macro'
+import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
 import { ThemedText } from 'legacy/theme'
 
-import { WrappedTokenInfo } from 'legacy/state/lists/wrappedTokenInfo'
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
 
 export const TokenSection = styled.div<{ dim?: boolean }>`
   padding: 4px 20px;

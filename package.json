@@ -11,6 +11,7 @@
     "test": "craco test --env=jsdom",
     "start:ssl": "HTTPS=true yarn start",
     "start:service-worker": "yarn build && yarn serve",
+    "lint:fix": "yarn run eslint --fix ./",
     "mock": "REACT_APP_MOCK=true yarn start",
     "build:analyze": "cross-env REACT_APP_ANALYZE_BUNDLE=true yarn build",
     "ipfs:build": "cross-env PUBLIC_URL=\".\" yarn build",
@@ -238,6 +239,7 @@
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "ts-mockito": "^2.6.1",
     "typechain": "^8.1.1",
     "webpack-bundle-analyzer": "^4.7.0"
   }

@@ -1,10 +1,11 @@
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { COW, GNO } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, TradeType, Price } from '@uniswap/sdk-core'
-import { RowFeeContent, RowFeeContentProps } from 'modules/swap/pure/Row/RowFeeContent'
+
+import { COW, GNO } from 'legacy/constants/tokens'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { RowFeeProps } from 'modules/swap/containers/Row/RowFee'
+import { RowFeeContent, RowFeeContentProps } from 'modules/swap/pure/Row/RowFeeContent'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]

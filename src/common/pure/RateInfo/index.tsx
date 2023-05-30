@@ -1,25 +1,29 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components/macro'
-import { Trans } from '@lingui/macro'
-import { Repeat } from 'react-feather'
-import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
-import { getAddress } from 'utils/getAddress'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { usePrice } from 'common/hooks/usePrice'
+
+import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { TokenAmount } from 'common/pure/TokenAmount'
+import { Repeat } from 'react-feather'
+import styled from 'styled-components/macro'
+import { Nullish } from 'types'
+
+import { usePrice } from 'common/hooks/usePrice'
 import { FiatAmount } from 'common/pure/FiatAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
+import { getAddress } from 'utils/getAddress'
 
 const DEFAULT_DECIMALS = 4
 
 export interface RateInfoParams {
   chainId: SupportedChainId | undefined
-  inputCurrencyAmount: CurrencyAmount<Currency> | null
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
-  activeRateFiatAmount: CurrencyAmount<Currency> | null
-  invertedActiveRateFiatAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  activeRateFiatAmount: Nullish<CurrencyAmount<Currency>>
+  invertedActiveRateFiatAmount: Nullish<CurrencyAmount<Currency>>
 }
 
 export interface RateInfoProps {

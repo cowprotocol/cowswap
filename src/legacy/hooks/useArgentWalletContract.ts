@@ -1,6 +1,8 @@
-import { useWalletInfo } from 'modules/wallet'
 import ArgentWalletContractABI from 'legacy/abis/argent-wallet-contract.json'
 import { ArgentWalletContract } from 'legacy/abis/types'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { useContract } from './useContract'
 import useIsArgentWallet from './useIsArgentWallet'
 

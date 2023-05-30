@@ -1,8 +1,9 @@
-import styled, { css } from 'styled-components/macro'
-import { CloseIcon, ExternalLink } from 'legacy/theme'
-import { RowBetween } from 'legacy/components/Row'
-import { Link } from 'react-router-dom'
 import { transparentize } from 'polished'
+import { Link } from 'react-router-dom'
+import styled, { css } from 'styled-components/macro'
+
+import { RowBetween } from 'legacy/components/Row'
+import { CloseIcon, ExternalLink } from 'legacy/theme'
 
 export const Wrapper = styled.div`
   width: 100%;

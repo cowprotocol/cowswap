@@ -1,22 +1,22 @@
-import { Routes } from 'constants/routes'
-import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
-import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuLink, MenuTreeItem } from '../types'
-
-// Assets
-import IMAGE_DOCS from 'legacy/assets/cow-swap/doc.svg'
-import IMAGE_TERMS_AND_CONDITIONS from 'legacy/assets/cow-swap/terms-and-conditions.svg'
-import IMAGE_COOKIE_POLICY from 'legacy/assets/cow-swap/cookie-policy.svg'
-import IMAGE_PRIVACY_POLICY from 'legacy/assets/cow-swap/privacy-policy.svg'
-import IMAGE_INFO from 'legacy/assets/cow-swap/info.svg'
 import IMAGE_CODE from 'legacy/assets/cow-swap/code.svg'
+import IMAGE_COOKIE_POLICY from 'legacy/assets/cow-swap/cookie-policy.svg'
 import IMAGE_DISCORD from 'legacy/assets/cow-swap/discord.svg'
-import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
-import IMAGE_PIE from 'legacy/assets/cow-swap/pie.svg'
-import IMAGE_SLICER from 'legacy/assets/cow-swap/ninja-cow.png'
+import IMAGE_DOCS from 'legacy/assets/cow-swap/doc.svg'
 import IMAGE_GAME from 'legacy/assets/cow-swap/game.gif'
-import { FeatureFlag } from 'utils/featureFlags'
+import IMAGE_INFO from 'legacy/assets/cow-swap/info.svg'
+import IMAGE_SLICER from 'legacy/assets/cow-swap/ninja-cow.png'
+import IMAGE_PIE from 'legacy/assets/cow-swap/pie.svg'
+import IMAGE_PRIVACY_POLICY from 'legacy/assets/cow-swap/privacy-policy.svg'
+import IMAGE_TERMS_AND_CONDITIONS from 'legacy/assets/cow-swap/terms-and-conditions.svg'
+import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
+import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
+
 import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
+import { Routes } from 'constants/routes'
+import { FeatureFlag } from 'utils/featureFlags'
 import { isNotNullish } from 'utils/isNotNullish'
+
+import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuLink, MenuTreeItem } from '../types'
 
 export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
   return !!(item.title && item.url)

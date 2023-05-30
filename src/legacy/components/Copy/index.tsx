@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+
 import { CopyIcon } from './CopyMod'
 
 export const TransactionStatusText = styled.span<{ isCopied?: boolean }>`

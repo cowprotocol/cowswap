@@ -1,17 +1,20 @@
+import { useCallback, useMemo } from 'react'
+
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
-import { useOrders } from 'legacy/state/orders/hooks'
-import { useCallback, useMemo } from 'react'
 import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
+import { useOrders } from 'legacy/state/orders/hooks'
+
+import { getOrderExecutedAmounts } from 'modules/limitOrders/utils/getOrderExecutedAmounts'
 import { getOrderFilledAmount } from 'modules/limitOrders/utils/getOrderFilledAmount'
 import { getOrderSurplus } from 'modules/limitOrders/utils/getOrderSurplus'
-import { getOrderExecutedAmounts } from 'modules/limitOrders/utils/getOrderExecutedAmounts'
 import { isOrderFilled } from 'modules/limitOrders/utils/isOrderFilled'
-import { ordersSorter } from 'modules/limitOrders/utils/ordersSorter'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
-import { useWalletInfo } from 'modules/wallet'
 import { isPartiallyFilled } from 'modules/limitOrders/utils/isPartiallyFilled'
+import { ordersSorter } from 'modules/limitOrders/utils/ordersSorter'
+import { useWalletInfo } from 'modules/wallet'
 
 export interface LimitOrdersList {
   pending: ParsedOrder[]
