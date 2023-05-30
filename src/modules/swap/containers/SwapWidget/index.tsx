@@ -10,12 +10,12 @@ import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { Field } from 'legacy/state/swap/actions'
-import { useSwapState } from 'legacy/state/swap/hooks'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
   useIsFeeGreaterThanInput,
   useSwapActionHandlers,
+  useSwapState,
   useUnknownImpactWarning,
 } from 'legacy/state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
@@ -48,7 +48,11 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
+const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
+  SwapButtonState.ApproveAndSwap,
+  SwapButtonState.ExpertApproveAndSwap,
+]
+const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap, SwapButtonState.ExpertWrapAndSwap]
 
 export function SwapWidget() {
   useSetupTradeState()
@@ -158,7 +162,10 @@ export function SwapWidget() {
     ethFlowProps,
   }
 
-  const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_BANNER.includes(swapButtonContext.swapButtonState)
+  const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER.includes(
+    swapButtonContext.swapButtonState
+  )
+  const showWrapBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER.includes(swapButtonContext.swapButtonState)
 
   const isSafeViaWc = useIsSafeViaWc()
   const showSafeWcBundlingBanner =
@@ -173,6 +180,7 @@ export function SwapWidget() {
     hideUnknownImpactWarning: !trade || isWrapUnwrapMode || !priceImpactParams.error || priceImpactParams.loading,
     isExpertMode,
     showApprovalBundlingBanner,
+    showWrapBundlingBanner,
     showSafeWcBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
