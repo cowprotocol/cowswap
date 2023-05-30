@@ -9,11 +9,12 @@ import { ExternalLink } from 'legacy/theme'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
 
 const Wrapper = styled.div`
+  width: 100%;
+  padding: 30px 15px 15px 15px;
   display: flex;
   gap: 20px;
   align-items: center;
   flex-direction: column;
-  padding-top: 20px;
 `
 
 const Caption = styled.h3`

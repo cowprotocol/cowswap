@@ -7,7 +7,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import { L2Content as TxSubmittedModal } from 'legacy/components/TransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { CloseIcon } from 'legacy/theme'
@@ -28,6 +27,7 @@ import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { GpModal } from 'common/pure/Modal'
+import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
@@ -146,15 +146,12 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
           </styledEl.ConfirmModalWrapper>
         )}
       </GpModal>
-      {chainId && (
-        <GpModal isOpen={!!confirmationState.orderHash} onDismiss={onDismissConfirmation}>
-          <TxSubmittedModal
-            isLimitOrderSubmit
+      {chainId && confirmationState.orderHash && (
+        <GpModal isOpen={true} onDismiss={onDismissConfirmation}>
+          <OrderSubmittedContent
             chainId={chainId}
             onDismiss={onDismissConfirmation}
-            hash={confirmationState.orderHash || undefined}
-            pendingText={''}
-            inline={true}
+            hash={confirmationState.orderHash}
           />
         </GpModal>
       )}

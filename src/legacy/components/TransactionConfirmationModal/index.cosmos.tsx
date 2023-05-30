@@ -2,7 +2,7 @@ import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
 
-import { ConfirmationPendingContent, L2Content, OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmationPendingContent, OperationType } from 'legacy/components/TransactionConfirmationModal'
 import { COW, GNO } from 'legacy/constants/tokens'
 import store from 'legacy/state'
 import { addPendingOrder, OrderStatus } from 'legacy/state/orders/actions'
@@ -31,11 +31,6 @@ const Wrapper = styled.div`
 `
 
 const Fixtures = {
-  L2Content: (
-    <Wrapper>
-      <L2Content {...defaultProps} chainId={100} />
-    </Wrapper>
-  ),
   ConfirmationPendingContent: (
     <Wrapper>
       <ConfirmationPendingContent {...defaultProps} />
