@@ -13,6 +13,7 @@ import { useWalletStatusIcon } from 'common/hooks/useWalletStatusIcon'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { tradeConfirmStateAtom, updateTradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
 
@@ -25,7 +26,7 @@ export function TradeConfirmModal() {
   const walletAddress = useWalletDisplayedAddress()
   const statusIcon = useWalletStatusIcon()
 
-  const { isPending, transactionHash, confirmationState } = useAtomValue(tradeConfirmStateAtom)
+  const { isPending, transactionHash, confirmationState, error } = useAtomValue(tradeConfirmStateAtom)
   const updateState = useUpdateAtom(updateTradeConfirmStateAtom)
 
   const onDismiss = useCallback(() => {
@@ -33,6 +34,10 @@ export function TradeConfirmModal() {
   }, [updateState])
 
   if (!isSupportedChain(chainId)) return null
+
+  if (error) {
+    return <TransactionErrorContent message={error} onDismiss={onDismiss} />
+  }
 
   if (confirmationState && isPending) {
     const { inputCurrencyInfo, outputCurrencyInfo } = confirmationState
@@ -59,6 +64,7 @@ export function TradeConfirmModal() {
     )
   }
 
+  // TODO: use <TransactionSubmittedContent/> for Swap
   if (transactionHash) {
     return <OrderSubmittedContent chainId={chainId} onDismiss={onDismiss} hash={transactionHash} />
   }

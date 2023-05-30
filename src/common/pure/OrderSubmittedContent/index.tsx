@@ -36,7 +36,9 @@ export function OrderSubmittedContent({ chainId, hash, onDismiss }: OrderSubmitt
   return (
     <Wrapper>
       <AnimatedConfirmation />
-      <Caption>Order Submitted</Caption>
+      <Caption>
+        <Trans>Order Submitted</Trans>
+      </Caption>
       <ExternalLink href={getExplorerLink(chainId, hash, 'transaction')}>
         <Trans>View on Explorer ↗</Trans>
       </ExternalLink>

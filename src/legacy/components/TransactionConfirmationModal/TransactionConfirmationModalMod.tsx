@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { AlertCircle, AlertTriangle } from 'react-feather'
+import { AlertCircle } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
 
@@ -92,40 +92,6 @@ export function ConfirmationModalContent({
         {topContent()}
       </Section>
       {bottomContent && <BottomSection gap="12px">{bottomContent()}</BottomSection>}
-    </Wrapper>
-  )
-}
-
-export function TransactionErrorContent({ message, onDismiss }: { message: ReactNode; onDismiss: () => void }) {
-  const theme = useContext(ThemeContext)
-  return (
-    <Wrapper>
-      <Section>
-        <GPModalHeader>
-          {/* <RowBetween> */}
-          <Text fontWeight={500} fontSize={20}>
-            <Trans>Error</Trans>
-          </Text>
-          <CloseIcon onClick={onDismiss} />
-        </GPModalHeader>
-        {/* </RowBetween> */}
-        <AutoColumn style={{ marginTop: 20, padding: '2rem 0' }} gap="24px" justify="center">
-          <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
-          <Text
-            fontWeight={500}
-            fontSize={16}
-            color={theme.red1}
-            style={{ textAlign: 'center', width: '85%', wordBreak: 'break-word' }}
-          >
-            {message}
-          </Text>
-        </AutoColumn>
-      </Section>
-      <BottomSection gap="12px">
-        <ButtonPrimary onClick={onDismiss}>
-          <Trans>Dismiss</Trans>
-        </ButtonPrimary>
-      </BottomSection>
     </Wrapper>
   )
 }

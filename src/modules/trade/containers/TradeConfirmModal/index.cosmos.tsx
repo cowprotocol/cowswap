@@ -43,22 +43,36 @@ function Custom() {
 
   const [isPending] = useValue('isPending', { defaultValue: false })
   const [isTransactionSent] = useValue('isTransactionSent', { defaultValue: false })
+  const [hasError] = useValue('hasError', { defaultValue: false })
 
   useEffect(() => {
+    if (hasError) {
+      updateState({
+        error: 'Something wrong',
+      })
+      return
+    }
+
     if (isPending) {
       updateState({
         isPending: true,
         transactionHash: null,
+        error: null,
       })
-    } else if (isTransactionSent) {
+      return
+    }
+
+    if (isTransactionSent) {
       updateState({
         isPending: false,
         transactionHash: defaultTxHash,
+        error: null,
       })
-    } else {
-      updateState({ transactionHash: null, isPending: false })
+      return
     }
-  }, [isPending, isTransactionSent, updateState])
+
+    updateState({ transactionHash: null, isPending: false, error: null })
+  }, [hasError, isPending, isTransactionSent, updateState])
 
   useEffect(() => {
     updateWalletInfo({ chainId, account })
