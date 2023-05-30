@@ -222,15 +222,12 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
   }
 }
 
-export function useMultipleActivityDescriptors({
-  chainId,
-  ids,
-}: UseActivityDescriptionParams): ActivityDescriptors[] | null {
+export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
   const txs = useTransactionsByHash({ hashes: ids })
   const orders = useOrdersById({ chainId, ids })
 
   return useMemo(() => {
-    if (!chainId) return null
+    if (!chainId) return []
 
     return ids.reduce<ActivityDescriptors[]>((acc, id) => {
       const activity = createActivityDescriptor(txs[id], orders[id])
