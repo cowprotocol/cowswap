@@ -1,6 +1,6 @@
-import { useIsSwapEth } from './useIsSwapEth'
+import { useIsEthFlowBundlingEnabled } from 'common/hooks/useIsEthFlowBundlingEnabled'
 
-import { useIsEthFlowBundlingEnabled } from '../../../common/hooks/useIsEthFlowBundlingEnabled'
+import { useIsSwapEth } from './useIsSwapEth'
 
 export function useIsSafeEthFlow(): boolean {
   const isSwapEth = useIsSwapEth()
