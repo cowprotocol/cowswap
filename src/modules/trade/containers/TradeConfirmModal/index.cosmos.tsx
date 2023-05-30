@@ -42,6 +42,8 @@ function Custom({ stateValue }: { stateValue: string }) {
   const updateState = useUpdateAtom(updateTradeConfirmStateAtom)
 
   useEffect(() => {
+    updateState({ isOpen: true })
+
     if (stateValue === 'error') {
       updateState({
         error: 'Something wrong',
@@ -52,8 +54,6 @@ function Custom({ stateValue }: { stateValue: string }) {
     if (stateValue === 'pending') {
       updateState({
         pendingTrade: tradeAmounts,
-        transactionHash: null,
-        error: null,
       })
       return
     }
@@ -61,17 +61,12 @@ function Custom({ stateValue }: { stateValue: string }) {
     if (stateValue === 'success') {
       updateState({
         transactionHash: defaultTxHash,
-        pendingTrade: null,
-        error: null,
       })
       return
     }
-
-    updateState({ transactionHash: null, pendingTrade: null, error: null })
   }, [stateValue, updateState])
 
   useEffect(() => {
-    updateState({ isOpen: true })
     updateWalletInfo({ chainId, account })
   }, [updateWalletInfo, updateState])
 
