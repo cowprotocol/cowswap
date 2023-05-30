@@ -23,8 +23,11 @@ import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
+import { useIsEthFlowBundlingEnabled } from 'common/hooks/useIsEthFlowBundlingEnabled'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+
+import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -51,7 +54,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
-  const safeBundleContext = useSafeBundleApprovalFlowContext()
+  const safeBundleApprovalFlowContext = useSafeBundleApprovalFlowContext()
+  const safeBundleEthFlowContext = useSafeBundleEthFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
 
@@ -76,7 +80,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const handleSwap = useHandleSwap(priceImpactParams)
 
-  const contextExists = ethFlowContext || swapFlowContext || safeBundleContext
+  const contextExists = ethFlowContext || swapFlowContext || safeBundleApprovalFlowContext || safeBundleEthFlowContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -84,6 +88,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isTxBundlingEnabled = useIsTxBundlingEnabled()
+  const isEthFlowBundlingEnabled = useIsEthFlowBundlingEnabled()
 
   const swapButtonState = getSwapButtonState({
     account,
@@ -91,6 +96,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
     isTxBundlingEnabled,
+    isEthFlowBundlingEnabled,
     isExpertMode,
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,
