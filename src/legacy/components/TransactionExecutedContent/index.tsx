@@ -1,14 +1,13 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import cowMeditatingSmooth from 'legacy/assets/images/cow-meditating-smoooth.svg'
+import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 
 import * as styledEl from './styled'
-
-import { DisplayLink } from '../TransactionConfirmationModal'
 
 export function TransactionExecutedContent({
   order,

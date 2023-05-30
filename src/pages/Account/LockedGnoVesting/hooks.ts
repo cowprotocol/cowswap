@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION } from 'legacy/constants'
 import { COW as COW_TOKENS } from 'legacy/constants/tokens'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
@@ -72,7 +72,7 @@ export const useCowFromLockedGnoBalances = () => {
 }
 
 interface ClaimCallbackParams {
-  openModal: (message: string, operationType: OperationType) => void
+  openModal: (message: string, operationType: ConfirmOperationType) => void
   closeModal: () => void
   isFirstClaim: boolean
 }
@@ -107,7 +107,7 @@ export function useClaimCowFromLockedGnoCallback({
     // Afterwards the allocation will be already in the tokenDistro contract and we can just claim it there.
     const claimPromise = isFirstClaim ? merkleDrop.claim(index, amount, proof) : tokenDistro.claim()
     const summary = 'Claim vested COW'
-    openModal(summary, OperationType.CLAIM_VESTED_COW)
+    openModal(summary, ConfirmOperationType.CLAIM_VESTED_COW)
 
     return claimPromise
       .then((tx) => {

@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { Percent } from '@uniswap/sdk-core'
 
 import { ConfirmSwapModal } from 'legacy/components/swap/ConfirmSwapModal'
-import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
+import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -56,6 +56,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
     }
   }, [closeSwapConfirm, onUserInput, swapConfirmState.txHash])
 
+  // TODO: use TradeConfirmModal
   return (
     <>
       <ConfirmSwapModal

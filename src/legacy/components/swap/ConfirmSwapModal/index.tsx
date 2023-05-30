@@ -6,10 +6,8 @@ import { Trans } from '@lingui/macro'
 
 import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
 import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
-import TransactionConfirmationModal, {
-  ConfirmationModalContent,
-  OperationType,
-} from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
@@ -97,12 +95,13 @@ export function ConfirmSwapModal({
     ) : null
   }, [buttonText, onConfirm, showAcceptChanges, swapErrorMessage, trade])
 
+  // TODO: use TradeConfirmModal
   const confirmationContent = useCallback(
     () =>
       swapErrorMessage ? (
         <TransactionErrorContent onDismiss={onDismiss} message={swapErrorMessage} />
       ) : (
-        <ConfirmationModalContent
+        <LegacyConfirmationModalContent
           title={<Trans>Confirm Swap</Trans>}
           onDismiss={onDismiss}
           topContent={modalHeader}
@@ -121,7 +120,7 @@ export function ConfirmSwapModal({
       content={confirmationContent}
       pendingText={<PendingText trade={trade} />}
       currencyToAdd={trade?.outputAmount.currency}
-      operationType={OperationType.ORDER_SIGN}
+      operationType={ConfirmOperationType.ORDER_SIGN}
     />
   )
 }

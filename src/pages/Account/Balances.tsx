@@ -15,7 +15,7 @@ import vCOWImage from 'legacy/assets/cow-swap/vCOW.png'
 import { ButtonPrimary } from 'legacy/components/Button'
 import CopyHelper from 'legacy/components/Copy'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { V_COW_CONTRACT_ADDRESS, COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import { COW, V_COW } from 'legacy/constants/tokens'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -101,7 +101,7 @@ export default function Profile() {
   // Init modal hooks
   const { handleSetError, handleCloseError, ErrorModal } = useErrorModal()
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
-    OperationType.CONVERT_VCOW
+    ConfirmOperationType.CONVERT_VCOW
   )
 
   // Handle swaping

@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { CloseIcon } from 'legacy/theme'
@@ -98,7 +98,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   }
   const doTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeCallbacks)
 
-  const operationType = OperationType.ORDER_SIGN
+  const operationType = ConfirmOperationType.ORDER_SIGN
   const pendingText = <PendingText inputRawAmount={inputAmount} outputRawAmount={outputAmount} />
 
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
@@ -113,6 +113,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
     </>
   ) : undefined
 
+  // TODO: use TradeConfirmModal
   return (
     <>
       <GpModal isOpen={isOpen} onDismiss={onDismiss}>

@@ -1,23 +1,11 @@
-// import { Trade } from '@uniswap/router-sdk'
 import { useCallback, useMemo } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, CurrencyAmount /* , Percent, TradeType */ } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-// import { Trade as V2Trade } from '@uniswap/v2-sdk'
-// import { Trade as V3Trade } from '@uniswap/v3-sdk'
-// import useSwapApproval, { useSwapApprovalOptimizedTrade } from 'lib/hooks/swap/useSwapApproval'
-// import { ApprovalState, useApproval } from 'lib/hooks/useApproval'
-
-// import { TransactionType } from '../state/enhancedTransactions/actions'
-// import { useHasPendingApproval, useTransactionAdder } from '../state/enhancedTransactions/hooks'
-// export { ApprovalState } from 'lib/hooks/useApproval'
-
-// MOD imports
-
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { useCurrency } from 'legacy/hooks/Tokens'
 import { useTokenContract } from 'legacy/hooks/useContract'
 import usePrevious from 'legacy/hooks/usePrevious'
@@ -40,7 +28,7 @@ export enum ApprovalState {
 }
 
 export interface ApproveCallbackParams {
-  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
+  openTransactionConfirmationModal: (message: string, operationType: ConfirmOperationType) => void
   closeModals: () => void
   amountToApprove?: CurrencyAmount<Currency>
   spender?: string
@@ -148,7 +136,7 @@ export function useApproveCallback({
       optionalParams.useModals &&
         openTransactionConfirmationModal?.(
           optionalParams?.modalMessage || `Approving ${amountToApprove.currency.symbol} for trading`,
-          OperationType.APPROVE_TOKEN
+          ConfirmOperationType.APPROVE_TOKEN
         )
       return (
         tokenContract
@@ -226,7 +214,7 @@ export function useApproveCallback({
       optionalParams.useModals &&
         openTransactionConfirmationModal?.(
           optionalParams?.modalMessage || `Revoke ${token.symbol} approval from ${spenderCurrency?.symbol || spender}`,
-          OperationType.REVOKE_APPROVE_TOKEN
+          ConfirmOperationType.REVOKE_APPROVE_TOKEN
         )
       return (
         tokenContract

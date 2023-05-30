@@ -5,7 +5,7 @@ import { Token } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { balanceComparator, useTokenComparator } from 'legacy/components/SearchModal/CurrencySearch/sorting'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import useFilterTokens from 'legacy/hooks/useFilterTokens'
 import usePrevious from 'legacy/hooks/usePrevious'
@@ -106,7 +106,7 @@ export default function TokenTable({
   const { ErrorModal } = useErrorModal()
 
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
-    OperationType.APPROVE_TOKEN
+    ConfirmOperationType.APPROVE_TOKEN
   )
 
   const sortedTokens = useMemo(() => {

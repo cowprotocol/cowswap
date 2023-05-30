@@ -9,7 +9,7 @@ import styled from 'styled-components/macro'
 
 import { ButtonPrimary } from 'legacy/components/Button'
 import NotificationBanner from 'legacy/components/NotificationBanner'
-import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { LinkStyledButton } from 'legacy/theme'
 
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
@@ -106,7 +106,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
   const txCostAmount = txCost && !txCost.isZero() ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
   return (
-    <ConfirmationModalContent
+    <LegacyConfirmationModalContent
       title={`Cancel order ${shortId}`}
       onDismiss={onDismiss}
       topContent={() => (

@@ -4,9 +4,10 @@ import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { ButtonPrimary } from 'legacy/components/Button'
-import AnimatedConfirmation from 'legacy/components/TransactionConfirmationModal/AnimatedConfirmation'
 import { ExternalLink } from 'legacy/theme'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
+
+import AnimatedConfirmation from 'common/pure/AnimatedConfirmation'
 
 const Wrapper = styled.div`
   width: 100%;
