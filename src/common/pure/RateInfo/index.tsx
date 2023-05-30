@@ -7,6 +7,7 @@ import { Trans } from '@lingui/macro'
 import { transparentize } from 'polished'
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
+import { Nullish } from 'types'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { FiatAmount } from 'common/pure/FiatAmount'
@@ -19,10 +20,10 @@ const DEFAULT_DECIMALS = 4
 
 export interface RateInfoParams {
   chainId: SupportedChainId | undefined
-  inputCurrencyAmount: CurrencyAmount<Currency> | null
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
-  activeRateFiatAmount: CurrencyAmount<Currency> | null
-  invertedActiveRateFiatAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  activeRateFiatAmount: Nullish<CurrencyAmount<Currency>>
+  invertedActiveRateFiatAmount: Nullish<CurrencyAmount<Currency>>
 }
 
 export interface RateInfoProps {

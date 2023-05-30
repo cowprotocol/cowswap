@@ -1,12 +1,14 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { buildPriceFromCurrencyAmounts } from 'modules/limitOrders/utils/buildPriceFromCurrencyAmounts'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 export function usePrice(
-  inputCurrencyAmount: CurrencyAmount<Currency> | null,
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
 ): Price<Currency, Currency> | null {
   return useSafeMemo(() => {
     return buildPriceFromCurrencyAmounts(inputCurrencyAmount, outputCurrencyAmount)

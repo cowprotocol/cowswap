@@ -1,27 +1,31 @@
-import { SetStateAction } from 'jotai'
-import React from 'react'
+import { useUpdateAtom } from 'jotai/utils'
+import { useEffect } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { DemoContainer } from 'cosmos.decorator'
+import { useValue } from 'react-cosmos/fixture'
 
 import { COW, GNO } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/swap/actions'
 
-import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
-import { defaultLimitOrdersSettings } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { initLimitRateState } from 'modules/limitOrders/state/limitRateAtom'
+import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-import { LimitOrdersConfirm } from './index'
+import { limitOrdersConfirmState } from './state'
 
 import { TradeFlowContext } from '../../services/types'
 
-const inputCurrency = COW[SupportedChainId.MAINNET]
-const outputCurrency = GNO[SupportedChainId.MAINNET]
+import { LimitOrdersConfirmModal, LimitOrdersConfirmModalProps } from './index'
+
+const chainId = SupportedChainId.MAINNET
+const account = '0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01'
+
+const inputCurrency = COW[chainId]
+const outputCurrency = GNO[chainId]
 
 const inputCurrencyInfo: CurrencyInfo = {
   field: Field.INPUT,
@@ -86,41 +90,44 @@ const tradeContext: TradeFlowContext = {
   isGnosisSafeWallet: false,
 }
 
-const rateInfoParams = {
-  chainId: 5,
-  inputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 123 * 10 ** 18),
-  outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputCurrency, 456 * 10 ** 18),
-  activeRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 2 * 10 ** 18),
-  invertedActiveRateFiatAmount: CurrencyAmount.fromRawAmount(outputCurrency, 65 * 10 ** 18),
-}
-
 const priceImpact: PriceImpact = {
   priceImpact: new Percent(20000, 10),
   loading: false,
   error: undefined,
 }
 
-const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
-
-const Fixtures = {
-  default: (
-    <LimitOrdersConfirm
-      rateInfoParams={rateInfoParams}
-      settingsState={defaultLimitOrdersSettings}
-      rateImpact={1}
-      priceImpact={priceImpact}
-      tradeContext={tradeContext}
-      inputCurrencyInfo={inputCurrencyInfo}
-      outputCurrencyInfo={outputCurrencyInfo}
-      limitRateState={initLimitRateState()}
-      Warnings={Warnings}
-      warningsAccepted={true}
-      executionPrice={null}
-      onConfirm={() => void 0}
-      partiallyFillableOverride={[true, (_?: SetStateAction<boolean | undefined>) => void 0]}
-      featurePartialFillsEnabled
-    />
-  ),
+const defaultProps: LimitOrdersConfirmModalProps = {
+  isOpen: true,
+  tradeContext,
+  inputCurrencyInfo,
+  outputCurrencyInfo,
+  priceImpact,
+  onDismiss() {
+    console.log('onDismiss')
+  },
 }
 
-export default Fixtures
+const defaultTxHash = '0x1e0e4acc2c5316b43240699c74a0f3e10ef2a3228904c981dddfb451d32ee8f4'
+
+function Fixture() {
+  const updateWalletInfo = useUpdateAtom(walletInfoAtom)
+  const updateState = useUpdateAtom(limitOrdersConfirmState)
+  const [isPending] = useValue('isPending', { defaultValue: false })
+  const [isTransactionSent] = useValue('isTransactionSent', { defaultValue: false })
+
+  useEffect(() => {
+    updateState({ isPending, orderHash: isTransactionSent ? defaultTxHash : null })
+  }, [isPending, isTransactionSent, updateState])
+
+  useEffect(() => {
+    updateWalletInfo({ chainId, account })
+  }, [updateWalletInfo])
+
+  return (
+    <DemoContainer>
+      <LimitOrdersConfirmModal {...defaultProps} />
+    </DemoContainer>
+  )
+}
+
+export default <Fixture />

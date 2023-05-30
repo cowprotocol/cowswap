@@ -8,6 +8,7 @@ export const CurrencySeparatorBox = styled.div<{ withRecipient: boolean }>`
 `
 
 export const ConfirmWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 6px;

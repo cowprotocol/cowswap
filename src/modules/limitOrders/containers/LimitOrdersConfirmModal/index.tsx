@@ -4,6 +4,8 @@ import React, { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import { L2Content as TxSubmittedModal } from 'legacy/components/TransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -19,26 +21,28 @@ import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { TradeConfirmation } from 'modules/trade/pure/TradeConfirmation'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { GpModal } from 'common/pure/Modal'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import * as styledEl from './styled'
 
-import { LimitOrdersConfirm } from '../../pure/LimitOrdersConfirm'
+import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
+import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
 import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 
 export interface LimitOrdersConfirmModalProps {
   isOpen: boolean
   tradeContext: TradeFlowContext
-  inputCurrencyInfo: CurrencyInfo
-  outputCurrencyInfo: CurrencyInfo
+  inputCurrencyInfo: CurrencyPreviewInfo
+  outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
   onDismiss(): void
 }
@@ -47,8 +51,8 @@ function PendingText({
   inputRawAmount,
   outputRawAmount,
 }: {
-  inputRawAmount: CurrencyAmount<Currency> | null
-  outputRawAmount: CurrencyAmount<Currency> | null
+  inputRawAmount: Nullish<CurrencyAmount<Currency>>
+  outputRawAmount: Nullish<CurrencyAmount<Currency>>
 }) {
   const inputTitle = <TokenAmount amount={inputRawAmount} tokenSymbol={inputRawAmount?.currency} />
   const outputTitle = <TokenAmount amount={outputRawAmount} tokenSymbol={outputRawAmount?.currency} />
@@ -71,7 +75,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { partialFillsEnabled } = useFeatureFlags()
 
   const { amount: inputAmount } = inputCurrencyInfo
-  const { amount: outputAmount, currency: outputCurrency } = outputCurrencyInfo
+  const { amount: outputAmount } = outputCurrencyInfo
+
+  const outputCurrency = outputAmount?.currency
 
   const rateImpact = useRateImpact()
   const rateInfoParams = useRateInfoParams(inputAmount, outputAmount)
@@ -94,7 +100,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
 
   const operationType = OperationType.ORDER_SIGN
   const pendingText = <PendingText inputRawAmount={inputAmount} outputRawAmount={outputAmount} />
-  const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+
+  const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
+  const isConfirmDisabled = isTooLowRate ? !warningsAccepted : false
 
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
   const buttonText = isSafeApprovalBundle ? (
@@ -114,23 +122,27 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
               <styledEl.ConfirmHeaderTitle>Review limit order</styledEl.ConfirmHeaderTitle>
               <CloseIcon onClick={() => onDismiss()} />
             </styledEl.ConfirmHeader>
-            <LimitOrdersConfirm
-              executionPrice={executionPrice}
-              limitRateState={limitRateState}
-              settingsState={settingsState}
-              tradeContext={tradeContext}
-              rateInfoParams={rateInfoParams}
+            <TradeConfirmation
               inputCurrencyInfo={inputCurrencyInfo}
               outputCurrencyInfo={outputCurrencyInfo}
               onConfirm={doTrade}
-              rateImpact={rateImpact}
+              isConfirmDisabled={isConfirmDisabled}
               priceImpact={priceImpact}
-              warningsAccepted={warningsAccepted}
-              partiallyFillableOverride={partiallyFillableOverride}
-              featurePartialFillsEnabled={partialFillsEnabled}
-              Warnings={Warnings}
               buttonText={buttonText}
-            />
+            >
+              <>
+                <LimitOrdersDetails
+                  limitRateState={limitRateState}
+                  tradeContext={tradeContext}
+                  rateInfoParams={rateInfoParams}
+                  settingsState={settingsState}
+                  executionPrice={executionPrice}
+                  partiallyFillableOverride={partiallyFillableOverride}
+                  featurePartialFillsEnabled={partialFillsEnabled}
+                />
+                <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+              </>
+            </TradeConfirmation>
           </styledEl.ConfirmModalWrapper>
         )}
       </GpModal>

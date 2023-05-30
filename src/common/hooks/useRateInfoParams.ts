@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
 import { useWalletInfo } from 'modules/wallet'
@@ -12,8 +14,8 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export function useRateInfoParams(
-  inputCurrencyAmount: CurrencyAmount<Currency> | null,
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
 ): RateInfoParams {
   const { chainId } = useWalletInfo()
 

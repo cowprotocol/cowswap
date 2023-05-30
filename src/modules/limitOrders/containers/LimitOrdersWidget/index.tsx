@@ -158,6 +158,20 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
 
+  const inputCurrencyPreviewInfo = {
+    amount: inputCurrencyInfo.amount,
+    fiatAmount: inputCurrencyInfo.fiatAmount,
+    balance: inputCurrencyInfo.balance,
+    label: inputCurrencyInfo.label,
+  }
+
+  const outputCurrencyPreviewInfo = {
+    amount: outputCurrencyInfo.amount,
+    fiatAmount: outputCurrencyInfo.fiatAmount,
+    balance: outputCurrencyInfo.balance,
+    label: outputCurrencyInfo.label,
+  }
+
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
   const slots = {
@@ -227,8 +241,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           isOpen={showConfirmation}
           tradeContext={tradeContext}
           priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyInfo}
-          outputCurrencyInfo={outputCurrencyInfo}
+          inputCurrencyInfo={inputCurrencyPreviewInfo}
+          outputCurrencyInfo={outputCurrencyPreviewInfo}
           onDismiss={() => setShowConfirmation(false)}
         />
       )}
