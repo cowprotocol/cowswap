@@ -377,4 +377,14 @@ export function partialOrderUpdate({ chainId, order }: UpdateOrderParams, dispat
 }
 
 // Checks if the order is expired or not
-export const isNotExpired = (order: Order) => Number(order.openSince) + order.validTo > Date.now()
+export const isExpired = (order: Order | undefined) => {
+  if (!order) {
+    return false
+  }
+
+  if (!order.openSince || !order.validTo) {
+    return false
+  }
+
+  return Number(order.openSince) + order.validTo < Date.now()
+}

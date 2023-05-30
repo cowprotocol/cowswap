@@ -12,6 +12,7 @@ import {
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   Order,
+  OrderStatus,
   preSignOrders,
   requestOrderCancellation,
   SerializedOrder,
@@ -37,7 +38,7 @@ import {
 import { isTruthy } from 'legacy/utils/misc'
 import { OrderID } from 'api/gnosisProtocol'
 import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
-import { partialOrderUpdate, isNotExpired } from 'legacy/state/orders/utils'
+import { partialOrderUpdate, isExpired } from 'legacy/state/orders/utils'
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
@@ -116,6 +117,11 @@ function _deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined)
       ...serialisedOrder,
       inputToken: deserialisedInputToken,
       outputToken: deserialisedOutputToken,
+    }
+
+    // Fix for edge-case, where for some reason the order is still pending but its actually expired
+    if (order.status === OrderStatus.PENDING && isExpired(order)) {
+      order.status = OrderStatus.EXPIRED
     }
   } else {
     orderObject?.order &&
@@ -254,7 +260,7 @@ export const useOnlyPendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    return Object.values(state).map(_deserializeOrder).filter(isTruthy).filter(isNotExpired)
+    return Object.values(state).map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
