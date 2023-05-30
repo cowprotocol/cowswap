@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 
-import { TransactionErrorContent } from 'legacy/components/TransactionConfirmationModal'
 import { useOpenModal, useCloseModals, useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
 import { GpModal } from 'common/pure/Modal'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 export default function useTransactionErrorModal() {
   const openModal = useOpenModal(ApplicationModal.TRANSACTION_ERROR)
@@ -17,7 +17,7 @@ export default function useTransactionErrorModal() {
     TransactionErrorModal: useCallback(
       ({ message, onDismiss }: { message?: string; onDismiss: () => void }) => (
         <GpModal isOpen={!!message && showTransactionErrorModal} onDismiss={closeModal}>
-          <TransactionErrorContent onDismiss={onDismiss} message={message} />
+          <TransactionErrorContent onDismiss={onDismiss} message={message || ''} />
         </GpModal>
       ),
       [closeModal, showTransactionErrorModal]

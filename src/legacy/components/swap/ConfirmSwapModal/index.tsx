@@ -9,7 +9,6 @@ import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   OperationType,
-  TransactionErrorContent,
 } from 'legacy/components/TransactionConfirmationModal'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -20,6 +19,7 @@ import { useWalletDetails } from 'modules/wallet'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState

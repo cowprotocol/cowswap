@@ -6,7 +6,6 @@ import {
   ConfirmationModalContent,
   ConfirmationPendingContent,
   OperationType,
-  TransactionErrorContent,
 } from 'legacy/components/TransactionConfirmationModal'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 import { isRejectRequestProviderError } from 'legacy/utils/misc'
@@ -16,6 +15,7 @@ import { useWalletInfo } from 'modules/wallet'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { GpModal as Modal } from 'common/pure/Modal'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 interface Props {
   isOpen: boolean
