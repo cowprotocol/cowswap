@@ -1,11 +1,11 @@
 import { useTokenContract } from 'legacy/hooks/useContract'
 
 import { FlowType } from 'modules/swap/hooks/useFlowContext'
-import { SafeBundleFlowContext } from 'modules/swap/services/types'
+import { SafeBundleApprovalFlowContext } from 'modules/swap/services/types'
 
 import { useBaseSafeBundleFlowContext } from './useBaseSafeBundleFlowContext'
 
-export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
+export function useSafeBundleApprovalFlowContext(): SafeBundleApprovalFlowContext | null {
   const baseContext = useBaseSafeBundleFlowContext()
   const trade = baseContext?.context.trade
 

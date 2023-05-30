@@ -3,9 +3,9 @@ import { useCallback } from 'react'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
 
-import { useSafeBundleFlowContext } from 'modules/swap/hooks/useSafeBundleFlowContext'
+import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { ethFlow } from 'modules/swap/services/ethFlow'
-import { safeBundleFlow } from 'modules/swap/services/safeBundleFlow'
+import { safeBundleApprovalFlow } from 'modules/swap/services/safeBundleFlow'
 import { swapFlow } from 'modules/swap/services/swapFlow'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 
@@ -17,7 +17,7 @@ import { useSwapFlowContext } from './useSwapFlowContext'
 export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<void> {
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
-  const safeBundleFlowContext = useSafeBundleFlowContext()
+  const safeBundleFlowContext = useSafeBundleApprovalFlowContext()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const { onChangeRecipient } = useSwapActionHandlers()
 
@@ -26,7 +26,7 @@ export function useHandleSwap(priceImpactParams: PriceImpact): () => Promise<voi
 
     if (safeBundleFlowContext) {
       logTradeFlow('SAFE BUNDLE FLOW', 'Start safe bundle flow')
-      await safeBundleFlow(safeBundleFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
+      await safeBundleApprovalFlow(safeBundleFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)
     } else if (swapFlowContext) {
       logTradeFlow('SWAP FLOW', 'Start swap flow')
       await swapFlow(swapFlowContext, priceImpactParams, confirmPriceImpactWithoutFee)

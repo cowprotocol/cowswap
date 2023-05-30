@@ -3,9 +3,9 @@ import { renderHook } from '@testing-library/react-hooks'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
 
-import { useSafeBundleFlowContext } from 'modules/swap/hooks/useSafeBundleFlowContext'
+import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { ethFlow } from 'modules/swap/services/ethFlow'
-import { safeBundleFlow } from 'modules/swap/services/safeBundleFlow'
+import { safeBundleApprovalFlow } from 'modules/swap/services/safeBundleFlow'
 import { swapFlow } from 'modules/swap/services/swapFlow'
 
 import { withModalProvider } from 'utils/withModalProvider'
@@ -26,10 +26,12 @@ jest.mock('modules/swap/state/transactionConfirmAtom')
 const mockUseSwapActionHandlers = useSwapActionHandlers as jest.MockedFunction<typeof useSwapActionHandlers>
 const mockSwapFlow = swapFlow as jest.MockedFunction<typeof swapFlow>
 const mockEthFlow = ethFlow as jest.MockedFunction<typeof ethFlow>
-const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>
+const mockSafeBundleFlow = safeBundleApprovalFlow as jest.MockedFunction<typeof safeBundleApprovalFlow>
 const mockUseSwapFlowContext = useSwapFlowContext as jest.MockedFunction<typeof useSwapFlowContext>
 const mockUseEthFlowContext = useEthFlowContext as jest.MockedFunction<typeof useEthFlowContext>
-const mockUseSafeBundleFlowContext = useSafeBundleFlowContext as jest.MockedFunction<typeof useSafeBundleFlowContext>
+const mockUseSafeBundleFlowContext = useSafeBundleApprovalFlowContext as jest.MockedFunction<
+  typeof useSafeBundleApprovalFlowContext
+>
 
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,

@@ -59,7 +59,7 @@ export type BaseSafeFlowContext = BaseFlowContext & {
   provider: Web3Provider
 }
 
-export type SafeBundleFlowContext = BaseSafeFlowContext & {
+export type SafeBundleApprovalFlowContext = BaseSafeFlowContext & {
   erc20Contract: Erc20
 }
 

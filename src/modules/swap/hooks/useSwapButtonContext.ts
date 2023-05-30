@@ -16,7 +16,7 @@ import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
 import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
-import { useSafeBundleFlowContext } from 'modules/swap/hooks/useSafeBundleFlowContext'
+import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
@@ -51,7 +51,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
-  const safeBundleContext = useSafeBundleFlowContext()
+  const safeBundleContext = useSafeBundleApprovalFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
 
