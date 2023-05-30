@@ -65,4 +65,5 @@ export type SafeBundleApprovalFlowContext = BaseSafeFlowContext & {
 
 export type SafeBundleEthFlowContext = BaseSafeFlowContext & {
   wrappedNativeContract: Weth
+  needsApproval: boolean
 }
