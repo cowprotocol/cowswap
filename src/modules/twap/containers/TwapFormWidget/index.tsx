@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 
+import { useTradeConfirmActions } from 'modules/trade'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
@@ -8,7 +9,7 @@ import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater
 import * as styledEl from './styled'
 
 import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines, defaultNumOfParts } from '../../const'
-import { useTwapFormActions } from '../../hooks/useTwapFormActions'
+import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
@@ -17,6 +18,7 @@ import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
+import { TwapConfirmModal } from '../TwapConfirmModal'
 
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
@@ -25,8 +27,14 @@ export function TwapFormWidget() {
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
-  const formActions = useTwapFormActions()
+  const setFallbackHandler = useSetupFallbackHandler()
+  const tradeConfirmActions = useTradeConfirmActions()
   const formState = useTwapFormState()
+
+  const primaryActionContext = {
+    setFallbackHandler,
+    openConfirmModal: tradeConfirmActions.onOpen,
+  }
 
   const deadlineState = {
     deadline,
@@ -37,6 +45,8 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
+      <TwapConfirmModal />
+
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
@@ -68,7 +78,7 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.DeadlineRow>
 
-      <PrimaryActionButton state={formState} context={formActions} />
+      <PrimaryActionButton state={formState} context={primaryActionContext} />
     </>
   )
 }
