@@ -1,8 +1,8 @@
 import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+
+import { useIsSwapEth } from './useIsSwapEth'
 
 export function useIsEoaEthFlow(): boolean {
   const isSwapEth = useIsSwapEth()
@@ -11,11 +11,4 @@ export function useIsEoaEthFlow(): boolean {
   const isEnabled = getEthFlowEnabled(isSmartContractWallet)
 
   return isEnabled && isSwapEth
-}
-
-export function useIsSwapEth(): boolean {
-  const { isNativeIn } = useDetectNativeToken()
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
-
-  return isNativeIn && !isWrapOrUnwrap
 }
