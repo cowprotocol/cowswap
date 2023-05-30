@@ -9,7 +9,7 @@ import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from 'modules/
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useUpdateCurrencyAmount } from 'modules/limitOrders/hooks/useUpdateCurrencyAmount'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { TradeWidgetActions } from 'modules/trade/containers/TradeWidget'
+import { TradeWidgetActions } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useOnCurrencySelection } from 'modules/trade/hooks/useOnCurrencySelection'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'

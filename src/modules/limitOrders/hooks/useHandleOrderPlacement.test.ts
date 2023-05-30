@@ -15,6 +15,8 @@ import { withModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 
+import { TradeConfirmActions } from '../../trade/hooks/useTradeConfirmActions'
+import { TradeAmounts } from '../../trade/types/TradeAmounts'
 import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 
@@ -39,11 +41,28 @@ const priceImpactMock: PriceImpact = {
   loading: false,
 }
 const recipient = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
+const tradeConfirmActions: TradeConfirmActions = {
+  onSign(pendingTrade: TradeAmounts) {
+    console.log('onSign', pendingTrade)
+  },
+  onError(error: string) {
+    console.log('onError', error)
+  },
+  onSuccess(transactionHash: string) {
+    console.log('onSuccess', transactionHash)
+  },
+  onDismiss() {
+    console.log('onDismiss')
+  },
+  onOpen() {
+    console.log('onOpen')
+  },
+}
 
 describe('useHandleOrderPlacement', () => {
   beforeEach(() => {
-    mockTradeFlow.mockImplementation(() => Promise.resolve(null))
-    mockSafeBundleFlow.mockImplementation(() => Promise.resolve(null))
+    mockTradeFlow.mockImplementation(() => Promise.resolve(''))
+    mockSafeBundleFlow.mockImplementation(() => Promise.resolve(''))
     mockUseSafeBundleFlowContext.mockImplementation(() => null)
     mockUseNeedsApproval.mockImplementation(() => false)
     mockUseIsTxBundlingEnabled.mockImplementation(() => false)
@@ -68,7 +87,7 @@ describe('useHandleOrderPlacement', () => {
 
     // Act
     const { result } = renderHook(
-      () => useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, {}),
+      () => useHandleOrderPlacement(tradeContextMock, priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
       { wrapper: withModalProvider }
     )
     await result.current()

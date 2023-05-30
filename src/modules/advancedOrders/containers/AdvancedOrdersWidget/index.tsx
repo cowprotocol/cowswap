@@ -7,8 +7,7 @@ import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
-import { useSetupTradeState } from 'modules/trade'
-import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWidget'
+import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
 

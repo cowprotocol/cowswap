@@ -71,11 +71,12 @@ function Custom({ stateValue }: { stateValue: string }) {
   }, [stateValue, updateState])
 
   useEffect(() => {
+    updateState({ isOpen: true })
     updateWalletInfo({ chainId, account })
   }, [updateWalletInfo, updateState])
 
   return (
-    <TradeConfirmModal isOpen={true}>
+    <TradeConfirmModal>
       <TradeConfirmation {...confirmationState} onDismiss={console.log}>
         <span>Some content</span>
       </TradeConfirmation>

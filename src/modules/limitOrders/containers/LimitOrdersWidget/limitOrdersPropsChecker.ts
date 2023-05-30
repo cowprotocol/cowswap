@@ -5,7 +5,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { TradeWidgetActions } from 'modules/trade/containers/TradeWidget'
+import { TradeWidgetActions } from 'modules/trade'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { RateInfoParams } from 'common/pure/RateInfo'

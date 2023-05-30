@@ -1,6 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
-import React, { useCallback } from 'react'
+import React from 'react'
 
 import { isSupportedChain } from 'legacy/utils/supportedChainId'
 
@@ -12,24 +11,19 @@ import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { TradeConfirmPendingContent } from './TradeConfirmPendingContent'
 
-import { tradeConfirmStateAtom, updateTradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
+import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
+import { tradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
 
 export interface TradeConfirmModalProps {
-  isOpen: boolean
   children: JSX.Element
 }
 
 export function TradeConfirmModal(props: TradeConfirmModalProps) {
-  const { isOpen, children } = props
+  const { children } = props
 
   const { chainId } = useWalletInfo()
-
-  const { pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
-  const updateState = useUpdateAtom(updateTradeConfirmStateAtom)
-
-  const onDismiss = useCallback(() => {
-    updateState({ pendingTrade: null, transactionHash: null })
-  }, [updateState])
+  const { isOpen, pendingTrade, transactionHash, error } = useAtomValue(tradeConfirmStateAtom)
+  const { onDismiss } = useTradeConfirmActions()
 
   if (!isSupportedChain(chainId)) return null
 
