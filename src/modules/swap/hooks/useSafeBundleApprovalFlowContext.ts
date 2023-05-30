@@ -14,7 +14,7 @@ export function useSafeBundleApprovalFlowContext(): SafeBundleApprovalFlowContex
 
   if (!trade || !erc20Contract) return null
 
-  if (!baseContext || baseContext.context.flowType !== FlowType.SAFE_BUNDLE) return null
+  if (!baseContext || baseContext.context.flowType !== FlowType.SAFE_BUNDLE_APPROVAL) return null
 
   return {
     ...baseContext,

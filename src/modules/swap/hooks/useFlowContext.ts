@@ -57,8 +57,8 @@ const _computeInputAmountForSignature = (params: {
 export enum FlowType {
   REGULAR = 'REGULAR',
   ETH_FLOW = 'ETH_FLOW',
-  SAFE_BUNDLE = 'SAFE_BUNDLE',
-  SAFE_ETH_FLOW = 'SAFE_ETH_FLOW',
+  SAFE_BUNDLE_APPROVAL = 'SAFE_BUNDLE_APPROVAL',
+  SAFE_BUNDLE_ETH = 'SAFE_BUNDLE_ETH',
 }
 
 interface BaseFlowContextSetup {
@@ -141,9 +141,9 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
 function _getFlowType(isSafeBundle: boolean, isEthFlow: boolean, isSafeEthFlow: boolean): FlowType {
   if (isSafeBundle) {
     // Takes precedence over eth flow
-    return FlowType.SAFE_BUNDLE
+    return FlowType.SAFE_BUNDLE_APPROVAL
   } else if (isSafeEthFlow) {
-    return FlowType.SAFE_ETH_FLOW
+    return FlowType.SAFE_BUNDLE_ETH
   } else if (isEthFlow) {
     // Takes precedence over regular flow
     return FlowType.ETH_FLOW
