@@ -23,14 +23,13 @@ import {
 } from 'legacy/constants'
 import { L2_CHAIN_IDS } from 'legacy/constants/chains'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
-// import ms from 'ms.macro'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
-import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
+import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
 import { useWalletInfo } from 'modules/wallet'
 
 import QuestionHelper from '../QuestionHelper'
@@ -134,7 +133,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const theme = useContext(ThemeContext)
 
   const isEthFlow = useIsEoaEthFlow()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const nativeCurrency = useNativeCurrency()
 
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()

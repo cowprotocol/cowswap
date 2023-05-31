@@ -6,7 +6,7 @@ import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
-import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
+import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
 
 import { formatPercent } from 'utils/amountFormat'
 
@@ -19,7 +19,7 @@ export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowS
   const toggleSettings = useToggleSettingsMenu()
 
   const isEthFlow = useIsEoaEthFlow()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const nativeCurrency = useNativeCurrency()
 
   const props = useMemo(
     () => ({

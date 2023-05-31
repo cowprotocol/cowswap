@@ -6,13 +6,15 @@ import { Token } from '@uniswap/sdk-core'
 import WXDAI_LOGO_URI from 'legacy/assets/cow-swap/wxdai.png'
 import { WETH_LOGO_URI } from 'legacy/constants'
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
-import { GpEther as ETHER, WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
+
+import { useNativeCurrency } from './useNativeCurrency'
 
 export function useDetectNativeToken() {
   const { chainId } = useWalletInfo()
@@ -22,6 +24,8 @@ export function useDetectNativeToken() {
   const input = useTokenBySymbolOrAddress(inputCurrencyId)
   const output = useTokenBySymbolOrAddress(outputCurrencyId)
 
+  const native = useNativeCurrency()
+
   return useMemo(() => {
     const activeChainId = supportedChainId(chainId)
     const wrappedToken: Token & { logoURI: string } = Object.assign(
@@ -30,9 +34,6 @@ export function useDetectNativeToken() {
         logoURI: activeChainId === ChainId.GNOSIS_CHAIN ? WXDAI_LOGO_URI : WETH_LOGO_URI,
       }
     )
-
-    // TODO: check the new native currency function
-    const native = ETHER.onChain(activeChainId || DEFAULT_NETWORK_FOR_LISTS)
 
     const [isNativeIn, isNativeOut] = [!!input?.isNative, !!output?.isNative]
     const [isWrappedIn, isWrappedOut] = [!!input?.equals(wrappedToken), !!output?.equals(wrappedToken)]
@@ -45,5 +46,5 @@ export function useDetectNativeToken() {
       wrappedToken,
       native,
     }
-  }, [input, output, chainId])
+  }, [chainId, input, output, native])
 }

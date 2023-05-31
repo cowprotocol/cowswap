@@ -9,6 +9,9 @@ import { useWalletInfo } from 'modules/wallet'
 
 export const MAINNET_NATIVE_CURRENCY = nativeOnChain(SupportedChainId.MAINNET)
 
+/**
+ * @deprecated use src/modules/trade/hooks/useNativeCurrency instead
+ */
 export default function useNativeCurrency(): NativeCurrency {
   const { chainId } = useWalletInfo()
   return useMemo(

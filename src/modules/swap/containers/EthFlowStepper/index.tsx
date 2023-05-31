@@ -9,7 +9,7 @@ import {
   EthFlowStepperProps as PureProps,
   SmartOrderStatus,
 } from 'modules/swap/pure/EthFlow/EthFlowStepper'
-import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
+import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
 
 import { formatSymbol } from 'utils/format'
 
@@ -19,7 +19,7 @@ type EthFlowStepperProps = {
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
   const { order } = props
-  const { native } = useDetectNativeToken()
+  const native = useNativeCurrency()
 
   const allTxs = useAllTransactions()
 

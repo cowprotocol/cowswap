@@ -5,15 +5,15 @@ import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
-import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
 
 export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()
   const toggleSettings = useToggleSettingsMenu()
   const isEthFlow = useIsEoaEthFlow()
   const isExpertMode = useIsExpertMode()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const nativeCurrency = useNativeCurrency()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const props = useMemo(() => {
