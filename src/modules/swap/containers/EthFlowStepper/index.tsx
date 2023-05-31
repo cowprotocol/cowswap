@@ -4,12 +4,12 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { isOrderExpired } from 'legacy/state/orders/utils'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import {
   EthFlowStepper as Pure,
   EthFlowStepperProps as PureProps,
   SmartOrderStatus,
 } from 'modules/swap/pure/EthFlow/EthFlowStepper'
+import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
 
 import { formatSymbol } from 'utils/format'
 

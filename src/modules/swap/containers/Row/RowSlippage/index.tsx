@@ -4,9 +4,9 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
+import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
 
 import { formatPercent } from 'utils/amountFormat'
 

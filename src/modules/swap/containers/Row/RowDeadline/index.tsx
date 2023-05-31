@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
+import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 export function RowDeadline() {

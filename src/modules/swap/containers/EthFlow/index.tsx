@@ -8,12 +8,12 @@ import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { useIsExpertMode } from 'legacy/state/user/hooks'
 
 import { getDerivedEthFlowState } from 'modules/swap/containers/EthFlow/utils/getDerivedEthFlowState'
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { EthFlowModalContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent'
 import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
 import { ethFlowContextAtom } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'

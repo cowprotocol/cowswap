@@ -16,9 +16,9 @@ import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useTransactionConfirmModal } from 'modules/swap/hooks/useTransactionConfirmModal'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
 import { useWalletInfo } from 'modules/wallet'
 
 import { formatTokenAmount } from 'utils/amountFormat'

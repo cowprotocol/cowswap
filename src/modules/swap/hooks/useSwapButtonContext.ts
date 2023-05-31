@@ -13,13 +13,13 @@ import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hoo
 import { useExpertModeManager } from 'legacy/state/user/hooks'
 
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
 import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
 import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
+import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
