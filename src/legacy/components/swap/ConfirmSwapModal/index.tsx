@@ -1,9 +1,8 @@
 import { useCallback, useMemo } from 'react'
 
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { Nullish } from 'types'
 
 import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
 import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
@@ -11,15 +10,14 @@ import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/compo
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
-import { useIsSafeEthFlow } from 'modules/swap/hooks/useIsSafeEthFlow'
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 import { useWalletDetails } from 'modules/wallet'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+
+import { useButtonText } from './hooks'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState
@@ -145,30 +143,4 @@ function tradeMeaningfullyDiffers(tradeA: TradeGp, tradeB: TradeGp): boolean {
     !tradeA.outputAmount.currency.equals(tradeB.outputAmount.currency) ||
     !tradeA.outputAmount.equalTo(tradeB.outputAmount)
   )
-}
-
-function useButtonText(slippageAdjustedSellAmount: Nullish<CurrencyAmount<Currency>>) {
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(slippageAdjustedSellAmount)
-  const isSafeEthFlowBundle = useIsSafeEthFlow()
-  const sellCurrency = slippageAdjustedSellAmount?.currency
-
-  return useMemo(() => {
-    if (isSafeEthFlowBundle) {
-      return (
-        <>
-          Confirm (Wrap&nbsp;{<TokenSymbol token={sellCurrency} length={6} />}
-          &nbsp;and Swap)
-        </>
-      )
-    } else if (isSafeApprovalBundle) {
-      return (
-        <>
-          Confirm (Approve&nbsp;{<TokenSymbol token={sellCurrency?.wrapped} length={6} />}
-          &nbsp;and Swap)
-        </>
-      )
-    } else {
-      return undefined
-    }
-  }, [isSafeApprovalBundle, isSafeEthFlowBundle, sellCurrency])
 }
