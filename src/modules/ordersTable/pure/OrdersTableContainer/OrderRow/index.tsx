@@ -15,15 +15,15 @@ import { CREATING_STATES, OrderStatus, PENDING_STATES } from 'legacy/state/order
 import { getEtherscanLink } from 'legacy/utils'
 
 import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { EstimatedExecutionPrice } from 'modules/ordersTable/pure/Orders/OrderRow/EstimatedExecutionPrice'
-import { OrderContextMenu } from 'modules/ordersTable/pure/Orders/OrderRow/OrderContextMenu'
+import { EstimatedExecutionPrice } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/EstimatedExecutionPrice'
+import { OrderContextMenu } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow/OrderContextMenu'
 import {
   TableRow,
   TableRowCheckbox,
   TableRowCheckboxWrapper,
   CheckboxCheckmark,
-} from 'modules/ordersTable/pure/Orders/styled'
-import { LimitOrderActions } from 'modules/ordersTable/pure/Orders/types'
+} from 'modules/ordersTable/pure/OrdersTableContainer/styled'
+import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
 

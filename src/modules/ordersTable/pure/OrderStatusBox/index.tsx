@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { orderStatusTitleMap } from 'modules/ordersTable/pure/Orders/OrderRow'
+import { orderStatusTitleMap } from 'modules/ordersTable/pure/OrdersTableContainer/OrderRow'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

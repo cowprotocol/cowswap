@@ -1,4 +1,4 @@
-import { OrderTab } from 'modules/ordersTable/pure/Orders/OrdersTabs'
+import { OrderTab } from 'modules/ordersTable/pure/OrdersTableContainer/OrdersTabs'
 
 export const OPEN_TAB: OrderTab = {
   id: 'open',

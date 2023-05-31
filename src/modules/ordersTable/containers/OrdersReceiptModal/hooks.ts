@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 
 import { UID } from '@cowprotocol/cow-sdk'
 
-import { useLimitOrdersList } from 'modules/ordersTable/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { useLimitOrdersList } from 'modules/ordersTable/containers/OrdersTableWidget/hooks/useLimitOrdersList'
 import { updateReceiptAtom, receiptAtom } from 'modules/ordersTable/state/limitOrdersReceiptAtom'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'

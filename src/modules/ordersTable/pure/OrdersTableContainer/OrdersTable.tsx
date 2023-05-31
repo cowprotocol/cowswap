@@ -22,8 +22,8 @@ import {
   TableRowCheckbox,
   TableRowCheckboxWrapper,
   CheckboxCheckmark,
-} from 'modules/ordersTable/pure/Orders/styled'
-import { LimitOrderActions } from 'modules/ordersTable/pure/Orders/types'
+} from 'modules/ordersTable/pure/OrdersTableContainer/styled'
+import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
