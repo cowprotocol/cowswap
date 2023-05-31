@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'legacy/state'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { isExpired } from 'legacy/state/orders/utils'
+import { isExpiredOrder } from 'legacy/state/orders/utils'
 import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
 import { isTruthy } from 'legacy/utils/misc'
 
@@ -125,7 +125,7 @@ function _deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined)
     }
 
     // Fix for edge-case, where for some reason the order is still pending but its actually expired
-    if (order.status === OrderStatus.PENDING && isExpired(order)) {
+    if (order.status === OrderStatus.PENDING && isExpiredOrder(order)) {
       order.status = OrderStatus.EXPIRED
     }
   } else {
