@@ -9,7 +9,7 @@ import { Nullish } from 'types'
 
 import GameIcon from 'legacy/assets/cow-swap/game.gif'
 import { OrderProgressBar } from 'legacy/components/OrderProgressBar'
-import { DisplayLink } from 'legacy/components/TransactionConfirmationModal'
+import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 import { supportedChainId } from 'legacy/utils/supportedChainId'

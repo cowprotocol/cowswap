@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 
 import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 import { ethFlowConfigs } from 'modules/swap/pure/EthFlow/EthFlowModalContent/configs'
@@ -25,7 +25,7 @@ export interface EthFlowModalContentProps {
   onDismiss: () => void
 }
 
-const EthFlowModalLayout = styled(ConfirmationModalContent)`
+const EthFlowModalLayout = styled(LegacyConfirmationModalContent)`
   padding: 22px;
 `
 

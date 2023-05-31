@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import Confetti from 'legacy/components/Confetti'
 import Loader from 'legacy/components/Loader'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import useENS from 'legacy/hooks/useENS'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import usePrevious from 'legacy/hooks/usePrevious'
@@ -223,7 +223,7 @@ export default function Claim() {
 
   // Transaction confirmation modal
   const { TransactionConfirmationModal, openModal, closeModal } = useTransactionConfirmationModal(
-    OperationType.APPROVE_TOKEN
+    ConfirmOperationType.APPROVE_TOKEN
   )
 
   return (

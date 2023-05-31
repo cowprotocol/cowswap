@@ -2,6 +2,7 @@ import { transparentize } from 'polished'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components/macro'
 
+import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween } from 'legacy/components/Row'
 import { CloseIcon, ExternalLink } from 'legacy/theme'
 
@@ -16,12 +17,24 @@ export const Wrapper = styled.div`
   ${({ theme }) => theme.colorScrollbar};
 `
 
-export const Section = styled.div`
-  padding: 0 16px 16px;
-  align-items: center;
-  justify-content: flex-start;
-  display: flex;
-  flex-flow: column wrap;
+export const ContentWrapper = styled(Wrapper)`
+  padding: 0 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 10px;
+  `}
+`
+
+export const Section = styled(AutoColumn)<{ inline?: boolean }>`
+  padding: ${({ inline }) => (inline ? '16px 0 0' : '0')};
+`
+
+export const BottomSection = styled(Section)`
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+
+  /* -- mod -- */
+  padding: 0 0 16px;
 `
 
 export const Header = styled.div`

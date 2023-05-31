@@ -7,11 +7,11 @@ import { Text } from 'rebass'
 import { AutoColumn } from 'legacy/components/Column'
 import { ExternalLink } from 'legacy/components/Link'
 import Row from 'legacy/components/Row'
+import { ConfirmationModalProps } from 'legacy/components/TransactionConfirmationModal'
 import {
-  ConfirmationModalContent,
+  LegacyConfirmationModalContent,
   ConfirmationModalContentProps,
-  ConfirmationModalProps,
-} from 'legacy/components/TransactionConfirmationModal'
+} from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
 
 import { useWalletInfo } from 'modules/wallet'
@@ -68,9 +68,10 @@ export default function CowSubsidyModal({
 
   if (!chainId) return null
 
+  // TODO: use TradeConfirmModal
   return (
     <GpModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
-      <ConfirmationModalContent
+      <LegacyConfirmationModalContent
         {...restProps}
         title="CoWmunity fees discount"
         titleSize={21}

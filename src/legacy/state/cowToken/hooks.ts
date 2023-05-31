@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { V_COW, COW } from 'legacy/constants/tokens'
 import { APPROVE_GAS_LIMIT_DEFAULT } from 'legacy/hooks/useApproveCallback/useApproveCallbackMod'
 import { useVCowContract } from 'legacy/hooks/useContract'
@@ -32,7 +32,7 @@ type VCowData = {
 }
 
 interface SwapVCowCallbackParams {
-  openModal: (message: string, operationType: OperationType) => void
+  openModal: (message: string, operationType: ConfirmOperationType) => void
   closeModal: () => void
 }
 
@@ -125,7 +125,7 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
     })
 
     const summary = `Convert vCOW to COW`
-    openModal(summary, OperationType.CONVERT_VCOW)
+    openModal(summary, ConfirmOperationType.CONVERT_VCOW)
 
     return vCowContract
       .swapAll({ from: account, gasLimit: estimatedGas })

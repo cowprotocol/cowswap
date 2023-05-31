@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import React from 'react'
 
-import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { TransactionConfirmationModal, ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
@@ -13,7 +13,7 @@ export function TradeApproveModal() {
   return (
     <TransactionConfirmationModal
       isOpen={approveInProgress}
-      operationType={OperationType.APPROVE_TOKEN}
+      operationType={ConfirmOperationType.APPROVE_TOKEN}
       currencyToAdd={currency}
       pendingText={
         <>

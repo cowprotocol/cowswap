@@ -2,11 +2,9 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import React, { useCallback, useState } from 'react'
 
 import { ButtonPrimary } from 'legacy/components/Button'
-import {
-  ConfirmationModalContent,
-  ConfirmationPendingContent,
-  OperationType,
-} from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 import { isRejectRequestProviderError } from 'legacy/utils/misc'
 
@@ -67,6 +65,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
   if (!isOpen || !chainId) return null
 
+  // TODO: use TradeConfirmModal
   if (cancellationError) {
     const errorMessage = isRejectRequestProviderError(cancellationError)
       ? 'User rejected signing'
@@ -82,11 +81,11 @@ export function MultipleOrdersCancellationModal(props: Props) {
   if (cancellationInProgress) {
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <ConfirmationPendingContent
+        <LegacyConfirmationPendingContent
           chainId={chainId}
           onDismiss={onDismiss}
           pendingText={<>Cancelling {ordersCount} orders</>}
-          operationType={OperationType.ORDER_CANCEL}
+          operationType={ConfirmOperationType.ORDER_CANCEL}
         />
       </Modal>
     )
@@ -94,7 +93,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss}>
-      <ConfirmationModalContent
+      <LegacyConfirmationModalContent
         title={`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}
         topContent={() => (
