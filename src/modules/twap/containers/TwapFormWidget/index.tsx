@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useTradeConfirmActions } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
@@ -12,7 +13,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import * as styledEl from './styled'
 
 import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines, defaultNumOfParts } from '../../const'
-import { useTwapFormActions } from '../../hooks/useTwapFormActions'
+import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
@@ -21,6 +22,7 @@ import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
+import { TwapConfirmModal } from '../TwapConfirmModal'
 
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
@@ -31,10 +33,16 @@ export function TwapFormWidget() {
   const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const formActions = useTwapFormActions()
+  const setFallbackHandler = useSetupFallbackHandler()
+  const tradeConfirmActions = useTradeConfirmActions()
   const formState = useTwapFormState()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
+
+  const primaryActionContext = {
+    setFallbackHandler,
+    openConfirmModal: tradeConfirmActions.onOpen,
+  }
 
   const deadlineState = {
     deadline,
@@ -45,6 +53,8 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
+      <TwapConfirmModal />
+
       {!isWrapOrUnwrap && (
         <styledEl.Row>
           <styledEl.StyledRateInfo label="Current market price" rateInfoParams={rateInfoParams} />
@@ -82,7 +92,7 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.DeadlineRow>
 
-      <PrimaryActionButton state={formState} context={formActions} />
+      <PrimaryActionButton state={formState} context={primaryActionContext} />
     </>
   )
 }

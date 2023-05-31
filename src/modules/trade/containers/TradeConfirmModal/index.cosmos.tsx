@@ -7,8 +7,8 @@ import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from '
 
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
+import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { TradeConfirmation, TradeConfirmationProps } from '../../pure/TradeConfirmation'
-import { updateTradeConfirmStateAtom } from '../../state/tradeConfirmStateAtom'
 
 import { TradeConfirmModal } from './index'
 
@@ -39,41 +39,30 @@ const confirmationState: TradeConfirmationProps = {
 
 function Custom({ stateValue }: { stateValue: string }) {
   const updateWalletInfo = useUpdateAtom(walletInfoAtom)
-  const updateState = useUpdateAtom(updateTradeConfirmStateAtom)
+  const actions = useTradeConfirmActions()
 
   useEffect(() => {
+    actions.onOpen()
+
     if (stateValue === 'error') {
-      updateState({
-        error: 'Something wrong',
-      })
+      actions.onError('Something wrong')
       return
     }
 
     if (stateValue === 'pending') {
-      updateState({
-        pendingTrade: tradeAmounts,
-        transactionHash: null,
-        error: null,
-      })
+      actions.onSign(tradeAmounts)
       return
     }
 
     if (stateValue === 'success') {
-      updateState({
-        transactionHash: defaultTxHash,
-        pendingTrade: null,
-        error: null,
-      })
+      actions.onSuccess(defaultTxHash)
       return
     }
-
-    updateState({ transactionHash: null, pendingTrade: null, error: null })
-  }, [stateValue, updateState])
+  }, [stateValue, actions])
 
   useEffect(() => {
-    updateState({ isOpen: true })
     updateWalletInfo({ chainId, account })
-  }, [updateWalletInfo, updateState])
+  }, [updateWalletInfo])
 
   return (
     <TradeConfirmModal>
