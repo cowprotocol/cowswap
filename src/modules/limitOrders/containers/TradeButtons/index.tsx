@@ -1,13 +1,9 @@
-import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai/utils'
 import React, { useCallback } from 'react'
-
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
 import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -20,6 +16,7 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
 import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
+import { useTradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useWalletDetails } from 'modules/wallet'
@@ -27,7 +24,6 @@ import { useWalletDetails } from 'modules/wallet'
 import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
 
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
 
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
@@ -36,16 +32,15 @@ const CompatibilityIssuesWarningWrapper = styled.div`
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
   priceImpact: PriceImpact
-  inputCurrencyAmount: CurrencyAmount<Currency> | null
-  openConfirmScreen(): void
 }
 
 export function TradeButtons(props: TradeButtonsProps) {
-  const { tradeContext, openConfirmScreen, priceImpact, inputCurrencyAmount } = props
+  const { tradeContext, priceImpact } = props
+  const inputCurrencyAmount = tradeContext?.postOrderParams.inputAmount
+
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const formState = useLimitOrdersFormState()
   const tradeState = useLimitOrdersDerivedState()
-  const setConfirmationState = useSetAtom(limitOrdersConfirmState)
   const toggleWalletModal = useToggleWalletModal()
   const quote = useTradeQuote()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
@@ -53,10 +48,10 @@ export function TradeButtons(props: TradeButtonsProps) {
   const transactionConfirmState = useAtomValue(transactionConfirmAtom)
   const closeModals = useCloseModals()
   const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
-  const { handleSetError, ErrorModal } = useErrorModal()
   const { isSupportedWallet } = useWalletDetails()
   const { inputCurrency, outputCurrency } = tradeState
   const isSwapUnsupported = isUnsupportedTokenInQuote(quote)
+  const tradeConfirmActions = useTradeConfirmActions()
 
   const wrapUnwrapParams: WrapUnwrapParams = {
     isNativeIn: !!inputCurrencyAmount?.currency.isNative,
@@ -66,19 +61,15 @@ export function TradeButtons(props: TradeButtonsProps) {
     showTransactionConfirmationModal,
   }
 
-  const tradeCallbacks = {
-    beforeTrade: () => setConfirmationState({ isPending: true, orderHash: null }),
-    onError: handleSetError,
-    finally: () => setConfirmationState({ isPending: false, orderHash: null }),
-  }
-  const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeCallbacks)
+  const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
+
   const doTrade = useCallback(() => {
     if (settingsState.expertMode) {
       handleTrade()
     } else {
-      openConfirmScreen()
+      tradeConfirmActions.onOpen()
     }
-  }, [settingsState.expertMode, handleTrade, openConfirmScreen])
+  }, [settingsState.expertMode, handleTrade, tradeConfirmActions])
 
   const buttonFactory = limitOrdersTradeButtonsMap[formState]
 
@@ -106,7 +97,6 @@ export function TradeButtons(props: TradeButtonsProps) {
           />
         </CompatibilityIssuesWarningWrapper>
       )}
-      <ErrorModal />
     </>
   )
 }
