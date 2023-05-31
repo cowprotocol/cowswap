@@ -16,53 +16,61 @@ export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
   error: null,
 })
 
-export const updateTradeConfirmStateAtom = atom(null, (get, set, nextState: Partial<TradeConfirmModalState>) => {
+export const setOpenTradeConfirmAtom = atom(null, (get, set) => {
+  set(tradeConfirmStateAtom, () => {
+    return {
+      isOpen: true,
+      error: null,
+      pendingTrade: null,
+      transactionHash: null,
+    }
+  })
+})
+
+export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
+  set(tradeConfirmStateAtom, () => {
+    return {
+      ...get(tradeConfirmStateAtom),
+      isOpen: false,
+    }
+  })
+})
+
+export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => {
   set(tradeConfirmStateAtom, () => {
     const currentState = get(tradeConfirmStateAtom)
 
-    if (nextState.isOpen === true) {
-      return {
-        isOpen: true,
-        error: null,
-        pendingTrade: null,
-        transactionHash: null, //
-      }
+    return {
+      isOpen: currentState.isOpen,
+      error,
+      pendingTrade: null,
+      transactionHash: null,
     }
+  })
+})
 
-    if (nextState.isOpen === false) {
-      return {
-        ...currentState,
-        isOpen: false,
-      }
+export const setPendingTradeConfirmAtom = atom(null, (get, set, pendingTrade: TradeAmounts) => {
+  set(tradeConfirmStateAtom, () => {
+    const currentState = get(tradeConfirmStateAtom)
+
+    return {
+      isOpen: currentState.isOpen,
+      error: null,
+      pendingTrade,
+      transactionHash: null,
     }
+  })
+})
 
-    if (nextState.error) {
-      return {
-        isOpen: currentState.isOpen,
-        error: nextState.error,
-        pendingTrade: null,
-        transactionHash: null, //
-      }
+export const setTxHashTradeConfirmAtom = atom(null, (get, set, transactionHash: string) => {
+  set(tradeConfirmStateAtom, () => {
+    const currentState = get(tradeConfirmStateAtom)
+
+    return {
+      isOpen: currentState.isOpen,
+      error: null,
+      pendingTrade: null,
+      transactionHash,
     }
-
-    if (nextState.pendingTrade) {
-      return {
-        isOpen: currentState.isOpen,
-        error: null,
-        pendingTrade: nextState.pendingTrade,
-        transactionHash: null, //
-      }
-    }
-
-    if (nextState.transactionHash) {
-      return {
-        isOpen: currentState.isOpen,
-        error: null,
-        pendingTrade: null,
-        transactionHash: nextState.transactionHash,
-      }
-    }
-
-    return get(tradeConfirmStateAtom)
   })
 })

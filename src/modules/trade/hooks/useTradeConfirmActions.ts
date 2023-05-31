@@ -1,6 +1,12 @@
 import { useUpdateAtom } from 'jotai/utils'
 
-import { updateTradeConfirmStateAtom } from '../state/tradeConfirmStateAtom'
+import {
+  setCloseTradeConfirmAtom,
+  setErrorTradeConfirmAtom,
+  setOpenTradeConfirmAtom,
+  setPendingTradeConfirmAtom,
+  setTxHashTradeConfirmAtom,
+} from '../state/tradeConfirmStateAtom'
 import { TradeAmounts } from '../types/TradeAmounts'
 
 export interface TradeConfirmActions {
@@ -12,23 +18,27 @@ export interface TradeConfirmActions {
 }
 
 export function useTradeConfirmActions(): TradeConfirmActions {
-  const updateTradeConfirm = useUpdateAtom(updateTradeConfirmStateAtom)
+  const setOpenTradeConfim = useUpdateAtom(setOpenTradeConfirmAtom)
+  const setCloseTradeConfirm = useUpdateAtom(setCloseTradeConfirmAtom)
+  const setErrorTradeConfirm = useUpdateAtom(setErrorTradeConfirmAtom)
+  const setPendingTradeConfirm = useUpdateAtom(setPendingTradeConfirmAtom)
+  const setTxHashTradeConfirm = useUpdateAtom(setTxHashTradeConfirmAtom)
 
   return {
     onSign(pendingTrade: TradeAmounts) {
-      updateTradeConfirm({ pendingTrade })
+      setPendingTradeConfirm(pendingTrade)
     },
     onError(error: string) {
-      updateTradeConfirm({ error })
+      setErrorTradeConfirm(error)
     },
     onSuccess(transactionHash: string) {
-      updateTradeConfirm({ transactionHash })
+      setTxHashTradeConfirm(transactionHash)
     },
     onOpen() {
-      updateTradeConfirm({ isOpen: true })
+      setOpenTradeConfim()
     },
     onDismiss() {
-      updateTradeConfirm({ isOpen: false })
+      setCloseTradeConfirm()
     },
   }
 }
