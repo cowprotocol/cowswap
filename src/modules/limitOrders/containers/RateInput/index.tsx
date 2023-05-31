@@ -19,7 +19,7 @@ import { useWalletInfo } from 'modules/wallet'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
-import { limitOrdersFeatures } from 'constants/featureFlags'
+import { ordersTableFeatures } from 'constants/featureFlags'
 import { formatInputAmount } from 'utils/amountFormat'
 import { getAddress } from 'utils/getAddress'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
@@ -175,7 +175,7 @@ export function RateInput() {
         </styledEl.Body>
       </styledEl.Wrapper>
 
-      {limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
+      {ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && (
         <styledEl.EstimatedRate>
           <b>
             Order executes at{' '}

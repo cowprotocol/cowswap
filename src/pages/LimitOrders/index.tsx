@@ -7,7 +7,7 @@ import {
   ExecutionPriceUpdater,
   limitOrdersRawStateAtom,
 } from 'modules/limitOrders'
-import { OrdersWidget } from 'modules/ordersTable'
+import { OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 export default function LimitOrderPage() {
@@ -25,7 +25,7 @@ export default function LimitOrderPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersWidget />
+          <OrdersTableWidget />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>

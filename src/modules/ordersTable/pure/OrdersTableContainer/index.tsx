@@ -144,7 +144,7 @@ export interface OrdersProps extends OrdersTabsProps, OrdersTableProps {
   children?: ReactNode
 }
 
-export function Orders({
+export function OrdersTableContainer({
   chainId,
   orders,
   tabs,
