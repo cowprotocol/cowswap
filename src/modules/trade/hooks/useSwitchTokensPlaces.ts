@@ -11,6 +11,8 @@ import { useTradeState } from './useTradeState'
 
 import { ExtendedTradeRawState } from '../types/TradeRawState'
 
+// TODO: when implementing this for SWAP remmeber this logic related to ETH flow
+// https://github.com/cowprotocol/cowswap/blob/628c62596d65e0761ccf70677a55bec9a0a36411/src/legacy/state/swap/reducer.ts#L143
 export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawState> = {}) {
   const { chainId } = useWalletInfo()
   const tradeState = useTradeState()
