@@ -20,7 +20,7 @@ import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculat
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { limitOrdersFeatures } from 'constants/featureFlags'
+import { ordersTableFeatures } from 'constants/featureFlags'
 import { DEFAULT_DATE_FORMAT } from 'constants/intl'
 import { formatInputAmount } from 'utils/amountFormat'
 
@@ -80,7 +80,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <styledEl.StyledRateInfo isInvertedState={isInvertedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
 
-      {limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+      {ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
         <styledEl.DetailsRow>
           <div>
             <span>

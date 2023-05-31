@@ -3,7 +3,9 @@ import { transparentize } from 'polished'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { buildLimitOrdersUrl } from 'modules/ordersTable/utils/buildLimitOrdersUrl'
+import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
+
+import { OrderTab } from '../../const/tabs'
 
 const Tabs = styled.div`
   display: inline-block;
@@ -42,13 +44,6 @@ const TabButton = styled(Link)<{ active: string }>`
   }
 `
 
-export interface OrderTab {
-  id: string
-  title: string
-  count: number
-  isActive?: boolean
-}
-
 export interface OrdersTabsProps {
   tabs: OrderTab[]
 }
@@ -66,7 +61,7 @@ export function OrdersTabs({ tabs }: OrdersTabsProps) {
         <TabButton
           key={index}
           active={(index === activeTabIndex).toString()}
-          to={buildLimitOrdersUrl(location, { tabId: tab.id, pageNumber: 1 })}
+          to={buildOrdersTableUrl(location, { tabId: tab.id, pageNumber: 1 })}
         >
           <Trans>{tab.title}</Trans> <span>({tab.count})</span>
         </TabButton>

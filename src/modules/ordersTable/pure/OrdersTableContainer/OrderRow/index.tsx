@@ -216,7 +216,7 @@ export function OrderRow({
       </styledEl.CellElement>
 
       {/* Market price */}
-      {/* {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
+      {/* {isOpenOrdersTab && ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && ( */}
       {isOpenOrdersTab && (
         <styledEl.PriceElement onClick={toggleIsInverted}>
           {/*// TODO: gray out the price when it was updated too long ago*/}
@@ -282,7 +282,7 @@ export function OrderRow({
       )}
 
       {/* TODO: Enable once there is back-end support */}
-      {/* {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+      {/* {!isOpenOrdersTab && ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
         <styledEl.CellElement>
           <b>{order.status === OrderStatus.FULFILLED ? executedTimeAgo : '-'}</b>
         </styledEl.CellElement>

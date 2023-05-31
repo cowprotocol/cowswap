@@ -2,7 +2,7 @@ import { transparentize } from 'polished'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
-import { buildLimitOrdersUrl } from 'modules/ordersTable/utils/buildLimitOrdersUrl'
+import { buildOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 
 export interface OrdersTablePaginationProps {
   pageSize: number
@@ -56,7 +56,7 @@ export function OrdersTablePagination({ pageSize, totalCount, currentPage }: Ord
           <PageButton
             key={index}
             $active={index === currentPage}
-            to={buildLimitOrdersUrl(location, { pageNumber: index })}
+            to={buildOrdersTableUrl(location, { pageNumber: index })}
           >
             {index}
           </PageButton>

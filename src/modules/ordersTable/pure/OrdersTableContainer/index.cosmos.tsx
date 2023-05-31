@@ -4,9 +4,10 @@ import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersMock } from './orders.mock'
-import { OrderTab } from './OrdersTabs'
 
 import { OrdersTableContainer } from './index'
+
+import { OrderTab } from '../../const/tabs'
 
 const tabs: OrderTab[] = [
   {
