@@ -8,14 +8,14 @@ import { useWalletInfo } from 'modules/wallet'
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
 import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
 
-export interface LimitOrdersList {
+export interface OrdersTableList {
   pending: ParsedOrder[]
   history: ParsedOrder[]
 }
 
 const ORDERS_LIMIT = 100
 
-export function useLimitOrdersList(): LimitOrdersList {
+export function useOrdersTableList(): OrdersTableList {
   const { chainId, account } = useWalletInfo()
   const allNonEmptyOrders = useOrders({ chainId })
   const accountLowerCase = account?.toLowerCase()
@@ -40,7 +40,7 @@ export function useLimitOrdersList(): LimitOrdersList {
 
         return acc
       },
-      { pending: [], history: [] } as LimitOrdersList
+      { pending: [], history: [] } as OrdersTableList
     )
 
     return { pending: pending.slice(0, ORDERS_LIMIT), history: history.slice(0, ORDERS_LIMIT) }

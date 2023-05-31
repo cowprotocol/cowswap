@@ -1,12 +1,13 @@
 import { UID } from '@cowprotocol/cow-sdk'
 
-import { LimitOrderActions } from 'modules/ordersTable/pure/Orders/types'
+import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { ordersMock } from './orders.mock'
-import { OrderTab } from './OrdersTabs'
 
-import { Orders } from './index'
+import { OrdersTableContainer } from './index'
+
+import { OrderTab } from '../../const/tabs'
 
 const tabs: OrderTab[] = [
   {
@@ -48,7 +49,7 @@ const orderActions: LimitOrderActions = {
 }
 
 export default (
-  <Orders
+  <OrdersTableContainer
     pendingOrdersPrices={{}}
     chainId={1}
     currentPageNumber={1}
