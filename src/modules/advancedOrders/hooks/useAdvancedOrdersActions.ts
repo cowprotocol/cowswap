@@ -6,6 +6,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { Field } from 'legacy/state/swap/actions'
 
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
+import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { updateTradeQuoteAtom } from 'modules/tradeQuote'
 
@@ -50,10 +51,14 @@ export function useAdvancedOrdersActions() {
     console.log('On change recipient')
   }, [])
 
-  // TODO: implement this one
+  const onSwitchTokensDefault = useSwitchTokensPlaces({
+    outputCurrencyAmount: null,
+  })
+
   const onSwitchTokens = useCallback(() => {
-    console.log('On switch tokens')
-  }, [])
+    onSwitchTokensDefault()
+    updateQuoteState({ response: null })
+  }, [updateQuoteState, onSwitchTokensDefault])
 
   return {
     onCurrencySelection,
