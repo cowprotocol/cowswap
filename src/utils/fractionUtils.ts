@@ -5,8 +5,7 @@ import { FractionLike, Nullish } from 'types'
 
 import { FULL_PRICE_PRECISION } from 'legacy/constants'
 
-import { adjustDecimalsAtoms } from 'modules/limitOrders/utils/calculateAmountForRate'
-
+import { adjustDecimalsAtoms } from 'utils/orderUtils/calculateAmountForRate'
 import { trimTrailingZeros } from 'utils/trimTrailingZeros'
 
 export class FractionUtils {
