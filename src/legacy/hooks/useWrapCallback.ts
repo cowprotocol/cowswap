@@ -18,7 +18,7 @@ import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
 import { useTransactionConfirmModal } from 'modules/swap/hooks/useTransactionConfirmModal'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
+import { useNativeTokenContext } from 'modules/trade/hooks/useNativeTokenContext'
 import { useWalletInfo } from 'modules/wallet'
 
 import { formatTokenAmount } from 'utils/amountFormat'
@@ -68,7 +68,7 @@ export function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<C
 }
 
 export function useWrapType(): WrapType {
-  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut } = useDetectNativeToken()
+  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut } = useNativeTokenContext()
 
   const isWrap = isNativeIn && isWrappedOut
   const isUnwrap = isWrappedIn && isNativeOut

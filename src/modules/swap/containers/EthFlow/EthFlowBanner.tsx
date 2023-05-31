@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { EthFlowBannerContent } from 'modules/swap/pure/EthFlow/EthFlowBanner'
-import { useDetectNativeToken } from 'modules/trade/hooks/useDetectNativeToken'
+import { useNativeTokenContext } from 'modules/trade/hooks/useNativeTokenContext'
 
 export interface EthFlowBannerCallbacks {
   wrapCallback: () => void
@@ -14,7 +14,7 @@ export interface EthFlowBannerProps extends EthFlowBannerCallbacks {
 
 export function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBannerProps) {
   const [showBanner, setShowBanner] = useState(false)
-  const { isNativeIn, native, wrappedToken: wrapped } = useDetectNativeToken()
+  const { isNativeIn, native, wrappedToken: wrapped } = useNativeTokenContext()
 
   const showBannerCallback = () => {
     return setShowBanner((state) => !state)

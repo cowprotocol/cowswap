@@ -4,7 +4,7 @@ import { useIsNativeIn, useIsNativeOut } from './useIsNative'
 import { useIsWrappedIn, useIsWrappedOut } from './useIsWrapped'
 import { useNativeCurrency } from './useNativeCurrency'
 
-export function useDetectNativeToken() {
+export function useNativeTokenContext() {
   const native = useNativeCurrency()
   const wrappedToken = native.wrapped
 
