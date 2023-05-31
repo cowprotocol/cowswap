@@ -1,5 +1,7 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { Erc20 } from 'legacy/abis/types'
+
 import { estimateApprove } from 'common/hooks/useApproveCallback'
 
 export type BuildApproveTxParams = {

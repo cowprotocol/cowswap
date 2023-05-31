@@ -1,13 +1,17 @@
-import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
-import { orderAnalytics } from '../../../components/analytics'
-import { FulfillOrdersBatchParams, Order } from '../actions'
 import { MiddlewareAPI } from '@reduxjs/toolkit'
-import { AppState } from '../../index'
 import { Dispatch } from 'redux'
+
+import { orderAnalytics } from 'legacy/components/analytics'
+
+import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+
+import { ExecutedSummary } from 'common/pure/ExecutedSummary'
+
 import { addPopup } from '../../application/reducer'
-import { parseOrder } from '../../../../modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { ExecutedSummary } from '../../../../common/pure/ExecutedSummary'
+import { AppState } from '../../index'
+import { FulfillOrdersBatchParams, Order } from '../actions'
 import * as OrderActions from '../actions'
+import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
 import { OrdersStateNetwork } from '../reducer'
 
 export function batchFulfillOrderPopup(

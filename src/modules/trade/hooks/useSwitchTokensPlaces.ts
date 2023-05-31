@@ -1,11 +1,15 @@
 import { useCallback } from 'react'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { FractionUtils } from 'utils/fractionUtils'
-import { ExtendedTradeRawState } from '../types/TradeRawState'
+
+import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
 import { useTradeNavigate } from './useTradeNavigate'
-import { useWalletInfo } from 'modules/wallet'
 import { useTradeState } from './useTradeState'
-import { useDerivedTradeState } from './useDerivedTradeState'
+
+import { ExtendedTradeRawState } from '../types/TradeRawState'
 
 export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawState> = {}) {
   const { chainId } = useWalletInfo()

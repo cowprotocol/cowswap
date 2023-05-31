@@ -1,13 +1,15 @@
 import { OrderKind } from '@cowprotocol/contracts'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { ParaSwap, SwapSide, NetworkID } from 'paraswap'
-import { OptimalRate } from 'paraswap-core'
 import { APIError, RateOptions } from 'paraswap/build/types'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { OptimalRate } from 'paraswap-core'
+import { PriceInformation } from 'types'
+
+import { SOLVER_ADDRESS as defaultUserAddress } from 'legacy/constants'
 import { getTokensFromMarket } from 'legacy/utils/misc'
 import { getValidParams } from 'legacy/utils/price'
-import { SOLVER_ADDRESS as defaultUserAddress } from 'legacy/constants'
-import { PriceInformation } from 'types'
+
 import { LegacyPriceQuoteParams } from 'api/gnosisProtocol/legacy/types'
 
 type ParaSwapPriceQuote = OptimalRate

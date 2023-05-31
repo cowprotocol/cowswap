@@ -1,6 +1,7 @@
-import invariant from 'tiny-invariant'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
+
+import invariant from 'tiny-invariant'
 
 /**
  * Convenient method to identify a market so it doesn't matter what is the sell token or buy token.

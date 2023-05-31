@@ -1,6 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { buildDocFilterFn, buildInverseDocFilterFn } from './utils'
+
 import {
   UploadAppDataParams,
   AppDataPendingToUpload,
@@ -8,7 +10,6 @@ import {
   RemoveAppDataFromUploadQueueParams,
   UpdateAppDataOnUploadQueueParams,
 } from '../types'
-import { buildDocFilterFn, buildInverseDocFilterFn } from './utils'
 import { updateAppDataHash } from '../utils/appDataHash'
 
 /**

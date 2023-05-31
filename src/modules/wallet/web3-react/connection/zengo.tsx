@@ -1,14 +1,15 @@
-import { ConnectionType } from 'modules/wallet'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { getConnectionName, getIsZengoWallet } from 'modules/wallet/api/utils/connection'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
-import { walletConnectConnection } from './walletConnect'
-import { TryActivation } from '.'
+import { ConnectionType } from 'modules/wallet'
 import { useWalletMetaData } from 'modules/wallet'
+import { default as ZengoImage } from 'modules/wallet/api/assets/zengo.svg'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getConnectionName, getIsZengoWallet } from 'modules/wallet/api/utils/connection'
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
-import { default as ZengoImage } from 'modules/wallet/api/assets/zengo.svg'
+import { TryActivation } from '.'
+
+import { walletConnectConnection } from './walletConnect'
 
 export const zengoOption = {
   color: '#4196FC',

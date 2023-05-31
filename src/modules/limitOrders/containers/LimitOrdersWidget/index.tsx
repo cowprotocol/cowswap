@@ -1,37 +1,43 @@
-import * as styledEl from './styled'
-import { Field } from 'legacy/state/swap/actions'
-import React, { useMemo, useState } from 'react'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { useFillLimitOrdersDerivedState, useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
-import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
+import { useAtom } from 'jotai'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { SettingsWidget } from '../SettingsWidget'
-import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
-import { RateInput } from '../RateInput'
-import { DeadlineInput } from '../DeadlineInput'
-import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
-import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
-import { useIsSellOrder } from '../../hooks/useIsSellOrder'
-import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
-import { useSetupTradeState } from 'modules/trade'
-import { limitRateAtom } from '../../state/limitRateAtom'
-import { useDisableNativeTokenSelling } from 'modules/limitOrders/hooks/useDisableNativeTokenSelling'
-import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
-import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
-import { useLimitOrdersPriceImpactParams } from 'modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
+import React, { useMemo, useState } from 'react'
+
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
+
+import usePriceImpact from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
+
+import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
+import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
+import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
+import { useDisableNativeTokenSelling } from 'modules/limitOrders/hooks/useDisableNativeTokenSelling'
+import { useLimitOrdersPriceImpactParams } from 'modules/limitOrders/hooks/useLimitOrdersPriceImpactParams'
 import { useSetupLimitOrderAmountsFromUrl } from 'modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useAtom } from 'jotai'
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useSetupTradeState } from 'modules/trade'
 import { TradeWidget } from 'modules/trade/containers/TradeWidget'
-import usePriceImpact from 'legacy/hooks/usePriceImpact'
-import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeQuote } from 'modules/tradeQuote'
+
+import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
+import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
+import * as styledEl from './styled'
+
+import { useIsSellOrder } from '../../hooks/useIsSellOrder'
+import { useFillLimitOrdersDerivedState, useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
+import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
+import { UnlockLimitOrders } from '../../pure/UnlockLimitOrders'
+import { updateLimitOrdersRawStateAtom } from '../../state/limitOrdersRawStateAtom'
+import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
+import { limitRateAtom } from '../../state/limitRateAtom'
+import { DeadlineInput } from '../DeadlineInput'
+import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
+import { RateInput } from '../RateInput'
+import { SettingsWidget } from '../SettingsWidget'
 
 export function LimitOrdersWidget() {
   useSetupTradeState()
@@ -152,6 +158,20 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
 
+  const inputCurrencyPreviewInfo = {
+    amount: inputCurrencyInfo.amount,
+    fiatAmount: inputCurrencyInfo.fiatAmount,
+    balance: inputCurrencyInfo.balance,
+    label: inputCurrencyInfo.label,
+  }
+
+  const outputCurrencyPreviewInfo = {
+    amount: outputCurrencyInfo.amount,
+    fiatAmount: outputCurrencyInfo.fiatAmount,
+    balance: outputCurrencyInfo.balance,
+    label: outputCurrencyInfo.label,
+  }
+
   console.debug('RENDER LIMIT ORDERS WIDGET', { inputCurrencyInfo, outputCurrencyInfo })
 
   const slots = {
@@ -221,8 +241,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           isOpen={showConfirmation}
           tradeContext={tradeContext}
           priceImpact={priceImpact}
-          inputCurrencyInfo={inputCurrencyInfo}
-          outputCurrencyInfo={outputCurrencyInfo}
+          inputCurrencyInfo={inputCurrencyPreviewInfo}
+          outputCurrencyInfo={outputCurrencyPreviewInfo}
           onDismiss={() => setShowConfirmation(false)}
         />
       )}

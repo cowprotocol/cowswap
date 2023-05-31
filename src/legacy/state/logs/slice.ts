@@ -1,4 +1,5 @@
 import { Filter } from '@ethersproject/providers'
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { filterToKey, Log } from './utils'

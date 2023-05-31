@@ -1,19 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
+import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
-import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
-import { useAllTokens } from 'legacy/hooks/Tokens'
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { GP_ORDER_UPDATE_INTERVAL, NATIVE_CURRENCY_BUY_ADDRESS, NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
-import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
+import { useAllTokens } from 'legacy/hooks/Tokens'
 import { useTokenLazy } from 'legacy/hooks/useTokenLazy'
-import { useGpOrders } from 'api/gnosisProtocol/hooks'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
+import { computeOrderSummary } from 'legacy/state/orders/updaters/utils'
+import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { useGpOrders } from 'api/gnosisProtocol/hooks'
 
 function _getTokenFromMapping(
   address: string,

@@ -1,8 +1,11 @@
-import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import * as styledEl from './styled'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
+
+import * as styledEl from './styled'
 
 interface Props {
   order: ParsedOrder

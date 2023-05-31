@@ -1,8 +1,11 @@
 import { Currency } from '@uniswap/sdk-core'
-import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-import styled from 'styled-components/macro'
-import { AlertTriangle } from 'react-feather'
+
 import { transparentize, lighten, darken } from 'polished'
+import { AlertTriangle } from 'react-feather'
+import styled from 'styled-components/macro'
+
+import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
+
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 interface RateImpactAcknowledge {

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components/macro'
+
 import { X } from 'react-feather'
+import styled from 'styled-components/macro'
+
 import { MEDIA_WIDTHS } from 'legacy/theme'
+
 import { useNotificationState } from 'common/hooks/useNotificationState'
 
 type Level = 'info' | 'warning' | 'error'

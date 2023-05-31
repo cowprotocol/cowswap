@@ -1,13 +1,17 @@
-import { useMultipleContractSingleData } from 'lib/hooks/multicall'
-import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
+import { useMemo } from 'react'
+
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Interface } from '@ethersproject/abi'
+import { BigNumber } from '@ethersproject/bignumber'
+
 import ERC20_ABI from 'legacy/abis/erc20.json'
 import { Erc20Interface } from 'legacy/abis/types/Erc20'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useMemo } from 'react'
 import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { BigNumber } from '@ethersproject/bignumber'
+import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { useMultipleContractSingleData } from 'lib/hooks/multicall'
 
 const WETH_ADDRESS = WETH[ChainId.MAINNET].address
 const PERI_ADDRESS = '0x5d30aD9C6374Bf925D0A75454fa327AACf778492'

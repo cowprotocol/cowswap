@@ -1,9 +1,12 @@
-import { ImportTokenModal } from 'common/containers/ImportTokenModal'
-import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
-import { TradeApproveModal } from 'common/containers/TradeApprove'
 import React from 'react'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { ImportTokenModal } from 'common/containers/ImportTokenModal'
+import { TradeApproveModal } from 'common/containers/TradeApprove'
+import { ZeroApprovalModal } from 'common/containers/ZeroApprovalModal'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
+
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 
 export function TradeWidgetModals() {

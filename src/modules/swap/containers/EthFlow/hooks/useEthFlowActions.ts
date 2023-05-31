@@ -1,15 +1,19 @@
-import { useMemo } from 'react'
-import { Field } from 'legacy/state/swap/actions'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { useAtomValue } from 'jotai/utils'
-import { ethFlowContextAtom, updateEthFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
 import { useSetAtom } from 'jotai'
-import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
-import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
+import { useAtomValue } from 'jotai/utils'
+import { useMemo } from 'react'
+
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
-import { TradeApproveCallback } from 'common/containers/TradeApprove/useTradeApproveCallback'
+import { Field } from 'legacy/state/swap/actions'
+import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
+
+import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
 import { useWalletInfo } from 'modules/wallet'
+
+import { TradeApproveCallback } from 'common/containers/TradeApprove/useTradeApproveCallback'
+
+import { ethFlowContextAtom, updateEthFlowContextAtom } from '../../../state/EthFlow/ethFlowContextAtom'
 
 export interface EthFlowActionCallbacks {
   approve: TradeApproveCallback

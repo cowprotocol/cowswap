@@ -1,15 +1,16 @@
-import { ConnectionType } from 'modules/wallet'
-import { getConnectionName } from 'modules/wallet/api/utils/connection'
-
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
-import { TryActivation, onError } from '.'
-
 import { initializeConnector } from '@web3-react/core'
 import { MetaMask } from '@web3-react/metamask'
-import { Web3ReactConnection } from '../types'
 
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+
+import { ConnectionType } from 'modules/wallet'
 import { default as KeystoneImage } from 'modules/wallet/api/assets/keystone.svg'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
+import { getConnectionName } from 'modules/wallet/api/utils/connection'
+
+import { TryActivation, onError } from '.'
+
+import { Web3ReactConnection } from '../types'
 
 const TOOLTIP_TEXT = 'Connect your Keystone wallet using MetaMask'
 const TOOLTIP_INSTALL_TEXT = 'Install Metamask to use Keystone wallet'

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+
 import { COW_SUBSIDY_DATA } from './constants'
 
 const SLICED_DATA = COW_SUBSIDY_DATA.slice(1)

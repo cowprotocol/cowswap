@@ -1,5 +1,6 @@
-import { WETH9 as WETH } from '@uniswap/sdk-core'
 import { GetQuoteResponse } from '@cowprotocol/contracts'
+import { WETH9 as WETH } from '@uniswap/sdk-core'
+
 import { parseUnits } from 'ethers/lib/utils'
 
 const DAI = '0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60'

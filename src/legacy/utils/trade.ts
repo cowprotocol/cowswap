@@ -1,13 +1,3 @@
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { isAddress, shortenAddress } from 'legacy/utils/index'
-import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
-import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
-
-import { getTrades, OrderID } from 'api/gnosisProtocol'
-import { Signer } from '@ethersproject/abstract-signer'
-import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { formatSymbol } from 'utils/format'
 import {
   EcdsaSigningScheme,
   OrderClass,
@@ -16,9 +6,21 @@ import {
   SigningScheme,
   OrderSigningUtils,
 } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Signer } from '@ethersproject/abstract-signer'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { orderBookApi } from 'cowSdk'
+
+import { RADIX_DECIMAL, NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
+import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
+import { isAddress, shortenAddress } from 'legacy/utils/index'
+
+import { getTrades, OrderID } from 'api/gnosisProtocol'
 import { getProfileData } from 'api/gnosisProtocol/api'
 import { formatTokenAmount } from 'utils/amountFormat'
-import { orderBookApi } from 'cowSdk'
+import { formatSymbol } from 'utils/format'
 
 export type PostOrderParams = {
   account: string

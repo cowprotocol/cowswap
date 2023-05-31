@@ -1,7 +1,8 @@
-import PopoverMod, { Arrow as ArrowMod, PopoverContainer as PopoverContainerMod } from './PopoverMod'
-import styled from 'styled-components/macro'
-import { PopoverProps } from './PopoverMod'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import PopoverMod, { Arrow as ArrowMod, PopoverContainer as PopoverContainerMod } from './PopoverMod'
+import { PopoverProps } from './PopoverMod'
 
 export * from './PopoverMod'
 

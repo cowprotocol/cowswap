@@ -1,8 +1,10 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import TradeGp from './TradeGp'
+
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import TradeGp from './TradeGp'
 
 export function isWrappingTrade(
   sellCurrency: Currency | null | undefined,

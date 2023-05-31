@@ -1,7 +1,13 @@
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Ether, NativeCurrency, Token, WETH9 } from '@uniswap/sdk-core'
 
-import { UNI_ADDRESS } from './addresses'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import cowLogo from 'legacy/assets/cow-swap/cow.svg'
+import gnoLogo from 'legacy/assets/cow-swap/gno.png'
+import usdcLogo from 'legacy/assets/cow-swap/usdc.png'
+import vCowLogo from 'legacy/assets/cow-swap/vCOW.png'
+import wxDaiLogo from 'legacy/assets/cow-swap/wxdai.png'
+import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import {
   USDC_GNOSIS_CHAIN,
   WBTC_GNOSIS_CHAIN,
@@ -11,13 +17,8 @@ import {
   XDAI_SYMBOL,
 } from 'legacy/utils/gnosis_chain/constants'
 import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import vCowLogo from 'legacy/assets/cow-swap/vCOW.png'
-import cowLogo from 'legacy/assets/cow-swap/cow.svg'
-import gnoLogo from 'legacy/assets/cow-swap/gno.png'
-import usdcLogo from 'legacy/assets/cow-swap/usdc.png'
-import wxDaiLogo from 'legacy/assets/cow-swap/wxdai.png'
+
+import { UNI_ADDRESS } from './addresses'
 
 export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,

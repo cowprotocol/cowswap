@@ -1,14 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
+
 import { Percent } from '@uniswap/sdk-core'
 
-import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'
-import { FallbackPriceImpactParams, PriceImpactTrade } from './types'
-import { calculateFallbackPriceImpact } from 'legacy/utils/price'
-import { QuoteInformationObject } from 'legacy/state/price/reducer'
+import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
 import { QuoteError } from 'legacy/state/price/actions'
+import { QuoteInformationObject } from 'legacy/state/price/reducer'
+import { calculateFallbackPriceImpact } from 'legacy/utils/price'
+
 import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
 import { PRICE_QUOTE_VALID_TO_TIME } from 'constants/quote'
-import useIsWindowVisible from 'legacy/hooks/useIsWindowVisible'
+
+import { FallbackPriceImpactParams, PriceImpactTrade } from './types'
+import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'
 
 type SwapParams = { abTrade?: PriceImpactTrade; sellToken?: string | null; buyToken?: string | null }
 

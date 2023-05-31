@@ -1,6 +1,7 @@
-import styled from 'styled-components/macro'
-import { ButtonPrimary } from 'legacy/components/Button'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { ButtonPrimary } from 'legacy/components/Button'
 
 export const BannerWrapper = styled.div`
   display: flex;

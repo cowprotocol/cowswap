@@ -1,6 +1,5 @@
-import styled from 'styled-components/macro'
-
 import { X } from 'react-feather'
+import styled from 'styled-components/macro'
 
 export const PhishAlert = styled.div<{ isActive: any }>`
   width: 100%;

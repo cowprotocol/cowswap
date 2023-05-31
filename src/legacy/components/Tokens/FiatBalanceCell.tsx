@@ -1,9 +1,13 @@
-import { Trans } from '@lingui/macro'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { BalanceValue, InfoCircle, FiatValue } from './styled'
+
+import { Trans } from '@lingui/macro'
+
 import { MouseoverTooltip } from 'legacy/components/Tooltip'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+
 import { FiatAmount } from 'common/pure/FiatAmount'
+
+import { BalanceValue, InfoCircle, FiatValue } from './styled'
 
 type FiatBalanceCellProps = {
   balance: CurrencyAmount<Token> | undefined

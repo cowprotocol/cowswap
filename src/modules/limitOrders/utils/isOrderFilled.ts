@@ -1,5 +1,6 @@
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { BigNumber } from 'bignumber.js'
+
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 const ONE_BIG_NUMBER = new BigNumber(1)
 const FILLED_ORDER_EPSILON = new BigNumber('0.0001')

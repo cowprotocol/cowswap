@@ -1,36 +1,42 @@
-import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
 import React, { useCallback, useState, useEffect, useMemo, useRef } from 'react'
-import { OrdersTablePagination } from './OrdersTablePagination'
-import { OrderRow } from './OrderRow'
-import { InvertRateControl } from 'common/pure/RateInfo'
-import { BalancesAndAllowances } from 'modules/tokens'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { transparentize } from 'polished'
-import { LIMIT_ORDERS_PAGE_SIZE } from 'modules/limitOrders/const/limitOrdersTabs'
-import { getOrderParams } from './utils/getOrderParams'
-import { ordersSorter } from 'modules/limitOrders/utils/ordersSorter'
-import QuestionHelper from 'legacy/components/QuestionHelper'
-import { RateTooltipHeader } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
-import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { limitOrdersFeatures } from 'constants/featureFlags'
-import { QuestionWrapper } from 'legacy/components/QuestionHelper'
-import SVG from 'react-inlinesvg'
-import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
-import { X } from 'react-feather'
-import { OrderExecutionStatusList } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
-import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
 import { Currency, Price } from '@uniswap/sdk-core'
-import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
+
+import { Trans } from '@lingui/macro'
+import { transparentize } from 'polished'
+import { X } from 'react-feather'
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
+import { QuestionWrapper } from 'legacy/components/QuestionHelper'
+import QuestionHelper from 'legacy/components/QuestionHelper'
 import { Order } from 'legacy/state/orders/actions'
+
+import { LIMIT_ORDERS_PAGE_SIZE } from 'modules/limitOrders/const/limitOrdersTabs'
+import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { OrderExecutionStatusList } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
+import { RateTooltipHeader } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import {
   TableHeader,
   TableRowCheckbox,
   TableRowCheckboxWrapper,
   CheckboxCheckmark,
 } from 'modules/limitOrders/pure/Orders/styled'
+import { LimitOrderActions } from 'modules/limitOrders/pure/Orders/types'
+import { ordersSorter } from 'modules/limitOrders/utils/ordersSorter'
+import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
+import { BalancesAndAllowances } from 'modules/tokens'
+
+import { InvertRateControl } from 'common/pure/RateInfo'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
+import { limitOrdersFeatures } from 'constants/featureFlags'
+
+import { OrderRow } from './OrderRow'
+import { OrdersTablePagination } from './OrdersTablePagination'
+import { getOrderParams } from './utils/getOrderParams'
 
 // TODO: move elements to styled.jsx
 

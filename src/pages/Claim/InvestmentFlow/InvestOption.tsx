@@ -1,9 +1,42 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { CurrencyAmount } from '@uniswap/sdk-core'
-import { BigNumber } from '@ethersproject/bignumber'
-import SVG from 'react-inlinesvg'
 
+import { BigNumber } from '@ethersproject/bignumber'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+import CheckCircle from 'legacy/assets/cow-swap/check.svg'
+import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
+import { ButtonConfirmed } from 'legacy/components/Button'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import Loader from 'legacy/components/Loader'
+import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
+import { Input as NumericalInput } from 'legacy/components/NumericalInput'
+import Row from 'legacy/components/Row'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
+import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
+import { ApprovalState, useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
+import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/claim/hooks/utils'
+import { useGasPrices } from 'legacy/state/gas/hooks'
+import { ButtonSize } from 'legacy/theme/enum'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+import { getProviderErrorMessage } from 'legacy/utils/misc'
+
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
+import { formatTokenAmount } from 'utils/amountFormat'
+import { formatSymbol } from 'utils/format'
+
+import { InvestmentFlowProps } from '.'
+
+import { IS_TESTING_ENV } from '../const'
 import {
   InvestTokenGroup,
   TokenLogo,
@@ -14,33 +47,11 @@ import {
   UserMessage,
   WarningWrapper,
 } from '../styled'
-import { formatSymbol } from 'utils/format'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-import Row from 'legacy/components/Row'
-import CheckCircle from 'legacy/assets/cow-swap/check.svg'
-import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
-import { ApprovalState, useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
-import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
-import { StyledNumericalInput } from 'legacy/components/CurrencyInputPanel/CurrencyInputPanelMod'
-
-import { ButtonConfirmed } from 'legacy/components/Button'
-import { ButtonSize } from 'legacy/theme/enum'
-import Loader from 'legacy/components/Loader'
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { calculateInvestmentAmounts, calculatePercentage } from 'legacy/state/claim/hooks/utils'
-import { useGasPrices } from 'legacy/state/gas/hooks'
-import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
 import { EnhancedUserClaimData } from '../types'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
-import { IS_TESTING_ENV } from '../const'
-import { InvestmentFlowProps } from '.'
-import { getProviderErrorMessage } from 'legacy/utils/misc'
-import { formatTokenAmount } from 'utils/amountFormat'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { useWalletInfo } from 'modules/wallet'
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+
+const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
+  ${loadingOpacityMixin}
+`
 
 const ErrorMessages = {
   NoBalance: (symbol = '') =>

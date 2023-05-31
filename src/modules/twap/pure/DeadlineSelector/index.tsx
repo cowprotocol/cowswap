@@ -1,8 +1,11 @@
-import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import React, { useCallback, useMemo, useState } from 'react'
-import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
-import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
+
 import styled from 'styled-components/macro'
+
+import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
+
+import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
+import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
 
 interface DeadlineSelectorProps {
   items: TradeSelectItem[]

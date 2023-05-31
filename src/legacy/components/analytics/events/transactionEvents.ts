@@ -1,14 +1,14 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
-import { sendEvent } from '../index'
-import { Category } from '../types'
 
+import { sendEvent } from '../index'
 import { PIXEL_EVENTS } from '../pixel/constants'
 import { sendFacebookEvent } from '../pixel/facebook'
 import { sendLinkedinEvent } from '../pixel/linkedin'
-import { sendTwitterEvent } from '../pixel/twitter'
-import { sendRedditEvent } from '../pixel/reddit'
-import { sendPavedEvent } from '../pixel/paved'
 import { sendMicrosoftEvent } from '../pixel/microsoft'
+import { sendPavedEvent } from '../pixel/paved'
+import { sendRedditEvent } from '../pixel/reddit'
+import { sendTwitterEvent } from '../pixel/twitter'
+import { Category } from '../types'
 
 const LABEL_FROM_CLASS: Record<OrderClass, string> = {
   [OrderClass.LIMIT]: 'Limit Order',

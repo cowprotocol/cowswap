@@ -1,12 +1,16 @@
-import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
-import styled from 'styled-components/macro'
-import { LightCard as LightCardUni } from 'legacy/components/Card'
-import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
-import { useWalletDetails } from 'modules/wallet'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
-import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
-import { transparentize } from 'polished'
 import React from 'react'
+
+import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { LightCard as LightCardUni } from 'legacy/components/Card'
+import { SwapShowAcceptChanges } from 'legacy/components/swap/styleds'
+import { HighFeeWarning as HighFeeWarningBase } from 'legacy/components/SwapWarnings'
+
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { useWalletDetails } from 'modules/wallet'
+
+import SwapModalHeaderMod, { SwapModalHeaderProps } from './SwapModalHeaderMod'
 
 const LightCard = styled(LightCardUni)<{ flatBorder?: boolean }>`
   background-color: ${({ theme }) => theme.grey1};

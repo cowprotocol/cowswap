@@ -1,6 +1,8 @@
-import { sendEvent } from 'legacy/components/analytics'
-import ms from 'ms.macro'
 import { useEffect } from 'react'
+
+import ms from 'ms.macro'
+
+import { sendEvent } from 'legacy/components/analytics'
 import { ApplicationModal, setOpenModal } from 'legacy/state/application/reducer'
 import { useAppDispatch } from 'legacy/state/hooks'
 

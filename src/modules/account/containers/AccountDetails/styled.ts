@@ -1,7 +1,11 @@
 import styled from 'styled-components/macro'
+
+import { ButtonSecondary } from 'legacy/components/Button'
+import { YellowCard } from 'legacy/components/Card'
 import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
 import { StyledLink } from 'legacy/theme'
-import { YellowCard } from 'legacy/components/Card'
+import { ExternalLink } from 'legacy/theme'
+
 import {
   StatusLabelWrapper,
   Summary,
@@ -11,8 +15,6 @@ import {
   TransactionInnerDetail,
   TextAlert,
 } from '../../containers/Transaction/styled'
-import { ButtonSecondary } from 'legacy/components/Button'
-import { ExternalLink } from 'legacy/theme'
 
 export const WalletName = styled.div`
   width: initial;

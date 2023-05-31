@@ -1,15 +1,21 @@
-import { useTradeStateFromUrl } from './useTradeStateFromUrl'
-import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
-import { useTradeState } from '../useTradeState'
 import { useEffect, useState } from 'react'
-import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
-import { useWeb3React } from '@web3-react/core'
-import { useWalletInfo } from 'modules/wallet'
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import usePrevious from 'legacy/hooks/usePrevious'
-import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWeb3React } from '@web3-react/core'
+
+import usePrevious from 'legacy/hooks/usePrevious'
+
+import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
+import { useWalletInfo } from 'modules/wallet'
+import { switchChain } from 'modules/wallet/web3-react/hooks/switchChain'
+
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
+
+import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
+import { useTradeStateFromUrl } from './useTradeStateFromUrl'
+
+import { useTradeState } from '../useTradeState'
 
 export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()

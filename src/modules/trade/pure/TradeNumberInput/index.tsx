@@ -1,5 +1,7 @@
-import { TradeWidgetField, TradeWidgetFieldProps } from 'modules/trade/pure/TradeWidgetField'
 import { useCallback, useEffect, useState } from 'react'
+
+import { TradeWidgetField, TradeWidgetFieldProps } from 'modules/trade/pure/TradeWidgetField'
+
 import { NumericalInput, Suffix } from './styled'
 
 export interface TradeNumberInputProps extends TradeWidgetFieldProps {

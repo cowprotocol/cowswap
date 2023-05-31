@@ -1,14 +1,18 @@
 import { renderHook } from '@testing-library/react-hooks'
-import { useHandleSwap } from './useHandleSwap'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
-import { swapFlow } from 'modules/swap/services/swapFlow'
-import { ethFlow } from 'modules/swap/services/ethFlow'
-import { useSwapFlowContext } from './useSwapFlowContext'
-import { useEthFlowContext } from './useEthFlowContext'
-import { withModalProvider } from 'utils/withModalProvider'
+
 import { useSafeBundleFlowContext } from 'modules/swap/hooks/useSafeBundleFlowContext'
+import { ethFlow } from 'modules/swap/services/ethFlow'
 import { safeBundleFlow } from 'modules/swap/services/safeBundleFlow'
+import { swapFlow } from 'modules/swap/services/swapFlow'
+
+import { withModalProvider } from 'utils/withModalProvider'
+
+import { useEthFlowContext } from './useEthFlowContext'
+import { useHandleSwap } from './useHandleSwap'
+import { useSwapFlowContext } from './useSwapFlowContext'
 
 jest.mock('./useSwapFlowContext')
 jest.mock('./useEthFlowContext')

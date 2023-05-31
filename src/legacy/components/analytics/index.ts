@@ -1,9 +1,12 @@
-import { UaEventOptions } from 'react-ga4/types/ga4'
-import { isMobile } from 'legacy/utils/userAgent'
 import { ErrorInfo } from 'react'
+
+import { UaEventOptions } from 'react-ga4/types/ga4'
+
+import { isMobile } from 'legacy/utils/userAgent'
+
+import { serviceWorkerAnalytics, initAnalytics } from './events/otherEvents'
 import { GAProvider } from './provider'
 import { Dimensions } from './types'
-import { serviceWorkerAnalytics, initAnalytics } from './events/otherEvents'
 export { useAnalyticsReporter } from './hooks/useAnalyticsReporter'
 
 const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID

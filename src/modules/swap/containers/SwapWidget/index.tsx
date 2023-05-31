@@ -1,3 +1,15 @@
+import React, { useState } from 'react'
+
+import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
+import SettingsTab from 'legacy/components/Settings'
+import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
+import usePriceImpact from 'legacy/hooks/usePriceImpact'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+import { useWrapType, WrapType } from 'legacy/hooks/useWrapCallback'
+import { useModalIsOpen } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
+import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
+import { Field } from 'legacy/state/swap/actions'
 import { useSwapState } from 'legacy/state/swap/hooks'
 import {
   useDerivedSwapInfo,
@@ -6,45 +18,36 @@ import {
   useSwapActionHandlers,
   useUnknownImpactWarning,
 } from 'legacy/state/swap/hooks'
-import { useWrapType, WrapType } from 'legacy/hooks/useWrapCallback'
-import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
-import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
-import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
-import usePriceImpact from 'legacy/hooks/usePriceImpact'
-import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { Field } from 'legacy/state/swap/actions'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
-import React, { useState } from 'react'
-import { useModalIsOpen } from 'legacy/state/application/hooks'
-import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
+
 import { ConfirmSwapModalSetupProps } from 'modules/swap/containers/ConfirmSwapModalSetup'
 import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
+import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
+import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useSetupSwapAmountsFromUrl } from 'modules/swap/hooks/useSetupSwapAmountsFromUrl'
+import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
+import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
+import { useSwapCurrenciesAmounts } from 'modules/swap/hooks/useSwapCurrenciesAmounts'
+import { useTradePricesUpdate } from 'modules/swap/hooks/useTradePricesUpdate'
+import { SwapButtons } from 'modules/swap/pure/SwapButtons'
+import { TradeRates, TradeRatesProps } from 'modules/swap/pure/TradeRates'
 import {
   SwapWarningsBottom,
   SwapWarningsBottomProps,
   SwapWarningsTop,
   SwapWarningsTopProps,
 } from 'modules/swap/pure/warnings'
-import { TradeRates, TradeRatesProps } from 'modules/swap/pure/TradeRates'
-import { SwapButtons } from 'modules/swap/pure/SwapButtons'
-import { useSetupTradeState } from 'modules/trade'
-import { NetworkAlert } from 'legacy/components/NetworkAlert/NetworkAlert'
-import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { useSetupSwapAmountsFromUrl } from 'modules/swap/hooks/useSetupSwapAmountsFromUrl'
-import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { TradeWidget, TradeWidgetContainer } from 'modules/trade/containers/TradeWidget'
-import SettingsTab from 'legacy/components/Settings'
-import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useSetupTradeState } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer } from 'modules/trade/containers/TradeWidget'
+import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
+
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
 

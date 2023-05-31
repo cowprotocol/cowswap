@@ -1,6 +1,7 @@
 // RangeBadge.fixture.jsx
-import { Box } from 'rebass'
 import { ReactNode } from 'react'
+
+import { Box } from 'rebass'
 import styled from 'styled-components/macro'
 
 type WrapperParams = { background?: string; children: ReactNode }

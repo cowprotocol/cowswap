@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 
 export const ConfirmModalWrapper = styled.div`
+  width: 100%;
   padding: 0;
   border-radius: 16px;
   background: ${({ theme }) => theme.bg1};

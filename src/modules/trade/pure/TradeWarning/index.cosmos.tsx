@@ -1,5 +1,6 @@
-import { TradeWarning, TradeWarningType } from './index'
 import React from 'react'
+
+import { TradeWarning, TradeWarningType } from './index'
 
 const text = (
   <span>

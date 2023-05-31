@@ -1,10 +1,14 @@
-import styled from 'styled-components/macro'
-import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
-import { AccountDetails } from '../AccountDetails'
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { ReactComponent as Close } from 'legacy/assets/images/x.svg'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+
+import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+
 import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
+
+import { AccountDetails } from '../AccountDetails'
 
 const SideBar = styled.div`
   display: flex;

@@ -1,32 +1,37 @@
+import { useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai/utils'
 import React, { useCallback, useEffect } from 'react'
 
-import { RateImpactWarning } from '../../pure/RateImpactWarning'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
-import { useAtomValue } from 'jotai/utils'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import styled from 'styled-components/macro'
+import { Nullish } from 'types'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { LimitOrdersFormState, useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
+import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
+import { HIGH_FEE_WARNING_PERCENTAGE } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import {
   limitOrdersWarningsAtom,
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
-import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useSetAtom } from 'jotai'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import styled from 'styled-components/macro'
-import { LimitOrdersFormState, useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
+import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import {
   BundleTxApprovalBanner,
   BundleTxSafeWcBanner,
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
-import { HIGH_FEE_WARNING_PERCENTAGE } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
-import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
-import { Nullish } from 'types'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
+
+import { RateImpactWarning } from '../../pure/RateImpactWarning'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [
   LimitOrdersFormState.ExpertApproveAndSwap,

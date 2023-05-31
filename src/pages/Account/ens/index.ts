@@ -1,5 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { ClientError, gql, GraphQLClient } from 'graphql-request'
+
 import { EnsNamesQuery } from 'pages/Account/ens/types'
 
 const CHAIN_SUBGRAPH_URL: Record<number, string> = {

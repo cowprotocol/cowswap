@@ -1,6 +1,7 @@
-import safeStringify from 'fast-safe-stringify'
 import { sha256 } from '@ethersproject/sha2'
 import { toUtf8Bytes } from '@ethersproject/strings'
+
+import safeStringify from 'fast-safe-stringify'
 
 /* Generates a sha256 hash of a given value deterministically */
 export default function deterministicHash(value: any): string {

@@ -1,12 +1,14 @@
 import { OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { AppState } from '../../index'
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from '../../../utils/appzi'
-import { getOrderByIdFromState } from '../helpers'
-import { getExplorerOrderLink } from '../../../utils/explorer'
-import { timeSinceInSeconds } from '../../../../utils/time'
-import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
-import * as OrderActions from '../actions'
+
 import { isAnyOf } from '@reduxjs/toolkit'
+import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
+
+import { timeSinceInSeconds } from '../../../../utils/time'
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from '../../../utils/appzi'
+import { getExplorerOrderLink } from '../../../utils/explorer'
+import { AppState } from '../../index'
+import * as OrderActions from '../actions'
+import { getOrderByIdFromState } from '../helpers'
 
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
@@ -45,7 +47,13 @@ function _triggerNps(
   const explorerUrl = getExplorerOrderLink(chainId, orderId)
 
   // Open Appzi NPS for limit orders only if they were filled before `PENDING_TOO_LONG_TIME` since creating
-  if (order?.class === OrderClass.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)) {
+  const isLimitOrderRecentlyTraded =
+    order?.class === OrderClass.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)
+
+  // Do not show NPS if the order is hidden and expired
+  const isHiddenAndExpired = order?.isHidden && npsParams?.expired
+
+  if (isHiddenAndExpired || isLimitOrderRecentlyTraded) {
     return
   }
 

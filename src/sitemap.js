@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { renderSitemap } = require('simple-sitemap-renderer')
+
 const fs = require('fs')
 
 const OUTPUT_FILE = 'public/sitemap.xml'

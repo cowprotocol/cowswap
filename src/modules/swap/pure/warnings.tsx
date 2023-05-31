@@ -1,13 +1,18 @@
-import { HighFeeWarning } from 'legacy/components/SwapWarnings'
-import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { Currency } from '@uniswap/sdk-core'
 import React from 'react'
-import { genericPropsChecker } from 'utils/genericPropsChecker'
-import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+
+import { Currency } from '@uniswap/sdk-core'
+
 import styled from 'styled-components/macro'
+
+import { HighFeeWarning } from 'legacy/components/SwapWarnings'
+import TradeGp from 'legacy/state/swap/TradeGp'
+
+import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+
 import { BundleTxApprovalBanner, BundleTxSafeWcBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
+import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 export interface SwapWarningsTopProps {
   trade: TradeGp | undefined

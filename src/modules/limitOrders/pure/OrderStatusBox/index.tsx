@@ -1,7 +1,9 @@
 import styled from 'styled-components/macro'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { orderStatusTitleMap } from 'modules/limitOrders/pure/Orders/OrderRow'
+
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { orderStatusTitleMap } from 'modules/limitOrders/pure/Orders/OrderRow'
 
 const Wrapper = styled.div<{
   status: OrderStatus
@@ -9,6 +11,7 @@ const Wrapper = styled.div<{
   cancelling?: boolean
   withWarning?: boolean
   widthAuto?: boolean
+  clickable?: boolean
 }>`
   --height: 28px;
   --statusColor: ${({ theme, status, cancelling, partiallyFilled }) =>
@@ -39,6 +42,7 @@ const Wrapper = styled.div<{
   font-weight: 600;
   height: var(--height);
   width: ${({ widthAuto }) => (widthAuto ? 'auto' : '100%')};
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
 
   &::before {
     content: '';
@@ -55,9 +59,14 @@ const Wrapper = styled.div<{
   }
 `
 
-export type OrderStatusBoxProps = { order: ParsedOrder; widthAuto?: boolean; withWarning?: boolean }
+export type OrderStatusBoxProps = {
+  order: ParsedOrder
+  widthAuto?: boolean
+  withWarning?: boolean
+  onClick?: () => void
+}
 
-export function OrderStatusBox({ order, widthAuto, withWarning }: OrderStatusBoxProps) {
+export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: OrderStatusBoxProps) {
   return (
     <Wrapper
       cancelling={order.isCancelling}
@@ -65,6 +74,8 @@ export function OrderStatusBox({ order, widthAuto, withWarning }: OrderStatusBox
       status={order.status}
       widthAuto={widthAuto}
       withWarning={withWarning}
+      clickable={!!onClick}
+      onClick={onClick}
     >
       {/* Status overrides for special cases */}
       {

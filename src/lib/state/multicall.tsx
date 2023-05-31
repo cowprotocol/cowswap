@@ -1,8 +1,12 @@
-import { useWalletInfo } from 'modules/wallet'
 import { createMulticall /*, ListenerOptions */ } from '@uniswap/redux-multicall'
-import { useInterfaceMulticall } from 'legacy/hooks/useContract'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
+
 import { combineReducers, createStore } from 'redux'
+
+import { useInterfaceMulticall } from 'legacy/hooks/useContract'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import useBlockNumber from 'lib/hooks/useBlockNumber'
 
 const multicall = createMulticall()
 const reducer = combineReducers({ [multicall.reducerPath]: multicall.reducer })

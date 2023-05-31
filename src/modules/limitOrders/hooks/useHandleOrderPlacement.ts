@@ -1,17 +1,20 @@
-import { useCallback } from 'react'
-import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
-import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useUpdateAtom } from 'jotai/utils'
-import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useAtom } from 'jotai'
-import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
-import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
-import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
-import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { useUpdateAtom } from 'jotai/utils'
+import { useCallback } from 'react'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
+import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
+import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
+import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
+import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+
+import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
+import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 interface HandleTradeCallback {
   beforeTrade(): void

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components/macro'
+
 import { X as CloseIcon } from 'react-feather'
+import styled from 'styled-components/macro'
 
 const Container = styled.header`
   display: flex;

@@ -1,6 +1,7 @@
-import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
 import { Link, useLocation } from 'react-router-dom'
+import styled from 'styled-components/macro'
+
 import { buildLimitOrdersUrl } from 'modules/limitOrders/utils/buildLimitOrdersUrl'
 
 export interface OrdersTablePaginationProps {

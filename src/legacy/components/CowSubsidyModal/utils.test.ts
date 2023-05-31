@@ -1,8 +1,7 @@
-/**
- * @jest-environment ./custom-test-env.js
- */
-import { BigNumber } from 'bignumber.js'
 import { formatUnits } from '@ethersproject/units'
+
+import { BigNumber } from 'bignumber.js'
+
 import { getDiscountFromBalance } from './utils'
 
 const BALANCES_IN_TIER = [

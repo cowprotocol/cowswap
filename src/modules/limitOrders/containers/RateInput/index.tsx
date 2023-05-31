@@ -1,26 +1,30 @@
-import * as styledEl from './styled'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { RefreshCw } from 'react-feather'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
-import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { toFraction } from 'modules/limitOrders/utils/toFraction'
-import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
-import { isFractionFalsy } from 'utils/isFractionFalsy'
-import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
-import { getAddress } from 'utils/getAddress'
-import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { formatInputAmount } from 'utils/amountFormat'
-import QuestionHelper from 'legacy/components/QuestionHelper'
-import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
+import { RefreshCw } from 'react-feather'
+
 import Loader from 'legacy/components/Loader'
-import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
+import QuestionHelper from 'legacy/components/QuestionHelper'
+
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
+import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
 import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
-import { limitOrdersFeatures } from 'constants/featureFlags'
+import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
+import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
+import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
+import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { useWalletInfo } from 'modules/wallet'
+
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
+import { limitOrdersFeatures } from 'constants/featureFlags'
+import { formatInputAmount } from 'utils/amountFormat'
+import { getAddress } from 'utils/getAddress'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
+
+import * as styledEl from './styled'
 
 export function RateInput() {
   const { chainId } = useWalletInfo()

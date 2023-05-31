@@ -1,10 +1,11 @@
 import { Dispatch, MiddlewareAPI } from 'redux'
-import { AppState } from '../../index'
-import { PresignedOrdersParams } from '../actions'
-import { OrdersStateNetwork } from '../reducer'
-import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
+
 import { orderAnalytics } from '../../../components/analytics'
 import { addPopup } from '../../application/reducer'
+import { AppState } from '../../index'
+import { PresignedOrdersParams } from '../actions'
+import { getOrderByIdFromState, OrderTxTypes, setPopupData } from '../helpers'
+import { OrdersStateNetwork } from '../reducer'
 
 export function batchPresignOrdersPopup(
   store: MiddlewareAPI<Dispatch, AppState>,

@@ -1,8 +1,10 @@
 import React from 'react'
-import Send from 'legacy/assets/cow-swap/send.svg'
-import Exclamation from 'legacy/assets/cow-swap/exclamation.svg'
+
 import Checkmark from 'legacy/assets/cow-swap/checkmark.svg'
+import Exclamation from 'legacy/assets/cow-swap/exclamation.svg'
+import Send from 'legacy/assets/cow-swap/send.svg'
 import X from 'legacy/assets/cow-swap/x.svg'
+
 import { EthFlowStepperProps, SmartOrderStatus } from '..'
 import { StatusIconState } from '../StatusIcon'
 import { Step, ExplorerLinkStyled } from '../Step'

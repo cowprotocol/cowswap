@@ -1,14 +1,17 @@
-import { useSearchInactiveTokenLists } from 'legacy/hooks/Tokens'
-import { Token } from '@uniswap/sdk-core'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import TokenWarningModal from 'legacy/components/TokenWarningModal'
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
-import { Field } from 'legacy/state/swap/actions'
 import { useAtomValue } from 'jotai/utils'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+
+import { Token } from '@uniswap/sdk-core'
+
+import TokenWarningModal from 'legacy/components/TokenWarningModal'
+import { TOKEN_SHORTHANDS, WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { useSearchInactiveTokenLists } from 'legacy/hooks/Tokens'
+import { Field } from 'legacy/state/swap/actions'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+
 import { tokensByAddressAtom, tokensBySymbolAtom } from 'modules/tokensList/state/tokensListAtom'
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
 
 export interface ImportTokenModalProps {
   chainId: number

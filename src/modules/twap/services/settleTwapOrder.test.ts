@@ -1,19 +1,26 @@
-import { settleTwapOrder } from './settleTwapOrder'
-import { useTwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
-import { CurrencyAmount } from '@uniswap/sdk-core'
-import { COW } from 'legacy/constants/tokens'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TWAPOrder } from '../types'
-import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
-import { renderHook } from '@testing-library/react-hooks'
 import { useUpdateAtom } from 'jotai/utils'
+import { useEffect } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { renderHook } from '@testing-library/react-hooks'
+
+import { COW } from 'legacy/constants/tokens'
+import { useTokenContract } from 'legacy/hooks/useContract'
+import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
+
+import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
-import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
-import { useTokenContract } from 'legacy/hooks/useContract'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-import { useEffect } from 'react'
+
+import { settleTwapOrder } from './settleTwapOrder'
+
+import { useTwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
+import { TWAPOrder } from '../types'
 
 jest.mock('modules/wallet/web3-react/hooks/useSafeAppsSdk')
 jest.mock('modules/advancedOrders/hooks/useComposableCowContract')

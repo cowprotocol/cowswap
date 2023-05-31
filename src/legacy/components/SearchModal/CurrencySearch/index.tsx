@@ -1,13 +1,15 @@
 import { Trans } from '@lingui/macro'
-import { RowFixed } from 'legacy/components/Row'
-import { IconWrapper, ThemedText } from 'legacy/theme'
-import styled from 'styled-components/macro'
-import { Edit } from 'react-feather'
-import { CurrencySearch as CurrencySearchMod, CurrencySearchProps } from './CurrencySearchMod'
-import { DefaultTheme } from 'styled-components/macro'
-import { Separator } from 'legacy/components/SearchModal/styleds'
 import { transparentize } from 'polished'
+import { Edit } from 'react-feather'
+import styled from 'styled-components/macro'
+import { DefaultTheme } from 'styled-components/macro'
+
 import Column from 'legacy/components/Column'
+import { RowFixed } from 'legacy/components/Row'
+import { Separator } from 'legacy/components/SearchModal/styleds'
+import { IconWrapper, ThemedText } from 'legacy/theme'
+
+import { CurrencySearch as CurrencySearchMod, CurrencySearchProps } from './CurrencySearchMod'
 
 export const ContentWrapper = styled(Column)`
   width: 100%;

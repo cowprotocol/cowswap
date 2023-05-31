@@ -1,6 +1,8 @@
-import JSBI from 'jsbi'
-import { useSingleCallResult } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
+
+import JSBI from 'jsbi'
+
+import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { useContract } from './useContract'
 import useENSAddress from './useENSAddress'

@@ -1,14 +1,17 @@
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
+import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { TradeWidgetActions } from 'modules/trade/containers/TradeWidget'
+
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { areFractionsEqual } from 'utils/areFractionsEqual'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 import { getAddress } from 'utils/getAddress'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { TradeWidgetActions } from 'modules/trade/containers/TradeWidget'
 
 export interface LimitOrdersProps {
   inputCurrencyInfo: CurrencyInfo

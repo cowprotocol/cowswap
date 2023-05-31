@@ -1,9 +1,12 @@
+import { OrderClass } from '@cowprotocol/cow-sdk'
+
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { anything, capture, instance, mock, resetCalls, verify, when } from 'ts-mockito'
+
+import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
+
 import { AppState } from '../../index'
 import { PresignedOrdersParams } from '../actions'
-import { OrderClass } from '@cowprotocol/cow-sdk'
-import { batchPresignOrdersPopup } from './batchPresignOrdersPopup'
 import { setPopupData } from '../helpers'
 
 const MOCK_REGULAR_ORDER = {

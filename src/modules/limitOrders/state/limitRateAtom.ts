@@ -1,5 +1,6 @@
-import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 import { atom } from 'jotai'
+
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 export interface LimitRateState {
   readonly isLoading: boolean

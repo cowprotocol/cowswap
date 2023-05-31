@@ -1,11 +1,15 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { useCallback } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { useLocation, useNavigate } from 'react-router-dom'
+
 import { useTradeTypeInfo } from 'modules/trade/hooks/useTradeTypeInfo'
 import { TradeCurrenciesIds } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import { useWalletInfo } from 'modules/wallet'
+
+import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 
 interface UseTradeNavigateCallback {
   (chainId: SupportedChainId | null | undefined, { inputCurrencyId, outputCurrencyId }: TradeCurrenciesIds): void

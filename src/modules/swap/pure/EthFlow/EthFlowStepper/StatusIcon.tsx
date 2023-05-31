@@ -1,7 +1,8 @@
 import React from 'react'
-import styled from 'styled-components/macro'
+
 import { transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 export type StatusIconState = 'success' | 'pending' | 'not-started' | 'error' | 'cancelled'
 

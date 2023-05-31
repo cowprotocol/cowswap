@@ -1,17 +1,22 @@
-import * as styledEl from './styled'
-import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
-import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
-import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import React, { useEffect } from 'react'
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
-import { useThrottleFn } from 'common/hooks/useThrottleFn'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
+
 import { t } from '@lingui/macro'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
+
+import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
+import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
+import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+
+import { useThrottleFn } from 'common/hooks/useThrottleFn'
+import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
+import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
+import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
 export interface TradeWidgetActions {
@@ -111,7 +116,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   id="input-currency-input"
                   disableNonToken={disableNonToken}
                   chainId={chainId}
-                  loading={currenciesLoadingInProgress}
+                  areCurrenciesLoading={currenciesLoadingInProgress}
                   onCurrencySelection={onCurrencySelection}
                   onUserInput={onUserInput}
                   allowsOffchainSigning={allowsOffchainSigning}
@@ -142,7 +147,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                       : undefined
                   }
                   chainId={chainId}
-                  loading={currenciesLoadingInProgress}
+                  areCurrenciesLoading={currenciesLoadingInProgress}
                   isRateLoading={isRateLoading}
                   onCurrencySelection={onCurrencySelection}
                   onUserInput={onUserInput}

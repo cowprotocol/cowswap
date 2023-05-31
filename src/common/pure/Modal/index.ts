@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+
 import Modal from './ModalMod'
 
 export * from './ModalMod'

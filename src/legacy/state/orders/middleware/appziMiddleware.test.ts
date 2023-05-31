@@ -1,23 +1,54 @@
-import { instance, mock, resetCalls, when } from 'ts-mockito'
-import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
-import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
-import { AppState } from '../../index'
-import { appziMiddleware } from './appziMiddleware'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+import { getOrderByIdFromState } from '../helpers'
+
+import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
+import { instance, mock, resetCalls, when } from 'ts-mockito'
+
+import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
+
+import { appziMiddleware } from './appziMiddleware'
+
+import { AppState } from '../../index'
 
 jest.mock('legacy/utils/appzi')
+jest.mock('../helpers', () => {
+  return {
+    ...jest.requireActual('../helpers'),
+    getOrderByIdFromState: jest.fn(),
+  }
+})
 
 const isOrderInPendingTooLongMock = jest.mocked(isOrderInPendingTooLong)
 const openNpsAppziSometimesMock = jest.mocked(openNpsAppziSometimes)
+const getOrderByOrderIdFromStateMock = jest.mocked(getOrderByIdFromState)
 
 const mockStore = mock<MiddlewareAPI<Dispatch, AppState>>()
 const nextMock = jest.fn()
 const actionMock = mock<AnyAction>()
 
+const BASE_MARKET_ORDER = {
+  order: {
+    id: '0x1',
+    class: OrderClass.MARKET,
+  },
+}
+
+const BASE_LIMIT_ORDER = {
+  order: {
+    id: '0x1',
+    class: OrderClass.LIMIT,
+  },
+}
+
 describe('appziMiddleware', () => {
   beforeEach(() => {
     resetCalls(actionMock)
     resetCalls(mockStore)
+    when(mockStore.getState()).thenReturn({
+      orders: {
+        1: 'mocked orders',
+      },
+    } as any)
   })
 
   describe('batch fulfill', () => {
@@ -27,20 +58,7 @@ describe('appziMiddleware', () => {
     })
 
     it('should open appzi if market order', () => {
-      when(mockStore.getState()).thenReturn({
-        orders: {
-          1: {
-            pending: {
-              '0x1': {
-                order: {
-                  id: '0x1',
-                  class: OrderClass.MARKET,
-                },
-              },
-            },
-          },
-        },
-      } as any)
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_MARKET_ORDER as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
@@ -49,20 +67,7 @@ describe('appziMiddleware', () => {
 
     it('should not open appzi if limit order is pending too long', () => {
       isOrderInPendingTooLongMock.mockReturnValue(true)
-      when(mockStore.getState()).thenReturn({
-        orders: {
-          1: {
-            pending: {
-              '0x1': {
-                order: {
-                  id: '0x1',
-                  class: OrderClass.LIMIT,
-                },
-              },
-            },
-          },
-        },
-      } as any)
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_LIMIT_ORDER as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
@@ -70,19 +75,16 @@ describe('appziMiddleware', () => {
     })
     it('should open appzi if limit order is not pending too long', () => {
       isOrderInPendingTooLongMock.mockReturnValue(false)
-      when(mockStore.getState()).thenReturn({
-        orders: {
-          1: {
-            pending: {
-              '0x1': {
-                order: {
-                  id: '0x1',
-                  class: OrderClass.LIMIT,
-                },
-              },
-            },
-          },
-        },
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_LIMIT_ORDER as any)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('should open appzi if order is hidden', () => {
+      getOrderByOrderIdFromStateMock.mockReturnValue({
+        order: { ...BASE_MARKET_ORDER.order, isHidden: true },
       } as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -97,20 +99,7 @@ describe('appziMiddleware', () => {
     })
 
     it('should open appzi if market order', () => {
-      when(mockStore.getState()).thenReturn({
-        orders: {
-          1: {
-            pending: {
-              '0x1': {
-                order: {
-                  id: '0x1',
-                  class: OrderClass.MARKET,
-                },
-              },
-            },
-          },
-        },
-      } as any)
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_MARKET_ORDER as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
@@ -118,24 +107,31 @@ describe('appziMiddleware', () => {
     })
 
     it('should open appzi if limit order', () => {
-      when(mockStore.getState()).thenReturn({
-        orders: {
-          1: {
-            pending: {
-              '0x1': {
-                order: {
-                  id: '0x1',
-                  class: OrderClass.LIMIT,
-                },
-              },
-            },
-          },
-        },
-      } as any)
+      getOrderByOrderIdFromStateMock.mockReturnValue(BASE_LIMIT_ORDER as any)
 
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not open appzi if market order is hidden', () => {
+      getOrderByOrderIdFromStateMock.mockReturnValue({
+        order: { ...BASE_MARKET_ORDER.order, isHidden: true },
+      } as any)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+    })
+
+    it('should not open appzi if limit order is hidden', () => {
+      getOrderByOrderIdFromStateMock.mockReturnValue({
+        order: { ...BASE_LIMIT_ORDER.order, isHidden: true },
+      } as any)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
     })
   })
 })

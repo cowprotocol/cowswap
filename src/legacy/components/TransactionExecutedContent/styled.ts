@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
-import { TokenAmount } from 'common/pure/TokenAmount'
+
 import { FiatAmount } from 'common/pure/FiatAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const ExecutedWrapper = styled.div`
   display: flex;

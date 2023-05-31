@@ -1,10 +1,14 @@
 import { CSSProperties } from 'react'
+
 import { Token } from '@uniswap/sdk-core'
+
 import styled from 'styled-components/macro'
-import ImportRowMod, { TokenSection } from './ImportRowMod'
-import { AutoRow } from 'legacy/components/Row'
-import { StyledListLogo } from 'legacy/components/ListLogo'
+
 import { ButtonPrimary } from 'legacy/components/Button'
+import { StyledListLogo } from 'legacy/components/ListLogo'
+import { AutoRow } from 'legacy/components/Row'
+
+import ImportRowMod, { TokenSection } from './ImportRowMod'
 
 interface ImportRowProps {
   token: Token
