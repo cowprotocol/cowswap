@@ -1,5 +1,5 @@
 import { AdvancedOrdersWidget } from 'modules/advancedOrders'
-import { OrdersWidget } from 'modules/limitOrders'
+import { OrdersWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 export default function AdvancedOrdersPage() {

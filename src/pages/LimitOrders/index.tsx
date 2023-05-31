@@ -5,9 +5,9 @@ import {
   QuoteObserverUpdater,
   InitialPriceUpdater,
   ExecutionPriceUpdater,
-  OrdersWidget,
   limitOrdersRawStateAtom,
 } from 'modules/limitOrders'
+import { OrdersWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 export default function LimitOrderPage() {
