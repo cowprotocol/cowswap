@@ -1,10 +1,14 @@
 import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
+
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import * as styledEl from './styled'
 
@@ -23,13 +27,17 @@ import { TwapConfirmModal } from '../TwapConfirmModal'
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
+  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const setFallbackHandler = useSetupFallbackHandler()
   const tradeConfirmActions = useTradeConfirmActions()
   const formState = useTwapFormState()
+
+  const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const primaryActionContext = {
     setFallbackHandler,
@@ -46,6 +54,12 @@ export function TwapFormWidget() {
     <>
       <QuoteObserverUpdater />
       <TwapConfirmModal />
+
+      {!isWrapOrUnwrap && (
+        <styledEl.Row>
+          <styledEl.StyledRateInfo label="Current market price" rateInfoParams={rateInfoParams} />
+        </styledEl.Row>
+      )}
 
       <styledEl.Row>
         <TradeNumberInput
