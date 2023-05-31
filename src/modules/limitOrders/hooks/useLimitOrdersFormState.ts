@@ -23,26 +23,32 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export enum LimitOrdersFormState {
-  NotApproved = 'NotApproved',
-  CanTrade = 'CanTrade',
-  ExpertCanTrade = 'ExpertCanTrade',
   Loading = 'Loading',
   SwapIsUnsupported = 'SwapIsUnsupported',
-  WrapUnwrap = 'WrapUnwrap',
-  InvalidRecipient = 'InvalidRecipient',
   WalletIsUnsupported = 'WalletIsUnsupported',
+  NotApproved = 'NotApproved',
   WalletIsNotConnected = 'WalletIsNotConnected',
   ReadonlyGnosisSafeUser = 'ReadonlyGnosisSafeUser',
+  FeeExceedsFrom = 'FeeExceedsFrom',
+
+  ApproveAndSwap = 'ApproveAndSwap',
+  ExpertApproveAndSwap = 'ExpertApproveAndSwap',
+
+  WrapUnwrap = 'WrapUnwrap',
+
+  QuoteError = 'QuoteError',
+
+  CanTrade = 'CanTrade',
+  ExpertCanTrade = 'ExpertCanTrade',
+
+  InsufficientBalance = 'InsufficientBalance',
+  CantLoadBalances = 'CantLoadBalances',
+
   NeedToSelectToken = 'NeedToSelectToken',
   AmountIsNotSet = 'AmountIsNotSet',
   PriceIsNotSet = 'PriceIsNotSet',
-  InsufficientBalance = 'InsufficientBalance',
-  CantLoadBalances = 'CantLoadBalances',
-  QuoteError = 'QuoteError',
+  InvalidRecipient = 'InvalidRecipient',
   ZeroPrice = 'ZeroPrice',
-  FeeExceedsFrom = 'FeeExceedsFrom',
-  ApproveAndSwap = 'ApproveAndSwap',
-  ExpertApproveAndSwap = 'ExpertApproveAndSwap',
 }
 
 interface LimitOrdersFormParams {
@@ -170,6 +176,7 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.ZeroPrice
   }
 
+  // TODO: not sure we should do it. This error should come from quote API
   if (sellAmount && feeAmount?.greaterThan(sellAmount)) {
     return LimitOrdersFormState.FeeExceedsFrom
   }

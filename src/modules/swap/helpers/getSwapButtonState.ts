@@ -8,31 +8,36 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { getEthFlowEnabled } from 'modules/swap/helpers/getEthFlowEnabled'
 
 export enum SwapButtonState {
+  Loading = 'Loading',
   SwapIsUnsupported = 'SwapIsUnsupported',
   WalletIsUnsupported = 'WalletIsUnsupported',
-  WrapError = 'WrapError',
-  ShouldWrapNativeToken = 'ShouldWrapNativeToken',
-  ShouldUnwrapNativeToken = 'ShouldUnwrapNativeToken',
-  FeesExceedFromAmount = 'FeesExceedFromAmount',
-  InsufficientLiquidity = 'InsufficientLiquidity',
-  ZeroPrice = 'ZeroPrice',
-  TransferToSmartContract = 'TransferToSmartContract',
-  UnsupportedToken = 'UnsupportedToken',
-  FetchQuoteError = 'FetchQuoteError',
-  OfflineBrowser = 'OfflineBrowser',
-  Loading = 'Loading',
+  NeedApprove = 'NeedApprove',
   WalletIsNotConnected = 'WalletIsNotConnected',
   ReadonlyGnosisSafeUser = 'ReadonlyGnosisSafeUser',
-  NeedApprove = 'NeedApprove',
-  SwapDisabled = 'SwapDisabled',
-  SwapError = 'SwapError',
-  ExpertModeSwap = 'ExpertModeSwap',
-  RegularSwap = 'RegularSwap',
-  SwapWithWrappedToken = 'SwapWithWrappedToken',
-  RegularEthFlowSwap = 'EthFlowSwap',
-  ExpertModeEthFlowSwap = 'ExpertModeEthFlowSwap',
+  FeesExceedFromAmount = 'FeesExceedFromAmount',
+
   ApproveAndSwap = 'ApproveAndSwap',
   ExpertApproveAndSwap = 'ExpertApproveAndSwap',
+
+  ShouldWrapNativeToken = 'ShouldWrapNativeToken',
+  ShouldUnwrapNativeToken = 'ShouldUnwrapNativeToken',
+  WrapError = 'WrapError',
+
+  FetchQuoteError = 'FetchQuoteError',
+  TransferToSmartContract = 'TransferToSmartContract',
+  UnsupportedToken = 'UnsupportedToken',
+  InsufficientLiquidity = 'InsufficientLiquidity',
+  ZeroPrice = 'ZeroPrice',
+
+  RegularSwap = 'RegularSwap',
+  RegularEthFlowSwap = 'EthFlowSwap',
+  ExpertModeSwap = 'ExpertModeSwap',
+  ExpertModeEthFlowSwap = 'ExpertModeEthFlowSwap',
+  SwapWithWrappedToken = 'SwapWithWrappedToken',
+
+  OfflineBrowser = 'OfflineBrowser',
+  SwapDisabled = 'SwapDisabled',
+  SwapError = 'SwapError',
 }
 
 export interface SwapButtonStateParams {
