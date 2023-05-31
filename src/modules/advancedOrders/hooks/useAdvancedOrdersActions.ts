@@ -6,25 +6,15 @@ import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAm
 import { Field } from 'legacy/state/swap/actions'
 import { useAdvancedOrdersDerivedState } from './useAdvancedOrdersDerivedState'
 import { updateTradeQuoteAtom } from 'modules/tradeQuote'
-import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useWalletInfo } from 'modules/wallet'
-import { useAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useUpdateAdvancedOrdersRawState } from './useAdvancedOrdersRawState'
-import { FractionUtils } from 'utils/fractionUtils'
+import { useSwitchTokensPlaces } from 'modules/trade/hooks/useSwitchTokensPlaces'
 
 // TODO: this should be also unified for each trade widget (swap, limit, advanced)
 export function useAdvancedOrdersActions() {
-  const { chainId } = useWalletInfo()
-  const { inputCurrency, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
-  const { inputCurrencyId, outputCurrencyId } = useAdvancedOrdersRawState()
+  const { inputCurrency } = useAdvancedOrdersDerivedState()
 
   const naviageOnCurrencySelection = useNavigateOnCurrencySelection()
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const updateQuoteState = useSetAtom(updateTradeQuoteAtom)
-  const updateAdvancedOrderRawState = useUpdateAdvancedOrdersRawState()
-  const tradeNavigate = useTradeNavigate()
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency | null) => {
@@ -57,31 +47,14 @@ export function useAdvancedOrdersActions() {
     console.log('On change recipient')
   }, [])
 
-  const onSwitchTokens = useCallback(() => {
-    if (!isWrapOrUnwrap) {
-      updateQuoteState({ response: null })
-      updateAdvancedOrderRawState({
-        inputCurrencyId: outputCurrencyId,
-        outputCurrencyId: inputCurrencyId,
-        inputCurrencyAmount: FractionUtils.serializeFractionToJSON(outputCurrencyAmount),
-        outputCurrencyAmount: null,
-      })
-    }
+  const onSwitchTokensDefault = useSwitchTokensPlaces({
+    outputCurrencyAmount: null,
+  })
 
-    tradeNavigate(chainId, {
-      inputCurrencyId: outputCurrencyId,
-      outputCurrencyId: inputCurrencyId,
-    })
-  }, [
-    chainId,
-    tradeNavigate,
-    updateQuoteState,
-    updateAdvancedOrderRawState,
-    inputCurrencyId,
-    outputCurrencyId,
-    outputCurrencyAmount,
-    isWrapOrUnwrap,
-  ])
+  const onSwitchTokens = useCallback(() => {
+    onSwitchTokensDefault()
+    updateQuoteState({ response: null })
+  }, [updateQuoteState, onSwitchTokensDefault])
 
   return {
     onCurrencySelection,
