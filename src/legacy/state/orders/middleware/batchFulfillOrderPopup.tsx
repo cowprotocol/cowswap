@@ -3,9 +3,8 @@ import { Dispatch } from 'redux'
 
 import { orderAnalytics } from 'legacy/components/analytics'
 
-import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-
 import { ExecutedSummary } from 'common/pure/ExecutedSummary'
+import { parseOrder } from 'utils/orderUtils/parseOrder'
 
 import { addPopup } from '../../application/reducer'
 import { AppState } from '../../index'

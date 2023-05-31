@@ -12,13 +12,11 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { LimitOrdersFormState, useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
-import { HIGH_FEE_WARNING_PERCENTAGE } from 'modules/limitOrders/pure/Orders/OrderRow/EstimatedExecutionPrice'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import {
   limitOrdersWarningsAtom,
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
-import { calculatePercentageInRelationToReference } from 'modules/limitOrders/utils/calculatePercentageInRelationToReference'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
@@ -29,7 +27,9 @@ import {
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
+import { HIGH_FEE_WARNING_PERCENTAGE } from 'constants/common'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
+import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 
