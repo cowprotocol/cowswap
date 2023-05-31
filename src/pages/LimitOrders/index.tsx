@@ -8,8 +8,7 @@ import {
   OrdersWidget,
   limitOrdersRawStateAtom,
 } from 'modules/limitOrders'
-
-import * as styledEl from './styled'
+import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 export default function LimitOrderPage() {
   const { isUnlocked } = useAtomValue(limitOrdersRawStateAtom)
@@ -26,7 +25,6 @@ export default function LimitOrderPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          {/*<ChartWidget />*/}
           <OrdersWidget />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
