@@ -10,12 +10,12 @@ import { Order } from 'legacy/state/orders/actions'
 import { useInputTokensFromOrders } from 'modules/orders'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
-import { LIMIT_ORDERS_TABS, OPEN_TAB } from 'modules/ordersTable/const/limitOrdersTabs'
+import { ORDERS_TABLE_TABS, OPEN_TAB } from 'modules/ordersTable/const/tabs'
+import { MultipleCancellationMenu } from 'modules/ordersTable/containers/MultipleCancellationMenu'
 import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
 import { useSelectReceiptOrder } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
-import { MultipleCancellationMenu } from 'modules/ordersTable/containers/OrdersWidget/MultipleCancellationMenu'
-import { LimitOrderActions } from 'modules/ordersTable/pure/Orders/types'
-import { buildLimitOrdersUrl, parseLimitOrdersPageParams } from 'modules/ordersTable/utils/buildLimitOrdersUrl'
+import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
+import { buildOrdersTableUrl, parseOrdersTableUrl } from 'modules/ordersTable/utils/buildOrdersTableUrl'
 import { useBalancesAndAllowances } from 'modules/tokens'
 import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
@@ -23,12 +23,12 @@ import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { LimitOrdersList, useLimitOrdersList } from './hooks/useLimitOrdersList'
+import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { Orders } from '../../pure/Orders'
+import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 
-function getOrdersListByIndex(ordersList: LimitOrdersList, id: string): ParsedOrder[] {
+function getOrdersListByIndex(ordersList: OrdersTableList, id: string): ParsedOrder[] {
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
@@ -46,10 +46,10 @@ const ContentWrapper = styled.div`
   width: 100%;
 `
 
-export function OrdersWidget() {
+export function OrdersTableWidget() {
   const location = useLocation()
   const navigate = useNavigate()
-  const ordersList = useLimitOrdersList()
+  const ordersList = useOrdersTableList()
   const { chainId, account } = useWalletInfo()
   const getShowCancellationModal = useCancelOrder()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -62,7 +62,7 @@ export function OrdersWidget() {
   const spender = useMemo(() => (chainId ? GP_VAULT_RELAYER[chainId] : undefined), [chainId])
 
   const { currentTabId, currentPageNumber } = useMemo(() => {
-    const params = parseLimitOrdersPageParams(location.search)
+    const params = parseOrdersTableUrl(location.search)
 
     return {
       currentTabId: params.tabId || OPEN_TAB.id,
@@ -75,7 +75,7 @@ export function OrdersWidget() {
   }, [ordersList, currentTabId])
 
   const tabs = useMemo(() => {
-    return LIMIT_ORDERS_TABS.map((tab) => {
+    return ORDERS_TABLE_TABS.map((tab) => {
       return { ...tab, isActive: tab.id === currentTabId, count: getOrdersListByIndex(ordersList, tab.id).length }
     })
   }, [currentTabId, ordersList])
@@ -111,7 +111,7 @@ export function OrdersWidget() {
 
   // Set page params initially once
   useEffect(() => {
-    navigate(buildLimitOrdersUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
+    navigate(buildOrdersTableUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useValidatePageUrlParams(orders, currentTabId, currentPageNumber)
@@ -119,7 +119,7 @@ export function OrdersWidget() {
   return (
     <>
       <ContentWrapper>
-        <Orders
+        <OrdersTableContainer
           chainId={chainId}
           tabs={tabs}
           orders={orders}
@@ -134,7 +134,7 @@ export function OrdersWidget() {
           allowsOffchainSigning={allowsOffchainSigning}
         >
           {isOpenOrdersTab && orders.length && <MultipleCancellationMenu pendingOrders={orders} />}
-        </Orders>
+        </OrdersTableContainer>
       </ContentWrapper>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
     </>

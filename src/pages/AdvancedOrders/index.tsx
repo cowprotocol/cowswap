@@ -1,5 +1,5 @@
 import { AdvancedOrdersWidget } from 'modules/advancedOrders'
-import { OrdersWidget } from 'modules/ordersTable'
+import { OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 export default function AdvancedOrdersPage() {
@@ -12,8 +12,7 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          {/*TODO: extract OrdersWidget from Limit orders and make it independent*/}
-          <OrdersWidget />
+          <OrdersTableWidget />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>

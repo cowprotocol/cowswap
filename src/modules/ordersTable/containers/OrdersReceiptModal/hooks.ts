@@ -3,8 +3,8 @@ import { useCallback, useMemo } from 'react'
 
 import { UID } from '@cowprotocol/cow-sdk'
 
-import { useLimitOrdersList } from 'modules/ordersTable/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { updateReceiptAtom, receiptAtom } from 'modules/ordersTable/state/limitOrdersReceiptAtom'
+import { useOrdersTableList } from 'modules/ordersTable/containers/OrdersTableWidget/hooks/useOrdersTableList'
+import { updateReceiptAtom, receiptAtom } from 'modules/ordersTable/state/orderReceiptAtom'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -20,7 +20,7 @@ export function useSelectReceiptOrder(): (orderId: UID) => void {
 
 export function useSelectedOrder(): ParsedOrder | null {
   const { orderId } = useAtomValue(receiptAtom)
-  const orders = useLimitOrdersList()
+  const orders = useOrdersTableList()
 
   return useMemo(() => {
     if (!orderId || !orders) {

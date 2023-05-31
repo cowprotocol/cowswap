@@ -1,1 +1,1 @@
-export * from './containers/OrdersWidget'
+export * from './containers/OrdersTableWidget'

@@ -16,20 +16,20 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
-import { LIMIT_ORDERS_PAGE_SIZE } from 'modules/ordersTable/const/limitOrdersTabs'
+import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable/const/tabs'
 import {
   TableHeader,
   TableRowCheckbox,
   TableRowCheckboxWrapper,
   CheckboxCheckmark,
-} from 'modules/ordersTable/pure/Orders/styled'
-import { LimitOrderActions } from 'modules/ordersTable/pure/Orders/types'
+} from 'modules/ordersTable/pure/OrdersTableContainer/styled'
+import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
-import { limitOrdersFeatures } from 'constants/featureFlags'
+import { ordersTableFeatures } from 'constants/featureFlags'
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -214,8 +214,8 @@ export function OrdersTable({
   const [isRateInverted, setIsRateInverted] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
-  const step = currentPageNumber * LIMIT_ORDERS_PAGE_SIZE
-  const ordersPage = orders.slice(step - LIMIT_ORDERS_PAGE_SIZE, step).sort(ordersSorter)
+  const step = currentPageNumber * ORDERS_TABLE_PAGE_SIZE
+  const ordersPage = orders.slice(step - ORDERS_TABLE_PAGE_SIZE, step).sort(ordersSorter)
   const onScroll = useCallback(() => {
     // Emit event to close OrderContextMenu
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
@@ -299,7 +299,7 @@ export function OrdersTable({
               <StyledInvertRateControl onClick={() => setIsRateInverted(!isRateInverted)} />
             </HeaderElement>
 
-            {isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
+            {isOpenOrdersTab && ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && (
               <HeaderElement doubleRow>
                 <span>
                   <Trans>
@@ -349,7 +349,7 @@ export function OrdersTable({
               </HeaderElement>
             )}
 
-            {/* {!isOpenOrdersTab && limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+            {/* {!isOpenOrdersTab && ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
               <HeaderElement>
                 <Trans>Execution time</Trans>
               </HeaderElement>
@@ -404,9 +404,9 @@ export function OrdersTable({
       </TableBox>
 
       {/* Only show pagination if more than 1 page available */}
-      {orders.length > LIMIT_ORDERS_PAGE_SIZE && (
+      {orders.length > ORDERS_TABLE_PAGE_SIZE && (
         <OrdersTablePagination
-          pageSize={LIMIT_ORDERS_PAGE_SIZE}
+          pageSize={ORDERS_TABLE_PAGE_SIZE}
           totalCount={orders.length}
           currentPage={currentPageNumber}
         />
