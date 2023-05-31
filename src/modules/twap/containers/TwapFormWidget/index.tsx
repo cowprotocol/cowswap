@@ -1,9 +1,13 @@
 import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
+
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import * as styledEl from './styled'
 
@@ -21,12 +25,16 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
+  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const formActions = useTwapFormActions()
   const formState = useTwapFormState()
+
+  const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const deadlineState = {
     deadline,
@@ -37,6 +45,12 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
+      {!isWrapOrUnwrap && (
+        <styledEl.Row>
+          <styledEl.StyledRateInfo label="Current market price" rateInfoParams={rateInfoParams} />
+        </styledEl.Row>
+      )}
+
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
