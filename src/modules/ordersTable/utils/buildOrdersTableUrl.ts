@@ -1,4 +1,3 @@
-import { Path } from '@remix-run/router/history'
 import { Location } from 'history'
 
 import { ORDERS_TABLE_TABS } from 'modules/ordersTable/const/tabs'
@@ -16,7 +15,7 @@ export interface OrdersTablePageParams {
 export function buildOrdersTableUrl(
   { pathname, search }: Pick<Location, 'pathname' | 'search'>,
   { tabId, pageNumber }: Partial<OrdersTablePageParams>
-): Partial<Path> {
+): Partial<{ pathname: string; search: string }> {
   const query = new URLSearchParams(search)
 
   if (tabId) {
