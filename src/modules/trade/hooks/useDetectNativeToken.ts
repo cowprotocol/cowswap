@@ -1,25 +1,20 @@
 import { useMemo } from 'react'
 
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
-
-import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
-
+import { useIsNativeIn, useIsNativeOut } from './useIsNative'
+import { useIsWrappedIn, useIsWrappedOut } from './useIsWrapped'
 import { useNativeCurrency } from './useNativeCurrency'
 
 export function useDetectNativeToken() {
-  const { state } = useTradeState()
-  const { inputCurrencyId, outputCurrencyId } = state || {}
-
-  const input = useTokenBySymbolOrAddress(inputCurrencyId)
-  const output = useTokenBySymbolOrAddress(outputCurrencyId)
-
   const native = useNativeCurrency()
   const wrappedToken = native.wrapped
 
-  return useMemo(() => {
-    const [isNativeIn, isNativeOut] = [!!input?.isNative, !!output?.isNative]
-    const [isWrappedIn, isWrappedOut] = [!!input?.equals(wrappedToken), !!output?.equals(wrappedToken)]
+  const isNativeIn = useIsNativeIn()
+  const isNativeOut = useIsNativeOut()
 
+  const isWrappedIn = useIsWrappedIn()
+  const isWrappedOut = useIsWrappedOut()
+
+  return useMemo(() => {
     return {
       isNativeIn,
       isNativeOut,
@@ -28,5 +23,5 @@ export function useDetectNativeToken() {
       wrappedToken,
       native,
     }
-  }, [input, output, wrappedToken, native])
+  }, [isNativeIn, isNativeOut, isWrappedIn, isWrappedOut, wrappedToken, native])
 }

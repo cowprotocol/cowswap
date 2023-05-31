@@ -24,6 +24,7 @@ import { useWalletInfo } from 'modules/wallet'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 
+import { useIsNativeIn } from '../../modules/trade/hooks/useIsNative'
 import { isRejectRequestProviderError } from '../utils/misc'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -105,7 +106,7 @@ export function useWrapUnwrapContext(
   const closeModals = useCloseModals()
   const wethContract = useWETHContract()
   const { native, wrapped } = getChainCurrencySymbols(chainId)
-  const { isNativeIn } = useDetectNativeToken()
+  const isNativeIn = useIsNativeIn()
   const addTransaction = useTransactionAdder()
   const wrapType = isNativeIn ? WrapType.WRAP : WrapType.UNWRAP
   const isWrap = isNativeIn
