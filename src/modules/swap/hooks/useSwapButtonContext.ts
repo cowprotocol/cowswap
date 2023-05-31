@@ -19,7 +19,9 @@ import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBund
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
-import { useNativeTokenContext } from 'modules/trade/hooks/useNativeTokenContext'
+import { useIsNativeIn } from 'modules/trade/hooks/useIsNative'
+import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrapped'
+import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
@@ -67,7 +69,9 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     chainId,
   })
 
-  const { isNativeIn, isWrappedOut, wrappedToken } = useNativeTokenContext()
+  const isNativeIn = useIsNativeIn()
+  const isWrappedOut = useIsWrappedOut()
+  const wrappedToken = useWrappedToken()
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
   const inputAmount = slippageAdjustedSellAmount || parsedAmount
