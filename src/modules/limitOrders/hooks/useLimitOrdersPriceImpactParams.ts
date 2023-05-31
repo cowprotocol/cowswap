@@ -1,7 +1,10 @@
-import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import type { PriceImpactParams } from 'legacy/hooks/usePriceImpact'
 import { useMemo } from 'react'
+
+import type { PriceImpactParams } from 'legacy/hooks/usePriceImpact'
+
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 export function useLimitOrdersPriceImpactParams(): PriceImpactParams {
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()

@@ -1,15 +1,18 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useSetupTradeState } from 'modules/trade'
-import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWidget'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
 import { Field } from 'legacy/state/swap/actions'
+
+import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
-} from '../../hooks/useAdvancedOrdersDerivedState'
-import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
-import { useIsQuoteLoading } from 'modules/tradeQuote'
+} from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
+import { useSetupTradeState } from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWidget'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
+
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -28,7 +31,7 @@ export function AdvancedOrdersWidget() {
     orderKind,
   } = useAdvancedOrdersDerivedState()
   const actions = useAdvancedOrdersActions()
-  const isTradePriceUpdating = useIsQuoteLoading()
+  const { isLoading: isTradePriceUpdating } = useTradeQuote()
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

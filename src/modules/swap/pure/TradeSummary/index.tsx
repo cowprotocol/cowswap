@@ -1,13 +1,16 @@
-import styled from 'styled-components/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import styled from 'styled-components/macro'
+
 import { AutoColumn } from 'legacy/components/Column'
 
-import { TradeSummaryProps } from 'modules/swap/containers/TradeSummary'
-// Sub-components
-import { RowFee } from 'modules/swap/containers/Row/RowFee'
-import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
-import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowDeadline } from 'modules/swap/containers/Row/RowDeadline'
+import { RowFee } from 'modules/swap/containers/Row/RowFee'
+import { RowReceivedAfterSlippage } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
+import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
+import { TradeSummaryProps } from 'modules/swap/containers/TradeSummary'
+
+// Sub-components
 
 const Wrapper = styled.div``
 

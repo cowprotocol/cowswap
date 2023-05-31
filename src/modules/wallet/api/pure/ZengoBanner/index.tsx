@@ -1,6 +1,9 @@
-import { default as ZengoImage } from 'modules/wallet/api/assets/zengo.svg'
-import { ExternalLink } from 'legacy/theme'
 import { Trans } from '@lingui/macro'
+
+import { ExternalLink } from 'legacy/theme'
+
+import { default as ZengoImage } from 'modules/wallet/api/assets/zengo.svg'
+
 import * as styled from './styled'
 
 const GET_ZENGO_LINK = 'https://zengo.com/'

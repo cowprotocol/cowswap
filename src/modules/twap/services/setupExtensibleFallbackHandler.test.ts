@@ -1,14 +1,20 @@
-import { setupExtensibleFallbackHandler } from './setupExtensibleFallbackHandler'
-import { renderHook } from '@testing-library/react-hooks'
 import { useUpdateAtom } from 'jotai/utils'
-import { walletInfoAtom } from 'modules/wallet/api/state'
 import { useEffect } from 'react'
-import { useExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
-import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
-import { useGP2SettlementContract } from 'legacy/hooks/useContract'
-import { WithMockedWeb3 } from 'test-utils'
-import { useWeb3React } from '@web3-react/core'
+
 import { Web3Provider } from '@ethersproject/providers'
+import { useWeb3React } from '@web3-react/core'
+
+import { renderHook } from '@testing-library/react-hooks'
+import { WithMockedWeb3 } from 'test-utils'
+
+import { useGP2SettlementContract } from 'legacy/hooks/useContract'
+
+import { walletInfoAtom } from 'modules/wallet/api/state'
+import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
+
+import { setupExtensibleFallbackHandler } from './setupExtensibleFallbackHandler'
+
+import { useExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 const chainId = 5
 

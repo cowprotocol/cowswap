@@ -1,7 +1,9 @@
-import * as styledEl from './styled'
-import { ExternalLink } from 'legacy/theme'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { ExternalLink } from 'legacy/theme'
 import { getEtherscanLink } from 'legacy/utils'
+
+import * as styledEl from './styled'
 
 export type Props = {
   chainId: SupportedChainId

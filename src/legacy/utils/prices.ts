@@ -2,7 +2,11 @@ import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Fraction, Percent, TradeType } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { FeeAmount } from '@uniswap/v3-sdk'
+
 import JSBI from 'jsbi'
+
+import { Field } from 'legacy/state/swap/actions'
+import TradeGp from 'legacy/state/swap/TradeGp'
 
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
@@ -12,8 +16,6 @@ import {
   ONE_HUNDRED_PERCENT,
   ZERO_PERCENT,
 } from '../constants/misc'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { Field } from 'legacy/state/swap/actions'
 
 const THIRTY_BIPS_FEE = new Percent(JSBI.BigInt(30), JSBI.BigInt(10000))
 const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(THIRTY_BIPS_FEE)
@@ -79,9 +81,12 @@ const IMPACT_TIERS = [
   ALLOWED_PRICE_IMPACT_LOW,
 ]
 
-type WarningSeverity = 0 | 1 | 2 | 3 | 4
+export type WarningSeverity = -1 | 0 | 1 | 2 | 3 | 4
+
 export function warningSeverity(priceImpact: Percent | undefined): WarningSeverity {
   if (!priceImpact) return 4
+  if (priceImpact.lessThan(0)) return -1
+
   let impact: WarningSeverity = IMPACT_TIERS.length as WarningSeverity
   for (const impactLevel of IMPACT_TIERS) {
     if (impactLevel.lessThan(priceImpact)) return impact

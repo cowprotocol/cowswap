@@ -1,39 +1,39 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
+import Confetti from 'legacy/components/Confetti'
+import Loader from 'legacy/components/Loader'
+import { OperationType } from 'legacy/components/TransactionConfirmationModal'
 import useENS from 'legacy/hooks/useENS'
-import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import usePrevious from 'legacy/hooks/usePrevious'
+import useTransactionConfirmationModal from 'legacy/hooks/useTransactionConfirmationModal'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useUserEnhancedClaimData,
   useUserUnclaimedAmount,
   useClaimCallback,
   ClaimInput,
 } from 'legacy/state/claim/hooks'
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
-import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'legacy/state/claim/hooks/utils'
 import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
-import { ClaimStatus } from 'legacy/state/claim/actions'
+import { getFreeClaims, hasPaidClaim, hasFreeClaim, prepareInvestClaims } from 'legacy/state/claim/hooks/utils'
 import ClaimsOnOtherChainsUpdater from 'legacy/state/claim/updater'
+import { getProviderErrorMessage } from 'legacy/utils/misc'
 
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import Confetti from 'legacy/components/Confetti'
-import Loader from 'legacy/components/Loader'
+import { useWalletInfo } from 'modules/wallet'
 
 import { PageWrapper, InnerPageWrapper } from 'pages/Claim/styled'
+
 import CanUserClaimMessage from './CanUserClaimMessage'
 import ClaimAddress from './ClaimAddress'
-import ClaimNav from './ClaimNav'
+import ClaimBanner from './ClaimBanner'
 import ClaimingStatus from './ClaimingStatus'
+import ClaimNav from './ClaimNav'
 import ClaimsOnOtherChainsBanner from './ClaimsOnOtherChainsBanner'
 import ClaimsTable from './ClaimsTable'
-import ClaimBanner from './ClaimBanner'
+import { ClaimSummary } from './ClaimSummary'
 import FooterNavButtons from './FooterNavButtons'
 import InvestmentFlow from './InvestmentFlow'
-import { ClaimSummary } from './ClaimSummary'
-
-import usePrevious from 'legacy/hooks/usePrevious'
-import { getProviderErrorMessage } from 'legacy/utils/misc'
-import { useWalletInfo } from 'modules/wallet'
 
 export default function Claim() {
   const { account, chainId } = useWalletInfo()

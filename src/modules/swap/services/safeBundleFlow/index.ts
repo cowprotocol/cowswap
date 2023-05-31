@@ -1,16 +1,20 @@
 import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
-import { logTradeFlow } from 'modules/trade/utils/logger'
-import { SafeBundleFlowContext } from 'modules/swap/services/types'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { signAndPostOrder } from 'legacy/utils/trade'
+
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildPresignTx } from 'modules/operations/bundle/buildPresignTx'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { signAndPostOrder } from 'legacy/utils/trade'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
-import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
+import { SafeBundleFlowContext } from 'modules/swap/services/types'
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { logTradeFlow } from 'modules/trade/utils/logger'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
+
+import { shouldZeroApprove as shouldZeroApproveFn } from 'common/hooks/useShouldZeroApprove/shouldZeroApprove'
 
 const LOG_PREFIX = 'SAFE BUNDLE FLOW'
 
@@ -56,6 +60,18 @@ export async function safeBundleFlow(
       callbacks.closeModals()
     })
 
+    addPendingOrderStep(
+      {
+        id: orderId,
+        chainId: context.chainId,
+        order: {
+          ...order,
+          isHidden: true,
+        },
+      },
+      dispatch
+    )
+
     logTradeFlow(LOG_PREFIX, 'STEP 4: build presign tx')
     const presignTx = await buildPresignTx({ settlementContract, orderId })
 
@@ -88,14 +104,14 @@ export async function safeBundleFlow(
 
     const safeTx = await safeAppsSdk.txs.send({ txs: safeTransactionData })
 
-    logTradeFlow(LOG_PREFIX, 'STEP 6: add tx to store')
-    addPendingOrderStep(
+    logTradeFlow(LOG_PREFIX, 'STEP 6: add safe tx hash and unhide order')
+    partialOrderUpdate(
       {
-        id: orderId,
         chainId: context.chainId,
         order: {
-          ...order,
+          id: order.id,
           presignGnosisSafeTxHash: safeTx.safeTxHash,
+          isHidden: false,
         },
       },
       dispatch

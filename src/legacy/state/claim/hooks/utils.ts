@@ -1,9 +1,8 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { GNO, GpEther, USDC } from 'legacy/constants/tokens'
 import { ONE_HUNDRED_PERCENT, ZERO_PERCENT } from 'legacy/constants/misc'
-
+import { GNO, GpEther, USDC } from 'legacy/constants/tokens'
 import {
   CLAIMS_REPO,
   ClaimType,
@@ -13,10 +12,10 @@ import {
   UserClaims,
   VCowPrices,
 } from 'legacy/state/claim/hooks/index'
+import { ClaimInput } from 'legacy/state/claim/hooks/index'
+import { InvestClaim } from 'legacy/state/claim/reducer'
 
 import { EnhancedUserClaimData, InvestmentAmounts } from 'pages/Claim/types'
-import { InvestClaim } from 'legacy/state/claim/reducer'
-import { ClaimInput } from 'legacy/state/claim/hooks/index'
 
 /**
  * Helper function to check whether any claim is an investment option

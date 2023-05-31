@@ -1,15 +1,20 @@
-import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency, Token } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import JSBI from 'jsbi'
+
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { V_COW } from 'legacy/constants/tokens'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import { useClaimState } from 'legacy/state/claim/hooks'
+
+import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
+
 import { ClaimSummary as ClaimSummaryWrapper, ClaimSummaryTitle, ClaimTotal } from './styled'
 import { ClaimCommonTypes } from './types'
-import { ClaimStatus } from 'legacy/state/claim/actions'
-import { V_COW } from 'legacy/constants/tokens'
-import JSBI from 'jsbi'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { useWalletInfo } from 'modules/wallet'
-import { useTokenBalance } from 'modules/tokens/hooks/useCurrencyBalance'
 
 type ClaimSummaryProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed'> & {
   unclaimedAmount: ClaimCommonTypes['tokenCurrencyAmount'] | undefined

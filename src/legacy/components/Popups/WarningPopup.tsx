@@ -1,10 +1,11 @@
 import { useContext } from 'react'
+
+import { AlertCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ThemedText } from 'legacy/theme'
 import { AutoColumn } from 'legacy/components/Column'
 import { AutoRow } from 'legacy/components/Row'
-import { AlertCircle } from 'react-feather'
+import { ThemedText } from 'legacy/theme'
 
 const RowNoFlex = styled(AutoRow)`
   flex-wrap: nowrap;

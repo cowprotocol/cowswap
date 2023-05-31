@@ -1,20 +1,22 @@
-import * as styledEl from './styled'
+import { useAtomValue } from 'jotai/utils'
+
 import {
   LimitOrdersWidget,
-  MarketPriceUpdater,
+  QuoteObserverUpdater,
   InitialPriceUpdater,
   ExecutionPriceUpdater,
   OrdersWidget,
   limitOrdersRawStateAtom,
 } from 'modules/limitOrders'
-import { useAtomValue } from 'jotai/utils'
+
+import * as styledEl from './styled'
 
 export default function LimitOrderPage() {
   const { isUnlocked } = useAtomValue(limitOrdersRawStateAtom)
 
   return (
     <>
-      <MarketPriceUpdater />
+      <QuoteObserverUpdater />
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
 

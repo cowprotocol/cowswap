@@ -1,10 +1,12 @@
+import { Percent } from '@uniswap/sdk-core'
+
+import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
 import { WithClassName } from 'types'
 
-import styled from 'styled-components/macro'
-import { transparentize } from 'polished'
 import { RowFixed } from 'legacy/components/Row'
+
 import SettingsMod, { StyledMenuButton, MenuFlyout, StyledMenuIcon, EmojiWrapper } from './SettingsMod'
-import { Percent } from '@uniswap/sdk-core'
 
 const Settings = styled(SettingsMod)`
   ${MenuFlyout} {

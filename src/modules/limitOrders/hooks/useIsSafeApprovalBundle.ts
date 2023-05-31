@@ -1,7 +1,9 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
-import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+
 import { Nullish } from 'types'
+
+import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 export function useIsSafeApprovalBundle(amount: Nullish<CurrencyAmount<Currency>>): boolean {
   const needsApproval = useNeedsApproval(amount)

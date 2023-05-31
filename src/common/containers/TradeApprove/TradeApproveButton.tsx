@@ -1,10 +1,13 @@
 import React, { useCallback } from 'react'
-import { ApproveButton } from 'common/pure/ApproveButton'
+
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
+import { useZeroApprove } from 'common/hooks/useZeroApprove'
+import { ApproveButton } from 'common/pure/ApproveButton'
+
 import { useTradeApproveCallback } from './useTradeApproveCallback'
 import { useTradeApproveState } from './useTradeApproveState'
-import { useZeroApprove } from 'common/hooks/useZeroApprove'
-import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>

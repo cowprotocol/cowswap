@@ -1,7 +1,8 @@
 // a list of tokens by chain
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@uniswap/sdk-core'
+
 import {
   AMPL,
   COW,
@@ -20,8 +21,8 @@ import {
   WBTC,
   WRAPPED_NATIVE_CURRENCY,
 } from 'legacy/constants/tokens'
-import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
 import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN } from 'legacy/utils/gnosis_chain/constants'
+import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]

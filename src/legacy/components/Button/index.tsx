@@ -1,10 +1,13 @@
 import { HTMLAttributes } from 'react'
-import styled from 'styled-components/macro'
-import { ButtonProps } from 'rebass/styled-components'
-import { ChevronDown, Star } from 'react-feather'
+
 import { transparentize, darken, lighten } from 'polished'
-import useTheme from 'legacy/hooks/useTheme'
+import { ChevronDown, Star } from 'react-feather'
+import { ButtonProps } from 'rebass/styled-components'
+import styled from 'styled-components/macro'
+
 import { RowBetween } from 'legacy/components/Row'
+import useTheme from 'legacy/hooks/useTheme'
+import { ButtonSize } from 'legacy/theme/enum'
 
 import {
   // Import only the basic buttons
@@ -15,7 +18,6 @@ import {
   ButtonConfirmedStyle as ButtonConfirmedStyleMod,
   // We don't import the "composite" buttons, they are just redefined (c&p actually)
 } from './ButtonMod'
-import { ButtonSize } from 'legacy/theme/enum'
 
 export * from './ButtonMod'
 

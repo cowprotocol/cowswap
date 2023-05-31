@@ -1,9 +1,11 @@
+import { ReactNode, useMemo } from 'react'
+
 import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
-import { Web3ReactConnection } from 'modules/wallet/web3-react/types'
-import { getConnectionName } from 'modules/wallet/api/utils/connection'
+
 import { useOrderedConnections, useEagerlyConnect } from 'modules/wallet'
-import { ReactNode, useMemo } from 'react'
+import { getConnectionName } from 'modules/wallet/api/utils/connection'
+import { Web3ReactConnection } from 'modules/wallet/web3-react/types'
 
 export default function Web3Provider({ children }: { children: ReactNode }) {
   useEagerlyConnect()

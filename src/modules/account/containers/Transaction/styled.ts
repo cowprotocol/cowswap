@@ -1,11 +1,13 @@
-import styled, { css, keyframes } from 'styled-components/macro'
-import { StyledSVG } from 'legacy/components/Loader'
-import { ExternalLink, LinkStyledButton, StyledLink } from 'legacy/theme'
-import { RowFixed } from 'legacy/components/Row'
 import { transparentize } from 'polished'
-import { StyledLogo } from 'legacy/components/CurrencyLogo'
-import { RateWrapper } from 'common/pure/RateInfo'
+import styled, { css, keyframes } from 'styled-components/macro'
+
+import { StyledSVG } from 'legacy/components/Loader'
+import { RowFixed } from 'legacy/components/Row'
+import { ExternalLink, LinkStyledButton, StyledLink } from 'legacy/theme'
+
+import { StyledLogo } from 'common/pure/CurrencyLogo'
 import { FiatAmount } from 'common/pure/FiatAmount'
+import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TransactionWrapper = styled.div`
   width: 100%;

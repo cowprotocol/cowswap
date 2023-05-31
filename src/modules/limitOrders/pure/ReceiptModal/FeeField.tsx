@@ -1,7 +1,10 @@
-import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-import * as styledEl from './styled'
+
+import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
+
+import * as styledEl from './styled'
 
 export type Props = { order: ParsedOrder }
 

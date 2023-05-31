@@ -1,9 +1,12 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react'
+
 import { Token } from '@uniswap/sdk-core'
-import { useFavouriteTokens, useToggleFavouriteToken } from 'legacy/state/user/hooks'
+
+import styled from 'styled-components/macro'
+
 import { ButtonStar } from 'legacy/components/Button'
 import useTheme from 'legacy/hooks/useTheme'
-import styled from 'styled-components/macro'
+import { useFavouriteTokens, useToggleFavouriteToken } from 'legacy/state/user/hooks'
 
 export const StyledButtonStar = styled(ButtonStar)`
   z-index: 9;

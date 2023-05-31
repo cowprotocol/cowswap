@@ -1,14 +1,15 @@
+import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { APP_DATA_HASH } from '../constants'
-import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
-import { appDataInfoAtom } from '../state/atoms'
-import { useAppCode } from '../hooks'
-
-import { useUpdateAtom } from 'jotai/utils'
 import { UtmParams } from 'modules/utm'
+
+import { APP_DATA_HASH } from '../constants'
+import { useAppCode } from '../hooks'
+import { appDataInfoAtom } from '../state/atoms'
+import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 
 export type UseAppDataParams = {
   chainId?: SupportedChainId

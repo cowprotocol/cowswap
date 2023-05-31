@@ -1,8 +1,10 @@
-import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
+
+import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
 
 // TODO: using .toNumber() we potentially lose accuracy
 // TODO: if we do migrations to etherjs v6, we should use native ES6 bignumber

@@ -1,4 +1,5 @@
 import { Trans } from '@lingui/macro'
+
 import { ConfirmationModal } from './ConfirmationModal'
 import { ConfirmationModalHeader } from './ConfirmationModalHeader'
 

@@ -1,6 +1,7 @@
-import styled from 'styled-components/macro'
-import { MobilePopupInner } from './PopupsMod'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
+
+import { MobilePopupInner } from './PopupsMod'
 
 export const MobilePopupWrapper = styled.div<{ show: boolean }>`
   position: relative;

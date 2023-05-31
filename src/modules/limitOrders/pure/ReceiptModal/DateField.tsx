@@ -1,6 +1,8 @@
-import * as styledEl from './styled'
-import useTimeAgo from 'legacy/hooks/useTimeAgo'
 import { format } from 'date-fns'
+
+import useTimeAgo from 'legacy/hooks/useTimeAgo'
+
+import * as styledEl from './styled'
 
 interface Props {
   date: Date | undefined

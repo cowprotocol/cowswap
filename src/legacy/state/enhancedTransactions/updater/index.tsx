@@ -1,7 +1,7 @@
 import React from 'react'
 
-import FinalizeTxUpdater from './FinalizeTxUpdater'
 import CancelReplaceTxUpdater from './CancelReplaceTxUpdater'
+import FinalizeTxUpdater from './FinalizeTxUpdater'
 
 export default function Updater() {
   return (

@@ -1,4 +1,5 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { BuildApproveTxParams, buildApproveTx } from './buildApproveTx'
 
 type BuildZeroApproveTxParams = Omit<BuildApproveTxParams, 'amountToApprove'> & {

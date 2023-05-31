@@ -3,11 +3,12 @@ import { Trans } from '@lingui/macro'
 import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
+
 import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
+import { ClickableText } from 'modules/swap/pure/Row/RowSlippageContent'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/typings'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
-import { ClickableText } from 'modules/swap/pure/Row/RowSlippageContent'
 
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
   return (

@@ -1,8 +1,10 @@
 // Code based on https://github.com/cowprotocol/explorer/blob/develop/src/components/orders/FilledProgress/index.tsx
-import * as styledEl from './styled'
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { getFilledAmounts } from 'modules/limitOrders/utils/getFilledAmounts'
+
+import { TokenAmount } from 'common/pure/TokenAmount'
+
+import * as styledEl from './styled'
 
 interface Props {
   order: ParsedOrder

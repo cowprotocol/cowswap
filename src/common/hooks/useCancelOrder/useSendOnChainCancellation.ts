@@ -1,10 +1,13 @@
 import { useCallback } from 'react'
+
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useWalletInfo } from 'modules/wallet'
-import { useGetOnChainCancellation } from './useGetOnChainCancellation'
+
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useGetOnChainCancellation } from './useGetOnChainCancellation'
 
 export function useSendOnChainCancellation() {
   const { chainId } = useWalletInfo()

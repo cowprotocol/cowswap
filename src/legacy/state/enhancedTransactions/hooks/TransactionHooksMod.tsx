@@ -1,6 +1,9 @@
-import { useWalletInfo } from 'modules/wallet'
 import { useMemo } from 'react'
+
 import { useAppSelector } from 'legacy/state/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { EnhancedTransactionDetails } from '../reducer'
 
 // returns all the transactions for the current chain

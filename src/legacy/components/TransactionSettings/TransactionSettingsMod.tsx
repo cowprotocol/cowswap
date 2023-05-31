@@ -1,19 +1,14 @@
-import { Trans } from '@lingui/macro'
-import { Percent } from '@uniswap/sdk-core'
-import { L2_CHAIN_IDS } from 'legacy/constants/chains'
-import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
-// import ms from 'ms.macro'
-import { darken } from 'polished'
 import { useContext, useState } from 'react'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
+
+import { Percent } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { darken } from 'polished'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ThemedText } from 'legacy/theme'
+import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
-import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
-
-// MOD imports
 import {
   MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
   MIN_SLIPPAGE_BPS,
@@ -26,12 +21,21 @@ import {
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
   MINIMUM_ETH_FLOW_SLIPPAGE,
 } from 'legacy/constants'
-import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'legacy/components/analytics'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
+import { L2_CHAIN_IDS } from 'legacy/constants/chains'
+import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
+// import ms from 'ms.macro'
+import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
+import { ThemedText } from 'legacy/theme'
+
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
+import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
+import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useWalletInfo } from 'modules/wallet'
+
+import QuestionHelper from '../QuestionHelper'
+
+// MOD imports
 
 const MAX_DEADLINE_MINUTES = 180 // 3h
 

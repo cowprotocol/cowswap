@@ -1,12 +1,17 @@
-import { SwapFlowContext } from '../types'
-import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
+import { Percent } from '@uniswap/sdk-core'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
-import { presignOrderStep } from './steps/presignOrderStep'
+
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { Percent } from '@uniswap/sdk-core'
+
+import { presignOrderStep } from './steps/presignOrderStep'
+
+import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
+import { SwapFlowContext } from '../types'
 
 export async function swapFlow(
   input: SwapFlowContext,
@@ -28,23 +33,37 @@ export async function swapFlow(
       input.callbacks.closeModals()
     })
 
-    logTradeFlow('SWAP FLOW', 'STEP 4: presign order (optional)')
-    const presignTx = await (input.flags.allowsOffchainSigning
-      ? Promise.resolve(null)
-      : presignOrderStep(orderId, input.contract))
-
-    logTradeFlow('SWAP FLOW', 'STEP 5: add pending order step')
     addPendingOrderStep(
       {
         id: orderId,
         chainId: input.context.chainId,
         order: {
           ...order,
-          presignGnosisSafeTxHash: input.flags.isGnosisSafeWallet && presignTx ? presignTx.hash : undefined,
+          isHidden: !input.flags.allowsOffchainSigning,
         },
       },
       input.dispatch
     )
+
+    logTradeFlow('SWAP FLOW', 'STEP 4: presign order (optional)')
+    const presignTx = await (input.flags.allowsOffchainSigning
+      ? Promise.resolve(null)
+      : presignOrderStep(orderId, input.contract))
+
+    logTradeFlow('SWAP FLOW', 'STEP 5: unhide SC order (optional)')
+    if (presignTx) {
+      partialOrderUpdate(
+        {
+          chainId: input.context.chainId,
+          order: {
+            id: order.id,
+            presignGnosisSafeTxHash: input.flags.isGnosisSafeWallet ? presignTx.hash : undefined,
+            isHidden: false,
+          },
+        },
+        input.dispatch
+      )
+    }
 
     logTradeFlow('SWAP FLOW', 'STEP 6: add app data to upload queue')
     input.callbacks.uploadAppData({ chainId: input.context.chainId, orderId, appData: input.appDataInfo })

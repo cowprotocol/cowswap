@@ -1,4 +1,5 @@
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
+
 import type { Ajv, ValidateFunction } from 'ajv'
 
 enum ValidationSchema {

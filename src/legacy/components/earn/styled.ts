@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import uImage from 'legacy/assets/images/big_unicorn.png'
 import noise from 'legacy/assets/images/noise.png'
 import xlUnicorn from 'legacy/assets/images/xl_uni.png'
+
 import { AutoColumn } from '../Column'
 
 export const DataCard = styled(AutoColumn)<{ disabled?: boolean }>`

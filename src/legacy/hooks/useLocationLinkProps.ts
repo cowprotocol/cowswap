@@ -1,10 +1,12 @@
+import { useMemo } from 'react'
+
+import { LocationDescriptor } from 'history'
+import { stringify } from 'qs'
+import { useLocation } from 'react-router-dom'
+
 import { sendEvent } from 'legacy/components/analytics'
 import { SupportedLocale } from 'legacy/constants/locales'
-import { LocationDescriptor } from 'history'
 import useParsedQueryString from 'legacy/hooks/useParsedQueryString'
-import { stringify } from 'qs'
-import { useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
 
 import { useActiveLocale } from './useActiveLocale'
 

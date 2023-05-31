@@ -1,9 +1,12 @@
 import { useMemo } from 'react'
+
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { Order } from 'legacy/state/orders/actions'
-import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
-import { useCoingeckoUsdValue } from 'legacy/hooks/useStablecoinPrice'
+
 import { MIN_FIAT_SURPLUS_VALUE } from 'legacy/constants'
+import { useCoingeckoUsdValue } from 'legacy/hooks/useStablecoinPrice'
+import { Order } from 'legacy/state/orders/actions'
+
+import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 
 type Output = {
   surplusFiatValue: CurrencyAmount<Token> | null

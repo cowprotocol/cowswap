@@ -1,3 +1,5 @@
+import React, { useMemo } from 'react'
+
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
   css,
@@ -5,14 +7,15 @@ import styled, {
   DefaultThemeUniswap,
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components/macro'
-import { Colors } from './styled'
+
+import { useIsDarkMode } from 'legacy/state/user/hooks'
 import {
   colors as colorsBaseTheme,
   FixedGlobalStyle as FixedGlobalStyleBase,
   themeVariables as baseThemeVariables,
 } from 'legacy/theme/baseTheme'
-import React, { useMemo } from 'react'
-import { useIsDarkMode } from 'legacy/state/user/hooks'
+
+import { Colors } from './styled'
 export type TextProps = Omit<TextPropsOriginal, 'css'> & { override?: boolean }
 
 export const MEDIA_WIDTHS = {

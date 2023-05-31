@@ -1,9 +1,8 @@
-/**
- * @jest-environment ./custom-test-env.js
- */
 import fetchMock from 'jest-fetch-mock'
-import fetchTokenList, { DEFAULT_TOKEN_LIST } from './fetchTokenList'
+
 import tokenList from 'lib/hooks/useTokenList/mockTokenList.json'
+
+import fetchTokenList, { DEFAULT_TOKEN_LIST } from './fetchTokenList'
 
 fetchMock.enableMocks()
 

@@ -1,11 +1,13 @@
 import { ButtonSecondary } from 'legacy/components/Button'
+import CopyHelper from 'legacy/components/Copy'
+import { ClaimStatus } from 'legacy/state/claim/actions'
+import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
 import { shortenAddress } from 'legacy/utils'
+
+import { Identicon } from 'modules/wallet/api/container/Identicon'
+
 import { TopNav, ClaimAccount, ClaimAccountButtons } from './styled'
 import { ClaimCommonTypes } from './types'
-import { useClaimDispatchers, useClaimState } from 'legacy/state/claim/hooks'
-import { ClaimStatus } from 'legacy/state/claim/actions'
-import { Identicon } from 'modules/wallet/api/container/Identicon'
-import CopyHelper from 'legacy/components/Copy'
 
 type ClaimNavProps = Pick<ClaimCommonTypes, 'account' | 'handleChangeAccount'>
 

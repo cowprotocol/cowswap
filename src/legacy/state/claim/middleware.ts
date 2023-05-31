@@ -1,8 +1,11 @@
 import { isAnyOf, Middleware } from '@reduxjs/toolkit'
-import { getCowSoundSend, getCowSoundSuccessClaim } from 'legacy/utils/sound'
+
 import { AppState } from 'legacy/state'
-import { addTransaction, finalizeTransaction } from '../enhancedTransactions/actions'
+import { getCowSoundSend, getCowSoundSuccessClaim } from 'legacy/utils/sound'
+
 import { ClaimStatus, setClaimStatus } from './actions'
+
+import { addTransaction, finalizeTransaction } from '../enhancedTransactions/actions'
 
 const isFinalizeTransaction = isAnyOf(finalizeTransaction)
 const isAddTransaction = isAnyOf(addTransaction)

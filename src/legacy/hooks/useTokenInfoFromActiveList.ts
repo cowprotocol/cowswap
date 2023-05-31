@@ -1,7 +1,10 @@
-import { useWalletInfo } from 'modules/wallet'
-import { Currency } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
+
+import { Currency } from '@uniswap/sdk-core'
+
 import { useCombinedActiveList } from 'legacy/state/lists/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
 
 /**
  * Returns a WrappedTokenInfo from the active token lists when possible,

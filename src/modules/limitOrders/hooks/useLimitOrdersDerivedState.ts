@@ -1,10 +1,11 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useEffect } from 'react'
+
 import {
   limitOrdersRawStateAtom,
   LimitOrdersDerivedState,
   limitOrdersDerivedStateAtom,
 } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { useEffect } from 'react'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 
 export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {

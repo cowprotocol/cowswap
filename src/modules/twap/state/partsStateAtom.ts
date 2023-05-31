@@ -1,7 +1,10 @@
 import { atom } from 'jotai'
-import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
-import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
+
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
+
+import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
 import { defaultNumOfParts } from '../const'
 
 export interface PartsState {

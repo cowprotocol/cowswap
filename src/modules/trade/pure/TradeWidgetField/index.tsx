@@ -1,6 +1,8 @@
-import { TradeWidgetFieldBox, TradeWidgetFieldLabel, Content, ErrorText } from './styled'
 import { Trans } from '@lingui/macro'
+
 import QuestionHelper from 'legacy/components/QuestionHelper'
+
+import { TradeWidgetFieldBox, TradeWidgetFieldLabel, Content, ErrorText } from './styled'
 
 export type TradeWidgetFieldError = { type: 'error' | 'warning'; text: string | null } | null
 

@@ -1,8 +1,10 @@
-import { CanonicalMarketParams, getCanonicalMarket } from 'legacy/utils/misc'
 import { CurrencyAmount, Currency, TradeType, Price, Percent } from '@uniswap/sdk-core'
 import { Trade } from '@uniswap/v2-sdk'
+
 import { FeeInformation, PriceInformation } from 'types'
+
 import { ONE_FRACTION } from 'legacy/constants/misc'
+import { CanonicalMarketParams, getCanonicalMarket } from 'legacy/utils/misc'
 
 export type FeeForTrade = { feeAsCurrency: CurrencyAmount<Currency> } & Pick<FeeInformation, 'amount'>
 

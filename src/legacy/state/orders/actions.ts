@@ -1,10 +1,12 @@
-import { createAction } from '@reduxjs/toolkit'
-import { Token } from '@uniswap/sdk-core'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { SerializedToken } from 'legacy/state/user/types'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { BigNumberish } from '@ethersproject/bignumber'
 import { UID, EnrichedOrder, OrderClass, OrderCreation } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { BigNumberish } from '@ethersproject/bignumber'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { Token } from '@uniswap/sdk-core'
+
+import { createAction } from '@reduxjs/toolkit'
+
+import { SerializedToken } from 'legacy/state/user/types'
 
 export enum OrderStatus {
   PENDING = 'pending',

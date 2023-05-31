@@ -1,7 +1,9 @@
-import applicationReducer from 'legacy/state/application/reducer'
+import { ReactNode } from 'react'
+
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
-import { ReactNode } from 'react'
+
+import applicationReducer from 'legacy/state/application/reducer'
 
 const combinedReducers = combineReducers({
   application: applicationReducer,

@@ -1,10 +1,12 @@
 import { Trans } from '@lingui/macro'
-import { CopyHelper } from 'modules/account/containers/CopyHelper'
-import Column from 'legacy/components/Column'
-import useTheme from 'legacy/hooks/useTheme'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
+
+import Column from 'legacy/components/Column'
+import useTheme from 'legacy/hooks/useTheme'
 import { ExternalLink, ThemedText } from 'legacy/theme'
+
+import { CopyHelper } from 'modules/account/containers/CopyHelper'
 
 import Modal from 'common/pure/Modal'
 

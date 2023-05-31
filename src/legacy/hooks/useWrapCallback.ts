@@ -1,25 +1,29 @@
-// eslint-disable-next-line no-restricted-imports
-import { t } from '@lingui/macro'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useWETHContract } from 'legacy/hooks/useContract'
 import { BigNumber } from '@ethersproject/bignumber'
-import { TransactionResponse } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
-import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
-import { RADIX_HEX } from 'legacy/constants'
-import { formatSymbol } from 'utils/format'
-import { getOperationMessage, OperationType } from 'legacy/components/TransactionConfirmationModal'
-import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-import { isRejectRequestProviderError } from '../utils/misc'
+import { TransactionResponse } from '@ethersproject/providers'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { t } from '@lingui/macro'
+
 import { wrapAnalytics } from 'legacy/components/analytics'
-import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
+import { getOperationMessage, OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { RADIX_HEX } from 'legacy/constants'
+import { useWETHContract } from 'legacy/hooks/useContract'
 import { useCloseModals } from 'legacy/state/application/hooks'
-import { useTransactionConfirmModal } from 'modules/swap/hooks/useTransactionConfirmModal'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
+import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
+
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { formatTokenAmount } from 'utils/amountFormat'
-import { useWalletInfo } from 'modules/wallet'
+import { useTransactionConfirmModal } from 'modules/swap/hooks/useTransactionConfirmModal'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useWalletInfo } from 'modules/wallet'
+
+import { formatTokenAmount } from 'utils/amountFormat'
+import { formatSymbol } from 'utils/format'
+
+import { isRejectRequestProviderError } from '../utils/misc'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = BigNumber.from('180000')
