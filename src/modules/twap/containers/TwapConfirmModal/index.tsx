@@ -1,10 +1,5 @@
-import { useAtomValue } from 'jotai'
-
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
-import { twapOrderSlippage } from 'modules/twap/state/twapOrdersSettingsAtom'
-
-import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { TwapConfirmDetails } from '../TwapConfirmDetails'
@@ -21,8 +16,6 @@ export function TwapConfirmModal() {
 
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
-  const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
-  const allowedSlippage = useAtomValue(twapOrderSlippage)
 
   // TODO: add conditions based on warnings
   const isConfirmDisabled = false
@@ -61,7 +54,7 @@ export function TwapConfirmModal() {
       >
         <>
           <>{/*TODO: display details*/}</>
-          <TwapConfirmDetails allowedSlippage={allowedSlippage} rateInfoParams={rateInfoParams} />
+          <TwapConfirmDetails inputCurrencyInfo={inputCurrencyInfo} outputCurrencyInfo={outputCurrencyInfo} />
         </>
       </TradeConfirmation>
     </TradeConfirmModal>

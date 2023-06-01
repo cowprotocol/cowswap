@@ -1,26 +1,18 @@
-import { useMemo } from 'react'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
-import { Percent } from '@uniswap/sdk-core'
-
-import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
-import { ConfirmModalItem } from 'modules/twap/pure/ConfirmModaltem'
-
-import { RateInfoParams } from 'common/pure/RateInfo'
-
+import { LimitPriceRow } from './LimitPriceRow'
+import { SlippageRow } from './SlippageRow'
 import * as styledEl from './styled'
 
 type Props = {
-  rateInfoParams: RateInfoParams
-  allowedSlippage: Percent
+  inputCurrencyInfo: CurrencyPreviewInfo
+  outputCurrencyInfo: CurrencyPreviewInfo
 }
 
 export function TwapConfirmDetails(props: Props) {
-  const { rateInfoParams, allowedSlippage } = props
-
-  const rateInfoWithSlippageAndFees = useMemo(() => {
-    // Todo: calculate limit price
-    return rateInfoParams
-  }, [rateInfoParams])
+  const { inputCurrencyInfo, outputCurrencyInfo } = props
+  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   return (
     <styledEl.Wrapper>
@@ -28,19 +20,10 @@ export function TwapConfirmDetails(props: Props) {
       <styledEl.StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />
 
       {/* Slippage */}
-      <ConfirmModalItem>
-        <RowSlippage allowedSlippage={allowedSlippage} showSettingOnClick={false} />
-      </ConfirmModalItem>
+      <SlippageRow />
 
       {/* Limit Price */}
-      <ConfirmModalItem>
-        <styledEl.StyledRateInfo
-          noFiat
-          stylized={true}
-          rateInfoParams={rateInfoWithSlippageAndFees}
-          label="Limit price (incl. fee/lippage)"
-        />
-      </ConfirmModalItem>
+      <LimitPriceRow rateInfoParams={rateInfoParams} />
     </styledEl.Wrapper>
   )
 }
