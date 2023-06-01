@@ -12,7 +12,7 @@ import { claimAnalytics } from 'legacy/components/analytics'
 import { ButtonPrimary } from 'legacy/components/Button'
 import CopyHelper from 'legacy/components/Copy'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { LOCKED_GNO_VESTING_START_DATE } from 'legacy/constants'
 import { MERKLE_DROP_CONTRACT_ADDRESSES, TOKEN_DISTRO_CONTRACT_ADDRESSES } from 'legacy/constants/tokens'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -38,7 +38,7 @@ enum ClaimStatus {
 }
 
 interface Props {
-  openModal: (message: string, operationType: OperationType) => void
+  openModal: (message: string, operationType: ConfirmOperationType) => void
   closeModal: () => void
   vested: CurrencyAmount<Currency>
   allocated: CurrencyAmount<Currency>

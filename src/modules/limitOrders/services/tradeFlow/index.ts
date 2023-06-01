@@ -22,7 +22,7 @@ export async function tradeFlow(
   settingsState: LimitOrdersSettingsState,
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   beforeTrade?: () => void
-): Promise<string | null> {
+): Promise<string> {
   const { account, recipientAddressOrName, sellToken, buyToken } = params.postOrderParams
   const marketLabel = [sellToken.symbol, buyToken.symbol].join(',')
   const swapFlowAnalyticsContext: SwapFlowAnalyticsContext = {

@@ -1,12 +1,14 @@
 import React from 'react'
 
+import { ButtonPrimary } from 'legacy/components/Button'
+import { ButtonSize } from 'legacy/theme/enum'
+
 import { TwapFormState } from './getTwapFormState'
 
-import { ButtonPrimary } from '../../../../legacy/components/Button'
-import { ButtonSize } from '../../../../legacy/theme/enum'
-import { TwapFormActions } from '../../hooks/useTwapFormActions'
-
-export interface PrimaryActionButtonContext extends TwapFormActions {}
+export interface PrimaryActionButtonContext {
+  openConfirmModal(): void
+  setFallbackHandler(): void
+}
 
 // TODO: extend with common trade widget states
 // TODO: set correct buttons text
@@ -31,8 +33,8 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
       Set fallback handler
     </ButtonPrimary>
   ),
-  [TwapFormState.CAN_CREATE_ORDER]: ({ createTwapOrder }: PrimaryActionButtonContext) => (
-    <ButtonPrimary onClick={createTwapOrder} buttonSize={ButtonSize.BIG}>
+  [TwapFormState.CAN_CREATE_ORDER]: ({ openConfirmModal }: PrimaryActionButtonContext) => (
+    <ButtonPrimary onClick={openConfirmModal} buttonSize={ButtonSize.BIG}>
       Create TWAP order
     </ButtonPrimary>
   ),

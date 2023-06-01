@@ -41,8 +41,7 @@ import {
 } from 'modules/swap/pure/warnings'
 import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useSetupTradeState } from 'modules/trade'
-import { TradeWidget, TradeWidgetContainer } from 'modules/trade/containers/TradeWidget'
+import { useSetupTradeState, TradeWidget, TradeWidgetContainer } from 'modules/trade'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'

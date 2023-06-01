@@ -7,9 +7,11 @@ import { TradeConfirmation } from './index'
 const Fixtures = {
   default: (
     <TradeConfirmation
+      title="Review order"
       inputCurrencyInfo={inputCurrencyInfoMock}
       outputCurrencyInfo={outputCurrencyInfoMock}
       onConfirm={() => void 0}
+      onDismiss={() => void 0}
       isConfirmDisabled={false}
       priceImpact={priceImpactMock}
     >

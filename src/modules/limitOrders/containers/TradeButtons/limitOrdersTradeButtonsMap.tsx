@@ -3,7 +3,7 @@ import React from 'react'
 import { Trans } from '@lingui/macro'
 
 import { ButtonPrimary } from 'legacy/components/Button'
-import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
+import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { ButtonSize } from 'legacy/theme/enum'
 
