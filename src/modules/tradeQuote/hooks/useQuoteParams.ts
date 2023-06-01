@@ -21,7 +21,7 @@ export function useQuoteParams() {
 
   const currencyAmount = useMemo(() => {
     // For TWAP orders, we want to get quote only for single part amount
-    if (tradeTypeInfo && tradeTypeInfo.tradeType === TradeType.ADVANCED_ORDERS) {
+    if (tradeTypeInfo?.tradeType === TradeType.ADVANCED_ORDERS) {
       return inputPartAmount
     }
 
