@@ -26,11 +26,11 @@ export enum LimitOrdersFormState {
   Loading = 'Loading',
   SwapIsUnsupported = 'SwapIsUnsupported',
   WalletIsUnsupported = 'WalletIsUnsupported',
-  NotApproved = 'NotApproved',
   WalletIsNotConnected = 'WalletIsNotConnected',
   ReadonlyGnosisSafeUser = 'ReadonlyGnosisSafeUser',
   FeeExceedsFrom = 'FeeExceedsFrom',
 
+  NotApproved = 'NotApproved',
   ApproveAndSwap = 'ApproveAndSwap',
   ExpertApproveAndSwap = 'ExpertApproveAndSwap',
 

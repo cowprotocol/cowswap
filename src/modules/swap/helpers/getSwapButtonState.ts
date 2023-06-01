@@ -11,11 +11,11 @@ export enum SwapButtonState {
   Loading = 'Loading',
   SwapIsUnsupported = 'SwapIsUnsupported',
   WalletIsUnsupported = 'WalletIsUnsupported',
-  NeedApprove = 'NeedApprove',
   WalletIsNotConnected = 'WalletIsNotConnected',
   ReadonlyGnosisSafeUser = 'ReadonlyGnosisSafeUser',
   FeesExceedFromAmount = 'FeesExceedFromAmount',
 
+  NeedApprove = 'NeedApprove',
   ApproveAndSwap = 'ApproveAndSwap',
   ExpertApproveAndSwap = 'ExpertApproveAndSwap',
 

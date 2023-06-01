@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 import usePrevious from 'legacy/hooks/usePrevious'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
@@ -11,7 +13,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-function getCurrencyToApprove(amountToApprove: CurrencyAmount<Currency> | null): Token | undefined {
+function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
   if (!amountToApprove) return undefined
 
   if (amountToApprove.currency.isNative) return amountToApprove.currency.wrapped
@@ -19,7 +21,7 @@ function getCurrencyToApprove(amountToApprove: CurrencyAmount<Currency> | null):
   return amountToApprove.currency
 }
 
-export function useApproveState(amountToApprove: CurrencyAmount<Currency> | null, spender?: string): ApprovalState {
+export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>, spender?: string): ApprovalState {
   const { account } = useWalletInfo()
   const token = getCurrencyToApprove(amountToApprove)
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
