@@ -11,3 +11,12 @@ export const StyledRateInfo = styled(RateInfo)`
   font-weight: 500;
   margin: 0 auto;
 `
+
+export const ItemWithArrow = styled.div`
+  display: flex;
+  align-items: center;
+
+  > svg:first-child {
+    margin-right: 5px;
+  }
+`
