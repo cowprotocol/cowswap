@@ -9,8 +9,8 @@ import {
   EthFlowStepperProps as PureProps,
   SmartOrderStatus,
 } from 'modules/swap/pure/EthFlow/EthFlowStepper'
-import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
 
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { formatSymbol } from 'utils/format'
 
 type EthFlowStepperProps = {

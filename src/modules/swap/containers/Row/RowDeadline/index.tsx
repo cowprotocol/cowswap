@@ -6,7 +6,8 @@ import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
+
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()

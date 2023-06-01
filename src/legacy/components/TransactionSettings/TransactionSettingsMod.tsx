@@ -29,8 +29,9 @@ import { ThemedText } from 'legacy/theme'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
-import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
 import { useWalletInfo } from 'modules/wallet'
+
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'
 

@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
 import { useIsNativeIn, useIsNativeOut } from './useIsNative'
 import { useIsWrappedIn, useIsWrappedOut } from './useIsWrapped'
-import { useNativeCurrency } from './useNativeCurrency'
 
 export function useNativeTokenContext() {
   const native = useNativeCurrency()

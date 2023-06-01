@@ -6,8 +6,8 @@ import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
-import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
 
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { formatPercent } from 'utils/amountFormat'
 
 export interface RowSlippageProps {

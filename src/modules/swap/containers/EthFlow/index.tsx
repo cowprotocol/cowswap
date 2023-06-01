@@ -13,12 +13,12 @@ import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
 import { ethFlowContextAtom } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 import { useCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
-import { useNativeCurrency } from 'modules/trade/hooks/useNativeCurrency'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveCallback, useTradeApproveState } from 'common/containers/TradeApprove'
 import { GpModal } from 'common/pure/Modal'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useEthFlowActions } from './hooks/useEthFlowActions'
 import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts'
