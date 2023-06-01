@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStorage'
 
@@ -14,7 +14,7 @@ const LOCAL_STORAGE_KEY = 'UserDeadlineSettings'
 export function EthFlowDeadlineUpdater() {
   // user deadline (in seconds)
   const [userDeadline, setUserDeadline] = useUserTransactionTTL()
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
 
   // On updater mount, load previous deadline from localStorage and set it
   useEffect(() => {

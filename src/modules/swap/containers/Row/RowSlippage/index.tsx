@@ -4,10 +4,10 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowSlippageContent } from 'modules/swap/pure/Row/RowSlippageContent'
 
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { formatPercent } from 'utils/amountFormat'
 
 export interface RowSlippageProps {
@@ -18,8 +18,8 @@ export interface RowSlippageProps {
 export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowSlippageProps) {
   const toggleSettings = useToggleSettingsMenu()
 
-  const isEthFlow = useIsEthFlow()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const isEthFlow = useIsEoaEthFlow()
+  const nativeCurrency = useNativeCurrency()
 
   const props = useMemo(
     () => ({

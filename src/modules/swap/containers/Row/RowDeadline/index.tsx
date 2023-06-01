@@ -3,17 +3,18 @@ import { useMemo } from 'react'
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
 import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()
   const toggleSettings = useToggleSettingsMenu()
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
   const isExpertMode = useIsExpertMode()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const nativeCurrency = useNativeCurrency()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const props = useMemo(() => {

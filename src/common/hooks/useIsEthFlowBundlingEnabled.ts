@@ -2,10 +2,10 @@ import { useIsBundlingSupported } from 'modules/wallet'
 
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 
-export function useIsTxBundlingEnabled(): boolean {
+export function useIsEthFlowBundlingEnabled(): boolean {
   const isBundlingSupported = useIsBundlingSupported()
 
-  const { txBundlingEnabled } = useFeatureFlags()
+  const { ethFlowBundlingEnabled } = useFeatureFlags()
 
-  return isBundlingSupported && txBundlingEnabled
+  return isBundlingSupported && ethFlowBundlingEnabled
 }

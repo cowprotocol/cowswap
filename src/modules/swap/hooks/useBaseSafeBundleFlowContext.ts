@@ -2,26 +2,23 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 
-import { useGP2SettlementContract, useTokenContract } from 'legacy/hooks/useContract'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 
-import { FlowType, getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
-import { SafeBundleFlowContext } from 'modules/swap/services/types'
+import { getFlowContext, useBaseFlowContextSetup } from 'modules/swap/hooks/useFlowContext'
+import { BaseSafeFlowContext } from 'modules/swap/services/types'
 import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
-export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
+export function useBaseSafeBundleFlowContext(): BaseSafeFlowContext | null {
   const baseProps = useBaseFlowContextSetup()
-  const addTransaction = useTransactionAdder()
   const sellToken = baseProps.trade ? baseProps.trade.inputAmount.currency.wrapped : undefined
-  const erc20Contract = useTokenContract(sellToken?.address)
   const settlementContract = useGP2SettlementContract()
   const spender = useTradeSpenderAddress()
   const safeAppsSdk = useSafeAppsSdk()
   const { provider } = useWeb3React()
 
-  if (!baseProps.trade || !erc20Contract || !settlementContract || !spender || !safeAppsSdk || !provider) return null
+  if (!baseProps.trade || !settlementContract || !spender || !safeAppsSdk || !provider) return null
 
   const baseContext = getFlowContext({
     baseProps,
@@ -29,15 +26,13 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
     kind: baseProps.trade.tradeType === TradeType.EXACT_INPUT ? OrderKind.SELL : OrderKind.BUY,
   })
 
-  if (!baseContext || baseProps.flowType !== FlowType.SAFE_BUNDLE) return null
+  if (!baseContext) return null
 
   return {
     ...baseContext,
-    erc20Contract,
     settlementContract,
     spender,
     safeAppsSdk,
     provider,
-    addTransaction,
   }
 }

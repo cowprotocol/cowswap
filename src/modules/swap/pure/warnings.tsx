@@ -10,7 +10,7 @@ import TradeGp from 'legacy/state/swap/TradeGp'
 import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
-import { BundleTxApprovalBanner, BundleTxSafeWcBanner } from 'common/pure/InlineBanner/banners'
+import { BundleTxApprovalBanner, BundleTxSafeWcBanner, BundleTxWrapBanner } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 
@@ -22,6 +22,7 @@ export interface SwapWarningsTopProps {
   hideUnknownImpactWarning: boolean
   isExpertMode: boolean
   showApprovalBundlingBanner: boolean
+  showWrapBundlingBanner: boolean
   shouldZeroApprove: boolean
   showSafeWcBundlingBanner: boolean
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
@@ -48,6 +49,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     isExpertMode,
     hideUnknownImpactWarning,
     showApprovalBundlingBanner,
+    showWrapBundlingBanner,
     showSafeWcBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
@@ -71,6 +73,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         />
       )}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
+      {showWrapBundlingBanner && <BundleTxWrapBanner />}
       {showSafeWcBundlingBanner && <BundleTxSafeWcBanner />}
     </>
   )

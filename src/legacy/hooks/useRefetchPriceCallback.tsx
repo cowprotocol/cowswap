@@ -16,7 +16,7 @@ import { CancelableResult, onlyResolvesLast } from 'legacy/utils/async'
 import { registerOnWindow, getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
 import { getBestQuote, getFastQuote, QuoteResult } from 'legacy/utils/price'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
 import { isValidOperatorError, ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
 import GpQuoteError, {
@@ -138,7 +138,7 @@ export function useRefetchQuoteCallback() {
   const removeGpUnsupportedToken = useRemoveGpUnsupportedToken()
   const strategy = useGetGpPriceStrategy()
   const [deadline] = useUserTransactionTTL()
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
 
   registerOnWindow({
     getNewQuote,
