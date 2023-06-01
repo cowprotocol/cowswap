@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { CurrencyAmount, Currency, TradeType, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 
 import TradeGp from 'legacy/state/swap/TradeGp'
 
@@ -60,18 +60,18 @@ function isValidNonZeroAmount(value: string): boolean {
 export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHelpers }: RowFeeProps) {
   const { realizedFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
-  const isEthFLow = useIsEoaEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
   const native = useNativeCurrency()
 
   const tooltip = useMemo(() => {
-    if (isEthFLow) {
+    if (isEoaEthFlow) {
       return getEthFlowFeeTooltipMsg(native.symbol)
     } else if (allowsOffchainSigning) {
       return GASLESS_FEE_TOOLTIP_MSG
     } else {
       return PRESIGN_FEE_TOOLTIP_MSG
     }
-  }, [allowsOffchainSigning, isEthFLow, native.symbol])
+  }, [allowsOffchainSigning, isEoaEthFlow, native.symbol])
 
   // trades are null when there is a fee quote error e.g
   // so we can take both
@@ -82,15 +82,15 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
     const smartFeeFiatValue = formatFiatAmount(feeFiatValue)
     const smartFeeTokenValue = formatTokenAmount(displayFee)
     const feeAmountWithCurrency = `${smartFeeTokenValue} ${formatSymbol(feeCurrencySymbol)} ${
-      isEthFLow ? ' + gas' : ''
+      isEoaEthFlow ? ' + gas' : ''
     }`
 
     const feeToken = isValidNonZeroAmount(smartFeeTokenValue)
       ? feeAmountWithCurrency
-      : `🎉 Free!${isEthFLow ? ' (+ gas)' : ''}`
+      : `🎉 Free!${isEoaEthFlow ? ' (+ gas)' : ''}`
     const feeUsd = isValidNonZeroAmount(smartFeeFiatValue) ? smartFeeFiatValue && `(≈$${smartFeeFiatValue})` : ''
     const fullDisplayFee = FractionUtils.fractionLikeToExactString(displayFee) || '-'
-    const includeGasMessage = allowsOffchainSigning && !isEthFLow ? ' (incl. gas costs)' : ''
+    const includeGasMessage = allowsOffchainSigning && !isEoaEthFlow ? ' (incl. gas costs)' : ''
 
     return {
       showHelpers,
@@ -101,7 +101,7 @@ export function RowFee({ trade, fee, feeFiatValue, allowsOffchainSigning, showHe
       includeGasMessage,
       tooltip,
     }
-  }, [allowsOffchainSigning, fee, feeFiatValue, isEthFLow, realizedFee, showHelpers, tooltip])
+  }, [allowsOffchainSigning, fee, feeFiatValue, isEoaEthFlow, realizedFee, showHelpers, tooltip])
 
   return <RowFeeContent {...props} />
 }
