@@ -6,32 +6,32 @@ import { Trans } from '@lingui/macro'
 import { darken } from 'polished'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'legacy/components/analytics'
+import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 import {
-  MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
-  MIN_SLIPPAGE_BPS,
-  MAX_SLIPPAGE_BPS,
-  LOW_SLIPPAGE_BPS,
-  HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
-  MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
-  MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
+  HIGH_SLIPPAGE_BPS,
+  LOW_SLIPPAGE_BPS,
+  MAX_SLIPPAGE_BPS,
+  MIN_SLIPPAGE_BPS,
+  MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
   MINIMUM_ETH_FLOW_SLIPPAGE,
+  MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
+  MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from 'legacy/constants'
 import { L2_CHAIN_IDS } from 'legacy/constants/chains'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
-// import ms from 'ms.macro'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useWalletInfo } from 'modules/wallet'
+
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'
 
@@ -134,7 +134,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const theme = useContext(ThemeContext)
 
   const isEthFlow = useIsEoaEthFlow()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const nativeCurrency = useNativeCurrency()
 
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
