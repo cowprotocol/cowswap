@@ -18,18 +18,18 @@ export interface RowSlippageProps {
 export function RowSlippage({ allowedSlippage, showSettingOnClick = true }: RowSlippageProps) {
   const toggleSettings = useToggleSettingsMenu()
 
-  const isEthFlow = useIsEoaEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
 
   const props = useMemo(
     () => ({
-      isEthFlow,
+      isEoaEthFlow,
       symbols: [nativeCurrency.symbol],
       showSettingOnClick,
       allowedSlippage,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
     }),
-    [allowedSlippage, nativeCurrency, isEthFlow, showSettingOnClick]
+    [allowedSlippage, nativeCurrency, isEoaEthFlow, showSettingOnClick]
   )
 
   return <RowSlippageContent {...props} toggleSettings={toggleSettings} />

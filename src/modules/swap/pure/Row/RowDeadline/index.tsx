@@ -34,7 +34,7 @@ export function getNonNativeOrderDeadlineTooltip() {
 
 export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippage'> {
   toggleSettings: () => void
-  isEthFlow: boolean
+  isEoaEthFlow: boolean
   symbols?: (string | undefined)[]
   displayDeadline: string
   styleProps?: RowStyleProps
@@ -44,8 +44,10 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
 
 export function RowDeadlineContent(props: RowDeadlineProps) {
-  const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
-  const deadlineTooltipContent = isEthFlow ? getNativeOrderDeadlineTooltip(symbols) : getNonNativeOrderDeadlineTooltip()
+  const { showSettingOnClick, toggleSettings, displayDeadline, isEoaEthFlow, symbols, styleProps } = props
+  const deadlineTooltipContent = isEoaEthFlow
+    ? getNativeOrderDeadlineTooltip(symbols)
+    : getNonNativeOrderDeadlineTooltip()
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -53,10 +55,10 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
         <TextWrapper>
           {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <DeadlineTextContents isEthFlow={isEthFlow} />
+              <DeadlineTextContents isEoaEthFlow={isEoaEthFlow} />
             </ClickableText>
           ) : (
-            <DeadlineTextContents isEthFlow={isEthFlow} />
+            <DeadlineTextContents isEoaEthFlow={isEoaEthFlow} />
           )}
         </TextWrapper>
         <MouseoverTooltipContent wrap content={deadlineTooltipContent}>
@@ -74,13 +76,13 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
   )
 }
 
-type DeadlineTextContentsProps = { isEthFlow: boolean }
+type DeadlineTextContentsProps = { isEoaEthFlow: boolean }
 
-function DeadlineTextContents({ isEthFlow }: DeadlineTextContentsProps) {
+function DeadlineTextContents({ isEoaEthFlow }: DeadlineTextContentsProps) {
   return (
     <TransactionText>
       <Trans>Transaction expiration</Trans>
-      {isEthFlow && <i>(modified)</i>}
+      {isEoaEthFlow && <i>(modified)</i>}
     </TransactionText>
   )
 }

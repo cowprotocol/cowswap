@@ -12,7 +12,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()
   const toggleSettings = useToggleSettingsMenu()
-  const isEthFlow = useIsEoaEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
   const isExpertMode = useIsExpertMode()
   const nativeCurrency = useNativeCurrency()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
@@ -23,15 +23,15 @@ export function RowDeadline() {
       userDeadline,
       symbols: [nativeCurrency.symbol],
       displayDeadline,
-      isEthFlow,
+      isEoaEthFlow,
       isExpertMode,
       isWrapOrUnwrap,
       toggleSettings,
       showSettingOnClick: true,
     }
-  }, [isEthFlow, isExpertMode, isWrapOrUnwrap, nativeCurrency.symbol, toggleSettings, userDeadline])
+  }, [isEoaEthFlow, isExpertMode, isWrapOrUnwrap, nativeCurrency.symbol, toggleSettings, userDeadline])
 
-  if ((!isEthFlow && !isExpertMode) || isWrapOrUnwrap) {
+  if ((!isEoaEthFlow && !isExpertMode) || isWrapOrUnwrap) {
     return null
   }
 

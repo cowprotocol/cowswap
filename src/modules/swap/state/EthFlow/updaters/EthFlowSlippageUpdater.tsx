@@ -16,14 +16,14 @@ const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
 export function EthFlowSlippageUpdater() {
   const currentSlippage = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
-  const isEthFlow = useIsEoaEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   // On updater mount, load previous slippage from localStorage and set it
   useEffect(() => {
     const { ethFlow } = _loadSlippage()
 
     if (
-      isEthFlow &&
+      isEoaEthFlow &&
       ethFlow &&
       ((currentSlippage === 'auto' && ethFlow !== 'auto') ||
         (currentSlippage instanceof Percent && ethFlow instanceof Percent && !currentSlippage.equalTo(ethFlow)))
@@ -40,7 +40,7 @@ export function EthFlowSlippageUpdater() {
   const wasEthFlowActive = useRef(false)
 
   useEffect(() => {
-    if (isEthFlow) {
+    if (isEoaEthFlow) {
       // Load what's stored
       const { regular, ethFlow } = _loadSlippage()
 
@@ -74,7 +74,7 @@ export function EthFlowSlippageUpdater() {
       // Disable the flag
       wasEthFlowActive.current = false
     }
-  }, [setUserSlippageTolerance, isEthFlow, currentSlippage])
+  }, [setUserSlippageTolerance, isEoaEthFlow, currentSlippage])
 
   return null
 }

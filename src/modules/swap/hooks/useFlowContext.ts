@@ -55,7 +55,7 @@ const _computeInputAmountForSignature = (params: {
 
 export enum FlowType {
   REGULAR = 'REGULAR',
-  ETH_FLOW = 'ETH_FLOW',
+  EOA_ETH_FLOW = 'EOA_ETH_FLOW',
   SAFE_BUNDLE_APPROVAL = 'SAFE_BUNDLE_APPROVAL',
   SAFE_BUNDLE_ETH = 'SAFE_BUNDLE_ETH',
 }
@@ -102,7 +102,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   const [deadline] = useUserTransactionTTL()
   const wethContract = useWETHContract()
   const swapConfirmManager = useSwapConfirmManager()
-  const isEthFlow = useIsEoaEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
   const isSafeEthFlow = useIsSafeEthFlow()
 
   const { INPUT: inputAmountWithSlippage, OUTPUT: outputAmountWithSlippage } = computeSlippageAdjustedAmounts(
@@ -111,7 +111,7 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   )
 
   const isSafeBundle = useIsSafeApprovalBundle(inputAmountWithSlippage)
-  const flowType = _getFlowType(isSafeBundle, isEthFlow, isSafeEthFlow)
+  const flowType = _getFlowType(isSafeBundle, isEoaEthFlow, isSafeEthFlow)
 
   return {
     chainId,
@@ -137,16 +137,16 @@ export function useBaseFlowContextSetup(): BaseFlowContextSetup {
   }
 }
 
-function _getFlowType(isSafeBundle: boolean, isEthFlow: boolean, isSafeEthFlow: boolean): FlowType {
+function _getFlowType(isSafeBundle: boolean, isEoaEthFlow: boolean, isSafeEthFlow: boolean): FlowType {
   if (isSafeEthFlow) {
     // Takes precedence over bundle approval
     return FlowType.SAFE_BUNDLE_ETH
   } else if (isSafeBundle) {
     // Takes precedence over eth flow
     return FlowType.SAFE_BUNDLE_APPROVAL
-  } else if (isEthFlow) {
+  } else if (isEoaEthFlow) {
     // Takes precedence over regular flow
-    return FlowType.ETH_FLOW
+    return FlowType.EOA_ETH_FLOW
   }
   return FlowType.REGULAR
 }

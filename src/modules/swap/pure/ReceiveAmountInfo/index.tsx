@@ -23,7 +23,7 @@ export interface ReceiveAmountInfoTooltipProps {
 const MAX_TOKEN_SYMBOL_LENGTH = 6
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
-  const isEthFlow = useIsEoaEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
   const { type, amountAfterFees, amountBeforeFees, feeAmount, feeAmountRaw } = receiveAmountInfo
@@ -65,7 +65,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           </styledEl.GreenText>
         )}
       </div>
-      {allowsOffchainSigning && !isEthFlow && (
+      {allowsOffchainSigning && !isEoaEthFlow && (
         <div>
           <span>
             <Trans>Gas cost</Trans>

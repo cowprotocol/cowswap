@@ -30,12 +30,13 @@ export function TradeBasicDetails(props: TradeBasicDetailsProp) {
   // trades are null when there is a fee quote error e.g
   // so we can take both
   const feeFiatValue = useHigherUSDValue(trade?.fee.feeAsCurrency || fee)
-  const isEthFlow = useIsEoaEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const showRowFee = trade || fee
   const showRowSlippage =
-    (isEthFlow || isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) && !isWrapOrUnwrap
+    (isEoaEthFlow || isExpertMode || !allowedSlippagePercent.equalTo(INITIAL_ALLOWED_SLIPPAGE_PERCENT)) &&
+    !isWrapOrUnwrap
   const showRowReceivedAfterSlippage = isExpertMode && trade
 
   return (

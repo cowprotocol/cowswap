@@ -41,7 +41,7 @@ import {
 } from 'modules/swap/pure/warnings'
 import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useSetupTradeState, TradeWidget, TradeWidgetContainer } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -78,7 +78,7 @@ export function SwapWidget() {
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
-  const isEthFlow = useIsEoaEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
@@ -221,7 +221,7 @@ export function SwapWidget() {
   }
 
   const params = {
-    isEthFlow,
+    isEoaEthFlow,
     compactView: true,
     recipient,
     showRecipient: showRecipientControls,
