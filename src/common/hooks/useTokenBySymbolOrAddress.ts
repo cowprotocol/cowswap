@@ -10,7 +10,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { isSupportedChainId } from 'lib/hooks/routing/clientSideSmartOrderRouter'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
+import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
 export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Token | NativeCurrency | null {
   const { chainId } = useWalletInfo()
@@ -39,6 +39,6 @@ export function useTokenBySymbolOrAddress(symbolOrAddress?: string | null): Toke
 
     if (foundBySymbol) return foundBySymbol[0]
 
-    return favouriteTokens.find((item) => checkBySymbolAndAddress(item, symbolOrAddress)) || null
+    return favouriteTokens.find((item) => doesTokenMatchSymbolOrAddress(item, symbolOrAddress)) || null
   }, [symbolOrAddress, isSupportedNetwork, nativeCurrency, tokensByAddress, tokensBySymbol, favouriteTokens])
 }
