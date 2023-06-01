@@ -1,5 +1,5 @@
-import { useIsNativeIn } from '../../trade/hooks/useIsNative'
-import { useIsWrapOrUnwrap } from '../../trade/hooks/useIsWrapOrUnwrap'
+import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
+import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 export function useIsSwapEth(): boolean {
   const isNativeIn = useIsNativeIn()

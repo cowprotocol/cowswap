@@ -18,13 +18,13 @@ import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
 import { useTransactionConfirmModal } from 'modules/swap/hooks/useTransactionConfirmModal'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useNativeTokenContext } from 'modules/trade/hooks/useNativeTokenContext'
 import { useWalletInfo } from 'modules/wallet'
 
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 
-import { useIsNativeIn } from '../../modules/trade/hooks/useIsNative'
 import { isRejectRequestProviderError } from '../utils/misc'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
