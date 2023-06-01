@@ -1,9 +1,11 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { Percent } from '@uniswap/sdk-core'
+
 import { Milliseconds } from 'types'
 
-import { defaultNumOfParts, defaultOrderDeadline } from '../const'
+import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, defaultOrderDeadline } from '../const'
 
 export interface TwapOrdersDeadline {
   readonly isCustomDeadline: boolean
@@ -45,4 +47,15 @@ export const updateTwapOrdersSettingsAtom = atom(null, (get, set, nextState: Par
 
     return { ...prevState, ...nextState }
   })
+})
+
+export const twapOrderSlippage = atom<Percent>((get) => {
+  const { slippageValue } = get(twapOrdersSettingsAtom)
+  const slippage =
+    slippageValue != null
+      ? // Multiplying on 100 to allow decimals values (e.g 0.05)
+        new Percent(slippageValue * 100, 10000)
+      : DEFAULT_TWAP_SLIPPAGE
+
+  return slippage
 })
