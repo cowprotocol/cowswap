@@ -11,11 +11,11 @@ type Props = {
   currency: Currency | undefined
 }
 
-export function LimitPriceRow(props: Props) {
+export function MinReceivedRow(props: Props) {
   const { amount, currency } = props
 
   return (
-    <ConfirmDetailsItem tooltip="TODO: limit price tooltip text" label="Limit price (incl fee/slippage)">
+    <ConfirmDetailsItem tooltip="TODO: Min received tooltip" label="Min received (incl. fee)">
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={currency} />
     </ConfirmDetailsItem>
   )
