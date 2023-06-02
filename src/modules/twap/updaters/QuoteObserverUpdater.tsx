@@ -21,29 +21,35 @@ export function QuoteObserverUpdater() {
   const updateCurrencyAmount = useUpdateCurrencyAmount()
   const outputCurrency = state?.outputCurrency
 
-  const value = useMemo(() => {
-    if (!response || !outputCurrency || !numberOfPartsValue || numberOfPartsValue !== prevNumberOfParts || isLoading) {
+  const quoteBuyAmount = useMemo(() => {
+    const numOfPartsChanged = numberOfPartsValue !== prevNumberOfParts
+
+    if (!response || !outputCurrency || !numberOfPartsValue || isLoading) {
       return null
     }
 
-    const value = response.quote.buyAmount
-    const currencyValue = CurrencyAmount.fromRawAmount(outputCurrency, value)
+    if (numOfPartsChanged) {
+      return null
+    }
+
+    const { buyAmount } = response.quote
+    const currencyValue = CurrencyAmount.fromRawAmount(outputCurrency, buyAmount)
     const adjustedForParts = currencyValue.multiply(numberOfPartsValue)
 
     return adjustedForParts.quotient.toString()
   }, [isLoading, numberOfPartsValue, outputCurrency, prevNumberOfParts, response])
 
   useMemo(() => {
-    if (!outputCurrency || !response || !value) {
+    if (!outputCurrency || !response || !quoteBuyAmount) {
       return
     }
 
     updateCurrencyAmount({
-      amount: { isTyped: false, value },
+      amount: { isTyped: false, value: quoteBuyAmount },
       currency: outputCurrency,
       field: Field.OUTPUT,
     })
-  }, [outputCurrency, response, updateCurrencyAmount, value])
+  }, [outputCurrency, response, updateCurrencyAmount, quoteBuyAmount])
 
   return null
 }

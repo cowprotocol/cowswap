@@ -17,7 +17,7 @@ import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useSetupTradeState, TradeWidget } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -79,6 +79,12 @@ export function LimitOrdersWidget() {
   )
 
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
+  const quoteAmount = useMemo(
+    () => (orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount),
+    [orderKind, inputCurrencyAmount, outputCurrencyAmount]
+  )
+
+  useSetTradeQuoteParams(quoteAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
