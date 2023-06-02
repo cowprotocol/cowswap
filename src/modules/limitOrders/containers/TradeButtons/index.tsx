@@ -11,9 +11,9 @@ import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useTradeConfirmActions } from 'modules/trade'
 import {
-  TradeFormButton,
+  TradeFormButtons,
+  TradeFormButtonContext,
   useGetTradeFormValidation,
-  TradeFormPrimaryButton,
   useTradeFormButtonContext,
 } from 'modules/tradeFormValidation'
 
@@ -50,14 +50,14 @@ export function TradeButtons(props: TradeButtonsProps) {
     return typeof buttonFactory === 'function' ? (
       buttonFactory()
     ) : (
-      <TradeFormPrimaryButton id={buttonFactory.id} disabled={true}>
+      <TradeFormBlankButton id={buttonFactory.id} disabled={true}>
         <Trans>{buttonFactory.text}</Trans>
-      </TradeFormPrimaryButton>
+      </TradeFormBlankButton>
     )
   }
 
   return (
-    <TradeFormButton
+    <TradeFormButtons
       doTradeText="Place limit order"
       confirmText="Review limit order"
       validation={primaryFormValidation}
