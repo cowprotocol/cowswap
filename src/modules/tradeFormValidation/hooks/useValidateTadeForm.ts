@@ -1,18 +1,21 @@
 import { useUpdateAtom } from 'jotai/utils'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { useTradeFormValidationContext } from './useTradeFormValidationContext'
 
 import { tradeFormValidationContextAtom } from '../state/tradeFormValidationContextAtom'
-import { TradeFormValidationLocalContext } from '../types'
 
-export function useValidateTadeForm(localContext: TradeFormValidationLocalContext) {
+export function useValidateTadeForm(isExpertMode: boolean) {
   const updateContext = useUpdateAtom(tradeFormValidationContextAtom)
-  const context = useTradeFormValidationContext(localContext)
+  const localContext = useMemo(() => ({ isExpertMode }), [isExpertMode])
+  const commonContext = useTradeFormValidationContext()
 
   useEffect(() => {
-    if (!context) return
+    if (!commonContext) return
 
-    updateContext(context)
-  }, [context, updateContext])
+    updateContext({
+      ...commonContext,
+      ...localContext,
+    })
+  }, [commonContext, localContext, updateContext])
 }
