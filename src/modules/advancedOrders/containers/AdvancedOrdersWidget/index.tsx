@@ -8,6 +8,7 @@ import {
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
+import { useValidateTadeForm } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
 
@@ -31,6 +32,9 @@ export function AdvancedOrdersWidget() {
   } = useAdvancedOrdersDerivedState()
   const actions = useAdvancedOrdersActions()
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
+
+  // TODO: bind isExpertMode to settings
+  useValidateTadeForm({ isExpertMode: false })
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

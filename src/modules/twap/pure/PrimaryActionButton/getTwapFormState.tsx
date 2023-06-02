@@ -7,27 +7,26 @@ export interface TwapFormStateParams {
   twapOrder: TWAPOrder | null
 }
 
-// TODO: compose with common TradeFormState
 export enum TwapFormState {
-  LOADING,
+  LOADING_SAFE_INFO,
   NOT_SAFE,
   ORDER_NOT_SPECIFIED, // TODO: reveal details
   NEED_FALLBACK_HANDLER,
   CAN_CREATE_ORDER,
 }
 
-export function getTwapFormState(props: TwapFormStateParams): TwapFormState {
+export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
   const { isSafeApp, verification, twapOrder } = props
 
   if (!isSafeApp) return TwapFormState.NOT_SAFE
 
-  if (verification === null) return TwapFormState.LOADING
+  if (verification === null) return TwapFormState.LOADING_SAFE_INFO
 
   if (!twapOrder) return TwapFormState.ORDER_NOT_SPECIFIED
 
-  if (verification === ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER) {
-    return TwapFormState.CAN_CREATE_ORDER
+  if (verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER) {
+    return TwapFormState.NEED_FALLBACK_HANDLER
   }
 
-  return TwapFormState.NEED_FALLBACK_HANDLER
+  return null
 }
