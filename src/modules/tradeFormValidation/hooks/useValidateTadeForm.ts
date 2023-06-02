@@ -11,6 +11,8 @@ export function useValidateTadeForm(localContext: TradeFormValidationLocalContex
   const context = useTradeFormValidationContext(localContext)
 
   useEffect(() => {
+    if (!context) return
+
     updateContext(context)
   }, [context, updateContext])
 }

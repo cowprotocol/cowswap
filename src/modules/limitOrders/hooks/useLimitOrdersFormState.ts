@@ -1,172 +1,39 @@
 import { useAtomValue } from 'jotai/utils'
 
-import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
-import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { ApprovalState } from 'legacy/hooks/useApproveCallback'
-import useENSAddress from 'legacy/hooks/useENSAddress'
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
-import { isAddress } from 'legacy/utils'
-
-import { LimitOrdersDerivedState } from 'modules/limitOrders'
-import { limitOrdersSettingsAtom, LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
-import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export enum LimitOrdersFormState {
-  Loading = 'Loading',
-  SwapIsUnsupported = 'SwapIsUnsupported',
-  WalletIsUnsupported = 'WalletIsUnsupported',
-  WalletIsNotConnected = 'WalletIsNotConnected',
-  ReadonlyGnosisSafeUser = 'ReadonlyGnosisSafeUser',
+  RateLoading = 'RateLoading',
   FeeExceedsFrom = 'FeeExceedsFrom',
-
-  NotApproved = 'NotApproved',
-  ApproveAndSwap = 'ApproveAndSwap',
-  ExpertApproveAndSwap = 'ExpertApproveAndSwap',
-
-  WrapUnwrap = 'WrapUnwrap',
-
-  QuoteError = 'QuoteError',
-
-  CanTrade = 'CanTrade',
-  ExpertCanTrade = 'ExpertCanTrade',
-
-  InsufficientBalance = 'InsufficientBalance',
-  CantLoadBalances = 'CantLoadBalances',
-
-  NeedToSelectToken = 'NeedToSelectToken',
-  AmountIsNotSet = 'AmountIsNotSet',
   PriceIsNotSet = 'PriceIsNotSet',
-  InvalidRecipient = 'InvalidRecipient',
   ZeroPrice = 'ZeroPrice',
 }
 
 interface LimitOrdersFormParams {
-  account: string | undefined
-  isSwapUnsupported: boolean
-  isSupportedWallet: boolean
-  isReadonlyGnosisSafeUser: boolean
-  isTxBundlingEnabled: boolean
-  currentAllowance: CurrencyAmount<Token> | undefined
-  approvalState: ApprovalState
-  tradeState: LimitOrdersDerivedState
-  settingsState: LimitOrdersSettingsState
-  recipientEnsAddress: string | null
-  quote: TradeQuoteState | null
   activeRate: Fraction | null
-  isWrapOrUnwrap: boolean
   isRateLoading: boolean
-  buyAmount: CurrencyAmount<Currency> | null
+  feeAmount: CurrencyAmount<Currency> | null
   sellAmount: CurrencyAmount<Currency> | null
+  buyAmount: CurrencyAmount<Currency> | null
 }
 
-function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState {
-  const {
-    account,
-    isReadonlyGnosisSafeUser,
-    isTxBundlingEnabled,
-    isSupportedWallet,
-    currentAllowance,
-    approvalState,
-    tradeState,
-    settingsState,
-    recipientEnsAddress,
-    quote,
-    isWrapOrUnwrap,
-    activeRate,
-    isRateLoading,
-    sellAmount,
-    buyAmount,
-    isSwapUnsupported,
-  } = params
+function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersFormState | null {
+  const { activeRate, isRateLoading, feeAmount, sellAmount, buyAmount } = params
 
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, inputCurrencyBalance, recipient } =
-    tradeState
-
-  const inputAmountIsNotSet = !inputCurrencyAmount || inputCurrencyAmount.equalTo(0)
-  const outputAmountIsNotSet = !outputCurrencyAmount || outputCurrencyAmount.equalTo(0)
-  const feeAmount =
-    quote?.response?.quote?.feeAmount && sellAmount
-      ? CurrencyAmount.fromRawAmount(sellAmount.currency, quote?.response?.quote?.feeAmount)
-      : null
-  const approvalRequired = approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
-
-  if (!inputCurrency || !outputCurrency) {
-    return LimitOrdersFormState.NeedToSelectToken
+  if (isFractionFalsy(activeRate)) {
+    return LimitOrdersFormState.PriceIsNotSet
   }
 
-  if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
-    return LimitOrdersFormState.InvalidRecipient
-  }
-
-  if (!isWrapOrUnwrap && quote?.error) {
-    return LimitOrdersFormState.QuoteError
-  }
-
-  if (isSwapUnsupported) {
-    return LimitOrdersFormState.SwapIsUnsupported
-  }
-
-  if (!account) {
-    return LimitOrdersFormState.WalletIsNotConnected
-  }
-
-  if (isWrapOrUnwrap) {
-    if (inputAmountIsNotSet && outputAmountIsNotSet) {
-      return LimitOrdersFormState.AmountIsNotSet
-    }
-  } else {
-    if (inputAmountIsNotSet || outputAmountIsNotSet) {
-      if (!activeRate || activeRate.equalTo(0)) {
-        return LimitOrdersFormState.PriceIsNotSet
-      }
-
-      return LimitOrdersFormState.AmountIsNotSet
-    }
-  }
-
-  if (!isSupportedWallet) {
-    return LimitOrdersFormState.WalletIsUnsupported
-  }
-
-  if (isReadonlyGnosisSafeUser) {
-    return LimitOrdersFormState.ReadonlyGnosisSafeUser
-  }
-
-  if (!inputCurrencyBalance) {
-    return LimitOrdersFormState.CantLoadBalances
-  }
-
-  if (inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
-    return LimitOrdersFormState.InsufficientBalance
-  }
-
-  if (!isWrapOrUnwrap && (isRateLoading || !currentAllowance || !quote)) {
-    return LimitOrdersFormState.Loading
-  }
-
-  if (isWrapOrUnwrap) {
-    return LimitOrdersFormState.WrapUnwrap
-  }
-
-  if (approvalRequired) {
-    if (isTxBundlingEnabled) {
-      if (settingsState.expertMode) {
-        return LimitOrdersFormState.ExpertApproveAndSwap
-      }
-      return LimitOrdersFormState.ApproveAndSwap
-    }
-    return LimitOrdersFormState.NotApproved
+  if (isRateLoading) {
+    return LimitOrdersFormState.RateLoading
   }
 
   if (
@@ -176,58 +43,30 @@ function getLimitOrdersFormState(params: LimitOrdersFormParams): LimitOrdersForm
     return LimitOrdersFormState.ZeroPrice
   }
 
-  // TODO: not sure we should do it. This error should come from quote API
   if (sellAmount && feeAmount?.greaterThan(sellAmount)) {
     return LimitOrdersFormState.FeeExceedsFrom
   }
 
-  if (settingsState.expertMode) {
-    return LimitOrdersFormState.ExpertCanTrade
-  }
-
-  return LimitOrdersFormState.CanTrade
+  return null
 }
 
-export function useLimitOrdersFormState(): LimitOrdersFormState {
-  const { chainId, account } = useWalletInfo()
-  const tradeState = useLimitOrdersDerivedState()
-  const settingsState = useAtomValue(limitOrdersSettingsAtom)
-  const { isSupportedWallet } = useWalletDetails()
-  const gnosisSafeInfo = useGnosisSafeInfo()
-  const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
-  const isTxBundlingEnabled = useIsTxBundlingEnabled()
+export function useLimitOrdersFormState(): LimitOrdersFormState | null {
+  const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const quote = useTradeQuote()
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const { inputCurrency, recipient } = tradeState
-  const sellAmount = tradeState.inputCurrencyAmount
-  const buyAmount = tradeState.outputCurrencyAmount
-  const sellToken = inputCurrency?.isToken ? inputCurrency : undefined
-  const spender = chainId ? GP_VAULT_RELAYER[chainId] : undefined
-
-  const currentAllowance = useTokenAllowance(sellToken, account ?? undefined, spender)
-  const approvalState = useTradeApproveState(sellAmount)
-  const isSwapUnsupported = isUnsupportedTokenInQuote(quote)
-  const { address: recipientEnsAddress } = useENSAddress(recipient)
+  const feeRawAmount = quote?.response?.quote?.feeAmount
+  const feeAmount =
+    feeRawAmount && inputCurrencyAmount
+      ? CurrencyAmount.fromRawAmount(inputCurrencyAmount.currency, feeRawAmount)
+      : null
 
   const params: LimitOrdersFormParams = {
-    account,
-    isReadonlyGnosisSafeUser,
-    isTxBundlingEnabled,
-    isSwapUnsupported,
-    isSupportedWallet,
-    approvalState,
-    currentAllowance,
-    tradeState,
-    settingsState,
-    recipientEnsAddress,
-    quote,
     activeRate,
-    isWrapOrUnwrap,
+    feeAmount,
     isRateLoading: isLoading,
-    buyAmount,
-    sellAmount,
+    sellAmount: inputCurrencyAmount,
+    buyAmount: outputCurrencyAmount,
   }
 
   return useSafeMemo(() => {

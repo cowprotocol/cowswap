@@ -3,22 +3,30 @@ import React from 'react'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
+import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
+import { TradeLoadingButton } from 'modules/trade/pure/TradeLoadingButton'
 import { TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
+import { TradeQuoteState } from 'modules/tradeQuote'
 
+import { GpQuoteErrorCodes } from 'api/gnosisProtocol/errors/QuoteError'
 import { TradeApproveButton } from 'common/containers/TradeApprove'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { TradeFormValidation } from '../../types'
+import { TradeFormPrimaryButton } from '../TradeFormPrimaryButton'
 
 export interface TradeFormButtonContext {
   defaultText: string
   derivedState: TradeDerivedState
+  quote: TradeQuoteState
+  isSupportedWallet: boolean
   doTrade(): void
-  confirmAndTrade(): void
+  confirmTrade(): void
+  connectWallet(): void
 }
 
 interface ButtonErrorConfig {
-  text: string
+  text: JSX.Element | string
   id?: string
 }
 
@@ -26,56 +34,152 @@ interface ButtonCallback {
   (context: TradeFormButtonContext): JSX.Element | null
 }
 
-const ActionButton = styled.div<{ disabled?: boolean }>`
-  background: red;
+const CompatibilityIssuesWarningWrapper = styled.div`
+  margin-top: -10px;
 `
 
-const buttonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
-  [TradeFormValidation.Approve]: (context) => {
-    const amountToApprove = context.derivedState.slippageAdjustedSellAmount
+const quoteErrorTexts: Record<GpQuoteErrorCodes, string> = {
+  [GpQuoteErrorCodes.UNHANDLED_ERROR]: 'Error loading price. Try again later.',
+  [GpQuoteErrorCodes.TransferEthToContract]:
+    'Buying native currency with smart contract wallets is not currently supported',
+  [GpQuoteErrorCodes.UnsupportedToken]: 'Unsupported token',
+  [GpQuoteErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
+  [GpQuoteErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
+  [GpQuoteErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
+}
 
-    if (!amountToApprove) return null
+const buttonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
+  [TradeFormValidation.WrapUnwrapAmountNotSet]: {
+    text: 'Enter an amount',
+  },
+  // TODO: implement
+  [TradeFormValidation.WrapUnwrapFlow]: {
+    text: 'Wrap or unwrap',
+  },
+  [TradeFormValidation.CurrencyNotSet]: {
+    text: 'Select a token',
+  },
+  [TradeFormValidation.InputAmountNotSet]: {
+    text: 'Enter an amount',
+  },
+  [TradeFormValidation.RecipientInvalid]: {
+    text: 'Enter a valid recipient',
+  },
+  [TradeFormValidation.CurrencyNotSupported]: (context) => {
+    const { derivedState, isSupportedWallet } = context
+    const { inputCurrency, outputCurrency } = derivedState
+
+    return inputCurrency && outputCurrency ? (
+      <>
+        <TradeFormPrimaryButton disabled={true}>
+          <Trans>Unsupported token</Trans>
+        </TradeFormPrimaryButton>
+        <CompatibilityIssuesWarningWrapper>
+          <CompatibilityIssuesWarning
+            currencyIn={inputCurrency}
+            currencyOut={outputCurrency}
+            isSupportedWallet={isSupportedWallet}
+          />
+        </CompatibilityIssuesWarningWrapper>
+      </>
+    ) : null
+  },
+  [TradeFormValidation.QuoteErrors]: (context) => {
+    const { quote } = context
+    const defaultError = quoteErrorTexts[GpQuoteErrorCodes.UNHANDLED_ERROR]
 
     return (
-      <TradeApproveButton amountToApprove={amountToApprove}>
-        <ActionButton disabled={true}>
-          <Trans>{context.defaultText}</Trans>
-        </ActionButton>
-      </TradeApproveButton>
+      <TradeFormPrimaryButton disabled={true}>
+        <Trans>{(quote.error && quoteErrorTexts[quote.error.type]) || defaultError}</Trans>
+      </TradeFormPrimaryButton>
     )
   },
-  [TradeFormValidation.ApproveAndSwap]: (context) => {
-    const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
-
+  [TradeFormValidation.WalletNotConnected]: (context) => {
     return (
-      <ActionButton onClick={context.confirmAndTrade}>
-        <Trans>
-          Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText}
-        </Trans>
-      </ActionButton>
+      <TradeFormPrimaryButton onClick={context.connectWallet}>
+        <Trans>Connect Wallet</Trans>
+      </TradeFormPrimaryButton>
+    )
+  },
+  [TradeFormValidation.WalletNotSupported]: {
+    text: 'Wallet Unsupported',
+  },
+  [TradeFormValidation.SafeReadonlyUser]: {
+    text: 'Read Only',
+  },
+  [TradeFormValidation.QuoteLoading]: {
+    text: <TradeLoadingButton />,
+  },
+  [TradeFormValidation.BalancesNotLoaded]: {
+    text: "Couldn't load balances",
+  },
+  [TradeFormValidation.BalanceInsufficient]: (context) => {
+    return (
+      <TradeFormPrimaryButton disabled={true}>
+        <Trans>Insufficient&nbsp;{<TokenSymbol token={context.derivedState.inputCurrency} />}&nbsp;balance</Trans>
+      </TradeFormPrimaryButton>
     )
   },
   [TradeFormValidation.ExpertApproveAndSwap]: (context) => {
     const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
-      <ActionButton onClick={context.doTrade}>
+      <TradeFormPrimaryButton onClick={context.doTrade}>
         <Trans>
           Confirm (Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText})
         </Trans>
-      </ActionButton>
+      </TradeFormPrimaryButton>
     )
   },
-  [TradeFormValidation.Default]: (context) => {
+  [TradeFormValidation.ApproveAndSwap]: (context) => {
+    const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
+
     return (
-      <ActionButton onClick={context.doTrade}>
-        <Trans>{context.defaultText}</Trans>
-      </ActionButton>
+      <TradeFormPrimaryButton onClick={context.confirmTrade}>
+        <Trans>
+          Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText}
+        </Trans>
+      </TradeFormPrimaryButton>
+    )
+  },
+  [TradeFormValidation.ApproveRequired]: (context) => {
+    const amountToApprove = context.derivedState.slippageAdjustedSellAmount
+
+    if (!amountToApprove) return null
+
+    return (
+      <TradeApproveButton amountToApprove={amountToApprove}>
+        <TradeFormPrimaryButton disabled={true}>
+          <Trans>{context.defaultText}</Trans>
+        </TradeFormPrimaryButton>
+      </TradeApproveButton>
     )
   },
 }
 
-export function TradeFormButton(validation: TradeFormValidation, context: TradeFormButtonContext) {
+export interface TradeFormButtonProps {
+  validation: TradeFormValidation | null
+  context: TradeFormButtonContext
+  doTradeText: string
+  confirmText: string
+  isExpertMode: boolean
+  isDisabled?: boolean
+}
+
+export function TradeFormButton(props: TradeFormButtonProps) {
+  const { validation, context, isExpertMode, isDisabled, doTradeText, confirmText } = props
+
+  if (!validation) {
+    return (
+      <TradeFormPrimaryButton
+        disabled={isDisabled}
+        onClick={() => (isExpertMode ? context.doTrade() : context.confirmTrade())}
+      >
+        {isExpertMode ? doTradeText : confirmText}
+      </TradeFormPrimaryButton>
+    )
+  }
+
   const buttonFactory = buttonsMap[validation]
 
   if (typeof buttonFactory === 'function') {
@@ -83,8 +187,8 @@ export function TradeFormButton(validation: TradeFormValidation, context: TradeF
   }
 
   return (
-    <ActionButton id={buttonFactory.id} disabled={true}>
+    <TradeFormPrimaryButton id={buttonFactory.id} disabled={true}>
       <Trans>{buttonFactory.text}</Trans>
-    </ActionButton>
+    </TradeFormPrimaryButton>
   )
 }
