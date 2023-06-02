@@ -1,5 +1,5 @@
 export * from './hooks/useValidateTadeForm'
 export * from './hooks/useGetTradeFormValidation'
-export * from './pure/TradeFormButton'
-export * from './pure/TradeFormPrimaryButton'
+export * from './pure/TradeFormButtons'
+export * from './pure/TradeFormBlankButton'
 export * from './types'

@@ -13,7 +13,7 @@ import { TradeApproveButton } from 'common/containers/TradeApprove'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
 import { TradeFormValidation } from '../../types'
-import { TradeFormPrimaryButton } from '../TradeFormPrimaryButton'
+import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
 export interface TradeFormButtonContext {
   defaultText: string
@@ -71,9 +71,9 @@ const buttonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback
 
     return inputCurrency && outputCurrency ? (
       <>
-        <TradeFormPrimaryButton disabled={true}>
+        <TradeFormBlankButton disabled={true}>
           <Trans>Unsupported token</Trans>
-        </TradeFormPrimaryButton>
+        </TradeFormBlankButton>
         <CompatibilityIssuesWarningWrapper>
           <CompatibilityIssuesWarning
             currencyIn={inputCurrency}
@@ -89,16 +89,16 @@ const buttonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback
     const defaultError = quoteErrorTexts[GpQuoteErrorCodes.UNHANDLED_ERROR]
 
     return (
-      <TradeFormPrimaryButton disabled={true}>
+      <TradeFormBlankButton disabled={true}>
         <Trans>{(quote.error && quoteErrorTexts[quote.error.type]) || defaultError}</Trans>
-      </TradeFormPrimaryButton>
+      </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.WalletNotConnected]: (context) => {
     return (
-      <TradeFormPrimaryButton onClick={context.connectWallet}>
+      <TradeFormBlankButton onClick={context.connectWallet}>
         <Trans>Connect Wallet</Trans>
-      </TradeFormPrimaryButton>
+      </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.WalletNotSupported]: {
@@ -115,31 +115,31 @@ const buttonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback
   },
   [TradeFormValidation.BalanceInsufficient]: (context) => {
     return (
-      <TradeFormPrimaryButton disabled={true}>
+      <TradeFormBlankButton disabled={true}>
         <Trans>Insufficient&nbsp;{<TokenSymbol token={context.derivedState.inputCurrency} />}&nbsp;balance</Trans>
-      </TradeFormPrimaryButton>
+      </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.ExpertApproveAndSwap]: (context) => {
     const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
-      <TradeFormPrimaryButton onClick={context.doTrade}>
+      <TradeFormBlankButton onClick={context.doTrade}>
         <Trans>
           Confirm (Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText})
         </Trans>
-      </TradeFormPrimaryButton>
+      </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.ApproveAndSwap]: (context) => {
     const tokenToApprove = context.derivedState.slippageAdjustedSellAmount?.currency.wrapped
 
     return (
-      <TradeFormPrimaryButton onClick={context.confirmTrade}>
+      <TradeFormBlankButton onClick={context.confirmTrade}>
         <Trans>
           Approve&nbsp;{<TokenSymbol token={tokenToApprove} length={6} />}&nbsp;and {context.defaultText}
         </Trans>
-      </TradeFormPrimaryButton>
+      </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.ApproveRequired]: (context) => {
@@ -149,15 +149,15 @@ const buttonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback
 
     return (
       <TradeApproveButton amountToApprove={amountToApprove}>
-        <TradeFormPrimaryButton disabled={true}>
+        <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
-        </TradeFormPrimaryButton>
+        </TradeFormBlankButton>
       </TradeApproveButton>
     )
   },
 }
 
-export interface TradeFormButtonProps {
+export interface TradeFormButtonsProps {
   validation: TradeFormValidation | null
   context: TradeFormButtonContext
   doTradeText: string
@@ -166,17 +166,17 @@ export interface TradeFormButtonProps {
   isDisabled?: boolean
 }
 
-export function TradeFormButton(props: TradeFormButtonProps) {
+export function TradeFormButtons(props: TradeFormButtonsProps) {
   const { validation, context, isExpertMode, isDisabled, doTradeText, confirmText } = props
 
   if (!validation) {
     return (
-      <TradeFormPrimaryButton
+      <TradeFormBlankButton
         disabled={isDisabled}
         onClick={() => (isExpertMode ? context.doTrade() : context.confirmTrade())}
       >
         {isExpertMode ? doTradeText : confirmText}
-      </TradeFormPrimaryButton>
+      </TradeFormBlankButton>
     )
   }
 
@@ -187,8 +187,8 @@ export function TradeFormButton(props: TradeFormButtonProps) {
   }
 
   return (
-    <TradeFormPrimaryButton id={buttonFactory.id} disabled={true}>
+    <TradeFormBlankButton id={buttonFactory.id} disabled={true}>
       <Trans>{buttonFactory.text}</Trans>
-    </TradeFormPrimaryButton>
+    </TradeFormBlankButton>
   )
 }
