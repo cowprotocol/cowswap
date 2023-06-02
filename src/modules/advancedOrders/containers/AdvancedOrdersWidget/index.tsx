@@ -37,7 +37,7 @@ export function AdvancedOrdersWidget() {
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
   const { inputPartAmount } = useAtomValue(partsStateAtom)
 
-  useSetTradeQuoteParams({ amount: inputPartAmount })
+  useSetTradeQuoteParams(inputPartAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

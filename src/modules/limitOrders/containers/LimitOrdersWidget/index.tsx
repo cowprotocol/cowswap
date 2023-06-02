@@ -79,8 +79,12 @@ export function LimitOrdersWidget() {
   )
 
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
+  const quoteAmount = useMemo(
+    () => (orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount),
+    [orderKind, inputCurrencyAmount, outputCurrencyAmount]
+  )
 
-  useSetTradeQuoteParams({ amount: orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount })
+  useSetTradeQuoteParams(quoteAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

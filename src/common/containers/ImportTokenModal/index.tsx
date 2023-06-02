@@ -100,12 +100,14 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
     onDismiss(unknownFields)
   }, [onDismiss, importTokensNotInDefault, loadedInputCurrency, loadedOutputCurrency])
 
+  const importTokensLength = importTokensNotInDefault.length
+
   // Reset dismiss state after importing token
   useEffect(() => {
-    if (importTokensNotInDefault.length === 0) {
+    if (importTokensLength === 0) {
       setDismissTokenWarning(false)
     }
-  }, [importTokensNotInDefault])
+  }, [importTokensLength])
 
   return (
     <TokenWarningModal

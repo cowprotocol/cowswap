@@ -1,15 +1,17 @@
-import { useResetAtom, useUpdateAtom } from 'jotai/utils'
+import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
-import { tradeQuoteAtom } from '../state/tradeQuoteAtom'
-import { tradeQuoteParamsAtom, TradeQuoteParamsState } from '../state/tradeQuoteParamsAtom'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-export function useSetTradeQuoteParams(state: TradeQuoteParamsState) {
-  const resetTradeQuote = useResetAtom(tradeQuoteAtom)
+import { updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
+import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
+
+export function useSetTradeQuoteParams(amount: CurrencyAmount<Currency> | null) {
+  const updateTradeQuote = useUpdateAtom(updateTradeQuoteAtom)
   const updateState = useUpdateAtom(tradeQuoteParamsAtom)
 
   useEffect(() => {
-    resetTradeQuote()
-    updateState(state)
-  }, [state, resetTradeQuote, updateState])
+    updateTradeQuote({ response: null, error: null })
+    updateState({ amount })
+  }, [amount, updateTradeQuote, updateState])
 }
