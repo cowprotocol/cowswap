@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
 import { useUserTransactionTTL } from 'legacy/state/user/hooks'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 
 import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStorage'
 
@@ -14,14 +14,14 @@ const LOCAL_STORAGE_KEY = 'UserDeadlineSettings'
 export function EthFlowDeadlineUpdater() {
   // user deadline (in seconds)
   const [userDeadline, setUserDeadline] = useUserTransactionTTL()
-  const isEthFlow = useIsEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   // On updater mount, load previous deadline from localStorage and set it
   useEffect(() => {
     const { ethFlow } = _loadDeadline() || {}
 
     // If on load there's an efhFlow deadline stored and it's ethFlow, use it
-    if (ethFlow && isEthFlow) {
+    if (ethFlow && isEoaEthFlow) {
       setUserDeadline(ethFlow)
     }
 
@@ -33,7 +33,7 @@ export function EthFlowDeadlineUpdater() {
   const wasEthFlowActive = useRef(false)
 
   useEffect(() => {
-    if (isEthFlow) {
+    if (isEoaEthFlow) {
       // Load what's stored
       const { regular, ethFlow } = _loadDeadline() || {}
       // Set the flag
@@ -69,7 +69,7 @@ export function EthFlowDeadlineUpdater() {
       // Disable the flag
       wasEthFlowActive.current = false
     }
-  }, [isEthFlow, setUserDeadline, userDeadline])
+  }, [isEoaEthFlow, setUserDeadline, userDeadline])
 
   return null
 }

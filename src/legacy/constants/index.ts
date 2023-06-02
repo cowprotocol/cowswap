@@ -10,6 +10,8 @@ import ms from 'ms.macro'
 
 import { PINATA_API_KEY, PINATA_SECRET_API_KEY } from 'legacy/constants/ipfs'
 
+// TODO: move those consts to src/constants/common
+
 const { GPv2Settlement, GPv2VaultRelayer } = networksJson
 const EthFlowBarn = ethFlowBarnJson.CoWSwapEthFlow
 const EthFlowProd = ethFlowProdJson.CoWSwapEthFlow

@@ -4,6 +4,8 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { wrapAnalytics } from 'legacy/components/analytics'
 import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { getOperationMessage } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
@@ -14,13 +16,12 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useTransactionConfirmModal } from 'modules/swap/hooks/useTransactionConfirmModal'
+import { useNativeTokenContext } from 'modules/trade/hooks/useNativeTokenContext'
 import { useWalletInfo } from 'modules/wallet'
 
 import { formatTokenAmount } from 'utils/amountFormat'
 
-import { Nullish } from '../../types'
 import { isRejectRequestProviderError } from '../utils/misc'
 
 // Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
@@ -58,7 +59,7 @@ export interface WrapUnwrapContext {
 }
 
 export function useWrapType(): WrapType {
-  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut } = useDetectNativeToken()
+  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut } = useNativeTokenContext()
 
   const isWrap = isNativeIn && isWrappedOut
   const isUnwrap = isWrappedIn && isNativeOut

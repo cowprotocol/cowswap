@@ -31,7 +31,7 @@ export interface TradeWidgetActions {
 interface TradeWidgetParams {
   recipient: string | null
   disableNonToken?: boolean
-  isEthFlow?: boolean
+  isEoaEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
@@ -70,7 +70,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     showRecipient,
     isTradePriceUpdating,
     isRateLoading,
-    isEthFlow = false,
+    isEoaEthFlow = false,
     disableNonToken = false,
     priceImpact,
     recipient,
@@ -143,9 +143,9 @@ export function TradeWidget(props: TradeWidgetProps) {
                 <CurrencyInputPanel
                   id="output-currency-input"
                   disableNonToken={disableNonToken}
-                  inputDisabled={isEthFlow || disableOutput}
+                  inputDisabled={isEoaEthFlow || disableOutput}
                   inputTooltip={
-                    isEthFlow
+                    isEoaEthFlow
                       ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                       : undefined
                   }

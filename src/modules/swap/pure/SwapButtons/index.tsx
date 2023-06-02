@@ -184,6 +184,22 @@ const swapButtonStateMap: { [key in SwapButtonState]: (props: SwapButtonsContext
       </styledEl.SwapButtonBox>
     </ButtonError>
   ),
+  [SwapButtonState.WrapAndSwap]: (props: SwapButtonsContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm}>
+      <styledEl.SwapButtonBox>
+        <Trans>Wrap&nbsp;{<TokenSymbol token={props.inputAmount?.currency} length={6} />}&nbsp;and Swap</Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
+  [SwapButtonState.ExpertWrapAndSwap]: (props: SwapButtonsContext) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.handleSwap}>
+      <styledEl.SwapButtonBox>
+        <Trans>
+          Confirm (Wrap&nbsp;{<TokenSymbol token={props.inputAmount?.currency} length={6} />}&nbsp;and Swap)
+        </Trans>
+      </styledEl.SwapButtonBox>
+    </ButtonError>
+  ),
   [SwapButtonState.RegularEthFlowSwap]: (props: SwapButtonsContext) => (
     <EthFlowSwapButton isExpertMode={false} {...props} />
   ),

@@ -33,6 +33,9 @@ export enum SwapButtonState {
   ExpertModeEthFlowSwap = 'ExpertModeEthFlowSwap',
   ApproveAndSwap = 'ApproveAndSwap',
   ExpertApproveAndSwap = 'ExpertApproveAndSwap',
+
+  WrapAndSwap = 'WrapAndSwap',
+  ExpertWrapAndSwap = 'ExpertWrapAndSwap',
 }
 
 export interface SwapButtonStateParams {
@@ -42,6 +45,7 @@ export interface SwapButtonStateParams {
   isExpertMode: boolean
   isSwapUnsupported: boolean
   isTxBundlingEnabled: boolean
+  isEthFlowBundlingEnabled: boolean
   wrapType: WrapType
   wrapInputError: string | undefined
   quoteError: QuoteError | undefined | null
@@ -139,6 +143,8 @@ export function getSwapButtonState(input: SwapButtonStateParams): SwapButtonStat
   if (input.isNativeIn) {
     if (getEthFlowEnabled(input.isSmartContractWallet)) {
       return input.isExpertMode ? SwapButtonState.ExpertModeEthFlowSwap : SwapButtonState.RegularEthFlowSwap
+    } else if (input.isEthFlowBundlingEnabled) {
+      return input.isExpertMode ? SwapButtonState.ExpertWrapAndSwap : SwapButtonState.WrapAndSwap
     } else {
       return SwapButtonState.SwapWithWrappedToken
     }
