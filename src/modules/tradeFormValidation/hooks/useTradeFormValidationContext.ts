@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import useENSAddress from 'legacy/hooks/useENSAddress'
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
@@ -12,7 +11,6 @@ import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wall
 
 import { useTradeApproveState } from 'common/containers/TradeApprove'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { TradeFormValidationCommonContext } from '../types'
 
@@ -31,10 +29,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
-  const spender = useTradeSpenderAddress()
-
-  const currentAllowance =
-    useTokenAllowance(inputCurrency?.isToken ? inputCurrency : undefined, account ?? undefined, spender) || null
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly || false
 
@@ -46,7 +40,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isSwapUnsupported,
     isSafeReadonlyUser,
     recipientEnsAddress,
-    currentAllowance,
     approvalState,
     tradeQuote,
   }

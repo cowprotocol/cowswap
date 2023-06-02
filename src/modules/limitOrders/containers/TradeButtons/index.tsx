@@ -14,9 +14,9 @@ import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSe
 import { useTradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import {
   TradeFormButtons,
-  TradeFormButtonContext,
   useGetTradeFormValidation,
   TradeFormBlankButton,
+  TradeFormButtonContext,
 } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useWalletDetails } from 'modules/wallet'
