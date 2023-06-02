@@ -23,6 +23,7 @@ export interface TradeFormButtonContext {
   doTrade(): void
   confirmTrade(): void
   connectWallet(): void
+  wrapNativeFlow(): void
 }
 
 interface ButtonErrorConfig {
@@ -52,9 +53,14 @@ const buttonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback
   [TradeFormValidation.WrapUnwrapAmountNotSet]: {
     text: 'Enter an amount',
   },
-  // TODO: implement
-  [TradeFormValidation.WrapUnwrapFlow]: {
-    text: 'Wrap or unwrap',
+  [TradeFormValidation.WrapUnwrapFlow]: (context) => {
+    const isNativeIn = !!context.derivedState.inputCurrency?.isNative
+
+    return (
+      <TradeFormPrimaryButton onClick={context.wrapNativeFlow}>
+        <Trans>{isNativeIn ? 'Wrap' : 'Unwrap'}</Trans>
+      </TradeFormPrimaryButton>
+    )
   },
   [TradeFormValidation.CurrencyNotSet]: {
     text: 'Select a token',

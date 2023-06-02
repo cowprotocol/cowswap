@@ -19,6 +19,8 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import * as styledEl from './styled'
 import { TradeWidgetModals } from './TradeWidgetModals'
 
+import { WrapNativeModal } from '../WrapNativeModal'
+
 export interface TradeWidgetActions {
   onCurrencySelection: CurrencyInputPanelProps['onCurrencySelection']
   onUserInput: CurrencyInputPanelProps['onUserInput']
@@ -99,6 +101,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     <styledEl.Container id={id}>
       {!disableQuotePolling && <TradeQuoteUpdater />}
       <TradeWidgetModals />
+      <WrapNativeModal />
 
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
