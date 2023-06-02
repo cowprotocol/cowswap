@@ -45,7 +45,7 @@ export interface TradeFormPrimaryButtonProps {
   onClick?(): void
 }
 
-export function TradeFormPrimaryButton({ onClick, children, disabled, id }: TradeFormPrimaryButtonProps) {
+export function TradeFormBlankButton({ onClick, children, disabled, id }: TradeFormPrimaryButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
 
