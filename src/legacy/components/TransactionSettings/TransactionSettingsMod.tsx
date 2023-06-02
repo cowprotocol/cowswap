@@ -6,32 +6,32 @@ import { Trans } from '@lingui/macro'
 import { darken } from 'polished'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { slippageToleranceAnalytics, orderExpirationTimeAnalytics } from 'legacy/components/analytics'
+import { orderExpirationTimeAnalytics, slippageToleranceAnalytics } from 'legacy/components/analytics'
 import { AutoColumn } from 'legacy/components/Column'
 import { RowBetween, RowFixed } from 'legacy/components/Row'
 import {
-  MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
-  MIN_SLIPPAGE_BPS,
-  MAX_SLIPPAGE_BPS,
-  LOW_SLIPPAGE_BPS,
-  HIGH_SLIPPAGE_BPS,
   DEFAULT_SLIPPAGE_BPS,
-  MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
-  MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
   HIGH_ETH_FLOW_SLIPPAGE_BIPS,
+  HIGH_SLIPPAGE_BPS,
+  LOW_SLIPPAGE_BPS,
+  MAX_SLIPPAGE_BPS,
+  MIN_SLIPPAGE_BPS,
+  MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
   MINIMUM_ETH_FLOW_SLIPPAGE,
+  MINIMUM_ETH_FLOW_SLIPPAGE_BIPS,
+  MINIMUM_ORDER_VALID_TO_TIME_SECONDS,
 } from 'legacy/constants'
 import { L2_CHAIN_IDS } from 'legacy/constants/chains'
 import { DEFAULT_DEADLINE_FROM_NOW } from 'legacy/constants/misc'
-// import ms from 'ms.macro'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from 'legacy/state/user/hooks'
 import { ThemedText } from 'legacy/theme'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'modules/swap/pure/Row/RowDeadline'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'modules/swap/pure/Row/RowSlippageContent'
 import { useWalletInfo } from 'modules/wallet'
+
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import QuestionHelper from '../QuestionHelper'
 
@@ -133,8 +133,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const { chainId } = useWalletInfo()
   const theme = useContext(ThemeContext)
 
-  const isEthFlow = useIsEthFlow()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const isEoaEthFlow = useIsEoaEthFlow()
+  const nativeCurrency = useNativeCurrency()
 
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
@@ -153,8 +153,8 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     setSlippageError(false)
 
     if (value.length === 0) {
-      slippageToleranceAnalytics('Default', isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
-      setUserSlippageTolerance(isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE : 'auto')
+      slippageToleranceAnalytics('Default', isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
+      setUserSlippageTolerance(isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE : 'auto')
     } else {
       let v = value
 
@@ -170,10 +170,10 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
 
       if (
         !Number.isInteger(parsed) ||
-        parsed < (isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : MIN_SLIPPAGE_BPS) ||
+        parsed < (isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : MIN_SLIPPAGE_BPS) ||
         parsed > MAX_SLIPPAGE_BPS
       ) {
-        slippageToleranceAnalytics('Default', isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
+        slippageToleranceAnalytics('Default', isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : DEFAULT_SLIPPAGE_BPS)
         setUserSlippageTolerance('auto')
         if (v !== '.') {
           setSlippageError(SlippageError.InvalidInput)
@@ -187,10 +187,14 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
 
   const tooLow =
     userSlippageTolerance !== 'auto' &&
-    userSlippageTolerance.lessThan(new Percent(isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : LOW_SLIPPAGE_BPS, 10_000))
+    userSlippageTolerance.lessThan(
+      new Percent(isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BIPS : LOW_SLIPPAGE_BPS, 10_000)
+    )
   const tooHigh =
     userSlippageTolerance !== 'auto' &&
-    userSlippageTolerance.greaterThan(new Percent(isEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BIPS : HIGH_SLIPPAGE_BPS, 10_000))
+    userSlippageTolerance.greaterThan(
+      new Percent(isEoaEthFlow ? HIGH_ETH_FLOW_SLIPPAGE_BIPS : HIGH_SLIPPAGE_BPS, 10_000)
+    )
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
@@ -206,7 +210,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
         if (
           !Number.isInteger(parsed) || // Check deadline is a number
           parsed <
-            (isEthFlow
+            (isEoaEthFlow
               ? // 10 minute low threshold for eth flow
                 MINIMUM_ETH_FLOW_DEADLINE_SECONDS
               : MINIMUM_ORDER_VALID_TO_TIME_SECONDS) || // Check deadline is not too small
@@ -239,7 +243,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             color={theme.text1}
             text={
               // <Trans>Your transaction will revert if the price changes unfavorably by more than this percentage.</Trans>
-              isEthFlow
+              isEoaEthFlow
                 ? getNativeSlippageTooltip([nativeCurrency.symbol, nativeCurrency.wrapped.symbol])
                 : getNonNativeSlippageTooltip()
             }
@@ -251,7 +255,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               parseSlippageInput('')
             }}
             active={userSlippageTolerance === 'auto'}
-            disabled={isEthFlow}
+            disabled={isEoaEthFlow}
           >
             <Trans>Auto</Trans>
           </Option>
@@ -280,7 +284,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                     // When ethFlow and there was an error
                     // Set the slippage to minimum allowed
                     // Otherwise it'll default to last value used
-                    if (curr && isEthFlow) {
+                    if (curr && isEoaEthFlow) {
                       setUserSlippageTolerance(MINIMUM_ETH_FLOW_SLIPPAGE)
                     }
                     return false
@@ -304,7 +308,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             {slippageError ? (
               <Trans>
                 Enter slippage percentage between{' '}
-                {isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE.toFixed(0) : MIN_SLIPPAGE_BPS / 100}% and{' '}
+                {isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE.toFixed(0) : MIN_SLIPPAGE_BPS / 100}% and{' '}
                 {MAX_SLIPPAGE_BPS / 100}%
               </Trans>
             ) : tooLow ? (
@@ -328,7 +332,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               color={theme.text1}
               text={
                 <Trans>
-                  {isEthFlow
+                  {isEoaEthFlow
                     ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])
                     : getNonNativeOrderDeadlineTooltip()}
                 </Trans>

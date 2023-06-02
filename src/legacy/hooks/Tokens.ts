@@ -14,7 +14,7 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
 import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
-import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
+import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
 
 import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
 
@@ -137,7 +137,7 @@ export function useSearchInactiveTokenLists(
       if (!list) continue
 
       for (const tokenInfo of list.tokens) {
-        const isTokenMatched = strictSearch ? checkBySymbolAndAddress(tokenInfo, search) : tokenFilter(tokenInfo)
+        const isTokenMatched = strictSearch ? doesTokenMatchSymbolOrAddress(tokenInfo, search) : tokenFilter(tokenInfo)
 
         if (tokenInfo.chainId === chainId && isTokenMatched) {
           try {

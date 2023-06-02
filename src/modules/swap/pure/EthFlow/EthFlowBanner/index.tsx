@@ -1,7 +1,7 @@
 import { Currency, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { ChevronUp, ChevronDown } from 'react-feather'
+import { ChevronDown, ChevronUp } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import savingsIcon from 'legacy/assets/cow-swap/savings.svg'
@@ -14,7 +14,7 @@ import * as styledEl from './styleds'
 
 export interface EthFlowBannerContentProps extends EthFlowBannerCallbacks {
   native: Currency
-  wrapped: Token & { logoURI: string }
+  wrapped: Token
   showBanner: boolean
   hasEnoughWrappedBalance: boolean
   showBannerCallback: () => void

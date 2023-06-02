@@ -10,9 +10,9 @@ import { Field } from 'legacy/state/swap/actions'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { LimitOrdersRawState, updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { calculateAmountForRate } from 'modules/limitOrders/utils/calculateAmountForRate'
 
 import { FractionUtils } from 'utils/fractionUtils'
+import { calculateAmountForRate } from 'utils/orderUtils/calculateAmountForRate'
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null

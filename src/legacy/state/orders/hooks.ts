@@ -5,7 +5,7 @@ import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'legacy/state'
-import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { isOrderExpired, partialOrderUpdate } from 'legacy/state/orders/utils'
 import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
 import { isTruthy } from 'legacy/utils/misc'
 
@@ -20,6 +20,7 @@ import {
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   Order,
+  OrderStatus,
   preSignOrders,
   requestOrderCancellation,
   SerializedOrder,
@@ -120,6 +121,11 @@ function _deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined)
       ...serialisedOrder,
       inputToken: deserialisedInputToken,
       outputToken: deserialisedOutputToken,
+    }
+
+    // Fix for edge-case, where for some reason the order is still pending but its actually expired
+    if (order.status === OrderStatus.PENDING && isOrderExpired(order)) {
+      order.status = OrderStatus.EXPIRED
     }
   } else {
     orderObject?.order &&

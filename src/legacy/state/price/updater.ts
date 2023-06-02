@@ -15,7 +15,7 @@ import { isWrappingTrade } from 'legacy/state/swap/utils'
 import { useOrderValidTo } from 'legacy/state/user/hooks'
 import { isAddress } from 'legacy/utils'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useWalletInfo } from 'modules/wallet'
 
 import { LegacyFeeQuoteParams as LegacyFeeQuoteParamsFull } from 'api/gnosisProtocol/legacy/types'
@@ -139,7 +139,7 @@ export default function FeesUpdater(): null {
   }, [quotesMap, sellCurrencyId])
 
   const isLoading = useIsBestQuoteLoading()
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
 
   const isUnsupportedTokenGp = useIsUnsupportedTokenGp()
 

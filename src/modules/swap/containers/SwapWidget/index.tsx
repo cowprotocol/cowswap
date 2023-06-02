@@ -10,12 +10,12 @@ import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { Field } from 'legacy/state/swap/actions'
-import { useSwapState } from 'legacy/state/swap/hooks'
 import {
   useDerivedSwapInfo,
   useHighFeeWarning,
   useIsFeeGreaterThanInput,
   useSwapActionHandlers,
+  useSwapState,
   useUnknownImpactWarning,
 } from 'legacy/state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from 'legacy/state/user/hooks'
@@ -25,7 +25,7 @@ import { EthFlowProps } from 'modules/swap/containers/EthFlow'
 import { SwapModals, SwapModalsProps } from 'modules/swap/containers/SwapModals'
 import { SwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useSetupSwapAmountsFromUrl } from 'modules/swap/hooks/useSetupSwapAmountsFromUrl'
 import { useShowRecipientControls } from 'modules/swap/hooks/useShowRecipientControls'
 import { useSwapButtonContext } from 'modules/swap/hooks/useSwapButtonContext'
@@ -41,7 +41,7 @@ import {
 } from 'modules/swap/pure/warnings'
 import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useSetupTradeState, TradeWidget, TradeWidgetContainer } from 'modules/trade'
+import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
 import { useValidateTadeForm } from 'modules/tradeFormValidation'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
@@ -49,7 +49,11 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-const BUTTON_STATES_TO_SHOW_BUNDLE_BANNER = [SwapButtonState.ApproveAndSwap, SwapButtonState.ExpertApproveAndSwap]
+const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
+  SwapButtonState.ApproveAndSwap,
+  SwapButtonState.ExpertApproveAndSwap,
+]
+const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap, SwapButtonState.ExpertWrapAndSwap]
 
 export function SwapWidget() {
   useSetupTradeState()
@@ -75,7 +79,7 @@ export function SwapWidget() {
   const swapState = useSwapState()
   const { independentField, recipient } = swapState
   const showRecipientControls = useShowRecipientControls(recipient)
-  const isEthFlow = useIsEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
@@ -161,7 +165,10 @@ export function SwapWidget() {
     ethFlowProps,
   }
 
-  const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_BANNER.includes(swapButtonContext.swapButtonState)
+  const showApprovalBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER.includes(
+    swapButtonContext.swapButtonState
+  )
+  const showWrapBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER.includes(swapButtonContext.swapButtonState)
 
   const isSafeViaWc = useIsSafeViaWc()
   const showSafeWcBundlingBanner =
@@ -176,6 +183,7 @@ export function SwapWidget() {
     hideUnknownImpactWarning: !trade || isWrapUnwrapMode || !priceImpactParams.error || priceImpactParams.loading,
     isExpertMode,
     showApprovalBundlingBanner,
+    showWrapBundlingBanner,
     showSafeWcBundlingBanner,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
@@ -216,7 +224,7 @@ export function SwapWidget() {
   }
 
   const params = {
-    isEthFlow,
+    isEoaEthFlow,
     compactView: true,
     recipient,
     showRecipient: showRecipientControls,

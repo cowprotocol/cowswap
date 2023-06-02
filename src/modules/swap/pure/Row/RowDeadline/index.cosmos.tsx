@@ -4,7 +4,7 @@ import { RowDeadlineContent, RowDeadlineProps } from '.'
 
 const defaultProps: RowDeadlineProps = {
   toggleSettings: console.log,
-  isEthFlow: true,
+  isEoaEthFlow: true,
   displayDeadline: Math.floor(MINIMUM_ETH_FLOW_DEADLINE_SECONDS / 60) + ' minutes',
   symbols: ['ETH', 'WETH'],
   userDeadline: 600,
