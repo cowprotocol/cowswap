@@ -23,6 +23,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps) {
   if (!validation) {
     return (
       <TradeFormBlankButton
+        id="do-trade-button"
         disabled={isDisabled}
         onClick={() => (isExpertMode ? context.doTrade() : context.confirmTrade())}
       >
