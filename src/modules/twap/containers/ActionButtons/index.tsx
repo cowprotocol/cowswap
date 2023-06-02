@@ -1,27 +1,18 @@
 import React from 'react'
 
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
-
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
-import { TradeFormButton, TradeFormButtonContext, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-import { useTradeQuote } from 'modules/tradeQuote'
-import { useWalletDetails } from 'modules/wallet'
+import { useTradeConfirmActions } from 'modules/trade'
+import { TradeFormButton, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 
 export function ActionButtons() {
-  const tradeState = useAdvancedOrdersDerivedState()
-  const quote = useTradeQuote()
   const setFallbackHandler = useSetupFallbackHandler()
   const tradeConfirmActions = useTradeConfirmActions()
-  const toggleWalletModal = useToggleWalletModal()
   const localFormValidation = useTwapFormState()
   const primaryFormValidation = useGetTradeFormValidation()
-  const wrapNativeFlow = useWrapNativeFlow()
-  const { isSupportedWallet } = useWalletDetails()
 
   const primaryActionContext = {
     setFallbackHandler,
@@ -30,24 +21,9 @@ export function ActionButtons() {
 
   const confirmTrade = tradeConfirmActions.onOpen
 
-  const tradeFormButtonContext: TradeFormButtonContext = {
-    defaultText: 'TWAP order',
-    derivedState: tradeState,
-    quote,
-    isSupportedWallet,
-    doTrade() {
-      confirmTrade()
-    },
-    wrapNativeFlow() {
-      wrapNativeFlow()
-    },
-    confirmTrade() {
-      confirmTrade()
-    },
-    connectWallet() {
-      toggleWalletModal()
-    },
-  }
+  const tradeFormButtonContext = useTradeFormButtonContext('TWAP order', { doTrade: confirmTrade, confirmTrade })
+
+  if (!tradeFormButtonContext) return null
 
   if (!primaryFormValidation && localFormValidation) {
     return <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
