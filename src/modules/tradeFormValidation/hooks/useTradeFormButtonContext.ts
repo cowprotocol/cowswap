@@ -7,7 +7,7 @@ import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useWalletDetails } from 'modules/wallet'
 
-import { TradeFormButtonContext } from '../pure/TradeFormButton'
+import { TradeFormButtonContext } from '../types'
 
 interface TradeFormCallbacks {
   doTrade(): void

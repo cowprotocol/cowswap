@@ -34,7 +34,7 @@ export function AdvancedOrdersWidget() {
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
 
   // TODO: bind isExpertMode to settings
-  useValidateTadeForm({ isExpertMode: false })
+  useValidateTadeForm(false)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

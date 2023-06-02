@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useTradeConfirmActions } from 'modules/trade'
-import { TradeFormButton, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TradeFormButtons, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
@@ -30,7 +30,7 @@ export function ActionButtons() {
   }
 
   return (
-    <TradeFormButton
+    <TradeFormButtons
       doTradeText="Place TWAP order"
       confirmText="Review TWAP order"
       validation={primaryFormValidation}
