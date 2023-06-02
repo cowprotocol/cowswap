@@ -94,7 +94,7 @@ export function SwapWidget() {
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
 
-  useValidateTadeForm({ isExpertMode })
+  useValidateTadeForm(isExpertMode)
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer

@@ -1,5 +1,6 @@
+import { useMemo } from 'react'
+
 import useENSAddress from 'legacy/hooks/useENSAddress'
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
@@ -10,18 +11,15 @@ import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wall
 
 import { useTradeApproveState } from 'common/containers/TradeApprove'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
-import { TradeFormValidationContext, TradeFormValidationLocalContext } from '../types'
+import { TradeFormValidationCommonContext } from '../types'
 
-export function useTradeFormValidationContext(
-  localContext: TradeFormValidationLocalContext
-): TradeFormValidationContext | null {
+export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
-  const derivedTradeState = useDerivedTradeState()
+  const { state: derivedTradeState } = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
 
-  const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient } = derivedTradeState.state || {}
+  const { inputCurrency, outputCurrency, slippageAdjustedSellAmount, recipient } = derivedTradeState || {}
   const approvalState = useTradeApproveState(slippageAdjustedSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
@@ -31,17 +29,10 @@ export function useTradeFormValidationContext(
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
-  const spender = useTradeSpenderAddress()
-
-  const currentAllowance =
-    useTokenAllowance(inputCurrency?.isToken ? inputCurrency : undefined, account ?? undefined, spender) || null
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly || false
 
-  if (!derivedTradeState.state) return null
-
-  return {
-    ...localContext,
+  const commonContext = {
     account,
     isWrapUnwrap,
     isTxBundlingEnabled,
@@ -49,9 +40,17 @@ export function useTradeFormValidationContext(
     isSwapUnsupported,
     isSafeReadonlyUser,
     recipientEnsAddress,
-    currentAllowance,
-    derivedTradeState: derivedTradeState.state,
     approvalState,
     tradeQuote,
   }
+
+  return useMemo(() => {
+    if (!derivedTradeState) return null
+
+    return {
+      ...commonContext,
+      derivedTradeState,
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [...Object.values(commonContext), derivedTradeState])
 }

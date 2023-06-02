@@ -1,5 +1,3 @@
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
 
 import { TradeDerivedState } from 'modules/trade'
@@ -46,7 +44,6 @@ export interface TradeFormValidationCommonContext {
   derivedTradeState: TradeDerivedState
   approvalState: ApprovalState
   tradeQuote: TradeQuoteState
-  currentAllowance: CurrencyAmount<Token> | null
   recipientEnsAddress: string | null
   isWrapUnwrap: boolean
   isTxBundlingEnabled: boolean
@@ -56,3 +53,15 @@ export interface TradeFormValidationCommonContext {
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationLocalContext, TradeFormValidationCommonContext {}
+
+export interface TradeFormButtonContext {
+  defaultText: string
+  derivedState: TradeDerivedState
+  quote: TradeQuoteState
+  isSupportedWallet: boolean
+
+  doTrade(): void
+  confirmTrade(): void
+  connectWallet(): void
+  wrapNativeFlow(): void
+}

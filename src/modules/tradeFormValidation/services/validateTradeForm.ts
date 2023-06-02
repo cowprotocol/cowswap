@@ -18,12 +18,13 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     recipientEnsAddress,
     tradeQuote,
     account,
-    currentAllowance,
   } = context
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, outputCurrencyAmount, recipient } =
     derivedTradeState
+
   const approvalRequired = approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
+
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
   const outputAmountIsNotSet = isFractionFalsy(outputCurrencyAmount)
 
@@ -39,7 +40,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.CurrencyNotSet
   }
 
-  // TODO: check, limit orders checks both input and output
   if (inputAmountIsNotSet) {
     return TradeFormValidation.InputAmountNotSet
   }
@@ -68,7 +68,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.SafeReadonlyUser
   }
 
-  if (!tradeQuote.response || !currentAllowance) {
+  if (!tradeQuote.response) {
     return TradeFormValidation.QuoteLoading
   }
 

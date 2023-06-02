@@ -12,9 +12,9 @@ import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSe
 import { useTradeConfirmActions } from 'modules/trade'
 import {
   TradeFormButtons,
-  TradeFormButtonContext,
   useGetTradeFormValidation,
   useTradeFormButtonContext,
+  TradeFormBlankButton,
 } from 'modules/tradeFormValidation'
 
 import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
