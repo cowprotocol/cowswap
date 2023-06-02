@@ -81,7 +81,7 @@ export function LimitOrdersWidget() {
 
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
 
-  useValidateTadeForm({ isExpertMode })
+  useValidateTadeForm(isExpertMode)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
