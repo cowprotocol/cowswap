@@ -10,14 +10,14 @@ import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/compo
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import TradeGp from 'legacy/state/swap/TradeGp'
 
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
 import { useWalletDetails } from 'modules/wallet'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+
+import { useButtonText } from './hooks'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState
@@ -73,16 +73,8 @@ export function ConfirmSwapModal({
     rateInfoParams,
   ])
 
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(trade?.maximumAmountIn(allowedSlippage))
-  const buttonText = useMemo(
-    () =>
-      isSafeApprovalBundle ? (
-        <>
-          Confirm (Approve&nbsp;{<TokenSymbol token={trade?.inputAmount?.currency.wrapped} length={6} />}&nbsp;and Swap)
-        </>
-      ) : undefined,
-    [isSafeApprovalBundle, trade?.inputAmount?.currency.wrapped]
-  )
+  const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
+  const buttonText = useButtonText(slippageAdjustedSellAmount)
 
   const modalBottom = useCallback(() => {
     return trade ? (

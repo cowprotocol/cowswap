@@ -33,7 +33,7 @@ export function useEthFlowContext(): EthFlowContext | null {
     kind: OrderKind.SELL,
   })
 
-  if (!baseContext || !contract || baseProps.flowType !== FlowType.ETH_FLOW) return null
+  if (!baseContext || !contract || baseProps.flowType !== FlowType.EOA_ETH_FLOW) return null
 
   return {
     ...baseContext,

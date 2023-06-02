@@ -22,6 +22,21 @@ export function BundleTxApprovalBanner() {
   )
 }
 
+export function BundleTxWrapBanner() {
+  return (
+    <InlineBanner
+      type="information"
+      content={
+        <>
+          <strong>Token wrapping</strong>: For your convenience, native token wrapping, approval of the wrapped token
+          (if needed) and order placement will be bundled into a single transaction, streamlining your experience! Even
+          if the trade fails, your wrapping (and approval) will be done!
+        </>
+      }
+    />
+  )
+}
+
 export function BundleTxSafeWcBanner() {
   return (
     <InlineBanner
