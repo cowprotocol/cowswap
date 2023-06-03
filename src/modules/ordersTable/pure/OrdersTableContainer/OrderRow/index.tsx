@@ -133,7 +133,8 @@ export function OrderRow({
   spotPrice,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, activityId, formattedPercentage, executedPrice, status } = order
+  const { parsedCreationTime, expirationTime, status } = order
+  const { filledPercentDisplayed, executedPrice, activityId } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
@@ -290,8 +291,8 @@ export function OrderRow({
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow clickable onClick={onClick}>
-        <b>{formattedPercentage}%</b>
-        <styledEl.ProgressBar value={formattedPercentage}></styledEl.ProgressBar>
+        <b>{filledPercentDisplayed}%</b>
+        <styledEl.ProgressBar value={filledPercentDisplayed}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
       {/* Status label */}

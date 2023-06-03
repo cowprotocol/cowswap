@@ -1,7 +1,7 @@
-import { UID } from '@cowprotocol/cow-sdk'
-
 import { LimitOrderActions } from 'modules/ordersTable/pure/OrdersTableContainer/types'
 import { BalancesAndAllowances } from 'modules/tokens'
+
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { ordersMock } from './orders.mock'
 
@@ -37,8 +37,8 @@ const orderActions: LimitOrderActions = {
     }
     return null
   },
-  selectReceiptOrder(orderUid: UID) {
-    console.log('selectReceiptOrder', orderUid)
+  selectReceiptOrder(order: ParsedOrder) {
+    console.log('selectReceiptOrder', order)
   },
   toggleOrderForCancellation(order) {
     console.log('toggleOrderForCancellation', order)

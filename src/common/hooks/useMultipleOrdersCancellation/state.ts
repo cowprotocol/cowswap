@@ -1,12 +1,11 @@
 import { atom } from 'jotai'
 
-import { Order } from 'legacy/state/orders/actions'
-
+import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
-export const ordersToCancelAtom = atom<Order[]>([])
+export const ordersToCancelAtom = atom<CancellableOrder[]>([])
 
-export const updateOrdersToCancelAtom = atom(null, (get, set, nextState: Order[]) => {
+export const updateOrdersToCancelAtom = atom(null, (get, set, nextState: CancellableOrder[]) => {
   set(ordersToCancelAtom, () => {
     return nextState.filter(isOrderOffChainCancellable)
   })

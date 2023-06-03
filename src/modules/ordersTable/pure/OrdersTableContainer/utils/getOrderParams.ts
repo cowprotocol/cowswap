@@ -1,12 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
-import { Order } from 'legacy/state/orders/actions'
-
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { isEnoughAmount } from 'utils/isEnoughAmount'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface OrderParams {
   chainId: SupportedChainId | undefined
@@ -22,7 +21,7 @@ const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
 export function getOrderParams(
   chainId: SupportedChainId | undefined,
   balancesAndAllowances: BalancesAndAllowances,
-  order: Order
+  order: ParsedOrder
 ): OrderParams {
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount.toString())

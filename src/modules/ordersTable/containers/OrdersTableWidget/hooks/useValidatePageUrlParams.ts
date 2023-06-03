@@ -2,18 +2,16 @@ import { useLayoutEffect } from 'react'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Order } from 'legacy/state/orders/actions'
-
 import { ORDERS_TABLE_PAGE_SIZE } from '../../../const/tabs'
 import { buildOrdersTableUrl, parseOrdersTableUrl } from '../../../utils/buildOrdersTableUrl'
 
 // Reset page params if they are invalid
-export function useValidatePageUrlParams(orders: Order[], currentTabId: string, currentPageNumber: number) {
+export function useValidatePageUrlParams(ordersLength: number, currentTabId: string, currentPageNumber: number) {
   const location = useLocation()
   const navigate = useNavigate()
 
   useLayoutEffect(() => {
-    const pagesCount = Math.ceil(orders.length / ORDERS_TABLE_PAGE_SIZE)
+    const pagesCount = Math.ceil(ordersLength / ORDERS_TABLE_PAGE_SIZE)
     const params = parseOrdersTableUrl(location.search)
 
     const shouldResetPageNumber =
@@ -31,5 +29,5 @@ export function useValidatePageUrlParams(orders: Order[], currentTabId: string, 
         { replace: true }
       )
     }
-  }, [navigate, location, currentTabId, currentPageNumber, orders.length])
+  }, [navigate, location, currentTabId, currentPageNumber, ordersLength])
 }
