@@ -7,11 +7,13 @@ import {
   useAdvancedOrdersRawState,
   useUpdateAdvancedOrdersRawState,
 } from 'modules/advancedOrders'
+import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { useTradeConfirmActions } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
+import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -31,6 +33,8 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
 export function TwapFormWidget() {
+  const { account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
 
@@ -43,6 +47,7 @@ export function TwapFormWidget() {
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
+  const composableCowContract = useComposableCowContract()
   const setFallbackHandler = useSetupFallbackHandler()
   const tradeConfirmActions = useTradeConfirmActions()
   const formState = useTwapFormState()
@@ -68,7 +73,9 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
-      <PendingTwapOrdersUpdater />
+      {account && isSafeWallet && composableCowContract && (
+        <PendingTwapOrdersUpdater composableCowContract={composableCowContract} account={account} />
+      )}
       <TwapConfirmModal />
 
       {!isWrapOrUnwrap && (
