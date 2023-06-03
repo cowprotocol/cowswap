@@ -23,9 +23,23 @@ export interface TWAPOrderStruct {
   span: number
 }
 
+export enum TWAPOrderStatus {
+  WaitSigning = 'WaitSigning',
+  Scheduled = 'Scheduled',
+  Cancelled = 'Cancelled',
+  Expired = 'Expired',
+}
+
 export interface TWAPOrderItem {
   order: TWAPOrderStruct
+  status: TWAPOrderStatus
   safeAddress: string
   hash: string
   submissionDate: string
+}
+
+export interface ConditionalOrderParams {
+  staticInput: string
+  salt: string
+  handler: string
 }
