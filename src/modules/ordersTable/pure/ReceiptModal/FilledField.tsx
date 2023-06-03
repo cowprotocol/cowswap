@@ -11,15 +11,15 @@ interface Props {
 }
 
 export function FilledField({ order }: Props) {
-  const { filledPercentage, formattedPercentage, fullyFilled } = order
+  const { executionData } = order
   const { action, mainAmount, formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts(order)
 
-  const touched = filledPercentage?.gt(0)
+  const touched = executionData.filledPercentage?.gt(0)
 
   return (
     <styledEl.Value>
       <styledEl.InlineWrapper>
-        <styledEl.Progress active={formattedPercentage || 0} />
+        <styledEl.Progress active={executionData.filledPercentDisplayed || 0} />
       </styledEl.InlineWrapper>
 
       <styledEl.InlineWrapper>
@@ -28,7 +28,7 @@ export function FilledField({ order }: Props) {
             {/* Executed part (bought/sold tokens) */}
             <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />
           </b>{' '}
-          {!fullyFilled && (
+          {!executionData.fullyFilled && (
             // Show the total amount to buy/sell. Only for orders that are not 100% executed
             <>
               of{' '}

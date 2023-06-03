@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
-import { useOrders } from 'legacy/state/orders/hooks'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -15,9 +14,8 @@ export interface OrdersTableList {
 
 const ORDERS_LIMIT = 100
 
-export function useOrdersTableList(): OrdersTableList {
-  const { chainId, account } = useWalletInfo()
-  const allNonEmptyOrders = useOrders({ chainId })
+export function useOrdersTableList(allOrders: Order[]): OrdersTableList {
+  const { account } = useWalletInfo()
   const accountLowerCase = account?.toLowerCase()
 
   const ordersFilter = useCallback(
@@ -26,8 +24,8 @@ export function useOrdersTableList(): OrdersTableList {
   )
 
   const allSortedOrders = useMemo(() => {
-    return allNonEmptyOrders.filter(ordersFilter).map(parseOrder).sort(ordersSorter)
-  }, [allNonEmptyOrders, ordersFilter])
+    return allOrders.filter(ordersFilter).map(parseOrder).sort(ordersSorter)
+  }, [allOrders, ordersFilter])
 
   return useMemo(() => {
     const { pending, history } = allSortedOrders.reduce(
