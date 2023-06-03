@@ -22,3 +22,8 @@ export interface TWAPOrderStruct {
   t: number
   span: number
 }
+
+export interface TWAPOrderItem {
+  order: TWAPOrderStruct
+  hash: string
+}

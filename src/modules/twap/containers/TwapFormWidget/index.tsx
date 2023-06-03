@@ -26,6 +26,7 @@ import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import { PendingTwapOrdersUpdater } from '../../updaters/PendingTwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
@@ -67,6 +68,7 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
+      <PendingTwapOrdersUpdater />
       <TwapConfirmModal />
 
       {!isWrapOrUnwrap && (
