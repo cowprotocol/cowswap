@@ -19,6 +19,7 @@ const ORDERS_LIMIT = 100
 export function useOrdersTableList(allOrders: Order[]): OrdersTableList {
   const { account } = useWalletInfo()
   // TODO: fix dependency inversion (for exanmple: use Context)
+  // TODO: filter by account
   const twapOrders = useAtomValue(parsedTwapOrdersAtom)
   const accountLowerCase = account?.toLowerCase()
 
