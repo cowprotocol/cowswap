@@ -9,7 +9,7 @@ import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 
 import { fetchPendingTwapOrders } from '../services/fetchPendingTwapOrders'
-import { addTwapOrdersInListAtom } from '../state/twapOrdersListAtom'
+import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
 
 const PENDING_TWAP_UPDATE_INTERVAL = ms`5s`
 
@@ -17,14 +17,14 @@ export function PendingTwapOrdersUpdater() {
   const safeAppsSdk = useSafeAppsSdk()
   const safeApiKit = useSafeApiKit()
   const composableCowContract = useComposableCowContract()
-  const addTwapOrders = useUpdateAtom(addTwapOrdersInListAtom)
+  const setTwapOrders = useUpdateAtom(twapOrdersListAtom)
 
   useEffect(() => {
     if (!safeApiKit || !safeAppsSdk || !composableCowContract) return
 
     const persistOrders = () => {
       fetchPendingTwapOrders(safeAppsSdk, safeApiKit, composableCowContract).then((orders) => {
-        addTwapOrders(orders)
+        setTwapOrders(orders)
       })
     }
 
@@ -33,7 +33,7 @@ export function PendingTwapOrdersUpdater() {
     persistOrders()
 
     return () => clearInterval(interval)
-  }, [safeApiKit, safeAppsSdk, composableCowContract, addTwapOrders])
+  }, [safeApiKit, safeAppsSdk, composableCowContract, setTwapOrders])
 
   return null
 }

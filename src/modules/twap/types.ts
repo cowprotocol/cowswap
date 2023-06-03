@@ -25,6 +25,7 @@ export interface TWAPOrderStruct {
 
 export interface TWAPOrderItem {
   order: TWAPOrderStruct
+  safeAddress: string
   hash: string
   submissionDate: string
 }

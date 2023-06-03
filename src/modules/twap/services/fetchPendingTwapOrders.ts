@@ -39,18 +39,28 @@ export async function fetchPendingTwapOrders(
   composableCowContract: ComposableCoW
 ): Promise<TWAPOrderItem[]> {
   const safeAddress = (await safeAppsSdk.safe.getInfo()).safeAddress
-  const pendingTxs = await safeApiKit.getPendingTransactions(safeAddress)
-  const results = pendingTxs?.results || []
+  const allTxs = await safeApiKit.getMultisigTransactions(safeAddress)
+  const results = allTxs?.results || []
 
   return results
     .map((result) => {
       const dataDecoded = result.dataDecoded as DataDecoded | undefined
-      const valueDecoded = dataDecoded?.parameters?.[0].valueDecoded || []
+      const valueDecoded = dataDecoded?.parameters?.[0]?.valueDecoded || []
       const callDatas = valueDecoded.map((value) => value.data)
 
       return callDatas
         .map((callData) => {
-          return callData ? parseTwapOrderItem(composableCowContract, callData, result.submissionDate) : null
+          if (!callData) return null
+
+          const parsedTwapOrder = parseTwapOrderItem(composableCowContract, callData)
+
+          if (!parsedTwapOrder) return null
+
+          return {
+            ...parsedTwapOrder,
+            submissionDate: result.submissionDate,
+            safeAddress: result.safe,
+          }
         })
         .filter(isTruthy)
     })
@@ -59,9 +69,8 @@ export async function fetchPendingTwapOrders(
 
 function parseTwapOrderItem(
   composableCowContract: ComposableCoW,
-  callData: string,
-  submissionDate: string
-): TWAPOrderItem | null {
+  callData: string
+): Pick<TWAPOrderItem, 'order' | 'hash'> | null {
   try {
     const _result = composableCowContract.interface.decodeFunctionData('create', callData)
     const { params } = _result as any as CreateFnResult
@@ -74,7 +83,7 @@ function parseTwapOrderItem(
       [{ handler: params.handler, salt: params.salt, staticInput: params.staticInput }]
     )
 
-    return { order, hash, submissionDate }
+    return { order, hash }
   } catch (e) {
     return null
   }
