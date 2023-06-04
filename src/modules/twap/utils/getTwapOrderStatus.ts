@@ -3,7 +3,8 @@ import { TWAPOrderStatus, TWAPOrderStruct } from '../types'
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
   isExecuted: boolean,
-  auth: boolean | undefined
+  auth: boolean,
+  hasDiscreteOrdder: boolean
 ): TWAPOrderStatus {
   if (isTwapOrderExpired(order)) return TWAPOrderStatus.Expired
 
@@ -11,7 +12,10 @@ export function getTwapOrderStatus(
 
   if (!auth) return TWAPOrderStatus.Cancelled
 
-  return TWAPOrderStatus.Scheduled
+  // TODO: check if a discrete order is filled
+  if (!hasDiscreteOrdder) return TWAPOrderStatus.Scheduled
+
+  return TWAPOrderStatus.Pending
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct): boolean {

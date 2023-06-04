@@ -29,8 +29,9 @@ const pendingTwapExecutionData: ParsedOrderExecutionData = {
 }
 
 const statusMap: Record<TWAPOrderStatus, OrderStatus> = {
+  [TWAPOrderStatus.Pending]: OrderStatus.PENDING,
   [TWAPOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
-  [TWAPOrderStatus.Scheduled]: OrderStatus.PENDING,
+  [TWAPOrderStatus.Scheduled]: OrderStatus.CREATING,
   [TWAPOrderStatus.Cancelled]: OrderStatus.CANCELLED,
   [TWAPOrderStatus.Expired]: OrderStatus.EXPIRED,
 }

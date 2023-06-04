@@ -33,7 +33,7 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
 export function TwapFormWidget() {
-  const { account } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
@@ -73,8 +73,12 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
-      {account && isSafeWallet && composableCowContract && (
-        <PendingTwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} />
+      {chainId && account && isSafeWallet && composableCowContract && (
+        <PendingTwapOrdersUpdater
+          composableCowContract={composableCowContract}
+          safeAddress={account}
+          chainId={chainId}
+        />
       )}
       <TwapConfirmModal />
 

@@ -1,5 +1,5 @@
 import type SafeApiKit from '@safe-global/api-kit'
-import type { DataDecoded } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 import { isTruthy } from 'legacy/utils/misc'
 
@@ -13,37 +13,41 @@ export interface TwapOrdersSafeData {
   isExecuted: boolean
 }
 
+const CREATE_COMPOSABLE_ORDER_SELECTOR = '6bfae1ca'
+
 export async function fetchTwapOrdersFromSafe(
   safeAddress: string,
   safeApiKit: SafeApiKit,
   composableCowContract: ComposableCoW
 ): Promise<TwapOrdersSafeData[]> {
-  const allTxs = await safeApiKit.getMultisigTransactions(safeAddress)
+  const allTxs = await safeApiKit.getAllTransactions(safeAddress)
   const results = allTxs?.results || []
 
   return results
     .map((result) => {
-      const dataDecoded = result.dataDecoded as DataDecoded | undefined
-      const valueDecoded = dataDecoded?.parameters?.[0]?.valueDecoded || []
-      const callDatas = valueDecoded.map((value) => value.data)
+      if (!result.data || !isSafeMultisigTransactionListResponse(result)) return null
 
-      return callDatas
-        .map((callData) => {
-          if (!callData) return null
+      const selectorIndex = result.data.indexOf(CREATE_COMPOSABLE_ORDER_SELECTOR)
 
-          const params = parseConditionalOrderParams(safeAddress, composableCowContract, callData)
+      if (selectorIndex < 0) return null
 
-          if (!params) return null
+      const callData = '0x' + result.data.substring(selectorIndex)
 
-          return {
-            params,
-            isExecuted: result.isExecuted,
-            submissionDate: result.submissionDate,
-          }
-        })
-        .filter(isTruthy)
+      const params = parseConditionalOrderParams(safeAddress, composableCowContract, callData)
+
+      if (!params) return null
+
+      return {
+        params,
+        isExecuted: result.isExecuted,
+        submissionDate: result.submissionDate,
+      }
     })
-    .flat()
+    .filter(isTruthy)
+}
+
+function isSafeMultisigTransactionListResponse(response: any): response is SafeMultisigTransactionResponse {
+  return !!response.data && !!response.submissionDate
 }
 
 function parseConditionalOrderParams(
