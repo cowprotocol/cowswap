@@ -1,5 +1,7 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { TwapOrdersSafeData } from './services/fetchTwapOrdersFromSafe'
+
 // Read more: https://github.com/rndlabs/composable-cow#data-structure
 export interface TWAPOrder {
   sellAmount: CurrencyAmount<Token>
@@ -42,4 +44,11 @@ export interface ConditionalOrderParams {
   staticInput: string
   salt: string
   handler: string
+}
+
+export interface TwapOrderInfo {
+  id: string
+  orderStruct: TWAPOrderStruct
+  safeData: TwapOrdersSafeData
+  isExpired: boolean
 }

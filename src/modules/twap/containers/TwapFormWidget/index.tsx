@@ -74,7 +74,7 @@ export function TwapFormWidget() {
     <>
       <QuoteObserverUpdater />
       {account && isSafeWallet && composableCowContract && (
-        <PendingTwapOrdersUpdater composableCowContract={composableCowContract} account={account} />
+        <PendingTwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} />
       )}
       <TwapConfirmModal />
 

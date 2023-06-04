@@ -1,75 +1,53 @@
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
 
-import { OrderParameters } from '@cowprotocol/cow-sdk'
-
 import { ComposableCoW } from 'abis/types'
 
+import { useFetchDiscreteOrders } from '../hooks/useFetchDiscreteOrders'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
-import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
-import { TradeableOrderWithSignature, useTwapOrdersTradeableMulticall } from '../hooks/useTwapOrdersTradeableMulticall'
-import { TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
-import {
-  TwapDiscreteOrderItem,
-  TwapDiscreteOrdersList,
-  updateTwapDiscreteOrdersListAtom,
-} from '../state/twapDiscreteOrdersListAtom'
+import { updateTwapDiscreteOrdersListAtom } from '../state/twapDiscreteOrdersListAtom'
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { TWAPOrderItem } from '../types'
-import { encodeConditionalOrderParams } from '../utils/encodeConditionalOrderParams'
-import { getTwapOrderStatus } from '../utils/getTwapOrderStatus'
+import { TwapOrderInfo } from '../types'
+import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { getTwapOrdersItems } from '../utils/getTwapOrdersItems'
+import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
 import { parseTwapOrderStruct } from '../utils/parseTwapOrderStruct'
 
-export function PendingTwapOrdersUpdater(props: { account: string; composableCowContract: ComposableCoW }) {
-  const { account, composableCowContract } = props
+export function PendingTwapOrdersUpdater(props: { safeAddress: string; composableCowContract: ComposableCoW }) {
+  const { safeAddress, composableCowContract } = props
 
   const setTwapOrders = useUpdateAtom(twapOrdersListAtom)
   const updateTwapDiscreteOrders = useUpdateAtom(updateTwapDiscreteOrdersListAtom)
 
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
-  const ordersConditionalParams = useMemo(() => {
-    return ordersSafeData.map(({ params }) => params)
+  const allOrdersInfo: TwapOrderInfo[] = useMemo(() => {
+    return ordersSafeData.map((data) => {
+      const id = getConditionalOrderId(data.params)
+      const order = parseTwapOrderStruct(data.params.staticInput)
+
+      return {
+        id,
+        orderStruct: order,
+        safeData: data,
+        isExpired: isTwapOrderExpired(order),
+      }
+    })
   }, [ordersSafeData])
 
-  const ordersHashes = useMemo(() => {
-    return ordersConditionalParams.map(encodeConditionalOrderParams)
-  }, [ordersConditionalParams])
+  // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
+  const openOrCancelledOrders = useMemo(() => {
+    return allOrdersInfo.filter((info) => !info.isExpired && info.safeData.isExecuted)
+  }, [allOrdersInfo])
 
-  const ordersAuth = useTwapOrdersAuthMulticall(account, composableCowContract, ordersHashes)
-  const ordersTradeableData = useTwapOrdersTradeableMulticall(account, composableCowContract, ordersConditionalParams)
-
-  const twapOrders = useMemo(() => {
-    const targetDataLength = ordersSafeData.length
-    const isDataConsistent = [ordersHashes, ordersAuth].every((data) => data.length === targetDataLength)
-
-    if (!isDataConsistent) return null
-
-    return ordersSafeData.map((safeData, index) => {
-      return getTWAPOrderItem(account, safeData, ordersHashes[index], !!ordersAuth[index])
-    })
-  }, [account, ordersSafeData, ordersHashes, ordersAuth])
-
-  const discreteOrders = useMemo(() => {
-    if (ordersHashes.length !== ordersTradeableData.length) return null
-
-    return ordersHashes.reduce((acc, hash, index) => {
-      const data = ordersTradeableData[index]
-      if (!data) return acc
-
-      const item = getTwapDiscreteOrderItem(hash, data)
-      if (!item) return acc
-
-      acc[hash] = item
-      return acc
-    }, {} as TwapDiscreteOrdersList)
-  }, [ordersHashes, ordersTradeableData])
+  // Here we know which orders are cancelled: if it has discrete order -it's not cancelled
+  const discreteOrders = useFetchDiscreteOrders(safeAddress, composableCowContract, openOrCancelledOrders)
 
   useEffect(() => {
-    if (!twapOrders) return
+    if (!discreteOrders) return
 
-    setTwapOrders(twapOrders)
-  }, [twapOrders, setTwapOrders])
+    setTwapOrders(getTwapOrdersItems(safeAddress, allOrdersInfo, discreteOrders))
+  }, [safeAddress, allOrdersInfo, discreteOrders, setTwapOrders])
 
   useEffect(() => {
     if (!discreteOrders) return
@@ -78,38 +56,4 @@ export function PendingTwapOrdersUpdater(props: { account: string; composableCow
   }, [discreteOrders, updateTwapDiscreteOrders])
 
   return null
-}
-
-function getTWAPOrderItem(
-  safeAddress: string,
-  safeData: TwapOrdersSafeData,
-  hash: string,
-  auth: boolean
-): TWAPOrderItem {
-  const { params, submissionDate, isExecuted } = safeData
-
-  const order = parseTwapOrderStruct(params.staticInput)
-  const status = getTwapOrderStatus(order, isExecuted, auth)
-
-  return {
-    order,
-    status,
-    safeAddress,
-    hash,
-    submissionDate,
-  }
-}
-
-function getTwapDiscreteOrderItem(hash: string, data: TradeableOrderWithSignature): TwapDiscreteOrderItem | null {
-  if (!data) return null
-
-  const { order: discreteOrder, signature } = data
-  const order = {
-    ...discreteOrder,
-    sellAmount: discreteOrder.sellAmount.toString(),
-    buyAmount: discreteOrder.buyAmount.toString(),
-    feeAmount: discreteOrder.feeAmount.toString(),
-  } as OrderParameters
-
-  return { order, signature }
 }

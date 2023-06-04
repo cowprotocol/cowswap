@@ -10,10 +10,10 @@ import { fetchTwapOrdersFromSafe, TwapOrdersSafeData } from '../services/fetchTw
 const PENDING_TWAP_UPDATE_INTERVAL = ms`5s`
 
 export function useFetchTwapOrdersFromSafe({
-  account,
+  safeAddress,
   composableCowContract,
 }: {
-  account: string
+  safeAddress: string
   composableCowContract: ComposableCoW
 }): TwapOrdersSafeData[] {
   const safeApiKit = useSafeApiKit()
@@ -22,8 +22,9 @@ export function useFetchTwapOrdersFromSafe({
   useEffect(() => {
     if (!safeApiKit) return
 
+    // TODO: now it fetches only last 20 transactions, should take into account the pagination
     const persistOrders = () => {
-      fetchTwapOrdersFromSafe(account, safeApiKit, composableCowContract).then(setOrdersSafeData)
+      fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
     }
 
     const interval = setInterval(persistOrders, PENDING_TWAP_UPDATE_INTERVAL)
@@ -31,7 +32,7 @@ export function useFetchTwapOrdersFromSafe({
     persistOrders()
 
     return () => clearInterval(interval)
-  }, [account, safeApiKit, composableCowContract])
+  }, [safeAddress, safeApiKit, composableCowContract])
 
   return ordersSafeData
 }
