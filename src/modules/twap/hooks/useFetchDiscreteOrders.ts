@@ -1,51 +1,81 @@
 import { useMemo } from 'react'
 
-import { OrderParameters } from '@cowprotocol/cow-sdk'
+import type { Order } from '@cowprotocol/contracts'
+import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { useAsyncMemo } from 'use-async-memo'
 
 import { ComposableCoW } from 'abis/types'
+import { computeDiscreteOrderUid } from 'utils/orderUtils/computeDiscreteOrderUid'
 
 import { TradeableOrderWithSignature, useTwapOrdersTradeableMulticall } from './useTwapOrdersTradeableMulticall'
 
-import { TwapDiscreteOrderItem, TwapDiscreteOrdersList } from '../state/twapDiscreteOrdersListAtom'
+import { TwapDiscreteOrderItem, TwapDiscreteOrders } from '../state/twapDiscreteOrdersAtom'
 import { TwapOrderInfo } from '../types'
 
 export function useFetchDiscreteOrders(
   safeAddress: string,
+  chainId: SupportedChainId,
   composableCowContract: ComposableCoW,
   ordersInfo: TwapOrderInfo[]
-): TwapDiscreteOrdersList | null {
+): TwapDiscreteOrders | null {
   const ordersToVerifyParams = useMemo(() => {
     return ordersInfo.map((info) => info.safeData.params)
   }, [ordersInfo])
 
   const ordersTradeableData = useTwapOrdersTradeableMulticall(safeAddress, composableCowContract, ordersToVerifyParams)
 
+  const items = useAsyncMemo(
+    () => {
+      if (ordersInfo.length !== ordersTradeableData.length) return null
+
+      return Promise.all(
+        ordersInfo.map(({ id }, index) => {
+          const data = ordersTradeableData[index]
+          return data ? getTwapDiscreteOrderItem(chainId, safeAddress, data, id) : Promise.resolve(null)
+        })
+      )
+    },
+    [chainId, safeAddress, ordersInfo, ordersTradeableData],
+    null
+  )
+
   return useMemo(() => {
-    if (ordersInfo.length !== ordersTradeableData.length) return null
+    if (!items) return null
 
     return ordersInfo.reduce((acc, { id }, index) => {
-      const data = ordersTradeableData[index]
-      if (!data) return acc
+      const item = items[index]
 
-      const item = getTwapDiscreteOrderItem(id, data)
-      if (!item) return acc
+      if (item) acc[id] = item
 
-      acc[id] = item
       return acc
-    }, {} as TwapDiscreteOrdersList)
-  }, [ordersInfo, ordersTradeableData])
+    }, {} as TwapDiscreteOrders)
+  }, [ordersInfo, items])
 }
 
-function getTwapDiscreteOrderItem(hash: string, data: TradeableOrderWithSignature): TwapDiscreteOrderItem | null {
+async function getTwapDiscreteOrderItem(
+  chainId: SupportedChainId,
+  safeAddress: string,
+  data: TradeableOrderWithSignature,
+  twapOrderId: string
+): Promise<TwapDiscreteOrderItem | null> {
   if (!data) return null
 
   const { order: discreteOrder, signature } = data
-  const order = {
-    ...discreteOrder,
+  const fixedOrder = {
     sellAmount: discreteOrder.sellAmount.toString(),
     buyAmount: discreteOrder.buyAmount.toString(),
     feeAmount: discreteOrder.feeAmount.toString(),
-  } as OrderParameters
+    sellToken: discreteOrder.sellToken,
+    buyToken: discreteOrder.buyToken,
+    receiver: discreteOrder.receiver,
+    validTo: discreteOrder.validTo,
+    appData: discreteOrder.appData,
+    kind: 'sell', // TODO: discuss it, smart-contract returns bytes here
+    partiallyFillable: discreteOrder.partiallyFillable,
+  } as Order
 
-  return { order, signature }
+  const uid = await computeDiscreteOrderUid(chainId, safeAddress, fixedOrder)
+
+  return { uid, twapOrderId, order: fixedOrder as OrderParameters, signature }
 }

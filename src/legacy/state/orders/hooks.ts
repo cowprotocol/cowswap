@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -256,7 +256,7 @@ export const useCombinedPendingOrders = ({ chainId }: GetOrdersParams): Order[] 
  * while usePendingOrders aggregates all pending states
  * @param chainId
  */
-export const useOnlyPendingOrders = ({ chainId }: GetOrdersParams): Order[] => {
+export const useOnlyPendingOrders = (chainId: SupportedChainId | undefined): Order[] => {
   const state = useSelector<AppState, PartialOrdersMap | undefined>(
     (state) => chainId && state.orders?.[chainId]?.pending
   )

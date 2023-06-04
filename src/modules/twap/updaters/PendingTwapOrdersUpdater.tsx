@@ -1,11 +1,14 @@
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect, useMemo } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { ComposableCoW } from 'abis/types'
 
 import { useFetchDiscreteOrders } from '../hooks/useFetchDiscreteOrders'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
-import { updateTwapDiscreteOrdersListAtom } from '../state/twapDiscreteOrdersListAtom'
+import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
+import { twapDiscreteOrdersAtom } from '../state/twapDiscreteOrdersAtom'
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderInfo } from '../types'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
@@ -13,11 +16,15 @@ import { getTwapOrdersItems } from '../utils/getTwapOrdersItems'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
 import { parseTwapOrderStruct } from '../utils/parseTwapOrderStruct'
 
-export function PendingTwapOrdersUpdater(props: { safeAddress: string; composableCowContract: ComposableCoW }) {
-  const { safeAddress, composableCowContract } = props
+export function PendingTwapOrdersUpdater(props: {
+  safeAddress: string
+  chainId: SupportedChainId
+  composableCowContract: ComposableCoW
+}) {
+  const { safeAddress, chainId, composableCowContract } = props
 
   const setTwapOrders = useUpdateAtom(twapOrdersListAtom)
-  const updateTwapDiscreteOrders = useUpdateAtom(updateTwapDiscreteOrdersListAtom)
+  const updateTwapDiscreteOrders = useUpdateAtom(twapDiscreteOrdersAtom)
 
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
@@ -41,13 +48,14 @@ export function PendingTwapOrdersUpdater(props: { safeAddress: string; composabl
   }, [allOrdersInfo])
 
   // Here we know which orders are cancelled: if it has discrete order -it's not cancelled
-  const discreteOrders = useFetchDiscreteOrders(safeAddress, composableCowContract, openOrCancelledOrders)
+  const discreteOrders = useFetchDiscreteOrders(safeAddress, chainId, composableCowContract, openOrCancelledOrders)
+  const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, openOrCancelledOrders)
 
   useEffect(() => {
-    if (!discreteOrders) return
+    if (!ordersAuthResult || !discreteOrders) return
 
-    setTwapOrders(getTwapOrdersItems(safeAddress, allOrdersInfo, discreteOrders))
-  }, [safeAddress, allOrdersInfo, discreteOrders, setTwapOrders])
+    setTwapOrders(getTwapOrdersItems(safeAddress, allOrdersInfo, ordersAuthResult, discreteOrders))
+  }, [safeAddress, allOrdersInfo, ordersAuthResult, discreteOrders, setTwapOrders])
 
   useEffect(() => {
     if (!discreteOrders) return

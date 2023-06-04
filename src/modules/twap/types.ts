@@ -27,6 +27,7 @@ export interface TWAPOrderStruct {
 
 export enum TWAPOrderStatus {
   WaitSigning = 'WaitSigning',
+  Pending = 'Pending',
   Scheduled = 'Scheduled',
   Cancelled = 'Cancelled',
   Expired = 'Expired',
@@ -52,3 +53,5 @@ export interface TwapOrderInfo {
   safeData: TwapOrdersSafeData
   isExpired: boolean
 }
+
+export type TwapOrdersAuthResult = { [key: string]: boolean }
