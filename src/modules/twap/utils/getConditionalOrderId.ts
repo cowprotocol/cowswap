@@ -5,6 +5,6 @@ import { ConditionalOrderParams } from '../types'
 
 const CONDITIONAL_ORDER_PARAMS_STRUCT = 'tuple(address handler, bytes32 salt, bytes staticInput)'
 
-export function encodeConditionalOrderParams(params: ConditionalOrderParams): string {
+export function getConditionalOrderId(params: ConditionalOrderParams): string {
   return keccak256(defaultAbiCoder.encode([CONDITIONAL_ORDER_PARAMS_STRUCT], [params]))
 }
