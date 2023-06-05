@@ -24,7 +24,7 @@ export function TwapOrdersUpdater(props: {
 }) {
   const { safeAddress, chainId, composableCowContract } = props
 
-  const discreteOrdersFromOrderBook = useDiscreteOrdersFromOrderBook(safeAddress, chainId)
+  const discreteOrdersFromOrderBook = useDiscreteOrdersFromOrderBook()
   const setTwapOrders = useUpdateAtom(twapOrdersListAtom)
   const updateTwapDiscreteOrders = useUpdateAtom(twapDiscreteOrdersAtom)
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)

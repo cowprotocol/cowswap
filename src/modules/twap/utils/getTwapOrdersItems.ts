@@ -1,4 +1,4 @@
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { Order } from 'legacy/state/orders/actions'
 
 import { getTwapOrderStatus } from './getTwapOrderStatus'
 import { parseTwapOrderStruct } from './parseTwapOrderStruct'
@@ -23,7 +23,7 @@ function getTwapOrderItem(
   safeData: TwapOrdersSafeData,
   hash: string,
   authorized: boolean,
-  discreteOrder: EnrichedOrder | undefined
+  discreteOrder: Order | undefined
 ): TwapOrderItem {
   const { params, submissionDate, isExecuted } = safeData
 
