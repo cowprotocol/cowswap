@@ -33,7 +33,7 @@ export function useTradeQuotePolling() {
     }
 
     const fetchQuote = () => {
-      updateQuoteState({ isLoading: true, error: null })
+      updateQuoteState({ isLoading: true })
 
       getQuoteOnlyResolveLast(quoteParams)
         .then((response) => {
