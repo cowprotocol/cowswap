@@ -1,9 +1,7 @@
-import { useAtomValue } from 'jotai/utils'
 import { useCallback, useMemo } from 'react'
 
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
-import { parsedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
@@ -16,11 +14,8 @@ export interface OrdersTableList {
 
 const ORDERS_LIMIT = 100
 
-export function useOrdersTableList(allOrders: Order[]): OrdersTableList {
+export function useOrdersTableList(allOrders: Order[], customOrders?: ParsedOrder[]): OrdersTableList {
   const { account } = useWalletInfo()
-  // TODO: fix dependency inversion (for exanmple: use Context)
-  // TODO: filter by account
-  const twapOrders = useAtomValue(parsedTwapOrdersAtom)
   const accountLowerCase = account?.toLowerCase()
 
   const ordersFilter = useCallback(
@@ -33,8 +28,8 @@ export function useOrdersTableList(allOrders: Order[]): OrdersTableList {
   }, [allOrders, ordersFilter])
 
   const allSortedOrders = useMemo(() => {
-    return [...parsedOrders, ...twapOrders].sort(ordersSorter)
-  }, [parsedOrders, twapOrders])
+    return [...parsedOrders, ...(customOrders || [])].sort(ordersSorter)
+  }, [parsedOrders, customOrders])
 
   return useMemo(() => {
     const { pending, history } = allSortedOrders.reduce(
