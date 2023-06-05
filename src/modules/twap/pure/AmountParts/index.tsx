@@ -5,7 +5,7 @@ import { Nullish } from 'types'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
-import { LabelTooltip } from 'modules/twap'
+import { LabelTooltipItems } from 'modules/twap'
 
 import * as styledEl from './styled'
 
@@ -34,7 +34,7 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   )
 }
 
-export function AmountParts({ partsState, labels }: { partsState: PartsState, labels: LabelTooltip }) {
+export function AmountParts({ partsState, labels }: { partsState: PartsState, labels: LabelTooltipItems }) {
   const { numberOfPartsValue, inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = partsState
   const { sellAmount, buyAmount } = labels
 

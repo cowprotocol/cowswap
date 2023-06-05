@@ -22,12 +22,12 @@ import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
 
-interface LabelTooltipObject {
+export interface LabelTooltipObject {
   label: string
   tooltip?: JSX.Element
 }
 
-export interface LabelTooltip {
+export interface LabelTooltipItems {
   [key: string]: LabelTooltipObject
 }
 
@@ -48,10 +48,15 @@ export function TwapFormWidget() {
     isCustomDeadline,
   }
 
-  const LABELS_TOOLTIPS: LabelTooltip = {
+  const LABELS_TOOLTIPS: LabelTooltipItems = {
     numberOfParts: {
       label: "No. of parts",
       tooltip: <>Your TWAP order will be split into this many parts, which will execute one by one.</>,
+    },
+    totalDuration: {
+      label: "Total duration",
+      tooltip: <>The "Total duration" is the duration it takes to execute all parts of your TWAP order.
+      For instance, your order consists of 2 parts placed every 30 minutes, the total time to complete the order is 1 hour. Each limit order remains open for 30 minutes until the next part becomes active.</>,
     },
     partDuration: {
       label: "Part duration",
@@ -115,7 +120,7 @@ export function TwapFormWidget() {
       <AmountParts partsState={partsState} labels={AMOUNTPARTS_LABELS}/>
 
       <styledEl.Row>
-        <DeadlineSelector deadline={deadlineState} items={orderDeadlines} setDeadline={(value) => updateState(value)} />
+        <DeadlineSelector deadline={deadlineState} items={orderDeadlines} setDeadline={(value) => updateState(value)} labels={LABELS_TOOLTIPS.totalDuration} />
 
         <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} hint={LABELS_TOOLTIPS.partDuration.label}>
           <>{deadlinePartsDisplay(timeInterval)}</>
