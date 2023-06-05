@@ -33,9 +33,7 @@ export function useTradeFormButtonContext(
       quote,
       isSupportedWallet,
       ...callbacks,
-      wrapNativeFlow() {
-        wrapNativeFlow()
-      },
+      wrapNativeFlow,
       connectWallet() {
         toggleWalletModal()
       },
