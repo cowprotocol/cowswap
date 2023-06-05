@@ -13,6 +13,7 @@ export interface TwapOrdersSafeData {
   isExecuted: boolean
 }
 
+// ComposableCoW.create method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '6bfae1ca'
 
 export async function fetchTwapOrdersFromSafe(

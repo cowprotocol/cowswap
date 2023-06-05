@@ -7,7 +7,7 @@ import { useSafeApiKit } from 'api/gnosisSafe/hooks/useSafeApiKit'
 
 import { fetchTwapOrdersFromSafe, TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
 
-const PENDING_TWAP_UPDATE_INTERVAL = ms`5s`
+const PENDING_TWAP_UPDATE_INTERVAL = ms`10s`
 
 export function useFetchTwapOrdersFromSafe({
   safeAddress,
@@ -22,7 +22,7 @@ export function useFetchTwapOrdersFromSafe({
   useEffect(() => {
     if (!safeApiKit) return
 
-    // TODO: now it fetches only last 20 transactions, should take into account the pagination
+    // TODO: now it fetches only last N transactions, should take into account the pagination
     const persistOrders = () => {
       fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract).then(setOrdersSafeData)
     }

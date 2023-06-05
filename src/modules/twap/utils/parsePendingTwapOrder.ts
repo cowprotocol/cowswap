@@ -11,6 +11,7 @@ import { ParsedOrder, ParsedOrderExecutionData } from 'utils/orderUtils/parseOrd
 
 import { TwapOrderItem, TWAPOrderStatus } from '../types'
 
+// TODO: fulfill data
 const pendingTwapExecutionData: ParsedOrderExecutionData = {
   executedBuyAmount: JSBI.BigInt(0),
   executedSellAmount: JSBI.BigInt(0),

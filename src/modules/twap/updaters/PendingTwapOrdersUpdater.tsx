@@ -25,10 +25,8 @@ export function PendingTwapOrdersUpdater(props: {
   const { safeAddress, chainId, composableCowContract } = props
 
   const discreteOrdersFromOrderBook = useDiscreteOrdersFromOrderBook()
-
   const setTwapOrders = useUpdateAtom(twapOrdersListAtom)
   const updateTwapDiscreteOrders = useUpdateAtom(twapDiscreteOrdersAtom)
-
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
   const allOrdersInfo: TwapOrderInfo[] = useMemo(() => {
@@ -50,8 +48,8 @@ export function PendingTwapOrdersUpdater(props: {
     return allOrdersInfo.filter((info) => !info.isExpired && info.safeData.isExecuted)
   }, [allOrdersInfo])
 
-  // Here we know which orders are cancelled: if it has discrete order -it's not cancelled
   const discreteOrders = useFetchDiscreteOrders(safeAddress, chainId, composableCowContract, openOrCancelledOrders)
+  // Here we know which orders are cancelled: if it's auth !== true, then it's cancelled
   const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, openOrCancelledOrders)
 
   useEffect(() => {

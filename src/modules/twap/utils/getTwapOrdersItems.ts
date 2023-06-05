@@ -3,7 +3,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { getTwapOrderStatus } from './getTwapOrderStatus'
 import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
-import { TwapToDiscreteMap } from '../hooks/useDiscreteOrdersFromOrderBook'
+import { TwapToDiscreteOrders } from '../hooks/useDiscreteOrdersFromOrderBook'
 import { TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult } from '../types'
 
@@ -11,7 +11,7 @@ export function getTwapOrdersItems(
   safeAddress: string,
   ordersInfo: TwapOrderInfo[],
   ordersAuthResult: TwapOrdersAuthResult,
-  discreteOrders: TwapToDiscreteMap
+  discreteOrders: TwapToDiscreteOrders
 ): TwapOrderItem[] {
   return ordersInfo.map(({ safeData, id }) => {
     return getTwapOrderItem(safeAddress, safeData, id, ordersAuthResult[id], discreteOrders[id])

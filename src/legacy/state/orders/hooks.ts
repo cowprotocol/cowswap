@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -58,11 +58,11 @@ interface AddPendingOrderParams extends GetRemoveOrderParams {
 
 interface GetRemoveOrderParams {
   id: OrderID
-  chainId: ChainId
+  chainId: SupportedChainId
 }
 type GetOrdersByIdParams = {
   ids: OrderID[]
-  chainId?: ChainId
+  chainId?: SupportedChainId
 }
 
 type GetOrdersParams = Partial<Pick<GetRemoveOrderParams, 'chainId'>>
@@ -71,7 +71,7 @@ type SetOrderCancellationHashParams = CancelOrderParams & { hash: string }
 
 interface UpdateOrdersBatchParams {
   ids: OrderID[]
-  chainId: ChainId
+  chainId: SupportedChainId
 }
 
 type ExpireOrdersBatchParams = UpdateOrdersBatchParams
@@ -155,14 +155,16 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
   })
 }
 
-function useOrdersStateNetwork(chainId: ChainId | undefined): OrdersStateNetwork | undefined {
-  const ordersState = useSelector<AppState, OrdersState[ChainId] | undefined>((state) => {
+function useOrdersStateNetwork(chainId: SupportedChainId | undefined): OrdersStateNetwork | undefined {
+  const ordersState = useSelector<AppState, OrdersState[SupportedChainId] | undefined>((state) => {
     if (!chainId) {
       return undefined
     }
     return state.orders?.[chainId]
   })
 
+  // Additional memoization to avoid excessive re-renders
+  // ordersState is a plain object that contains serialized data, so we can stringify it safely
   return useMemo(() => {
     if (!chainId) return undefined
     return { ...getDefaultNetworkState(chainId), ...(ordersState || {}) }
@@ -334,7 +336,7 @@ export const useAddPendingOrder = (): AddOrderCallback => {
 }
 
 export type UpdateOrderParams = {
-  chainId: ChainId
+  chainId: SupportedChainId
   order: Partial<Omit<Order, 'id'>> & Pick<Order, 'id'>
 }
 
