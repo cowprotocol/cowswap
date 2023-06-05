@@ -1,4 +1,4 @@
-import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
+import { EnrichedOrder, OrderStatus } from '@cowprotocol/cow-sdk'
 
 import { TWAPOrderStatus, TWAPOrderStruct } from '../types'
 
@@ -6,7 +6,7 @@ export function getTwapOrderStatus(
   order: TWAPOrderStruct,
   isExecuted: boolean,
   auth: boolean,
-  discreteOrder: Order | undefined
+  discreteOrder: EnrichedOrder | undefined
 ): TWAPOrderStatus {
   if (isTwapOrderExpired(order)) return TWAPOrderStatus.Expired
 
@@ -14,7 +14,7 @@ export function getTwapOrderStatus(
 
   if (!auth) return TWAPOrderStatus.Cancelled
 
-  if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TWAPOrderStatus.Pending
+  if (discreteOrder?.status === OrderStatus.OPEN) return TWAPOrderStatus.Pending
 
   return TWAPOrderStatus.Scheduled
 }
