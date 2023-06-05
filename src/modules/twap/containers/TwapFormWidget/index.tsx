@@ -28,7 +28,7 @@ import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
-import { PendingTwapOrdersUpdater } from '../../updaters/PendingTwapOrdersUpdater'
+import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
@@ -74,11 +74,7 @@ export function TwapFormWidget() {
     <>
       <QuoteObserverUpdater />
       {isSafeApp && chainId && account && composableCowContract && (
-        <PendingTwapOrdersUpdater
-          composableCowContract={composableCowContract}
-          safeAddress={account}
-          chainId={chainId}
-        />
+        <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
       )}
       <TwapConfirmModal />
 

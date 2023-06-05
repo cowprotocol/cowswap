@@ -17,7 +17,7 @@ import { getTwapOrdersItems } from '../utils/getTwapOrdersItems'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
 import { parseTwapOrderStruct } from '../utils/parseTwapOrderStruct'
 
-export function PendingTwapOrdersUpdater(props: {
+export function TwapOrdersUpdater(props: {
   safeAddress: string
   chainId: SupportedChainId
   composableCowContract: ComposableCoW
