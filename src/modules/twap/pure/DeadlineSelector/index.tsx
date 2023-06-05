@@ -5,7 +5,6 @@ import styled from 'styled-components/macro'
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { LabelTooltipObject } from 'modules/twap'
 
-
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
 
@@ -27,7 +26,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   const {
     items,
     deadline: { deadline, customDeadline, isCustomDeadline },
-    labels: {label, tooltip},
+    labels: { label, tooltip },
     setDeadline,
   } = props
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)

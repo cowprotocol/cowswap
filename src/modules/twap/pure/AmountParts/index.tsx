@@ -34,21 +34,29 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   )
 }
 
-export function AmountParts({ partsState, labels }: { partsState: PartsState, labels: LabelTooltipItems }) {
+export function AmountParts({ partsState, labels }: { partsState: PartsState; labels: LabelTooltipItems }) {
   const { numberOfPartsValue, inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = partsState
   const { sellAmount, buyAmount } = labels
 
   return (
     <styledEl.Wrapper>
       <TradeAmountPreview
-        label={<Trans>{labels.sellAmount.label} (1/{numberOfPartsValue})</Trans>}
+        label={
+          <Trans>
+            {labels.sellAmount.label} (1/{numberOfPartsValue})
+          </Trans>
+        }
         tooltip={<Trans>{sellAmount.tooltip}</Trans>}
         amount={inputPartAmount}
         fiatAmount={inputFiatAmount}
       />
 
       <TradeAmountPreview
-        label={<Trans>{buyAmount.label} (1/{numberOfPartsValue})</Trans>}
+        label={
+          <Trans>
+            {buyAmount.label} (1/{numberOfPartsValue})
+          </Trans>
+        }
         tooltip={<Trans>{buyAmount.tooltip}</Trans>}
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
