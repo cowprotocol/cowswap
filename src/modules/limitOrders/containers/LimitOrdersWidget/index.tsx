@@ -17,7 +17,6 @@ import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useSetupTradeState, TradeWidget } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useValidateTadeForm } from 'modules/tradeFormValidation'
 import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
@@ -86,8 +85,6 @@ export function LimitOrdersWidget() {
   )
 
   useSetTradeQuoteParams(quoteAmount)
-
-  useValidateTadeForm(isExpertMode)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,

@@ -42,7 +42,6 @@ import {
 import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
-import { useValidateTadeForm } from 'modules/tradeFormValidation'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -100,8 +99,6 @@ export function SwapWidget() {
 
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
-
-  useValidateTadeForm(isExpertMode)
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer

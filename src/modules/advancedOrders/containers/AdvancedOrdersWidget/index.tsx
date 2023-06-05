@@ -12,10 +12,9 @@ import {
 import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
+import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-
-import { partsStateAtom } from '../../../twap/state/partsStateAtom'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
