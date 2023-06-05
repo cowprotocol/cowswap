@@ -54,9 +54,7 @@ export function TradeButtons(props: TradeButtonsProps) {
     doTrade: handleTrade,
     quote,
     isSupportedWallet,
-    wrapNativeFlow() {
-      wrapNativeFlow()
-    },
+    wrapNativeFlow,
     confirmTrade() {
       tradeConfirmActions.onOpen()
     },
