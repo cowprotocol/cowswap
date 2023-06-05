@@ -5,6 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { ComposableCoW } from 'abis/types'
 
+import { useDiscreteOrdersFromOrderBook } from '../hooks/useDiscreteOrdersFromOrderBook'
 import { useFetchDiscreteOrders } from '../hooks/useFetchDiscreteOrders'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
@@ -22,6 +23,8 @@ export function PendingTwapOrdersUpdater(props: {
   composableCowContract: ComposableCoW
 }) {
   const { safeAddress, chainId, composableCowContract } = props
+
+  const discreteOrdersFromOrderBook = useDiscreteOrdersFromOrderBook()
 
   const setTwapOrders = useUpdateAtom(twapOrdersListAtom)
   const updateTwapDiscreteOrders = useUpdateAtom(twapDiscreteOrdersAtom)
@@ -52,10 +55,14 @@ export function PendingTwapOrdersUpdater(props: {
   const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, openOrCancelledOrders)
 
   useEffect(() => {
-    if (!ordersAuthResult || !discreteOrders) return
+    if (!ordersAuthResult || !discreteOrdersFromOrderBook) return
 
-    setTwapOrders(getTwapOrdersItems(safeAddress, allOrdersInfo, ordersAuthResult, discreteOrders))
-  }, [safeAddress, allOrdersInfo, ordersAuthResult, discreteOrders, setTwapOrders])
+    const items = getTwapOrdersItems(safeAddress, allOrdersInfo, ordersAuthResult, discreteOrdersFromOrderBook)
+
+    if (!items.length) return
+
+    setTwapOrders(items)
+  }, [safeAddress, allOrdersInfo, ordersAuthResult, discreteOrdersFromOrderBook, setTwapOrders])
 
   useEffect(() => {
     if (!discreteOrders) return

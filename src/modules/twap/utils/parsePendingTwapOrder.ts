@@ -9,7 +9,7 @@ import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
 
 import { ParsedOrder, ParsedOrderExecutionData } from 'utils/orderUtils/parseOrder'
 
-import { TWAPOrderItem, TWAPOrderStatus } from '../types'
+import { TwapOrderItem, TWAPOrderStatus } from '../types'
 
 const pendingTwapExecutionData: ParsedOrderExecutionData = {
   executedBuyAmount: JSBI.BigInt(0),
@@ -36,7 +36,7 @@ const statusMap: Record<TWAPOrderStatus, OrderStatus> = {
   [TWAPOrderStatus.Expired]: OrderStatus.EXPIRED,
 }
 
-export function parsePendingTwapOrder(tokens: TokensByAddress, item: TWAPOrderItem): ParsedOrder {
+export function parsePendingTwapOrder(tokens: TokensByAddress, item: TwapOrderItem): ParsedOrder {
   const { sellToken, buyToken, partSellAmount, minPartLimit, n, t } = item.order
   const numOfParts = BigInt(n)
   const sellAmount = BigInt(partSellAmount) * numOfParts

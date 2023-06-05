@@ -33,7 +33,7 @@ export enum TWAPOrderStatus {
   Expired = 'Expired',
 }
 
-export interface TWAPOrderItem {
+export interface TwapOrderItem {
   order: TWAPOrderStruct
   status: TWAPOrderStatus
   safeAddress: string
