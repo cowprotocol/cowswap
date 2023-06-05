@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+import { atomWithReset } from 'jotai/utils'
 
 import { OrderQuoteResponse } from '@cowprotocol/cow-sdk'
 
@@ -15,7 +16,7 @@ export interface TradeQuoteState {
   isLoading: boolean
 }
 
-export const tradeQuoteAtom = atom<TradeQuoteState>(DEFAULT_QUOTE_RESPONSE)
+export const tradeQuoteAtom = atomWithReset<TradeQuoteState>(DEFAULT_QUOTE_RESPONSE)
 
 export const updateTradeQuoteAtom = atom(null, (get, set, nextState: Partial<TradeQuoteState>) => {
   set(tradeQuoteAtom, () => {

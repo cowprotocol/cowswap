@@ -42,12 +42,14 @@ import {
 import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
-import { useValidateTadeForm } from 'modules/tradeFormValidation'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
+import { useIsSwapEth } from '../../hooks/useIsSwapEth'
 
 const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
   SwapButtonState.ApproveAndSwap,
@@ -97,8 +99,6 @@ export function SwapWidget() {
 
   const inputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT) || null
   const outputCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies.OUTPUT) || null
-
-  useValidateTadeForm(isExpertMode)
 
   // TODO: unify CurrencyInfo assembling between Swap and Limit orders
   // TODO: delegate formatting to the view layer
@@ -171,8 +171,16 @@ export function SwapWidget() {
   const showWrapBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER.includes(swapButtonContext.swapButtonState)
 
   const isSafeViaWc = useIsSafeViaWc()
-  const showSafeWcBundlingBanner =
+  const showSafeWcApprovalBundlingBanner =
     !showApprovalBundlingBanner && isSafeViaWc && swapButtonContext.swapButtonState === SwapButtonState.NeedApprove
+
+  const isSwapEth = useIsSwapEth()
+  const showSafeWcWrapBundlingBanner = !showWrapBundlingBanner && isSafeViaWc && isSwapEth
+
+  // Show the same banner when approval is needed or selling native token
+  const showSafeWcBundlingBanner = showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner
+
+  const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 
   const swapWarningsTopProps: SwapWarningsTopProps = {
     trade,
@@ -185,6 +193,7 @@ export function SwapWidget() {
     showApprovalBundlingBanner,
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
+    nativeCurrencySymbol,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
