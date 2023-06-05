@@ -21,6 +21,16 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
+
+interface LabelTooltipObject {
+  label: string
+  tooltip?: JSX.Element
+}
+
+export interface LabelTooltip {
+  [key: string]: LabelTooltipObject
+}
+
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
@@ -38,6 +48,38 @@ export function TwapFormWidget() {
     isCustomDeadline,
   }
 
+  const LABELS_TOOLTIPS: LabelTooltip = {
+    numberOfParts: {
+      label: "No. of parts",
+      tooltip: <>Your TWAP order will be split into this many parts, which will execute one by one.</>,
+    },
+    partDuration: {
+      label: "Part duration",
+      tooltip: <>The "Part duration" refers to the duration between each part of your TWAP order.
+        Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution.</>,
+    },
+    slippage: {
+      label: "Slippage",
+      tooltip: <>This slippage will apply to each part of your order. Since a TWAP order executes over a longer period of time, your slippage should take into account possible price fluctuations over that time. If your slippage is too low, you risk some parts of your order failing to execute.</>,
+    },
+    price: {
+      label: "Current market price"
+    },
+    sellAmount: {
+      label: "Sell amount per part",
+      tooltip: <>Estimated amount that will be sold in each part of the order.</>
+    },
+    buyAmount: {
+      label: "Buy amount per part",
+      tooltip: <>Estimated amount that you will receive from each part of the order.</>
+    },
+  };
+
+  const AMOUNTPARTS_LABELS = {
+    sellAmount: LABELS_TOOLTIPS.sellAmount,
+    buyAmount: LABELS_TOOLTIPS.buyAmount,
+  };
+  
   return (
     <>
       <QuoteObserverUpdater />
@@ -45,7 +87,7 @@ export function TwapFormWidget() {
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
-          <styledEl.StyledRateInfo label="Current market price" rateInfoParams={rateInfoParams} />
+          <styledEl.StyledRateInfo label={LABELS_TOOLTIPS.price.label} rateInfoParams={rateInfoParams} />
         </styledEl.Row>
       )}
 
@@ -55,8 +97,8 @@ export function TwapFormWidget() {
           onUserInput={(value: number | null) => updateState({ numberOfPartsValue: value || defaultNumOfParts })}
           min={defaultNumOfParts}
           max={100}
-          label="No. of parts"
-          hint="Todo: No of parts hint"
+          label={LABELS_TOOLTIPS.numberOfParts.label}
+          hint={LABELS_TOOLTIPS.numberOfParts.tooltip}
         />
         <TradeNumberInput
           value={slippageValue}
@@ -64,21 +106,21 @@ export function TwapFormWidget() {
           decimalsPlaces={2}
           placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
           max={50}
-          label="Slippage"
-          hint="Todo: Slippage hint"
+          label={LABELS_TOOLTIPS.slippage.label}
+          hint={LABELS_TOOLTIPS.slippage.tooltip}
           suffix="%"
         />
       </styledEl.Row>
 
-      <AmountParts partsState={partsState} />
+      <AmountParts partsState={partsState} labels={AMOUNTPARTS_LABELS}/>
 
-      <styledEl.DeadlineRow>
+      <styledEl.Row>
         <DeadlineSelector deadline={deadlineState} items={orderDeadlines} setDeadline={(value) => updateState(value)} />
 
-        <TradeTextBox label="Part every" hint="TODO: part every tooltip">
+        <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} hint={LABELS_TOOLTIPS.partDuration.label}>
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
-      </styledEl.DeadlineRow>
+      </styledEl.Row>
 
       <ActionButtons />
     </>

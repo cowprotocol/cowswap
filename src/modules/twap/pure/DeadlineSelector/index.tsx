@@ -14,6 +14,9 @@ interface DeadlineSelectorProps {
 }
 
 const CUSTOM_OPTION: TradeSelectItem = { label: 'Custom', value: 'CUSTOM_ITEM_VALUE' }
+const LABEL = 'Total duration'
+const TOOLTIP_CONTENT = `The "Total duration" is the duration it takes to execute all parts of your TWAP order.
+For instance, your order consists of 2 parts placed every 30 minutes, the total time to complete the order is 1 hour. Each limit order remains open for 30 minutes until the next part becomes active.`
 
 const StyledTradeSelect = styled(TradeSelect)`
   font-size: 14px;
@@ -58,8 +61,8 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   return (
     <>
       <StyledTradeSelect
-        label="Total time"
-        hint="TODO: Some hint"
+        label={LABEL}
+        hint={TOOLTIP_CONTENT}
         items={itemsWithCustom}
         activeLabel={activeLabel}
         onSelect={onSelect}

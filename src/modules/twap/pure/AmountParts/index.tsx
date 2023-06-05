@@ -5,6 +5,8 @@ import { Nullish } from 'types'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
 
+import { LabelTooltip } from 'modules/twap'
+
 import * as styledEl from './styled'
 
 import { PartsState } from '../../state/partsStateAtom'
@@ -32,21 +34,22 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   )
 }
 
-export function AmountParts({ partsState }: { partsState: PartsState }) {
+export function AmountParts({ partsState, labels }: { partsState: PartsState, labels: LabelTooltip }) {
   const { numberOfPartsValue, inputPartAmount, outputPartAmount, inputFiatAmount, outputFiatAmount } = partsState
+  const { sellAmount, buyAmount } = labels
 
   return (
     <styledEl.Wrapper>
       <TradeAmountPreview
-        label={<Trans>Sell amount per part (1/{numberOfPartsValue})</Trans>}
-        tooltip={<Trans>TODO: Add buy tooltip text</Trans>}
+        label={<Trans>{labels.sellAmount.label} (1/{numberOfPartsValue})</Trans>}
+        tooltip={<Trans>{sellAmount.tooltip}</Trans>}
         amount={inputPartAmount}
         fiatAmount={inputFiatAmount}
       />
 
       <TradeAmountPreview
-        label={<Trans>Buy amount per part (1/{numberOfPartsValue})</Trans>}
-        tooltip={<Trans>TODO: Add sell tooltip text</Trans>}
+        label={<Trans>{buyAmount.label} (1/{numberOfPartsValue})</Trans>}
+        tooltip={<Trans>{buyAmount.tooltip}</Trans>}
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
       />
