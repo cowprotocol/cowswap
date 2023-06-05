@@ -58,15 +58,15 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const updateLimitOrdersWarnings = useSetAtom(updateLimitOrdersWarningsAtom)
   const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
 
-  const formState = useLimitOrdersFormState()
-  const tradeFormValidation = useGetTradeFormValidation()
+  const localFormValidation = useLimitOrdersFormState()
+  const primaryFormValidation = useGetTradeFormValidation()
   const rateImpact = useRateImpact()
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount } =
     useLimitOrdersDerivedState()
   const tradeQuote = useTradeQuote()
 
-  const canTrade = formState === null && tradeFormValidation === null && !tradeQuote.error
+  const canTrade = localFormValidation === null && primaryFormValidation === null && !tradeQuote.error
   const showPriceImpactWarning =
     canTrade && !tradeQuote.isLoading && !!chainId && !expertMode && !!account && !!priceImpact.error
   const showRateImpactWarning =
@@ -81,7 +81,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
   const showApprovalBundlingBanner =
-    !isConfirmScreen && tradeFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(tradeFormValidation)
+    !isConfirmScreen && primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
   const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
@@ -90,7 +90,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
     !isConfirmScreen &&
     !showApprovalBundlingBanner &&
     isSafeViaWc &&
-    tradeFormValidation === TradeFormValidation.ApproveRequired
+    primaryFormValidation === TradeFormValidation.ApproveRequired
 
   const isVisible =
     showPriceImpactWarning ||

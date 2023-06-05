@@ -2,12 +2,14 @@ import { useMemo } from 'react'
 
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { Nullish } from 'types'
+
 import { useSingleCallResult } from 'lib/hooks/multicall'
 
 import { useTokenContract } from './useContract'
 
 export function useTokenAllowance(
-  token?: Token | null,
+  token: Nullish<Token>,
   owner?: string,
   spender?: string
 ): CurrencyAmount<Token> | undefined {

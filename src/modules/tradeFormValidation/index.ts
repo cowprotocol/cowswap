@@ -1,4 +1,4 @@
-export * from './hooks/useValidateTadeForm'
+export * from './updaters/TradeFormValidationUpdater'
 export * from './hooks/useGetTradeFormValidation'
 export * from './pure/TradeFormButtons'
 export * from './pure/TradeFormBlankButton'
