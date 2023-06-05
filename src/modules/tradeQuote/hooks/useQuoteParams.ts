@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -21,7 +23,7 @@ export function useQuoteParams() {
     }
 
     const sellToken = getAddress(inputCurrency)
-    const buyToken = getAddress(outputCurrency)
+    const buyToken = outputCurrency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
@@ -31,10 +33,10 @@ export function useQuoteParams() {
       amount,
       chainId,
       receiver: account,
-      kind: OrderKind.SELL,
+      kind: orderKind,
       toDecimals,
       fromDecimals,
-      isEthFlow: false,
+      isEthFlow: false, // EthFlow is not compatible with limit orders
     }
-  }, [inputCurrency, outputCurrency, amount, account, chainId])
+  }, [inputCurrency, outputCurrency, amount, account, chainId, orderKind])
 }
