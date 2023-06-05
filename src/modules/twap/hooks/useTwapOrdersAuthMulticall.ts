@@ -21,10 +21,12 @@ export function useTwapOrdersAuthMulticall(
   const results = useSingleContractMultipleData(composableCowContract, 'singleOrders', input, DEFAULT_LISTENER_OPTIONS)
 
   return useMemo(() => {
-    if (results.length !== ordersInfo.length) return null
+    const loadedResults = results.filter((result) => !result.loading)
+
+    if (loadedResults.length !== ordersInfo.length) return null
 
     return ordersInfo.reduce((acc, val, index) => {
-      acc[val.id] = !!results[index].result?.[0]
+      acc[val.id] = !!loadedResults[index].result?.[0]
       return acc
     }, {} as TwapOrdersAuthResult)
   }, [ordersInfo, results])

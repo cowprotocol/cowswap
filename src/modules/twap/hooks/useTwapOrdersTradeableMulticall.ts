@@ -35,6 +35,6 @@ export function useTwapOrdersTradeableMulticall(
   )
 
   return useMemo(() => {
-    return results.map((res) => res.result as TradeableOrderWithSignature)
+    return results.filter((result) => !result.loading).map((res) => res.result as TradeableOrderWithSignature)
   }, [results])
 }

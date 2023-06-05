@@ -156,13 +156,18 @@ export const useOrder = ({ id, chainId }: Partial<GetRemoveOrderParams>): Order 
 }
 
 function useOrdersStateNetwork(chainId: ChainId | undefined): OrdersStateNetwork | undefined {
-  return useSelector<AppState, OrdersState[ChainId] | undefined>((state) => {
+  const ordersState = useSelector<AppState, OrdersState[ChainId] | undefined>((state) => {
     if (!chainId) {
       return undefined
     }
-    const ordersState = state.orders?.[chainId] || {}
-    return { ...getDefaultNetworkState(chainId), ...ordersState }
+    return state.orders?.[chainId]
   })
+
+  return useMemo(() => {
+    if (!chainId) return undefined
+    return { ...getDefaultNetworkState(chainId), ...(ordersState || {}) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(ordersState), chainId])
 }
 
 export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
@@ -193,16 +198,16 @@ export const useAllOrders = ({ chainId }: GetOrdersParams): PartialOrdersMap => 
   }, [state])
 }
 
-type OrdersMap = {
+export type OrdersMap = {
   [id: string]: Order
 }
 
-export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap => {
+export const useOrdersById = ({ chainId, ids }: GetOrdersByIdParams): OrdersMap | null => {
   const allOrders = useAllOrders({ chainId })
 
   return useMemo(() => {
     if (!allOrders || !ids) {
-      return {}
+      return null
     }
 
     return ids.reduce<OrdersMap>((acc, id) => {

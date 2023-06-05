@@ -13,7 +13,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
-import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
+import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -34,7 +34,7 @@ import { TwapConfirmModal } from '../TwapConfirmModal'
 
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeApp = useIsSafeApp()
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
 
@@ -73,7 +73,7 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
-      {chainId && account && isSafeWallet && composableCowContract && (
+      {isSafeApp && chainId && account && composableCowContract && (
         <PendingTwapOrdersUpdater
           composableCowContract={composableCowContract}
           safeAddress={account}

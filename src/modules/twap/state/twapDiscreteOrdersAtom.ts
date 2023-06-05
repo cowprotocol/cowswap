@@ -14,11 +14,3 @@ export type TwapDiscreteOrders = { [twapOrderHash: string]: TwapDiscreteOrderIte
 export const twapDiscreteOrdersAtom = atomWithStorage<TwapDiscreteOrders>('twap-discrete-orders-list:v1', {})
 
 export const twapDiscreteOrdersListAtom = atom((get) => Object.values(get(twapDiscreteOrdersAtom)))
-
-export const updateTwapDiscreteOrdersAtom = atom(null, (get, set, nextState: TwapDiscreteOrders) => {
-  set(twapDiscreteOrdersAtom, () => {
-    const prevState = get(twapDiscreteOrdersAtom)
-
-    return { ...prevState, ...nextState }
-  })
-})
