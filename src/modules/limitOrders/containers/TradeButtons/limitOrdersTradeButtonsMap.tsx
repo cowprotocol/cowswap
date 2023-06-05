@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { TradeLoadingButton } from 'modules/trade/pure/TradeLoadingButton'
+import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 

@@ -1,7 +1,12 @@
 import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
+import { useEffect } from 'react'
 
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import {
+  useAdvancedOrdersDerivedState,
+  useAdvancedOrdersRawState,
+  useUpdateAdvancedOrdersRawState,
+} from 'modules/advancedOrders'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
@@ -34,10 +39,14 @@ export interface LabelTooltipItems {
 export function TwapFormWidget() {
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
+
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
+  const updateRawState = useUpdateAdvancedOrdersRawState()
+
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
-  const updateState = useUpdateAtom(updateTwapOrdersSettingsAtom)
+  const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -85,6 +94,11 @@ export function TwapFormWidget() {
     buyAmount: LABELS_TOOLTIPS.buyAmount,
   };
   
+  // Reset output amount when num of parts or input amount are changed
+  useEffect(() => {
+    updateRawState({ outputCurrencyAmount: null })
+  }, [updateRawState, numberOfPartsValue, rawInputCurrencyAmount])
+
   return (
     <>
       <QuoteObserverUpdater />
@@ -99,7 +113,9 @@ export function TwapFormWidget() {
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
-          onUserInput={(value: number | null) => updateState({ numberOfPartsValue: value || defaultNumOfParts })}
+          onUserInput={(value: number | null) =>
+            updateSettingsState({ numberOfPartsValue: value || defaultNumOfParts })
+          }
           min={defaultNumOfParts}
           max={100}
           label={LABELS_TOOLTIPS.numberOfParts.label}
@@ -107,7 +123,7 @@ export function TwapFormWidget() {
         />
         <TradeNumberInput
           value={slippageValue}
-          onUserInput={(value: number | null) => updateState({ slippageValue: value })}
+          onUserInput={(value: number | null) => updateSettingsState({ slippageValue: value })}
           decimalsPlaces={2}
           placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
           max={50}
@@ -120,8 +136,13 @@ export function TwapFormWidget() {
       <AmountParts partsState={partsState} labels={AMOUNTPARTS_LABELS}/>
 
       <styledEl.Row>
-        <DeadlineSelector deadline={deadlineState} items={orderDeadlines} setDeadline={(value) => updateState(value)} labels={LABELS_TOOLTIPS.totalDuration} />
-
+        <DeadlineSelector
+          deadline={deadlineState}
+          items={orderDeadlines}
+          setDeadline={(value) => updateSettingsState(value)}
+          labels={LABELS_TOOLTIPS.totalDuration}
+        />
+       
         <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} hint={LABELS_TOOLTIPS.partDuration.label}>
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
