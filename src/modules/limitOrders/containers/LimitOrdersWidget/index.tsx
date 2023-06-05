@@ -18,7 +18,7 @@ import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partial
 import { useSetupTradeState, TradeWidget } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useValidateTadeForm } from 'modules/tradeFormValidation'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -80,6 +80,12 @@ export function LimitOrdersWidget() {
   )
 
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
+  const quoteAmount = useMemo(
+    () => (orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount),
+    [orderKind, inputCurrencyAmount, outputCurrencyAmount]
+  )
+
+  useSetTradeQuoteParams(quoteAmount)
 
   useValidateTadeForm(isExpertMode)
 

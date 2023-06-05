@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/swap/actions'
@@ -8,10 +10,12 @@ import {
   useFillAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 import { TwapFormWidget } from 'modules/twap'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
+import { partsStateAtom } from '../../../twap/state/partsStateAtom'
 
 export function AdvancedOrdersWidget() {
   useSetupTradeState()
@@ -31,6 +35,9 @@ export function AdvancedOrdersWidget() {
   } = useAdvancedOrdersDerivedState()
   const actions = useAdvancedOrdersActions()
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
+  const { inputPartAmount } = useAtomValue(partsStateAtom)
+
+  useSetTradeQuoteParams(inputPartAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
