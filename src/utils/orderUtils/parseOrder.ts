@@ -23,7 +23,7 @@ export interface ParsedOrderExecutionData {
   surplusPercentage: BigNumber
   executedFeeAmount: string | undefined
   executedSurplusFee: string | null
-  filledPercentDisplayed: number
+  filledPercentDisplay: number
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
   activityTitle: string
@@ -41,7 +41,7 @@ export interface ParsedOrder {
   class: OrderClass
   status: OrderStatus
   partiallyFillable: boolean
-  parsedCreationTime: Date
+  creationTime: Date
   expirationTime: Date
 
   executionData: ParsedOrderExecutionData
@@ -54,10 +54,10 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const expirationTime = new Date(Number(order.validTo) * 1000)
   const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
   const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
-  const parsedCreationTime = new Date(order.creationTime)
+  const creationTime = new Date(order.creationTime)
   const fullyFilled = isOrderFilled(order)
   const partiallyFilled = isPartiallyFilled(order)
-  const filledPercentDisplayed = filledPercentage.times(100).decimalPlaces(2).toNumber()
+  const filledPercentDisplay = filledPercentage.times(100).decimalPlaces(2).toNumber()
   const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
     ? new Price({
         baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
@@ -71,18 +71,17 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const activityId = showCreationTxLink ? order.orderCreationHash : order.id
   const activityTitle = showCreationTxLink ? 'Creation transaction' : 'Order ID'
 
-  const executionData = {
+  const executionData: ParsedOrderExecutionData = {
     executedBuyAmount,
     executedSellAmount,
     filledAmount,
     filledPercentage,
-    filledPercentDisplayed,
+    filledPercentDisplay,
     surplusAmount,
     surplusPercentage,
     executedFeeAmount,
     executedSurplusFee,
     executedPrice,
-    parsedCreationTime,
     fullyFilled,
     partiallyFilled,
     activityId,
@@ -101,8 +100,8 @@ export const parseOrder = (order: Order): ParsedOrder => {
     class: order.class,
     status: order.status,
     partiallyFillable: order.partiallyFillable,
+    creationTime,
     expirationTime,
     executionData,
-    ...executionData,
   }
 }
