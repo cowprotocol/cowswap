@@ -10,7 +10,7 @@ import { Nullish } from 'types'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { LimitOrdersFormState, useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
+import { useLimitOrdersFormState } from 'modules/limitOrders/hooks/useLimitOrdersFormState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import {
@@ -18,6 +18,8 @@ import {
   updateLimitOrdersWarningsAtom,
 } from 'modules/limitOrders/state/limitOrdersWarningsAtom'
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -33,10 +35,7 @@ import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calcu
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 
-const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [
-  LimitOrdersFormState.ExpertApproveAndSwap,
-  LimitOrdersFormState.ApproveAndSwap,
-]
+const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ExpertApproveAndSwap, TradeFormValidation.ApproveAndSwap]
 
 export interface LimitOrdersWarningsProps {
   priceImpact: PriceImpact
@@ -59,26 +58,39 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const updateLimitOrdersWarnings = useSetAtom(updateLimitOrdersWarningsAtom)
   const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
 
-  const formState = useLimitOrdersFormState()
+  const localFormValidation = useLimitOrdersFormState()
+  const primaryFormValidation = useGetTradeFormValidation()
   const rateImpact = useRateImpact()
   const { chainId, account } = useWalletInfo()
   const { slippageAdjustedSellAmount, inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount } =
     useLimitOrdersDerivedState()
+  const tradeQuote = useTradeQuote()
 
+  const canTrade = localFormValidation === null && primaryFormValidation === null && !tradeQuote.error
   const showPriceImpactWarning =
-    !!chainId && !expertMode && !!account && !!priceImpact.error && formState === LimitOrdersFormState.CanTrade
+    canTrade && !tradeQuote.isLoading && !!chainId && !expertMode && !!account && !!priceImpact.error
+  const showRateImpactWarning =
+    canTrade &&
+    !tradeQuote.isLoading &&
+    inputCurrency &&
+    !isFractionFalsy(inputCurrencyAmount) &&
+    !isFractionFalsy(outputCurrencyAmount)
 
   const feePercentage = calculatePercentageInRelationToReference({ value: feeAmount, reference: inputCurrencyAmount })
 
   const showHighFeeWarning = feePercentage?.greaterThan(HIGH_FEE_WARNING_PERCENTAGE)
 
-  const showApprovalBundlingBanner = !isConfirmScreen && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(formState)
+  const showApprovalBundlingBanner =
+    !isConfirmScreen && primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
   const showZeroApprovalWarning = shouldZeroApprove && outputCurrency !== null // Show warning only when output currency is also present.
 
   const isSafeViaWc = useIsSafeViaWc()
   const showSafeWcBundlingBanner =
-    !isConfirmScreen && !showApprovalBundlingBanner && isSafeViaWc && formState === LimitOrdersFormState.NotApproved
+    !isConfirmScreen &&
+    !showApprovalBundlingBanner &&
+    isSafeViaWc &&
+    primaryFormValidation === TradeFormValidation.ApproveRequired
 
   const isVisible =
     showPriceImpactWarning ||
@@ -120,7 +132,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
           acceptCallback={onAcceptPriceImpact}
         />
       )}
-      {inputCurrency && !isFractionFalsy(inputCurrencyAmount) && !isFractionFalsy(outputCurrencyAmount) && (
+      {showRateImpactWarning && (
         <StyledRateImpactWarning
           withAcknowledge={isConfirmScreen}
           isAccepted={isRateImpactAccepted}

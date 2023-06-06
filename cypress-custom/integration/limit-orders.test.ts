@@ -13,7 +13,7 @@ describe('Limit orders', () => {
 
     cy.get('#input-currency-input .token-amount-input').type(inputAmount.toString())
     cy.get('#rate-limit-amount-input').clear().type(rate.toString(), { force: true })
-    cy.get('#review-limit-order-btn').click()
+    cy.get('#do-trade-button').click()
 
     cy.get('#output-currency-input .token-amount-input').should('have.value', outputAmount.toString())
     cy.get('#trade-confirmation #input-currency-preview .token-amount-input').should(
