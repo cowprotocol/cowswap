@@ -3,10 +3,9 @@ import { useAtomValue } from 'jotai'
 import { AdvancedOrdersWidget } from 'modules/advancedOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TwapFormWidget } from 'modules/twap'
 import { parsedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
-import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
-
 export default function AdvancedOrdersPage() {
   const parsedTwapOrders = useAtomValue(parsedTwapOrdersAtom)
 
