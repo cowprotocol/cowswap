@@ -2,6 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
+import { renderTooltip } from 'legacy/components/Tooltip'
+
 import {
   useAdvancedOrdersDerivedState,
   useAdvancedOrdersRawState,
@@ -15,7 +17,7 @@ import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import * as styledEl from './styled'
-import { LABELS_TOOLTIPS, renderTooltip } from './tooltips'
+import { LABELS_TOOLTIPS } from './tooltips'
 
 import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines, defaultNumOfParts } from '../../const'
 import { AmountParts } from '../../pure/AmountParts'
@@ -27,7 +29,6 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
-export { renderTooltip } from './tooltips'
 export type { LabelTooltipObject, LabelTooltipItems } from './tooltips'
 
 const AMOUNTPARTS_LABELS = {

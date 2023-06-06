@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 
 export interface LabelTooltipObject {
   label: string
@@ -46,11 +45,4 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     label: 'Buy amount per part',
     tooltip: 'Estimated amount that you will receive from each part of the order.',
   },
-}
-
-export function renderTooltip(tooltip: ReactNode | ((params?: any) => ReactNode), params?: any) {
-  if (typeof tooltip === 'function') {
-    return tooltip(params);
-  }
-  return tooltip;
 }

@@ -3,6 +3,7 @@ import React from 'react'
 import { Trans } from '@lingui/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
+import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { TradeWidgetFieldBox, TradeWidgetFieldLabel, Content, ErrorText } from './styled'
 
@@ -18,13 +19,7 @@ export interface TradeWidgetFieldProps {
 
 export function TradeWidgetField(props: TradeWidgetFieldProps) {
   const { className, children, label, hint, error } = props
-  let hintElement: React.ReactNode;
-
-  if (typeof hint === 'function') {
-    hintElement = hint(props);
-  } else {
-    hintElement = hint;
-  }
+  const hintElement = renderTooltip(hint, props);
 
   return (
     <TradeWidgetFieldBox className={className}>

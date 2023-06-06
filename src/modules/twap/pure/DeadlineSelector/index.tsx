@@ -2,8 +2,10 @@ import React, { useCallback, useMemo, useState } from 'react'
 
 import styled from 'styled-components/macro'
 
+import { renderTooltip } from 'legacy/components/Tooltip'
+
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
-import { LabelTooltipObject, renderTooltip } from 'modules/twap'
+import { LabelTooltipObject } from 'modules/twap'
 
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
 import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
