@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { EthFlowBannerContent } from 'modules/swap/pure/EthFlow/EthFlowBanner'
+
 import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
+import { EthFlowBannerContent } from 'modules/swap/pure/EthFlow/EthFlowBanner'
 
 export interface EthFlowBannerCallbacks {
   wrapCallback: () => void

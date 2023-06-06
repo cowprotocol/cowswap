@@ -1,5 +1,6 @@
-import * as styledEl from './styled'
 import { ParsedOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+
+import * as styledEl from './styled'
 
 export type Props = {
   order: ParsedOrder

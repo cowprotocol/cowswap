@@ -1,24 +1,30 @@
 import React, { useMemo, useState } from 'react'
-import { InfoIcon } from 'legacy/components/InfoIcon'
-import * as styledEl from './styled'
-import styled from 'styled-components/macro'
-import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { isAddress, shortenAddress } from 'legacy/utils'
-import { RateInfoParams } from 'common/pure/RateInfo'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import SVG from 'react-inlinesvg'
-import ArrowDownImage from 'legacy/assets/cow-swap/arrowDownRight.svg'
-import QuestionHelper from 'legacy/components/QuestionHelper'
-import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
-import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
+
 import { Currency, Price } from '@uniswap/sdk-core'
+
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+import ArrowDownImage from 'legacy/assets/cow-swap/arrowDownRight.svg'
+import { InfoIcon } from 'legacy/components/InfoIcon'
+import QuestionHelper from 'legacy/components/QuestionHelper'
+import { isAddress, shortenAddress } from 'legacy/utils'
+
+import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
+import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
+import { OrderType } from 'modules/limitOrders/pure/OrderType'
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
+import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
-import { formatInputAmount } from 'utils/amountFormat'
+import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
+
+import { RateInfoParams } from 'common/pure/RateInfo'
 import { limitOrdersFeatures } from 'constants/featureFlags'
 import { DEFAULT_DATE_FORMAT } from 'constants/intl'
-import { OrderType } from 'modules/limitOrders/pure/OrderType'
-import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { formatInputAmount } from 'utils/amountFormat'
+
+import * as styledEl from './styled'
 
 const Wrapper = styled.div`
   font-size: 13px;

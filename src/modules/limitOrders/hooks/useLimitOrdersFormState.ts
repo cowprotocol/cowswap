@@ -1,21 +1,26 @@
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
-import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { useAtomValue } from 'jotai/utils'
+
+import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
+
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
-import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
-import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { Currency, CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import useENSAddress from 'legacy/hooks/useENSAddress'
+import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { isAddress } from 'legacy/utils'
-import { useAtomValue } from 'jotai/utils'
-import { limitOrdersQuoteAtom, LimitOrdersQuoteState } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
+
+import { LimitOrdersDerivedState } from 'modules/limitOrders'
+import { limitOrdersSettingsAtom, LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
-import { limitOrdersSettingsAtom, LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { LimitOrdersDerivedState } from 'modules/limitOrders'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
+import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
+
+import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
+
+import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 export enum LimitOrdersFormState {
   NotApproved = 'NotApproved',
@@ -51,7 +56,7 @@ interface LimitOrdersFormParams {
   tradeState: LimitOrdersDerivedState
   settingsState: LimitOrdersSettingsState
   recipientEnsAddress: string | null
-  quote: LimitOrdersQuoteState | null
+  quote: TradeQuoteState | null
   activeRate: Fraction | null
   isWrapOrUnwrap: boolean
   isRateLoading: boolean
@@ -184,7 +189,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState {
   const gnosisSafeInfo = useGnosisSafeInfo()
   const isReadonlyGnosisSafeUser = gnosisSafeInfo?.isReadOnly || false
   const isTxBundlingEnabled = useIsTxBundlingEnabled()
-  const quote = useAtomValue(limitOrdersQuoteAtom)
+  const quote = useTradeQuote()
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 

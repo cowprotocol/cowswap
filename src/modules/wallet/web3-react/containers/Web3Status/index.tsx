@@ -1,15 +1,16 @@
-import { useWalletDetails, useWalletInfo, WalletModal } from 'modules/wallet'
-import { STORAGE_KEY_LAST_PROVIDER } from 'legacy/constants'
-import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
-
 import { useWeb3React } from '@web3-react/core'
-import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+
+import { useCloseFollowTxPopupIfNotPendingOrder } from 'legacy/components/Popups/FollowPendingTxPopup'
+import { STORAGE_KEY_LAST_PROVIDER } from 'legacy/constants'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useAppSelector } from 'legacy/state/hooks'
 
-import { useToggleWalletModal } from 'legacy/state/application/hooks'
-import { useCloseFollowTxPopupIfNotPendingOrder } from 'legacy/components/Popups/FollowPendingTxPopup'
+import { useWalletDetails, useWalletInfo, WalletModal } from 'modules/wallet'
 import { Web3StatusInner } from 'modules/wallet/api/pure/Web3StatusInner'
 import { Wrapper } from 'modules/wallet/api/pure/Web3StatusInner/styled'
+import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
+
+import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 
 export function Web3Status() {
   const { connector } = useWeb3React()

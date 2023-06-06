@@ -1,10 +1,12 @@
-import { createAction } from '@reduxjs/toolkit'
-import { Token } from '@uniswap/sdk-core'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { SerializedToken } from 'legacy/state/user/types'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { BigNumberish } from '@ethersproject/bignumber'
 import { UID, EnrichedOrder, OrderClass, OrderCreation } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { BigNumberish } from '@ethersproject/bignumber'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import { Token } from '@uniswap/sdk-core'
+
+import { createAction } from '@reduxjs/toolkit'
+
+import { SerializedToken } from 'legacy/state/user/types'
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -60,6 +62,19 @@ export interface BaseOrder extends Omit<OrderCreation, 'signingScheme'> {
 
   // For tracking how long an order has been pending
   openSince?: number
+
+  /**
+   * Whether the order should be hidden in the UI
+   *
+   * Orders are temporarily hidden from the moment the order is created in the backend
+   * until we get a confirmation from the wallet that the onchain transaction has been created
+   *
+   * Useful for onchain orders only, as the order placement process is not atomic
+   *
+   * Keep in mind that we cannot tell whether the order should be hidden if we only have backend info
+   * The order data is local to the device where the order was initiated
+   */
+  isHidden?: boolean
 }
 
 /**

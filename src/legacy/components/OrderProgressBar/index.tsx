@@ -1,5 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { useTransition } from '@react-spring/web'
+import ms from 'ms.macro'
+
+import loadingCowWebp from 'legacy/assets/cow-swap/cow-load.webp'
+import ammsGraphGC from 'legacy/assets/images/amms-graph-gc.svg'
+import ammsGraphEth from 'legacy/assets/images/amms-graph.svg'
+import cowGraph from 'legacy/assets/images/cow-graph.svg'
+import cowMeditatingSmooth from 'legacy/assets/images/cow-meditating-smoooth.svg'
+import cowMeditatingGraph from 'legacy/assets/images/cow-meditating.svg'
+import { AMMsLogo } from 'legacy/components/AMMsLogo'
+import { EXPECTED_EXECUTION_TIME, getPercentage } from 'legacy/components/OrderProgressBar/utils'
+import { getExplorerOrderLink } from 'legacy/utils/explorer'
+
+import { ActivityDerivedState } from 'modules/account/containers/Transaction'
+
+import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
+import { CancelButton } from 'common/pure/CancelButton'
+
 import {
   ProgressBarWrapper,
   ProgressBarInnerWrapper,
@@ -17,22 +38,7 @@ import {
   StyledExternalLink,
   StyledCoWLink,
 } from './styled'
-import { AMMsLogo } from 'legacy/components/AMMsLogo'
-import { EXPECTED_EXECUTION_TIME, getPercentage } from 'legacy/components/OrderProgressBar/utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ActivityDerivedState } from 'modules/account/containers/Transaction'
-import loadingCowWebp from 'legacy/assets/cow-swap/cow-load.webp'
-import cowGraph from 'legacy/assets/images/cow-graph.svg'
-import ammsGraphEth from 'legacy/assets/images/amms-graph.svg'
-import ammsGraphGC from 'legacy/assets/images/amms-graph-gc.svg'
-import cowMeditatingGraph from 'legacy/assets/images/cow-meditating.svg'
-import cowMeditatingSmooth from 'legacy/assets/images/cow-meditating-smoooth.svg'
 
-import { getExplorerOrderLink } from 'legacy/utils/explorer'
-import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { CancelButton } from 'common/pure/CancelButton'
-import ms from 'ms.macro'
 import { TransactionExecutedContent } from '../TransactionExecutedContent'
 
 const REFRESH_INTERVAL_MS = ms`0.2s`

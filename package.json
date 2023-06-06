@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "1.38.1",
+  "version": "1.39.0",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",
@@ -11,6 +11,7 @@
     "test": "craco test --env=jsdom",
     "start:ssl": "HTTPS=true yarn start",
     "start:service-worker": "yarn build && yarn serve",
+    "lint:fix": "yarn run eslint --fix ./",
     "mock": "REACT_APP_MOCK=true yarn start",
     "build:analyze": "cross-env REACT_APP_ANALYZE_BUNDLE=true yarn build",
     "ipfs:build": "cross-env PUBLIC_URL=\".\" yarn build",
@@ -96,6 +97,7 @@
     "@sentry/react": "^7.3.0",
     "@sentry/tracing": "^7.3.0",
     "@sentry/webpack-plugin": "^1.17.1",
+    "@types/ms": "^0.7.31",
     "@uniswap/governance": "^1.0.2",
     "@uniswap/liquidity-staker": "^1.0.2",
     "@uniswap/merkle-distributor": "1.0.1",
@@ -145,6 +147,7 @@
     "lightweight-charts": "^3.3.0",
     "limiter": "^2.1.0",
     "make-plural": "^7.0.0",
+    "ms": "^2.1.3",
     "ms.macro": "^2.0.0",
     "multicodec": "^3.0.1",
     "multihashes": "^4.0.2",
@@ -236,6 +239,7 @@
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "ts-mockito": "^2.6.1",
     "typechain": "^8.1.1",
     "webpack-bundle-analyzer": "^4.7.0"
   }

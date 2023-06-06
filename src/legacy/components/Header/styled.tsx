@@ -1,11 +1,13 @@
-import styled, { css } from 'styled-components/macro'
+import { PropsWithChildren } from 'react'
+
+import useScrollPosition from '@react-hook/window-scroll'
 import { transparentize, darken } from 'polished'
+import { NavLink } from 'react-router-dom'
+import { Text } from 'rebass'
+import styled, { css } from 'styled-components/macro'
+
 import { MenuFlyout, MenuSection, Content as MenuContent, MenuTitle } from 'legacy/components/MenuDropdown/styled'
 import Row, { RowFixed } from 'legacy/components/Row'
-import { Text } from 'rebass'
-import { NavLink } from 'react-router-dom'
-import useScrollPosition from '@react-hook/window-scroll'
-import { PropsWithChildren } from 'react'
 
 const activeClassName = 'active'
 

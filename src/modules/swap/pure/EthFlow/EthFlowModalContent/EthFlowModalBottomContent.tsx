@@ -1,13 +1,15 @@
-import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
+import { useCallback, useMemo } from 'react'
+
+import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
 
 import SimpleAccountDetails from 'modules/account/containers/SimpleAccountDetails'
+import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
+import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
 
 import { ActionButton } from './ActionButton'
+
 import { EthFlowState } from '../../../services/ethFlow/types'
-import { useCallback, useMemo } from 'react'
-import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
-import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
-import { ActivityStatus } from 'legacy/hooks/useRecentActivity'
+import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
 function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions, isExpertMode: boolean) {
   if (state === EthFlowState.WrapAndApproveFailed) {

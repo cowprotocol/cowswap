@@ -1,5 +1,12 @@
+import { useUpdateAtom } from 'jotai/utils'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
+
+import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
+import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
+import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
@@ -15,21 +22,17 @@ import {
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
 } from 'legacy/state/orders/hooks'
-import { OrderTransitionStatus } from 'legacy/state/orders/utils'
-import { FulfillOrdersBatchParams, Order, OrderFulfillmentData, OrderStatus } from 'legacy/state/orders/actions'
-import { OrderClass, EthflowData } from '@cowprotocol/cow-sdk'
-import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { fetchOrderPopupData, OrderLogPopupMixData } from 'legacy/state/orders/updaters/utils'
-import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
+import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/appzi'
-import { timeSinceInSeconds } from 'utils/time'
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
+
 import { useWalletInfo } from 'modules/wallet'
-import { useUpdateAtom } from 'jotai/utils'
+
+import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { removeOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { timeSinceInSeconds } from 'utils/time'
 
 /**
  * Return the ids of the orders that we are not yet aware that are signed.

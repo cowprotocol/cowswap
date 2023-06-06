@@ -1,10 +1,15 @@
+import { useCallback, useMemo } from 'react'
+
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
 import { useTokenContract } from 'legacy/hooks/useContract'
 import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
-import { useCallback, useMemo } from 'react'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
+
 import { useWalletInfo } from 'modules/wallet'
 
 export enum ApprovalState {
@@ -20,7 +25,7 @@ export interface ApprovalStateForSpenderResult {
 }
 
 function toApprovalState(
-  amountToApprove: CurrencyAmount<Currency> | undefined,
+  amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
   currentAllowance?: CurrencyAmount<Token>,
   pendingApproval?: boolean
@@ -49,7 +54,7 @@ function toApprovalState(
 }
 
 export function useApprovalStateForSpender(
-  amountToApprove: CurrencyAmount<Currency> | undefined,
+  amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
   useIsPendingApproval: (token?: Token, spender?: string) => boolean
 ): ApprovalStateForSpenderResult {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+
 import { MEDIA_WIDTHS } from 'legacy/theme'
 
 export const useMediaQuery = (query: string) => {

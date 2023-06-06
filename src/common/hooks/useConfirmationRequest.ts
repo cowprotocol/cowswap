@@ -1,10 +1,13 @@
-import { atomWithReset, useResetAtom } from 'jotai/utils'
-import { ConfirmationModalProps } from '../pure/ConfirmationModal/ConfirmationModal'
-import { useCallback } from 'react'
-import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { atom, useSetAtom } from 'jotai'
+import { atomWithReset, useResetAtom } from 'jotai/utils'
+import { useCallback } from 'react'
+
 import { t } from '@lingui/macro'
+
+import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
+import { ApplicationModal } from 'legacy/state/application/reducer'
+
+import { ConfirmationModalProps } from '../pure/ConfirmationModal/ConfirmationModal'
 
 type TriggerConfirmationParams = Pick<
   ConfirmationModalProps,

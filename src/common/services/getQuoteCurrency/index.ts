@@ -1,9 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { DAI, USDC_MAINNET, USDT } from 'legacy/constants/tokens'
-import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
-import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from 'legacy/utils/gnosis_chain/constants'
+
+import { Nullish } from 'types'
+
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { DAI, USDC_MAINNET, USDT } from 'legacy/constants/tokens'
+import { USDC_GNOSIS_CHAIN, USDT_GNOSIS_CHAIN, WXDAI } from 'legacy/utils/gnosis_chain/constants'
+import { DAI_GOERLI, USDT_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
 import { isSupportedChain, supportedChainId } from 'legacy/utils/supportedChainId'
 
 // TODO: Find a solution for using API: https://www.coingecko.com/en/categories/stablecoins
@@ -26,8 +29,8 @@ const STABLE_COINS: { [key in SupportedChainId]: string[] } = {
  */
 export function getQuoteCurrency(
   _chainId: SupportedChainId | undefined,
-  inputCurrencyAmount: CurrencyAmount<Currency> | null,
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
 ): Currency | null {
   const chainId = supportedChainId(_chainId)
 

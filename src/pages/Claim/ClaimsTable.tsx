@@ -1,3 +1,12 @@
+import { useEffect } from 'react'
+
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
+import Circle from 'legacy/assets/images/blue-loader.svg'
+import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   ClaimType,
   useClaimDispatchers,
@@ -5,23 +14,16 @@ import {
   useClaimTimeInfo,
   useClaimLinks,
 } from 'legacy/state/claim/hooks'
-import styled from 'styled-components/macro'
-import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'
-import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
-import { ClaimStatus } from 'legacy/state/claim/actions'
-// import { UserClaimDataDetails } from './types' TODO: fix in another PR
-import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
-import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
-
-import { CustomLightSpinner } from 'legacy/theme'
-import Circle from 'legacy/assets/images/blue-loader.svg'
-import { Countdown } from 'pages/Claim/Countdown'
 import { getPaidClaims, getIndexes } from 'legacy/state/claim/hooks/utils'
-import { useEffect } from 'react'
+import { useAllClaimingTransactionIndices } from 'legacy/state/enhancedTransactions/hooks'
+import { CustomLightSpinner } from 'legacy/theme'
 import { ExternalLink } from 'legacy/theme'
-import SVG from 'react-inlinesvg'
-import CowProtocolImage from 'legacy/assets/cow-swap/cowprotocol.svg'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { Countdown } from 'pages/Claim/Countdown'
+import { ClaimTable, ClaimBreakdown, TokenLogo, BannerExplainer } from 'pages/Claim/styled'
+
+import { ClaimCommonTypes, EnhancedUserClaimData } from './types'
 
 export type ClaimsTableProps = Pick<ClaimCommonTypes, 'claims' | 'hasClaims' | 'isAirdropOnly'>
 

@@ -1,6 +1,8 @@
-import { RequestCancellationModal, RequestCancellationModalProps } from './RequestCancellationModal'
-import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 import { BigNumber } from '@ethersproject/bignumber'
+
+import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
+
+import { RequestCancellationModal, RequestCancellationModalProps } from './RequestCancellationModal'
 
 const props: Omit<RequestCancellationModalProps, 'defaultType'> = {
   triggerCancellation(): void {

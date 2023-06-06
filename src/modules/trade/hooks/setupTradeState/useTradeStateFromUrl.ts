@@ -1,5 +1,7 @@
-import { useLocation, useParams } from 'react-router-dom'
 import { useMemo } from 'react'
+
+import { useLocation, useParams } from 'react-router-dom'
+
 import { TradeRawState } from '../../types/TradeRawState'
 
 /**

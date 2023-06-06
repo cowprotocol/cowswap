@@ -1,8 +1,16 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useCallback, useMemo } from 'react'
+
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch, AppState } from 'legacy/state'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
+import { isTruthy } from 'legacy/utils/misc'
+
+import { OrderID } from 'api/gnosisProtocol'
+
 import {
   addOrUpdateOrders,
   AddOrUpdateOrdersParams,
@@ -34,9 +42,6 @@ import {
   PartialOrdersMap,
   V2OrderObject,
 } from './reducer'
-import { isTruthy } from 'legacy/utils/misc'
-import { OrderID } from 'api/gnosisProtocol'
-import { deserializeToken, serializeToken } from 'legacy/state/user/hooks'
 
 export interface AddOrUpdateUnserialisedOrdersParams extends Omit<AddOrUpdateOrdersParams, 'orders'> {
   orders: Order[]
@@ -160,9 +165,7 @@ export const useOrders = ({ chainId }: GetOrdersParams): Order[] => {
   return useMemo(() => {
     if (!state) return []
 
-    const allOrders = _concatOrdersState(state, ORDER_LIST_KEYS).map(_deserializeOrder).filter(isTruthy)
-
-    return allOrders
+    return _concatOrdersState(state, ORDER_LIST_KEYS).map(_deserializeOrder).filter(isTruthy)
   }, [state])
 }
 
@@ -317,6 +320,18 @@ export const useAddPendingOrder = (): AddOrderCallback => {
     },
     [dispatch]
   )
+}
+
+export type UpdateOrderParams = {
+  chainId: ChainId
+  order: Partial<Omit<Order, 'id'>> & Pick<Order, 'id'>
+}
+
+export type UpdateOrderCallback = (params: UpdateOrderParams) => void
+
+export const usePartialUpdateOrder = (): UpdateOrderCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback((params: UpdateOrderParams) => partialOrderUpdate(params, dispatch), [dispatch])
 }
 
 export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {

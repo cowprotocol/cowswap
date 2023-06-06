@@ -1,4 +1,7 @@
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 
 export function buildPriceFromCurrencyAmounts(
@@ -6,12 +9,12 @@ export function buildPriceFromCurrencyAmounts(
   outputCurrencyAmount: CurrencyAmount<Currency>
 ): Price<Currency, Currency>
 export function buildPriceFromCurrencyAmounts(
-  inputCurrencyAmount: CurrencyAmount<Currency> | null,
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
 ): Price<Currency, Currency> | null
 export function buildPriceFromCurrencyAmounts(
-  inputCurrencyAmount: CurrencyAmount<Currency> | null,
-  outputCurrencyAmount: CurrencyAmount<Currency> | null
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
 ): Price<Currency, Currency> | null {
   if (
     !inputCurrencyAmount ||

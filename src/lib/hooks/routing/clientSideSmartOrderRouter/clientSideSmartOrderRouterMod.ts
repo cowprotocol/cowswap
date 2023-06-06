@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { Nullish } from 'types'
 
 export function toSupportedChainId(chainId: number): SupportedChainId | undefined {

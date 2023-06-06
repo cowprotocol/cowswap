@@ -1,15 +1,18 @@
-import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Currency, TradeType } from '@uniswap/sdk-core'
-import { StyledInfoIcon } from 'modules/swap/pure/styled'
-import { RowReceivedAfterSlippageProps } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
+
+import { Trans } from '@lingui/macro'
 
 import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-
 import { getMinimumReceivedTooltip } from 'legacy/utils/tooltips'
-import { StyledRowBetween, TextWrapper } from '../styled'
+
+import { RowReceivedAfterSlippageProps } from 'modules/swap/containers/Row/RowReceivedAfterSlippage'
 import { RowStyleProps } from 'modules/swap/pure/Row/types'
+import { StyledInfoIcon } from 'modules/swap/pure/styled'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
+
+import { StyledRowBetween, TextWrapper } from '../styled'
 
 export interface RowReceivedAfterSlippageContentProps extends RowReceivedAfterSlippageProps {
   isExactIn: boolean

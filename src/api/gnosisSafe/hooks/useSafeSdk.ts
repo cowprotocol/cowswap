@@ -1,7 +1,10 @@
-import Safe from '@safe-global/protocol-kit'
 import { useEffect, useState } from 'react'
-import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
+
+import Safe from '@safe-global/protocol-kit'
 import { useWeb3React } from '@web3-react/core'
+
+import { useIsSafeWallet, useWalletInfo } from 'modules/wallet'
+
 import { createSafeSdkInstance } from 'api/gnosisSafe'
 
 export function useSafeSdk(): Safe | null {

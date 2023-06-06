@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
+
 import { PopupContent } from 'legacy/state/application/reducer'
+
 import { default as PopupItemUni, Popup, Fader } from './PopupItemMod'
 
 const Wrapper = styled.div`

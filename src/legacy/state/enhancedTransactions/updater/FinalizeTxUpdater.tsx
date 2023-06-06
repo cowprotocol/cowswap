@@ -2,26 +2,33 @@
  * This file is basically a Mod of src/state/enhancedTransactions/updater
  */
 
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
+
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { useWeb3React } from '@web3-react/core'
+
+import ms from 'ms.macro'
+
+import { GetReceipt, useGetReceipt } from 'legacy/hooks/useGetReceipt'
+import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
+import { AppDispatch } from 'legacy/state'
+import { useAddPopup } from 'legacy/state/application/hooks'
+import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
 import { useAppDispatch } from 'legacy/state/hooks'
 // import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useAddPopup } from 'legacy/state/application/hooks'
+import { cancelOrdersBatch, invalidateOrdersBatch } from 'legacy/state/orders/actions'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
+import { useWalletInfo } from 'modules/wallet'
+
 import useBlockNumber from 'lib/hooks/useBlockNumber'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
+
 import { checkedTransaction, finalizeTransaction, updateSafeTransaction } from '../actions'
 import { EnhancedTransactionDetails, HashType } from '../reducer'
-import { GetReceipt, useGetReceipt } from 'legacy/hooks/useGetReceipt'
-import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
-import { Dispatch } from 'redux'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { GetSafeInfo, useGetSafeInfo } from 'legacy/hooks/useGetSafeInfo'
-import { useWeb3React } from '@web3-react/core'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { cancelOrdersBatch, invalidateOrdersBatch, updateOrder } from 'legacy/state/orders/actions'
-import { useSetAtom } from 'jotai'
-import { removeInFlightOrderIdAtom } from 'modules/swap/state/EthFlow/ethFlowInFlightOrderIdsAtom'
-import ms from 'ms.macro'
-import { useWalletInfo } from 'modules/wallet'
 
 const DELAY_REMOVAL_ETH_FLOW_ORDER_ID_MILLISECONDS = ms`2m` // Delay removing the order ID since the creation time its mined (minor precaution just to avoid edge cases of delay in indexing times affect the collision detection
 
@@ -54,7 +61,7 @@ interface CheckEthereumTransactions {
   lastBlockNumber: number
   getReceipt: GetReceipt
   getSafeInfo: GetSafeInfo
-  dispatch: Dispatch
+  dispatch: AppDispatch
   addPopup: ReturnType<typeof useAddPopup>
   removeInFlightOrderId: (update: string) => void
   nativeCurrencySymbol: string
@@ -164,7 +171,7 @@ function finalizeOnChainCancellation(
   } else {
     // If cancellation failed:
     // 1. Update order state and remove the isCancelling flag and cancellationHash
-    dispatch(updateOrder({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }))
+    partialOrderUpdate({ chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined } }, dispatch)
     // 2. Show failure tx pop-up
     addPopup(
       {

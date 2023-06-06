@@ -1,9 +1,12 @@
 import { Percent } from '@uniswap/sdk-core'
-import useFiatValuePriceImpact from './useFiatValuePriceImpact'
-import useFallbackPriceImpact from './useFallbackPriceImpact'
-import { ParsedAmounts, PriceImpactTrade } from './types'
+
 import { QuoteError } from 'legacy/state/price/actions'
+
 import { getAddress } from 'utils/getAddress'
+
+import { ParsedAmounts, PriceImpactTrade } from './types'
+import useFallbackPriceImpact from './useFallbackPriceImpact'
+import useFiatValuePriceImpact from './useFiatValuePriceImpact'
 
 export interface PriceImpactParams {
   abTrade?: PriceImpactTrade

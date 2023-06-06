@@ -1,18 +1,19 @@
 import styled from 'styled-components/macro'
-import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
-import { StyledLink } from 'legacy/theme'
+
+import { ButtonSecondary } from 'legacy/components/Button'
 import { YellowCard } from 'legacy/components/Card'
+import { CopyIcon, TransactionStatusText } from 'legacy/components/Copy'
+import { ExternalLink, StyledLink } from 'legacy/theme'
+
 import {
   StatusLabelWrapper,
   Summary,
-  TransactionWrapper,
-  TransactionStatusText as ActivityDetailsText,
   SummaryInner,
-  TransactionInnerDetail,
   TextAlert,
+  TransactionInnerDetail,
+  TransactionStatusText as ActivityDetailsText,
+  TransactionWrapper,
 } from '../../containers/Transaction/styled'
-import { ButtonSecondary } from 'legacy/components/Button'
-import { ExternalLink } from 'legacy/theme'
 
 export const WalletName = styled.div`
   width: initial;
@@ -34,6 +35,8 @@ export const IconWrapper = styled.div<{ size?: number }>`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     align-items: flex-end;
   `};
+  border-radius: ${({ size }) => (size ? size + 'px' : '32px')};
+  overflow: hidden;
 `
 
 export const TransactionListWrapper = styled.div`

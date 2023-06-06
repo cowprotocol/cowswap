@@ -1,17 +1,20 @@
-import { signAndPostOrder } from 'legacy/utils/trade'
-import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
-import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
-import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
-import { logTradeFlow } from 'modules/trade/utils/logger'
-import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
-import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { Percent } from '@uniswap/sdk-core'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
+import { signAndPostOrder } from 'legacy/utils/trade'
+
+import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
+import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
+import { presignOrderStep } from 'modules/swap/services/swapFlow/steps/presignOrderStep'
+import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
+import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { logTradeFlow } from 'modules/trade/utils/logger'
+import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
 
 export async function tradeFlow(
   params: TradeFlowContext,
@@ -50,33 +53,47 @@ export async function tradeFlow(
       signer: params.provider.getSigner(),
       validTo,
     })
-
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: presign order (optional)')
-    const presignTx = await (params.allowsOffchainSigning
-      ? Promise.resolve(null)
-      : presignOrderStep(orderId, params.settlementContract))
-
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: add pending order step')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 4: add pending order step')
     addPendingOrderStep(
       {
         id: orderId,
         chainId: params.chainId,
         order: {
           ...order,
-          presignGnosisSafeTxHash: params.isGnosisSafeWallet && presignTx ? presignTx.hash : undefined,
+          isHidden: !params.allowsOffchainSigning,
         },
       },
       params.dispatch
     )
 
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: add app data to upload queue')
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 5: presign order (optional)')
+    const presignTx = await (params.allowsOffchainSigning
+      ? Promise.resolve(null)
+      : presignOrderStep(orderId, params.settlementContract))
+
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 6: unhide SC order (optional)')
+    if (presignTx) {
+      partialOrderUpdate(
+        {
+          chainId: params.chainId,
+          order: {
+            id: order.id,
+            presignGnosisSafeTxHash: params.isGnosisSafeWallet ? presignTx.hash : undefined,
+            isHidden: false,
+          },
+        },
+        params.dispatch
+      )
+    }
+
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: add app data to upload queue')
     params.uploadAppData({ chainId: params.chainId, orderId, appData: params.appData })
 
     tradeFlowAnalytics.sign(swapFlowAnalyticsContext)
 
     return orderId
   } catch (error: any) {
-    logTradeFlow('LIMIT ORDER FLOW', 'STEP 7: ERROR: ', error)
+    logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
     tradeFlowAnalytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

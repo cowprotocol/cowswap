@@ -1,9 +1,10 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
-import { calculateExecutionPrice } from 'modules/limitOrders/utils/calculateExecutionPrice'
-import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useEffect } from 'react'
+
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
+import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { calculateExecutionPrice } from 'modules/limitOrders/utils/calculateExecutionPrice'
 
 export function ExecutionPriceUpdater() {
   const { marketRate, feeAmount } = useAtomValue(limitRateAtom)

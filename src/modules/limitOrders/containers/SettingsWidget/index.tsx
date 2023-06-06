@@ -1,16 +1,20 @@
 import { useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai/utils'
+import React, { useCallback, useState } from 'react'
+
 import { Menu, MenuItem } from '@reach/menu-button'
+
+import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { ExpertModeModal } from 'common/pure/ExpertModeModal'
+
+import * as styledEl from './styled'
+
+import { Settings } from '../../pure/Settings'
 import {
   limitOrdersSettingsAtom,
   LimitOrdersSettingsState,
   updateLimitOrdersSettingsAtom,
 } from '../../state/limitOrdersSettingsAtom'
-import { Settings } from '../../pure/Settings'
-import { ExpertModeModal } from 'common/pure/ExpertModeModal'
-import React, { useCallback, useState } from 'react'
-import * as styledEl from './styled'
-import { useAtomValue } from 'jotai/utils'
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 
 export function SettingsWidget() {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)

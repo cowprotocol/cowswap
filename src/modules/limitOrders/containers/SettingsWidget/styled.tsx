@@ -1,7 +1,7 @@
-import styled from 'styled-components/macro'
-import { Settings as SettingsIconRaw } from 'react-feather'
-import { transparentize } from 'polished'
 import { MenuButton, MenuList } from '@reach/menu-button'
+import { transparentize } from 'polished'
+import { Settings as SettingsIconRaw } from 'react-feather'
+import styled from 'styled-components/macro'
 
 export const SettingsButton = styled(MenuButton)`
   display: flex;

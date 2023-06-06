@@ -1,12 +1,13 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
+import styled from 'styled-components/macro'
 
 import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'legacy/constants'
+
 import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
+import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
 
 export const ClickableText = styled.button`

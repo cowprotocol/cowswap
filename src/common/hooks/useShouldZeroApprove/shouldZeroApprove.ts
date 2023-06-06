@@ -1,7 +1,9 @@
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
 import { Erc20 } from 'legacy/abis/types'
 import { ApprovalState } from 'legacy/hooks/useApproveCallback'
-import { Nullish } from 'types'
 
 interface ShouldZeroApproveBaseParams {
   tokenContract: Nullish<Erc20>

@@ -1,8 +1,10 @@
-import { useCallback, useMemo } from 'react'
 import { useUpdateAtom, useAtomValue } from 'jotai/utils'
-import { updateReceiptAtom, receiptAtom } from 'modules/limitOrders/state/limitOrdersReceiptAtom'
-import { ParsedOrder, useLimitOrdersList } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { useCallback, useMemo } from 'react'
+
 import { UID } from '@cowprotocol/cow-sdk'
+
+import { ParsedOrder, useLimitOrdersList } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
+import { updateReceiptAtom, receiptAtom } from 'modules/limitOrders/state/limitOrdersReceiptAtom'
 
 export function useCloseReceiptModal() {
   const updateReceiptState = useUpdateAtom(updateReceiptAtom)

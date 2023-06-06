@@ -1,8 +1,10 @@
+import { transparentize, darken } from 'polished'
 import { ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
+
 import { ThemedText } from 'legacy/theme'
+
 import { Card } from 'pages/Account/styled'
-import { transparentize, darken } from 'polished'
 
 export const MenuWrapper = styled.div`
   position: relative;

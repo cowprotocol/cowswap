@@ -1,12 +1,16 @@
 import { useMemo } from 'react'
-import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
-import { useOrder, useOrders, useOrdersById, useCombinedPendingOrders } from 'legacy/state/orders/hooks'
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getDateTimestamp } from 'utils/time'
+
 import { MAXIMUM_ORDERS_TO_DISPLAY } from 'legacy/constants'
+import { isTransactionRecent, useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { useOrder, useOrders, useOrdersById, useCombinedPendingOrders } from 'legacy/state/orders/hooks'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { getDateTimestamp } from 'utils/time'
 
 export interface AddedOrder extends Order {
   addedTime: number
@@ -57,8 +61,8 @@ export default function useRecentActivity() {
 
     return (
       allNonEmptyOrders
-        // only show orders for connected account
-        .filter((order) => order.owner.toLowerCase() === accountLowerCase)
+        // only show orders for connected account that are not hidden
+        .filter((order) => order.owner.toLowerCase() === accountLowerCase && !order.isHidden)
         .map((order) =>
           // we need to essentially match TransactionDetails type which uses "addedTime" for date checking
           // and time in MS vs ISO string as Orders uses
@@ -218,15 +222,12 @@ function createActivityDescriptor(tx?: EnhancedTransactionDetails, order?: Order
   }
 }
 
-export function useMultipleActivityDescriptors({
-  chainId,
-  ids,
-}: UseActivityDescriptionParams): ActivityDescriptors[] | null {
+export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
   const txs = useTransactionsByHash({ hashes: ids })
   const orders = useOrdersById({ chainId, ids })
 
   return useMemo(() => {
-    if (!chainId) return null
+    if (!chainId) return []
 
     return ids.reduce<ActivityDescriptors[]>((acc, id) => {
       const activity = createActivityDescriptor(txs[id], orders[id])

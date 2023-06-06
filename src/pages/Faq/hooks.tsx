@@ -1,5 +1,6 @@
-import { TocSection, TocItem } from '.'
 import { useCallback, useState } from 'react'
+
+import { TocSection, TocItem } from '.'
 
 function getToc(node: HTMLDivElement) {
   const headingNodes = node.querySelectorAll('h2,h3')

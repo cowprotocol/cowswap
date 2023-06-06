@@ -1,12 +1,14 @@
-import { ClaimType } from 'legacy/state/claim/hooks'
-import { calculatePercentage } from 'legacy/state/claim/hooks/utils'
-import { TokenLogo, InvestAvailableBar, UserMessage } from 'pages/Claim/styled'
-import { ClaimWithInvestmentData } from 'pages/Claim/types'
+import SVG from 'react-inlinesvg'
+
+import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
 import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
-import ImportantIcon from 'legacy/assets/cow-swap/important.svg'
-import SVG from 'react-inlinesvg'
+import { ClaimType } from 'legacy/state/claim/hooks'
+import { calculatePercentage } from 'legacy/state/claim/hooks/utils'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { TokenLogo, InvestAvailableBar, UserMessage } from 'pages/Claim/styled'
+import { ClaimWithInvestmentData } from 'pages/Claim/types'
 
 export type Props = { claim: ClaimWithInvestmentData }
 

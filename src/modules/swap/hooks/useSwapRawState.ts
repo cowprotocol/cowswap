@@ -1,8 +1,10 @@
-import { TradeRawState } from 'modules/trade/types/TradeRawState'
-import { useSwapState } from 'legacy/state/swap/hooks'
-import { useAppDispatch } from 'legacy/state/hooks'
 import { useCallback } from 'react'
+
+import { useAppDispatch } from 'legacy/state/hooks'
 import { replaceOnlyTradeRawState, ReplaceOnlyTradeRawStatePayload } from 'legacy/state/swap/actions'
+import { useSwapState } from 'legacy/state/swap/hooks'
+
+import { TradeRawState } from 'modules/trade/types/TradeRawState'
 
 export function useSwapRawState(): TradeRawState {
   const swapState = useSwapState()

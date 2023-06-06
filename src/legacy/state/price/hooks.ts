@@ -1,9 +1,14 @@
-import { useSwapState } from 'legacy/state/swap/hooks'
 import { useCallback } from 'react'
+
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { useDispatch, useSelector } from 'react-redux'
-import { useWalletInfo } from 'modules/wallet'
 
 import { AppDispatch, AppState } from 'legacy/state'
+import { useSwapState } from 'legacy/state/swap/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import {
   updateQuote,
   UpdateQuoteParams,
@@ -16,7 +21,6 @@ import {
   RefreshQuoteParams,
 } from './actions'
 import { QuoteInformationObject, QuotesMap } from './reducer'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 type GetNewQuoteCallback = (params: GetQuoteParams) => void
 type RefreshQuoteCallback = (params: RefreshQuoteParams) => void

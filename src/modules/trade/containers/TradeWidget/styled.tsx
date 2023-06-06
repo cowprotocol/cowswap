@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+
 import { SetRecipient } from 'modules/swap/containers/SetRecipient'
 
 export const Container = styled.div`

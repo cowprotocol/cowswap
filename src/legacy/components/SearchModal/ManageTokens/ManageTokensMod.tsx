@@ -1,22 +1,28 @@
-import { Trans } from '@lingui/macro'
-import { Token } from '@uniswap/sdk-core'
-import Column from 'legacy/components/Column'
-import CurrencyLogo from 'legacy/components/CurrencyLogo'
-import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
-import { useToken } from 'legacy/hooks/Tokens'
 import { ChangeEventHandler, RefObject, useCallback, useMemo, useRef, useState } from 'react'
-import { useRemoveUserAddedToken, useUserAddedTokens } from 'legacy/state/user/hooks'
+
+import { Token } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
-import { ButtonText, ExternalLink, ExternalLinkIcon, ThemedText, TrashIcon } from 'legacy/theme'
-import { isAddress } from 'legacy/utils'
-import useTheme from 'legacy/hooks/useTheme'
+
+import Column from 'legacy/components/Column'
+import Row, { RowBetween, RowFixed } from 'legacy/components/Row'
 import { CurrencyModalView } from 'legacy/components/SearchModal/CurrencySearchModal'
 import { PaddedColumn, SearchInput, Separator } from 'legacy/components/SearchModal/styleds'
-import { ImportTokensRowProps } from './index'
+import { useToken } from 'legacy/hooks/Tokens'
 import useNetworkName from 'legacy/hooks/useNetworkName'
+import useTheme from 'legacy/hooks/useTheme'
+import { useRemoveUserAddedToken, useUserAddedTokens } from 'legacy/state/user/hooks'
+import { ButtonText, ExternalLink, ExternalLinkIcon, ThemedText, TrashIcon } from 'legacy/theme'
+import { isAddress } from 'legacy/utils'
 import { getEtherscanLink as getExplorerLink } from 'legacy/utils'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { TokenSymbol } from 'common/pure/TokenSymbol'
+
+import { ImportTokensRowProps } from './index'
 
 const Wrapper = styled.div`
   width: 100%;

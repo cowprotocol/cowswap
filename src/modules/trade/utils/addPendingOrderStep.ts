@@ -1,7 +1,7 @@
-import { serializeToken } from 'legacy/state/user/hooks'
+import { AppDispatch } from 'legacy/state'
 import { addPendingOrder, AddPendingOrderParams, SerializedOrder } from 'legacy/state/orders/actions'
 import { AddUnserialisedPendingOrderParams } from 'legacy/state/orders/hooks'
-import { AppDispatch } from 'legacy/state'
+import { serializeToken } from 'legacy/state/user/hooks'
 
 export function addPendingOrderStep(addOrderParams: AddUnserialisedPendingOrderParams, dispatch: AppDispatch) {
   const serialisedSellToken = serializeToken(addOrderParams.order.inputToken)

@@ -1,6 +1,10 @@
-import { createReducer } from '@reduxjs/toolkit'
-import { parsedQueryString } from 'legacy/hooks/useParsedQueryString'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
+import { createReducer } from '@reduxjs/toolkit'
+
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
+import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { parsedQueryString } from 'legacy/hooks/useParsedQueryString'
 import {
   Field,
   replaceOnlyTradeRawState,
@@ -11,9 +15,7 @@ import {
   typeInput,
 } from 'legacy/state/swap/actions'
 import { queryParametersToSwapState } from 'legacy/state/swap/hooks'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
-import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 export interface SwapState {
   // Mod: added chainId
   chainId: number | null

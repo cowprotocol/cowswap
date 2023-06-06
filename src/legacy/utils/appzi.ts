@@ -1,8 +1,10 @@
-import EventEmitter from 'events'
-import ReactAppzi from 'react-appzi'
-import { userAgent, majorBrowserVersion, isImTokenBrowser } from 'legacy/utils/userAgent'
-import { environmentName, isProdLike } from 'legacy/utils/environments'
 import ms from 'ms.macro'
+import ReactAppzi from 'react-appzi'
+
+import { environmentName, isProdLike } from 'legacy/utils/environments'
+import { userAgent, majorBrowserVersion, isImTokenBrowser } from 'legacy/utils/userAgent'
+
+import EventEmitter from 'events'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76

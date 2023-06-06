@@ -1,16 +1,22 @@
-import { renderHook } from '@testing-library/react-hooks'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useHandleOrderPlacement } from './useHandleOrderPlacement'
-import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
-import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
-import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
-import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { withModalProvider } from 'utils/withModalProvider'
+
+import { renderHook } from '@testing-library/react-hooks'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
 import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
-import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
+import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
+import { TradeFlowContext } from 'modules/limitOrders/services/types'
+
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+import { withModalProvider } from 'utils/withModalProvider'
+
+import { useHandleOrderPlacement } from './useHandleOrderPlacement'
+
+import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
+import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 
 jest.mock('modules/limitOrders/services/tradeFlow')
 jest.mock('modules/limitOrders/services/safeBundleFlow')

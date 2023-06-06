@@ -1,12 +1,17 @@
-import { CurrencyInputPanel, CurrencyInputPanelProps } from './CurrencyInputPanel'
-import { Field } from 'legacy/state/swap/actions'
-import { COW } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { DemoContainer } from 'cosmos.decorator'
 import { useSelect, useValue } from 'react-cosmos/fixture'
+
+import { COW } from 'legacy/constants/tokens'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { Field } from 'legacy/state/swap/actions'
+
+import { CurrencyInputPanel, CurrencyInputPanelProps } from './CurrencyInputPanel'
 import { defaultCurrencyInputPanelProps } from './defaultCurrencyInputProps'
-import { CurrencyPreview } from './CurrencyPreview'
+
+import { CurrencyAmountPreview } from '../CurrencyAmountPreview'
 
 const currency = COW[SupportedChainId.MAINNET]
 const defaultProps = defaultCurrencyInputPanelProps
@@ -58,12 +63,16 @@ function useCustomProps(): Partial<CurrencyInputPanelProps> {
 }
 
 const Custom = () => {
-  return <CurrencyInputPanel {...defaultProps} {...useCustomProps()} />
+  return (
+    <DemoContainer>
+      <CurrencyInputPanel {...defaultProps} {...useCustomProps()} />
+    </DemoContainer>
+  )
 }
 
 const Fixtures = {
   default: <CurrencyInputPanel {...defaultProps} />,
-  CurrencyPreview: <CurrencyPreview {...defaultProps} />,
+  CurrencyPreview: <CurrencyAmountPreview {...defaultProps} />,
   custom: <Custom />,
 }
 
