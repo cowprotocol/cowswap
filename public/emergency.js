@@ -11,7 +11,6 @@ if (window.location.host === 'barn.cowswap.exchange') {
  * In case of problems with the service worker cache we can urgently reset the cache.
  * Just set resetCacheInCaseOfEmergency to true and release a new version
  */
-
 const emergencyConfigUrl = 'https://raw.githubusercontent.com/cowprotocol/cowswap/configuration/config/emergency.json'
 
 async function deleteAllCaches() {
