@@ -40,11 +40,15 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
   },
   slippage: {
     label: 'Slippage',
-    tooltip: <>
-      This slippage will apply to each part of your order. Since a TWAP order executes over a longer period of time, your slippage should take into account possible price fluctuations over that time. 
-      <br /><br />
-      If your slippage is too low, you risk some parts of your order failing to execute.
-    </>,
+    tooltip: (
+      <>
+        This slippage will apply to each part of your order. Since a TWAP order executes over a longer period of time,
+        your slippage should take into account possible price fluctuations over that time.
+        <br />
+        <br />
+        If your slippage is too low, you risk some parts of your order failing to execute.
+      </>
+    ),
   },
   price: {
     label: 'Current market price',
