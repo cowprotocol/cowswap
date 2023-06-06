@@ -44,12 +44,7 @@ export interface TwapOrderItem {
   submissionDate: string
 }
 
-type A = { a: string }
-type B = { B: number }
-
-type C = A & TwapOrderItem
-
-export interface ConditionalOrderParams extends C {
+export interface ConditionalOrderParams {
   staticInput: string
   salt: string
   handler: string
