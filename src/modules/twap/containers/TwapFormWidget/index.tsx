@@ -7,7 +7,6 @@ import {
   useAdvancedOrdersRawState,
   useUpdateAdvancedOrdersRawState,
 } from 'modules/advancedOrders'
-import { useTradeConfirmActions } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
@@ -18,15 +17,13 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import * as styledEl from './styled'
 
 import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines, defaultNumOfParts } from '../../const'
-import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
-import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
-import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
+import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
 export function TwapFormWidget() {
@@ -42,16 +39,7 @@ export function TwapFormWidget() {
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
-  const setFallbackHandler = useSetupFallbackHandler()
-  const tradeConfirmActions = useTradeConfirmActions()
-  const formState = useTwapFormState()
-
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
-
-  const primaryActionContext = {
-    setFallbackHandler,
-    openConfirmModal: tradeConfirmActions.onOpen,
-  }
 
   const deadlineState = {
     deadline,
@@ -112,7 +100,7 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.DeadlineRow>
 
-      <PrimaryActionButton state={formState} context={primaryActionContext} />
+      <ActionButtons />
     </>
   )
 }

@@ -10,7 +10,7 @@ import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/get
 import { verifyExtensibleFallback } from '../services/verifyExtensibleFallback'
 import { twapOrderAtom } from '../state/twapOrderAtom'
 
-export function useTwapFormState(): TwapFormState {
+export function useTwapFormState(): TwapFormState | null {
   const isSafeApp = useIsSafeApp()
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
