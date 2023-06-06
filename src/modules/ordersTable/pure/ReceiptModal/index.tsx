@@ -131,7 +131,7 @@ export function ReceiptModal({
 
             <styledEl.Field>
               <FieldLabel label="Created" tooltip={tooltips.CREATED} />
-              <DateField date={order.parsedCreationTime} />
+              <DateField date={order.creationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
@@ -145,10 +145,10 @@ export function ReceiptModal({
             </styledEl.Field>
 
             <styledEl.Field>
-              {order.activityId && (
+              {order.executionData.activityId && (
                 <>
-                  <FieldLabel label={order.activityTitle} />
-                  <IdField id={order.activityId} chainId={chainId} />
+                  <FieldLabel label={order.executionData.activityTitle} />
+                  <IdField id={order.executionData.activityId} chainId={chainId} />
                 </>
               )}
             </styledEl.Field>

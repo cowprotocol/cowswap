@@ -11,7 +11,8 @@ interface Props {
 }
 
 export function SurplusField({ order }: Props) {
-  const { kind, inputToken, outputToken, surplusAmount, surplusPercentage } = order
+  const { kind, inputToken, outputToken } = order
+  const { surplusAmount, surplusPercentage } = order.executionData
 
   const surplusToken = kind === OrderKind.SELL ? outputToken : inputToken
 

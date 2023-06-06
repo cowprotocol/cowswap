@@ -1,11 +1,13 @@
 import { atom } from 'jotai'
 
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
 export interface ReceiptState {
-  orderId: string | null
+  order: ParsedOrder | null
 }
 
 export const receiptAtom = atom<ReceiptState>({
-  orderId: null,
+  order: null,
 })
 
 export const updateReceiptAtom = atom(null, (get, set, nextState: Partial<ReceiptState>) => {

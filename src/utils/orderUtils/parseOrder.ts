@@ -1,4 +1,5 @@
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
@@ -11,10 +12,9 @@ import { getOrderSurplus } from './getOrderSurplus'
 import { isOrderFilled } from './isOrderFilled'
 import { isPartiallyFilled } from './isPartiallyFilled'
 
-export interface ParsedOrder extends Order {
+export interface ParsedOrderExecutionData {
   executedBuyAmount: JSBI
   executedSellAmount: JSBI
-  expirationTime: Date
   fullyFilled: boolean
   partiallyFilled: boolean
   filledAmount: BigNumber
@@ -23,11 +23,28 @@ export interface ParsedOrder extends Order {
   surplusPercentage: BigNumber
   executedFeeAmount: string | undefined
   executedSurplusFee: string | null
-  formattedPercentage: number
-  parsedCreationTime: Date
+  filledPercentDisplay: number
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
   activityTitle: string
+}
+
+export interface ParsedOrder {
+  id: string
+  isCancelling: boolean | undefined
+  inputToken: Token
+  outputToken: Token
+  kind: OrderKind
+  sellAmount: string
+  buyAmount: string
+  feeAmount: string
+  class: OrderClass
+  status: OrderStatus
+  partiallyFillable: boolean
+  creationTime: Date
+  expirationTime: Date
+
+  executionData: ParsedOrderExecutionData
 }
 
 export const parseOrder = (order: Order): ParsedOrder => {
@@ -37,10 +54,10 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const expirationTime = new Date(Number(order.validTo) * 1000)
   const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
   const executedSurplusFee = order.apiAdditionalInfo?.executedSurplusFee || null
-  const parsedCreationTime = new Date(order.creationTime)
+  const creationTime = new Date(order.creationTime)
   const fullyFilled = isOrderFilled(order)
   const partiallyFilled = isPartiallyFilled(order)
-  const formattedPercentage = filledPercentage.times(100).decimalPlaces(2).toNumber()
+  const filledPercentDisplay = filledPercentage.times(100).decimalPlaces(2).toNumber()
   const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
     ? new Price({
         baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
@@ -54,23 +71,37 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const activityId = showCreationTxLink ? order.orderCreationHash : order.id
   const activityTitle = showCreationTxLink ? 'Creation transaction' : 'Order ID'
 
-  return {
-    ...order,
-    expirationTime,
+  const executionData: ParsedOrderExecutionData = {
     executedBuyAmount,
     executedSellAmount,
     filledAmount,
     filledPercentage,
-    formattedPercentage,
+    filledPercentDisplay,
     surplusAmount,
     surplusPercentage,
     executedFeeAmount,
     executedSurplusFee,
     executedPrice,
-    parsedCreationTime,
     fullyFilled,
     partiallyFilled,
     activityId,
     activityTitle,
+  }
+
+  return {
+    id: order.id,
+    isCancelling: order.isCancelling,
+    inputToken: order.inputToken,
+    outputToken: order.outputToken,
+    kind: order.kind,
+    sellAmount: order.sellAmount,
+    buyAmount: order.buyAmount,
+    feeAmount: order.feeAmount,
+    class: order.class,
+    status: order.status,
+    partiallyFillable: order.partiallyFillable,
+    creationTime,
+    expirationTime,
+    executionData,
   }
 }
