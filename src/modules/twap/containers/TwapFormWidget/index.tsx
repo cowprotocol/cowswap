@@ -91,7 +91,7 @@ export function TwapFormWidget() {
           placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
           max={50}
           label={LABELS_TOOLTIPS.slippage.label}
-          hint={LABELS_TOOLTIPS.slippage.tooltip}
+          hint={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
           suffix="%"
         />
       </styledEl.Row>

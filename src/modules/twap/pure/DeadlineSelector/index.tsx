@@ -66,7 +66,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     <>
       <StyledTradeSelect
         label={label}
-        hint={renderTooltip(tooltip)}
+        tooltip={renderTooltip(tooltip)}
         items={itemsWithCustom}
         activeLabel={activeLabel}
         onSelect={onSelect}
