@@ -40,9 +40,6 @@ export function TradeWidgetLinks() {
           to={parameterizeTradeRoute(tradeContext, Routes.LIMIT_ORDER)}
         >
           <Trans>Limit</Trans>
-          <styledEl.Badge>
-            <Trans>Beta</Trans>
-          </styledEl.Badge>
         </styledEl.Link>
       </styledEl.MenuItem>
 
