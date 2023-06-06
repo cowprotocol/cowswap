@@ -122,6 +122,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   allowsOffchainSigning={allowsOffchainSigning}
                   currencyInfo={inputCurrencyInfo}
                   showSetMax={showSetMax}
+                  maxBalance={maxBalance}
                   topLabel={inputCurrencyInfo.label}
                 />
               </div>
