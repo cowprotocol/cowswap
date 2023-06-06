@@ -27,8 +27,8 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
     return null
   }
 
-  const { inputToken, outputToken, buyAmount, sellAmount, executedBuyAmount, executedSellAmount } = order
-
+  const { inputToken, outputToken, buyAmount, sellAmount } = order
+  const { executedBuyAmount, executedSellAmount } = order.executionData
   // Sell and buy amounts
   const sellAmountCurrency = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
   const buyAmountCurrency = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())

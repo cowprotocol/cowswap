@@ -8,9 +8,10 @@ import * as styledEl from './styled'
 export type Props = { order: ParsedOrder }
 
 export function FeeField({ order }: Props): JSX.Element | null {
-  const { executedFeeAmount, executedSurplusFee, inputToken, sellToken } = order
+  const { inputToken } = order
+  const { executedFeeAmount, executedSurplusFee } = order.executionData
 
-  if (!sellToken) return <styledEl.Value></styledEl.Value>
+  if (!inputToken) return <styledEl.Value></styledEl.Value>
 
   // TODO: use the value from SDK
   const totalFee = CurrencyAmount.fromRawAmount(inputToken, (executedSurplusFee ?? executedFeeAmount) || 0)
