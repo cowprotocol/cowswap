@@ -40,9 +40,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.WrapUnwrapAmountNotSet]: {
     text: 'Enter an amount',
   },
-  // TODO: implement
-  [TradeFormValidation.WrapUnwrapFlow]: {
-    text: 'Wrap or unwrap',
+  [TradeFormValidation.WrapUnwrapFlow]: (context) => {
+    const isNativeIn = !!context.derivedState.inputCurrency?.isNative
+
+    return (
+      <TradeFormBlankButton onClick={context.wrapNativeFlow}>
+        <Trans>{isNativeIn ? 'Wrap' : 'Unwrap'}</Trans>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.CurrencyNotSet]: {
     text: 'Select a token',

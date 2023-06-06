@@ -11,7 +11,7 @@ import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOr
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useTradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
+import { useTradeConfirmActions, useWrapNativeFlow } from 'modules/trade'
 import {
   TradeFormButtons,
   useGetTradeFormValidation,
@@ -42,6 +42,7 @@ export function TradeButtons(props: TradeButtonsProps) {
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
   const { isSupportedWallet } = useWalletDetails()
   const tradeConfirmActions = useTradeConfirmActions()
+  const wrapNativeFlow = useWrapNativeFlow()
 
   const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
 
@@ -53,6 +54,7 @@ export function TradeButtons(props: TradeButtonsProps) {
     doTrade: handleTrade,
     quote,
     isSupportedWallet,
+    wrapNativeFlow,
     confirmTrade() {
       tradeConfirmActions.onOpen()
     },

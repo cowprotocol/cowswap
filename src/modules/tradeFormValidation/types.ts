@@ -61,8 +61,7 @@ export interface TradeFormButtonContext {
   isSupportedWallet: boolean
 
   doTrade(): void
-
   confirmTrade(): void
-
   connectWallet(): void
+  wrapNativeFlow(): void
 }
