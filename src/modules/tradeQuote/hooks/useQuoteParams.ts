@@ -1,8 +1,6 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { OrderKind } from '@cowprotocol/cow-sdk'
-
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -15,7 +13,7 @@ export function useQuoteParams() {
   const { state } = useDerivedTradeState()
   const { amount } = useAtomValue(tradeQuoteParamsAtom)
 
-  const { inputCurrency, outputCurrency } = state || {}
+  const { inputCurrency, outputCurrency, orderKind } = state || {}
 
   const amountStr = amount?.quotient.toString()
 
@@ -35,10 +33,10 @@ export function useQuoteParams() {
       amount: amountStr,
       chainId,
       receiver: account,
-      kind: OrderKind.SELL,
+      kind: orderKind,
       toDecimals,
       fromDecimals,
       isEthFlow: false,
     }
-  }, [inputCurrency, outputCurrency, amountStr, account, chainId])
+  }, [inputCurrency, outputCurrency, amountStr, account, chainId, orderKind])
 }
