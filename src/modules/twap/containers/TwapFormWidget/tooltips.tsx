@@ -62,4 +62,8 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     label: 'Buy amount per part',
     tooltip: 'Estimated amount that you will receive from each part of the order.',
   },
+  startTime: {
+    label: 'Start time',
+    tooltip: 'The order will start when it is validated and executed in your Safe.',
+  },
 }
