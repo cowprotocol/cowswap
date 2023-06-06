@@ -66,7 +66,7 @@ export default function QuestionHelper({ text, className, QuestionMark, ...toolt
 
   const content = (
     <div onMouseEnter={open} onMouseLeave={close}>
-      {text}
+      {typeof text === 'function' ? text() : text}
     </div>
   )
 

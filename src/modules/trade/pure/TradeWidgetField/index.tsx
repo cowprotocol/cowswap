@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { Trans } from '@lingui/macro'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
@@ -7,20 +9,28 @@ import { TradeWidgetFieldBox, TradeWidgetFieldLabel, Content, ErrorText } from '
 export type TradeWidgetFieldError = { type: 'error' | 'warning'; text: string | null } | null
 
 export interface TradeWidgetFieldProps {
-  label: string
+  label: React.ReactNode
   children?: JSX.Element
-  hint?: JSX.Element | string
+  hint?: React.ReactNode | ((params: any) => React.ReactNode)
   error?: TradeWidgetFieldError
   className?: string
 }
 
 export function TradeWidgetField(props: TradeWidgetFieldProps) {
   const { className, children, label, hint, error } = props
+  let hintElement: React.ReactNode;
+
+  if (typeof hint === 'function') {
+    hintElement = hint(props);
+  } else {
+    hintElement = hint;
+  }
+
   return (
     <TradeWidgetFieldBox className={className}>
       <TradeWidgetFieldLabel>
         <Trans>{label}</Trans>
-        {hint && <QuestionHelper text={hint} />}
+        {hint && <QuestionHelper text={hintElement} />}
       </TradeWidgetFieldLabel>
       <Content>{children}</Content>
       {error && <ErrorText type={error.type}>{error.text}</ErrorText>}

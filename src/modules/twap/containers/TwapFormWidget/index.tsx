@@ -15,7 +15,7 @@ import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import * as styledEl from './styled'
-import { LABELS_TOOLTIPS } from './tooltips'
+import { LABELS_TOOLTIPS, renderTooltip } from './tooltips'
 
 import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines, defaultNumOfParts } from '../../const'
 import { AmountParts } from '../../pure/AmountParts'
@@ -27,6 +27,7 @@ import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
+export { renderTooltip } from './tooltips'
 export type { LabelTooltipObject, LabelTooltipItems } from './tooltips'
 
 const AMOUNTPARTS_LABELS = {
@@ -80,7 +81,7 @@ export function TwapFormWidget() {
           min={defaultNumOfParts}
           max={100}
           label={LABELS_TOOLTIPS.numberOfParts.label}
-          hint={LABELS_TOOLTIPS.numberOfParts.tooltip}
+          hint={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
         />
         <TradeNumberInput
           value={slippageValue}
@@ -101,7 +102,11 @@ export function TwapFormWidget() {
           deadline={deadlineState}
           items={orderDeadlines}
           setDeadline={(value) => updateSettingsState(value)}
-          labels={LABELS_TOOLTIPS.totalDuration}
+          label={LABELS_TOOLTIPS.totalDuration.label}
+          tooltip={renderTooltip(LABELS_TOOLTIPS.totalDuration.tooltip, { 
+            parts: numberOfPartsValue,
+            partDuration: timeInterval,
+          })}
         />
 
         <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} hint={LABELS_TOOLTIPS.partDuration.label}>

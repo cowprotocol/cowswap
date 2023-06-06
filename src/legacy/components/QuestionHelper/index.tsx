@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -25,6 +27,18 @@ export const QuestionWrapper = styled.div`
   }
 `
 
-export default function QuestionHelper(props: Omit<QuestionHelperProps, 'QuestionMark'>) {
-  return <QuestionHelperMod {...props} QuestionMark={QuestionMark} />
+interface EnhancedQuestionHelperProps extends Omit<QuestionHelperProps, 'QuestionMark'> {
+  text: ReactNode | ((params?: any) => ReactNode);
+}
+
+export default function QuestionHelper({ text, ...props }: EnhancedQuestionHelperProps) {
+  let tooltip;
+  
+  if (typeof text === 'function') {
+    tooltip = text(props);
+  } else {
+    tooltip = text;
+  }
+
+  return <QuestionHelperMod {...props} text={tooltip} QuestionMark={QuestionMark} />;
 }

@@ -1,3 +1,5 @@
+import React, { ReactNode } from 'react'
+
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -15,7 +17,7 @@ interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
   fiatAmount: Nullish<CurrencyAmount<Currency>>
   label: JSX.Element
-  tooltip: JSX.Element
+  tooltip: ReactNode | ((params: any) => ReactNode)
 }
 
 function TradeAmountPreview(props: TradeAmountPreviewProps) {
@@ -41,23 +43,15 @@ export function AmountParts({ partsState, labels }: { partsState: PartsState; la
   return (
     <styledEl.Wrapper>
       <TradeAmountPreview
-        label={
-          <Trans>
-            {labels.sellAmount.label} (1/{numberOfPartsValue})
-          </Trans>
-        }
-        tooltip={<Trans>{sellAmount.tooltip}</Trans>}
+        label={<>{labels.sellAmount.label} (1/{numberOfPartsValue})</>}
+        tooltip={sellAmount.tooltip}
         amount={inputPartAmount}
         fiatAmount={inputFiatAmount}
       />
 
       <TradeAmountPreview
-        label={
-          <Trans>
-            {buyAmount.label} (1/{numberOfPartsValue})
-          </Trans>
-        }
-        tooltip={<Trans>{buyAmount.tooltip}</Trans>}
+        label={<>buyAmount.label (1/{numberOfPartsValue})</>}
+        tooltip={buyAmount.tooltip}
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
       />
