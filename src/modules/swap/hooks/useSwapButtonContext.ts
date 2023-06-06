@@ -1,16 +1,16 @@
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { t } from '@lingui/macro'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import {
-  useHasEnoughWrappedBalanceForSwap,
-  useWrapCallback,
-  useWrapType,
-  useWrapUnwrapError,
-} from 'legacy/hooks/useWrapCallback'
+import { useWrapCallback, useWrapType, WrapType } from 'legacy/hooks/useWrapCallback'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useIsTradeUnsupported } from 'legacy/state/lists/hooks'
 import { useGetQuoteAndStatus, useIsBestQuoteLoading } from 'legacy/state/price/hooks'
 import { Field } from 'legacy/state/swap/actions'
 import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hooks'
 import { useExpertModeManager } from 'legacy/state/user/hooks'
+import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
@@ -19,6 +19,7 @@ import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBund
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
 import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
@@ -28,6 +29,7 @@ import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApp
 import { useIsEthFlowBundlingEnabled } from 'common/hooks/useIsEthFlowBundlingEnabled'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+import { formatSymbol } from 'utils/format'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 
@@ -138,4 +140,32 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     swapInputError,
     onCurrencySelection,
   }
+}
+
+// TODO: get rid of it. The validation should be handled by modules/tradeFormValidation
+function useWrapUnwrapError(wrapType: WrapType, inputAmount?: CurrencyAmount<Currency>): string | undefined {
+  const { chainId, account } = useWalletInfo()
+  const { currencies } = useDerivedSwapInfo()
+  const { native, wrapped } = getChainCurrencySymbols(chainId)
+  const balance = useCurrencyBalance(account ?? undefined, currencies.INPUT)
+
+  const symbol = wrapType === WrapType.WRAP ? native : wrapped
+  // Check if user has enough balance for wrap/unwrap
+  const sufficientBalance = !!(inputAmount && balance && !balance.lessThan(inputAmount))
+  const isZero = balance && !inputAmount
+
+  if (isZero) {
+    return t`Enter an amount`
+  }
+
+  return !sufficientBalance ? t`Insufficient ${formatSymbol(symbol)} balance` : undefined
+}
+
+function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<Currency>): boolean {
+  const { currencies } = useDerivedSwapInfo()
+  const { account } = useWalletInfo()
+  const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT?.wrapped)
+
+  // is an native currency trade but wrapped token has enough balance
+  return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))
 }

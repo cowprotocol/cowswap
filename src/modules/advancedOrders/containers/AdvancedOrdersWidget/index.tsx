@@ -11,10 +11,9 @@ import {
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
+import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-
-import { partsStateAtom } from '../../../twap/state/partsStateAtom'
 
 export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   useSetupTradeState()

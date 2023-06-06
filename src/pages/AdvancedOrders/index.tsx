@@ -5,12 +5,16 @@ import { OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { TwapFormWidget } from 'modules/twap'
 import { parsedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
+import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 
 export default function AdvancedOrdersPage() {
   const parsedTwapOrders = useAtomValue(parsedTwapOrdersAtom)
 
   return (
     <>
+      {/*TODO: add isExpertMode value*/}
+      <TradeFormValidationUpdater isExpertMode={false} />
+
       {/*TODO: add isUnlocked value*/}
       <styledEl.PageWrapper isUnlocked={true}>
         <styledEl.PrimaryWrapper>
