@@ -75,7 +75,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
   const inputAmount = slippageAdjustedSellAmount || parsedAmount
-  const wrapUnwrapAmount = isNativeInSwap ? inputAmount?.wrapped : slippageAdjustedSellAmount || parsedAmount
+  const wrapUnwrapAmount = isNativeInSwap ? inputAmount?.wrapped : inputAmount
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
