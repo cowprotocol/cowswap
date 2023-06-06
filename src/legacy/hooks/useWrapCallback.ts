@@ -63,7 +63,7 @@ export function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<C
   const { account } = useWalletInfo()
   const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT?.wrapped)
 
-  // is an native currency trade but wrapped token has enough balance
+  // is a native currency trade but wrapped token has enough balance
   return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))
 }
 

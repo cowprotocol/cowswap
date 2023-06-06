@@ -43,7 +43,7 @@ import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
-import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { useIsSafeViaWc, useIsSafeWallet, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -172,6 +172,8 @@ export function SwapWidget() {
   const showWrapBundlingBanner = BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER.includes(swapButtonContext.swapButtonState)
 
   const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useIsSafeWallet()
+
   const showSafeWcApprovalBundlingBanner =
     !showApprovalBundlingBanner && isSafeViaWc && swapButtonContext.swapButtonState === SwapButtonState.NeedApprove
 
@@ -180,6 +182,8 @@ export function SwapWidget() {
 
   // Show the same banner when approval is needed or selling native token
   const showSafeWcBundlingBanner = showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner
+
+  const canSellAllNative = isSafeWallet
 
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
@@ -243,6 +247,7 @@ export function SwapWidget() {
     isTradePriceUpdating,
     priceImpact: priceImpactParams,
     disableQuotePolling: true,
+    canSellAllNative,
   }
 
   return (

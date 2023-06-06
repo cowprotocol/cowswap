@@ -36,6 +36,7 @@ interface TradeWidgetParams {
   priceImpact: PriceImpact
   isRateLoading?: boolean
   disableQuotePolling?: boolean
+  canSellAllNative?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -73,6 +74,7 @@ export function TradeWidget(props: TradeWidgetProps) {
     priceImpact,
     recipient,
     disableQuotePolling = false,
+    canSellAllNative = false,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -81,7 +83,7 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
-  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
+  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, canSellAllNative)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
   // Disable too frequent tokens switching
@@ -122,6 +124,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   allowsOffchainSigning={allowsOffchainSigning}
                   currencyInfo={inputCurrencyInfo}
                   showSetMax={showSetMax}
+                  maxBalance={maxBalance}
                   topLabel={inputCurrencyInfo.label}
                 />
               </div>
