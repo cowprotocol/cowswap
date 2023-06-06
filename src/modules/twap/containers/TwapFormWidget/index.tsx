@@ -82,7 +82,7 @@ export function TwapFormWidget() {
           min={defaultNumOfParts}
           max={100}
           label={LABELS_TOOLTIPS.numberOfParts.label}
-          hint={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
+          tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
         />
         <TradeNumberInput
           value={slippageValue}
@@ -91,7 +91,7 @@ export function TwapFormWidget() {
           placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
           max={50}
           label={LABELS_TOOLTIPS.slippage.label}
-          hint={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
+          tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
           suffix="%"
         />
       </styledEl.Row>
@@ -110,7 +110,7 @@ export function TwapFormWidget() {
           })}
         />
 
-        <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} hint={LABELS_TOOLTIPS.partDuration.label}>
+        <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} tooltip={LABELS_TOOLTIPS.partDuration.label}>
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
       </styledEl.Row>

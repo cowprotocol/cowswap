@@ -12,20 +12,20 @@ export type TradeWidgetFieldError = { type: 'error' | 'warning'; text: string | 
 export interface TradeWidgetFieldProps {
   label: React.ReactNode
   children?: JSX.Element
-  hint?: React.ReactNode | ((params: any) => React.ReactNode)
+  tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
   error?: TradeWidgetFieldError
   className?: string
 }
 
 export function TradeWidgetField(props: TradeWidgetFieldProps) {
-  const { className, children, label, hint, error } = props
-  const hintElement = renderTooltip(hint, props);
+  const { className, children, label, tooltip, error } = props
+  const tooltipElement = renderTooltip(tooltip, props);
 
   return (
     <TradeWidgetFieldBox className={className}>
       <TradeWidgetFieldLabel>
         <Trans>{label}</Trans>
-        {hint && <QuestionHelper text={hintElement} />}
+        {tooltip && <QuestionHelper text={tooltipElement} />}
       </TradeWidgetFieldLabel>
       <Content>{children}</Content>
       {error && <ErrorText type={error.type}>{error.text}</ErrorText>}
