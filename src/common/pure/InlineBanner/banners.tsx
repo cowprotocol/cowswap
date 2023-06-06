@@ -22,15 +22,20 @@ export function BundleTxApprovalBanner() {
   )
 }
 
-export function BundleTxWrapBanner() {
+export type BundleTxWrapBannerProps = {
+  nativeCurrencySymbol: string
+  wrappedCurrencySymbol: string
+}
+
+export function BundleTxWrapBanner({ nativeCurrencySymbol, wrappedCurrencySymbol }: BundleTxWrapBannerProps) {
   return (
     <InlineBanner
       type="information"
       content={
         <>
-          <strong>Token wrapping</strong>: For your convenience, native token wrapping, approval of the wrapped token
-          (if needed) and order placement will be bundled into a single transaction, streamlining your experience! Even
-          if the trade fails, your wrapping (and approval) will be done!
+          <strong>Token wrapping</strong>: For your convenience, CoW Swap will bundle all the necessary actions for this
+          trade into a single transaction. This includes the {nativeCurrencySymbol} wrapping and, if needed,{' '}
+          {wrappedCurrencySymbol} approval. Even if the trade fails, your wrapping and approval will be done!
         </>
       }
     />
