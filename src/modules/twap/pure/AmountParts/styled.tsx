@@ -10,7 +10,7 @@ import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const Wrapper = styled.div`
   display: flex;
-  grid-gap: 10px;
+  grid-gap: 8px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
