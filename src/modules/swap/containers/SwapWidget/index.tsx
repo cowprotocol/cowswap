@@ -42,6 +42,7 @@ import {
 import { useFillSwapDerivedState } from 'modules/swap/state/useSwapDerivedState'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
+import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -181,6 +182,7 @@ export function SwapWidget() {
   const showSafeWcBundlingBanner = showSafeWcApprovalBundlingBanner || showSafeWcWrapBundlingBanner
 
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
+  const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
   const swapWarningsTopProps: SwapWarningsTopProps = {
     trade,
@@ -194,6 +196,7 @@ export function SwapWidget() {
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
     nativeCurrencySymbol,
+    wrappedCurrencySymbol,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
