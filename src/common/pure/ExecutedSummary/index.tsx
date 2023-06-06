@@ -1,11 +1,10 @@
-import { Order } from 'legacy/state/orders/actions'
-
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
 
-export function ExecutedSummary({ order }: { order: Order }) {
+export function ExecutedSummary({ order }: { order: ParsedOrder }) {
   const { formattedFilledAmount, formattedSwappedAmount } = getExecutedSummaryData(order)
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
 

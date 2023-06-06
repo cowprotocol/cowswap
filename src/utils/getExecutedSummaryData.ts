@@ -5,12 +5,17 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 
-import { parseOrder } from './orderUtils/parseOrder'
+import { ParsedOrder, parseOrder } from './orderUtils/parseOrder'
 
-export function getExecutedSummaryData(order: Order) {
-  const parsedOrder = parseOrder(order)
+function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {
+  return !!(order as ParsedOrder).executionData
+}
 
-  const { inputToken, outputToken, surplusAmount: amount, surplusPercentage: percentage } = parsedOrder
+export function getExecutedSummaryData(order: Order | ParsedOrder) {
+  const parsedOrder = isParsedOrder(order) ? order : parseOrder(order)
+
+  const { inputToken, outputToken } = parsedOrder
+  const { surplusAmount: amount, surplusPercentage: percentage } = parsedOrder.executionData
 
   const parsedInputToken = new Token(
     inputToken.chainId,
