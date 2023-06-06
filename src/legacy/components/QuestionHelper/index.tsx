@@ -29,11 +29,11 @@ export const QuestionWrapper = styled.div`
 `
 
 interface EnhancedQuestionHelperProps extends Omit<QuestionHelperProps, 'QuestionMark'> {
-  text: ReactNode | ((params?: any) => ReactNode);
+  text: ReactNode | ((params?: any) => ReactNode)
 }
 
 export default function QuestionHelper({ text, ...props }: EnhancedQuestionHelperProps) {
-  const tooltip = renderTooltip(text, props);
+  const tooltip = renderTooltip(text, props)
 
-  return <QuestionHelperMod {...props} text={tooltip} QuestionMark={QuestionMark} />;
+  return <QuestionHelperMod {...props} text={tooltip} QuestionMark={QuestionMark} />
 }

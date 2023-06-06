@@ -1,4 +1,3 @@
-
 export interface LabelTooltipObject {
   label: string
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
@@ -18,24 +17,31 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     tooltip: ({ parts, partDuration }: { parts: number; partDuration: number }) => (
       <>
         {/* TODO: Add time units */}
-        The "Total duration" is the duration it takes to execute all parts of your TWAP order. 
-        <br/><br/> 
-        For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDuration}</b>, the total time to complete the order is <b>{parts * partDuration}</b>. Each limit order
-        remains open for <b>{partDuration}</b> until the next part becomes active.
+        The "Total duration" is the duration it takes to execute all parts of your TWAP order.
+        <br />
+        <br />
+        For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDuration}</b>, the total time to
+        complete the order is <b>{parts * partDuration}</b>. Each limit order remains open for <b>{partDuration}</b>{' '}
+        until the next part becomes active.
       </>
     ),
   },
   partDuration: {
     label: 'Part duration',
-    tooltip: <>
-      The "Part duration" refers to the duration between each part of your TWAP order. 
-      <br/><br/> 
-      Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution.
-    </>,
+    tooltip: (
+      <>
+        The "Part duration" refers to the duration between each part of your TWAP order.
+        <br />
+        <br />
+        Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations.
+        Striking the right balance is crucial for optimal execution.
+      </>
+    ),
   },
   slippage: {
     label: 'Slippage',
-    tooltip: 'This slippage will apply to each part of your order. Since a TWAP order executes over a longer period of time, your slippage should take into account possible price fluctuations over that time. If your slippage is too low, you risk some parts of your order failing to execute.',
+    tooltip:
+      'This slippage will apply to each part of your order. Since a TWAP order executes over a longer period of time, your slippage should take into account possible price fluctuations over that time. If your slippage is too low, you risk some parts of your order failing to execute.',
   },
   price: {
     label: 'Current market price',

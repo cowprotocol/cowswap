@@ -19,7 +19,7 @@ export interface TradeWidgetFieldProps {
 
 export function TradeWidgetField(props: TradeWidgetFieldProps) {
   const { className, children, label, tooltip, error } = props
-  const tooltipElement = renderTooltip(tooltip, props);
+  const tooltipElement = renderTooltip(tooltip, props)
 
   return (
     <TradeWidgetFieldBox className={className}>

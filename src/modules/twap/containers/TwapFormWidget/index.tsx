@@ -104,7 +104,7 @@ export function TwapFormWidget() {
           items={orderDeadlines}
           setDeadline={(value) => updateSettingsState(value)}
           label={LABELS_TOOLTIPS.totalDuration.label}
-          tooltip={renderTooltip(LABELS_TOOLTIPS.totalDuration.tooltip, { 
+          tooltip={renderTooltip(LABELS_TOOLTIPS.totalDuration.tooltip, {
             parts: numberOfPartsValue,
             partDuration: timeInterval,
           })}

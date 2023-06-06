@@ -43,7 +43,11 @@ export function AmountParts({ partsState, labels }: { partsState: PartsState; la
   return (
     <styledEl.Wrapper>
       <TradeAmountPreview
-        label={<>{labels.sellAmount.label} (1/{numberOfPartsValue})</>}
+        label={
+          <>
+            {labels.sellAmount.label} (1/{numberOfPartsValue})
+          </>
+        }
         tooltip={sellAmount.tooltip}
         amount={inputPartAmount}
         fiatAmount={inputFiatAmount}
