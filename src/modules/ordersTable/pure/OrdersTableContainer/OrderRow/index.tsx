@@ -133,8 +133,8 @@ export function OrderRow({
   spotPrice,
 }: OrderRowProps) {
   const { buyAmount, rateInfoParams, hasEnoughAllowance, hasEnoughBalance, chainId } = orderParams
-  const { parsedCreationTime, expirationTime, status } = order
-  const { filledPercentDisplayed, executedPrice, activityId } = order.executionData
+  const { creationTime, expirationTime, status } = order
+  const { filledPercentDisplay, executedPrice, activityId } = order.executionData
   const { inputCurrencyAmount, outputCurrencyAmount } = rateInfoParams
   const { estimatedExecutionPrice, feeAmount } = prices || {}
 
@@ -147,7 +147,7 @@ export function OrderRow({
   const theme = useContext(ThemeContext)
 
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
-  const creationTimeAgo = useTimeAgo(parsedCreationTime, TIME_AGO_UPDATE_INTERVAL)
+  const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)
   // TODO: set the real value when API returns it
   // const executedTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const activityUrl = chainId && activityId ? getEtherscanLink(chainId, activityId, 'transaction') : undefined
@@ -291,8 +291,8 @@ export function OrderRow({
 
       {/* Filled % */}
       <styledEl.CellElement doubleRow clickable onClick={onClick}>
-        <b>{filledPercentDisplayed}%</b>
-        <styledEl.ProgressBar value={filledPercentDisplayed}></styledEl.ProgressBar>
+        <b>{filledPercentDisplay}%</b>
+        <styledEl.ProgressBar value={filledPercentDisplay}></styledEl.ProgressBar>
       </styledEl.CellElement>
 
       {/* Status label */}
