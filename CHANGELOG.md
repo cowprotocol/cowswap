@@ -1,38 +1,5 @@
 # Changelog
 
-## [1.39.1](https://github.com/cowprotocol/cowswap/compare/v1.39.0...v1.39.1) (2023-06-06)
-
-
-## [1.39.0](https://github.com/cowprotocol/cowswap/compare/v1.38.1...v1.39.0) (2023-06-06)
-
-
-### Features
-
-* add rate info ([#2570](https://github.com/cowprotocol/cowswap/issues/2570)) ([52cfa63](https://github.com/cowprotocol/cowswap/commit/52cfa63c50e1fce0fdb476f7b4509b3774c6a185))
-* clickable fill+status label for order receipt ([#2559](https://github.com/cowprotocol/cowswap/issues/2559)) ([b56954e](https://github.com/cowprotocol/cowswap/commit/b56954e1b2d46a76ac5dac19f309a82523832bc9))
-* get quote for single part in TWAP ([#2580](https://github.com/cowprotocol/cowswap/issues/2580)) ([40b2627](https://github.com/cowprotocol/cowswap/commit/40b2627ce90ff789d77458ba924f4ff837247a30))
-* **limit-orders:** integrate TradeConfirmModal in Limit orders ([#2573](https://github.com/cowprotocol/cowswap/issues/2573)) ([dd76fc2](https://github.com/cowprotocol/cowswap/commit/dd76fc26b602a0b9d6b28bec4ab9a4bc505bdeb8))
-* **safe-eth-flow:** add Safe Eth flow ([#2576](https://github.com/cowprotocol/cowswap/issues/2576)) ([ec4426a](https://github.com/cowprotocol/cowswap/commit/ec4426abe8a1165beb99531f60603fdba3bb9421))
-* show Safe WC banner when selling ETH ([#2588](https://github.com/cowprotocol/cowswap/issues/2588)) ([8107248](https://github.com/cowprotocol/cowswap/commit/810724837298a69a9d110b455d9abf17e4176939))
-* **smart-contract-orders:** hide sc presign orders on start ([#2525](https://github.com/cowprotocol/cowswap/issues/2525)) ([96ea696](https://github.com/cowprotocol/cowswap/commit/96ea6960c91c6a0f9aaea2260399a450fcbf4f2b))
-* swap SELL and BUY fields ([#2567](https://github.com/cowprotocol/cowswap/issues/2567)) ([a9d243e](https://github.com/cowprotocol/cowswap/commit/a9d243e6fe623ebb708934955771f35f120cd952))
-* **trade-form-validation:** service to validate generic trade widget behaviour ([#2590](https://github.com/cowprotocol/cowswap/issues/2590)) ([9493f11](https://github.com/cowprotocol/cowswap/commit/9493f111f88ad8020013ba57afd9ee87ca52cb2a))
-* **trade:** move import token and approval modals to TradeWidget ([#2547](https://github.com/cowprotocol/cowswap/issues/2547)) ([3ce3316](https://github.com/cowprotocol/cowswap/commit/3ce3316c46adecc57c92eb4972dc5db68d0a2bd0))
-* **twap:** add generic trade form validation to TWAP ([#2592](https://github.com/cowprotocol/cowswap/issues/2592)) ([bccacb6](https://github.com/cowprotocol/cowswap/commit/bccacb60cb9e53c1935da727c0900a5e9f1c4cfc))
-* **twap:** add orders table to Advanced orders page ([8de717c](https://github.com/cowprotocol/cowswap/commit/8de717c188c7ba72872196817801c7b192c3bc46))
-* **twap:** integrate TradeConfirmModal in Twap orders ([#2574](https://github.com/cowprotocol/cowswap/issues/2574)) ([771da11](https://github.com/cowprotocol/cowswap/commit/771da1155953c31b94903061e0993de39068858b))
-* **twap:** order creation and fallback verification MVP ([#2533](https://github.com/cowprotocol/cowswap/issues/2533)) ([3dea3d4](https://github.com/cowprotocol/cowswap/commit/3dea3d4fb2da7ac97d4f14297c1b5ed8837b668c))
-
-
-### Bug Fixes
-
-* do not trigger expired NPS for hidden orders ([#2554](https://github.com/cowprotocol/cowswap/issues/2554)) ([e806902](https://github.com/cowprotocol/cowswap/commit/e806902bb78dc094a4f5d2a19383de787d5529db))
-* expired order that still shows as pending ([#2558](https://github.com/cowprotocol/cowswap/issues/2558)) ([645c242](https://github.com/cowprotocol/cowswap/commit/645c2426f44eca49abd7d36c47530e3de3af1d0c))
-* fix kind field in useQuoteParams ([a6bb882](https://github.com/cowprotocol/cowswap/commit/a6bb882be15edcb663dbb189c3306c1af4b0d851))
-* **limit-orders:** fix quoting for buy flow ([#2598](https://github.com/cowprotocol/cowswap/issues/2598)) ([76b927f](https://github.com/cowprotocol/cowswap/commit/76b927f4ac9a1a7a5609947123189a92071415b0))
-* make (Trust) wallet icon round on modals ([#2599](https://github.com/cowprotocol/cowswap/issues/2599)) ([dabf88e](https://github.com/cowprotocol/cowswap/commit/dabf88e1af67f872d36846e2e60902dcc7397f61))
-* unsupported token error fix ([d05ae0f](https://github.com/cowprotocol/cowswap/commit/d05ae0f5085685aaf07c78d2f42385522c0e051f))
-
 ## [1.38.1](https://github.com/cowprotocol/cowswap/compare/v1.38.0...v1.38.1) (2023-05-25)
 
 
