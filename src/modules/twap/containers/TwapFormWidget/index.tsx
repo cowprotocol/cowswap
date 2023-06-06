@@ -54,6 +54,8 @@ export function TwapFormWidget() {
     isCustomDeadline,
   }
 
+  const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
+
   // Reset output amount when num of parts or input amount are changed
   useEffect(() => {
     updateRawState({ outputCurrencyAmount: null })
@@ -62,7 +64,7 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
-      {isSafeApp && chainId && account && composableCowContract && (
+      {shouldLoadTwapOrders && (
         <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
       )}
       <TwapConfirmModal />

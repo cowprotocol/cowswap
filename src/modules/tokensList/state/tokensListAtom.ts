@@ -19,5 +19,7 @@ export class TokenWithLogo extends Token {
 
 export type TokensByAddress = { [address: string]: TokenWithLogo }
 
+export type TokensBySymbol = { [address: string]: TokenWithLogo[] }
+
 export const tokensByAddressAtom = atom<TokensByAddress>({})
-export const tokensBySymbolAtom = atom<{ [symbol: string]: TokenWithLogo[] }>({})
+export const tokensBySymbolAtom = atom<TokensBySymbol>({})

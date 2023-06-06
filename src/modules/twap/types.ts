@@ -19,8 +19,11 @@ export interface TWAPOrderStruct {
   receiver: string
   partSellAmount: string
   minPartLimit: string
+  // timeStart
   t0: number
+  // numOfParts
   n: number
+  // timeInterval
   t: number
   span: number
 }
@@ -41,7 +44,12 @@ export interface TwapOrderItem {
   submissionDate: string
 }
 
-export interface ConditionalOrderParams {
+type A = { a: string }
+type B = { B: number }
+
+type C = A & TwapOrderItem
+
+export interface ConditionalOrderParams extends C {
   staticInput: string
   salt: string
   handler: string
