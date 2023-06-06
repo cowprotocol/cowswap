@@ -4,6 +4,7 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import QuestionImage from 'legacy/assets/svg/question.svg'
+import { renderTooltip } from 'legacy/components/Tooltip'
 
 import QuestionHelperMod, { QuestionHelperProps } from './QuestionHelperMod'
 
@@ -32,13 +33,7 @@ interface EnhancedQuestionHelperProps extends Omit<QuestionHelperProps, 'Questio
 }
 
 export default function QuestionHelper({ text, ...props }: EnhancedQuestionHelperProps) {
-  let tooltip;
-  
-  if (typeof text === 'function') {
-    tooltip = text(props);
-  } else {
-    tooltip = text;
-  }
+  const tooltip = renderTooltip(text, props);
 
   return <QuestionHelperMod {...props} text={tooltip} QuestionMark={QuestionMark} />;
 }
