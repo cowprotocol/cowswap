@@ -27,7 +27,11 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
   },
   partDuration: {
     label: 'Part duration',
-    tooltip: 'The "Part duration" refers to the duration between each part of your TWAP order. Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution.',
+    tooltip: <>
+      The "Part duration" refers to the duration between each part of your TWAP order. 
+      <br/><br/> 
+      Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution.
+    </>,
   },
   slippage: {
     label: 'Slippage',

@@ -110,7 +110,7 @@ export function TwapFormWidget() {
           })}
         />
 
-        <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} tooltip={LABELS_TOOLTIPS.partDuration.label}>
+        <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} tooltip={LABELS_TOOLTIPS.partDuration.tooltip}>
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
       </styledEl.Row>
