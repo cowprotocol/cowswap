@@ -23,7 +23,7 @@ const pendingTwapExecutionData: ParsedOrderExecutionData = {
   surplusPercentage: new BigNumber(0),
   executedFeeAmount: undefined,
   executedSurplusFee: null,
-  filledPercentDisplayed: 0,
+  filledPercentDisplay: 0,
   executedPrice: null,
   activityId: undefined,
   activityTitle: '',
@@ -43,8 +43,8 @@ export function parsePendingTwapOrder(tokens: TokensByAddress, item: TwapOrderIt
   const sellAmount = BigInt(partSellAmount) * numOfParts
   const buyAmount = BigInt(minPartLimit) * numOfParts
 
-  const parsedCreationTime = new Date(item.submissionDate)
-  const expirationTime = new Date(parsedCreationTime.getTime() + t * n * 1000)
+  const creationTime = new Date(item.submissionDate)
+  const expirationTime = new Date(creationTime.getTime() + t * n * 1000)
 
   return {
     id: item.hash,
@@ -58,7 +58,7 @@ export function parsePendingTwapOrder(tokens: TokensByAddress, item: TwapOrderIt
     buyAmount: buyAmount.toString(),
     feeAmount: '0',
     partiallyFillable: true,
-    parsedCreationTime,
+    creationTime,
     expirationTime,
     executionData: pendingTwapExecutionData,
   }
