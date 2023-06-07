@@ -5,7 +5,7 @@ import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
-export interface TwapDiscreteOrderItem {
+export interface TwapParticleOrderItem {
   uid: string
   chainId: SupportedChainId
   safeAddress: string
@@ -13,18 +13,18 @@ export interface TwapDiscreteOrderItem {
   order: OrderParameters
   signature: string
 }
-export type TwapDiscreteOrders = { [twapOrderHash: string]: TwapDiscreteOrderItem }
+export type TwapParticleOrders = { [twapOrderHash: string]: TwapParticleOrderItem }
 
-export const twapDiscreteOrdersAtom = atomWithStorage<TwapDiscreteOrders>('twap-discrete-orders-list:v2', {})
+export const twapParticleOrdersAtom = atomWithStorage<TwapParticleOrders>('twap-particle-orders-list:v1', {})
 
-export const twapDiscreteOrdersListAtom = atom((get) => {
+export const twapParticleOrdersListAtom = atom((get) => {
   const { account, chainId } = get(walletInfoAtom)
 
   if (!account || !chainId) return []
 
   const accountLowerCase = account.toLowerCase()
 
-  return Object.values(get(twapDiscreteOrdersAtom)).filter(
+  return Object.values(get(twapParticleOrdersAtom)).filter(
     (order) => order.safeAddress === accountLowerCase && order.chainId === chainId
   )
 })

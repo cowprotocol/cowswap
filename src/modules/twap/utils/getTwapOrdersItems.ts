@@ -3,7 +3,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { getTwapOrderStatus } from './getTwapOrderStatus'
 import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
-import { TwapToDiscreteOrders } from '../hooks/useDiscreteOrdersFromOrderBook'
+import { TwapToDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult } from '../types'
 

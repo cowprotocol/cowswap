@@ -10,7 +10,7 @@ import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
 import { isBarnBackendEnv } from 'legacy/utils/environments'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-import { TwapDiscreteOrderItem, twapDiscreteOrdersListAtom } from 'modules/twap/state/twapDiscreteOrdersAtom'
+import { TwapParticleOrderItem, twapParticleOrdersListAtom } from 'modules/twap/state/twapParticleOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 /**
@@ -28,7 +28,7 @@ import { useWalletInfo } from 'modules/wallet'
 export function useGpOrders(account?: string | null, refreshInterval?: number): EnrichedOrder[] {
   const { chainId: _chainId } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
-  const discreteOrders = useAtomValue(twapDiscreteOrdersListAtom)
+  const twapParticleOrders = useAtomValue(twapParticleOrdersListAtom)
 
   const requestParams = useMemo(() => {
     return account ? { owner: account, limit: AMOUNT_OF_ORDERS_TO_FETCH } : null
@@ -66,16 +66,16 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
   const twapRelatedOrders = useMemo(() => {
     if (!prodOrders) return []
 
-    const discreteOrdersMap = discreteOrders.reduce<{ [uid: string]: TwapDiscreteOrderItem }>((acc, val) => {
+    const particleOrdersMap = twapParticleOrders.reduce<{ [uid: string]: TwapParticleOrderItem }>((acc, val) => {
       acc[val.uid] = val
 
       return acc
     }, {})
 
     return prodOrders.filter((order) => {
-      return discreteOrdersMap[order.uid]
+      return particleOrdersMap[order.uid]
     })
-  }, [discreteOrders, prodOrders])
+  }, [twapParticleOrders, prodOrders])
 
   // Add only TWAP-related orders to the common list of orders
   return useMemo(() => {

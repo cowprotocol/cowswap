@@ -10,15 +10,15 @@ import { computeDiscreteOrderUid } from 'utils/orderUtils/computeDiscreteOrderUi
 
 import { TradeableOrderWithSignature, useTwapOrdersTradeableMulticall } from './useTwapOrdersTradeableMulticall'
 
-import { TwapDiscreteOrderItem, TwapDiscreteOrders } from '../state/twapDiscreteOrdersAtom'
+import { TwapParticleOrderItem, TwapParticleOrders } from '../state/twapParticleOrdersAtom'
 import { TwapOrderInfo } from '../types'
 
-export function useFetchDiscreteOrders(
+export function useFetchTwapParticleOrders(
   safeAddress: string,
   chainId: SupportedChainId,
   composableCowContract: ComposableCoW,
   ordersInfo: TwapOrderInfo[]
-): TwapDiscreteOrders | null {
+): TwapParticleOrders | null {
   const ordersToVerifyParams = useMemo(() => {
     return ordersInfo.map((info) => info.safeData.params)
   }, [ordersInfo])
@@ -34,7 +34,7 @@ export function useFetchDiscreteOrders(
       return Promise.all(
         ordersInfo.map(({ id }, index) => {
           const data = ordersTradeableData[index]
-          return data ? getTwapDiscreteOrderItem(chainId, safeAddressLowerCase, data, id) : Promise.resolve(null)
+          return data ? getTwapParticleOrderItem(chainId, safeAddressLowerCase, data, id) : Promise.resolve(null)
         })
       )
     },
@@ -51,31 +51,31 @@ export function useFetchDiscreteOrders(
       if (item) acc[id] = item
 
       return acc
-    }, {} as TwapDiscreteOrders)
+    }, {} as TwapParticleOrders)
   }, [ordersInfo, items])
 }
 
-async function getTwapDiscreteOrderItem(
+async function getTwapParticleOrderItem(
   chainId: SupportedChainId,
   safeAddress: string,
   data: TradeableOrderWithSignature,
   twapOrderId: string
-): Promise<TwapDiscreteOrderItem | null> {
+): Promise<TwapParticleOrderItem | null> {
   if (!data) return null
 
-  const { order: discreteOrder, signature } = data
-  const { sellToken, buyToken, receiver, validTo, appData } = discreteOrder
+  const { order: particleOrder, signature } = data
+  const { sellToken, buyToken, receiver, validTo, appData } = particleOrder
   const fixedOrder = {
     sellToken,
     buyToken,
     receiver,
     validTo,
     appData,
-    sellAmount: discreteOrder.sellAmount.toString(),
-    buyAmount: discreteOrder.buyAmount.toString(),
-    feeAmount: discreteOrder.feeAmount.toString(),
+    sellAmount: particleOrder.sellAmount.toString(),
+    buyAmount: particleOrder.buyAmount.toString(),
+    feeAmount: particleOrder.feeAmount.toString(),
     kind: 'sell', // TODO: discuss it, smart-contract returns bytes here
-    partiallyFillable: discreteOrder.partiallyFillable,
+    partiallyFillable: particleOrder.partiallyFillable,
   } as Order
 
   const uid = await computeDiscreteOrderUid(chainId, safeAddress, fixedOrder)
