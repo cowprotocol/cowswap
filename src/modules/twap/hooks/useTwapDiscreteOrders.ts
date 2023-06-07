@@ -5,18 +5,18 @@ import { Order } from 'legacy/state/orders/actions'
 import { useOrdersById } from 'legacy/state/orders/hooks'
 
 import { useWalletInfo } from '../../wallet'
-import { twapParticleOrdersListAtom } from '../state/twapParticleOrdersAtom'
+import { twapPartOrdersListAtom } from '../state/twapPartOrdersAtom'
 
 export type TwapToDiscreteOrders = { [twapOrderId: string]: Order }
 
 export function useTwapDiscreteOrders(): TwapToDiscreteOrders | null {
   const { chainId } = useWalletInfo()
-  const particleOrders = useAtomValue(twapParticleOrdersListAtom)
-  const ids = useMemo(() => particleOrders.map((item) => item.uid), [particleOrders])
+  const partOrders = useAtomValue(twapPartOrdersListAtom)
+  const ids = useMemo(() => partOrders.map((item) => item.uid), [partOrders])
   const orders = useOrdersById({ chainId, ids })
 
   return useMemo(() => {
-    return particleOrders.reduce<TwapToDiscreteOrders>((acc, item) => {
+    return partOrders.reduce<TwapToDiscreteOrders>((acc, item) => {
       const order = orders?.[item.uid]
 
       if (order) {
@@ -25,5 +25,5 @@ export function useTwapDiscreteOrders(): TwapToDiscreteOrders | null {
 
       return acc
     }, {})
-  }, [particleOrders, orders])
+  }, [partOrders, orders])
 }

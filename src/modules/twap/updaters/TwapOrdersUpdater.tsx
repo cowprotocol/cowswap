@@ -6,11 +6,11 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoW } from 'abis/types'
 
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
-import { useFetchTwapParticleOrders } from '../hooks/useFetchTwapParticleOrders'
+import { useFetchTwapPartOrders } from '../hooks/useFetchTwapPartOrders'
 import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { updateTwapParticleOrdersAtom } from '../state/twapParticleOrdersAtom'
+import { updateTwapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderInfo } from '../types'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getTwapOrdersItems } from '../utils/getTwapOrdersItems'
@@ -26,7 +26,7 @@ export function TwapOrdersUpdater(props: {
 
   const twapDiscreteOrders = useTwapDiscreteOrders()
   const setTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
-  const updateTwapParticleOrders = useUpdateAtom(updateTwapParticleOrdersAtom)
+  const updateTwapPartOrders = useUpdateAtom(updateTwapPartOrdersAtom)
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
   const allOrdersInfo: TwapOrderInfo[] = useMemo(() => {
@@ -48,7 +48,7 @@ export function TwapOrdersUpdater(props: {
     return allOrdersInfo.filter((info) => !info.isExpired && info.safeData.isExecuted)
   }, [allOrdersInfo])
 
-  const particleOrders = useFetchTwapParticleOrders(safeAddress, chainId, composableCowContract, openOrCancelledOrders)
+  const partOrders = useFetchTwapPartOrders(safeAddress, chainId, composableCowContract, openOrCancelledOrders)
   // Here we know which orders are cancelled: if it's auth !== true, then it's cancelled
   const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, openOrCancelledOrders)
 
@@ -61,10 +61,10 @@ export function TwapOrdersUpdater(props: {
   }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, setTwapOrders])
 
   useEffect(() => {
-    if (!particleOrders) return
+    if (!partOrders) return
 
-    updateTwapParticleOrders(particleOrders)
-  }, [particleOrders, updateTwapParticleOrders])
+    updateTwapPartOrders(partOrders)
+  }, [partOrders, updateTwapPartOrders])
 
   return null
 }

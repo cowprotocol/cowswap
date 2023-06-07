@@ -10,15 +10,15 @@ import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
 import { TradeableOrderWithSignature, useTwapOrdersTradeableMulticall } from './useTwapOrdersTradeableMulticall'
 
-import { TwapParticleOrderItem, TwapParticleOrders } from '../state/twapParticleOrdersAtom'
+import { TwapPartOrderItem, TwapPartOrders } from '../state/twapPartOrdersAtom'
 import { TwapOrderInfo } from '../types'
 
-export function useFetchTwapParticleOrders(
+export function useFetchTwapPartOrders(
   safeAddress: string,
   chainId: SupportedChainId,
   composableCowContract: ComposableCoW,
   ordersInfo: TwapOrderInfo[]
-): TwapParticleOrders | null {
+): TwapPartOrders | null {
   const ordersToVerifyParams = useMemo(() => {
     return ordersInfo.map((info) => info.safeData.params)
   }, [ordersInfo])
@@ -34,7 +34,7 @@ export function useFetchTwapParticleOrders(
       return Promise.all(
         ordersInfo.map(({ id }, index) => {
           const data = ordersTradeableData[index]
-          return data ? getTwapParticleOrderItem(chainId, safeAddressLowerCase, data, id) : Promise.resolve(null)
+          return data ? getTwapPartOrderItem(chainId, safeAddressLowerCase, data, id) : Promise.resolve(null)
         })
       )
     },
@@ -51,31 +51,31 @@ export function useFetchTwapParticleOrders(
       if (item) acc[id] = item
 
       return acc
-    }, {} as TwapParticleOrders)
+    }, {} as TwapPartOrders)
   }, [ordersInfo, items])
 }
 
-async function getTwapParticleOrderItem(
+async function getTwapPartOrderItem(
   chainId: SupportedChainId,
   safeAddress: string,
   data: TradeableOrderWithSignature,
   twapOrderId: string
-): Promise<TwapParticleOrderItem | null> {
+): Promise<TwapPartOrderItem | null> {
   if (!data) return null
 
-  const { order: particleOrder, signature } = data
-  const { sellToken, buyToken, receiver, validTo, appData } = particleOrder
+  const { order: partOrder, signature } = data
+  const { sellToken, buyToken, receiver, validTo, appData } = partOrder
   const fixedOrder = {
     sellToken,
     buyToken,
     receiver,
     validTo,
     appData,
-    sellAmount: particleOrder.sellAmount.toString(),
-    buyAmount: particleOrder.buyAmount.toString(),
-    feeAmount: particleOrder.feeAmount.toString(),
+    sellAmount: partOrder.sellAmount.toString(),
+    buyAmount: partOrder.buyAmount.toString(),
+    feeAmount: partOrder.feeAmount.toString(),
     kind: 'sell', // TODO: discuss it, smart-contract returns bytes here
-    partiallyFillable: particleOrder.partiallyFillable,
+    partiallyFillable: partOrder.partiallyFillable,
   } as Order
 
   const uid = await computeOrderUid(chainId, safeAddress, fixedOrder)

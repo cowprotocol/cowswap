@@ -11,7 +11,7 @@ import { isBarnBackendEnv } from 'legacy/utils/environments'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { emulatedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
-import { TwapParticleOrderItem, twapParticleOrdersListAtom } from 'modules/twap/state/twapParticleOrdersAtom'
+import { TwapPartOrderItem, twapPartOrdersListAtom } from 'modules/twap/state/twapPartOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 
 /**
@@ -30,7 +30,7 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
   const { chainId: _chainId } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
   const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
-  const twapParticleOrders = useAtomValue(twapParticleOrdersListAtom)
+  const twapParticleOrders = useAtomValue(twapPartOrdersListAtom)
 
   const requestParams = useMemo(() => {
     return account ? { owner: account, limit: AMOUNT_OF_ORDERS_TO_FETCH } : null
@@ -68,7 +68,7 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
   const twapRelatedOrders = useMemo(() => {
     if (!prodOrders) return []
 
-    const particleOrdersMap = twapParticleOrders.reduce<{ [uid: string]: TwapParticleOrderItem }>((acc, val) => {
+    const particleOrdersMap = twapParticleOrders.reduce<{ [uid: string]: TwapPartOrderItem }>((acc, val) => {
       acc[val.uid] = val
 
       return acc
