@@ -17,7 +17,7 @@ interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
   fiatAmount: Nullish<CurrencyAmount<Currency>>
   label: JSX.Element
-  tooltip: ReactNode | ((params: any) => ReactNode)
+  tooltip: ReactNode
 }
 
 function TradeAmountPreview(props: TradeAmountPreviewProps) {
