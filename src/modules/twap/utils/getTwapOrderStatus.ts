@@ -1,22 +1,22 @@
 import { Order, PENDING_STATES } from 'legacy/state/orders/actions'
 
-import { TWAPOrderStatus, TWAPOrderStruct } from '../types'
+import { TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
   isExecuted: boolean,
   auth: boolean,
   discreteOrder: Order | undefined
-): TWAPOrderStatus {
-  if (isTwapOrderExpired(order)) return TWAPOrderStatus.Expired
+): TwapOrderStatus {
+  if (isTwapOrderExpired(order)) return TwapOrderStatus.Expired
 
-  if (!isExecuted) return TWAPOrderStatus.WaitSigning
+  if (!isExecuted) return TwapOrderStatus.WaitSigning
 
-  if (!auth) return TWAPOrderStatus.Cancelled
+  if (!auth) return TwapOrderStatus.Cancelled
 
-  if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TWAPOrderStatus.Pending
+  if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TwapOrderStatus.Pending
 
-  return TWAPOrderStatus.Scheduled
+  return TwapOrderStatus.Scheduled
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct): boolean {

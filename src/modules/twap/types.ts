@@ -29,7 +29,7 @@ export interface TWAPOrderStruct {
   span: number
 }
 
-export enum TWAPOrderStatus {
+export enum TwapOrderStatus {
   WaitSigning = 'WaitSigning',
   Pending = 'Pending',
   Scheduled = 'Scheduled',
@@ -39,7 +39,7 @@ export enum TWAPOrderStatus {
 
 export interface TwapOrderItem {
   order: TWAPOrderStruct
-  status: TWAPOrderStatus
+  status: TwapOrderStatus
   chainId: SupportedChainId
   safeAddress: string
   hash: string

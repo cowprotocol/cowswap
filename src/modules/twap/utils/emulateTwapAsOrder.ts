@@ -2,15 +2,15 @@ import { EnrichedOrder, OrderClass, OrderKind, SigningScheme, OrderStatus } from
 
 import { TokensByAddress } from 'modules/tokensList/state/tokensListAtom'
 
-import { TwapOrderItem, TWAPOrderStatus } from '../types'
+import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 // TODO: add FULFILLED status
-const statusMap: Record<TWAPOrderStatus, OrderStatus> = {
-  [TWAPOrderStatus.Pending]: OrderStatus.OPEN,
-  [TWAPOrderStatus.Scheduled]: OrderStatus.OPEN,
-  [TWAPOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
-  [TWAPOrderStatus.Cancelled]: OrderStatus.CANCELLED,
-  [TWAPOrderStatus.Expired]: OrderStatus.EXPIRED,
+const statusMap: Record<TwapOrderStatus, OrderStatus> = {
+  [TwapOrderStatus.Pending]: OrderStatus.OPEN,
+  [TwapOrderStatus.Scheduled]: OrderStatus.OPEN,
+  [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
+  [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
+  [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
 }
 
 export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem): EnrichedOrder {
