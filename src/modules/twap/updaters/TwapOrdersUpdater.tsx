@@ -12,8 +12,8 @@ import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { updateTwapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderInfo } from '../types'
+import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
-import { getTwapOrdersItems } from '../utils/getTwapOrdersItems'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
 import { parseTwapOrderStruct } from '../utils/parseTwapOrderStruct'
 
@@ -55,7 +55,7 @@ export function TwapOrdersUpdater(props: {
   useEffect(() => {
     if (!ordersAuthResult || !twapDiscreteOrders) return
 
-    const items = getTwapOrdersItems(chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders)
+    const items = buildTwapOrdersItems(chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders)
 
     setTwapOrders(items)
   }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, setTwapOrders])

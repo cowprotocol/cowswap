@@ -10,7 +10,7 @@ import { TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersList } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult } from '../types'
 
-export function getTwapOrdersItems(
+export function buildTwapOrdersItems(
   chainId: SupportedChainId,
   safeAddress: string,
   ordersInfo: TwapOrderInfo[],
