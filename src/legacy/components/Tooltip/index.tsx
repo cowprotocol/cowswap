@@ -12,7 +12,7 @@ export const TooltipContainer = styled.div`
 `
 
 export interface TooltipProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
-  text: ReactNode | ((params?: any) => ReactNode)
+  text: ReactNode
 }
 
 interface TooltipContentProps extends Omit<PopoverProps, 'content' | 'PopoverContainer' | 'Arrow'> {
@@ -27,7 +27,7 @@ export default function Tooltip({ text, className, ...rest }: TooltipProps) {
   return (
     <Popover
       className={className}
-      content={<TooltipContainer>{typeof text === 'function' ? text() : text}</TooltipContainer>}
+      content={<TooltipContainer>{text}</TooltipContainer>}
       {...rest}
     />
   )
