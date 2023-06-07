@@ -6,6 +6,7 @@ import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
+import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { LabelTooltipItems } from 'modules/twap'
 
@@ -48,14 +49,14 @@ export function AmountParts({ partsState, labels }: { partsState: PartsState; la
             {labels.sellAmount.label} (1/{numberOfPartsValue})
           </>
         }
-        tooltip={sellAmount.tooltip}
+        tooltip={renderTooltip(sellAmount.tooltip)}
         amount={inputPartAmount}
         fiatAmount={inputFiatAmount}
       />
 
       <TradeAmountPreview
         label={<>buyAmount.label (1/{numberOfPartsValue})</>}
-        tooltip={buyAmount.tooltip}
+        tooltip={renderTooltip(buyAmount.tooltip)}
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
       />
