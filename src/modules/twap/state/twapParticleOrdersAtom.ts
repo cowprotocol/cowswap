@@ -17,6 +17,14 @@ export type TwapParticleOrders = { [twapOrderHash: string]: TwapParticleOrderIte
 
 export const twapParticleOrdersAtom = atomWithStorage<TwapParticleOrders>('twap-particle-orders-list:v1', {})
 
+export const updateTwapParticleOrdersAtom = atom(null, (get, set, nextState: TwapParticleOrders) => {
+  const currentState = get(twapParticleOrdersAtom)
+
+  if (JSON.stringify(nextState) !== JSON.stringify(currentState)) {
+    set(twapParticleOrdersAtom, nextState)
+  }
+})
+
 export const twapParticleOrdersListAtom = atom((get) => {
   const { account, chainId } = get(walletInfoAtom)
 

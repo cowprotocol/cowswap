@@ -9,8 +9,8 @@ import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useFetchTwapParticleOrders } from '../hooks/useFetchTwapParticleOrders'
 import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
-import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { twapParticleOrdersAtom } from '../state/twapParticleOrdersAtom'
+import { updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
+import { updateTwapParticleOrdersAtom } from '../state/twapParticleOrdersAtom'
 import { TwapOrderInfo } from '../types'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getTwapOrdersItems } from '../utils/getTwapOrdersItems'
@@ -25,8 +25,8 @@ export function TwapOrdersUpdater(props: {
   const { safeAddress, chainId, composableCowContract } = props
 
   const twapDiscreteOrders = useTwapDiscreteOrders()
-  const setTwapOrders = useUpdateAtom(twapOrdersListAtom)
-  const updateTwapParticleOrders = useUpdateAtom(twapParticleOrdersAtom)
+  const setTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
+  const updateTwapParticleOrders = useUpdateAtom(updateTwapParticleOrdersAtom)
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
   const allOrdersInfo: TwapOrderInfo[] = useMemo(() => {
@@ -55,12 +55,10 @@ export function TwapOrdersUpdater(props: {
   useEffect(() => {
     if (!ordersAuthResult || !twapDiscreteOrders) return
 
-    const items = getTwapOrdersItems(safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders)
-
-    if (!items.length) return
+    const items = getTwapOrdersItems(chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders)
 
     setTwapOrders(items)
-  }, [safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, setTwapOrders])
+  }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, setTwapOrders])
 
   useEffect(() => {
     if (!particleOrders) return

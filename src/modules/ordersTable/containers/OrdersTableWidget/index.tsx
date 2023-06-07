@@ -46,12 +46,12 @@ const ContentWrapper = styled.div`
   width: 100%;
 `
 
-export function OrdersTableWidget({ customOrders }: { customOrders?: ParsedOrder[] }) {
+export function OrdersTableWidget() {
   const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
   const allOrders = useOrders({ chainId })
-  const ordersList = useOrdersTableList(allOrders, customOrders)
+  const ordersList = useOrdersTableList(allOrders)
   const cancelOrder = useCancelOrder()
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)

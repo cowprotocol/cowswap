@@ -1,3 +1,4 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { TwapOrdersSafeData } from './services/fetchTwapOrdersFromSafe'
@@ -39,6 +40,7 @@ export enum TWAPOrderStatus {
 export interface TwapOrderItem {
   order: TWAPOrderStruct
   status: TWAPOrderStatus
+  chainId: SupportedChainId
   safeAddress: string
   hash: string
   submissionDate: string

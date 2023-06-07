@@ -5,19 +5,29 @@ import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { TwapOrderItem } from '../types'
-import { parsePendingTwapOrder } from '../utils/parsePendingTwapOrder'
+import { emulateTwapAsDiscreteOrder } from '../utils/emulateTwapAsDiscreteOrder'
 
-export const twapOrdersListAtom = atomWithStorage<TwapOrderItem[]>('twap-orders-list:v1', [])
+export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
-export const parsedTwapOrdersAtom = atom((get) => {
-  const { account } = get(walletInfoAtom)
+export const twapOrdersListAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v2', {})
+
+export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrdersList) => {
+  const currentState = get(twapOrdersListAtom)
+
+  if (JSON.stringify(nextState) !== JSON.stringify(currentState)) {
+    set(twapOrdersListAtom, nextState)
+  }
+})
+
+export const emulatedTwapOrdersAtom = atom((get) => {
+  const { account, chainId } = get(walletInfoAtom)
   const tokens = get(tokensByAddressAtom)
-  const orders = get(twapOrdersListAtom)
+  const orders = Object.values(get(twapOrdersListAtom))
   const accountLowerCase = account?.toLowerCase()
 
   if (!accountLowerCase) return []
 
   return orders
-    .filter((order) => order.safeAddress.toLowerCase() === accountLowerCase)
-    .map((order) => parsePendingTwapOrder(tokens, order))
+    .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
+    .map((order) => emulateTwapAsDiscreteOrder(tokens, order))
 })

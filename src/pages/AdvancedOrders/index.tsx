@@ -1,14 +1,10 @@
-import { useAtomValue } from 'jotai'
-
 import { AdvancedOrdersWidget } from 'modules/advancedOrders'
 import { OrdersTableWidget } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TwapFormWidget } from 'modules/twap'
-import { parsedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
-export default function AdvancedOrdersPage() {
-  const parsedTwapOrders = useAtomValue(parsedTwapOrdersAtom)
 
+export default function AdvancedOrdersPage() {
   return (
     <>
       {/*TODO: add isExpertMode value*/}
@@ -24,7 +20,7 @@ export default function AdvancedOrdersPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget customOrders={parsedTwapOrders} />
+          <OrdersTableWidget />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>

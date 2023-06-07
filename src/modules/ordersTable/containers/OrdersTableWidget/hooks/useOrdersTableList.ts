@@ -14,7 +14,7 @@ export interface OrdersTableList {
 
 const ORDERS_LIMIT = 100
 
-export function useOrdersTableList(allOrders: Order[], customOrders?: ParsedOrder[]): OrdersTableList {
+export function useOrdersTableList(allOrders: Order[]): OrdersTableList {
   const { account } = useWalletInfo()
   const accountLowerCase = account?.toLowerCase()
 
@@ -23,13 +23,9 @@ export function useOrdersTableList(allOrders: Order[], customOrders?: ParsedOrde
     [accountLowerCase]
   )
 
-  const parsedOrders = useMemo(() => {
-    return allOrders.filter(ordersFilter).map(parseOrder)
-  }, [allOrders, ordersFilter])
-
   const allSortedOrders = useMemo(() => {
-    return [...parsedOrders, ...(customOrders || [])].sort(ordersSorter)
-  }, [parsedOrders, customOrders])
+    return allOrders.filter(ordersFilter).map(parseOrder).sort(ordersSorter)
+  }, [allOrders, ordersFilter])
 
   return useMemo(() => {
     const { pending, history } = allSortedOrders.reduce(

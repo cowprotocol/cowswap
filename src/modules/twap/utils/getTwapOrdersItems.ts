@@ -1,3 +1,5 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { Order } from 'legacy/state/orders/actions'
 
 import { getTwapOrderStatus } from './getTwapOrderStatus'
@@ -5,20 +7,24 @@ import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
 import { TwapToDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
+import { TwapOrdersList } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult } from '../types'
 
 export function getTwapOrdersItems(
+  chainId: SupportedChainId,
   safeAddress: string,
   ordersInfo: TwapOrderInfo[],
   ordersAuthResult: TwapOrdersAuthResult,
   discreteOrders: TwapToDiscreteOrders
-): TwapOrderItem[] {
-  return ordersInfo.map(({ safeData, id }) => {
-    return getTwapOrderItem(safeAddress, safeData, id, ordersAuthResult[id], discreteOrders[id])
-  })
+): TwapOrdersList {
+  return ordersInfo.reduce<TwapOrdersList>((acc, { safeData, id }) => {
+    acc[id] = getTwapOrderItem(chainId, safeAddress, safeData, id, ordersAuthResult[id], discreteOrders[id])
+    return acc
+  }, {})
 }
 
 function getTwapOrderItem(
+  chainId: SupportedChainId,
   safeAddress: string,
   safeData: TwapOrdersSafeData,
   hash: string,
@@ -33,6 +39,7 @@ function getTwapOrderItem(
   return {
     order,
     status,
+    chainId,
     safeAddress,
     hash,
     submissionDate,

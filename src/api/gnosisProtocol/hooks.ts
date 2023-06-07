@@ -10,6 +10,7 @@ import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
 import { isBarnBackendEnv } from 'legacy/utils/environments'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
+import { emulatedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
 import { TwapParticleOrderItem, twapParticleOrdersListAtom } from 'modules/twap/state/twapParticleOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -28,6 +29,7 @@ import { useWalletInfo } from 'modules/wallet'
 export function useGpOrders(account?: string | null, refreshInterval?: number): EnrichedOrder[] {
   const { chainId: _chainId } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
+  const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
   const twapParticleOrders = useAtomValue(twapParticleOrdersListAtom)
 
   const requestParams = useMemo(() => {
@@ -48,7 +50,7 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
   // Fetch PROD orders only when current env is not prod
   // We need them for TWAP
   const { data: loadedProdOrders } = useSWR<EnrichedOrder[]>(
-    ['orders', requestParams, chainId],
+    ['prod-orders', requestParams, chainId],
     () => {
       if (!chainId || !requestParams) return []
       if (!isBarnBackendEnv) return []
@@ -79,8 +81,8 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
 
   // Add only TWAP-related orders to the common list of orders
   return useMemo(() => {
-    return [...(currentEnvOrders || []), ...twapRelatedOrders]
-  }, [currentEnvOrders, twapRelatedOrders])
+    return [...(currentEnvOrders || []), ...emulatedTwapOrders, ...twapRelatedOrders]
+  }, [currentEnvOrders, emulatedTwapOrders, twapRelatedOrders])
 }
 
 export function useHasOrders(account?: string | null): boolean | undefined {
