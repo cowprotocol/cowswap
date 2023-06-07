@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai/utils'
 
-import { GnosisSafeInfo, WalletDetails, WalletInfo } from 'modules/wallet'
+import { GnosisSafeInfo, useIsSafeApp, WalletDetails, WalletInfo } from 'modules/wallet'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
 
@@ -18,4 +18,11 @@ export function useWalletDisplayedAddress(): string {
 
 export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
   return useAtomValue(gnosisSafeInfoAtom)
+}
+
+export function useIsBundlingSupported(): boolean {
+  // For now, bundling can only be performed while the App is loaded as a Safe App
+  // Pending a custom RPC endpoint implementation on Safe side to allow
+  // tx bundling via WalletConnect
+  return useIsSafeApp()
 }

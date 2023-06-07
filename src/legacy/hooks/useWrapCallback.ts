@@ -6,7 +6,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { t } from '@lingui/macro'
 
 import { wrapAnalytics } from 'legacy/components/analytics'
-import { getOperationMessage, OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { getOperationMessage } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { RADIX_HEX } from 'legacy/constants'
 import { useWETHContract } from 'legacy/hooks/useContract'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -15,9 +16,10 @@ import { useDerivedSwapInfo } from 'legacy/state/swap/hooks'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 import { getChainCurrencySymbols } from 'legacy/utils/gnosis_chain/hack'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useTransactionConfirmModal } from 'modules/swap/hooks/useTransactionConfirmModal'
 import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
+import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
+import { useNativeTokenContext } from 'modules/trade/hooks/useNativeTokenContext'
 import { useWalletInfo } from 'modules/wallet'
 
 import { formatTokenAmount } from 'utils/amountFormat'
@@ -42,7 +44,7 @@ export type WrapUnwrapCallback = (params?: WrapUnwrapCallbackParams) => Promise<
 
 type TransactionAdder = ReturnType<typeof useTransactionAdder>
 
-export type OpenSwapConfirmModalCallback = (message: string, operationType: OperationType) => void
+export type OpenSwapConfirmModalCallback = (message: string, operationType: ConfirmOperationType) => void
 
 export interface WrapUnwrapContext {
   wrapType: WrapType
@@ -61,12 +63,12 @@ export function useHasEnoughWrappedBalanceForSwap(inputAmount?: CurrencyAmount<C
   const { account } = useWalletInfo()
   const wrappedBalance = useCurrencyBalance(account ?? undefined, currencies.INPUT?.wrapped)
 
-  // is an native currency trade but wrapped token has enough balance
+  // is a native currency trade but wrapped token has enough balance
   return !!(wrappedBalance && inputAmount && !wrappedBalance.lessThan(inputAmount))
 }
 
 export function useWrapType(): WrapType {
-  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut } = useDetectNativeToken()
+  const { isNativeIn, isNativeOut, isWrappedIn, isWrappedOut } = useNativeTokenContext()
 
   const isWrap = isNativeIn && isWrappedOut
   const isUnwrap = isWrappedIn && isNativeOut
@@ -104,7 +106,7 @@ export function useWrapUnwrapContext(
   const closeModals = useCloseModals()
   const wethContract = useWETHContract()
   const { native, wrapped } = getChainCurrencySymbols(chainId)
-  const { isNativeIn } = useDetectNativeToken()
+  const isNativeIn = useIsNativeIn()
   const addTransaction = useTransactionAdder()
   const wrapType = isNativeIn ? WrapType.WRAP : WrapType.UNWRAP
   const isWrap = isNativeIn
@@ -114,11 +116,11 @@ export function useWrapUnwrapContext(
     return null
   }
 
-  const openTransactionConfirmationModal = (pendingText: string, operationType: OperationType) => {
+  const openTransactionConfirmationModal = (pendingText: string, operationType: ConfirmOperationType) => {
     openTxConfirmationModal({ operationType, pendingText })
   }
   const amountHex = `0x${inputAmount.quotient.toString(RADIX_HEX)}`
-  const operationType = isWrap ? OperationType.WRAP_ETHER : OperationType.UNWRAP_WETH
+  const operationType = isWrap ? ConfirmOperationType.WRAP_ETHER : ConfirmOperationType.UNWRAP_WETH
   const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
   const baseSummary = `${formatTokenAmount(inputAmount)} ${baseSummarySuffix}`
   const summary = `${isWrap ? 'Wrap' : 'Unwrap'} ${baseSummary}`
@@ -170,7 +172,7 @@ export async function wrapUnwrapCallback(
     closeModals,
   } = context
   const isWrap = wrapType === WrapType.WRAP
-  const operationType = isWrap ? OperationType.WRAP_ETHER : OperationType.UNWRAP_WETH
+  const operationType = isWrap ? ConfirmOperationType.WRAP_ETHER : ConfirmOperationType.UNWRAP_WETH
 
   try {
     useModals && openTransactionConfirmationModal(confirmationMessage, operationType)

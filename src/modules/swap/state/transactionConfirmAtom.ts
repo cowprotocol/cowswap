@@ -1,13 +1,13 @@
 import { atom } from 'jotai'
 
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 
 export interface TransactionConfirmState {
-  operationType: OperationType
+  operationType: ConfirmOperationType
   pendingText: string
 }
 
 export const transactionConfirmAtom = atom<TransactionConfirmState>({
-  operationType: OperationType.UNWRAP_WETH,
+  operationType: ConfirmOperationType.UNWRAP_WETH,
   pendingText: '',
 })

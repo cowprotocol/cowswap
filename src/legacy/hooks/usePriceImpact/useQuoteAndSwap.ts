@@ -16,7 +16,7 @@ import { getPromiseFulfilledValue, isPromiseFulfilled } from 'legacy/utils/misc'
 import { getBestQuote, QuoteResult } from 'legacy/utils/price'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
 import { useWalletInfo } from 'modules/wallet'
 
 import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
@@ -55,7 +55,7 @@ export function useCalculateQuote(params: GetQuoteParams) {
   } = params
   const { chainId: preChain } = useWalletInfo()
   const { account } = useWalletInfo()
-  const isEthFlow = useIsEthFlow()
+  const isEthFlow = useIsEoaEthFlow()
   const strategy = useGetGpPriceStrategy()
 
   const [quote, setLocalQuote] = useState<QuoteInformationObject | FeeQuoteParamsWithError | undefined>()

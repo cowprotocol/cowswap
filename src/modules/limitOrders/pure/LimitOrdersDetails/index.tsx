@@ -10,7 +10,6 @@ import { InfoIcon } from 'legacy/components/InfoIcon'
 import QuestionHelper from 'legacy/components/QuestionHelper'
 import { isAddress, shortenAddress } from 'legacy/utils'
 
-import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
@@ -19,8 +18,9 @@ import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { limitOrdersFeatures } from 'constants/featureFlags'
+import { ordersTableFeatures } from 'constants/featureFlags'
 import { DEFAULT_DATE_FORMAT } from 'constants/intl'
 import { formatInputAmount } from 'utils/amountFormat'
 
@@ -80,7 +80,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
         <styledEl.StyledRateInfo isInvertedState={isInvertedState} rateInfoParams={rateInfoParams} />
       </styledEl.DetailsRow>
 
-      {limitOrdersFeatures.DISPLAY_EXECUTION_TIME && (
+      {ordersTableFeatures.DISPLAY_EXECUTION_TIME && (
         <styledEl.DetailsRow>
           <div>
             <span>

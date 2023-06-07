@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Erc20 } from 'legacy/abis/types'
+import { Erc20, Weth } from 'legacy/abis/types'
 import { AppDispatch } from 'legacy/state'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { AddOrderCallback } from 'legacy/state/orders/hooks'
@@ -15,6 +15,7 @@ import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
 
 import { GPv2Settlement } from 'abis/types'
 import { CoWSwapEthFlow } from 'abis/types/ethflow'
+import { FlowType } from '../hooks/useFlowContext'
 
 export interface BaseFlowContext {
   context: {
@@ -22,6 +23,7 @@ export interface BaseFlowContext {
     trade: TradeGp
     inputAmountWithSlippage: CurrencyAmount<Currency>
     outputAmountWithSlippage: CurrencyAmount<Currency>
+    flowType: FlowType
   }
   flags: {
     allowsOffchainSigning: boolean
@@ -50,11 +52,18 @@ export type EthFlowContext = BaseFlowContext & {
   addInFlightOrderId: (orderId: string) => void
 }
 
-export type SafeBundleFlowContext = BaseFlowContext & {
-  erc20Contract: Erc20
+export type BaseSafeFlowContext = BaseFlowContext & {
   settlementContract: GPv2Settlement
-  addTransaction: ReturnType<typeof useTransactionAdder>
   spender: string
   safeAppsSdk: SafeAppsSDK
   provider: Web3Provider
+}
+
+export type SafeBundleApprovalFlowContext = BaseSafeFlowContext & {
+  erc20Contract: Erc20
+}
+
+export type SafeBundleEthFlowContext = BaseSafeFlowContext & {
+  wrappedNativeContract: Weth
+  needsApproval: boolean
 }

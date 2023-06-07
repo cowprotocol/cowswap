@@ -12,7 +12,7 @@ import { BadgeVariant } from 'legacy/components/Badge'
 import { ExplorerLink } from 'legacy/components/ExplorerLink'
 import { FaqDrawer } from 'legacy/components/FaqDrawer'
 import { Stepper } from 'legacy/components/Stepper'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useClaimState,
@@ -73,7 +73,7 @@ const FAQ_DATA = (chainId: number | undefined) => [
 
 export type InvestmentFlowProps = Pick<ClaimCommonTypes, 'hasClaims' | 'claims' | 'isAirdropOnly'> & {
   modalCbs: {
-    openModal: (message: string, operationType: OperationType) => void
+    openModal: (message: string, operationType: ConfirmOperationType) => void
     closeModal: () => void
   }
 }

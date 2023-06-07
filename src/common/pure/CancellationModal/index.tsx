@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import { ConfirmationPendingContent, OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
 import { shortenOrderId } from 'legacy/utils'
 
 import { CancellationModalContext } from 'common/hooks/useCancelOrder/state'
@@ -40,9 +41,10 @@ export function CancellationModal(props: CancellationModalProps): JSX.Element | 
       return <TransactionErrorContent onDismiss={onDismiss} message={error || 'Failed to cancel order'} />
     }
 
+    // TODO: use TradeConfirmModal
     if (isPendingSignature) {
       return (
-        <ConfirmationPendingContent
+        <LegacyConfirmationPendingContent
           chainId={chainId}
           onDismiss={onDismiss}
           pendingText={
@@ -52,7 +54,7 @@ export function CancellationModal(props: CancellationModalProps): JSX.Element | 
               <em>{summary}</em>
             </>
           }
-          operationType={OperationType.ORDER_CANCEL}
+          operationType={ConfirmOperationType.ORDER_CANCEL}
         />
       )
     } else {

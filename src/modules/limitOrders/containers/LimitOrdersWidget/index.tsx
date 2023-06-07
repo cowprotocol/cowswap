@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
@@ -15,10 +15,9 @@ import { useLimitOrdersPriceImpactParams } from 'modules/limitOrders/hooks/useLi
 import { useSetupLimitOrderAmountsFromUrl } from 'modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useSetupTradeState } from 'modules/trade'
-import { TradeWidget } from 'modules/trade/containers/TradeWidget'
+import { useSetupTradeState, TradeWidget } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
 
 import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -80,6 +79,12 @@ export function LimitOrdersWidget() {
   )
 
   const priceImpact = usePriceImpact(useLimitOrdersPriceImpactParams())
+  const quoteAmount = useMemo(
+    () => (orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount),
+    [orderKind, inputCurrencyAmount, outputCurrencyAmount]
+  )
+
+  useSetTradeQuoteParams(quoteAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -155,7 +160,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const isPartiallyFillable = featurePartialFillsEnabled && settingsState.partialFillsEnabled
 
-  const [showConfirmation, setShowConfirmation] = useState(false)
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
 
   const inputCurrencyPreviewInfo = {
@@ -206,12 +210,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
         {!isWrapOrUnwrap && <LimitOrdersWarnings priceImpact={priceImpact} feeAmount={feeAmount} />}
 
         <styledEl.TradeButtonBox>
-          <TradeButtons
-            inputCurrencyAmount={inputCurrencyInfo.amount}
-            tradeContext={tradeContext}
-            priceImpact={priceImpact}
-            openConfirmScreen={() => setShowConfirmation(true)}
-          />
+          <TradeButtons tradeContext={tradeContext} priceImpact={priceImpact} />
         </styledEl.TradeButtonBox>
       </>
     ),
@@ -238,12 +237,10 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       />
       {tradeContext && (
         <LimitOrdersConfirmModal
-          isOpen={showConfirmation}
           tradeContext={tradeContext}
           priceImpact={priceImpact}
           inputCurrencyInfo={inputCurrencyPreviewInfo}
           outputCurrencyInfo={outputCurrencyPreviewInfo}
-          onDismiss={() => setShowConfirmation(false)}
         />
       )}
       {isUnlocked && <InfoBanner />}

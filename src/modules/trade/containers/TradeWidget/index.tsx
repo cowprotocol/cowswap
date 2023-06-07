@@ -29,13 +29,14 @@ export interface TradeWidgetActions {
 interface TradeWidgetParams {
   recipient: string | null
   disableNonToken?: boolean
-  isEthFlow?: boolean
+  isEoaEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
   priceImpact: PriceImpact
   isRateLoading?: boolean
   disableQuotePolling?: boolean
+  canSellAllNative?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -68,11 +69,12 @@ export function TradeWidget(props: TradeWidgetProps) {
     showRecipient,
     isTradePriceUpdating,
     isRateLoading,
-    isEthFlow = false,
+    isEoaEthFlow = false,
     disableNonToken = false,
     priceImpact,
     recipient,
     disableQuotePolling = false,
+    canSellAllNative = false,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -81,7 +83,7 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
-  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
+  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, canSellAllNative)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
   // Disable too frequent tokens switching
@@ -122,6 +124,7 @@ export function TradeWidget(props: TradeWidgetProps) {
                   allowsOffchainSigning={allowsOffchainSigning}
                   currencyInfo={inputCurrencyInfo}
                   showSetMax={showSetMax}
+                  maxBalance={maxBalance}
                   topLabel={inputCurrencyInfo.label}
                 />
               </div>
@@ -140,9 +143,9 @@ export function TradeWidget(props: TradeWidgetProps) {
                 <CurrencyInputPanel
                   id="output-currency-input"
                   disableNonToken={disableNonToken}
-                  inputDisabled={isEthFlow || disableOutput}
+                  inputDisabled={isEoaEthFlow || disableOutput}
                   inputTooltip={
-                    isEthFlow
+                    isEoaEthFlow
                       ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
                       : undefined
                   }

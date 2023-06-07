@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 
 import EtherscanImage from 'legacy/assets/cow-swap/etherscan-icon.svg'
 import Loader from 'legacy/components/Loader'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { GP_VAULT_RELAYER } from 'legacy/constants'
 import { ApprovalState, useApproveCallback } from 'legacy/hooks/useApproveCallback'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -45,7 +45,7 @@ type DataRowParams = {
   index: number
   balance?: CurrencyAmount<Token> | undefined
   closeModals: () => void
-  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
+  openTransactionConfirmationModal: (message: string, operationType: ConfirmOperationType) => void
   toggleWalletModal: () => void
 }
 

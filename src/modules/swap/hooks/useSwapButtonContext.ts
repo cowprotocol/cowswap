@@ -13,18 +13,23 @@ import { useDerivedSwapInfo, useSwapActionHandlers } from 'legacy/state/swap/hoo
 import { useExpertModeManager } from 'legacy/state/user/hooks'
 
 import { getSwapButtonState } from 'modules/swap/helpers/getSwapButtonState'
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import { useEthFlowContext } from 'modules/swap/hooks/useEthFlowContext'
 import { useHandleSwap } from 'modules/swap/hooks/useHandleSwap'
-import { useSafeBundleFlowContext } from 'modules/swap/hooks/useSafeBundleFlowContext'
+import { useSafeBundleApprovalFlowContext } from 'modules/swap/hooks/useSafeBundleApprovalFlowContext'
 import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { useSwapFlowContext } from 'modules/swap/hooks/useSwapFlowContext'
 import { SwapButtonsContext } from 'modules/swap/pure/SwapButtons'
+import { useIsNativeIn } from 'modules/trade/hooks/useIsNativeInOrOut'
+import { useIsWrappedOut } from 'modules/trade/hooks/useIsWrappedInOrOut'
+import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
+import { useIsEthFlowBundlingEnabled } from 'common/hooks/useIsEthFlowBundlingEnabled'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
 import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+
+import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'
 
 export interface SwapButtonInput {
   feeWarningAccepted: boolean
@@ -51,7 +56,8 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const { openSwapConfirmModal } = useSwapConfirmManager()
   const swapFlowContext = useSwapFlowContext()
   const ethFlowContext = useEthFlowContext()
-  const safeBundleContext = useSafeBundleFlowContext()
+  const safeBundleApprovalFlowContext = useSafeBundleApprovalFlowContext()
+  const safeBundleEthFlowContext = useSafeBundleEthFlowContext()
   const { onCurrencySelection } = useSwapActionHandlers()
   const isBestQuoteLoading = useIsBestQuoteLoading()
 
@@ -63,11 +69,13 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     chainId,
   })
 
-  const { isNativeIn, isWrappedOut, wrappedToken } = useDetectNativeToken()
+  const isNativeIn = useIsNativeIn()
+  const isWrappedOut = useIsWrappedOut()
+  const wrappedToken = useWrappedToken()
   const isNativeInSwap = isNativeIn && !isWrappedOut
 
   const inputAmount = slippageAdjustedSellAmount || parsedAmount
-  const wrapUnwrapAmount = isNativeInSwap ? inputAmount?.wrapped : slippageAdjustedSellAmount || parsedAmount
+  const wrapUnwrapAmount = isNativeInSwap ? inputAmount?.wrapped : inputAmount
   const wrapType = useWrapType()
   const wrapInputError = useWrapUnwrapError(wrapType, wrapUnwrapAmount)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap(wrapUnwrapAmount)
@@ -76,7 +84,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
 
   const handleSwap = useHandleSwap(priceImpactParams)
 
-  const contextExists = ethFlowContext || swapFlowContext || safeBundleContext
+  const contextExists = ethFlowContext || swapFlowContext || safeBundleApprovalFlowContext || safeBundleEthFlowContext
   const swapCallbackError = contextExists ? null : 'Missing dependencies'
 
   const gnosisSafeInfo = useGnosisSafeInfo()
@@ -84,6 +92,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
   const isSwapUnsupported = useIsTradeUnsupported(currencyIn, currencyOut)
   const isSmartContractWallet = useIsSmartContractWallet()
   const isTxBundlingEnabled = useIsTxBundlingEnabled()
+  const isEthFlowBundlingEnabled = useIsEthFlowBundlingEnabled()
 
   const swapButtonState = getSwapButtonState({
     account,
@@ -91,6 +100,7 @@ export function useSwapButtonContext(input: SwapButtonInput): SwapButtonsContext
     isSmartContractWallet,
     isReadonlyGnosisSafeUser,
     isTxBundlingEnabled,
+    isEthFlowBundlingEnabled,
     isExpertMode,
     isSwapUnsupported,
     isNativeIn: isNativeInSwap,

@@ -9,7 +9,6 @@ import QuestionHelper from 'legacy/components/QuestionHelper'
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
-import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
@@ -17,9 +16,10 @@ import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/li
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { useWalletInfo } from 'modules/wallet'
 
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
-import { limitOrdersFeatures } from 'constants/featureFlags'
+import { ordersTableFeatures } from 'constants/featureFlags'
 import { formatInputAmount } from 'utils/amountFormat'
 import { getAddress } from 'utils/getAddress'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
@@ -175,7 +175,7 @@ export function RateInput() {
         </styledEl.Body>
       </styledEl.Wrapper>
 
-      {limitOrdersFeatures.DISPLAY_EST_EXECUTION_PRICE && (
+      {ordersTableFeatures.DISPLAY_EST_EXECUTION_PRICE && (
         <styledEl.EstimatedRate>
           <b>
             Order executes at{' '}

@@ -1,6 +1,5 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
-
-import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 
@@ -9,16 +8,19 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { getAddress } from 'utils/getAddress'
 
+import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
+
 export function useQuoteParams() {
   const { chainId, account } = useWalletInfo()
   const { state } = useDerivedTradeState()
+  const { amount } = useAtomValue(tradeQuoteParamsAtom)
 
-  const { inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount, orderKind } = state || {}
-  const currencyAmount = orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount
-  const amount = currencyAmount?.quotient.toString()
+  const { inputCurrency, outputCurrency, orderKind } = state || {}
+
+  const amountStr = amount?.quotient.toString()
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !amount) {
+    if (!inputCurrency || !outputCurrency || !amountStr) {
       return
     }
 
@@ -30,7 +32,7 @@ export function useQuoteParams() {
     return {
       sellToken,
       buyToken,
-      amount,
+      amount: amountStr,
       chainId,
       receiver: account,
       kind: orderKind,
@@ -38,5 +40,5 @@ export function useQuoteParams() {
       fromDecimals,
       isEthFlow: false, // EthFlow is not compatible with limit orders
     }
-  }, [inputCurrency, outputCurrency, amount, account, chainId, orderKind])
+  }, [inputCurrency, outputCurrency, amountStr, account, chainId, orderKind])
 }

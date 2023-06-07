@@ -24,6 +24,10 @@ export const tradeFlowAnalytics = {
     const { marketLabel, orderClass } = context
     swapAnalytics('Bundle Approve and Swap', orderClass, marketLabel)
   },
+  wrapApproveAndPresign(context: SwapFlowAnalyticsContext) {
+    const { marketLabel, orderClass } = context
+    swapAnalytics('Bundled Eth Flow', orderClass, marketLabel)
+  },
   error(error: any, errorMessage: string, context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
 

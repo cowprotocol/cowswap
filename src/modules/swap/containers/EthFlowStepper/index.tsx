@@ -4,13 +4,13 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { isOrderExpired } from 'legacy/state/orders/utils'
 
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
 import {
   EthFlowStepper as Pure,
   EthFlowStepperProps as PureProps,
   SmartOrderStatus,
 } from 'modules/swap/pure/EthFlow/EthFlowStepper'
 
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { formatSymbol } from 'utils/format'
 
 type EthFlowStepperProps = {
@@ -19,7 +19,7 @@ type EthFlowStepperProps = {
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
   const { order } = props
-  const { native } = useDetectNativeToken()
+  const native = useNativeCurrency()
 
   const allTxs = useAllTransactions()
 

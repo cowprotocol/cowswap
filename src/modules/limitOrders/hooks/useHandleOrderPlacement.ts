@@ -12,26 +12,17 @@ import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/s
 import { updateLimitOrdersRawStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
+import { TradeAmounts } from 'modules/trade/types/TradeAmounts'
 
 import OperatorError from 'api/gnosisProtocol/errors/OperatorError'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
-
-interface HandleTradeCallback {
-  beforeTrade(): void
-
-  onDismissConfirmation(): void
-
-  onTradeSuccess(hash: string | null): void
-
-  onError(error: string): void
-  finally(): void
-}
 
 export function useHandleOrderPlacement(
   tradeContext: TradeFlowContext | null,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
-  callbacks: Partial<HandleTradeCallback>
+  tradeConfirmActions: TradeConfirmActions
 ): () => Promise<void> {
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const updateLimitOrdersState = useUpdateAtom(updateLimitOrdersRawStateAtom)
@@ -40,8 +31,21 @@ export function useHandleOrderPlacement(
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
 
+  const beforeTrade = useCallback(() => {
+    if (!tradeContext) return
+
+    const tradeAmounts: TradeAmounts = {
+      inputAmount: tradeContext.postOrderParams.inputAmount,
+      outputAmount: tradeContext.postOrderParams.outputAmount,
+    }
+
+    tradeConfirmActions.onSign(tradeAmounts)
+  }, [tradeContext, tradeConfirmActions])
+
   const tradeFn = useCallback(async () => {
-    if (isSafeBundle && safeBundleFlowContext) {
+    if (isSafeBundle) {
+      if (!safeBundleFlowContext) throw new Error('safeBundleFlowContext is not set!')
+
       safeBundleFlowContext.postOrderParams.partiallyFillable =
         partiallyFillableOverride ?? safeBundleFlowContext.postOrderParams.partiallyFillable
 
@@ -50,18 +54,18 @@ export function useHandleOrderPlacement(
         priceImpact,
         settingsState,
         confirmPriceImpactWithoutFee,
-        callbacks.beforeTrade
+        beforeTrade
       )
-    } else if (!isSafeBundle && tradeContext) {
-      tradeContext.postOrderParams.partiallyFillable =
-        partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
-
-      return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, callbacks.beforeTrade)
     }
 
-    return
+    if (!tradeContext) throw new Error('tradeContext is not set!')
+
+    tradeContext.postOrderParams.partiallyFillable =
+      partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
+
+    return tradeFlow(tradeContext, priceImpact, settingsState, confirmPriceImpactWithoutFee, beforeTrade)
   }, [
-    callbacks.beforeTrade,
+    beforeTrade,
     confirmPriceImpactWithoutFee,
     isSafeBundle,
     partiallyFillableOverride,
@@ -74,7 +78,7 @@ export function useHandleOrderPlacement(
   return useCallback(() => {
     return tradeFn()
       .then((orderHash) => {
-        callbacks.onTradeSuccess?.(orderHash || null)
+        tradeConfirmActions.onSuccess(orderHash)
 
         updateLimitOrdersState({ recipient: null })
         // Reset override after successful order placement
@@ -83,14 +87,11 @@ export function useHandleOrderPlacement(
       .catch((error: Error) => {
         if (error instanceof PriceImpactDeclineError) return
 
-        callbacks.onDismissConfirmation?.()
-
         if (error instanceof OperatorError) {
-          callbacks.onError?.(error.message)
+          tradeConfirmActions.onError(error.message)
+        } else {
+          tradeConfirmActions.onDismiss()
         }
       })
-      .finally(() => {
-        callbacks.finally?.()
-      })
-  }, [tradeFn, callbacks, updateLimitOrdersState, setPartiallyFillableOverride])
+  }, [tradeFn, tradeConfirmActions, updateLimitOrdersState, setPartiallyFillableOverride])
 }

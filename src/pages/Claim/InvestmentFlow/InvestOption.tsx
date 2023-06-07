@@ -14,7 +14,7 @@ import Loader from 'legacy/components/Loader'
 import { loadingOpacityMixin } from 'legacy/components/Loader/styled'
 import { Input as NumericalInput } from 'legacy/components/NumericalInput'
 import Row from 'legacy/components/Row'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
 import { AVG_APPROVE_COST_GWEI } from 'legacy/constants'
 import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
 import { ApprovalState, useApproveCallbackFromClaim } from 'legacy/hooks/useApproveCallback'
@@ -97,7 +97,7 @@ export default function InvestOption({ claim, openModal, closeModal }: InvestOpt
     revokeApprove: revokeApprovalCallback, // CURRENTLY TEST ONLY (not on prod, barn or ens)
     isPendingApproval: isPendingRevoke, // CURRENTLY TEST ONLY (not on prod, barn or ens)
   } = useApproveCallbackFromClaim({
-    openTransactionConfirmationModal: (message: string, operationType: OperationType) =>
+    openTransactionConfirmationModal: (message: string, operationType: ConfirmOperationType) =>
       openModal(message, operationType),
     closeModals: closeModal,
     claim,

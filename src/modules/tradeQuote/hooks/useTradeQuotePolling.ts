@@ -8,7 +8,7 @@ import { onlyResolvesLast } from 'legacy/utils/async'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { updateTradeQuoteAtom } from 'modules/tradeQuote/state/tradeQuoteAtom'
 
-import { getQuote } from 'api/gnosisProtocol'
+import { getQuote } from 'api/gnosisProtocol/api'
 import GpQuoteError from 'api/gnosisProtocol/errors/QuoteError'
 
 import { useQuoteParams } from './useQuoteParams'

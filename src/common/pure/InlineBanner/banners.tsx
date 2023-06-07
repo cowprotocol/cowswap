@@ -22,14 +22,43 @@ export function BundleTxApprovalBanner() {
   )
 }
 
-export function BundleTxSafeWcBanner() {
+export type BundleTxWrapBannerProps = {
+  nativeCurrencySymbol: string
+  wrappedCurrencySymbol: string
+}
+
+export function BundleTxWrapBanner({ nativeCurrencySymbol, wrappedCurrencySymbol }: BundleTxWrapBannerProps) {
   return (
     <InlineBanner
       type="information"
       content={
         <>
-          Use the Safe web app for streamlined trading: token approval and orders bundled in one go! Only available in
-          the{' '}
+          <strong>Token wrapping</strong>: For your convenience, CoW Swap will bundle all the necessary actions for this
+          trade into a single transaction. This includes the {nativeCurrencySymbol} wrapping and, if needed,{' '}
+          {wrappedCurrencySymbol} approval. Even if the trade fails, your wrapping and approval will be done!
+        </>
+      }
+    />
+  )
+}
+
+// If supportsWrapping is true, nativeCurrencySymbol is required
+type WrappingSupportedProps = { supportsWrapping: true; nativeCurrencySymbol: string }
+// If supportsWrapping is not set or false, nativeCurrencySymbol is not required
+type WrappingUnsupportedProps = { supportsWrapping?: false; nativeCurrencySymbol?: undefined }
+
+export type BundleTxSafeWcBannerProps = WrappingSupportedProps | WrappingUnsupportedProps
+
+export function BundleTxSafeWcBanner({ nativeCurrencySymbol, supportsWrapping }: BundleTxSafeWcBannerProps) {
+  const supportsWrappingText = supportsWrapping ? `${nativeCurrencySymbol} wrapping, ` : ''
+
+  return (
+    <InlineBanner
+      type="information"
+      content={
+        <>
+          Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one
+          go! Only available in the{' '}
           <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
             CoW Swap Safe App↗
           </ExternalLink>
