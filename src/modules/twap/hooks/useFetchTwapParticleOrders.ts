@@ -6,7 +6,7 @@ import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAsyncMemo } from 'use-async-memo'
 
 import { ComposableCoW } from 'abis/types'
-import { computeDiscreteOrderUid } from 'utils/orderUtils/computeDiscreteOrderUid'
+import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
 import { TradeableOrderWithSignature, useTwapOrdersTradeableMulticall } from './useTwapOrdersTradeableMulticall'
 
@@ -78,7 +78,7 @@ async function getTwapParticleOrderItem(
     partiallyFillable: particleOrder.partiallyFillable,
   } as Order
 
-  const uid = await computeDiscreteOrderUid(chainId, safeAddress, fixedOrder)
+  const uid = await computeOrderUid(chainId, safeAddress, fixedOrder)
 
   return { uid, chainId, safeAddress, twapOrderId, order: fixedOrder as OrderParameters, signature }
 }

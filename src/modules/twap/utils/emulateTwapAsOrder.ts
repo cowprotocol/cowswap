@@ -13,7 +13,7 @@ const statusMap: Record<TWAPOrderStatus, OrderStatus> = {
   [TWAPOrderStatus.Expired]: OrderStatus.EXPIRED,
 }
 
-export function emulateTwapAsDiscreteOrder(tokens: TokensByAddress, item: TwapOrderItem): EnrichedOrder {
+export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem): EnrichedOrder {
   const { safeAddress, hash, status } = item
   const { sellToken, buyToken, partSellAmount, minPartLimit, n, t } = item.order
   const numOfParts = BigInt(n)

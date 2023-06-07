@@ -5,7 +5,7 @@ import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
 import { TwapOrderItem } from '../types'
-import { emulateTwapAsDiscreteOrder } from '../utils/emulateTwapAsDiscreteOrder'
+import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
@@ -29,5 +29,5 @@ export const emulatedTwapOrdersAtom = atom((get) => {
 
   return orders
     .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
-    .map((order) => emulateTwapAsDiscreteOrder(tokens, order))
+    .map((order) => emulateTwapAsOrder(tokens, order))
 })
