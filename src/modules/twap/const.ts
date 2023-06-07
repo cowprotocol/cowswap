@@ -3,6 +3,8 @@ import { Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
 
+import { TwapOrderStatus } from './types'
+
 export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
 export type OrderDeadline = { label: string; value: number }
@@ -29,3 +31,5 @@ export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
   100: 'TODO',
   5: '0xa12d770028d7072b80baeb6a1df962374fd13d9a',
 }
+
+export const TWAP_ORDER_FINAL_STATUSES = [TwapOrderStatus.Cancelled, TwapOrderStatus.Expired]
