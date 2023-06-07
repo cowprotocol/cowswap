@@ -29,10 +29,12 @@ export function useFetchDiscreteOrders(
     () => {
       if (ordersInfo.length !== ordersTradeableData.length) return null
 
+      const safeAddressLowerCase = safeAddress.toLowerCase()
+
       return Promise.all(
         ordersInfo.map(({ id }, index) => {
           const data = ordersTradeableData[index]
-          return data ? getTwapDiscreteOrderItem(chainId, safeAddress, data, id) : Promise.resolve(null)
+          return data ? getTwapDiscreteOrderItem(chainId, safeAddressLowerCase, data, id) : Promise.resolve(null)
         })
       )
     },
@@ -62,20 +64,21 @@ async function getTwapDiscreteOrderItem(
   if (!data) return null
 
   const { order: discreteOrder, signature } = data
+  const { sellToken, buyToken, receiver, validTo, appData } = discreteOrder
   const fixedOrder = {
+    sellToken,
+    buyToken,
+    receiver,
+    validTo,
+    appData,
     sellAmount: discreteOrder.sellAmount.toString(),
     buyAmount: discreteOrder.buyAmount.toString(),
     feeAmount: discreteOrder.feeAmount.toString(),
-    sellToken: discreteOrder.sellToken,
-    buyToken: discreteOrder.buyToken,
-    receiver: discreteOrder.receiver,
-    validTo: discreteOrder.validTo,
-    appData: discreteOrder.appData,
     kind: 'sell', // TODO: discuss it, smart-contract returns bytes here
     partiallyFillable: discreteOrder.partiallyFillable,
   } as Order
 
   const uid = await computeDiscreteOrderUid(chainId, safeAddress, fixedOrder)
 
-  return { uid, twapOrderId, order: fixedOrder as OrderParameters, signature }
+  return { uid, chainId, safeAddress, twapOrderId, order: fixedOrder as OrderParameters, signature }
 }

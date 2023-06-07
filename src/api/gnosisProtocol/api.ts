@@ -144,10 +144,6 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Enric
   return orderBookApi.getOrder(orderId, { chainId })
 }
 
-export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<EnrichedOrder[]> {
-  return orderBookApi.getOrders({ owner, limit, offset }, { chainId })
-}
-
 export async function getTrades(chainId: ChainId, owner: string): Promise<Trade[]> {
   return orderBookApi.getTrades({ owner }, { chainId })
 }

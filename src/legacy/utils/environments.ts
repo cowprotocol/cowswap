@@ -66,7 +66,8 @@ export const environmentName = (function () {
 })()
 
 const isProdLike = isProd || isEns || isStaging || isBarn
+const isBarnBackendEnv = isLocal || isDev || isPr || isBarn
 
 registerOnWindow({ environment: environmentName })
 
-export { isLocal, isDev, isPr, isBarn, isStaging, isProd, isEns, isProdLike }
+export { isLocal, isDev, isPr, isBarn, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv }
