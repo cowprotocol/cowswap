@@ -1,6 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useWalletInfo } from 'modules/wallet'
 
@@ -23,7 +25,7 @@ export function useQuoteParams() {
     }
 
     const sellToken = getAddress(inputCurrency)
-    const buyToken = getAddress(outputCurrency)
+    const buyToken = outputCurrency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
