@@ -25,15 +25,16 @@ export function useSwitchTokensPlaces(stateOverride: Partial<ExtendedTradeRawSta
 
   return useCallback(() => {
     if (!inputCurrencyId || !outputCurrencyId || !updateState) return
-    if (isWrapOrUnwrap) return
+    if (!isWrapOrUnwrap) {
+      updateState({
+        inputCurrencyId: outputCurrencyId,
+        outputCurrencyId: inputCurrencyId,
+        inputCurrencyAmount: FractionUtils.serializeFractionToJSON(outputCurrencyAmount),
+        outputCurrencyAmount: FractionUtils.serializeFractionToJSON(inputCurrencyAmount),
+        ...stateOverride,
+      })
+    }
 
-    updateState({
-      inputCurrencyId: outputCurrencyId,
-      outputCurrencyId: inputCurrencyId,
-      inputCurrencyAmount: FractionUtils.serializeFractionToJSON(outputCurrencyAmount),
-      outputCurrencyAmount: FractionUtils.serializeFractionToJSON(inputCurrencyAmount),
-      ...stateOverride,
-    })
     tradeNavigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
   }, [
     updateState,
