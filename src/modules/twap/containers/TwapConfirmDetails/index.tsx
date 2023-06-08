@@ -1,7 +1,11 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
+import { Dispatch, SetStateAction, useMemo } from 'react'
 
-import { ONE_FRACTION } from 'legacy/constants/misc'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
+import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
 
 import { twapOrderSlippage } from 'modules/twap/state/twapOrdersSettingsAtom'
 
@@ -17,43 +21,51 @@ import * as styledEl from './styled'
 type Props = {
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
+  isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
 }
 
 export function TwapConfirmDetails(props: Props) {
-  const { inputCurrencyInfo, outputCurrencyInfo } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, isInvertedState } = props
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const allowedSlippage = useAtomValue(twapOrderSlippage)
 
-  const activeRate = usePrice(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+  // This is the minimum per part
+  const minReceivedAmountPerPart = useMemo(
+    () => getSlippageAdjustedBuyAmount(outputCurrencyInfo.amount, allowedSlippage),
+    [allowedSlippage, outputCurrencyInfo.amount]
+  )
 
-  // Calculate limit price
-  const limitPrice = useMemo(() => {
-    // TODO: apply allowedSlippage to this somehow
-    return activeRate?.invert()
-  }, [activeRate])
-
-  // Calculate Min Received amount
-  const minReceiveAmount = useMemo(() => {
-    // TODO: I'm not sure this calculation is correct and want to check with others
-    return outputCurrencyInfo.amount?.multiply(ONE_FRACTION.subtract(allowedSlippage))
-  }, [allowedSlippage, outputCurrencyInfo.amount])
+  // Limit price is the same for all parts
+  const limitPrice = usePrice(inputCurrencyInfo.amount, minReceivedAmountPerPart)
 
   // TODO: calculate USD amounts for limit price and min received
 
   return (
     <styledEl.Wrapper>
       {/* Price */}
-      <styledEl.StyledRateInfo label="Price" stylized={true} rateInfoParams={rateInfoParams} />
+      <styledEl.StyledRateInfo
+        label="Price"
+        stylized={true}
+        rateInfoParams={rateInfoParams}
+        isInvertedState={isInvertedState}
+      />
 
       {/* Slippage */}
       <SlippageRow />
 
       {/* Limit Price */}
-      <LimitPriceRow currency={inputCurrencyInfo.amount?.currency} amount={limitPrice} />
+      <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
 
       {/* Min received */}
-      <MinReceivedRow currency={outputCurrencyInfo.amount?.currency} amount={minReceiveAmount} />
+      <MinReceivedRow currency={outputCurrencyInfo.amount?.currency} amount={minReceivedAmountPerPart} />
     </styledEl.Wrapper>
   )
+}
+
+function getSlippageAdjustedBuyAmount(
+  buyAmount: Nullish<CurrencyAmount<Currency>>,
+  slippage: Percent
+): CurrencyAmount<Currency> | undefined {
+  return buyAmount?.multiply(ONE_HUNDRED_PERCENT.subtract(slippage))
 }
