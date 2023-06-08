@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import { Dispatch, SetStateAction, useMemo } from 'react'
 
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
@@ -7,8 +6,6 @@ import { Nullish } from 'types'
 
 import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-
-import { twapOrderSlippage } from 'modules/twap/state/twapOrdersSettingsAtom'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -23,18 +20,18 @@ type Props = {
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
+  slippage: Percent
 }
 
-export function TwapConfirmDetails(props: Props) {
-  const { inputCurrencyInfo, outputCurrencyInfo, isInvertedState } = props
+export function TradeBasicConfirmDetails(props: Props) {
+  const { inputCurrencyInfo, outputCurrencyInfo, isInvertedState, slippage } = props
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const allowedSlippage = useAtomValue(twapOrderSlippage)
 
   // This is the minimum per part
   const minReceivedAmountPerPart = useMemo(
-    () => getSlippageAdjustedBuyAmount(outputCurrencyInfo.amount, allowedSlippage),
-    [allowedSlippage, outputCurrencyInfo.amount]
+    () => getSlippageAdjustedBuyAmount(outputCurrencyInfo.amount, slippage),
+    [slippage, outputCurrencyInfo.amount]
   )
   const minReceivedUsdAmount = useHigherUSDValue(minReceivedAmountPerPart)
 
@@ -52,7 +49,7 @@ export function TwapConfirmDetails(props: Props) {
       />
 
       {/* Slippage */}
-      <SlippageRow slippage={allowedSlippage} />
+      <SlippageRow slippage={slippage} />
 
       {/* Limit Price */}
       <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />

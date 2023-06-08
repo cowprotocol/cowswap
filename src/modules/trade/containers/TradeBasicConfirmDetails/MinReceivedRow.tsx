@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ConfirmDetailsItem } from 'modules/twap/pure/ConfirmDetailsItem'
+import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 
 import { FiatAmount } from 'common/pure/FiatAmount'
 import { TokenAmount } from 'common/pure/TokenAmount'
