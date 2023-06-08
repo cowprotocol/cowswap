@@ -14,11 +14,19 @@ export type ReviewOrderAmountRowProps = {
   usdAmount?: Nullish<CurrencyAmount<Currency>>
   tooltip?: ReactNode
   label: string
+  isAmountAccurate?: boolean
 }
 
-export function ReviewOrderModalAmountRow({ amount, usdAmount, tooltip, label }: ReviewOrderAmountRowProps) {
+export function ReviewOrderModalAmountRow({
+  amount,
+  usdAmount,
+  tooltip,
+  label,
+  isAmountAccurate = true,
+}: ReviewOrderAmountRowProps) {
   return (
     <ConfirmDetailsItem tooltip={tooltip} label={label}>
+      {!isAmountAccurate && '≈ '}
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
       {usdAmount && (
         <i>
