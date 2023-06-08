@@ -1,15 +1,16 @@
-import { useAtomValue } from 'jotai'
+import { Percent } from '@uniswap/sdk-core'
 
 import { RowSlippage } from 'modules/swap/containers/Row/RowSlippage'
 import { ConfirmDetailsItem } from 'modules/twap/pure/ConfirmDetailsItem'
-import { twapOrderSlippage } from 'modules/twap/state/twapOrdersSettingsAtom'
 
-export function SlippageRow() {
-  const allowedSlippage = useAtomValue(twapOrderSlippage)
+export type SlippageRowProps = {
+  slippage: Percent
+}
 
+export function SlippageRow({ slippage }: SlippageRowProps) {
   return (
     <ConfirmDetailsItem>
-      <RowSlippage allowedSlippage={allowedSlippage} showSettingOnClick={false} />
+      <RowSlippage allowedSlippage={slippage} showSettingOnClick={false} />
     </ConfirmDetailsItem>
   )
 }

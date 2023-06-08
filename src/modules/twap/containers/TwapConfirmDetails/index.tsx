@@ -52,7 +52,7 @@ export function TwapConfirmDetails(props: Props) {
       />
 
       {/* Slippage */}
-      <SlippageRow />
+      <SlippageRow slippage={allowedSlippage} />
 
       {/* Limit Price */}
       <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
