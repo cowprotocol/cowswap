@@ -1,10 +1,10 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import deepEqual from 'fast-deep-equal'
+
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
-
-import { deepEqual } from 'utils/deepEqual'
 
 import { TwapOrderItem } from '../types'
 import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
