@@ -1,11 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useMemo, useState } from 'react'
-
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
-
-import { Nullish } from 'types'
-
-import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
+import { useState } from 'react'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
@@ -65,14 +59,9 @@ export function TwapConfirmModal() {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
-  // This is the minimum per part
-  const minReceivedAmountPerPart = useMemo(
-    () => getSlippageAdjustedBuyAmount(outputCurrencyAmount, slippage),
-    [slippage, outputCurrencyAmount]
-  )
-
-  const { numberOfPartsValue } = partsState
-  const minReceivedAmount = numberOfPartsValue ? minReceivedAmountPerPart?.multiply(numberOfPartsValue) : null
+  // This already takes into account the full order
+  // TODO: maybe it shouldn't? We want to quote the price per part, not the full amount
+  const minReceivedAmount = twapOrder?.buyAmount
 
   return (
     <TradeConfirmModal>
@@ -101,11 +90,4 @@ export function TwapConfirmModal() {
       </TradeConfirmation>
     </TradeConfirmModal>
   )
-}
-
-function getSlippageAdjustedBuyAmount(
-  buyAmount: Nullish<CurrencyAmount<Currency>>,
-  slippage: Percent
-): CurrencyAmount<Currency> | undefined {
-  return buyAmount?.multiply(ONE_HUNDRED_PERCENT.subtract(slippage))
 }
