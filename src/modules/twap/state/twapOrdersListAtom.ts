@@ -4,6 +4,8 @@ import { atomWithStorage } from 'jotai/utils'
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
+import { deepEqual } from 'utils/deepEqual'
+
 import { TwapOrderItem } from '../types'
 import { emulateTwapAsOrder } from '../utils/emulateTwapAsOrder'
 
@@ -14,7 +16,7 @@ export const twapOrdersListAtom = atomWithStorage<TwapOrdersList>('twap-orders-l
 export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrdersList) => {
   const currentState = get(twapOrdersListAtom)
 
-  if (JSON.stringify(nextState) !== JSON.stringify(currentState)) {
+  if (!deepEqual(currentState, nextState)) {
     set(twapOrdersListAtom, nextState)
   }
 })

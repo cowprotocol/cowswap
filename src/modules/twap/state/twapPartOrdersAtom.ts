@@ -5,6 +5,8 @@ import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
+import { deepEqual } from 'utils/deepEqual'
+
 export interface TwapPartOrderItem {
   uid: string
   chainId: SupportedChainId
@@ -20,7 +22,7 @@ export const twapPartOrdersAtom = atomWithStorage<TwapPartOrders>('twap-part-ord
 export const updateTwapPartOrdersAtom = atom(null, (get, set, nextState: TwapPartOrders) => {
   const currentState = get(twapPartOrdersAtom)
 
-  if (JSON.stringify(nextState) !== JSON.stringify(currentState)) {
+  if (!deepEqual(currentState, nextState)) {
     set(twapPartOrdersAtom, nextState)
   }
 })
