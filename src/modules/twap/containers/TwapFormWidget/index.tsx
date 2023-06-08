@@ -2,13 +2,10 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
-import {
-  useAdvancedOrdersDerivedState,
-  useAdvancedOrdersRawState,
-  useUpdateAdvancedOrdersRawState,
-} from 'modules/advancedOrders'
+import { useAdvancedOrdersDerivedState, useAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
@@ -18,7 +15,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import * as styledEl from './styled'
 
-import { DEFAULT_TWAP_SLIPPAGE, orderDeadlines, defaultNumOfParts } from '../../const'
+import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
@@ -37,7 +34,7 @@ export function TwapFormWidget() {
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { inputCurrencyAmount: rawInputCurrencyAmount } = useAdvancedOrdersRawState()
-  const updateRawState = useUpdateAdvancedOrdersRawState()
+  const { updateState } = useTradeState()
 
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
@@ -58,8 +55,8 @@ export function TwapFormWidget() {
 
   // Reset output amount when num of parts or input amount are changed
   useEffect(() => {
-    updateRawState({ outputCurrencyAmount: null })
-  }, [updateRawState, numberOfPartsValue, rawInputCurrencyAmount])
+    updateState?.({ outputCurrencyAmount: null })
+  }, [updateState, numberOfPartsValue, rawInputCurrencyAmount])
 
   return (
     <>
