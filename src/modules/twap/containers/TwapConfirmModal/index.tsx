@@ -1,9 +1,17 @@
 import { useAtomValue } from 'jotai'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
+import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
+
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { twapOrderSlippage } from '../../state/twapOrdersSettingsAtom'
@@ -48,6 +56,17 @@ export function TwapConfirmModal() {
     label: 'Estimated receive amount',
   }
 
+  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+
+  // This is the minimum per part
+  const minReceivedAmountPerPart = useMemo(
+    () => getSlippageAdjustedBuyAmount(outputCurrencyAmount, slippage),
+    [slippage, outputCurrencyAmount]
+  )
+
+  const { numberOfPartsValue } = partsState
+  const minReceivedAmount = numberOfPartsValue ? minReceivedAmountPerPart?.multiply(numberOfPartsValue) : null
+
   return (
     <TradeConfirmModal>
       <TradeConfirmation
@@ -62,8 +81,8 @@ export function TwapConfirmModal() {
         <>
           <>{/*TODO: display details*/}</>
           <TradeBasicConfirmDetails
-            inputCurrencyInfo={inputCurrencyInfo}
-            outputCurrencyInfo={outputCurrencyInfo}
+            rateInfoParams={rateInfoParams}
+            minReceiveAmount={minReceivedAmount}
             isInvertedState={isInvertedState}
             slippage={slippage}
           />
@@ -71,4 +90,11 @@ export function TwapConfirmModal() {
       </TradeConfirmation>
     </TradeConfirmModal>
   )
+}
+
+function getSlippageAdjustedBuyAmount(
+  buyAmount: Nullish<CurrencyAmount<Currency>>,
+  slippage: Percent
+): CurrencyAmount<Currency> | undefined {
+  return buyAmount?.multiply(ONE_HUNDRED_PERCENT.subtract(slippage))
 }
