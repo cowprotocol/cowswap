@@ -11,7 +11,7 @@ import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
 
 export type ReviewOrderAmountRowProps = {
   amount: Nullish<CurrencyAmount<Currency>>
-  usdAmount?: Nullish<CurrencyAmount<Currency>>
+  fiatAmount?: Nullish<CurrencyAmount<Currency>>
   tooltip?: ReactNode
   label: string
   isAmountAccurate?: boolean
@@ -19,7 +19,7 @@ export type ReviewOrderAmountRowProps = {
 
 export function ReviewOrderModalAmountRow({
   amount,
-  usdAmount,
+  fiatAmount,
   tooltip,
   label,
   isAmountAccurate = true,
@@ -28,10 +28,10 @@ export function ReviewOrderModalAmountRow({
     <ConfirmDetailsItem tooltip={tooltip} label={label}>
       {!isAmountAccurate && '≈ '}
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
-      {usdAmount && (
+      {fiatAmount && (
         <i>
           &nbsp;(
-          <FiatAmount amount={usdAmount} />)
+          <FiatAmount amount={fiatAmount} />)
         </i>
       )}
     </ConfirmDetailsItem>
