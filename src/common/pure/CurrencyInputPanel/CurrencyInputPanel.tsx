@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
@@ -11,7 +11,6 @@ import { MouseoverTooltip } from 'legacy/components/Tooltip'
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { Field } from 'legacy/state/swap/actions'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 
 import { ReceiveAmount } from 'modules/swap/pure/ReceiveAmount'
 
@@ -37,6 +36,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   inputTooltip?: string
   isRateLoading?: boolean
   showSetMax?: boolean
+  maxBalance?: CurrencyAmount<Currency> | undefined
   disableNonToken?: boolean
   allowsOffchainSigning: boolean
   currencyInfo: CurrencyInfo
@@ -56,6 +56,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     priceImpactParams,
     disableNonToken = false,
     showSetMax = false,
+    maxBalance,
     inputDisabled = false,
     inputTooltip,
     onCurrencySelection,
@@ -92,14 +93,13 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps) {
     [onUserInput, field]
   )
   const handleMaxInput = useCallback(() => {
-    const maxBalance = maxAmountSpend(balance || undefined)
     if (!maxBalance) {
       return
     }
 
     onUserInputDispatch(maxBalance.toExact())
     setMaxSellTokensAnalytics()
-  }, [balance, onUserInputDispatch])
+  }, [maxBalance, onUserInputDispatch])
 
   useEffect(() => {
     const areValuesSame = parseFloat(viewAmount) === parseFloat(typedValue)
