@@ -51,11 +51,9 @@ export const updateTwapOrdersSettingsAtom = atom(null, (get, set, nextState: Par
 
 export const twapOrderSlippage = atom<Percent>((get) => {
   const { slippageValue } = get(twapOrdersSettingsAtom)
-  const slippage =
-    slippageValue != null
-      ? // Multiplying on 100 to allow decimals values (e.g 0.05)
-        new Percent(slippageValue * 100, 10000)
-      : DEFAULT_TWAP_SLIPPAGE
 
-  return slippage
+  return slippageValue != null
+    ? // Multiplying on 100 to allow decimals values (e.g 0.05)
+      new Percent(slippageValue * 100, 10000)
+    : DEFAULT_TWAP_SLIPPAGE
 })
