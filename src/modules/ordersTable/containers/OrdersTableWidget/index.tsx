@@ -5,9 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { GP_VAULT_RELAYER } from 'legacy/constants'
-import { Order } from 'legacy/state/orders/actions'
+import { useOrders } from 'legacy/state/orders/hooks'
 
-import { useInputTokensFromOrders } from 'modules/orders'
 import { pendingOrdersPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useGetSpotPrice } from 'modules/orders/state/spotPricesAtom'
 import { ORDERS_TABLE_TABS, OPEN_TAB } from 'modules/ordersTable/const/tabs'
@@ -21,6 +20,7 @@ import { useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
+import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
@@ -32,7 +32,7 @@ function getOrdersListByIndex(ordersList: OrdersTableList, id: string): ParsedOr
   return id === OPEN_TAB.id ? ordersList.pending : ordersList.history
 }
 
-function toggleOrderInCancellationList(state: Order[], order: Order): Order[] {
+function toggleOrderInCancellationList(state: CancellableOrder[], order: CancellableOrder): CancellableOrder[] {
   const isOrderIncluded = state.find((item) => item.id === order.id)
 
   if (isOrderIncluded) {
@@ -47,11 +47,12 @@ const ContentWrapper = styled.div`
 `
 
 export function OrdersTableWidget() {
+  const { chainId, account } = useWalletInfo()
   const location = useLocation()
   const navigate = useNavigate()
-  const ordersList = useOrdersTableList()
-  const { chainId, account } = useWalletInfo()
-  const getShowCancellationModal = useCancelOrder()
+  const allOrders = useOrders({ chainId })
+  const ordersList = useOrdersTableList(allOrders)
+  const cancelOrder = useCancelOrder()
   const { allowsOffchainSigning } = useWalletDetails()
   const pendingOrdersPrices = useAtomValue(pendingOrdersPricesAtom)
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
@@ -83,23 +84,36 @@ export function OrdersTableWidget() {
   const isOpenOrdersTab = useMemo(() => OPEN_TAB.id === currentTabId, [currentTabId])
 
   // Get tokens from pending orders (only if the OPEN orders tab is opened)
-  const tokens = useInputTokensFromOrders(isOpenOrdersTab ? ordersList.pending : [])
+  const tokens = useMemo(() => {
+    const pendingOrders = isOpenOrdersTab ? ordersList.pending : []
+
+    return pendingOrders.map((order) => order.inputToken)
+  }, [isOpenOrdersTab, ordersList.pending])
 
   // Get effective balance
   const balancesAndAllowances = useBalancesAndAllowances({ account, spender, tokens })
 
   const toggleOrdersForCancellation = useCallback(
-    (orders: Order[]) => {
+    (orders: ParsedOrder[]) => {
       updateOrdersToCancel(orders)
     },
     [updateOrdersToCancel]
   )
 
   const toggleOrderForCancellation = useCallback(
-    (order: Order) => {
+    (order: ParsedOrder) => {
       updateOrdersToCancel(toggleOrderInCancellationList(ordersToCancel, order))
     },
     [ordersToCancel, updateOrdersToCancel]
+  )
+
+  const getShowCancellationModal = useCallback(
+    (order: ParsedOrder) => {
+      const rawOrder = allOrders.find((item) => item.id === order.id)
+
+      return rawOrder ? cancelOrder(rawOrder) : null
+    },
+    [allOrders, cancelOrder]
   )
 
   const orderActions: LimitOrderActions = {
@@ -114,7 +128,7 @@ export function OrdersTableWidget() {
     navigate(buildOrdersTableUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useValidatePageUrlParams(orders, currentTabId, currentPageNumber)
+  useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)
 
   return (
     <>

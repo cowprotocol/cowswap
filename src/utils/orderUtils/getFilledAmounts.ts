@@ -13,18 +13,8 @@ function legacyBigNumberToCurrencyAmount(currency: Token, value: BigNumber | und
 }
 
 export function getFilledAmounts(order: ParsedOrder) {
-  const {
-    inputToken,
-    outputToken,
-    kind,
-    feeAmount,
-    executedBuyAmount,
-    executedSellAmount,
-    executedFeeAmount,
-    filledAmount,
-    sellAmount,
-    buyAmount,
-  } = order
+  const { inputToken, outputToken, kind, feeAmount, sellAmount, buyAmount } = order
+  const { executedBuyAmount, executedSellAmount, executedFeeAmount, filledAmount } = order.executionData
 
   let mainToken: Token
   let mainAmount: CurrencyAmount<Token>

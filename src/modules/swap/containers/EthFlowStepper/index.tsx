@@ -1,3 +1,5 @@
+import { Token } from '@uniswap/sdk-core'
+
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
@@ -117,6 +119,6 @@ function didRefundFail(order: Order): boolean | undefined {
 }
 
 // TODO: move this somewhere else?
-export function getIsEthFlowOrder(order: Order | undefined): boolean {
+export function getIsEthFlowOrder(order: { inputToken: Token } | undefined): boolean {
   return order?.inputToken.address === NATIVE_CURRENCY_BUY_ADDRESS
 }

@@ -1,8 +1,8 @@
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { Order } from 'legacy/state/orders/actions'
+import { ParsedOrder } from './parseOrder'
 
-export function getSellAmountWithFee(order: Order): CurrencyAmount<Token> {
+export function getSellAmountWithFee(order: ParsedOrder): CurrencyAmount<Token> {
   const feeAmountParsed = CurrencyAmount.fromRawAmount(order.inputToken, order.feeAmount.toString())
   const sellAmountParsed = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount.toString())
   return sellAmountParsed.add(feeAmountParsed)
