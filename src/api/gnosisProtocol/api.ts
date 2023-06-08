@@ -1,7 +1,7 @@
 import { OrderBookApiError, PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
-import { NativePriceResponse, Trade } from '@cowprotocol/cow-sdk'
+import { NativePriceResponse, Trade, PartialApiContext, Address } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
 
@@ -142,6 +142,17 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
 
 export async function getOrder(chainId: ChainId, orderId: string): Promise<EnrichedOrder | null> {
   return orderBookApi.getOrder(orderId, { chainId })
+}
+
+export async function getOrders(
+  params: {
+    owner: Address
+    offset?: number
+    limit?: number
+  },
+  context: PartialApiContext
+): Promise<EnrichedOrder[]> {
+  return orderBookApi.getOrders(params, context)
 }
 
 export async function getTrades(chainId: ChainId, owner: string): Promise<Trade[]> {

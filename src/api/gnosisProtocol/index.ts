@@ -16,5 +16,6 @@ export const {
   getOrder = realApi.getOrder,
   getNativePrice = realApi.getNativePrice,
   getTrades = realApi.getTrades,
+  getOrders = realApi.getOrders,
   // functions that only have a mock
 } = useMock ? { ...mockApi } : { ...realApi }

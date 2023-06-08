@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
-import { orderBookApi } from 'cowSdk'
 import useSWR from 'swr'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
@@ -13,6 +12,8 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { emulatedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom } from 'modules/twap/state/twapPartOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
+
+import { getOrders } from './api'
 
 /**
  * TODO: refactor this hook
@@ -42,7 +43,7 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
     () => {
       if (!chainId || !requestParams) return []
 
-      return orderBookApi.getOrders(requestParams, { chainId })
+      return getOrders(requestParams, { chainId })
     },
     { refreshInterval }
   )
@@ -55,7 +56,7 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
       if (!chainId || !requestParams) return []
       if (!isBarnBackendEnv) return []
 
-      return orderBookApi.getOrders(requestParams, { chainId, env: 'prod' })
+      return getOrders(requestParams, { chainId, env: 'prod' })
     },
     { refreshInterval }
   )

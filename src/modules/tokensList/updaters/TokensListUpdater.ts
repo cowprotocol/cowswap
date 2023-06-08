@@ -15,13 +15,13 @@ export function TokensListUpdater() {
   const updateTokensBySymbol = useUpdateAtom(tokensBySymbolAtom)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const allTokensDistinct = useMemo(() => allTokens, [JSON.stringify(allTokens)])
+  const allTokensMemo = useMemo(() => allTokens, [JSON.stringify(allTokens)])
 
   useEffect(() => {
     const tokensByAddressMap: { [address: string]: TokenWithLogo } = {}
     const tokensBySymbolMap: { [address: string]: TokenWithLogo[] } = {}
 
-    allTokensDistinct.forEach((token) => {
+    allTokensMemo.forEach((token) => {
       const wrappedToken: TokenWithLogo = new TokenWithLogo(
         token.logoURI,
         token.chainId,
@@ -49,7 +49,7 @@ export function TokensListUpdater() {
 
     updateTokensByAddress(tokensByAddressMap)
     updateTokensBySymbol(tokensBySymbolMap)
-  }, [allTokensDistinct, updateTokensByAddress, updateTokensBySymbol])
+  }, [allTokensMemo, updateTokensByAddress, updateTokensBySymbol])
 
   return null
 }

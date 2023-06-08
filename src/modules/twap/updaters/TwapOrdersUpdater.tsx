@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { ComposableCoW } from 'abis/types'
 
-import { TWAP_ORDER_FINAL_STATUSES } from '../const'
+import { TWAP_NOT_PENDING_STATUSES } from '../const'
 import { useFetchTwapOrdersFromSafe } from '../hooks/useFetchTwapOrdersFromSafe'
 import { useFetchTwapPartOrders } from '../hooks/useFetchTwapPartOrders'
 import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
@@ -51,7 +51,7 @@ export function TwapOrdersUpdater(props: {
       const existedOrder = twapOrdersList[info.id]
 
       if (existedOrder) {
-        return !TWAP_ORDER_FINAL_STATUSES.includes(existedOrder.status)
+        return !TWAP_NOT_PENDING_STATUSES.includes(existedOrder.status)
       }
 
       return !info.isExpired && info.safeData.isExecuted
