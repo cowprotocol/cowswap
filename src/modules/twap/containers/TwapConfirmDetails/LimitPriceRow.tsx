@@ -1,22 +1,32 @@
-import { Currency } from '@uniswap/sdk-core'
+import { Dispatch, SetStateAction } from 'react'
 
-import { FractionLike, Nullish } from 'types'
+import { Currency, Price } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
 
 import { ConfirmDetailsItem } from 'modules/twap/pure/ConfirmDetailsItem'
 
-import { TokenAmount } from 'common/pure/TokenAmount'
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 
 type Props = {
-  amount: Nullish<FractionLike>
-  currency: Currency | undefined
+  price: Nullish<Price<Currency, Currency>>
+  isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
 }
 
 export function LimitPriceRow(props: Props) {
-  const { amount, currency } = props
+  const { price, isInvertedState } = props
+  const [isInverted, setIsInverted] = isInvertedState
 
   return (
-    <ConfirmDetailsItem tooltip="TODO: limit price tooltip text" label="Limit price (incl fee/slippage)">
-      <TokenAmount amount={amount} defaultValue="-" tokenSymbol={currency} />
-    </ConfirmDetailsItem>
+    // TODO: style button
+    <button onClick={() => setIsInverted((curr) => !curr)}>
+      <ConfirmDetailsItem tooltip="TODO: limit price tooltip text" label="Limit price (incl fee/slippage)">
+        {price ? (
+          <ExecutionPrice executionPrice={price} isInverted={isInverted} showBaseCurrency separatorSymbol="=" />
+        ) : (
+          '-'
+        )}
+      </ConfirmDetailsItem>
+    </button>
   )
 }
