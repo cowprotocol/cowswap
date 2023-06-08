@@ -190,7 +190,7 @@ export function OrderRow({
         </TableRowCheckboxWrapper>
       )}
       {/* Order sell/buy tokens */}
-      <styledEl.CurrencyCell clickable onClick={onClick}>
+      <styledEl.CurrencyCell clickable title={order.id} onClick={onClick}>
         <styledEl.CurrencyLogoPair>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
           <CurrencySymbolItem amount={buyAmount} />

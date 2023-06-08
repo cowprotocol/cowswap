@@ -46,6 +46,6 @@ export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem)
     executedSellAmountBeforeFees: '0',
     executedBuyAmount: '0',
     executedFeeAmount: '0',
-    invalidated: false,
+    invalidated: status === TwapOrderStatus.Cancelled,
   }
 }
