@@ -6,6 +6,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
 import { twapOrderSlippage } from 'modules/twap/state/twapOrdersSettingsAtom'
 
@@ -35,11 +36,10 @@ export function TwapConfirmDetails(props: Props) {
     () => getSlippageAdjustedBuyAmount(outputCurrencyInfo.amount, allowedSlippage),
     [allowedSlippage, outputCurrencyInfo.amount]
   )
+  const minReceivedUsdAmount = useHigherUSDValue(minReceivedAmountPerPart)
 
   // Limit price is the same for all parts
   const limitPrice = usePrice(inputCurrencyInfo.amount, minReceivedAmountPerPart)
-
-  // TODO: calculate USD amounts for limit price and min received
 
   return (
     <styledEl.Wrapper>
@@ -58,7 +58,7 @@ export function TwapConfirmDetails(props: Props) {
       <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
 
       {/* Min received */}
-      <MinReceivedRow amount={minReceivedAmountPerPart} />
+      <MinReceivedRow amount={minReceivedAmountPerPart} usdAmount={minReceivedUsdAmount} />
     </styledEl.Wrapper>
   )
 }
