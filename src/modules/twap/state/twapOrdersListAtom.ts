@@ -30,14 +30,16 @@ export const emulatedTwapOrdersAtom = atom((get) => {
 
   if (!accountLowerCase) return []
 
-  return orders
+  const orderWithComposableCowInfo: OrderWithComposableCowInfo[] = orders
     .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
     .map((order) => {
       return {
         order: emulateTwapAsOrder(tokens, order),
         composableCowInfo: {
-          uid: order.id,
+          id: order.id,
         },
       }
-    }) as OrderWithComposableCowInfo[]
+    })
+
+  return orderWithComposableCowInfo
 })
