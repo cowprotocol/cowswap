@@ -71,7 +71,7 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: Order
   return (
     <Wrapper
       cancelling={order.isCancelling}
-      partiallyFilled={order.partiallyFilled}
+      partiallyFilled={order.executionData.partiallyFilled}
       status={order.status}
       widthAuto={widthAuto}
       withWarning={withWarning}
@@ -88,10 +88,10 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick }: Order
           ? orderStatusTitleMap[order.status]
           : // We consider the order fully filled for display purposes even if not 100% filled
           // For this reason we use the flag to override the order status
-          order.fullyFilled
+          order.executionData.fullyFilled
           ? orderStatusTitleMap[OrderStatus.FULFILLED]
           : // Partially filled is also not a real status
-          order.partiallyFilled
+          order.executionData.partiallyFilled
           ? 'Partially Filled'
           : orderStatusTitleMap[order.status] // Finally, map order status to their display version
       }

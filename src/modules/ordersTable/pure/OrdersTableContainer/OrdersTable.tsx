@@ -12,7 +12,6 @@ import styled from 'styled-components/macro'
 import iconOrderExecution from 'legacy/assets/cow-swap/orderExecution.svg'
 import { QuestionWrapper } from 'legacy/components/QuestionHelper'
 import QuestionHelper from 'legacy/components/QuestionHelper'
-import { Order } from 'legacy/state/orders/actions'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { SpotPricesKeyParams } from 'modules/orders/state/spotPricesAtom'
@@ -28,6 +27,7 @@ import { BalancesAndAllowances } from 'modules/tokens'
 
 import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
 import { InvertRateControl } from 'common/pure/RateInfo'
+import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 import { ordersTableFeatures } from 'constants/featureFlags'
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
@@ -193,7 +193,7 @@ export interface OrdersTableProps {
   chainId: SupportedChainId | undefined
   pendingOrdersPrices: PendingOrdersPrices
   orders: ParsedOrder[]
-  selectedOrders: Order[]
+  selectedOrders: CancellableOrder[]
   balancesAndAllowances: BalancesAndAllowances
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
   orderActions: LimitOrderActions
@@ -389,14 +389,14 @@ export function OrdersTable({
                 order={order}
                 spotPrice={getSpotPrice({
                   chainId: chainId as SupportedChainId,
-                  sellTokenAddress: order.sellToken,
-                  buyTokenAddress: order.buyToken,
+                  sellTokenAddress: order.inputToken.address,
+                  buyTokenAddress: order.outputToken.address,
                 })}
                 prices={pendingOrdersPrices[order.id]}
                 orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
                 isRateInverted={isRateInverted}
                 orderActions={orderActions}
-                onClick={() => orderActions.selectReceiptOrder(order.id)}
+                onClick={() => orderActions.selectReceiptOrder(order)}
               />
             ))}
           </Rows>

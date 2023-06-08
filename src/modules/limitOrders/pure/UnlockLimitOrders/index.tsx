@@ -30,7 +30,7 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
     <styledEl.Container>
       <styledEl.TitleSection>
         <h3>Want to try out limit orders?</h3>
-        <span>Unlock the BETA version!</span>
+        <span>Get started!</span>
       </styledEl.TitleSection>
 
       {BULLET_LIST_CONTENT && (
@@ -54,7 +54,7 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
           </ExternalLink>
         </span>
         <ButtonPrimary id="unlock-limit-orders-btn" onClick={handleUnlock}>
-          Unlock limit orders (BETA)
+          Get started with limit orders
         </ButtonPrimary>
       </styledEl.ControlSection>
     </styledEl.Container>

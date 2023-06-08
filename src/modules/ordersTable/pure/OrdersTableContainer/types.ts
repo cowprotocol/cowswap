@@ -1,12 +1,9 @@
-import { UID } from '@cowprotocol/cow-sdk'
-
-import { Order } from 'legacy/state/orders/actions'
-
 import { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 export interface LimitOrderActions {
-  getShowCancellationModal: (order: Order) => UseCancelOrderReturn
-  selectReceiptOrder(orderId: UID): void
-  toggleOrderForCancellation(order: Order): void
-  toggleOrdersForCancellation(orders: Order[]): void
+  getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
+  selectReceiptOrder(order: ParsedOrder): void
+  toggleOrderForCancellation(order: ParsedOrder): void
+  toggleOrdersForCancellation(orders: ParsedOrder[]): void
 }

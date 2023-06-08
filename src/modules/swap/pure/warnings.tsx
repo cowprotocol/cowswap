@@ -26,6 +26,7 @@ export interface SwapWarningsTopProps {
   shouldZeroApprove: boolean
   showSafeWcBundlingBanner: boolean
   nativeCurrencySymbol: string
+  wrappedCurrencySymbol: string
   setFeeWarningAccepted(cb: (state: boolean) => boolean): void
   setImpactWarningAccepted(cb: (state: boolean) => boolean): void
 }
@@ -53,6 +54,7 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
     showWrapBundlingBanner,
     showSafeWcBundlingBanner,
     nativeCurrencySymbol,
+    wrappedCurrencySymbol,
     setFeeWarningAccepted,
     setImpactWarningAccepted,
     shouldZeroApprove,
@@ -75,7 +77,9 @@ export const SwapWarningsTop = React.memo(function (props: SwapWarningsTopProps)
         />
       )}
       {showApprovalBundlingBanner && <BundleTxApprovalBanner />}
-      {showWrapBundlingBanner && <BundleTxWrapBanner />}
+      {showWrapBundlingBanner && (
+        <BundleTxWrapBanner nativeCurrencySymbol={nativeCurrencySymbol} wrappedCurrencySymbol={wrappedCurrencySymbol} />
+      )}
       {showSafeWcBundlingBanner && (
         <BundleTxSafeWcBanner nativeCurrencySymbol={nativeCurrencySymbol} supportsWrapping />
       )}

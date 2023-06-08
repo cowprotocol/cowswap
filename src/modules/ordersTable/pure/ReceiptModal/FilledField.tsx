@@ -11,7 +11,9 @@ interface Props {
 }
 
 export function FilledField({ order }: Props) {
-  const { filledPercentage, formattedPercentage, fullyFilled } = order
+  const {
+    executionData: { filledPercentage, filledPercentDisplay, fullyFilled },
+  } = order
   const { action, mainAmount, formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts(order)
 
   const touched = filledPercentage?.gt(0)
@@ -19,7 +21,7 @@ export function FilledField({ order }: Props) {
   return (
     <styledEl.Value>
       <styledEl.InlineWrapper>
-        <styledEl.Progress active={formattedPercentage || 0} />
+        <styledEl.Progress active={filledPercentDisplay || 0} />
       </styledEl.InlineWrapper>
 
       <styledEl.InlineWrapper>
