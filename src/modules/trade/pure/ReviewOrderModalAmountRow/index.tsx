@@ -1,0 +1,31 @@
+import { ReactNode } from 'react'
+
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
+import { FiatAmount } from 'common/pure/FiatAmount'
+import { TokenAmount } from 'common/pure/TokenAmount'
+
+import { ConfirmDetailsItem } from '../ConfirmDetailsItem'
+
+export type ReviewOrderAmountRowProps = {
+  amount: Nullish<CurrencyAmount<Currency>>
+  usdAmount?: Nullish<CurrencyAmount<Currency>>
+  tooltip?: ReactNode
+  label: string
+}
+
+export function ReviewOrderModalAmountRow({ amount, usdAmount, tooltip, label }: ReviewOrderAmountRowProps) {
+  return (
+    <ConfirmDetailsItem tooltip={tooltip} label={label}>
+      <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
+      {usdAmount && (
+        <i>
+          &nbsp;(
+          <FiatAmount amount={usdAmount} />)
+        </i>
+      )}
+    </ConfirmDetailsItem>
+  )
+}
