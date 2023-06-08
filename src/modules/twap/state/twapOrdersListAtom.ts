@@ -4,6 +4,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
 import { walletInfoAtom } from 'modules/wallet/api/state'
 
+import { OrderWithComposableCowInfo } from 'common/types'
 import { deepEqual } from 'utils/deepEqual'
 
 import { TwapOrderItem } from '../types'
@@ -31,5 +32,12 @@ export const emulatedTwapOrdersAtom = atom((get) => {
 
   return orders
     .filter((order) => order.chainId === chainId && order.safeAddress.toLowerCase() === accountLowerCase)
-    .map((order) => emulateTwapAsOrder(tokens, order))
+    .map((order) => {
+      return {
+        order: emulateTwapAsOrder(tokens, order),
+        composableCowInfo: {
+          uid: order.id,
+        },
+      }
+    }) as OrderWithComposableCowInfo[]
 })
