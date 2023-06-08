@@ -58,7 +58,7 @@ export function TwapConfirmDetails(props: Props) {
       <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
 
       {/* Min received */}
-      <MinReceivedRow currency={outputCurrencyInfo.amount?.currency} amount={minReceivedAmountPerPart} />
+      <MinReceivedRow amount={minReceivedAmountPerPart} />
     </styledEl.Wrapper>
   )
 }

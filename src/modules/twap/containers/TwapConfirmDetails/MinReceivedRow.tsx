@@ -1,22 +1,21 @@
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { FractionLike, Nullish } from 'types'
+import { Nullish } from 'types'
 
 import { ConfirmDetailsItem } from 'modules/twap/pure/ConfirmDetailsItem'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 type Props = {
-  amount: Nullish<FractionLike>
-  currency: Currency | undefined
+  amount: Nullish<CurrencyAmount<Currency>>
 }
 
 export function MinReceivedRow(props: Props) {
-  const { amount, currency } = props
+  const { amount } = props
 
   return (
     <ConfirmDetailsItem tooltip="TODO: Min received tooltip" label="Min received (incl. fee)">
-      <TokenAmount amount={amount} defaultValue="-" tokenSymbol={currency} />
+      <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
     </ConfirmDetailsItem>
   )
 }
