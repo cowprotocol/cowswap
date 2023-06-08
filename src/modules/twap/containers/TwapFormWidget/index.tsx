@@ -7,10 +7,12 @@ import {
   useAdvancedOrdersRawState,
   useUpdateAdvancedOrdersRawState,
 } from 'modules/advancedOrders'
+import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
+import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
@@ -22,11 +24,14 @@ import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
 
 export function TwapFormWidget() {
+  const { chainId, account } = useWalletInfo()
+  const isSafeApp = useIsSafeApp()
   const { numberOfPartsValue, slippageValue, deadline, customDeadline, isCustomDeadline } =
     useAtomValue(twapOrdersSettingsAtom)
 
@@ -39,6 +44,8 @@ export function TwapFormWidget() {
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
+  const composableCowContract = useComposableCowContract()
+
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
   const deadlineState = {
@@ -46,6 +53,8 @@ export function TwapFormWidget() {
     customDeadline,
     isCustomDeadline,
   }
+
+  const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
 
   // Reset output amount when num of parts or input amount are changed
   useEffect(() => {
@@ -55,6 +64,9 @@ export function TwapFormWidget() {
   return (
     <>
       <QuoteObserverUpdater />
+      {shouldLoadTwapOrders && (
+        <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
+      )}
       <TwapConfirmModal />
 
       {!isWrapOrUnwrap && (

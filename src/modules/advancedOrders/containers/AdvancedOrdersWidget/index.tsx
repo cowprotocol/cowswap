@@ -11,12 +11,11 @@ import {
 } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
 import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
-import { TwapFormWidget } from 'modules/twap'
 import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
-export function AdvancedOrdersWidget() {
+export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   useSetupTradeState()
   useFillAdvancedOrdersDerivedState()
 
@@ -60,12 +59,7 @@ export function AdvancedOrdersWidget() {
   // TODO
   const slots: TradeWidgetSlots = {
     settingsWidget: <div></div>,
-    bottomContent: (
-      <>
-        {/*TODO: conditionally display a widget for current advanced order type*/}
-        <TwapFormWidget />
-      </>
-    ),
+    bottomContent: children,
   }
 
   const params = {
