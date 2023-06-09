@@ -22,6 +22,12 @@ export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrd
   }
 })
 
+export const addTwapOrderToListAtom = atom(null, (get, set, order: TwapOrderItem) => {
+  const currentState = get(twapOrdersListAtom)
+
+  set(updateTwapOrdersListAtom, {...currentState, [order.id]: order})
+})
+
 export const emulatedTwapOrdersAtom = atom((get) => {
   const { account, chainId } = get(walletInfoAtom)
   const tokens = get(tokensByAddressAtom)
