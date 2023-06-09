@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useUpdateAtom } from 'jotai/utils'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
@@ -28,8 +28,6 @@ import { isOrderInPendingTooLong, openNpsAppziSometimes } from 'legacy/utils/app
 import { getExplorerOrderLink } from 'legacy/utils/explorer'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
-import { twapOrdersListAtom } from 'modules/twap/state/twapOrdersListAtom'
-import { TwapOrderStatus } from 'modules/twap/types'
 import { useWalletInfo } from 'modules/wallet'
 
 import { getOrder, OrderID } from 'api/gnosisProtocol'
@@ -256,7 +254,6 @@ export function PendingOrdersUpdater(): null {
   const { chainId: _chainId, account } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
   const removeOrdersToCancel = useUpdateAtom(removeOrdersToCancelAtom)
-  const twapOrdersList = useAtomValue(twapOrdersListAtom)
 
   const pending = useCombinedPendingOrders({ chainId })
   const isUpdating = useRef(false) // TODO: Implement using SWR or retry/cancellable promises
@@ -339,33 +336,6 @@ export function PendingOrdersUpdater(): null {
       clearInterval(limitInterval)
     }
   }, [account, chainId, updateOrders])
-
-  // Since CoW Protocol order-book don't change status of ComposableCow children orders
-  // We need to do it on the frontend side
-  useEffect(() => {
-    if (!chainId) return
-
-    const cancelledComposableCowChildren = pendingRef.current
-      .filter((order) => {
-        const composableCowParentId = order.composableCowInfo?.parentId
-
-        if (composableCowParentId) {
-          const parent = twapOrdersList[composableCowParentId]
-
-          return parent?.status === TwapOrderStatus.Cancelled
-        }
-
-        return false
-      })
-      .map((order) => order.id)
-
-    if (cancelledComposableCowChildren.length > 0) {
-      cancelOrdersBatch({
-        ids: cancelledComposableCowChildren,
-        chainId,
-      })
-    }
-  }, [chainId, cancelOrdersBatch, twapOrdersList])
 
   return null
 }

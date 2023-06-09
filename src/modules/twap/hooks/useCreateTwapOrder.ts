@@ -43,13 +43,14 @@ export function useCreateTwapOrder() {
     }
 
     const startTime = Math.round((Date.now() + ms`1m`) / 1000) // Now + 1 min
-    const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
+    const twapOrderWithStartTime = { ...twapOrder, startTime }
+    const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrderWithStartTime)
     const orderId = getConditionalOrderId(paramsStruct)
 
     tradeConfirmActions.onSign(pendingTrade)
 
     try {
-      const { safeTxHash } = await settleTwapOrder({ ...twapOrder, startTime }, paramsStruct, twapOrderCreationContext)
+      const { safeTxHash } = await settleTwapOrder(twapOrderWithStartTime, paramsStruct, twapOrderCreationContext)
 
       addTwapOrderToList({
         order: twapOrderToStruct(twapOrder),
@@ -64,5 +65,5 @@ export function useCreateTwapOrder() {
     } catch (error) {
       tradeConfirmActions.onError(error.message || error)
     }
-  }, [chainId, account, inputCurrencyAmount, outputCurrencyAmount, twapOrder, tradeConfirmActions, twapOrderCreationContext])
+  }, [chainId, account, inputCurrencyAmount, outputCurrencyAmount, twapOrder, tradeConfirmActions, twapOrderCreationContext, addTwapOrderToList])
 }
