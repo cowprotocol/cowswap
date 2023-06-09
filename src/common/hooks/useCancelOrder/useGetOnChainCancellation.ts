@@ -3,11 +3,10 @@ import { useCallback } from 'react'
 import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
 import { Order } from 'legacy/state/orders/actions'
 
-import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+import { useCancelTwapOrder } from 'modules/twap/hooks/useCancelTwapOrder'
 
 import {
-  getConditionalOrderCancellation,
   getEthFlowCancellation,
   getOnChainCancellation,
   OnChainCancellation,
@@ -16,7 +15,7 @@ import {
 export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCancellation> {
   const ethFlowContract = useEthFlowContract()
   const settlementContract = useGP2SettlementContract()
-  const composableCowContract = useComposableCowContract()
+  const cancelTwapOrder = useCancelTwapOrder()
 
   return useCallback(
     (order: Order) => {
@@ -25,7 +24,7 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
       const isEthFlowOrder = getIsEthFlowOrder(order)
 
       if (composableCowId) {
-        return getConditionalOrderCancellation(composableCowContract!, composableCowId)
+        return cancelTwapOrder(composableCowId)
       }
 
       if (isEthFlowOrder) {
@@ -34,6 +33,6 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
 
       return getOnChainCancellation(settlementContract!, order)
     },
-    [ethFlowContract, settlementContract, composableCowContract]
+    [ethFlowContract, settlementContract, cancelTwapOrder]
   )
 }

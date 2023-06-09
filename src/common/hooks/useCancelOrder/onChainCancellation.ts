@@ -1,12 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { ContractTransaction } from '@ethersproject/contracts'
 
 import { Order } from 'legacy/state/orders/actions'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
 
 import { logTradeFlowError } from 'modules/trade/utils/logger'
 
-import { ComposableCoW, GPv2Settlement } from 'abis/types'
+import { GPv2Settlement } from 'abis/types'
 import { CoWSwapEthFlow } from 'abis/types/ethflow'
 
 // Fallback If we couldn't estimate gas for on-chain cancellation
@@ -16,7 +15,7 @@ const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
 export interface OnChainCancellation {
   estimatedGas: BigNumber
 
-  sendTransaction(): Promise<ContractTransaction>
+  sendTransaction(): Promise<string>
 }
 
 export async function getEthFlowCancellation(
@@ -47,7 +46,9 @@ export async function getEthFlowCancellation(
   return {
     estimatedGas,
     sendTransaction: () => {
-      return ethFlowContract.invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
+      return ethFlowContract
+        .invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
+        .then((res) => res.hash)
     },
   }
 }
@@ -67,24 +68,9 @@ export async function getOnChainCancellation(contract: GPv2Settlement, order: Or
   return {
     estimatedGas,
     sendTransaction: () => {
-      return contract.invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
-    },
-  }
-}
-
-export async function getConditionalOrderCancellation(
-  contract: ComposableCoW,
-  composableCowId: string
-): Promise<OnChainCancellation> {
-  const estimatedGas = await contract.estimateGas.remove(composableCowId).catch((error: Error) => {
-    logTradeFlowError(LOG_LABEL, `Error estimating remove gas. Using default ${CANCELLATION_GAS_LIMIT_DEFAULT}`, error)
-    return CANCELLATION_GAS_LIMIT_DEFAULT
-  })
-
-  return {
-    estimatedGas,
-    sendTransaction: () => {
-      return contract.remove(composableCowId, { gasLimit: calculateGasMargin(estimatedGas) })
+      return contract
+        .invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
+        .then((res) => res.hash)
     },
   }
 }

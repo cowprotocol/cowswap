@@ -25,20 +25,18 @@ export function useSendOnChainCancellation() {
       const isEthFlowOrder = getIsEthFlowOrder(order)
       const { sendTransaction } = await getOnChainCancellation(order)
 
-      const receipt = await sendTransaction()
+      const hash = await sendTransaction()
 
-      if (receipt?.hash) {
-        cancelPendingOrder({ id: order.id, chainId })
-        setOrderCancellationHash({ chainId, id: order.id, hash: receipt.hash })
+      cancelPendingOrder({ id: order.id, chainId })
+      setOrderCancellationHash({ chainId, id: order.id, hash })
 
-        if (isEthFlowOrder) {
-          addTransaction({ hash: receipt.hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
-        } else {
-          addTransaction({
-            hash: receipt.hash,
-            onChainCancellation: { orderId: order.id, sellTokenSymbol: order.inputToken.symbol || '' },
-          })
-        }
+      if (isEthFlowOrder) {
+        addTransaction({ hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
+      } else {
+        addTransaction({
+          hash,
+          onChainCancellation: { orderId: order.id, sellTokenSymbol: order.inputToken.symbol || '' },
+        })
       }
     },
     [addTransaction, getOnChainCancellation, cancelPendingOrder, chainId, setOrderCancellationHash]

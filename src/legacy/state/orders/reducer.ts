@@ -150,6 +150,15 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.failed[id]
 }
 
+export function findPendingComposableCowChild(
+  pendingOrders: PartialOrdersMap,
+  composableCowOrderId: string
+): OrderObject | undefined {
+  return Object.values(pendingOrders).find((order) => {
+    return order?.order.composableCowInfo?.parentId === composableCowOrderId
+  })
+}
+
 function addOrderToState(
   state: Required<OrdersState>,
   chainId: ChainId,
@@ -361,6 +370,17 @@ export default createReducer(initialState, (builder) =>
 
       if (orderObject) {
         orderObject.order.isCancelling = true
+
+        const composableCowOrderId = orderObject.order.composableCowInfo?.id
+
+        // Set isCancelling=true for ComposableCoW child orders
+        if (composableCowOrderId) {
+          const childOrder = findPendingComposableCowChild(state[chainId].pending, composableCowOrderId)
+
+          if (childOrder) {
+            childOrder.order.isCancelling = true
+          }
+        }
       }
     })
     .addCase(cancelOrdersBatch, (state, action) => {

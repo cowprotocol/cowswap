@@ -27,7 +27,7 @@ export function TwapOrdersUpdater(props: {
 
   const twapDiscreteOrders = useTwapDiscreteOrders()
   const twapOrdersList = useAtomValue(twapOrdersListAtom)
-  const setTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
+  const updateTwapOrders = useUpdateAtom(updateTwapOrdersListAtom)
   const updateTwapPartOrders = useUpdateAtom(updateTwapPartOrdersAtom)
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
 
@@ -67,8 +67,8 @@ export function TwapOrdersUpdater(props: {
 
     const items = buildTwapOrdersItems(chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders)
 
-    setTwapOrders(items)
-  }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, setTwapOrders])
+    updateTwapOrders(items)
+  }, [chainId, safeAddress, allOrdersInfo, ordersAuthResult, twapDiscreteOrders, updateTwapOrders])
 
   useEffect(() => {
     if (!partOrders) return
