@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
 
@@ -9,8 +11,8 @@ export type TwapConfirmDetailsProps = {
   partsState: PartsState
 }
 
-export function TwapConfirmDetails(_props: TwapConfirmDetailsProps) {
-  const { startTime, partDuration, partsState } = _props
+export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: TwapConfirmDetailsProps) {
+  const { startTime, partDuration, partsState } = props
   const { numberOfPartsValue, inputPartAmount, inputFiatAmount, outputFiatAmount, outputPartAmount } = partsState
 
   const partsSuffix = ` part (1/${numberOfPartsValue})`
@@ -44,4 +46,4 @@ export function TwapConfirmDetails(_props: TwapConfirmDetailsProps) {
       </ConfirmDetailsItem>
     </div>
   )
-}
+})
