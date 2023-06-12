@@ -4,7 +4,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ConfirmDetailsItem } from 'modules/twap/pure/ConfirmDetailsItem'
+import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateWrapper } from 'common/pure/RateInfo'
