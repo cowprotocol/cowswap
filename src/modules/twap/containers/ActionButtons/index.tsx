@@ -25,7 +25,7 @@ export function ActionButtons() {
 
   if (!tradeFormButtonContext) return null
 
-  if (!primaryFormValidation && localFormValidation) {
+  if (localFormValidation) {
     return <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
   }
 

@@ -109,3 +109,9 @@ function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithC
       .filter(isTruthy)
   }, [twapParticleOrders, prodOrders])
 }
+
+export function useHasOrders(account?: string | null): boolean | undefined {
+  const gpOrders = useGpOrders(account)
+
+  return (gpOrders?.length || 0) > 0
+}
