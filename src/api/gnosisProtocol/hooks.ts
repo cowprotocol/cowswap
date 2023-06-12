@@ -111,3 +111,9 @@ function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithC
     return orderWithComposableCowInfo
   }, [twapParticleOrders, prodOrders])
 }
+
+export function useHasOrders(account?: string | null): boolean | undefined {
+  const gpOrders = useGpOrders(account)
+
+  return (gpOrders?.length || 0) > 0
+}
