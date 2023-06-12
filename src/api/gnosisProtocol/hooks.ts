@@ -85,3 +85,9 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
     return [...(currentEnvOrders || []), ...emulatedTwapOrders, ...twapRelatedOrders]
   }, [currentEnvOrders, emulatedTwapOrders, twapRelatedOrders])
 }
+
+export function useHasOrders(account?: string | null): boolean | undefined {
+  const gpOrders = useGpOrders(account)
+
+  return (gpOrders?.length || 0) > 0
+}
