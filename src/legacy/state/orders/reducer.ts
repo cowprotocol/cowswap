@@ -251,7 +251,7 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.FAILED, id)
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
-        const isComposableCowOrder = !!orderObj?.order?.composableCowInfo?.id
+        const isComposableCowOrder = !!orderObj?.order?.composableCowInfo
         // merge existing and new order objects
         const order = orderObj
           ? {
