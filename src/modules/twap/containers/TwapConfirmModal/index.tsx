@@ -13,6 +13,7 @@ import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippage } from '../../state/twapOrdersSettingsAtom'
+import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 
 export function TwapConfirmModal() {
   const {
@@ -62,6 +63,10 @@ export function TwapConfirmModal() {
   // This already takes into account the full order
   const minReceivedAmount = twapOrder?.buyAmount
 
+  const { timeInterval, numOfParts } = twapOrder || {}
+  const partDuration = timeInterval ? deadlinePartsDisplay(timeInterval, true) : ''
+  const totalDuration = timeInterval && numOfParts ? deadlinePartsDisplay(timeInterval * numOfParts, true) : ''
+
   return (
     <TradeConfirmModal>
       <TradeConfirmation
@@ -82,8 +87,9 @@ export function TwapConfirmModal() {
           />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
-            partDuration={twapOrder?.timeInterval}
+            partDuration={partDuration}
             partsState={partsState}
+            totalDuration={totalDuration}
           />
         </>
       </TradeConfirmation>

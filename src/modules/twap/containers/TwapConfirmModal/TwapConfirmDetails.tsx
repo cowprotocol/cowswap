@@ -7,12 +7,13 @@ import { PartsState } from '../../state/partsStateAtom'
 
 export type TwapConfirmDetailsProps = {
   startTime: number | undefined
-  partDuration: number | undefined
+  partDuration: string
+  totalDuration: string
   partsState: PartsState
 }
 
 export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: TwapConfirmDetailsProps) {
-  const { startTime, partDuration, partsState } = props
+  const { partDuration, totalDuration, partsState } = props
   const { numberOfPartsValue, inputPartAmount, inputFiatAmount, outputFiatAmount, outputPartAmount } = partsState
 
   const partsSuffix = ` part (1/${numberOfPartsValue})`
@@ -21,12 +22,16 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
   return (
     <div>
       <span>TWAP order split in {numberOfPartsValue} equal parts</span>
+
+      {/* Sell amount per part */}
       <ReviewOrderModalAmountRow
         amount={inputPartAmount}
         fiatAmount={inputFiatAmount}
         tooltip="TODO: add tooltip"
         label={'Sell' + amountLabelSuffix}
       />
+
+      {/* Buy amount per part */}
       <ReviewOrderModalAmountRow
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
@@ -34,17 +39,20 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
         label={'Buy' + amountLabelSuffix}
         isAmountAccurate={false}
       />
-      {/*TODO: implement logic for time fields*/}
 
       {/* Start time */}
       {/*<ConfirmDetailsItem tooltip="TODO: add tooltip" label={'Start time first' + partsSuffix} withArrow={false}>*/}
       {/*  {startTime}*/}
       {/*</ConfirmDetailsItem>*/}
+
+      {/* Part duration */}
       <ConfirmDetailsItem tooltip="TODO: add tooltip" label="Part duration" withArrow={false}>
         {partDuration}
       </ConfirmDetailsItem>
+
+      {/* Total duration */}
       <ConfirmDetailsItem tooltip="TODO: add tooltip" label="Total duration" withArrow={false}>
-        {partDuration}
+        {totalDuration}
       </ConfirmDetailsItem>
     </div>
   )
