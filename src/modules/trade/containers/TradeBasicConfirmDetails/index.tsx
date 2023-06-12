@@ -10,12 +10,14 @@ import { usePrice } from 'common/hooks/usePrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
-import { MinReceivedRow } from './MinReceivedRow'
 import { SlippageRow } from './SlippageRow'
 import * as styledEl from './styled'
 
+import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
+
 type Props = {
   rateInfoParams: RateInfoParams
+  // TODO: Add maxSendAmount when using component in swap/limit BUY orders
   minReceiveAmount: Nullish<CurrencyAmount<Currency>>
   isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
   slippage: Percent
@@ -47,7 +49,12 @@ export function TradeBasicConfirmDetails(props: Props) {
       <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
 
       {/* Min received */}
-      <MinReceivedRow amount={minReceiveAmount} usdAmount={minReceivedUsdAmount} />
+      <ReviewOrderModalAmountRow
+        amount={minReceiveAmount}
+        fiatAmount={minReceivedUsdAmount}
+        tooltip="TODO: Min received tooltip"
+        label="Min received (incl. fee)"
+      />
     </styledEl.Wrapper>
   )
 }
