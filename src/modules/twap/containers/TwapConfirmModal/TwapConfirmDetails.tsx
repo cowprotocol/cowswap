@@ -35,9 +35,11 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
         isAmountAccurate={false}
       />
       {/*TODO: implement logic for time fields*/}
-      <ConfirmDetailsItem tooltip="TODO: add tooltip" label={'Start time first' + partsSuffix} withArrow={false}>
-        {startTime}
-      </ConfirmDetailsItem>
+
+      {/* Start time */}
+      {/*<ConfirmDetailsItem tooltip="TODO: add tooltip" label={'Start time first' + partsSuffix} withArrow={false}>*/}
+      {/*  {startTime}*/}
+      {/*</ConfirmDetailsItem>*/}
       <ConfirmDetailsItem tooltip="TODO: add tooltip" label="Part duration" withArrow={false}>
         {partDuration}
       </ConfirmDetailsItem>
