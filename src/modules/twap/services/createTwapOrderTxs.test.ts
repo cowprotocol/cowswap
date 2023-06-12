@@ -23,8 +23,6 @@ const order: TWAPOrder = {
   span: 0,
 }
 
-const paramsStruct = buildTwapOrderParamsStruct(chainId, order)
-
 const CREATE_COW_TX_DATA = '0xCREATE_COW_TX_DATA'
 const APPROVE_TX_DATA = '0xAPPROVE_TX_DATA'
 
@@ -52,6 +50,7 @@ describe('Create TWAP order', () => {
   })
 
   it('When sell token is approved, then should generate only creation transaction', () => {
+    const paramsStruct = buildTwapOrderParamsStruct(chainId, order)
     const result = createTwapOrderTxs(order, paramsStruct, { ...context, needsApproval: false })
 
     expect(createCowFn).toHaveBeenCalledTimes(1)
@@ -62,6 +61,7 @@ describe('Create TWAP order', () => {
   })
 
   it('When sell token is NOT approved, then should generate approval and creation transactions', () => {
+    const paramsStruct = buildTwapOrderParamsStruct(chainId, order)
     const result = createTwapOrderTxs(order, paramsStruct, { ...context, needsApproval: true })
 
     expect(createCowFn).toHaveBeenCalledTimes(1)
