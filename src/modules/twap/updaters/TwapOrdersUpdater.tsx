@@ -12,7 +12,7 @@ import { useTwapDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
 import { useTwapOrdersAuthMulticall } from '../hooks/useTwapOrdersAuthMulticall'
 import { twapOrdersListAtom, updateTwapOrdersListAtom } from '../state/twapOrdersListAtom'
 import { updateTwapPartOrdersAtom } from '../state/twapPartOrdersAtom'
-import { TwapOrderInfo } from '../types'
+import { TwapOrderInfo, TwapOrderStatus } from '../types'
 import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
@@ -51,6 +51,10 @@ export function TwapOrdersUpdater(props: {
       const existedOrder = twapOrdersList[info.id]
 
       if (existedOrder) {
+        if (existedOrder.status === TwapOrderStatus.WaitSigning) {
+          return false
+        }
+
         return !TWAP_NOT_PENDING_STATUSES.includes(existedOrder.status)
       }
 
