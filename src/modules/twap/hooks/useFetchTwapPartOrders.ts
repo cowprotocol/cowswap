@@ -74,7 +74,7 @@ async function getTwapPartOrderItem(
     sellAmount: partOrder.sellAmount.toString(),
     buyAmount: partOrder.buyAmount.toString(),
     feeAmount: partOrder.feeAmount.toString(),
-    kind: 'sell', // TODO: discuss it, smart-contract returns bytes here
+    kind: 'sell', // Twap order is always sell
     partiallyFillable: partOrder.partiallyFillable,
   } as Order
 
