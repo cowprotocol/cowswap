@@ -1,9 +1,10 @@
-import React from 'react'
+import { useState } from 'react'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { TwapConfirmDetails } from '../TwapConfirmDetails'
 
 export function TwapConfirmModal() {
   const {
@@ -17,6 +18,8 @@ export function TwapConfirmModal() {
 
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
+
+  const isInvertedState = useState(false)
 
   // TODO: add conditions based on warnings
   const isConfirmDisabled = false
@@ -32,12 +35,14 @@ export function TwapConfirmModal() {
     amount: inputCurrencyAmount,
     fiatAmount: inputCurrencyFiatAmount,
     balance: inputCurrencyBalance,
+    label: 'Sell amount',
   }
 
   const outputCurrencyInfo = {
     amount: outputCurrencyAmount,
     fiatAmount: outputCurrencyFiatAmount,
     balance: outputCurrencyBalance,
+    label: 'Estimated receive amount',
   }
 
   return (
@@ -51,7 +56,14 @@ export function TwapConfirmModal() {
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
       >
-        <>{/*TODO: display details*/}</>
+        <>
+          <>{/*TODO: display details*/}</>
+          <TwapConfirmDetails
+            inputCurrencyInfo={inputCurrencyInfo}
+            outputCurrencyInfo={outputCurrencyInfo}
+            isInvertedState={isInvertedState}
+          />
+        </>
       </TradeConfirmation>
     </TradeConfirmModal>
   )
