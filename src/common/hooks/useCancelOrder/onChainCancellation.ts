@@ -12,7 +12,7 @@ import { CoWSwapEthFlow } from 'abis/types/ethflow'
 const CANCELLATION_GAS_LIMIT_DEFAULT = BigNumber.from(150000)
 const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
 
-export type CancelledOrderInfo  = {
+export type CancelledOrderInfo = {
   txHash: string
   orderId: string
   sellTokenAddress: string
@@ -60,7 +60,7 @@ export async function getEthFlowCancellation(
             txHash: res.hash,
             orderId: order.id,
             sellTokenAddress: order.inputToken.address,
-            sellTokenSymbol: order.inputToken.symbol
+            sellTokenSymbol: order.inputToken.symbol,
           })
         })
     },
@@ -82,16 +82,14 @@ export async function getOnChainCancellation(contract: GPv2Settlement, order: Or
   return {
     estimatedGas,
     sendTransaction: (processCancelledOrder) => {
-      return contract
-        .invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) })
-        .then((res) => {
-          processCancelledOrder({
-            txHash: res.hash,
-            orderId: order.id,
-            sellTokenAddress: order.inputToken.address,
-            sellTokenSymbol: order.inputToken.symbol
-          })
+      return contract.invalidateOrder(cancelOrderParams, { gasLimit: calculateGasMargin(estimatedGas) }).then((res) => {
+        processCancelledOrder({
+          txHash: res.hash,
+          orderId: order.id,
+          sellTokenAddress: order.inputToken.address,
+          sellTokenSymbol: order.inputToken.symbol,
         })
+      })
     },
   }
 }

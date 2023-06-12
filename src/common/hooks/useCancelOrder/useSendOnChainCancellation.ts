@@ -17,23 +17,26 @@ export function useSendOnChainCancellation() {
   const addTransaction = useTransactionAdder()
   const getOnChainCancellation = useGetOnChainCancellation()
 
-  const processCancelledOrder = useCallback(({ txHash, orderId, sellTokenAddress, sellTokenSymbol }: CancelledOrderInfo) => {
-    if (!chainId) return
+  const processCancelledOrder = useCallback(
+    ({ txHash, orderId, sellTokenAddress, sellTokenSymbol }: CancelledOrderInfo) => {
+      if (!chainId) return
 
-    const isEthFlowOrder = getIsEthFlowOrder(sellTokenAddress)
+      const isEthFlowOrder = getIsEthFlowOrder(sellTokenAddress)
 
-    cancelPendingOrder({ id: orderId, chainId })
-    setOrderCancellationHash({ chainId, id: orderId, hash: txHash })
+      cancelPendingOrder({ id: orderId, chainId })
+      setOrderCancellationHash({ chainId, id: orderId, hash: txHash })
 
-    if (isEthFlowOrder) {
-      addTransaction({ hash: txHash, ethFlow: { orderId, subType: 'cancellation' } })
-    } else {
-      addTransaction({
-        hash: txHash,
-        onChainCancellation: { orderId, sellTokenSymbol: sellTokenSymbol || '' },
-      })
-    }
-  }, [chainId, cancelPendingOrder, setOrderCancellationHash, addTransaction])
+      if (isEthFlowOrder) {
+        addTransaction({ hash: txHash, ethFlow: { orderId, subType: 'cancellation' } })
+      } else {
+        addTransaction({
+          hash: txHash,
+          onChainCancellation: { orderId, sellTokenSymbol: sellTokenSymbol || '' },
+        })
+      }
+    },
+    [chainId, cancelPendingOrder, setOrderCancellationHash, addTransaction]
+  )
 
   return useCallback(
     async (order: Order) => {

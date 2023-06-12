@@ -6,7 +6,6 @@ import { WETH_GOERLI } from 'legacy/utils/goerli/constants'
 
 import { createTwapOrderTxs } from './createTwapOrderTxs'
 
-
 import { COMPOSABLE_COW_ADDRESS } from '../../advancedOrders'
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { TWAPOrder } from '../types'
@@ -42,7 +41,10 @@ describe('Create TWAP order', () => {
 
     context = {
       safeAppsSdk: null as any,
-      composableCowContract: { interface: { encodeFunctionData: createCowFn }, address: COMPOSABLE_COW_ADDRESS[chainId] } as any,
+      composableCowContract: {
+        interface: { encodeFunctionData: createCowFn },
+        address: COMPOSABLE_COW_ADDRESS[chainId],
+      } as any,
       needsApproval: false,
       spender: '0xB4FBF271143F4FBf7B91A5ded31805e42b222222',
       erc20Contract: { interface: { encodeFunctionData: approveFn } } as any,

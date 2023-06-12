@@ -38,18 +38,17 @@ export function useCancelTwapOrder(): (order: Order) => Promise<OnChainCancellat
       return {
         estimatedGas: await estimateCancelTwapOrderTxs(context),
         sendTransaction: (processCancelledOrder) => {
-          return safeAppsSdk.txs.send({ txs: cancelTwapOrderTxs(context) })
-            .then((res) => {
-              const txHash = res.safeTxHash
-              const sellTokenAddress = order.inputToken.address
-              const sellTokenSymbol = order.inputToken.symbol
+          return safeAppsSdk.txs.send({ txs: cancelTwapOrderTxs(context) }).then((res) => {
+            const txHash = res.safeTxHash
+            const sellTokenAddress = order.inputToken.address
+            const sellTokenSymbol = order.inputToken.symbol
 
-              processCancelledOrder({ txHash, orderId, sellTokenAddress, sellTokenSymbol })
+            processCancelledOrder({ txHash, orderId, sellTokenAddress, sellTokenSymbol })
 
-              if (partOrderId) {
-                processCancelledOrder({ txHash, orderId: partOrderId, sellTokenAddress, sellTokenSymbol })
-              }
-            })
+            if (partOrderId) {
+              processCancelledOrder({ txHash, orderId: partOrderId, sellTokenAddress, sellTokenSymbol })
+            }
+          })
         },
       }
     },

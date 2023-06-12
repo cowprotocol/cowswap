@@ -21,7 +21,6 @@ import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
-
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
   const twapOrder = useAtomValue(twapOrderAtom)
@@ -39,7 +38,7 @@ export function useCreateTwapOrder() {
 
     const pendingTrade = {
       inputAmount: inputCurrencyAmount,
-      outputAmount: outputCurrencyAmount
+      outputAmount: outputCurrencyAmount,
     }
 
     const startTime = Math.round((Date.now() + ms`1m`) / 1000) // Now + 1 min
@@ -58,12 +57,21 @@ export function useCreateTwapOrder() {
         chainId,
         safeAddress: account,
         submissionDate: new Date().toISOString(),
-        id: orderId
+        id: orderId,
       })
 
       tradeConfirmActions.onSuccess(safeTxHash)
     } catch (error) {
       tradeConfirmActions.onError(error.message || error)
     }
-  }, [chainId, account, inputCurrencyAmount, outputCurrencyAmount, twapOrder, tradeConfirmActions, twapOrderCreationContext, addTwapOrderToList])
+  }, [
+    chainId,
+    account,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    twapOrder,
+    tradeConfirmActions,
+    twapOrderCreationContext,
+    addTwapOrderToList,
+  ])
 }

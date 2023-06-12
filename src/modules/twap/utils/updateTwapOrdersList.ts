@@ -4,7 +4,7 @@ import { TwapOrdersList } from '../state/twapOrdersListAtom'
 export function updateTwapOrdersList(currentState: TwapOrdersList, nextState: TwapOrdersList): TwapOrdersList {
   const newState = { ...currentState, ...nextState }
 
-  Object.keys(nextState).forEach(orderId => {
+  Object.keys(nextState).forEach((orderId) => {
     const currentOrder = currentState[orderId]
 
     // Don't update orders in final statuses

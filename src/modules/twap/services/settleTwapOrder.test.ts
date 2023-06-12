@@ -57,7 +57,7 @@ describe('settleTwapOrder - integration test', () => {
     useSafeAppsSdkMock.mockReturnValue({ txs: { send: () => Promise.resolve({ safeTxHash: '0x00b' }) } } as any)
     useComposableCowContractMock.mockReturnValue({
       interface: { encodeFunctionData: () => '0xCREATE_COW_TX_DATA' },
-      address: COMPOSABLE_COW_ADDRESS[chainId]
+      address: COMPOSABLE_COW_ADDRESS[chainId],
     } as any)
     useNeedsApprovalMock.mockReturnValue(true)
     useTokenContractMock.mockReturnValue({ interface: { encodeFunctionData: () => '0xAPPROVE_TX_DATA' } } as any)

@@ -1,4 +1,3 @@
-
 import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
