@@ -176,7 +176,7 @@ export function OrderRow({
   const isOrderCreating = CREATING_STATES.includes(order.status)
 
   return (
-    <TableRow isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
+    <TableRow data-id={order.id} isOpenOrdersTab={isOpenOrdersTab} isRowSelectable={isRowSelectable}>
       {/*Checkbox for multiple cancellation*/}
       {isRowSelectable && isOpenOrdersTab && (
         <TableRowCheckboxWrapper>
@@ -190,7 +190,7 @@ export function OrderRow({
         </TableRowCheckboxWrapper>
       )}
       {/* Order sell/buy tokens */}
-      <styledEl.CurrencyCell clickable title={order.id} onClick={onClick}>
+      <styledEl.CurrencyCell clickable onClick={onClick}>
         <styledEl.CurrencyLogoPair>
           <CurrencySymbolItem amount={getSellAmountWithFee(order)} />
           <CurrencySymbolItem amount={buyAmount} />

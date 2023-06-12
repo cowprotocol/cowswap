@@ -20,11 +20,12 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
   return useCallback(
     (order: Order) => {
       const isComposableCowOrder = !!order.composableCowInfo?.id
-      const isEthFlowOrder = getIsEthFlowOrder(order.inputToken.address)
 
       if (isComposableCowOrder) {
         return cancelTwapOrder(order)
       }
+
+      const isEthFlowOrder = getIsEthFlowOrder(order.inputToken.address)
 
       if (isEthFlowOrder) {
         return getEthFlowCancellation(ethFlowContract!, order)

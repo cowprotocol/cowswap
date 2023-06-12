@@ -38,6 +38,7 @@ export interface RateInfoProps {
   isInvertedState?: [boolean, Dispatch<SetStateAction<boolean>>]
   rateInfoParams: RateInfoParams
   opacitySymbol?: boolean
+  noFiat?: boolean
 }
 
 const Wrapper = styled.div<{ stylized: boolean }>`
@@ -132,6 +133,7 @@ export function RateInfo({
   prependSymbol = true,
   isInvertedState,
   opacitySymbol = false,
+  noFiat = false,
 }: RateInfoProps) {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
@@ -150,8 +152,9 @@ export function RateInfo({
   }, [currentIsInverted, activeRate])
 
   const fiatAmount = useMemo(() => {
+    if (noFiat) return null
     return currentIsInverted ? invertedActiveRateFiatAmount : activeRateFiatAmount
-  }, [currentIsInverted, activeRateFiatAmount, invertedActiveRateFiatAmount])
+  }, [noFiat, currentIsInverted, invertedActiveRateFiatAmount, activeRateFiatAmount])
 
   const rateInputCurrency = useMemo(() => {
     return currentIsInverted ? outputCurrency : inputCurrency
