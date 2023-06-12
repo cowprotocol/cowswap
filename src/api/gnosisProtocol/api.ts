@@ -1,7 +1,18 @@
-import { OrderBookApiError, PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { OrderKind } from '@cowprotocol/cow-sdk'
-import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
-import { NativePriceResponse, Trade, PartialApiContext, Address } from '@cowprotocol/cow-sdk'
+import {
+  OrderBookApiError,
+  PriceQuality,
+  SupportedChainId as ChainId,
+  CowEnv,
+  OrderKind,
+  OrderQuoteRequest,
+  SigningScheme,
+  OrderQuoteResponse,
+  EnrichedOrder,
+  NativePriceResponse,
+  Trade,
+  PartialApiContext,
+  Address,
+} from '@cowprotocol/cow-sdk'
 
 import { orderBookApi } from 'cowSdk'
 
@@ -140,8 +151,8 @@ export async function getQuote(params: FeeQuoteParams): Promise<OrderQuoteRespon
   })
 }
 
-export async function getOrder(chainId: ChainId, orderId: string): Promise<EnrichedOrder | null> {
-  return orderBookApi.getOrder(orderId, { chainId })
+export async function getOrder(chainId: ChainId, orderId: string, env?: CowEnv): Promise<EnrichedOrder | null> {
+  return orderBookApi.getOrder(orderId, { chainId, env })
 }
 
 export async function getOrders(

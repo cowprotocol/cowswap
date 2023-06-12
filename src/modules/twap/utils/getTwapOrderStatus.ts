@@ -5,14 +5,14 @@ import { TwapOrderStatus, TWAPOrderStruct } from '../types'
 export function getTwapOrderStatus(
   order: TWAPOrderStruct,
   isExecuted: boolean,
-  auth: boolean,
+  auth: boolean | undefined,
   discreteOrder: Order | undefined
 ): TwapOrderStatus {
   if (isTwapOrderExpired(order)) return TwapOrderStatus.Expired
 
   if (!isExecuted) return TwapOrderStatus.WaitSigning
 
-  if (!auth) return TwapOrderStatus.Cancelled
+  if (auth === false) return TwapOrderStatus.Cancelled
 
   if (discreteOrder && PENDING_STATES.includes(discreteOrder.status)) return TwapOrderStatus.Pending
 

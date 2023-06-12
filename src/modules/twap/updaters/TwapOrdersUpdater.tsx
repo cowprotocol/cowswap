@@ -59,7 +59,7 @@ export function TwapOrdersUpdater(props: {
   }, [allOrdersInfo, twapOrdersList])
 
   const partOrders = useFetchTwapPartOrders(safeAddress, chainId, composableCowContract, openOrCancelledOrders)
-  // Here we know which orders are cancelled: if it's auth !== true, then it's cancelled
+  // Here we know which orders are cancelled: if it's auth === false, then it's cancelled
   const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, openOrCancelledOrders)
 
   useEffect(() => {

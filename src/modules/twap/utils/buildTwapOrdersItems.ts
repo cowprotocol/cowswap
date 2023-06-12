@@ -28,7 +28,7 @@ function getTwapOrderItem(
   safeAddress: string,
   safeData: TwapOrdersSafeData,
   id: string,
-  authorized: boolean,
+  authorized: boolean | undefined,
   discreteOrder: Order | undefined
 ): TwapOrderItem {
   const { params, submissionDate, isExecuted } = safeData

@@ -26,7 +26,7 @@ export function useTwapOrdersAuthMulticall(
     if (loadedResults.length !== ordersInfo.length) return null
 
     return ordersInfo.reduce((acc, val, index) => {
-      acc[val.id] = !!loadedResults[index].result?.[0]
+      acc[val.id] = loadedResults[index].result?.[0]
       return acc
     }, {} as TwapOrdersAuthResult)
   }, [ordersInfo, results])

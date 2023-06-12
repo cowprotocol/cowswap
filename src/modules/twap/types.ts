@@ -59,4 +59,4 @@ export interface TwapOrderInfo {
   isExpired: boolean
 }
 
-export type TwapOrdersAuthResult = { [key: string]: boolean }
+export type TwapOrdersAuthResult = { [key: string]: boolean | undefined }

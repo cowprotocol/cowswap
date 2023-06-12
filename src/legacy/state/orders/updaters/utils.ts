@@ -65,10 +65,16 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
   if (orderFromStore.status === OrderStatus.CREATING) {
     return null
   }
+  // Skip ComposableCow orders
+  if (orderFromStore.composableCowInfo?.id) {
+    return null
+  }
   // Get order from API
   let orderFromApi: EnrichedOrder | null = null
   try {
-    orderFromApi = await getOrder(chainId, orderFromStore.id)
+    const isComposableCowChildOrder = !!orderFromStore.composableCowInfo?.parentId
+    // For ComposableCow child orders always request PROD order-book
+    orderFromApi = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
   } catch (e: any) {
     console.debug(
       `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`
