@@ -10,7 +10,7 @@ import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
 import { Content, Row, Wrapper } from './styled'
 
-type Props = {
+export type ConfirmDetailsItemProps = {
   children: ReactNode
   label?: string
   tooltip?: ReactNode
@@ -18,7 +18,7 @@ type Props = {
   fiatAmount?: string
 }
 
-export function ConfirmDetailsItem(props: Props) {
+export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
   const { children, label, tooltip, withArrow = true } = props
 
   return (
