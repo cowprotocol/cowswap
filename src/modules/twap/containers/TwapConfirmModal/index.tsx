@@ -60,7 +60,6 @@ export function TwapConfirmModal() {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
   // This already takes into account the full order
-  // TODO: maybe it shouldn't? We want to quote the price per part, not the full amount
   const minReceivedAmount = twapOrder?.buyAmount
 
   return (
