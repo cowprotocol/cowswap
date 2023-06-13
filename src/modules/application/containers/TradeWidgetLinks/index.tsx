@@ -5,9 +5,8 @@ import { Trans } from '@lingui/macro'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
-import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 import { Routes } from 'constants/routes'
-import { FeatureFlag } from 'utils/featureFlags'
 
 import * as styledEl from './styled'
 
@@ -43,7 +42,7 @@ export function TradeWidgetLinks() {
         </styledEl.Link>
       </styledEl.MenuItem>
 
-      {FeatureFlag.get(ADVANCED_ORDERS_FEATURE_FLAG) && (
+      <FeatureGuard featureFlag="advancedOrdersEnabled">
         <styledEl.MenuItem>
           <styledEl.Link
             className={({ isActive }) => (isActive ? 'active' : undefined)}
@@ -55,7 +54,7 @@ export function TradeWidgetLinks() {
             </styledEl.Badge>
           </styledEl.Link>
         </styledEl.MenuItem>
-      )}
+      </FeatureGuard>
     </styledEl.Wrapper>
   )
 }
