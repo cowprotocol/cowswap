@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
@@ -13,7 +13,7 @@ export interface TwapFormStateParams {
   isFallbackHandlerSetupAccepted: boolean
   verification: ExtensibleFallbackVerification | null
   twapOrder: TWAPOrder | null
-  sellAmountPartFiat: Nullish<CurrencyAmount<Token>>
+  sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
   chainId: SupportedChainId | undefined
 }
 
@@ -54,7 +54,7 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
 
 // TODO: move to a utils file
 function isSellAmountTooSmall(
-  sellAmount: Nullish<CurrencyAmount<Token>>,
+  sellAmount: Nullish<CurrencyAmount<Currency>>,
   chainId: SupportedChainId | undefined
 ): boolean {
   if (!chainId) {

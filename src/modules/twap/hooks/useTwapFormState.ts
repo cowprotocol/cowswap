@@ -3,12 +3,11 @@ import { useMemo } from 'react'
 
 import { useAsyncMemo } from 'use-async-memo'
 
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 
+import { useAdvancedOrdersDerivedState } from '../../advancedOrders'
 import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/getTwapFormState'
 import { verifyExtensibleFallback } from '../services/verifyExtensibleFallback'
 import { twapOrderAtom } from '../state/twapOrderAtom'
@@ -21,6 +20,7 @@ export function useTwapFormState(): TwapFormState | null {
   const { chainId } = useWalletInfo()
 
   const twapOrder = useAtomValue(twapOrderAtom)
+  const { inputCurrencyFiatAmount } = useAdvancedOrdersDerivedState()
 
   const verification = useAsyncMemo(
     () => (extensibleFallbackContext ? verifyExtensibleFallback(extensibleFallbackContext) : null),
@@ -28,13 +28,12 @@ export function useTwapFormState(): TwapFormState | null {
     null
   )
 
-  const sellAmountPart = useMemo(() => {
-    if (!twapOrder?.sellAmount || !twapOrder?.numOfParts) {
+  const sellAmountPartFiat = useMemo(() => {
+    if (!inputCurrencyFiatAmount || !twapOrder?.numOfParts) {
       return null
     }
-    return twapOrder.sellAmount.divide(twapOrder.numOfParts)
-  }, [twapOrder?.numOfParts, twapOrder?.sellAmount])
-  const sellAmountPartFiat = useHigherUSDValue(sellAmountPart)
+    return inputCurrencyFiatAmount.divide(twapOrder.numOfParts)
+  }, [inputCurrencyFiatAmount, twapOrder?.numOfParts])
 
   return useMemo(() => {
     return getTwapFormState({ isSafeApp, isFallbackHandlerSetupAccepted, verification, twapOrder, sellAmountPartFiat, chainId })
