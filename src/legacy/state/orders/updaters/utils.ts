@@ -9,7 +9,7 @@ import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
-import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
@@ -68,7 +68,7 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
     return null
   }
   // Skip ComposableCow orders
-  if (getIsComposableCowOrder(orderFromStore)) {
+  if (getIsComposableCowParentOrder(orderFromStore)) {
     return null
   }
   // Get order from API
