@@ -27,7 +27,7 @@ function getTwapOrderItem(
   chainId: SupportedChainId,
   safeAddress: string,
   safeData: TwapOrdersSafeData,
-  hash: string,
+  id: string,
   authorized: boolean,
   discreteOrder: Order | undefined
 ): TwapOrderItem {
@@ -41,7 +41,7 @@ function getTwapOrderItem(
     status,
     chainId,
     safeAddress,
-    hash,
+    id,
     submissionDate,
   }
 }

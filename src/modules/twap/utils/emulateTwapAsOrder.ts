@@ -14,7 +14,7 @@ const statusMap: Record<TwapOrderStatus, OrderStatus> = {
 }
 
 export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem): EnrichedOrder {
-  const { safeAddress, hash, status } = item
+  const { safeAddress, id, status } = item
   const { sellToken, buyToken, partSellAmount, minPartLimit, n, t } = item.order
   const numOfParts = BigInt(n)
   const sellAmount = BigInt(partSellAmount) * numOfParts
@@ -29,7 +29,7 @@ export function emulateTwapAsOrder(tokens: TokensByAddress, item: TwapOrderItem)
     sellToken,
     buyToken,
     validTo: Math.ceil(expirationTime.getTime() / 1000),
-    uid: hash,
+    uid: id,
     sellAmount: sellAmount.toString(),
     buyAmount: buyAmount.toString(),
     kind: OrderKind.SELL,

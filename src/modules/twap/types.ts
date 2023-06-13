@@ -42,7 +42,7 @@ export interface TwapOrderItem {
   status: TwapOrderStatus
   chainId: SupportedChainId
   safeAddress: string
-  hash: string
+  id: string
   submissionDate: string
 }
 

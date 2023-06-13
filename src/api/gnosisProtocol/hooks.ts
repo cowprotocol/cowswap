@@ -7,11 +7,14 @@ import useSWR from 'swr'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from 'legacy/constants'
 import { isBarnBackendEnv } from 'legacy/utils/environments'
+import { isTruthy } from 'legacy/utils/misc'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { emulatedTwapOrdersAtom } from 'modules/twap/state/twapOrdersListAtom'
 import { TwapPartOrderItem, twapPartOrdersListAtom } from 'modules/twap/state/twapPartOrdersAtom'
 import { useWalletInfo } from 'modules/wallet'
+
+import { OrderWithComposableCowInfo } from 'common/types'
 
 import { getOrders } from './api'
 
@@ -27,11 +30,10 @@ import { getOrders } from './api'
  * For non-PROD environment we do two requests: barn and prod
  * For PROD environment we do only one: prod. It depends on isBarnBackendEnv
  */
-export function useGpOrders(account?: string | null, refreshInterval?: number): EnrichedOrder[] {
+export function useGpOrders(account?: string | null, refreshInterval?: number): OrderWithComposableCowInfo[] {
   const { chainId: _chainId } = useWalletInfo()
   const chainId = supportedChainId(_chainId)
   const emulatedTwapOrders = useAtomValue(emulatedTwapOrdersAtom)
-  const twapParticleOrders = useAtomValue(twapPartOrdersListAtom)
 
   const requestParams = useMemo(() => {
     return account ? { owner: account, limit: AMOUNT_OF_ORDERS_TO_FETCH } : null
@@ -65,8 +67,24 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
     return isBarnBackendEnv ? loadedProdOrders : currentEnvOrders
   }, [currentEnvOrders, loadedProdOrders])
 
-  // Take only orders are connected to TWAP orders
-  const twapRelatedOrders = useMemo(() => {
+  const twapChildOrders = useTwapChildOrders(prodOrders)
+
+  const regularOrders: OrderWithComposableCowInfo[] = useMemo(() => {
+    if (!currentEnvOrders) return []
+
+    return currentEnvOrders.map((order) => ({ order }))
+  }, [currentEnvOrders])
+
+  return useMemo(() => {
+    return [...regularOrders, ...emulatedTwapOrders, ...twapChildOrders]
+  }, [regularOrders, emulatedTwapOrders, twapChildOrders])
+}
+
+// Take only orders are connected to TWAP orders
+function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithComposableCowInfo[] {
+  const twapParticleOrders = useAtomValue(twapPartOrdersListAtom)
+
+  return useMemo(() => {
     if (!prodOrders) return []
 
     const particleOrdersMap = twapParticleOrders.reduce<{ [uid: string]: TwapPartOrderItem }>((acc, val) => {
@@ -75,15 +93,21 @@ export function useGpOrders(account?: string | null, refreshInterval?: number): 
       return acc
     }, {})
 
-    return prodOrders.filter((order) => {
-      return particleOrdersMap[order.uid]
-    })
-  }, [twapParticleOrders, prodOrders])
+    return prodOrders
+      .map((order) => {
+        const particleOrder = particleOrdersMap[order.uid]
 
-  // Add only TWAP-related orders to the common list of orders
-  return useMemo(() => {
-    return [...(currentEnvOrders || []), ...emulatedTwapOrders, ...twapRelatedOrders]
-  }, [currentEnvOrders, emulatedTwapOrders, twapRelatedOrders])
+        if (!particleOrder) return null
+
+        return {
+          order,
+          composableCowInfo: {
+            parentId: particleOrder.twapOrderId,
+          },
+        } as OrderWithComposableCowInfo
+      })
+      .filter(isTruthy)
+  }, [twapParticleOrders, prodOrders])
 }
 
 export function useHasOrders(account?: string | null): boolean | undefined {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { Token } from '@uniswap/sdk-core'
 
@@ -16,6 +16,7 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useGpOrders } from 'api/gnosisProtocol/hooks'
+import { OrderWithComposableCowInfo } from 'common/types'
 
 function _getTokenFromMapping(
   address: string,
@@ -41,7 +42,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 }
 
 function _transformGpOrderToStoreOrder(
-  order: EnrichedOrder,
+  { order, composableCowInfo }: OrderWithComposableCowInfo,
   chainId: ChainId,
   allTokens: { [address: string]: Token | null }
 ): Order | undefined {
@@ -99,6 +100,7 @@ function _transformGpOrderToStoreOrder(
     refundHash: ethflowData?.refundTxHash || undefined,
     buyTokenBalance: order.buyTokenBalance,
     sellTokenBalance: order.sellTokenBalance,
+    composableCowInfo,
   }
 
   // The function to compute the summary needs the Order instance to exist already
@@ -126,14 +128,14 @@ function _getInputToken(
 }
 
 function _getMissingTokensAddresses(
-  orders: EnrichedOrder[],
+  orders: OrderWithComposableCowInfo[],
   tokens: Record<string, Token>,
   chainId: ChainId
 ): string[] {
   const tokensToFetch = new Set<string>()
 
   // Find out which tokens are not yet loaded in the UI
-  orders.forEach(({ sellToken, buyToken }) => {
+  orders.forEach(({ order: { sellToken, buyToken } }) => {
     if (!_getTokenFromMapping(sellToken, chainId, tokens)) tokensToFetch.add(sellToken)
     if (!_getTokenFromMapping(buyToken, chainId, tokens)) tokensToFetch.add(buyToken)
   })
@@ -160,7 +162,11 @@ async function _fetchTokens(
   }, {})
 }
 
-function _filterOrders(orders: EnrichedOrder[], tokens: Record<string, Token | null>, chainId: ChainId): Order[] {
+function _filterOrders(
+  orders: OrderWithComposableCowInfo[],
+  tokens: Record<string, Token | null>,
+  chainId: ChainId
+): Order[] {
   return orders.reduce<Order[]>((acc, order) => {
     const storeOrder = _transformGpOrderToStoreOrder(order, chainId, tokens)
     if (storeOrder) {
