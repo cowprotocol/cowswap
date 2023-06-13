@@ -15,12 +15,12 @@ import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
+import { GnosisSafeLink } from 'common/pure/GnosisSafeLink'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { ActivityDerivedState } from './index'
 
-import { GnosisSafeLink } from './StatusDetails'
 import { StatusDetails } from './StatusDetails'
 import {
   Summary,

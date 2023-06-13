@@ -4,6 +4,9 @@ import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { CloseIcon } from 'legacy/theme'
 
+import { TwapOrderItem } from 'modules/twap/types'
+
+import { InlineBanner } from 'common/pure/InlineBanner'
 import { GpModal } from 'common/pure/Modal'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -12,6 +15,7 @@ import { CurrencyField } from './CurrencyField'
 import { DateField } from './DateField'
 import { FeeField } from './FeeField'
 import { FieldLabel } from './FieldLabel'
+import { SafeTxFields } from './fields/SafeTxFields'
 import { FilledField } from './FilledField'
 import { IdField } from './IdField'
 import { OrderTypeField } from './OrderTypeField'
@@ -23,6 +27,7 @@ import { SurplusField } from './SurplusField'
 interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
+  twapOrder: TwapOrderItem | null
   chainId: SupportedChainId
   onDismiss: () => void
   sellAmount: CurrencyAmount<Token>
@@ -61,6 +66,7 @@ export function ReceiptModal({
   isOpen,
   onDismiss,
   order,
+  twapOrder,
   chainId,
   buyAmount,
   limitPrice,
@@ -81,6 +87,12 @@ export function ReceiptModal({
           <styledEl.Title>Order Receipt</styledEl.Title>
           <CloseIcon onClick={() => onDismiss()} />
         </styledEl.Header>
+
+        {twapOrder && (
+          <styledEl.InfoBannerWrapper>
+            <InlineBanner type="information" content={`Part of a ${twapOrder.order.n}-part TWAP order split`} />
+          </styledEl.InfoBannerWrapper>
+        )}
 
         <styledEl.Body>
           <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
@@ -144,14 +156,27 @@ export function ReceiptModal({
               <OrderTypeField order={order} />
             </styledEl.Field>
 
-            <styledEl.Field>
-              {order.executionData.activityId && (
-                <>
-                  <FieldLabel label={order.executionData.activityTitle} />
-                  <IdField id={order.executionData.activityId} chainId={chainId} />
-                </>
-              )}
-            </styledEl.Field>
+            {/*TODO: add a link to explorer when it will support TWAP orders*/}
+            {!twapOrder && (
+              <styledEl.Field>
+                {order.executionData.activityId && (
+                  <>
+                    <FieldLabel label={order.executionData.activityTitle} />
+                    <IdField id={order.executionData.activityId} chainId={chainId} />
+                  </>
+                )}
+              </styledEl.Field>
+            )}
+            {twapOrder?.safeParams && (
+              <SafeTxFields
+                chainId={chainId}
+                safeAddress={twapOrder.safeAddress}
+                safeTxHash={twapOrder.safeParams.safeTxHash}
+                nonce={twapOrder.safeParams.nonce}
+                confirmations={twapOrder.safeParams.confirmations}
+                confirmationsRequired={twapOrder.safeParams.confirmationsRequired}
+              />
+            )}
           </styledEl.FieldsWrapper>
         </styledEl.Body>
       </styledEl.Wrapper>

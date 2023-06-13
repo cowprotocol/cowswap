@@ -6,9 +6,8 @@ import { getTwapOrderStatus } from './getTwapOrderStatus'
 import { parseTwapOrderStruct } from './parseTwapOrderStruct'
 
 import { TwapToDiscreteOrders } from '../hooks/useTwapDiscreteOrders'
-import { TwapOrdersSafeData } from '../services/fetchTwapOrdersFromSafe'
 import { TwapOrdersList } from '../state/twapOrdersListAtom'
-import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult } from '../types'
+import { TwapOrderItem, TwapOrderInfo, TwapOrdersAuthResult, TwapOrdersSafeData } from '../types'
 
 export function buildTwapOrdersItems(
   chainId: SupportedChainId,
@@ -44,5 +43,6 @@ function getTwapOrderItem(
     safeAddress,
     id,
     submissionDate,
+    safeParams: safeData,
   }
 }

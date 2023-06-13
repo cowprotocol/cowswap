@@ -59,6 +59,10 @@ export const FieldsWrapper = styled.div`
   `}
 `
 
+export const InfoBannerWrapper = styled.div`
+  margin: 12px;
+`
+
 export const Field = styled.div`
   display: flex;
   flex-flow: row wrap;
@@ -122,6 +126,7 @@ export const LabelText = styled.span`
 export const Label = styled.div`
   display: flex;
   gap: 4px;
+  align-items: center;
 
   // TODO: Override required to remove inline styles from StyledInfoIcon parent.
   // Need to refactor and remove the inline styles.
