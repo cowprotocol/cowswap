@@ -8,12 +8,12 @@ import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { TextWrapper } from 'modules/swap/pure/Row/styled'
 import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
-import { Wrapper, Row, Content } from './styled'
+import { Content, Row, Wrapper } from './styled'
 
 type Props = {
   children: ReactNode
   label?: string
-  tooltip?: string
+  tooltip?: ReactNode
   withArrow?: boolean
   fiatAmount?: string
 }
