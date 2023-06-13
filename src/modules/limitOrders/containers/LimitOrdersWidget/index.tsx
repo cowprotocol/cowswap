@@ -15,11 +15,11 @@ import { useLimitOrdersPriceImpactParams } from 'modules/limitOrders/hooks/useLi
 import { useSetupLimitOrderAmountsFromUrl } from 'modules/limitOrders/hooks/useSetupLimitOrderAmountsFromUrl'
 import { InfoBanner } from 'modules/limitOrders/pure/InfoBanner'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useSetupTradeState, TradeWidget } from 'modules/trade'
+import { TradeWidget, useSetupTradeState } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
-import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
+import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
