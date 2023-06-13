@@ -1,10 +1,14 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import cowMeditatingSmooth from 'legacy/assets/images/cow-meditating-smoooth.svg'
-import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
 import { Order } from 'legacy/state/orders/actions'
-import { DisplayLink } from '../TransactionConfirmationModal'
-import * as styledEl from './styled'
+
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+import { parseOrder } from 'utils/orderUtils/parseOrder'
+
+import * as styledEl from './styled'
 
 export function TransactionExecutedContent({
   order,
@@ -15,8 +19,9 @@ export function TransactionExecutedContent({
   chainId: SupportedChainId
   hash?: string
 }) {
-  const { formattedFilledAmount, formattedSwappedAmount } = getExecutedSummaryData(order)
-  const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
+  const parsedOrder = parseOrder(order)
+  const { formattedFilledAmount, formattedSwappedAmount } = getExecutedSummaryData(parsedOrder)
+  const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(parsedOrder)
 
   return (
     <styledEl.ExecutedWrapper>

@@ -6,10 +6,11 @@ import { precacheAndRoute } from 'workbox-precaching'
 import { PrecacheEntry } from 'workbox-precaching/_types'
 import { registerRoute, Route } from 'workbox-routing'
 import { CacheFirst } from 'workbox-strategies'
-import pkg from '../../package.json'
 
 import { DocumentRoute } from './document'
 import { toURL } from './utils'
+
+import pkg from '../../package.json'
 
 const WEB_VERSION = pkg.version
 

@@ -1,10 +1,13 @@
 import { useCallback } from 'react'
+
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useWalletInfo } from 'modules/wallet'
-import { useGetOnChainCancellation } from './useGetOnChainCancellation'
+
 import { getIsEthFlowOrder } from 'modules/swap/containers/EthFlowStepper'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useGetOnChainCancellation } from './useGetOnChainCancellation'
 
 export function useSendOnChainCancellation() {
   const { chainId } = useWalletInfo()
@@ -22,20 +25,18 @@ export function useSendOnChainCancellation() {
       const isEthFlowOrder = getIsEthFlowOrder(order)
       const { sendTransaction } = await getOnChainCancellation(order)
 
-      const receipt = await sendTransaction()
+      const hash = await sendTransaction()
 
-      if (receipt?.hash) {
-        cancelPendingOrder({ id: order.id, chainId })
-        setOrderCancellationHash({ chainId, id: order.id, hash: receipt.hash })
+      cancelPendingOrder({ id: order.id, chainId })
+      setOrderCancellationHash({ chainId, id: order.id, hash })
 
-        if (isEthFlowOrder) {
-          addTransaction({ hash: receipt.hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
-        } else {
-          addTransaction({
-            hash: receipt.hash,
-            onChainCancellation: { orderId: order.id, sellTokenSymbol: order.inputToken.symbol || '' },
-          })
-        }
+      if (isEthFlowOrder) {
+        addTransaction({ hash, ethFlow: { orderId: order.id, subType: 'cancellation' } })
+      } else {
+        addTransaction({
+          hash,
+          onChainCancellation: { orderId: order.id, sellTokenSymbol: order.inputToken.symbol || '' },
+        })
       }
     },
     [addTransaction, getOnChainCancellation, cancelPendingOrder, chainId, setOrderCancellationHash]

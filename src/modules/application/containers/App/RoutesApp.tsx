@@ -1,17 +1,17 @@
-import Loader from 'legacy/components/Loader'
 import { lazy, Suspense } from 'react'
+import { ReactNode } from 'react'
+
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
-import { Routes as RoutesEnum } from 'constants/routes'
-
-import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
-import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { Loading } from 'legacy/components/FlashingLoading'
+import Loader from 'legacy/components/Loader'
+import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
+import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
 
+import { Routes as RoutesEnum } from 'constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
+import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { SwapPage } from 'pages/Swap'
-import { ReactNode } from 'react'
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))

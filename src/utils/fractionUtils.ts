@@ -1,9 +1,12 @@
 import { CurrencyAmount, Fraction, Price, BigintIsh, Rounding, Token, Currency } from '@uniswap/sdk-core'
-import { FractionLike, Nullish } from 'types'
-import { FULL_PRICE_PRECISION } from 'legacy/constants'
-import { trimTrailingZeros } from 'utils/trimTrailingZeros'
+
 import JSBI from 'jsbi'
-import { adjustDecimalsAtoms } from 'modules/limitOrders/utils/calculateAmountForRate'
+import { FractionLike, Nullish } from 'types'
+
+import { FULL_PRICE_PRECISION } from 'legacy/constants'
+
+import { adjustDecimalsAtoms } from 'utils/orderUtils/calculateAmountForRate'
+import { trimTrailingZeros } from 'utils/trimTrailingZeros'
 
 export class FractionUtils {
   static serializeFractionToJSON(fraction: Nullish<Fraction>): string {

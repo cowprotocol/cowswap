@@ -1,7 +1,11 @@
-import UnsupportedCurrencyFooter from 'legacy/components/swap/UnsupportedCurrencyFooter'
-import { HashLink } from 'react-router-hash-link'
-import { Currency } from '@uniswap/sdk-core'
 import React from 'react'
+
+import { Currency } from '@uniswap/sdk-core'
+
+import { HashLink } from 'react-router-hash-link'
+
+import UnsupportedCurrencyFooter from 'legacy/components/swap/UnsupportedCurrencyFooter'
+
 import { genericPropsChecker } from 'utils/genericPropsChecker'
 
 export interface CompatibilityIssuesWarningProps {

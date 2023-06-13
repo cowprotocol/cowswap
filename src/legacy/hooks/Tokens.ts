@@ -1,18 +1,22 @@
-import { Currency, Token } from '@uniswap/sdk-core'
-import { getChainInfo } from 'legacy/constants/chainInfo'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
-import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
+import { useAtomValue } from 'jotai/utils'
 import { useMemo } from 'react'
-import { isL2ChainId } from 'legacy/utils/chains'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@uniswap/sdk-core'
+
+import { getChainInfo } from 'legacy/constants/chainInfo'
 import { useAllLists, useInactiveListUrls } from 'legacy/state/lists/hooks'
 import { deserializeToken, useUserAddedTokens } from 'legacy/state/user/hooks'
-import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
-import { useWalletInfo } from 'modules/wallet'
-import { useAtomValue } from 'jotai/utils'
+import { isL2ChainId } from 'legacy/utils/chains'
+
 import { tokensByAddressAtom } from 'modules/tokensList/state/tokensListAtom'
-import { checkBySymbolAndAddress } from 'utils/checkBySymbolAndAddress'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useCurrencyFromMap, useTokenFromMapOrNetwork } from 'lib/hooks/useCurrency'
+import { getTokenFilter } from 'lib/hooks/useTokenList/filtering'
+import { doesTokenMatchSymbolOrAddress } from 'utils/doesTokenMatchSymbolOrAddress'
+
+import { TokenAddressMap, useUnsupportedTokenList } from './../state/lists/hooks'
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
 export function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean): { [address: string]: Token } {
@@ -133,7 +137,7 @@ export function useSearchInactiveTokenLists(
       if (!list) continue
 
       for (const tokenInfo of list.tokens) {
-        const isTokenMatched = strictSearch ? checkBySymbolAndAddress(tokenInfo, search) : tokenFilter(tokenInfo)
+        const isTokenMatched = strictSearch ? doesTokenMatchSymbolOrAddress(tokenInfo, search) : tokenFilter(tokenInfo)
 
         if (tokenInfo.chainId === chainId && isTokenMatched) {
           try {

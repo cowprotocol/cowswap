@@ -1,4 +1,5 @@
 import type { TokenList } from '@uniswap/token-lists'
+
 import contenthashToUri from 'lib/utils/contenthashToUri'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'

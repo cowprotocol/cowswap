@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+
 import { useAppDispatch } from 'legacy/state/hooks'
 
 import { updateMatchesDarkMode } from './reducer'

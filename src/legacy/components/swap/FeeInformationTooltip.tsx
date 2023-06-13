@@ -1,13 +1,18 @@
 import React from 'react'
+
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import QuestionHelper from 'legacy/components/QuestionHelper'
+
 import styled from 'styled-components/macro'
-import useTheme from 'legacy/hooks/useTheme'
+
+import QuestionHelper from 'legacy/components/QuestionHelper'
 import useCowBalanceAndSubsidy from 'legacy/hooks/useCowBalanceAndSubsidy'
-import { FiatAmount } from 'common/pure/FiatAmount'
-import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
+import useTheme from 'legacy/hooks/useTheme'
+import TradeGp from 'legacy/state/swap/TradeGp'
+
 import { getInputReceiveAmountInfo, getOutputReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { ReceiveAmountInfoTooltip } from 'modules/swap/pure/ReceiveAmountInfo'
+
+import { FiatAmount } from 'common/pure/FiatAmount'
 
 interface FeeInformationTooltipProps {
   trade?: TradeGp

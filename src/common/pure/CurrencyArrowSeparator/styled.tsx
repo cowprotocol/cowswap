@@ -1,5 +1,6 @@
-import styled, { css } from 'styled-components/macro'
 import { ArrowDown } from 'react-feather'
+import styled, { css } from 'styled-components/macro'
+
 import { loadingAnimationMixin } from './style-mixins'
 
 export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; hasSeparatorLine?: boolean }>`

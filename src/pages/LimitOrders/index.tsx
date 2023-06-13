@@ -1,22 +1,27 @@
-import * as styledEl from './styled'
+import { useAtomValue } from 'jotai/utils'
+
 import {
   LimitOrdersWidget,
-  MarketPriceUpdater,
+  QuoteObserverUpdater,
   InitialPriceUpdater,
   ExecutionPriceUpdater,
-  OrdersWidget,
   limitOrdersRawStateAtom,
+  limitOrdersSettingsAtom,
 } from 'modules/limitOrders'
-import { useAtomValue } from 'jotai/utils'
+import { OrdersTableWidget } from 'modules/ordersTable'
+import * as styledEl from 'modules/trade/pure/TradePageLayout'
+import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 
 export default function LimitOrderPage() {
   const { isUnlocked } = useAtomValue(limitOrdersRawStateAtom)
+  const { expertMode } = useAtomValue(limitOrdersSettingsAtom)
 
   return (
     <>
-      <MarketPriceUpdater />
+      <QuoteObserverUpdater />
       <InitialPriceUpdater />
       <ExecutionPriceUpdater />
+      <TradeFormValidationUpdater isExpertMode={expertMode} />
 
       <styledEl.PageWrapper isUnlocked={isUnlocked}>
         <styledEl.PrimaryWrapper>
@@ -24,8 +29,7 @@ export default function LimitOrderPage() {
         </styledEl.PrimaryWrapper>
 
         <styledEl.SecondaryWrapper>
-          {/*<ChartWidget />*/}
-          <OrdersWidget />
+          <OrdersTableWidget />
         </styledEl.SecondaryWrapper>
       </styledEl.PageWrapper>
     </>

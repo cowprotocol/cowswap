@@ -1,18 +1,20 @@
 import { useMemo } from 'react'
 
-import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
-import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
 import { useToggleSettingsMenu } from 'legacy/state/application/hooks'
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
+import { useIsExpertMode, useUserTransactionTTL } from 'legacy/state/user/hooks'
+
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+import { RowDeadlineContent } from 'modules/swap/pure/Row/RowDeadline'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export function RowDeadline() {
   const [userDeadline] = useUserTransactionTTL()
   const toggleSettings = useToggleSettingsMenu()
-  const isEthFlow = useIsEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
   const isExpertMode = useIsExpertMode()
-  const { native: nativeCurrency } = useDetectNativeToken()
+  const nativeCurrency = useNativeCurrency()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const props = useMemo(() => {
@@ -21,15 +23,15 @@ export function RowDeadline() {
       userDeadline,
       symbols: [nativeCurrency.symbol],
       displayDeadline,
-      isEthFlow,
+      isEoaEthFlow,
       isExpertMode,
       isWrapOrUnwrap,
       toggleSettings,
       showSettingOnClick: true,
     }
-  }, [isEthFlow, isExpertMode, isWrapOrUnwrap, nativeCurrency.symbol, toggleSettings, userDeadline])
+  }, [isEoaEthFlow, isExpertMode, isWrapOrUnwrap, nativeCurrency.symbol, toggleSettings, userDeadline])
 
-  if ((!isEthFlow && !isExpertMode) || isWrapOrUnwrap) {
+  if ((!isEoaEthFlow && !isExpertMode) || isWrapOrUnwrap) {
     return null
   }
 

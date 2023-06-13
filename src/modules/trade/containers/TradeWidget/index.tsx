@@ -1,16 +1,25 @@
-import * as styledEl from './styled'
-import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
-import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
-import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
 import React, { useEffect } from 'react'
-import { useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
-import { useThrottleFn } from 'common/hooks/useThrottleFn'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
+
 import { t } from '@lingui/macro'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
+
+import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
+import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { TradeQuoteUpdater } from 'modules/tradeQuote'
+import { useWalletDetails, useWalletInfo } from 'modules/wallet'
+
+import { useThrottleFn } from 'common/hooks/useThrottleFn'
+import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
+import { CurrencyInputPanel, CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
+import * as styledEl from './styled'
+import { TradeWidgetModals } from './TradeWidgetModals'
+
+import { WrapNativeModal } from '../WrapNativeModal'
 
 export interface TradeWidgetActions {
   onCurrencySelection: CurrencyInputPanelProps['onCurrencySelection']
@@ -22,12 +31,14 @@ export interface TradeWidgetActions {
 interface TradeWidgetParams {
   recipient: string | null
   disableNonToken?: boolean
-  isEthFlow?: boolean
+  isEoaEthFlow?: boolean
   compactView: boolean
   showRecipient: boolean
   isTradePriceUpdating: boolean
   priceImpact: PriceImpact
   isRateLoading?: boolean
+  disableQuotePolling?: boolean
+  canSellAllNative?: boolean
 }
 
 export interface TradeWidgetSlots {
@@ -60,10 +71,12 @@ export function TradeWidget(props: TradeWidgetProps) {
     showRecipient,
     isTradePriceUpdating,
     isRateLoading,
-    isEthFlow = false,
+    isEoaEthFlow = false,
     disableNonToken = false,
     priceImpact,
     recipient,
+    disableQuotePolling = false,
+    canSellAllNative = false,
   } = params
 
   const { chainId } = useWalletInfo()
@@ -72,7 +85,7 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   const currenciesLoadingInProgress = !inputCurrencyInfo.currency && !outputCurrencyInfo.currency
 
-  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined)
+  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, canSellAllNative)
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
   // Disable too frequent tokens switching
@@ -88,70 +101,77 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   return (
     <styledEl.Container id={id}>
-      <styledEl.ContainerBox>
-        <styledEl.Header>
-          <TradeWidgetLinks />
-          {!lockScreen && settingsWidget}
-        </styledEl.Header>
+      {!disableQuotePolling && <TradeQuoteUpdater />}
+      <TradeWidgetModals />
+      <WrapNativeModal />
 
-        {lockScreen ? (
-          lockScreen
-        ) : (
-          <>
-            <div>
-              <CurrencyInputPanel
-                id="input-currency-input"
-                disableNonToken={disableNonToken}
-                chainId={chainId}
-                loading={currenciesLoadingInProgress}
-                onCurrencySelection={onCurrencySelection}
-                onUserInput={onUserInput}
-                allowsOffchainSigning={allowsOffchainSigning}
-                currencyInfo={inputCurrencyInfo}
-                showSetMax={showSetMax}
-                topLabel={inputCurrencyInfo.label}
-              />
-            </div>
-            {!isWrapOrUnwrap && middleContent}
-            <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={!isWrapOrUnwrap && showRecipient}>
-              <CurrencyArrowSeparator
-                isCollapsed={compactView}
-                hasSeparatorLine={!compactView}
-                border={!compactView}
-                onSwitchTokens={throttledOnSwitchTokens}
-                withRecipient={showRecipient}
-                isLoading={isTradePriceUpdating}
-              />
-            </styledEl.CurrencySeparatorBox>
-            <div>
-              <CurrencyInputPanel
-                id="output-currency-input"
-                disableNonToken={disableNonToken}
-                inputDisabled={isEthFlow || disableOutput}
-                inputTooltip={
-                  isEthFlow
-                    ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
-                    : undefined
-                }
-                chainId={chainId}
-                loading={currenciesLoadingInProgress}
-                isRateLoading={isRateLoading}
-                onCurrencySelection={onCurrencySelection}
-                onUserInput={onUserInput}
-                allowsOffchainSigning={allowsOffchainSigning}
-                currencyInfo={outputCurrencyInfo}
-                priceImpactParams={priceImpact}
-                topLabel={outputCurrencyInfo.label}
-              />
-            </div>
-            {showRecipient && (
-              <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
-            )}
+      <styledEl.Container id={id}>
+        <styledEl.ContainerBox>
+          <styledEl.Header>
+            <TradeWidgetLinks />
+            {!lockScreen && settingsWidget}
+          </styledEl.Header>
 
-            {bottomContent}
-          </>
-        )}
-      </styledEl.ContainerBox>
+          {lockScreen ? (
+            lockScreen
+          ) : (
+            <>
+              <div>
+                <CurrencyInputPanel
+                  id="input-currency-input"
+                  disableNonToken={disableNonToken}
+                  chainId={chainId}
+                  areCurrenciesLoading={currenciesLoadingInProgress}
+                  onCurrencySelection={onCurrencySelection}
+                  onUserInput={onUserInput}
+                  allowsOffchainSigning={allowsOffchainSigning}
+                  currencyInfo={inputCurrencyInfo}
+                  showSetMax={showSetMax}
+                  maxBalance={maxBalance}
+                  topLabel={inputCurrencyInfo.label}
+                />
+              </div>
+              {!isWrapOrUnwrap && middleContent}
+              <styledEl.CurrencySeparatorBox compactView={compactView} withRecipient={!isWrapOrUnwrap && showRecipient}>
+                <CurrencyArrowSeparator
+                  isCollapsed={compactView}
+                  hasSeparatorLine={!compactView}
+                  border={!compactView}
+                  onSwitchTokens={throttledOnSwitchTokens}
+                  withRecipient={showRecipient}
+                  isLoading={isTradePriceUpdating}
+                />
+              </styledEl.CurrencySeparatorBox>
+              <div>
+                <CurrencyInputPanel
+                  id="output-currency-input"
+                  disableNonToken={disableNonToken}
+                  inputDisabled={isEoaEthFlow || disableOutput}
+                  inputTooltip={
+                    isEoaEthFlow
+                      ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                      : undefined
+                  }
+                  chainId={chainId}
+                  areCurrenciesLoading={currenciesLoadingInProgress}
+                  isRateLoading={isRateLoading}
+                  onCurrencySelection={onCurrencySelection}
+                  onUserInput={onUserInput}
+                  allowsOffchainSigning={allowsOffchainSigning}
+                  currencyInfo={outputCurrencyInfo}
+                  priceImpactParams={priceImpact}
+                  topLabel={outputCurrencyInfo.label}
+                />
+              </div>
+              {showRecipient && (
+                <styledEl.StyledRemoveRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />
+              )}
+
+              {bottomContent}
+            </>
+          )}
+        </styledEl.ContainerBox>
+      </styledEl.Container>
     </styledEl.Container>
   )
 }

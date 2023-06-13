@@ -1,5 +1,7 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { createReducer } from '@reduxjs/toolkit'
+
 import { updateGasPrices, UpdateGasPrices } from './actions'
 
 export type GasState = {

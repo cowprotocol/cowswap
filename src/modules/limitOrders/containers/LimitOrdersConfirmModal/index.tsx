@@ -1,62 +1,38 @@
-import React, { useCallback } from 'react'
 import { useAtom } from 'jotai'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { CloseIcon } from 'legacy/theme'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
-import { LimitOrdersConfirm } from '../../pure/LimitOrdersConfirm'
-import { TradeFlowContext } from '../../services/types'
-import TransactionConfirmationModal, { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
-import { useWalletInfo } from 'modules/wallet'
-import { GpModal } from 'common/pure/Modal'
-import * as styledEl from './styled'
-import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
-import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useAtomValue } from 'jotai/utils'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { TokenAmount } from 'common/pure/TokenAmount'
-import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
-import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import React from 'react'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
+import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
-import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
-import { L2Content as TxSubmittedModal } from 'legacy/components/TransactionConfirmationModal'
 import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
+import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
+import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
+import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
+import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { TradeConfirmModal, useTradeConfirmActions, TradeConfirmation } from 'modules/trade'
+
+import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
 
-export interface LimitOrdersConfirmModalProps {
-  isOpen: boolean
-  tradeContext: TradeFlowContext
-  inputCurrencyInfo: CurrencyInfo
-  outputCurrencyInfo: CurrencyInfo
-  priceImpact: PriceImpact
-  onDismiss(): void
-}
+import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
+import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
+import { TradeFlowContext } from '../../services/types'
 
-function PendingText({
-  inputRawAmount,
-  outputRawAmount,
-}: {
-  inputRawAmount: CurrencyAmount<Currency> | null
-  outputRawAmount: CurrencyAmount<Currency> | null
-}) {
-  const inputTitle = <TokenAmount amount={inputRawAmount} tokenSymbol={inputRawAmount?.currency} />
-  const outputTitle = <TokenAmount amount={outputRawAmount} tokenSymbol={outputRawAmount?.currency} />
-  return (
-    <>
-      Placing limit order {inputTitle} for {outputTitle}
-    </>
-  )
+export interface LimitOrdersConfirmModalProps {
+  tradeContext: TradeFlowContext
+  inputCurrencyInfo: CurrencyPreviewInfo
+  outputCurrencyInfo: CurrencyPreviewInfo
+  priceImpact: PriceImpact
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
-  const { isOpen, inputCurrencyInfo, outputCurrencyInfo, tradeContext, onDismiss, priceImpact } = props
-  const { chainId } = useWalletInfo()
-  const [confirmationState, setConfirmationState] = useAtom(limitOrdersConfirmState)
+  const { inputCurrencyInfo, outputCurrencyInfo, tradeContext, priceImpact } = props
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -65,30 +41,16 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { partialFillsEnabled } = useFeatureFlags()
 
   const { amount: inputAmount } = inputCurrencyInfo
-  const { amount: outputAmount, currency: outputCurrency } = outputCurrencyInfo
+  const { amount: outputAmount } = outputCurrencyInfo
 
   const rateImpact = useRateImpact()
   const rateInfoParams = useRateInfoParams(inputAmount, outputAmount)
-  const { handleSetError, ErrorModal } = useErrorModal()
 
-  const onDismissConfirmation = useCallback(() => {
-    setConfirmationState({ isPending: false, orderHash: null })
-  }, [setConfirmationState])
+  const tradeConfirmActions = useTradeConfirmActions()
 
-  const tradeCallbacks = {
-    beforeTrade: () => {
-      onDismiss()
-      setConfirmationState({ isPending: true, orderHash: null })
-    },
-    onTradeSuccess: (orderHash: string | null) => setConfirmationState({ isPending: false, orderHash }),
-    onDismissConfirmation,
-    onError: handleSetError,
-  }
-  const doTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeCallbacks)
-
-  const operationType = OperationType.ORDER_SIGN
-  const pendingText = <PendingText inputRawAmount={inputAmount} outputRawAmount={outputAmount} />
-  const Warnings = <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+  const doTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
+  const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
+  const isConfirmDisabled = isTooLowRate ? !warningsAccepted : false
 
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
   const buttonText = isSafeApprovalBundle ? (
@@ -101,56 +63,31 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
 
   return (
     <>
-      <GpModal isOpen={isOpen} onDismiss={onDismiss}>
-        {tradeContext && (
-          <styledEl.ConfirmModalWrapper>
-            <styledEl.ConfirmHeader>
-              <styledEl.ConfirmHeaderTitle>Review limit order</styledEl.ConfirmHeaderTitle>
-              <CloseIcon onClick={() => onDismiss()} />
-            </styledEl.ConfirmHeader>
-            <LimitOrdersConfirm
-              executionPrice={executionPrice}
+      <TradeConfirmModal>
+        <TradeConfirmation
+          title="Review limit order"
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+          onConfirm={doTrade}
+          onDismiss={tradeConfirmActions.onDismiss}
+          isConfirmDisabled={isConfirmDisabled}
+          priceImpact={priceImpact}
+          buttonText={buttonText}
+        >
+          <>
+            <LimitOrdersDetails
               limitRateState={limitRateState}
-              settingsState={settingsState}
               tradeContext={tradeContext}
               rateInfoParams={rateInfoParams}
-              inputCurrencyInfo={inputCurrencyInfo}
-              outputCurrencyInfo={outputCurrencyInfo}
-              onConfirm={doTrade}
-              rateImpact={rateImpact}
-              priceImpact={priceImpact}
-              warningsAccepted={warningsAccepted}
+              settingsState={settingsState}
+              executionPrice={executionPrice}
               partiallyFillableOverride={partiallyFillableOverride}
               featurePartialFillsEnabled={partialFillsEnabled}
-              Warnings={Warnings}
-              buttonText={buttonText}
             />
-          </styledEl.ConfirmModalWrapper>
-        )}
-      </GpModal>
-      {chainId && (
-        <GpModal isOpen={!!confirmationState.orderHash} onDismiss={onDismissConfirmation}>
-          <TxSubmittedModal
-            isLimitOrderSubmit
-            chainId={chainId}
-            onDismiss={onDismissConfirmation}
-            hash={confirmationState.orderHash || undefined}
-            pendingText={''}
-            inline={true}
-          />
-        </GpModal>
-      )}
-      {outputCurrency && (
-        <TransactionConfirmationModal
-          isOpen={confirmationState.isPending}
-          operationType={operationType}
-          currencyToAdd={outputCurrency}
-          pendingText={pendingText}
-          onDismiss={onDismissConfirmation}
-          attemptingTxn={confirmationState.isPending}
-        />
-      )}
-      <ErrorModal />
+            <LimitOrdersWarnings isConfirmScreen={true} priceImpact={priceImpact} />
+          </>
+        </TradeConfirmation>
+      </TradeConfirmModal>
     </>
   )
 }

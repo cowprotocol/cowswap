@@ -1,21 +1,24 @@
-import { Currency, CurrencyAmount, Price, Token /*, TradeType*/ } from '@uniswap/sdk-core'
-import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { USDC, USDC_MAINNET } from 'legacy/constants/tokens'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
-import { supportedChainId } from 'legacy/utils/supportedChainId'
-import { stringToCurrency } from 'legacy/state/swap/extension'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
-import { useGetCoingeckoUsdPrice } from 'api/coingecko'
+import { Nullish } from 'types'
+
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
-import { useGetGpUsdcPrice } from 'legacy/utils/price'
-import { useWalletInfo } from 'modules/wallet'
+import { USDC, USDC_MAINNET } from 'legacy/constants/tokens'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
+import { stringToCurrency } from 'legacy/state/swap/extension'
+import { useGetGpUsdcPrice } from 'legacy/utils/price'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
+import { useWalletInfo } from 'modules/wallet'
+
+import { useGetCoingeckoUsdPrice } from 'api/coingecko'
+import useBlockNumber from 'lib/hooks/useBlockNumber'
+import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 
 export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 
@@ -119,7 +122,7 @@ export default function useCowUsdPrice(currency?: Currency) {
 }
 
 interface GetPriceQuoteParams {
-  currencyAmount?: CurrencyAmount<Currency>
+  currencyAmount: Nullish<CurrencyAmount<Currency>>
   error: Error | null
   price: Price<Token, Currency> | null
 }
@@ -141,7 +144,7 @@ function useGetPriceQuote({ price, error, currencyAmount }: GetPriceQuoteParams)
  * Returns the price in USDC of the input currency from price APIs
  * @param currencyAmount currency to compute the USDC price of
  */
-export function useUSDCValue(currencyAmount?: CurrencyAmount<Currency>) {
+export function useUSDCValue(currencyAmount: Nullish<CurrencyAmount<Currency>>) {
   const usdcPrice = useCowUsdPrice(currencyAmount?.currency)
 
   return useGetPriceQuote({ ...usdcPrice, currencyAmount })
@@ -225,13 +228,13 @@ export function useCoingeckoUsdPrice(currency?: Currency) {
   return { price, error }
 }
 
-export function useCoingeckoUsdValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
+export function useCoingeckoUsdValue(currencyAmount: Nullish<CurrencyAmount<Currency>>) {
   const coingeckoUsdPrice = useCoingeckoUsdPrice(currencyAmount?.currency)
 
   return useGetPriceQuote({ ...coingeckoUsdPrice, currencyAmount })
 }
 
-export function useHigherUSDValue(currencyAmount: CurrencyAmount<Currency> | undefined) {
+export function useHigherUSDValue(currencyAmount: Nullish<CurrencyAmount<Currency>>) {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const checkedCurrencyAmount = isWrapOrUnwrap ? undefined : currencyAmount
   // if iswrap or unwrap use undefined values to not run expensive calculation

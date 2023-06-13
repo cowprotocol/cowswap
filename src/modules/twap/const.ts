@@ -1,5 +1,11 @@
-import ms from 'ms.macro'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Percent } from '@uniswap/sdk-core'
+
+import ms from 'ms.macro'
+
+import { TwapOrderStatus } from './types'
+
+export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
 export type OrderDeadline = { label: string; value: number }
 
@@ -25,3 +31,6 @@ export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
   100: 'TODO',
   5: '0xa12d770028d7072b80baeb6a1df962374fd13d9a',
 }
+
+// TODO: Add filled status
+export const TWAP_NOT_PENDING_STATUSES = [TwapOrderStatus.Cancelled, TwapOrderStatus.Expired]

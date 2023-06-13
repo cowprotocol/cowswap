@@ -1,24 +1,29 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
-import { getAddress } from 'utils/getAddress'
-import { useWalletInfo } from 'modules/wallet'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+import { useWalletInfo } from 'modules/wallet'
+
+import { getAddress } from 'utils/getAddress'
+
+import { tradeQuoteParamsAtom } from '../state/tradeQuoteParamsAtom'
 
 export function useQuoteParams() {
   const { chainId, account } = useWalletInfo()
   const { state } = useDerivedTradeState()
+  const { amount } = useAtomValue(tradeQuoteParamsAtom)
 
-  const { inputCurrency, inputCurrencyAmount, outputCurrency, outputCurrencyAmount, orderKind } = state || {}
-  const currencyAmount = orderKind === OrderKind.SELL ? inputCurrencyAmount : outputCurrencyAmount
-  const amount = currencyAmount?.quotient.toString()
+  const { inputCurrency, outputCurrency, orderKind } = state || {}
 
   return useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !currencyAmount) {
+    if (!inputCurrency || !outputCurrency || !amount) {
       return
     }
 
     const sellToken = getAddress(inputCurrency)
-    const buyToken = getAddress(outputCurrency)
+    const buyToken = outputCurrency.isNative ? NATIVE_CURRENCY_BUY_ADDRESS : getAddress(outputCurrency)
     const fromDecimals = inputCurrency?.decimals
     const toDecimals = outputCurrency?.decimals
 
@@ -28,10 +33,10 @@ export function useQuoteParams() {
       amount,
       chainId,
       receiver: account,
-      kind: OrderKind.SELL,
+      kind: orderKind,
       toDecimals,
       fromDecimals,
       isEthFlow: false,
     }
-  }, [inputCurrency, outputCurrency, amount, account, chainId])
+  }, [inputCurrency, outputCurrency, amount, account, chainId, orderKind])
 }

@@ -1,18 +1,19 @@
-import {
-  ConfirmationModalContent,
-  ConfirmationPendingContent,
-  OperationType,
-  TransactionErrorContent,
-} from 'legacy/components/TransactionConfirmationModal'
-import { GpModal as Modal } from 'common/pure/Modal'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import React, { useCallback, useState } from 'react'
+
+import { ButtonPrimary } from 'legacy/components/Button'
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import { LegacyConfirmationPendingContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationPendingContent'
+import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
+import { isRejectRequestProviderError } from 'legacy/utils/misc'
+
+import { useWalletInfo } from 'modules/wallet'
+
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
-import { useWalletInfo } from 'modules/wallet'
-import React, { useCallback, useState } from 'react'
-import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
-import { ButtonPrimary } from 'legacy/components/Button'
-import { isRejectRequestProviderError } from 'legacy/utils/misc'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { GpModal as Modal } from 'common/pure/Modal'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 interface Props {
   isOpen: boolean
@@ -64,6 +65,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
   if (!isOpen || !chainId) return null
 
+  // TODO: use TradeConfirmModal
   if (cancellationError) {
     const errorMessage = isRejectRequestProviderError(cancellationError)
       ? 'User rejected signing'
@@ -79,11 +81,11 @@ export function MultipleOrdersCancellationModal(props: Props) {
   if (cancellationInProgress) {
     return (
       <Modal isOpen={true} onDismiss={dismissAll}>
-        <ConfirmationPendingContent
+        <LegacyConfirmationPendingContent
           chainId={chainId}
           onDismiss={onDismiss}
           pendingText={<>Cancelling {ordersCount} orders</>}
-          operationType={OperationType.ORDER_CANCEL}
+          operationType={ConfirmOperationType.ORDER_CANCEL}
         />
       </Modal>
     )
@@ -91,7 +93,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss}>
-      <ConfirmationModalContent
+      <LegacyConfirmationModalContent
         title={`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}
         topContent={() => (

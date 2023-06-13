@@ -1,18 +1,19 @@
+import { useCallback } from 'react'
+
 import styled from 'styled-components/macro'
 
-import { useCallback } from 'react'
-import { EthFlowModalBottomContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalBottomContent'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 
-import { ConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal'
+import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
+import { ethFlowConfigs } from 'modules/swap/pure/EthFlow/EthFlowModalContent/configs'
+import { EthFlowModalBottomContent } from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalBottomContent'
 import {
   BalanceChecks,
   EthFlowModalTopContent,
 } from 'modules/swap/pure/EthFlow/EthFlowModalContent/EthFlowModalTopContent'
-import { ethFlowConfigs } from 'modules/swap/pure/EthFlow/EthFlowModalContent/configs'
-import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { WrappingPreviewProps } from 'modules/swap/pure/EthFlow/WrappingPreview'
+import { EthFlowState } from 'modules/swap/services/ethFlow/types'
 import { EthFlowContext } from 'modules/swap/state/EthFlow/ethFlowContextAtom'
-import { EthFlowActions } from 'modules/swap/containers/EthFlow/hooks/useEthFlowActions'
 
 export interface EthFlowModalContentProps {
   state: EthFlowState
@@ -24,7 +25,7 @@ export interface EthFlowModalContentProps {
   onDismiss: () => void
 }
 
-const EthFlowModalLayout = styled(ConfirmationModalContent)`
+const EthFlowModalLayout = styled(LegacyConfirmationModalContent)`
   padding: 22px;
 `
 

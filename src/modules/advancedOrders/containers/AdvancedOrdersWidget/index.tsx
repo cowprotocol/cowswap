@@ -1,17 +1,21 @@
+import { useAtomValue } from 'jotai'
+
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { useSetupTradeState } from 'modules/trade'
-import { TradeWidget, TradeWidgetSlots } from 'modules/trade/containers/TradeWidget'
-import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
 import { Field } from 'legacy/state/swap/actions'
+
+import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import {
   useAdvancedOrdersDerivedState,
   useFillAdvancedOrdersDerivedState,
-} from '../../hooks/useAdvancedOrdersDerivedState'
-import { useAdvancedOrdersActions } from '../../hooks/useAdvancedOrdersActions'
-import { useIsQuoteLoading } from 'modules/tradeQuote'
-import { TwapFormWidget } from 'modules/twap'
+} from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
+import { useSetupTradeState, TradeWidget, TradeWidgetSlots } from 'modules/trade'
+import { useTradeQuote, useSetTradeQuoteParams } from 'modules/tradeQuote'
+import { partsStateAtom } from 'modules/twap/state/partsStateAtom'
 
-export function AdvancedOrdersWidget() {
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
+export function AdvancedOrdersWidget({ children }: { children: JSX.Element }) {
   useSetupTradeState()
   useFillAdvancedOrdersDerivedState()
 
@@ -28,7 +32,10 @@ export function AdvancedOrdersWidget() {
     orderKind,
   } = useAdvancedOrdersDerivedState()
   const actions = useAdvancedOrdersActions()
-  const isTradePriceUpdating = useIsQuoteLoading()
+  const { isLoading: isTradePriceUpdating } = useTradeQuote()
+  const { inputPartAmount } = useAtomValue(partsStateAtom)
+
+  useSetTradeQuoteParams(inputPartAmount)
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -52,12 +59,7 @@ export function AdvancedOrdersWidget() {
   // TODO
   const slots: TradeWidgetSlots = {
     settingsWidget: <div></div>,
-    bottomContent: (
-      <>
-        {/*TODO: conditionally display a widget for current advanced order type*/}
-        <TwapFormWidget />
-      </>
-    ),
+    bottomContent: children,
   }
 
   const params = {

@@ -1,6 +1,9 @@
-import { signSwapAnalytics, swapAnalytics } from 'legacy/components/analytics'
-import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 import { OrderClass } from '@cowprotocol/cow-sdk'
+
+import { signSwapAnalytics, swapAnalytics } from 'legacy/components/analytics'
+
+import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
+
 export interface SwapFlowAnalyticsContext {
   account: string | null
   recipient: string | null
@@ -20,6 +23,10 @@ export const tradeFlowAnalytics = {
   approveAndPresign(context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
     swapAnalytics('Bundle Approve and Swap', orderClass, marketLabel)
+  },
+  wrapApproveAndPresign(context: SwapFlowAnalyticsContext) {
+    const { marketLabel, orderClass } = context
+    swapAnalytics('Bundled Eth Flow', orderClass, marketLabel)
   },
   error(error: any, errorMessage: string, context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context

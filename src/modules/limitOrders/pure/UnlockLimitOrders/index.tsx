@@ -1,9 +1,12 @@
 import React from 'react'
-import * as styledEl from './styled'
-import { ButtonPrimary } from 'legacy/components/Button'
+
 import SVG from 'react-inlinesvg'
+
 import iconCompleted from 'legacy/assets/cow-swap/check.svg'
+import { ButtonPrimary } from 'legacy/components/Button'
 import { ExternalLink } from 'legacy/theme'
+
+import * as styledEl from './styled'
 
 const BULLET_LIST_CONTENT = [
   { id: 1, content: 'Set any limit price and time horizon' },
@@ -27,7 +30,7 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
     <styledEl.Container>
       <styledEl.TitleSection>
         <h3>Want to try out limit orders?</h3>
-        <span>Unlock the BETA version!</span>
+        <span>Get started!</span>
       </styledEl.TitleSection>
 
       {BULLET_LIST_CONTENT && (
@@ -51,7 +54,7 @@ export function UnlockLimitOrders({ handleUnlock }: { handleUnlock: () => void }
           </ExternalLink>
         </span>
         <ButtonPrimary id="unlock-limit-orders-btn" onClick={handleUnlock}>
-          Unlock limit orders (BETA)
+          Get started with limit orders
         </ButtonPrimary>
       </styledEl.ControlSection>
     </styledEl.Container>

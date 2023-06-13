@@ -1,18 +1,22 @@
-import { ConfirmSwapModal } from 'legacy/components/swap/ConfirmSwapModal'
-import { useCallback } from 'react'
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { Percent } from '@uniswap/sdk-core'
-import { Field } from 'legacy/state/swap/actions'
 import { useAtomValue } from 'jotai/utils'
-import { swapConfirmAtom } from 'modules/swap/state/swapConfirmAtom'
-import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
-import TransactionConfirmationModal from 'legacy/components/TransactionConfirmationModal'
-import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
+import { useCallback } from 'react'
+
+import { Percent } from '@uniswap/sdk-core'
+
+import { ConfirmSwapModal } from 'legacy/components/swap/ConfirmSwapModal'
+import { TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
+import { useCloseModals } from 'legacy/state/application/hooks'
 import { useModalIsOpen } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useCloseModals } from 'legacy/state/application/hooks'
-import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
+import { Field } from 'legacy/state/swap/actions'
+import { useSwapActionHandlers } from 'legacy/state/swap/hooks'
+import TradeGp from 'legacy/state/swap/TradeGp'
+
+import { useSwapConfirmManager } from 'modules/swap/hooks/useSwapConfirmManager'
 import { HandleSwapCallback } from 'modules/swap/pure/SwapButtons'
+import { swapConfirmAtom } from 'modules/swap/state/swapConfirmAtom'
+import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
+
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 export interface ConfirmSwapModalSetupProps {
@@ -52,6 +56,7 @@ export function ConfirmSwapModalSetup(props: ConfirmSwapModalSetupProps) {
     }
   }, [closeSwapConfirm, onUserInput, swapConfirmState.txHash])
 
+  // TODO: use TradeConfirmModal
   return (
     <>
       <ConfirmSwapModal

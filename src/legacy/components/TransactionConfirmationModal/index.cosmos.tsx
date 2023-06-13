@@ -1,10 +1,13 @@
-import { ConfirmationPendingContent, L2Content, OperationType } from 'legacy/components/TransactionConfirmationModal'
-import { COW, GNO } from 'legacy/constants/tokens'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import styled from 'styled-components/macro'
+
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { COW, GNO } from 'legacy/constants/tokens'
 import store from 'legacy/state'
 import { addPendingOrder, OrderStatus } from 'legacy/state/orders/actions'
-import { TransactionSubmittedContent } from 'legacy/components/TransactionConfirmationModal/index'
-import styled from 'styled-components/macro'
+
+import { LegacyConfirmationPendingContent } from './LegacyConfirmationPendingContent'
 
 const txHash = '0xe87e1d02b052daa9605abe018e8172feffd1bc38ed2284e6hhhhhh' + Date.now()
 
@@ -16,7 +19,7 @@ const defaultProps = {
   hash: txHash,
   pendingText: <div>pendingText</div>,
   currencyToAdd: COW[SupportedChainId.MAINNET],
-  operationType: OperationType.ORDER_SIGN,
+  operationType: ConfirmOperationType.ORDER_SIGN,
   inline: false,
 }
 
@@ -30,19 +33,9 @@ const Wrapper = styled.div`
 `
 
 const Fixtures = {
-  L2Content: (
-    <Wrapper>
-      <L2Content {...defaultProps} chainId={100} />
-    </Wrapper>
-  ),
-  TransactionSubmittedContent: (
-    <Wrapper>
-      <TransactionSubmittedContent {...defaultProps} />
-    </Wrapper>
-  ),
   ConfirmationPendingContent: (
     <Wrapper>
-      <ConfirmationPendingContent {...defaultProps} />
+      <LegacyConfirmationPendingContent {...defaultProps} />
     </Wrapper>
   ),
 }

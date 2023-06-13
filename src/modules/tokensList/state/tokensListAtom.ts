@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+
 import { Token } from '@uniswap/sdk-core'
 
 // It's a hack for useCurrencyLogoURIs(), must be refactored
@@ -16,5 +17,9 @@ export class TokenWithLogo extends Token {
   }
 }
 
-export const tokensByAddressAtom = atom<{ [address: string]: TokenWithLogo }>({})
-export const tokensBySymbolAtom = atom<{ [symbol: string]: TokenWithLogo[] }>({})
+export type TokensByAddress = { [address: string]: TokenWithLogo }
+
+export type TokensBySymbol = { [address: string]: TokenWithLogo[] }
+
+export const tokensByAddressAtom = atom<TokensByAddress>({})
+export const tokensBySymbolAtom = atom<TokensBySymbol>({})

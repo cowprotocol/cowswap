@@ -1,5 +1,7 @@
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { OrderID } from 'api/gnosisProtocol'
+
 import { isLocal, isDev, isPr, isStaging, isBarn } from './environments'
 
 function _getExplorerUrlByEnvironment() {

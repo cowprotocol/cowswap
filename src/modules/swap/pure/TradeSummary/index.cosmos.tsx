@@ -1,9 +1,12 @@
-import TradeGp from 'legacy/state/swap/TradeGp'
-import { COW, GNO } from 'legacy/constants/tokens'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, TradeType, Price, Percent } from '@uniswap/sdk-core'
-import { TradeSummaryContent, TradeSummaryContentProps } from '.'
+
+import { COW, GNO } from 'legacy/constants/tokens'
+import TradeGp from 'legacy/state/swap/TradeGp'
+
 import { TradeSummaryProps } from 'modules/swap/containers/TradeSummary'
+
+import { TradeSummaryContent, TradeSummaryContentProps } from '.'
 
 const currency = COW[SupportedChainId.MAINNET]
 const currencyOut = GNO[SupportedChainId.MAINNET]

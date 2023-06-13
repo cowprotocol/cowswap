@@ -1,5 +1,6 @@
-import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 import styled from 'styled-components/macro'
+
+import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 
 const StyledTradeWidgetField = styled(TradeWidgetField)`
   background-color: ${({ theme }) => theme.bg1};

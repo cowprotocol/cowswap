@@ -1,11 +1,15 @@
-import { useWalletInfo } from 'modules/wallet'
-import { Filter } from '@ethersproject/providers'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
 import { useEffect, useMemo } from 'react'
 
-import { useAppDispatch, useAppSelector } from '../hooks'
+import { Filter } from '@ethersproject/providers'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import useBlockNumber from 'lib/hooks/useBlockNumber'
+
 import { addListener, removeListener } from './slice'
 import { filterToKey, isHistoricalLog, Log } from './utils'
+
+import { useAppDispatch, useAppSelector } from '../hooks'
 
 export enum LogsState {
   // The filter is invalid

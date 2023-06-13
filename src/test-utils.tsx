@@ -1,21 +1,23 @@
+import { ReactElement, ReactNode, useMemo } from 'react'
+
+import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
+import { Connector } from '@web3-react/types'
+
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { render } from '@testing-library/react'
+import { en } from 'make-plural/plurals'
+import { Provider } from 'react-redux'
+import { HashRouter } from 'react-router-dom'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+
 import Web3Provider from 'legacy/components/Web3Provider'
 import { DEFAULT_LOCALE } from 'legacy/constants/locales'
-import { en } from 'make-plural/plurals'
-import { ReactElement, ReactNode, useMemo } from 'react'
-import { Provider } from 'react-redux'
 import store from 'legacy/state'
-// import ThemeProvider from 'legacy/theme'
-
-import catalog from './locales/en-US'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 import { theme } from 'legacy/theme'
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
-import { Connector } from '@web3-react/types'
-import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
-import { HashRouter } from 'react-router-dom'
+
+import catalog from './locales/en-US'
 
 i18n.load({
   [DEFAULT_LOCALE]: catalog.messages,

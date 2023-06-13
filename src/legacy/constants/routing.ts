@@ -1,12 +1,14 @@
 // a list of tokens by chain
-import { Currency, Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@uniswap/sdk-core'
+
 import {
   AMPL,
   COW,
   DAI,
   ETH2X_FLI,
+  EURE_GNOSIS_CHAIN,
   FEI,
   FRAX,
   FXS,
@@ -20,8 +22,8 @@ import {
   WBTC,
   WRAPPED_NATIVE_CURRENCY,
 } from 'legacy/constants/tokens'
-import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
 import { USDC_GNOSIS_CHAIN, WBTC_GNOSIS_CHAIN, WETH_GNOSIS_CHAIN } from 'legacy/utils/gnosis_chain/constants'
+import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]
@@ -91,11 +93,11 @@ export const COMMON_BASES: ChainCurrencyList = {
   ],
   [SupportedChainId.GNOSIS_CHAIN]: [
     USDC_GNOSIS_CHAIN,
-    WBTC_GNOSIS_CHAIN,
     COW[SupportedChainId.GNOSIS_CHAIN],
-    WBTC_GNOSIS_CHAIN,
-    WETH_GNOSIS_CHAIN,
+    EURE_GNOSIS_CHAIN,
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.GNOSIS_CHAIN],
+    WETH_GNOSIS_CHAIN,
+    WBTC_GNOSIS_CHAIN,
   ],
 }
 

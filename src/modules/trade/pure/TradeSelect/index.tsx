@@ -1,7 +1,8 @@
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
-import styled from 'styled-components/macro'
-import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 import { ChevronDown } from 'react-feather'
+import styled from 'styled-components/macro'
+
+import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 
 export type TradeSelectItem = { label: string; value: unknown }
 

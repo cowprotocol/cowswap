@@ -1,12 +1,16 @@
+import { useAtomValue } from 'jotai/utils'
+
 import { Atom } from 'jotai/core/atom'
+
+import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+
+import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { ExtendedTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo } from 'modules/wallet'
-import { useAtomValue } from 'jotai/utils'
+
+import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { useTokenBySymbolOrAddress } from 'common/hooks/useTokenBySymbolOrAddress'
 import { tryParseFractionalAmount } from 'utils/tryParseFractionalAmount'
-import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
-import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
-import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>) {
   const { account } = useWalletInfo()
@@ -23,6 +27,8 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
   const outputCurrencyBalance = useCurrencyBalance(account, outputCurrency) || null
   const inputCurrencyFiatAmount = useHigherUSDValue(inputCurrencyAmount || undefined)
   const outputCurrencyFiatAmount = useHigherUSDValue(outputCurrencyAmount || undefined)
+  // In limit orders and advanced orders we don't have "real" buy orders
+  const slippageAdjustedSellAmount = inputCurrencyAmount
 
   return useSafeMemoObject({
     orderKind,
@@ -31,6 +37,7 @@ export function useBuildTradeDerivedState(stateAtom: Atom<ExtendedTradeRawState>
     outputCurrency,
     inputCurrencyAmount,
     outputCurrencyAmount,
+    slippageAdjustedSellAmount,
     inputCurrencyBalance,
     outputCurrencyBalance,
     inputCurrencyFiatAmount,

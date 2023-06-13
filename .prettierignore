@@ -4,6 +4,7 @@ build
 .git
 .github
 src/**/*.d.ts
+src/**/docs/*
 src/abis
 src/legacy/abis
 src/legacy/types

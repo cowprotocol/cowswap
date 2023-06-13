@@ -1,21 +1,26 @@
-import { useWalletInfo } from 'modules/wallet'
+import { useEffect, useState } from 'react'
+
 import { Trans } from '@lingui/macro'
+import JSBI from 'jsbi'
+import ms from 'ms.macro'
+import styled, { keyframes } from 'styled-components/macro'
+
 import { RowFixed } from 'legacy/components/Row'
 import { getChainInfo } from 'legacy/constants/chainInfo'
 import useCurrentBlockTimestamp from 'legacy/hooks/useCurrentBlockTimestamp'
 import useGasPrice from 'legacy/hooks/useGasPrice'
 import useMachineTimeMs from 'legacy/hooks/useMachineTime'
 import useTheme from 'legacy/hooks/useTheme'
-import JSBI from 'jsbi'
-import useBlockNumber from 'lib/hooks/useBlockNumber'
-import ms from 'ms.macro'
-import { useEffect, useState } from 'react'
-import styled, { keyframes } from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'legacy/theme'
 import { ExplorerDataType, getExplorerLink } from 'legacy/utils/getExplorerLink'
 
-import { MouseoverTooltip } from '../Tooltip'
+import { useWalletInfo } from 'modules/wallet'
+
+import useBlockNumber from 'lib/hooks/useBlockNumber'
+
 import { ChainConnectivityWarning } from './ChainConnectivityWarning'
+
+import { MouseoverTooltip } from '../Tooltip'
 
 export const StyledPolling = styled.div<{ warning: boolean }>`
   position: fixed;

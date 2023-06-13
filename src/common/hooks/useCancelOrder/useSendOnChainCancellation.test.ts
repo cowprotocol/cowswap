@@ -1,13 +1,18 @@
-import { renderHook } from '@testing-library/react-hooks'
-import { useSendOnChainCancellation } from './useSendOnChainCancellation'
-import { Order } from 'legacy/state/orders/actions'
-import { useWalletInfo } from 'modules/wallet'
-import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
-import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
-import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
-import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { BigNumber } from '@ethersproject/bignumber'
+
+import { renderHook } from '@testing-library/react-hooks'
+
+import { NATIVE_CURRENCY_BUY_TOKEN } from 'legacy/constants'
 import { COW } from 'legacy/constants/tokens'
+import { useEthFlowContract, useGP2SettlementContract } from 'legacy/hooks/useContract'
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+import { Order } from 'legacy/state/orders/actions'
+import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { useSendOnChainCancellation } from './useSendOnChainCancellation'
+import { WithMockedWeb3 } from '../../../test-utils'
 
 const chainId = 1
 const settlementCancellationTxHash = '0xcfwj23g4fwe111'
@@ -84,7 +89,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   })
 
   it('When is ETH-flow order, then should call eth-flow contract', async () => {
-    const { result } = renderHook(() => useSendOnChainCancellation())
+    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithMockedWeb3 })
 
     await result.current({ ...orderMock, inputToken: NATIVE_CURRENCY_BUY_TOKEN[chainId] })
 
@@ -94,7 +99,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   })
 
   it('When is NOT ETH-flow order, then should call settlement contract', async () => {
-    const { result } = renderHook(() => useSendOnChainCancellation())
+    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithMockedWeb3 })
 
     await result.current({ ...orderMock, inputToken: COW[chainId] })
 
@@ -105,7 +110,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
 
   describe('When a transaction is sent', () => {
     it('Then should change an order status, set a tx hash to order and add the transaction to store', async () => {
-      const { result } = renderHook(() => useSendOnChainCancellation())
+      const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithMockedWeb3 })
 
       await result.current({ ...orderMock, inputToken: COW[chainId] })
 

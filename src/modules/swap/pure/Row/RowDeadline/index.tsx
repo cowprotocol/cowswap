@@ -3,11 +3,12 @@ import { Trans } from '@lingui/macro'
 import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_DEADLINE_SECONDS } from 'legacy/constants'
+
 import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
+import { ClickableText } from 'modules/swap/pure/Row/RowSlippageContent'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
 import { RowStyleProps } from 'modules/swap/pure/Row/typings'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
-import { ClickableText } from 'modules/swap/pure/Row/RowSlippageContent'
 
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
   return (
@@ -33,7 +34,7 @@ export function getNonNativeOrderDeadlineTooltip() {
 
 export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippage'> {
   toggleSettings: () => void
-  isEthFlow: boolean
+  isEoaEthFlow: boolean
   symbols?: (string | undefined)[]
   displayDeadline: string
   styleProps?: RowStyleProps
@@ -43,8 +44,10 @@ export interface RowDeadlineProps extends Omit<RowSlippageProps, 'allowedSlippag
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
 
 export function RowDeadlineContent(props: RowDeadlineProps) {
-  const { showSettingOnClick, toggleSettings, displayDeadline, isEthFlow, symbols, styleProps } = props
-  const deadlineTooltipContent = isEthFlow ? getNativeOrderDeadlineTooltip(symbols) : getNonNativeOrderDeadlineTooltip()
+  const { showSettingOnClick, toggleSettings, displayDeadline, isEoaEthFlow, symbols, styleProps } = props
+  const deadlineTooltipContent = isEoaEthFlow
+    ? getNativeOrderDeadlineTooltip(symbols)
+    : getNonNativeOrderDeadlineTooltip()
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -52,10 +55,10 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
         <TextWrapper>
           {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <DeadlineTextContents isEthFlow={isEthFlow} />
+              <DeadlineTextContents isEoaEthFlow={isEoaEthFlow} />
             </ClickableText>
           ) : (
-            <DeadlineTextContents isEthFlow={isEthFlow} />
+            <DeadlineTextContents isEoaEthFlow={isEoaEthFlow} />
           )}
         </TextWrapper>
         <MouseoverTooltipContent wrap content={deadlineTooltipContent}>
@@ -73,13 +76,13 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
   )
 }
 
-type DeadlineTextContentsProps = { isEthFlow: boolean }
+type DeadlineTextContentsProps = { isEoaEthFlow: boolean }
 
-function DeadlineTextContents({ isEthFlow }: DeadlineTextContentsProps) {
+function DeadlineTextContents({ isEoaEthFlow }: DeadlineTextContentsProps) {
   return (
     <TransactionText>
       <Trans>Transaction expiration</Trans>
-      {isEthFlow && <i>(modified)</i>}
+      {isEoaEthFlow && <i>(modified)</i>}
     </TransactionText>
   )
 }

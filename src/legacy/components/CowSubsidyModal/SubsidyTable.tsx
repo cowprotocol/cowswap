@@ -1,13 +1,17 @@
-import styled from 'styled-components/macro'
-import { COW_SUBSIDY_DATA } from './constants'
-import { CowSubsidy } from './index'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@uniswap/sdk-core'
+
 import { transparentize, lighten } from 'polished'
+import styled from 'styled-components/macro'
 
 import { V_COW } from 'legacy/constants/tokens'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
+
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { COW_SUBSIDY_DATA } from './constants'
+
+import { CowSubsidy } from './index'
 
 const StyledSubsidyTable = styled.table`
   width: 100%;

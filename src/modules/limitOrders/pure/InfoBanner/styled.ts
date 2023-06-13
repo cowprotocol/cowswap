@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
 import { transparentize, lighten } from 'polished'
 import { X } from 'react-feather'
+import styled from 'styled-components/macro'
 
 export const InfoPopup = styled.div`
   display: flex;

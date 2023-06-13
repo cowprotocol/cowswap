@@ -1,30 +1,68 @@
-import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 import { CurrencyAmount, Percent } from '@uniswap/sdk-core'
-import { DAI_GOERLI } from 'legacy/utils/goerli/constants'
+
 import { USDC_GNOSIS_CHAIN } from 'legacy/utils/gnosis_chain/constants'
+import { DAI_GOERLI, USDC_GOERLI } from 'legacy/utils/goerli/constants'
+
+import { formatAmountWithPrecision, formatFiatAmount, formatPercent, formatTokenAmount } from './index'
 
 describe('Amounts formatting', () => {
   const decimals = DAI_GOERLI.decimals
-  const getAmount = (value: string, decimalsShift: number) =>
-    CurrencyAmount.fromRawAmount(DAI_GOERLI, value + '0'.repeat(decimals + decimalsShift))
+  const getAmount = (value: string, decimalsShift: number, token = DAI_GOERLI) =>
+    CurrencyAmount.fromRawAmount(token, value + '0'.repeat(token.decimals + decimalsShift))
 
   describe('Amounts', () => {
     it('Zero amount', () => {
-      const result = formatTokenAmount(getAmount('0', 0))
+      const result = formatTokenAmount(getAmount('0', 0)) // 0 DAI
 
       expect(result).toBe('0')
     })
 
     it('Extra small amount', () => {
-      const result = formatTokenAmount(getAmount('1', -decimals))
+      const result = formatTokenAmount(getAmount('1', -decimals)) // 1e-18 DAI
 
       expect(result).toBe('< 0.000001')
     })
 
     it('Small amount', () => {
-      const result = formatTokenAmount(getAmount('1', -4))
+      const result = formatTokenAmount(getAmount('1', -4)) // 1e-4 DAI
 
       expect(result).toBe('0.0001')
+    })
+
+    it('Trim one trailing zero', () => {
+      const result = formatTokenAmount(getAmount('1000010', -4)) // 100.0010
+
+      expect(result).toBe('100.001')
+    })
+
+    it('Trim two trailing zero', () => {
+      const result = formatTokenAmount(getAmount('10000100', -5)) // 100.00100
+
+      expect(result).toBe('100.001')
+    })
+
+    it('Trim all trailing zero (for exact)', () => {
+      const result = formatTokenAmount(getAmount('10000000', -5)) // 100.00000
+
+      expect(result).toBe('100')
+    })
+
+    it('Trim all trailing zero (when rounded down to zero)', () => {
+      const result = formatTokenAmount(getAmount('10000001', -5)) // 100.00001
+
+      expect(result).toBe('100')
+    })
+
+    it('Trim all trailing zero (when rounded up to zero)', () => {
+      const result = formatTokenAmount(getAmount('9999999', -5)) // 99.99999
+
+      expect(result).toBe('100')
+    })
+
+    it('Format decimals up (when rounded up to zero, 6 decimals)', () => {
+      const result = formatTokenAmount(getAmount('1850999994', -6, USDC_GOERLI)) //1850.999994
+
+      expect(result).toBe('1,851')
     })
 
     it('One amount', () => {

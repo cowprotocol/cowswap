@@ -1,12 +1,17 @@
+import { useMemo } from 'react'
+
 import { Interface } from '@ethersproject/abi'
-import { isAddress } from 'legacy/utils'
+import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
 import JSBI from 'jsbi'
+
 import ERC20ABI from 'legacy/abis/erc20.json'
 import { Erc20Interface } from 'legacy/abis/types/Erc20'
+import { isAddress } from 'legacy/utils'
+
 import { useMultipleContractSingleData } from 'lib/hooks/multicall'
-import { ListenerOptionsWithGas } from '@uniswap/redux-multicall'
-import { useMemo } from 'react'
+
 import { BalancesAndAllowances, BalancesAndAllowancesParams, TokenAmounts, TokenAmountsResult } from '../types'
 
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface

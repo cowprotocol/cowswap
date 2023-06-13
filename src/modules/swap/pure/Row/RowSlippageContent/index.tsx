@@ -1,12 +1,13 @@
-import styled from 'styled-components/macro'
 import { Trans } from '@lingui/macro'
+import styled from 'styled-components/macro'
 
 import { RowFixed } from 'legacy/components/Row'
 import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
-import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { INPUT_OUTPUT_EXPLANATION, MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from 'legacy/constants'
+
 import { RowSlippageProps } from 'modules/swap/containers/Row/RowSlippage'
 import { StyledRowBetween, TextWrapper } from 'modules/swap/pure/Row/styled'
+import { RowStyleProps } from 'modules/swap/pure/Row/types'
 import { StyledInfoIcon, TransactionText } from 'modules/swap/pure/styled'
 
 export const ClickableText = styled.button`
@@ -45,7 +46,7 @@ export const getNonNativeSlippageTooltip = () => (
 export interface RowSlippageContentProps extends RowSlippageProps {
   toggleSettings: () => void
   displaySlippage: string
-  isEthFlow: boolean
+  isEoaEthFlow: boolean
   symbols?: (string | undefined)[]
   wrappedSymbol?: string
 
@@ -55,7 +56,7 @@ export interface RowSlippageContentProps extends RowSlippageProps {
 // TODO: RowDeadlineContent and RowSlippageContent are very similar. Refactor and extract base component?
 
 export function RowSlippageContent(props: RowSlippageContentProps) {
-  const { showSettingOnClick, toggleSettings, displaySlippage, isEthFlow, symbols, styleProps } = props
+  const { showSettingOnClick, toggleSettings, displaySlippage, isEoaEthFlow, symbols, styleProps } = props
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -63,15 +64,15 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
         <TextWrapper>
           {showSettingOnClick ? (
             <ClickableText onClick={toggleSettings}>
-              <SlippageTextContents isEthFlow={isEthFlow} />
+              <SlippageTextContents isEoaEthFlow={isEoaEthFlow} />
             </ClickableText>
           ) : (
-            <SlippageTextContents isEthFlow={isEthFlow} />
+            <SlippageTextContents isEoaEthFlow={isEoaEthFlow} />
           )}
         </TextWrapper>
         <MouseoverTooltipContent
           wrap
-          content={isEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip()}
+          content={isEoaEthFlow ? getNativeSlippageTooltip(symbols) : getNonNativeSlippageTooltip()}
         >
           <StyledInfoIcon size={16} />
         </MouseoverTooltipContent>
@@ -87,13 +88,13 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   )
 }
 
-type SlippageTextContentsProps = { isEthFlow: boolean }
+type SlippageTextContentsProps = { isEoaEthFlow: boolean }
 
-function SlippageTextContents({ isEthFlow }: SlippageTextContentsProps) {
+function SlippageTextContents({ isEoaEthFlow }: SlippageTextContentsProps) {
   return (
     <TransactionText>
       <Trans>Slippage tolerance</Trans>
-      {isEthFlow && <i>(modified)</i>}
+      {isEoaEthFlow && <i>(modified)</i>}
     </TransactionText>
   )
 }

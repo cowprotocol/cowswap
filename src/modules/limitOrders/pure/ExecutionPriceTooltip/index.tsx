@@ -1,11 +1,14 @@
-import * as styledEl from './styled'
-import { TokenAmount } from 'common/pure/TokenAmount'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
+
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
+
+import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { FiatAmount } from 'common/pure/FiatAmount'
-import { ExecutionPrice } from 'modules/limitOrders/pure/ExecutionPrice'
-import { convertAmountToCurrency } from 'modules/limitOrders/utils/calculateExecutionPrice'
-import { ExecuteIndicator } from 'modules/limitOrders/pure/Orders/OrderRow/styled'
+import { RateTooltipHeader } from 'common/pure/OrderExecutionStatusList'
+import { TokenAmount } from 'common/pure/TokenAmount'
+import { convertAmountToCurrency } from 'utils/orderUtils/calculateExecutionPrice'
+
+import * as styledEl from './styled'
 
 export interface ExecutionPriceTooltipProps {
   isInverted: boolean
@@ -16,40 +19,6 @@ export interface ExecutionPriceTooltipProps {
   isOpenOrdersTab?: boolean
 }
 
-export function OrderExecutionStatusList() {
-  return (
-    <styledEl.StatusList>
-      <li>
-        <ExecuteIndicator status={'veryClose'} /> <b>Very close</b> (&lt;0.5% from market price)
-      </li>
-      <li>
-        <ExecuteIndicator status={'close'} /> <b>Close</b> (0.5% - 5% from market price)
-      </li>
-      <li>
-        <ExecuteIndicator status={'notClose'} /> <b>Not yet close</b> (&gt;5% from market price)
-      </li>
-    </styledEl.StatusList>
-  )
-}
-
-interface RateTooltipHeaderProps {
-  isOpenOrdersTab?: boolean
-}
-
-export function RateTooltipHeader({ isOpenOrdersTab }: RateTooltipHeaderProps) {
-  return (
-    <styledEl.Content>
-      <p>Fees (incl. gas) are covered by filling your order when the market price is better than your limit price.</p>
-
-      {isOpenOrdersTab && (
-        <>
-          <h3>How close is my order to executing?</h3>
-          {OrderExecutionStatusList()}
-        </>
-      )}
-    </styledEl.Content>
-  )
-}
 function formatFeeAmount({
   marketRate,
   feeAmount,

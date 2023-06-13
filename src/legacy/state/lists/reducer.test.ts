@@ -1,9 +1,11 @@
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+
 import { createStore, Store } from 'redux'
+
 import { DEFAULT_ACTIVE_LIST_URLS_BY_NETWORK, DEFAULT_LIST_OF_LISTS_BY_NETWORK } from 'legacy/constants/lists'
 import { updateVersion } from 'legacy/state/global/actions'
 import { fetchTokenList, acceptListUpdate, addList, removeList, enableList } from 'legacy/state/lists/actions'
 import reducer, { ListsStateByNetwork } from 'legacy/state/lists/reducer'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 const DEFAULT_LIST_OF_LISTS = DEFAULT_LIST_OF_LISTS_BY_NETWORK[ChainId.MAINNET]
 

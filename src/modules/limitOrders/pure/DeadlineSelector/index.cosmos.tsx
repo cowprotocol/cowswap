@@ -1,5 +1,6 @@
-import { DeadlineSelector } from './index'
 import { defaultLimitOrderDeadline } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
+
+import { DeadlineSelector } from './index'
 
 const Fixtures = {
   default: (

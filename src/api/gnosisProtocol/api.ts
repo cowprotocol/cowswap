@@ -1,17 +1,20 @@
 import { OrderBookApiError, PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
+import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { NativePriceResponse, Trade, PartialApiContext, Address } from '@cowprotocol/cow-sdk'
 
-import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
-import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
+import { orderBookApi } from 'cowSdk'
 
 import { ZERO_ADDRESS } from 'legacy/constants/misc'
-import { orderBookApi } from 'cowSdk'
-import { OrderQuoteRequest, SigningScheme, OrderQuoteResponse, EnrichedOrder } from '@cowprotocol/cow-sdk'
-import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
-import { NativePriceResponse, Trade } from '@cowprotocol/cow-sdk'
-import { ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
+import { isBarn, isDev, isLocal, isPr } from 'legacy/utils/environments'
+import { toErc20Address, toNativeBuyAddress } from 'legacy/utils/tokens'
+
 import { getAppDataHash } from 'modules/appData'
+
+import { ApiErrorCodes } from 'api/gnosisProtocol/errors/OperatorError'
+import GpQuoteError, { mapOperatorErrorToQuoteError } from 'api/gnosisProtocol/errors/QuoteError'
+
+import { LegacyFeeQuoteParams as FeeQuoteParams } from './legacy/types'
 
 function getProfileUrl(): Partial<Record<ChainId, string>> {
   if (isLocal || isDev || isPr || isBarn) {
@@ -141,8 +144,15 @@ export async function getOrder(chainId: ChainId, orderId: string): Promise<Enric
   return orderBookApi.getOrder(orderId, { chainId })
 }
 
-export async function getOrders(chainId: ChainId, owner: string, limit = 1000, offset = 0): Promise<EnrichedOrder[]> {
-  return orderBookApi.getOrders({ owner, limit, offset }, { chainId })
+export async function getOrders(
+  params: {
+    owner: Address
+    offset?: number
+    limit?: number
+  },
+  context: PartialApiContext
+): Promise<EnrichedOrder[]> {
+  return orderBookApi.getOrders(params, context)
 }
 
 export async function getTrades(chainId: ChainId, owner: string): Promise<Trade[]> {

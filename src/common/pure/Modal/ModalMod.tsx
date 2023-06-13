@@ -1,8 +1,9 @@
-import { DialogContent, DialogOverlay } from '@reach/dialog'
-import { transparentize } from 'polished'
 import React from 'react'
+
+import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated, useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
+import { transparentize } from 'polished'
 import styled, { css } from 'styled-components/macro'
 
 import { isMobile } from 'legacy/utils/userAgent'

@@ -1,16 +1,15 @@
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
 import { RowFixed } from 'legacy/components/Row'
-
-import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
-import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
-
-// import { StateIcon } from './StateIcon'
-import { Order } from 'legacy/state/orders/actions'
 import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
-import { ActivityDetails } from './ActivityDetails'
+import { ActivityDescriptors, ActivityStatus, ActivityType } from 'legacy/hooks/useRecentActivity'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { Order } from 'legacy/state/orders/actions'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { ActivityDetails } from './ActivityDetails'
+import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapper } from './styled'
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: 'success',

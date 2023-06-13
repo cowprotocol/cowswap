@@ -1,12 +1,15 @@
-import { Trans } from '@lingui/macro'
-import { Routes } from 'constants/routes'
-
 import { useMemo } from 'react'
+
+import { Trans } from '@lingui/macro'
+
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
-import * as styledEl from './styled'
-import { FeatureFlag } from 'utils/featureFlags'
+
 import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
+import { Routes } from 'constants/routes'
+import { FeatureFlag } from 'utils/featureFlags'
+
+import * as styledEl from './styled'
 
 export function TradeWidgetLinks() {
   const { state } = useTradeState()
@@ -37,9 +40,6 @@ export function TradeWidgetLinks() {
           to={parameterizeTradeRoute(tradeContext, Routes.LIMIT_ORDER)}
         >
           <Trans>Limit</Trans>
-          <styledEl.Badge>
-            <Trans>Beta</Trans>
-          </styledEl.Badge>
         </styledEl.Link>
       </styledEl.MenuItem>
 
@@ -50,6 +50,9 @@ export function TradeWidgetLinks() {
             to={parameterizeTradeRoute(tradeContext, Routes.ADVANCED_ORDERS)}
           >
             <Trans>Advanced</Trans>
+            <styledEl.Badge>
+              <Trans>Beta</Trans>
+            </styledEl.Badge>
           </styledEl.Link>
         </styledEl.MenuItem>
       )}

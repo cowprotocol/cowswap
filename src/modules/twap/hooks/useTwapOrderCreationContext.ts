@@ -1,14 +1,18 @@
-import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
-import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
-import { useTokenContract } from 'legacy/hooks/useContract'
-import { ComposableCoW } from 'abis/types'
-import { Erc20 } from 'legacy/abis/types'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
-import { Nullish } from 'types'
-import { useWalletInfo } from 'modules/wallet'
-import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
+import { Erc20 } from 'legacy/abis/types'
+import { useTokenContract } from 'legacy/hooks/useContract'
+
+import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
+import { useWalletInfo } from 'modules/wallet'
+import { useSafeAppsSdk } from 'modules/wallet/web3-react/hooks/useSafeAppsSdk'
+
+import { ComposableCoW } from 'abis/types'
+import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 export interface TwapOrderCreationContext {

@@ -1,106 +1,69 @@
-import React, { useCallback } from 'react'
-import { Trans } from '@lingui/macro'
 import { useAtomValue } from 'jotai/utils'
-import { useSetAtom } from 'jotai'
+import React from 'react'
+
+import { Trans } from '@lingui/macro'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+
+import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
+import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-import { limitOrdersTradeButtonsMap, SwapButton, WrapUnwrapParams } from './limitOrdersTradeButtonsMap'
-import { limitOrdersConfirmState } from '../LimitOrdersConfirmModal/state'
-import { useCloseModals, useModalIsOpen, useToggleWalletModal } from 'legacy/state/application/hooks'
-import { limitOrdersQuoteAtom } from 'modules/limitOrders/state/limitOrdersQuoteAtom'
-import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { useWrapCallback } from 'legacy/hooks/useWrapCallback'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-import { transactionConfirmAtom } from 'modules/swap/state/transactionConfirmAtom'
-import { ApplicationModal } from 'legacy/state/application/reducer'
-import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
-import { CompatibilityIssuesWarning } from 'modules/trade/pure/CompatibilityIssuesWarning'
-import { useWalletDetails } from 'modules/wallet'
-import styled from 'styled-components/macro'
-import { isUnsupportedTokenInQuote } from 'modules/limitOrders/utils/isUnsupportedTokenInQuote'
-import { useHandleOrderPlacement } from 'modules/limitOrders/hooks/useHandleOrderPlacement'
+import { useTradeConfirmActions } from 'modules/trade'
+import {
+  TradeFormButtons,
+  useGetTradeFormValidation,
+  useTradeFormButtonContext,
+  TradeFormBlankButton,
+} from 'modules/tradeFormValidation'
 
-const CompatibilityIssuesWarningWrapper = styled.div`
-  margin-top: -10px;
-`
+import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
+
+import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 export interface TradeButtonsProps {
   tradeContext: TradeFlowContext | null
   priceImpact: PriceImpact
-  inputCurrencyAmount: CurrencyAmount<Currency> | null
-  openConfirmScreen(): void
 }
 
 export function TradeButtons(props: TradeButtonsProps) {
-  const { tradeContext, openConfirmScreen, priceImpact, inputCurrencyAmount } = props
+  const { tradeContext, priceImpact } = props
+
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
-  const formState = useLimitOrdersFormState()
-  const tradeState = useLimitOrdersDerivedState()
-  const setConfirmationState = useSetAtom(limitOrdersConfirmState)
-  const toggleWalletModal = useToggleWalletModal()
-  const quote = useAtomValue(limitOrdersQuoteAtom)
+  const localFormValidation = useLimitOrdersFormState()
+  const primaryFormValidation = useGetTradeFormValidation()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
-  const wrapUnwrapCallback = useWrapCallback(inputCurrencyAmount)
-  const transactionConfirmState = useAtomValue(transactionConfirmAtom)
-  const closeModals = useCloseModals()
-  const showTransactionConfirmationModal = useModalIsOpen(ApplicationModal.TRANSACTION_CONFIRMATION)
-  const { handleSetError, ErrorModal } = useErrorModal()
-  const { isSupportedWallet } = useWalletDetails()
-  const { inputCurrency, outputCurrency } = tradeState
-  const isSwapUnsupported = isUnsupportedTokenInQuote(quote)
+  const tradeConfirmActions = useTradeConfirmActions()
 
-  const wrapUnwrapParams: WrapUnwrapParams = {
-    isNativeIn: !!inputCurrencyAmount?.currency.isNative,
-    wrapUnwrapCallback,
-    transactionConfirmState,
-    closeModals,
-    showTransactionConfirmationModal,
-  }
+  const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeConfirmActions)
+  const confirmTrade = tradeConfirmActions.onOpen
+  const isExpertMode = settingsState.expertMode
 
-  const tradeCallbacks = {
-    beforeTrade: () => setConfirmationState({ isPending: true, orderHash: null }),
-    onError: handleSetError,
-    finally: () => setConfirmationState({ isPending: false, orderHash: null }),
-  }
-  const handleTrade = useHandleOrderPlacement(tradeContext, priceImpact, settingsState, tradeCallbacks)
-  const doTrade = useCallback(() => {
-    if (settingsState.expertMode) {
-      handleTrade()
-    } else {
-      openConfirmScreen()
-    }
-  }, [settingsState.expertMode, handleTrade, openConfirmScreen])
+  const tradeFormButtonContext = useTradeFormButtonContext('Limit order', { doTrade: handleTrade, confirmTrade })
 
-  const buttonFactory = limitOrdersTradeButtonsMap[formState]
+  if (!tradeFormButtonContext) return null
 
-  const isButtonDisabled = (typeof buttonFactory !== 'function' && buttonFactory.disabled) || !warningsAccepted
-  const showWarnings = !!(inputCurrency && outputCurrency && isSwapUnsupported)
+  // Display local form validation errors only when there are no primary errors
+  if (!primaryFormValidation && localFormValidation) {
+    const buttonFactory = limitOrdersTradeButtonsMap[localFormValidation]
 
-  const Button =
-    typeof buttonFactory === 'function' ? (
-      buttonFactory({ tradeState, toggleWalletModal, quote, wrapUnwrapParams, doTrade })
+    return typeof buttonFactory === 'function' ? (
+      buttonFactory()
     ) : (
-      <SwapButton id={buttonFactory.id} onClick={doTrade} disabled={isButtonDisabled}>
+      <TradeFormBlankButton id={buttonFactory.id} disabled={true}>
         <Trans>{buttonFactory.text}</Trans>
-      </SwapButton>
+      </TradeFormBlankButton>
     )
+  }
 
   return (
-    <>
-      {Button}
-      {showWarnings && (
-        <CompatibilityIssuesWarningWrapper>
-          <CompatibilityIssuesWarning
-            currencyIn={inputCurrency}
-            currencyOut={outputCurrency}
-            isSupportedWallet={isSupportedWallet}
-          />
-        </CompatibilityIssuesWarningWrapper>
-      )}
-      <ErrorModal />
-    </>
+    <TradeFormButtons
+      doTradeText="Place limit order"
+      confirmText="Review limit order"
+      validation={primaryFormValidation}
+      context={tradeFormButtonContext}
+      isExpertMode={isExpertMode}
+      isDisabled={!warningsAccepted}
+    />
   )
 }

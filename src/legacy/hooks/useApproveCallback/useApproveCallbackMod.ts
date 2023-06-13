@@ -1,29 +1,21 @@
-// import { Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount /* , Percent, TradeType */ } from '@uniswap/sdk-core'
-// import { Trade as V2Trade } from '@uniswap/v2-sdk'
-// import { Trade as V3Trade } from '@uniswap/v3-sdk'
-// import useSwapApproval, { useSwapApprovalOptimizedTrade } from 'lib/hooks/swap/useSwapApproval'
-// import { ApprovalState, useApproval } from 'lib/hooks/useApproval'
 import { useCallback, useMemo } from 'react'
 
-// import { TransactionType } from '../state/enhancedTransactions/actions'
-// import { useHasPendingApproval, useTransactionAdder } from '../state/enhancedTransactions/hooks'
-// export { ApprovalState } from 'lib/hooks/useApproval'
-
-// MOD imports
+import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { BigNumber } from '@ethersproject/bignumber'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { ConfirmOperationType } from 'legacy/components/TransactionConfirmationModal'
+import { useCurrency } from 'legacy/hooks/Tokens'
+import { useTokenContract } from 'legacy/hooks/useContract'
+import usePrevious from 'legacy/hooks/usePrevious'
+import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
 import { useHasPendingApproval, useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { calculateGasMargin } from 'legacy/utils/calculateGasMargin'
-import { useTokenContract } from 'legacy/hooks/useContract'
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
-import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
-import { useCurrency } from 'legacy/hooks/Tokens'
-import { OperationType } from 'legacy/components/TransactionConfirmationModal'
-import usePrevious from 'legacy/hooks/usePrevious'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { ApproveCallbackState, OptionalApproveCallbackParams } from './index'
 
 // Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
 export const APPROVE_GAS_LIMIT_DEFAULT = BigNumber.from('150000')
@@ -36,7 +28,7 @@ export enum ApprovalState {
 }
 
 export interface ApproveCallbackParams {
-  openTransactionConfirmationModal: (message: string, operationType: OperationType) => void
+  openTransactionConfirmationModal: (message: string, operationType: ConfirmOperationType) => void
   closeModals: () => void
   amountToApprove?: CurrencyAmount<Currency>
   spender?: string
@@ -144,7 +136,7 @@ export function useApproveCallback({
       optionalParams.useModals &&
         openTransactionConfirmationModal?.(
           optionalParams?.modalMessage || `Approving ${amountToApprove.currency.symbol} for trading`,
-          OperationType.APPROVE_TOKEN
+          ConfirmOperationType.APPROVE_TOKEN
         )
       return (
         tokenContract
@@ -222,7 +214,7 @@ export function useApproveCallback({
       optionalParams.useModals &&
         openTransactionConfirmationModal?.(
           optionalParams?.modalMessage || `Revoke ${token.symbol} approval from ${spenderCurrency?.symbol || spender}`,
-          OperationType.REVOKE_APPROVE_TOKEN
+          ConfirmOperationType.REVOKE_APPROVE_TOKEN
         )
       return (
         tokenContract

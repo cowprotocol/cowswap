@@ -1,5 +1,5 @@
-import { ExternalLink } from 'legacy/theme'
 import HashLink from 'legacy/components/HashLink'
+import { ExternalLink } from 'legacy/theme'
 
 export { ExternalLink } from 'legacy/theme'
 const SCROLL_OFFSET = 24

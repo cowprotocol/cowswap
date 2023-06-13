@@ -1,25 +1,30 @@
-import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 import { useCallback, useMemo } from 'react'
-import sortByListPriority from 'legacy/utils/listSort'
+
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
+import { Currency } from '@uniswap/sdk-core'
+import { TokenInfo } from '@uniswap/token-lists'
+
+import { shallowEqual } from 'react-redux'
+
+import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import BROKEN_LIST from 'legacy/constants/tokenLists/broken.tokenlist.json'
 import UNSUPPORTED_TOKEN_LIST from 'legacy/constants/tokenLists/unsupported.tokenlist.json'
-import { DEFAULT_NETWORK_FOR_LISTS, UNSUPPORTED_LIST_URLS } from 'legacy/constants/lists'
 import { AppState } from 'legacy/state'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from 'modules/wallet'
-import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { useAppDispatch, useAppSelector } from 'legacy/state/hooks'
-import { shallowEqual } from 'react-redux'
-import { TokenInfo } from '@uniswap/token-lists'
-import { UnsupportedToken } from 'api/gnosisProtocol'
 import {
   addGpUnsupportedToken,
   AddGpUnsupportedTokenParams,
   removeGpUnsupportedToken,
   RemoveGpUnsupportedTokenParams,
 } from 'legacy/state/lists/actions'
-import { Currency } from '@uniswap/sdk-core'
-import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
+import sortByListPriority from 'legacy/utils/listSort'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
+
+import { useWalletInfo } from 'modules/wallet'
+
+import { UnsupportedToken } from 'api/gnosisProtocol'
+import { ChainTokenMap, tokensToChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
 export type TokenAddressMap = ChainTokenMap
 

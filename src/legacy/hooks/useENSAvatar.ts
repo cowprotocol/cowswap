@@ -1,18 +1,23 @@
-import { fetchWithBackoff } from 'common/utils/fetch'
-import { useWalletInfo } from 'modules/wallet'
+import { useEffect, useMemo, useState } from 'react'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { namehash } from '@ethersproject/hash'
-import { useSingleCallResult } from 'lib/hooks/multicall'
-import uriToHttp from 'lib/utils/uriToHttp'
-import { useEffect, useMemo, useState } from 'react'
+
 import { safeNamehash } from 'legacy/utils/safeNamehash'
 
-import { isAddress } from '../utils'
-import isZero from '../utils/isZero'
+import { useWalletInfo } from 'modules/wallet'
+
+import { fetchWithBackoff } from 'common/utils/fetch'
+import { useSingleCallResult } from 'lib/hooks/multicall'
+import uriToHttp from 'lib/utils/uriToHttp'
+
 import { useENSRegistrarContract, useENSResolverContract, useERC721Contract, useERC1155Contract } from './useContract'
 import useDebounce from './useDebounce'
 import useENSName from './useENSName'
+
+import { isAddress } from '../utils'
+import isZero from '../utils/isZero'
 
 /**
  * Returns the ENS avatar URI, if available.

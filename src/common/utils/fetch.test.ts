@@ -1,5 +1,6 @@
-import { fetchWithRateLimit } from './fetch'
 import fetchMock from 'jest-fetch-mock'
+
+import { fetchWithRateLimit } from './fetch'
 
 fetchMock.enableMocks()
 // jest.useFakeTimers('modern')

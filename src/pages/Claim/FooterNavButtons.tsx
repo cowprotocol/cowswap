@@ -1,18 +1,24 @@
 import { ReactNode, useEffect, useRef } from 'react'
-import { Trans } from '@lingui/macro'
+
 import { isAddress } from '@ethersproject/address'
+
+import { Trans } from '@lingui/macro'
+
+import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
+import { ClaimStatus } from 'legacy/state/claim/actions'
 import {
   useClaimDispatchers,
   useClaimState,
   useHasClaimInvestmentFlowError,
   useHasZeroInvested,
 } from 'legacy/state/claim/hooks'
-import { ButtonPrimary, ButtonSecondary } from 'legacy/components/Button'
-import { ClaimStatus } from 'legacy/state/claim/actions'
-import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
-import { ClaimAddressProps } from './ClaimAddress'
-import { ClaimCommonTypes } from 'pages/Claim/types'
+
 import { useWalletInfo } from 'modules/wallet'
+
+import { ClaimCommonTypes } from 'pages/Claim/types'
+
+import { ClaimAddressProps } from './ClaimAddress'
+import { FooterNavButtons as FooterNavButtonsWrapper } from './styled'
 
 type FooterNavButtonsProps = Pick<ClaimCommonTypes, 'hasClaims' | 'isClaimed' | 'isAirdropOnly'> &
   Pick<ClaimAddressProps, 'toggleWalletModal'> & {

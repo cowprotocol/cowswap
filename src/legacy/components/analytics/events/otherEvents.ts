@@ -1,5 +1,6 @@
-import { sendEvent } from '../index'
 import { detectExplorer } from 'legacy/utils/explorer'
+
+import { sendEvent } from '../index'
 import { Category } from '../types'
 
 type GameType = 'CoW Runner' | 'MEV Slicer'

@@ -1,5 +1,5 @@
-import styled from 'styled-components/macro'
 import { transparentize } from 'polished'
+import styled from 'styled-components/macro'
 
 export const FeeTooltipWrapper = styled.div`
   display: flex;
@@ -7,33 +7,6 @@ export const FeeTooltipWrapper = styled.div`
   align-items: center;
   justify-content: center;
   color: ${({ theme }) => theme.text1};
-`
-
-export const Content = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 5px 10px;
-
-  > p {
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 0;
-    margin: 0;
-    color: ${({ theme }) => theme.text1};
-  }
-
-  > h3 {
-    font-size: 14px;
-    font-weight: 600;
-    margin: 21px 0 0;
-    padding: 0;
-    text-align: left;
-    width: 100%;
-  }
 `
 
 export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }>`
@@ -68,22 +41,5 @@ export const FeeItem = styled.div<{ highlighted?: boolean; borderTop?: boolean }
 
   > span > p {
     margin: 0;
-  }
-`
-
-export const StatusList = styled.ol`
-  display: flex;
-  flex-flow: row wrap;
-  list-style: none;
-  font-size: 12px;
-  font-weight: 400;
-  gap: 5px;
-  padding: 0;
-
-  > li {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-    width: 100%;
   }
 `

@@ -1,14 +1,17 @@
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { Percent, Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { ChainTokenMap } from 'lib/hooks/useTokenList/utils'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { getExplorerOrderLink } from 'legacy/utils/explorer'
-import { ORDER_ID_SHORT_LENGTH } from 'legacy/constants'
+
 import JSBI from 'jsbi'
+
+import { ORDER_ID_SHORT_LENGTH } from 'legacy/constants'
+import { getExplorerOrderLink } from 'legacy/utils/explorer'
+
+import { ChainTokenMap } from 'lib/hooks/useTokenList/utils'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {

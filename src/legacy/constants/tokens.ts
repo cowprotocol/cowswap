@@ -1,7 +1,12 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Ether, NativeCurrency, Token, WETH9 } from '@uniswap/sdk-core'
 
-import { UNI_ADDRESS } from './addresses'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import cowLogo from 'legacy/assets/cow-swap/cow.svg'
+import gnoLogo from 'legacy/assets/cow-swap/gno.png'
+import usdcLogo from 'legacy/assets/cow-swap/usdc.png'
+import vCowLogo from 'legacy/assets/cow-swap/vCOW.png'
+import wxDaiLogo from 'legacy/assets/cow-swap/wxdai.png'
+import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
 import {
   USDC_GNOSIS_CHAIN,
   WBTC_GNOSIS_CHAIN,
@@ -11,13 +16,8 @@ import {
   XDAI_SYMBOL,
 } from 'legacy/utils/gnosis_chain/constants'
 import { DAI_GOERLI, USDT_GOERLI, WBTC_GOERLI, WETH_GOERLI } from 'legacy/utils/goerli/constants'
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from 'legacy/constants'
-import vCowLogo from 'legacy/assets/cow-swap/vCOW.png'
-import cowLogo from 'legacy/assets/cow-swap/cow.svg'
-import gnoLogo from 'legacy/assets/cow-swap/gno.png'
-import usdcLogo from 'legacy/assets/cow-swap/usdc.png'
-import wxDaiLogo from 'legacy/assets/cow-swap/wxdai.png'
+
+import { UNI_ADDRESS } from './addresses'
 
 export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,
@@ -208,7 +208,7 @@ function getTrustImage(mainnetAddress: string): string {
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${mainnetAddress}/logo.png`
 }
 
-const WETH_ADDRESS_MAINNET = WETH9[ChainId.MAINNET].address
+const WETH_ADDRESS_MAINNET = WETH9[SupportedChainId.MAINNET].address
 
 /**
  * vCow token
@@ -302,13 +302,21 @@ export const GNO: Record<SupportedChainId, Token> = {
   [SupportedChainId.GOERLI]: GNO_GOERLI,
 }
 
+export const EURE_GNOSIS_CHAIN = new Token(
+  SupportedChainId.GNOSIS_CHAIN,
+  '0xcb444e90d8198415266c6a2724b7900fb12fc56e',
+  18,
+  'EURe',
+  'Monerium EUR emoney'
+)
+
 export const ADDRESS_IMAGE_OVERRIDE = {
   // Goerli
   [DAI_GOERLI.address]: getTrustImage(DAI.address),
   [USDC_GOERLI.address]: getTrustImage(USDC_MAINNET.address),
   [USDT_GOERLI.address]: getTrustImage(USDT.address),
   [WBTC_GOERLI.address]: getTrustImage(WBTC.address),
-  [WETH9[ChainId.GOERLI].address]: getTrustImage(WETH_ADDRESS_MAINNET),
+  [WETH9[SupportedChainId.GOERLI].address]: getTrustImage(WETH_ADDRESS_MAINNET),
   [V_COW_TOKEN_GOERLI.address]: vCowLogo,
   [COW_TOKEN_GOERLI.address]: cowLogo,
   [GNO_GOERLI.address]: gnoLogo,
@@ -326,7 +334,7 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   // Mainnet
   [V_COW_TOKEN_MAINNET.address]: vCowLogo,
   [COW_TOKEN_MAINNET.address]: cowLogo,
-  [WETH9[ChainId.MAINNET].address]: getTrustImage(WETH_ADDRESS_MAINNET),
+  [WETH9[SupportedChainId.MAINNET].address]: getTrustImage(WETH_ADDRESS_MAINNET),
 }
 
 /**

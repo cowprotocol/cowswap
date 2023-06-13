@@ -1,11 +1,17 @@
 import React from 'react'
-import * as styledEl from './styled'
-import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+
 import { Currency } from '@uniswap/sdk-core'
-import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
+
 import { Trans } from '@lingui/macro'
+
+import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
+
+import { ReceiveAmountInfo } from 'modules/swap/helpers/tradeReceiveAmount'
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
+
+import * as styledEl from './styled'
 
 export interface ReceiveAmountInfoTooltipProps {
   receiveAmountInfo: ReceiveAmountInfo
@@ -17,7 +23,7 @@ export interface ReceiveAmountInfoTooltipProps {
 const MAX_TOKEN_SYMBOL_LENGTH = 6
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
-  const isEthFlow = useIsEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   const { receiveAmountInfo, currency, subsidyAndBalance, allowsOffchainSigning } = props
   const { type, amountAfterFees, amountBeforeFees, feeAmount, feeAmountRaw } = receiveAmountInfo
@@ -59,7 +65,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           </styledEl.GreenText>
         )}
       </div>
-      {allowsOffchainSigning && !isEthFlow && (
+      {allowsOffchainSigning && !isEoaEthFlow && (
         <div>
           <span>
             <Trans>Gas cost</Trans>

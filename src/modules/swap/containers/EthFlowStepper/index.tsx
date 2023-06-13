@@ -1,14 +1,18 @@
+import { Token } from '@uniswap/sdk-core'
+
+import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
+import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { isOrderExpired } from 'legacy/state/orders/utils'
+
 import {
   EthFlowStepper as Pure,
   EthFlowStepperProps as PureProps,
   SmartOrderStatus,
 } from 'modules/swap/pure/EthFlow/EthFlowStepper'
-import { useDetectNativeToken } from 'modules/swap/hooks/useDetectNativeToken'
-import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { NATIVE_CURRENCY_BUY_ADDRESS } from 'legacy/constants'
-import { isOrderExpired } from 'legacy/state/orders/utils'
-import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+
+import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { formatSymbol } from 'utils/format'
 
 type EthFlowStepperProps = {
@@ -17,7 +21,7 @@ type EthFlowStepperProps = {
 
 export function EthFlowStepper(props: EthFlowStepperProps) {
   const { order } = props
-  const { native } = useDetectNativeToken()
+  const native = useNativeCurrency()
 
   const allTxs = useAllTransactions()
 
@@ -115,6 +119,6 @@ function didRefundFail(order: Order): boolean | undefined {
 }
 
 // TODO: move this somewhere else?
-export function getIsEthFlowOrder(order: Order | undefined): boolean {
+export function getIsEthFlowOrder(order: { inputToken: Token } | undefined): boolean {
   return order?.inputToken.address === NATIVE_CURRENCY_BUY_ADDRESS
 }

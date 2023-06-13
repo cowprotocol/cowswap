@@ -1,24 +1,29 @@
-import { Percent } from '@uniswap/sdk-core'
 import { useEffect, useRef } from 'react'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'legacy/state/user/hooks'
-import { useIsEthFlow } from 'modules/swap/hooks/useIsEthFlow'
-import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStorage'
-import { SerializedSlippage, SerializedSlippageSettings, Slippage, SlippageSettings } from './types'
+
+import { Percent } from '@uniswap/sdk-core'
+
 import { MINIMUM_ETH_FLOW_SLIPPAGE } from 'legacy/constants'
+import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'legacy/state/user/hooks'
+
+import { useIsEoaEthFlow } from 'modules/swap/hooks/useIsEoaEthFlow'
+
+import { loadJsonFromLocalStorage, setJsonToLocalStorage } from 'utils/localStorage'
+
+import { SerializedSlippage, SerializedSlippageSettings, Slippage, SlippageSettings } from './types'
 
 const LOCAL_STORAGE_KEY = 'UserSlippageSettings'
 
 export function EthFlowSlippageUpdater() {
   const currentSlippage = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
-  const isEthFlow = useIsEthFlow()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   // On updater mount, load previous slippage from localStorage and set it
   useEffect(() => {
     const { ethFlow } = _loadSlippage()
 
     if (
-      isEthFlow &&
+      isEoaEthFlow &&
       ethFlow &&
       ((currentSlippage === 'auto' && ethFlow !== 'auto') ||
         (currentSlippage instanceof Percent && ethFlow instanceof Percent && !currentSlippage.equalTo(ethFlow)))
@@ -35,7 +40,7 @@ export function EthFlowSlippageUpdater() {
   const wasEthFlowActive = useRef(false)
 
   useEffect(() => {
-    if (isEthFlow) {
+    if (isEoaEthFlow) {
       // Load what's stored
       const { regular, ethFlow } = _loadSlippage()
 
@@ -69,7 +74,7 @@ export function EthFlowSlippageUpdater() {
       // Disable the flag
       wasEthFlowActive.current = false
     }
-  }, [setUserSlippageTolerance, isEthFlow, currentSlippage])
+  }, [setUserSlippageTolerance, isEoaEthFlow, currentSlippage])
 
   return null
 }

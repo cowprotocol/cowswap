@@ -1,21 +1,23 @@
-import { Trans } from '@lingui/macro'
-import { Percent } from '@uniswap/sdk-core'
 import { useCallback, useMemo } from 'react'
 
-import TradeGp from 'legacy/state/swap/TradeGp'
-import TransactionConfirmationModal, {
-  ConfirmationModalContent,
-  OperationType,
-  TransactionErrorContent,
-} from 'legacy/components/TransactionConfirmationModal'
+import { Percent } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+
 import { SwapModalFooter } from 'legacy/components/swap/SwapModalFooter'
 import SwapModalHeader from 'legacy/components/swap/SwapModalHeader'
-import { useWalletDetails } from 'modules/wallet'
+import { ConfirmOperationType, TransactionConfirmationModal } from 'legacy/components/TransactionConfirmationModal'
+import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
+import TradeGp from 'legacy/state/swap/TradeGp'
+
 import { SwapConfirmState } from 'modules/swap/state/swapConfirmAtom'
+import { useWalletDetails } from 'modules/wallet'
+
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { useIsSafeApprovalBundle } from 'modules/limitOrders/hooks/useIsSafeApprovalBundle'
-import { TokenSymbol } from 'common/pure/TokenSymbol'
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
+
+import { useButtonText } from './hooks'
 
 type ConfirmSwapModalProps = {
   swapConfirmState: SwapConfirmState
@@ -71,16 +73,8 @@ export function ConfirmSwapModal({
     rateInfoParams,
   ])
 
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(trade?.maximumAmountIn(allowedSlippage))
-  const buttonText = useMemo(
-    () =>
-      isSafeApprovalBundle ? (
-        <>
-          Confirm (Approve&nbsp;{<TokenSymbol token={trade?.inputAmount?.currency.wrapped} length={6} />}&nbsp;and Swap)
-        </>
-      ) : undefined,
-    [isSafeApprovalBundle, trade?.inputAmount?.currency.wrapped]
-  )
+  const slippageAdjustedSellAmount = trade?.maximumAmountIn(allowedSlippage)
+  const buttonText = useButtonText(slippageAdjustedSellAmount)
 
   const modalBottom = useCallback(() => {
     return trade ? (
@@ -93,12 +87,13 @@ export function ConfirmSwapModal({
     ) : null
   }, [buttonText, onConfirm, showAcceptChanges, swapErrorMessage, trade])
 
+  // TODO: use TradeConfirmModal
   const confirmationContent = useCallback(
     () =>
       swapErrorMessage ? (
         <TransactionErrorContent onDismiss={onDismiss} message={swapErrorMessage} />
       ) : (
-        <ConfirmationModalContent
+        <LegacyConfirmationModalContent
           title={<Trans>Confirm Swap</Trans>}
           onDismiss={onDismiss}
           topContent={modalHeader}
@@ -117,7 +112,7 @@ export function ConfirmSwapModal({
       content={confirmationContent}
       pendingText={<PendingText trade={trade} />}
       currencyToAdd={trade?.outputAmount.currency}
-      operationType={OperationType.ORDER_SIGN}
+      operationType={ConfirmOperationType.ORDER_SIGN}
     />
   )
 }

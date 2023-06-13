@@ -1,9 +1,13 @@
 import { useMemo } from 'react'
+
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
-import { Order } from 'legacy/state/orders/actions'
-import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
-import { useCoingeckoUsdValue } from 'legacy/hooks/useStablecoinPrice'
+
 import { MIN_FIAT_SURPLUS_VALUE } from 'legacy/constants'
+import { useCoingeckoUsdValue } from 'legacy/hooks/useStablecoinPrice'
+import { Order } from 'legacy/state/orders/actions'
+
+import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 type Output = {
   surplusFiatValue: CurrencyAmount<Token> | null
@@ -12,7 +16,7 @@ type Output = {
   showFiatValue: boolean
 }
 
-export function useGetSurplusData(order: Order | undefined): Output {
+export function useGetSurplusData(order: Order | ParsedOrder | undefined): Output {
   const { surplusAmount, surplusToken } = useMemo(() => {
     const output: { surplusToken?: Token; surplusAmount?: CurrencyAmount<Token> } = {}
 

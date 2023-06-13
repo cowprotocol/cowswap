@@ -1,13 +1,17 @@
-import { SwapFlowContext } from '../types'
-import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
+import { Percent } from '@uniswap/sdk-core'
+
+import { PriceImpact } from 'legacy/hooks/usePriceImpact'
+import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { signAndPostOrder } from 'legacy/utils/trade'
-import { presignOrderStep } from './steps/presignOrderStep'
+
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { getSwapErrorMessage } from 'modules/trade/utils/swapErrorHelper'
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { Percent } from '@uniswap/sdk-core'
+
+import { presignOrderStep } from './steps/presignOrderStep'
+
+import { tradeFlowAnalytics } from '../../../trade/utils/analytics'
+import { SwapFlowContext } from '../types'
 
 export async function swapFlow(
   input: SwapFlowContext,

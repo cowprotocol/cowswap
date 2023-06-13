@@ -1,13 +1,21 @@
-import { Order } from 'legacy/state/orders/actions'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { parseOrder } from 'modules/limitOrders/containers/OrdersWidget/hooks/useLimitOrdersList'
-import { getFilledAmounts } from 'modules/limitOrders/utils/getFilledAmounts'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-export function getExecutedSummaryData(order: Order) {
-  const parsedOrder = parseOrder(order)
+import { Order } from 'legacy/state/orders/actions'
 
-  const { inputToken, outputToken, surplusAmount: amount, surplusPercentage: percentage } = parsedOrder
+import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
+
+import { ParsedOrder, parseOrder } from './orderUtils/parseOrder'
+
+function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {
+  return !!(order as ParsedOrder).executionData
+}
+
+export function getExecutedSummaryData(order: Order | ParsedOrder) {
+  const parsedOrder = isParsedOrder(order) ? order : parseOrder(order)
+
+  const { inputToken, outputToken } = parsedOrder
+  const { surplusAmount: amount, surplusPercentage: percentage } = parsedOrder.executionData
 
   const parsedInputToken = new Token(
     inputToken.chainId,

@@ -1,22 +1,22 @@
-import { GpModal } from 'common/pure/Modal'
-
-import { Trans } from '@lingui/macro'
-import { Routes } from 'constants/routes'
-import { StyledInternalLink } from 'legacy/theme/components'
-
 import { Connector } from '@web3-react/types'
 
+import { Trans } from '@lingui/macro'
+
+import { LightCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 import { AutoRow } from 'legacy/components/Row'
-
 import { ThemedText } from 'legacy/theme'
-import { LightCard } from 'legacy/components/Card'
+import { StyledInternalLink } from 'legacy/theme/components'
 
-import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from 'common/pure/Modal'
-import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 import { PendingView } from 'modules/wallet/api/pure/PendingView'
-import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/connection'
 import { ZengoBanner } from 'modules/wallet/api/pure/ZengoBanner'
+import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/connection'
+
+import { GpModal } from 'common/pure/Modal'
+import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from 'common/pure/Modal'
+import { Routes } from 'constants/routes'
+
+import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 
 export type WalletModalView = 'options' | 'account' | 'pending'
 

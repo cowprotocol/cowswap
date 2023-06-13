@@ -1,11 +1,13 @@
 import { ReactNode } from 'react'
-import styled, { useTheme } from 'styled-components/macro' // import useTheme
+
 import { lighten, darken, transparentize } from 'polished'
 import SVG from 'react-inlinesvg'
-import iconAlert from 'legacy/assets/cow-swap/alert.svg'
+import styled, { useTheme } from 'styled-components/macro' // import useTheme
+
 import iconInformation from 'legacy/assets/cow-swap/alert-circle.svg'
-import iconSuccess from 'legacy/assets/cow-swap/check.svg'
+import iconAlert from 'legacy/assets/cow-swap/alert.svg'
 import iconDanger from 'legacy/assets/cow-swap/alert.svg'
+import iconSuccess from 'legacy/assets/cow-swap/check.svg'
 
 type BannerType = 'alert' | 'information' | 'success' | 'danger'
 
