@@ -11,8 +11,9 @@ export function updateTwapOrdersList(currentState: TwapOrdersList, nextState: Tw
   const newState = Object.keys(nextState).reduce<TwapOrdersList>((acc, orderId) => {
     const currentOrder = currentState[orderId]
 
+    // Insert an order if it's not exist in the state
     // Update an order only if it's in pending state
-    // Then don't update it
+    // Otherwise, don't update it
     if (!currentOrder || TWAP_PENDING_STATUSES.includes(currentOrder.status)) {
       acc[orderId] = nextState[orderId]
     }
