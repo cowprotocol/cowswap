@@ -1,4 +1,3 @@
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Ether, NativeCurrency, Token, WETH9 } from '@uniswap/sdk-core'
 
@@ -209,7 +208,7 @@ function getTrustImage(mainnetAddress: string): string {
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${mainnetAddress}/logo.png`
 }
 
-const WETH_ADDRESS_MAINNET = WETH9[ChainId.MAINNET].address
+const WETH_ADDRESS_MAINNET = WETH9[SupportedChainId.MAINNET].address
 
 /**
  * vCow token
@@ -317,7 +316,7 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   [USDC_GOERLI.address]: getTrustImage(USDC_MAINNET.address),
   [USDT_GOERLI.address]: getTrustImage(USDT.address),
   [WBTC_GOERLI.address]: getTrustImage(WBTC.address),
-  [WETH9[ChainId.GOERLI].address]: getTrustImage(WETH_ADDRESS_MAINNET),
+  [WETH9[SupportedChainId.GOERLI].address]: getTrustImage(WETH_ADDRESS_MAINNET),
   [V_COW_TOKEN_GOERLI.address]: vCowLogo,
   [COW_TOKEN_GOERLI.address]: cowLogo,
   [GNO_GOERLI.address]: gnoLogo,
@@ -335,7 +334,7 @@ export const ADDRESS_IMAGE_OVERRIDE = {
   // Mainnet
   [V_COW_TOKEN_MAINNET.address]: vCowLogo,
   [COW_TOKEN_MAINNET.address]: cowLogo,
-  [WETH9[ChainId.MAINNET].address]: getTrustImage(WETH_ADDRESS_MAINNET),
+  [WETH9[SupportedChainId.MAINNET].address]: getTrustImage(WETH_ADDRESS_MAINNET),
 }
 
 /**
