@@ -1,42 +1,36 @@
-import { Dispatch, SetStateAction, useMemo } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ONE_HUNDRED_PERCENT } from 'legacy/constants/misc'
 import { useHigherUSDValue } from 'legacy/hooks/useStablecoinPrice'
 
 import { usePrice } from 'common/hooks/usePrice'
-import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
-import { MinReceivedRow } from './MinReceivedRow'
 import { SlippageRow } from './SlippageRow'
 import * as styledEl from './styled'
 
+import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
+
 type Props = {
-  inputCurrencyInfo: CurrencyPreviewInfo
-  outputCurrencyInfo: CurrencyPreviewInfo
+  rateInfoParams: RateInfoParams
+  // TODO: Add maxSendAmount when using component in swap/limit BUY orders
+  minReceiveAmount: Nullish<CurrencyAmount<Currency>>
   isInvertedState: [boolean, Dispatch<SetStateAction<boolean>>]
   slippage: Percent
 }
 
 export function TradeBasicConfirmDetails(props: Props) {
-  const { inputCurrencyInfo, outputCurrencyInfo, isInvertedState, slippage } = props
+  const { rateInfoParams, minReceiveAmount, isInvertedState, slippage } = props
+  const { inputCurrencyAmount } = rateInfoParams
 
-  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-
-  // This is the minimum per part
-  const minReceivedAmountPerPart = useMemo(
-    () => getSlippageAdjustedBuyAmount(outputCurrencyInfo.amount, slippage),
-    [slippage, outputCurrencyInfo.amount]
-  )
-  const minReceivedUsdAmount = useHigherUSDValue(minReceivedAmountPerPart)
+  const minReceivedUsdAmount = useHigherUSDValue(minReceiveAmount)
 
   // Limit price is the same for all parts
-  const limitPrice = usePrice(inputCurrencyInfo.amount, minReceivedAmountPerPart)
+  const limitPrice = usePrice(inputCurrencyAmount, minReceiveAmount)
 
   return (
     <styledEl.Wrapper>
@@ -55,14 +49,12 @@ export function TradeBasicConfirmDetails(props: Props) {
       <LimitPriceRow price={limitPrice} isInvertedState={isInvertedState} />
 
       {/* Min received */}
-      <MinReceivedRow amount={minReceivedAmountPerPart} usdAmount={minReceivedUsdAmount} />
+      <ReviewOrderModalAmountRow
+        amount={minReceiveAmount}
+        fiatAmount={minReceivedUsdAmount}
+        tooltip="TODO: Min received tooltip"
+        label="Min received (incl. fee)"
+      />
     </styledEl.Wrapper>
   )
-}
-
-function getSlippageAdjustedBuyAmount(
-  buyAmount: Nullish<CurrencyAmount<Currency>>,
-  slippage: Percent
-): CurrencyAmount<Currency> | undefined {
-  return buyAmount?.multiply(ONE_HUNDRED_PERCENT.subtract(slippage))
 }
