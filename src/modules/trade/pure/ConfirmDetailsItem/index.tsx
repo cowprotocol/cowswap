@@ -2,15 +2,14 @@ import { ReactNode } from 'react'
 
 import { CornerDownRight } from 'react-feather'
 
+import { InfoIcon } from 'legacy/components/InfoIcon'
 import { RowFixed } from 'legacy/components/Row'
-import { MouseoverTooltipContent } from 'legacy/components/Tooltip'
 
 import { TextWrapper } from 'modules/swap/pure/Row/styled'
-import { StyledInfoIcon } from 'modules/swap/pure/styled'
 
 import { Content, Row, Wrapper } from './styled'
 
-type Props = {
+export type ConfirmDetailsItemProps = {
   children: ReactNode
   label?: string
   tooltip?: ReactNode
@@ -18,7 +17,7 @@ type Props = {
   fiatAmount?: string
 }
 
-export function ConfirmDetailsItem(props: Props) {
+export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
   const { children, label, tooltip, withArrow = true } = props
 
   return (
@@ -30,11 +29,7 @@ export function ConfirmDetailsItem(props: Props) {
           <Row>
             <RowFixed>
               {label && <TextWrapper>{label}</TextWrapper>}
-              {tooltip && (
-                <MouseoverTooltipContent content={tooltip} wrap>
-                  <StyledInfoIcon size={16} />
-                </MouseoverTooltipContent>
-              )}
+              {tooltip && <InfoIcon content={tooltip} />}
             </RowFixed>
 
             <Content>{children}</Content>

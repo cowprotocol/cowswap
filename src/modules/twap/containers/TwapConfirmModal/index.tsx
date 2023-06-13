@@ -62,6 +62,11 @@ export function TwapConfirmModal() {
   // This already takes into account the full order
   const minReceivedAmount = twapOrder?.buyAmount
 
+  const { timeInterval, numOfParts } = twapOrder || {}
+
+  const partDuration = timeInterval
+  const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
+
   return (
     <TradeConfirmModal>
       <TradeConfirmation
@@ -82,8 +87,9 @@ export function TwapConfirmModal() {
           />
           <TwapConfirmDetails
             startTime={twapOrder?.startTime}
-            partDuration={twapOrder?.timeInterval}
+            partDuration={partDuration}
             partsState={partsState}
+            totalDuration={totalDuration}
           />
         </>
       </TradeConfirmation>
