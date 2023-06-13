@@ -1,8 +1,6 @@
-import { useMemo } from 'react'
-
 import { Trans } from '@lingui/macro'
 
-import { useTradeState } from 'modules/trade/hooks/useTradeState'
+import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { FeatureGuard } from 'common/containers/FeatureGuard'
@@ -11,16 +9,7 @@ import { Routes } from 'constants/routes'
 import * as styledEl from './styled'
 
 export function TradeWidgetLinks() {
-  const { state } = useTradeState()
-
-  const tradeContext = useMemo(
-    () => ({
-      inputCurrencyId: state?.inputCurrencyId || undefined,
-      outputCurrencyId: state?.outputCurrencyId || undefined,
-      chainId: state?.chainId?.toString(),
-    }),
-    [state]
-  )
+  const tradeContext = useTradeRouteContext()
 
   return (
     <styledEl.Wrapper>
