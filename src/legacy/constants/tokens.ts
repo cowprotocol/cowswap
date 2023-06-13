@@ -303,6 +303,14 @@ export const GNO: Record<SupportedChainId, Token> = {
   [SupportedChainId.GOERLI]: GNO_GOERLI,
 }
 
+export const EURE_GNOSIS_CHAIN = new Token(
+  SupportedChainId.GNOSIS_CHAIN,
+  '0xcb444e90d8198415266c6a2724b7900fb12fc56e',
+  18,
+  'EURe',
+  'Monerium EUR emoney'
+)
+
 export const ADDRESS_IMAGE_OVERRIDE = {
   // Goerli
   [DAI_GOERLI.address]: getTrustImage(DAI.address),
