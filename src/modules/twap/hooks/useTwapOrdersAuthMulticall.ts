@@ -21,7 +21,7 @@ export function useTwapOrdersAuthMulticall(
   const results = useSingleContractMultipleData(composableCowContract, 'singleOrders', input, DEFAULT_LISTENER_OPTIONS)
 
   return useMemo(() => {
-    const loadedResults = results.filter((result) => !result.loading && result.valid && !result.syncing)
+    const loadedResults = results.filter((result) => !result.loading && result.valid)
 
     if (loadedResults.length !== ordersInfo.length) return null
 

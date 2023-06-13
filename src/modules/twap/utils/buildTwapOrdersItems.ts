@@ -31,10 +31,11 @@ function getTwapOrderItem(
   authorized: boolean | undefined,
   discreteOrder: Order | undefined
 ): TwapOrderItem {
-  const { params, submissionDate, isExecuted } = safeData
+  const { params, isExecuted, submissionDate } = safeData
 
+  const executionDate = new Date(safeData.executionDate)
   const order = parseTwapOrderStruct(params.staticInput)
-  const status = getTwapOrderStatus(order, isExecuted, authorized, discreteOrder)
+  const status = getTwapOrderStatus(order, isExecuted, executionDate, authorized, discreteOrder)
 
   return {
     order,
