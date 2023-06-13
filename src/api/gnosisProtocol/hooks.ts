@@ -93,7 +93,7 @@ function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithC
       return acc
     }, {})
 
-    return prodOrders
+    const orderWithComposableCowInfo: OrderWithComposableCowInfo[] = prodOrders
       .map((order) => {
         const particleOrder = particleOrdersMap[order.uid]
 
@@ -107,6 +107,8 @@ function useTwapChildOrders(prodOrders: EnrichedOrder[] | undefined): OrderWithC
         } as OrderWithComposableCowInfo
       })
       .filter(isTruthy)
+
+    return orderWithComposableCowInfo
   }, [twapParticleOrders, prodOrders])
 }
 
