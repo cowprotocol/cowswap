@@ -5,7 +5,13 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 
+import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+
+import { TwapConfirmDetails } from './TwapConfirmDetails'
+
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { partsStateAtom } from '../../state/partsStateAtom'
+import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippage } from '../../state/twapOrdersSettingsAtom'
 
 export function TwapConfirmModal() {
@@ -17,7 +23,10 @@ export function TwapConfirmModal() {
     outputCurrencyFiatAmount,
     outputCurrencyBalance,
   } = useAdvancedOrdersDerivedState()
+  // TODO: there's some overlap with what's in each atom
+  const twapOrder = useAtomValue(twapOrderAtom)
   const slippage = useAtomValue(twapOrderSlippage)
+  const partsState = useAtomValue(partsStateAtom)
 
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
@@ -48,6 +57,11 @@ export function TwapConfirmModal() {
     label: 'Estimated receive amount',
   }
 
+  const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+
+  // This already takes into account the full order
+  const minReceivedAmount = twapOrder?.buyAmount
+
   return (
     <TradeConfirmModal>
       <TradeConfirmation
@@ -60,12 +74,16 @@ export function TwapConfirmModal() {
         priceImpact={priceImpact}
       >
         <>
-          <>{/*TODO: display details*/}</>
           <TradeBasicConfirmDetails
-            inputCurrencyInfo={inputCurrencyInfo}
-            outputCurrencyInfo={outputCurrencyInfo}
+            rateInfoParams={rateInfoParams}
+            minReceiveAmount={minReceivedAmount}
             isInvertedState={isInvertedState}
             slippage={slippage}
+          />
+          <TwapConfirmDetails
+            startTime={twapOrder?.startTime}
+            partDuration={twapOrder?.timeInterval}
+            partsState={partsState}
           />
         </>
       </TradeConfirmation>
