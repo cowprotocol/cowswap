@@ -28,22 +28,24 @@ export async function fetchTwapOrdersFromSafe(
 
       const callData = '0x' + result.data.substring(selectorIndex)
 
-      const params = parseConditionalOrderParams(safeAddress, composableCowContract, callData)
+      const conditionalOrderParams = parseConditionalOrderParams(safeAddress, composableCowContract, callData)
 
-      if (!params) return null
+      if (!conditionalOrderParams) return null
 
       const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } =
         result
 
       return {
-        params,
-        isExecuted,
-        submissionDate,
-        executionDate,
-        confirmationsRequired,
-        confirmations: confirmations?.length || 0,
-        safeTxHash,
-        nonce,
+        conditionalOrderParams,
+        safeTxParams: {
+          isExecuted,
+          submissionDate,
+          executionDate,
+          confirmationsRequired,
+          confirmations: confirmations?.length || 0,
+          safeTxHash,
+          nonce,
+        },
       }
     })
     .filter(isTruthy)

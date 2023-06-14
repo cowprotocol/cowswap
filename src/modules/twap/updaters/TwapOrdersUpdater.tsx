@@ -33,8 +33,8 @@ export function TwapOrdersUpdater(props: {
 
   const allOrdersInfo: TwapOrderInfo[] = useMemo(() => {
     return ordersSafeData.map((data) => {
-      const id = getConditionalOrderId(data.params)
-      const order = parseTwapOrderStruct(data.params.staticInput)
+      const id = getConditionalOrderId(data.conditionalOrderParams)
+      const order = parseTwapOrderStruct(data.conditionalOrderParams.staticInput)
 
       return {
         id,
@@ -54,7 +54,7 @@ export function TwapOrdersUpdater(props: {
         return TWAP_PENDING_STATUSES.includes(existingOrder.status)
       }
 
-      return !info.isExpired && info.safeData.isExecuted
+      return !info.isExpired && info.safeData.safeTxParams.isExecuted
     })
   }, [allOrdersInfo, twapOrdersList])
 

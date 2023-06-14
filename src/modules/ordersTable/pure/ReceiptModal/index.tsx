@@ -79,6 +79,7 @@ export function ReceiptModal({
 
   const inputLabel = order.kind === OrderKind.SELL ? 'You sell' : 'You sell at most'
   const outputLabel = order.kind === OrderKind.SELL ? 'You receive at least' : 'You receive exactly'
+  const safeTxParams = twapOrder?.safeTxParams
 
   return (
     <GpModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -167,14 +168,14 @@ export function ReceiptModal({
                 )}
               </styledEl.Field>
             )}
-            {twapOrder?.safeParams && (
+            {twapOrder && safeTxParams && (
               <SafeTxFields
                 chainId={chainId}
                 safeAddress={twapOrder.safeAddress}
-                safeTxHash={twapOrder.safeParams.safeTxHash}
-                nonce={twapOrder.safeParams.nonce}
-                confirmations={twapOrder.safeParams.confirmations}
-                confirmationsRequired={twapOrder.safeParams.confirmationsRequired}
+                safeTxHash={safeTxParams.safeTxHash}
+                nonce={safeTxParams.nonce}
+                confirmations={safeTxParams.confirmations}
+                confirmationsRequired={safeTxParams.confirmationsRequired}
               />
             )}
           </styledEl.FieldsWrapper>
