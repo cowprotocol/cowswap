@@ -14,7 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: google-github-actions/release-please-action@v3
+        name: release
         with:
           release-type: node
           package-name: release-please-action
           default-branch: main
+        # Deploys to Vercel staging and barn environments
+      - uses: ./.github/workflows/vercel.yml
+        name: deploy
+        if: ${{ steps.release.outputs.release_created }}
+        secrets: inherit
+        strategy:
+          matrix:
+            env_name: [ barn, staging ] # deploys both in parallel
+        with:
+          env_name: ${{ matrix.env_name }}
