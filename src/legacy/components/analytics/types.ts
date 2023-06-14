@@ -1,5 +1,5 @@
 export enum Category {
-  SWAP = 'Swap',
+  TRADE = 'Trade',
   LIST = 'Lists',
   CURRENCY_SELECT = 'Currency Select',
   EXPERT_MODE = 'Expert mode',

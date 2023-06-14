@@ -51,7 +51,7 @@ export function claimAnalytics(action: ClaimAction, value?: number) {
 type ApprovalAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 export function approvalAnalytics(action: ApprovalAction, label?: string, value?: number) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: `${action} Token Approval`,
     label,
     value,
@@ -59,18 +59,18 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
 }
 
 export type SwapAction = 'Send' | 'Error' | 'Reject' | 'Bundle Approve and Swap' | 'Bundled Eth Flow'
-export function swapAnalytics(action: SwapAction, orderClass: OrderClass, label?: string, value?: number) {
+export function tradeAnalytics(action: SwapAction, orderClass: OrderClass, label?: string, value?: number) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action,
     label: getClassLabel(orderClass, label),
     value,
   })
 }
 
-export function signSwapAnalytics(orderClass: OrderClass, label?: string) {
+export function signTradeAnalytics(orderClass: OrderClass, label?: string) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: 'Sign',
     label: getClassLabel(orderClass, label),
   })
@@ -88,7 +88,7 @@ export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?
   }
 
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action,
     label: getClassLabel(orderClass, label),
   })
@@ -96,7 +96,7 @@ export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?
 
 export function priceOutOfRangeAnalytics(isUnfillable: boolean, label: string) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: `Order price is ${isUnfillable ? 'out of' : 'back to'} market`,
     label,
   })
