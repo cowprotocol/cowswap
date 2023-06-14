@@ -6,13 +6,14 @@ import { TradeUrlParams } from '../types/TradeRawState'
 
 export function useTradeRouteContext(): TradeUrlParams {
   const { state } = useTradeState()
+  const { inputCurrencyId, outputCurrencyId, chainId } = state || {}
 
   return useMemo(
     () => ({
-      inputCurrencyId: state?.inputCurrencyId || undefined,
-      outputCurrencyId: state?.outputCurrencyId || undefined,
-      chainId: state?.chainId?.toString(),
+      inputCurrencyId: inputCurrencyId || undefined,
+      outputCurrencyId: outputCurrencyId || undefined,
+      chainId: chainId?.toString(),
     }),
-    [state]
+    [inputCurrencyId, outputCurrencyId, chainId]
   )
 }
