@@ -36,7 +36,7 @@ export async function ethFlow(
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
   // TODO: check if we need own eth flow analytics or more generic
-  tradeFlowAnalytics.swap(swapFlowAnalyticsContext)
+  tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
   swapConfirmManager.sendTransaction(context.trade)
 
   logTradeFlow('ETH FLOW', 'STEP 3: Get Unique Order Id (prevent collisions)')

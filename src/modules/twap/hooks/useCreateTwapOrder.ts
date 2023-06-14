@@ -59,7 +59,7 @@ export function useCreateTwapOrder() {
     const orderId = getConditionalOrderId(paramsStruct)
 
     // TODO: swap, approveAndPresign or something else?
-    tradeFlowAnalytics.swap(twapFlowAnalyticsContext)
+    tradeFlowAnalytics.trade(twapFlowAnalyticsContext)
     tradeConfirmActions.onSign(pendingTrade)
 
     try {
