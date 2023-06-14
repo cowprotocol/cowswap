@@ -15,8 +15,8 @@ import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { CurrencyLogo } from 'common/pure/CurrencyLogo'
-import { GnosisSafeLink } from 'common/pure/GnosisSafeLink'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
+import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import { TokenAmount } from 'common/pure/TokenAmount'
 
 import { ActivityDerivedState } from './index'
@@ -135,7 +135,7 @@ function GnosisSafeTxDetails(props: {
       {signaturesMessage}
 
       {/* View in: Gnosis Safe */}
-      <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} />
+      <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} />
     </TransactionInnerDetail>
   )
 }

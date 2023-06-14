@@ -2,7 +2,7 @@ import { ExternalLink } from 'legacy/theme'
 
 import { getSafeWebUrl } from 'api/gnosisSafe'
 
-export function GnosisSafeLink(props: {
+export function SafeWalletLink(props: {
   chainId: number
   safeTransaction?: { safe: string; safeTxHash: string }
 }): JSX.Element | null {

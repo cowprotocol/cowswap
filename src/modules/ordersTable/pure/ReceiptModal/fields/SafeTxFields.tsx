@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 
 import safeLogo from 'legacy/assets/cow-swap/safe-logo.svg'
 
-import { GnosisSafeLink } from 'common/pure/GnosisSafeLink'
+import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 
 import { FieldLabel } from '../FieldLabel'
 import { Field } from '../styled'
@@ -34,7 +34,7 @@ export function SafeTxFields(props: SafeTxFieldsProps) {
         <FieldLabel label="Safe transaction" tooltip="TODO: set tooltip" prefix={safeLogoImg} />
         <div>
           <span>{safeTxHash.slice(0, 8)}</span> {' - '}
-          <GnosisSafeLink chainId={chainId} safeTransaction={safeTransaction} />
+          <SafeWalletLink chainId={chainId} safeTransaction={safeTransaction} />
         </div>
       </Field>
 
