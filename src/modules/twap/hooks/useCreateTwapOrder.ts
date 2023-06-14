@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
@@ -9,6 +10,8 @@ import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeConfirmActions } from 'modules/trade'
+import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
@@ -41,11 +44,22 @@ export function useCreateTwapOrder() {
       outputAmount: outputCurrencyAmount,
     }
 
+    const twapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+      account,
+      recipient: twapOrder.receiver,
+      recipientAddress: twapOrder.receiver,
+      marketLabel: [inputCurrencyAmount.currency.symbol, outputCurrencyAmount.currency.symbol].join(','),
+      // TODO: change to TWAP?
+      orderClass: OrderClass.LIMIT,
+    }
+
     const startTime = Math.round((Date.now() + ms`1m`) / 1000) // Now + 1 min
     const twapOrderWithStartTime = { ...twapOrder, startTime }
     const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrderWithStartTime)
     const orderId = getConditionalOrderId(paramsStruct)
 
+    // TODO: swap, approveAndPresign or something else?
+    tradeFlowAnalytics.swap(twapFlowAnalyticsContext)
     tradeConfirmActions.onSign(pendingTrade)
 
     try {
@@ -61,8 +75,10 @@ export function useCreateTwapOrder() {
       })
 
       tradeConfirmActions.onSuccess(safeTxHash)
+      tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
     } catch (error) {
       tradeConfirmActions.onError(error.message || error)
+      tradeFlowAnalytics.error(error, error.message, twapFlowAnalyticsContext)
     }
   }, [
     chainId,
