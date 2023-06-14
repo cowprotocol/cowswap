@@ -1,4 +1,13 @@
+import { initializeConnector } from '@web3-react/core'
+import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
+
+import { RPC_URLS } from 'legacy/constants/networks'
+import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
+
+import { useWalletMetaData } from 'modules/wallet'
 import { ConnectionType } from 'modules/wallet'
+import { default as WalletConnectV2Image } from 'modules/wallet/api/assets/wallet-connect-v2.png'
+import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import {
   getConnectionName,
   getIsZengoWallet,
@@ -6,19 +15,11 @@ import {
   getIsAlphaWallet,
   getIsTrustWallet,
 } from 'modules/wallet/api/utils/connection'
-import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
-import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
-import { TryActivation, onError } from '.'
-import { useWalletMetaData } from 'modules/wallet'
-
-import { initializeConnector } from '@web3-react/core'
-import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
-
-import { RPC_URLS } from 'legacy/constants/networks'
-import { Web3ReactConnection } from '../types'
-import { default as WalletConnectV2Image } from 'modules/wallet/api/assets/wallet-connect-v2.png'
-
 import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
+
+import { TryActivation, onError } from '.'
+
+import { Web3ReactConnection } from '../types'
 
 const WC_PROJECT_ID = process.env.REACT_APP_WC_PROJECT_ID
 const WC_DEFAULT_PROJECT_ID = 'a6cc11517a10f6f12953fd67b1eb67e7'
