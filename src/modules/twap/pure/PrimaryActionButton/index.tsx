@@ -18,7 +18,7 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
   ),
   [TwapFormState.NOT_SAFE]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Please, connect to Safe
+      Unsupported wallet
     </ButtonPrimary>
   ),
   [TwapFormState.NEED_FALLBACK_HANDLER]: ({ setFallbackHandler }: PrimaryActionButtonContext) => (

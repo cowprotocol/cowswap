@@ -16,6 +16,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import * as styledEl from './styled'
 
 import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../const'
+import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
 import { partsStateAtom } from '../../state/partsStateAtom'
@@ -25,6 +26,7 @@ import { TwapOrdersUpdater } from '../../updaters/TwapOrdersUpdater'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { TwapConfirmModal } from '../TwapConfirmModal'
+import { TwapFormWarnings } from '../TwapFormWarnings'
 
 export function TwapFormWidget() {
   const { chainId, account } = useWalletInfo()
@@ -39,6 +41,8 @@ export function TwapFormWidget() {
   const partsState = useAtomValue(partsStateAtom)
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
+
+  const formValidation = useTwapFormState()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const composableCowContract = useComposableCowContract()
@@ -109,7 +113,8 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.DeadlineRow>
 
-      <ActionButtons />
+      <TwapFormWarnings formValidation={formValidation} />
+      <ActionButtons formValidation={formValidation} />
     </>
   )
 }

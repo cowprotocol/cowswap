@@ -65,12 +65,13 @@ const Wrapper = styled.span<{ color: string }>`
 `
 
 export type InlineBannerProps = {
-  content: ReactNode
+  content?: ReactNode
+  children?: ReactNode
   className?: string
   type?: BannerType
 }
 
-export function InlineBanner({ content, className, type = 'alert' }: InlineBannerProps) {
+export function InlineBanner({ content, children, className, type = 'alert' }: InlineBannerProps) {
   const theme = useTheme()
   const config = BANNER_CONFIG[type]
   const color = theme[config.colorKey]
@@ -78,7 +79,7 @@ export function InlineBanner({ content, className, type = 'alert' }: InlineBanne
   return (
     <Wrapper className={className} color={color}>
       <SVG src={config.icon} description={type} />
-      <span>{content}</span>
+      <span>{content || children}</span>
     </Wrapper>
   )
 }

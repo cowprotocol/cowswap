@@ -5,14 +5,17 @@ import { TradeFormButtons, TradeFormValidation, useGetTradeFormValidation } from
 import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
-import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
+import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
 
-export function ActionButtons() {
+interface ActionButtonsProps {
+  formValidation: TwapFormState | null
+}
+
+export function ActionButtons({ formValidation: localFormValidation }: ActionButtonsProps) {
   const setFallbackHandler = useSetupFallbackHandler()
   const tradeConfirmActions = useTradeConfirmActions()
   const primaryFormValidation = useGetTradeFormValidation()
-  const localFormValidation = useTwapFormState()
 
   const primaryActionContext = {
     setFallbackHandler,
