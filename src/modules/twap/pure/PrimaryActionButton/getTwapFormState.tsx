@@ -5,6 +5,7 @@ import { Nullish } from 'types'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
+import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
   isSafeApp: boolean
@@ -49,18 +50,3 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
 
   return null
 }
-
-// TODO: move to a utils file
-function isSellAmountTooSmall(
-  sellAmount: Nullish<CurrencyAmount<Currency>>,
-  chainId: SupportedChainId | undefined
-): boolean {
-  if (!chainId) {
-    return false
-  }
-
-  const minimum = MINIMUM_PART_SELL_AMOUNT_FIAT[chainId]
-
-  return !!minimum && !!sellAmount && sellAmount.lessThan(minimum)
-}
-
