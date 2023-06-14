@@ -7,9 +7,9 @@ import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 
-import { useAdvancedOrdersDerivedState } from '../../advancedOrders'
 import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/getTwapFormState'
 import { verifyExtensibleFallback } from '../services/verifyExtensibleFallback'
+import { partsStateAtom } from '../state/partsStateAtom'
 import { twapOrderAtom } from '../state/twapOrderAtom'
 import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
@@ -20,20 +20,13 @@ export function useTwapFormState(): TwapFormState | null {
   const { chainId } = useWalletInfo()
 
   const twapOrder = useAtomValue(twapOrderAtom)
-  const { inputCurrencyFiatAmount } = useAdvancedOrdersDerivedState()
+  const { inputFiatAmount: sellAmountPartFiat } = useAtomValue(partsStateAtom)
 
   const verification = useAsyncMemo(
     () => (extensibleFallbackContext ? verifyExtensibleFallback(extensibleFallbackContext) : null),
     [extensibleFallbackContext],
     null
   )
-
-  const sellAmountPartFiat = useMemo(() => {
-    if (!inputCurrencyFiatAmount || !twapOrder?.numOfParts) {
-      return null
-    }
-    return inputCurrencyFiatAmount.divide(twapOrder.numOfParts)
-  }, [inputCurrencyFiatAmount, twapOrder?.numOfParts])
 
   return useMemo(() => {
     return getTwapFormState({ isSafeApp, isFallbackHandlerSetupAccepted, verification, twapOrder, sellAmountPartFiat, chainId })
