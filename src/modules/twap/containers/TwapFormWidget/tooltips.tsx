@@ -1,3 +1,5 @@
+import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
+
 export interface LabelTooltipObject {
   label: string
   tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
@@ -20,9 +22,10 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
         The "Total duration" is the duration it takes to execute all parts of your TWAP order.
         <br />
         <br />
-        For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDuration}</b>, the total time to
-        complete the order is <b>{parts * partDuration}</b>. Each limit order remains open for <b>{partDuration}</b>{' '}
-        until the next part becomes active.
+        For instance, your order consists of <b>{parts} parts</b> placed every{' '}
+        <b>{deadlinePartsDisplay(partDuration)}</b>, the total time to complete the order is{' '}
+        <b>{deadlinePartsDisplay(parts * partDuration)}</b>. Each limit order remains open for{' '}
+        <b>{deadlinePartsDisplay(partDuration)}</b> until the next part becomes active.
       </>
     ),
   },
