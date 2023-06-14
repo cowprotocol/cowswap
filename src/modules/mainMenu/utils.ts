@@ -1,3 +1,5 @@
+import cloneDeep from 'clone-deep'
+
 import { MAIN_MENU } from './constants/mainMenu'
 import { DropDownItem, MainMenuItemId, MenuItemKind, MenuTreeItem } from './types'
 
@@ -14,22 +16,19 @@ export function buildMainMenuTreeItems({ isAdvancedOrdersEnabled }: BuildMainMen
     return MAIN_MENU
   }
 
+  // Make a deep copy to avoid mutating original
+  const mainMenuCopy = cloneDeep(MAIN_MENU)
+
   // Assume trade menu is at the first position
-  const [tradeMenu] = MAIN_MENU
+  const [tradeMenu] = mainMenuCopy
 
-  // Check whether this has been added previously
-  const notAdded = !(tradeMenu as DropDownItem).items[0].links.find(
-    (link) => 'title' in link && link.title === ADVANCED_ORDERS_MENU_TITLE
-  )
+  // Add to the bottom of the list
+  ;(tradeMenu as DropDownItem).items[0].links.push({
+    id: MainMenuItemId.ADVANCED_ORDERS,
+    kind: MenuItemKind.DYNAMIC_LINK,
+    title: ADVANCED_ORDERS_MENU_TITLE,
+    url: Routes.ADVANCED_ORDERS,
+  })
 
-  if (notAdded) {
-    ;(tradeMenu as DropDownItem).items[0].links.push({
-      id: MainMenuItemId.ADVANCED_ORDERS,
-      kind: MenuItemKind.DYNAMIC_LINK,
-      title: ADVANCED_ORDERS_MENU_TITLE,
-      url: Routes.ADVANCED_ORDERS,
-    })
-  }
-
-  return MAIN_MENU
+  return mainMenuCopy
 }
