@@ -10,7 +10,7 @@ export interface TwapFormStateParams {
 export enum TwapFormState {
   LOADING_SAFE_INFO,
   NOT_SAFE,
-  ORDER_NOT_SPECIFIED, // TODO: reveal details
+  ORDER_NOT_SPECIFIED,
   NEED_FALLBACK_HANDLER,
   CAN_CREATE_ORDER,
 }

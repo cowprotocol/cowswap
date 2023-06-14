@@ -10,6 +10,7 @@ import { ConditionalOrderParams } from '../types'
 export interface TwapOrdersSafeData {
   params: ConditionalOrderParams
   submissionDate: string
+  executionDate: string
   isExecuted: boolean
 }
 
@@ -38,10 +39,13 @@ export async function fetchTwapOrdersFromSafe(
 
       if (!params) return null
 
+      const { isExecuted, submissionDate, executionDate } = result
+
       return {
         params,
-        isExecuted: result.isExecuted,
-        submissionDate: result.submissionDate,
+        isExecuted,
+        submissionDate,
+        executionDate,
       }
     })
     .filter(isTruthy)

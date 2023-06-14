@@ -183,7 +183,7 @@ export function OrderRow({
           <TableRowCheckbox
             type="checkbox"
             checked={isRowSelected}
-            disabled={getIsEthFlowOrder(order) || !isOrderCancellable(order)}
+            disabled={getIsEthFlowOrder(order.inputToken.address) || !isOrderCancellable(order)}
             onChange={() => orderActions.toggleOrderForCancellation(order)}
           />
           <CheckboxCheckmark />

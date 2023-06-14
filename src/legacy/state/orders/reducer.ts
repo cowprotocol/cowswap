@@ -251,13 +251,17 @@ export default createReducer(initialState, (builder) =>
           popOrder(state, chainId, OrderStatus.FAILED, id)
 
         const validTo = getValidTo(newOrder.apiAdditionalInfo, newOrder)
+        const isComposableCowOrder = !!orderObj?.order?.composableCowInfo
         // merge existing and new order objects
         const order = orderObj
           ? {
               ...orderObj.order,
               validTo,
               apiAdditionalInfo: newOrder.apiAdditionalInfo,
-              isCancelling: newOrder.isCancelling,
+              // Don't reset isCancelling status for ComposableCow orders
+              // Because currently we don't have a backend for it
+              // And this status is stored only on Frontend
+              isCancelling: isComposableCowOrder ? !!orderObj.order.isCancelling : newOrder.isCancelling,
               class: newOrder.class,
               openSince: newOrder.openSince || orderObj.order.openSince,
               status,

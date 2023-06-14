@@ -8,6 +8,8 @@ import { stringToCurrency } from 'legacy/state/swap/extension'
 import { getOrder, OrderID } from 'api/gnosisProtocol'
 import { formatTokenAmount } from 'utils/amountFormat'
 import { formatSymbol } from 'utils/format'
+import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
+import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 
 export type OrderLogPopupMixData = OrderFulfillmentData | OrderID
 
@@ -65,10 +67,16 @@ export async function fetchOrderPopupData(orderFromStore: Order, chainId: ChainI
   if (orderFromStore.status === OrderStatus.CREATING) {
     return null
   }
+  // Skip ComposableCow orders
+  if (getIsComposableCowParentOrder(orderFromStore)) {
+    return null
+  }
   // Get order from API
   let orderFromApi: EnrichedOrder | null = null
   try {
-    orderFromApi = await getOrder(chainId, orderFromStore.id)
+    const isComposableCowChildOrder = getIsComposableCowChildOrder(orderFromStore)
+    // For ComposableCow child orders always request PROD order-book
+    orderFromApi = await getOrder(chainId, orderFromStore.id, isComposableCowChildOrder ? 'prod' : undefined)
   } catch (e: any) {
     console.debug(
       `[PendingOrdersUpdater] Failed to fetch order popup data on chain ${chainId} for order ${orderFromStore.id}`

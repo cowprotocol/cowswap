@@ -27,7 +27,7 @@ export const updateTwapPartOrdersAtom = atom(null, (get, set, nextState: TwapPar
   }
 })
 
-export const twapPartOrdersListAtom = atom((get) => {
+export const twapPartOrdersListAtom = atom<TwapPartOrderItem[]>((get) => {
   const { account, chainId } = get(walletInfoAtom)
 
   if (!account || !chainId) return []

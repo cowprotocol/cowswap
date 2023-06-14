@@ -12,6 +12,7 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy
 import { useWalletInfo } from 'modules/wallet'
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
+
 import { WithMockedWeb3 } from '../../../test-utils'
 
 const chainId = 1

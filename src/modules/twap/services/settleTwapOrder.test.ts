@@ -19,8 +19,10 @@ import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { settleTwapOrder } from './settleTwapOrder'
 
+import { COMPOSABLE_COW_ADDRESS } from '../../advancedOrders'
 import { useTwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { TWAPOrder } from '../types'
+import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 
 jest.mock('modules/wallet/web3-react/hooks/useSafeAppsSdk')
 jest.mock('modules/advancedOrders/hooks/useComposableCowContract')
@@ -39,6 +41,9 @@ const order: TWAPOrder = {
   timeInterval: 350,
   span: 0,
 }
+
+const paramsStruct = buildTwapOrderParamsStruct(chainId, order)
+
 const useSafeAppsSdkMock = useSafeAppsSdk as jest.MockedFunction<typeof useSafeAppsSdk>
 const useComposableCowContractMock = useComposableCowContract as jest.MockedFunction<typeof useComposableCowContract>
 const useNeedsApprovalMock = useNeedsApproval as jest.MockedFunction<typeof useNeedsApproval>
@@ -52,6 +57,7 @@ describe('settleTwapOrder - integration test', () => {
     useSafeAppsSdkMock.mockReturnValue({ txs: { send: () => Promise.resolve({ safeTxHash: '0x00b' }) } } as any)
     useComposableCowContractMock.mockReturnValue({
       interface: { encodeFunctionData: () => '0xCREATE_COW_TX_DATA' },
+      address: COMPOSABLE_COW_ADDRESS[chainId],
     } as any)
     useNeedsApprovalMock.mockReturnValue(true)
     useTokenContractMock.mockReturnValue({ interface: { encodeFunctionData: () => '0xAPPROVE_TX_DATA' } } as any)
@@ -70,7 +76,7 @@ describe('settleTwapOrder - integration test', () => {
 
       if (!context) return null
 
-      return settleTwapOrder(order, context)
+      return settleTwapOrder(order, paramsStruct, context)
     })
 
     expect(await result.current).toEqual({ safeTxHash: '0x00b' })

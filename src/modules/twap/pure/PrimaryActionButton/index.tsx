@@ -10,7 +10,6 @@ export interface PrimaryActionButtonContext {
   setFallbackHandler(): void
 }
 
-// TODO: extend with common trade widget states
 // TODO: set correct buttons text
 const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) => JSX.Element> = {
   [TwapFormState.LOADING_SAFE_INFO]: () => (
