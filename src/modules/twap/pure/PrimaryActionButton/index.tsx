@@ -6,7 +6,6 @@ import { ButtonSize } from 'legacy/theme/enum'
 import { TwapFormState } from './getTwapFormState'
 
 export interface PrimaryActionButtonContext {
-  openConfirmModal(): void
   setFallbackHandler(): void
 }
 
@@ -22,19 +21,9 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
       Please, connect to Safe
     </ButtonPrimary>
   ),
-  [TwapFormState.ORDER_NOT_SPECIFIED]: () => (
-    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Please, specify an order
-    </ButtonPrimary>
-  ),
   [TwapFormState.NEED_FALLBACK_HANDLER]: ({ setFallbackHandler }: PrimaryActionButtonContext) => (
     <ButtonPrimary onClick={setFallbackHandler} buttonSize={ButtonSize.BIG}>
       Set fallback handler
-    </ButtonPrimary>
-  ),
-  [TwapFormState.CAN_CREATE_ORDER]: ({ openConfirmModal }: PrimaryActionButtonContext) => (
-    <ButtonPrimary onClick={openConfirmModal} buttonSize={ButtonSize.BIG}>
-      Create TWAP order
     </ButtonPrimary>
   ),
 }

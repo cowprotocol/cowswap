@@ -11,12 +11,11 @@ import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 export function ActionButtons() {
   const setFallbackHandler = useSetupFallbackHandler()
   const tradeConfirmActions = useTradeConfirmActions()
-  const localFormValidation = useTwapFormState()
   const primaryFormValidation = useGetTradeFormValidation()
+  const localFormValidation = useTwapFormState()
 
   const primaryActionContext = {
     setFallbackHandler,
-    openConfirmModal: tradeConfirmActions.onOpen,
   }
 
   const confirmTrade = tradeConfirmActions.onOpen
