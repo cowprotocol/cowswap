@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, useGetTradeFormValidation } from 'modules/tradeFormValidation'
@@ -22,6 +22,14 @@ export function ActionButtons() {
   const confirmTrade = tradeConfirmActions.onOpen
 
   const tradeFormButtonContext = useTradeFormButtonContext('TWAP order', { doTrade: confirmTrade, confirmTrade })
+
+  // TODO: It's a temporary tool! Just for testing purposes
+  // TODO: must be removed before prod release
+  useEffect(() => {
+    ;(window as any)['resetFallbackHandler'] = () => {
+      setFallbackHandler('0x0000000000000000000000000000000000000000')
+    }
+  }, [setFallbackHandler])
 
   if (!tradeFormButtonContext) return null
 

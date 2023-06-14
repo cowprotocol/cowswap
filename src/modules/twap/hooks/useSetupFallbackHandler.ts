@@ -7,9 +7,12 @@ import { setupExtensibleFallbackHandler } from '../services/setupExtensibleFallb
 export function useSetupFallbackHandler() {
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
-  return useCallback(() => {
-    if (!extensibleFallbackContext) return
+  return useCallback(
+    (domainVerifierAddress?: string) => {
+      if (!extensibleFallbackContext) return
 
-    setupExtensibleFallbackHandler(extensibleFallbackContext)
-  }, [extensibleFallbackContext])
+      setupExtensibleFallbackHandler(extensibleFallbackContext, domainVerifierAddress)
+    },
+    [extensibleFallbackContext]
+  )
 }

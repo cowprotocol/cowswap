@@ -5,11 +5,12 @@ import { extensibleFallbackSetupTxs } from './extensibleFallbackSetupTxs'
 import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext'
 
 export async function setupExtensibleFallbackHandler(
-  context: ExtensibleFallbackContext
+  context: ExtensibleFallbackContext,
+  domainVerifierAddress?: string
 ): Promise<SendTransactionsResponse> {
   const { safeAppsSdk } = context
 
-  const txs = await extensibleFallbackSetupTxs(context)
+  const txs = await extensibleFallbackSetupTxs(context, domainVerifierAddress)
   const response = await safeAppsSdk.txs.send({ txs })
 
   // TODO: process the sent transaction
