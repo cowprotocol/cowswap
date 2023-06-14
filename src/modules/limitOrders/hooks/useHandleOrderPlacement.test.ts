@@ -15,7 +15,7 @@ import { withModalProvider } from 'utils/withModalProvider'
 
 import { useHandleOrderPlacement } from './useHandleOrderPlacement'
 
-import { TradeConfirmActions } from '../../trade/hooks/useTradeConfirmActions'
+import { TradeConfirmActions } from '../../trade'
 import { TradeAmounts } from '../../trade/types/TradeAmounts'
 import { limitOrdersRawStateAtom, updateLimitOrdersRawStateAtom } from '../state/limitOrdersRawStateAtom'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
@@ -25,7 +25,7 @@ jest.mock('modules/limitOrders/services/safeBundleFlow')
 
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('common/hooks/useNeedsApproval')
-jest.mock('common/hooks/useIsTxBundlingEnabled')
+jest.mock('common/hooks/featureFlags/useIsTxBundlingEnabled')
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>
