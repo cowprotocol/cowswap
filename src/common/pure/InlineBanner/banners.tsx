@@ -1,11 +1,8 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { ExternalLink } from 'legacy/theme'
-
-import { MINIMUM_PART_SELL_AMOUNT_FIAT } from 'modules/twap/const'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
 
@@ -82,27 +79,5 @@ export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolu
         {/*<a href="/">Learn more ↗</a>*/}
       </>
     </InlineBanner>
-  )
-}
-
-export type SmallPartVolumeWarningBannerProps = {
-  chainId: SupportedChainId
-}
-
-export function SmallPartVolumeWarningBanner({ chainId }: SmallPartVolumeWarningBannerProps) {
-  const amount = MINIMUM_PART_SELL_AMOUNT_FIAT[chainId]
-
-  return (
-    <InlineBanner
-      content={
-        <>
-          TWAP orders require a minimum of{' '}
-          <strong>
-            <TokenAmount amount={amount} tokenSymbol={amount.currency} />
-          </strong>{' '}
-          per part. Decrease the number of parts or increase the total sell amount.
-        </>
-      }
-    />
   )
 }
