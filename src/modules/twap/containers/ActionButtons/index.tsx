@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useTradeConfirmActions } from 'modules/trade'
-import { TradeFormButtons, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TradeFormButtons, TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 import { useSetupFallbackHandler } from '../../hooks/useSetupFallbackHandler'
@@ -21,10 +21,12 @@ export function ActionButtons() {
   const confirmTrade = tradeConfirmActions.onOpen
 
   const tradeFormButtonContext = useTradeFormButtonContext('TWAP order', { doTrade: confirmTrade, confirmTrade })
+  // Show local form validation errors only when wallet is connected
+  const walletIsNotConnected = primaryFormValidation === TradeFormValidation.WalletNotConnected
 
   if (!tradeFormButtonContext) return null
 
-  if (localFormValidation) {
+  if (localFormValidation && !walletIsNotConnected) {
     return <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
   }
 
