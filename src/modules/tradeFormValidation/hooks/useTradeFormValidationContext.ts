@@ -10,7 +10,7 @@ import { useTradeQuote } from 'modules/tradeQuote'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove'
-import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
+import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 
 import { TradeFormValidationCommonContext } from '../types'
 
