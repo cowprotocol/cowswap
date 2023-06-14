@@ -11,7 +11,7 @@ export function customDeadlineToSeconds(customDeadline: TwapOrdersDeadline['cust
   return minutesToSeconds
 }
 
-export function deadlinePartsDisplay(timeInterval: number): string {
+export function deadlinePartsDisplay(timeInterval: number, longLabels = false): string {
   const timeMs = ms(`${timeInterval * 1000}ms`)
 
   const days = Math.floor(timeMs / oneD)
@@ -20,10 +20,10 @@ export function deadlinePartsDisplay(timeInterval: number): string {
   const seconds = Math.floor((timeMs % oneM) / oneS)
 
   return [
-    [days, 'd'],
-    [hours, 'h'],
-    [minutes, 'm'],
-    [seconds, 's'],
+    [days, longLabels ? ' days' : 'd'],
+    [hours, longLabels ? ' hours' : 'h'],
+    [minutes, longLabels ? ' minutes' : 'm'],
+    [seconds, longLabels ? ' seconds' : 's'],
   ]
     .filter(([value]) => !!value)
     .map(([value, suffix]) => `${value}${suffix}`)
