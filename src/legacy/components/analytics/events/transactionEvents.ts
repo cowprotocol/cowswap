@@ -58,8 +58,8 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
   })
 }
 
-export type SwapAction = 'Send' | 'Error' | 'Reject' | 'Bundle Approve and Swap' | 'Bundled Eth Flow'
-export function tradeAnalytics(action: SwapAction, orderClass: OrderClass, label?: string, value?: number) {
+export type TradeAction = 'Send' | 'Error' | 'Reject' | 'Bundle Approve and Swap' | 'Bundled Eth Flow'
+export function tradeAnalytics(action: TradeAction, orderClass: OrderClass, label?: string, value?: number) {
   sendEvent({
     category: Category.TRADE,
     action,
