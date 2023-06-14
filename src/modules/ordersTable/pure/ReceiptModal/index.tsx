@@ -28,6 +28,7 @@ interface ReceiptProps {
   isOpen: boolean
   order: ParsedOrder
   twapOrder: TwapOrderItem | null
+  isTwapPartOrder: boolean
   chainId: SupportedChainId
   onDismiss: () => void
   sellAmount: CurrencyAmount<Token>
@@ -67,6 +68,7 @@ export function ReceiptModal({
   onDismiss,
   order,
   twapOrder,
+  isTwapPartOrder,
   chainId,
   buyAmount,
   limitPrice,
@@ -91,7 +93,14 @@ export function ReceiptModal({
 
         {twapOrder && (
           <styledEl.InfoBannerWrapper>
-            <InlineBanner type="information" content={`Part of a ${twapOrder.order.n}-part TWAP order split`} />
+            <InlineBanner
+              type="information"
+              content={
+                isTwapPartOrder
+                  ? `Part of a ${twapOrder.order.n}-part TWAP order split`
+                  : `TWAP order split into ${twapOrder.order.n} parts`
+              }
+            />
           </styledEl.InfoBannerWrapper>
         )}
 
@@ -127,20 +136,26 @@ export function ReceiptModal({
               )}
             </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
-              <FilledField order={order} />
-            </styledEl.Field>
+            {/*TODO: Currently, we don't have this information for parent TWAP orders*/}
+            {/*The condition should be removed once we have the data*/}
+            {(!twapOrder || isTwapPartOrder) && (
+              <>
+                <styledEl.Field>
+                  <FieldLabel label="Filled" tooltip={tooltips.FILLED} />
+                  <FilledField order={order} />
+                </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
-              <SurplusField order={order} />
-            </styledEl.Field>
+                <styledEl.Field>
+                  <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
+                  <SurplusField order={order} />
+                </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label="Fee" tooltip={tooltips.FEE} />
-              <FeeField order={order} />
-            </styledEl.Field>
+                <styledEl.Field>
+                  <FieldLabel label="Fee" tooltip={tooltips.FEE} />
+                  <FeeField order={order} />
+                </styledEl.Field>
+              </>
+            )}
 
             <styledEl.Field>
               <FieldLabel label="Created" tooltip={tooltips.CREATED} />
