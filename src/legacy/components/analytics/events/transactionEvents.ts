@@ -59,7 +59,13 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
   })
 }
 
-export type TradeAction = 'Send' | 'Error' | 'Reject' | 'Bundle Approve and Swap' | 'Bundled Eth Flow'
+export type TradeAction =
+  | 'Send'
+  | 'Error'
+  | 'Reject'
+  | 'Bundle Approve and Swap'
+  | 'Bundled Eth Flow'
+  | 'Place Advanced Order'
 export function tradeAnalytics(action: TradeAction, orderClass: AnalyticsOrderType, label?: string, value?: number) {
   sendEvent({
     category: Category.TRADE,

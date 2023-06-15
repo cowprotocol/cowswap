@@ -56,8 +56,7 @@ export function useCreateTwapOrder() {
     const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrderWithStartTime)
     const orderId = getConditionalOrderId(paramsStruct)
 
-    // TODO: swap, approveAndPresign or something else?
-    tradeFlowAnalytics.trade(twapFlowAnalyticsContext)
+    tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
     tradeConfirmActions.onSign(pendingTrade)
 
     try {
