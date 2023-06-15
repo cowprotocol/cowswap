@@ -7,17 +7,14 @@ import { InlineBanner } from 'common/pure/InlineBanner'
 export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean }) {
   if (isSafeViaWc) {
     return (
-      <InlineBanner
-        type="information"
-        content={
-          <>
-            Use the Safe web app for advanced trading. Only available in the{' '}
-            <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
-              CoW Swap Safe App↗
-            </ExternalLink>
-          </>
-        }
-      />
+      <InlineBanner type="information">
+        <>
+          Use the Safe web app for advanced trading. Only available in the{' '}
+          <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
+            CoW Swap Safe App↗
+          </ExternalLink>
+        </>
+      </InlineBanner>
     )
   }
 

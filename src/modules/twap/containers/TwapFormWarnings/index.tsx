@@ -26,7 +26,7 @@ export function TwapFormWarnings({ localFormValidation, walletIsNotConnected }: 
     [updateTwapOrdersSettings]
   )
 
-  // Don't ddisplay any warnings while a wallet is not connected
+  // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
   if (localFormValidation === TwapFormState.NOT_SAFE) {
