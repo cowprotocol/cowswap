@@ -8,11 +8,6 @@ export enum TradeFormValidation {
   WrapUnwrapAmountNotSet,
   WrapUnwrapFlow,
 
-  // Quote request params
-  CurrencyNotSet,
-  InputAmountNotSet,
-  RecipientInvalid,
-
   // Quote errors
   QuoteErrors,
   CurrencyNotSupported,
@@ -21,6 +16,11 @@ export enum TradeFormValidation {
   WalletNotConnected,
   WalletNotSupported,
   SafeReadonlyUser,
+
+  // Quote request params
+  CurrencyNotSet,
+  InputAmountNotSet,
+  RecipientInvalid,
 
   // Quote loading indicator
   QuoteLoading,

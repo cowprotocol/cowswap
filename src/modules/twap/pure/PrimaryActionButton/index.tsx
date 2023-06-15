@@ -6,11 +6,9 @@ import { ButtonSize } from 'legacy/theme/enum'
 import { TwapFormState } from './getTwapFormState'
 
 export interface PrimaryActionButtonContext {
-  openConfirmModal(): void
-  setFallbackHandler(): void
+  confirmTrade(): void
 }
 
-// TODO: set correct buttons text
 const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) => JSX.Element> = {
   [TwapFormState.LOADING_SAFE_INFO]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
@@ -19,22 +17,17 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
   ),
   [TwapFormState.NOT_SAFE]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Please, connect to Safe
+      Unsupported wallet
     </ButtonPrimary>
   ),
-  [TwapFormState.ORDER_NOT_SPECIFIED]: () => (
+  [TwapFormState.NEED_FALLBACK_HANDLER]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Please, specify an order
+      Unsupported Safe
     </ButtonPrimary>
   ),
-  [TwapFormState.NEED_FALLBACK_HANDLER]: ({ setFallbackHandler }: PrimaryActionButtonContext) => (
-    <ButtonPrimary onClick={setFallbackHandler} buttonSize={ButtonSize.BIG}>
-      Set fallback handler
-    </ButtonPrimary>
-  ),
-  [TwapFormState.CAN_CREATE_ORDER]: ({ openConfirmModal }: PrimaryActionButtonContext) => (
-    <ButtonPrimary onClick={openConfirmModal} buttonSize={ButtonSize.BIG}>
-      Create TWAP order
+  [TwapFormState.ACCEPTED_FALLBACK_HANDLER_SETUP]: ({ confirmTrade }: PrimaryActionButtonContext) => (
+    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={confirmTrade}>
+      Review TWAP order
     </ButtonPrimary>
   ),
 }

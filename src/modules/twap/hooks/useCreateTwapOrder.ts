@@ -11,9 +11,12 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeConfirmActions } from 'modules/trade'
 import { useWalletInfo } from 'modules/wallet'
 
+import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
-import { settleTwapOrder } from '../services/settleTwapOrder'
+import { useSafeAppsSdk } from '../../wallet/web3-react/hooks/useSafeAppsSdk'
+import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
+import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
 import { twapOrderAtom } from '../state/twapOrderAtom'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderStatus } from '../types'
@@ -28,50 +31,69 @@ export function useCreateTwapOrder() {
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
+  const safeAppsSdk = useSafeAppsSdk()
   const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
+  const extensibleFallbackContext = useExtensibleFallbackContext()
 
   const tradeConfirmActions = useTradeConfirmActions()
 
-  return useCallback(async () => {
-    if (!chainId || !account) return
-    if (!inputCurrencyAmount || !outputCurrencyAmount || !twapOrderCreationContext || !twapOrder) return
+  return useCallback(
+    async (fallbackHandlerIsNotSet: boolean) => {
+      if (!chainId || !account) return
+      if (
+        !inputCurrencyAmount ||
+        !outputCurrencyAmount ||
+        !twapOrderCreationContext ||
+        !extensibleFallbackContext ||
+        !safeAppsSdk ||
+        !twapOrder
+      )
+        return
 
-    const pendingTrade = {
-      inputAmount: inputCurrencyAmount,
-      outputAmount: outputCurrencyAmount,
-    }
+      const pendingTrade = {
+        inputAmount: inputCurrencyAmount,
+        outputAmount: outputCurrencyAmount,
+      }
 
-    const startTime = Math.round((Date.now() + ms`1m`) / 1000) // Now + 1 min
-    const twapOrderWithStartTime = { ...twapOrder, startTime }
-    const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrderWithStartTime)
-    const orderId = getConditionalOrderId(paramsStruct)
+      const startTime = Math.round((Date.now() + ms`1m`) / 1000) // Now + 1 min
+      const twapOrderWithStartTime = { ...twapOrder, startTime }
+      const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrderWithStartTime)
+      const orderId = getConditionalOrderId(paramsStruct)
 
-    tradeConfirmActions.onSign(pendingTrade)
+      tradeConfirmActions.onSign(pendingTrade)
 
-    try {
-      const { safeTxHash } = await settleTwapOrder(twapOrderWithStartTime, paramsStruct, twapOrderCreationContext)
+      try {
+        const fallbackSetupTxs = fallbackHandlerIsNotSet
+          ? await extensibleFallbackSetupTxs(extensibleFallbackContext)
+          : []
+        const createOrderTxs = createTwapOrderTxs(twapOrderWithStartTime, paramsStruct, twapOrderCreationContext)
+        const { safeTxHash } = await safeAppsSdk.txs.send({ txs: [...fallbackSetupTxs, ...createOrderTxs] })
 
-      addTwapOrderToList({
-        order: twapOrderToStruct(twapOrder),
-        status: TwapOrderStatus.WaitSigning,
-        chainId,
-        safeAddress: account,
-        submissionDate: new Date().toISOString(),
-        id: orderId,
-      })
+        addTwapOrderToList({
+          order: twapOrderToStruct(twapOrder),
+          status: TwapOrderStatus.WaitSigning,
+          chainId,
+          safeAddress: account,
+          submissionDate: new Date().toISOString(),
+          id: orderId,
+        })
 
-      tradeConfirmActions.onSuccess(safeTxHash)
-    } catch (error) {
-      tradeConfirmActions.onError(error.message || error)
-    }
-  }, [
-    chainId,
-    account,
-    inputCurrencyAmount,
-    outputCurrencyAmount,
-    twapOrder,
-    tradeConfirmActions,
-    twapOrderCreationContext,
-    addTwapOrderToList,
-  ])
+        tradeConfirmActions.onSuccess(safeTxHash)
+      } catch (error) {
+        tradeConfirmActions.onError(error.message || error)
+      }
+    },
+    [
+      chainId,
+      account,
+      inputCurrencyAmount,
+      outputCurrencyAmount,
+      twapOrder,
+      tradeConfirmActions,
+      twapOrderCreationContext,
+      extensibleFallbackContext,
+      addTwapOrderToList,
+      safeAppsSdk,
+    ]
+  )
 }
