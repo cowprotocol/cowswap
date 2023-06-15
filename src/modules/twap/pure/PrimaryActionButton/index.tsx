@@ -6,7 +6,7 @@ import { ButtonSize } from 'legacy/theme/enum'
 import { TwapFormState } from './getTwapFormState'
 
 export interface PrimaryActionButtonContext {
-  setFallbackHandler(): void
+  confirmTrade(): void
 }
 
 // TODO: set correct buttons text
@@ -21,9 +21,14 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
       Unsupported wallet
     </ButtonPrimary>
   ),
-  [TwapFormState.NEED_FALLBACK_HANDLER]: ({ setFallbackHandler }: PrimaryActionButtonContext) => (
-    <ButtonPrimary onClick={setFallbackHandler} buttonSize={ButtonSize.BIG}>
-      Set fallback handler
+  [TwapFormState.NEED_FALLBACK_HANDLER]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      Unsupported Safe
+    </ButtonPrimary>
+  ),
+  [TwapFormState.ACCEPTED_FALLBACK_HANDLER_SETUP]: ({ confirmTrade }: PrimaryActionButtonContext) => (
+    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={confirmTrade}>
+      Review TWAP order
     </ButtonPrimary>
   ),
 }

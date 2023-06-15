@@ -8,6 +8,7 @@ import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
+import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { QuoteObserverUpdater } from 'modules/twap/updaters/QuoteObserverUpdater'
 import { useIsSafeApp, useWalletInfo } from 'modules/wallet'
 
@@ -19,6 +20,7 @@ import { DEFAULT_TWAP_SLIPPAGE, defaultNumOfParts, orderDeadlines } from '../../
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { AmountParts } from '../../pure/AmountParts'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { NEED_FALLBACK_HANDLER_STATES } from '../../pure/PrimaryActionButton/getTwapFormState'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
@@ -42,7 +44,8 @@ export function TwapFormWidget() {
   const timeInterval = useAtomValue(twapTimeIntervalAtom)
   const updateSettingsState = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
-  const formValidation = useTwapFormState()
+  const localFormValidation = useTwapFormState()
+  const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
 
   const composableCowContract = useComposableCowContract()
@@ -55,6 +58,8 @@ export function TwapFormWidget() {
     isCustomDeadline,
   }
 
+  const walletIsNotConnected = primaryFormValidation === TradeFormValidation.WalletNotConnected
+  const fallbackHandlerIsNotSet = !!localFormValidation && NEED_FALLBACK_HANDLER_STATES.includes(localFormValidation)
   const shouldLoadTwapOrders = !!(isSafeApp && chainId && account && composableCowContract)
 
   // Reset output amount when num of parts or input amount are changed
@@ -68,7 +73,7 @@ export function TwapFormWidget() {
       {shouldLoadTwapOrders && (
         <TwapOrdersUpdater composableCowContract={composableCowContract} safeAddress={account} chainId={chainId} />
       )}
-      <TwapConfirmModal />
+      <TwapConfirmModal fallbackHandlerIsNotSet={fallbackHandlerIsNotSet} />
 
       {!isWrapOrUnwrap && (
         <styledEl.Row>
@@ -113,8 +118,12 @@ export function TwapFormWidget() {
         </TradeTextBox>
       </styledEl.DeadlineRow>
 
-      <TwapFormWarnings formValidation={formValidation} />
-      <ActionButtons formValidation={formValidation} />
+      <TwapFormWarnings localFormValidation={localFormValidation} walletIsNotConnected={walletIsNotConnected} />
+      <ActionButtons
+        localFormValidation={localFormValidation}
+        primaryFormValidation={primaryFormValidation}
+        walletIsNotConnected={walletIsNotConnected}
+      />
     </>
   )
 }

@@ -12,7 +12,7 @@ const defaultJsonRpcHandler = (method: string) => {
 }
 const context: ExtensibleFallbackContext = {
   chainId: SupportedChainId.GOERLI,
-  safeAppsSdk: { safe: { getInfo: () => ({ safeAddress: '0x360Ba61Bc799edfa01e306f1eCCb2F6e0C3C8c8e' }) } } as any,
+  safeAddress: '0x360Ba61Bc799edfa01e306f1eCCb2F6e0C3C8c8e',
   settlementContract: {
     callStatic: { domainSeparator: () => '0xa5b986c2f5845d520bcb903639360b147735589732066cea24a3a59678025c94' },
   } as any,

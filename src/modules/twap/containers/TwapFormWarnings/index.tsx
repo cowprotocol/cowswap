@@ -1,25 +1,44 @@
-import { HashLink } from 'react-router-hash-link'
+import { useAtomValue } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
+import { useCallback } from 'react'
 
-import { InlineBanner } from 'common/pure/InlineBanner'
+import { FallbackHandlerWarning } from './warnings/FallbackHandlerWarning'
+import { UnsupportedWalletWarning } from './warnings/UnsupportedWalletWarning'
 
-import * as styledEl from './styled'
-
-import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
+import { useIsSafeViaWc } from '../../../wallet'
+import { NEED_FALLBACK_HANDLER_STATES, TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
+import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 
 interface TwapFormWarningsProps {
-  formValidation: TwapFormState | null
+  localFormValidation: TwapFormState | null
+  walletIsNotConnected: boolean
 }
 
-export function TwapFormWarnings({ formValidation }: TwapFormWarningsProps) {
-  if (formValidation === TwapFormState.NOT_SAFE) {
+export function TwapFormWarnings({ localFormValidation, walletIsNotConnected }: TwapFormWarningsProps) {
+  const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
+  const updateTwapOrdersSettings = useUpdateAtom(updateTwapOrdersSettingsAtom)
+  const isSafeViaWc = useIsSafeViaWc()
+
+  const toggleFallbackHandlerSetupFlag = useCallback(
+    (isFallbackHandlerSetupAccepted: boolean) => {
+      updateTwapOrdersSettings({ isFallbackHandlerSetupAccepted })
+    },
+    [updateTwapOrdersSettings]
+  )
+
+  // Don't ddisplay any warnings while a wallet is not connected
+  if (walletIsNotConnected) return null
+
+  if (localFormValidation === TwapFormState.NOT_SAFE) {
+    return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
+  }
+
+  if (localFormValidation && NEED_FALLBACK_HANDLER_STATES.includes(localFormValidation)) {
     return (
-      <InlineBanner type="danger">
-        <styledEl.WarningCaption>Unsupported wallet detected!</styledEl.WarningCaption>
-        TWAP orders currently require a Safe with a special fallback handler. Have one? Switch to it! Need setup?
-        {/*TODO: set a proper link*/}
-        <HashLink to="/faq/limit-order#how-do-fees-work">Click here</HashLink>. Future updates may extend wallet
-        support!
-      </InlineBanner>
+      <FallbackHandlerWarning
+        isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
+        toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
+      />
     )
   }
 
