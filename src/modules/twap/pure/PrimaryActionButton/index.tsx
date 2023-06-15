@@ -35,6 +35,11 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
       Sell amount too small
     </ButtonPrimary>
   ),
+  [TwapFormState.PART_TIME_INTERVAL_TOO_SHORT]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      Interval time too short
+    </ButtonPrimary>
+  ),
 }
 
 export interface PrimaryActionButtonProps {

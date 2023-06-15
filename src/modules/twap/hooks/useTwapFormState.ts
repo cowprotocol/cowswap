@@ -10,7 +10,7 @@ import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/getTwapFormState'
 import { verifyExtensibleFallback } from '../services/verifyExtensibleFallback'
 import { partsStateAtom } from '../state/partsStateAtom'
-import { twapOrderAtom } from '../state/twapOrderAtom'
+import { twapOrderAtom, twapTimeIntervalAtom } from '../state/twapOrderAtom'
 import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 
 export function useTwapFormState(): TwapFormState | null {
@@ -21,6 +21,7 @@ export function useTwapFormState(): TwapFormState | null {
 
   const twapOrder = useAtomValue(twapOrderAtom)
   const { inputFiatAmount: sellAmountPartFiat } = useAtomValue(partsStateAtom)
+  const partTime = useAtomValue(twapTimeIntervalAtom)
 
   const verification = useAsyncMemo(
     () => (extensibleFallbackContext ? verifyExtensibleFallback(extensibleFallbackContext) : null),
@@ -36,6 +37,7 @@ export function useTwapFormState(): TwapFormState | null {
       twapOrder,
       sellAmountPartFiat,
       chainId,
+      partTime,
     })
-  }, [isSafeApp, isFallbackHandlerSetupAccepted, verification, twapOrder, sellAmountPartFiat, chainId])
+  }, [isSafeApp, isFallbackHandlerSetupAccepted, verification, twapOrder, sellAmountPartFiat, chainId, partTime])
 }
