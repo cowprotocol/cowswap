@@ -183,6 +183,7 @@ export function ReceiptModal({
                 )}
               </styledEl.Field>
             )}
+            {/*TODO: make it more generic. The ReceiptModal should know about TWAP and should display Safe info for any ComposableCow order*/}
             {twapOrder && safeTxParams && (
               <SafeTxFields
                 chainId={chainId}
