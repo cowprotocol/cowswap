@@ -93,14 +93,11 @@ export function ReceiptModal({
 
         {twapOrder && (
           <styledEl.InfoBannerWrapper>
-            <InlineBanner
-              type="information"
-              content={
-                isTwapPartOrder
-                  ? `Part of a ${twapOrder.order.n}-part TWAP order split`
-                  : `TWAP order split into ${twapOrder.order.n} parts`
-              }
-            />
+            <InlineBanner type="information">
+              {isTwapPartOrder
+                ? `Part of a ${twapOrder.order.n}-part TWAP order split`
+                : `TWAP order split into ${twapOrder.order.n} parts`}
+            </InlineBanner>
           </styledEl.InfoBannerWrapper>
         )}
 
