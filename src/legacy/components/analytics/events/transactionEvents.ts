@@ -8,15 +8,16 @@ import { sendMicrosoftEvent } from '../pixel/microsoft'
 import { sendPavedEvent } from '../pixel/paved'
 import { sendRedditEvent } from '../pixel/reddit'
 import { sendTwitterEvent } from '../pixel/twitter'
-import { Category } from '../types'
+import { AnalyticsOrderType, Category } from '../types'
 
-const LABEL_FROM_CLASS: Record<OrderClass, string> = {
+const LABEL_FROM_CLASS: Record<AnalyticsOrderType, string> = {
   [OrderClass.LIMIT]: 'Limit Order',
   [OrderClass.MARKET]: 'Market Order',
   [OrderClass.LIQUIDITY]: 'Liquidity Order',
+  TWAP: 'TWAP Order',
 }
 
-function getClassLabel(orderClass: OrderClass, label?: string) {
+function getClassLabel(orderClass: AnalyticsOrderType, label?: string) {
   const classLabel = LABEL_FROM_CLASS[orderClass]
   return label ? `${label}::${classLabel}` : classLabel
 }
@@ -59,7 +60,7 @@ export function approvalAnalytics(action: ApprovalAction, label?: string, value?
 }
 
 export type TradeAction = 'Send' | 'Error' | 'Reject' | 'Bundle Approve and Swap' | 'Bundled Eth Flow'
-export function tradeAnalytics(action: TradeAction, orderClass: OrderClass, label?: string, value?: number) {
+export function tradeAnalytics(action: TradeAction, orderClass: AnalyticsOrderType, label?: string, value?: number) {
   sendEvent({
     category: Category.TRADE,
     action,
@@ -68,7 +69,7 @@ export function tradeAnalytics(action: TradeAction, orderClass: OrderClass, labe
   })
 }
 
-export function signTradeAnalytics(orderClass: OrderClass, label?: string) {
+export function signTradeAnalytics(orderClass: AnalyticsOrderType, label?: string) {
   sendEvent({
     category: Category.TRADE,
     action: 'Sign',
@@ -77,7 +78,7 @@ export function signTradeAnalytics(orderClass: OrderClass, label?: string) {
 }
 
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
-export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?: string) {
+export function orderAnalytics(action: OrderType, orderClass: AnalyticsOrderType, label?: string) {
   if (action === 'Posted') {
     sendFacebookEvent(PIXEL_EVENTS.POST_TRADE)
     sendLinkedinEvent(PIXEL_EVENTS.POST_TRADE)

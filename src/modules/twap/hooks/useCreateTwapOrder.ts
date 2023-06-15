@@ -2,7 +2,6 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
@@ -49,8 +48,7 @@ export function useCreateTwapOrder() {
       recipient: twapOrder.receiver,
       recipientAddress: twapOrder.receiver,
       marketLabel: [inputCurrencyAmount.currency.symbol, outputCurrencyAmount.currency.symbol].join(','),
-      // TODO: change to TWAP?
-      orderClass: OrderClass.LIMIT,
+      orderClass: 'TWAP',
     }
 
     const startTime = Math.round((Date.now() + ms`1m`) / 1000) // Now + 1 min
