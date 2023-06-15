@@ -55,7 +55,11 @@ export function AmountParts({ partsState, labels }: { partsState: PartsState; la
       />
 
       <TradeAmountPreview
-        label={<>{buyAmount.label} (1/{numberOfPartsValue})</>}
+        label={
+          <>
+            {buyAmount.label} (1/{numberOfPartsValue})
+          </>
+        }
         tooltip={renderTooltip(buyAmount.tooltip)}
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
