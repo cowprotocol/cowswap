@@ -29,6 +29,13 @@ export function useTwapFormState(): TwapFormState | null {
   )
 
   return useMemo(() => {
-    return getTwapFormState({ isSafeApp, isFallbackHandlerSetupAccepted, verification, twapOrder, sellAmountPartFiat, chainId })
+    return getTwapFormState({
+      isSafeApp,
+      isFallbackHandlerSetupAccepted,
+      verification,
+      twapOrder,
+      sellAmountPartFiat,
+      chainId,
+    })
   }, [isSafeApp, isFallbackHandlerSetupAccepted, verification, twapOrder, sellAmountPartFiat, chainId])
 }
