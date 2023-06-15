@@ -8,8 +8,10 @@ import ms from 'ms.macro'
 import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { useTradeConfirmActions } from 'modules/trade'
+import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { useWalletInfo } from 'modules/wallet'
+
+import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
@@ -32,9 +34,18 @@ export function useCreateTwapOrder() {
 
   const tradeConfirmActions = useTradeConfirmActions()
 
+  const { priceImpact } = useTradePriceImpact()
+  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
+
   return useCallback(async () => {
     if (!chainId || !account) return
     if (!inputCurrencyAmount || !outputCurrencyAmount || !twapOrderCreationContext || !twapOrder) return
+
+    const isPriceImpactConfirmed = await confirmPriceImpactWithoutFee(priceImpact)
+
+    if (!isPriceImpactConfirmed) {
+      return
+    }
 
     const pendingTrade = {
       inputAmount: inputCurrencyAmount,
@@ -73,5 +84,7 @@ export function useCreateTwapOrder() {
     tradeConfirmActions,
     twapOrderCreationContext,
     addTwapOrderToList,
+    confirmPriceImpactWithoutFee,
+    priceImpact,
   ])
 }
