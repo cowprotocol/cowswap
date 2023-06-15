@@ -1,5 +1,3 @@
-import { HashLink } from 'react-router-hash-link'
-
 import { ExternalLink } from 'legacy/theme'
 
 import { InlineBanner } from 'common/pure/InlineBanner'
@@ -22,7 +20,8 @@ export function UnsupportedWalletWarning({ isSafeViaWc }: { isSafeViaWc: boolean
     <InlineBanner type="alert">
       <strong>Unsupported wallet detected:</strong> TWAP orders currently require a Safe with a special fallback
       handler. <br />
-      Have one? Switch to it! Need setup? <HashLink to="/faq/limit-order#how-do-fees-work">Click here</HashLink>. <br />
+      Have one? Switch to it! {/*Need setup? <HashLink to="/faq/limit-order#how-do-fees-work">Click here</HashLink>.*/}{' '}
+      <br />
       Future updates may extend wallet support!
       {/*TODO: set a proper link*/}
     </InlineBanner>

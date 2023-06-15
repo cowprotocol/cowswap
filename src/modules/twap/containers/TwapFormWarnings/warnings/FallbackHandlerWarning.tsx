@@ -1,4 +1,3 @@
-import { HashLink } from 'react-router-hash-link'
 import styled from 'styled-components/macro'
 
 import { InlineBanner } from 'common/pure/InlineBanner'
@@ -64,7 +63,8 @@ export function FallbackHandlerWarning({
           <strong>Unsupported Safe detected</strong>
           <br />
           Connected Safe lacks required fallback handler. Switch to a compatible Safe or modify fallback handler for
-          TWAP orders when placing your order. <HashLink to="/faq/limit-order#how-do-fees-work">Learn more</HashLink>
+          TWAP orders when placing your order.{' '}
+          {/*<HashLink to="/faq/limit-order#how-do-fees-work">Learn more</HashLink>*/}
           {/*TODO: set a proper link*/}
           <WarningCheckboxWrapper>{fallbackHandlerCheckbox}</WarningCheckboxWrapper>
         </InlineBannerWithCheckbox>
