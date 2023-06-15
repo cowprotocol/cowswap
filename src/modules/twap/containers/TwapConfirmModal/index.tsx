@@ -4,12 +4,14 @@ import { useState } from 'react'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradePriceImpact, TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
+import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippage } from '../../state/twapOrdersSettingsAtom'
@@ -31,6 +33,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
   const twapOrder = useAtomValue(twapOrderAtom)
   const slippage = useAtomValue(twapOrderSlippage)
   const partsState = useAtomValue(partsStateAtom)
+  const { showPriceImpactWarning } = useTwapWarningsContext()
 
   const tradeConfirmActions = useTradeConfirmActions()
   const createTwapOrder = useCreateTwapOrder()
@@ -90,6 +93,7 @@ export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalPr
             partsState={partsState}
             totalDuration={totalDuration}
           />
+          {showPriceImpactWarning && <NoImpactWarning withoutAccepting={true} isAccepted={true} />}
         </>
       </TradeConfirmation>
     </TradeConfirmModal>

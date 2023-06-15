@@ -32,6 +32,7 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   position: sticky;
+  background: ${({ theme }) => theme.bg1};
   top: 0;
   left: 0;
   width: 100%;

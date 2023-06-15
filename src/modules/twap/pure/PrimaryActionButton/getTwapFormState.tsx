@@ -12,13 +12,7 @@ export enum TwapFormState {
   LOADING_SAFE_INFO = 'LOADING_SAFE_INFO',
   NOT_SAFE = 'NOT_SAFE',
   NEED_FALLBACK_HANDLER = 'NEED_FALLBACK_HANDLER',
-  ACCEPTED_FALLBACK_HANDLER_SETUP = 'ACCEPTED_FALLBACK_HANDLER_SETUP',
 }
-
-export const NEED_FALLBACK_HANDLER_STATES = [
-  TwapFormState.NEED_FALLBACK_HANDLER,
-  TwapFormState.ACCEPTED_FALLBACK_HANDLER_SETUP,
-]
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
   const { twapOrder, isSafeApp, isFallbackHandlerSetupAccepted, verification } = props
@@ -27,11 +21,11 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
 
   if (verification === null) return TwapFormState.LOADING_SAFE_INFO
 
-  if (twapOrder && verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER) {
-    if (isFallbackHandlerSetupAccepted) {
-      return TwapFormState.ACCEPTED_FALLBACK_HANDLER_SETUP
-    }
-
+  if (
+    twapOrder &&
+    verification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER &&
+    !isFallbackHandlerSetupAccepted
+  ) {
     return TwapFormState.NEED_FALLBACK_HANDLER
   }
 

@@ -25,11 +25,6 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
       Unsupported Safe
     </ButtonPrimary>
   ),
-  [TwapFormState.ACCEPTED_FALLBACK_HANDLER_SETUP]: ({ confirmTrade }: PrimaryActionButtonContext) => (
-    <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={confirmTrade}>
-      Review TWAP order
-    </ButtonPrimary>
-  ),
 }
 
 export interface PrimaryActionButtonProps {
