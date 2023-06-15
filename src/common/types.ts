@@ -16,3 +16,13 @@ export type OrderWithComposableCowInfo = {
   order: EnrichedOrder
   composableCowInfo?: ComposableCowInfo
 }
+
+export type SafeTransactionParams = {
+  submissionDate: string
+  executionDate: string
+  isExecuted: boolean
+  nonce: number
+  confirmationsRequired: number
+  confirmations: number
+  safeTxHash: string
+}
