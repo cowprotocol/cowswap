@@ -1,5 +1,4 @@
 import { initializeConnector } from '@web3-react/core'
-import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
 
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
@@ -8,6 +7,8 @@ import { ConnectionType } from 'modules/wallet'
 import { default as WalletConnectV2Image } from 'modules/wallet/api/assets/wallet-connect-v2.png'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
 import { getConnectionName } from 'modules/wallet/api/utils/connection'
+
+import { AsyncConnector } from './asyncConnector'
 
 import { TryActivation, onError } from '.'
 
@@ -25,18 +26,26 @@ export const walletConnectV2Option = {
 
 const [mainnet, ...optionalChains] = Object.keys(RPC_URLS).map(Number)
 
-export const [web3WalletConnectV2, web3WalletConnectV2Hooks] = initializeConnector<WalletConnectV2>(
+const [web3WalletConnectV2, web3WalletConnectV2Hooks] = initializeConnector<AsyncConnector>(
   (actions) =>
-    new WalletConnectV2({
+    new AsyncConnector(
+      () =>
+        import('@web3-react/walletconnect-v2').then(
+          (m) =>
+            new m.WalletConnect({
+              actions,
+              options: {
+                projectId: WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID,
+                chains: [mainnet],
+                optionalChains,
+                showQrModal: true,
+              },
+              onError,
+            })
+        ),
       actions,
-      options: {
-        projectId: WC_PROJECT_ID || WC_DEFAULT_PROJECT_ID,
-        chains: [mainnet],
-        optionalChains,
-        showQrModal: true,
-      },
-      onError,
-    })
+      onError
+    )
 )
 
 export const walletConnectConnectionV2: Web3ReactConnection = {
