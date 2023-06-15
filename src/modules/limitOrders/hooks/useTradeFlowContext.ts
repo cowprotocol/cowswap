@@ -10,14 +10,14 @@ import { useGP2SettlementContract } from 'legacy/hooks/useContract'
 import useENSAddress from 'legacy/hooks/useENSAddress'
 import { AppDispatch } from 'legacy/state'
 
-import { useUploadAppData, useAppData } from 'modules/appData'
+import { useAppData, useUploadAppData } from 'modules/appData'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 

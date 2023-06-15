@@ -20,7 +20,7 @@ export function useFetchTwapPartOrders(
   ordersInfo: TwapOrderInfo[]
 ): TwapPartOrders | null {
   const ordersToVerifyParams = useMemo(() => {
-    return ordersInfo.map((info) => info.safeData.params)
+    return ordersInfo.map((info) => info.safeData.conditionalOrderParams)
   }, [ordersInfo])
 
   const ordersTradeableData = useTwapOrdersTradeableMulticall(safeAddress, composableCowContract, ordersToVerifyParams)

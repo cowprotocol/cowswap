@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'
@@ -9,14 +8,14 @@ import { useNavigate } from 'react-router-dom'
 import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
 import NetworkSelector from 'legacy/components/Header/NetworkSelector'
-import { useMediaQuery, upToSmall, upToMedium, upToLarge, LargeAndUp } from 'legacy/hooks/useMediaQuery'
+import { LargeAndUp, upToLarge, upToMedium, upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 import { cowSwapLogo } from 'legacy/theme/cowSwapAssets'
 import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
-import { MAIN_MENU, MainMenuContext } from 'modules/mainMenu'
+import { MainMenuContext, useMenuItems } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useNativeCurrencyBalances } from 'modules/tokens/hooks/useCurrencyBalance'
@@ -29,16 +28,16 @@ import { Routes } from 'constants/routes'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {
-  Wrapper,
-  Title,
-  LogoImage,
-  HeaderModWrapper,
-  UniIcon,
   AccountElement,
   BalanceText,
   HeaderControls,
   HeaderElement,
+  HeaderModWrapper,
   HeaderRow,
+  LogoImage,
+  Title,
+  UniIcon,
+  Wrapper,
 } from './styled'
 
 // Assets
@@ -69,6 +68,8 @@ export default function Header() {
     setIsOrdersPanelOpen(false)
     !isOrdersPanelOpen && removeBodyClass('noScroll')
   }
+
+  const menuItems = useMenuItems()
 
   const navigate = useNavigate()
   const handleBalanceButtonClick = () => navigate('/account')
@@ -128,7 +129,7 @@ export default function Header() {
               </LogoImage>
             </UniIcon>
           </Title>
-          <MenuTree items={MAIN_MENU} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
+          <MenuTree items={menuItems} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
         </HeaderRow>
 
         <HeaderControls>

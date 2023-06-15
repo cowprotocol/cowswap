@@ -5,14 +5,7 @@ import { isTruthy } from 'legacy/utils/misc'
 
 import { ComposableCoW } from 'abis/types'
 
-import { ConditionalOrderParams } from '../types'
-
-export interface TwapOrdersSafeData {
-  params: ConditionalOrderParams
-  submissionDate: string
-  executionDate: string
-  isExecuted: boolean
-}
+import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 
 // ComposableCoW.create method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '6bfae1ca'
@@ -26,7 +19,7 @@ export async function fetchTwapOrdersFromSafe(
   const results = allTxs?.results || []
 
   return results
-    .map((result) => {
+    .map<TwapOrdersSafeData | null>((result) => {
       if (!result.data || !isSafeMultisigTransactionListResponse(result)) return null
 
       const selectorIndex = result.data.indexOf(CREATE_COMPOSABLE_ORDER_SELECTOR)
@@ -35,17 +28,24 @@ export async function fetchTwapOrdersFromSafe(
 
       const callData = '0x' + result.data.substring(selectorIndex)
 
-      const params = parseConditionalOrderParams(safeAddress, composableCowContract, callData)
+      const conditionalOrderParams = parseConditionalOrderParams(safeAddress, composableCowContract, callData)
 
-      if (!params) return null
+      if (!conditionalOrderParams) return null
 
-      const { isExecuted, submissionDate, executionDate } = result
+      const { isExecuted, submissionDate, executionDate, nonce, confirmationsRequired, confirmations, safeTxHash } =
+        result
 
       return {
-        params,
-        isExecuted,
-        submissionDate,
-        executionDate,
+        conditionalOrderParams,
+        safeTxParams: {
+          isExecuted,
+          submissionDate,
+          executionDate,
+          confirmationsRequired,
+          confirmations: confirmations?.length || 0,
+          safeTxHash,
+          nonce,
+        },
       }
     })
     .filter(isTruthy)

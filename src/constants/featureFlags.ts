@@ -4,5 +4,3 @@ export const ordersTableFeatures = {
   DISPLAY_EST_EXECUTION_PRICE: false,
   DISPLAY_EXECUTION_TIME: false,
 }
-
-export const ADVANCED_ORDERS_FEATURE_FLAG = 'advanced-orders'

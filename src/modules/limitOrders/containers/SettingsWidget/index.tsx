@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react'
 
 import { Menu, MenuItem } from '@reach/menu-button'
 
-import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 import { ExpertModeModal } from 'common/pure/ExpertModeModal'
 
 import * as styledEl from './styled'

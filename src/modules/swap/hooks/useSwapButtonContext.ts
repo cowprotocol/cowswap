@@ -26,9 +26,9 @@ import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useGnosisSafeInfo, useWalletDetails, useWalletInfo } from 'modules/wallet'
 
 import { useTradeApproveState } from 'common/containers/TradeApprove/useTradeApproveState'
-import { useIsEthFlowBundlingEnabled } from 'common/hooks/useIsEthFlowBundlingEnabled'
+import { useIsEthFlowBundlingEnabled } from 'common/hooks/featureFlags/useIsEthFlowBundlingEnabled'
+import { useIsTxBundlingEnabled } from 'common/hooks/featureFlags/useIsTxBundlingEnabled'
 import { useIsSmartContractWallet } from 'common/hooks/useIsSmartContractWallet'
-import { useIsTxBundlingEnabled } from 'common/hooks/useIsTxBundlingEnabled'
 import { formatSymbol } from 'utils/format'
 
 import { useSafeBundleEthFlowContext } from './useSafeBundleEthFlowContext'

@@ -6,6 +6,7 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { PendingOrdersPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { ReceiptModal } from 'modules/ordersTable/pure/ReceiptModal'
+import { useTwapOrderById, useTwapOrderByChildId } from 'modules/twap'
 import { useWalletInfo } from 'modules/wallet'
 
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
@@ -22,6 +23,10 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
   const { chainId: _chainId } = useWalletInfo()
   const closeReceiptModal = useCloseReceiptModal()
   const chainId = supportedChainId(_chainId)
+  const twapOrderById = useTwapOrderById(order?.id)
+  const twapOrderByChildId = useTwapOrderByChildId(order?.id)
+  const twapOrder = twapOrderById || twapOrderByChildId
+  const isTwapPartOrder = !!twapOrderByChildId
 
   if (!chainId || !order) {
     return null
@@ -63,6 +68,8 @@ export function OrdersReceiptModal(props: OrdersReceiptModalProps) {
       estimatedExecutionPrice={estimatedExecutionPrice}
       chainId={chainId}
       order={order}
+      twapOrder={twapOrder}
+      isTwapPartOrder={isTwapPartOrder}
       isOpen={!!order}
       onDismiss={closeReceiptModal}
     />
