@@ -25,7 +25,6 @@ export const Part = styled(TradeWidgetFieldBox)`
 `
 
 export const Label = styled(TradeWidgetFieldLabel)`
-  font-size: 12px;
 
   ${QuestionWrapper} {
     opacity: 0.5;
@@ -38,9 +37,9 @@ export const Label = styled(TradeWidgetFieldLabel)`
 `
 
 export const Amount = styled(TokenAmount)`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
-  padding: 7px 0;
+  padding: 2px 0;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

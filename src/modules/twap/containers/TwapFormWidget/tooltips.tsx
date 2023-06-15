@@ -58,11 +58,11 @@ export const LABELS_TOOLTIPS: LabelTooltipItems = {
     tooltip: 'This is the current market price',
   },
   sellAmount: {
-    label: 'Sell amount per part',
+    label: 'Sell per part',
     tooltip: 'Estimated amount that will be sold in each part of the order.',
   },
   buyAmount: {
-    label: 'Buy amount per part',
+    label: 'Buy per part',
     tooltip: 'Estimated amount that you will receive from each part of the order.',
   },
   startTime: {
