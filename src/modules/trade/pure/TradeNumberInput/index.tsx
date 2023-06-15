@@ -33,9 +33,9 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
         return
       }
 
-      if (parsedValue && min && parsedValue < min) {
-        setDisplayedValue(min?.toString() || '')
-        onUserInput(min || null)
+      if (min && (!parsedValue || parsedValue < min)) {
+        setDisplayedValue(min.toString())
+        onUserInput(min)
         return
       }
 
