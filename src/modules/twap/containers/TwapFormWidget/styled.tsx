@@ -6,7 +6,7 @@ import { RateInfo } from 'common/pure/RateInfo'
 
 export const Row = styled.div`
   display: flex;
-  grid-gap: 10px;
+  grid-gap: 8px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;

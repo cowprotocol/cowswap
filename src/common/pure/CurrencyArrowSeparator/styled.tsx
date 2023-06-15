@@ -20,8 +20,8 @@ export const Box = styled.div<{ withRecipient: boolean; isCollapsed: boolean; ha
       &::before {
         content: ${withRecipient ? 'none' : '""'};
         position: absolute;
-        width: calc(100% + 20px);
-        left: -10px;
+        width: calc(100% + 16px);
+        left: -8px;
         top: calc(50% - 1px);
         height: 1px;
         background: ${theme.grey1};

@@ -1,9 +1,12 @@
+import React, { ReactNode } from 'react'
+
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
 import QuestionHelper from 'legacy/components/QuestionHelper'
+import { renderTooltip } from 'legacy/components/Tooltip'
 
 import { LabelTooltipItems } from 'modules/twap'
 
@@ -15,7 +18,7 @@ interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
   fiatAmount: Nullish<CurrencyAmount<Currency>>
   label: JSX.Element
-  tooltip: JSX.Element
+  tooltip: ReactNode
 }
 
 function TradeAmountPreview(props: TradeAmountPreviewProps) {
@@ -42,22 +45,22 @@ export function AmountParts({ partsState, labels }: { partsState: PartsState; la
     <styledEl.Wrapper>
       <TradeAmountPreview
         label={
-          <Trans>
+          <>
             {labels.sellAmount.label} (1/{numberOfPartsValue})
-          </Trans>
+          </>
         }
-        tooltip={<Trans>{sellAmount.tooltip}</Trans>}
+        tooltip={renderTooltip(sellAmount.tooltip)}
         amount={inputPartAmount}
         fiatAmount={inputFiatAmount}
       />
 
       <TradeAmountPreview
         label={
-          <Trans>
+          <>
             {buyAmount.label} (1/{numberOfPartsValue})
-          </Trans>
+          </>
         }
-        tooltip={<Trans>{buyAmount.tooltip}</Trans>}
+        tooltip={renderTooltip(buyAmount.tooltip)}
         amount={outputPartAmount}
         fiatAmount={outputFiatAmount}
       />

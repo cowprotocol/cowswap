@@ -10,7 +10,7 @@ import { TokenAmount } from 'common/pure/TokenAmount'
 
 export const Wrapper = styled.div`
   display: flex;
-  grid-gap: 10px;
+  grid-gap: 8px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
@@ -25,8 +25,6 @@ export const Part = styled(TradeWidgetFieldBox)`
 `
 
 export const Label = styled(TradeWidgetFieldLabel)`
-  font-size: 12px;
-
   ${QuestionWrapper} {
     opacity: 0.5;
     transition: opacity 0.2s ease-in-out;
@@ -38,9 +36,9 @@ export const Label = styled(TradeWidgetFieldLabel)`
 `
 
 export const Amount = styled(TokenAmount)`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
-  padding: 7px 0;
+  padding: 2px 0;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

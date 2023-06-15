@@ -65,3 +65,10 @@ export function MouseoverTooltipContent({
     </TooltipContent>
   )
 }
+
+export function renderTooltip(tooltip: ReactNode | ((params?: any) => ReactNode), params?: any) {
+  if (typeof tooltip === 'function') {
+    return tooltip(params)
+  }
+  return tooltip
+}

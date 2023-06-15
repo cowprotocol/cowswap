@@ -2,7 +2,10 @@ import React, { useCallback, useMemo, useState } from 'react'
 
 import styled from 'styled-components/macro'
 
+import { renderTooltip } from 'legacy/components/Tooltip'
+
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
+import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
 import { LabelTooltipObject } from 'modules/twap'
 
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
@@ -11,22 +14,31 @@ import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
 interface DeadlineSelectorProps {
   items: TradeSelectItem[]
   deadline: TwapOrdersDeadline
-  labels: LabelTooltipObject
+  label: LabelTooltipObject['label']
+  tooltip: LabelTooltipObject['tooltip']
   setDeadline(value: TwapOrdersDeadline): void
 }
 
 const CUSTOM_OPTION: TradeSelectItem = { label: 'Custom', value: 'CUSTOM_ITEM_VALUE' }
 
 const StyledTradeSelect = styled(TradeSelect)`
-  font-size: 14px;
   font-weight: 500;
+
+  ${Content} {
+    width: 100%;
+  }
+
+  ${Content} > div {
+    width: 100%;
+  }
 `
 
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const {
     items,
     deadline: { deadline, customDeadline, isCustomDeadline },
-    labels: { label, tooltip },
+    label,
+    tooltip,
     setDeadline,
   } = props
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
@@ -62,7 +74,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     <>
       <StyledTradeSelect
         label={label}
-        hint={tooltip}
+        tooltip={renderTooltip(tooltip)}
         items={itemsWithCustom}
         activeLabel={activeLabel}
         onSelect={onSelect}
