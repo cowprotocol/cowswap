@@ -30,6 +30,11 @@ const buttonsMap: Record<TwapFormState, (context: PrimaryActionButtonContext) =>
       Review TWAP order
     </ButtonPrimary>
   ),
+  [TwapFormState.SELL_AMOUNT_TOO_SMALL]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      Sell amount too small
+    </ButtonPrimary>
+  ),
 }
 
 export interface PrimaryActionButtonProps {

@@ -1,11 +1,19 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
+
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
+import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
   isSafeApp: boolean
   isFallbackHandlerSetupAccepted: boolean
   verification: ExtensibleFallbackVerification | null
   twapOrder: TWAPOrder | null
+  sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
+  chainId: SupportedChainId | undefined
 }
 
 export enum TwapFormState {
@@ -13,6 +21,7 @@ export enum TwapFormState {
   NOT_SAFE = 'NOT_SAFE',
   NEED_FALLBACK_HANDLER = 'NEED_FALLBACK_HANDLER',
   ACCEPTED_FALLBACK_HANDLER_SETUP = 'ACCEPTED_FALLBACK_HANDLER_SETUP',
+  SELL_AMOUNT_TOO_SMALL = 'SELL_AMOUNT_TOO_SMALL',
 }
 
 export const NEED_FALLBACK_HANDLER_STATES = [
@@ -21,7 +30,7 @@ export const NEED_FALLBACK_HANDLER_STATES = [
 ]
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
-  const { twapOrder, isSafeApp, isFallbackHandlerSetupAccepted, verification } = props
+  const { twapOrder, isSafeApp, isFallbackHandlerSetupAccepted, verification, sellAmountPartFiat, chainId } = props
 
   if (!isSafeApp) return TwapFormState.NOT_SAFE
 
@@ -33,6 +42,10 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     }
 
     return TwapFormState.NEED_FALLBACK_HANDLER
+  }
+
+  if (isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
+    return TwapFormState.SELL_AMOUNT_TOO_SMALL
   }
 
   return null

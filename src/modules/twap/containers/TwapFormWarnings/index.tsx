@@ -2,10 +2,9 @@ import { useAtomValue } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { FallbackHandlerWarning } from './warnings/FallbackHandlerWarning'
-import { UnsupportedWalletWarning } from './warnings/UnsupportedWalletWarning'
+import { FallbackHandlerWarning, SmallPartVolumeWarning, UnsupportedWalletWarning } from './warnings'
 
-import { useIsSafeViaWc } from '../../../wallet'
+import { useIsSafeViaWc, useWalletInfo } from '../../../wallet'
 import { NEED_FALLBACK_HANDLER_STATES, TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 
@@ -18,6 +17,7 @@ export function TwapFormWarnings({ localFormValidation, walletIsNotConnected }: 
   const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useUpdateAtom(updateTwapOrdersSettingsAtom)
   const isSafeViaWc = useIsSafeViaWc()
+  const { chainId } = useWalletInfo()
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
@@ -40,6 +40,10 @@ export function TwapFormWarnings({ localFormValidation, walletIsNotConnected }: 
         toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
       />
     )
+  }
+
+  if (chainId && localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
+    return <SmallPartVolumeWarning chainId={chainId} />
   }
 
   return null
