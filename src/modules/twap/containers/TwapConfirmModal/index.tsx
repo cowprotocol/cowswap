@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useState } from 'react'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import { useTradePriceImpact, TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -36,12 +36,7 @@ export function TwapConfirmModal() {
   // TODO: add conditions based on warnings
   const isConfirmDisabled = false
 
-  // TODO: define priceImpact
-  const priceImpact = {
-    priceImpact: undefined,
-    error: undefined,
-    loading: false,
-  }
+  const priceImpact = useTradePriceImpact()
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
