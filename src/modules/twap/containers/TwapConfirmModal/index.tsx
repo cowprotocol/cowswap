@@ -14,7 +14,11 @@ import { partsStateAtom } from '../../state/partsStateAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { twapOrderSlippage } from '../../state/twapOrdersSettingsAtom'
 
-export function TwapConfirmModal() {
+interface TwapConfirmModalProps {
+  fallbackHandlerIsNotSet: boolean
+}
+
+export function TwapConfirmModal({ fallbackHandlerIsNotSet }: TwapConfirmModalProps) {
   const {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
@@ -73,7 +77,7 @@ export function TwapConfirmModal() {
         title="Review TWAP order"
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
-        onConfirm={createTwapOrder}
+        onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
         onDismiss={tradeConfirmActions.onDismiss}
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}

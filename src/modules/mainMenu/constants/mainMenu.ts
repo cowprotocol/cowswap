@@ -11,12 +11,9 @@ import IMAGE_TERMS_AND_CONDITIONS from 'legacy/assets/cow-swap/terms-and-conditi
 import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 
-import { ADVANCED_ORDERS_FEATURE_FLAG } from 'constants/featureFlags'
 import { Routes } from 'constants/routes'
-import { FeatureFlag } from 'utils/featureFlags'
-import { isNotNullish } from 'utils/isNotNullish'
 
-import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuLink, MenuTreeItem } from '../types'
+import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
 
 export const isBasicMenuLink = (item: any): item is BasicMenuLink => {
   return !!(item.title && item.url)
@@ -50,15 +47,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
             title: 'Limit orders',
             url: Routes.LIMIT_ORDER,
           },
-          FeatureFlag.get(ADVANCED_ORDERS_FEATURE_FLAG)
-            ? {
-                id: MainMenuItemId.ADVANCED_ORDERS,
-                kind: MenuItemKind.DYNAMIC_LINK,
-                title: 'Advanced orders',
-                url: Routes.ADVANCED_ORDERS,
-              }
-            : null,
-        ].filter(isNotNullish) as MenuLink[],
+        ],
       },
     ],
   },

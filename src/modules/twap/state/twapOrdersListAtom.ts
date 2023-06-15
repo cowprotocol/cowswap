@@ -13,7 +13,7 @@ import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
-export const twapOrdersListAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v3', {})
+export const twapOrdersListAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v4', {})
 
 export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrdersList) => {
   const currentState = get(twapOrdersListAtom)

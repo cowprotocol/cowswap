@@ -38,7 +38,6 @@ describe('Create TWAP order', () => {
     approveFn = jest.fn().mockReturnValue(APPROVE_TX_DATA)
 
     context = {
-      safeAppsSdk: null as any,
       composableCowContract: {
         interface: { encodeFunctionData: createCowFn },
         address: COMPOSABLE_COW_ADDRESS[chainId],

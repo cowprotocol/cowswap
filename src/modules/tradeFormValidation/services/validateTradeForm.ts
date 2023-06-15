@@ -36,22 +36,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return TradeFormValidation.WrapUnwrapFlow
   }
 
-  if (!inputCurrency || !outputCurrency) {
-    return TradeFormValidation.CurrencyNotSet
-  }
-
-  if (inputAmountIsNotSet) {
-    return TradeFormValidation.InputAmountNotSet
-  }
-
-  if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
-    return TradeFormValidation.RecipientInvalid
-  }
-
-  if (isSwapUnsupported) {
-    return TradeFormValidation.CurrencyNotSupported
-  }
-
   if (tradeQuote.error) {
     return TradeFormValidation.QuoteErrors
   }
@@ -66,6 +50,22 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isSafeReadonlyUser) {
     return TradeFormValidation.SafeReadonlyUser
+  }
+
+  if (!inputCurrency || !outputCurrency) {
+    return TradeFormValidation.CurrencyNotSet
+  }
+
+  if (inputAmountIsNotSet) {
+    return TradeFormValidation.InputAmountNotSet
+  }
+
+  if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
+    return TradeFormValidation.RecipientInvalid
+  }
+
+  if (isSwapUnsupported) {
+    return TradeFormValidation.CurrencyNotSupported
   }
 
   if (!tradeQuote.response) {

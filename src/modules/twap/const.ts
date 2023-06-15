@@ -1,7 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
+
+import { USDC } from 'legacy/constants/tokens'
 
 import { TwapOrderStatus } from './types'
 
@@ -33,3 +35,9 @@ export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = {
 }
 
 export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Scheduled]
+
+export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
+  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 5_000e6), // 5k
+  [SupportedChainId.GOERLI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GOERLI], 100e6), // 100
+  [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 5e6), // 5
+}

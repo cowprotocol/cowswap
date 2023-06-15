@@ -8,8 +8,7 @@ import { ExtensibleFallbackContext } from '../hooks/useExtensibleFallbackContext
 export async function getSignatureVerifierContract(
   context: ExtensibleFallbackContext
 ): Promise<SignatureVerifierMuxer> {
-  const { safeAppsSdk, provider } = context
-  const { safeAddress } = await safeAppsSdk.safe.getInfo()
+  const { safeAddress, provider } = context
 
   return new Contract(safeAddress, SignatureVerifierMuxerABI, provider) as SignatureVerifierMuxer
 }

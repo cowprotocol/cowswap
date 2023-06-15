@@ -10,15 +10,12 @@ import { InlineBanner } from './index'
 
 export function BundleTxApprovalBanner() {
   return (
-    <InlineBanner
-      type="information"
-      content={
-        <>
-          <strong>Token approval</strong>: For your convenience, token approval and order placement will be bundled into
-          a single transaction, streamlining your experience!
-        </>
-      }
-    />
+    <InlineBanner type="information">
+      <>
+        <strong>Token approval</strong>: For your convenience, token approval and order placement will be bundled into a
+        single transaction, streamlining your experience!
+      </>
+    </InlineBanner>
   )
 }
 
@@ -29,16 +26,13 @@ export type BundleTxWrapBannerProps = {
 
 export function BundleTxWrapBanner({ nativeCurrencySymbol, wrappedCurrencySymbol }: BundleTxWrapBannerProps) {
   return (
-    <InlineBanner
-      type="information"
-      content={
-        <>
-          <strong>Token wrapping</strong>: For your convenience, CoW Swap will bundle all the necessary actions for this
-          trade into a single transaction. This includes the {nativeCurrencySymbol} wrapping and, if needed,{' '}
-          {wrappedCurrencySymbol} approval. Even if the trade fails, your wrapping and approval will be done!
-        </>
-      }
-    />
+    <InlineBanner type="information">
+      <>
+        <strong>Token wrapping</strong>: For your convenience, CoW Swap will bundle all the necessary actions for this
+        trade into a single transaction. This includes the {nativeCurrencySymbol} wrapping and, if needed,{' '}
+        {wrappedCurrencySymbol} approval. Even if the trade fails, your wrapping and approval will be done!
+      </>
+    </InlineBanner>
   )
 }
 
@@ -53,18 +47,15 @@ export function BundleTxSafeWcBanner({ nativeCurrencySymbol, supportsWrapping }:
   const supportsWrappingText = supportsWrapping ? `${nativeCurrencySymbol} wrapping, ` : ''
 
   return (
-    <InlineBanner
-      type="information"
-      content={
-        <>
-          Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one
-          go! Only available in the{' '}
-          <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
-            CoW Swap Safe App↗
-          </ExternalLink>
-        </>
-      }
-    />
+    <InlineBanner type="information">
+      <>
+        Use the Safe web app for streamlined trading: {supportsWrappingText}token approval and orders bundled in one go!
+        Only available in the{' '}
+        <ExternalLink href="https://app.safe.global/share/safe-app?appUrl=https%3A%2F%2Fswap.cow.fi&chain=eth">
+          CoW Swap Safe App↗
+        </ExternalLink>
+      </>
+    </InlineBanner>
   )
 }
 
@@ -75,20 +66,18 @@ export type SmallVolumeWarningBannerProps = {
 
 export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolumeWarningBannerProps) {
   return (
-    <InlineBanner
-      content={
-        <>
-          Small orders are unlikely to be executed. For this order, network fees would be{' '}
-          <b>
-            {feePercentage?.toFixed(2)}% (
-            <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} />)
-          </b>{' '}
-          of your sell amount! Therefore, your order is unlikely to execute.
-          {/*<br />*/}
-          {/* TODO: add link to somewhere */}
-          {/*<a href="/">Learn more ↗</a>*/}
-        </>
-      }
-    />
+    <InlineBanner>
+      <>
+        Small orders are unlikely to be executed. For this order, network fees would be{' '}
+        <b>
+          {feePercentage?.toFixed(2)}% (
+          <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} />)
+        </b>{' '}
+        of your sell amount! Therefore, your order is unlikely to execute.
+        {/*<br />*/}
+        {/* TODO: add link to somewhere */}
+        {/*<a href="/">Learn more ↗</a>*/}
+      </>
+    </InlineBanner>
   )
 }
