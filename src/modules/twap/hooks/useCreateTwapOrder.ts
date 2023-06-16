@@ -93,7 +93,7 @@ export function useCreateTwapOrder() {
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
       } catch (error) {
         tradeConfirmActions.onError(error.message || error)
-        tradeConfirmActions.onError(error.message || error)
+        tradeFlowAnalytics.error(error, error.message, twapFlowAnalyticsContext)
       }
     },
     [
