@@ -6,6 +6,8 @@ import { /* isChrome, */ isMobile } from 'legacy/utils/userAgent'
 
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 
+import { useFeatureFlags } from 'common/hooks/useFeatureFlags'
+
 import { AlphaOption } from './alpha'
 import { AmbireOption } from './ambire'
 import { CoinbaseWalletOption } from './coinbase'
@@ -109,6 +111,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
 
+  const { walletConnectV1Enabled, walletConnectV2Enabled } = useFeatureFlags()
+
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
@@ -156,8 +160,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   return (
     <>
       {injectedOption}
-      {walletConnectionOption}
-      {walletConnectionV2Option}
+      {walletConnectV1Enabled && walletConnectionOption}
+      {walletConnectV2Enabled && walletConnectionV2Option}
       {coinbaseWalletOption}
       {ledgerOption}
       {zengoOption}
