@@ -9,6 +9,8 @@ import { Nullish } from 'types'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeConfirmActions } from 'modules/trade'
+import { SwapFlowAnalyticsContext } from 'modules/trade/utils/analytics'
+import { tradeFlowAnalytics } from 'modules/trade/utils/analytics'
 import { useWalletInfo } from 'modules/wallet'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
@@ -55,11 +57,20 @@ export function useCreateTwapOrder() {
         outputAmount: outputCurrencyAmount,
       }
 
+      const twapFlowAnalyticsContext: SwapFlowAnalyticsContext = {
+        account,
+        recipient: twapOrder.receiver,
+        recipientAddress: twapOrder.receiver,
+        marketLabel: [inputCurrencyAmount.currency.symbol, outputCurrencyAmount.currency.symbol].join(','),
+        orderClass: 'TWAP',
+      }
+
       const startTime = Math.round((Date.now() + ms`1m`) / 1000) // Now + 1 min
       const twapOrderWithStartTime = { ...twapOrder, startTime }
       const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrderWithStartTime)
       const orderId = getConditionalOrderId(paramsStruct)
 
+      tradeFlowAnalytics.placeAdvancedOrder(twapFlowAnalyticsContext)
       tradeConfirmActions.onSign(pendingTrade)
 
       try {
@@ -79,8 +90,10 @@ export function useCreateTwapOrder() {
         })
 
         tradeConfirmActions.onSuccess(safeTxHash)
+        tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
       } catch (error) {
         tradeConfirmActions.onError(error.message || error)
+        tradeFlowAnalytics.error(error, error.message, twapFlowAnalyticsContext)
       }
     },
     [

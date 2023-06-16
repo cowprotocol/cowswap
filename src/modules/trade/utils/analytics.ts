@@ -1,6 +1,5 @@
-import { OrderClass } from '@cowprotocol/cow-sdk'
-
-import { signSwapAnalytics, swapAnalytics } from 'legacy/components/analytics'
+import { signTradeAnalytics, tradeAnalytics } from 'legacy/components/analytics'
+import { AnalyticsOrderType } from 'legacy/components/analytics/types'
 
 import { USER_SWAP_REJECTED_ERROR } from 'modules/trade/utils/swapErrorHelper'
 
@@ -9,32 +8,36 @@ export interface SwapFlowAnalyticsContext {
   recipient: string | null
   recipientAddress: string | null
   marketLabel?: string
-  orderClass: OrderClass
+  orderClass: AnalyticsOrderType
 }
 
 export const tradeFlowAnalytics = {
-  swap(context: SwapFlowAnalyticsContext) {
-    swapAnalytics('Send', context.orderClass, context.marketLabel)
+  trade(context: SwapFlowAnalyticsContext) {
+    tradeAnalytics('Send', context.orderClass, context.marketLabel)
   },
   sign(context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
-    signSwapAnalytics(orderClass, marketLabel)
+    signTradeAnalytics(orderClass, marketLabel)
   },
   approveAndPresign(context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
-    swapAnalytics('Bundle Approve and Swap', orderClass, marketLabel)
+    tradeAnalytics('Bundle Approve and Swap', orderClass, marketLabel)
+  },
+  placeAdvancedOrder(context: SwapFlowAnalyticsContext) {
+    const { marketLabel, orderClass } = context
+    tradeAnalytics('Place Advanced Order', orderClass, marketLabel)
   },
   wrapApproveAndPresign(context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
-    swapAnalytics('Bundled Eth Flow', orderClass, marketLabel)
+    tradeAnalytics('Bundled Eth Flow', orderClass, marketLabel)
   },
   error(error: any, errorMessage: string, context: SwapFlowAnalyticsContext) {
     const { marketLabel, orderClass } = context
 
     if (errorMessage === USER_SWAP_REJECTED_ERROR) {
-      swapAnalytics('Reject', orderClass, marketLabel)
+      tradeAnalytics('Reject', orderClass, marketLabel)
     } else {
-      swapAnalytics(
+      tradeAnalytics(
         'Error',
         orderClass,
         marketLabel,

@@ -1,5 +1,7 @@
+import { OrderClass } from '@cowprotocol/cow-sdk'
+
 export enum Category {
-  SWAP = 'Swap',
+  TRADE = 'Trade',
   LIST = 'Lists',
   CURRENCY_SELECT = 'Currency Select',
   EXPERT_MODE = 'Expert mode',
@@ -29,3 +31,5 @@ export enum Dimensions {
   customBrowserType = 'customBrowserType',
   userAddress = 'userAddress',
 }
+
+export type AnalyticsOrderType = OrderClass | 'TWAP'

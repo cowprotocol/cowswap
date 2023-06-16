@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 import { t } from '@lingui/macro'
 import { ParsedQs } from 'qs'
 
-import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
+import { changeSwapAmountAnalytics, switchTokensAnalytics } from 'legacy/components/analytics'
 import { FEE_SIZE_THRESHOLD, INITIAL_ALLOWED_SLIPPAGE_PERCENT } from 'legacy/constants'
 import { useCurrency } from 'legacy/hooks/Tokens'
 import useENS from 'legacy/hooks/useENS'
@@ -109,6 +109,7 @@ export function useSwapActionHandlers(): SwapActions {
 
     navigate(chainId, { inputCurrencyId: outputCurrencyId, outputCurrencyId: inputCurrencyId })
     dispatch(switchCurrencies())
+    switchTokensAnalytics()
   }, [swapState, navigate, chainId, dispatch])
 
   const onUserInput = useCallback(

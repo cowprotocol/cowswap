@@ -41,7 +41,7 @@ export async function tradeFlow(
   }
 
   logTradeFlow('LIMIT ORDER FLOW', 'STEP 2: send transaction')
-  tradeFlowAnalytics.swap(swapFlowAnalyticsContext)
+  tradeFlowAnalytics.trade(swapFlowAnalyticsContext)
   beforeTrade?.()
 
   const validTo = calculateLimitOrdersDeadline(settingsState)
