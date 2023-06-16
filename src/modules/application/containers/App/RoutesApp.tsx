@@ -12,6 +12,7 @@ import { Routes as RoutesEnum } from 'constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { SwapPage } from 'pages/Swap'
+import { WidgetPage } from 'pages/Widget'
 
 // Async routes
 const PrivacyPolicy = lazy(() => import(/* webpackChunkName: "privacy_policy" */ 'pages/PrivacyPolicy'))
@@ -78,6 +79,9 @@ export function RoutesApp() {
         </Route>
         <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
         <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
+
+        {/*Widget*/}
+        <Route path={RoutesEnum.WIDGET} element={<WidgetPage />} />
 
         {/*Swap*/}
         <Route path={RoutesEnum.SWAP} element={<SwapPage />} />

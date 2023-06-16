@@ -58,7 +58,12 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
 ]
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap, SwapButtonState.ExpertWrapAndSwap]
 
-export function SwapWidget() {
+export interface SwapWidgetProps {
+  isStandaloneWidget?: boolean
+}
+
+export function SwapWidget(props?: SwapWidgetProps) {
+  const { isStandaloneWidget = false } = props ?? {}
   useSetupTradeState()
   useSetupSwapAmountsFromUrl()
   useFillSwapDerivedState()
@@ -261,6 +266,7 @@ export function SwapWidget() {
           params={params}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
+          isStandaloneWidget={isStandaloneWidget}
         />
         <NetworkAlert />
       </TradeWidgetContainer>

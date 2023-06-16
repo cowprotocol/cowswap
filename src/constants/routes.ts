@@ -4,6 +4,7 @@ export enum Routes {
   SWAP = '/:chainId?/swap/:inputCurrencyId?/:outputCurrencyId?',
   LIMIT_ORDER = '/:chainId?/limit-orders/:inputCurrencyId?/:outputCurrencyId?',
   ADVANCED_ORDERS = '/:chainId?/advanced-orders/:inputCurrencyId?/:outputCurrencyId?',
+  WIDGET = '/:chainId?/widget/:inputCurrencyId?/:outputCurrencyId?',
   SEND = '/send',
   ACCOUNT = '/account',
   ACCOUNT_TOKENS = '/account/tokens',

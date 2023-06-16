@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { t } from '@lingui/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { maxAmountSpend } from 'legacy/utils/maxAmountSpend'
 
-import { TradeWidgetLinks } from 'modules/application/containers/TradeWidgetLinks'
+import { TradeWidgetLinks, TradeWidgetLinksProps } from 'modules/application/containers/TradeWidgetLinks'
 import { SetRecipientProps } from 'modules/swap/containers/SetRecipient'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
@@ -56,13 +56,23 @@ export interface TradeWidgetProps {
   actions: TradeWidgetActions
   params: TradeWidgetParams
   disableOutput?: boolean
+  isStandaloneWidget?: boolean
 }
 
 export const TradeWidgetContainer = styledEl.Container
 
 // TODO: add ImportTokenModal, TradeApproveWidget
 export function TradeWidget(props: TradeWidgetProps) {
-  const { id, slots, inputCurrencyInfo, outputCurrencyInfo, actions, params, disableOutput } = props
+  const {
+    id,
+    slots,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    actions,
+    params,
+    disableOutput,
+    isStandaloneWidget = false,
+  } = props
   const { settingsWidget, lockScreen, middleContent, bottomContent } = slots
 
   const { onCurrencySelection, onUserInput, onSwitchTokens, onChangeRecipient } = actions
@@ -90,6 +100,10 @@ export function TradeWidget(props: TradeWidgetProps) {
 
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
+  const tradeWidgetLinksProps: TradeWidgetLinksProps | undefined = useMemo(
+    () => (isStandaloneWidget ? { showSwap: false, showLimit: false, showAdvanced: false } : undefined),
+    [isStandaloneWidget]
+  )
 
   /**
    * Reset recipient value only once at App start
@@ -108,7 +122,7 @@ export function TradeWidget(props: TradeWidgetProps) {
       <styledEl.Container id={id}>
         <styledEl.ContainerBox>
           <styledEl.Header>
-            <TradeWidgetLinks />
+            <TradeWidgetLinks {...tradeWidgetLinksProps} />
             {!lockScreen && settingsWidget}
           </styledEl.Header>
 
