@@ -44,6 +44,7 @@ import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsSafeViaWc, useIsSafeWallet, useWalletDetails, useWalletInfo } from 'modules/wallet'
+import { useIsStandaloneWidget } from 'modules/widget'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -58,12 +59,7 @@ const BUTTON_STATES_TO_SHOW_BUNDLE_APPROVAL_BANNER = [
 ]
 const BUTTON_STATES_TO_SHOW_BUNDLE_WRAP_BANNER = [SwapButtonState.WrapAndSwap, SwapButtonState.ExpertWrapAndSwap]
 
-export interface SwapWidgetProps {
-  isStandaloneWidget?: boolean
-}
-
-export function SwapWidget(props?: SwapWidgetProps) {
-  const { isStandaloneWidget = false } = props ?? {}
+export function SwapWidget() {
   useSetupTradeState()
   useSetupSwapAmountsFromUrl()
   useFillSwapDerivedState()
@@ -89,6 +85,7 @@ export function SwapWidget(props?: SwapWidgetProps) {
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
+  const isStandaloneWidget = useIsStandaloneWidget()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({

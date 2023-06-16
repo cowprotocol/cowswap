@@ -1,0 +1,1 @@
+export { useIsStandaloneWidget } from './hooks'

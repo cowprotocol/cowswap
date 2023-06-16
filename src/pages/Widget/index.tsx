@@ -18,7 +18,7 @@ export function WidgetPage() {
     return <WidgetPageRedirect />
   }
 
-  return <SwapWidget isStandaloneWidget={true} />
+  return <SwapWidget />
 }
 
 function WidgetPageRedirect() {
