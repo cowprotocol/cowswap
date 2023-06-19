@@ -7,7 +7,7 @@ import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 import { Nullish } from 'types'
 
 import { DEFAULT_NETWORK_FOR_LISTS } from 'legacy/constants/lists'
-import { USDC, USDC_MAINNET } from 'legacy/constants/tokens'
+import { USDC } from 'legacy/constants/tokens'
 import { useGetGpPriceStrategy } from 'legacy/hooks/useGetGpPriceStrategy'
 import { stringToCurrency } from 'legacy/state/swap/extension'
 import { useGetGpUsdcPrice } from 'legacy/utils/price'
@@ -23,7 +23,6 @@ import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 export const getUsdQuoteValidTo = () => Math.ceil(Date.now() / 1000) + 600
 
 const STABLECOIN_AMOUNT_OUT: { [chain in SupportedChainId]: CurrencyAmount<Token> } = {
-  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC_MAINNET, 100_000e6),
   [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 100e6),
   [SupportedChainId.GOERLI]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GOERLI], 100e6),
   [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 10_000e6),

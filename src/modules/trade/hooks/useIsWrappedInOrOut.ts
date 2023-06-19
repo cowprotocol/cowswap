@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { WRAPPED_NATIVE_CURRENCY } from 'legacy/constants/tokens'
+import { supportedChainId } from 'legacy/utils/supportedChainId'
 
 import { useWalletInfo } from 'modules/wallet'
 
@@ -12,6 +13,10 @@ import { useTradeState } from './useTradeState'
 
 function getIsWrappedNativeToken(chainId: SupportedChainId, tokenId: string): boolean {
   const nativeToken = WRAPPED_NATIVE_CURRENCY[chainId]
+
+  if (!supportedChainId(chainId)) {
+    return false
+  }
 
   return doesTokenMatchSymbolOrAddress(nativeToken, tokenId)
 }

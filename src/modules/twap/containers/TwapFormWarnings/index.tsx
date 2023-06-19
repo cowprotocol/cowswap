@@ -3,10 +3,14 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import { NoImpactWarning } from 'modules/trade/pure/NoImpactWarning'
-import { useIsSafeViaWc } from 'modules/wallet'
+import { useIsSafeViaWc, useWalletInfo } from 'modules/wallet'
 
-import { FallbackHandlerWarning } from './warnings/FallbackHandlerWarning'
-import { UnsupportedWalletWarning } from './warnings/UnsupportedWalletWarning'
+import {
+  FallbackHandlerWarning,
+  SmallPartTimeWarning,
+  SmallPartVolumeWarning,
+  UnsupportedWalletWarning,
+} from './warnings'
 
 import { useFallbackHandlerVerification } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
@@ -22,6 +26,7 @@ export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps)
   const { isFallbackHandlerSetupAccepted, isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useUpdateAtom(updateTwapOrdersSettingsAtom)
 
+  const { chainId } = useWalletInfo()
   const fallbackHandlerVerification = useFallbackHandlerVerification()
   const isSafeViaWc = useIsSafeViaWc()
   const { canTrade, showPriceImpactWarning, walletIsNotConnected } = useTwapWarningsContext()
@@ -53,6 +58,14 @@ export function TwapFormWarnings({ localFormValidation }: TwapFormWarningsProps)
       {(() => {
         if (localFormValidation === TwapFormState.NOT_SAFE) {
           return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} />
+        }
+
+        if (chainId && localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
+          return <SmallPartVolumeWarning chainId={chainId} />
+        }
+
+        if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
+          return <SmallPartTimeWarning />
         }
 
         if (canTrade && fallbackHandlerVerification !== ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER) {

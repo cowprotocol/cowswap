@@ -24,7 +24,7 @@ export async function swapFlow(
   }
 
   logTradeFlow('SWAP FLOW', 'STEP 2: send transaction')
-  tradeFlowAnalytics.swap(input.swapFlowAnalyticsContext)
+  tradeFlowAnalytics.trade(input.swapFlowAnalyticsContext)
   input.swapConfirmManager.sendTransaction(input.context.trade)
 
   try {

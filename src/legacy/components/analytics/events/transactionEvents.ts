@@ -8,15 +8,16 @@ import { sendMicrosoftEvent } from '../pixel/microsoft'
 import { sendPavedEvent } from '../pixel/paved'
 import { sendRedditEvent } from '../pixel/reddit'
 import { sendTwitterEvent } from '../pixel/twitter'
-import { Category } from '../types'
+import { AnalyticsOrderType, Category } from '../types'
 
-const LABEL_FROM_CLASS: Record<OrderClass, string> = {
+const LABEL_FROM_CLASS: Record<AnalyticsOrderType, string> = {
   [OrderClass.LIMIT]: 'Limit Order',
   [OrderClass.MARKET]: 'Market Order',
   [OrderClass.LIQUIDITY]: 'Liquidity Order',
+  TWAP: 'TWAP Order',
 }
 
-function getClassLabel(orderClass: OrderClass, label?: string) {
+function getClassLabel(orderClass: AnalyticsOrderType, label?: string) {
   const classLabel = LABEL_FROM_CLASS[orderClass]
   return label ? `${label}::${classLabel}` : classLabel
 }
@@ -51,33 +52,39 @@ export function claimAnalytics(action: ClaimAction, value?: number) {
 type ApprovalAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 export function approvalAnalytics(action: ApprovalAction, label?: string, value?: number) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: `${action} Token Approval`,
     label,
     value,
   })
 }
 
-export type SwapAction = 'Send' | 'Error' | 'Reject' | 'Bundle Approve and Swap' | 'Bundled Eth Flow'
-export function swapAnalytics(action: SwapAction, orderClass: OrderClass, label?: string, value?: number) {
+export type TradeAction =
+  | 'Send'
+  | 'Error'
+  | 'Reject'
+  | 'Bundle Approve and Swap'
+  | 'Bundled Eth Flow'
+  | 'Place Advanced Order'
+export function tradeAnalytics(action: TradeAction, orderClass: AnalyticsOrderType, label?: string, value?: number) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action,
     label: getClassLabel(orderClass, label),
     value,
   })
 }
 
-export function signSwapAnalytics(orderClass: OrderClass, label?: string) {
+export function signTradeAnalytics(orderClass: AnalyticsOrderType, label?: string) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: 'Sign',
     label: getClassLabel(orderClass, label),
   })
 }
 
 export type OrderType = 'Posted' | 'Executed' | 'Canceled' | 'Expired'
-export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?: string) {
+export function orderAnalytics(action: OrderType, orderClass: AnalyticsOrderType, label?: string) {
   if (action === 'Posted') {
     sendFacebookEvent(PIXEL_EVENTS.POST_TRADE)
     sendLinkedinEvent(PIXEL_EVENTS.POST_TRADE)
@@ -88,7 +95,7 @@ export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?
   }
 
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action,
     label: getClassLabel(orderClass, label),
   })
@@ -96,7 +103,7 @@ export function orderAnalytics(action: OrderType, orderClass: OrderClass, label?
 
 export function priceOutOfRangeAnalytics(isUnfillable: boolean, label: string) {
   sendEvent({
-    category: Category.SWAP,
+    category: Category.TRADE,
     action: `Order price is ${isUnfillable ? 'out of' : 'back to'} market`,
     label,
   })

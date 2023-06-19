@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
+import { changeSwapAmountAnalytics } from 'legacy/components/analytics'
 import { Field } from 'legacy/state/swap/actions'
 
 import { useNavigateOnCurrencySelection } from 'modules/trade/hooks/useNavigateOnCurrencySelection'
@@ -37,6 +38,7 @@ export function useAdvancedOrdersActions() {
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
+      changeSwapAmountAnalytics(field, Number(typedValue))
       updateCurrencyAmount({
         amount: { isTyped: true, value: typedValue },
         currency: inputCurrency,
