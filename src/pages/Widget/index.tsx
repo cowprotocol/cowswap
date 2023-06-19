@@ -76,8 +76,6 @@ export function WidgetPage() {
     window.addEventListener('message', receiveMessage)
 
     // Send a periodic message
-    window.parent.postMessage('hello', '*')
-
     const intervalId = setInterval(() => {
       postMessage({
         method: 'areYouThere',
