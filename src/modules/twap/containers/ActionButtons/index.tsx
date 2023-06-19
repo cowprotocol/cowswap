@@ -18,11 +18,11 @@ interface ActionButtonsProps {
 export function ActionButtons({ localFormValidation, primaryFormValidation }: ActionButtonsProps) {
   const { isPriceImpactAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const tradeConfirmActions = useTradeConfirmActions()
-  const { walletIsNotConnected } = useTwapWarningsContext()
+  const { walletIsNotConnected, showPriceImpactWarning } = useTwapWarningsContext()
 
   const confirmTrade = tradeConfirmActions.onOpen
 
-  const areWarningsAccepted = isPriceImpactAccepted
+  const areWarningsAccepted = showPriceImpactWarning ? isPriceImpactAccepted : true
 
   const primaryActionContext = {
     confirmTrade,
