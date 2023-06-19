@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Navigate, useLocation, useParams } from 'react-router-dom'
+import styled from 'styled-components/macro'
 
 import { WRAPPED_NATIVE_CURRENCY as WETH } from 'legacy/constants/tokens'
 
@@ -11,6 +12,10 @@ import { useWalletInfo } from 'modules/wallet'
 
 import { Routes } from 'constants/routes'
 
+const Wrapper = styled.div`
+  margin-top: 20px;
+`
+
 export function WidgetPage() {
   const params = useParams()
 
@@ -18,7 +23,11 @@ export function WidgetPage() {
     return <WidgetPageRedirect />
   }
 
-  return <SwapWidget />
+  return (
+    <Wrapper>
+      <SwapWidget />
+    </Wrapper>
+  )
 }
 
 function WidgetPageRedirect() {

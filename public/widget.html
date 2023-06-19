@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Widget Example</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    #cowswap-widget{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🐮 Example of CoW Swap Widget</h1>
+  <div id="cowswap-widget"></div>
+
+  <script>
+    // TODO: Npm package :) 
+    function renderCowSwapWidget(props) {
+      const isLocal = document.location.host.startsWith('localhost:')
+
+      const { id, width, height } = props
+      const widgetWrapper = document.getElementById(id);
+      const iframe = document.createElement('iframe');  
+      iframe.width = width
+      iframe.height = height
+      iframe.src = isLocal ? '/#/widget' : 'https://cowswap.exchange/#/widget'
+      widgetWrapper.appendChild(iframe)
+    }
+
+    renderCowSwapWidget({
+      id: 'cowswap-widget',
+      width: 600,
+      height: 400,
+    })
+
+  </script>
+</body>
+</html>
