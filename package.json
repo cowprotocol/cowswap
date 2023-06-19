@@ -272,9 +272,9 @@
           "{projectRoot}/build"
         ]
       },
-      "integration-test": {
+      "optimize-bundle": {
         "outputs": [
-          "{projectRoot}/build"
+          "{projectRoot}/../node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json"
         ]
       },
       "contracts:add:export": {

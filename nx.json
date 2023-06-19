@@ -1,24 +1,26 @@
 {
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "production": ["!{projectRoot}/**/*.test.tsx"]
+  },
+  "targetDefaults": {
+    "build": {
+      "inputs": ["production", "^production"],
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/build"]
+    },
+    "test": {
+      "inputs": ["default", "^production", "{workspaceRoot}/package.json"]
+    }
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx-cloud",
       "options": {
         "cacheableOperations": [
-          "start",
           "build",
-          "test",
-          "start:ssl",
-          "start:service-worker",
-          "lint:fix",
-          "mock",
           "build:analyze",
           "ipfs:build",
-          "ipfs:publish",
-          "test:debug",
-          "integration-test",
-          "serve",
-          "serve:ci",
-          "cypress",
           "contracts:add:export",
           "contracts:compile:abi",
           "contracts:compile:abi-ethflow",
@@ -26,15 +28,10 @@
           "contracts:compile:v3",
           "contracts:compile",
           "optimize-bundle",
-          "patch-package",
           "i18n:extract",
           "i18n:compile",
           "i18n:pseudo",
-          "test:e2e",
-          "cosmos:clear",
-          "cosmos:run",
           "cosmos:export",
-          "widgets:build",
           "sitemap",
           "writeVersion"
         ],
