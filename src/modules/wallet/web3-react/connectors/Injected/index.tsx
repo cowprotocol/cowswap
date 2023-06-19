@@ -10,14 +10,14 @@ import {
 
 import { isRejectRequestProviderError } from 'legacy/utils/misc'
 
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
+
+import { IFrameEthereumProvider } from './IFrameEthereumProvider'
+
 type InjectedWalletProvider = Provider & {
-  providers?: Omit<InjectedWalletProvider, 'providers'>[]
   isConnected: () => boolean
   request<T>(args: RequestArguments): Promise<T>
-  chainId: string
-  selectedAddress: string
   enable?: () => void
-  isTrust?: boolean
   on: (event: string, args: unknown) => unknown
 }
 
@@ -118,9 +118,7 @@ export class InjectedWallet extends Connector {
       // Fix to call this only once
       this.eagerConnection = true
 
-      if (this.provider.isTrust) {
-        await this.provider.enable?.()
-      }
+      await this.provider.enable?.()
 
       // Wallets may resolve eth_chainId and hang on eth_accounts pending user interaction, which may include changing
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
@@ -178,7 +176,13 @@ export class InjectedWallet extends Connector {
   // Mod: Added custom method
   // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
   private detectProvider(): InjectedWalletProvider | void {
-    this.provider = this.detectOnEthereum(window.ethereum) || this.detectOnProvider(window.ethereum?.providers) || null
+    if (isInjectedWidget()) {
+      this.provider = new IFrameEthereumProvider() as InjectedWalletProvider
+    } else {
+      this.provider =
+        this.detectOnEthereum(window.ethereum) || this.detectOnProvider(window.ethereum?.providers) || null
+    }
+
     return this.provider
   }
 

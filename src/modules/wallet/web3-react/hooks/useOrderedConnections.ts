@@ -5,12 +5,19 @@ import { useAppSelector } from 'legacy/state/hooks'
 import { BACKFILLABLE_WALLETS, ConnectionType } from 'modules/wallet'
 import { getWeb3ReactConnection } from 'modules/wallet/web3-react/connection'
 
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
+
 const SELECTABLE_WALLETS = [...BACKFILLABLE_WALLETS, ConnectionType.FORTMATIC]
 
+// TODO: The logic looks very similar with useEagerlyConnect
 export function useOrderedConnections() {
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
   return useMemo(() => {
     const orderedConnectionTypes: ConnectionType[] = []
+
+    if (isInjectedWidget()) {
+      orderedConnectionTypes.push(ConnectionType.INJECTED_WIDGET)
+    }
 
     // Always attempt to use to Gnosis Safe first, as we can't know if we're in a SafeContext.
     orderedConnectionTypes.push(ConnectionType.GNOSIS_SAFE)
