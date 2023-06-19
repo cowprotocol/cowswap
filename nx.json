@@ -46,5 +46,15 @@
   },
   "affected": {
     "defaultBase": "develop"
+  },
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "babel": true
+      },
+      "library": {
+        "unitTestRunner": "jest"
+      }
+    }
   }
 }

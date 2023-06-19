@@ -77,7 +77,7 @@ This will start a server on the `http://localhost:5000/`
 yarn run cosmos
 ```
 
-## Build UI Library
+## Build/test UI Library
 
 CoW Swap has a library of reusable components.
 
