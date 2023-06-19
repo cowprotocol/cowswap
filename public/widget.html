@@ -23,10 +23,8 @@
     const COWSWAP_DOMAIN = 'https://swap.cowswap.fi'
     const WIDGET_PATH = '/#/widget'
 
-    function getiFrameUrl() {
-      const isLocal = document.location.host.startsWith('localhost:')      
-      const isPR = document.location.host.endsWith('vercel.app')
-
+    function getiFrameUrl(props) {
+      const { isLocal, isPR } = props
       if (isLocal || isPR) {
         return WIDGET_PATH
       }
@@ -37,12 +35,14 @@
 
     // TODO: Npm package :) 
     function renderCowSwapWidget(props) {
+      const isLocal = document.location.host.startsWith('localhost:')      
+      const isPR = document.location.host.endsWith('vercel.app')
       const { id, width, height } = props
       const widgetWrapper = document.getElementById(id);
       const iframe = document.createElement('iframe');  
       iframe.width = width
       iframe.height = height
-      iframe.src = getiFrameUrl()
+      iframe.src = getiFrameUrl({ isLocal, isPR })
       widgetWrapper.appendChild(iframe)
 
       // Add button to widgetWrapper
