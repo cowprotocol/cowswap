@@ -19,6 +19,8 @@
   <div id="cowswap-widget"></div>
 
   <script>
+    const POST_MESSAGE_TYPE = 'cowswap-widget'
+    const COWSWAP_DOMAIN = 'https://swap.cowswap.fi'
     // TODO: Npm package :) 
     function renderCowSwapWidget(props) {
       const isLocal = document.location.host.startsWith('localhost:')
@@ -28,14 +30,41 @@
       const iframe = document.createElement('iframe');  
       iframe.width = width
       iframe.height = height
-      iframe.src = isLocal ? '/#/widget' : 'https://cowswap.exchange/#/widget'
+      iframe.src = (isLocal ? '' : COWSWAP_DOMAIN) + '/#/widget'
       widgetWrapper.appendChild(iframe)
+
+      // Add button to widgetWrapper
+      const button = document.createElement('button')
+      button.innerText = '🐮 Send message!'
+      button.onclick = () => {
+        iframe.contentWindow.postMessage({
+          type: 'cowswap-widget',
+          method: 'time'
+        }, '*')
+      }
+      widgetWrapper.appendChild(button)
+
+
+      window.addEventListener(
+        "message",
+        (event) => {
+          const sourceIsIframe = event.source === iframe.contentWindow
+          const trustedOrigin = isLocal ? true : event.origin === COWSWAP_DOMAIN
+
+          if (!sourceIsIframe || !trustedOrigin || event.type !== 'message' || !event.data || event.data.type !== POST_MESSAGE_TYPE) {
+            return
+          }
+
+          console.log('WIDGET:HOST Receive message', event.data)
+        },
+        false
+      );
     }
 
     renderCowSwapWidget({
       id: 'cowswap-widget',
       width: 600,
-      height: 400,
+      height: 600,
     })
 
   </script>

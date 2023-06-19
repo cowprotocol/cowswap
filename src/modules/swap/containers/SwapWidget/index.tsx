@@ -44,7 +44,7 @@ import useCurrencyBalance from 'modules/tokens/hooks/useCurrencyBalance'
 import { TradeWidget, TradeWidgetContainer, useSetupTradeState } from 'modules/trade'
 import { useWrappedToken } from 'modules/trade/hooks/useWrappedToken'
 import { useIsSafeViaWc, useIsSafeWallet, useWalletDetails, useWalletInfo } from 'modules/wallet'
-import { useIsStandaloneWidget } from 'modules/widget'
+import { isStandaloneWidget } from 'modules/widget'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useShouldZeroApprove } from 'common/hooks/useShouldZeroApprove'
@@ -85,7 +85,7 @@ export function SwapWidget() {
   const showRecipientControls = useShowRecipientControls(recipient)
   const isEoaEthFlow = useIsEoaEthFlow()
   const shouldZeroApprove = useShouldZeroApprove(slippageAdjustedSellAmount)
-  const isStandaloneWidget = useIsStandaloneWidget()
+  const isStandaloneWidgetMode = isStandaloneWidget()
 
   const isWrapUnwrapMode = wrapType !== WrapType.NOT_APPLICABLE
   const priceImpactParams = usePriceImpact({
@@ -263,7 +263,7 @@ export function SwapWidget() {
           params={params}
           inputCurrencyInfo={inputCurrencyInfo}
           outputCurrencyInfo={outputCurrencyInfo}
-          isStandaloneWidget={isStandaloneWidget}
+          isStandaloneWidget={isStandaloneWidgetMode}
         />
         <NetworkAlert />
       </TradeWidgetContainer>

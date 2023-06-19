@@ -1,1 +1,1 @@
-export { useIsStandaloneWidget } from './hooks'
+export { isStandaloneWidget } from './utils'

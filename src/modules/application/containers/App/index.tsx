@@ -9,7 +9,7 @@ import ApeModeQueryParamReader from 'legacy/hooks/useApeModeQueryParamReader'
 import DarkModeQueryParamReader from 'legacy/theme'
 
 import { useInitializeUtm } from 'modules/utm'
-import { useIsStandaloneWidget } from 'modules/widget'
+import { isStandaloneWidget } from 'modules/widget'
 
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
@@ -20,7 +20,7 @@ export function App() {
   initializeAnalytics()
   useAnalyticsReporter()
   useInitializeUtm()
-  const isTandaloneWidget = useIsStandaloneWidget()
+  const isTandaloneWidgetMode = isStandaloneWidget()
 
   return (
     <ErrorBoundary>
@@ -28,7 +28,7 @@ export function App() {
       <DarkModeQueryParamReader />
       <ApeModeQueryParamReader />
       <styledEl.AppWrapper>
-        {!isTandaloneWidget && (
+        {!isTandaloneWidgetMode && (
           <>
             <URLWarning />
             <styledEl.HeaderWrapper>
@@ -41,7 +41,7 @@ export function App() {
           <RoutesApp />
           <styledEl.Marginer />
         </styledEl.BodyWrapper>
-        {!isTandaloneWidget && (
+        {!isTandaloneWidgetMode && (
           <>
             <styledEl.FooterWrapper>
               <Footer />
