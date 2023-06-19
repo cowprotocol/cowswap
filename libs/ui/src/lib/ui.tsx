@@ -1,17 +1,17 @@
-/* eslint-disable-next-line */
-export interface UiProps {}
+import { PropsWithChildren } from 'react'
+import { return5 } from '@cowprotocol/ui-utils'
 
-export function Ui(props: UiProps) {
+/* eslint-disable-next-line */
+export interface UiProps extends PropsWithChildren {}
+
+export function PinkTitle(props: UiProps) {
   return (
     <div>
-      <style jsx>{`
-        div {
-          color: pink;
-        }
-      `}</style>
-      <h1>Welcome to Ui!</h1>
+      <h1 style={{ color: 'pink' }}>
+        {props.children} (return5 = {return5()})
+      </h1>
     </div>
   )
 }
 
-export default Ui
+export default PinkTitle

@@ -1,3 +1,5 @@
+import { PinkTitle } from '@cowprotocol/ui'
+
 import { Link } from 'react-router-dom'
 
 import { PageName } from 'legacy/components/AmplitudeAnalytics/constants'
@@ -21,6 +23,7 @@ export default function TokenFaq() {
 
   return (
     <Trace page={PageName.FAQ_TOKEN_PAGE} shouldLogImpression>
+      <PinkTitle />
       <Wrapper ref={faqRef}>
         <PageTitle title="Token FAQ" />
         <FaqMenu />
