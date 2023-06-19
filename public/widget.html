@@ -1,84 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <title>Widget Example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      #cowswap-widget {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
 
-<head>
-  <title>Widget Example</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    #cowswap-widget{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  </style>
-</head>
+  <body>
+    <h1>🐮 Example of CoW Swap Widget</h1>
+    <div id="cowswap-widget"></div>
 
-<body>
-  <h1>🐮 Example of CoW Swap Widget</h1>
-  <div id="cowswap-widget"></div>
+    <script>
+      const POST_MESSAGE_TYPE = 'cowswap-widget'
+      const COWSWAP_DOMAIN = 'https://swap.cowswap.fi'
+      const WIDGET_PATH = '/#/widget'
 
-  <script>
-    const POST_MESSAGE_TYPE = 'cowswap-widget'
-    const COWSWAP_DOMAIN = 'https://swap.cowswap.fi'
-    const WIDGET_PATH = '/#/widget'
+      function getiFrameUrl(props) {
+        const { isLocal, isPR } = props
+        if (isLocal || isPR) {
+          return WIDGET_PATH
+        }
 
-    function getiFrameUrl(props) {
-      const { isLocal, isPR } = props
-      if (isLocal || isPR) {
-        return WIDGET_PATH
+        return COWSWAP_DOMAIN + WIDGET_PATH
       }
 
-      
-      return COWSWAP_DOMAIN + WIDGET_PATH
-    }
+      // TODO: Npm package :)
+      function renderCowSwapWidget(props) {
+        const isLocal = document.location.host.startsWith('localhost:')
+        const isPR = document.location.host.endsWith('vercel.app')
+        const { id, width, height } = props
+        const widgetWrapper = document.getElementById(id)
+        const iframe = document.createElement('iframe')
+        iframe.width = width
+        iframe.height = height
+        iframe.src = getiFrameUrl({ isLocal, isPR })
+        widgetWrapper.appendChild(iframe)
 
-    // TODO: Npm package :) 
-    function renderCowSwapWidget(props) {
-      const isLocal = document.location.host.startsWith('localhost:')      
-      const isPR = document.location.host.endsWith('vercel.app')
-      const { id, width, height } = props
-      const widgetWrapper = document.getElementById(id);
-      const iframe = document.createElement('iframe');  
-      iframe.width = width
-      iframe.height = height
-      iframe.src = getiFrameUrl({ isLocal, isPR })
-      widgetWrapper.appendChild(iframe)
+        // Add button to widgetWrapper
+        const button = document.createElement('button')
+        button.innerText = '🐮 Send message!'
+        button.onclick = () => {
+          iframe.contentWindow.postMessage(
+            {
+              type: 'cowswap-widget',
+              method: 'time',
+            },
+            '*'
+          )
+        }
+        widgetWrapper.appendChild(button)
 
-      // Add button to widgetWrapper
-      const button = document.createElement('button')
-      button.innerText = '🐮 Send message!'
-      button.onclick = () => {
-        iframe.contentWindow.postMessage({
-          type: 'cowswap-widget',
-          method: 'time'
-        }, '*')
+        window.addEventListener(
+          'message',
+          (event) => {
+            const sourceIsIframe = event.source === iframe.contentWindow
+            const trustedOrigin = isLocal ? true : event.origin === COWSWAP_DOMAIN
+
+            if (
+              !sourceIsIframe ||
+              !trustedOrigin ||
+              event.type !== 'message' ||
+              !event.data ||
+              event.data.type !== POST_MESSAGE_TYPE
+            ) {
+              return
+            }
+
+            console.log('WIDGET:HOST Receive message', event.data)
+          },
+          false
+        )
       }
-      widgetWrapper.appendChild(button)
 
-
-      window.addEventListener(
-        "message",
-        (event) => {
-          const sourceIsIframe = event.source === iframe.contentWindow
-          const trustedOrigin = isLocal ? true : event.origin === COWSWAP_DOMAIN
-
-          if (!sourceIsIframe || !trustedOrigin || event.type !== 'message' || !event.data || event.data.type !== POST_MESSAGE_TYPE) {
-            return
-          }
-
-          console.log('WIDGET:HOST Receive message', event.data)
-        },
-        false
-      );
-    }
-
-    renderCowSwapWidget({
-      id: 'cowswap-widget',
-      width: 600,
-      height: 600,
-    })
-
-  </script>
-</body>
+      renderCowSwapWidget({
+        id: 'cowswap-widget',
+        width: 600,
+        height: 600,
+      })
+    </script>
+  </body>
 </html>
