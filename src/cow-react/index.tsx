@@ -15,7 +15,7 @@ import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
 
 import AppziButton from 'legacy/components/AppziButton'
 import Blocklist from 'legacy/components/Blocklist'
-import Popups from 'legacy/components/Popups'
+import { Popups } from 'legacy/components/Popups'
 import Web3Provider from 'legacy/components/Web3Provider'
 import store from 'legacy/state'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from 'legacy/theme'
