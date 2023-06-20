@@ -141,7 +141,10 @@ export class InjectedWallet extends Connector {
     const provider = this.detectProvider()
 
     if (provider) {
-      provider.on('connect', ({ chainId }: ProviderConnectInfo): void => {
+      provider.on('connect', (data: ProviderConnectInfo): void => {
+        if (!data) return
+
+        const { chainId } = data
         this.actions.update({ chainId: parseChainId(chainId) })
       })
 
