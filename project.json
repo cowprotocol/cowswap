@@ -8,6 +8,12 @@
         "command": "craco test src --env=jsdom --testPathIgnorePatterns src/libs --no-watch --watchAll=false"
       }
     },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "yarn i18n:compile && craco build && yarn writeVersion"
+      }
+    },
     "local-registry": {
       "executor": "@nx/js:verdaccio",
       "options": {
