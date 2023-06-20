@@ -7,9 +7,10 @@
   "license": "ISC",
   "scripts": {
     "start": "nx exec -- craco start",
-    "build": "npx nx run-many -t build",
-    "test": "npx nx run-many -t test",
-    "e2e": "npx nx run-many -t e2e",
+    "build": "nx run-many -t build",
+    "build:cowswap": "nx build cowswap",
+    "test": "nx run-many -t test",
+    "e2e": "nx run-many -t e2e",
     "start:ssl": "nx exec -- HTTPS=true yarn start",
     "start:service-worker": "nx exec -- yarn _start:service-worker ",
     "lint:fix": "nx exec -- yarn run eslint --fix ./",
