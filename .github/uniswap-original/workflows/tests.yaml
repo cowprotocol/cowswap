@@ -36,7 +36,7 @@ jobs:
         env:
           CI: false
           REACT_APP_NETWORK_URL: 'https://mainnet.infura.io/v3/586e7e6b7c7e437aa41f5da496a749f5'
-      - run: yarn integration-test
+      - run: yarn e2e
 
   unit-tests:
     name: Unit tests
