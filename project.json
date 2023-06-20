@@ -14,6 +14,13 @@
         "command": "yarn i18n:compile && craco build && yarn writeVersion"
       }
     },
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'"
+      },
+      "dependsOn": ["^build"]
+    },
     "local-registry": {
       "executor": "@nx/js:verdaccio",
       "options": {
