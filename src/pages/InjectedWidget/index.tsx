@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { SwapWidget } from 'modules/swap/containers/SwapWidget'
+import { InjectedWidget } from 'modules/injectedWidget'
 
-export function InjectedWidget() {
-  return <SwapWidget />
+export function InjectedWidgetPage() {
+  return <InjectedWidget />
 }

@@ -11,7 +11,7 @@ import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
 import { Routes as RoutesEnum } from 'constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
-import { InjectedWidget } from 'pages/InjectedWidget'
+import { InjectedWidgetPage } from 'pages/InjectedWidget'
 import { SwapPage } from 'pages/Swap'
 
 // Async routes
@@ -82,7 +82,7 @@ export function RoutesApp() {
 
         {/*Swap*/}
         <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
-        <Route path={RoutesEnum.WIDGET} element={<InjectedWidget />} />
+        <Route path={RoutesEnum.WIDGET} element={<InjectedWidgetPage />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
