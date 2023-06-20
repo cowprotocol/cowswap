@@ -21,6 +21,7 @@ import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from 'modules/swap/sta
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
 import { WalletUpdater } from 'modules/wallet'
 
+import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { MulticallUpdater } from 'lib/state/multicall'
 
 export function Updaters() {
@@ -48,6 +49,7 @@ export function Updaters() {
       <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
       <SpotPricesUpdater />
+      <ThemeFromUrlUpdater />
     </>
   )
 }
