@@ -24,6 +24,7 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo, Web3Status } from 'modules/wallet'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
+import { isInjectedWidget } from 'common/utils/isInjectedWidget'
 import { Routes } from 'constants/routes'
 
 import MobileMenuIcon from './MobileMenuIcon'
@@ -49,6 +50,7 @@ const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
 export default function Header() {
   const { account, chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
+  const isInjectedWidgetMode = isInjectedWidget()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
@@ -129,7 +131,9 @@ export default function Header() {
               </LogoImage>
             </UniIcon>
           </Title>
-          <MenuTree items={menuItems} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
+          {!isInjectedWidgetMode && (
+            <MenuTree items={menuItems} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
+          )}
         </HeaderRow>
 
         <HeaderControls>
@@ -154,7 +158,9 @@ export default function Header() {
           </HeaderElement>
         </HeaderControls>
 
-        {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
+        {isUpToLarge && !isInjectedWidgetMode && (
+          <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />
+        )}
         {isOrdersPanelOpen && <OrdersPanel handleCloseOrdersPanel={handleCloseOrdersPanel} />}
       </HeaderModWrapper>
     </Wrapper>

@@ -32,7 +32,6 @@ export function useEagerlyConnect() {
   useEffect(() => {
     if (isInjectedWidget()) {
       connect(injectedWidgetConnection.connector)
-      return
     }
 
     connect(gnosisSafeConnection.connector)

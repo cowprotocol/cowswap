@@ -21,28 +21,25 @@ export function App() {
   useAnalyticsReporter()
   useInitializeUtm()
 
-  const isTandaloneWidgetMode = isInjectedWidget()
+  const isInjectedWidgetMode = isInjectedWidget()
 
   return (
     <ErrorBoundary>
       <RedirectAnySwapAffectedUsers />
       <DarkModeQueryParamReader />
       <ApeModeQueryParamReader />
+
       <styledEl.AppWrapper>
-        {!isTandaloneWidgetMode && (
-          <>
-            <URLWarning />
-            <styledEl.HeaderWrapper>
-              <Header />
-            </styledEl.HeaderWrapper>
-          </>
-        )}
+        <URLWarning />
+        <styledEl.HeaderWrapper>
+          <Header />
+        </styledEl.HeaderWrapper>
         <styledEl.BodyWrapper>
           <TopLevelModals />
           <RoutesApp />
           <styledEl.Marginer />
         </styledEl.BodyWrapper>
-        {!isTandaloneWidgetMode && (
+        {!isInjectedWidgetMode && (
           <>
             <styledEl.FooterWrapper>
               <Footer />
