@@ -9,7 +9,7 @@ import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TwapFormWidget } from 'modules/twap'
 
 import { useIsAdvancedOrdersEnabled } from 'common/hooks/useIsAdvancedOrdersEnabled'
-import { Routes as RoutesEnum } from 'constants/routes'
+import { Routes as RoutesEnum } from 'common/constants/routes'
 
 export default function AdvancedOrdersPage() {
   const isAdvancedOrdersEnabled = useIsAdvancedOrdersEnabled()

@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react'
 
-import Ui from './ui'
+import { PinkTitle } from './ui'
 
 describe('Ui', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Ui />)
+    const { baseElement } = render(<PinkTitle />)
     expect(baseElement).toBeTruthy()
   })
 })

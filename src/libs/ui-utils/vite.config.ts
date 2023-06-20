@@ -1,12 +1,11 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import viteTsConfigPaths from 'vite-tsconfig-paths'
-import dts from 'vite-plugin-dts'
 import { joinPathFragments } from '@nx/devkit'
+import { defineConfig } from 'vite'
+import dts from 'vite-plugin-dts'
+import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/ui',
+  cacheDir: '../../../node_modules/.vite/ui',
 
   plugins: [
     dts({
@@ -14,9 +13,9 @@ export default defineConfig({
       tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
       skipDiagnostics: true,
     }),
-    react(),
+
     viteTsConfigPaths({
-      root: '../../',
+      root: '../../../',
     }),
   ],
 
@@ -24,7 +23,7 @@ export default defineConfig({
   // worker: {
   //  plugins: [
   //    viteTsConfigPaths({
-  //      root: '../../',
+  //      root: '../../../',
   //    }),
   //  ],
   // },
@@ -43,7 +42,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: [],
     },
   },
 })

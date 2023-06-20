@@ -9,7 +9,7 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 import { useWalletInfo } from 'modules/wallet'
 
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 export function SwapPage() {
   const params = useParams()

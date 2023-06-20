@@ -14,7 +14,7 @@ import { ConnectWalletOptions, TryActivation } from 'modules/wallet/web3-react/c
 
 import { GpModal } from 'common/pure/Modal'
 import { HeaderRow, HoverText, CloseIcon, ContentWrapper } from 'common/pure/Modal'
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 import { CloseColor, OptionGrid, TermsWrapper, UpperSection, Wrapper } from './styled'
 

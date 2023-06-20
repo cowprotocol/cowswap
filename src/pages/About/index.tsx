@@ -13,7 +13,7 @@ import { ExternalLink as ExternalLinkTheme } from 'legacy/theme'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
 
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 const ExternalLink = styled(ExternalLinkTheme)``
 

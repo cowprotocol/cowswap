@@ -24,7 +24,7 @@ import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo, Web3Status } from 'modules/wallet'
 
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {

@@ -8,7 +8,7 @@ import { QuoteInformationObject } from 'legacy/state/price/reducer'
 import { calculateFallbackPriceImpact } from 'legacy/utils/price'
 
 import { LegacyFeeQuoteParams } from 'api/gnosisProtocol/legacy/types'
-import { PRICE_QUOTE_VALID_TO_TIME } from 'constants/quote'
+import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
 
 import { FallbackPriceImpactParams, PriceImpactTrade } from './types'
 import useExactInSwap, { useCalculateQuote } from './useQuoteAndSwap'

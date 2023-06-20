@@ -3,8 +3,8 @@ import { Trans } from '@lingui/macro'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
+import { Routes } from 'common/constants/routes'
 import { FeatureGuard } from 'common/containers/FeatureGuard'
-import { Routes } from 'constants/routes'
 
 import * as styledEl from './styled'
 

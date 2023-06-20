@@ -16,7 +16,7 @@ import { StyledInternalLink } from 'legacy/theme'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Page, Content } from 'modules/application/pure/Page'
 
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 import { useToC } from './hooks'
 import { FaqMenu } from './Menu'

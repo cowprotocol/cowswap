@@ -29,7 +29,7 @@ import {
   SmallVolumeWarningBanner,
 } from 'common/pure/InlineBanner/banners'
 import { ZeroApprovalWarning } from 'common/pure/ZeroApprovalWarning'
-import { HIGH_FEE_WARNING_PERCENTAGE } from 'constants/common'
+import { HIGH_FEE_WARNING_PERCENTAGE } from 'common/constants/common'
 import { isFractionFalsy } from 'utils/isFractionFalsy'
 import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calculatePercentageInRelationToReference'
 

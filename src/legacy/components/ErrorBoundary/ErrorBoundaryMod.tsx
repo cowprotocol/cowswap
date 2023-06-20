@@ -15,7 +15,7 @@ import { MEDIA_WIDTHS } from 'legacy/theme'
 
 import { Page } from 'modules/application/pure/Page'
 
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 /* const FallbackWrapper = styled.div`
   display: flex;

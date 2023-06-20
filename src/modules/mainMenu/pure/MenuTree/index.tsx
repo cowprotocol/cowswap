@@ -19,7 +19,7 @@ import {
 } from 'modules/mainMenu/types'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 // Assets
 

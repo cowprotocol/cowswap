@@ -18,7 +18,7 @@ import { ActivityDerivedState } from 'modules/account/containers/Transaction'
 import { EthFlowStepper } from 'modules/swap/containers/EthFlowStepper'
 import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
 
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 import * as styledEl from './styled'
 
