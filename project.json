@@ -5,7 +5,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "craco test --testPathIgnorePatterns src/libs"
+        "command": "craco test src --env=jsdom --testPathIgnorePatterns src/libs --no-watch --watchAll=false"
       }
     },
     "local-registry": {
@@ -14,6 +14,20 @@
         "port": 4873,
         "config": ".verdaccio/config.yml",
         "storage": "tmp/local-registry/storage"
+      }
+    },
+    "test:nx": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectName}"],
+      "options": {
+        "jestConfig": "jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
   }
