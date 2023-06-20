@@ -11,7 +11,7 @@ import IMAGE_TERMS_AND_CONDITIONS from 'legacy/assets/cow-swap/terms-and-conditi
 import IMAGE_TWITTER from 'legacy/assets/cow-swap/twitter.svg'
 import { CONTRACTS_CODE_LINK, DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 import { BasicMenuLink, InternalLink, MainMenuItemId, MenuItemKind, MenuTreeItem } from '../types'
 

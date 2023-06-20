@@ -23,7 +23,7 @@ import { useWalletInfo } from 'modules/wallet'
 import { useAreThereTokensWithSameSymbol } from 'common/hooks/useAreThereTokensWithSameSymbol'
 import { TokenAmount } from 'common/pure/TokenAmount'
 import { TokenSymbol } from 'common/pure/TokenSymbol'
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'

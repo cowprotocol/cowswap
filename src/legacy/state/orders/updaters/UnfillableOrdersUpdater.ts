@@ -30,7 +30,7 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 import { useWalletInfo } from 'modules/wallet'
 
-import { PRICE_QUOTE_VALID_TO_TIME } from 'constants/quote'
+import { PRICE_QUOTE_VALID_TO_TIME } from 'common/constants/quote'
 
 /**
  * Thin wrapper around `getBestPrice` that builds the params and returns null on failure

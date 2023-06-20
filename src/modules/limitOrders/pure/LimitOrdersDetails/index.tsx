@@ -20,8 +20,8 @@ import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculat
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
-import { ordersTableFeatures } from 'constants/featureFlags'
-import { DEFAULT_DATE_FORMAT } from 'constants/intl'
+import { ordersTableFeatures } from 'common/constants/featureFlags'
+import { DEFAULT_DATE_FORMAT } from 'common/constants/intl'
 import { formatInputAmount } from 'utils/amountFormat'
 
 import * as styledEl from './styled'

@@ -14,7 +14,7 @@ import { LinkStyledButton } from 'legacy/theme'
 
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 export type RequestCancellationModalProps = {
   summary?: string

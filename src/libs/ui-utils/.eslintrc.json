@@ -1,5 +1,7 @@
 {
-  "extends": ["../../.eslintrc.json"],
+  // TODO: Once we get rid of craco, cra
+  // "extends": ["plugin:@nx/react"],
+  "extends": ["../../../.eslintrc.json"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {

@@ -26,4 +26,5 @@ export enum Routes {
   DOCS = '/docs',
   STATS = '/stats',
   TWITTER = '/twitter',
+  KITCHEN_SINK = '/kitchen-sink',
 }

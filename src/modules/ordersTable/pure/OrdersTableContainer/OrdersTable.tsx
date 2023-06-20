@@ -29,7 +29,7 @@ import { OrderExecutionStatusList, RateTooltipHeader } from 'common/pure/OrderEx
 import { InvertRateControl } from 'common/pure/RateInfo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
-import { ordersTableFeatures } from 'constants/featureFlags'
+import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ordersSorter } from 'utils/orderUtils/ordersSorter'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 

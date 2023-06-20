@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { PathMatch } from '@remix-run/router'
 import { useMatch } from 'react-router-dom'
 
-import { Routes } from 'constants/routes'
+import { Routes } from 'common/constants/routes'
 
 export enum TradeType {
   SWAP,
