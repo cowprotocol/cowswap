@@ -8,7 +8,7 @@
   "scripts": {
     "start": "nx exec -- craco start",
     "build": "nx exec -- yarn _build ",
-    "test": "nx exec -- craco test --env=jsdom",
+    "test": "npx nx run-many -t test",
     "ui:build": "nx build ui",
     "ui:test": "nx test ui",
     "start:ssl": "nx exec -- HTTPS=true yarn start",
