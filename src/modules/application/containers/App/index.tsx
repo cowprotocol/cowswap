@@ -39,12 +39,12 @@ export function App() {
           <RoutesApp />
           <styledEl.Marginer />
         </styledEl.BodyWrapper>
-        {!isInjectedWidgetMode && (
-          <>
-            <styledEl.FooterWrapper>
-              <Footer />
-            </styledEl.FooterWrapper>
-          </>
+        {isInjectedWidgetMode ? (
+          <styledEl.MarginerBottom></styledEl.MarginerBottom>
+        ) : (
+          <styledEl.FooterWrapper>
+            <Footer />
+          </styledEl.FooterWrapper>
         )}
       </styledEl.AppWrapper>
     </ErrorBoundary>

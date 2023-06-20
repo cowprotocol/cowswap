@@ -24,6 +24,10 @@ export const Marginer = styled.div`
   margin-top: 5rem;
 `
 
+export const MarginerBottom = styled.div`
+  margin-bottom: 60px;
+`
+
 export const BodyWrapper = styled.div`
   display: flex;
   flex-direction: row;
