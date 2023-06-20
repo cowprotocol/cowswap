@@ -1,6 +1,5 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
