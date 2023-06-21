@@ -7,11 +7,12 @@
  * You might need to authenticate with NPM before running this script.
  */
 
-import { execSync } from 'child_process'
-import { readFileSync, writeFileSync } from 'fs'
+import devkit from '@nx/devkit'
 import chalk from 'chalk'
 
-import devkit from '@nx/devkit'
+import { execSync } from 'child_process'
+import { readFileSync, writeFileSync } from 'fs'
+import path from 'path'
 const { readCachedProjectGraph } = devkit
 
 function invariant(condition, message) {
@@ -23,7 +24,7 @@ function invariant(condition, message) {
 
 // Executing publish script: node path/to/publish.mjs {name} --version {version} --tag {tag}
 // Default "tag" to "next" so we won't publish the "latest" tag by accident.
-const [, , name, version, tag = 'next'] = process.argv
+const [, , name, version, tag] = process.argv
 
 // A simple SemVer validation to validate the version
 const validVersion = /^\d+\.\d+\.\d+(-\w+\.\d+)?/
@@ -43,6 +44,9 @@ invariant(
   `Could not find "build.options.outputPath" of project "${name}". Is project.json configured  correctly?`
 )
 
+const rootLib = path.dirname(project.data.sourceRoot)
+const copyReadmeCommand = `cp ${rootLib}/README.md ${outputPath}`
+console.log(chalk.bold.greenBright(copyReadmeCommand))
 process.chdir(outputPath)
 
 // Updating the version in "package.json" before publishing
@@ -55,4 +59,7 @@ try {
 }
 
 // Execute "npm publish" to publish
-execSync(`npm publish --access public --tag ${tag}`)
+const publishCommand = `npm publish --access public --tag ${tag === 'undefined' ? 'next' : tag}`
+console.log(chalk.bold.greenBright(publishCommand))
+execSync(publishCommand)
+console.log('Published successfully 🎉')
