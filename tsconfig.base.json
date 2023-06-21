@@ -25,7 +25,8 @@
     "types": ["react-spring", "jest"],
     "paths": {
       "@cowprotocol/ui": ["libs/ui/src/index.ts"],
-      "@cowprotocol/ui-utils": ["libs/ui-utils/src/index.ts"]
+      "@cowprotocol/ui-utils": ["libs/ui-utils/src/index.ts"],
+      "@cowprotocol/widget-lib": ["src/libs/widget-lib/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "cypress"]
