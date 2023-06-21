@@ -12,12 +12,6 @@
         "outputPath": "dist/libs/widget-lib"
       }
     },
-    "docs": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "cp src/libs/widget-lib/README.md dist/libs/widget-lib"
-      }
-    },
     "publish": {
       "command": "node tools/scripts/publish.mjs widget-lib {args.ver} {args.tag}",
       "dependsOn": ["build"]

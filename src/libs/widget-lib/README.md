@@ -52,10 +52,9 @@ nx test widget-lib
 
 # Build the library
 nx build widget-lib
-cp src/libs/widget-lib/README.md dist/libs/widget-lib # automate
 
 # Publish to NPM
-npm publish --access=public ./dist/libs/widget-lib
+nx publish widget-lib --ver 0.0.7 --tag latest
 ```
 
 ## Running unit tests
