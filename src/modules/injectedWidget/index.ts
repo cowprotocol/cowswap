@@ -1,1 +1,1 @@
-export * from './containers/InjectedWidget'
+export * from './updaters/InjectedWidgetUpdater'

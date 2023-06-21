@@ -8,10 +8,9 @@ import Loader from 'legacy/components/Loader'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
 
-import { Routes as RoutesEnum } from 'constants/routes'
+import { Routes as RoutesEnum, RoutesValues } from 'constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
-import { InjectedWidgetPage } from 'pages/InjectedWidget'
 import { SwapPage } from 'pages/Swap'
 
 // Async routes
@@ -44,7 +43,7 @@ function createRedirectExternal(url: string) {
   }
 }
 
-type LazyRouteProps = { route: RoutesEnum; element: ReactNode; key?: number }
+type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
 
 function LazyRoute({ route, element, key }: LazyRouteProps) {
   return <Route key={key} path={route} element={<Suspense fallback={Loading}>{element}</Suspense>} />
@@ -82,7 +81,6 @@ export function RoutesApp() {
 
         {/*Swap*/}
         <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
-        <Route path={RoutesEnum.WIDGET} element={<InjectedWidgetPage />} />
         <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
         {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}

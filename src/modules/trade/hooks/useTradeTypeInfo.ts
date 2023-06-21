@@ -3,8 +3,7 @@ import { useMemo } from 'react'
 import { PathMatch } from '@remix-run/router'
 import { useMatch } from 'react-router-dom'
 
-import { isInjectedWidget } from 'common/utils/isInjectedWidget'
-import { Routes } from 'constants/routes'
+import { Routes, RoutesValues, TRADE_WIDGET_PREFIX } from 'constants/routes'
 
 export enum TradeType {
   SWAP,
@@ -14,12 +13,12 @@ export enum TradeType {
 
 export interface TradeTypeInfo {
   tradeType: TradeType
-  route: Routes
+  route: RoutesValues
 }
 
 function useMatchTradeRoute(route: string): PathMatch<'chainId'> | null {
-  const withChainId = useMatch({ path: `/:chainId/${route}/`, end: false })
-  const withoutChainId = useMatch({ path: `/${route}/`, end: false })
+  const withChainId = useMatch({ path: `/:chainId${TRADE_WIDGET_PREFIX}/${route}/`, end: false })
+  const withoutChainId = useMatch({ path: `${TRADE_WIDGET_PREFIX}/${route}/`, end: false })
 
   return withChainId || withoutChainId
 }
@@ -30,7 +29,6 @@ export function useTradeTypeInfo(): TradeTypeInfo | null {
   const advancedOrdersMatch = useMatchTradeRoute('advanced-orders')
 
   return useMemo(() => {
-    if (isInjectedWidget()) return { tradeType: TradeType.SWAP, route: Routes.WIDGET }
     if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }
     if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDER }
     if (advancedOrdersMatch) return { tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS }
