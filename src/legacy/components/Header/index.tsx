@@ -15,6 +15,7 @@ import { supportedChainId } from 'legacy/utils/supportedChainId'
 import { addBodyClass, removeBodyClass } from 'legacy/utils/toggleBodyClass'
 
 import { OrdersPanel } from 'modules/account/containers/OrdersPanel'
+import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { MainMenuContext, useMenuItems } from 'modules/mainMenu'
 import { MenuTree } from 'modules/mainMenu/pure/MenuTree'
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
@@ -31,6 +32,7 @@ import MobileMenuIcon from './MobileMenuIcon'
 import {
   AccountElement,
   BalanceText,
+  CustomLogoImg,
   HeaderControls,
   HeaderElement,
   HeaderModWrapper,
@@ -51,6 +53,7 @@ export default function Header() {
   const { account, chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
   const isInjectedWidgetMode = isInjectedWidget()
+  const injectedWidgetParams = useInjectedWidgetParams()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
   const nativeToken = chainId && (CHAIN_CURRENCY_LABELS[chainId] || 'ETH')
@@ -74,7 +77,7 @@ export default function Header() {
   const menuItems = useMenuItems()
 
   const navigate = useNavigate()
-  const handleBalanceButtonClick = () => navigate('/account')
+
   const isUpToLarge = useMediaQuery(upToLarge)
   const isUpToMedium = useMediaQuery(upToMedium)
   const isUpToSmall = useMediaQuery(upToSmall)
@@ -124,28 +127,36 @@ export default function Header() {
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <HeaderModWrapper>
         <HeaderRow>
-          <Title href={Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
-            <UniIcon>
-              <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
-                <SVG src={cowSwapLogo(darkMode)} />
-              </LogoImage>
-            </UniIcon>
-          </Title>
+          {!injectedWidgetParams.hideLogo && (
+            <Title href={isInjectedWidgetMode ? undefined : Routes.HOME} isMobileMenuOpen={isMobileMenuOpen}>
+              <UniIcon>
+                <LogoImage isMobileMenuOpen={isMobileMenuOpen}>
+                  {injectedWidgetParams.logoUrl ? (
+                    <CustomLogoImg src={injectedWidgetParams.logoUrl} alt="Logo" />
+                  ) : (
+                    <SVG src={cowSwapLogo(darkMode)} />
+                  )}
+                </LogoImage>
+              </UniIcon>
+            </Title>
+          )}
           {!isInjectedWidgetMode && (
             <MenuTree items={menuItems} isMobileMenuOpen={isMobileMenuOpen} context={menuContext} />
           )}
         </HeaderRow>
 
         <HeaderControls>
-          <NetworkSelector />
+          {!injectedWidgetParams.hideNetworkSelector && <NetworkSelector />}
 
           <HeaderElement>
-            <CowBalanceButton
-              onClick={handleBalanceButtonClick}
-              account={account}
-              chainId={chainId}
-              isUpToSmall={isUpToSmall}
-            />
+            {!isInjectedWidgetMode && (
+              <CowBalanceButton
+                onClick={() => navigate('/account')}
+                account={account}
+                chainId={chainId}
+                isUpToSmall={isUpToSmall}
+              />
+            )}
 
             <AccountElement active={!!account} onClick={handleOpenOrdersPanel}>
               {account && userEthBalance && chainId && (
