@@ -3,12 +3,19 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "src/libs/widget-lib/src",
   "projectType": "library",
+
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/widget-lib"
+      }
+    },
+    "docs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cp src/libs/widget-lib/README.md dist/libs/widget-lib"
       }
     },
     "publish": {
