@@ -1,9 +1,3 @@
-declare global {
-  interface Window {
-    ethereum?: EthereumProvider
-  }
-}
-
 export interface JsonRpcRequest {
   id: number
   method: string
@@ -17,7 +11,7 @@ export interface EthereumProvider {
   enable(): Promise<void>
 }
 
-export type CowSwapWidgetEnv = 'local' | 'prod' | 'barn'
+export type CowSwapWidgetEnv = 'local' | 'prod'
 
 export type CowSwapTheme = 'dark' | 'light'
 
@@ -32,16 +26,27 @@ export interface TradeAssets {
 }
 
 export interface CowSwapWidgetUrlParams {
-  chainId?: number
-  env?: CowSwapWidgetEnv
+  chainId: number
+  tradeType: string
+  env: CowSwapWidgetEnv
   tradeAssets?: TradeAssets
   theme?: CowSwapTheme
 }
 
+export interface CowSwapWidgetAppParams {
+  logoUrl?: string
+  hideLogo?: boolean
+  hideNetworkSelector?: boolean
+}
+
+export interface CowSwapWidgetSettings {
+  urlParams: CowSwapWidgetUrlParams
+  appParams: CowSwapWidgetAppParams
+}
+
 export interface CowSwapWidgetParams {
+  width: number
+  height: number
   container: HTMLElement
-  width?: number
-  height?: number
-  urlParams?: CowSwapWidgetUrlParams
   provider?: EthereumProvider
 }
