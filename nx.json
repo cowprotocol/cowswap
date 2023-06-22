@@ -1,0 +1,45 @@
+{
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "production": ["!{projectRoot}/**/*.test.tsx"]
+  },
+  "targetDefaults": {
+    "build": {
+      "inputs": ["production", "^production"],
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/build"]
+    },
+    "test": {
+      "inputs": ["default", "^production", "{workspaceRoot}/package.json"]
+    }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx-cloud",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "build:analyze",
+          "ipfs:build",
+          "contracts:add:export",
+          "contracts:compile:abi",
+          "contracts:compile:abi-ethflow",
+          "contracts:compile:abi-uniswap",
+          "contracts:compile:v3",
+          "contracts:compile",
+          "optimize-bundle",
+          "i18n:extract",
+          "i18n:compile",
+          "i18n:pseudo",
+          "cosmos:export",
+          "sitemap",
+          "writeVersion"
+        ],
+        "accessToken": "MTEyNmY3NzgtMGUzMy00NGI1LTk4NzEtZTIzNzBiMjRjZGY3fHJlYWQtd3JpdGU="
+      }
+    }
+  },
+  "affected": {
+    "defaultBase": "develop"
+  }
+}
