@@ -23,8 +23,8 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useWalletInfo, Web3Status } from 'modules/wallet'
 
+import { Routes } from 'common/constants/routes'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
 
 import MobileMenuIcon from './MobileMenuIcon'
 import {

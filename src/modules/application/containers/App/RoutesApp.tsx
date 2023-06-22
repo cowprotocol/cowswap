@@ -8,7 +8,7 @@ import Loader from 'legacy/components/Loader'
 import { DISCORD_LINK, DOCS_LINK, DUNE_DASHBOARD_LINK, TWITTER_LINK } from 'legacy/constants'
 import { RedirectPathToSwapOnly } from 'legacy/pages/Swap/redirects'
 
-import { Routes as RoutesEnum } from 'constants/routes'
+import { Routes as RoutesEnum } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { SwapPage } from 'pages/Swap'
@@ -35,6 +35,8 @@ const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ 'pag
 // Account
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
+
+const KitchenSink = lazy(() => import(/* webpackChunkName: "kitchen_sink" */ 'pages/KitchenSink'))
 
 function createRedirectExternal(url: string) {
   return () => {
@@ -64,6 +66,7 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.PRIVACY_POLICY, element: <PrivacyPolicy /> },
   { route: RoutesEnum.COOKIE_POLICY, element: <CookiePolicy /> },
   { route: RoutesEnum.TERMS_CONDITIONS, element: <TermsAndConditions /> },
+  { route: RoutesEnum.KITCHEN_SINK, element: <KitchenSink /> },
 ]
 
 export function RoutesApp() {

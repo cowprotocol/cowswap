@@ -24,8 +24,8 @@ import { shortenAddress } from 'legacy/utils'
 import { useWalletInfo } from 'modules/wallet'
 import AddToMetamask from 'modules/wallet/web3-react/containers/AddToMetamask'
 
+import { Routes } from 'common/constants/routes'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
 import {
   ConfirmOrLoadingWrapper,
   ConfirmedIcon,

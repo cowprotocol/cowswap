@@ -1,7 +1,12 @@
 {
   "namedInputs": {
     "default": ["{projectRoot}/**/*"],
-    "production": ["!{projectRoot}/**/*.test.tsx"]
+    "production": [
+      "!{projectRoot}/**/*.test.tsx",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/jest.config.[jt]s"
+    ]
   },
   "targetDefaults": {
     "build": {
@@ -10,7 +15,7 @@
       "outputs": ["{projectRoot}/build"]
     },
     "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/package.json"]
+      "inputs": ["default", "^production", "{workspaceRoot}/package.json", "{workspaceRoot}/jest.preset.js"]
     }
   },
   "tasksRunnerOptions": {
@@ -41,5 +46,15 @@
   },
   "affected": {
     "defaultBase": "develop"
+  },
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "babel": true
+      },
+      "library": {
+        "unitTestRunner": "jest"
+      }
+    }
   }
 }

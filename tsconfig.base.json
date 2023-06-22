@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -21,7 +22,11 @@
     "isolatedModules": true,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["react-spring", "jest"]
+    "types": ["react-spring", "jest"],
+    "paths": {
+      "@cowprotocol/ui": ["libs/ui/src/index.ts"],
+      "@cowprotocol/ui-utils": ["libs/ui-utils/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "cypress"]
 }

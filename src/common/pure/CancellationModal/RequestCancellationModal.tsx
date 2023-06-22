@@ -12,9 +12,9 @@ import NotificationBanner from 'legacy/components/NotificationBanner'
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { LinkStyledButton } from 'legacy/theme'
 
+import { Routes } from 'common/constants/routes'
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
 import { TokenAmount } from 'common/pure/TokenAmount'
-import { Routes } from 'constants/routes'
 
 export type RequestCancellationModalProps = {
   summary?: string

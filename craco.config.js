@@ -60,6 +60,8 @@ module.exports = {
     plugins,
     alias: {
       'bn.js': path.resolve(__dirname, 'node_modules/bn.js/lib/bn.js'),
+      '@cowprotocol/ui': path.resolve(__dirname, 'src/libs/ui/src/index.ts'),
+      '@cowprotocol/ui-utils': path.resolve(__dirname, 'src/libs/ui-utils/src/index.ts'),
     },
     // https://webpack.js.org/configuration
     configure: (webpackConfig) => ({
