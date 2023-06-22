@@ -1,15 +1,15 @@
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './consts'
 import { JsonRpcManager } from './JsonRpcManager'
-import { CowSwapWidgetParams, CowSwapWidgetUrlParams } from './types'
-import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './utils'
+import { CowSwapWidgetParams, CowSwapWidgetSettings } from './types'
+import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 
-const COW_SWAP_WIDGET_KEY = '@cowprotocol/widget-lib'
+const COW_SWAP_WIDGET_URL_UPDATE_KEY = 'cowSwapWidgetUrlUpdate'
+const COW_SWAP_WIDGET_APP_UPDATE_KEY = 'cowSwapWidgetAppUpdate'
 
-type UpdateWidgetCallback = (params: CowSwapWidgetUrlParams) => void
+export type UpdateWidgetCallback = (params: CowSwapWidgetSettings) => void
 
-export function cowSwapWidget(params: CowSwapWidgetParams): UpdateWidgetCallback {
+export function cowSwapWidget(params: CowSwapWidgetParams, settings: CowSwapWidgetSettings): UpdateWidgetCallback {
   const { container, provider } = params
-  const iframe = createIframe(params)
+  const iframe = createIframe(params, settings)
 
   container.innerHTML = ''
   container.appendChild(iframe)
@@ -24,29 +24,37 @@ export function cowSwapWidget(params: CowSwapWidgetParams): UpdateWidgetCallback
     jsonRpcManager.onConnect(provider)
   }
 
-  return (params: CowSwapWidgetUrlParams) => updateWidget(params, contentWindow)
+  return (params: CowSwapWidgetSettings) => updateWidget(params, contentWindow)
 }
 
-function updateWidget(params: CowSwapWidgetUrlParams, contentWindow: Window) {
-  const pathname = buildWidgetPath(params)
-  const search = buildTradeAmountsQuery(params).toString()
+function updateWidget(params: CowSwapWidgetSettings, contentWindow: Window) {
+  const pathname = buildWidgetPath(params.urlParams)
+  const search = buildTradeAmountsQuery(params.urlParams).toString()
 
   contentWindow.postMessage(
     {
-      key: COW_SWAP_WIDGET_KEY,
+      key: COW_SWAP_WIDGET_URL_UPDATE_KEY,
       pathname,
       search,
     },
     '*'
   )
+
+  contentWindow.postMessage(
+    {
+      key: COW_SWAP_WIDGET_APP_UPDATE_KEY,
+      params: params.appParams,
+    },
+    '*'
+  )
 }
 
-function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
-  const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = params
+function createIframe(params: CowSwapWidgetParams, settings: CowSwapWidgetSettings): HTMLIFrameElement {
+  const { width, height } = params
 
   const iframe = document.createElement('iframe')
 
-  iframe.src = buildWidgetUrl(params.urlParams ?? {})
+  iframe.src = buildWidgetUrl(settings.urlParams)
   iframe.width = `${width}px`
   iframe.height = `${height}px`
   iframe.style.border = '0'
