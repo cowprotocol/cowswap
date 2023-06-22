@@ -4,45 +4,67 @@ import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
-export default defineConfig({
-  cacheDir: '../../../node_modules/.vite/widget-lib',
+export default defineConfig(({ command }) => {
+  if (command === 'serve') {
+    const entryPoint = './src/demo/index.html'
 
-  plugins: [
-    dts({
-      entryRoot: 'src',
-      tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
-      skipDiagnostics: true,
-    }),
+    return {
+      server: {
+        open: entryPoint,
+        fs: {
+          allow: ['..'],
+        },
+      },
+      build: {
+        rollupOptions: {
+          input: {
+            main: entryPoint,
+          },
+        },
+      },
+    }
+  }
 
-    viteTsConfigPaths({
-      root: '../../../',
-    }),
-  ],
+  return {
+    cacheDir: '../../../node_modules/.vite/widget-lib',
 
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [
-  //    viteTsConfigPaths({
-  //      root: '../../../',
-  //    }),
-  //  ],
-  // },
+    plugins: [
+      dts({
+        entryRoot: 'src',
+        tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
+        skipDiagnostics: true,
+      }),
 
-  // Configuration for building your library.
-  // See: https://vitejs.dev/guide/build.html#library-mode
-  build: {
-    lib: {
-      // Could also be a dictionary or array of multiple entry points.
-      entry: 'src/index.ts',
-      name: 'widget-lib',
-      fileName: 'index',
-      // Change this to the formats you want to support.
-      // Don't forgot to update your package.json as well.
-      formats: ['es', 'cjs'],
+      viteTsConfigPaths({
+        root: '../../../',
+      }),
+    ],
+
+    // Uncomment this if you are using workers.
+    // worker: {
+    //  plugins: [
+    //    viteTsConfigPaths({
+    //      root: '../../../',
+    //    }),
+    //  ],
+    // },
+
+    // Configuration for building your library.
+    // See: https://vitejs.dev/guide/build.html#library-mode
+    build: {
+      lib: {
+        // Could also be a dictionary or array of multiple entry points.
+        entry: 'src/index.ts',
+        name: 'widget-lib',
+        fileName: 'index',
+        // Change this to the formats you want to support.
+        // Don't forgot to update your package.json as well.
+        formats: ['es', 'cjs'],
+      },
+      rollupOptions: {
+        // External packages that should not be bundled into your library.
+        external: [],
+      },
     },
-    rollupOptions: {
-      // External packages that should not be bundled into your library.
-      external: [],
-    },
-  },
+  }
 })

@@ -12,6 +12,15 @@
         "outputPath": "dist/libs/widget-lib"
       }
     },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "widget-lib:build",
+        "port": 3012
+      },
+      "configurations": {}
+    },
     "publish": {
       "command": "node tools/scripts/publish.mjs widget-lib {args.ver} {args.tag}",
       "dependsOn": ["build"]

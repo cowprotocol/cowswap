@@ -1,11 +1,7 @@
-import { DemoPage } from './DemoPage'
 import { ProviderMode } from './ProviderMode'
 import { Settings } from './Settings'
 
 import { cowSwapWidget, CowSwapWidgetAppParams, CowSwapWidgetUrlParams, EthereumProvider } from '../index'
-
-const demoPage = DemoPage()
-document.body.appendChild(demoPage)
 
 const urlParams: CowSwapWidgetUrlParams = {
   env: 'local',
