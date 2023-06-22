@@ -17,7 +17,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/src/libs/widget-react"
+        "outputPath": "dist/libs/widget-react"
       },
       "configurations": {
         "development": {

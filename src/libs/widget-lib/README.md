@@ -1,4 +1,4 @@
-# CoW Swap widget-lib
+# CoW Swap Widget Library
 
 ## Use it
 
