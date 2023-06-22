@@ -3,7 +3,9 @@
 Integrate the power of `CowSwap` into your product!
 With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the look and much more!
 
-[![Demo](./demo-preview.png)](https://github.com/cowprotocol/cowswap/raw/npm-widget-1-docs/src/libs/widget-lib/docs/widget-demo.mp4)
+[![Demo](./demo-preview.png)](./widget-demo.mp4)
+
+> [See demo video](./widget-demo.mp4)
 
 
 ## Install
