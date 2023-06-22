@@ -164,7 +164,7 @@ export function theme(darkmode: boolean): DefaultTheme {
     // Overide Theme
     ...baseThemeVariables(darkmode, colorsTheme),
     mediaWidth: mediaWidthTemplates,
-  }
+  } as any
 }
 
 export default function ThemeProvider({ children }: { children?: React.ReactNode }) {

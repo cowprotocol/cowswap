@@ -1,0 +1,30 @@
+diff --git a/node_modules/wagmi/dist/index.js b/node_modules/wagmi/dist/index.js
+index 14fa20b..35c3c11 100644
+--- a/node_modules/wagmi/dist/index.js
++++ b/node_modules/wagmi/dist/index.js
+@@ -315,7 +315,7 @@ function useProvider({
+     () => getProvider({ chainId }),
+     () => getProvider({ chainId }),
+     (x) => x,
+-    (a, b) => a.network.chainId === b.network.chainId
++    (a, b) => a.network?.chainId === b.network?.chainId
+   );
+ }
+ 
+@@ -328,14 +328,14 @@ function useWebSocketProvider({ chainId } = {}) {
+     () => getWebSocketProvider({ chainId }),
+     () => getWebSocketProvider({ chainId }),
+     (x) => x,
+-    (a, b) => a?.network.chainId === b?.network.chainId
++    (a, b) => a?.network?.chainId === b?.network?.chainId
+   );
+ }
+ 
+ // src/hooks/utils/useChainId.ts
+ function useChainId({ chainId } = {}) {
+   const provider = useProvider({ chainId });
+-  return provider.network.chainId;
++  return provider.network?.chainId || 1;
+ }
+ 
+ // src/hooks/utils/useForceUpdate.ts

@@ -1,9 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SupportedChainId as ChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWeb3React } from '@web3-react/core'
 
+import { NotificationFeed, NotificationFeedProvider, ThemeMode, WidgetMode } from '@wherever/react-notification-feed'
+import { transparentize } from 'polished'
+import { Bell } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components/macro'
 
 import { toggleDarkModeAnalytics } from 'legacy/components/analytics'
 import CowBalanceButton from 'legacy/components/CowBalanceButton'
@@ -43,13 +48,26 @@ import {
   Wrapper,
 } from './styled'
 
-// Assets
+const BellIcon = styled(Bell)`
+  color: ${({ theme }) => theme.text1};
+  background: ${({ theme }) => transparentize(0.9, theme.bg2)};
+  border-radius: 8px;
+  padding: 5px;
+  cursor: pointer;
+
+  :hover {
+    background: none;
+  }
+`
 
 const CHAIN_CURRENCY_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.GNOSIS_CHAIN]: 'xDAI',
 }
 
+const WHEREVER_PARTNER_KEY = '6139d518-a0cc-4833-a87e-3ed371d10365'
+
 export default function Header() {
+  const { connector } = useWeb3React()
   const { account, chainId: connectedChainId } = useWalletInfo()
   const chainId = supportedChainId(connectedChainId)
   const isInjectedWidgetMode = isInjectedWidget()
@@ -166,6 +184,18 @@ export default function Header() {
               )}
               <Web3Status />
             </AccountElement>
+            {account && connector.provider && chainId && (
+              <NotificationFeedProvider
+                mode={WidgetMode.SubscribeOnly}
+                theme={{ mode: darkMode ? ThemeMode.Dark : ThemeMode.Light }}
+                provider={connector.provider}
+                partnerKey={WHEREVER_PARTNER_KEY}
+              >
+                <NotificationFeed>
+                  <BellIcon size={36} />
+                </NotificationFeed>
+              </NotificationFeedProvider>
+            )}
           </HeaderElement>
         </HeaderControls>
 
