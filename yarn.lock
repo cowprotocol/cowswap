@@ -3118,6 +3118,13 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
+"@ethvault/iframe-provider@^0.1.10":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@ethvault/iframe-provider/-/iframe-provider-0.1.10.tgz#75f35d9bc651587d104ef86843c1d13fe4bc7968"
+  integrity sha512-TKz7B9/e8gkb2V88YwvAPu7Rp7yISNG+oML0zK8mDwSRZXlj1ubBHHG0b6sdpgDoAE6PnI4IhGdy2IEczCW7kA==
+  dependencies:
+    eventemitter3 "^4.0.0"
+
 "@fontsource/ibm-plex-mono@^4.5.1":
   version "4.5.13"
   resolved "https://registry.yarnpkg.com/@fontsource/ibm-plex-mono/-/ibm-plex-mono-4.5.13.tgz#f91559ab3b5074a8e2db75c0370b9640e80c99b2"

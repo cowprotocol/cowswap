@@ -47,6 +47,10 @@ cowSwapWidget({
 ## Developers
 
 ```bash
+# Run demo project locally
+# Will open http://localhost:3012/src/demo/index.html
+nx serve widget-lib
+
 # Test
 nx test widget-lib
 
