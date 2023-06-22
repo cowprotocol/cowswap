@@ -125,3 +125,45 @@ export interface TradeAssets {
 | `hideLogo`            | `boolean`          | The height of the widget in pixels.                                              |
 | `hideNetworkSelector` | `boolean`          | The container in which the widget will be displayed.                             |
 
+
+## Widget updating
+
+You can change all possible widget options on the fly:
+
+```typescript
+import { cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowprotocol/widget-lib'
+
+const params: CowSwapWidgetParams = {
+  container: document.getElementById('cowswap-widget'),
+  width: 600,
+  height: 640,
+}
+
+
+const settings: CowSwapWidgetSettings = {
+  appParams: {
+    logoUrl: 'YOUR_LOGO_URL'
+  }
+}
+
+const updateWidget = cowSwapWidget(params, settings)
+
+// Update the widget
+updateWidget({
+  urlParams: {
+    theme: 'dark', // <- Change theme to dark
+  },
+  appParams: {
+    ...settings.appParams,
+    hideNetworkSelector: true // <- Hide the network selector
+  },
+})
+```
+
+## Widget URL
+
+Most of the widget parameters are controlled via the URL, which means that you can create the URL yourself and embed the iframe.
+An example of URL:
+```
+https://swap.cow.fi/#/100/swap/WXDAI/GNO?sellAmount=200&theme=dark
+```
