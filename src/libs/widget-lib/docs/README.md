@@ -167,3 +167,9 @@ An example of URL:
 ```
 https://swap.cow.fi/#/100/swap/WXDAI/GNO?sellAmount=200&theme=dark
 ```
+
+
+## Backlog
+1. [ ] Customizing the theme palette
+2. [ ] Set custom tokens list from URL or JSON
+3. [ ] Forward integrator meta-data to Appzi
