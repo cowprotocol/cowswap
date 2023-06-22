@@ -81,6 +81,7 @@
     "@cowprotocol/ethflowcontract": "cowprotocol/ethflowcontract.git#v1.0.0-artifacts",
     "@davatar/react": "1.8.1",
     "@ethersproject/bignumber": "^5.7.0",
+    "@ethvault/iframe-provider": "^0.1.10",
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",
     "@ledgerhq/connect-kit-loader": "^1.0.2",

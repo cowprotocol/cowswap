@@ -1,6 +1,6 @@
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
-import { Routes } from 'common/constants/routes'
+import { RoutesValues } from 'common/constants/routes'
 
 export enum MenuItemKind {
   DROP_DOWN = 'DROP_DOWN',
@@ -52,7 +52,7 @@ export interface ExternalLink extends BasicMenuLink {
 }
 export interface DynamicLink extends BasicMenuLink {
   kind: MenuItemKind.DYNAMIC_LINK
-  url: Routes
+  url: RoutesValues
 }
 
 export type DarkModeLink = { kind: MenuItemKind.DARK_MODE_BUTTON }
