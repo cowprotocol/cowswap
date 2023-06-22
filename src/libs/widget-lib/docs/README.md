@@ -6,7 +6,7 @@ look and much more!
 
 [![Demo](./demo-preview.png)](./widget-demo.mp4)
 
-> [See demo video](./widget-demo.mp4)
+> [Watch the demo](./widget-demo.mp4)
 
 ## Install
 
