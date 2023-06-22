@@ -2,8 +2,7 @@ import { JsonRpcManager } from './JsonRpcManager'
 import { CowSwapWidgetParams, CowSwapWidgetSettings } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 
-const COW_SWAP_WIDGET_URL_UPDATE_KEY = 'cowSwapWidgetUrlUpdate'
-const COW_SWAP_WIDGET_APP_UPDATE_KEY = 'cowSwapWidgetAppUpdate'
+const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
 
 export type UpdateWidgetCallback = (params: CowSwapWidgetSettings) => void
 
@@ -33,17 +32,13 @@ function updateWidget(params: CowSwapWidgetSettings, contentWindow: Window) {
 
   contentWindow.postMessage(
     {
-      key: COW_SWAP_WIDGET_URL_UPDATE_KEY,
-      pathname,
-      search,
-    },
-    '*'
-  )
-
-  contentWindow.postMessage(
-    {
-      key: COW_SWAP_WIDGET_APP_UPDATE_KEY,
-      params: params.appParams,
+      key: COW_SWAP_WIDGET_EVENT_KEY,
+      method: 'update',
+      urlParams: {
+        pathname,
+        search,
+      },
+      appParams: params.appParams,
     },
     '*'
   )
