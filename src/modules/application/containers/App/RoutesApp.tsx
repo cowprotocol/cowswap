@@ -36,6 +36,9 @@ const EthFlowFaq = lazy(() => import(/* webpackChunkName: "eth_flow_faq" */ 'pag
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
 
+// Misc
+const KitchenSink = lazy(() => import(/* webpackChunkName: "kitchen_sink" */ 'pages/KitchenSink'))
+
 function createRedirectExternal(url: string) {
   return () => {
     window.location.replace(url)
@@ -64,6 +67,7 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.PRIVACY_POLICY, element: <PrivacyPolicy /> },
   { route: RoutesEnum.COOKIE_POLICY, element: <CookiePolicy /> },
   { route: RoutesEnum.TERMS_CONDITIONS, element: <TermsAndConditions /> },
+  { route: RoutesEnum.KITCHEN_SINK, element: <KitchenSink /> },
 ]
 
 export function RoutesApp() {
