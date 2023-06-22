@@ -17,10 +17,12 @@ import SentryUpdater from 'legacy/state/sentry/updater'
 import UserUpdater from 'legacy/state/user/updater'
 
 import { UploadToIpfsUpdater, AppDataUpdater } from 'modules/appData'
+import { InjectedWidgetUpdater } from 'modules/injectedWidget'
 import { EthFlowSlippageUpdater, EthFlowDeadlineUpdater } from 'modules/swap/state/EthFlow/updaters'
 import { TokensListUpdater } from 'modules/tokensList/updaters/TokensListUpdater'
 import { WalletUpdater } from 'modules/wallet'
 
+import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { MulticallUpdater } from 'lib/state/multicall'
 
 export function Updaters() {
@@ -48,6 +50,8 @@ export function Updaters() {
       <EthFlowSlippageUpdater />
       <EthFlowDeadlineUpdater />
       <SpotPricesUpdater />
+      <ThemeFromUrlUpdater />
+      <InjectedWidgetUpdater />
     </>
   )
 }

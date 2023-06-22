@@ -3,6 +3,7 @@ import { SafeInfoResponse } from '@safe-global/api-kit'
 
 export enum ConnectionType {
   INJECTED = 'INJECTED',
+  INJECTED_WIDGET = 'INJECTED_WIDGET',
   COINBASE_WALLET = 'COINBASE_WALLET',
   WALLET_CONNECT = 'WALLET_CONNECT',
   FORTMATIC = 'FORTMATIC',

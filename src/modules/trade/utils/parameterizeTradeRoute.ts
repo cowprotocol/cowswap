@@ -1,6 +1,6 @@
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 
-import { Routes } from 'common/constants/routes'
+import { RoutesValues } from 'common/constants/routes'
 
 /**
  * When input currency is not set and user select output currency, we build a link like:
@@ -8,7 +8,7 @@ import { Routes } from 'common/constants/routes'
  */
 export function parameterizeTradeRoute(
   { chainId, inputCurrencyId, outputCurrencyId }: TradeUrlParams,
-  route: Routes
+  route: RoutesValues
 ): string {
   return route
     .replace('/:chainId?', chainId ? `/${encodeURIComponent(chainId)}` : '')
