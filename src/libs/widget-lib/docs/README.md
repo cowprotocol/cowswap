@@ -4,9 +4,7 @@ Integrate the power of `CowSwap` into your product!
 With the widget, you can create an incredible trading interface. Specify the required pair of currencies, customize the
 look and much more!
 
-[![Demo](./demo-preview.png)](./widget-demo.mp4)
-
-> [Watch the demo](./widget-demo.mp4)
+<iframe width="650" src="https://youtube.com/embed/gxRRH9Rumx4?feature=share" frameborder=0 allowfullscreen></iframe>
 
 ## Install
 
