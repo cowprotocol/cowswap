@@ -80,6 +80,7 @@ export const HeaderText = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   font-size: 0.8rem;
   font-weight: 400;
+  white-space: nowrap;
 `
 
 const SubHeader = styled.div`

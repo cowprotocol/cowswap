@@ -6,6 +6,8 @@ import { /* isChrome, */ isMobile } from 'legacy/utils/userAgent'
 
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 
+import { FeatureGuard } from 'common/containers/FeatureGuard'
+
 import { AlphaOption } from './alpha'
 import { AmbireOption } from './ambire'
 import { CoinbaseWalletOption } from './coinbase'
@@ -22,6 +24,7 @@ import { tallyWalletConnection /* TallyWalletOption */ } from './tally'
 import { trustWalletConnection, TrustWalletOption } from './trust'
 import { WalletConnectOption } from './walletConnect'
 import { walletConnectConnection } from './walletConnect'
+import { WalletConnectV2Option, walletConnectConnectionV2 } from './walletConnectV2'
 import { ZengoOption } from './zengo'
 
 import { ConnectionType } from '../../api/types'
@@ -32,6 +35,7 @@ const CONNECTIONS: Web3ReactConnection[] = [
   injectedConnection,
   coinbaseWalletConnection,
   walletConnectConnection,
+  walletConnectConnectionV2,
   fortmaticConnection,
   networkConnection,
   tallyWalletConnection,
@@ -55,6 +59,7 @@ export function isChainAllowed(connector: Connector, chainId: number) {
     case injectedWidgetConnection.connector:
     case ledgerConnection.connector:
     case keystoneConnection.connector:
+    case walletConnectConnectionV2.connector:
       return ALL_SUPPORTED_CHAIN_IDS.includes(chainId)
     default:
       return false
@@ -76,6 +81,8 @@ export function getWeb3ReactConnection(c: Connector | ConnectionType): Web3React
         return coinbaseWalletConnection
       case ConnectionType.WALLET_CONNECT:
         return walletConnectConnection
+      case ConnectionType.WALLET_CONNECT_V2:
+        return walletConnectConnectionV2
       case ConnectionType.ZENGO:
         return walletConnectConnection
       case ConnectionType.FORTMATIC:
@@ -138,6 +145,9 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const walletConnectionOption =
     (!isInjectedMobileBrowser && <WalletConnectOption tryActivation={tryActivation} />) ?? null
 
+  const walletConnectionV2Option =
+    (!isInjectedMobileBrowser && <WalletConnectV2Option tryActivation={tryActivation} />) ?? null
+
   // Wallet-connect based
   const zengoOption = (!isInjectedMobileBrowser && <ZengoOption tryActivation={tryActivation} />) ?? null
   const ambireOption = (!isInjectedMobileBrowser && <AmbireOption tryActivation={tryActivation} />) ?? null
@@ -153,7 +163,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   return (
     <>
       {injectedOption}
-      {walletConnectionOption}
+      <FeatureGuard featureFlag="walletConnectV1Enabled">{walletConnectionOption}</FeatureGuard>
+      <FeatureGuard featureFlag="walletConnectV2Enabled">{walletConnectionV2Option}</FeatureGuard>
       {coinbaseWalletOption}
       {ledgerOption}
       {zengoOption}
