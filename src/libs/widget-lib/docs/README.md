@@ -28,6 +28,7 @@ const widgetContainer = document.getElementById('cowswap-widget')
 
 const params: CowSwapWidgetParams = {
   container: widgetContainer,
+  metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
   width: 600,
   height: 640,
 }
@@ -45,13 +46,17 @@ cowSwapWidget(params, settings)
 ## Wallet provider
 
 You can pass the wallet provider from your application to seamlessly use the widget as part of your application.
-Also, you can not specify the provider, in this case the widget will work in standalone mode with the ability to connect any wallet supported in CowSwap.
+Also, you can not specify the provider, in this case the widget will work in standalone mode with the ability to connect
+any wallet supported in CowSwap.
 
 A provider must comply with [EIP-1193](https://eips.ethereum.org/EIPS/eip-11930) and implement the interface:
+
 ```typescript
 interface EthereumProvider {
   on(event: string, args: unknown): void
+
   request<T>(params: JsonRpcRequest): Promise<T>
+
   enable(): Promise<void>
 }
 
@@ -69,6 +74,7 @@ import { cowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 const params: CowSwapWidgetParams = {
   container: document.getElementById('cowswap-widget'),
+  metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
   width: 600,
   height: 640,
   provider: window.ethereum // <-------
@@ -81,12 +87,13 @@ cowSwapWidget(params, {})
 
 ### `CowSwapWidgetParams`
 
-| Parameter   | Type               | Description                                                                |
-|-------------|--------------------|----------------------------------------------------------------------------|
-| `width`     | `number`           | The width of the widget in pixels.                                         |
-| `height`    | `number`           | The height of the widget in pixels.                                        |
-| `container` | `HTMLElement`      | The container in which the widget will be displayed.                       |
-| `provider`  | `EthereumProvider` | (Optional) The Ethereum provider to be used for interacting with a wallet. |
+| Parameter   | Type                    | Description                                                                                                                                          |
+|-------------|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `width`     | `number`                | The width of the widget in pixels.                                                                                                                   |
+| `height`    | `number`                | The height of the widget in pixels.                                                                                                                  |
+| `container` | `HTMLElement`           | The container in which the widget will be displayed.                                                                                                 |
+| `metaData`  | `CowSwapWidgetMetaData` | Information about the application in which the widget is embedded. This information will help identify the source of orders and requests from users. |
+| `provider`  | `EthereumProvider`      | (Optional) The Ethereum provider to be used for interacting with a wallet.                                                                           |
 
 ### `CowSwapWidgetSettings`
 
@@ -97,13 +104,13 @@ cowSwapWidget(params, {})
 
 ### `CowSwapWidgetUrlParams`
 
-| Parameter     | Type               | Description                                                                                            |
-|---------------|--------------------|--------------------------------------------------------------------------------------------------------|
-| `chainId`     | `number`           | The blockchain ID on which the trade will take place.                                                  |
-| `tradeType`   | `string`           | The type of trade. Can be `swap` or `limit-orders`.                                                    |
-| `env`         | `CowSwapWidgetEnv` | The environment of the widget (`'local'` or `'prod'`). |
-| `theme`       | `CowSwapTheme`     | (Optional) The theme of the widget (`'dark'` for dark theme or `'light'` for light theme).             |
-| `tradeAssets` | `TradeAssets`      | (Optional) An object containing information about the selling and buying assets.                       |
+| Parameter     | Type               | Description                                                                                |
+|---------------|--------------------|--------------------------------------------------------------------------------------------|
+| `chainId`     | `number`           | The blockchain ID on which the trade will take place.                                      |
+| `tradeType`   | `string`           | The type of trade. Can be `swap` or `limit-orders`.                                        |
+| `env`         | `CowSwapWidgetEnv` | The environment of the widget (`'local'` or `'prod'`).                                     |
+| `theme`       | `CowSwapTheme`     | (Optional) The theme of the widget (`'dark'` for dark theme or `'light'` for light theme). |
+| `tradeAssets` | `TradeAssets`      | (Optional) An object containing information about the selling and buying assets.           |
 
 ```typescript
 interface TradeAsset {
@@ -119,12 +126,11 @@ export interface TradeAssets {
 
 ### `CowSwapWidgetAppParams`
 
-| Parameter             | Type               | Description                                                                      |
-|-----------------------|--------------------|----------------------------------------------------------------------------------|
-| `logoUrl`             | `boolean`          | The width of the widget in pixels.                                               |
-| `hideLogo`            | `boolean`          | The height of the widget in pixels.                                              |
-| `hideNetworkSelector` | `boolean`          | The container in which the widget will be displayed.                             |
-
+| Parameter             | Type      | Description                                          |
+|-----------------------|-----------|------------------------------------------------------|
+| `logoUrl`             | `boolean` | The width of the widget in pixels.                   |
+| `hideLogo`            | `boolean` | The height of the widget in pixels.                  |
+| `hideNetworkSelector` | `boolean` | The container in which the widget will be displayed. |
 
 ## Widget updating
 
@@ -135,6 +141,7 @@ import { cowSwapWidget, CowSwapWidgetParams, CowSwapWidgetSettings } from '@cowp
 
 const params: CowSwapWidgetParams = {
   container: document.getElementById('cowswap-widget'),
+  metaData: { appKey: 'YOUR_APP_ID', url: 'https://YOUR_APP_URL' },
   width: 600,
   height: 640,
 }
@@ -162,14 +169,16 @@ updateWidget({
 
 ## Widget URL
 
-Most of the widget parameters are controlled via the URL, which means that you can create the URL yourself and embed the iframe.
+Most of the widget parameters are controlled via the URL, which means that you can create the URL yourself and embed the
+iframe.
 An example of URL:
+
 ```
 https://swap.cow.fi/#/100/swap/WXDAI/GNO?sellAmount=200&theme=dark
 ```
 
-
 ## Backlog
+
 1. [ ] Customizing the theme palette
 2. [ ] Set custom tokens list from URL or JSON
 3. [ ] Forward integrator meta-data to Appzi

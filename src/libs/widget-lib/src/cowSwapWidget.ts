@@ -1,5 +1,5 @@
 import { JsonRpcManager } from './JsonRpcManager'
-import { CowSwapWidgetParams, CowSwapWidgetSettings } from './types'
+import { CowSwapWidgetMetaData, CowSwapWidgetParams, CowSwapWidgetSettings } from './types'
 import { buildTradeAmountsQuery, buildWidgetPath, buildWidgetUrl } from './urlUtils'
 
 const COW_SWAP_WIDGET_EVENT_KEY = 'cowSwapWidget'
@@ -17,6 +17,8 @@ export function cowSwapWidget(params: CowSwapWidgetParams, settings: CowSwapWidg
 
   if (!contentWindow) throw new Error('Iframe does not contain a window!')
 
+  sendMetaData(contentWindow, params.metaData)
+
   if (provider) {
     const jsonRpcManager = new JsonRpcManager(contentWindow)
 
@@ -24,6 +26,19 @@ export function cowSwapWidget(params: CowSwapWidgetParams, settings: CowSwapWidg
   }
 
   return (params: CowSwapWidgetSettings) => updateWidget(params, contentWindow)
+}
+
+function createIframe(params: CowSwapWidgetParams, settings: CowSwapWidgetSettings): HTMLIFrameElement {
+  const { width, height } = params
+
+  const iframe = document.createElement('iframe')
+
+  iframe.src = buildWidgetUrl(settings.urlParams)
+  iframe.width = `${width}px`
+  iframe.height = `${height}px`
+  iframe.style.border = '0'
+
+  return iframe
 }
 
 function updateWidget(params: CowSwapWidgetSettings, contentWindow: Window) {
@@ -44,15 +59,19 @@ function updateWidget(params: CowSwapWidgetSettings, contentWindow: Window) {
   )
 }
 
-function createIframe(params: CowSwapWidgetParams, settings: CowSwapWidgetSettings): HTMLIFrameElement {
-  const { width, height } = params
+function sendMetaData(contentWindow: Window, metaData: CowSwapWidgetMetaData) {
+  window.addEventListener('message', (event) => {
+    if (event.data.key !== COW_SWAP_WIDGET_EVENT_KEY || event.data.method !== 'activate') {
+      return
+    }
 
-  const iframe = document.createElement('iframe')
-
-  iframe.src = buildWidgetUrl(settings.urlParams)
-  iframe.width = `${width}px`
-  iframe.height = `${height}px`
-  iframe.style.border = '0'
-
-  return iframe
+    contentWindow.postMessage(
+      {
+        key: COW_SWAP_WIDGET_EVENT_KEY,
+        method: 'metaData',
+        metaData,
+      },
+      '*'
+    )
+  })
 }

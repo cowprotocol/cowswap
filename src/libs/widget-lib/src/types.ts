@@ -44,9 +44,15 @@ export interface CowSwapWidgetSettings {
   appParams: CowSwapWidgetAppParams
 }
 
+export interface CowSwapWidgetMetaData {
+  appKey: string
+  url: string
+}
+
 export interface CowSwapWidgetParams {
   width: number
   height: number
   container: HTMLElement
+  metaData: CowSwapWidgetMetaData
   provider?: EthereumProvider
 }
