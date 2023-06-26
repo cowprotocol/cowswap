@@ -6,7 +6,7 @@ import { /* isChrome, */ isMobile } from 'legacy/utils/userAgent'
 
 import { getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'modules/wallet/api/utils/connection'
 
-import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
+import { FeatureGuard } from 'common/containers/FeatureGuard'
 
 import { AlphaOption } from './alpha'
 import { AmbireOption } from './ambire'
@@ -116,8 +116,6 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   const isMetaMask = getIsMetaMask()
   const isCoinbaseWallet = getIsCoinbaseWallet()
 
-  const { walletConnectV1Enabled, walletConnectV2Enabled } = useFeatureFlags()
-
   const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
   const isMetaMaskBrowser = isMobile && isMetaMask
   const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
@@ -165,8 +163,8 @@ export function ConnectWalletOptions({ tryActivation }: { tryActivation: TryActi
   return (
     <>
       {injectedOption}
-      {walletConnectV1Enabled && walletConnectionOption}
-      {walletConnectV2Enabled && walletConnectionV2Option}
+      <FeatureGuard featureFlag="walletConnectV1Enabled">{walletConnectionOption}</FeatureGuard>
+      <FeatureGuard featureFlag="walletConnectV2Enabled">{walletConnectionV2Option}</FeatureGuard>
       {coinbaseWalletOption}
       {ledgerOption}
       {zengoOption}

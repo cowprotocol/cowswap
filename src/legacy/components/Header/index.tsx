@@ -25,6 +25,7 @@ import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 import { useDisconnectWallet, useWalletInfo, Web3Status } from 'modules/wallet'
 import { walletConnectConnection } from 'modules/wallet/web3-react/connection/walletConnect'
+import { walletConnectConnectionV2 } from 'modules/wallet/web3-react/connection/walletConnectV2'
 
 import { Routes } from 'common/constants/routes'
 import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
@@ -58,8 +59,9 @@ export default function Header() {
   const isInjectedWidgetMode = isInjectedWidget()
   const injectedWidgetParams = useInjectedWidgetParams()
 
-  const { walletConnectV1Enabled } = useFeatureFlags()
+  const { walletConnectV1Enabled, walletConnectV2Enabled } = useFeatureFlags()
   const isWalletConnectV1 = useIsActiveWallet(walletConnectConnection)
+  const isWalletConnectV2 = useIsActiveWallet(walletConnectConnectionV2)
   const disconnectWallet = useDisconnectWallet()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
@@ -132,10 +134,13 @@ export default function Header() {
 
   // Disconnect wallet if its wallet-connect v1 and v1 flag is disabled
   useEffect(() => {
-    if (walletConnectV1Enabled === false && isWalletConnectV1) {
+    if (
+      (walletConnectV1Enabled === false && isWalletConnectV1) ||
+      (walletConnectV2Enabled === false && isWalletConnectV2)
+    ) {
       disconnectWallet()
     }
-  }, [walletConnectV1Enabled, isWalletConnectV1, disconnectWallet])
+  }, [walletConnectV1Enabled, isWalletConnectV1, disconnectWallet, walletConnectV2Enabled, isWalletConnectV2])
 
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>

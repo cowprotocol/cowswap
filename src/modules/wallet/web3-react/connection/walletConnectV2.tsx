@@ -90,7 +90,7 @@ export function WalletConnectV2Option({ tryActivation }: { tryActivation: TryAct
       {...walletConnectV2Option}
       isActive={isActive}
       tooltipText={tooltipText}
-      clickable={!isActive}
+      clickable={!isWalletConnect}
       onClick={() => tryActivation(walletConnectConnectionV2.connector)}
       header={getConnectionName(ConnectionType.WALLET_CONNECT_V2)}
     />
