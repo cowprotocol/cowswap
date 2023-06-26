@@ -1,16 +1,27 @@
+import { useMemo } from 'react'
+
 import { initializeConnector } from '@web3-react/core'
 
 import { RPC_URLS } from 'legacy/constants/networks'
 import { useIsActiveWallet } from 'legacy/hooks/useIsActiveWallet'
 
-import { ConnectionType } from 'modules/wallet'
+import { ConnectionType, useWalletMetaData } from 'modules/wallet'
 import { default as WalletConnectV2Image } from 'modules/wallet/api/assets/wallet-connect-v2.png'
 import { ConnectWalletOption } from 'modules/wallet/api/pure/ConnectWalletOption'
-import { getConnectionName } from 'modules/wallet/api/utils/connection'
+import {
+  getConnectionName,
+  getIsAlphaWallet,
+  getIsAmbireWallet,
+  getIsTrustWallet,
+  getIsZengoWallet,
+} from 'modules/wallet/api/utils/connection'
+import { WC_DISABLED_TEXT } from 'modules/wallet/constants'
 
-import { AsyncConnector } from './asyncConnector'
+import { useFeatureFlags } from 'common/hooks/featureFlags/useFeatureFlags'
 
 import { TryActivation, onError } from '.'
+
+import { AsyncConnector } from './asyncConnector'
 
 import { Web3ReactConnection } from '../types'
 
@@ -55,13 +66,30 @@ export const walletConnectConnectionV2: Web3ReactConnection = {
 }
 
 export function WalletConnectV2Option({ tryActivation }: { tryActivation: TryActivation }) {
-  const isActive = useIsActiveWallet(walletConnectConnectionV2)
+  const { walletName } = useWalletMetaData()
+  const { walletConnectV1Enabled } = useFeatureFlags()
+
+  const isWalletConnect = useIsActiveWallet(walletConnectConnectionV2)
+  const isActive =
+    isWalletConnect &&
+    !getIsZengoWallet(walletName) &&
+    !getIsAmbireWallet(walletName) &&
+    !getIsAlphaWallet(walletName) &&
+    !getIsTrustWallet(null, walletName)
+
+  const tooltipText = useMemo(() => {
+    if (walletConnectV1Enabled) {
+      return TOOLTIP_TEXT
+    }
+
+    return !isActive && isWalletConnect ? WC_DISABLED_TEXT : null
+  }, [isActive, isWalletConnect, walletConnectV1Enabled])
 
   return (
     <ConnectWalletOption
       {...walletConnectV2Option}
       isActive={isActive}
-      tooltipText={TOOLTIP_TEXT}
+      tooltipText={tooltipText}
       clickable={!isActive}
       onClick={() => tryActivation(walletConnectConnectionV2.connector)}
       header={getConnectionName(ConnectionType.WALLET_CONNECT_V2)}
