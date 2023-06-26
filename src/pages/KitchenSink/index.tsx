@@ -12,6 +12,10 @@ export default function KitchenSink() {
   const cowSwapWidgetParams: CowSwapWidgetParams = {
     width: 600,
     height: 700,
+    metaData: {
+      appKey: 'KitchenSink',
+      url: '/',
+    },
   }
 
   const cowSwapWidgetSettings: CowSwapWidgetSettings = {
